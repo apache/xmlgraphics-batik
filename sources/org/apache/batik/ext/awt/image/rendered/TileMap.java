@@ -55,6 +55,15 @@ public class TileMap implements TileStore {
 
     public void setTile(int x, int y, Raster ras) {
         Point pt = new Point(x, y);
+
+        if (ras == null) {
+            // Clearing entry...
+            Object o = rasters.remove(pt);
+            if (o != null) 
+                cache.remove((TileMapLRUMember)o);
+            return;
+        }
+
         Object o = rasters.get(pt);
         TileMapLRUMember item;
         if (o == null) {

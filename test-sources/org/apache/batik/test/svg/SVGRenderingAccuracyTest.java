@@ -26,12 +26,14 @@ import java.util.Vector;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 
 import org.apache.batik.ext.awt.image.CompositeRule;
 import org.apache.batik.ext.awt.image.rendered.CompositeRed;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 
-import org.apache.batik.ext.awt.image.ImageLoader;
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
@@ -42,6 +44,8 @@ import org.apache.batik.transcoder.TranscoderOutput;
 
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+
+import org.apache.batik.util.ParsedURL;
 
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.Test;
@@ -578,13 +582,23 @@ public class SVGRenderingAccuracyTest implements Test{
      */
     protected BufferedImage getImage(URL url) 
         throws IOException {
-        BufferedImage img = ImageLoader.loadImage(url,
-                                                  BufferedImage.TYPE_INT_ARGB);
+        ImageTagRegistry reg = ImageTagRegistry.getRegistry();
+        Filter filt = reg.readURL(new ParsedURL(url));
+        if(filt == null)
+            throw new IOException(Messages.formatMessage
+                                  (COULD_NOT_LOAD_IMAGE,
+                                   new Object[]{url.toString()}));
+
+        RenderedImage red = filt.createDefaultRendering();
+        if(red == null)
+            throw new IOException(Messages.formatMessage
+                                  (COULD_NOT_LOAD_IMAGE,
+                                   new Object[]{url.toString()}));
         
-        if(img == null){
-            throw new IOException(Messages.formatMessage(COULD_NOT_LOAD_IMAGE,
-                                                         new Object[]{url.toString()}));
-        }
+        BufferedImage img = new BufferedImage(red.getWidth(),
+                                              red.getHeight(),
+                                              BufferedImage.TYPE_INT_ARGB);
+        red.copyData(img.getRaster());
 
         return img;
     }

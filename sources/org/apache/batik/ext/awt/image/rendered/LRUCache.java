@@ -81,8 +81,9 @@ public class LRUCache {
 			} else {
 				setNext(nde);
 				setPrev(nde.getPrev());
-				getNext().setPrev(this);
-				getPrev().setNext(this);
+				nde.setPrev(this);
+                if (getPrev() != null)
+                    getPrev().setNext(this);
 			}
 		}
 	}

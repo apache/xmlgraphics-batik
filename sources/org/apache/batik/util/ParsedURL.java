@@ -8,8 +8,10 @@
 
 package org.apache.batik.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import java.io.IOException;
@@ -48,6 +50,11 @@ public class ParsedURL {
     ParsedURLData data;
 
     /**
+     * The user agent to associate with this URL
+     */
+    String userAgent;
+
+    /**
      * This maps between protocol names and ParsedURLProtocolHandler instances.
      */
     private static Map handlersMap = null; 
@@ -59,6 +66,14 @@ public class ParsedURL {
      */
     private static ParsedURLProtocolHandler defaultHandler 
         = new ParsedURLDefaultProtocolHandler();
+
+    private static String globalUserAgent = "Batik/1.0";
+
+    public static String getGlobalUserAgent() { return globalUserAgent; }
+
+    public static void setGlobalUserAgent(String userAgent) { 
+        globalUserAgent = userAgent; 
+    }
 
     /**
      * Returns the shared instance of HandlersMap.  This method is
@@ -140,7 +155,8 @@ public class ParsedURL {
      * @param urlStr The string to try and parse as a URL 
      */
     public ParsedURL(String urlStr) {
-        data = parseURL(urlStr);
+        this.userAgent = getGlobalUserAgent();
+        this.data      = parseURL(urlStr);
     }
 
     /**
@@ -149,10 +165,12 @@ public class ParsedURL {
      * instance.  This bypasses most of the parsing and hence is
      * quicker and less prone to reinterpretation than converting the
      * URL to a string before construction.
+     *
      * @param url The URL to "mimic".  
      */
     public ParsedURL(URL url) {
-        data = new ParsedURLData(url);
+        this.userAgent = getGlobalUserAgent();
+        this.data      = new ParsedURLData(url);
     }
 
     /**
@@ -162,10 +180,11 @@ public class ParsedURL {
      *               the missing pieces will be taken from the baseStr.
      */
     public ParsedURL(String baseStr, String urlStr) {
+        this.userAgent = getGlobalUserAgent();
         if (baseStr != null)
-            data = parseURL(baseStr, urlStr);
+            this.data = parseURL(baseStr, urlStr);
         else
-            data = parseURL(urlStr);
+            this.data = parseURL(urlStr);
     }
 
     /**
@@ -175,10 +194,11 @@ public class ParsedURL {
      *               the missing pieces will be taken from the baseURL.
      */
     public ParsedURL(URL baseURL, String urlStr) {
+        this.userAgent = getGlobalUserAgent();
         if (baseURL != null)
-            data = parseURL(new ParsedURL(baseURL), urlStr);
+            this.data = parseURL(new ParsedURL(baseURL), urlStr);
         else
-            data = parseURL(urlStr);
+            this.data = parseURL(urlStr);
     }
 
     /**
@@ -188,10 +208,11 @@ public class ParsedURL {
      *               the missing pieces will be taken from the baseURL.
      */
     public ParsedURL(ParsedURL baseURL, String urlStr) {
+        this.userAgent = baseURL.getUserAgent();
         if (baseURL != null)
-            data = parseURL(baseURL, urlStr);
+            this.data = parseURL(baseURL, urlStr);
         else
-            data = parseURL(urlStr);
+            this.data = parseURL(urlStr);
     }
 
     /**
@@ -231,6 +252,21 @@ public class ParsedURL {
      */
     public boolean complete() {
         return data.complete();
+    }
+
+    /**
+     * Return the user agent current associated with this url (or
+     * null if none).
+     */
+    public String getUserAgent() {
+        return userAgent;
+    }
+    /**
+     * Sets the user agent associated with this url (null clears
+     * any associated user agent).
+     */
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 
     /**
@@ -286,18 +322,110 @@ public class ParsedURL {
     }
 
     /**
+     * Returns the content type if available.  This is only available
+     * for some protocols.
+     */
+    public String getContentType() {
+        return data.getContentType();
+    }
+
+    /**
+     * Returns the content encoding if available.  This is only available
+     * for some protocols.
+     */
+    public String getContentEncoding() {
+        return data.getContentEncoding();
+    }
+
+    /**
      * Attempt to open the stream checking for common compression
      * types, and automatically decompressing them if found.  
      */
     public InputStream openStream() throws IOException {
-        return data.openStream();
+        return data.openStream(userAgent, null);
     }
 
     /**
-     * Attempt to open the stream.
+     * Attempt to open the stream checking for common compression
+     * types, and automatically decompressing them if found.  
+     */
+    public InputStream openStream(String mimeType) throws IOException {
+        List mt = new ArrayList(1);
+        mt.add(mimeType);
+        return data.openStream(userAgent, mt.iterator());
+    }
+
+    /**
+     * Attempt to open the stream checking for common compression
+     * types, and automatically decompressing them if found.
+     * @param mimeTypes The expected mime types of the content 
+     *        in the returned InputStream (mapped to Http accept
+     *        header among other possability).
+     */
+    public InputStream openStream(String [] mimeTypes) throws IOException {
+        List mt = new ArrayList(mimeTypes.length);
+        for (int i=0; i<mimeTypes.length; i++)
+            mt.add(mimeTypes[i]);
+        return data.openStream(userAgent, mt.iterator());
+    }
+
+    /**
+     * Attempt to open the stream checking for common compression
+     * types, and automatically decompressing them if found.
+     * @param mimeTypes The expected mime types of the content 
+     *        in the returned InputStream (mapped to Http accept
+     *        header among other possability).  The elements of
+     *        the iterator must be strings.
+     */
+    public InputStream openStream(Iterator mimeTypes) throws IOException {
+        return data.openStream(userAgent, mimeTypes);
+    }
+
+    /**
+     * Attempt to open the stream, does no checking for comression
+     * types.
      */
     public InputStream openStreamRaw() throws IOException {
-        return data.openStreamRaw();
+        return data.openStreamRaw(userAgent, null);
+    }
+
+    /**
+     * Attempt to open the stream, does no checking for comression
+     * types.
+     * @param mimeType The expected mime type of the content 
+     *        in the returned InputStream (mapped to Http accept
+     *        header among other possability).
+     */
+    public InputStream openStreamRaw(String mimeType) throws IOException {
+        List mt = new ArrayList(1);
+        mt.add(mimeType);
+        return data.openStreamRaw(userAgent, mt.iterator());
+    }
+
+    /**
+     * Attempt to open the stream, does no checking for comression
+     * types.
+     * @param mimeTypes The expected mime types of the content 
+     *        in the returned InputStream (mapped to Http accept
+     *        header among other possability).
+     */
+    public InputStream openStreamRaw(String [] mimeTypes) throws IOException {
+        List mt = new ArrayList(mimeTypes.length);
+        for (int i=0; i<mimeTypes.length; i++)
+            mt.add(mimeTypes[i]);
+        return data.openStreamRaw(userAgent, mt.iterator());
+    }
+
+    /**
+     * Attempt to open the stream, does no checking for comression
+     * types.
+     * @param mimeTypes The expected mime types of the content 
+     *        in the returned InputStream (mapped to Http accept
+     *        header among other possability).  The elements of
+     *        the iterator must be strings.
+     */
+    public InputStream openStreamRaw(Iterator mimeTypes) throws IOException {
+        return data.openStreamRaw(userAgent, mimeTypes);
     }
 
     /**
@@ -360,49 +488,5 @@ public class ParsedURL {
 
         ParsedURLProtocolHandler handler = getHandler(protocol);
         return handler.parseURL(baseURL, urlStr);        
-    }
-
-    static public void main1(String []args) {
-        for (int i=0; i<args.length; i++) {
-            ParsedURL purl = new ParsedURL(args[i]);
-
-            System.out.println("URL:        \"" + args[i] + "\"");
-            System.out.println("  Str:      \"" + purl + "\"");
-            System.out.println("  Protocol: \"" + purl.getProtocol()+"\"");
-            System.out.println("  Host:     \"" + purl.getHost()    +"\"");
-            System.out.println("  Port:     \"" + purl.getPort()    +"\"");
-            System.out.println("  Path:     \"" + purl.getPath()    +"\"");
-            System.out.println("  Ref:      \"" + purl.getRef()     +"\"");
-        }
-    }
-
-    // This is a little test harness that takes the arguments and uses
-    // them to construct 'relative' URLS (so it always uses the
-    // previous url to construct the next url).
-    //
-    // Example input:
-    // "xml.apache.org ~deweese 
-    // file:///home/deweese/.cshrc 
-    // http://xml.apache.org:8080/~deweese/index.html#1234asdb 
-    // file:/home/deweese/tools/src/foo.cc 
-    // fooz:/home/deweese/tools/src/foo.cc 
-    // fooz:///home/deweese/tools/src/foo.cc 
-    // fooz://www.www.www:1234/home/deweese/src/foo.cc#abcd 
-    //      xzy.html#lalsjdf 
-    // /xyz.svg#alskd
-
-    static public void main(String []args) {
-        ParsedURL purl = null;
-        for (int i=0; i<args.length; i++) {
-            purl = new ParsedURL(purl, args[i]);
-
-            System.out.println("URL:        \"" + args[i] + "\"");
-            System.out.println("  Str:      \"" + purl + "\"");
-            System.out.println("  Protocol: \"" + purl.getProtocol()+"\"");
-            System.out.println("  Host:     \"" + purl.getHost()    +"\"");
-            System.out.println("  Port:     \"" + purl.getPort()    +"\"");
-            System.out.println("  Path:     \"" + purl.getPath()    +"\"");
-            System.out.println("  Ref:      \"" + purl.getRef()     +"\"");
-        }
     }
 }

@@ -86,12 +86,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         GraphicsNode node = null;
         // try to load the image as an svg document
         SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
-        ParsedURL purl;
         URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
-        if (baseURL != null)
-            purl = new ParsedURL(baseURL.toString(), uriStr);
-        else
-            purl = new ParsedURL(uriStr);
+        ParsedURL purl = new ParsedURL(baseURL, uriStr);
 
 
         // try to load an SVG document
@@ -105,7 +101,9 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             }
         } catch (BridgeException ex) {
             throw ex;
-        } catch (Exception ex) { /* Nothing to do */ }
+        } catch (Exception ex) { 
+            /* Nothing to do */ 
+        }
 
         if (node == null) {
             // try to load the image as a raster image (JPG or PNG)

@@ -8,6 +8,7 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -36,7 +37,9 @@ import org.apache.batik.ext.awt.image.renderable.ProfileRable;
  */
 public class ImageTagRegistry implements ErrorConstants {
 
-    List entries = new LinkedList();
+    List entries    = new LinkedList();
+    List extensions = null;
+    List mimeTypes  = null;
 
     URLImageCache rawCache;
     URLImageCache imgCache;
@@ -83,6 +86,7 @@ public class ImageTagRegistry implements ErrorConstants {
 
         InputStream is         = null;
         boolean     openFailed = false;
+        List mimeTypes = getRegisteredMimeTypes();
 
         Iterator i;
         i = entries.iterator();
@@ -107,7 +111,7 @@ public class ImageTagRegistry implements ErrorConstants {
                     if (is == null) {
                         // Haven't opened the stream yet let's try.
                         try {
-                            is = purl.openStream();
+                            is = purl.openStream(mimeTypes.iterator());
                         } catch(IOException ioe) {
                             // Couldn't open the stream, go to next entry.
                             openFailed = true;
@@ -186,7 +190,7 @@ public class ImageTagRegistry implements ErrorConstants {
         return ret;
     }
 
-    public void register(RegistryEntry newRE) {
+    public synchronized void register(RegistryEntry newRE) {
         float priority = newRE.getPriority();
 
         ListIterator li;
@@ -200,11 +204,49 @@ public class ImageTagRegistry implements ErrorConstants {
             }
         }
         li.add(newRE);
+        extensions = null;
+        mimeTypes = null;
+    }
+
+    /**
+     * Returns a List that contains String of all the extensions that
+     * can be handleded by the various registered image format
+     * handlers.  
+     */
+    public synchronized List getRegisteredExtensions() {
+        if (extensions != null)
+            return extensions;
+        
+        extensions = new LinkedList();
+        Iterator iter = entries.iterator();;
+        while(iter.hasNext()) {
+            RegistryEntry re = (RegistryEntry)iter.next();
+            extensions.addAll(re.getStandardExtensions());
+        }
+        extensions = Collections.unmodifiableList(extensions);
+        return extensions;
+    }
+
+    /**
+     * Returns a List that contains String of all the mime types that
+     * can be handleded by the various registered image format
+     * handlers.  
+     */
+    public synchronized List getRegisteredMimeTypes() {
+        if (mimeTypes != null) 
+            return mimeTypes;
+
+        mimeTypes = new LinkedList();
+        Iterator iter = entries.iterator();;
+        while(iter.hasNext()) {
+            RegistryEntry re = (RegistryEntry)iter.next();
+            mimeTypes.addAll(re.getMimeTypes());
+        }
+        mimeTypes = Collections.unmodifiableList(mimeTypes);
+        return mimeTypes;
     }
 
     static ImageTagRegistry registry = null;
-    
-
 
     public synchronized static ImageTagRegistry getRegistry() { 
         if (registry != null) 

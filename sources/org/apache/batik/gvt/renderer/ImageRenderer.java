@@ -9,6 +9,7 @@
 package org.apache.batik.gvt.renderer;
 
 import java.awt.image.BufferedImage;
+import java.awt.Rectangle;
 
 /**
  * Interface for GVT Renderers that render into raster images.
@@ -32,4 +33,13 @@ public interface ImageRenderer extends Renderer{
      */
     public void clearOffScreen();
 
+    /**
+     * Flush any cached image data (preliminary interface).
+     */
+    public void flush();
+
+    /**
+     * Flush a rectangle of cached image data (preliminary interface).
+     */
+    public void flush(Rectangle r);
 }

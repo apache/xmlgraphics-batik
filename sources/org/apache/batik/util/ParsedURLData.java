@@ -12,11 +12,27 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 
 import java.util.zip.GZIPInputStream;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ParsedURLData {
+    
+    String HTTP_USER_AGENT_HEADER      = "User-Agent";
+
+    String HTTP_ACCEPT_HEADER          = "Accept";
+    String HTTP_ACCEPT_LANGUAGE_HEADER = "Accept-Language";
+    String HTTP_ACCEPT_ENCODING_HEADER = "Accept-Encoding";
+
+    protected static List acceptedEncodings = new LinkedList();
+    static {
+        acceptedEncodings.add("gzip");
+    }
 
     /**
      * GZIP header magic number bytes, like found in a gzipped
@@ -57,12 +73,13 @@ public class ParsedURLData {
      * easy for the various Protocol Handlers to update an
      * instance as parsing proceeds.
      */
-    public String protocol = null;
-    public String host     = null;
-    public int    port     = -1;
-    public String path     = null;
-    public String ref      = null;
-
+    public String protocol        = null;
+    public String host            = null;
+    public int    port            = -1;
+    public String path            = null;
+    public String ref             = null;
+    public String contentType     = null;
+    public String contentEncoding = null;
     /**
      * Void constructor
      */
@@ -188,6 +205,22 @@ public class ParsedURLData {
     }
 
     /**
+     * Returns the content type if available.  This is only available
+     * for some protocols.
+     */
+    public String getContentType() {
+        return contentType;
+    }
+
+    /**
+     * Returns the content encoding if available.  This is only available
+     * for some protocols.
+     */
+    public String getContentEncoding() {
+        return contentEncoding;
+    }
+
+    /**
      * Returns true if the URL looks well formed and complete.
      * This does not garuntee that the stream can be opened but
      * is a good indication that things aren't totally messed up.
@@ -205,9 +238,16 @@ public class ParsedURLData {
      * Open the stream and check for common compression types.  If
      * the stream is found to be compressed with a standard
      * compression type it is automatically decompressed.
+     * @param userAgent The user agent opening the stream (may be null).
+     * @param mimeTypes The expected mime types of the content 
+     *        in the returned InputStream (mapped to Http accept
+     *        header among other possability).  The elements of
+     *        the iterator must be strings (may be null)
      */
-    public InputStream openStream() throws IOException {
-        InputStream raw = openStreamRaw();
+    public InputStream openStream(String userAgent, Iterator mimeTypes) 
+        throws IOException {
+        InputStream raw = openStreamInternal(userAgent, mimeTypes, 
+                                             acceptedEncodings.iterator());
         if (raw == null)
             return null;
                 
@@ -217,8 +257,21 @@ public class ParsedURLData {
     /**
      * Open the stream and returns it.  No checks are made to see
      * if the stream is compressed or encoded in any way.
+     * @param userAgent The user agent opening the stream (may be null).
+     * @param mimeTypes The expected mime types of the content 
+     *        in the returned InputStream (mapped to Http accept
+     *        header among other possability).  The elements of
+     *        the iterator must be strings (may be null)
      */
-    public InputStream openStreamRaw() throws IOException {
+    public InputStream openStreamRaw(String userAgent, Iterator mimeTypes) 
+        throws IOException {
+        return openStreamInternal(userAgent, mimeTypes, null);
+    }
+
+    protected InputStream openStreamInternal(String userAgent,
+                                             Iterator mimeTypes,
+                                             Iterator encodingTypes) 
+        throws IOException {
         URL url = null;
         try {
             url = buildURL();
@@ -229,7 +282,38 @@ public class ParsedURLData {
 
         if (url == null)
             return null;
-        return url.openStream();
+
+        URLConnection urlC = url.openConnection();
+        if (urlC instanceof HttpURLConnection) {
+            if (userAgent != null)
+                urlC.setRequestProperty(HTTP_USER_AGENT_HEADER, userAgent);
+
+            if (mimeTypes != null) {
+                String acceptHeader = "";
+                while (mimeTypes.hasNext()) {
+                    acceptHeader += mimeTypes.next();
+                    if (mimeTypes.hasNext())
+                        acceptHeader += ",";
+                }
+                urlC.setRequestProperty(HTTP_ACCEPT_HEADER, acceptHeader);
+            }
+
+            if (encodingTypes != null) {
+                String encodingHeader = "";
+                while (encodingTypes.hasNext()) {
+                    encodingHeader += encodingTypes.next();
+                    if (encodingTypes.hasNext())
+                        encodingHeader += ",";
+                }
+                urlC.setRequestProperty(HTTP_ACCEPT_ENCODING_HEADER, 
+                                        encodingHeader);
+            }
+
+            contentType     = urlC.getContentType();
+            contentEncoding = urlC.getContentEncoding();
+        }
+
+        return urlC.getInputStream();
     }
 
     /**

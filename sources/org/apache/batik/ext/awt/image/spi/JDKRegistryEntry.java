@@ -44,7 +44,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
         1000*MagicNumberRegistryEntry.PRIORITY;
 
     public JDKRegistryEntry() {
-        super ("JDK", PRIORITY, new String[0]);
+        super ("JDK", PRIORITY, new String[0], new String [] {"image/gif"});
     }
 
     /**

@@ -24,11 +24,13 @@ import org.apache.batik.util.ParsedURL;
 public class JPEGRegistryEntry 
     extends MagicNumberRegistryEntry {
 
-    static final byte [] signature = {(byte)0xFF, (byte)0xd8, 
+    static final byte [] signature   = {(byte)0xFF, (byte)0xd8, 
                                       (byte)0xFF, (byte)0xe0};
-    static final String [] exts    = {"jpeg", "jpg" };
+    static final String [] exts      = {"jpeg", "jpg" };
+    static final String [] mimeTypes = {"image/jpeg", "image/jpg" };
+
     public JPEGRegistryEntry() {
-        super("JPEG", exts, 0, signature);
+        super("JPEG", exts, mimeTypes, 0, signature);
     }
 
     /**

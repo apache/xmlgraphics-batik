@@ -22,6 +22,8 @@ import java.util.ResourceBundle;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.batik.dom.util.SAXDocumentFactory;
+import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.MimeTypeConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
@@ -45,6 +47,11 @@ public class SAXSVGDocumentFactory
      */
     protected final static String DTDS =
         "org.apache.batik.dom.svg.resources.dtduris";
+
+    /**
+     * Constant for HTTP content type header charset field.
+     */
+    protected final static String HTTP_CHARSET = "charset";
 
     /**
      * The accepted DTD URIs.
@@ -75,27 +82,57 @@ public class SAXSVGDocumentFactory
      * @exception IOException if an error occured while reading the document.
      */
     public SVGOMDocument createDocument(String uri) throws IOException {
-        URL url = null;
-        try {
-            url = new URL(uri);
-        } catch (MalformedURLException e) {
-            throw new IOException("Malformed URL: " + uri);
-        }
+        ParsedURL purl = new ParsedURL(uri);
 
-        InputStream is = url.openStream();
-        try {
-            is = new GZIPInputStream(is);
-        } catch (IOException e) {
-            is.close();
-            is = url.openStream();
-        }
+        InputStream is = purl.openStream(MimeTypeConstants.MIME_TYPES_SVG);
 
         InputSource isrc = new InputSource(is);
+        
+        // now looking for a charset encoding in the content type such
+        // as "image/svg+xml; charset=iso8859-1" this is not official
+        // for image/svg+xml yet! only for text/xml and maybe
+        // for application/xml
+        String contentType = purl.getContentType();
+        int cindex = -1;
+        if (contentType != null) {
+            contentType = contentType.toLowerCase();
+            cindex = contentType.indexOf(HTTP_CHARSET);
+        }
+ 
+        if (cindex != -1) {
+            int i                 = cindex + HTTP_CHARSET.length();
+            int eqIdx = contentType.indexOf('=', i);
+            if (eqIdx != -1) {
+                eqIdx++; // no one is interested in the equals sign...
+
+                String charset;
+                // The patch had ',' as the terminator but I suspect
+                // that is the delimiter between possible charsets,
+                // but if another 'attribute' were in the accept header
+                // charset would be terminated by a ';'.  So I look
+                // for both and take to closer of the two.
+                int idx     = contentType.indexOf(',', eqIdx);
+                int semiIdx = contentType.indexOf(';', eqIdx);
+                if ((semiIdx != -1) && ((semiIdx < idx) || (idx == -1)))
+                    idx = semiIdx;
+                if (idx != -1)
+                    charset = contentType.substring(eqIdx, idx);
+                else 
+                    charset = contentType.substring(eqIdx);
+                isrc.setEncoding(charset.trim());
+            }
+        }
+
         isrc.setSystemId(uri);
 
         SVGOMDocument doc = (SVGOMDocument)super.createDocument
             (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, isrc);
-        doc.setURLObject(url);
+        try {
+            doc.setURLObject(new URL(purl.toString()));
+        } catch (MalformedURLException mue) {
+            // Not very likely to happen given we already opened the stream.
+            throw new IOException("Malformed URL: " + uri);
+        }
 
         return doc;
     }

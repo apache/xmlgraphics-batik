@@ -16,6 +16,8 @@ import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.util.ParsedURL;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -96,13 +98,11 @@ public class URIResolver {
             return document.getElementById(uri.substring(1));
         }
 
-        URL url = new URL(((SVGOMDocument)document).getURLObject(), uri);
-        Document doc = documentLoader.loadDocument(url.toString());
-        String ref = url.getRef();
-        if (url.getRef() == null) {
-            return doc;
-        } else {
+        ParsedURL purl = new ParsedURL(documentURI, uri);
+        Document doc = documentLoader.loadDocument(purl.toString());
+        String ref = purl.getRef();
+        if (ref != null)
             return doc.getElementById(ref);
-        }
+        return doc;
     }
 }

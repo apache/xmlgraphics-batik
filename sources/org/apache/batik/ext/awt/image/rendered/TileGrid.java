@@ -45,9 +45,20 @@ public class TileGrid implements TileStore {
         y-= minTileY;
         if ((x<0) || (x>=xSz)) return;
         if ((y<0) || (y>=ySz)) return;
-		
+
         TileLRUMember [] row = rasters[y];
         TileLRUMember item;
+        if (ras == null) {
+            // Clearing entry.
+            if (row == null) return;
+            item = row[x];
+            if (item == null) return;
+
+            row[x] = null;
+            cache.remove(item);
+            return;
+        }
+		
         if (row != null) {
             item = row[x];
             if (item == null) {

@@ -10,6 +10,7 @@ package org.apache.batik.gvt.filter;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.AbstractTiledRed;
+import org.apache.batik.ext.awt.image.rendered.AbstractRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 
 import java.awt.AlphaComposite;
@@ -35,7 +36,7 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class GraphicsNodeRed8Bit extends AbstractTiledRed {
+public class GraphicsNodeRed8Bit extends AbstractRed {
 
     /**
      * GraphicsNode this image can render
@@ -109,6 +110,11 @@ public class GraphicsNodeRed8Bit extends AbstractTiledRed {
 
         // Finish initializing our base class...
         init((CachableRed)null, bounds, cm, sm, tgX, tgY, null);
+    }
+
+    public WritableRaster copyData(WritableRaster wr) {
+        genRect(wr);
+        return wr;
     }
 
     public void genRect(WritableRaster wr) {
