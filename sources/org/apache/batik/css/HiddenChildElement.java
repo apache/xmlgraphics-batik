@@ -27,4 +27,14 @@ public interface HiddenChildElement {
      * Sets the parent element of this element.
      */
     void setParentElement(Element elt);
+
+    /**
+     * Sets the cascaded style of this element.
+     */
+    CSSOMReadOnlyStyleDeclaration getCascadedStyle();
+
+    /**
+     * Sets the cascaded style of this element.
+     */
+    void setCascadedStyle(CSSOMReadOnlyStyleDeclaration sd);
 }

@@ -27,7 +27,7 @@ public class HiddenChildElementSupport {
     /**
      * Returns the parent element.
      */
-    public final static Element getParentElement(Element e) {
+    public static Element getParentElement(Element e) {
         Node n = e.getParentNode();
         if (n == null) {
             if (e instanceof HiddenChildElement) {
@@ -42,5 +42,26 @@ public class HiddenChildElementSupport {
             n = n.getParentNode();
         } while (n != null); 
         return null;
+    }
+
+    /**
+     * Recursively imports the style from the 'src' element.
+     */
+    public static void setStyle(Element e,
+                                AbstractViewCSS ev,
+                                Element src,
+                                AbstractViewCSS srcv) {
+        CSSOMReadOnlyStyleDeclaration sd;
+        sd = (CSSOMReadOnlyStyleDeclaration)srcv.computeStyle(src, null);
+        ((HiddenChildElement)e).setCascadedStyle(sd);
+        sd.setContext(ev, e);
+        
+        for (Node en = e.getFirstChild(), sn = src.getFirstChild();
+             en != null;
+             en = en.getNextSibling(), sn = sn.getNextSibling()) {
+            if (en.getNodeType() == Node.ELEMENT_NODE) {
+                setStyle((Element)en, ev, (Element)sn, srcv);
+            }
+        }
     }
 }

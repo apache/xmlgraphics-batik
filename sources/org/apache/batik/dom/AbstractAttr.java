@@ -195,14 +195,14 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * Called when a child node has been added.
      */
     protected void nodeAdded(Node n) {
-	setSpecified(true);
+        setSpecified(true);
     }
 
     /**
      * Called when a child node is going to be removed.
      */
     protected void nodeToBeRemoved(Node n) {
-	setSpecified(true);
+        setSpecified(true);
     }
 
     /**

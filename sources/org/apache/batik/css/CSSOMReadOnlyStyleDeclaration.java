@@ -70,6 +70,15 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     }
 
     /**
+     * Creates a new CSSOMReadOnlyStyleDeclaration object.
+     */
+    public CSSOMReadOnlyStyleDeclaration(CSSOMReadOnlyStyleDeclaration sd) {
+        properties = new PropertyMap(sd.properties);
+        viewCSS = sd.viewCSS;
+        parentElement = sd.parentElement;
+    }
+
+    /**
      * Sets the declaration context.
      */
     public void setContext(AbstractViewCSS v, Element elt) {
@@ -560,6 +569,33 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
         }
 
         /**
+         * Creates a copy of the given PropertyMap object.
+         * @param t The table to copy.
+         */
+        public PropertyMap(PropertyMap t) {
+            count = t.count;
+            table = new ValueEntry[t.table.length];
+            for (int i = 0; i < table.length; i++) {
+                ValueEntry e = t.table[i];
+                ValueEntry n = null;
+                if (e != null) {
+                    n = createValueEntry(e.value, e.getPriority(),
+                                         e.getOrigin());
+                    n.initialize(e.hash, e.key, null);
+                    table[i] = n;
+                    e = e.next;
+                    while (e != null) {
+                        n.next = createValueEntry(e.value, e.getPriority(),
+                                                  e.getOrigin());
+                        n = n.next;
+                        n.initialize(e.hash, e.key, null);
+                        e = e.next;
+                    }
+                }
+            }
+        }
+
+        /**
          * Returns the size of this table.
          */
         public int size() {
@@ -715,7 +751,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
         protected void rehash () {
             ValueEntry[] oldTable = table;
 	
-            table     = new ValueEntry[oldTable.length * 2 + 1];
+            table = new ValueEntry[oldTable.length * 2 + 1];
 	
             for (int i = oldTable.length-1; i >= 0; i--) {
                 for (ValueEntry old = oldTable[i]; old != null;) {

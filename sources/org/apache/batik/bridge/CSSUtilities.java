@@ -25,6 +25,7 @@ import java.util.HashMap;
 import org.apache.batik.css.AbstractViewCSS;
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.css.value.ImmutableString;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -837,14 +838,17 @@ public abstract class CSSUtilities
 
         SVGOMDocument document
             = (SVGOMDocument)localRefElement.getOwnerDocument();
-        ViewCSS view = (ViewCSS)document.getDefaultView();
+        AbstractViewCSS view = (AbstractViewCSS)document.getDefaultView();
+
 
         SVGOMDocument refDocument
             = (SVGOMDocument)refElement.getOwnerDocument();
-        ViewCSS refView = (ViewCSS)refDocument.getDefaultView();
-
-        computeStyle(refElement,      refView,
-                     localRefElement, view);
+        AbstractViewCSS refView = (AbstractViewCSS)refDocument.getDefaultView();
+        
+        HiddenChildElementSupport.setStyle(localRefElement,
+                                           view,
+                                           refElement,
+                                           refView);
     }
 
     /**

@@ -8,17 +8,8 @@
 
 package org.apache.batik.extension;
 
-import org.apache.batik.css.ElementWithID;
-import org.apache.batik.css.ElementWithPseudoClass;
-import org.apache.batik.css.HiddenChildElement;
-import org.apache.batik.css.HiddenChildElementSupport;
-
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.AbstractElement;
-
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import org.apache.batik.dom.svg.AbstractElement;
 
 /**
  * This class implements the basic features an element must have in order
@@ -27,21 +18,7 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class ExtensionElement
-    extends    AbstractElement
-    implements ElementWithID,
-               ElementWithPseudoClass,
-               HiddenChildElement {
-    
-    /**
-     * The element ID attribute name.
-     */
-    protected final static String ID_NAME = "id";
-
-    /**
-     * The parent element.
-     */
-    protected transient Element parentElement;
+public abstract class ExtensionElement extends AbstractElement {
 
     /**
      * Creates a new Element object.
@@ -57,24 +34,6 @@ public abstract class ExtensionElement
     protected ExtensionElement(String name, AbstractDocument owner) {
         super(name, owner);
     }
-    
-    // HiddenChildElement //////////////////////////////////////////////////
-
-    /**
-     * The parent element of this element.
-     */
-    public Element getParentElement() {
-        return parentElement;
-    }
-
-    /**
-     * Sets the parent element.
-     */
-    public void setParentElement(Element elt) {
-        parentElement = elt;
-    }
-
-    // ExtendedNode //////////////////////////////////////////////////
 
     /**
      * Tests whether this node is readonly.
@@ -88,45 +47,4 @@ public abstract class ExtensionElement
      */
     public void setReadonly(boolean v) {
     }
-
-    // ElementWithID /////////////////////////////////////////////////
-
-    /**
-     * Sets the element ID attribute name.
-     * @param uri The namespace uri.
-     * @param s   The attribute local name.
-     */
-    public void setIDName(String uri, String s) {
-        if (uri != null || s == null || !s.equals(ID_NAME)) {
-	    throw createDOMException
-		(DOMException.NO_MODIFICATION_ALLOWED_ERR,
-		 "id.name",
-		 new Object[] { s });
-        }
-    }
-
-    /**
-     * Returns the ID of this element or the empty string.
-     */
-    public String getID() {
-        return getAttribute(ID_NAME);
-    }
-
-    // ElementWithPseudoClass ////////////////////////////////////////
-
-    /**
-     * Whether this element matches the given pseudo-class.
-     * This methods supports the :first-child pseudo class.
-     */
-    public boolean matchPseudoClass(String pseudoClass) {
-        if (pseudoClass.equals("first-child")) {
-            Node n = getPreviousSibling();
-            while (n != null && n.getNodeType() != ELEMENT_NODE) {
-                n = n.getPreviousSibling();
-            }
-            return n == null;
-        }
-        return false;
-    }
-
 }
