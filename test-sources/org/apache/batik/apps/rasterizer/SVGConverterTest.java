@@ -272,7 +272,9 @@ public class SVGConverterTest extends DefaultTestSuite {
         t = new ConfigErrorTest(SVGConverter.ERROR_OUTPUT_NOT_WRITEABLE){
                 protected void configure(SVGConverter c){
                     c.setSources(new String[]{ "samples/anne.svg" });
-                    c.setDst(new File("test-resources/org/apache/batik/apps/rasterizer/readOnly.png"));
+                    File o = new File("test-resources/org/apache/batik/apps/rasterizer/readOnly.png");
+                    o.setReadOnly();
+                    c.setDst(o);
                 }
             };
         addTest(t);
