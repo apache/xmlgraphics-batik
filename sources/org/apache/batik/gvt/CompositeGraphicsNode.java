@@ -35,8 +35,9 @@ import org.apache.batik.gvt.event.GraphicsNodeEvent;
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class CompositeGraphicsNode extends AbstractGraphicsNode
-        implements List {
+public class CompositeGraphicsNode extends AbstractGraphicsNode 
+    implements List {
+
     public static final Rectangle2D VIEWPORT = new Rectangle(0, 0, 0, 0);
 
     /**
@@ -71,7 +72,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      */
     private Rectangle2D primitiveBounds;
 
-
+    /**
+     * Internal Cache: the outline.
+     */
     private Shape outline;
 
     /**
@@ -84,7 +87,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     //
 
     /**
-     * Returns the list of children. Never null.
+     * Returns the list of children.
      */
     public List getChildren() {
         return this;
@@ -92,6 +95,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * Sets the enable background property to the specified rectangle.
+     *
      * @param bgRgn the region that defines the background enable property
      */
     public void setBackgroundEnable(Rectangle2D bgRgn) {
@@ -110,10 +114,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     //
 
     /**
-     * Paints this node without applying Filter, Mask, Composite and clip.
+     * Paints this node without applying Filter, Mask, Composite, and clip.
      *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use
      */
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if (count == 0) {
@@ -135,32 +138,8 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     //
 
     /**
-     * Adds the specified composite graphics node listener to receive
-     * composite graphics node events from this node.
-     * @param l the composite graphics node listener to add
-     */
-    public void addCompositeGraphicsNodeListener(
-                                              CompositeGraphicsNodeListener l) {
-        if (listeners == null) {
-            listeners = new EventListenerList();
-        }
-        listeners.add(CompositeGraphicsNodeListener.class, l);
-    }
-
-    /**
-     * Removes the specified composite graphics node listener so that it
-     * no longer receives composite graphics node events from this node.
-     * @param l the composite graphics node listener to remove
-     */
-    public void removeCompositeGraphicsNodeListener(
-                                              CompositeGraphicsNodeListener l) {
-        if (listeners != null) {
-            listeners.remove(CompositeGraphicsNodeListener.class, l);
-        }
-    }
-
-    /**
      * Dispatches the specified event to the interested registered listeners.
+     *
      * @param evt the event to dispatch
      */
     public void dispatchEvent(GraphicsNodeEvent evt) {
@@ -176,7 +155,37 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
+     * Adds the specified composite graphics node listener to receive composite
+     * graphics node events from this node.
+     *
+     * @param l the composite graphics node listener to add 
+     */
+    public void addCompositeGraphicsNodeListener
+	(CompositeGraphicsNodeListener l) {
+
+        if (listeners == null) {
+            listeners = new EventListenerList();
+        }
+        listeners.add(CompositeGraphicsNodeListener.class, l);
+    }
+
+    /**
+     * Removes the specified composite graphics node listener so that it no
+     * longer receives composite graphics node events from this node.
+     *
+     * @param l the composite graphics node listener to remove 
+     */
+    public void removeCompositeGraphicsNodeListener
+	(CompositeGraphicsNodeListener l) {
+
+        if (listeners != null) {
+            listeners.remove(CompositeGraphicsNodeListener.class, l);
+        }
+    }
+
+    /**
      * Processes a composite event occuring on this graphics node.
+     *
      * @param evt the event to process
      */
    public void processCompositeEvent(CompositeGraphicsNodeEvent evt) {
@@ -207,6 +216,11 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     // Geometric methods
     //
 
+    /**
+     * Invalidates the cached geometric bounds. This method is called
+     * each time an attribute that affects the bounds of this node
+     * changed.
+     */
     protected void invalidateGeometryCache() {
         super.invalidateGeometryCache();
         geometryBounds = null;
@@ -214,63 +228,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         outline = null;
     }
 
-    public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
-        if (count > 0 && getBounds(rc).contains(p)) {
-            Point2D pt = null;
-            Point2D cp = null; // Propagated to children
-            for (int i=0; i < count; ++i) {
-                AffineTransform t = children[i].getInverseTransform();
-                if(t != null){
-                    pt = t.transform(p, pt);
-                    cp = pt;
-                }
-                else{
-                    cp = p;
-                }
-
-                if (children[i].contains(cp, rc)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc) {
-        Rectangle2D bounds = getBounds(rc);
-        if (count > 0 && bounds != null && bounds.contains(p)) {
-            //
-            // Go backward because the children are in rendering order
-            //
-            Point2D pt = null;
-            Point2D cp = null; // Propagated to children
-            for (int i=count-1; i >= 0; --i) {
-                AffineTransform t = children[i].getInverseTransform();
-                if(t != null){
-                    pt = t.transform(p, pt);
-                    cp = pt;
-                }
-                else{
-                    cp = p;
-                }
-                GraphicsNode node = children[i].nodeHitAt(cp, rc);
-                if (node != null) {
-                    return node;
-                }
-            }
-        }
-        return null;
-    }
-
     /**
-     * Returns the bounds of the area covered by this node's
-     * primitive paint.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-      */
+     * Returns the bounds of the area covered by this node's primitive paint.
+     */
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         if (primitiveBounds == null) {
             int i=0;
@@ -304,14 +264,12 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns the bounds of the area covered by this node's
-     * primitive paint.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns the bounds of this node's primitivePaint after applying the input
+     * transform (if any), concatenated with this node's transform (if any).
      *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-      */
+     * @param txf the affine transform with which this node's transform should
+     *        be concatenated. Should not be null.
+     */
     public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf,
                                                      GraphicsNodeRenderContext rc) {
         AffineTransform t = txf;
@@ -338,15 +296,10 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns the bounds of the area covered by this node, without
-     * taking any of its rendering attribute into account, i.e., exclusive
-     * of any clipping, masking, filtering or stroking, for example.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-      */
+     * Returns the bounds of the area covered by this node, without taking any
+     * of its rendering attribute into account. i.e., exclusive of any clipping,
+     * masking, filtering or stroking, for example.
+     */
     public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc) {
         if(geometryBounds == null){
             // System.out.println("geometryBounds are null");
@@ -374,18 +327,15 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns the bounds of the area covered by this node, without
-     * taking any of its rendering attribute into account, i.e., exclusive
-     * of any clipping, masking, filtering or stroking, for example.
-     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
-     * cannot be precisely determined independent of their
-     * GraphicsNodeRenderContext.
+     * Returns the bounds of the area covered by this node, without taking any
+     * of its rendering attribute into accoun. i.e., exclusive of any clipping,
+     * masking, filtering or stroking, for example. The returned value is
+     * transformed by the concatenation of the input transform and this node's
+     * transform.
      *
-     * The returned Rectangle2D is transformed through the contenation of the
-     * input transform and this node's transform.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-      */
+     * @param txf the affine transform with which this node's transform should
+     *        be concatenated. Should not be null.
+     */
     public Rectangle2D getTransformedGeometryBounds
         (AffineTransform txf, GraphicsNodeRenderContext rc) {
 
@@ -408,15 +358,72 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
                 gb.add(cgb);
             }
         }
-
         return gb;
     }
 
     /**
-     * Returns the outline of this <tt>CompositeGraphicsNode</tt>.
+     * Returns true if the specified Point2D is inside the boundary of this
+     * node, false otherwise.
      *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return the outline of this node
+     * @param p the specified Point2D in the user space
+     */
+    public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
+        if (count > 0 && getBounds(rc).contains(p)) {
+            Point2D pt = null;
+            Point2D cp = null; // Propagated to children
+            for (int i=0; i < count; ++i) {
+                AffineTransform t = children[i].getInverseTransform();
+                if(t != null){
+                    pt = t.transform(p, pt);
+                    cp = pt;
+                }
+                else{
+                    cp = p;
+                }
+
+                if (children[i].contains(cp, rc)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Returns the GraphicsNode containing point p if this node or one of its
+     * children is sensitive to mouse events at p.
+     *
+     * @param p the specified Point2D in the user space
+     */
+    public GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc) {
+        Rectangle2D bounds = getBounds(rc);
+        if (count > 0 && bounds != null && bounds.contains(p)) {
+            //
+            // Go backward because the children are in rendering order
+            //
+            Point2D pt = null;
+            Point2D cp = null; // Propagated to children
+            for (int i=count-1; i >= 0; --i) {
+                AffineTransform t = children[i].getInverseTransform();
+                if(t != null){
+                    pt = t.transform(p, pt);
+                    cp = pt;
+                }
+                else{
+                    cp = p;
+                }
+                GraphicsNode node = children[i].nodeHitAt(cp, rc);
+                if (node != null) {
+                    return node;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the outline of this node.
      */
     public Shape getOutline(GraphicsNodeRenderContext rc) {
         if (outline == null) {
@@ -501,10 +508,10 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns an array containing all of the graphics node in the
-     * children list of this composite graphics node in the correct
-     * order.
-     * @param a the array to fit if possible
+     * Returns an array containing all of the graphics node in the children list
+     * of this composite graphics node in the correct order.
+     *
+     * @param a the array to fit if possible 
      */
     public Object[] toArray(Object [] a) {
         if (a.length < count) {
@@ -519,6 +526,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * Returns the graphics node at the specified position in the children list.
+     *
      * @param index the index of the graphics node to return
      * @exception IndexOutOfBoundsException if the index is out of range
      */
@@ -530,14 +538,15 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     // Modification Operations
 
     /**
-     * Replaces the graphics node at the specified position in the
-     * children list with the specified graphics node.
+     * Replaces the graphics node at the specified position in the children list
+     * with the specified graphics node.
+     *
      * @param index the index of the graphics node to replace
      * @param o the graphics node to be stored at the specified position
      * @return the graphics node previously  at the specified position
      * @exception IndexOutOfBoundsException if the index is out of range
      * @exception IllegalArgumentException if the node is not an
-     * instance of GraphicsNode
+     * instance of GraphicsNode 
      */
     public Object set(int index, Object o) {
         // Check for correct arguments
@@ -571,6 +580,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * Adds the specified graphics node to this composite graphics node.
+     *
      * @param o the graphics node to add
      * @return true (as per the general contract of Collection.add)
      * @exception IllegalArgumentException if the node is not an
@@ -602,17 +612,17 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Inserts the specified graphics node at the specified position
-     * in this children list. Shifts the graphics node currently at
-     * that position (if any) and any subsequent graphics nodes to the
-     * right (adds one to their indices).
+     * Inserts the specified graphics node at the specified position in this
+     * children list. Shifts the graphics node currently at that position (if
+     * any) and any subsequent graphics nodes to the right (adds one to their
+     * indices).
      *
      * @param index the position at which the specified graphics node is to
      * be inserted.
      * @param o the graphics node to be inserted.
      * @exception IndexOutOfBoundsException if the index is out of range
      * @exception IllegalArgumentException if the node is not an
-     * instance of GraphicsNode
+     * instance of GraphicsNode 
      */
     public void add(int index, Object o) {
         // Check for correct arguments
@@ -662,6 +672,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * Removes the specified graphics node from the children list.
+     *
      * @param o the node the remove
      * @return true if the children list contains the specified graphics node
      * @exception IllegalArgumentException if the node is not an
@@ -685,11 +696,12 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * Removes the graphics node at the specified position in the children list.
-     * Shifts any subsequent graphics nodes to the left (subtracts one
-     * from their indices).
+     * Shifts any subsequent graphics nodes to the left (subtracts one from
+     * their indices).
+     *
      * @param index the position of the graphics node to remove
      * @return the graphics node that was removed
-     * @exception IndexOutOfBoundsException if index out of range <tt>
+     * @exception IndexOutOfBoundsException if index out of range <tt> 
      */
     public Object remove(int index) {
         // Check for correct argument
@@ -742,9 +754,10 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns true if this composite graphics node contains all the
-     * graphics node in the specified collection, false otherwise.
-     * @param c the collection to be checked for containment
+     * Returns true if this composite graphics node contains all the graphics
+     * node in the specified collection, false otherwise.
+     *
+     * @param c the collection to be checked for containment 
      */
     public boolean containsAll(Collection c) {
         Iterator i = c.iterator();
@@ -759,11 +772,10 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     // Search Operations
 
     /**
-     * Returns the index in the children list of the specified
-     * graphics node or -1 if the children list does not contain this
-     * graphics node.
+     * Returns the index in the children list of the specified graphics node or
+     * -1 if the children list does not contain this graphics node.
      *
-     * @param node the graphics node to search for
+     * @param node the graphics node to search for 
      */
     public int indexOf(Object node) {
         if (node == null || !(node instanceof GraphicsNode)) {
@@ -780,11 +792,11 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns the index in this children list of the last occurence
-     * of the specified graphics node, or -1 if the list does not contain
-     * this graphics node.
+     * Returns the index in this children list of the last occurence of the
+     * specified graphics node, or -1 if the list does not contain this graphics
+     * node.
      *
-     * @param node the graphics node to search for
+     * @param node the graphics node to search for 
      */
     public int lastIndexOf(Object node) {
         if (node == null || !(node instanceof GraphicsNode)) {
@@ -810,10 +822,11 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns an iterator over the children of this graphics node,
-     * starting at the specified position in the children list.
+     * Returns an iterator over the children of this graphics node, starting at
+     * the specified position in the children list.
+     *
      * @param index the index of the first graphics node to return
-     * from the children list
+     * from the children list 
      */
     public ListIterator listIterator(int index) {
         if (index < 0 || index > count) {
@@ -835,6 +848,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     /**
      * Checks if the given index is in range.  If not, throws an appropriate
      * runtime exception.
+     *
      * @param index the index to check
      */
     private void checkRange(int index) {
@@ -845,9 +859,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Increases the capacity of the children list, if necessary, to
-     * ensure that it can hold at least the number of graphics nodes
-     * specified by the minimum capacity argument.
+     * Increases the capacity of the children list, if necessary, to ensure that
+     * it can hold at least the number of graphics nodes specified by the
+     * minimum capacity argument.
      *
      * @param minCapacity the desired minimum capacity.
      */

@@ -136,6 +136,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Sets the transform of this node.
+     *
      * @param newTransform the new transform of this node
      */
     public void setTransform(AffineTransform newTransform) {
@@ -157,14 +158,14 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns the transform of this node.
+     * Returns the transform of this node or null if any.
      */
     public AffineTransform getTransform() {
         return transform;
     }
 
     /**
-     * Returns the inverse transform of this node
+     * Returns the inverse transform for this node.
      */
     public AffineTransform getInverseTransform(){
         return inverseTransform;
@@ -188,6 +189,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Sets the composite of this node.
+     *
      * @param composite the composite of this node
      */
     public void setComposite(Composite newComposite) {
@@ -196,7 +198,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns the composite of this node.
+     * Returns the composite of this node or null if any.
      */
     public Composite getComposite() {
         return composite;
@@ -204,6 +206,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Sets if this node is visible or not depending on the specified value.
+     *
      * @param isVisible If true this node is visible
      */
     public void setVisible(boolean isVisible) {
@@ -211,18 +214,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Determines whether or not this node is visible when its parent
-     * is visible. Nodes are initially visible.
-     * @return true if this node is visible, false otherwise
+     * Returns true if this node is visible, false otherwise.
      */
     public boolean isVisible() {
         return isVisible;
     }
 
-    /**
-     * Sets the clipping filter for this node.
-     * @param newClipper the new clipping filter of this node
-     */
     public void setClip(ClipRable newClipper) {
         invalidateGeometryCache();
         this.clip = newClipper;
@@ -236,11 +233,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Maps the specified key to the specified value in the rendering
-     * hints of this node.
+     * Maps the specified key to the specified value in the rendering hints of
+     * this node.
+     *
      * @param key the key of the hint to be set
      * @param value the value indicating preferences for the specified
-     * hint category.
+     * hint category.  
      */
     public void setRenderingHint(RenderingHints.Key key, Object value) {
         if (this.hints == null) {
@@ -253,6 +251,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     /**
      * Copies all of the mappings from the specified Map to the
      * rendering hints of this node.
+     *
      * @param hints the rendering hints to be set
      */
     public void setRenderingHints(Map hints) {
@@ -265,6 +264,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Sets the rendering hints of this node.
+     *
      * @param newHints the new rendering hints of this node
      */
     public void setRenderingHints(RenderingHints newHints) {
@@ -280,6 +280,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Sets the mask of this node.
+     *
      * @param newMask the new mask of this node
      */
     public void setMask(Mask newMask) {
@@ -296,6 +297,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Sets the filter of this node.
+     *
      * @param newFilter the new filter of this node
      */
     public void setFilter(Filter newFilter) {
@@ -318,7 +320,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * Paints this node.
      *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use
      */
     public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc){
 
@@ -334,11 +335,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 return;         // No point in drawing
         }
 
-        //
-        // Set up graphic context. It is important to setup the
-        // transform first, because the clip is defined in this
-        // node's user space.
-        //
+        // Set up graphic context. It is important to setup the transform first,
+        // because the clip is defined in this node's user space.
         Shape defaultClip = g2d.getClip();
         Composite defaultComposite = g2d.getComposite();
         AffineTransform defaultTransform = g2d.getTransform();
@@ -365,10 +363,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         rc.setRenderingHints(g2d.getRenderingHints());
         rc.setAreaOfInterest(curClip);
 
-        //
         // Check if any painting is needed at all. Get the clip (in user space)
         // and see if it intersects with this node's bounds (in user space).
-        //
         boolean paintNeeded = true;
         Rectangle2D bounds = getBounds(rc);
         Shape g2dClip = g2d.getClip();
@@ -382,10 +378,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             }
         }
 
-        //
         // Only paint if needed.
-        //
-        // paintNeeded = true;
         if (paintNeeded){
             AffineTransform txf = g2d.getTransform();
             boolean antialiasedClip = false;
@@ -471,8 +464,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns true of an offscreen buffer is needed to render this
-     * node, false otherwise.
+     * Returns true of an offscreen buffer is needed to render this node, false
+     * otherwise.  
      */
     protected boolean isOffscreenBufferNeeded() {
         return ((filter != null) ||
@@ -520,89 +513,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
 
     /**
-     * Adds the specified graphics node mouse listener to receive
-     * graphics node mouse events from this node.
-     * @param l the graphics node mouse listener to add
-     */
-    public void addGraphicsNodeMouseListener(GraphicsNodeMouseListener l) {
-        if (listeners == null) {
-            listeners = new EventListenerList();
-        }
-        listeners.add(GraphicsNodeMouseListener.class, l);
-    }
-
-    /**
-     * Removes the specified graphics node mouse listener so that it
-     * no longer receives graphics node mouse events from this node.
-     * @param l the graphics node mouse listener to remove
-     */
-    public void removeGraphicsNodeMouseListener(GraphicsNodeMouseListener l) {
-        if (listeners != null) {
-            listeners.remove(GraphicsNodeMouseListener.class, l);
-        }
-    }
-
-    /**
-     * Adds the specified graphics node key listener to receive
-     * graphics node key events from this node.
-     * @param l the graphics node key listener to add
-     */
-    public void addGraphicsNodeKeyListener(GraphicsNodeKeyListener l) {
-        if (listeners == null) {
-            listeners = new EventListenerList();
-        }
-        listeners.add(GraphicsNodeKeyListener.class, l);
-    }
-
-    /**
-     * Removes the specified graphics node key listener so that it
-     * no longer receives graphics node key events from this node.
-     * @param l the graphics node key listener to remove
-     */
-    public void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l) {
-        if (listeners != null) {
-            listeners.remove(GraphicsNodeKeyListener.class, l);
-        }
-    }
-
-    /**
-     * Sets the hit detector for this node.
-     * @param hitDetector the new hit detector
-     */
-    public void setGraphicsNodeHitDetector(GraphicsNodeHitDetector hitDetector){
-        this.hitDetector = hitDetector;
-    }
-
-    /**
-     * Returns the hit detector for this node.
-     */
-    public GraphicsNodeHitDetector getGraphicsNodeHitDetector() {
-        return hitDetector;
-    }
-
-    /**
-     * Returns an array of listeners that were added to this node and
-     * of the specified type.
-     * @param listenerType the type of the listeners to return
-     */
-    public EventListener [] getListeners(Class listenerType) {
-        Object array =
-            Array.newInstance(listenerType,
-                              listeners.getListenerCount(listenerType));
-        Object[] pairElements = listeners.getListenerList();
-        for (int i=0, j=0;i<pairElements.length-1;i+=2) {
-            if (pairElements[i].equals(listenerType)) {
-                Array.set(array, j, pairElements[i+1]);
-                ++j;
-            }
-        }
-        return (EventListener[]) array;
-        // XXX: Code below is a jdk 1.3 dependency!  Should be removed.
-        //return listeners.getListeners(listenerType);
-    }
-
-    /**
      * Dispatches the specified event to the interested registered listeners.
+     *
      * @param evt the event to dispatch
      */
     public void dispatchEvent(GraphicsNodeEvent evt) {
@@ -626,8 +538,75 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Processes a mouse event occuring on this graphics node.
-     * @param evt the event to process
+     * Adds the specified graphics node mouse listener to receive graphics node
+     * mouse events from this node.
+     *
+     * @param l the graphics node mouse listener to add 
+     */
+    public void addGraphicsNodeMouseListener(GraphicsNodeMouseListener l) {
+        if (listeners == null) {
+            listeners = new EventListenerList();
+        }
+        listeners.add(GraphicsNodeMouseListener.class, l);
+    }
+
+    /**
+     * Removes the specified graphics node mouse listener so that it no longer
+     * receives graphics node mouse events from this node.
+     *
+     * @param l the graphics node mouse listener to remove 
+     */
+    public void removeGraphicsNodeMouseListener(GraphicsNodeMouseListener l) {
+        if (listeners != null) {
+            listeners.remove(GraphicsNodeMouseListener.class, l);
+        }
+    }
+
+    /**
+     * Adds the specified graphics node key listener to receive graphics node
+     * key events from this node.
+     *
+     * @param l the graphics node key listener to add 
+     */
+    public void addGraphicsNodeKeyListener(GraphicsNodeKeyListener l) {
+        if (listeners == null) {
+            listeners = new EventListenerList();
+        }
+        listeners.add(GraphicsNodeKeyListener.class, l);
+    }
+
+    /**
+     * Removes the specified graphics node key listener so that it no longer
+     * receives graphics node key events from this node.
+     *
+     * @param l the graphics node key listener to remove 
+     */
+    public void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l) {
+        if (listeners != null) {
+            listeners.remove(GraphicsNodeKeyListener.class, l);
+        }
+    }
+
+    /**
+     * Sets the hit detector for this node.
+     *
+     * @param hitDetector the new hit detector
+     */
+    public void setGraphicsNodeHitDetector(GraphicsNodeHitDetector hitDetector){
+        this.hitDetector = hitDetector;
+    }
+
+    /**
+     * Returns the hit detector for this node.
+     */
+    public GraphicsNodeHitDetector getGraphicsNodeHitDetector() {
+        return hitDetector;
+    }
+
+    /**
+     * Dispatches a graphics node mouse event to this node or one of its child.
+     *
+     * @param evt the evt to dispatch
      */
     public void processMouseEvent(GraphicsNodeMouseEvent evt) {
         if ((listeners != null) && acceptEvent(evt)) {
@@ -678,12 +657,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         evt.consume();
     }
 
-
     /**
-     * Processes a key event occuring on this graphics node.
-     * @param evt the event to process
+     * Dispatches a graphics node key event to this node or one of its child.
+     *
+     * @param evt the evt to dispatch
      */
-   public void processKeyEvent(GraphicsNodeKeyEvent evt) {
+    public void processKeyEvent(GraphicsNodeKeyEvent evt) {
         if ((listeners != null) && acceptEvent(evt)) {
             GraphicsNodeKeyListener[] listeners =
                 (GraphicsNodeKeyListener[])
@@ -713,7 +692,18 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
+     * Returns an array of listeners that were added to this node and of the
+     * specified type.
+     *
+     * @param listenerType the type of the listeners to return 
+     */
+    public EventListener [] getListeners(Class listenerType) {
+        return listeners.getListeners(listenerType);
+    }
+
+    /**
      * Returns true is this node accepts the specified event, false otherwise.
+     *
      * @param evt the event to check
      * @return always true at this time
      */
@@ -733,8 +723,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns the root of the GVT tree or <code>null</code> if
-     * the node is not part of a GVT tree.
+     * Returns the root of the GVT tree or null if the node is not part of a GVT
+     * tree.  
      */
     public RootGraphicsNode getRoot() {
         return root;
@@ -742,6 +732,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Sets the root node of this graphics node.
+     *
      * @param newRoot the new root node of this node
      */
     protected void setRoot(RootGraphicsNode newRoot) {
@@ -750,6 +741,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Sets the parent node of this graphics node.
+     *
      * @param newParent the new parent node of this node
      */
     protected void setParent(CompositeGraphicsNode newParent) {
@@ -773,94 +765,16 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns the bounds of this node after applying the input transform
-     * (if any), concatenated with this node's transform (if any).
-     *
-     * @param txf the affine transform with which this node's transform should
-     *        be concatenated. Should not be null.
-     * @param rc the GraphicsNodeRenderContext
-     */
-    public Rectangle2D getTransformedBounds(AffineTransform txf,
-                                            GraphicsNodeRenderContext rc){
-        AffineTransform t = txf;
-        if(transform != null){
-            t = new AffineTransform(txf);
-            t.concatenate(transform);
-        }
-
-        // The painted region, before cliping, masking and compositing
-        // is either the area painted by the primitive paint or the
-        // area painted by the filter.
-        Rectangle2D tBounds = null;
-        if(filter == null){
-            tBounds = getTransformedPrimitiveBounds(txf, rc); /* Use txf, not t */
-        } else {
-            tBounds = t.createTransformedShape
-                (filter.getBounds2D()).getBounds2D();
-        }
-        // Factor in the clipping area, if any
-        if(tBounds != null){
-            if(clip != null) {
-                tBounds.intersect(tBounds,
-                                  t.createTransformedShape(clip.getClipPath()).getBounds2D(),
-                                  tBounds);
-            }
-
-            // Factor in the mask, if any
-            if(mask != null) {
-                tBounds.intersect(tBounds,
-                                  t.createTransformedShape(mask.getBounds2D()).getBounds2D(),
-                                  tBounds);
-            }
-        }
-        return tBounds;
-    }
-
-    public Rectangle2D getTransformedPrimitiveBounds
-        (AffineTransform txf, GraphicsNodeRenderContext rc) {
-
-        Rectangle2D tpBounds = getPrimitiveBounds(rc);
-        if (tpBounds == null) {
-            return null;
-        }
-        AffineTransform t = txf;
-        if(transform != null){
-            t = new AffineTransform(txf);
-            t.concatenate(transform);
-        }
-
-        return t.createTransformedShape(tpBounds).getBounds2D();
-    }
-
-    public Rectangle2D getTransformedGeometryBounds
-        (AffineTransform txf, GraphicsNodeRenderContext rc) {
-
-        Rectangle2D tpBounds = getGeometryBounds(rc);
-        if (tpBounds == null) {
-            return null;
-        }
-        AffineTransform t = txf;
-        if(transform != null){
-            t = new AffineTransform(txf);
-            t.concatenate(transform);
-        }
-
-        return t.createTransformedShape(tpBounds).getBounds2D();
-    }
-
-    /**
-     * Compute the rendered bounds of this node based on it's
-     * renderBounds. i.e., the area painted by its primitivePaint
-     * method. This is used in addition to the mask, clip and filter
-     * to compute the area actually rendered by this node.
+     * Returns the bounds of this node in user space. This includes primitive
+     * paint, filtering, clipping and masking.
      */
     public Rectangle2D getBounds(GraphicsNodeRenderContext rc){
         // Get the primitive bounds
         // Rectangle2D bounds = null;
         if(bounds == null){
-            // The painted region, before cliping, masking and
-            // compositing is either the area painted by the primitive
-            // paint or the area painted by the filter.
+            // The painted region, before cliping, masking and compositing is
+            // either the area painted by the primitive paint or the area
+            // painted by the filter.
             if(filter == null){
                 bounds = getPrimitiveBounds(rc);
             } else {
@@ -892,24 +806,118 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns true if the specified coordinates are inside the
-     * interior of the bounds of this node, false otherwise.
+     * Returns the bounds of this node after applying the input transform
+     * (if any), concatenated with this node's transform (if any).
+     *
+     * @param txf the affine transform with which this node's transform should
+     *        be concatenated. Should not be null.
+     */
+    public Rectangle2D getTransformedBounds(AffineTransform txf,
+                                            GraphicsNodeRenderContext rc){
+        AffineTransform t = txf;
+        if(transform != null){
+            t = new AffineTransform(txf);
+            t.concatenate(transform);
+        }
+
+        // The painted region, before cliping, masking and compositing
+        // is either the area painted by the primitive paint or the
+        // area painted by the filter.
+        Rectangle2D tBounds = null;
+        if(filter == null){
+	    // Use txf, not t
+            tBounds = getTransformedPrimitiveBounds(txf, rc);
+        } else {
+            tBounds = t.createTransformedShape
+                (filter.getBounds2D()).getBounds2D();
+        }
+        // Factor in the clipping area, if any
+        if(tBounds != null){
+            if(clip != null) {
+                tBounds.intersect
+		    (tBounds,
+		     t.createTransformedShape(clip.getClipPath()).getBounds2D(),
+		     tBounds);
+            }
+
+            // Factor in the mask, if any
+            if(mask != null) {
+                tBounds.intersect
+		    (tBounds,
+		     t.createTransformedShape(mask.getBounds2D()).getBounds2D(),
+		     tBounds);
+            }
+        }
+        return tBounds;
+    }
+
+    /**
+     * Returns the bounds of this node's primitivePaint after applying the input
+     * transform (if any), concatenated with this node's transform (if any).
+     *
+     * @param txf the affine transform with which this node's transform should
+     *        be concatenated. Should not be null.
+     */
+    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf, GraphicsNodeRenderContext rc) {
+
+        Rectangle2D tpBounds = getPrimitiveBounds(rc);
+        if (tpBounds == null) {
+            return null;
+        }
+        AffineTransform t = txf;
+        if(transform != null){
+            t = new AffineTransform(txf);
+            t.concatenate(transform);
+        }
+
+        return t.createTransformedShape(tpBounds).getBounds2D();
+    }
+
+    /**
+     * Returns the bounds of the area covered by this node, without taking any
+     * of its rendering attribute into account. i.e., exclusive of any clipping,
+     * masking, filtering or stroking, for example.
+     */
+    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf, GraphicsNodeRenderContext rc) {
+
+        Rectangle2D tpBounds = getGeometryBounds(rc);
+        if (tpBounds == null) {
+            return null;
+        }
+        AffineTransform t = txf;
+        if(transform != null){
+            t = new AffineTransform(txf);
+            t.concatenate(transform);
+        }
+
+        return t.createTransformedShape(tpBounds).getBounds2D();
+    }
+
+    /**
+     * Returns true if the specified Point2D is inside the boundary of this
+     * node, false otherwise.
      *
      * @param p the specified Point2D in the user space
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return true if the coordinates are inside, false otherwise
      */
     public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
         return getBounds(rc).contains(p);
     }
 
     /**
-     * Returns the GraphicsNode containing point p if this node or one of
-     * its children is sensitive to mouse events at p.
+     * Returns true if the interior of this node intersects the interior of a
+     * specified Rectangle2D, false otherwise.
+     *
+     * @param r the specified Rectangle2D in the user node space
+     */
+    public boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc) {
+        return getBounds(rc).intersects(r);
+    }
+
+    /**
+     * Returns the GraphicsNode containing point p if this node or one of its
+     * children is sensitive to mouse events at p.
      *
      * @param p the specified Point2D in the user space
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return the GraphicsNode containing p on this branch of the GVT tree.
      */
     public GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc) {
         if (hitDetector != null) {
@@ -921,17 +929,5 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         } else {
             return (contains(p, rc) ? this : null);
         }
-    }
-
-    /**
-     * Tests if the bounds of this node intersects the interior of a
-     * specified Rectangle2D.
-     *
-     * @param r the specified Rectangle2D in the user node space
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
-     * @return true if the rectangle intersects, false otherwise
-     */
-    public boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc) {
-        return getBounds(rc).intersects(r);
     }
 }
