@@ -348,7 +348,8 @@ public class GlyphIterator {
 
     public LineInfo newLine(Point2D.Float loc, 
                             float lineWidth, 
-                            boolean partial) {
+                            boolean partial,
+                            Point2D.Float verticalAlignOffset) {
         if (ch == SOFT_HYPHEN) {
             gv.setGlyphVisible(idx, true);
         }
@@ -410,7 +411,7 @@ public class GlyphIterator {
         maxFontSize = -Float.MAX_VALUE;
         LineInfo ret = new LineInfo(loc, aci, gv, lineIdx, lineInfoIdx, 
                             lineInfoAdj, lineInfoAdv, lineInfoChW, 
-                                    lineWidth, partial);
+                                    lineWidth, partial, verticalAlignOffset);
         lineIdx = idx;
 
         return ret;

@@ -87,7 +87,6 @@ public class GlyphLayout implements TextSpanLayout {
     private boolean pathApplied    = false;
 
 
-    
     public static final AttributedCharacterIterator.Attribute FLOW_LINE_BREAK
         = GVTAttributedCharacterIterator.TextAttribute.FLOW_LINE_BREAK;
 
@@ -157,7 +156,6 @@ public class GlyphLayout implements TextSpanLayout {
     static {
         szAtts.add(TextAttribute.SIZE);
     }
-
 
 
     /**
@@ -2010,7 +2008,7 @@ public class GlyphLayout implements TextSpanLayout {
      *             text to wrap.  There is one aci per text chunk
      *             (which maps to flowPara elements. Used to access
      *             font, paragraph, and line break info.
-     * @param ChunkLayouts A List of List of GlyphLayout objects.  There
+     * @param chunkLayouts A List of List of GlyphLayout objects.  There
      *                     is a List of GlyphLayout objects for each
      *                     flowPara element.  There is a GlyphLayout
      *                     for approximately each sub element in the 
@@ -2021,7 +2019,6 @@ public class GlyphLayout implements TextSpanLayout {
     public static void textWrapTextChunk(AttributedCharacterIterator [] acis,
                                          List chunkLayouts,
                                          List flowRects) {
-        int justification;
         int numChunks = acis.length;
         // System.out.println("Len: " + acis.length + " Size: " + 
         //                    chunkLayouts.size());
@@ -2029,20 +2026,28 @@ public class GlyphLayout implements TextSpanLayout {
         // Make a list of the GlyphVectors so we can construct a
         // multiGlyphVector that makes them all look like one big
         // glyphVector
-        GVTGlyphVector [] gvs = new GVTGlyphVector [acis.length];
+        GVTGlyphVector [] gvs            = new GVTGlyphVector[acis.length];
+        List           [] chunkLineInfos = new List          [acis.length];
+        GlyphIterator  [] gis            = new GlyphIterator [acis.length];
         Iterator clIter = chunkLayouts.iterator();
 
         // Get an iterator for the flow rects.
         Iterator flowRectsIter = flowRects.iterator();
         // Get info for new flow rect.
-        Rectangle2D cRect = (Rectangle2D)flowRectsIter.next();
-        float y0, x0, width, height;
-        height = (float)cRect.getHeight();
+        RegionInfo currentRegion = null;
+        float y0, x0, width, height=0;
+        if (flowRectsIter.hasNext()) {
+            currentRegion = (RegionInfo) flowRectsIter.next();
+            height = (float) currentRegion.getHeight();
+        }
 
         boolean lineHeightRelative = true;
         float lineHeight           = 1.0f;
         float nextLineMult         = 0.0f;
         float dy                   = 0.0f;
+
+        //
+        Point2D.Float verticalAlignOffset = new Point2D.Float(0,0);
 
         //System.out.println("Chunks: " + numChunks);
         
@@ -2050,6 +2055,7 @@ public class GlyphLayout implements TextSpanLayout {
         for (int chunk=0; clIter.hasNext(); chunk++) {
             // System.out.println("Chunk: " + chunk);
             AttributedCharacterIterator aci = acis[chunk];
+            if (currentRegion != null)
             {
                 List extraP = (List)aci.getAttribute(FLOW_EMPTY_PARAGRAPH);
                 if (extraP != null) {
@@ -2065,12 +2071,15 @@ public class GlyphLayout implements TextSpanLayout {
                         } else {
                             // Move to next flow region..
                             if (!flowRectsIter.hasNext()) {
-                                cRect = null;
+                                currentRegion = null;
                                 break; // No flow rect stop layout here...
                             }
 
-                            cRect = (Rectangle2D)flowRectsIter.next();
-                            height = (float)cRect.getHeight();
+                            // NEXT FLOW REGION
+                            currentRegion = (RegionInfo) flowRectsIter.next();
+                            height = (float) currentRegion.getHeight();
+                            // start a new alignment offset for this flow rect.
+                            verticalAlignOffset = new Point2D.Float(0,0);
 
                             // New rect so no previous row to consider...
                             dy        = emi.getTopMargin();
@@ -2078,7 +2087,7 @@ public class GlyphLayout implements TextSpanLayout {
                         prevBotMargin = emi.getBottomMargin();
                     }
 
-                    if (cRect == null) break;
+                    if (currentRegion == null) break;
                 }
             }
 
@@ -2100,9 +2109,9 @@ public class GlyphLayout implements TextSpanLayout {
             if (mi == null) {
               continue;
             }
-            justification = mi.getJustification();
+            int justification = mi.getJustification();
 
-            if (cRect == null) {
+            if (currentRegion == null) {
                 for(int idx=0; idx <numGlyphs; idx++) 
                     gv.setGlyphVisible(idx, false);
                 continue;
@@ -2114,39 +2123,57 @@ public class GlyphLayout implements TextSpanLayout {
                 dy += inc;
             } else {
                 // Move to next flow region..
+                // NEXT FLOW REGION
                 if (!flowRectsIter.hasNext()) {
-                    cRect = null;
+                    currentRegion = null;
                     break; // No flow rect stop layout here...
                 }
 
-                cRect = (Rectangle2D)flowRectsIter.next();
-                height = (float)cRect.getHeight();
+                // NEXT FLOW REGION
+                currentRegion = (RegionInfo) flowRectsIter.next();
+                height = (float) currentRegion.getHeight();
+                // start a new alignment offset for this flow rect..
+                verticalAlignOffset = new Point2D.Float(0,0);
 
                             // New rect so no previous row to consider...
                 dy        = mi.getTopMargin();
             }
             prevBotMargin = mi.getBottomMargin();
 
-            float leftMargin = mi.getFirstLineLeftMargin();
-            float rightMargin = mi.getFirstLineRightMargin();
+            float leftMargin = mi.getLeftMargin();
+            float rightMargin = mi.getRightMargin();
+            if (((GlyphLayout)layouts.get(0)).isLeftToRight()) {
+                leftMargin += mi.getIndent();
+            } else {
+                rightMargin += mi.getIndent();
+            }
 
-            x0    = (float)cRect.getX() + leftMargin;
-            y0    = (float)cRect.getY();
-            width = (float)(cRect.getWidth() - (leftMargin+rightMargin));
-            height = (float)cRect.getHeight();
+            x0 = (float) currentRegion.getX() + leftMargin;
+            y0 = (float) currentRegion.getY();
+            width = (float) (currentRegion.getWidth() - 
+                             (leftMargin + rightMargin));
+            height = (float) currentRegion.getHeight();
             
             List lineInfos = new LinkedList();
+            chunkLineInfos[chunk] = lineInfos;
 
             float prevDesc = 0.0f;
             GlyphIterator gi = new GlyphIterator(aci, gv);
+            gis[chunk] = gi;
+
             GlyphIterator breakGI  = null, newBreakGI = null;
 
             if (!gi.done() && !gi.isPrinting()) {
-              // This will place any preceeding whitespace on an imaginary
-              // line that preceeds the real first line of the paragraph.
-              lineInfos.add(gi.newLine
-                            (new Point2D.Float(x0, y0+dy), 
-                             width, true));
+                // This will place any preceeding whitespace on an
+                // imaginary line that preceeds the real first line of
+                // the paragraph, also calculate the vertical
+                // alignment offset, this will be repeated until the
+                // last line in the flow rect.
+               updateVerticalAlignOffset(verticalAlignOffset, 
+                                         currentRegion, dy);
+               lineInfos.add(gi.newLine
+                             (new Point2D.Float(x0, y0+dy), 
+                              width, true, verticalAlignOffset));
             }
 
 
@@ -2161,20 +2188,24 @@ public class GlyphLayout implements TextSpanLayout {
                         // first char on line didn't fit.
                         // move to next flow rect.
                         if (!flowRectsIter.hasNext()) {
-                            cRect = null;
+                            currentRegion = null;
                             gi = lineGI.copy(gi);
                             break; // No flow rect stop layout here...
                         }
 
-                        cRect = (Rectangle2D)flowRectsIter.next();
-                        x0    = (float) cRect.getX() + leftMargin;
-                        y0    = (float) cRect.getY();
-                        width = (float)(cRect.getWidth() - 
+                        // NEXT FLOW REGION
+                        currentRegion = (RegionInfo) flowRectsIter.next();
+                        x0 = (float) currentRegion.getX() + leftMargin;
+                        y0 = (float) currentRegion.getY();
+                        width = (float) (currentRegion.getWidth() -
                                         (leftMargin+rightMargin));
-                        height = (float)cRect.getHeight();
+                        height = (float) currentRegion.getHeight();
+                        // start a new alignment offset for this flow rect..
+                        verticalAlignOffset = new Point2D.Float(0,0);
 
                         // New rect so no previous row to consider...
-                        dy        = firstLine?mi.getTopMargin():0; ;
+                        dy = firstLine ? mi.getTopMargin() : 0;
+                        ;
                         prevDesc  = 0;
                         gi = lineGI.copy(gi);
                         continue;
@@ -2259,7 +2290,7 @@ public class GlyphLayout implements TextSpanLayout {
                     // System.out.println("Doesn't Fit: " + dy);
 
                     if (!flowRectsIter.hasNext()) {
-                        cRect = null;
+                        currentRegion = null;
                         gi = lineGI.copy(gi);
                         break; // No flow rect stop layout here...
                     }
@@ -2268,15 +2299,18 @@ public class GlyphLayout implements TextSpanLayout {
                     float oldWidth = width;
 
                     // Get info for new flow rect.
-                    cRect = (Rectangle2D)flowRectsIter.next();
-                    x0    = (float) cRect.getX() + leftMargin;
-                    y0    = (float) cRect.getY();
-                    width = (float)(cRect.getWidth() - 
-                                    (leftMargin+rightMargin));
-                    height = (float)cRect.getHeight();
+                    currentRegion = (RegionInfo) flowRectsIter.next();
+                    x0     = (float) currentRegion.getX() + leftMargin;
+                    y0     = (float) currentRegion.getY();
+                    width  = (float)(currentRegion.getWidth() -
+                                     (leftMargin+rightMargin));
+                    height = (float) currentRegion.getHeight();
+                    // start a new alignment offset for this flow rect..
+                    verticalAlignOffset = new Point2D.Float(0,0);
 
                     // New rect so no previous row to consider...
-                    dy        = firstLine?mi.getTopMargin():0; ;
+                    dy = firstLine ? mi.getTopMargin() : 0;
+                    ;
                     prevDesc  = 0;
                     // previous flows?
 
@@ -2289,8 +2323,11 @@ public class GlyphLayout implements TextSpanLayout {
 
                 prevDesc = newDesc + (nextLineMult-1)*lineBoxHeight;
                 nextLineMult = 0f;
+                updateVerticalAlignOffset(verticalAlignOffset, 
+                                          currentRegion, dy + bottomEdge);
                 lineInfos.add(gi.newLine
-                              (new Point2D.Float(x0, y0+dy), width, partial));
+                              (new Point2D.Float(x0, y0 + dy), width, partial, 
+                               verticalAlignOffset));
 
                 // System.out.println("Fit: " + dy);
                 x0    -= leftMargin;
@@ -2312,22 +2349,69 @@ public class GlyphLayout implements TextSpanLayout {
             while(idx <numGlyphs) 
                 gv.setGlyphVisible(idx++, false);
 
-            layoutChunk(aci, gv, gi.getOrigin(), justification, lineInfos);
-
             if (mi.isFlowRegionBreak()) {
                 // Move to next flow region..
-                cRect = null;
+                currentRegion = null;
                 if (flowRectsIter.hasNext()) {
-                    cRect  = (Rectangle2D)flowRectsIter.next();
-                    height = (float)cRect.getHeight();
+                    currentRegion = (RegionInfo) flowRectsIter.next();
+                    height = (float) currentRegion.getHeight();
                     dy     = mi.getTopMargin();
+                    verticalAlignOffset = new Point2D.Float(0,0);
                 }
             }
         }
+
+        for (int chunk=0; chunk < acis.length; chunk++) {
+            List lineInfos = chunkLineInfos[chunk];
+            if (lineInfos == null) continue;
+
+            AttributedCharacterIterator aci = acis[chunk];
+            aci.first();
+            MarginInfo mi = (MarginInfo)aci.getAttribute(FLOW_PARAGRAPH);
+            if (mi == null) {
+              continue;
+            }
+            int justification = mi.getJustification();
+            
+            GVTGlyphVector gv = gvs[chunk];
+            if (gv == null) break;
+
+            GlyphIterator gi = gis[chunk];
+            
+            layoutChunk(gv, gi.getOrigin(), justification, lineInfos);
+        }
     }
 
-    public static void layoutChunk(AttributedCharacterIterator aci,
-                                   GVTGlyphVector gv, Point2D origin,
+
+    /**
+     * Updates the specified verticalAlignmentOffset using the current
+     * alignment rule and the heights of the flow rect and the maximum
+     * descent of the text.  This method gets for called every line,
+     * but only the value that is calculated for the last line of the
+     * flow rect is used by the glyph rendering.  This is achieved by
+     * creating a new verticalAlignOffset object everytime a new flow
+     * rect is encountered, thus a single verticalAlignmentOffset is
+     * shared for all {@link LineInfo} objects created for a given
+     * flow rect.  The value is calculated by determining the left
+     * over space in the flow rect and scaling that value by 1.0 to
+     * align to the bottom, 0.5 for middle and 0.0 for top.
+     *
+     * @param verticalAlignOffset the {@link Point2D.Float} object that 
+     *                            is storing the alignment offset.
+     * @param currentRegion the {@link RegionInfo} object that we 
+     *                      are rendering into.
+     * @param maxDescent the very lowest point this line reaches.
+     */
+    public static void updateVerticalAlignOffset
+        (Point2D.Float verticalAlignOffset,
+         RegionInfo region, float maxDescent)
+        {
+            float freeSpace = (float)region.getHeight() - maxDescent;
+            verticalAlignOffset.setLocation
+                (0, region.getVerticalAlignment() * freeSpace);
+        }
+
+    public static void layoutChunk(GVTGlyphVector gv, Point2D origin,
                                    int justification,
                                    List lineInfos) {
         Iterator lInfoIter = lineInfos.iterator();
@@ -2345,6 +2429,7 @@ public class GlyphLayout implements TextSpanLayout {
         float charW=0;
         float lineWidth=0;
         boolean partial = false;
+        float verticalAlignOffset = 0;
 
         // This loop goes through and puts glyphs where they belong
         // based on info collected in first trip through glyphVector...
@@ -2370,14 +2455,19 @@ public class GlyphLayout implements TextSpanLayout {
                 charW     = li.getLastCharWidth();
                 lineWidth = li.getLineWidth();
                 partial   = li.isPartialLine();
+                verticalAlignOffset = li.getVerticalAlignOffset().y;
 
                 xAdj = 0;
                 xScale = 1;
                 // Recalc justification info.
                 switch (justification) {
                 case 0: default: break;                  // Left
-                case 1: xAdj = (lineWidth-lineVAdv)/2; break; // Center
-                case 2: xAdj =  lineWidth-lineVAdv;    break; // Right
+                case 1:                                  // Center
+                    xAdj = (lineWidth - lineVAdv) / 2;
+                    break;
+                case 2:                                  // Right
+                    xAdj = lineWidth - lineVAdv;
+                    break;
                 case 3:                                  // Full
                     if ((!partial) && (lineEnd != i+1)) {
                         // More than one char on line...
@@ -2388,7 +2478,8 @@ public class GlyphLayout implements TextSpanLayout {
                 }
             }
             float x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
-            float y = lineLoc.y + (gp[2*i+1]-yOrig);
+            float y = lineLoc.y + ((gp[2 * i + 1] - yOrig) + 
+                                   verticalAlignOffset);
             gv.setGlyphPosition(i, new Point2D.Float(x, y));
         }
 
@@ -2396,7 +2487,7 @@ public class GlyphLayout implements TextSpanLayout {
         float y = yOrig;
         if (lineLoc != null) {
           x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
-          y = lineLoc.y + (gp[2*i+1]-yOrig);
+            y = lineLoc.y + (gp[2 * i + 1] - yOrig) + verticalAlignOffset;
         }
         gv.setGlyphPosition(i, new Point2D.Float(x, y));
     }

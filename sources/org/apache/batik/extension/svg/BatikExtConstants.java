@@ -23,16 +23,58 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_STAR_TAG = 
         "star";
 
-    /** Tag name for Batik's flowText extension (SVG 1.1). */
+    /** Tag name for Batik's flowText extension (SVG 1.2). */
     public static final String BATIK_EXT_FLOW_TEXT_TAG = 
         "flowText";
 
-    /** Tag name for Batik's flowText extension Region element (SVG 1.1). */
-    public static final String BATIK_EXT_FLOW_LAYOUT_TAG = 
-        "flowLayout";
-    /** Tag name for Batik's flowText extension Region element (SVG 1.1). */
+    /** Tag name for Batik's flowText extension Region element (SVG 1.2). */
     public static final String BATIK_EXT_FLOW_REGION_TAG = 
         "flowRegion";
+
+    /** Tag name for Batik's flowText extension Region element (SVG 1.2). */
+    public static final String BATIK_EXT_FLOW_REGION_EXCLUDE_TAG = 
+        "flowRegionExclude";
+
+    /** Tag name for Batik's flowText extension div element SVG 1.2). */
+    public static final String BATIK_EXT_FLOW_DIV_TAG = 
+        "flowDiv";
+
+    /** Tag name for Batik's flowText extension p element SVG 1.2). */
+    public static final String BATIK_EXT_FLOW_PARA_TAG = 
+        "flowPara";
+
+    /** Tag name for Batik's flowText extension flow Region break 
+     *  element SVG 1.2). */
+    public static final String BATIK_EXT_FLOW_REGION_BREAK_TAG = 
+        "flowRegionBreak";
+
+    /** Tag name for Batik's flowText extension line element SVG 1.2). */
+    public static final String BATIK_EXT_FLOW_LINE_TAG = 
+        "flowLine";
+
+    /** Tag name for Batik's flowText extension span element SVG 1.2). */
+    public static final String BATIK_EXT_FLOW_SPAN_TAG = 
+        "flowSpan";
+
+    /** Tag name for Batik's solid color extension (SVG 1.2). */
+    public static final String BATIK_EXT_SOLID_COLOR_TAG = 
+        "solidColor";
+
+    /** Tag name for Batik's color switch extension. */
+    public static final String BATIK_EXT_COLOR_SWITCH_TAG = 
+        "colorSwitch";
+
+    /** Tag name for Batik's histogram normalization extension. */
+    public static final String BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG =
+        "histogramNormalization";
+
+    /** Tag name for Batik's multiImage extension. */
+    public static final String BATIK_EXT_MULTI_IMAGE_TAG =
+        "multiImage";
+
+    /** Tag name for Batik's subImage multiImage extension. */
+    public static final String BATIK_EXT_SUB_IMAGE_TAG =
+        "subImage";
 
     /** Attribute name for dx attribute */
     public static final String BATIK_EXT_DX_ATRIBUTE =
@@ -86,59 +128,36 @@ public interface BatikExtConstants {
     /** Attribute name for left-margin attribute */
     public static final String BATIK_EXT_LEFT_MARGIN_ATTRIBUTE = 
         "left-margin";
-    /** Attribute name for first-line-left-margin attribute */
-    public static final String BATIK_EXT_FIRST_LINE_LEFT_MARGIN_ATTRIBUTE = 
-        "first-line-left-margin";
-    /** Attribute name for first-line-right-margin attribute */
-    public static final String BATIK_EXT_FIRST_LINE_RIGHT_MARGIN_ATTRIBUTE = 
-        "first-line-right-margin";
+    /** Attribute name for indent attribute/property */
+    public static final String BATIK_EXT_INDENT_ATTRIBUTE = 
+        "indent";
     /** Attribute name for justification */
     public static final String BATIK_EXT_JUSTIFICATION_ATTRIBUTE = 
         "justification";
+    /** Value for justification to start of region */
+    public static final String BATIK_EXT_JUSTIFICATION_START_VALUE  = "start";
+    /** Value for justification to middle of region */
+    public static final String BATIK_EXT_JUSTIFICATION_MIDDLE_VALUE = "middle";
+    /** Value for justification to end of region */
+    public static final String BATIK_EXT_JUSTIFICATION_END_VALUE    = "end";
+    /** Value for justification to both edges of region */
+    public static final String BATIK_EXT_JUSTIFICATION_FULL_VALUE = "full";
+
+
     /** Attribute name for preformated data */
     public static final String BATIK_EXT_PREFORMATTED_ATTRIBUTE = 
         "preformatted";
 
-    /** Tag name for Batik's flowText extension div element SVG 1.1). */
-    public static final String BATIK_EXT_FLOW_DIV_TAG = 
-        "flowDiv";
+   /** Attribute name for preformated data */
+    public static final String BATIK_EXT_VERTICAL_ALIGN_ATTRIBUTE =
+        "vertical-align";
 
-    /** Tag name for Batik's flowText extension p element SVG 1.1). */
-    public static final String BATIK_EXT_FLOW_PARA_TAG = 
-        "flowPara";
-
-    /** Tag name for Batik's flowText extension flow Region break 
-     *  element SVG 1.1). */
-    public static final String BATIK_EXT_FLOW_REGION_BREAK_TAG = 
-        "flowRegionBreak";
-
-    /** Tag name for Batik's flowText extension line element SVG 1.1). */
-    public static final String BATIK_EXT_FLOW_LINE_TAG = 
-        "flowLine";
-
-    /** Tag name for Batik's flowText extension span element SVG 1.1). */
-    public static final String BATIK_EXT_FLOW_SPAN_TAG = 
-        "flowSpan";
-
-    /** Tag name for Batik's solid color extension (SVG 1.1). */
-    public static final String BATIK_EXT_SOLID_COLOR_TAG = 
-        "solidColor";
-
-    /** Tag name for Batik's color switch extension. */
-    public static final String BATIK_EXT_COLOR_SWITCH_TAG = 
-        "colorSwitch";
-
-    /** Tag name for Batik's histogram normalization extension. */
-    public static final String BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG =
-        "histogramNormalization";
-
-    /** Tag name for Batik's multiImage extension. */
-    public static final String BATIK_EXT_MULTI_IMAGE_TAG =
-        "multiImage";
-
-    /** Tag name for Batik's subImage multiImage extension. */
-    public static final String BATIK_EXT_SUB_IMAGE_TAG =
-        "subImage";
+    /** Value for vertical-align to top of region */
+    public static final String BATIK_EXT_ALIGN_TOP_VALUE    = "top";
+    /** Value for vertical-align to middle of region */
+    public static final String BATIK_EXT_ALIGN_MIDDLE_VALUE = "middle";
+    /** Value for vertical-align to bottom of region */
+    public static final String BATIK_EXT_ALIGN_BOTTOM_VALUE = "bottom";
 
     /** Attribute name for sides attribute */
     public static final String BATIK_EXT_SIDES_ATTRIBUTE = 

@@ -19,23 +19,21 @@ public class MarginInfo {
     protected float   bottom;
     protected float   left;
 
-    protected float   firstLineLeft;
-    protected float   firstLineRight;
+    protected float   indent;
 
     protected int     justification;
     protected boolean flowRegionBreak;
 
 
     public MarginInfo(float top, float right, float bottom, float left,
-                      float firstLineLeft, float firstLineRight,
-                      int justification, boolean flowRegionBreak) {
+                      float indent, int justification, 
+                      boolean flowRegionBreak) {
         this.top    = top;
         this.right  = right;
         this.bottom = bottom;
         this.left   = left;
 
-        this.firstLineLeft = firstLineLeft;
-        this.firstLineRight = firstLineRight;
+        this.indent = indent;
 
         this.justification = justification;
         this.flowRegionBreak = flowRegionBreak;
@@ -43,6 +41,7 @@ public class MarginInfo {
 
     public MarginInfo(float margin, int justification) {
         setMargin(margin);
+        this.indent = 0;
         this.justification = justification;
         this.flowRegionBreak = false;
     }
@@ -52,17 +51,15 @@ public class MarginInfo {
         this.right  = margin;
         this.bottom = margin;
         this.left   = margin;
-        this.firstLineLeft  = margin;
-        this.firstLineRight = margin;
     }
-    public float   getTopMargin()            { return top; }
-    public float   getRightMargin()          { return right; }
-    public float   getBottomMargin()         { return bottom; }
-    public float   getLeftMargin()           { return left; }
 
-    public float   getFirstLineLeftMargin()  { return firstLineLeft; }
-    public float   getFirstLineRightMargin() { return firstLineLeft; }
+    public float   getTopMargin()      { return top; }
+    public float   getRightMargin()    { return right; }
+    public float   getBottomMargin()   { return bottom; }
+    public float   getLeftMargin()     { return left; }
 
-    public int     getJustification()        { return justification; }
-    public boolean isFlowRegionBreak()       { return flowRegionBreak; }
+    public float   getIndent()         { return indent; }
+
+    public int     getJustification()  { return justification; }
+    public boolean isFlowRegionBreak() { return flowRegionBreak; }
 }
