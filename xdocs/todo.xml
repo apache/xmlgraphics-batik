@@ -32,75 +32,53 @@
     </devs>
 
     <actions priority="high">
-        <action context="docs"
-                assigned-to="VH">
+
+        <action context="docs" assigned-to="VH">
             Figure out how to publish documentation on web site.
         </action>
 
-        <action context="docs" 
-                assigned-to="VH">
+        <action context="docs" assigned-to="VH">
             Create initial version of documentation set.
         </action>
 
-        <action context="docs"
-                assigned-to="VH">
+        <action context="docs" assigned-to="VH">
             SVG Viewer page with Screen Shots.
         </action>
 
-        <action context="docs"
-                assigned-to="TK">
+        <action context="docs" assigned-to="TK">
             SVG Viewer Pluggin page
         </action>
 
-        <action context="docs"
-                assigned-to="TK">
+        <action context="docs" assigned-to="TK">
             SVG Rasterizer image examples
         </action>
 
-        <action context="docs"
-                assigned-to="VH">
+        <action context="docs" assigned-to="VH">
             SVG Generator sample page
         </action>
 
 
-
-        <action context="code"
-                assigned-to="TK">
-            objectBoundingBox, userSpaceOnUser for masks, and patterns.
+        <action context="code" assigned-to="TK">
+            objectBoundingBox, userSpaceOnUser for masks, and patterns
         </action>
 
-        <action context="code"
-                assigned-to="SH">
-            Error handling (tolerance on DOCTYPE and processing errors).
+        <action context="code" assigned-to="SH">
+            Error handling (tolerance on DOCTYPE and processing errors)
         </action>
 
-        <action context="code"
-                assigned-to="SH">
-            images with SVG source.
+        <action context="code" assigned-to="VH">
+            Improve patterns quality
         </action>
 
-        <action context="code"
-                assigned-to="BH">
-            tspan support
+        <action context="code" assigned-to="BH">
+            Text selection
         </action>
 
-        <action context="code"
-                assigned-to="VH">
-            Patterns
-        </action>
-
-        <action context="code"
-                assigned-to="BH">
-            Text selection.
-        </action>
-
-        <action context="code"
-                assigned-to="DJ">
+        <action context="code" assigned-to="DJ">
             SVG Font support
         </action>
 
-        <action context="code"
-                assigned-to="CJ">
+        <action context="code" assigned-to="CJ">
             Fix issue with passing a script function
             instead of a listener.
         </action>
@@ -113,32 +91,70 @@
     </actions>
 
     <actions priority="medium">
-        <action context="code"
-                assigned-to="VH">
-            hueRotate bug in ColorMatrix.
+
+        <action context="code" assigned-to="TK">
+        CSS Properties : 'visibility', 'display' and 'overflow'
         </action>
 
-        <action context="code"
-                assigned-to="TK">
-            Markers.
+        <action context="code" assigned-to="TK">
+        Marker symbols
         </action>
 
-        <action context="code"
-                assigned-to="TK">
-            Image element references an SVG file.
+        <action context="code" assigned-to="VH">
+        feTile - improve rendering with antialiasing
         </action>
 
-        <action context="code"
-                assigned-to="SH">
+        <action context="code" assigned-to="VH">
+        feColorMatrix - bug in hueRotate
+        </action>
+
+        <action context="code" assigned-to="VH">
+        feBlend
+        </action>
+
+        <action context="code" assigned-to="VH">
+        feComposite
+        </action>
+
+        <action context="code" assigned-to="VH">
+        feConvolveMatrix
+        </action>
+
+        <action context="code" assigned-to="VH">
+        feDiffuseLighting
+        </action>
+
+        <action context="code" assigned-to="VH">
+        feDistantLight
+        </action>
+
+        <action context="code" assigned-to="VH">
+        feSpecularLighting
+        </action>
+
+        <action context="code" assigned-to="VH">
+        fePointLight
+        </action>
+
+        <action context="code" assigned-to="VH">
+        feSpotLight
+        </action>
+
+        <action context="code" assigned-to="VH">
+        feDisplacementMap
+        </action>
+
+        <action context="code" assigned-to="VH">
+        feImage
+        </action>
+
+        <action context="code" assigned-to="VH">
+        feMerge
+        </action>
+
+        <action context="code" assigned-to="SH">
             Use consistent naming conventions for value
             constants in CSSConstants and SVGConstants
-        </action>
-
-        <action context="code"
-                assigned-to="SH">
-            Implement a Shift+Reload that forces reload of 
-            raster images referenced in an SVG document (i.e.,
-            do not use the one cached by the JVM).
         </action>
 
     </actions>
