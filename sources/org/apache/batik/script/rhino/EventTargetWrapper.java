@@ -101,8 +101,7 @@ class EventTargetWrapper extends NativeJavaObject {
                     Class[] paramTypes = { String.class, Function.class,
                                            Boolean.TYPE };
                     for (int i = 0; i < args.length; i++)
-                        args[i] = NativeJavaObject.coerceType(paramTypes[i],
-                                                              args[i]);
+  		        args[i] = Context.toType(args[i], paramTypes[i]);
                     ((EventTarget)unwrap()).
                         addEventListener((String)args[0],
                                          evtListener,
@@ -114,9 +113,7 @@ class EventTargetWrapper extends NativeJavaObject {
                         Class[] paramTypes = { String.class, Function.class,
                                                Boolean.TYPE };
                         for (int i = 0; i < args.length; i++)
-                            args[i] =
-                                NativeJavaObject.coerceType(paramTypes[i],
-                                                            args[i]);
+			    args[i] = Context.toType(args[i], paramTypes[i]);
                         ((EventTarget)unwrap()).
                             removeEventListener((String)args[0],
                                                 (EventListener)listenerMap.
@@ -138,8 +135,7 @@ class EventTargetWrapper extends NativeJavaObject {
                         Class[] paramTypes = { String.class, Scriptable.class,
                                                Boolean.TYPE };
                         for (int i = 0; i < args.length; i++)
-                            args[i] = NativeJavaObject.coerceType(paramTypes[i],
-                                                                  args[i]);
+			    args[i] = Context.toType(args[i], paramTypes[i]);
                         ((EventTarget)unwrap()).
                             addEventListener((String)args[0],
                                              evtListener,
@@ -151,9 +147,7 @@ class EventTargetWrapper extends NativeJavaObject {
                             Class[] paramTypes = { String.class, Scriptable.class,
                                                    Boolean.TYPE };
                             for (int i = 0; i < args.length; i++)
-                                args[i] =
-                                    NativeJavaObject.coerceType(paramTypes[i],
-                                                                args[i]);
+			        args[i] = Context.toType(args[i], paramTypes[i]);
                             ((EventTarget)unwrap()).
                                 removeEventListener((String)args[0],
                                                     (EventListener)listenerMap.
