@@ -198,12 +198,11 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         gvtRoot = null; // We're done with it...
 
         try {
-            BufferedImage rend = renderer.getOffScreen();
-
             // now we are sure that the aoi is the image size
             Shape raoi = new Rectangle2D.Float(0, 0, width, height);
             // Warning: the renderer's AOI must be in user space
             renderer.repaint(Px.createInverse().createTransformedShape(raoi));
+            BufferedImage rend = renderer.getOffScreen();
             renderer = null; // We're done with it...
 
             BufferedImage dest = createImage(w, h);
