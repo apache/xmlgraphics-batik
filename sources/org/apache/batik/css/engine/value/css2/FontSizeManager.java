@@ -133,6 +133,9 @@ public class FontSizeManager extends LengthManager {
                               int idx,
                               StyleMap sm,
                               Value value) {
+        float scale = 1.0f;
+        boolean doParentRelative = false;
+
         switch (value.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_NUMBER:
         case CSSPrimitiveValue.CSS_PX:
@@ -171,64 +174,29 @@ public class FontSizeManager extends LengthManager {
                                    (6f * ctx.getPixelUnitToMillimeter())));
 
         case CSSPrimitiveValue.CSS_EMS:
-            sm.putParentRelative(idx, true);
-
-            v = value.getFloatValue();
-            CSSStylableElement p;
-            p = CSSEngine.getParentCSSStylableElement(elt);
-            float fs;
-            if (p == null) {
-                ctx = engine.getCSSContext();
-                fs = ctx.getMediumFontSize();
-            } else {
-                fs = engine.getComputedStyle(p, null, idx).getFloatValue();
-            }
-            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, v * fs);
-
+            doParentRelative = true;
+            scale = value.getFloatValue();
+            break;
         case CSSPrimitiveValue.CSS_EXS:
-            sm.putParentRelative(idx, true);
-
-            v = value.getFloatValue();
-            p = CSSEngine.getParentCSSStylableElement(elt);
-            if (p == null) {
-                ctx = engine.getCSSContext();
-                fs = ctx.getMediumFontSize();
-            } else {
-                fs = engine.getComputedStyle(p, null, idx).getFloatValue();
-            }
-            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
-                                  v * fs * 0.5f); // !!! x-height
-
+            doParentRelative = true;
+            scale = value.getFloatValue()*0.5f;   // !!! x-height
+            break;
         case CSSPrimitiveValue.CSS_PERCENTAGE:
-            sm.putParentRelative(idx, true);
-
-            v = value.getFloatValue();
-            p = CSSEngine.getParentCSSStylableElement(elt);
-            if (p == null) {
-                ctx = engine.getCSSContext();
-                fs = ctx.getMediumFontSize();
-            } else {
-                fs = engine.getComputedStyle(p, null, idx).getFloatValue();
-            }
-            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
-                                  v * fs / 100f);
+            doParentRelative = true;
+            scale = value.getFloatValue()*0.01f;
+            break;
+        default:
         }
 
         if (value == ValueConstants.LARGER_VALUE) {
-            sm.putParentRelative(idx, true);
-
-            CSSStylableElement p;
-            p = CSSEngine.getParentCSSStylableElement(elt);
-            float fs;
-            if (p == null) {
-                CSSContext ctx = engine.getCSSContext();
-                fs = ctx.getMediumFontSize();
-            } else {
-                fs = engine.getComputedStyle(p, null, idx).getFloatValue();
-            }
-            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
-                                  fs * 1.2f);
+            doParentRelative = true;
+            scale = 1.2f;
         } else if (value == ValueConstants.SMALLER_VALUE) {
+            doParentRelative = true;
+            scale = 1/1.2f;
+        }
+
+        if (doParentRelative) {
             sm.putParentRelative(idx, true);
 
             CSSStylableElement p;
@@ -240,8 +208,7 @@ public class FontSizeManager extends LengthManager {
             } else {
                 fs = engine.getComputedStyle(p, null, idx).getFloatValue();
             }
-            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
-                                  fs / 1.2f);
+            return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, fs * scale);
         }
         
         // absolute identifiers

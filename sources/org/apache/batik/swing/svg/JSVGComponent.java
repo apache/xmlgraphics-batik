@@ -330,6 +330,8 @@ public class JSVGComponent extends JGVTComponent {
 
     protected boolean recenterOnResize = true;
 
+    protected AffineTransform viewingTransform = null;
+
     /**
      * Creates a new JSVGComponent.
      */
@@ -740,6 +742,7 @@ public class JSVGComponent extends JGVTComponent {
             (fragmentIdentifier, elt);
         CanvasGraphicsNode cgn = getCanvasGraphicsNode(gn);
         cgn.setViewingTransform(at);
+        viewingTransform = at;
         initialTransform = new AffineTransform();
         setRenderingTransform(initialTransform, false);
         jsvgComponentListener.updateMatrix(initialTransform);
@@ -822,11 +825,8 @@ public class JSVGComponent extends JGVTComponent {
         AffineTransform at = getRenderingTransform();
         if (at == null) at = new AffineTransform();
         else            at = new AffineTransform(at);
-        CanvasGraphicsNode cgn = getCanvasGraphicsNode();
-        if (cgn != null) {
-            AffineTransform vAT = cgn.getViewingTransform();
-            if (vAT != null)
-                at.concatenate(vAT);
+        if (viewingTransform != null) {
+            at.concatenate(viewingTransform);
         }
         return at;
     }
@@ -873,10 +873,9 @@ public class JSVGComponent extends JGVTComponent {
             prevComponentSize = d;
             if (d.width  < 1) d.width  = 1;
             if (d.height < 1) d.height = 1;
-            AffineTransform at = calculateViewingTransform
+            final AffineTransform at = calculateViewingTransform
                 (fragmentIdentifier, elt);
-            CanvasGraphicsNode cgn = getCanvasGraphicsNode();
-            AffineTransform vt = cgn.getViewingTransform();
+            AffineTransform vt = viewingTransform;
             if (at.equals(vt)) {
                 // No new transform
                 // Only repaint if size really changed.
@@ -923,7 +922,17 @@ public class JSVGComponent extends JGVTComponent {
                     (AffineTransform.getTranslateInstance(dx, dy));
                 setRenderingTransform(rendAT, false);
             }
-            cgn.setViewingTransform(at);
+            viewingTransform = at;
+            Runnable r = new Runnable() {
+                    AffineTransform myAT = at;
+                    CanvasGraphicsNode myCGN = getCanvasGraphicsNode();
+                    public void run() {
+                        myCGN.setViewingTransform(myAT);
+                    }
+                };
+            UpdateManager um = getUpdateManager();
+            if (um != null) um.getUpdateRunnableQueue().invokeLater(r);
+            else             r.run();
         } catch (BridgeException e) {
             userAgent.displayError(e);
         }
@@ -960,9 +969,8 @@ public class JSVGComponent extends JGVTComponent {
 
         updateManager.getUpdateRunnableQueue().invokeLater
             (new Runnable() { public void run() {
-                paintingTransform = null;
                 updateManager.updateRendering(renderingTransform,
-                                              doubleBufferedRendering, s,
+                                              doubleBufferedRendering, true, s,
                                               visRect.width, visRect.height);
             }});
     }
@@ -1733,6 +1741,8 @@ public class JSVGComponent extends JGVTComponent {
                 EventQueue.invokeAndWait(new Runnable() {
                         public void run() {
                             image = e.getImage();
+                            if (e.getClearPaintingTransform())
+                                paintingTransform = null;
 
                             List l = e.getDirtyAreas();
                             if (l != null) {

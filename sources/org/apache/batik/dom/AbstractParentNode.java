@@ -71,13 +71,14 @@ public abstract class AbstractParentNode extends AbstractNode {
      */
     public Node insertBefore(Node newChild, Node refChild)
         throws DOMException {
-	if (refChild != null && childNodes == null) {
+	if ((refChild != null) && ((childNodes == null) ||
+                                   (refChild.getParentNode() != this))) 
 	    throw createDOMException
 		(DOMException.NOT_FOUND_ERR,
 		 "child.missing",
 		 new Object[] { new Integer(refChild.getNodeType()),
 				refChild.getNodeName() });
-	}
+
 	checkAndRemove(newChild, false);
 
 	if (newChild.getNodeType() == DOCUMENT_FRAGMENT_NODE) {
@@ -112,47 +113,52 @@ public abstract class AbstractParentNode extends AbstractNode {
      */
     public Node replaceChild(Node newChild, Node oldChild)
         throws DOMException {
-	if (childNodes == null) {
+	if ((childNodes == null) || (oldChild.getParentNode() != this) )
 	    throw createDOMException
 		(DOMException.NOT_FOUND_ERR,
 		 "child.missing",
 		 new Object[] { new Integer(oldChild.getNodeType()),
 				oldChild.getNodeName() });
-	}
+
 	checkAndRemove(newChild, true);
 
 	if (newChild.getNodeType() == DOCUMENT_FRAGMENT_NODE) {
 	    Node n  = newChild.getLastChild();
-	    Node ps = oldChild.getNextSibling();
-	    if (n != null) {
-		replaceChild(n, oldChild);
-		n = n.getPreviousSibling();
-	    }
-	    while (n != null) {
-		insertBefore(n, ps);
-		n = n.getPreviousSibling();
-	    }
+	    if (n == null) 
+                return newChild;
+
+            Node ps = n.getPreviousSibling();
+            replaceChild(n, oldChild);
+	    Node ns = n;
+            n  = ps;
+            while (n != null) {
+                ps = n.getPreviousSibling();
+                insertBefore(n, ns);
+                ns = n;
+                n = ps;
+            }
+
 	    return newChild;
-	} else {
-	    // Mutation event
-	    fireDOMNodeRemovedEvent(oldChild);
-
-            getCurrentDocument().nodeToBeRemoved(oldChild);
-            nodeToBeRemoved(oldChild);
-
-	    // Node modification
-	    ExtendedNode n = (ExtendedNode)newChild;
-	    ExtendedNode o = childNodes.replace(n, (ExtendedNode)oldChild);
-	    n.setParentNode(this);
-	    o.setParentNode(null);
-
-            nodeAdded(n);
-
-	    // Mutation event
-	    fireDOMNodeInsertedEvent(n);
-	    fireDOMSubtreeModifiedEvent();
-	    return n;
 	}
+
+        // Mutation event
+        fireDOMNodeRemovedEvent(oldChild);
+        
+        getCurrentDocument().nodeToBeRemoved(oldChild);
+        nodeToBeRemoved(oldChild);
+        
+        // Node modification
+        ExtendedNode n = (ExtendedNode)newChild;
+        ExtendedNode o = childNodes.replace(n, (ExtendedNode)oldChild);
+        n.setParentNode(this);
+        o.setParentNode(null);
+        
+        nodeAdded(n);
+        
+        // Mutation event
+        fireDOMNodeInsertedEvent(n);
+        fireDOMSubtreeModifiedEvent();
+        return n;
     }
 
     /**
@@ -203,9 +209,9 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    }
 	    return newChild;
 	} else {
-	    if (childNodes == null) {
+	    if (childNodes == null)
 		childNodes = new ChildNodes();
-	    }
+
 	    // Node modification
 	    ExtendedNode n = childNodes.append((ExtendedNode)newChild);
 	    n.setParentNode(this);
@@ -422,33 +428,34 @@ public abstract class AbstractParentNode extends AbstractNode {
      */
     protected void checkAndRemove(Node n, boolean replace) {
 	checkChildType(n, replace);
-	if (isReadonly()) {
+
+	if (isReadonly())
 	    throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
 				     "readonly.node",
 				     new Object[] { new Integer(getNodeType()),
 						    getNodeName() });
-	}
-	if (n.getOwnerDocument() != getCurrentDocument()) {
+
+	if (n.getOwnerDocument() != getCurrentDocument())
 	    throw createDOMException(DOMException.WRONG_DOCUMENT_ERR,
 				     "node.from.wrong.document",
 				     new Object[] { new Integer(getNodeType()),
 						    getNodeName() });
-	}
-	for (Node pn = getParentNode(); pn != null; pn = pn.getParentNode()) {
-	    if (pn == n) {
-		throw createDOMException
-                    (DOMException.WRONG_DOCUMENT_ERR,
+        
+	Node np = n.getParentNode();
+        if (np == null)
+            return;  // Already removed from tree, do nothing.
+
+        for (Node pn = getParentNode(); pn != null; pn = pn.getParentNode()) {
+            if (pn == n)
+                throw createDOMException
+                    (DOMException.HIERARCHY_REQUEST_ERR,
                      "add.ancestor",
                      new Object[] { new Integer(getNodeType()),
                                     getNodeName() });
-	    }
-	}
+        }
 
 	// Remove the node from the tree
-	Node np = n.getParentNode();
-	if (np != null) {
-	    np.removeChild(n);
-	}
+        np.removeChild(n);
     }
 
     /**

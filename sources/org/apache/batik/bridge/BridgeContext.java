@@ -1479,7 +1479,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     public static boolean checkInteractiveElement(SVGDocument doc,
                                                   Element e) {
-        String tag = e.getNodeName();
+        String tag = e.getLocalName();
         
         // Check if it's one of our important element.
         if (SVGConstants.SVG_A_TAG.equals(tag))

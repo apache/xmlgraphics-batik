@@ -352,14 +352,37 @@ public class UpdateManager  {
         repaintManager.setupRenderer(u2d,dbr,aoi,width,height);
         List l = new ArrayList(1);
         l.add(aoi);
-        updateRendering(l);
+        updateRendering(l, false);
+    }
+
+    /**
+     * Updates the rendering buffer.  Only to be called from the
+     * update thread.
+     * @param u2d The user to device transform.
+     * @param dbr Whether the double buffering should be used.
+     * @param cpt If the canvas painting transform should be cleared
+     *            when the update complets
+     * @param aoi The area of interest in the renderer space units.
+     * @param width&nbsp;height The offscreen buffer size.
+     */
+    public void updateRendering(AffineTransform u2d,
+                                boolean dbr,
+                                boolean cpt,
+                                Shape aoi,
+                                int width,
+                                int height) {
+        repaintManager.setupRenderer(u2d,dbr,aoi,width,height);
+        List l = new ArrayList(1);
+        l.add(aoi);
+        updateRendering(l, cpt);
     }
 
     /**
      * Updates the rendering buffer.
      * @param aoi The area of interest in the renderer space units.
      */
-    protected void updateRendering(List areas) {
+    protected void updateRendering(List areas, 
+                                   boolean clearPaintingTransform) {
         try {
             fireEvent(updateStartedDispatcher,new UpdateManagerEvent
                       (this, repaintManager.getOffScreen(), null));
@@ -367,7 +390,8 @@ public class UpdateManager  {
             Collection c = repaintManager.updateRendering(areas);
             List l = new ArrayList(c);
             fireEvent(updateCompletedDispatcher,new UpdateManagerEvent
-                      (this, repaintManager.getOffScreen(), l));
+                      (this, repaintManager.getOffScreen(), l,
+                       clearPaintingTransform));
         } catch (ThreadDeath td) {
             fireEvent(updateFailedDispatcher,
                       new UpdateManagerEvent(this, null, null));
@@ -405,7 +429,7 @@ public class UpdateManager  {
         List dirtyAreas = updateTracker.getDirtyAreas();
         updateTracker.clear();
         if (dirtyAreas != null) {
-            updateRendering(dirtyAreas);
+            updateRendering(dirtyAreas, false);
         }
         lastRepaint = System.currentTimeMillis();
     }

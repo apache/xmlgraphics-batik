@@ -117,11 +117,11 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         imageNode.setHitCheckChildren(hitCheckChildren);
 
         // 'image-rendering' and 'color-rendering'
-        RenderingHints hints = CSSUtilities.convertImageRendering(e, null);
+        RenderingHints hints = null;
+        hints = CSSUtilities.convertImageRendering(e, hints);
         hints = CSSUtilities.convertColorRendering(e, hints);
-        if (hints != null) {
+        if (hints != null)
             imageNode.setRenderingHints(hints);
-        }
 
         return imageNode;
     }
@@ -275,7 +275,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                       new Object[] {purl});
         } catch (Exception ex) {
             /* Nothing to do */
-            ex.printStackTrace();
+            // ex.printStackTrace();
         } 
 
         try {

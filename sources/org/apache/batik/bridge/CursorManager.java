@@ -233,8 +233,8 @@ public class CursorManager implements SVGConstants, ErrorConstants {
             //   set to the anchor cursor through the SVGAElementBridge.
             //
             String nameSpaceURI = e.getNamespaceURI();
-            String tag = e.getNodeName();
             if (SVGConstants.SVG_NAMESPACE_URI.equals(nameSpaceURI)) {
+                String tag = e.getLocalName();
                 if (SVGConstants.SVG_A_TAG.equals(tag)) {
                     cursor = CursorManager.ANCHOR_CURSOR;
                 } else if (SVGConstants.SVG_TEXT_TAG.equals(tag) ||
@@ -290,9 +290,9 @@ public class CursorManager implements SVGConstants, ErrorConstants {
                 if (cursorElement != null) {
                     // We go an element, check it is of type cursor
                     String cursorNS = cursorElement.getNamespaceURI();
-                    if (SVGConstants.SVG_NAMESPACE_URI.equals(cursorNS)
-                        &&
-                        SVGConstants.SVG_CURSOR_TAG.equals(cursorElement.getNodeName())) {
+                    if (SVGConstants.SVG_NAMESPACE_URI.equals(cursorNS) &&
+                        SVGConstants.SVG_CURSOR_TAG.equals
+                        (cursorElement.getLocalName())) {
                         Cursor c = convertSVGCursorElement(cursorElement);
                         if (c != null) { 
                             return c;

@@ -18,6 +18,7 @@
 package org.apache.batik.bridge;
 
 import java.awt.Dimension;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
@@ -150,7 +151,7 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
             cgn.setPositionTransform(positionTransform);
         } else if (doc == ctx.getDocument()) {
             // <!> FIXME: hack to compute the original document's size
-            ctx.setDocumentSize(new Dimension((int)w, (int)h));
+            ctx.setDocumentSize(new Dimension((int)(w+0.5f), (int)(h+0.5f)));
         }
         // Set the viewing transform, this is often updated when the
         // component prepares for rendering.
@@ -184,6 +185,10 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
                 cgn.setClip(new ClipRable8Bit(filter, clip));
             } catch (NoninvertibleTransformException ex) {}
         }
+        RenderingHints hints = null;
+        hints = CSSUtilities.convertColorRendering(e, hints);
+        if (hints != null)
+            cgn.setRenderingHints(hints);
 
         // 'enable-background'
         Rectangle2D r = CSSUtilities.convertEnableBackground(e);

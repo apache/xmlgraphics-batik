@@ -18,6 +18,7 @@
 package org.apache.batik.bridge;
 
 import java.awt.Cursor;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
@@ -81,9 +82,8 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
         // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-        if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+        if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent()))
             return null;
-        }
 
         CompositeGraphicsNode gn = buildCompositeGraphicsNode(ctx, e, null);
 
@@ -211,12 +211,15 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         // 'visibility'
         gn.setVisible(CSSUtilities.convertVisibility(e));
 
+        RenderingHints hints = null;
+        hints = CSSUtilities.convertColorRendering(e, hints);
+        if (hints != null)
+            gn.setRenderingHints(hints);
 
         // 'enable-background'
         Rectangle2D r = CSSUtilities.convertEnableBackground(e);
-        if (r != null) {
+        if (r != null)
             gn.setBackgroundEnable(r);
-        }
 
         ///////////////////////////////////////////////////////////////////////
         

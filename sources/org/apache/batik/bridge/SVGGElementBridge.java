@@ -63,21 +63,20 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
         CompositeGraphicsNode gn =
             (CompositeGraphicsNode)super.createGraphicsNode(ctx, e);
-	if (gn == null) {
+	if (gn == null)
 	    return null;
-	}
 
         // 'color-rendering'
-        RenderingHints hints = CSSUtilities.convertColorRendering(e, null);
-        if (hints != null) {
+        RenderingHints hints = null;
+        hints = CSSUtilities.convertColorRendering(e, hints);
+        if (hints != null)
             gn.setRenderingHints(hints);
-        }
 
         // 'enable-background'
         Rectangle2D r = CSSUtilities.convertEnableBackground(e);
-        if (r != null) {
+        if (r != null)
             gn.setBackgroundEnable(r);
-        }
+
         return gn;
     }
 
