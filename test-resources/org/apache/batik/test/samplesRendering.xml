@@ -190,6 +190,12 @@
         <test id="samples/tests/spec/structure/xmlBaseStyling.svg" />
         <test id="samples/tests/spec/structure/requiredFeatures.svg" />
         <test id="samples/tests/spec/structure/requiredFeaturesCombo.svg" />
+        <test id="samples/tests/spec/structure/systemLanguage.svg">
+            <property name="UserLanguage" class="java.lang.String" value="fr" />
+        </test>
+        <test id="samples/tests/spec/structure/systemLanguageDialect.svg">
+            <property name="UserLanguage" class="java.lang.String" value="en-UK" />
+        </test>
     </testGroup>
 
     <testGroup id="tests.spec.styling">
@@ -223,6 +229,8 @@
         <test id="samples/tests/spec/text/longTextOnPath.svg" />
         <test id="samples/tests/spec/text/smallFonts.svg" />
         <test id="samples/tests/spec/text/textAnchor.svg" />
+        <test id="samples/tests/spec/text/textAnchor2.svg" />
+        <test id="samples/tests/spec/text/textAnchor3.svg" />
         <test id="samples/tests/spec/text/textBiDi.svg" />
         <test id="samples/tests/spec/text/textDecoration.svg" />
         <test id="samples/tests/spec/text/textEffect.svg" />

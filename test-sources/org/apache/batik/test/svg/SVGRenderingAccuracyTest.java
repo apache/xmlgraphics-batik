@@ -270,6 +270,11 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
     protected static File tempDirectory;
 
     /**
+     * The userLanguage for which the document should be tested.
+     */
+    protected String userLanguage;
+
+    /**
      * Returns the temporary directory
      */
     public static File getTempDirectory(){
@@ -345,6 +350,17 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
         }catch(MalformedURLException e){
             throw new IllegalArgumentException(url);
         }
+    }
+
+    /**
+     * Sets the userLanguage
+     */
+    public void setUserLanguage(String userLanguage){
+        this.userLanguage = userLanguage;
+    }
+
+    public String getUserLanguage(){
+        return this.userLanguage;
     }
 
     /**
@@ -939,10 +955,14 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
         if (validate){
             t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_VALIDATING,
                                  new Boolean(true));
-	    t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
-				 VALIDATING_PARSER);
+            t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                 VALIDATING_PARSER);
         }
 
+        if (userLanguage != null){
+            t.addTranscodingHint(PNGTranscoder.KEY_LANGUAGE, 
+                                 userLanguage);
+        }
         return t;
     }
 
