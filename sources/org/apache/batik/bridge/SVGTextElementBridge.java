@@ -359,7 +359,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * @see org.apache.batik.bridge.BridgeUpdateHandler
      */
     protected void addContextToChild(BridgeContext ctx,Element e) {
-        if (e.getNamespaceURI().equals(SVG_NAMESPACE_URI)) {
+        if (SVG_NAMESPACE_URI.equals(e.getNamespaceURI())) {
             if (e.getLocalName().equals(SVG_TSPAN_TAG)) {
                 ((SVGOMElement)e).setSVGContext
                     (new TspanBridge(ctx, this, e));
@@ -396,7 +396,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 laidoutText = null;
                 break;
             case Node.ELEMENT_NODE:
-                if (childNode.getNamespaceURI().equals(SVG_NAMESPACE_URI)) {
+                if (SVG_NAMESPACE_URI.equals(childNode.getNamespaceURI())) {
                     String nodeName = childNode.getLocalName();
                     if (nodeName.equals(SVG_TSPAN_TAG) ||
                         nodeName.equals(SVG_ALT_GLYPH_TAG) ||
@@ -447,7 +447,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 }
                 break;
             case Node.ELEMENT_NODE:
-                if (childNode.getNamespaceURI().equals(SVG_NAMESPACE_URI)) {
+                if (SVG_NAMESPACE_URI.equals(childNode.getNamespaceURI())) {
                     String nodeName = childNode.getLocalName();
                     if (nodeName.equals(SVG_TSPAN_TAG) ||
                         nodeName.equals(SVG_ALT_GLYPH_TAG) ||
@@ -501,7 +501,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected boolean isParentDisplayed(Node childNode) {
         Node parentNode = childNode.getParentNode();
         if (parentNode.getNodeType() == Node.ELEMENT_NODE) {
-            if (parentNode.getNamespaceURI().equals(SVG_NAMESPACE_URI)) {
+            if (SVG_NAMESPACE_URI.equals(parentNode.getNamespaceURI())) {
                 String nodeName = parentNode.getLocalName();
                 if (nodeName.equals(SVG_TEXT_TAG) ||
                     nodeName.equals(SVG_TSPAN_TAG) ||
@@ -851,7 +851,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
-                if (n.getNamespaceURI() != SVG_NAMESPACE_URI) {
+                if (!SVG_NAMESPACE_URI.equals(n.getNamespaceURI())) {
                     break;
                 }
                 
