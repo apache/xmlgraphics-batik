@@ -30,7 +30,7 @@ public class Messages {
      * The error messages bundle class name.
      */
     protected final static String RESOURCES =
-        "org.apache.batik.bridge.Messages";
+        "org.apache.batik.bridge.resources.Messages";
 
     /**
      * The localizable support for the error messages.
