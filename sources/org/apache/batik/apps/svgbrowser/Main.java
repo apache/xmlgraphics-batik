@@ -25,6 +25,7 @@ import java.security.Policy;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.Authenticator;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -295,6 +296,8 @@ public class Main implements Application {
         securityEnforcer 
             = new ApplicationSecurityEnforcer(this.getClass(),
                                               SQUIGGLE_SECURITY_POLICY);
+
+        Authenticator.setDefault(new JAuthenticator());
                                               
         try {
             preferenceManager = new XMLPreferenceManager(SQUIGGLE_CONFIGURATION_FILE,
