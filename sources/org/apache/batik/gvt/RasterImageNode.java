@@ -137,7 +137,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
      *
      * @param g2d the Graphics2D to use
      */
-    public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
+    public void primitivePaint(Graphics2D g2d) {
         if ((image == null) ||
             (imageBounds.getWidth()  == 0) ||
             (imageBounds.getHeight() == 0)) {
@@ -146,17 +146,9 @@ public class RasterImageNode extends AbstractGraphicsNode {
 
         if (calcAffine) {
             updateAffine();
-	}
+        }
 
-        // get the current affine transform
-        rc.setTransform(img2usr);
-        rc.setAreaOfInterest(null);
-
-        GraphicsUtil.drawImage(g2d, image, rc);
-
-        // Restore default rendering attributes
-        rc.setTransform(g2d.getTransform());
-        rc.setAreaOfInterest(g2d.getClip());
+        GraphicsUtil.drawImage(g2d, image);
     }
 
     //

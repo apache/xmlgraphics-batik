@@ -73,7 +73,7 @@ public class StrokeShapePainter implements ShapePainter {
      *
      * @param g2d the Graphics2D to use 
      */
-    public void paint(Graphics2D g2d, GraphicsNodeRenderContext ctx) {
+    public void paint(Graphics2D g2d) {
         if (stroke != null && paint != null) {
             g2d.setPaint(paint);
             g2d.setStroke(stroke);

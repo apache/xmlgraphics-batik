@@ -27,7 +27,6 @@ import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.text.ArabicTextHandler;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
@@ -620,7 +619,6 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      * Draws this glyph vector.
      */
     public void draw(Graphics2D graphics2D,
-		     GraphicsNodeRenderContext context,
                      AttributedCharacterIterator aci) {
 
         aci.first();

@@ -24,7 +24,6 @@ import java.awt.image.renderable.RenderableImage;
 import java.util.Map;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
@@ -55,11 +54,6 @@ public class GraphicsNodeRable8Bit
      * Should GraphicsNodeRable call primitivePaint or Paint.
      */
     private boolean usePrimitivePaint = true;
-
-    /**
-     * The current render context for the filtered GraphicsNode.
-     */
-    private GraphicsNodeRenderContext gnrc = null;
 
     /**
      * Returns true if this Rable get's it's contents by calling
@@ -105,13 +99,11 @@ public class GraphicsNodeRable8Bit
     /**
      * @param node The GraphicsNode this image should represent
      */
-    public GraphicsNodeRable8Bit(GraphicsNode node, 
-                                 GraphicsNodeRenderContext gnrc){
+    public GraphicsNodeRable8Bit(GraphicsNode node){
         if(node == null)
             throw new IllegalArgumentException();
 
         this.node = node;
-        this.gnrc = gnrc;
         this.usePrimitivePaint = true;
     }
 
@@ -119,8 +111,7 @@ public class GraphicsNodeRable8Bit
      * @param node The GraphicsNode this image should represent
      * @param props The Properties for this image.
      */
-    public GraphicsNodeRable8Bit(GraphicsNode node, 
-                                 GraphicsNodeRenderContext gnrc,
+    public GraphicsNodeRable8Bit(GraphicsNode node,
                                  Map props){
         super((Filter)null, props);
 
@@ -128,7 +119,6 @@ public class GraphicsNodeRable8Bit
             throw new IllegalArgumentException();
 
         this.node = node;
-        this.gnrc = gnrc;
         this.usePrimitivePaint = true;
     }
 
@@ -215,14 +205,11 @@ public class GraphicsNodeRable8Bit
 
         // System.out.println("drawImage GNR: " + g2dCS);
         GraphicsNode gn = getGraphicsNode();
-        GraphicsNodeRenderContext gnrc
-            = GraphicsNodeRenderContext.getGraphicsNodeRenderContext(g2d);
-
         if (getUsePrimitivePaint()){
-            gn.primitivePaint(g2d, gnrc);
+            gn.primitivePaint(g2d);
         }
         else{
-            gn.paint(g2d, gnrc);
+            gn.paint(g2d);
         }
 
         // Paint did the work...
@@ -304,20 +291,11 @@ public class GraphicsNodeRable8Bit
             cachedUsr2dev = (AffineTransform)usr2dev.clone();
             cachedGn2dev = gn2dev;
             cachedRed =  new GraphicsNodeRed8Bit
-                (node, usr2dev, getGraphicsNodeRenderContext(),
-                 usePrimitivePaint, renderContext.getRenderingHints());
+                (node, usr2dev, usePrimitivePaint, 
+                 renderContext.getRenderingHints());
             return cachedRed;
         }
 
         return null;
     }
-
-    protected void setGraphicsNodeRenderContext(GraphicsNodeRenderContext rc) {
-        this.gnrc = rc;
-    }
-
-    protected GraphicsNodeRenderContext getGraphicsNodeRenderContext() {
-        return gnrc;
-    }
-
 }

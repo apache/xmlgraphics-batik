@@ -18,11 +18,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.awt.Graphics2D;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import java.text.AttributedCharacterIterator;
 import java.awt.Paint;
 import java.awt.Stroke;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import java.text.AttributedCharacterIterator;
 import java.awt.font.TextAttribute;
@@ -552,11 +550,11 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     /**
      * Draws this glyph vector.
      */
-    public void draw(Graphics2D graphics2D, GraphicsNodeRenderContext context,
+    public void draw(Graphics2D graphics2D, 
                      AttributedCharacterIterator aci) {
         for (int i = 0; i < glyphs.length; i++) {
             if (glyphVisible[i]) {
-                glyphs[i].draw(graphics2D, context);
+                glyphs[i].draw(graphics2D);
             }
         }
     }

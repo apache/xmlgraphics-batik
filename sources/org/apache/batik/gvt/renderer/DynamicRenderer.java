@@ -8,7 +8,8 @@
 
 package org.apache.batik.gvt.renderer;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import java.awt.geom.AffineTransform;
+import java.awt.RenderingHints;
 
 /**
  * Simple implementation of the Renderer that supports dynamic updates.
@@ -25,11 +26,8 @@ public class DynamicRenderer extends StaticRenderer {
         super();
     }
 
-    /**
-     * Constructs a new dynamic renderer with the specified buffer image.
-     * @param rc the GraphicsNodeRenderContext to use
-     */
-    public DynamicRenderer(GraphicsNodeRenderContext rc) {
-        super(rc);
+    public DynamicRenderer(RenderingHints rh,
+                           AffineTransform at){
+        super(rh, at);
     }
 }

@@ -160,8 +160,7 @@ public class SVGFeImageElementBridge
                                              Element refElement) {
 
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, refElement);
-        Filter filter = new GraphicsNodeRable8Bit
-            (node, ctx.getGraphicsNodeRenderContext());
+        Filter filter = node.getGraphicsNodeRable();
 
         // Need to translate the image to the x, y coordinate to
         // have the same behavior as the <use> element

@@ -9,7 +9,6 @@
 package org.apache.batik.gvt.font;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.text.ArabicTextHandler;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -334,7 +333,7 @@ public class Glyph {
      * @param graphics2D The Graphics2D object to draw to.
      * @param context The current rendering context.
      */
-    public void draw(Graphics2D graphics2D, GraphicsNodeRenderContext context) {
+    public void draw(Graphics2D graphics2D) {
         AffineTransform tr = 
 	    AffineTransform.getTranslateInstance(position.getX(),
 						 position.getY());
@@ -361,7 +360,7 @@ public class Glyph {
         // paint the glyph children nodes
         if (glyphChildrenNode != null) {
             glyphChildrenNode.setTransform(tr);
-            glyphChildrenNode.paint(graphics2D, context);
+            glyphChildrenNode.paint(graphics2D);
         }
     }
 }

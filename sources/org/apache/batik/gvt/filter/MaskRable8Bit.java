@@ -9,7 +9,6 @@
 package org.apache.batik.gvt.filter;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -129,13 +128,10 @@ public class MaskRable8Bit
     }
 
     public RenderedImage createRendering(RenderContext rc) {
-
-        GraphicsNodeRenderContext gnrc = 
-               GraphicsNodeRenderContext.getGraphicsNodeRenderContext(rc);
         //
         // Get the mask content
         //
-        Filter maskSrc = new GraphicsNodeRable8Bit(getMaskNode(), gnrc);
+        Filter   maskSrc = getMaskNode().getGraphicsNodeRable();
         PadRable maskPad = new PadRable8Bit(maskSrc, getBounds2D(),
                                                 PadMode.ZERO_PAD);
         maskSrc = new FilterAsAlphaRable(maskPad);

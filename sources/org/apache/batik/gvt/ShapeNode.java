@@ -109,9 +109,9 @@ public class ShapeNode extends AbstractGraphicsNode {
      *
      * @param g2d the Graphics2D to use
      */
-    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
+    public void paint(Graphics2D g2d) {
         if (isVisible) {
-            super.paint(g2d, rc);
+            super.paint(g2d);
         }
 
     }
@@ -121,9 +121,9 @@ public class ShapeNode extends AbstractGraphicsNode {
      *
      * @param g2d the Graphics2D to use
      */
-    public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
+    public void primitivePaint(Graphics2D g2d) {
         if (shapePainter != null) {
-            shapePainter.paint(g2d, rc);
+            shapePainter.paint(g2d);
         }
     }
 

@@ -54,9 +54,9 @@ public class ProxyGraphicsNode extends AbstractGraphicsNode {
      *
      * @param g2d the Graphics2D to use
      */
-    public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
+    public void primitivePaint(Graphics2D g2d) {
         if (source != null) {
-            source.paint(g2d, rc);
+            source.paint(g2d);
         }
     }
 

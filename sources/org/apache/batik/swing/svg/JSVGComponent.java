@@ -400,9 +400,7 @@ public class JSVGComponent extends JGVTComponent {
         if (loader == null) {
             loader = new DocumentLoader(userAgent);
         }
-        return new BridgeContext(userAgent,
-                                 rendererFactory.getRenderContext(),
-                                 loader);
+        return new BridgeContext(userAgent, loader);
     }
 
     /**

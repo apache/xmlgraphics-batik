@@ -25,6 +25,7 @@ import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.renderable.RenderableImage;
 import java.lang.reflect.Array;
+import java.lang.ref.WeakReference;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +42,8 @@ import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.filter.Mask;
+import org.apache.batik.gvt.filter.GraphicsNodeRable;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 
 /**
  * A partial implementation of the <tt>GraphicsNode</tt> interface.
@@ -96,11 +99,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected RenderingHints hints;
 
     /**
-     * The mask of this graphics node.
-     */
-    protected Mask mask;
-
-    /**
      * The parent of this graphics node.
      */
     protected CompositeGraphicsNode parent;
@@ -111,6 +109,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected RootGraphicsNode root;
 
     /**
+     * The mask of this graphics node.
+     */
+    protected Mask mask;
+
+    /**
      * The filter of this graphics node.
      */
     protected Filter filter;
@@ -118,7 +121,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     /**
      * .The GraphicsNodeRable for this node.
      */
-    protected Filter gnr;
+    protected WeakReference graphicsNodeRable;
 
     /**
      * Internal Cache: node bounds
@@ -312,6 +315,23 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         return filter;
     }
 
+    /**
+     * Returns the GraphicsNodeRable for this node.
+     * The GraphicsNodeRable is the Renderable (Filter) before any
+     * of the filter operations have been applied.
+     */
+    public GraphicsNodeRable getGraphicsNodeRable() {
+        GraphicsNodeRable ret = null;
+        if (graphicsNodeRable != null) {
+            ret = (GraphicsNodeRable)graphicsNodeRable.get();
+            if (ret != null) return ret;
+        }
+        ret = new GraphicsNodeRable8Bit(this);
+        graphicsNodeRable = new WeakReference(ret);
+        return ret;
+    }
+
+
     //
     // Drawing methods
     //
@@ -321,7 +341,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      *
      * @param g2d the Graphics2D to use
      */
-    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc){
+    public void paint(Graphics2D g2d){
 
         // first, make sure we haven't been interrupted
         if (Thread.currentThread().isInterrupted()) {
@@ -359,9 +379,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         Shape curClip = g2d.getClip();
         g2d.setRenderingHint(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST,
                              curClip);
-        rc.setTransform(g2d.getTransform());
-        rc.setRenderingHints(g2d.getRenderingHints());
-        rc.setAreaOfInterest(curClip);
 
         // Check if any painting is needed at all. Get the clip (in user space)
         // and see if it intersects with this node's bounds (in user space).
@@ -384,8 +401,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             boolean antialiasedClip = false;
             if(clip != null){
                 antialiasedClip =
-                    isAntialiasedClip(rc.getTransform(),
-                                      rc.getRenderingHints(),
+                    isAntialiasedClip(g2d.getTransform(),
+                                      g2d.getRenderingHints(),
                                       clip.getClipPath());
             }
 
@@ -395,15 +412,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
             if (!useOffscreen) {
                 // Render on this canvas.
-                primitivePaint(g2d, rc);
+                primitivePaint(g2d);
             } else {
                 Filter filteredImage = null;
 
                 if(filter == null){
-                    if (gnr == null)
-                        gnr = rc.getGraphicsNodeRableFactory().
-                            createGraphicsNodeRable(this, rc);
-                    filteredImage = gnr;
+                    filteredImage = getGraphicsNodeRable();
                 }
                 else {
                     // traceFilter(filter, "=====>> ");

@@ -77,10 +77,10 @@ public class CompositeShapePainter implements ShapePainter {
      *
      * @param g2d the Graphics2D to use
      */
-    public void paint(Graphics2D g2d, GraphicsNodeRenderContext ctx) {
+    public void paint(Graphics2D g2d) {
         if (painters != null) {
             for (int i=0; i < count; ++i) {
-                painters[i].paint(g2d, ctx);
+                painters[i].paint(g2d);
             }
         }
     }

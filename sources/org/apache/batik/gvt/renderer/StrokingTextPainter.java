@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 
 import org.apache.batik.gvt.font.FontFamilyResolver;
@@ -78,21 +77,18 @@ public class StrokingTextPainter extends BasicTextPainter {
      * @param node the text node to paint
      * @param g2d the Graphics2D to use
      */
-    public void paint(TextNode node, 
-		      Graphics2D g2d, 
-		      GraphicsNodeRenderContext context) {
-
-        AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
+    public void paint(TextNode node, Graphics2D g2d) {
+        AttributedCharacterIterator aci;
+        aci = node.getAttributedCharacterIterator();
         List textRuns = getTextRuns(node, aci);
 
         // draw the underline and overline first, then the actual text
         // and finally the strikethrough
         paintDecorations(textRuns, g2d, TextSpanLayout.DECORATION_UNDERLINE);
         paintDecorations(textRuns, g2d, TextSpanLayout.DECORATION_OVERLINE);
-        paintTextRuns(textRuns, g2d, context);
+        paintTextRuns(textRuns, g2d);
         paintDecorations
-	    (textRuns, g2d, TextSpanLayout.DECORATION_STRIKETHROUGH);
-
+            (textRuns, g2d, TextSpanLayout.DECORATION_STRIKETHROUGH);
     }
 
     private List getTextRuns(TextNode node, AttributedCharacterIterator aci) {
@@ -643,8 +639,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Paints the text in each text run. Decorations are not painted here.
      */
     private void paintTextRuns(List textRuns, 
-			       Graphics2D g2d,
-                               GraphicsNodeRenderContext context) {
+                               Graphics2D g2d) {
 
         for (int i = 0; i < textRuns.size(); i++) {
             TextRun textRun = (TextRun)textRuns.get(i);
@@ -657,7 +652,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (opacity != null) {
                 g2d.setComposite(opacity);
             }
-            textRun.getLayout().draw(g2d, context);
+            textRun.getLayout().draw(g2d);
         }
     }
 

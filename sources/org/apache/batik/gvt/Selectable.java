@@ -10,8 +10,6 @@ package org.apache.batik.gvt;
 
 import java.awt.Shape;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-
 /**
  * Interface describing object that can be selected or have selections
  * made on it.

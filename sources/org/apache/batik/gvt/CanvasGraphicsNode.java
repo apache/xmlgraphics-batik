@@ -60,11 +60,11 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
      *
      * @param g2d the Graphics2D to use
      */
-    public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
+    public void primitivePaint(Graphics2D g2d) {
         if (backgroundPaint != null) {
             g2d.setPaint(backgroundPaint);
             g2d.fill(g2d.getClip()); // Fast paint for huge background area
         }
-        super.primitivePaint(g2d, rc);
+        super.primitivePaint(g2d);
     }
 }

@@ -9,7 +9,6 @@
 package org.apache.batik.gvt.filter;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 /**
  * This interface lets <tt>GraphicsNode</tt> create instances of
@@ -24,6 +23,5 @@ public interface GraphicsNodeRableFactory {
      * Returns a <tt>GraphicsNodeRable</tt> initialized with the
      * input <tt>GraphicsNode</tt>.
      */
-    GraphicsNodeRable createGraphicsNodeRable(GraphicsNode node, 
-                                              GraphicsNodeRenderContext rc);
+    GraphicsNodeRable createGraphicsNodeRable(GraphicsNode node);
 }

@@ -8,8 +8,6 @@
 
 package org.apache.batik.gvt.renderer;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-
 /**
  * Interface for a factory of ImageRenderers
  *

@@ -9,18 +9,7 @@
 package org.apache.batik.gvt.renderer;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.TextPainter;
-import org.apache.batik.gvt.Selector;
-import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-
-import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-
-import org.apache.batik.gvt.text.ConcreteTextSelector;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
@@ -32,6 +21,7 @@ import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
 import java.lang.ref.SoftReference;
 import java.util.Iterator;
 import java.util.Stack;
+
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -79,11 +69,6 @@ public class StaticRenderer implements ImageRenderer {
     private boolean isDoubleBuffered = false;
 
     /**
-     * The Selector instance which listens to TextSelection gestures.
-     */
-    private Selector textSelector = null;
-
-    /**
      * Offscreen image where the Renderer does its rendering
      */
     protected WritableRaster currentBaseRaster;
@@ -100,43 +85,30 @@ public class StaticRenderer implements ImageRenderer {
     /**
      * Passed to the GVT tree to describe the rendering environment
      */
-    protected GraphicsNodeRenderContext nodeRenderContext;
+    protected RenderingHints renderingHints;
+    protected AffineTransform usr2dev;
 
     /**
-     * @param offScreen image where the Renderer should do its rendering
-     * @param rc a GraphicsNodeRenderContext which this renderer should use
+     * @param rh Hints for rendering.
+     * @param at Starting user to device coordinate system transform.
      */
-    public StaticRenderer(GraphicsNodeRenderContext rc){
-        setRenderContext(rc);
+    public StaticRenderer(RenderingHints rh,
+                          AffineTransform at){
+        renderingHints = new RenderingHints(rh);
+        usr2dev = new AffineTransform(at);
     }
 
     /**
      * @param offScreen image where the Renderer should do its rendering
      */
     public StaticRenderer(){
+        renderingHints = new RenderingHints(null);
+        renderingHints.put(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
 
-        RenderingHints hints = new RenderingHints(null);
-        hints.put(RenderingHints.KEY_ANTIALIASING,
-                  RenderingHints.VALUE_ANTIALIAS_ON);
-
-        hints.put(RenderingHints.KEY_INTERPOLATION,
-                  RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
-        FontRenderContext fontRenderContext =
-            new FontRenderContext(new AffineTransform(), true, true);
-
-        TextPainter textPainter = new StrokingTextPainter();
-
-        GraphicsNodeRableFactory gnrFactory =
-            new ConcreteGraphicsNodeRableFactory();
-
-        this.nodeRenderContext =
-            new GraphicsNodeRenderContext(new AffineTransform(),
-                                          null,
-                                          hints,
-                                          fontRenderContext,
-                                          textPainter,
-                                          gnrFactory);
+        renderingHints.put(RenderingHints.KEY_INTERPOLATION,
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        usr2dev = new AffineTransform();
     }
 
 
@@ -156,7 +128,7 @@ public class StaticRenderer implements ImageRenderer {
         currentBaseRaster = null;
         currentRaster = null;
 
-        nodeRenderContext = null;
+        renderingHints = null;
     }
 
     /**
@@ -186,11 +158,11 @@ public class StaticRenderer implements ImageRenderer {
     }
 
     /**
-     * @param rc a GraphicsNodeRenderContext which the Renderer should use
-     *           for its rendering
+     * @param rh Set of rendering hints to user for future renderings
      */
-    public void setRenderContext(GraphicsNodeRenderContext rc) {
-        this.nodeRenderContext = rc;
+    public void setRenderingHints(RenderingHints rh) {
+        renderingHints = new RenderingHints(rh);
+
         rootGNR    = null;
         rootCR     = null;
 
@@ -204,11 +176,11 @@ public class StaticRenderer implements ImageRenderer {
     }
 
     /**
-     * @return the GraphicsNodeRenderContext which the Renderer uses
-     *           for its rendering
+     * @return the RenderingHints which the Renderer is using for its
+     *         rendering 
      */
-    public GraphicsNodeRenderContext getRenderContext() {
-        return nodeRenderContext;
+    public RenderingHints getRenderingHints() {
+        return renderingHints;
     }
 
     /**
@@ -220,10 +192,10 @@ public class StaticRenderer implements ImageRenderer {
      */
     public void setTransform(AffineTransform usr2dev){
         if(usr2dev == null)
-            usr2dev = new AffineTransform();
+            this.usr2dev = new AffineTransform();
+        else
+            this.usr2dev = new AffineTransform(usr2dev);
 
-        // Update the RenderContext in the nodeRenderContext
-        nodeRenderContext.setTransform(usr2dev);
         rootCR = null;
     }
 
@@ -233,7 +205,7 @@ public class StaticRenderer implements ImageRenderer {
      * unit = 1/72nd of an inch / 1 pixel, roughly speaking
      */
     public AffineTransform getTransform(){
-        return nodeRenderContext.getTransform();
+        return usr2dev;
     }
 
     /**
@@ -437,14 +409,12 @@ public class StaticRenderer implements ImageRenderer {
 
     protected CachableRed renderGNR() {
         AffineTransform at, rcAT;
-        at = nodeRenderContext.getTransform();
+        at = usr2dev;
         rcAT = new AffineTransform(at.getScaleX(), at.getShearY(),
                                    at.getShearX(), at.getScaleY(),
                                    0, 0);
 
-        RenderContext rc = new RenderContext
-            (rcAT, null,
-             nodeRenderContext.getRenderingHints());
+        RenderContext rc = new RenderContext(rcAT, null, renderingHints);
             
         RenderedImage ri = rootGNR.createRendering(rc);
         if (ri == null)
@@ -469,8 +439,7 @@ public class StaticRenderer implements ImageRenderer {
      */
     protected void updateWorkingBuffers() {
         if (rootGNR == null) {
-            rootGNR = new GraphicsNodeRable8Bit(rootGN, 
-                                                nodeRenderContext);
+            rootGNR = rootGN.getGraphicsNodeRable();
             rootCR = null;
         }
 

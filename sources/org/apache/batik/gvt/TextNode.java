@@ -349,9 +349,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      *
      * @param g2d the Graphics2D to use
      */
-    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
+    public void paint(Graphics2D g2d) {
         if (isVisible) {
-            super.paint(g2d, rc);
+            super.paint(g2d);
         }
     }
 
@@ -360,7 +360,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      *
      * @param g2d the Graphics2D to use
      */
-    public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
+    public void primitivePaint(Graphics2D g2d) {
         //
         // DO NOT REMOVE: THE FOLLOWING IS A WORK AROUND
         // A BUG IN THE JDK 1.2 RENDERING PIPELINE WHEN
@@ -371,7 +371,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
             g2d.setClip(new GeneralPath(clip));
         }
         // Paint the text
-	textPainter.paint(this, g2d, rc);
+        textPainter.paint(this, g2d);
     }
 
     /**

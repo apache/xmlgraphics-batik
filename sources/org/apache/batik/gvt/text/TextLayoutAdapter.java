@@ -20,7 +20,6 @@ import java.awt.font.TextLayout;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextHitInfo;
 import java.text.AttributedCharacterIterator;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.TextSpanLayout;
 import org.apache.batik.gvt.text.TextHit;
@@ -55,7 +54,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * specified Graphics2D and rendering context.
      * @param g2d the Graphics2D to use
      */
-    public void draw(Graphics2D g2d, GraphicsNodeRenderContext ctx) {
+    public void draw(Graphics2D g2d) {
 
         Shape outline = getOutline();
 

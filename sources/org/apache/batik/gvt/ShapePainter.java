@@ -24,7 +24,7 @@ public interface ShapePainter {
      *
      * @param g2d the Graphics2D to use
      */
-    void paint(Graphics2D g2d, GraphicsNodeRenderContext ctx);
+    void paint(Graphics2D g2d);
 
     /**
      * Returns the area painted by this shape painter.

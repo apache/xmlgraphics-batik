@@ -12,10 +12,8 @@ import java.net.URL;
 
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.DefaultBrokenLinkProvider;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.renderer.StaticRenderer;
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.i18n.LocalizableSupport;
 
 import org.apache.batik.dom.util.DOMUtilities;
@@ -43,17 +41,14 @@ public class SVGBrokenLinkProvider extends DefaultBrokenLinkProvider {
 
     UserAgent      userAgent;
     DocumentLoader loader;
-    GraphicsNodeRenderContext  rc;
     BridgeContext  ctx;
     GraphicsNode   gvtRoot = null;
     SVGDocument       svgDoc;
     
     public SVGBrokenLinkProvider() {
-        StaticRenderer renderer = new StaticRenderer();
-        rc        = renderer.getRenderContext();
         userAgent = new UserAgentAdapter();
         loader    = new DocumentLoader(userAgent);
-        ctx       = new BridgeContext(userAgent, rc, loader);
+        ctx       = new BridgeContext(userAgent, loader);
 
         Class cls = SVGBrokenLinkProvider.class;
         URL blURL = cls.getResource("BrokenLink.svg");
@@ -99,7 +94,7 @@ public class SVGBrokenLinkProvider extends DefaultBrokenLinkProvider {
 
             // We should format the code and params and replace a node
             // in the gvtRoot with the result.
-            return new GraphicsNodeRable8Bit(gvtRoot, rc, props);
+            return gvtRoot.getGraphicsNodeRable();
         }
         return null;
     }

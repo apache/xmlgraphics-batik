@@ -8,8 +8,6 @@
 
 package org.apache.batik.gvt.renderer;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-
 /**
  * Interface for GVT renderer factory.
  *
@@ -21,11 +19,4 @@ public interface RendererFactory {
      * Creates a new renderer.
      */
     Renderer createRenderer();
-
-    /**
-     * @return a GraphicsNodeRenderContext of the type used by the renderers.
-     * This may be a shared instance or a new instance, clients of this
-     * API should not depend on which.
-     */
-    GraphicsNodeRenderContext getRenderContext();
 }

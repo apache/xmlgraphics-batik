@@ -49,12 +49,6 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.TextPainter;
-
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
-import org.apache.batik.gvt.renderer.StrokingTextPainter;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
@@ -173,12 +167,6 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      * Transform needed to render the current area of interest
      */
     private AffineTransform curTxf;
-
-    /**
-     * GraphicsNodeRenderContext used by this transcoder to render
-     * the GVT trees.
-     */
-    private GraphicsNodeRenderContext nodeRenderContext;
 
     /**
      * UserAgent. Configuration comes from hints
@@ -358,8 +346,10 @@ public class PrintTranscoder extends XMLAbstractTranscoder
 
         // Cast to Graphics2D to access Java 2D features
         Graphics2D g = (Graphics2D)_g;
-        g.addRenderingHints(nodeRenderContext.getRenderingHints());
-
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         //
         // Compute transform so that the SVG document fits on one page
@@ -397,7 +387,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         // Delegate rendering to painter
         //
         try{
-            root.paint(g, nodeRenderContext);
+            root.paint(g);
         }catch(Exception e){
             g.setTransform(t);
             g.setClip(clip);
@@ -453,8 +443,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
 
         // build the GVT tree
         GVTBuilder builder = new GVTBuilder();
-        GraphicsNodeRenderContext rc = getRenderContext();
-        BridgeContext ctx = new BridgeContext(userAgent, rc);
+        BridgeContext ctx = new BridgeContext(userAgent);
         GraphicsNode gvtRoot;
         try {
             gvtRoot = builder.build(ctx, svgDoc);
@@ -534,38 +523,6 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         }
         curTxf = Px;
         this.root = gvtRoot;
-    }
-
-    /**
-     * Builds a GraphicsNodeRenderContext
-     */
-    public GraphicsNodeRenderContext getRenderContext() {
-        if (nodeRenderContext == null) {
-            RenderingHints hints = new RenderingHints(null);
-            hints.put(RenderingHints.KEY_ANTIALIASING,
-                  RenderingHints.VALUE_ANTIALIAS_ON);
-
-            hints.put(RenderingHints.KEY_INTERPOLATION,
-                  RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
-            FontRenderContext fontRenderContext =
-                new FontRenderContext(new AffineTransform(), true, true);
-
-            TextPainter textPainter = new StrokingTextPainter();
-
-            GraphicsNodeRableFactory gnrFactory =
-                new ConcreteGraphicsNodeRableFactory();
-
-            nodeRenderContext =
-                new GraphicsNodeRenderContext(new AffineTransform(),
-                                          null,
-                                          hints,
-                                          fontRenderContext,
-                                          textPainter,
-                                          gnrFactory);
-            }
-
-        return nodeRenderContext;
     }
 
     // --------------------------------------------------------------------

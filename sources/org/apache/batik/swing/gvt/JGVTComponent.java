@@ -41,8 +41,6 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-
 import org.apache.batik.gvt.event.AWTEventDispatcher;
 
 import org.apache.batik.gvt.renderer.DynamicRendererFactory;
@@ -212,14 +210,6 @@ public class JGVTComponent extends JComponent {
     }
 
     /**
-     * Returns the <tt>GraphicsNodeRenderContext</tt> used by the renderer. Use
-     * this object if you want to manipulate the GVT tree.
-     */
-    public GraphicsNodeRenderContext getRenderContext() {
-        return rendererFactory.getRenderContext();
-    }
-
-    /**
      * Returns the interactor list.
      */
     public List getInteractors() {
@@ -294,8 +284,7 @@ public class JGVTComponent extends JComponent {
             eventDispatcher = new AWTEventDispatcher();
             if (selectableText) {
                 textSelectionManager =
-                    new TextSelectionManager(this, rendererFactory.getRenderContext(),
-                                             eventDispatcher);
+                    new TextSelectionManager(this, eventDispatcher);
             }
         }
     }

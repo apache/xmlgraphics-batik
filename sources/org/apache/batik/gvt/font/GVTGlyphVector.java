@@ -21,8 +21,6 @@ import java.awt.geom.Rectangle2D;
 
 import java.text.AttributedCharacterIterator;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-
 /**
  * An interface for all GVT GlyphVector classes.
  *
@@ -159,7 +157,6 @@ public interface GVTGlyphVector {
     /**
      * Draws the glyph vector.
      */
-    void draw(Graphics2D graphics2D, 
-	      GraphicsNodeRenderContext context,
-	      AttributedCharacterIterator aci);
+    void draw(Graphics2D graphics2D,
+              AttributedCharacterIterator aci);
 }

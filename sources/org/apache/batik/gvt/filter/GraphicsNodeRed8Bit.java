@@ -27,7 +27,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 /**
  * This implementation of RenderableImage will render its input
@@ -47,13 +46,10 @@ public class GraphicsNodeRed8Bit extends AbstractRed {
 
     private RenderingHints  hints;
 
-    private GraphicsNodeRenderContext gnrc;
-
     private boolean usePrimitivePaint;
 
     public GraphicsNodeRed8Bit(GraphicsNode node,
                                AffineTransform node2dev,
-                               GraphicsNodeRenderContext gnrc,
                                boolean usePrimitivePaint,
                                RenderingHints  hints) {
         super(); // We _must_ call init...
@@ -61,7 +57,6 @@ public class GraphicsNodeRed8Bit extends AbstractRed {
         this.node              = node;
         this.node2dev          = node2dev;
         this.hints             = hints;
-        this.gnrc              = gnrc;
         this.usePrimitivePaint = usePrimitivePaint;
 
         // Calculate my bounds by applying the affine transform to
@@ -136,11 +131,11 @@ public class GraphicsNodeRed8Bit extends AbstractRed {
 
 
         // Invoke primitive paint.
-        if (usePrimitivePaint){
-            node.primitivePaint(g, gnrc);
+        if (usePrimitivePaint) {
+            node.primitivePaint(g);
         }
-        else{
-            node.paint (g, gnrc);
+        else {
+            node.paint (g);
         }
 
         g.dispose();
