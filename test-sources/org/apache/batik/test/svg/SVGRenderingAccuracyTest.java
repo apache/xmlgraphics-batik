@@ -900,8 +900,11 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
     /**
      * If true, this test will use validation
      */
-    public void setValidating(boolean validate){
-        this.validate = validate;
+    public void setValidating(Boolean validate){
+	if (validate == null){
+	    throw new IllegalArgumentException();
+	}
+        this.validate = validate.booleanValue();
     }
 
     public boolean getValidating(){
