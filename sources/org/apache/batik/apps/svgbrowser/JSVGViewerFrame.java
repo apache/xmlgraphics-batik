@@ -103,8 +103,6 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import org.apache.batik.transcoder.print.PrintTranscoder;
 
-import org.apache.batik.util.XMLUtilities;
-
 import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.LanguageDialog;
 import org.apache.batik.util.gui.LocationBar;
@@ -119,6 +117,8 @@ import org.apache.batik.util.gui.resource.MenuFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.apache.batik.util.gui.resource.ResourceManager;
 import org.apache.batik.util.gui.resource.ToolBarFactory;
+
+import org.apache.batik.xml.XMLUtilities;
 
 import org.w3c.dom.css.ViewCSS;
 

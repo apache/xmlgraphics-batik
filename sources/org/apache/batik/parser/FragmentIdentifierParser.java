@@ -10,7 +10,7 @@ package org.apache.batik.parser;
 
 import java.io.Reader;
 
-import org.apache.batik.util.XMLUtilities;
+import org.apache.batik.xml.XMLUtilities;
 
 /**
  * This class represents an event-based parser for the SVG

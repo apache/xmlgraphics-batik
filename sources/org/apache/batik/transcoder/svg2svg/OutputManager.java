@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.batik.util.XMLUtilities;
+import org.apache.batik.xml.XMLUtilities;
 import org.apache.batik.xml.scanner.DocumentScanner;
 
 /**

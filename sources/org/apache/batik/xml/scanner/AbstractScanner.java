@@ -18,7 +18,8 @@ import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 
 import org.apache.batik.util.InputBuffer;
-import org.apache.batik.util.XMLUtilities;
+
+import org.apache.batik.xml.XMLUtilities;
 
 /**
  * This class contains the basic methods needed by an XML scanners.

@@ -11,7 +11,7 @@ package org.apache.batik.dom.util;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.batik.util.XMLUtilities;
+import org.apache.batik.xml.XMLUtilities;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
