@@ -1,0 +1,24 @@
+
+.fancyBackground {
+	visibility: hidden;
+}
+
+.background {
+	fill: white;
+	stroke: none;
+}
+
+.sectionTitle {
+	stroke: none;
+	fill: black;
+	font-size: 14;
+}
+
+.sectionContent {
+	visibility: visible;
+	font-size: 10;
+	fill: black;
+	stroke: none;
+}
+
+
