@@ -56,7 +56,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         while (i.hasNext()) {
             WeakReference gnWRef = (WeakReference)i.next();
             GraphicsNode  gn     = (GraphicsNode)gnWRef.get();
-            //GraphicsNode  srcGN  = gn;
+            // GraphicsNode  srcGN  = gn;
 
             // if the weak ref has been cleared then this node is no
             // longer part of the GVT tree (and the change should be
@@ -132,12 +132,11 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 //       srcORgn + "\n" + srcNRgn + "\n");
                 // <!>
                 Shape oRgn = srcORgn;
-                // System.err.println("src: " + srcORgn);
-                // System.err.println("GN: " + srcGN);
-                if (oat != null){
-                    oRgn = oat.createTransformedShape(srcORgn);
-                }
                 if (oRgn != null) {
+                    if (oat != null)
+                        oRgn = oat.createTransformedShape(srcORgn);
+                    // System.err.println("GN: " + srcGN);
+                    // System.err.println("Src: " + oRgn.getBounds2D());
                     ret.add(oRgn);
                 }
                 
@@ -235,7 +234,13 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         // Add this dirty region to any existing dirty region.
         Rectangle2D r2d = (Rectangle2D)fromBounds.remove(gnWRef);
         if (rgn != null) {
-            if (r2d != null) r2d = r2d.createUnion(rgn);
+            if (r2d != null) {
+                // System.err.println("GN: " + gn);
+                // System.err.println("R2d: " + r2d);
+                // System.err.println("Rgn: " + rgn);
+                r2d = r2d.createUnion(rgn);
+                // System.err.println("Union: " + r2d);
+            }
             else             r2d = rgn;
         }
 

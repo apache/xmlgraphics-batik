@@ -582,10 +582,9 @@ public abstract class CSSEngine {
             media = parser.parseMedia(str);
         } catch (Exception e) {
             String m = e.getMessage();
-            String s =
-                Messages.formatMessage("media.error",
-                                       new Object[] { str,
-                                                      (m == null) ? "" : m });
+            if (m == null) m = "";
+            String s =Messages.formatMessage
+                ("media.error", new Object[] { str, m });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         }
     }
@@ -685,12 +684,12 @@ public abstract class CSSEngine {
                                           StyleMap.NON_CSS_ORIGIN);
                     } catch (Exception e) {
                         String m = e.getMessage();
-                        String s =
-                            Messages.formatMessage("property.syntax.error.at",
-                                new Object[] { documentURI.toString(),
-                                               an,
-                                               attr.getNodeValue(),
-                                               (m == null) ? "" : m });
+                        if (m == null) m = "";
+                        String u = ((documentURI == null)?"<unknown>":
+                                    documentURI.toString());
+                        String s = Messages.formatMessage
+                            ("property.syntax.error.at",
+                             new Object[] { u, an, attr.getNodeValue(),m});
                         throw new DOMException(DOMException.SYNTAX_ERR, s);
                     }
                 }
@@ -730,12 +729,12 @@ public abstract class CSSEngine {
                     styleDeclarationDocumentHandler.styleMap = null;
                 } catch (Exception e) {
                     String m = e.getMessage();
-                    String s =
-                        Messages.formatMessage("style.syntax.error.at",
-                                      new Object[] { documentURI.toString(),
-                                                     styleLocalName,
-                                                     style,
-                                                     (m == null) ? "" : m });
+                    if (m == null) m = "";
+                    String u = ((documentURI == null)?"<unknown>":
+                                documentURI.toString());
+                    String s = Messages.formatMessage
+                        ("style.syntax.error.at",
+                         new Object[] { u, styleLocalName, style, m});
                     throw new DOMException(DOMException.SYNTAX_ERR, s);
                 }
             }
@@ -879,12 +878,12 @@ public abstract class CSSEngine {
             return vm.createValue(lu, this);
         } catch (Exception e) {
             String m = e.getMessage();
-            String s =
-                Messages.formatMessage("property.syntax.error.at",
-                                       new Object[] { documentURI.toString(),
-                                                      prop,
-                                                      value,
-                                                      (m == null) ? "" : m });
+            if (m == null) m = "";
+            String u = ((documentURI == null)?"<unknown>":
+                        documentURI.toString());
+            String s = Messages.formatMessage
+                ("property.syntax.error.at",
+                 new Object[] { u, prop, value, m});
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         } finally {
             element = null;
@@ -908,10 +907,11 @@ public abstract class CSSEngine {
             return styleDeclarationBuilder.styleDeclaration;
         } catch (Exception e) {
             String m = e.getMessage();
-            String s =
-                Messages.formatMessage("syntax.error.at",
-                                       new Object[] { documentURI.toString(),
-                                                      (m == null) ? "" : m });
+            if (m == null) m = "";
+            String u = ((documentURI == null)?"<unknown>":
+                        documentURI.toString());
+            String s = Messages.formatMessage
+                ("syntax.error.at", new Object[] { u, m });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         }
     }
@@ -928,10 +928,11 @@ public abstract class CSSEngine {
             ss.setMedia(parser.parseMedia(media));
         } catch (Exception e) {
             String m = e.getMessage();
-            String s =
-                Messages.formatMessage("syntax.error.at",
-                                       new Object[] { documentURI.toString(),
-                                                      (m == null) ? "" : m });
+            if (m == null) m = "";
+            String u = ((documentURI == null)?"<unknown>":
+                        documentURI.toString());
+            String s = Messages.formatMessage
+                ("syntax.error.at", new Object[] { u, m });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         }
         parseStyleSheet(ss, uri);
@@ -952,10 +953,11 @@ public abstract class CSSEngine {
             parseStyleSheet(ss, is, uri);
         } catch (Exception e) {
             String m = e.getMessage();
-            String s =
-                Messages.formatMessage("syntax.error.at",
-                                       new Object[] { documentURI.toString(),
-                                                      (m == null) ? "" : m });
+            if (m == null) m = "";
+            String u = ((documentURI == null)?"<unknown>":
+                        documentURI.toString());
+            String s = Messages.formatMessage
+                ("syntax.error.at", new Object[] { u, m });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         }
         return ss;
@@ -968,9 +970,9 @@ public abstract class CSSEngine {
      */
     public void parseStyleSheet(StyleSheet ss, URL uri) throws DOMException {
         if (uri == null) {
-            String s = Messages.formatMessage("syntax.error.at",
-                                              new Object[] { "Null Document reference", 
-                                                             "" });
+            String s = Messages.formatMessage
+                ("syntax.error.at",
+                 new Object[] { "Null Document reference", "" });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         }
 
@@ -980,8 +982,7 @@ public abstract class CSSEngine {
              if (documentURI != null) {
                  pDocURL = new ParsedURL(documentURI);
              }
-             ParsedURL pURL = null;
-                 pURL = new ParsedURL(uri);
+             ParsedURL pURL = new ParsedURL(uri);
              cssContext.checkLoadExternalResource(pURL, pDocURL);
              
              parseStyleSheet(ss, new InputSource(uri.toString()), uri);
@@ -989,10 +990,9 @@ public abstract class CSSEngine {
             throw e; 
         } catch (Exception e) {
             String m = e.getMessage();
-            String s =
-                Messages.formatMessage("syntax.error.at",
-                                       new Object[] { uri.toString(),
-                                                      (m == null) ? "" : m });
+            if (m == null) m = "";
+            String s = Messages.formatMessage
+                ("syntax.error.at", new Object[] { uri.toString(), m });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         }
     }
@@ -1010,10 +1010,11 @@ public abstract class CSSEngine {
             ss.setMedia(parser.parseMedia(media));
         } catch (Exception e) {
             String m = e.getMessage();
-            String s =
-                Messages.formatMessage("syntax.error.at",
-                                       new Object[] { documentURI.toString(),
-                                                      (m == null) ? "" : m });
+            if (m == null) m = "";
+            String u = ((documentURI == null)?"<unknown>":
+                        documentURI.toString());
+            String s = Messages.formatMessage
+                ("syntax.error.at", new Object[] { u, m });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         }
         parseStyleSheet(ss, rules, uri);
@@ -1033,11 +1034,10 @@ public abstract class CSSEngine {
             parseStyleSheet(ss, new InputSource(new StringReader(rules)), uri);
 	} catch (Exception e) {
             String m = e.getMessage();
-            String s =
-                Messages.formatMessage("stylesheet.syntax.error",
-                                       new Object[] { uri.toString(),
-                                                      rules,
-                                                      (m == null) ? "" : m });
+            if (m == null) m = "";
+            String s = Messages.formatMessage
+                ("stylesheet.syntax.error",
+                 new Object[] { uri.toString(), rules, m });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         }
     }
@@ -1346,7 +1346,11 @@ public abstract class CSSEngine {
             ir.setMediaList(media);
             ir.setParent(styleSheet);
             try {
-                ir.setURI(new URL(getCSSBaseURI(), uri));
+                URL base = getCSSBaseURI();
+                URL url;
+                if (base == null) url = new URL(uri);
+                else              url = new URL(base, uri);
+                ir.setURI(url);
             } catch (MalformedURLException e) {
             }
             styleSheet.append(ir);
@@ -1417,7 +1421,9 @@ public abstract class CSSEngine {
             Value fontFamily = sm.getValue(pidx);
             if (fontFamily == null) return;
 
-            ParsedURL purl = new ParsedURL(getCSSBaseURI());
+            URL base = getCSSBaseURI();
+            ParsedURL purl = null;
+            if (base != null) purl = new ParsedURL(base);
             fontFaces.add(new FontFaceRule(sm, purl));
         }
     
@@ -1650,6 +1656,7 @@ public abstract class CSSEngine {
         case MutationEvent.ADDITION:
         case MutationEvent.MODIFICATION:
             String decl = evt.getNewValue();
+            // System.err.println("Inline Style Update: '" + decl + "'");
             if (decl.length() > 0) {
                 element = elt;
                 try {
@@ -1661,12 +1668,12 @@ public abstract class CSSEngine {
                     styleDeclarationUpdateHandler.styleMap = null;
                 } catch (Exception e) {
                     String m = e.getMessage();
-                    String s =
-                        Messages.formatMessage("style.syntax.error.at",
-                                      new Object[] { documentURI.toString(),
-                                                     styleLocalName,
-                                                     decl,
-                                                     (m == null) ? "" : m });
+                    if (m == null) m = "";
+                    String u = ((documentURI == null)?"<unknown>":
+                                documentURI.toString());
+                    String s = Messages.formatMessage
+                        ("style.syntax.error.at",
+                         new Object[] { u, styleLocalName, decl, m });
                     throw new DOMException(DOMException.SYNTAX_ERR, s);
                 }
                 element = null;
@@ -1710,25 +1717,14 @@ public abstract class CSSEngine {
                     : updated[colorIndex];
                 
                 for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
-                    if (!updated[i]) {
-                        if (style.isComputed(i)) {
-                            if (fs && style.isFontSizeRelative(i)) {
-                                updated[i] = true;
-                                count++;
-                                clearComputedValue(style, i);
-                            }
-                            if (lh && style.isLineHeightRelative(i)) {
-                                updated[i] = true;
-                                count++;
-                                clearComputedValue(style, i);
-                            }
-                            if (cl && style.isColorRelative(i)) {
-                                updated[i] = true;
-                                count++;
-                                clearComputedValue(style, i);
-                            }
-                        }
-                    } else {
+                    if (updated[i]) {
+                        count++;
+                    } 
+                    else if ((fs && style.isFontSizeRelative(i)) ||
+                             (lh && style.isLineHeightRelative(i)) ||
+                             (cl && style.isColorRelative(i))) {
+                        updated[i] = true;
+                        clearComputedValue(style, i);
                         count++;
                     }
                 }
@@ -1858,24 +1854,13 @@ public abstract class CSSEngine {
             for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
                 if (updated[i]) {
                     count++;
-                    continue;
                 }
-                if (style.isComputed(i)) {
-                    if (fs && style.isFontSizeRelative(i)) {
-                        updated[i] = true;
-                        count++;
-                        clearComputedValue(style, i);
-                    }
-                    if (lh && style.isLineHeightRelative(i)) {
-                        updated[i] = true;
-                        count++;
-                        clearComputedValue(style, i);
-                    }
-                    if (cl && style.isColorRelative(i)) {
-                        updated[i] = true;
-                        count++;
-                        clearComputedValue(style, i);
-                    }
+                else if ((fs && style.isFontSizeRelative(i)) ||
+                         (lh && style.isLineHeightRelative(i)) ||
+                         (cl && style.isColorRelative(i))) {
+                    updated[i] = true;
+                    clearComputedValue(style, i);
+                    count++;
                 }
             }
 
@@ -1893,14 +1878,34 @@ public abstract class CSSEngine {
             }
         }
 
+        int [] inherited = props;
+        if (props != null) {
+            // Filter out uninheritable properties when we 
+            // propogate to children.
+            int count = 0;
+            for (int i=0; i<props.length; i++) {
+                ValueManager vm = valueManagers[props[i]];
+                if (vm.isInheritedProperty()) count++;
+                else props[i] = -1;
+            }
+            
+            if (count == 0) 
+                return; // nothing to propogate
+            inherited = new int[count];
+            count=0;
+            for (int i=0; i<props.length; i++)
+                if (props[i] != -1)
+                    inherited[count++] = props[i];
+        }
+
         Node c = getImportedChild(node);
         if (c != null) {
-            invalidateProperties(c, props);
+            invalidateProperties(c, inherited);
         }
         for (Node n = node.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-            invalidateProperties(n, props);
+            invalidateProperties(n, inherited);
         }
     }
 
@@ -1938,9 +1943,7 @@ public abstract class CSSEngine {
                     return;
                 }
 
-                if (styleMap.isComputed(i)) {
-                    updatedProperties[i] = true;
-                }
+                updatedProperties[i] = true;
 
                 Value v = valueManagers[i].createValue(value, CSSEngine.this);
                 styleMap.putMask(i, (short)0);
@@ -1987,13 +1990,12 @@ public abstract class CSSEngine {
                 style.putOrigin(idx, StyleMap.NON_CSS_ORIGIN);
             } catch (Exception e) {
                 String m = e.getMessage();
-                String s =
-                    Messages.formatMessage("property.syntax.error.at",
-                        new Object[]
-                        { documentURI.toString(),
-                          property,
-                          evt.getNewValue(),
-                          (m == null) ? "" : m });
+                if (m == null) m = "";
+                String u = ((documentURI == null)?"<unknown>":
+                            documentURI.toString());
+                String s = Messages.formatMessage
+                    ("property.syntax.error.at",
+                     new Object[] { u, property, evt.getNewValue(), m });
                 throw new DOMException(DOMException.SYNTAX_ERR, s);
             }
             element = null;
@@ -2018,25 +2020,14 @@ public abstract class CSSEngine {
         int count = 0;
 
         for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
-            if (!updated[i]) {
-                if (style.isComputed(i)) {
-                    if (fs && style.isFontSizeRelative(i)) {
-                        updated[i] = true;
-                        count++;
-                        clearComputedValue(style, i);
-                    }
-                    if (lh && style.isLineHeightRelative(i)) {
-                        updated[i] = true;
-                        count++;
-                        clearComputedValue(style, i);
-                    }
-                    if (cl && style.isColorRelative(i)) {
-                        updated[i] = true;
-                        count++;
-                        clearComputedValue(style, i);
-                    }
-                }
-            } else {
+            if (updated[i]) {
+                count++;
+            }
+            else if ((fs && style.isFontSizeRelative(i)) ||
+                     (lh && style.isLineHeightRelative(i)) ||
+                     (cl && style.isColorRelative(i))) {
+                updated[i] = true;
+                clearComputedValue(style, i);
                 count++;
             }
         }

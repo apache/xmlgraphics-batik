@@ -107,6 +107,20 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         return backgroundEnableRgn;
     }
 
+    /**
+     * Sets if this node is visible or not depending on the specified value.
+     * Don't fire a graphicsNodeChange event because this doesn't really
+     * effect us (it effects our children through CSS inheritence).
+     *
+     * @param isVisible If true this node is visible
+     */
+    public void setVisible(boolean isVisible) {
+        // fireGraphicsNodeChangeStarted();
+        this.isVisible = isVisible;
+        // fireGraphicsNodeChangeCompleted();
+    }
+
+
     //
     // Drawing methods
     //
