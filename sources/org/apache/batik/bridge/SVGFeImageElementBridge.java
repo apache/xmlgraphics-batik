@@ -109,6 +109,7 @@ public class SVGFeImageElementBridge
         // try to load an SVG document
         DocumentLoader loader = ctx.getDocumentLoader();
         URIResolver resolver = new URIResolver(svgDoc, loader);
+        boolean toBBoxNeeded = false;
         try {
             Element refElement = null;
             Node n = resolver.getNode(purl.toString(), filterElement);
@@ -116,13 +117,14 @@ public class SVGFeImageElementBridge
                 refElement = ((SVGDocument)n).getRootElement();
             } else if (n.getNodeType() == Node.ELEMENT_NODE) {
                 refElement = (Element)n;
+                toBBoxNeeded = true;
             } else {
                 throw new BridgeException
                     (filterElement, ERR_URI_IMAGE_INVALID,
                      new Object[] {uriStr});
             }
             filter = createSVGFeImage
-                (ctx, primitiveRegion, refElement);
+                (ctx, primitiveRegion, refElement, toBBoxNeeded, filterElement, filteredNode);
         } catch (BridgeException ex) {
             throw ex;
         } catch (Exception ex) { /* Nothing to do */ }
@@ -154,20 +156,61 @@ public class SVGFeImageElementBridge
      * @param ctx the bridge context
      * @param primitiveRegion the primitive region
      * @param Element the referenced element
+     * @param toBBoxNeeded true if there is a need to transform to ObjectBoundingBox
+     *        space
+     * @param filterElement parent filter element
+     * @param filteredNode node to which the filter applies
      */
     protected static Filter createSVGFeImage(BridgeContext ctx,
                                              Rectangle2D primitiveRegion,
-                                             Element refElement) {
+                                             Element refElement,
+                                             boolean toBBoxNeeded,
+                                             Element filterElement,
+                                             GraphicsNode filteredNode) {
 
+        //
+        // <!> FIX ME
+        // Unresolved issue on the feImage behavior when referencing an
+        // image (PNG, JPEG or SVG image).
+        // VH & TK, 03/08/2002
+        // Furthermore, for feImage referencing doc fragment, should act
+        // like a <use>, i.e., CSS cascading and the whole zing bang.
+        //
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, refElement);
         Filter filter = node.getGraphicsNodeRable(true);
 
-        // Need to translate the image to the x, y coordinate to
-        // have the same behavior as the <use> element
-        // <!> FIX ME? I THINK THIS IS ONLY PARTIALLY IMPLEMENTING THE SPEC.
-        // <!> TO DO : HANDLE TRANSFORM
         AffineTransform at = new AffineTransform();
-        at.translate(primitiveRegion.getX(), primitiveRegion.getY());
+
+        if (toBBoxNeeded){
+            // 'primitiveUnits' attribute - default is userSpaceOnUse
+            short coordSystemType;
+            Element filterDefElement = (Element)(filterElement.getParentNode());
+            String s = SVGUtilities.getChainableAttributeNS
+                (filterDefElement, null, SVG_PRIMITIVE_UNITS_ATTRIBUTE, ctx);
+            if (s.length() == 0) {
+                coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
+            } else {
+                coordSystemType = SVGUtilities.parseCoordinateSystem
+                    (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s);
+            }
+            
+            if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {
+                at = SVGUtilities.toObjectBBox(at, filteredNode);
+            }
+
+            Rectangle2D bounds = filteredNode.getGeometryBounds();
+            at.preConcatenate(AffineTransform.getTranslateInstance
+                              (primitiveRegion.getX() - bounds.getX(), 
+                               primitiveRegion.getY() - bounds.getY()));
+            
+        } else {
+            
+            // Need to translate the image to the x, y coordinate to
+            // have the same behavior as the <use> element
+            at.preConcatenate(AffineTransform.getTranslateInstance
+                              (primitiveRegion.getX(), primitiveRegion.getY()));
+        }
+
         return new AffineRable8Bit(filter, at);
     }
 
