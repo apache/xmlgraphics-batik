@@ -197,6 +197,21 @@
     <!-- ======================================================================= -->
     <!-- Samples tests files                                                     -->
     <!-- ======================================================================= -->
+
+    <test id="samples/tests/useTargets.svg" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/useTargets.svg" />
+        <arg class="java.lang.String" value="test-references/samples/tests/useTargets.png" />
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/tests/accepted-variation/useTargets.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/useTargets.png" />
+    </test>
+
+    <test id="samples/tests/externalUseCascading.svg" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/externalUseCascading.svg" />
+        <arg class="java.lang.String" value="test-references/samples/tests/externalUseCascading.png" />
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/tests/accepted-variation/externalUseCascading.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/externalUseCascading.png" />
+    </test>
+
     <test id="samples/tests/batikFont.svg" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="samples/tests/batikFont.svg" />
         <arg class="java.lang.String" value="test-references/samples/tests/batikFont.png" />
