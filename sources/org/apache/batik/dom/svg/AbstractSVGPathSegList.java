@@ -891,21 +891,21 @@ public abstract class AbstractSVGPathSegList
             this.listHandler  = listHandler;
         }
         /**
-         * Implements {@link PathHandler#startPath()}.
+         * Implements {@link org.apache.batik.parser.PathHandler#startPath()}.
          */
         public void startPath() throws ParseException {
             listHandler.startList();
         }
 
         /**
-         * Implements {@link PathHandler#endPath()}.
+         * Implements {@link org.apache.batik.parser.PathHandler#endPath()}.
          */
         public void endPath() throws ParseException {
             listHandler.endList();
         }
         
         /**
-         * Implements {@link PathHandler#movetoRel(float,float)}.
+         * Implements {@link org.apache.batik.parser.PathHandler#movetoRel(float,float)}.
          */
         public void movetoRel(float x, float y) throws ParseException {
             listHandler.item(new SVGPathSegMovetoLinetoItem
@@ -914,7 +914,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         /**
-         * Implements {@link PathHandler#movetoAbs(float,float)}.
+         * Implements {@link org.apache.batik.parser.PathHandler#movetoAbs(float,float)}.
          */
         public void movetoAbs(float x, float y) throws ParseException {
             listHandler.item(new SVGPathSegMovetoLinetoItem
@@ -923,7 +923,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         /**
-         * Implements {@link PathHandler#closePath()}.
+         * Implements {@link org.apache.batik.parser.PathHandler#closePath()}.
          */
         public void closePath() throws ParseException {
             listHandler.item(new SVGPathSegItem
@@ -932,7 +932,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         /**
-         * Implements {@link PathHandler#linetoRel(float,float)}.
+         * Implements {@link org.apache.batik.parser.PathHandler#linetoRel(float,float)}.
          */
         public void linetoRel(float x, float y) throws ParseException {
             listHandler.item(new SVGPathSegMovetoLinetoItem
@@ -941,7 +941,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         /**
-         * Implements {@link PathHandler#linetoAbs(float,float)}.
+         * Implements {@link org.apache.batik.parser.PathHandler#linetoAbs(float,float)}.
          */
         public void linetoAbs(float x, float y) throws ParseException {
             listHandler.item(new SVGPathSegMovetoLinetoItem
@@ -950,7 +950,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         /**
-         * Implements {@link PathHandler#linetoHorizontalRel(float)}.
+         * Implements {@link org.apache.batik.parser.PathHandler#linetoHorizontalRel(float)}.
          */
         public void linetoHorizontalRel(float x) throws ParseException {
             listHandler.item(new SVGPathSegLinetoHorizontalItem
@@ -959,7 +959,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         /**
-         * Implements {@link PathHandler#linetoHorizontalAbs(float)}.
+         * Implements {@link org.apache.batik.parser.PathHandler#linetoHorizontalAbs(float)}.
          */
         public void linetoHorizontalAbs(float x) throws ParseException {
             listHandler.item(new SVGPathSegLinetoHorizontalItem
@@ -968,7 +968,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         /**
-         * Implements {@link PathHandler#linetoVerticalRel(float)}.
+         * Implements {@link org.apache.batik.parser.PathHandler#linetoVerticalRel(float)}.
          */
         public void linetoVerticalRel(float y) throws ParseException {
             listHandler.item(new SVGPathSegLinetoVerticalItem
@@ -977,7 +977,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         /**
-         * Implements {@link PathHandler#linetoVerticalAbs(float)}.
+         * Implements {@link org.apache.batik.parser.PathHandler#linetoVerticalAbs(float)}.
          */
         public void linetoVerticalAbs(float y) throws ParseException {
             listHandler.item(new SVGPathSegLinetoVerticalItem
@@ -987,7 +987,7 @@ public abstract class AbstractSVGPathSegList
 
         /**
          * Implements {@link
-         * PathHandler#curvetoCubicRel(float,float,float,float,float,float)}.
+         * org.apache.batik.parser.PathHandler#curvetoCubicRel(float,float,float,float,float,float)}.
          */
         public void curvetoCubicRel(float x1, float y1, 
                                     float x2, float y2, 
@@ -999,7 +999,7 @@ public abstract class AbstractSVGPathSegList
 
         /**
          * Implements {@link
-         * PathHandler#curvetoCubicAbs(float,float,float,float,float,float)}.
+         * org.apache.batik.parser.PathHandler#curvetoCubicAbs(float,float,float,float,float,float)}.
          */
         public void curvetoCubicAbs(float x1, float y1, 
                                     float x2, float y2, 
@@ -1011,7 +1011,7 @@ public abstract class AbstractSVGPathSegList
 
         /**
          * Implements {@link
-         * PathHandler#curvetoCubicSmoothRel(float,float,float,float)}.
+         * org.apache.batik.parser.PathHandler#curvetoCubicSmoothRel(float,float,float,float)}.
          */
         public void curvetoCubicSmoothRel(float x2, float y2, 
                                           float x, float y) throws ParseException {
@@ -1022,7 +1022,7 @@ public abstract class AbstractSVGPathSegList
 
         /**
          * Implements {@link
-         * PathHandler#curvetoCubicSmoothAbs(float,float,float,float)}.
+         * org.apache.batik.parser.PathHandler#curvetoCubicSmoothAbs(float,float,float,float)}.
          */
         public void curvetoCubicSmoothAbs(float x2, float y2, 
                                           float x, float y) throws ParseException {
@@ -1033,7 +1033,7 @@ public abstract class AbstractSVGPathSegList
 
         /**
          * Implements {@link
-         * PathHandler#curvetoQuadraticRel(float,float,float,float)}.
+         * org.apache.batik.parser.PathHandler#curvetoQuadraticRel(float,float,float,float)}.
          */
         public void curvetoQuadraticRel(float x1, float y1, 
                                         float x, float y) throws ParseException {
@@ -1044,7 +1044,7 @@ public abstract class AbstractSVGPathSegList
 
         /**
          * Implements {@link
-         * PathHandler#curvetoQuadraticAbs(float,float,float,float)}.
+         * org.apache.batik.parser.PathHandler#curvetoQuadraticAbs(float,float,float,float)}.
          */
         public void curvetoQuadraticAbs(float x1, float y1, 
                                         float x, float y) throws ParseException {
@@ -1054,7 +1054,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         /**
-         * Implements {@link PathHandler#curvetoQuadraticSmoothRel(float,float)}.
+         * Implements {@link org.apache.batik.parser.PathHandler#curvetoQuadraticSmoothRel(float,float)}.
          */
         public void curvetoQuadraticSmoothRel(float x, float y)
             throws ParseException {
@@ -1064,7 +1064,7 @@ public abstract class AbstractSVGPathSegList
         }
 
         /**
-         * Implements {@link PathHandler#curvetoQuadraticSmoothAbs(float,float)}.
+         * Implements {@link org.apache.batik.parser.PathHandler#curvetoQuadraticSmoothAbs(float,float)}.
          */
         public void curvetoQuadraticSmoothAbs(float x, float y)
             throws ParseException {
@@ -1075,7 +1075,7 @@ public abstract class AbstractSVGPathSegList
 
         /**
          * Implements {@link
-         * PathHandler#arcRel(float,float,float,boolean,boolean,float,float)}.
+         * org.apache.batik.parser.PathHandler#arcRel(float,float,float,boolean,boolean,float,float)}.
          */
         public void arcRel(float rx, float ry, 
                            float xAxisRotation, 
@@ -1088,7 +1088,7 @@ public abstract class AbstractSVGPathSegList
         
         /**
          * Implements {@link
-         * PathHandler#arcAbs(float,float,float,boolean,boolean,float,float)}.
+         * org.apache.batik.parser.PathHandler#arcAbs(float,float,float,boolean,boolean,float,float)}.
          */
         public void arcAbs(float rx, float ry, 
                            float xAxisRotation, 

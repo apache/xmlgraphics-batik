@@ -50,7 +50,7 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     }
 
     /**
-     * Implements {@link SVGMatrix#getA(float)}.
+     * Implements {@link SVGMatrix#setA(float)}.
      */
     public void setA(float a) throws DOMException {
         AffineTransform at = getAffineTransform();
@@ -70,7 +70,7 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     }
 
     /**
-     * Implements {@link SVGMatrix#getB(float)}.
+     * Implements {@link SVGMatrix#setB(float)}.
      */
     public void setB(float b) throws DOMException {
         AffineTransform at = getAffineTransform();
@@ -90,7 +90,7 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     }
 
     /**
-     * Implements {@link SVGMatrix#getC(float)}.
+     * Implements {@link SVGMatrix#setC(float)}.
      */
     public void setC(float c) throws DOMException {
         AffineTransform at = getAffineTransform();
@@ -110,7 +110,7 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     }
 
     /**
-     * Implements {@link SVGMatrix#getD(float)}.
+     * Implements {@link SVGMatrix#setD(float)}.
      */
     public void setD(float d) throws DOMException {
         AffineTransform at = getAffineTransform();
@@ -130,7 +130,7 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     }
 
     /**
-     * Implements {@link SVGMatrix#getE(float)}.
+     * Implements {@link SVGMatrix#setE(float)}.
      */
     public void setE(float e) throws DOMException {
         AffineTransform at = getAffineTransform();
@@ -150,7 +150,7 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     }
 
     /**
-     * Implements {@link SVGMatrix#getF(float)}.
+     * Implements {@link SVGMatrix#setF(float)}.
      */
     public void setF(float f) throws DOMException {
         AffineTransform at = getAffineTransform();
@@ -267,7 +267,7 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
     }
 
     /**
-     * Implements {@link SVGMatrix#skewY()}.
+     * Implements {@link SVGMatrix#skewY(float)}.
      */
     public SVGMatrix skewY(float angle) {
         AffineTransform tr = (AffineTransform)getAffineTransform().clone();

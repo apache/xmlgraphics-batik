@@ -251,7 +251,7 @@ public abstract class AbstractSVGLengthList
             listHandler.startList();
         }
         /**
-         * Implements {@link LengthHandler#startLength()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#startLength()}.
          */
         public void startLength() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_NUMBER;
@@ -259,77 +259,77 @@ public abstract class AbstractSVGLengthList
         }
 
         /**
-         * Implements {@link LengthHandler#lengthValue(float)}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#lengthValue(float)}.
          */
         public void lengthValue(float v) throws ParseException {
             currentValue = v;
         }
         
         /**
-         * Implements {@link LengthHandler#em()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#em()}.
          */
         public void em() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_EMS;
         }
 
         /**
-         * Implements {@link LengthHandler#ex()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#ex()}.
          */
         public void ex() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_EXS;
         }
 
         /**
-         * Implements {@link LengthHandler#in()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#in()}.
          */
         public void in() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_IN;
         }
         
         /**
-         * Implements {@link LengthHandler#cm()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#cm()}.
          */
         public void cm() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_CM;
         }
         
         /**
-         * Implements {@link LengthHandler#mm()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#mm()}.
          */
         public void mm() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_MM;
         }
         
         /**
-         * Implements {@link LengthHandler#pc()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#pc()}.
          */
         public void pc() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_PC;
         }
 
         /**
-         * Implements {@link LengthHandler#pt()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#pt()}.
          */
         public void pt() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_EMS;
         }
 
         /**
-         * Implements {@link LengthHandler#px()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#px()}.
          */
         public void px() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_PX;
         }
 
         /**
-         * Implements {@link LengthHandler#percentage()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#percentage()}.
          */
         public void percentage() throws ParseException {
             currentType = SVGLength.SVG_LENGTHTYPE_PERCENTAGE;
         }
 
         /**
-         * Implements {@link LengthHandler#endLength()}.
+         * Implements {@link org.apache.batik.parser.LengthHandler#endLength()}.
          */
         public void endLength() throws ParseException {
             listHandler.item(new SVGLengthItem(currentType,currentValue,direction));
