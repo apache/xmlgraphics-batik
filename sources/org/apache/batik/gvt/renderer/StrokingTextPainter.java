@@ -119,6 +119,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING;
     public static final Integer ADJUST_ALL =
         GVTAttributedCharacterIterator.TextAttribute.ADJUST_ALL;
+    public static final GVTAttributedCharacterIterator.TextAttribute ALT_GLYPH_HANDLER =
+        GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER;
 
     static Set extendedAtts = new HashSet();
 
@@ -418,7 +420,8 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             Vector fontFamilies;
             fontFamilies = (Vector)aci.getAttributes().get(GVT_FONT_FAMILIES);
-            if (fontFamilies == null) {
+
+            if (fontFamilies == null ) {
                 // no font families set this chunk so just increment...
                 asOff += aciLength;
                 moreChunks = (aci.setIndex(end) != aci.DONE);
@@ -477,6 +480,13 @@ public class StrokingTextPainter extends BasicTextPainter {
                 while (currentIndex < end) {
                     int displayUpToIndex = font.canDisplayUpTo
                         (aci, currentIndex, end);
+
+                    Object altGlyphElement = aci.getAttributes().get(ALT_GLYPH_HANDLER);
+                    if ( altGlyphElement != null ){
+                        //found all the glyph to be displayed
+                        //consider the font matching done
+                        displayUpToIndex = -1;
+                    }
 
                     if (displayUpToIndex == -1) {
                         // Can handle the whole thing...
