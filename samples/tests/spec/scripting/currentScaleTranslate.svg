@@ -53,9 +53,9 @@
 -->
 
 <!-- ====================================================================== -->
-<!-- append child test                                                      -->
+<!-- Test of getting/setting current Scale and Translate.                   -->
 <!--                                                                        -->
-<!-- @author tkormann@ilog.fr                                               -->
+<!-- @author deweese@apache.org                                             -->
 <!-- @version $Id$ -->
 <!-- ====================================================================== -->
 
