@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Event;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -46,7 +47,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -92,11 +95,13 @@ import org.apache.batik.bridge.NoLoadScriptSecurity;
 import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
 import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
+import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.HashTable;
+import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.ext.swing.JAffineTransformChooser;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
@@ -276,6 +281,7 @@ public class JSVGViewerFrame
     public final static String OPEN_LOCATION_ACTION = "OpenLocationAction";
     public final static String NEW_WINDOW_ACTION = "NewWindowAction";
     public final static String RELOAD_ACTION = "ReloadAction";
+    public final static String SAVE_AS_ACTION = "SaveAsAction";
     public final static String BACK_ACTION = "BackAction";
     public final static String FORWARD_ACTION = "ForwardAction";
     public final static String FULL_SCREEN_ACTION = "FullScreenAction";
@@ -392,7 +398,7 @@ public class JSVGViewerFrame
     /**
      * The current export path.
      */
-    protected File currentExportPath = new File("");
+    protected File currentSavePath = new File("");
 
     /**
      * The back action
@@ -589,6 +595,7 @@ public class JSVGViewerFrame
         listeners.put(OPEN_LOCATION_ACTION, new OpenLocationAction());
         listeners.put(NEW_WINDOW_ACTION, new NewWindowAction());
         listeners.put(RELOAD_ACTION, new ReloadAction());
+        listeners.put(SAVE_AS_ACTION, new SaveAsAction());
         listeners.put(BACK_ACTION, backAction);
         listeners.put(FORWARD_ACTION, forwardAction);
         listeners.put(PRINT_ACTION, new PrintAction());
@@ -1229,13 +1236,80 @@ public class JSVGViewerFrame
     }
 
     /**
+     * To save the current document as SVG.
+     */
+    public class SaveAsAction extends AbstractAction {
+        public SaveAsAction() {}
+
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser;
+            fileChooser = new JFileChooser(makeAbsolute(currentSavePath));
+            fileChooser.setDialogTitle(resources.getString("SaveAs.title"));
+            fileChooser.setFileHidingEnabled(false);
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fileChooser.addChoosableFileFilter(new ImageFileFilter(".svg"));
+
+            int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
+            if (choice != JFileChooser.APPROVE_OPTION)
+                return;
+
+            final File f = fileChooser.getSelectedFile();
+            final SVGDocument svgDoc = svgCanvas.getSVGDocument();
+            if (svgDoc == null) return;
+            
+            statusBar.setMessage(resources.getString("Message.saveAs"));
+            currentSavePath = f;
+            Writer w = null;
+            try { 
+                OutputStream tos = null;
+                tos = new FileOutputStream(f);
+                tos = new BufferedOutputStream(tos);
+                w = new OutputStreamWriter(tos);
+            } catch (Exception ex) { 
+                userAgent.displayError(ex); 
+                return;
+            }
+
+            final Writer writer  = w;
+            final Runnable doneRun = new Runnable() {
+                    public void run() {
+                        String doneStr = resources.getString("Message.done");
+                        statusBar.setMessage(doneStr);
+                    }
+                };
+            Runnable r = new Runnable() {
+                    public void run() {
+                        try {
+                            DOMUtilities.writeDocument(svgDoc, writer);
+                            writer.close();
+                            if (EventQueue.isDispatchThread()) {
+                                doneRun.run();
+                            } else {
+                                EventQueue.invokeLater(doneRun);
+                            }
+                        } catch (Exception ex) {
+                            userAgent.displayError(ex);
+                        }
+                    }
+                };
+
+            UpdateManager um = svgCanvas.getUpdateManager();
+            if ((um != null) && (um.isRunning())) {
+                um.getUpdateRunnableQueue().invokeLater(r);
+            } else {
+                r.run();
+            }
+        }
+    }
+
+    /**
      * To save the current document as JPG.
      */
     public class ExportAsJPGAction extends AbstractAction {
         public ExportAsJPGAction() {}
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser =
-                new JFileChooser(makeAbsolute(currentExportPath));
+                new JFileChooser(makeAbsolute(currentSavePath));
             fileChooser.setDialogTitle(resources.getString("ExportAsJPG.title"));
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
@@ -1273,7 +1347,7 @@ public class JSVGViewerFrame
                     new Thread() {
                         public void run() {
                             try {
-                                currentExportPath = f;
+                                currentSavePath = f;
                                 OutputStream ostream =
                                     new BufferedOutputStream(new FileOutputStream(f));
                                 trans.writeImage(img, new TranscoderOutput(ostream));
@@ -1296,7 +1370,7 @@ public class JSVGViewerFrame
         public ExportAsPNGAction() {}
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser =
-                new JFileChooser(makeAbsolute(currentExportPath));
+                new JFileChooser(makeAbsolute(currentSavePath));
             fileChooser.setDialogTitle(resources.getString("ExportAsPNG.title"));
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
@@ -1341,7 +1415,7 @@ public class JSVGViewerFrame
                     new Thread() {
                         public void run() {
                             try {
-                                currentExportPath = f;
+                                currentSavePath = f;
                                 OutputStream ostream =
                                     new BufferedOutputStream(new FileOutputStream(f));
                                 trans.writeImage(img,
@@ -1364,7 +1438,7 @@ public class JSVGViewerFrame
         public ExportAsTIFFAction() {}
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser =
-                new JFileChooser(makeAbsolute(currentExportPath));
+                new JFileChooser(makeAbsolute(currentSavePath));
             fileChooser.setDialogTitle(resources.getString("ExportAsTIFF.title"));
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
@@ -1394,7 +1468,7 @@ public class JSVGViewerFrame
                     new Thread() {
                         public void run() {
                             try {
-                                currentExportPath = f;
+                                currentSavePath = f;
                                 OutputStream ostream = new BufferedOutputStream
                                     (new FileOutputStream(f));
                                 trans.writeImage

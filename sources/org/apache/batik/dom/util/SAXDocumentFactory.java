@@ -721,6 +721,7 @@ public class SAXDocumentFactory
      */
     public void comment(char ch[], int start, int length) throws SAXException {
 	if (inDTD) return;
+        appendStringData();
 
         String str = new String(ch, start, length);
         if (currentNode == null) {
