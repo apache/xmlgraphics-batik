@@ -80,9 +80,19 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
         if(maskContentUnits.length() == 0){
             maskContentUnits = VALUE_USER_SPACE_ON_USE;
         }
+        int maskContentUnitsType;
+        try {
+            maskContentUnitsType =
+                SVGUtilities.parseCoordinateSystem(maskContentUnits);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("mask.maskContentUnits.invalid",
+                                       new Object[] {maskContentUnits,
+                                                     ATTR_CLIP_PATH_UNITS}));
+        }
 
         Viewport oldViewport = bridgeContext.getCurrentViewport();
-        if(VALUE_OBJECT_BOUNDING_BOX.equals(maskContentUnits)){
+        if(maskContentUnitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
             bridgeContext.setCurrentViewport(new ObjectBoundingBoxViewport());
         }
 
@@ -124,11 +134,12 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
         AffineTransform at =
             SVGUtilities.convertAffineTransform(maskElement,
                                                 ATTR_TRANSFORM,
-                                                bridgeContext.getParserFactory());
+                                              bridgeContext.getParserFactory());
+
 
         at = SVGUtilities.convertAffineTransform(at,
                                                  maskedNode,
-                                                 maskContentUnits);
+                                                 maskContentUnitsType);
         maskNodeContent.setTransform(at);
 
         Filter filter = maskedNode.getFilter();

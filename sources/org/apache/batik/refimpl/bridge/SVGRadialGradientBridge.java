@@ -15,12 +15,16 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.io.StringReader;
 import java.util.Vector;
+
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.util.awt.RadialGradientPaint;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -116,20 +120,30 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             fy = cy;
         }
 
+        int unitsType;
+        try {
+            unitsType = SVGUtilities.parseCoordinateSystem(units);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("radialGradient.units.invalid",
+                                       new Object[] {units,
+                                                     ATTR_GRADIENT_UNITS}));
+        }
+
         Point2D c
             = SVGUtilities.convertGradientPoint(paintedElement,
                                                 ATTR_CX, cx,
                                                 ATTR_CY, cy,
-                                                units, uctx);
+                                                unitsType, uctx);
         Point2D f
             = SVGUtilities.convertGradientPoint(paintedElement,
                                                 ATTR_FX, fx,
                                                 ATTR_FY, fy,
-                                                units, uctx);
+                                                unitsType, uctx);
         float radius
             = SVGUtilities.convertGradientLength(paintedElement,
                                                  ATTR_R, r,
-                                                 units, uctx);
+                                                 unitsType, uctx);
 
         // parse the 'spreadMethod' attribute, (default is PAD)
         String spreadMethod =
@@ -147,7 +161,7 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
                                                 ATTR_GRADIENT_TRANSFORM,
                                                 ctx.getParserFactory());
 
-        at = SVGUtilities.convertAffineTransform(at, paintedNode, units);
+        at = SVGUtilities.convertAffineTransform(at, paintedNode, unitsType);
 
         // Extract stop colors and intervals
         Vector stopVector = extractGradientStops(paintElement, ctx);

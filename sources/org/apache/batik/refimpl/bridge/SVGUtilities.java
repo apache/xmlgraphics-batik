@@ -953,7 +953,7 @@ public class SVGUtilities implements SVGConstants {
      * @param xStr the 'x' coordinate
      * @param attrYName the name of the Y attribute (used by error handling)
      * @param yStr the 'y' coordinate
-     * @param units the coordinate system
+     * @param unitsType the coordinate system
      * @param uctx the context used to compute units and percentages
      * @exception IllegalAttributeValueException if one of the specified is
      *                                           not valid
@@ -963,14 +963,13 @@ public class SVGUtilities implements SVGConstants {
                                                String xStr,
                                                String attrYName,
                                                String yStr,
-                                               String units,
+                                               int unitsType,
                                                UnitProcessor.Context uctx) {
 
         float x, y;
         short hd = UnitProcessor.HORIZONTAL_LENGTH;
         short vd = UnitProcessor.VERTICAL_LENGTH;
 
-        int unitsType = parseCoordinateSystem(units);
         switch(unitsType) {
         case OBJECT_BOUNDING_BOX:
             x = svgToObjectBoundingBox(element, attrXName, xStr, uctx, hd);
@@ -998,19 +997,18 @@ public class SVGUtilities implements SVGConstants {
      * @param element the element that defines the specified length
      * @param attrLengthName the name of the attribute (used by error handling)
      * @param lengthStr the length value
-     * @param units the coordinate system
+     * @param unitsType the coordinate system
      * @param uctx the context used to compute units and percentages
      * @exception IllegalAttributeValueException if the value is not a valid
      */
     public static float convertGradientLength(Element element,
                                               String attrLengthName,
                                               String lengthStr,
-                                              String units,
+                                              int unitsType,
                                               UnitProcessor.Context uctx) {
 
         float length;
         short d = UnitProcessor.OTHER_LENGTH;
-        int unitsType = parseCoordinateSystem(units);
         switch(unitsType) {
         case OBJECT_BOUNDING_BOX:
             length = svgToObjectBoundingBox(element,
@@ -1029,8 +1027,7 @@ public class SVGUtilities implements SVGConstants {
         if (length < 0) {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("length.illegal",
-                                       new Object[] {attrLengthName,
-                                                     element.getLocalName()}));
+                                       new Object[] {attrLengthName}));
         }
         return length;
     }
@@ -1068,12 +1065,11 @@ public class SVGUtilities implements SVGConstants {
      *
      * @param at the additional transform
      * @param node the graphics node that defines the coordinate space
-     * @param units the coordinate system
+     * @param unitsType the coordinate system
      */
     public static AffineTransform convertAffineTransform(AffineTransform at,
                                                          GraphicsNode node,
-                                                         String units) {
-        int unitsType = parseCoordinateSystem(units);
+                                                         int unitsType) {
         AffineTransform Mx = new AffineTransform();
         switch(unitsType) {
         case OBJECT_BOUNDING_BOX:
@@ -1157,8 +1153,7 @@ public class SVGUtilities implements SVGConstants {
         } catch (ParseException ex) {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("length.invalid",
-                                       new Object[] {valueStr, attrName,
-                                                     element.getLocalName() }));
+                                       new Object[] {valueStr, attrName}));
         }
         return UnitProcessor.svgToUserSpace(ur.unit,
                                             ur.value,
@@ -1207,8 +1202,7 @@ public class SVGUtilities implements SVGConstants {
         } catch (ParseException ex) {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("length.invalid",
-                                       new Object[] {valueStr, attrName,
-                                                     element.getLocalName() }));
+                                       new Object[] {valueStr, attrName}));
         }
         float value = ur.value;
         if (ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE) {
