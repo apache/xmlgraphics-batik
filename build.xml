@@ -172,6 +172,8 @@ To display the available targets type:
     <zip zipfile="${project}-src-${version}.zip" basedir=".." 
          includes="xml-${project}/**" excludes="xml-${project}/test-references/**">
         <exclude name="xml-${project}/${project}-src-${version}.zip" />
+        <exclude name="xml-${project}/${project}-${version}.zip" />
+        <exclude name="xml-${project}/${project}-docs-${version}.zip" />
         <exclude name="xml-${project}/classes/**" />
         <exclude name="xml-${project}/lib/build/mail.jar" />
         <exclude name="xml-${project}/lib/build/activation.jar" />
