@@ -25,9 +25,13 @@
 	  function green(event) {
 		System.err.println('You clicked on the green rectangle')
 	  }
+	  function glevel(event) {
+		System.err.println('...')
+	  }
 	]]>
        </script>
     </defs>
+    <g onmouseup="glevel(evt)">
     <rect x="10" y="10" width="40" height="40" style="fill:blue;stroke:none" 
         onmousedown="System.err.println('You clicked on the blue rectangle')"/>
 
@@ -39,9 +43,9 @@
 
     <rect x="70" y="70" width="40" height="40" style="fill:green;stroke:none" 
         onmousedown="green(evt)"/>
-
+    </g>
     <g transform="translate(130, -65)">
-    <text x="60" y="125">Click on a rectangle </text>
+    <text x="60" y="125" mousedown="green(evt)">Click on a rectangle</text>
     <text x="60" y="140">and look in the console</text>
     </g>
 </svg>

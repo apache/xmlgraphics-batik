@@ -61,6 +61,9 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
         Mask mask = CSSUtilities.convertMask(element, gn, ctx);
         gn.setMask(mask);
 
+        // <!> TODO only when binding is enabled
+        BridgeEventSupport.addDOMListener(ctx, element);
+
         return gn;
     }
 

@@ -75,6 +75,9 @@ public class SVGUseElementBridge
         Filter filter = CSSUtilities.convertFilter(element, gn, ctx);
         gn.setFilter(filter);
 
+        // <!> TODO only when binding is enabled
+        BridgeEventSupport.addDOMListener(ctx, element);
+
         return gn;
     }
 

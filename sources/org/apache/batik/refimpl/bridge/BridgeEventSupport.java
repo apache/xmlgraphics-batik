@@ -21,6 +21,7 @@ import org.w3c.dom.events.MouseEvent;
 import org.w3c.dom.events.DocumentEvent;
 
 import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGSVGElement;
 
 import org.apache.batik.gvt.GraphicsNode;
 
@@ -122,8 +123,11 @@ class BridgeEventSupport {
         String script = null;
         // <!> HACK (the cast) should be modified : call the method
         // with SVGElement's only
-        String language = ((SVGElement)element).getOwnerSVGElement().
-            getContentScriptType();
+        SVGSVGElement svgElement = (SVGSVGElement)
+            ((SVGElement)element).getOwnerSVGElement();
+        if (svgElement == null)
+            svgElement = (SVGSVGElement)element;
+        String language = svgElement.getContentScriptType();
         Interpreter interpret =
             ctx.getInterpreterPool().
             getInterpreter(language);
