@@ -51,6 +51,16 @@ public class DynamicRenderer extends StaticRenderer {
 
     RectListManager damagedAreas;
 
+    protected CachableRed setupCache(CachableRed img) {
+        /* Don't do any caching of content for dynamic case */
+        return img;
+    }
+
+    public void flush(Rectangle r) {
+        /* Since we don't cache we don't need to flush */
+        return;
+    }
+
     /**
      * Repaints the associated GVT tree under the list of <tt>areas</tt>.
      * 
