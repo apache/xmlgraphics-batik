@@ -94,7 +94,7 @@ public class Base64DecodeStream extends InputStream {
             }
         }
 
-        return out_buffer[out_offset++];
+        return ((int)out_buffer[out_offset++])&0xFF;
     }
 
     public int read(byte []out, int offset, int len) 
