@@ -62,7 +62,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         for (int i = 0; i < glyphs.length; i++) {
             glyphVisible[i] = true;
         }
-        
+
         endPos = glyphs[glyphs.length-1].getPosition();
         endPos = new Point2D.Float
             ((float)(endPos.getX()+glyphs[glyphs.length-1].getHorizAdvX()),

@@ -207,7 +207,8 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         if (node instanceof SVGOMElement) {
             SVGOMElement elt = (SVGOMElement)node;
             BridgeUpdateHandler h = (BridgeUpdateHandler)elt.getSVGContext();
-            h.dispose();
+            if (h != null)
+                h.dispose();
         }
         for (Node n = node.getFirstChild(); n!=null; n = n.getNextSibling()) {
             disposeTree(n);
