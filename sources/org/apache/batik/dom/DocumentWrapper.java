@@ -444,7 +444,7 @@ public class DocumentWrapper
         Element result = (Element)getNode(e);
         if (result == null) {
             result = new ElementWrapper(this, e);
-            nodes.put(e, result);
+            nodes.put(e, new WeakReference(result));
         }
         return result;
     }

@@ -540,9 +540,10 @@ class BridgeEventSupport implements SVGConstants {
                             // use the String version to enable caching mechanism
                             interpreter.evaluate(script);
                         } catch (InterpreterException e) {
-                            if (ua != null)
-                                ua.displayError(new Exception("scripting error: "+
-                                                              e.getMessage()));
+                            Exception ex = e.getException();
+                            if (ua != null) {
+                                ua.displayError((ex != null) ? ex : e);
+                            }
                         }
                     }
                 });
