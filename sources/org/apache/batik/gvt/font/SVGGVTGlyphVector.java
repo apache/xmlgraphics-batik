@@ -486,14 +486,16 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             return bounds2D;
 
         Rectangle2D b=null;
-        for (int i = 0; i < getNumGlyphs(); i++) {
-            if (!glyphVisible[i])  continue;
+        if (tpi.visible) {
+            for (int i = 0; i < getNumGlyphs(); i++) {
+                if (!glyphVisible[i])  continue;
 
-            Rectangle2D glyphBounds = glyphs[i].getBounds2D();
-            // System.out.println("GB["+i+"]: " + glyphBounds);
-            if (glyphBounds == null) continue;
-            if (b == null) b=glyphBounds;
-            else b = glyphBounds.createUnion(b);
+                Rectangle2D glyphBounds = glyphs[i].getBounds2D();
+                // System.out.println("GB["+i+"]: " + glyphBounds);
+                if (glyphBounds == null) continue;
+                if (b == null) b=glyphBounds;
+                else b = glyphBounds.createUnion(b);
+            }
         }
 
         bounds2D = b;
@@ -709,6 +711,10 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      */
     public void draw(Graphics2D graphics2D, 
                      AttributedCharacterIterator aci) {
+        aci.first();
+        TextPaintInfo tpi = (TextPaintInfo)aci.getAttribute(PAINT_INFO);
+        if (!tpi.visible) return;
+
         for (int i = 0; i < glyphs.length; i++) {
             if (glyphVisible[i]) {
                 glyphs[i].draw(graphics2D);

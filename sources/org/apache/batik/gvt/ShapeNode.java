@@ -138,10 +138,8 @@ public class ShapeNode extends AbstractGraphicsNode {
      * @param g2d the Graphics2D to use
      */
     public void paint(Graphics2D g2d) {
-        if (isVisible) {
+        if (isVisible)
             super.paint(g2d);
-        }
-
     }
 
     /**

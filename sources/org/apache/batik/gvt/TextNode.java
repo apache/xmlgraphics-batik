@@ -378,17 +378,6 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     //
 
     /**
-     * Paints this node.
-     *
-     * @param g2d the Graphics2D to use
-     */
-    public void paint(Graphics2D g2d) {
-        if (isVisible) {
-            super.paint(g2d);
-        }
-    }
-
-    /**
      * Paints this node without applying Filter, Mask, Composite, and clip.
      *
      * @param g2d the Graphics2D to use

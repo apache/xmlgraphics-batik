@@ -31,6 +31,7 @@ import java.awt.Stroke;
  * @version $Id$
  */
 public class TextPaintInfo {
+    public boolean   visible;
     public Paint     fillPaint;
     public Paint     strokePaint;
     public Stroke    strokeStroke;
@@ -47,7 +48,7 @@ public class TextPaintInfo {
     public Paint  strikethroughPaint;
     public Paint  strikethroughStrokePaint;
     public Stroke strikethroughStroke;
-    
+
     public TextPaintInfo() { }
     
     public TextPaintInfo(TextPaintInfo pi) {
@@ -72,6 +73,8 @@ public class TextPaintInfo {
             this.strikethroughPaint       = null;
             this.strikethroughStrokePaint = null;
             this.strikethroughStroke      = null;
+
+            this.visible = false;
         } else {
             this.fillPaint    = pi.fillPaint;
             this.strokePaint  = pi.strokePaint;
@@ -89,6 +92,8 @@ public class TextPaintInfo {
             this.strikethroughPaint       = pi.strikethroughPaint;
             this.strikethroughStrokePaint = pi.strikethroughStrokePaint;
             this.strikethroughStroke      = pi.strikethroughStroke;
+
+            this.visible = pi.visible;
         }
     }
 
@@ -100,12 +105,15 @@ public class TextPaintInfo {
 
         if ((tpi1.fillPaint == null) != (tpi2.fillPaint == null))
             return false;
+
+        if (tpi1.visible != tpi2.visible) return false;
         
         boolean tpi1Stroke = ((tpi1.strokePaint != null) &&
                               (tpi1.strokeStroke != null));
 
         boolean tpi2Stroke = ((tpi2.strokePaint != null) &&
                               (tpi2.strokeStroke != null));
+
         return (tpi1Stroke == tpi2Stroke);
 
     }
