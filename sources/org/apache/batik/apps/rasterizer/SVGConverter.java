@@ -878,7 +878,8 @@ public class SVGConverter {
         try {
             transcoder.transcode(input, output);
             success = true;
-        } catch(TranscoderException te) {
+        } catch(Exception te) {
+            te.printStackTrace();
             try {
                 outputStream.flush();
                 outputStream.close();

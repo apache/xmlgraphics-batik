@@ -1,0 +1,70 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Tests support for the DOMFocusIn, DOMFocusOut, DOMActivate                -->
+<!--                                                                           -->
+<!-- @author tkormann@ilog.fr                                                  -->
+<!-- @version $Id$ -->
+<!-- ========================================================================= -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     id="body" width="450" height="500" viewBox="0 0 450 500">
+
+    <text class="title" x="50%" y="50">KeyEvents test</text>
+
+  <script type="text/ecmascript"><![CDATA[
+
+        var textElt;
+        var document;
+
+        function init(evt) {
+           document = evt.target.ownerDocument;
+           textElt = document.getElementById('key');
+        }
+
+        function show(color, evt) {
+            System.out.println(color+": '"+String.fromCharCode(evt.getCharCode())+"' "+evt.getType());
+            //textElt.removeChild(textElt.firstChild);
+            //var text = color+": '"+String.fromCharCode(evt.charCode)+"' "+evt.type;
+            //var textNode = document.createTextNode(text);
+            //textElt.appendChild(textNode);
+        }
+  ]]></script>
+
+<g id="body-content" onload="init(evt)">
+
+<rect onkeypress="show('orange', evt)" onkeydown="show('orange', evt)" onkeyup="show('orange', evt)"
+      x="100" y="100" width="100" height="100" style="fill:orange" />
+
+<rect onkeypress="show('crimson', evt)" onkeydown="show('crimson', evt)" onkeyup="show('crimson', evt)"
+      x="250" y="100" width="100" height="100" style="fill:crimson" />
+
+<rect onkeypress="show('gold', evt)" onkeydown="show('gold', evt)" onkeyup="show('gold', evt)"
+      x="100" y="250" width="100" height="100" style="fill:gold" />
+
+<rect onkeypress="show('#aaa', evt)" onkeydown="show('#aaa', evt)" onkeyup="show('#aaa', evt)"
+      x="250" y="250" width="100" height="100" style="fill:#aaa" />
+
+<circle onkeypress="show('#eee', evt)" onkeydown="show('#eee', evt)" onkeyup="show('#eee', evt)"
+        cx="225" cy="225" r="75" style="fill:#eee" />
+
+</g>
+
+<text id="key" x="50%" y="400" style="text-anchor:middle">
+ </text>
+
+</svg>
