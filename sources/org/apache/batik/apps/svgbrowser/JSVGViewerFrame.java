@@ -1240,7 +1240,7 @@ public class JSVGViewerFrame
 		    // Start: By Jun Inamori
 		    if(isIndexed){
 			trans.addTranscodingHint
-                            (PNGTranscoder.KEY_INDEXED,new Boolean(true));
+                            (PNGTranscoder.KEY_INDEXED,new Integer(256));
 		    }
 		    // End: By Jun Inamori
 
