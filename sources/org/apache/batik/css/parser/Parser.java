@@ -103,7 +103,8 @@ public class Parser implements ExtendedParser, Localizable {
     protected String documentURI;
 
     /**
-     * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#getParserVersion()}.
+     * <b>SAC</b>: Implements {@link
+     * org.w3c.css.sac.Parser#getParserVersion()}.
      * @return "http://www.w3.org/TR/REC-CSS2".
      */
     public String getParserVersion() {
@@ -171,7 +172,7 @@ public class Parser implements ExtendedParser, Localizable {
      */
     public void parseStyleSheet(InputSource source) 
         throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null));
+        scanner = createScanner(source);
 
         try {
             documentHandler.startDocument(source);
@@ -249,7 +250,7 @@ public class Parser implements ExtendedParser, Localizable {
     public void parseStyleDeclaration(InputSource source) 
         throws CSSException, IOException {
 
-        scanner = new Scanner(characterStream(source, null));
+        scanner = createScanner(source);
 	parseStyleDeclarationInternal();
     }
 
@@ -269,11 +270,12 @@ public class Parser implements ExtendedParser, Localizable {
     }
 
     /**
-     * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#parseRule(InputSource)}.
+     * <b>SAC</b>: Implements {@link
+     * org.w3c.css.sac.Parser#parseRule(InputSource)}.
      */
     public void parseRule(InputSource source) 
 	throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null));
+        scanner = createScanner(source);
 	parseRuleInternal();
     }
 
@@ -287,11 +289,12 @@ public class Parser implements ExtendedParser, Localizable {
     }
 
     /**
-     * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#parseSelectors(InputSource)}.
+     * <b>SAC</b>: Implements {@link
+     * org.w3c.css.sac.Parser#parseSelectors(InputSource)}.
      */    
     public SelectorList parseSelectors(InputSource source)
         throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null));
+        scanner = createScanner(source);
 	return parseSelectorsInternal();
     }
 
@@ -312,7 +315,7 @@ public class Parser implements ExtendedParser, Localizable {
      */    
     public LexicalUnit parsePropertyValue(InputSource source)
         throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null));
+        scanner = createScanner(source);
 	return parsePropertyValueInternal();
     }
 
@@ -346,7 +349,7 @@ public class Parser implements ExtendedParser, Localizable {
      */    
     public boolean parsePriority(InputSource source)
         throws CSSException, IOException {
-        scanner = new Scanner(characterStream(source, null));
+        scanner = createScanner(source);
 	return parsePriorityInternal();
     }
 
@@ -655,7 +658,8 @@ public class Parser implements ExtendedParser, Localizable {
         if (pseudoElement != null) {
             result = selectorFactory.createChildSelector
                 (result,
-                 selectorFactory.createPseudoElementSelector(null, pseudoElement));
+                 selectorFactory.createPseudoElementSelector
+                 (null, pseudoElement));
         }
         return result;
     }
@@ -668,8 +672,8 @@ public class Parser implements ExtendedParser, Localizable {
 
         switch (current) {
         case LexicalUnits.IDENTIFIER:
-            result = selectorFactory.createElementSelector(null,
-                                                           scanner.getStringValue());
+            result = selectorFactory.createElementSelector
+                (null, scanner.getStringValue());
             next();
             break;
         case LexicalUnits.ANY:
@@ -682,15 +686,16 @@ public class Parser implements ExtendedParser, Localizable {
             Condition c = null;
             switch (current) {
             case LexicalUnits.HASH:
-                c = conditionFactory.createIdCondition(scanner.getStringValue());
+                c = conditionFactory.createIdCondition
+                    (scanner.getStringValue());
                 next();
                 break;
             case LexicalUnits.DOT:
                 if (next() != LexicalUnits.IDENTIFIER) {
                     throw createCSSParseException("identifier");
                 }
-                c = conditionFactory.createClassCondition(null,
-                                                          scanner.getStringValue());
+                c = conditionFactory.createClassCondition
+                    (null, scanner.getStringValue());
                 next();
                 break;
             case LexicalUnits.LEFT_BRACKET:
@@ -704,8 +709,8 @@ public class Parser implements ExtendedParser, Localizable {
                     throw createCSSParseException("right.bracket");
                 case LexicalUnits.RIGHT_BRACKET:
                     nextIgnoreSpaces();
-                    c = conditionFactory.createAttributeCondition(name, null, false,
-                                                                  null);
+                    c = conditionFactory.createAttributeCondition
+                        (name, null, false, null);
                     break;
                 case LexicalUnits.EQUAL:
                 case LexicalUnits.INCLUDES:
@@ -725,18 +730,17 @@ public class Parser implements ExtendedParser, Localizable {
                     next();
                     switch (op) {
                     case LexicalUnits.EQUAL:
-                        c = conditionFactory.createAttributeCondition(name, null, false, 
-                                                                      val);
+                        c = conditionFactory.createAttributeCondition
+                            (name, null, false, val);
                         break;
                     case LexicalUnits.INCLUDES:
-                        c = conditionFactory.createOneOfAttributeCondition(name, null,
-                                                                           false, val);
+                        c = conditionFactory.createOneOfAttributeCondition
+                            (name, null, false, val);
                         break;
                     default:
-                        c = conditionFactory.createBeginHyphenAttributeCondition(name,
-                                                                                 null, 
-                                                                                 false, 
-                                                                                 val);
+                        c = conditionFactory.
+                            createBeginHyphenAttributeCondition
+                            (name, null, false, val);
                     }
                 }
                 break;
@@ -746,11 +750,13 @@ public class Parser implements ExtendedParser, Localizable {
                     String val = scanner.getStringValue();
                     if (isPseudoElement(val)) {
                         if (pseudoElement != null) {
-                            throw createCSSParseException("duplicate.pseudo.element");
+                            throw createCSSParseException
+                                ("duplicate.pseudo.element");
                         }
                         pseudoElement = val;
                     } else {
-                        c = conditionFactory.createPseudoClassCondition(null, val);
+                        c = conditionFactory.createPseudoClassCondition
+                            (null, val);
                     }
                     next();
                     break;
@@ -878,21 +884,21 @@ public class Parser implements ExtendedParser, Localizable {
             switch (current) {
             case LexicalUnits.COMMA:
                 op = true;
-                curr = CSSLexicalUnit.createSimple(LexicalUnit.SAC_OPERATOR_COMMA,
-                                                   curr);
+                curr = CSSLexicalUnit.createSimple
+                    (LexicalUnit.SAC_OPERATOR_COMMA, curr);
                 nextIgnoreSpaces();
                 break;
             case LexicalUnits.DIVIDE:
                 op = true;
-                curr = CSSLexicalUnit.createSimple(LexicalUnit.SAC_OPERATOR_SLASH,
-                                                   curr);
+                curr = CSSLexicalUnit.createSimple
+                    (LexicalUnit.SAC_OPERATOR_SLASH, curr);
                 nextIgnoreSpaces();
             }
             if (param) {
                 if (current == LexicalUnits.RIGHT_BRACE) {
                     if (op) {
-                        throw createCSSParseException("token",
-                                                 new Object[] { new Integer(current) });
+                        throw createCSSParseException
+                            ("token", new Object[] { new Integer(current) });
                     }
                     return result;
                 }
@@ -904,8 +910,8 @@ public class Parser implements ExtendedParser, Localizable {
                 case LexicalUnits.RIGHT_CURLY_BRACE:
                 case LexicalUnits.EOF:
                     if (op) {
-                        throw createCSSParseException("token",
-                                                 new Object[] { new Integer(current) });
+                        throw createCSSParseException
+                            ("token", new Object[] { new Integer(current) });
                     }
                     return result;
                 default:
@@ -992,8 +998,9 @@ public class Parser implements ExtendedParser, Localizable {
                 return parseFunction(plus, prev);
             }
             if (sgn) {
-                throw createCSSParseException("token",
-                                              new Object[] { new Integer(current) });
+                throw createCSSParseException
+                    ("token",
+                     new Object[] { new Integer(current) });
             }
         }
         switch (current) {
@@ -1020,8 +1027,9 @@ public class Parser implements ExtendedParser, Localizable {
         case LexicalUnits.HASH:
             return hexcolor(prev);
         default:
-            throw createCSSParseException("token",
-                                          new Object[] { new Integer(current) });
+            throw createCSSParseException
+                ("token",
+                 new Object[] { new Integer(current) });
         }
     }
 
@@ -1035,8 +1043,9 @@ public class Parser implements ExtendedParser, Localizable {
         LexicalUnit params = parseExpression(true);
 
         if (current != LexicalUnits.RIGHT_BRACE) {
-            throw createCSSParseException("token",
-                                          new Object[] { new Integer(current) });
+            throw createCSSParseException
+                ("token",
+                 new Object[] { new Integer(current) });
         }
         nextIgnoreSpaces();
 
@@ -1380,7 +1389,8 @@ public class Parser implements ExtendedParser, Localizable {
             if (!ScannerUtilities.isCSSHexadecimalCharacter(rc) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(gc) ||
                 !ScannerUtilities.isCSSHexadecimalCharacter(bc)) {
-                throw createCSSParseException("rgb.color", new Object[] { val });
+                throw createCSSParseException
+                    ("rgb.color", new Object[] { val });
             }
             int t;
             int r = t = (rc >= '0' && rc <= '9') ? rc - '0' : rc - 'a' + 10;
@@ -1394,9 +1404,11 @@ public class Parser implements ExtendedParser, Localizable {
             b |= t;
             params = CSSLexicalUnit.createInteger(r, null);
             LexicalUnit tmp;
-            tmp = CSSLexicalUnit.createSimple(LexicalUnit.SAC_OPERATOR_COMMA, params);
+            tmp = CSSLexicalUnit.createSimple
+                (LexicalUnit.SAC_OPERATOR_COMMA, params);
             tmp = CSSLexicalUnit.createInteger(g, tmp);
-            tmp = CSSLexicalUnit.createSimple(LexicalUnit.SAC_OPERATOR_COMMA, tmp);
+            tmp = CSSLexicalUnit.createSimple
+                (LexicalUnit.SAC_OPERATOR_COMMA, tmp);
             tmp = CSSLexicalUnit.createInteger(b, tmp);
             break;
         case 6:
@@ -1424,84 +1436,50 @@ public class Parser implements ExtendedParser, Localizable {
             b <<= 4;
             b |= (bc2 >= '0' && bc2 <= '9') ? bc2 - '0' : bc2 - 'a' + 10;
             params = CSSLexicalUnit.createInteger(r, null);
-            tmp = CSSLexicalUnit.createSimple(LexicalUnit.SAC_OPERATOR_COMMA, params);
+            tmp = CSSLexicalUnit.createSimple
+                (LexicalUnit.SAC_OPERATOR_COMMA, params);
             tmp = CSSLexicalUnit.createInteger(g, tmp);
-            tmp = CSSLexicalUnit.createSimple(LexicalUnit.SAC_OPERATOR_COMMA, tmp);
+            tmp = CSSLexicalUnit.createSimple
+                (LexicalUnit.SAC_OPERATOR_COMMA, tmp);
             tmp = CSSLexicalUnit.createInteger(b, tmp);
             break;
         default:
             throw createCSSParseException("rgb.color", new Object[] { val });
         }
         nextIgnoreSpaces();
-        return CSSLexicalUnit.createPredefinedFunction(LexicalUnit.SAC_RGBCOLOR,
-                                                       params,
-                                                       prev);
+        return CSSLexicalUnit.createPredefinedFunction
+            (LexicalUnit.SAC_RGBCOLOR, params, prev);
     }
 
     /**
-     * Returns the Java encoding string mapped with the given CSS encoding string.
+     * Creates a scanner, given an InputSource.
      */
-    protected String javaEncoding(String encoding) {
-        String result = EncodingUtilities.javaEncoding(encoding);
-        if (result == null) {
-            throw createCSSParseException("encoding", new Object[] { encoding });
-        }
-        return result;
-    }
-
-    /**
-     * Converts the given input source into a Reader.
-     * @param is The input source.
-     * @param enc The encoding or null.
-     */
-    protected Reader characterStream(InputSource source, String enc) {
-        Reader r = source.getCharacterStream();
-        if (r == null) {
-            InputStream is = source.getByteStream();
-            if (is != null) {
-                r = characterStream(source, is, enc);
-            } else {
-                String uri = source.getURI();
-                if (uri != null) {
-                    try {
-                        ParsedURL purl = new ParsedURL(uri);
-                        is = purl.openStreamRaw(CSSConstants.CSS_MIME_TYPE);
-                        r = characterStream(source, is, enc);
-                    } catch (IOException e) {
-                        throw new CSSException(e);
-                    }
-                } else {
-                    throw new CSSException(formatMessage("empty.source", null));
-                }
-            }
-        }
-        return r;
-    }
-
-    /**
-     * Converts the given input stream into a Reader.
-     * @param is The input source.
-     * @param enc The encoding or null.
-     */
-    protected Reader characterStream(InputSource source, InputStream is, String enc) {
+    protected Scanner createScanner(InputSource source) {
         documentURI = source.getURI();
-        documentURI = (documentURI == null) ? "" : documentURI;
+        if (documentURI == null) {
+            documentURI = "";
+        }
+
+        Reader r = source.getCharacterStream();
+        if (r != null) {
+            return new Scanner(r);
+        }
+
+        InputStream is = source.getByteStream();
+        if (is != null) {
+            return new Scanner(is, source.getEncoding());
+        }
+
+        String uri = source.getURI();
+        if (uri == null) {
+            throw new CSSException(formatMessage("empty.source", null));
+        }
 
         try {
-            String encoding = source.getEncoding();
-            if (encoding == null && enc == null) {
-                return new InputStreamReader(is);
-            } else if (encoding != null && enc != null) {
-                if (!javaEncoding(encoding).equals(javaEncoding(enc))) {
-                    throw new CSSException(formatMessage("encoding",
-                                                         new Object[] { enc }));
-                }
-                return new InputStreamReader(is, javaEncoding(encoding));
-            } else {
-                return new InputStreamReader(is, javaEncoding((enc != null)
-                                                              ? enc : encoding));
-            }
-        } catch (UnsupportedEncodingException e) {
+            ParsedURL purl = new ParsedURL(uri);
+            is = purl.openStreamRaw(CSSConstants.CSS_MIME_TYPE);
+            return new Scanner(is, source.getEncoding());
+        } catch (IOException e) {
             throw new CSSException(e);
         }
     }
@@ -1518,7 +1496,7 @@ public class Parser implements ExtendedParser, Localizable {
     }
 
     /**
-     * Skips the white spaces and CDO/CDC untis.
+     * Skips the white spaces and CDO/CDC units.
      */
     protected int skipSpacesAndCDOCDC() {
         loop: for (;;) {
@@ -1670,7 +1648,8 @@ public class Parser implements ExtendedParser, Localizable {
     /**
      * Creates a parse exception.
      */
-    protected CSSParseException createCSSParseException(String key, Object[] params) {
+    protected CSSParseException createCSSParseException(String key,
+                                                        Object[] params) {
         return new CSSParseException(formatMessage(key, params),
                                      documentURI,
                                      scanner.getLine(),

@@ -8,6 +8,7 @@
 
 package org.apache.batik.parser;
 
+import java.io.IOException;
 import java.io.Reader;
 
 /**
@@ -59,12 +60,12 @@ public class PointsParser extends NumberParser {
     }
 
     /**
-     * Parses the given current stream.
+     * Parses the current stream.
      */
-    protected void doParse() throws ParseException {
+    protected void doParse() throws ParseException, IOException {
         pointsHandler.startPoints();
 
-        read();
+        current = reader.read();
         skipSpaces();
 
         loop: for (;;) {

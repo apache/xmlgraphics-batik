@@ -8,6 +8,7 @@
 
 package org.apache.batik.parser;
 
+import java.io.IOException;
 import java.io.Reader;
 
 /**
@@ -53,10 +54,10 @@ public class LengthParser extends AbstractParser {
 	return lengthHandler;
     }
 
-    protected void doParse() throws ParseException {
+    protected void doParse() throws ParseException, IOException {
         lengthHandler.startLength();
 
-        read();
+        current = reader.read();
         skipSpaces();
 	
         parseLength();
@@ -72,7 +73,7 @@ public class LengthParser extends AbstractParser {
     /**
      * Parses a length value.
      */
-    protected void parseLength() throws ParseException {
+    protected void parseLength() throws ParseException, IOException {
         int     mant      = 0;
         int     mantDig   = 0;
         boolean mantPos   = true;
@@ -89,12 +90,7 @@ public class LengthParser extends AbstractParser {
         case '-':
             mantPos = false;
         case '+':
-            if (position == count && !fillBuffer()) {
-                current = -1;
-                break;
-            }
-            column++;
-            current = buffer[position++];
+            current = reader.read();
         }
 
         m1: switch (current) {
@@ -109,12 +105,7 @@ public class LengthParser extends AbstractParser {
         case '0':
             mantRead = true;
             l: for (;;) {
-                if (position == count && !fillBuffer()) {
-                    current = -1;
-                } else {
-                    column++;
-                    current = buffer[position++];
-                }
+                current = reader.read();
                 switch (current) {
                 case '1': case '2': case '3': case '4': 
                 case '5': case '6': case '7': case '8': case '9': 
@@ -135,12 +126,7 @@ public class LengthParser extends AbstractParser {
                 } else {
                     expAdj++;
                 }
-                if (position == count && !fillBuffer()) {
-                    current = -1;
-                } else {
-                    column++;
-                    current = buffer[position++];
-                }
+                current = reader.read();
                 switch (current) {
                 default:
                     break l;
@@ -151,12 +137,7 @@ public class LengthParser extends AbstractParser {
         }
         
         if (current == '.') {
-            if (position == count && !fillBuffer()) {
-                current = -1;
-            } else {
-                column++;
-                current = buffer[position++];
-            }
+            current = reader.read();
             m2: switch (current) {
             default:
             case 'e': case 'E':
@@ -170,12 +151,7 @@ public class LengthParser extends AbstractParser {
             case '0':
                 if (mantDig == 0) {
                     l: for (;;) {
-                        if (position == count && !fillBuffer()) {
-                            current = -1;
-                        } else {
-                            column++;
-                            current = buffer[position++];
-                        }
+                        current = reader.read();
                         expAdj--;
                         switch (current) {
                         case '1': case '2': case '3': case '4': 
@@ -195,12 +171,7 @@ public class LengthParser extends AbstractParser {
                         mant = mant * 10 + (current - '0');
                         expAdj--;
                     }
-                    if (position == count && !fillBuffer()) {
-                        current = -1;
-                    } else {
-                        column++;
-                        current = buffer[position++];
-                    }
+                    current = reader.read();
                     switch (current) {
                     default:
                         break l;
@@ -216,12 +187,7 @@ public class LengthParser extends AbstractParser {
         case 'e':
             le = true;
         case 'E':
-            if (position == count && !fillBuffer()) {
-                current = -1;
-            } else {
-                column++;
-                current = buffer[position++];
-            }
+            current = reader.read();
             switch (current) {
             default:
                 reportError("character.unexpected",
@@ -246,12 +212,7 @@ public class LengthParser extends AbstractParser {
             case '-':
                 expPos = false;
             case '+':
-                if (position == count && !fillBuffer()) {
-                    current = -1;
-                } else {
-                    column++;
-                    current = buffer[position++];
-                }
+                current = reader.read();
                 switch (current) {
                 default:
                     reportError("character.unexpected",
@@ -267,12 +228,7 @@ public class LengthParser extends AbstractParser {
             en: switch (current) {
             case '0':
                 l: for (;;) {
-                    if (position == count && !fillBuffer()) {
-                        current = -1;
-                    } else {
-                        column++;
-                        current = buffer[position++];
-                    }
+                    current = reader.read();
                     switch (current) {
                     case '1': case '2': case '3': case '4': 
                     case '5': case '6': case '7': case '8': case '9': 
@@ -290,12 +246,7 @@ public class LengthParser extends AbstractParser {
                         expDig++;
                         exp = exp * 10 + (current - '0');
                     }
-                    if (position == count && !fillBuffer()) {
-                        current = -1;
-                    } else {
-                        column++;
-                        current = buffer[position++];
-                    }
+                    current = reader.read();
                     switch (current) {
                     default:
                         break l;
@@ -320,11 +271,11 @@ public class LengthParser extends AbstractParser {
         switch (unitState) {
         case 1:
             lengthHandler.em();
-            read();
+            current = reader.read();
             return;
         case 2:
             lengthHandler.ex();
-            read();
+            current = reader.read();
             return;
         }
 
@@ -332,15 +283,15 @@ public class LengthParser extends AbstractParser {
         case -1: case 0xD: case 0xA: case 0x20: case 0x9:
             return;
         case 'e':
-            read();
+            current = reader.read();
             switch (current) {
             case 'm':
                 lengthHandler.em();
-                read();
+                current = reader.read();
                 break;
             case 'x':
                 lengthHandler.ex();
-                read();
+                current = reader.read();
                 break;
             default:
                 reportError("character.unexpected",
@@ -349,19 +300,19 @@ public class LengthParser extends AbstractParser {
             break;
 
         case 'p':
-            read();
+            current = reader.read();
             switch (current) {
             case 'c':
                 lengthHandler.pc();
-                read();
+                current = reader.read();
                 break;
             case 't':
                 lengthHandler.pt();
-                read();
+                current = reader.read();
                 break;
             case 'x':
                 lengthHandler.px();
-                read();
+                current = reader.read();
                 break;
             default:
                 reportError("character.unexpected",
@@ -370,7 +321,7 @@ public class LengthParser extends AbstractParser {
             break;
 
         case 'i':
-            read();
+            current = reader.read();
             if (current != 'n') {
                 reportError("character.expected",
                             new Object[] { new Character('n'),
@@ -378,10 +329,10 @@ public class LengthParser extends AbstractParser {
                 break;
             }
             lengthHandler.in();
-            read();
+            current = reader.read();
             break;
         case 'c':
-            read();
+            current = reader.read();
             if (current != 'm') {
                 reportError("character.expected",
                             new Object[] { new Character('m'),
@@ -389,10 +340,10 @@ public class LengthParser extends AbstractParser {
                 break;
             }
             lengthHandler.cm();
-            read();
+            current = reader.read();
             break;
         case 'm':
-            read();
+            current = reader.read();
             if (current != 'm') {
                 reportError("character.expected",
                             new Object[] { new Character('m'),
@@ -400,11 +351,11 @@ public class LengthParser extends AbstractParser {
                 break;
             }
             lengthHandler.mm();
-            read();
+            current = reader.read();
             break;
         case '%':
             lengthHandler.percentage();
-            read();
+            current = reader.read();
             break;
         default:
             reportError("character.unexpected",

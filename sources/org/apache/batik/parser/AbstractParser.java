@@ -8,6 +8,7 @@
 
 package org.apache.batik.parser;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -18,6 +19,10 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.batik.i18n.LocalizableSupport;
+
+import org.apache.batik.util.io.NormalizingReader;
+import org.apache.batik.util.io.StreamNormalizingReader;
+import org.apache.batik.util.io.StringNormalizingReader;
 
 /**
  * This class is the superclass of all parsers. It provides localization
@@ -46,34 +51,9 @@ public abstract class AbstractParser implements Parser {
         new LocalizableSupport(BUNDLE_CLASSNAME);
 
     /**
-     * The reader.
+     * The normalizing reader.
      */
-    protected Reader reader;
-
-    /**
-     * The current line.
-     */
-    protected int line = 1;
-
-    /**
-     * The current column.
-     */
-    protected int column;
-
-    /**
-     * The buffer.
-     */
-    protected char[] buffer;
-
-    /**
-     * The current position in the buffer.
-     */
-    protected int position;
-
-    /**
-     * The current count of characters in the buffer.
-     */
-    protected int count;
+    protected NormalizingReader reader;
 
     /**
      * The current character.
@@ -116,7 +96,7 @@ public abstract class AbstractParser implements Parser {
      * <p>If the application does not register an error event handler,
      * all error events reported by the parser will cause an exception
      * to be thrown.
-     *
+`     *
      * <p>Applications may register a new or different handler in the
      * middle of a parse, and the parser must begin using the new
      * handler immediately.</p>
@@ -129,129 +109,52 @@ public abstract class AbstractParser implements Parser {
     /**
      * Parses the given reader
      */
-    public void parse(Reader r)  throws ParseException {
-        reader = r;
-        buffer = new char[4096];
+    public void parse(Reader r) throws ParseException {
+        try {
+            reader = new StreamNormalizingReader(r);
+            doParse();
+        } catch (IOException e) {
+            errorHandler.error
+                (new ParseException
+                 (createErrorMessage("io.exception", null), e));
+        }
+    }
 
-        doParse();
+    /**
+     * Parses the given input stream. If the encoding is null,
+     * ISO-8859-1 is used.
+     */
+    public void parse(InputStream is, String enc) throws ParseException {
+        try {
+            reader = new StreamNormalizingReader(is, enc);
+            doParse();
+        } catch (IOException e) {
+            errorHandler.error
+                (new ParseException
+                 (createErrorMessage("io.exception", null), e));
+        }
     }
 
     /**
      * Parses the given string.
      */
-    public void parse(String s)  throws ParseException {
-        reader = null;
-        buffer = s.toCharArray();
-        count = buffer.length;
-        collapseCRNL(0, count);
-
-        doParse();
-    }
-
-    /**
-     * Method resposible for actually parsing data after AbstractParser
-     * has initialized it's self.
-     */
-    protected abstract void doParse() throws ParseException ;
-
-    protected final void collapseCRNL(int src, int end) {
-        // Now collapse cr/nl...
-        while (src < end) {
-            if (buffer[src] != 13) {
-                src++;
-            } else {
-                buffer[src] = 10;
-                src++;
-                if (src >= end) {
-                    break;
-                }
-                if (buffer[src] == 10) {
-                    // We now need to collapse some of the chars to
-                    // eliminate cr/nl pairs.  This is where we do it...
-                    int dst = src; // start writing where this 10 is
-                    src++; // skip reading this 10.
-                    while (src < end) {
-                        if (buffer[src] == 13) {
-                            buffer[dst++] = 10;
-                            src++;
-                            if (src >= end) {
-                                break;
-                            }
-                            if (buffer[src] == 10) {
-                                src++;
-                            }
-                            continue;
-                        }
-                        buffer[dst++] = buffer[src++];
-                    }
-                    end = dst;
-                    break;
-                }
-            }
-        }
-    }
-
-    protected final boolean fillBuffer() {
+    public void parse(String s) throws ParseException {
         try {
-            if (count != 0) {
-                if (position == count) {
-                    buffer[0] = buffer[count - 1];
-                    count = 1;
-                    position = 1;
-                } else {
-                    // we keep the last char in our buffer.
-                    System.arraycopy(buffer, position - 1, buffer, 0, 
-                                     count - position + 1);
-                    count = (count - position) + 1;
-                    position = 1;
-                }
-            }
-
-            if (reader == null) {
-                return (count != position);
-            }
-            
-            // remember where the fill starts...
-            int src = count - 1;
-            if (src < 0) {
-                src = 0;
-            }
-
-            // Refill the buffer...
-            int read = reader.read(buffer, count, buffer.length-count);
-            if (read == -1) {
-                return (count != position);
-            }
-
-            count += read; // add in chars read.
-            collapseCRNL(src, count);
+            reader = new StringNormalizingReader(s);
+            doParse();
         } catch (IOException e) {
             errorHandler.error
                 (new ParseException
-                    (createErrorMessage("io.exception", null), e));
+                 (createErrorMessage("io.exception", null), e));
         }
-        return (count != position);
     }
 
     /**
-     * Reads one character from the given reader and sets 'current' to this
-     * value.
+     * Method responsible for actually parsing data after AbstractParser
+     * has initialized itself.
      */
-    protected void read() {
-        if (position == count && !fillBuffer()) {
-            current = -1;
-            return;
-        }
-
-        if (current == 10) {
-            line++;
-            column = 1;
-        } else {
-            column++;
-        }
-
-        current = buffer[position++];
-    }
+    protected abstract void doParse()
+        throws ParseException, IOException;
 
     /**
      * Signals an error to the error handler.
@@ -261,8 +164,8 @@ public abstract class AbstractParser implements Parser {
     protected void reportError(String key, Object[] args)
         throws ParseException {
         errorHandler.error(new ParseException(createErrorMessage(key, args),
-                                              line,
-                                              column));
+                                              reader.getLine(),
+                                              reader.getColumn()));
     }
 
     /**
@@ -289,112 +192,46 @@ public abstract class AbstractParser implements Parser {
     /**
      * Skips the whitespaces in the current reader.
      */
-    protected void skipSpaces() {
-        switch (current) {
-        default:
-            return;
-        case 0x20:
-        case 0x9:
-        case 0xD:
-        case 0xA:
-        }
+    protected void skipSpaces() throws IOException {
         for (;;) {
-            if (position == count && !fillBuffer()) {
-                current = -1;
-                return;
-            }
-
-            if (current == 10) {
-                line++;
-                column = 1;
-            } else {
-                column++;
-            }
-
-            current = buffer[position++];
-
             switch (current) {
             default:
                 return;
-            case 0x20: case 0x09: case 0x0D: case 0x0A:
+            case 0x20:
+            case 0x09:
+            case 0x0D:
+            case 0x0A:
             }
+            current = reader.read();
         }
     }
 
     /**
      * Skips the whitespaces and an optional comma.
      */
-    protected void skipCommaSpaces() {
-        switch (current) {
-        default:
-            return;
-        case 0x20: case 0x09: case 0x0D: case 0x0A:
-            break;
-        case ',': 
-            for(;;) {
-                if (position == count && !fillBuffer()) {
-                    current = -1;
-                    return;
-                }
-
-                if (current == 10) {
-                    line++;
-                    column = 1;
-                } else {
-                    column++;
-                }
-
-                current = buffer[position++];
-
-                switch (current) {
-                default:
-                    return;
-                case 0x20: case 0x09: case 0x0D: case 0x0A:
-                }
-            }
-        }
-
-        for(;;) {
-            if (position == count && !fillBuffer()) {
-                current = -1;
-                return;
-            }
-
-            if (current == 10) {
-                line++;
-                column = 1;
-            } else {
-                column++;
-            }
-
-            current = buffer[position++];
-
-            switch (current) {
-            default:
-                return;
-            case 0x20: case 0x09: case 0x0D: case 0x0A:
-                break;
-            case ',':
-                for(;;) {
-                    if (position == count && !fillBuffer()) {
-                        current = -1;
-                        return;
-                    }
-
-                    if (current == 10) {
-                        line++;
-                        column = 1;
-                    } else {
-                        column++;
-                    }
-                    current = buffer[position++];
-                    switch (current) {
-                    default:
-                        return; 
-                    case 0x20: case 0x09: case 0x0D: case 0x0A:
-                    }
-                }
-            }
-        }
+    protected void skipCommaSpaces() throws IOException {
+        wsp1: for (;;) {
+	    switch (current) {
+	    default:
+		break wsp1;
+	    case 0x20:
+	    case 0x9:
+	    case 0xD:
+	    case 0xA:
+	    }
+	    current = reader.read();
+	}
+	if (current == ',') {
+            wsp2: for (;;) {
+		switch (current = reader.read()) {
+		default:
+		    break wsp2;
+		case 0x20:
+		case 0x9:
+		case 0xD:
+		case 0xA:
+		}
+	    }
+	}
     }
 }
