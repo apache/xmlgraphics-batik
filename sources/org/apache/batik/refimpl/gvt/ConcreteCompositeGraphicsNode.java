@@ -58,10 +58,15 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
     protected int modCount;
 
     /**
-     * Geometry bounds for this node, not taking into account any of its
+     * Cache: Geometry bounds for this node, not taking into account any of its
      * children rendering attributes into account
      */
-    protected Rectangle2D geometryBounds;
+    private Rectangle2D geometryBounds;
+
+    /**
+     * Cache: Primitive bounds.
+     */
+    private Rectangle2D primitiveBounds;
 
     /**
      * Constructs a new empty composite graphics node.
@@ -123,6 +128,12 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
     // Geometric methods
     //
 
+    protected void invalidateGeometryCache() {
+        super.invalidateGeometryCache();
+        geometryBounds = null;
+        primitiveBounds = null;
+    }
+
     public boolean contains(Point2D p) {
         if (getBounds().contains(p)) {
             for (int i=0; i < count; ++i) {
@@ -170,29 +181,32 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     public Rectangle2D getPrimitiveBounds() {
-        Rectangle2D bounds = null, nodeBounds = null;
-        AffineTransform txf = null;
-        if(count > 0){
-            txf = children[0].getTransform();
-            nodeBounds = children[0].getBounds();
-            bounds = (txf == null)
-                ? nodeBounds
-                : txf.createTransformedShape(nodeBounds).getBounds2D();
-        } else {
-            // With the following empty groups may have bad side effects.
-            bounds = new Rectangle(0, 0, 0, 0);
-        }
-        for (int i=1; i < count; ++i) {
-            GraphicsNode node = children[i];
-            nodeBounds = node.getBounds();
-            txf = children[i].getTransform();
-            if (txf != null) {
-                nodeBounds =
-                    txf.createTransformedShape(nodeBounds).getBounds2D();
+        if (primitiveBounds == null) {
+            Rectangle2D bounds = null, nodeBounds = null;
+            AffineTransform txf = null;
+            if(count > 0){
+                txf = children[0].getTransform();
+                nodeBounds = children[0].getBounds();
+                bounds = (txf == null)
+                    ? nodeBounds
+                    : txf.createTransformedShape(nodeBounds).getBounds2D();
+            } else {
+                // With the following empty groups may have bad side effects.
+                return new Rectangle(0, 0, 0, 0);
             }
-            bounds.add(nodeBounds);
+            for (int i=1; i < count; ++i) {
+                GraphicsNode node = children[i];
+                nodeBounds = node.getBounds();
+                txf = children[i].getTransform();
+                if (txf != null) {
+                    nodeBounds =
+                        txf.createTransformedShape(nodeBounds).getBounds2D();
+                }
+                bounds.add(nodeBounds);
+            }
+            primitiveBounds = bounds;
         }
-        return bounds;
+        return primitiveBounds;
     }
 
     public Rectangle2D getGeometryBounds(){
@@ -358,6 +372,8 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         // Set the root of the graphics node
         ((AbstractGraphicsNode) node).setRoot(this.getRoot());
         ((AbstractGraphicsNode) oldNode).setRoot(null);
+        // Invalidates cached values
+        invalidateGeometryCache();
         // Create and dispatch events
         int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED;
         dispatch(new CompositeGraphicsNodeEvent(this, id, oldNode));
@@ -390,6 +406,8 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         ((AbstractGraphicsNode) node).setParent(this);
         // Set the root of the graphics node
         ((AbstractGraphicsNode) node).setRoot(this.getRoot());
+        // Invalidates cached values
+        invalidateGeometryCache();
         // Create and dispatch event
         int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
         dispatch(new CompositeGraphicsNodeEvent(this, id, node));
@@ -432,7 +450,8 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         ((AbstractGraphicsNode) node).setParent(this);
         // Set root of the graphics node
         ((AbstractGraphicsNode) node).setRoot(this.getRoot());
-
+        // Invalidates cached values
+        invalidateGeometryCache();
         // Create and dispatch event
         int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
         dispatch(new CompositeGraphicsNodeEvent(this, id, node));
@@ -503,6 +522,8 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         ((AbstractGraphicsNode) oldNode).setParent(null);
         // Set root of the node
         ((AbstractGraphicsNode) oldNode).setRoot(null);
+        // Invalidates cached values
+        invalidateGeometryCache();
         // Create and dispatch event
         int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED;
         dispatch(new CompositeGraphicsNodeEvent(this, id, oldNode));

@@ -28,6 +28,7 @@ import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
  * A graphics node that represents text.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public class ConcreteTextNode
@@ -37,29 +38,35 @@ public class ConcreteTextNode
     /**
      * Location of this text node
      */
-    private Point2D location = new Point2D.Float(0, 0);
+    protected Point2D location = new Point2D.Float(0, 0);
 
     /**
      * Attributed Character Iterator describing the text
      */
-    private AttributedCharacterIterator aci;
+    protected AttributedCharacterIterator aci;
 
     /**
-     * Bounds for this text node, without taking any of the
+     * Cache: Bounds for this text node, without taking any of the
      * rendering attributes (e.g., stroke) into account
      */
     private Rectangle2D geometryBounds;
 
     /**
+     * Cache: Primitive Bounds.
+     */
+    private Rectangle2D primitiveBounds;
+
+    /**
      * Text Anchor
      */
-    private Anchor anchor = Anchor.START;
+    protected Anchor anchor = Anchor.START;
 
     /**
      * Sets the location of this raster text node.
      * @param newLocation the new location of this raster image node
      */
     public void setLocation(Point2D newLocation){
+        invalidateGeometryCache();
         Point2D oldLocation = location;
         this.location = newLocation;
         firePropertyChange("location", oldLocation, location);
@@ -78,6 +85,7 @@ public class ConcreteTextNode
      * @param newAci the new attributed character iterator
      */
     public void setAttributedCharacterIterator(AttributedCharacterIterator newAci){
+        invalidateGeometryCache();
         AttributedCharacterIterator oldAci = this.aci;
         this.aci = newAci;
         firePropertyChange("attributedCharacterIterator", oldAci, newAci);
@@ -96,6 +104,7 @@ public class ConcreteTextNode
      * @param newAnchor the new anchor of this text node
      */
     public void setAnchor(Anchor newAnchor){
+        invalidateGeometryCache();
         Anchor oldAnchor = anchor;
         this.anchor = newAnchor;
         firePropertyChange("anchor", oldAnchor, anchor);
@@ -109,48 +118,58 @@ public class ConcreteTextNode
         return anchor;
     }
 
+    protected void invalidateGeometryCache() {
+        super.invalidateGeometryCache();
+        primitiveBounds = null;
+        geometryBounds = null;
+    }
+
     /**
      * Primitive bounds are in user space.
      */
     public Rectangle2D getPrimitiveBounds(){
-        // HACK, until we change getBounds to take
-        // GraphicsNodeRenderContext
-        Rectangle2D bounds;
-        if (aci != null) {
-            java.awt.font.TextLayout layout
-              = new java.awt.font.TextLayout(aci,
-                  new java.awt.font.FontRenderContext(new AffineTransform(),
-                                                      true,
-                                                      true));
-            bounds = layout.getBounds();
-        } else {
-            bounds = new Rectangle2D.Float(0, 0, 0, 0);
-        }
-        double tx = location.getX();
-        double ty = location.getY();
-        if (anchor == Anchor.MIDDLE) {
-            tx -= bounds.getWidth()/2;
-        } else if (anchor == Anchor.END) {
-            tx -= bounds.getWidth();
-        }
-
-        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
-
-        bounds = t.createTransformedShape(bounds).getBounds();
-
-        return bounds;
-    }
-
-    public Rectangle2D getGeometryBounds(){
-        if(geometryBounds == null){
+        // HACK, until we change getBounds to take GraphicsNodeRenderContext
+        // We don't consider stroke and/or fill yet
+        if (primitiveBounds == null) {
             if (aci != null) {
                 java.awt.font.TextLayout layout
                     = new java.awt.font.TextLayout(aci,
-                                                   new java.awt.font.FontRenderContext(new AffineTransform(),
-                                                                                       true,
-                                                                                       true));
+                      new java.awt.font.FontRenderContext(new AffineTransform(),
+                                                          true,
+                                                          true));
+                primitiveBounds = layout.getBounds();
+                double tx = location.getX();
+                double ty = location.getY();
+                if (anchor == Anchor.MIDDLE) {
+                    tx -= primitiveBounds.getWidth()/2;
+                } else if (anchor == Anchor.END) {
+                    tx -= primitiveBounds.getWidth();
+                }
+
+                AffineTransform t =
+                    AffineTransform.getTranslateInstance(tx, ty);
+                primitiveBounds =
+                    t.createTransformedShape(primitiveBounds).getBounds();
+            } else {
+                // Don't cache if ACI is null
+                return new Rectangle2D.Float(0, 0, 0, 0);
+            }
+        }
+        return primitiveBounds;
+    }
+
+    /**
+     * Geometric bounds are in user space.
+     */
+    public Rectangle2D getGeometryBounds(){
+        if (geometryBounds == null){
+            if (aci != null) {
+                java.awt.font.TextLayout layout
+                    = new java.awt.font.TextLayout(aci,
+                      new java.awt.font.FontRenderContext(new AffineTransform(),
+                                                          true,
+                                                          true));
                 geometryBounds = layout.getBounds();
-                
                 double tx = location.getX();
                 double ty = location.getY();
                 if (anchor == Anchor.MIDDLE) {
@@ -158,21 +177,20 @@ public class ConcreteTextNode
                 } else if (anchor == Anchor.END) {
                     tx -= geometryBounds.getWidth();
                 }
-                
-                AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
-                
-                geometryBounds = t.createTransformedShape(geometryBounds).getBounds();
 
-
+                AffineTransform t =
+                    AffineTransform.getTranslateInstance(tx, ty);
+                geometryBounds =
+                    t.createTransformedShape(geometryBounds).getBounds();
             } else {
-                geometryBounds = new Rectangle2D.Float(0, 0, 0, 0);
+                // Don't cache if ACI is null
+                return new Rectangle2D.Float(0, 0, 0, 0);
             }
         }
         return geometryBounds;
     }
 
     public boolean contains(Point2D p) {
-        //System.out.println("Bounds "+getBounds()+"point "+p);
         return getBounds().contains(p.getX(), p.getY());
     }
 

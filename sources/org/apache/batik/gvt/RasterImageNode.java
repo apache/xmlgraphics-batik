@@ -1,9 +1,9 @@
 /*****************************************************************************
  * Copyright (C) The Apache Software Foundation. All rights reserved.        *
- * ------------------------------------------------------------------------- * 
- * This software is published under the terms of the Apache Software License * 
- * version 1.1, a copy of which has been included with this distribution in  * 
- * the LICENSE file.                                                         * 
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
  *****************************************************************************/
 
 package org.apache.batik.gvt;
@@ -23,13 +23,13 @@ public interface RasterImageNode extends LeafGraphicsNode {
      * Sets the bounds of this raster image node.
      * @param newBounds the new bounds of this raster image node
      */
-    void setBounds(Rectangle2D newBounds);
+    void setImageBounds(Rectangle2D newBounds);
 
     /**
      * Returns the bounds of this raster image node.
      * @return the bounds of this raster image node
      */
-    Rectangle2D getBounds();
+    Rectangle2D getImageBounds();
 
     /**
      * Sets the raster image of this raster image node.

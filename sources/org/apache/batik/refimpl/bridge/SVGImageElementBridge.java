@@ -111,7 +111,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         Rectangle2D bounds = new Rectangle2D.Float(x, y, w, h);
 
         node.setImage(RasterRable.create(url, bounds));
-        node.setBounds(bounds);
+        node.setImageBounds(bounds);
 
         // Initialize the transform
         AffineTransform at = AWTTransformProducer.createAffineTransform

@@ -96,24 +96,29 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * The transform of this graphics node.
      */
     protected AffineTransform transform;
+
     /**
      * The compositing operation to be used when a graphics node is
      * painted on top of another one.
      */
     protected Composite composite;
+
     /**
      * This flag bit indicates whether or not this graphics node is visible.
      */
     protected boolean isVisible = true;
+
     /**
      * The clipping area of this graphics node.
      */
     protected Shape clip;
+
     /**
      * The rendering hints that control the quality to use when rendering
      * this graphics node.
      */
     protected RenderingHints hints;
+
     /**
      * The mask of this graphics node.
      */
@@ -135,9 +140,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected Filter filter;
 
     /**
-     * Cached node bounds
+     * Cache: node bounds
      */
-    protected Rectangle2D bounds;
+    private Rectangle2D bounds;
 
     /**
      * Constructs a new graphics node.
@@ -208,6 +213,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setComposite(Composite newComposite) {
+        invalidateGeometryCache();
         Composite oldComposite = composite;
         this.composite = newComposite;
         firePropertyChange("composite", oldComposite, newComposite);
@@ -228,6 +234,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setClippingArea(Shape newClippingArea) {
+        invalidateGeometryCache();
         Shape oldClip = clip;
         this.clip = newClippingArea;
         firePropertyChange("clippingArea", oldClip, newClippingArea);
@@ -262,6 +269,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setMask(Mask newMask) {
+        invalidateGeometryCache();
         Mask oldMask = mask;
         this.mask = newMask;
         firePropertyChange("mask", oldMask, newMask);
@@ -272,6 +280,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setFilter(Filter newFilter) {
+        invalidateGeometryCache();
         Filter oldFilter = filter;
         this.filter = newFilter;
         firePropertyChange("filter", oldFilter, newFilter);
@@ -542,6 +551,18 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
     // Geometric methods
     //
+
+    /**
+     * Invalidates the cached geometric bounds. This method is called
+     * each time an attribute that affects the bounds of this node
+     * changed.
+     */
+    protected void invalidateGeometryCache() {
+        if (parent != null) {
+            ((AbstractGraphicsNode) parent).invalidateGeometryCache();
+        }
+        bounds = null;
+    }
 
     /**
      * Compute the rendered bounds of this node based on it's
