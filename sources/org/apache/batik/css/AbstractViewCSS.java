@@ -407,8 +407,8 @@ public abstract class AbstractViewCSS implements ViewCSS {
      * @param dest The result style declaration.
      */
     protected void setAuthorProperty(String name,
-				   CSSStyleDeclaration decl,
-				   CSSOMReadOnlyStyleDeclaration dest) {
+                                     CSSStyleDeclaration decl,
+                                     CSSOMReadOnlyStyleDeclaration dest) {
 	CSSOMValue         val   = (CSSOMValue)decl.getPropertyCSSValue(name);
 	String             prio  = decl.getPropertyPriority(name);
 	CSSOMReadOnlyValue value = val.createReadOnlyCopy();
