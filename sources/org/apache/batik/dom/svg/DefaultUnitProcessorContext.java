@@ -9,12 +9,14 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGSVGElement;
 
 /**
  * The default unit processor context.
@@ -23,6 +25,7 @@ import org.w3c.dom.svg.SVGElement;
  * @version $Id$
  */
 public class DefaultUnitProcessorContext implements UnitProcessor.Context {
+
     protected SVGContext context;
     protected SVGElement element;
 
@@ -66,5 +69,13 @@ public class DefaultUnitProcessorContext implements UnitProcessor.Context {
      */
     public float getXHeight(SVGElement e) {
         return 0.5f;
+    }
+
+    /**
+     * Returns the viewport to use to compute the percentages and the units.
+     */
+    public SVGSVGElement getViewport() {
+        return (SVGSVGElement)
+            HiddenChildElementSupport.getParentElement(element);
     }
 }

@@ -15,6 +15,7 @@ import org.apache.batik.util.UnitProcessor;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGSVGElement;
 
 /**
  * The default unit processor context.
@@ -66,5 +67,12 @@ public class DefaultUnitProcessorContext implements UnitProcessor.Context {
      */
     public float getXHeight(SVGElement e) {
         return 0.5f;
+    }
+
+    /**
+     * Returns the viewport to use to compute the percentages and the units.
+     */
+    public SVGSVGElement getViewport() {
+        return ctx.getCurrentViewport();
     }
 }

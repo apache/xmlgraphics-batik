@@ -23,6 +23,7 @@ import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGSVGElement;
 import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
@@ -37,6 +38,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
         SVGElement svgElement = (SVGElement) element;
+        ctx.setCurrentViewport((SVGSVGElement) svgElement);
         CSSStyleDeclaration cssDecl
             = ctx.getViewCSS().getComputedStyle(element, null);
         UnitProcessor.Context uctx

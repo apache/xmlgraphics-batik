@@ -16,7 +16,7 @@ import org.apache.batik.script.InterpreterPool;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.css.ViewCSS;
-
+import org.w3c.dom.svg.SVGSVGElement;
 import java.util.List;
 
 /**
@@ -38,6 +38,18 @@ public interface BridgeContext {
      * Returns the document loader to use to load a document.
      */
     DocumentLoader getDocumentLoader();
+
+    /**
+     * Returns the current viewport to use to compute percentages and units.
+     */
+    SVGSVGElement getCurrentViewport();
+
+    /**
+     * Sets the current viewport to use to compute percentages and
+     * units to the specified SVG element.
+     * @param newViewport the new viewport
+     */
+    void setCurrentViewport(SVGSVGElement newViewport);
 
     /**
      * Sets the document loader to use to load a document.
@@ -158,5 +170,9 @@ public interface BridgeContext {
      */
     GraphicsNodeRableFactory getGraphicsNodeRableFactory();
 
+    /**
+     * Sets the GraphicsNodeRableFactory to use.
+     * @param f the new GraphicsNodeRableFactory
+     */
     void setGraphicsNodeRableFactory(GraphicsNodeRableFactory f);
 }

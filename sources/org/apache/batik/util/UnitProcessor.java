@@ -230,7 +230,7 @@ public abstract class UnitProcessor {
         if (ctm == null) {
             return v;
         }
-        
+
         try {
             ctm = ctm.createInverse();
         } catch (NoninvertibleTransformException ex) {
@@ -240,7 +240,7 @@ public abstract class UnitProcessor {
         Point2D pt1 = new Point2D.Float();
         Point2D pt2;
         if (d == OTHER_LENGTH) {
-            SVGSVGElement svg = e.getOwnerSVGElement();
+            SVGSVGElement svg = c.getViewport();
             if (svg == null) {
                 return v;
             }
@@ -342,7 +342,7 @@ public abstract class UnitProcessor {
             throw new RuntimeException
                 (formatMessage("element.needed", null));
         }
-        SVGSVGElement svg = e.getOwnerSVGElement();
+        SVGSVGElement svg = c.getViewport();
         if (svg == null) {
             throw new RuntimeException
                 (formatMessage("svg.element.needed", null));
@@ -533,5 +533,10 @@ public abstract class UnitProcessor {
          * Returns the x-height value.
          */
         float getXHeight(SVGElement e);
+
+        /**
+         * Returns the viewport used to compute percentages and units.
+         */
+        SVGSVGElement getViewport();
     }
 }
