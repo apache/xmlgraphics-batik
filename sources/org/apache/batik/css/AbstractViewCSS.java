@@ -363,8 +363,8 @@ public abstract class AbstractViewCSS implements ViewCSS {
             StyleSheetList l = ((DocumentStyle)document).getStyleSheets();
             for (int i = 0; i < l.getLength(); i++) {
                 CSSStyleSheet ss = (CSSStyleSheet)l.item(i);
-                if (!ss.getDisabled()) {
-                    addMatchingRules(((CSSStyleSheet)l.item(i)).getCssRules(),
+                if (!ss.getDisabled() && mediaMatch(ss.getMedia())) {
+                    addMatchingRules(ss.getCssRules(),
                                      e,
                                      pe,
                                      authorRules);
