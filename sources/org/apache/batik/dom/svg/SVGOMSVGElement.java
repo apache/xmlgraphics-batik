@@ -404,10 +404,12 @@ public class SVGOMSVGElement
     public SVGRect                createSVGRect (  ) {
         return new SVGOMRect(0,0,0,0);
     }
-    public SVGTransform           createSVGTransform (  ) {
-        return new SVGOMTransform();
+    public SVGTransform createSVGTransform () {
+        SVGOMTransform ret = new SVGOMTransform();
+        ret.setType(SVGTransform.SVG_TRANSFORM_MATRIX);
+        return ret;
     }
-    public SVGTransform     createSVGTransformFromMatrix ( SVGMatrix matrix ) {
+    public SVGTransform createSVGTransformFromMatrix ( SVGMatrix matrix ) {
         SVGOMTransform tr = new SVGOMTransform();
         tr.setMatrix(matrix);
         return tr;

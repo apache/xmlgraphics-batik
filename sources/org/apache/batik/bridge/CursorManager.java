@@ -68,7 +68,6 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
-import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -198,26 +197,26 @@ public class CursorManager implements SVGConstants, ErrorConstants {
      * @param e the element on which the cursor property is set
      */
     public Cursor convertCursor(Element e) {
-        Value cursorValue 
-            = CSSUtilities.getComputedStyle(e, 
-                                            SVGCSSEngine.CURSOR_INDEX);
+        Value cursorValue = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.CURSOR_INDEX);
 
         String cursorStr = SVGConstants.SVG_AUTO_VALUE;
 
         if (cursorValue != null) {
-            if (cursorValue.getCssValueType() ==  CSSValue.CSS_PRIMITIVE_VALUE
+            if (cursorValue.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE
                 &&
                 cursorValue.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
                 // Single Value : should be one of the predefined cursors or 
                 // 'inherit'
                 cursorStr = cursorValue.getStringValue();
                 return convertBuiltInCursor(e, cursorStr);
-            } else if (cursorValue.getCssValueType() == CSSValue.CSS_VALUE_LIST) {
-                ListValue l = (ListValue)cursorValue;
-                int nValues = l.getLength();
+            } else if (cursorValue.getCssValueType() == 
+                       CSSValue.CSS_VALUE_LIST) {
+                int nValues = cursorValue.getLength();
                 if (nValues == 1) {
-                    cursorValue = l.item(nValues-1);
-                    if (cursorValue.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+                    cursorValue = cursorValue.item(0);
+                    if (cursorValue.getPrimitiveType() == 
+                        CSSPrimitiveValue.CSS_IDENT) {
                         cursorStr = cursorValue.getStringValue();
                         return convertBuiltInCursor(e, cursorStr);
                     }
@@ -226,7 +225,7 @@ public class CursorManager implements SVGConstants, ErrorConstants {
                     // Look for the first cursor url we can handle.
                     // That would be a reference to a <cursor> element.
                     //
-                    return convertSVGCursor(e, l);
+                    return convertSVGCursor(e, cursorValue);
                 }
             }
         } 
@@ -299,7 +298,7 @@ public class CursorManager implements SVGConstants, ErrorConstants {
      * So the caller should check that before calling the method.
      * For example, CSSUtilities.convertCursor performs that check.
      */
-    public Cursor convertSVGCursor(Element e, ListValue l) {
+    public Cursor convertSVGCursor(Element e, Value l) {
         int nValues = l.getLength();
         Element cursorElement = null;
         for (int i=0; i<nValues-1; i++) {
