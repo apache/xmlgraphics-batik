@@ -9,22 +9,30 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.Rectangle2D;
+
 import java.util.Map;
 import java.util.Vector;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+import org.apache.batik.bridge.MissingAttributeException;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.CompositeRable;
 import org.apache.batik.gvt.filter.CompositeRule;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadMode;
+
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteCompositeRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -37,114 +45,8 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public class SVGFeCompositeElementBridge implements FilterBridge,
-                                                    SVGConstants{
+public class SVGFeCompositeElementBridge implements FilterBridge, SVGConstants {
 
-    public static CompositeRule getRule(Element filterElement) {
-
-        String oper = filterElement.getAttributeNS(null, ATTR_OPERATOR);
-        if (oper == null)
-            return CompositeRule.OVER;
-
-        switch (oper.charAt(0)) {
-        case 'a': case 'A':
-            switch (oper.charAt(1)) {
-            case 't': case 'T':
-                // 'atop'
-                if (((oper.charAt(2) != 'o') && (oper.charAt(2) != 'O')) ||
-                    ((oper.charAt(3) != 'p') && (oper.charAt(3) != 'P')))
-                    return null;
-
-                return CompositeRule.ATOP;
-
-            case 'r': case 'R': {
-                  // 'arithmetic
-                if (((oper.charAt(2) != 'i') && (oper.charAt(2) != 'I')) ||
-                    ((oper.charAt(3) != 't') && (oper.charAt(3) != 'T')) ||
-                    ((oper.charAt(4) != 'h') && (oper.charAt(4) != 'H')) ||
-                    ((oper.charAt(5) != 'm') && (oper.charAt(5) != 'M')) ||
-                    ((oper.charAt(6) != 'e') && (oper.charAt(6) != 'E')) ||
-                    ((oper.charAt(7) != 't') && (oper.charAt(7) != 'T')) ||
-                    ((oper.charAt(8) != 'i') && (oper.charAt(8) != 'I')) ||
-                    ((oper.charAt(9) != 'c') && (oper.charAt(9) != 'C')))
-                    return null; // error
-
-                float k1=0, k2=0, k3=0, k4=0;
-
-                String kAttr;
-                kAttr = filterElement.getAttributeNS(null, ATTR_K1);
-                if (kAttr != null) {
-                    try {
-                        k1 = SVGUtilities.convertSVGNumber(kAttr);
-                    }  catch (NumberFormatException e) { }
-                }
-
-
-                kAttr = filterElement.getAttributeNS(null, ATTR_K2);
-                if (kAttr != null) {
-                    try {
-                        k2 = SVGUtilities.convertSVGNumber(kAttr);
-                    }  catch (NumberFormatException e) { }
-                }
-
-
-                kAttr = filterElement.getAttributeNS(null, ATTR_K3);
-                if (kAttr != null) {
-                    try {
-                        k3 = SVGUtilities.convertSVGNumber(kAttr);
-                    }  catch (NumberFormatException e) { }
-                }
-
-
-                kAttr = filterElement.getAttributeNS(null, ATTR_K4);
-                if (kAttr != null) {
-                    try {
-                        k4 = SVGUtilities.convertSVGNumber(kAttr);
-                    }  catch (NumberFormatException e) { }
-                }
-
-                return CompositeRule.ARITHMETIC(k1, k2, k3, k4);
-            }
-            default:
-                return null; // error
-            }
-
-        case 'i': case 'I':
-              // in
-            if ((oper.charAt(1) != 'n') && (oper.charAt(1) != 'N'))
-                  return null; // error
-            return CompositeRule.IN;
-
-        case 'o': case 'O':
-            switch (oper.charAt(1)) {
-            case 'v': case 'V':
-                  // 'over'
-                if (((oper.charAt(2) != 'e') && (oper.charAt(2) != 'E')) ||
-                    ((oper.charAt(3) != 'r') && (oper.charAt(3) != 'R')))
-                    return null;
-                return CompositeRule.OVER;
-
-            case 'u': case'U':
-                  // 'out'
-                if ((oper.charAt(2) != 't') && (oper.charAt(2) != 'T'))
-                    return null;
-                return CompositeRule.OUT;
-
-            default:
-                return null;
-            }
-
-        case 'x': case 'X':
-              // 'xor'
-                if (((oper.charAt(1) != 'o') && (oper.charAt(1) != 'O')) ||
-                    ((oper.charAt(2) != 'r') && (oper.charAt(2) != 'R')))
-                      return null;
-                return CompositeRule.XOR;
-
-        default:
-            return null;
-        }
-    }
 
     /**
      * Returns the <tt>Filter</tt> that implements the filter
@@ -172,54 +74,53 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
 
         // Extract Composite operation
         CompositeRule rule = getRule(filterElement);
-        if (rule == null) {
-            String oper = filterElement.getAttributeNS(null, ATTR_OPERATOR);
-            throw new IllegalArgumentException
-                ("Unknown composite operator: " + oper);
-        }
 
         // Extract sources
         String in1Attr = filterElement.getAttributeNS(null, ATTR_IN);
         Filter in1;
-        in1 = CSSUtilities.getFilterSource(filteredNode, in1Attr,
-                                           bridgeContext, filteredElement,
-                                           in, filterMap);
+        in1 = CSSUtilities.getFilterSource(filteredNode,
+                                           in1Attr,
+                                           bridgeContext,
+                                           filteredElement,
+                                           in,
+                                           filterMap);
 
         String in2Attr = filterElement.getAttributeNS(null, ATTR_IN2);
+        if (in2Attr.length() == 0) {
+            throw new MissingAttributeException(
+                Messages.formatMessage("feComposite.in2.required", null));
+        }
         Filter in2;
-        in2 = CSSUtilities.getFilterSource(filteredNode, in2Attr,
-                                           bridgeContext, filteredElement,
-                                           in, filterMap);
+        in2 = CSSUtilities.getFilterSource(filteredNode,
+                                           in2Attr,
+                                           bridgeContext,
+                                           filteredElement,
+                                           in,
+                                           filterMap);
 
-        if ((in1 == null) || (in2 == null))
+        if ((in1 == null) || (in2 == null)) {
             return null;
+        }
 
         //
-        // The default region is the union of the input
-        // sources regions unless 'in' is 'SourceGraphic'
-        // in which case the default region is the
-        // filterChain's region
+        // The default region is the union of the input sources
+        // regions unless 'in' is 'SourceGraphic' in which case the
+        // default region is the filterChain's region
         //
-        Filter sourceGraphics
-            = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-        Rectangle2D defaultRegion
-            = in1.getBounds2D();
+        Rectangle2D defaultRegion = in1.getBounds2D();
         defaultRegion.add(in2.getBounds2D());
 
-        if(in1 == sourceGraphics){
+        if(in1 == sourceGraphics) {
             defaultRegion = filterRegion;
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle
-            (filterElement,
-             null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext
-                (bridgeContext,
-                 cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D compositeArea
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -235,20 +136,70 @@ public class SVGFeCompositeElementBridge implements FilterBridge,
         srcs.add(in1);
         filter = new ConcreteCompositeRable(srcs, rule);
 
-        filter = new ConcretePadRable(filter,
-                                      compositeArea,
-                                      PadMode.ZERO_PAD);
-
+        filter = new ConcretePadRable(filter, compositeArea, PadMode.ZERO_PAD);
 
         // Get result attribute and update map
-        String result
-            = filterElement.getAttributeNS(null,
-                                           ATTR_RESULT);
+        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
             filterMap.put(result, filter);
         }
 
         return filter;
+    }
+
+    private static CompositeRule getRule(Element filterElement) {
+        String ruleStr = filterElement.getAttributeNS(null, ATTR_OPERATOR);
+        CompositeRule rule;
+
+        if (ruleStr.length() == 0) {
+            rule = CompositeRule.OVER; // default value
+
+        } else if (VALUE_ATOP.equals(ruleStr)) {
+            rule = CompositeRule.ATOP;
+
+        } else if (VALUE_ARITHMETIC.equals(ruleStr)) {
+            String kAttr;
+            float k1=0, k2=0, k3=0, k4=0;
+
+            kAttr = filterElement.getAttributeNS(null, ATTR_K1);
+            if (kAttr.length() != 0) {
+                k1 = SVGUtilities.convertSVGNumber(kAttr);
+            }
+
+            kAttr = filterElement.getAttributeNS(null, ATTR_K2);
+            if (kAttr.length() != 0) {
+                k2 = SVGUtilities.convertSVGNumber(kAttr);
+            }
+
+            kAttr = filterElement.getAttributeNS(null, ATTR_K3);
+            if (kAttr.length() != 0) {
+                k3 = SVGUtilities.convertSVGNumber(kAttr);
+            }
+
+            kAttr = filterElement.getAttributeNS(null, ATTR_K4);
+            if (kAttr.length() != 0) {
+                k4 = SVGUtilities.convertSVGNumber(kAttr);
+            }
+            rule = CompositeRule.ARITHMETIC(k1, k2, k3, k4);
+
+        } else if (VALUE_IN.equals(ruleStr)) {
+            rule = CompositeRule.IN;
+
+        } else if (VALUE_OVER.equals(ruleStr)) {
+            rule = CompositeRule.OVER;
+
+        } else if (VALUE_OUT.equals(ruleStr)) {
+            rule = CompositeRule.OUT;
+
+        } else if (VALUE_XOR.equals(ruleStr)) {
+            rule = CompositeRule.XOR;
+
+        } else {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feComposite.operator.invalid",
+                                       new Object[] { ruleStr }));
+        }
+        return rule;
     }
 
     /**
