@@ -411,7 +411,7 @@ public class JSVGViewerFrame
             });
         svgCanvas.addMouseListener(new MouseAdapter() {
                 public void mouseExited(MouseEvent e) {
-                    Dimension dim = getSize();
+                    Dimension dim = svgCanvas.getSize();
                     if (svgDocument == null) {
                         statusBar.setWidth(dim.width);
                         statusBar.setHeight(dim.height);
@@ -440,7 +440,7 @@ public class JSVGViewerFrame
             });
         svgCanvas.addComponentListener(new ComponentAdapter() {
                 public void componentResized(ComponentEvent e) {
-                    Dimension dim = getSize();
+                    Dimension dim = svgCanvas.getSize();
                     if (svgDocument == null) {
                         statusBar.setWidth(dim.width);
                         statusBar.setHeight(dim.height);
@@ -477,7 +477,10 @@ public class JSVGViewerFrame
                         if (f.isDirectory()) {
                             s = null;
                         } else {
-                            s = "file:" + s;
+                            try {
+                                s = "file:" + f.getCanonicalPath();
+                            } catch (IOException ex) {
+                            }
                         }
                     }
                     if (s != null) {
