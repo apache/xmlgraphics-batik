@@ -31,7 +31,7 @@
 
         <g transform="translate(0, 50)">
             <image xlink:href="../../resources/images/svg.svg" x="75" y="10" width="300" height="193.45" 
-                   viewBox="0 0 210 170" preserveAspectRatio="xMidYMin meet"/>
+                   preserveAspectRatio="xMidYMin meet"/>
             <image xlink:href="../../resources/images/png.png" x="75" y="195" width="300" height="100" />
             <image xlink:href="../../resources/images/jpeg.jpg" x="75" y="320" width="300" height="100" />
         </g>
