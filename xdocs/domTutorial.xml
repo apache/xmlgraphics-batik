@@ -157,7 +157,7 @@ The example given has the following equivalent SVG.
 </s1>
 
 <!-- ##################################################################### -->
-<s1 title="Creating a Document from an SVG file">
+<s1 title="Creating a Document from a SVG file">
 
 <p> With Batik, you can also create a SVG DOM tree from a URI, an
 <code>InputStream</code>, or a <code>Reader</code> - using the
