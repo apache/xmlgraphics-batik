@@ -34,6 +34,9 @@ public abstract class AbstractTiledRed
 
     private TileStore tiles;
 
+    private static int defaultTileSize = 128;
+    public static int getDefaultTileSize() { return defaultTileSize; }
+
     /**
      * void constructor. The subclass must call one of the
      * flavors of init before the object becomes usable.
@@ -251,8 +254,7 @@ public abstract class AbstractTiledRed
 
     public Raster genTile(int x, int y) {
         WritableRaster wr = makeTile(x, y);
-
-        genRect(wr);
+        genRect(wr); 
         return wr;
     }
 
@@ -511,7 +513,8 @@ public abstract class AbstractTiledRed
                     int cols = endCol-startCol+1;
                     boolean [] occ = new boolean[cols];
                     System.arraycopy(occupied, off+startCol, occ, 0, cols);
-                    block3 = new TileBlock(startCol, yloc+y, cols, 1, occ);
+                    block3 = new TileBlock(xloc+startCol, yloc+y, 
+                                           cols, 1, occ);
                     splits++;
                 }
             }
@@ -530,7 +533,8 @@ public abstract class AbstractTiledRed
                     int cols = endCol-startCol+1;
                     boolean [] occ = new boolean[cols];
                     System.arraycopy(occupied, off+startCol, occ, 0, cols);
-                    block4 = new TileBlock(startCol, yloc+y, cols, 1, occ);
+                    block4 = new TileBlock(xloc+startCol, yloc+y, 
+                                           cols, 1, occ);
                     splits++;
                 }
             }
@@ -687,10 +691,13 @@ public abstract class AbstractTiledRed
         final boolean is_INT_PACK = 
             GraphicsUtil.is_INT_PACK_Data(getSampleModel(), false);
 
-        int tx0 = getXTile(wr.getMinX());
-        int ty0 = getYTile(wr.getMinY());
-        int tx1 = getXTile(wr.getMinX()+wr.getWidth() -1);
-        int ty1 = getYTile(wr.getMinY()+wr.getHeight()-1);
+        Rectangle bounds = getBounds();
+        Rectangle wrR    = wr.getBounds();
+
+        int tx0 = getXTile(wrR.x);
+        int ty0 = getYTile(wrR.y);
+        int tx1 = getXTile(wrR.x+wrR.width -1);
+        int ty1 = getYTile(wrR.y+wrR.height-1);
 
         if (tx0 < minTileX) tx0 = minTileX;
         if (ty0 < minTileY) ty0 = minTileY;
@@ -708,22 +715,33 @@ public abstract class AbstractTiledRed
         // Now figure out what tiles lie completely inside wr...
         int tx, ty;
         tx = tx0*tileWidth+tileGridXOff;
-        if (tx < wr.getMinX()) insideTx0++;
+        if ((tx < wrR.x)  && (bounds.x != wrR.x)) 
+            // Partial tile off the left.
+            insideTx0++;
 
         ty= ty0*tileHeight+tileGridYOff;
-        if (ty < wr.getMinY()) insideTy0++;
+        if ((ty < wrR.y) && (bounds.y != wrR.y))
+            // Partial tile off the top.
+            insideTy0++;
 
         tx= (tx1+1)*tileWidth+tileGridXOff-1;
-        if (tx >= (wr.getMinX()+wr.getWidth()))  insideTx1--;
+        if ((tx >= (wrR.x+wrR.width)) && 
+            ((bounds.x+bounds.width) != (wrR.x+wrR.width)))
+            // Partial tile off right
+            insideTx1--;
 
         ty= (ty1+1)*tileHeight+tileGridYOff-1;
-        if (ty >= (wr.getMinY()+wr.getHeight())) insideTy1--;
+        if ((ty >= (wrR.y+wrR.height)) &&
+            ((bounds.y+bounds.height) != (wrR.y+wrR.height)))
+            // Partial tile off bottom
+            insideTy1--;
 
         int xtiles = insideTx1-insideTx0+1;
         int ytiles = insideTy1-insideTy0+1;
+        boolean [] occupied = null;
         if ((xtiles > 0) && (ytiles > 0)) {
             // Collect all the tiles that we currently have...
-            boolean [] occupied = new boolean[xtiles*ytiles];
+            occupied = new boolean[xtiles*ytiles];
             for (int y=0; y<ytiles; y++)
                 for (int x=0; x<xtiles; x++) {
                     Raster ras = tiles.getTileNoCompute(x+insideTx0,
@@ -740,32 +758,9 @@ public abstract class AbstractTiledRed
                             GraphicsUtil.copyData_FALLBACK(ras, wr);
                     }
                 }
-
-            TileBlock block = new TileBlock(insideTx0, insideTy0,
-                                            xtiles, ytiles, occupied);
-            // System.out.println("Starting Splits");
-            TileBlock [] blocks = block.getBestSplit();
-            // System.out.println("Ending Splits: " + blocks.length);
-
-            // System.out.println("Starting Computation: " + this);
-            for (int i=0; i<blocks.length; i++) {
-                TileBlock curr = blocks[i];
-                int xloc = curr.getXLoc()*tileWidth +tileGridXOff;
-                int yloc = curr.getYLoc()*tileHeight+tileGridYOff;
-                WritableRaster child = 
-                    wr.createWritableChild(xloc, yloc, 
-                                           curr.getWidth()*tileWidth,
-                                           curr.getHeight()*tileHeight,
-                                           xloc, yloc, null);
-                // System.out.println("Computing : " + child);
-                genRect(child);
-            }
-            // Exception e= new Exception("Foo");
-            // e.printStackTrace();
         }
 
-        boolean [] got = new boolean[2*(tx1-tx0+1)+
-                                    2*(ty1-ty0+1)];
+        boolean [] got = new boolean[2*(tx1-tx0+1) + 2*(ty1-ty0+1)];
         int idx = 0;
         // Get the ones from the cache.
         for (int y=ty0; y<=ty1; y++) {
@@ -789,46 +784,83 @@ public abstract class AbstractTiledRed
             }
         }
 
+
+        // Compute the stuff from the middle in the largest possible Chunks.
+        if ((xtiles > 0) && (ytiles > 0)) {
+            TileBlock block = new TileBlock(insideTx0, insideTy0,
+                                            xtiles, ytiles, occupied);
+            // System.out.println("Starting Splits");
+            TileBlock [] blocks = block.getBestSplit();
+            // System.out.println("Ending Splits: " + blocks.length);
+
+            // System.out.println("Starting Computation: " + this);
+            for (int i=0; i<blocks.length; i++) {
+                TileBlock curr = blocks[i];
+                if (curr.getXLoc() < insideTx0)
+                    System.out.println("Curr: " + curr + 
+                                       " X: " + curr.getXLoc() +
+                                       " inside: " + insideTx0);
+                int xloc = curr.getXLoc()*tileWidth +tileGridXOff;
+                int yloc = curr.getYLoc()*tileHeight+tileGridYOff;
+                Rectangle tb = new Rectangle(xloc, yloc,
+                                             curr.getWidth()*tileWidth,
+                                             curr.getHeight()*tileHeight);
+                tb = tb.intersection(bounds);
+
+                WritableRaster child = 
+                    wr.createWritableChild(tb.x, tb.y, tb.width, tb.height,
+                                           tb.x, tb.y, null);
+                // System.out.println("Computing : " + child);
+                genRect(child);
+
+                if (Thread.currentThread().isInterrupted())
+                    return;
+            }
+            // Exception e= new Exception("Foo");
+            // e.printStackTrace();
+        }
+
         idx = 0;
         // Fill in the ones that weren't in the cache.
-        for (int y=ty0; y<=ty1; y++) {
-            for (int x=tx0; x<=tx1; x++) {
-                if ((y>=insideTy0) && (y<=insideTy1) &&
-                    (x>=insideTx0) && (x<=insideTx1)) 
-                    continue;
+        for (ty=ty0; ty<=ty1; ty++) {
 
-                if (got[idx++]) continue;
+            if (Thread.currentThread().isInterrupted())
+                break;
 
-                // System.out.println("Computing : " + x + "," + y);
-                Raster r = getTile(x, y);
-                if (is_INT_PACK)
-                    GraphicsUtil.copyData_INT_PACK(r, wr);
-                else
-                    GraphicsUtil.copyData_FALLBACK(r, wr);
+            for (tx=tx0; tx<=tx1; tx++) {
+                // At least touch the tile...
+                Raster ras = tiles.getTileNoCompute(tx, ty);
+
+                if ((ty>=insideTy0) && (ty<=insideTy1) &&
+                    (tx>=insideTx0) && (tx<=insideTx1)) {
+
+                    if (ras != null) continue;
+
+                    // Fill the tile from wr (since wr is full now
+                    // at least in the middle).
+                    WritableRaster tile = makeTile(tx, ty);
+                    if (is_INT_PACK)
+                        GraphicsUtil.copyData_INT_PACK(wr, tile);
+                    else
+                        GraphicsUtil.copyData_FALLBACK(wr, tile);
+
+                    tiles.setTile(tx, ty, tile);
+                }
+                else {
+                    if (got[idx++]) continue;
+
+                    // System.out.println("Computing : " + x + "," + y);
+                
+                    ras = getTile(tx, ty);// Compute the tile..
+                    if (is_INT_PACK)
+                        GraphicsUtil.copyData_INT_PACK(ras, wr);
+                    else
+                        GraphicsUtil.copyData_FALLBACK(ras, wr);
+                }
             }
         }
 
         // System.out.println("Ending Computation: " + this);
-
-        // Ok time to copy data out of wr and into our tile grid.
-        for (int y=0; y<ytiles; y++) {
-            ty = y+insideTy0;
-            for (int x=0; x<xtiles; x++) {
-                tx = x+insideTx0;
-                Raster ras = tiles.getTileNoCompute(tx, ty);
-                if (ras != null)
-                    continue;
-
-                WritableRaster tile = makeTile(tx, ty);
-                if (is_INT_PACK)
-                    GraphicsUtil.copyData_INT_PACK(wr, tile);
-                else
-                    GraphicsUtil.copyData_FALLBACK(wr, tile);
-
-                tiles.setTile(tx, ty, tile);
-            }
-        }
-        // System.out.println("Ending copying: " + this);
     }
 
     /**
@@ -838,10 +870,12 @@ public abstract class AbstractTiledRed
      * @param wr Raster to fill with image data.
      */
     public void copyToRaster(WritableRaster wr) {
-        int tx0 = getXTile(wr.getMinX());
-        int ty0 = getYTile(wr.getMinY());
-        int tx1 = getXTile(wr.getMinX()+wr.getWidth() -1);
-        int ty1 = getYTile(wr.getMinY()+wr.getHeight()-1);
+        Rectangle wrR = wr.getBounds();
+            
+        int tx0 = getXTile(wrR.x);
+        int ty0 = getYTile(wrR.y);
+        int tx1 = getXTile(wrR.x+wrR.width -1);
+        int ty1 = getYTile(wrR.y+wrR.height-1);
 
         if (tx0 < minTileX) tx0 = minTileX;
         if (ty0 < minTileY) ty0 = minTileY;

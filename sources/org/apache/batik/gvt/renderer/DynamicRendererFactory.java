@@ -8,8 +8,6 @@
 
 package org.apache.batik.gvt.renderer;
 
-import java.awt.image.BufferedImage;
-
 import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.gvt.renderer.RendererFactory;
 
@@ -22,9 +20,8 @@ import org.apache.batik.gvt.renderer.RendererFactory;
 public class DynamicRendererFactory extends StaticRendererFactory {
     /**
      * Creates a new renderer.
-     * @param im The buffered image used to render.
      */
-    public Renderer createRenderer(BufferedImage im) {
-        return new DynamicRenderer(im, getRenderContext());
+    public Renderer createRenderer() {
+        return new DynamicRenderer(getRenderContext());
     }
 }

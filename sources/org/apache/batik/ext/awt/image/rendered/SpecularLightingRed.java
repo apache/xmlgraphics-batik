@@ -77,8 +77,9 @@ public class SpecularLightingRed extends AbstractTiledRed{
         ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;
         int tw = litRegion.width;
         int th = litRegion.height;
-        if (tw > 256) tw = 256;
-        if (th > 256) th = 256;
+        int defSz = AbstractTiledRed.getDefaultTileSize();
+        if (tw > defSz) tw = defSz;
+        if (th > defSz) th = defSz;
         SampleModel sm = cm.createCompatibleSampleModel(tw, th);
                                              
         init((CachableRed)null, litRegion, cm, sm,

@@ -31,12 +31,13 @@ import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.event.EventDispatcher;
-import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.XMLAbstractTranscoder;
 import org.apache.batik.transcoder.image.resources.Messages;
+import org.apache.batik.gvt.renderer.Renderer;
+import org.apache.batik.gvt.renderer.RendererFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
@@ -50,7 +51,6 @@ import org.w3c.dom.svg.SVGSVGElement;
 // <!> FIXME : Those import clauses will change with new design
 import org.apache.batik.bridge.ConcreteGVTBuilder;
 import org.apache.batik.bridge.SVGUtilities;
-import org.apache.batik.gvt.renderer.StaticRenderer;
 import org.apache.batik.gvt.renderer.StaticRendererFactory;
 
 /**
@@ -172,31 +172,47 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         // prepare the image to be painted
         int w = (int)width;
         int h = (int)height;
-        BufferedImage img = createImage(w, h);
-        Graphics2D g2d = GraphicsUtil.createGraphics(img);
-        if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
-            Paint bgcolor = (Paint)hints.get(KEY_BACKGROUND_COLOR);
-            g2d.setComposite(AlphaComposite.Src);
-            g2d.setPaint(bgcolor);
-            g2d.fillRect(0, 0, w, h);
-        }
-        g2d.setComposite(AlphaComposite.SrcOver);
-        // create the appropriate renderer
-        Renderer renderer = new StaticRenderer(img);
+
         // build the GVT tree
         GVTBuilder builder = new ConcreteGVTBuilder();
-        GraphicsNodeRenderContext rc = new StaticRendererFactory().getRenderContext(); // <!> FIX ME
+        RendererFactory rendFactory = new StaticRendererFactory();
+        GraphicsNodeRenderContext rc = rendFactory.getRenderContext(); // <!> FIX ME
         BridgeContext ctx = new BridgeContext(userAgent, rc);
         GraphicsNode gvtRoot = builder.build(ctx, svgDoc);
+        ctx = null;
+        builder = null;
+
         // paint the SVG document using the bridge package
+        // create the appropriate renderer
+        Renderer renderer = rendFactory.createRenderer();
+        renderer.updateOffScreen(w, h);
         renderer.setTransform(Px);
         renderer.setTree(gvtRoot);
+        gvtRoot = null; // We're done with it...
+
         try {
+            BufferedImage rend = renderer.getOffScreen();
+
             // now we are sure that the aoi is the image size
             Shape raoi = new Rectangle2D.Float(0, 0, width, height);
             // Warning: the renderer's AOI must be in user space
             renderer.repaint(Px.createInverse().createTransformedShape(raoi));
-            writeImage(img, output);
+            renderer = null; // We're done with it...
+
+            BufferedImage dest = createImage(w, h);
+            
+            Graphics2D g2d = GraphicsUtil.createGraphics(dest);
+            if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
+                Paint bgcolor = (Paint)hints.get(KEY_BACKGROUND_COLOR);
+                g2d.setComposite(AlphaComposite.SrcOver);
+                g2d.setPaint(bgcolor);
+                g2d.fillRect(0, 0, w, h);
+                g2d.dispose();
+            }
+            g2d.drawRenderedImage(rend, new AffineTransform());
+            rend = null; // We're done with it...
+
+            writeImage(dest, output);
         } catch (Exception ex) {
             throw new TranscoderException(ex);
         }

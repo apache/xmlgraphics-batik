@@ -19,18 +19,30 @@ import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.renderer.Renderer;
 
 import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
+
 import org.apache.batik.gvt.text.ConcreteTextSelector;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.PadRed;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
 
 import java.util.Iterator;
 import java.util.Stack;
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.awt.image.Raster;
+import java.awt.image.ColorModel;
+import java.awt.image.SampleModel;
 import java.awt.image.renderable.RenderContext;
 
 /**
@@ -54,6 +66,9 @@ public class StaticRenderer implements Renderer {
      */
     protected GraphicsNode treeRoot;
 
+    protected GraphicsNodeRable rootGNR;
+    protected CachableRed       rootCR;
+
     /**
      * Flag for progressive rendering. Not used in this implementation
      */
@@ -68,6 +83,10 @@ public class StaticRenderer implements Renderer {
      * Offscreen image where the Renderer does its rendering
      */
     protected BufferedImage offScreen;
+    protected BufferedImage baseOffScreen;
+
+    protected int offScreenWidth;
+    protected int offScreenHeight;
 
     /**
      * Passed to the GVT tree to describe the rendering environment
@@ -83,17 +102,14 @@ public class StaticRenderer implements Renderer {
      * @param offScreen image where the Renderer should do its rendering
      * @param rc a GraphicsNodeRenderContext which this renderer should use
      */
-    public StaticRenderer(BufferedImage offScreen,
-                                        GraphicsNodeRenderContext rc){
-        setOffScreen(offScreen);
+    public StaticRenderer(GraphicsNodeRenderContext rc){
         setRenderContext(rc);
     }
 
     /**
      * @param offScreen image where the Renderer should do its rendering
      */
-    public StaticRenderer(BufferedImage offScreen){
-        setOffScreen(offScreen);
+    public StaticRenderer(){
 
         RenderingHints hints = new RenderingHints(null);
         hints.put(RenderingHints.KEY_ANTIALIASING,
@@ -126,6 +142,10 @@ public class StaticRenderer implements Renderer {
      */
     public void setRenderContext(GraphicsNodeRenderContext rc) {
         this.nodeRenderContext = rc;
+        rootGNR       = null;
+        rootCR        = null;
+        offScreen     = null;
+        baseOffScreen = null;
     }
 
     /**
@@ -136,27 +156,71 @@ public class StaticRenderer implements Renderer {
         return nodeRenderContext;
     }
 
-    /**
-     * @param offScreen image where the Renderer should do its rendering
-     */
-    public void setOffScreen(BufferedImage offScreen){
-        if(offScreen == null) {
-            throw new IllegalArgumentException(ILLEGAL_ARGUMENT_NULL_OFFSCREEN);
+    public void updateOffScreen(int width, int height) {
+        offScreenWidth  = width;
+        offScreenHeight = height;
+    }
+
+    public BufferedImage getOffScreen() {
+        if (treeRoot == null)
+            return null;
+
+        if (rootGNR == null) {
+            rootGNR = new GraphicsNodeRable8Bit(treeRoot, 
+                                                nodeRenderContext);
+            rootCR = null;
         }
-        if((offScreen.getWidth() <= 0) || (offScreen.getHeight() <= 0) )
-            throw new IllegalArgumentException(
-                ILLEGAL_ARGUMENT_ZERO_WIDTH_OR_HEIGHT +
-                " : offScreen.getWidth() = " + offScreen.getWidth() +
-                " / offScreen.getHeight() = " + offScreen.getHeight() );
-        this.offScreen = offScreen;
+
+        if (rootCR == null) {
+            RenderContext rc = new RenderContext
+                (nodeRenderContext.getTransform(),
+                 null,
+                 nodeRenderContext.getRenderingHints());
+            
+            rootCR = GraphicsUtil.wrap(rootGNR.createRendering(rc));
+            rootCR = GraphicsUtil.convertTosRGB(rootCR);
+            offScreen = null;
+        }
+
+        if ((offScreen == null) ||
+            (offScreen.getWidth()  != offScreenWidth) ||
+            (offScreen.getHeight() != offScreenHeight)) {
+            if ((baseOffScreen == null)                      ||
+                (baseOffScreen.getWidth()  < offScreenWidth) ||
+                (baseOffScreen.getHeight() < offScreenHeight))
+                baseOffScreen = makeOffscreen(rootCR, 
+                                              offScreenWidth,
+                                              offScreenHeight);
+            offScreen = baseOffScreen.getSubimage
+                (0, 0, offScreenWidth, offScreenHeight);
+        }
+
+        return offScreen;
+    }
+
+    protected BufferedImage makeOffscreen(CachableRed cr, int w, int h) {
+        SampleModel sm = cr.getSampleModel();
+        int tw = sm.getWidth();
+        int th = sm.getHeight();
+        w = ((w+tw-1)/tw)*tw;
+        h = ((h+th-1)/th)*th;
+        sm = sm.createCompatibleSampleModel(w, h);
+        WritableRaster wr;
+        wr = Raster.createWritableRaster(sm, new Point(0,0));
+        return new BufferedImage
+            (cr.getColorModel(), wr, 
+             cr.getColorModel().isAlphaPremultiplied(), null);
     }
 
     /**
      * Disposes all resources of this renderer.
      */
     public void dispose() {
+        baseOffScreen = null;
         offScreen = null;
         treeRoot = null;
+        rootGNR  = null;
+        rootCR    = null;
         nodeRenderContext = null;
     }
 
@@ -167,6 +231,10 @@ public class StaticRenderer implements Renderer {
      */
     public void setTree(GraphicsNode treeRoot){
         this.treeRoot = treeRoot;
+        rootGNR = null;
+        rootCR    = null;
+        offScreen = null;
+        baseOffScreen = null;
     }
 
     /**
@@ -174,6 +242,16 @@ public class StaticRenderer implements Renderer {
      */
     public GraphicsNode getTree(){
         return treeRoot;
+    }
+
+
+    public void clearOffScreen() {
+        getOffScreen();
+        Graphics2D g2d = baseOffScreen.createGraphics();
+        g2d.setComposite(AlphaComposite.Clear);
+        g2d.fillRect(0, 0, baseOffScreen.getWidth(), 
+                     baseOffScreen.getHeight());
+        g2d.dispose();
     }
 
     /**
@@ -193,21 +271,23 @@ public class StaticRenderer implements Renderer {
         nodeRenderContext.setTransform(usr2dev);
         nodeRenderContext.setAreaOfInterest(area);
 
-        // Now, paint into offscreen image
-        // and Set default rendering hints
-        Graphics2D g = GraphicsUtil.createGraphics
-            (offScreen, nodeRenderContext.getRenderingHints());
-
-        // Set initial transform as required by the render context
-        g.transform(nodeRenderContext.getTransform());
-
-        // Set initial clip
-        g.clip(nodeRenderContext.getAreaOfInterest());
-
         // Render tree
 /*        long t0 = System.currentTimeMillis();*/
         if(treeRoot != null) {
-            treeRoot.paint(g, nodeRenderContext);
+            getOffScreen();
+            Rectangle srcR = rootCR.getBounds();
+            Rectangle dstR = new Rectangle(0,0, 
+                                           baseOffScreen.getWidth(),
+                                           baseOffScreen.getHeight());
+            CachableRed cr = rootCR;
+            if ((dstR.x < srcR.x) ||
+                (dstR.y < srcR.y) ||
+                (dstR.x+dstR.width  > srcR.x+srcR.width) ||
+                (dstR.y+dstR.height > srcR.y+srcR.height))
+                cr = new PadRed(cr, dstR, PadMode.ZERO_PAD, null);
+
+            cr.copyData(baseOffScreen.getRaster());
+
 /*            long t1 = System.currentTimeMillis();
             GraphicsNode copy = treeRoot.renderingClone();
             long t2 = System.currentTimeMillis();
@@ -230,6 +310,7 @@ public class StaticRenderer implements Renderer {
         this.usr2dev = usr2dev;
         // Update the RenderContext in the nodeRenderContext
         nodeRenderContext.setTransform(usr2dev);
+        rootCR = null;
     }
 
     /**

@@ -93,18 +93,21 @@ public class GraphicsNodeRed8Bit extends AbstractTiledRed
 
         ColorModel cm = GraphicsUtil.sRGB_Unpre;
 
-        int tgX = bounds.x & 0xFFFFFF00;
+        int defSz = AbstractTiledRed.getDefaultTileSize();
+
+        // Make tile(0,0) fall on the closest intersection of defaultSz.
+        int tgX = defSz*(int)Math.floor(bounds.x/defSz);
+        int tgY = defSz*(int)Math.floor(bounds.y/defSz);
+
         int tw  = (bounds.x+bounds.width)-tgX;
-        if (tw > 256) tw = 256;
-        int tgY = bounds.y & 0xFFFFFF00;
+        if (tw > defSz) tw = defSz;
         int th  = (bounds.y+bounds.height)-tgY;
-        if (th > 256) th = 256;
+        if (th > defSz) th = defSz;
 
         // fix my sample model so it makes sense given my size.
         SampleModel sm = cm.createCompatibleSampleModel(tw, th);
 
         // Finish initializing our base class...
-        // Make our tile grid fall on the closes multiply of 256.
         init((CachableRed)null, bounds, cm, sm, tgX, tgY, null);
     }
 

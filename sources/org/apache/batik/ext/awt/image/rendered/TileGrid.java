@@ -122,6 +122,13 @@ public class TileGrid implements TileStore {
                                           (y+minTileY) + ")");
             if (COUNT) synchronized (TileGrid.class) { misses++; }
             ras = source.genTile(x+minTileX, y+minTileY);
+
+            // In all likelyhood the contents of this tile is junk!
+            // So don't cache it (returning is probably fine since it
+            // won't come back to haunt us...
+            if (Thread.currentThread().isInterrupted())
+                return ras;
+
             item.setRaster(ras);
         }
 

@@ -529,7 +529,7 @@ public abstract class AbstractRed implements CachableRed {
     public final int getXTile(int xloc) {
         int tgx = xloc-tileGridXOff;
         // We need to round to -infinity...
-        if (tgx>0)
+        if (tgx>=0)
             return tgx/tileWidth;
         else
             return (tgx-tileWidth+1)/tileWidth;
@@ -543,7 +543,7 @@ public abstract class AbstractRed implements CachableRed {
     public final int getYTile(int yloc) {
         int tgy = yloc-tileGridYOff;
         // We need to round to -infinity...
-        if (tgy>0)
+        if (tgy>=0)
             return tgy/tileHeight;
         else
             return (tgy-tileHeight+1)/tileHeight;
