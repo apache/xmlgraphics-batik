@@ -307,6 +307,10 @@
         <test id="samples/tests/spec/scripting/image.svg" />
         <test id="samples/tests/spec/scripting/imageraster.svg" />
         <test id="samples/tests/spec/scripting/imagesvg.svg" />
+        <test id="samples/tests/spec/scripting/gradientsUpdate.svg" />
+        <test id="samples/tests/spec/scripting/maskClipUpdate.svg" />
+        <test id="samples/tests/spec/scripting/markerUpdate.svg" />
+        <test id="samples/tests/spec/scripting/filterPatternUpdate.svg" />
     </testGroup>
 
 </testSuite>
