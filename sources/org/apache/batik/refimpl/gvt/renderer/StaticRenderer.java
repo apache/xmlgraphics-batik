@@ -149,6 +149,9 @@ public class StaticRenderer implements Renderer {
      * coordinate system.
      */
     public void repaint(Shape area){
+        if (area == null) {
+            return;
+        }
         // First, set the Area Of Interest in the renderContext
         nodeRenderContext.setTransform(usr2dev);
         nodeRenderContext.setAreaOfInterest(area);

@@ -52,14 +52,16 @@ public class DynamicRenderer extends StaticRenderer {
             throw new IllegalArgumentException("not a RootGraphicsNode");
         }
         RootGraphicsNode root = (RootGraphicsNode) this.treeRoot;
-        if (updateListener != null && root != null) {
+        if (repaintHandler != null && root != null) {
             //root.removeGlobalPropertyChangeListener(updateListener);
             root.removeGraphicsNodePaintListener(updateListener);
         }
         root = (RootGraphicsNode) newTreeRoot;
         super.setTree(root);
         //root.addGlobalPropertyChangeListener(updateListener);
-        root.addGraphicsNodePaintListener(updateListener);
+        if (repaintHandler != null) {
+            root.addGraphicsNodePaintListener(updateListener);
+        }
     }
 
     /**

@@ -181,7 +181,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                 URIResolver ur;
                 ur = new URIResolver((SVGDocument)e.getOwnerDocument(),
                                      ctx.getDocumentLoader());
-                
+
                 String href = XLinkSupport.getXLinkHref(e);
                 try {
                     Node n = ur.getNode(href);
@@ -221,7 +221,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                         tmp.setAttributeNS(null, ATTR_HEIGHT, "100%");
                         inst = tmp;
                     }
-                    
+
                     ((HiddenChildElement)inst).setParentElement(e);
                     if (inst instanceof SVGSVGElement) {
                         if (e.hasAttributeNS(null, ATTR_WIDTH)) {
@@ -328,5 +328,5 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
             }
         }
     }
-    
+
 }

@@ -42,10 +42,31 @@
             Create initial version of documentation set.
         </action>
 
+        <action context="docs"
+                assigned-to="VH">
+            SVG Viewer page with Screen Shots.
+        </action>
+
+        <action context="docs"
+                assigned-to="TK">
+            SVG Viewer Pluggin page
+        </action>
+
+        <action context="docs"
+                assigned-to="TK">
+            SVG Rasterizer image examples
+        </action>
+
+        <action context="docs"
+                assigned-to="VH">
+            SVG Generator sample page
+        </action>
+
+
+
         <action context="code"
                 assigned-to="TK">
-            objectBoundingBox, userSpaceOnUser for masks,
-            and patterns.
+            objectBoundingBox, userSpaceOnUser for masks, and patterns.
         </action>
 
         <action context="code"
@@ -73,26 +94,6 @@
             Text selection.
         </action>
 
-        <action context="docs"
-                assigned-to="VH">
-            SVG Viewer page with Screen Shots.
-        </action>
-
-        <action context="docs"
-                assigned-to="TK">
-            SVG Viewer Pluggin page
-        </action>
-
-        <action context="docs"
-                assigned-to="TK">
-            SVG Rasterizer image examples
-        </action>
-
-        <action context="docs"
-                assigned-to="VH">
-            SVG Generator sample page
-        </action>
-
         <action context="code"
                 assigned-to="DJ">
             SVG Font support
@@ -115,6 +116,16 @@
         <action context="code"
                 assigned-to="VH">
             hueRotate bug in ColorMatrix.
+        </action>
+
+        <action context="code"
+                assigned-to="TK">
+            Markers.
+        </action>
+
+        <action context="code"
+                assigned-to="TK">
+            Image element references an SVG file.
         </action>
 
         <action context="code"
