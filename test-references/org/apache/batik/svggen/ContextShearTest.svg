@@ -6,11 +6,11 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke-width:15;stroke:gray;fill:gray;}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;stroke:gray;fill:gray;stroke-width:15;shape-rendering:geometricPrecision;}
 .testC2 {fill:none;}
-.testC3 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke-width:15;stroke:gray;fill:gray;}
+.testC3 {text-rendering:optimizeLegibility;stroke:gray;fill:gray;stroke-width:15;shape-rendering:geometricPrecision;}
 .testC4 {fill:none;}
-.testC5 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}
+.testC5 {font-size:12;color-interpolation:auto;stroke-dashoffset:0;image-rendering:auto;stroke:black;stroke-opacity:1;font-weight:normal;stroke-linejoin:miter;font-style:normal;stroke-dasharray:none;stroke-width:1;text-rendering:auto;stroke-miterlimit:10;stroke-linecap:square;fill:black;color-rendering:auto;font-family:'dialog';fill-opacity:1;shape-rendering:auto;}
 ]]>
     </style>
     <g>
