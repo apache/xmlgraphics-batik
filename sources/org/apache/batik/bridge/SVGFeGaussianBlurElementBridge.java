@@ -111,7 +111,6 @@ public class SVGFeGaussianBlurElementBridge
         //     DEFAULT PROPERLY. THIS REQUIRES A MORE GENERIC FIX.
         /////////////////////////////////////////////////////////////////////
         else if( SVG_SOURCE_ALPHA_VALUE.equals(inStr) ){
-            System.out.println("SourceAlpha");
             defaultRegion = filterRegion;
         } 
         /////////////////////////////////////////////////////////////////////
