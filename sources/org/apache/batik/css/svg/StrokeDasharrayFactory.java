@@ -89,11 +89,24 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
     protected ImmutableValue createValueList(LexicalUnit lu)
         throws DOMException {
 	ImmutableValueList list = new ImmutableValueList(' ');
-	do {
+	for (;;) {
 	    list.append(new CSSOMValue(NUMBER_FACTORY,
                                        NUMBER_FACTORY.createValue(lu)));
 	    lu = lu.getNextLexicalUnit();
-	} while (lu != null);
+            if (lu == null) {
+                break;
+            }
+            if (lu.getLexicalUnitType() != LexicalUnit.SAC_OPERATOR_COMMA) {
+                throw CSSDOMExceptionFactory.createDOMException
+                    (DOMException.INVALID_ACCESS_ERR,
+                     "bad.unit.type",
+                     new Object[] { lu.getLexicalUnitType() });
+            }
+	    lu = lu.getNextLexicalUnit();
+            if (lu == null) {
+                break;
+            }
+	}
 	return list;
     }
 
