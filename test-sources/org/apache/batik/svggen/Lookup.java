@@ -30,7 +30,7 @@ public class Lookup implements Painter {
         //
         // Load Image
         //
-        Image image = Toolkit.getDefaultToolkit().createImage("test-resources/org/apache/batik/svggen/resources/vangogh.jpg");
+        Image image = Toolkit.getDefaultToolkit().createImage("test-resources/org/apache/batik/svggen/resources/vangogh.png");
         MediaTracker tracker = new MediaTracker(new Button(""));
         tracker.addImage(image, 0);
         try{

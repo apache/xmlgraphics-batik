@@ -23,8 +23,8 @@ import java.text.*;
  */
 public class AttributedCharacterIterator implements Painter {
     public void paint(Graphics2D g) {
-        String fontName = "SunSansCondensed-Demi";
-        int fontSize = 30;
+        String fontName = "Arial";
+        int fontSize = 15;
 
         FontRenderContext frc = new FontRenderContext(null, true, true);
 

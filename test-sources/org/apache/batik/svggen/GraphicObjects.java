@@ -73,6 +73,7 @@ public class GraphicObjects implements Painter {
         ig.setPaint(paint);
         ig.fillRect(0, 0, 200, 150);
         ig.setPaint(Color.black);
+        ig.setFont(new Font("Arial", Font.PLAIN, 10));
         ig.drawString("This is an image with alpha", 10, 30);
         ig.dispose();
 

@@ -539,6 +539,13 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                  new Object[]{refImgURL.toString(), 
                                                               tmpFile.getAbsolutePath(),
                                                               e.getMessage()}))});
+            if (candidateReference != null){
+                if (candidateReference.exists()){
+                    candidateReference.delete();
+                }
+                tmpFile.renameTo(candidateReference);
+            }
+
             report.setPassed(false);
             return report;
         }
@@ -611,7 +618,13 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                         new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_DIFFERENCE_IMAGE, null),
                                              diffFile) });
 
-                
+                    if (candidateReference != null){
+                        if (candidateReference.exists()){
+                            candidateReference.delete();
+                        }
+                        tmpFile.renameTo(candidateReference);
+                    }
+                    
                     report.setPassed(false);
                     return report;
                 }
@@ -628,8 +641,16 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                                 new Object[]{e.getClass().getName(),
                                                                              e.getMessage(),
                                                                              trace.toString()})) });
-                    report.setPassed(false);
-                    return report;
+
+                if (candidateReference != null){
+                    if (candidateReference.exists()){
+                        candidateReference.delete();
+                    }
+                    tmpFile.renameTo(candidateReference);
+                }
+                
+                report.setPassed(false);
+                return report;
             }
         }
 
