@@ -16,9 +16,10 @@ import java.awt.geom.AffineTransform;
  * type and a value, which is an array of double values.<br>
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:paul_evenblij@compuware.com">Paul Evenblij</a>
  * @version $Id$
  */
-public class TransformStackElement implements Cloneable{
+abstract public class TransformStackElement implements Cloneable{
     /**
      * Transform type
      */
@@ -43,9 +44,18 @@ public class TransformStackElement implements Cloneable{
      * @return an object which is a deep copy of this one
      */
     public Object clone() {
+        TransformStackElement newElement = null;
+
+        // start with a shallow copy to get our implementations right
+        try {
+            newElement = (TransformStackElement) super.clone();
+        } catch(java.lang.CloneNotSupportedException ex) {}
+
+        // now deep copy the parameter array
         double transformParameters[] = new double[this.transformParameters.length];
         System.arraycopy(this.transformParameters, 0, transformParameters, 0, transformParameters.length);
-        return new TransformStackElement(type, transformParameters);
+        newElement.transformParameters = transformParameters;
+        return newElement;
     }
 
     /**
@@ -61,25 +71,59 @@ public class TransformStackElement implements Cloneable{
      */
 
     public static TransformStackElement createTranslateElement(double tx, double ty){
-        return new TransformStackElement(TransformType.TRANSLATE, new double[]{ tx, ty });
+        return new TransformStackElement(TransformType.TRANSLATE, new double[]{ tx, ty }) {
+                       boolean isIdentity(double[] parameters) {
+                           return parameters[0] == 0 && parameters[1] == 0;
+                       }
+                   };
     }
 
     public static TransformStackElement createRotateElement(double theta){
-        return new TransformStackElement(TransformType.ROTATE, new double[]{ theta });
+        return new TransformStackElement(TransformType.ROTATE, new double[]{ theta }) {
+                       boolean isIdentity(double[] parameters) {
+                           return Math.cos(parameters[0]) == 1;
+                       }
+                   };
     }
 
     public static TransformStackElement createScaleElement(double scaleX, double scaleY){
-        return new TransformStackElement(TransformType.SCALE, new double[]{ scaleX, scaleY });
+        return new TransformStackElement(TransformType.SCALE, new double[]{ scaleX, scaleY }) {
+                       boolean isIdentity(double[] parameters) {
+                           return parameters[0] == 1 && parameters[1] == 1;
+                       }
+                   };
     }
 
     public static TransformStackElement createShearElement(double shearX, double shearY){
-        return new TransformStackElement(TransformType.SHEAR, new double[]{ shearX, shearY });
+        return new TransformStackElement(TransformType.SHEAR, new double[]{ shearX, shearY }) {
+                       boolean isIdentity(double[] parameters) {
+                           return parameters[0] == 0 && parameters[1] == 0;
+                       }
+                   };
     }
 
     public static TransformStackElement createGeneralTransformElement(AffineTransform txf){
         double matrix[] = new double[6];
         txf.getMatrix(matrix);
-        return new TransformStackElement(TransformType.GENERAL, matrix);
+        return new TransformStackElement(TransformType.GENERAL, matrix) {
+                       boolean isIdentity(double[] m) {
+                           return (m[0] == 1 && m[2] == 0 && m[4] == 0 &&
+                                   m[1] == 0 && m[3] == 1 && m[5] == 0);
+                       }
+                   };
+    }
+    
+    /**
+     * Implementation should determine if the parameter list represents
+     * an identity transform, for the instance transform type.
+     */
+    abstract boolean isIdentity(double[] parameters);
+    
+    /**
+     * @return true iff this transform is the identity transform
+     */
+    public boolean isIdentity() {
+        return isIdentity(transformParameters);
     }
 
     /**
