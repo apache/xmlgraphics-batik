@@ -9,7 +9,7 @@
       <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
 .testC2 {stroke:none;}
 .testC3 {shape-rendering:crispEdges;font-family:'Impact';stroke:none;font-size:25;}
-.testC4 {shape-rendering:crispEdges;text-rendering:geometricPrecision;font-family:'Impact';font-size:25;}
+.testC4 {shape-rendering:crispEdges;text-rendering:optimizeSpeed;font-family:'Impact';font-size:25;}
 .testC5 {stroke:none;}
 .testC6 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
 .testC7 {stroke:none;}
