@@ -444,18 +444,32 @@ public class ParsedURL {
      */
     protected static String getProtocol(String urlStr) {
         if (urlStr == null) return null;
+        int idx = 0, len = urlStr.length();
 
-        int idx = urlStr.indexOf(':');
-        if (idx == -1) return null;
+        if (len == 0) return null;
 
-        // May have a protocol spec...
-        String protocol = urlStr.substring(0, idx).toLowerCase();
-        if (protocol.indexOf('/') != -1)
-            // Got a slash in protocol probably means 
-            // no protocol given.
-            return null;
-
-        return protocol;
+        // Protocol is only allowed to include -+.a-zA-Z
+        // So as soon as we hit something else we know we
+        // are done (if it is a ':' then we have protocol otherwise
+        // we don't.
+        char ch = urlStr.charAt(idx);
+        while ((ch == '-') ||
+               (ch == '+') ||
+               (ch == '.') ||
+               ((ch >= 'a') && (ch <= 'z')) ||
+               ((ch >= 'A') && (ch <= 'Z'))) {
+            idx++;
+            if (idx == len) {
+                ch=0;
+                break;
+            }
+            ch = urlStr.charAt(idx);
+        }
+        if (ch == ':') {
+            // Has a protocol spec...
+            return urlStr.substring(0, idx).toLowerCase();
+        }
+        return null;
     }
     
     /**
@@ -488,8 +502,7 @@ public class ParsedURL {
         String protocol = getProtocol(urlStr);
         if (protocol == null)
             protocol = baseURL.getProtocol();
-
         ParsedURLProtocolHandler handler = getHandler(protocol);
-        return handler.parseURL(baseURL, urlStr);        
+        return handler.parseURL(baseURL, urlStr);
     }
 }

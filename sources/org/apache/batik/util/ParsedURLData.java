@@ -127,7 +127,7 @@ public class ParsedURLData {
         // System.out.println("File: " + file);
         // if (ref != null)
         //     file += "#" + ref;
-        // System.out.println("Building: " + protocol + " - " + 
+        // System.err.println("Building: " + protocol + " - " + 
         //                     host + " - " + path);
 
         if ((protocol != null) && (host != null)) {
@@ -140,6 +140,7 @@ public class ParsedURLData {
             return new URL(protocol, host, port, file);
         }
 
+        // System.err.println("toString: " + toString());
         return new URL(toString());
     }
 
