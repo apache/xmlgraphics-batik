@@ -1,13 +1,39 @@
 
                   A  P  A  C  H  E     B  A  T  I  K
 
-                               @version@
+                               1.0 Beta
 
 
   What is it?
   -----------
 
-  Apache Batik is ... [TODO (SM) finish this]
+  Batik is a Java based toolkit for applications which handle
+  images in the Scalable Vector Graphics (SVG) format for
+  various purposes, such as viewing, generation or
+  manipulation. 
+
+  The project's ambition is to give developers a set of core
+  modules which can be used together or individually to
+  support specific SVG solutions. Examples of modules are
+  an SVG parser, an SVG generator and an SVG DOM
+  implementations. Another ambition of the Batik project is to
+  make it highly extensible (for example, Batik allows the
+  developer to handle custom SVG tags). Even though the
+  goal of the project is to provide a set of core modules, one
+  of the deliveries is a full fledged SVG Viewer
+  implementation which validates the various modules and
+  their inter-operability. 
+
+  In a nutshell, Batik provides building blocks that developers
+  can assemble in various ways in their Java technology
+  applications to generate, parse, view or convert SVG
+  contents. For example, Batik contains a Swing component
+  that can add SVG viewing capability to all Java technology
+  applications. Batik can also be used to generate SVG on a
+  client or on a server, and Batik can convert SVG content
+  into other formats such as JPEG or PNG. Batik's goal is to
+  make it easy for application developers to handle SVG
+  content for various purposes, client-side or server-side.
 
 
   Where is it?
@@ -28,10 +54,7 @@
   Installation Instructions and Documentation
   -------------------------------------------
 
-  Read the INSTALL file in this directory for the installation instructions.
-
-  The documentation available as of the date of this release is
-  included in the "docs/" directory.
+  Read the Install page at http://xml.apache.org/batik for the installation instructions.
 
   Look for the most updated documentation on the Apache Batik web site under
   the Apache XML Project (http://xml.apache.org/batik/).
@@ -41,8 +64,6 @@
   --------------------------
 
   For legal and licensing issues, please read the LICENSE file.
-
-
 
   Thanks for using Apache Batik.
 
