@@ -346,6 +346,13 @@ public interface GraphicsNode {
     Rectangle2D getPrimitiveBounds();
 
     /**
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into account, i.e., exclusive
+     * of any clipping, masking, filtering or stroking, for example.
+     */
+    Rectangle2D getGeometryBounds();
+
+    /**
      * Tests if the specified Point2D is inside the boundary of this
      * node.
      * @param p the specified Point2D in the user space

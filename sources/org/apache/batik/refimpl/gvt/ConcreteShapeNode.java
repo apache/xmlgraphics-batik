@@ -43,6 +43,11 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     protected Rectangle2D primitiveBounds;
 
     /**
+     * Geometry bounds
+     */
+    protected Rectangle2D geometryBounds;
+
+    /**
      * The painted area.
      */
     protected Shape paintedArea;
@@ -126,6 +131,14 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         }
         return primitiveBounds;
 
+    }
+
+    public Rectangle2D getGeometryBounds(){
+        if (geometryBounds == null) {
+            geometryBounds = shape.getBounds();
+        }
+
+        return geometryBounds;
     }
 
     public Shape getOutline() {

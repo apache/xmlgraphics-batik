@@ -719,7 +719,6 @@ public class SVGUtilities implements SVGConstants {
                                                   uctx);
         }
 
-
         return new FilterChainRegion(x, y, width, height,
                                      txf);
     }
@@ -1049,56 +1048,9 @@ public class SVGUtilities implements SVGConstants {
             }
         }
 
-
         return new FilterPrimitiveRegion(x, y, width, height,
                                          txf, defaultRegion);
     }
-
-    /**
-     * Creates a filter region from a filter element's x, y, width
-     * and height attributes. Uses the input <tt>GraphicsNode</tt>
-     * as a default for the region bounds
-     */
-    /*public static FilterRegion convertFilterRegion(Element filteredElement,
-                                                   GraphicsNode node,
-                                                   UnitProcessor.Context uctx){
-
-        SVGElement svgElement = (SVGElement)filteredElement;
-
-        // Extract string values for x, y, width, height
-        String floatStr = filteredElement.getAttributeNS(null, ATTR_X);
-        floatStr = (floatStr.length() == 0 ? VALUE_ZERO : floatStr);
-        float x = UnitProcessor.svgToUserSpace(floatStr,
-                                               svgElement,
-                                               UnitProcessor.HORIZONTAL_LENGTH,
-                                               uctx);
-
-        floatStr = filteredElement.getAttributeNS(null, ATTR_Y);
-        floatStr = (floatStr.length() == 0 ? VALUE_ZERO : floatStr);
-        float y = UnitProcessor.svgToUserSpace(floatStr,
-                                               svgElement,
-                                               UnitProcessor.VERTICAL_LENGTH,
-                                               uctx);
-
-        floatStr = filteredElement.getAttributeNS(null, ATTR_WIDTH);
-        floatStr = (floatStr.length() == 0 ? VALUE_HUNDRED_PERCENT : floatStr);
-        float width = UnitProcessor.svgToUserSpace(floatStr,
-                                                   svgElement,
-                                                   UnitProcessor.HORIZONTAL_LENGTH,
-                                                   uctx);
-
-        floatStr = filteredElement.getAttributeNS(null, ATTR_HEIGHT);
-        floatStr = (floatStr.length() == 0 ? VALUE_HUNDRED_PERCENT : floatStr);
-        float height = UnitProcessor.svgToUserSpace(floatStr,
-                                                    svgElement,
-                                                    UnitProcessor.VERTICAL_LENGTH,
-                                                    uctx);
-
-
-        return new ConcreteFilterRegion(node,
-                                        new Float(x), new Float(y),
-                                        new Float(width), new Float(height));
-                                        }*/
 
     /**
      * Parses a Float value pair. This assumes that the input attribute

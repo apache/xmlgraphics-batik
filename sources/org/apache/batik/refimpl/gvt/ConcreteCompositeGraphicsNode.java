@@ -58,6 +58,12 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
     protected int modCount;
 
     /**
+     * Geometry bounds for this node, not taking into account any of its
+     * children rendering attributes into account
+     */
+    protected Rectangle2D geometryBounds;
+
+    /**
      * Constructs a new empty composite graphics node.
      */
     public ConcreteCompositeGraphicsNode() {}
@@ -187,6 +193,43 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
             bounds.add(nodeBounds);
         }
         return bounds;
+    }
+
+    public Rectangle2D getGeometryBounds(){
+        Rectangle2D b = null;
+        if(geometryBounds == null){
+            Rectangle2D nodeBounds = null;
+            AffineTransform txf = null;
+            if(count > 0){
+                txf = children[0].getTransform();
+                nodeBounds = children[0].getGeometryBounds();
+                geometryBounds = (txf == null)
+                    ? nodeBounds
+                    : txf.createTransformedShape(nodeBounds).getBounds2D();
+                b = geometryBounds;
+            } else {
+                System.out.println("Group is empty ...");
+                Exception e = new Exception();
+                e.printStackTrace();
+                // With the following empty groups may have bad side effects.
+                // Note that we do not cache this value as this does not
+                // have a performance impact and it is likely that this
+                // group is under construction.
+                b = new Rectangle(0, 0, 0, 0);
+            }
+            for (int i=1; i < count; ++i) {
+                GraphicsNode node = children[i];
+                nodeBounds = node.getGeometryBounds();
+                txf = children[i].getTransform();
+                if (txf != null) {
+                    nodeBounds =
+                        txf.createTransformedShape(nodeBounds).getBounds2D();
+                }
+                geometryBounds.add(nodeBounds);
+            }
+        }
+
+        return b;
     }
 
     public Shape getOutline() {

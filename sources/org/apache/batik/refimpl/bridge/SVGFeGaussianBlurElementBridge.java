@@ -146,8 +146,8 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
                                                                 uctx);
 
                 PadRable pad = new ConcretePadRable(in,
-                                              blurArea.getRegion(),
-                                              PadMode.ZERO_PAD){
+                                                    new Rectangle2D.Float(0, 0, 0, 0), // Let this be lazily computed on request
+                                                    PadMode.ZERO_PAD){
                         public Rectangle2D getBounds2D(){
                             setPadRect(blurArea.getRegion());
                             return super.getBounds2D();

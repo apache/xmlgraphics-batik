@@ -80,8 +80,9 @@ public class ConcreteFilterChainRable extends AbstractRable
             throw new IllegalArgumentException();
         }
 
-        // Build crop with chain source and region
-        Rectangle2D padRect = filterRegion.getRegion();
+        // Build crop with chain source and dummy region (will be lazily evaluated
+        // later on).
+        Rectangle2D padRect = new Rectangle2D.Float(0, 0, 0, 0);
         crop = new ConcretePadRable(source, padRect, 
                                     PadMode.ZERO_PAD);
 
@@ -174,10 +175,6 @@ public class ConcreteFilterChainRable extends AbstractRable
         if(filterRegion == null){
             throw new IllegalArgumentException();
         }
-
-        // Update the crop operation with the new filter 
-        // region's size.
-        crop.setPadRect(filterRegion.getRegion());
      }
 
     /**
@@ -219,8 +216,6 @@ public class ConcreteFilterChainRable extends AbstractRable
      * Returns this filter's bounds
      */
     public Rectangle2D getBounds2D(){
-        // <!> HACK : Should not need to update the crop's here
-        crop.setPadRect(filterRegion.getRegion());
         return filterRegion.getRegion();
     }
 

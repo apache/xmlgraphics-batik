@@ -109,4 +109,9 @@ public class ConcreteImageNode extends AbstractGraphicsNode
         // <!> FIXME : TODO
         return null;
     }
+
+    public Rectangle2D getGeometryBounds(){
+        // <!> FIXME : TODO
+        return null;
+    }
 }
