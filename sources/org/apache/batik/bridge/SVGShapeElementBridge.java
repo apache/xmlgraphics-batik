@@ -40,6 +40,9 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
         ShapeNode shapeNode = (ShapeNode)super.createGraphicsNode(ctx, e);
+	if (shapeNode == null) {
+	    return null;
+	}
         // delegates to subclasses the shape construction
         buildShape(ctx, e, shapeNode);
 	if (shapeNode.getShape() == null) {

@@ -70,6 +70,10 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * @return a graphics node that represents the specified element 
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
+	// 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+	if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+	    return null;
+	}
 
         ImageNode imageNode = (ImageNode)super.createGraphicsNode(ctx, e);
 
