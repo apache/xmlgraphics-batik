@@ -82,11 +82,11 @@
     </g>
     <rect x="25" y="25" width="400" height="400" style="fill:url(#light);"/>
     <defs>
-      <radialGradient id="psion" gradientUnits="objectBoundingBox" fx="30%" fy="40%" r="100%">
+      <radialGradient id="psion" gradientUnits="objectBoundingBox" fx="20%" fy="24%" r="100%">
                       <stop offset="0%"   style="stop-color:white;" />
                       <stop offset="50%" style="stop-color:black;" />
       </radialGradient>
-      <radialGradient id="psion2" gradientUnits="objectBoundingBox" fx="20%" fy="30%" r="60%">
+      <radialGradient id="psion2" gradientUnits="objectBoundingBox" fx="20%" fy="24%" r="60%">
                       <stop offset="0%"   style="stop-color:white;" />
                       <stop offset="100%" style="stop-color:black;" />
       </radialGradient>
