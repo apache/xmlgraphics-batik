@@ -13,6 +13,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.StringReader;
 import java.util.StringTokenizer;
+import java.util.ArrayList;
 
 import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MissingAttributeException;
@@ -1172,6 +1173,56 @@ public class SVGUtilities implements SVGConstants {
                                             (SVGElement)element,
                                             direction,
                                             uctx);
+    }
+
+    /**
+     * Returns the float array that represents a set of values or percentage.
+     *
+     * @param element the element that defines the specified coordinates
+     * @param attrName the name of the attribute (used by error handling)
+     * @param valueStr the delimited string containing values of the coordinate
+     * @param uctx the context used to compute units and percentages
+     * @param direction HORIZONTAL_LENGTH | VERTICAL_LENGTH | OTHER_LENGTH
+     * @exception IllegalAttributeValueException if the value is not a valid
+     */
+    public static float[] svgToUserSpaceArray(Element element,
+                                       String attrName,
+                                       String valueStr,
+                                       UnitProcessor.Context uctx,
+                                       short direction) {
+
+        // INTERNAL : check for correct arguments - should never happen
+        if (valueStr == null || valueStr.length() == 0) {
+            throw new Error("The value is null or empty");
+        }
+
+        LengthParser p = uctx.getParserFactory().createLengthParser();
+        UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
+        p.setLengthHandler(ur);
+        ArrayList values = new ArrayList();
+        StringTokenizer st = new StringTokenizer(valueStr, ", ", false);
+        int c = 0; // must count, can't rely in ArrayList.size()
+        while (st.hasMoreTokens()) {
+            String s = st.nextToken();
+            try {
+                p.parse(new StringReader(s));
+                ++c;
+            } catch (ParseException ex) {
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("length.invalid",
+                                       new Object[] {s, attrName}));
+            }
+            values.add(new Float(UnitProcessor.svgToUserSpace(ur.unit,
+                                            ur.value,
+                                            (SVGElement)element,
+                                            direction,
+                                            uctx)));
+        }
+        float[] floats = new float[c];
+        for (int i=0; i<c; ++i) {
+            floats[i] = ((Float) values.get(i)).floatValue();
+        }
+        return floats;
     }
 
     /**

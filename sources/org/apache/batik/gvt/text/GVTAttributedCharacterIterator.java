@@ -207,7 +207,7 @@ public interface GVTAttributedCharacterIterator extends
         }
 
         /** Attribute span delimiter - new tspan, tref, or textelement.*/
-        public final static TextAttribute TEXT_COMPOUND_DELIMITER = 
+        public final static TextAttribute TEXT_COMPOUND_DELIMITER =
                               new TextAttribute("TEXT_COMPOUND_DELIMITER");
 
         /** User-space X coordinate for character.*/
@@ -215,6 +215,12 @@ public interface GVTAttributedCharacterIterator extends
 
         /** User-space Y coordinate for character.*/
         public final static TextAttribute Y = new TextAttribute("Y");
+
+        /** User-space relative X coordinate for character.*/
+        public final static TextAttribute DX = new TextAttribute("DX");
+
+        /** User-space relative Y coordinate for character.*/
+        public final static TextAttribute DY = new TextAttribute("DY");
 
         /** Rotation for character, in degrees.*/
         public final static TextAttribute ROTATION =

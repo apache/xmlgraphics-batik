@@ -11,6 +11,7 @@ package org.apache.batik.gvt.text;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 
 /**
@@ -80,6 +81,14 @@ public interface TextSpanLayout {
      * adjacent layouts.)
      */
     public float getAdvance();
+
+    /**
+     * Returns the current text position at the completion
+     * of glyph layout. 
+     * (This is the position that should be used for positioning
+     * adjacent layouts.)
+     */
+    public Point2D getAdvance2D();
 
     /**
      * Returns a Shape which encloses the currently selected glyphs

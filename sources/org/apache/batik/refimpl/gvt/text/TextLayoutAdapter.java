@@ -13,6 +13,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.BasicStroke;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.font.TextLayout;
@@ -35,9 +36,11 @@ public class TextLayoutAdapter implements TextSpanLayout {
 
     private TextLayout layout;
     private AttributedCharacterIterator aci;
+    private Point2D offset;
 
-    public TextLayoutAdapter(TextLayout layout, AttributedCharacterIterator aci) {
+    public TextLayoutAdapter(TextLayout layout, Point2D offset, AttributedCharacterIterator aci) {
         this.layout = layout;
+        this.offset = offset;
         this.aci = aci;
     }
 
@@ -49,7 +52,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * @param y the y position of the rendered layout origin.
      */
     public void draw(Graphics2D g2d, float x, float y) {
-        layout.draw(g2d, x, y);
+        layout.draw(g2d, x+(float) offset.getX(), y+(float) offset.getY());
     }
 
     /**
@@ -58,7 +61,9 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * @param t an AffineTransform to apply to the outline before returning it.
      */
     public Shape getOutline(AffineTransform t) {
-        return layout.getOutline(t);
+        AffineTransform nt = (AffineTransform) t.clone();
+        nt.translate(offset.getX(), offset.getY());
+        return layout.getOutline(nt);
     }
 
     /**
@@ -81,14 +86,20 @@ public class TextLayoutAdapter implements TextSpanLayout {
         if ((decorationType & DECORATION_OVERLINE) != 0) {
              g.append(getOverlineShape(aci, layout), false);
         }
-        return t.createTransformedShape(g);
+        AffineTransform nt = (AffineTransform) t.clone();
+        nt.translate(offset.getX(), offset.getY());
+        return nt.createTransformedShape(g);
     }
 
     /**
      * Returns the rectangular bounds of the completed glyph layout.
      */
     public Rectangle2D getBounds() {
-        return layout.getBounds();
+        Rectangle2D bounds = layout.getBounds();
+        return new Rectangle2D.Double(bounds.getX()+offset.getX(),
+                                      bounds.getY()+offset.getY(),
+                                      bounds.getWidth(), 
+                                      bounds.getHeight());
     }
 
     /**
@@ -97,7 +108,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
     public Rectangle2D getDecoratedBounds() {
         Rectangle2D dbounds = getDecorationOutline(
           DECORATION_UNDERLINE|DECORATION_OVERLINE|DECORATION_STRIKETHROUGH,
-                     new AffineTransform()).getBounds2D();
+          new AffineTransform()).getBounds2D();
        return dbounds.createUnion(getBounds());
     }
 
@@ -112,13 +123,26 @@ public class TextLayoutAdapter implements TextSpanLayout {
     }
 
     /**
+     * Returns the current text position at the completion
+     * of glyph layout.
+     * (This is the position that should be used for positioning
+     * adjacent layouts.)
+     */
+    public Point2D getAdvance2D() {
+        return new Point2D.Float(layout.getAdvance(), 0f);
+    }
+
+    /**
      * Returns a Shape which encloses the currently selected glyphs
      * as specified by glyph indices <tt>begin/tt> and <tt>end</tt>.
      * @param begin the index of the first glyph in the contiguous selection.
      * @param end the index of the last glyph in the contiguous selection.
      */
     public Shape getLogicalHighlightShape(int begin, int end) {
-        return layout.getLogicalHighlightShape(begin, end);
+        AffineTransform nt = AffineTransform.getTranslateInstance(
+                                           offset.getX(), offset.getY());
+        return nt.createTransformedShape(
+                  layout.getLogicalHighlightShape(begin, end));
     }
 
     /**
@@ -130,7 +154,8 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * @param y the y coordinate of the point to be tested.
      */
     public TextHit hitTestChar(float x, float y) {
-        TextHitInfo hit = layout.hitTestChar(x, y);
+        TextHitInfo hit = layout.hitTestChar(x-(float) offset.getX(), 
+                                             y-(float) offset.getY());
         return new TextHit(hit.getCharIndex(), hit.isLeadingEdge());
     }
 

@@ -8,6 +8,7 @@
 
 package org.apache.batik.gvt.text;
 
+import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
 import java.awt.font.FontRenderContext;
 
@@ -29,6 +30,7 @@ public interface TextLayoutFactory {
      * @param frc the rendering context for the fonts used.
      */
     public TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
+                                 Point2D offset,
                                  FontRenderContext frc);
 
 }
