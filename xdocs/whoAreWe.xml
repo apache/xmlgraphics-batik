@@ -104,17 +104,68 @@ as a software engineer for Bull.</em>
         </dl>
 
         <p>
-        <link href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</link>,
-        <link href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</link>,
-        <link href="mailto:tissandi@ilog.fr">Emmanuel Tissandier</link>
-        are some of the Batik project founders and helped define and
-        implement the initial Batik architecture.
+        The following people are some of the Batik project founders and
+        helped define and implement the initial Batik architecture:
         </p>
 
+        <dl>
+          <dt>Bill Haneman</dt><dd><br />
+          <link href="mailto:bill.haneman@ireland.sun.com">bill.haneman@ireland.sun.com</link><br />
+          <em>
+          Bill Haneman works for Sun Microsystems' Desktop Enabling Middleware
+          group in Dublin, Ireland, and implemented much of the Batik's text
+          support (though not SVG Fonts, thanks Bella, Dean, and David!).  He is
+          also technical lead for the Gnome Accessibility Project
+          (http://developer.gnome.org/projects/gap), an open project to provide
+          an accessibility framework for linux and Solaris(TM) desktops.  A
+          twenty-year veteran of scientific programming and application
+          development, he is a US expatriate who plays traditional Irish music
+          on the uilleann pipes. 
+          </em> 
+          <br /><br />
+          </dd>
+
+          <dt>Dean Jackson</dt><dd><br />
+          <link href="mailto:dean.jackson@cmis.csiro.au">dean.jackson@cmis.csiro.au</link><br />
+          <em>
+          Dean is employed by CSIRO Australia and is currently working at
+          the World Wide Web Consortium (W3C) full time on SVG. He is a member
+          of the W3C's SVG working group, and was a developer
+          of the CSIRO SVG Toolkit, one of the first and most complete open source
+          SVG libraries. 
+          </em>
+          <br /><br />
+          </dd>
+
+          <dt>Emmanuel Tissandier</dt><dd><br />
+          <link href="mailto:tissandi@ilog.fr">tissandi@ilog.fr</link><br />
+          <em>
+          Emmanuel Tissandier has been working for 10 years as a software engineer
+          in object oriented environments. He started with the development of CASE
+          tools at Rank Xerox and joined the visualization R&amp;D team of ILOG in
+          1995. Since 1997, he has been the R&amp;D Project Manager for the ILOG
+          JViews Component Suite, a product for delivering two-dimensional
+          structured graphics, cartography, diagrams, and Gantt charts in Java.  
+          </em>
+          <br /><br />
+          </dd>
+        </dl>
+
         <p>
-        <link href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</link>
-        implemented the SVG fonts support in Batik. 
+        Bella Robinson implemented the SVG fonts support in Batik:
         </p>
+        <dl>
+        <dt>Bella Robinson</dt><dd><br />
+        <link href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</link>
+          <em>
+          Bella is a Software Engineer working for CSIRO Australia. She was one
+          of the main developers of the CSIRO SVG Toolkit and has also been working
+          on a Pocket SVG Viewer for handheld devices. Her interests include 
+          graphics and XML programming.
+          </em>
+          <br /><br />
+          </dd>
+        </dl>
 
         <p>
         In addition, <link href="mailto:James.Davidson@eng.sun.com">James Davidson</link>
