@@ -143,6 +143,7 @@ public class SVGAccuracyTest extends AbstractTest
         OutputStreamWriter osw = new OutputStreamWriter(bos, "UTF-8");
         try{
             painter.paint(g2d);
+            configureSVGGraphics2D(g2d);
             g2d.stream(osw);
             osw.flush();
             bos.flush();
@@ -254,11 +255,18 @@ public class SVGAccuracyTest extends AbstractTest
      * Builds an <tt>SVGGraphics2D</tt> with a default
      * configuration.
      */
-    protected SVGGraphics2D buildSVGGraphics2D(){
+    protected SVGGraphics2D buildSVGGraphics2D() {
         // CSSDocumentHandler.setParserClassName(CSS_PARSER_CLASS_NAME);
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
         String namespaceURI = SVGDOMImplementation.SVG_NAMESPACE_URI;
         Document domFactory = impl.createDocument(namespaceURI, SVG_SVG_TAG, null);
         return new SVGGraphics2D(domFactory);
     }
+
+
+    /**
+     * Eventually configure the <tt>SVGGraphics2D</tt> after dumping in it and just
+     * before serializing the DOM Tree.
+     */
+    protected void configureSVGGraphics2D(SVGGraphics2D g2d) {}
 }
