@@ -35,7 +35,7 @@
           class="org.apache.batik.dom.svg.CloneElementTest" >
         <arg class="java.lang.String"
              value="test-resources/org/apache/batik/dom/dummyXML3.xml" />
-        <arg class="java.lang.String" value="root" />
+        <arg class="java.lang.String" value="doc" />
         <arg class="java.lang.String" value="elt2" />
     </test>
 

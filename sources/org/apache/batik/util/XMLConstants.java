@@ -19,13 +19,13 @@ public interface XMLConstants {
      * The XML namespace URI.
      */
     String XML_NAMESPACE_URI =
-	"http://www.w3.org/XML/1998/namespace";
+        "http://www.w3.org/XML/1998/namespace";
 
     /**
      * The xmlns namespace URI.
      */
     String XMLNS_NAMESPACE_URI =
-	"http://www.w3.org/2000/xmlns/";
+        "http://www.w3.org/2000/xmlns/";
 
     /**
      * The xmlns prefix
