@@ -38,6 +38,12 @@
         <xsl:variable name="childrenTestSuites" select="description/testSuiteReport" />
         <xsl:variable name="childrenTestsCount" select="count($childrenTests) + count($childrenTestSuites)" />
 
+        <a>
+            <xsl:attribute name="href">
+                <xsl:value-of select="@id" />
+            </xsl:attribute>
+        </a>
+
         <xsl:choose>
         <xsl:when test="$childrenTestsCount &gt; 0 or @status='failed'">
             <tr bgcolor="#cccccc">

@@ -43,12 +43,6 @@ public class PNGEncoderTest extends AbstractTest {
     public static final String ERROR_DECODED_DOES_NOT_MATCH_ENCODED
         = "PNGEncoderTest.error.decoded.does.not.match.encoded";
 
-    /**
-     * Entry describing the error
-     */
-    public static final String ENTRY_KEY_ERROR_DESCRIPTION 
-        = "SVGRenderingAccuracyTest.entry.key.error.description";
-
     public TestReport runImpl() throws Exception {
         // Create a BufferedImage to be encoded
         BufferedImage image = new BufferedImage(100, 75, BufferedImage.TYPE_INT_ARGB);
@@ -169,61 +163,4 @@ public class PNGEncoderTest extends AbstractTest {
         return identical;
     }
 
-    /**
-     * Convenience method to report a simple error code.
-     */
-    public TestReport reportError(String errorCode){
-        DefaultTestReport report = new DefaultTestReport(this);
-        report.setErrorCode(errorCode);
-        report.setPassed(false);
-        return report;
-    }
-
-    /**
-     * Convenience method to report success.
-     */
-    public TestReport reportSuccess(){
-        DefaultTestReport report = new DefaultTestReport(this);
-        report.setPassed(true);
-        return report;
-    }
-        
-    /**
-     * Convenience method to help implementations report errors.
-     * An <tt>AbstractTest</tt> extension will typically catch 
-     * exceptions for specific error conditions it wants to point 
-     * out. For example:<tt>
-     * public TestReport runImpl() throws Exception { <br />
-     *   try{ <br />
-     *      .... something .... <br />
-     *   catch(MySpecialException e){ <br />
-     *      return reportException(MY_SPECIAL_ERROR_CODE, e); <br />
-     *   } <br />
-     * <br />
-     * public static final String MY_SPECIAL_ERROR_CODE = "myNonQualifiedClassName.my.error.code" <br />
-     * <br />
-     * </tt> <br />
-     * Note that the implementor will also need to add an entry
-     * in its Messages.properties file. That file is expected to be 
-     * in a resource file called <tt>Messages</tt> having the same package 
-     * name as the <tt>Test</tt> class, appended with "<tt>.resources</tt>".
-     */
-    public TestReport reportException(String errorCode,
-                                      Exception e){
-        DefaultTestReport report 
-            = new DefaultTestReport(this);
-
-        StringWriter trace = new StringWriter();
-        e.printStackTrace(new PrintWriter(trace));
-        report.setErrorCode(errorCode);
-        report.setDescription(new TestReport.Entry[] {
-            new TestReport.Entry
-                (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                 Messages.formatMessage
-                     (errorCode,
-                      new String[]{trace.toString()})) });
-        report.setPassed(false);
-        return report;
-    }
-            
 }

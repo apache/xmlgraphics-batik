@@ -116,12 +116,15 @@ public abstract class AbstractTest implements Test {
 
                 report.setDescription(entries);
 
+            }catch(Exception ex){
+                ex.printStackTrace();
             }finally {
                 //
                 // In case we are in severe trouble, even filling in the 
                 // TestReport may fail. Because the TestReport instance
                 // was created up-front, this ensures we can return 
                 // the report, even though it may be incomplete.
+                System.out.println("SERIOUS ERROR");
                 return report;
             }
                 
@@ -165,4 +168,62 @@ public abstract class AbstractTest implements Test {
         report.setPassed(true);
         return report;
     }
+
+    /**
+     * Convenience method to report a simple error code.
+     */
+    public TestReport reportError(String errorCode){
+        DefaultTestReport report = new DefaultTestReport(this);
+        report.setErrorCode(errorCode);
+        report.setPassed(false);
+        return report;
+    }
+
+    /**
+     * Convenience method to help implementations report errors.
+     * An <tt>AbstractTest</tt> extension will typically catch 
+     * exceptions for specific error conditions it wants to point 
+     * out. For example:<tt>
+     * public TestReport runImpl() throws Exception { <br />
+     *   try{ <br />
+     *      .... something .... <br />
+     *   catch(MySpecialException e){ <br />
+     *      return reportException(MY_SPECIAL_ERROR_CODE, e); <br />
+     *   } <br />
+     * <br />
+     * public static final String MY_SPECIAL_ERROR_CODE = "myNonQualifiedClassName.my.error.code" <br />
+     * <br />
+     * </tt> <br />
+     * Note that the implementor will also need to add an entry
+     * in its Messages.properties file. That file is expected to be 
+     * in a resource file called <tt>Messages</tt> having the same package 
+     * name as the <tt>Test</tt> class, appended with "<tt>.resources</tt>".
+     */
+    public TestReport reportException(String errorCode,
+                                      Exception e){
+        DefaultTestReport report 
+            = new DefaultTestReport(this);
+
+        StringWriter trace = new StringWriter();
+        e.printStackTrace(new PrintWriter(trace));
+        report.setErrorCode(errorCode);
+
+                
+        TestReport.Entry[] entries = new TestReport.Entry[]{
+            new TestReport.Entry
+                (Messages.formatMessage(report.ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_CLASS, null),
+                 e.getClass().getName()),
+            new TestReport.Entry
+                (Messages.formatMessage(report.ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_MESSAGE, null),
+                 e.getMessage()),
+            new TestReport.Entry
+                (Messages.formatMessage(report.ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_STACK_TRACE, null),
+                 trace.toString())
+                };
+        report.setDescription(entries);
+        report.setPassed(false);
+        return report;
+    }
+            
+
 }
