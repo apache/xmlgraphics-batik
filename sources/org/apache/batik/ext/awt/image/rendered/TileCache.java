@@ -21,7 +21,8 @@ public class TileCache {
 		return new TileGrid(minTileX, minTileY, xSz, ySz, src, cache);
 	}
 
-	public static TileStore getTileGrid(RenderedImage img, TileGenerator src) {
+	public static TileStore getTileGrid(RenderedImage img, 
+					    TileGenerator src) {
 		return new TileGrid(img.getMinTileX(),  img.getMinTileY(), 
                             img.getNumXTiles(), img.getNumYTiles(), 
                             src, cache);

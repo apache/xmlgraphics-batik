@@ -477,6 +477,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                         for (int j = currentIndex; j < displayUpToIndex; j++) {
                             if (fontAssigned[j - start]) {
                                 if (runStart != -1) {
+				    // System.out.println("Font 1: " + font);
                                     as.addAttribute(GVT_FONT, font, 
                                                     runStart-begin, j-begin);
                                     runStart=-1;
@@ -489,6 +490,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                             numSet++;
                         }
                         if (runStart != -1) {
+			    // System.out.println("Font 2: " + font);
                             as.addAttribute(GVT_FONT, font, 
                                             runStart-begin, 
                                             displayUpToIndex-begin);
@@ -511,6 +513,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             for (int i = 0; i < aciLength; i++) {
                 if (fontAssigned[i]) {
                     if (runStart != -1) {
+			// System.out.println("Font 3: " + prevF);
                         as.addAttribute(GVT_FONT, prevF, 
                                         runStart+asOff, i+asOff);
                         runStart = -1;
@@ -532,6 +535,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                             prevF = fontFamily.deriveFont(fontSize, aci);
                     } else if (prevFF != fontFamily) {
                         // Font family changed...
+			// System.out.println("Font 4: " + prevF);
                         as.addAttribute(GVT_FONT, prevF, 
                                         runStart+asOff, i+asOff);
                     
@@ -544,9 +548,11 @@ public class StrokingTextPainter extends BasicTextPainter {
                     }
                 }
             }
-            if (runStart != -1) 
+            if (runStart != -1) {
+		// System.out.println("Font 5: " + prevF);
                 as.addAttribute(GVT_FONT, prevF, 
                                 runStart+asOff, aciLength+asOff);
+	    }
 
             asOff += aciLength;
             if (aci.setIndex(end) == aci.DONE) {
