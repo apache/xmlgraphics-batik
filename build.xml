@@ -119,7 +119,8 @@ To display the available targets type:
     <echo message="   dist-tgz      --> build the tgz distributions"/>
     <echo message="   compile       --> compiles the source code"/>
     <echo message="   svgviewer     --> runs the SVG viewer"/>
-    <echo message="   svgrasterizer --> runs the SVG viewer"/>
+    <echo message="   svgrasterizer --> runs the SVG rasterizer"/>
+    <echo message="   svgpp         --> runs the SVG pretty-printer"/>
     <echo message="   regard        --> runs the regard regression utility"/>
     <echo message="   javadoc       --> generates the API documentation"/>
     <echo message="   site          --> generates the site documentation"/>
@@ -530,6 +531,20 @@ To display the available targets type:
           description="Runs the SVG rasterizer">
     <java fork="yes"
           classname="${class-prefix}.apps.rasterizer.Main">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+      </classpath>
+      <arg value="${args}"/>
+    </java>
+  </target>
+
+  <target name="svgpp"
+          depends="compile"
+          description="Runs the SVG pretty-printer">
+    <java fork="yes"
+          classname="${class-prefix}.apps.svgpp.Main">
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
