@@ -582,7 +582,9 @@ public class JSVGViewerFrame
 
         public void actionPerformed(ActionEvent e){
             AboutDialog dlg = new AboutDialog(JSVGViewerFrame.this);
-            dlg.setVisible(true);
+            dlg.setSize(dlg.getPreferredSize()); // Work around pack() bug on some platforms
+            dlg.setLocationRelativeTo(JSVGViewerFrame.this);
+            dlg.show();
         }
     }
 

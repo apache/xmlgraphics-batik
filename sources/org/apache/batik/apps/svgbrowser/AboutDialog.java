@@ -169,7 +169,7 @@ public class AboutDialog extends JWindow
 
         JTextArea contributors 
             = new JTextArea(Resources.getString(LABEL_CONTRIBUTORS)){ 
-                    {setLineWrap(true); setWrapStyleWord(true); setEnabled(false);}
+                    {setLineWrap(true); setWrapStyleWord(true); setEnabled(false); setRows(7); }
                 };
 
         contributors.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -188,8 +188,8 @@ public class AboutDialog extends JWindow
         // getContentPane().setLayout(new FlowLayout());
         getContentPane().add(p);
 
-        pack();
-        pack(); // This is not a mistake but a work-around.
+        // pack();
+        // pack(); // This is not a mistake but a work-around.
         // The layout is not done properly on the first pack();
     }
 
