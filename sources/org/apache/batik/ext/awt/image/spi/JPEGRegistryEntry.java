@@ -8,6 +8,7 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -19,6 +20,7 @@ import org.apache.batik.ext.awt.image.renderable.DeferRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
+import org.apache.batik.ext.awt.image.rendered.FormatRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.util.ParsedURL;
 
@@ -86,9 +88,13 @@ public class JPEGRegistryEntry
                                 throw new IOException
                                     ("JPEG File was truncated");
                         }
+                        dr.setBounds(new Rectangle2D.Double
+                                     (0, 0, image.getWidth(), 
+                                      image.getHeight()));
                         CachableRed cr;
                         cr = GraphicsUtil.wrap(image);
                         cr = new Any2sRGBRed(cr);
+                        cr = new FormatRed(cr, GraphicsUtil.sRGB_Unpre);
                         WritableRaster wr = (WritableRaster)cr.getData();
                         ColorModel cm = cr.getColorModel();
                         image = new BufferedImage

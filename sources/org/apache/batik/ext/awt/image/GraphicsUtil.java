@@ -91,8 +91,6 @@ public class GraphicsUtil {
 
         // System.out.println("DrawImage G: " + g2d);
 
-        ColorModel  srcCM = cr.getColorModel();
-
         AffineTransform at = null;
         while (true) {
             if (cr instanceof AffineRed) {
@@ -117,18 +115,45 @@ public class GraphicsUtil {
             }
             break;
         }
-
         AffineTransform g2dAt   = g2d.getTransform();
         if ((at == null) || (at.isIdentity()))
             at = g2dAt;
         else
             at.preConcatenate(g2dAt);
 
-        Composite g2dComposite = g2d.getComposite();
+        ColorModel  srcCM = cr.getColorModel();
+        ColorSpace g2dCS = getDestinationColorSpace(g2d);
+        ColorModel g2dCM = getDestinationColorModel(g2d);
+        if (g2dCS == null)
+            // Assume device is sRGB
+            g2dCS = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+        ColorModel drawCM = g2dCM;
+        if (g2dCM == null) {
+            // If we can't find out about our device assume
+            // it's SRGB unpremultiplied (Just because this
+            // seems to work for us).
+            drawCM = sRGB_Unpre;
+        } else if (drawCM.hasAlpha() && g2dCM.hasAlpha() &&
+                   (drawCM.isAlphaPremultiplied() !=
+                    g2dCM .isAlphaPremultiplied())) {
+            drawCM = coerceColorModel(drawCM, g2dCM.isAlphaPremultiplied());
+        }
 
-        if (false) {
-            System.out.println("CR: " + cr);
-            System.out.println("CRR: " + cr.getBounds());
+        if (cr instanceof BufferedImageCachableRed) {
+            // There is a huge win if we can use the BI directly here.
+            // This results in something like a 10x performance gain
+            // for images, the best thing is this is the common case.
+            if (g2dCS.equals(srcCM.getColorSpace()) &&
+                drawCM.equals(srcCM)) {
+                // System.err.println("Fast Case");
+                g2d.setTransform(at);
+                BufferedImageCachableRed bicr;
+                bicr = (BufferedImageCachableRed)cr;
+                g2d.drawImage(bicr.getBufferedImage(),
+                              bicr.getMinX(), bicr.getMinY(), null);
+                g2d.setTransform(g2dAt);
+                return;
+            }
         }
 
         // Scaling down so do it before color conversion.
@@ -143,11 +168,6 @@ public class GraphicsUtil {
             }
         }
 
-        ColorSpace g2dCS = getDestinationColorSpace(g2d);
-        if (g2dCS == null)
-            // Assume device is sRGB
-            g2dCS = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-
         if (g2dCS != srcCM.getColorSpace()) {
             // System.out.println("srcCS: " + srcCM.getColorSpace());
             // System.out.println("g2dCS: " + g2dCS);
@@ -161,22 +181,9 @@ public class GraphicsUtil {
             else if (g2dCS == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
                 cr = convertToLsRGB(cr);
         }
-
         srcCM = cr.getColorModel();
-        ColorModel g2dCM = getDestinationColorModel(g2d);
-        ColorModel drawCM = g2dCM;
-        if (g2dCM == null) {
-            // If we can't find out about our device assume
-            // it's SRGB unpremultiplied (Just because this
-            // seems to work for us).
-            drawCM = sRGB_Unpre;
-        } else if (drawCM.hasAlpha() && g2dCM.hasAlpha() &&
-                   (drawCM.isAlphaPremultiplied() !=
-                    g2dCM .isAlphaPremultiplied())) {
-            drawCM = coerceColorModel(drawCM, g2dCM.isAlphaPremultiplied());
-        }
-
-        cr = FormatRed.construct(cr, drawCM);
+        if (!drawCM.equals(srcCM))
+            cr = FormatRed.construct(cr, drawCM);
 
         // Scaling up so do it after color conversion.
         if (!at.isIdentity() && (determinant > 1.0))
@@ -189,6 +196,7 @@ public class GraphicsUtil {
         // Which doesn't seem to have as many bugs as the JDK one when
         // going between different src's and destinations (of course it's
         // also a lot slower).
+        Composite g2dComposite = g2d.getComposite();
         if (g2d.getRenderingHint(RenderingHintsKeyExt.KEY_TRANSCODING) ==
             RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING) {
             if (SVGComposite.OVER.equals(g2dComposite)) {
@@ -219,68 +227,13 @@ public class GraphicsUtil {
                 clipR = clipR.intersection(gcR);
             }
 
-            if (false) {
-                // There has been a problem where the render tries to
-                // request a zero pixel high region (due to a bug in the
-                // complex clip handling).  I have at least temporarily
-                // worked around this by changing the alpha state in
-                // CompositeRable which changes code paths enough that the
-                // renderer doesn't try to construct a zero height
-                // SampleModel (which dies).
-                //
-                // However I suspect that this fix is fragile (other code
-                // paths may trigger the bug), eventually we may need to
-                // reinstate this code, which handles the clipping for the
-                // Graphics2D.
-                if ((clip != null) &&
-                    !(clip instanceof Rectangle2D)) {
-
-                    // This is now the clip in device space...
-                    clip = g2d.getClip();
-
-                    if (clip instanceof Rectangle2D)
-                        // Simple clip rect...
-                        cr = new PadRed(cr, clipR, PadMode.ZERO_PAD, null);
-                    else {
-                        // Complex clip...
-                        // System.out.println("Clip:" + clip);
-                        // System.out.println("ClipR: " + clipR);
-                        // System.out.println("crR: " + cr.getBounds());
-                        // System.out.println("at: " + at);
-
-                        if (clipR.intersects(cr.getBounds()) == false)
-                            return; // Nothing to draw...
-                        clipR = clipR.intersection(cr.getBounds());
-
-                        BufferedImage bi = new BufferedImage
-                            (clipR.width, clipR.height,
-                             BufferedImage.TYPE_BYTE_GRAY);
-
-                        Graphics2D big2d = createGraphics
-                            (bi, g2d.getRenderingHints());
-
-                        big2d.translate(-clipR.x, -clipR.y);
-                        big2d.setPaint(Color.white);
-                        big2d.fill(clip);
-                        big2d.dispose();
-
-                        CachableRed cCr;
-                        cCr = new BufferedImageCachableRed(bi, clipR.x,
-                                                           clipR.y);
-                        cr     = new MultiplyAlphaRed     (cr, cCr);
-                    }
-                    g2d.setClip(null);
-                }
-            }
-
             // System.out.println("Starting Draw: " + cr);
             // long startTime = System.currentTimeMillis();
 
             boolean useDrawRenderedImage = false;
 
-            SampleModel srcSM;
             srcCM = cr.getColorModel();
-            srcSM = cr.getSampleModel();
+            SampleModel srcSM = cr.getSampleModel();
             if ((srcSM.getWidth()*srcSM.getHeight()) >=
                 (clipR.width*clipR.height))
                 // if srcSM tiles are larger than the clip size
@@ -292,18 +245,14 @@ public class GraphicsUtil {
                 // This can be significantly faster but can also
                 // require much more memory, so we only use it when
                 // the clip size is smaller than the tile size.
-                wr = srcCM.createCompatibleWritableRaster
-                    (clipR.width, clipR.height);
-
-                // If we push caching down the tree farther
-                // Then this code path should probably try to
-                // align with cr's tile grid to promote tile caching
-                // (this of course will increase the memory required
-                // in this path).
-                cr.copyData(wr.createWritableTranslatedChild
-                            (clipR.x, clipR.y));
+                Raster r = cr.getData(clipR);
+                wr = ((WritableRaster)r).createWritableChild
+                    (clipR.x, clipR.y, clipR.width, clipR.height, 
+                     0, 0, null);
+                
                 BufferedImage bi = new BufferedImage
-                    (srcCM, wr, srcCM.isAlphaPremultiplied(), null);
+                    (srcCM, wr, 
+                     srcCM.isAlphaPremultiplied(), null);
                 
                 // Any of the drawImage calls that take an
                 // Affine are prone to the 'CGGStackRestore: gstack 
@@ -418,6 +367,7 @@ public class GraphicsUtil {
 
         // System.out.println("Finished Draw");
     }
+
 
     /**
      * Draws a <tt>Filter</tt> (<tt>RenderableImage</tt>) into a

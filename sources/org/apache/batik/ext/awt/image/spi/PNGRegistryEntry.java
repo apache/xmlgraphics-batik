@@ -8,16 +8,22 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.batik.ext.awt.image.codec.PNGDecodeParam;
 import org.apache.batik.ext.awt.image.codec.PNGRed;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.renderable.DeferRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.FormatRed;
 import org.apache.batik.util.ParsedURL;
 
 public class PNGRegistryEntry 
@@ -70,7 +76,17 @@ public class PNGRegistryEntry
                             param.setDisplayExponent(2.2f); // sRGB gamma
                         }
                         CachableRed cr = new PNGRed(is, param);
+                        dr.setBounds(new Rectangle2D.Double
+                                     (0, 0, cr.getWidth(), cr.getHeight()));
+
                         cr = new Any2sRGBRed(cr);
+                        cr = new FormatRed(cr, GraphicsUtil.sRGB_Unpre);
+                        WritableRaster wr = (WritableRaster)cr.getData();
+                        ColorModel cm = cr.getColorModel();
+                        BufferedImage image;
+                        image = new BufferedImage
+                            (cm, wr, cm.isAlphaPremultiplied(), null);
+                        cr = GraphicsUtil.wrap(image);
                         filt = new RedRable(cr);
                     } catch (IOException ioe) {
                         filt = ImageTagRegistry.getBrokenLinkImage
