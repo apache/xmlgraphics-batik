@@ -1790,11 +1790,9 @@ public abstract class CSSEngine {
             }
 
             if (removed) {
-                invalidateProperties(elt, null);
+                invalidateProperties(elt, null, updated);
             } else {
                 int count = 0;
-            
-
                 // Invalidate the relative values
                 boolean fs = (fontSizeIndex == -1)
                     ? false
@@ -1827,7 +1825,7 @@ public abstract class CSSEngine {
                             props[count++] = i;
                         }
                     }
-                    invalidateProperties(elt, props);
+                    invalidateProperties(elt, props, null);
                 }
             }
             break;
@@ -1856,11 +1854,12 @@ public abstract class CSSEngine {
     /**
      * Invalidates all the properties of the given node.
      */
-    protected void invalidateProperties(Node node, int [] properties) {
+    protected void invalidateProperties(Node node, 
+                                        int [] properties, 
+                                        boolean [] updated) {
+
         if (!(node instanceof CSSStylableElement))
             return;  // Not Stylable sub tree
-        // System.err.println("Node id: " + 
-        //                    ((Element)node).getAttribute("id"));
 
         CSSStylableElement elt = (CSSStylableElement)node;
         StyleMap style = elt.getComputedStyleMap(null);
@@ -1870,16 +1869,26 @@ public abstract class CSSEngine {
         StyleMap newStyle = getCascadedStyleMap(elt, null);
         elt.setComputedStyleMap(null, newStyle);
         boolean [] diffs = new boolean[getNumberOfProperties()];
-        int count =0;
+        if (updated != null) {
+            for (int i=0; i< updated.length; i++) {
+                diffs[i] = updated[i];
+            }
+        }
         if (properties != null) {
-            for (int i=0; i<properties.length; i++)
+            for (int i=0; i<properties.length; i++) {
                 diffs[properties[i]] = true;
-            count = properties.length;
+            }
+        }
+        int count =0;
+        for (int i=0; i< diffs.length; i++) {
+            if (diffs[i])
+                count++;
         }
 
         for (int i=0; i<diffs.length; i++) {
             if (diffs[i]) continue; // Already marked changed.
 
+            // Value nv = getComputedStyle(elt, null, i);
             Value nv = newStyle.getValue(i);
             Value ov = null;
             if (!style.isNullCascaded(i)) {
@@ -1944,8 +1953,8 @@ public abstract class CSSEngine {
             boolean cl = (colorIndex == -1)
                 ? false
                 : updated[colorIndex];
-            int count = 0;
 
+            int count = 0;
             for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
                 if (updated[i]) {
                     count++;
@@ -1998,12 +2007,12 @@ public abstract class CSSEngine {
 
         Node c = getImportedChild(node);
         if (c != null) {
-            invalidateProperties(c, inherited);
+            invalidateProperties(c, inherited, null);
         }
         for (Node n = node.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-            invalidateProperties(n, inherited);
+            invalidateProperties(n, inherited, null);
         }
     }
 
@@ -2103,9 +2112,12 @@ public abstract class CSSEngine {
             }
             break;
 
-        case MutationEvent.REMOVAL:
-            invalidateProperties(elt, null);
-            return;
+        case MutationEvent.REMOVAL: 
+            {
+                int [] invalid = { idx };
+                invalidateProperties(elt, invalid, null);
+                return;
+            }
         }
 
         boolean[] updated = styleDeclarationUpdateHandler.updatedProperties;
@@ -2141,7 +2153,7 @@ public abstract class CSSEngine {
             }
         }
 
-        invalidateProperties(elt, props);
+        invalidateProperties(elt, props, null);
     }
 
     /**
@@ -2153,9 +2165,9 @@ public abstract class CSSEngine {
             EventTarget et = evt.getTarget();
             if (et instanceof CSSStyleSheetNode) {
                 styleSheetNodes = null;
-
                 // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(), null);
+                invalidateProperties(document.getDocumentElement(), 
+                                     null, null);
                 return;
             }
             if (et instanceof CSSStylableElement) {
@@ -2165,7 +2177,7 @@ public abstract class CSSEngine {
                 for (Node n = ((Node)evt.getTarget()).getNextSibling();
                      n != null;
                      n = n.getNextSibling()) {
-                    invalidateProperties(n, null);
+                    invalidateProperties(n, null, null);
                 }
             }
         }
@@ -2203,7 +2215,8 @@ public abstract class CSSEngine {
                 styleSheetNodes = null;
 
                 // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(), null);
+                invalidateProperties(document.getDocumentElement(), 
+                                     null, null);
             } else if (removedStylableElementSibling != null) {
                 // Invalidate the CSSStylableElement siblings, to
                 // correctly match the adjacent selectors and
@@ -2211,7 +2224,7 @@ public abstract class CSSEngine {
                 for (Node n = removedStylableElementSibling;
                      n != null;
                      n = n.getNextSibling()) {
-                    invalidateProperties(n, null);
+                    invalidateProperties(n, null, null);
                 }
                 removedStylableElementSibling = null;
             }
@@ -2226,9 +2239,9 @@ public abstract class CSSEngine {
             Node n = (Node)evt.getTarget();
             if (n.getParentNode() instanceof CSSStyleSheetNode) {
                 styleSheetNodes = null;
-
                 // Invalidate all the CSSStylableElements in the document.
-                invalidateProperties(document.getDocumentElement(), null);
+                invalidateProperties(document.getDocumentElement(), 
+                                     null, null);
             }
         }
     }
@@ -2284,11 +2297,11 @@ public abstract class CSSEngine {
                 selectorAttributes.contains(name)) {
                 // An attribute has been modified, invalidate all the
                 // properties to correctly match attribute selectors.
-                invalidateProperties(elt, null);
+                invalidateProperties(elt, null, null);
                 for (Node n = elt.getNextSibling();
                      n != null;
                      n = n.getNextSibling()) {
-                    invalidateProperties(n, null);
+                    invalidateProperties(n, null, null);
                 }
             }
         }
