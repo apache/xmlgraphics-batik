@@ -8,9 +8,11 @@
 
 package org.apache.batik.refimpl.bridge;
 
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
+
 import java.util.Map;
-import java.util.Vector;
+import java.util.StringTokenizer;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
@@ -20,13 +22,15 @@ import org.apache.batik.bridge.MissingAttributeException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.CompositeRable;
-import org.apache.batik.gvt.filter.CompositeRule;
+import org.apache.batik.gvt.filter.Light;
+import org.apache.batik.gvt.filter.DiffuseLightingRable;
+import org.apache.batik.gvt.filter.DistantLight;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadMode;
+import org.apache.batik.gvt.filter.PadRable;
 
 import org.apache.batik.refimpl.bridge.resources.Messages;
-import org.apache.batik.refimpl.gvt.filter.ConcreteCompositeRable;
+import org.apache.batik.refimpl.gvt.filter.ConcreteDiffuseLightingRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
 
 import org.apache.batik.util.SVGConstants;
@@ -38,16 +42,14 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * This class bridges an SVG <tt>feBlend</tt> element with
+ * This class bridges an SVG <tt>feDiffuseLighting</tt> element with
  * a concrete <tt>Filter</tt> filter implementation
  *
- * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
-                                                SVGConstants {
-
+public class SVGFeDiffuseLightingElementBridge
+        implements FilterPrimitiveBridge, SVGConstants {
 
     /**
      * Returns the <tt>Filter</tt> that implements the filter
@@ -72,51 +74,35 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
                          Filter in,
                          Rectangle2D filterRegion,
                          Map filterMap){
+        Filter filter = null;
 
-         GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc = 
                          bridgeContext.getGraphicsNodeRenderContext();
 
-        // Extract Blend operation
-        CompositeRule rule = getRule(filterElement);
+        // First, extract source
+        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
+        in = CSSUtilities.getFilterSource(filteredNode,
+                                          inAttr,
+                                          bridgeContext,
+                                          filteredElement,
+                                          in,
+                                          filterMap);
 
-        // Extract sources
-        String in1Attr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-        Filter in1;
-        in1 = CSSUtilities.getFilterSource(filteredNode,
-                                           in1Attr,
-                                           bridgeContext,
-                                           filteredElement,
-                                           in,
-                                           filterMap);
-
-        String in2Attr = filterElement.getAttributeNS(null, SVG_IN2_ATTRIBUTE);
-        if (in2Attr.length() == 0) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("feBlend.in2.required", null));
-        }
-        Filter in2;
-        in2 = CSSUtilities.getFilterSource(filteredNode,
-                                           in2Attr,
-                                           bridgeContext,
-                                           filteredElement,
-                                           in,
-                                           filterMap);
-
-        if ((in1 == null) || (in2 == null)) {
+        // Exit if no 'in' found
+        if (in == null) {
             return null;
         }
 
         //
-        // The default region is the union of the input sources
-        // regions unless 'in' is 'SourceGraphic' in which case the
-        // default region is the filterChain's region
+        // The default region is the input source's region unless the
+        // source is SourceGraphics, in which case the default region
+        // is the filter chain's region
         //
         Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-        Rectangle2D defaultRegion = in1.getBounds2D();
-        defaultRegion.add(in2.getBounds2D());
+        Rectangle2D defaultRegion = in.getBounds2D();
 
-        if(in1 == sourceGraphics) {
+        if (in == sourceGraphics){
             defaultRegion = filterRegion;
         }
 
@@ -126,7 +112,7 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
-        Rectangle2D blendArea
+        Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
                                                         defaultRegion,
@@ -135,52 +121,57 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
                                                         rc,
                                                         uctx);
 
-        // Now, do the blend.
-        Filter filter = null;
-        Vector srcs = new Vector(2);
-        srcs.add(in2);
-        srcs.add(in1);
-        filter = new ConcreteCompositeRable(srcs, rule);
 
-        filter = new ConcretePadRable(filter, blendArea, PadMode.ZERO_PAD);
+        // Extract the light color
+        Color color = CSSUtilities.convertLightingColor(cssDecl);
+
+        // Extract the Light from the child node.
+        NodeList children = filterElement.getChildNodes();
+        int nChildren = children.getLength();
+        if(nChildren < 1){
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feDiffuseLighting.child.missing",
+                                       null));
+        }
+
+        Node lightNode = children.item(0);
+        if((lightNode == null) || 
+           !(lightNode.getNodeType() == Node.ELEMENT_NODE)){
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feDiffuseLighting.child.missing",
+                                       null));
+        }
+
+        Light light = SVGLightElementBridge.createLight((Element)lightNode, color);
+
+        // Extract diffuse lighting constant
+        String kdStr =
+            filterElement.getAttributeNS(null, SVG_DIFFUSE_CONSTANT_ATTRIBUTE);
+
+        double kd = 
+            SVGUtilities.convertSVGNumber(SVG_DIFFUSE_CONSTANT_ATTRIBUTE, kdStr);
+        
+        // Extract surface scale
+        String surfaceScaleStr =
+            filterElement.getAttributeNS(null, SVG_SURFACE_SCALE_ATTRIBUTE);
+
+        double surfaceScale = 
+            SVGUtilities.convertSVGNumber(SVG_SURFACE_SCALE_ATTRIBUTE, 
+                                          surfaceScaleStr);
+
+        filter = new ConcreteDiffuseLightingRable(in,
+                                                  primitiveRegion,
+                                                  light,
+                                                  kd,
+                                                  surfaceScale);
 
         // Get result attribute and update map
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);
-        if((result != null) && (result.trim().length() > 0)){
+        if ((result != null) && (result.trim().length() > 0)) {
             filterMap.put(result, filter);
         }
 
         return filter;
-    }
-
-    private static CompositeRule getRule(Element filterElement) {
-        String ruleStr = filterElement.getAttributeNS(null, SVG_MODE_ATTRIBUTE);
-        CompositeRule rule;
-
-        if (ruleStr.length() == 0) {
-            rule = CompositeRule.OVER; // default value
-
-        } else if (SVG_NORMAL_VALUE.equals(ruleStr)) {
-            rule = CompositeRule.OVER;  // Same rule
-
-        } else if (SVG_MULTIPLY_VALUE.equals(ruleStr)) {
-            rule = CompositeRule.MULTIPLY;
-
-        }  else if (SVG_SCREEN_VALUE.equals(ruleStr)) {
-            rule = CompositeRule.SCREEN;
-
-        } else if (SVG_DARKEN_VALUE.equals(ruleStr)) {
-            rule = CompositeRule.DARKEN;
-
-        } else if (SVG_LIGHTEN_VALUE.equals(ruleStr)) {
-            rule = CompositeRule.LIGHTEN;
-
-        } else {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feBlen.mode.invalid",
-                                       new Object[] { ruleStr }));
-        }
-        return rule;
     }
 
     /**

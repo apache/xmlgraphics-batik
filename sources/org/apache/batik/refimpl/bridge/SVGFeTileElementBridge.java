@@ -49,7 +49,7 @@ public class SVGFeTileElementBridge implements FilterPrimitiveBridge,
      * @param filterElement DOM element that represents a filter abstraction
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
@@ -86,9 +86,11 @@ public class SVGFeTileElementBridge implements FilterPrimitiveBridge,
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
                                                         defaultRegion,
+                                                        filterRegion,
                                                         filteredNode,
                                                         rc,
                                                         uctx);
+
         //
         // Get the tile source
         //

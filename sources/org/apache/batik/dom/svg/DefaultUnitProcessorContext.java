@@ -57,7 +57,7 @@ public class DefaultUnitProcessorContext
      * Returns the font-size medium value in pt.
      */
     public float getMediumFontSize() {
-        return 10;
+        return 9;
     }
 
     /**

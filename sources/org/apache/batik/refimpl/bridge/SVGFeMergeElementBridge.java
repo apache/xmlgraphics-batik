@@ -133,6 +133,7 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
                                                         defaultRegion,
+                                                        filterRegion,
                                                         filteredNode,
                                                         rc,
                                                         uctx);

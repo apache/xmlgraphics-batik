@@ -158,6 +158,7 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
                                                         defaultRegion,
+                                                        filterRegion,
                                                         filteredNode,
                                                         rc,
                                                         uctx);

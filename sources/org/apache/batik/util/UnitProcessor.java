@@ -61,7 +61,7 @@ public abstract class UnitProcessor {
     }
 
     /**
-     * Converts a SVG length value to screen pixels.
+     * Converts a SVG length value to user space.
      * @param t the unit type like specified in the CSSPrimitiveType interface.
      * @param v the length value.
      * @param e the element.

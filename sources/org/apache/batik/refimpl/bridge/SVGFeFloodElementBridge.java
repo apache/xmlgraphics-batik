@@ -96,6 +96,7 @@ public class SVGFeFloodElementBridge implements FilterPrimitiveBridge,
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
                                                         filterRegion,
+                                                        filterRegion,
                                                         filteredNode,
                                                         rc,
                                                         uctx);
