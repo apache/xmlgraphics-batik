@@ -238,7 +238,25 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 	    super.handleDOMAttrModifiedEvent(evt);
 	}
     }
-    
+
+    /**
+     * Invoked for each CSS property that has changed.
+     */
+    protected void handleCSSPropertyChanged(int property) {
+        switch(property) {
+        case SVGCSSEngine.IMAGE_RENDERING_INDEX:
+        case SVGCSSEngine.COLOR_INTERPOLATION_INDEX:
+            RenderingHints hints = CSSUtilities.convertImageRendering(e, null);
+            hints = CSSUtilities.convertColorRendering(e, hints);
+            if (hints != null) {
+                node.setRenderingHints(hints);
+            }
+            break;
+        default:
+            super.handleCSSPropertyChanged(property);
+        }
+    }
+
     // convenient methods //////////////////////////////////////////////////
 
     /**
