@@ -198,15 +198,24 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
              ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue() &&
              BaseScriptingEnvironment.isDynamicDocument(svgDoc));
 
-        if (isDynamic)
-            ctx.setDynamicState(BridgeContext.DYNAMIC);
-
         GraphicsNode gvtRoot;
         try {
+            if (isDynamic)
+                ctx.setDynamicState(BridgeContext.DYNAMIC);
+
             gvtRoot = builder.build(ctx, svgDoc);
+
+            // dispatch an 'onload' event if needed
+            if (ctx.isDynamic()) {
+                BaseScriptingEnvironment se;
+                se = new BaseScriptingEnvironment(ctx);
+                se.loadScripts();
+                se.dispatchSVGLoadEvent();
+            }
         } catch (BridgeException ex) {
             throw new TranscoderException(ex);
         }
+
         // get the 'width' and 'height' attributes of the SVG document
         float docWidth = (float)ctx.getDocumentSize().getWidth();
         float docHeight = (float)ctx.getDocumentSize().getHeight();
@@ -260,18 +269,6 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             curTxf = new AffineTransform();
         } else {
             curTxf = Px;
-        }
-
-        try {
-            // dispatch an 'onload' event if needed
-            if (ctx.isDynamic()) {
-                BaseScriptingEnvironment se;
-                se = new BaseScriptingEnvironment(ctx);
-                se.loadScripts();
-                se.dispatchSVGLoadEvent();
-            }
-        } catch (BridgeException ex) {
-            throw new TranscoderException(ex);
         }
 
         this.root = gvtRoot;

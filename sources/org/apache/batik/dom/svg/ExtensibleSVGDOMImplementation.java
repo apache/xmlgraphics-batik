@@ -203,14 +203,20 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
         if (SVG_NAMESPACE_URI.equals(namespaceURI)) {
             String name = DOMUtilities.getLocalName(qualifiedName);
             ElementFactory ef = (ElementFactory)factories.get(name);
-            if (ef == null) {
-                throw document.createDOMException
-                    (DOMException.NOT_FOUND_ERR,
-                     "invalid.element",
-                     new Object[] { namespaceURI,
-                                    qualifiedName });
+            if (ef != null) 
+                return ef.create(DOMUtilities.getPrefix(qualifiedName), 
+                                 document);
+            if (customFactories != null) {
+                ElementFactory cef;
+                cef = (ElementFactory)customFactories.get(namespaceURI, name);
+                if (cef != null)
+                    return cef.create(DOMUtilities.getPrefix(qualifiedName),
+                                      document);
             }
-            return ef.create(DOMUtilities.getPrefix(qualifiedName), document);
+
+            throw document.createDOMException
+                (DOMException.NOT_FOUND_ERR, "invalid.element",
+                 new Object[] { namespaceURI, qualifiedName });
         }
         if (namespaceURI != null) {
             if (customFactories != null) {
