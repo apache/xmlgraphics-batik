@@ -69,8 +69,8 @@ import java.util.StringTokenizer;
  *     background before rendering the image</li>
  * <li>quality: relevant only for JPEG destinations, this controls the 
  *     encoding quality.</li>
- * <li>indexed: relevant only for PNG, controls the writting of 
- *     indexed files.</li>
+ * <li>indexed: relevant only for PNG, controls the number of bits
+ *              used in writting of a palletized files.</li>
  * <li>mediaType: controls the CSS media, or list of media, for which the 
  *     image should be rendered.</li>
  * <li>alternate: controls the alternate CSS stylesheet to activate, 
@@ -86,8 +86,7 @@ import java.util.StringTokenizer;
  *
  * @version $Id$
  * @author Henri Ruini
- * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
- */
+ * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a> */
 public class SVGConverter {
     // 
     // Error codes reported by the SVGConverter
@@ -209,7 +208,7 @@ public class SVGConverter {
     protected float quality = DEFAULT_QUALITY;
 
     /** Should output Image be indexed . */
-    protected boolean indexed = false;
+    protected int indexed = -1;
 
     /** Output AOI area. */
     protected Rectangle2D area = null;
@@ -351,11 +350,11 @@ public class SVGConverter {
      * Tells the PNG encoder to reduce the image to 256 colors, so the
      * PNG file is indexed.
      */
-    public void setIndexed(boolean indexed) throws IllegalArgumentException {
-        this.indexed = indexed;
+    public void setIndexed(int bits) throws IllegalArgumentException {
+        this.indexed = bits;
     }
 
-    public boolean getIndexed(){
+    public int getIndexed(){
         return indexed;
     }
 
@@ -762,8 +761,8 @@ public class SVGConverter {
         } 
 
         // Set image indexed. ------------------------------------------------
-        if (indexed) {
-            map.put(PNGTranscoder.KEY_INDEXED, new Boolean(indexed));
+        if (indexed != -1) {
+            map.put(PNGTranscoder.KEY_INDEXED, new Integer(indexed));
         } 
 
         // Set image background color -----------------------------------------

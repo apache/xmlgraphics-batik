@@ -649,11 +649,18 @@ public class Main implements SVGConverterController {
                           });
 
         optionMap.put(CL_OPTION_INDEXED,
-                      new NoValueOptionHandler(){
-                              public void handleOption(SVGConverter c){
-                                  c.setIndexed(true);
-                             }
+                      new FloatOptionHandler(){
+                              public void handleOption(float optionValue, 
+                                                       SVGConverter c){
+                                  if ((optionValue != 1) &&
+                                      (optionValue != 2) &&
+                                      (optionValue != 4) &&
+                                      (optionValue != 8)) 
+                                      throw new IllegalArgumentException();
 
+                                  c.setIndexed((int)optionValue);
+                              }
+                      
                               public String getOptionDescription(){
                                   return CL_OPTION_INDEXED_DESCRIPTION;
                               }

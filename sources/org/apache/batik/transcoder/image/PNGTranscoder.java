@@ -13,6 +13,7 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.io.IOException;
 import java.io.OutputStream;
+import org.apache.batik.transcoder.keys.IntegerKey;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.FloatKey;
 import org.apache.batik.transcoder.TranscoderException;
@@ -104,9 +105,12 @@ public class PNGTranscoder extends ImageTranscoder {
             }
         }
 
+        int n=-1;
         if (hints.containsKey(KEY_INDEXED)) {
-            if (((Boolean)hints.get(KEY_INDEXED)).booleanValue())
-                img = IndexImage.getIndexedImage(img);
+            n=((Integer)hints.get(KEY_INDEXED)).intValue();
+            if (n==1||n==2||n==4||n==8) 
+                //PNGEncodeParam.Palette can handle these numbers only.
+                img = IndexImage.getIndexedImage(img,1<<n);
         }
 
         PNGEncodeParam params = PNGEncodeParam.getDefaultEncodeParam(img);
@@ -169,7 +173,8 @@ public class PNGTranscoder extends ImageTranscoder {
         = new FloatKey();
 
     /**
-     * The write a 256 color indexed image key.
+     * The color indexed image key to specify number of colors used in
+     * palette.
      *
      * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
      * <TR>
@@ -177,21 +182,21 @@ public class PNGTranscoder extends ImageTranscoder {
      * <TD VALIGN="TOP">KEY_INDEXED</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Boolean</TD></TR>
+     * <TD VALIGN="TOP">Integer</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">False</TD></TR>
+     * <TD VALIGN="TOP">none/true color image</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
      * <TD VALIGN="TOP">No</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Turns on the reduction of the image to 256 colors.  
-     *     The resultant PNG will be an indexed PNG with 256 colors.</TD>
+     * <TD VALIGN="TOP">Turns on the reduction of the image to index 
+     *     colors by specifying color bit depth, 1,2,4,8. The resultant 
+     *     PNG will be an indexed PNG with color bit depth specified.</TD>
      * </TR>
-     * </TABLE>
+     * </TABLE> 
      */
     public static final TranscodingHints.Key KEY_INDEXED
-        = new BooleanKey();
-
+        = new IntegerKey();
 }
