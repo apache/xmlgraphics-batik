@@ -142,7 +142,7 @@ public class FillShapePainter implements ShapePainter {
     public Rectangle2D getSensitiveBounds2D() {
         if (shape == null)
             return  null;
-	    return shape.getBounds2D();
+        return shape.getBounds2D();
     }
 
     /**

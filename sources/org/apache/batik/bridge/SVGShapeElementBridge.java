@@ -200,6 +200,7 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
         case SVGCSSEngine.FILL_OPACITY_INDEX:
         case SVGCSSEngine.STROKE_INDEX:
         case SVGCSSEngine.STROKE_OPACITY_INDEX:
+            // Opportunity to just 'update' the existing shape painters...
         case SVGCSSEngine.STROKE_WIDTH_INDEX:
         case SVGCSSEngine.STROKE_LINECAP_INDEX:
         case SVGCSSEngine.STROKE_LINEJOIN_INDEX:
