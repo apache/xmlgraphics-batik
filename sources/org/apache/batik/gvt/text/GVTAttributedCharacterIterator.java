@@ -303,6 +303,10 @@ public interface GVTAttributedCharacterIterator extends
         public final static TextAttribute WORD_SPACING =
                                           new TextAttribute("WORD_SPACING");
 
+        /** Path along which text is to be laid out */
+        public final static TextAttribute TEXTPATH =
+                                          new TextAttribute("TEXTPATH");
+
         /** Font variant to be used for this character span.
          * @see org.apache.batik.gvt.text.GVTAttributedCharacterIterator.TextAttribute#SMALL_CAPS
          */
