@@ -642,18 +642,16 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             DocumentFragment result = null;
             try {
                 Document d = df.createDocument(uri, new StringReader(text));
-                for (Node n = d.getDocumentElement().getFirstChild();
-                     n != null;
-                     n = n.getNextSibling()) {
-                    if (n.getNodeType() == n.ELEMENT_NODE) {
-                        n = doc.importNode(n, true);
-                        result = doc.createDocumentFragment();
-                        result.appendChild(n);
-                        break;
-                    }
-                }
+                result = doc.createDocumentFragment();
+                result.appendChild(doc.importNode(d.getDocumentElement(), true));
             } catch (Exception ex) {
-                text = "<svg>" + text + "</svg>";
+                StringBuffer sb = new StringBuffer(text.length() 
+                                                   + "<svg>".length() 
+                                                   + "</svg>".length());
+                sb.append("<svg>");
+                sb.append(text);
+                sb.append("</svg>");
+                text = sb.toString();
                 try {
                     Document d = df.createDocument(uri,
                                                    new StringReader(text));
