@@ -77,7 +77,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge,
         // 'width' attribute - default is 100%
         s = e.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         if (s.length() == 0) {
-            s = "100%";
+            s = SVG_SVG_WIDTH_DEFAULT_VALUE;
         }
         float w = UnitProcessor.svgHorizontalLengthToUserSpace
             (s, SVG_WIDTH_ATTRIBUTE, uctx);
@@ -85,7 +85,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge,
         // 'height' attribute - default is 100%
         s = e.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         if (s.length() == 0) {
-            s = "100%";
+            s = SVG_SVG_HEIGHT_DEFAULT_VALUE;
         }
         float h = UnitProcessor.svgVerticalLengthToUserSpace
             (s, SVG_HEIGHT_ATTRIBUTE, uctx);

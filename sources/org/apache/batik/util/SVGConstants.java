@@ -351,7 +351,7 @@ public interface SVGConstants extends CSSConstants {
 
 
     ///////////////////////////////////////////////////////////////////
-    // Default values for attributes
+    // default values for attributes
     ///////////////////////////////////////////////////////////////////
 
     String SVG_CIRCLE_CX_DEFAULT_VALUE = "0";
@@ -400,6 +400,10 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FILTER_Y_DEFAULT_VALUE = "-10%";
     String SVG_IMAGE_X_DEFAULT_VALUE = "0";
     String SVG_IMAGE_Y_DEFAULT_VALUE = "0";
+    String SVG_LINEAR_GRADIENT_X1_DEFAULT_VALUE = "0%";
+    String SVG_LINEAR_GRADIENT_X2_DEFAULT_VALUE = "100%";
+    String SVG_LINEAR_GRADIENT_Y1_DEFAULT_VALUE = "0%";
+    String SVG_LINEAR_GRADIENT_Y2_DEFAULT_VALUE = "0%";
     String SVG_MARKER_MARKER_HEIGHT_DEFAULT_VALUE = "3";
     String SVG_MARKER_MARKER_UNITS_DEFAULT_VALUE = "strokeWidth";
     String SVG_MARKER_MARKER_WIDTH_DEFAULT_VALUE = "3";
@@ -413,6 +417,11 @@ public interface SVGConstants extends CSSConstants {
     String SVG_MASK_Y_DEFAULT_VALUE = "-10%";
     String SVG_PATTERN_X_DEFAULT_VALUE = "0%";
     String SVG_PATTERN_Y_DEFAULT_VALUE = "0%";
+    String SVG_RADIAL_GRADIENT_CX_DEFAULT_VALUE = "50%";
+    String SVG_RADIAL_GRADIENT_CY_DEFAULT_VALUE = "50%";
+    String SVG_RADIAL_GRADIENT_R_DEFAULT_VALUE = "50%";
+    String SVG_SVG_HEIGHT_DEFAULT_VALUE = "100%";
+    String SVG_SVG_WIDTH_DEFAULT_VALUE = "100%";
 
     ///////////////////////////////////////////////////////////////////
     // various constants in SVG attributes

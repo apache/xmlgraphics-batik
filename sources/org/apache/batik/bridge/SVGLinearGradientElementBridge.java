@@ -63,28 +63,28 @@ public class SVGLinearGradientElementBridge
         String x1Str = SVGUtilities.getChainableAttributeNS
             (paintElement, null, SVG_X1_ATTRIBUTE, ctx);
         if (x1Str.length() == 0) {
-            x1Str = "0%";
+            x1Str = SVG_LINEAR_GRADIENT_X1_DEFAULT_VALUE;
         }
 
         // 'y1' attribute - default is 0%
         String y1Str = SVGUtilities.getChainableAttributeNS
             (paintElement, null, SVG_Y1_ATTRIBUTE, ctx);
         if (y1Str.length() == 0) {
-            y1Str = "0%";
+            y1Str = SVG_LINEAR_GRADIENT_Y1_DEFAULT_VALUE;
         }
 
         // 'x2' attribute - default is 100%
         String x2Str = SVGUtilities.getChainableAttributeNS
             (paintElement, null, SVG_X2_ATTRIBUTE, ctx);
         if (x2Str.length() == 0) {
-            x2Str = "100%";
+            x2Str = SVG_LINEAR_GRADIENT_X2_DEFAULT_VALUE;
         }
 
         // 'y2' attribute - default is 0%
         String y2Str = SVGUtilities.getChainableAttributeNS
             (paintElement, null, SVG_Y2_ATTRIBUTE, ctx);
         if (y2Str.length() == 0) {
-            y2Str = "0%";
+            y2Str = SVG_LINEAR_GRADIENT_Y2_DEFAULT_VALUE;
         }
 
         // 'gradientUnits' attribute - default is objectBoundingBox

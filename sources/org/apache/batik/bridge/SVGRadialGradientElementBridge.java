@@ -64,21 +64,21 @@ public class SVGRadialGradientElementBridge
         String cxStr = SVGUtilities.getChainableAttributeNS
             (paintElement, null, SVG_CX_ATTRIBUTE, ctx);
         if (cxStr.length() == 0) {
-            cxStr = "50%";
+            cxStr = SVG_RADIAL_GRADIENT_CX_DEFAULT_VALUE;
         }
 
         // 'cy' attribute - default is 50%
         String cyStr = SVGUtilities.getChainableAttributeNS
             (paintElement, null, SVG_CY_ATTRIBUTE, ctx);
         if (cyStr.length() == 0) {
-            cyStr = "50%";
+            cyStr = SVG_RADIAL_GRADIENT_CY_DEFAULT_VALUE;
         }
 
         // 'r' attribute - default is 50%
         String rStr = SVGUtilities.getChainableAttributeNS
             (paintElement, null, SVG_R_ATTRIBUTE, ctx);
         if (rStr.length() == 0) {
-            rStr = "50%";
+            rStr = SVG_RADIAL_GRADIENT_R_DEFAULT_VALUE;
         }
 
         // 'fx' attribute - default is same as cx
