@@ -1296,6 +1296,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
     /** Superclass getRaster... */
     public final Raster getRaster(int x, int y, int w, int h) {
+        if ((w == 0) || (h == 0)) return null;
+
         //
         // If working raster is big enough, reuse it. Otherwise,
         // build a large enough new one.
@@ -1353,6 +1355,9 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                     }
             }
         }
+        // Don't create rediculously small rasters...
+        if (w<32) w=32;
+        if (h<32) h=32;
         return cm.createCompatibleWritableRaster(w, h);
     }
 
