@@ -171,10 +171,21 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             return createSVGImageNode(ctx, e, errDoc);
         }
         node.setImage(img);
-	node.setImageBounds(img.getBounds2D());
+	Rectangle2D imgBounds = img.getBounds2D();
+	node.setImageBounds(imgBounds);
         Rectangle2D bounds = getImageBounds(ctx, e);
 
-	initializeViewport(ctx, e, node, bounds);
+	// create the implicit viewBox for the raster image. The viewBox for a
+	// raster image is the size of the image
+	float [] vb = new float[4];
+	vb[0] = 0; // x
+	vb[1] = 0; // y
+	vb[2] = (float)imgBounds.getWidth(); // width
+	vb[3] = (float)imgBounds.getHeight(); // height
+
+	// handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets the
+	// appropriate AffineTransform to the image node
+	initializeViewport(ctx, e, node, vb, bounds);
 
         return node;
     }
@@ -183,35 +194,37 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * Returns a GraphicsNode that represents a svg document as an image.
      *
      * @param ctx the bridge context
-     * @param element the image element
+     * @param e the image element
      * @param imgDocument the SVG document that represents the image
      */
     protected static GraphicsNode createSVGImageNode(BridgeContext ctx,
-                                                     Element element,
+                                                     Element e,
                                                      SVGDocument imgDocument) {
 
-        // viewport is automatically created by the svg element of the image
-        SVGSVGElement svgElement = imgDocument.getRootElement();
         CompositeGraphicsNode result = new CompositeGraphicsNode();
-        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
+        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(e);
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
 
         Rectangle2D r
-            = CSSUtilities.convertEnableBackground(element, uctx);
+            = CSSUtilities.convertEnableBackground(e, uctx);
         if (r != null) {
             result.setBackgroundEnable(r);
         }
 
-        Rectangle2D bounds = getImageBounds(ctx, element);
-        svgElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                  String.valueOf(bounds.getWidth()));
-        svgElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                                  String.valueOf(bounds.getHeight()));
-
+        SVGSVGElement svgElement = imgDocument.getRootElement();
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, svgElement);
         result.getChildren().add(node);
 
-	initializeViewport(ctx, element, result, bounds);
+	// create the implicit viewBox for the SVG image. The viewBox for a
+	// SVG image is the viewBox of the outermost SVG element of the SVG file
+	String viewBox = 
+	    svgElement.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
+	float [] vb = ViewBox.parseViewBoxAttribute(e, viewBox);
+	
+	// handles the 'preserveAspectRatio', 'overflow' and 'clip' and sets the
+	// appropriate AffineTransform to the image node
+        Rectangle2D bounds = getImageBounds(ctx, e);
+	initializeViewport(ctx, e, result, vb, bounds);
 
         return result;
     }
@@ -225,20 +238,22 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * @param ctx the bridge context
      * @param e the image element that defines the properties
      * @param node the graphics node
+     * @param vb the implicit viewBox definition
      * @param bounds the bounds of the image element 
      */
     protected static void initializeViewport(BridgeContext ctx,
 					     Element e,
 					     GraphicsNode node,
+					     float [] vb,
 					     Rectangle2D bounds) {
 	
-        // 'viewBox' and 'preserveAspectRatio'
         float x = (float)bounds.getX();
         float y = (float)bounds.getY();
         float w = (float)bounds.getWidth();
         float h = (float)bounds.getHeight();
+
         AffineTransform at
-            = ViewBox.getPreserveAspectRatioTransform(e, w, h);
+            = ViewBox.getPreserveAspectRatioTransform(e, vb, w, h);
         at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
         node.setTransform(at);
 
