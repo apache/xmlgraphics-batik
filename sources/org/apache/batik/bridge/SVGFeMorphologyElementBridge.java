@@ -90,21 +90,10 @@ public class SVGFeMorphologyElementBridge
             return null; // disable the filter
         }
 
-        // feMorphology is a point operation. Therefore, to take the
-        // filter primitive region into account, only a pad operation
-        // on the input is required.
-
-        // The default region is the union of the input sources
-        // regions unless 'in' is 'SourceGraphic' in which case the
-        // default region is the filterChain's region
-        Filter sourceGraphics = (Filter)filterMap.get(SVG_SOURCE_GRAPHIC_VALUE);
-        Rectangle2D defaultRegion;
-        if (in == sourceGraphics) {
-            defaultRegion = filterRegion;
-        } else {
-            defaultRegion = in.getBounds2D();
-        }
-
+        // Default region is the size of in (if in is SourceGraphic or
+        // SourceAlpha it will already include a pad/crop to the
+        // proper filter region size).
+        Rectangle2D defaultRegion = in.getBounds2D();
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
@@ -113,6 +102,8 @@ public class SVGFeMorphologyElementBridge
                                                         filterRegion,
                                                         ctx);
 
+        // Take the filter primitive region into account, we need to
+        // pad/crop the input and output.
         PadRable pad = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
 
         // build tfilter
