@@ -19,6 +19,7 @@ package org.apache.batik.svggen;
 
 import java.awt.Polygon;
 import java.awt.Shape;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -45,22 +46,24 @@ public class SVGShape extends SVGGraphicObjectConverter {
     /*
      * Subconverts, for each type of Shape class
      */
-    private SVGPolygon svgPolygon;
+    private SVGArc       svgArc;
+    private SVGEllipse   svgEllipse;
+    private SVGLine      svgLine;
+    private SVGPath      svgPath;
+    private SVGPolygon   svgPolygon;
     private SVGRectangle svgRectangle;
-    private SVGEllipse svgEllipse;
-    private SVGLine svgLine;
-    private SVGPath svgPath;
 
     /**
      * @param generatorContext used to build Elements
      */
     public SVGShape(SVGGeneratorContext generatorContext) {
         super(generatorContext);
-        svgPolygon = new SVGPolygon(generatorContext);
+        svgArc       = new SVGArc(generatorContext);
+        svgEllipse   = new SVGEllipse(generatorContext);
+        svgLine      = new SVGLine(generatorContext);
+        svgPath      = new SVGPath(generatorContext);
+        svgPolygon   = new SVGPolygon(generatorContext);
         svgRectangle = new SVGRectangle(generatorContext);
-        svgEllipse = new SVGEllipse(generatorContext);
-        svgLine = new SVGLine(generatorContext);
-        svgPath = new SVGPath(generatorContext);
     }
 
     /**
@@ -77,6 +80,8 @@ public class SVGShape extends SVGGraphicObjectConverter {
             return svgEllipse.toSVG((Ellipse2D)shape);
         else if(shape instanceof Line2D)
             return svgLine.toSVG((Line2D)shape);
+        else if(shape instanceof Arc2D)
+            return svgArc.toSVG((Arc2D)shape);
         else
             return svgPath.toSVG(shape);
     }

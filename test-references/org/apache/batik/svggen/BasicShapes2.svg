@@ -7,7 +7,7 @@
   <g>
     <g text-rendering="optimizeLegibility">
       <text xml:space="preserve" x="10" y="20" stroke="none">Arc2D</text>
-      <path fill="none" d="M60 50 C60 38.9543037414551 48.8071174621582 30 35 30 C21.1928806304932 30 10 38.9543037414551 10 50 C10 61.0456962585449 21.1928806304932 70 35 70 L35 50 Z" />
+      <path fill="none" d="M60 50 A25 20 0 1 0 35 70L 35 50 Z" />
       <text xml:space="preserve" x="10" y="20" transform="translate(0,90)" stroke="none">Ellipse</text>
       <ellipse transform="translate(0,90)" fill="none" rx="50" cx="60" ry="20" cy="50" />
       <text xml:space="preserve" x="10" y="20" transform="translate(150,0)" stroke="none">GeneralPath, lineTo</text>

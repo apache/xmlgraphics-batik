@@ -50,7 +50,7 @@
       </defs>
       <g class="testC1">
         <text xml:space="preserve" x="10" y="20" class="testC2">Arc2D</text>
-        <path class="testC3" d="M60 50 C60 38.9543 48.8071 30 35 30 C21.1929 30 10 38.9543 10 50 C10 61.0457 21.1929 70 35 70 L35 50 Z" />
+        <path class="testC3" d="M60 50 A25 20 0 1 0 35 70L 35 50 Z" />
         <text xml:space="preserve" x="10" y="20" class="testC4" transform="translate(0,90)">Ellipse</text>
         <ellipse transform="translate(0,90)" rx="50" cx="60" class="testC5" ry="20" cy="50" />
         <text xml:space="preserve" x="10" y="20" class="testC6" transform="translate(150,0)">GeneralPath, lineTo</text>

@@ -19,8 +19,9 @@ package org.apache.batik.ext.awt.image.codec.tiff;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.batik.ext.awt.image.codec.SeekableStream;
@@ -58,7 +59,7 @@ public class TIFFDirectory extends Object implements Serializable {
     TIFFField[] fields;
 
     /** A Hashtable indexing the fields by tag number. */
-    Hashtable fieldIndex = new Hashtable();
+    Map fieldIndex = new HashMap();
 
     /** The offset of this IFD. */
     long IFDOffset = 8;
@@ -375,11 +376,11 @@ public class TIFFDirectory extends Object implements Serializable {
      */
     public int[] getTags() {
         int[] tags = new int[fieldIndex.size()];
-        Enumeration enum = fieldIndex.keys();
+        Iterator iter = fieldIndex.keySet().iterator();
         int i = 0;
 
-        while (enum.hasMoreElements()) {
-            tags[i++] = ((Integer)enum.nextElement()).intValue();
+        while (iter.hasNext()) {
+            tags[i++] = ((Integer)iter.next()).intValue();
         }
 
         return tags;

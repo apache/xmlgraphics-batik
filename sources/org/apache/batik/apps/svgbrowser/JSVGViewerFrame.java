@@ -869,9 +869,10 @@ public class JSVGViewerFrame
 
         public void actionPerformed(ActionEvent e){
             AboutDialog dlg = new AboutDialog(JSVGViewerFrame.this);
-            dlg.setSize(dlg.getPreferredSize()); // Work around pack() bug on some platforms
+            // Work around pack() bug on some platforms
+            dlg.setSize(dlg.getPreferredSize()); 
             dlg.setLocationRelativeTo(JSVGViewerFrame.this);
-            dlg.show();
+            dlg.setVisible(true);
             dlg.toFront();
         }
     }
@@ -1457,7 +1458,7 @@ public class JSVGViewerFrame
                         ta.setDocument(doc);
                         ta.setEditable(false);
                         ta.setBackground(Color.white);
-                        fr.show();
+                        fr.setVisible(true);
                     } catch (Exception ex) {
                         userAgent.displayError(ex);
                     }
@@ -1734,7 +1735,7 @@ public class JSVGViewerFrame
                 memoryMonitorFrame.setLocation(fr.x + (fr.width  - md.width) / 2,
                                                fr.y + (fr.height - md.height) / 2);
             }
-            memoryMonitorFrame.show();
+            memoryMonitorFrame.setVisible(true);
         }
     }
 
@@ -1753,7 +1754,7 @@ public class JSVGViewerFrame
                 findDialog.setLocation(fr.x + (fr.width  - td.width) / 2,
                                        fr.y + (fr.height - td.height) / 2);
             }
-            findDialog.show();
+            findDialog.setVisible(true);
         }
     }
 
@@ -1774,7 +1775,7 @@ public class JSVGViewerFrame
             }
             thumbnailDialog.setInteractionEnabled
                 (!svgCanvas.getDisableInteractions());
-            thumbnailDialog.show();
+            thumbnailDialog.setVisible(true);
         }
     }
 
@@ -1823,7 +1824,7 @@ public class JSVGViewerFrame
                 domViewer.setLocation(fr.x + (fr.width  - td.width) / 2,
                                       fr.y + (fr.height - td.height) / 2);
             }
-            domViewer.show();
+            domViewer.setVisible(true);
         }
     }
 
@@ -2302,7 +2303,7 @@ public class JSVGViewerFrame
                 new JOptionPane(message, JOptionPane.ERROR_MESSAGE);
             JDialog dialog = pane.createDialog(JSVGViewerFrame.this, "ERROR");
             dialog.setModal(false);
-            dialog.show();
+            dialog.setVisible(true);
         }
 
         /**
@@ -2316,7 +2317,7 @@ public class JSVGViewerFrame
                 new JErrorPane(ex, JOptionPane.ERROR_MESSAGE);
             JDialog dialog = pane.createDialog(JSVGViewerFrame.this, "ERROR");
             dialog.setModal(false);
-            dialog.show();
+            dialog.setVisible(true);
         }
 
         /**
