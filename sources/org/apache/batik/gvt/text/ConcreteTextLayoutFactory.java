@@ -28,7 +28,6 @@ import java.util.Vector;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextSpanLayout;
 import org.apache.batik.gvt.text.TextLayoutFactory;
-import org.apache.batik.bridge.SVGFontFamily;   // don't like having to import this
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
