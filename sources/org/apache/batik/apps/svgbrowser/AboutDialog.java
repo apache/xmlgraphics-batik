@@ -16,6 +16,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Color;
 
+import java.net.URL;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -26,11 +28,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JWindow;
+import javax.swing.SwingConstants;
 
 import javax.swing.border.BevelBorder;
-
-import org.apache.batik.ext.swing.JGridBagPanel;
-import org.apache.batik.ext.swing.GridBagConstants;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
@@ -45,8 +45,7 @@ import java.awt.event.MouseAdapter;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class AboutDialog extends JWindow
-    implements GridBagConstants{
+public class AboutDialog extends JWindow {
 
     public static final String ICON_BATIK_SPLASH 
         = "AboutDialog.icon.batik.splash";
@@ -120,7 +119,7 @@ public class AboutDialog extends JWindow
      * Populates this window
      */
     protected void buildGUI(){
-        JGridBagPanel panel = new JGridBagPanel();
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.setBackground(Color.white);
 
         ClassLoader cl = this.getClass().getClassLoader();
@@ -129,22 +128,17 @@ public class AboutDialog extends JWindow
         // Top is made of the Apache feather, the 
         // name of the project and URL
         //
-        JGridBagPanel projectPanel = new JGridBagPanel();
-        projectPanel.setBackground(Color.white);
-        projectPanel.add(new JLabel(new ImageIcon(cl.getResource(Resources.getString(ICON_APACHE_LOGO)))),
-                         0, 0, 1, 1, WEST, NONE, 0, 0);
-        projectPanel.add(new JLabel(Resources.getString(LABEL_APACHE_BATIK_PROJECT)),
-                         1, 0, 1, 1, WEST, NONE, 0, 0);
-        projectPanel.add(new JLabel(""),
-                         2, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
-
-        panel.add(projectPanel, 0, 0, 1, 1, CENTER, HORIZONTAL, 1, 0);
+        URL url = cl.getResource(Resources.getString(ICON_APACHE_LOGO));
+        JLabel l = new JLabel(Resources.getString(LABEL_APACHE_BATIK_PROJECT),
+                              new ImageIcon(url),
+                              SwingConstants.LEFT);
+        panel.add(BorderLayout.NORTH, l);
 
         //
         // Add splash image
         //
-        panel.add(new JLabel(new ImageIcon(cl.getResource(Resources.getString(ICON_BATIK_SPLASH)))),
-                  0, 1, 1, 1, CENTER, NONE, 0, 0);
+        url = cl.getResource(Resources.getString(ICON_BATIK_SPLASH));
+        panel.add(BorderLayout.CENTER, new JLabel(new ImageIcon(url)));
 
         //
         // Add exact revision information
@@ -156,8 +150,7 @@ public class AboutDialog extends JWindow
             tagName = Resources.getString(LABEL_DEVELOPMENT_BUILD);
         }
 
-        panel.add(new JLabel(tagName),
-                  0, 2, 1, 1, EAST, NONE, 0, 0);
+        panel.add(BorderLayout.SOUTH, new JLabel(tagName, SwingConstants.RIGHT));
 
         setBackground(Color.white);
         getContentPane().setBackground(Color.white);
