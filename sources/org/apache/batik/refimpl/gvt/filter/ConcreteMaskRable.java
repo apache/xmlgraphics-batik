@@ -134,6 +134,9 @@ public class ConcreteMaskRable
                                                 PadMode.ZERO_PAD);
         maskSrc = new FilterAsAlphaRable(maskPad);
         RenderedImage ri = maskSrc.createRendering(rc);
+        if (ri == null)
+            return null;
+
         CachableRed maskCr = ConcreteRenderedImageCachableRed.wrap(ri);
 
         //

@@ -343,46 +343,150 @@ public class GraphicsUtil {
      * to the state of AlphaPreMultiplied.
      *
      * @param src The source 
+     * @param dst The destination 
      */
     public static void 
         copyData(BufferedImage src, BufferedImage dst) {
-        if (src.isAlphaPremultiplied() == dst.isAlphaPremultiplied()) {
-            dst.setData(src.getRaster());
-            return;
-        }
+        Rectangle srcRect = new Rectangle(0, 0, 
+                                          src.getWidth(), src.getHeight());
+        copyData(src, srcRect, dst, new Point(0,0));
+    }
+        
+
+    /**
+     * Copies data from one bufferedImage to another paying attention
+     * to the state of AlphaPreMultiplied.
+     *
+     * @param src The source 
+     * @param srcRect The Rectangle of source data to be copied
+     * @param dst The destination 
+     * @param dstP The Place for the upper left corner of srcRect in dst.
+     */
+    public static void 
+        copyData(BufferedImage src, Rectangle srcRect,
+                 BufferedImage dst, Point destP) {
+        boolean srcAlpha = src.getColorModel().hasAlpha();
+        boolean dstAlpha = dst.getColorModel().hasAlpha();
+
+        if (srcAlpha == dstAlpha)
+            if ((srcAlpha == false) ||
+                (src.isAlphaPremultiplied() == dst.isAlphaPremultiplied())) {
+                // They match one another so just copy everything...
+                dst.setData(src.getRaster());
+                return;
+            }
 
         int [] pixel = null;
         Raster         srcR  = src.getRaster();
         WritableRaster dstR  = dst.getRaster();
-        int            bands = srcR.getNumBands();
+        int            bands = dstR.getNumBands();
         float          norm;
-        if (dst.isAlphaPremultiplied()) {
-            // Original loop that definately works for all cases...
+
+        int dx = destP.x-srcRect.x;
+        int dy = destP.y-srcRect.y;
+
+        int x0 = srcRect.x;
+        int y0 = srcRect.y;
+        int x1 = x0+srcRect.width-1;
+        int y1 = y0+srcRect.height-1;
+        
+        if (!srcAlpha) {
+            // Src has no alpha dest does so set alpha to 1.0 everywhere.
+            int [] oPix = new int[bands];
+            for (int y=y0; y<y1; y++)
+                for (int x=x0; x<x1; x++) {
+                    oPix[bands-1] = 255;
+                    for (int b=0; b<bands-1; b++)
+                        oPix[b] = pixel[b];
+                    dstR.setPixel(x+dx, y+dy,oPix);
+                }
+        } else if (dstAlpha && dst.isAlphaPremultiplied()) {
+            // Src and dest have Alpha but we need to multiply it for dst.
             norm = 1/(float)255;
-            for (int y=0; y<src.getHeight(); y++)
-                for (int x=0; x<src.getWidth(); x++) {
+            for (int y=y0; y<y1; y++)
+                for (int x=x0; x<x1; x++) {
                     pixel = srcR.getPixel(x,y,pixel);
                     int a = pixel[bands-1];
                     if ((a >= 0) && (a < 255)) {
                         float alpha = a*norm;
                         for (int b=0; b<bands-1; b++) 
                             pixel[b] = (int)(pixel[b]*alpha+0.5f);
-                        dstR.setPixel(x,y,pixel);
                     }
+                    dstR.setPixel(x+dx, y+dy,pixel);
                 }
-
-        } else {
-            for (int y=0; y<src.getHeight(); y++)
-                for (int x=0; x<src.getWidth(); x++) {
+        } else if (dstAlpha && !dst.isAlphaPremultiplied()) {
+            // Src and dest have Alpha but we need to divide it out for dst.
+            for (int y=y0; y<y1; y++)
+                for (int x=x0; x<x1; x++) {
                     pixel = srcR.getPixel(x,y,pixel);
                     int a = pixel[bands-1];
                     if ((a > 0) && (a < 255)) {
                         float ialpha = 255/(float)a;
                         for (int b=0; b<bands-1; b++) 
                             pixel[b] = (int)(pixel[b]*ialpha+0.5f);
-                        dstR.setPixel(x,y,pixel);
                     }
+                    dstR.setPixel(x+dx, y+dy,pixel);
                 }
+        } else if (src.isAlphaPremultiplied()) {
+            int [] oPix = new int[bands];
+            // Src has alpha dest does not so unpremult and store...
+            for (int y=y0; y<y1; y++)
+                for (int x=x0; x<x1; x++) {
+                    pixel = srcR.getPixel(x,y,pixel);
+                    int a = pixel[bands];
+                    if (a > 0) {
+                        if (a < 255) {
+                            float ialpha = 255/(float)a;
+                            for (int b=0; b<bands-1; b++) 
+                                oPix[b] = (int)(pixel[b]*ialpha+0.5f);
+                        } else {
+                            for (int b=0; b<bands-1; b++) 
+                                oPix[b] = pixel[b];
+                        }
+                    } else {
+                        for (int b=0; b<bands-1; b++) 
+                            oPix[b] = 255;
+                    }
+                    dstR.setPixel(x+dx, y+dy,oPix);
+                }
+        } else {
+            // Src has unpremult alpha, dest does not have alpha, 
+            // just copy the color channels over.
+            Rectangle dstRect = new Rectangle(destP.x, destP.y,
+                                              srcRect.width, srcRect.height);
+            for (int b=0; b<bands; b++)
+                copyBand(srcR, srcRect, b, 
+                         dstR, dstRect, b);
+        }
+    }
+
+    public static void copyBand(Raster         src, int srcBand, 
+                                WritableRaster dst, int dstBand) {
+
+        Rectangle sR   = src.getBounds();
+        Rectangle dR   = dst.getBounds();
+        Rectangle cpR  = sR.intersection(dR);
+
+        copyBand(src, cpR, srcBand, dst, cpR, dstBand);
+    }
+
+    public static void copyBand(Raster         src, Rectangle sR, int sBand, 
+                                WritableRaster dst, Rectangle dR, int dBand) {
+        int dy = dR.y -sR.y;
+        int dx = dR.x -sR.x;
+        sR = sR.intersection(src.getBounds());
+        dR = dR.intersection(dst.getBounds());
+        int width, height;
+        if (dR.width  < sR.width)  width  = dR.width;
+        else                       width  = sR.width;
+        if (dR.height < sR.height) height = dR.height;
+        else                       height = sR.height;
+
+        int x = sR.x+dx;
+        int [] samples = null;
+        for (int y=sR.y; y< sR.y+height; y++) {
+            samples = src.getSamples(sR.x, y, width, 1, sBand, samples);
+            dst.setSamples(x, y+dy, width, 1, dBand, samples);
         }
     }
 
