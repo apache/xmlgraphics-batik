@@ -22,34 +22,43 @@
     <answer>
         <p>        <img src="images/batikUses.jpg" alt="Batik use cases" />
         Batik is a Java(tm) technology
-        based toolkit for applications that want to use images in the
+        based toolkit for applications or applets that want to use images in the
         <link href="http://www.w3.org/TR/SVG/">Scalable Vector
         Graphics (SVG)</link> format for various purposes, such as
         viewing, generation or manipulation.        
         </p>
         <p>
-        The project's ambition is to give developers a set of core modules which can be used together 
-        or individually to support specific SVG solutions. Examples of modules are an
-        <link href="glossary.html#SVGParser">SVG parser</link>, an 
-        <link href="glossary.html#SVGGenerator">SVG generator</link>
-        and an <link href="glossary.html#SVGDOM">SVG DOM </link>
-        implementations. Another ambition of the Batik project is to make 
-        it highly extensible (for example, Batik allows the developer to handle custom SVG tags).
-        Even though the goal of the project is to provide a set 
-        of core modules, one of the deliveries is a full fledged SVG Browser implementation which 
-        validates the various modules and their inter-operability. 
+        It is the ambition of this project to give developers a set of
+        <link href="architecture.html">core modules</link> which can
+        be used together or individually to support specific SVG
+        solutions. Examples of modules are an <link
+        href="glossary.html#SVGParser">SVG parser</link>, an <link
+        href="glossary.html#SVGGenerator">SVG generator</link> and an
+        <link href="glossary.html#SVGDOM">SVG DOM </link>
+        implementations. Another ambition of the Batik project is to
+        make it highly extensible (for example, Batik allows the
+        developer to handle <link href="extendingBatik.html">custom
+        SVG tags</link>).  Even though the goal of the project is to
+        provide a set of core modules, one of the deliveries is a full
+        fledged <link href="svgviewer.html">SVG Browser</link>
+        implementation which validates the various modules and their
+        inter-operability.
         </p>
         <p>
-        In a nutshell, Batik provides building blocks that developers can assemble in 
-        various ways in their Java technology applications to generate, 
-        parse, view or convert SVG contents. For example, Batik contains
-        a Swing component that can add SVG viewing capability to all Java
-        technology applications. Batik can also be used to generate SVG on
-        a client or on a server, and Batik can convert SVG content into
-        other formats such as JPEG or PNG. Batik's goal is to make it easy
-        for application developers to handle SVG content for various 
-        purposes, client-side or server-side, as illustrated in the 
-        diagram.
+        Batik provides <link href="architecture.html">building
+        blocks</link> that developers can assemble in various ways in
+        their Java technology applications or applets to generate,
+        parse, view or convert SVG contents. For example, Batik
+        contains a Swing component that can add <link
+        href="svggen.html">SVG viewing capability</link> to all Java
+        technology applications or applets. Batik can also be used to
+        generate SVG on a client or on a server, and Batik can <link
+        href="svgrasterizer.html">convert SVG content</link> into
+        other formats such as JPEG, PNG or Tiff or other formats
+        (<link href="rasterizerTutorial.html"> transcoder API</link>).
+        Batik's goal is to make it easy for developers to handle SVG
+        content for many purposes, client-side or server-side, as
+        illustrated in the diagram.
         </p>
     </answer>
 
@@ -59,7 +68,7 @@
     <question>What is SVG?</question>
     <answer>
         <p>
-        SVG (Scalable Vector Graphics) is an open-standard language for describing 
+        <link href="http://www.w3.org/TR/SVG/">SVG</link> (Scalable Vector Graphics) is an open-standard language for describing 
         two-dimensional (2D) graphics in XML. It is a Recommendation from the 
         <link href="http://www.w3.org">W3C</link>. SVG lets you describe rich images
         with features such as gradients, transparency, filter effects and animation.
@@ -90,7 +99,7 @@
     <question>What can I do with Batik?</question>
     <answer>
         <p>
-        Batik contains several core modules which can be used independently or jointly to 
+        Batik contains several <link href="architecture.html">core modules</link> which can be used independently or jointly to 
         <strong>generate SVG content</strong> (see the <link href="svggen.html">SVG Generator</link>, an 
         <link href="domapi.html">SVG DOM</link> implementation documentation)
         <strong>view SVG content</strong> (see the <link href="jsvgcanvas.html">JSVGCanvas</link>)
@@ -99,15 +108,15 @@
         </p>
         
         <p>
-        In addition, Batik contains low level modules such as
+        In addition, Batik contains low <link href="architecture.html#lowLevelComponents">level modules</link> such as
         an object oriented Graphic Vector Toolkit (<link href="glossary.html#GVT">GVT</link>),
-        a set of low level parsers specific to the SVG syntax and
-        a set of extensions to the Java 2D API (such as sophisticated fill types and 
+        a set of low level parsers(<link href="glossary.html#SVGParser">SVG Parser</link>) specific to the SVG syntax and
+        a set of <link href="extendingBatik.html">extensions</link> to the Java 2D API (such as sophisticated fill types and 
         filter effects).
         </p>
 
         <p>
-        Finally, Batik comes with packaged applications to help developers get
+        Finally, Batik comes with <link href="toolsAndApps.html">packaged applications</link> to help developers get
         familiar with the code and be quickly able to use the various modules: an 
         <link href="svgviewer.html">SVG browser</link> (in the 
         <code>org.apache.batik.apps.svgbrowser</code> package) an 
@@ -118,15 +127,16 @@
         <link href="svgpp.html">SVG pretty printer</link> (in the 
         <code>org.apache.batik.apps.svgpp package</code>).</p>
         <p>
-        The <strong>SVG browser</strong> can display SVG documents and lets the user zoom, pan 
+        The <strong>SVG browser</strong> <link href="svgviewer.html">(here)</link> can display SVG documents and lets the user zoom, pan 
         and rotate any SVG document, view the SVG source, link between SVG 
         documents, view a tree representation of the SVG DOM and more. One
         important component of the SVG viewer is the <code>org.apache.batik.swing.JSVGCanvas</code>  
-        component which can be plugged in any Java application to provide SVG viewing capability.
+        component which can be plugged in any Java application or applet to provide SVG viewing capability.
         </p>
         <p>
-        The <strong>SVG rasterizer</strong> lets the user convert SVG files to raster formats such
-        as JPEG and PNG. It contains an extensible mechanism so that arbitrary
+        The <strong>SVG rasterizer</strong> <link href="svgrasterizer.html">(here)</link> 
+        lets the user convert SVG files to raster formats such
+        as JPEG, PNG or Tiff . It contains an extensible mechanism so that arbitrary
         raster formats can be added. For example, the rasterizer lets you create 
         one SVG file with a special effect (e.g., shadows, gradients, etc...), 
         turn it into an PNG image, then modify the SVG source (e.g., modify
@@ -136,8 +146,8 @@
         can also be used on a web server to do this conversion automatically).
         </p>
         <p>
-        The <strong>SVG Font Converter</strong> lets the user easily create
-        an SVG Font for a set of characters from a True Type Font file. That
+        The <strong>SVG Font Converter</strong><link href="ttf2svg.html">(here)</link> lets the user easily create
+        an <link href="http://www.w3.org/TR/SVG/fonts.html">SVG Font</link> for a set of characters from a True Type Font file. That
         SVG Font definition can be embedded in a document using the
         characters. This allows users to create SVG documents that are self contained and 
         do not rely on system fonts, and guarantees that the SVG file will
@@ -145,16 +155,16 @@
         </p>
 
         <p>
-        The <strong>SVG Pretty Printer</strong> is a convenience tool to 
+        The <strong>SVG Pretty Printer</strong><link href="svgpp.html">(here)</link> is a convenience tool to 
         pretty print an SVG document, which means that you can reformat any
         existing SVG document to produce a properly formatted and highly legible 
         version.</p>
 
         <!-- <p>The SVG Generator 
         (in the <code>org.apache.batik.util.awt.svg</code> package) that allows
-        all Java applications to export their graphics to the SVG format. 
+        all Java applications or applets to export their graphics to the SVG format. 
         
-        The SVG generator lets all Java application export their graphics
+        The SVG generator lets all Java application or applets export their graphics
         as SVG, using the same code used for drawing to the screen or for
         printing. For example, an application that displays a pie chart in
         a window, can use the SVG generator to easily export the sequence
@@ -168,12 +178,17 @@
         used to serve SVG images to client machines that do not have SVG support).
         </p>
         <p>
-        The SVG viewer and the rasterizer are only examples of the type of 
-        applications Batik allows. Its architecture allows the different modules to
-        be used in different ways and other applications are possible, such as 
-        transcoders (to other vector formats, such as PDF, for example). Furthermore,
-        the Graphic Vector Toolkit could be used to render other graphic formats
-        such as XHTML.
+        The <link href="svgviewer.html">SVG Browser</link> and the
+        <link href="svgrasterizer.html">rasterizer</link> are examples
+        of some of the types of applications Batik allows. Batik's
+        <link href="architecture.html">architecture</link> allows the
+        modules to be used in many different ways so other
+        applications are possible, such as using the <link
+        href="rasterizerTutorial.html">transcoders</link> (to other
+        vector formats, such as PDF, for example). Furthermore, the
+        <link href="glossary.html">Graphic Vector Toolkit</link> could
+        be used to render other graphic formats such as <link
+        href="http://www.w3.org/TR/xhtml1/">XHTML</link>.
         </p>
     </answer>
 </faq>
@@ -190,7 +205,8 @@
         of the Batik SVG viewer, images created from the 
         <link href="svgrasterizer.html">rasterizer</link>
         and an <link href="svggen.html">example</link>
-        of how to use the SVG Graphics2D generator.
+        of how to use the <link href="svggen.html">SVGGraphics2D</link> 
+        generator.
         </p>
     </answer>
 
@@ -200,9 +216,11 @@
     <question>Why do we have such a project at Apache?</question>
     <answer>
         <p>
-        Apache's mission is to allow the web to be an open environment and
-        to remain an open environment. Batik is an open source implementation of
-        a key format for today and tomorrow's web and fits well in Apache's mission.
+        <link href="http://xml.apache.org/mission.html">Apache's
+        mission</link> is to allow the web to be an open environment
+        and to remain an open environment. Batik as an open source
+        implementation of a key format for today's and tomorrow's web
+        fits well in this mission.
         </p>
     </answer>
 
@@ -270,7 +288,8 @@
         Java projects at Apache. A formal description of that process
         can be found on the <link
         href="http://jakarta.apache.org/guidelines/index.html">Jakarta</link>
-        web site.
+        web site.(<link href="whoAreWe.html#BatikCommitters">Batik Commiters</link> and 
+        <link href="whoAreWe.html#BatikContributors">Batik Contributors</link>)
         </p>
         <p>
         For direct participation, we suggest you to subscribe to the
@@ -288,11 +307,11 @@
 <faq>
     <question>Where is Batik going? What is next?</question>
     <answer>
-        <p>The SVG implementation is not complete, and there is more work to do to 
+        <p>The SVG implementation is not complete <link href="status.html">(status)</link>, and there is more work to do to 
         achieve a fully functional viewer.</p>
-        <p>Batik 1.1 supports all the static SVG features, linking and a limited
-        support for scripting. Design work has 
-        started on dynamic features (scripting and SMIL animation) support.
+        <p>Batik 1.1 supports all the <link href="status.html#beSuiteStatus">static SVG features</link>, linking and a limited
+        support for <link href="scripting.html">scripting</link>. Design work has 
+        started on <link href="status.html#DynamicTest">dynamic features</link> (scripting and SMIL animation) support.
         </p>
         <p>
         The type of applications (e.g., transcoding applications) that can or will
@@ -311,7 +330,7 @@
         and that will let you author SVG content visually.</p>
         <p>
         You can get a list of tools exporting SVG from the 
-        <link href="http://www.w3.org/Graphics/SVG/SVG-Implementations#edit">implementation</link>
+        <link href="http://www.w3.org/Graphics/SVG/SVG-Implementations#edit">SVG implementation</link>
         section of the SVG Home page on the W3C web site. You can also 
         imagine building a tool on top of Batik: feel free to contribute!
         </p>
@@ -371,7 +390,8 @@
         <p>
         The following <link href="status.html">status page</link>
         shows how much of the SVG specification Batik implements by showing which 
-        of the tests in the SVG Basic Effectivity test suite Batik successfully passes.
+        of the tests in the <link href="status.html#beSuiteStatus">SVG Basic Effectivity test suite</link> 
+        Batik successfully passes.
         </p>
     </answer>
 
@@ -383,7 +403,9 @@
     <answer>
         <p>
         Being an XML grammar means SVG can leverage work done around XML, 
-        and SVG actually leverages other grammars such as XLink for linking and SMIL
+        and SVG actually leverages other grammars such as 
+        <link href="http://www.w3.org/TR/2001/REC-xlink-20010627/">XLink</link>, for linking and 
+        <link href="http://www.w3.org/TR/2001/REC-smil-animation-20010904/#AnimationFramework">SMIL</link>
         for the animation.
         </p>
         <p>
@@ -488,7 +510,7 @@
               What is the problem?</question>
     <answer><p>There is certainly something wrong with your classpath. Clear your
             CLASSPATH environment variable and be sure to remove all the libraries
-            which use the W3C's DOM bindings from jre/lib/ext before running
+            which use the W3C's DOM bindings from <code>jre/lib/ext</code>before running
             any of the Batik's applications.</p></answer>
 </faq>
 
@@ -499,15 +521,15 @@
     What am I missing?
     </question>
     <answer><p>
-    When running from the source distribution you automatically get
+    When running from the <link href="install.html#distributions">source distribution</link> you automatically get
     the service provider entries for the Batik extension tags
     (regularPolygon, and star for example).  We chose not to include
-    these by default in the binary distribution for the Batik
+    these by default in the <link href="install.html#distributions">binary distribution</link> for the Batik
     applications.
     </p>
     <p> 
     You can make the Batik extension tags available by putting the
-    'lib/batik-extensions.jar' file on the java class path.
+    <code>'lib/batik-extensions.jar'</code> file on the java class path.
     </p></answer>
 </faq>
 
@@ -516,13 +538,13 @@
     Why do I get red circles when I view the samples/extensions files?
     </question>
     <answer><p>
-    You are using the binary distribution.  This distribution does not
-    include support for our example extensions (they are just
+    You are using the <link href="install.html#distributions">binary distribution</link>.  
+    This distribution does not include support for our example extensions (they are just
     examples and other people can do more sophisticated things).
     </p>
     
     <p>
-    If you want to view these examples you need to add lib/batik-extensions.jar to 
+    If you want to view these examples you need to add <code>lib/batik-extensions.jar</code> to 
     your class path.
     </p></answer>
 </faq>
@@ -530,24 +552,24 @@
 <faq>
     <question>
     I am trying to use Batik and FOP together but Batik does not work and
-    fails on the org.w3c.xxx packages. What is happening?
+    fails on the <code>org.w3c.xxx packages</code>. What is happening?
     </question>
 
     <answer>
         <p>Both FOP and Batik use the <code>org.w3c.xxx packages</code>. Depending on the 
         version of FOP and Batik, Batik has been using a version of these
         packages which is more recent than the one in the w3c.jar file FOP 
-        uses. However, if the w3c.jar file which comes with the FOP distribution
+        uses. However, if the <code>w3c.jar</code>, file which comes with the FOP distribution
         is loaded before the Batik jar files, then, the version coming with 
         FOP takes precedence (i.e., that is the version the Java Virtual Machine
         loads). Because that version is incompatible with Batik, you get a 
         failure.</p>
-        <p>The solution is to either repackage the w3c.jar file with the 
+        <p>The solution is to either repackage the <code>w3c.jar</code> file with the 
         classes in the Batik distribution (you will need the Batik source
         distrib to do that), or you will need to make sure the Batik jars are
-        loaded before the w3c.jar, for example by putting them before the
-        w3c.jar file in your classpath. If you are copying your jar files to
-        ..jre/lib/ext, you can simply remove the FOP w3c.jar file from that
+        loaded before the <code>w3c.jar</code>, for example by putting them before the
+        <code>w3c.jar</code> file in your classpath. If you are copying your jar files to
+        <code>..jre/lib/ext</code>, you can simply remove the FOP <code>w3c.jar</code> file from that
         directory.</p>
     </answer>
 </faq>
@@ -601,11 +623,11 @@
     What is happening?
     </question>
     <answer>
-    <p>The Batik demo (see http://xml.apache.org/batik/batikDemo.html) uses Java Web Start. Java Web Start (under the Applications/Utilities
+    <p>The Batik demo (see <code>http://xml.apache.org/batik/batikDemo.html</code>) uses Java Web Start. Java Web Start (under the Applications/Utilities
     folder), lets you start a Java application from a web browser. You can see the debug
     traces by enabling the Java console for Java Web Start. If you do, you will see that
-    there is a java.lang.NoSuchMethodError execption thrown.</p>
-    <p>This is happening because the Java Web Start jar file (javaws.jar in /Applications/Utilities/Java Web Start/Content/MacOS)
+    there is a <code>java.lang.NoSuchMethodError</code> execption thrown.</p>
+    <p>This is happening because the Java Web Start jar file (<code>javaws.jar in /Applications/Utilities/Java Web Start/Content/MacOS)</code>
     contains an older version of the DOM bindings.</p>
     <p>One work around is to manually patch the javaws.jar file to remove the DOM bindings
     so that they do not take precedence over the Batik ones.</p>

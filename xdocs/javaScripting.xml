@@ -24,7 +24,9 @@
   <body>
     <s1 title="Introduction">
     <p>
-    This section explains how to manipulate the DOM tree of an SVG document from a Java program. It contains the following sub-sections:
+    This section explains how to manipulate the DOM tree of an SVG
+    document from a Java program.  It contains the following
+    sub-sections:
     </p>
 
     <ul>
@@ -192,8 +194,9 @@ canvas.getUpdateManager().getUpdateRunnableQueue().
     <anchor id="Extension"/>
     <s1 title="Alternate way to manipulate an SVG document">
       <p>
-      Batik provides an extension of the SVG &lt;script&gt; element
-      which allows Java programs to be called from an SVG document.
+      Batik provides an extension of the SVG
+      <code>&lt;script&gt;</code> element which allows Java programs
+      to be called from an SVG document.
 
       This feature is available to any application of Batik that uses
       the bridge module (for example the Swing component and the

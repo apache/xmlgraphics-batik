@@ -25,14 +25,24 @@
 
     <body>
         <s1 title="Batik 1.0 release reports and reviews">
-            <ul>
-                <li><link href="http://news.cnet.com/news/0-1005-200-5991585.html">CNET</link></li>
-                <li><link href="http://industry.java.sun.com/javanews/stories/story2/0,1072,36774,00.html">Java Industry Connection</link></li>
-                <li><link href="http://apachetoday.com/news_story.php3?ltsn=2001-05-21-002-06-PR-CY">Apache Today</link></li>
-                <li><link href="http://freshmeat.net/releases/48664/">Freshmeat.net</link></li>
-                <li><link href="http://xmlhack.com/read.php?item=1225">XML Hack</link></li>
-                <li><link href="http://www.webtechniques.com/archives/2001/04/desi/">Web Techniques</link></li>
-            </ul>
+        
+        	<p><br/><strong>OREILLYNET.com</strong>
+        			<link href="http://www.oreillynet.com/pub/a/javascript/2002/06/06/svg_future.html">SVG On the Rise</link><br/>
+               		<strong>CNET: </strong>
+                      		<link href="http://news.cnet.com/news/0-1005-200-5991585.html">"Toolkit opened for graphics technology"</link><br/>
+               		<strong>Java Industry Connection: </strong>
+                      		<link href="http://industry.java.sun.com/javanews/stories/story2/0,1072,36774,00.html">"Scalable Vector Graphics (Svg) Software Released from The Apache Software Foundation"</link><br/>
+	       		<strong>Apache Today: </strong>
+	              		<link href="http://apachetoday.com/news_story.php3?ltsn=2001-05-21-002-06-PR-CY">"Scalable Vector Graphics (SVG) software released from the Apache Software Foundation"</link><br/>
+	       		<strong>Freshmeat.net</strong>
+	              		<link href="http://freshmeat.net/releases/48664/">Batik 1.0</link><br/>
+	       		<strong>XML Hack</strong>
+	              		<link href="http://xmlhack.com/read.php?item=1225">Batik SVG toolkit reaches 1.0</link><br/>
+	       		<strong>Web Techniques</strong>
+	       			<link href="http://www.webtechniques.com/archives/2001/04/desi/">Scalable Vector Graphics</link><br/>
+	       		<strong>XML.com</strong>
+	       			<link href="http://www.xml.com/pub/a/2002/02/27/batik/index.html">Server Side SVG</link><br/>
+        	</p>
         </s1>
         <s1 title="Batik 1.0 Press Releases, Monday May 21st 2001">
 <p><strong>CONTACT</strong><br />
@@ -58,7 +68,7 @@ marks for the implementation of this maturing specification. </p>
 <p>"In the past months the Batik team has moved quickly toward realizing
 its goal of providing a full implementation of the W3C's SVG specification," 
 said Vincent Hardy of the Batik team. "The latest Batik release provides a 
-high quality implementation of many of the high-end SVG features. With the
+high quality implementation of many of the high-end SVG features. With this
 highly modular tool, developers can cut down the cost of creating, viewing 
 and exchanging graphical content between applications or across the Internet, 
 and easily generate, manipulate or view SVG content. The contribution, 
@@ -71,7 +81,7 @@ lead the drive in building an industrial-grade embeddable Web graphics
 software solution. Batik delivers core components for three main purposes:</p>
 <ul>
 <li>generating SVG content from any Java applications, </li>
-<li>viewing SVG content, and </li>
+<li>viewing SVG content</li>
 <li>converting SVG to and from other formats. </li>
 </ul>
 
@@ -126,7 +136,7 @@ and made more flexible.</li>
 </ul>
 
 <p>Batik delivers a number of sample applications that leverage its core
-components, such as an SVG browser. Screenshots of that browser can
+modules, such as an SVG browser. Screenshots of that browser can
 be seen at: <link href="http://xml.apache.org/batik/svgviewer.html">http://xml.apache.org/batik/svgviewer.html</link></p>
  
 <p>In the near future, the Batik team aims to provide developers worldwide

@@ -41,7 +41,7 @@
             The SVG Rasterizer is a utility that can convert SVG files to a
             raster format. The tool can convert individual files or sets of
             files, making it easy to convert entire directories of SVG
-            files. The provided formats are JPEG, PNG, and TIFF, however the
+            files. The provided formats are JPEG, PNG, and Tiff, however the
             design allows new formats to be added easily.
         </p>
 
@@ -52,8 +52,8 @@
 
             <p>Refer to the <link href="install.html">install page</link> and the
             <link href="dist">download area</link> to find out what to download and how to 
-            install it. Remember that you can get either the developer distribution
-            or the binary distribution.</p>
+            install it. Remember that you can get either the <link href="install.html#distributions">source distribution</link>
+            or the <link href="install.html#distributions">binary distribution</link>.</p>
         </s1>
 
         <anchor id="using" />
@@ -66,75 +66,76 @@
             <s2 title="Using the binary distribution" >
 
                 <p>If you downloaded the binary distribution of Batik, you should have
-                gotten a file called <em>batik-1.1.zip</em>, and, after expanding that
-                file, a JAR (Java ARchive) file called <em>batik-rasterizer.jar</em>. 
+                gotten a file called <em>batik-1.5beta3.zip</em>, and, after expanding that
+                file, a JAR (Java ARchive) file called <code>batik-rasterizer.jar</code>. 
                 To start the rasterizer, open a console, go to the directory where you 
-                expanded the distribution (and where batik-rasterizer.jar is located) and
+                expanded the distribution (and where <code>batik-rasterizer.jar</code> is located) and
                 simply type the following at the command prompt :</p>
-                <p><em>java -jar batik-rasterizer.jar [@files]</em></p>
+                <p><code>java -jar batik-rasterizer.jar </code><em>[@files]</em></p>
                 <p>For example, if you type:</p>
-                <p><em>java -jar batik-rasterizer.jar samples/batikFX.svg</em></p>
+                <p><code>java -jar batik-rasterizer.jar samples/batikFX.svg</code></p>
                 <p>you will see the following printout:</p>
-                <p><em>Converting file: samples/BatikFX.svg to samples/BatikFX.png</em></p>
-                <p>Once the conversion is complete, you will find a batikFX.png file in the samples
+                <p><code>Converting file: samples/BatikFX.svg to samples/BatikFX.png</code></p>
+                <p>Once the conversion is complete, you will find a <code>batikFX.png</code> file in the samples
                 directory</p>
                 <p>You can pass options to the command line:</p>
-                <p><em>java -jar batik-rasterizer.jar [options] [@files]</em></p>
+                <p><code>java -jar batik-rasterizer.jar </code><em>[options] [@files]</em></p>
                 <p>Where the options are:</p>
                 <ul>
-                <li><em>-d &lt;dir|file&gt;</em>. Output directory. If there is a single input file, this can be a file.</li>
-                <li><em>-m &lt;mimeType&gt;</em>. Output mime type, one of image/png, image/jpeg, application/pdf, image/tiff.</li>
-                <li><em>-w &lt;width&gt;</em>. Output width. This is a floating point value.</li>
-                <li><em>-h &lt;height&gt;</em>. Output height. This is a floating point value.</li>
-                <li><em>-a &lt;area&gt;</em>. Output area. The format for &lt;area&gt; is x,y,w,h, where x, y, w and h
+                <li><code>-d</code> <em>&lt;dir|file&gt;</em>. Output directory. If there is a single input file, this can be a file.</li>
+                <li><code>-m</code><em> &lt;mimeType&gt;</em>. Output mime type, one of image/png, image/jpeg, application/pdf, image/tiff.</li>
+                <li><code>-w</code><em> &lt;width&gt;</em>. Output width. This is a floating point value.</li>
+                <li><code>-h</code><em> &lt;height&gt;</em>. Output height. This is a floating point value.</li>
+                <li><code>-a</code><em> &lt;area&gt;</em>. Output area. The format for &lt;area&gt; is x,y,w,h, where x, y, w and h
                 are floating point values.</li>
-                <li><em>-bg &lt;color&gt;</em>. Uuput color. The format for &lt;color&gt; is a.r.g.b, where a, r, g and b
+                <li><code>-bg</code><em> &lt;color&gt;</em>. Uuput color. The format for &lt;color&gt; is a.r.g.b, where a, r, g and b
                 are integer values.</li>
-                <li><em>-cssMedia &lt;media&gt;</em>.CSS media type for which the source SVG files should be
+                <li><code>-cssMedia</code><em> &lt;media&gt;</em>.CSS media type for which the source SVG files should be
                 converted.</li>
-                <li><em>-cssAlternate &lt;alternate&gt;</em>. CSS alternate stylesheet to use when converting the source
+                <li><code>-cssAlternate</code><em> &lt;alternate&gt;</em>. CSS alternate stylesheet to use when converting the source
                 SVG files.</li>
-                <li><em>-cssUser &lt;userStylesheet&gt;</em>. CSS user stylesheet URI to apply to converted SVG documents
+                <li><code>-cssUser</code><em>&lt;userStylesheet&gt;</em>. CSS user stylesheet URI to apply to converted SVG documents
                 in addition to any other referened or embeded stylesheets.</li>
-                <li><em>-lang &lt;userLanguage&gt;</em>. User language to use when converting SVG documents.</li>
-                <li><em>-q &lt;quality&gt;</em>. Quality for the output image. This is only relevant for the
+                <li><code>-lang</code><em> &lt;userLanguage&gt;</em>. User language to use when converting SVG documents.</li>
+                <li><code>-q</code><em> &lt;quality&gt;</em>. Quality for the output image. This is only relevant for the
                 image/jpeg mime type.</li>
-                <li><em>-dpi &lt;resolution&gt;</em>. Resolution for the ouptut image.</li>
-                <li><em>-validate</em>. Controls whether the source SVG files should be validated.</li>
+                <li><code>-dpi</code><em> &lt;resolution&gt;</em>. Resolution for the ouptut image.</li>
+                <li><code>-validate</code> Controls whether the source SVG files should be validated.</li>
                 </ul>
+               	
                 <p>For example:</p>
                 <ul>
-                    <li><em>java -jar batik-rasterizer.jar -d myDir -m image/jpg samples\*.svg</em> will generate JPEG images
+                    <li><code>java -jar batik-rasterizer.jar -d myDir -m image/jpeg samples/*.svg</code> will generate JPEG images
                     for all the SVG files found in the samples directory.</li>
                 </ul>
+                <p><strong>NOTE:</strong>to run MIME type <code>application/pdf</code> need to have (see <link href="http://xml.apache.org/fop/index.html">FOP</link>) installed.</p>
             </s2>
 
-            <s2 title="Using the developer distribution">
+            <s2 title="Using the source distribution">
             
-                <p>If you downloaded the developer distribution of Batik, you 
-                got a zip or tar file that expanded into an xml-batik directory. In that directory, you
-                can find build scripts for the platform you are running on. For example, there is 
-                a build.bat script for users of the Windows platform and there is a build.sh script
+                <p>If you downloaded the <link href="install.html#distributions">source distribution</link>
+                of Batik, you 
+                got a zip or tar file that expanded into a directory called <code>xml-batik</code> directory. 
+                In that directory, you can find <code>build</code> scripts for the platform you are running on. 
+                For example, there is a build.bat script for users of the Windows platform and there is a 
+                <code>build.sh</code> script
                 for UNIX users.</p>
                 <p>To start the rasterizer you should:</p><ul>
-                    <li>Make sure the xml-batik directory is in your PATH environment variable</li>
-                    <li>Make sure the ANT_HOME environment variable is set to the xml-batik directory</li>
-                    <li>Make sure that your JAVA_HOME environment variable is set to your JDK installation 
+                    <li>Make sure the <code>xml-batik</code> directory is in your PATH environment variable</li>
+                    <li>Make sure the <code>ANT_HOME</code> environment variable is set to the xml-batik directory</li>
+                    <li>Make sure that your <code>JAVA_HOME</code> environment variable is set to your JDK installation 
                         directory</li>
-                    <li>Open a command line window and go to the xml-batik directory where the Batik
+                    <li>Open a command line window and go to the <code>xml-batik</code> directory where the Batik
                         distribution was expanded</li>
-                    <li><strong>UNIX users</strong>. If you have not done so already, make the build.sh script
-                        executable:<br />
-                        <em>chmod +x build.sh</em></li>
                     <li>At the command prompt, type: <br />
-                        <strong>Windows: </strong><em>build svgrasterizer</em>.<br />
-                        <strong>UNIX: </strong><em>build.sh svgrasterizer</em>.<br />
+                        <strong>Windows: </strong><code>build svgrasterizer</code>.<br />
+                        <strong>UNIX: </strong><code>build.sh svgrasterizer</code>.<br />
                         This will printout a
                         help message for the rasterizer</li>
                 </ul>
                 <p>You can pass options to the rasterizer as follows:</p>
-                <p><strong>Windows: </strong><em>build svgrasterizer [options] [@files]</em></p>
-                <p><strong>UNIX: </strong><em>build.sh svgrasterizer [options] [@files]</em></p>
+                <p><strong>Windows: </strong><code>build svgrasterizer </code><em>[options] [@files]</em></p>
+                <p><strong>UNIX: </strong><code>build.sh svgrasterizer </code><em>[options] [@files]</em></p>
                 <p>Refer to <link href="#usingBinary">"Using the binary distribution" </link>for an explanation of these
                 options</p>
             </s2>
@@ -150,16 +151,16 @@
             purpose as the utility but has a different syntax and a 
             little different set of features.</p>
 
-            <p>The task is able to produce four raster formats: PNG, JPEG, TIFF 
-            and PDF. You need to set 
-            <link href="http://xml.apache.org/fop/">FOP</link> (versions after 
+            <p>The task is able to produce four raster formats: PNG, JPEG, Tiff 
+            and PDF. You need to have 
+            <link href="http://xml.apache.org/fop/">FOP</link> installed (versions after 
             0.20.2 should work) in your <em>CLASSPATH</em> if you want to 
             produce result images in PDF format.</p>
 
             <anchor id="initTask" />
             <s2 title="Taking rasterizer task in use">
                 <p>The first thing to do before you can use the task in your Ant 
-                projects is to set <em>batik-rasterizer.jar</em> and 
+                projects is to set <code>batik-rasterizer.jar</code> and 
                 classes of the rasterizer task to your 
                 <em>CLASSPATH</em>.</p>
 
@@ -328,16 +329,16 @@ classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask" /&gt;
                     </tr>
                 </table>
                 <p>You can use <code>fileset</code> elements to select input 
-                files and directories. See the Ant documentation to learn how to 
-                use 
+                files and directories. See the <link href="http://jakarta.apache.org/ant/index.html">Ant</link>
+                documentation to learn how to use 
                 <link href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">filesets</link>.</p>
             </s2>
 
             <anchor id="taskExamples" />
             <s2 title="Examples of using the rasterizer task">
 
-                <p>The following example is the complete Ant project which 
-                converts SVG image (called <em>input.svg</em>) to PNG image 
+                <p>The following example is the complete Ant
+                project which converts SVG image (called <em>input.svg</em>) to PNG image 
                 (called <em>output.png</em>):</p>
 
 <source>
@@ -359,7 +360,7 @@ classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask" /&gt;
                 <p>The next example is just a one task in a project. It 
                 converts all files with <code>.svg</code> suffix in 
                 <em>images</em> directory and all files in <em>images2</em> 
-                directory to TIFF images. The resulting image files are placed 
+                directory to Tiff images. The resulting image files are placed 
                 in the <em>results</em> directory.</p>
 
 <source>

@@ -24,19 +24,47 @@
     <body>
         <s1 title="Introduction">
            <p>
-               You will find below a little introduction on scripting basics, on how it could be useful through an example and on how you can go a little bit further.
+               What follows is a little introduction to scripting
+               basics, an example of how it could be useful
+               and ways to go a little bit further.
            </p>
+           
+           <ul>
+	          <li><link href="#scriptingBasics">Scripting Basics</link></li>
+                  <li><link href="#howToUseScripting">How to use Scripting in Batik</link></li>
+                  <li><link href="#goingFurther">Going Further</link></li>
+                  <ul>
+                  	<li><link href="#customizeRhino">Customize the Rhino interpreter</link></li>
+                  	<li><link href="#haveYourOwn">Have your own interpreter</link></li>
+                  </ul>
+           </ul>
         </s1>
+        
+        <anchor id="scriptingBasics"/>
         <s1 title="Scripting Basics">
            <p>
-               As it is one of the most popular scripting language and as the SVG specification states that an SVG conforming implementation should support it, the ECMAScript (JavaScript) language is supported in Batik through the Mozilla ECMAScript interpreter called Rhino. Even if it is the only scripting language provided with the Batik standard distribution, other languages such a Python or Tcl can also be supported. All examples in this section will use ECMAScript.
+               As the ECMAScript (JavaScript) language is one of the
+               most popular scripting language and as the SVG
+               specification states that an SVG conforming
+               implementation must support it, the ECMAScript language
+               is supported in Batik through the Mozilla ECMAScript
+               interpreter called 
+               <link href="http://www.mozilla.org/rhino/bsf.html">Rhino</link>
+               (<code>js.jar</code> ).  Even if it is the only
+               scripting language provided with standard with the Batik
+               distribution, other languages such a Python or Tcl can
+               also be <link href="installing.html#optionalComponents">
+               supported</link>.
            </p>
+           <p><strong>Note:</strong>All examples in this section will use 
+           ECMAScript.</p>
            <p>
                There are two places in an SVG file where you can put scripts. 
            </p>    
            <p>  
-               The first one is in the &lt;script&gt; element where you can put the
-	       definition of your functions or some general code to be executed when the
+               The first one is in the <code>&lt;script&gt;</code>
+	       element where you can put the definition of your
+	       functions or some general code to be executed when the
 	       element will be read.
            </p>
 	   <source>
@@ -48,10 +76,14 @@
   &lt;!-- Your SVG elements --&gt;
 &lt;/svg&gt;</source>
 	   <p>
-	       You can also put script in response to user or document events using attributes on SVG elements. As shown in the previous example, the scripting language must be set on the &lt;script&gt; element. However for event handling the default language type "text/ecmascript" is already set. If you want to change it you can use the contentScriptType attribute on the &lt;svg&gt; element.
+	       You can also put script in response to user or document events using attributes on SVG elements. 
+	       As shown in the previous example, the scripting language must be set on the &lt;script&gt; element.
+	       However for event handling the default language type "<code>text/ecmascript</code>" is already set. 
+	       If you want to change it you can use the <code>contentScriptType</code> attribute on the <code>&lt;svg&gt;</code> element.
 	   </p>
 	   <p>
-	       In most cases, the event attribute will only call a function defined in a &lt;script&gt; section, however as you can see below it can also contains regular code.
+	       In most cases, the event attribute will only call a function defined in a <code>&lt;script&gt;</code>
+	       section, however as you can see below it can also contains regular code.
 	   </p>
 	   <source>
 
@@ -66,7 +98,10 @@
 	     <li><link href="http://www.ecma.ch/ecma1/stand/ecma-262.htm">ECMAScript specification</link> for advanced information on ECMAScript language.</li>
            </ul>
         </s1>
-        <s1 title="Scripting Uses in Batik">
+        
+        
+        <anchor id="howToUseScripting"/>
+        <s1 title="How to use Scripting in Batik">
 	<p>The following simplified example that you can find in your Batik distribution displays a simple message in response to user events:</p>
 	<source>
 &lt;svg width="450" height="500" viewBox="0 0 450 500"&gt;
@@ -75,7 +110,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;function showDialog(msg) {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(msg);
 &nbsp;&nbsp;&nbsp;&nbsp;}
-
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/script&gt;
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;g&gt;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circle cx="137.5" cy="110" r="20" style="fill:crimson"
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onmousedown="showDialog('onmousedown')"/&gt;
@@ -97,23 +132,28 @@
 &lt;/svg&gt;
 </source>
         <p>
-	You can see in the above example that the &lt;script&gt; element contains
+	You can see in the above example that the <code>&lt;script&gt;</code> element contains
     the definition of a single function: <code>showDialog</code>.
 	</p>
 	<p>
 	This function will be called thanks to the Batik event handling mechanism in answer to
-	user events. The function is registered to listen to mouse events on the various &lt;circle&gt;
+	user events. The function is registered to listen to mouse events on the various <code>&lt;circle&gt;</code>
     elements.
 	</p>
         </s1>
+        
+        <anchor id="goingFurther"/>
         <s1 title="Going Further">
 	   <p>
 	   Batik as an extensible API provides the ability to customize the scripting module to
 	   go beyond the simple support of ECMAScript language in SVG files.
 	   </p>
+	   
+	   
+	   <anchor id="customizeRhino"/>
            <s2 title="Customize the Rhino interpreter">
 	   <p>
-	   A useful example of cutomization of the Rhino interpreter comes from the fact that the
+	   A useful example of customization of the Rhino interpreter comes from the fact that the
 	   ECMAScript specification doesn't provide any I/O predefined facilities to interact with
 	   the console . However it is very common for ECMAScript compatible languages to provide 
            a function named <code>print</code> to output messages to the console. We will describe 
@@ -184,6 +224,8 @@ ctx.setIntepreterPool(pool);</source>
 	   in the <code>createBridgeContext()</code> method.
 	   </p>
            </s2>
+           
+           <anchor id="haveYourOwn"/>
            <s2 title="Have your own interpreter">
 	   <p>
 	   If you want to use SVG files with your own scripting language in it, you can do it with
