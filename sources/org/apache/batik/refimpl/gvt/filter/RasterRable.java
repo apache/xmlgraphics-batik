@@ -124,7 +124,7 @@ public class RasterRable
             try{
                 imageBuffer = decoder.decodeBuffer(imageData);
             }catch(EOFException e){
-                System.out.println("Done decoding Base64 data");
+                //System.out.println("Done decoding Base64 data");
             }
             Image decodedImage = Toolkit.getDefaultToolkit().createImage(imageBuffer);
             MediaTracker tracker = new MediaTracker(mediaComponent);
@@ -158,7 +158,7 @@ public class RasterRable
             // org.apache.batik.test.gvt.ImageDisplay.showImage("Loaded image 2", bi);
             g.dispose();
 
-            System.out.println("Decoded image " + bi.getWidth() + " by " + bi.getHeight());
+            //System.out.println("Decoded image " + bi.getWidth() + " by " + bi.getHeight());
             return new RasterRable(new
                 ConcreteBufferedImageCachableRed(bi));
         }catch(IOException e){

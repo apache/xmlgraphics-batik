@@ -34,7 +34,7 @@ public class BufferedDocumentLoader implements DocumentLoader {
     /**
      * The maximum number of cachable nodes.
      */
-    public static final int MAX_CACHED_NODE_COUNT = 2000;
+    public static final int MAX_CACHED_NODE_COUNT = 800;
 
     /**
      * The enclosed document loader used to load the document when needed.
@@ -91,8 +91,8 @@ public class BufferedDocumentLoader implements DocumentLoader {
             document = documentLoader.loadDocument(uri);
             // update the cache
             int num = getNodeCount(document.getDocumentElement());
-            System.out.println("*** CACHE *** load "+uri+" ["+num+"]");
-            if ((currentCachedNodeCount + num) > MAX_CACHED_NODE_COUNT &&
+            //System.out.println("*** CACHE *** load "+uri+" ["+num+"]");
+            while ((currentCachedNodeCount + num) > MAX_CACHED_NODE_COUNT &&
                     documentList.size() > 0) {
                 // remove the oldest document loaded
                 int i = documentList.size()-1;
@@ -100,10 +100,10 @@ public class BufferedDocumentLoader implements DocumentLoader {
                 documentList.remove(i);
                 documentMap.remove(state.uri);
                 currentCachedNodeCount -= state.nodeCount;
-                System.out.println("*** CACHE *** remove "+state.uri+" ["+state.nodeCount+"]");
+                //System.out.println("*** CACHE *** remove "+state.uri+" ["+state.nodeCount+"]");
             }
             currentCachedNodeCount += num;
-            System.out.println("*** CACHE *** total cached nodes : "+currentCachedNodeCount+"/"+MAX_CACHED_NODE_COUNT);
+            //System.out.println("*** CACHE *** total cached nodes : "+currentCachedNodeCount+"/"+MAX_CACHED_NODE_COUNT);
             // add the new loaded document to the cache
             DocumentState state = new DocumentState(uri, document, num);
             documentList.add(0, state);
@@ -113,7 +113,7 @@ public class BufferedDocumentLoader implements DocumentLoader {
     }
 
     public void dispose() {
-        System.out.println("*** CACHE *** dispose");
+        //System.out.println("*** CACHE *** dispose");
         documentMap.clear();
         documentList.clear();
     }
