@@ -189,23 +189,21 @@ public class GraphicsNodeRable8Bit
         
         ColorSpace g2dCS = GraphicsUtil.getDestinationColorSpace(g2d);
         if ((g2dCS == null) ||
-            (g2dCS != ColorSpace.getInstance(ColorSpace.CS_sRGB)))
+            (g2dCS != ColorSpace.getInstance(ColorSpace.CS_sRGB))){
             // Only draw directly into sRGB destinations...
             return false;
+        }
 
         // System.out.println("drawImage GNR: " + g2dCS);
         GraphicsNode gn = getGraphicsNode();
         GraphicsNodeRenderContext gnrc
             = GraphicsNodeRenderContext.getGraphicsNodeRenderContext(g2d);
 
-        try {
-            if (getUsePrimitivePaint())
-                gn.primitivePaint(g2d, gnrc);
-            else
-                gn.paint(g2d, gnrc);
-
-        } catch (InterruptedException ie) {
-            // Don't do anything we just return...
+        if (getUsePrimitivePaint()){
+            gn.primitivePaint(g2d, gnrc);
+        }
+        else{
+            gn.paint(g2d, gnrc);
         }
 
         // Paint did the work...

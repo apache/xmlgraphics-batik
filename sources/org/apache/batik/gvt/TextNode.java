@@ -259,8 +259,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @exception InterruptedException thrown if the current thread
      * was interrupted during paint
      */
-    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc)
-            throws InterruptedException {
+    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if (isVisible) {
             super.paint(g2d, rc);
         }

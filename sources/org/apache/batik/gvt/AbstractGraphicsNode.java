@@ -319,15 +319,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
      *
      * @param g2d the Graphics2D to use
      * @param rc the GraphicsNodeRenderContext to use
-     * @exception InterruptedException thrown if the current thread
-     * was interrupted during paint
      */
-    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc)
-            throws InterruptedException {
+    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc){
 
         // first, make sure we haven't been interrupted
         if (Thread.currentThread().isInterrupted()) {
-            throw new InterruptedException();
+            return;
         }
 
         //
@@ -397,13 +394,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
             useOffscreen |= antialiasedClip;
 
             if (!useOffscreen) {
-
-              /* Render directly on the canvas
-               * Note: this operation is not interruptable,
-               * since InterruptedExceptions are caught and ignored
-               * by primitivePaint().
-               */
-
+                // Render on this canvas.
                 primitivePaint(g2d, rc);
             } else {
                 Filter filteredImage = null;

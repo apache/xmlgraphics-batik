@@ -606,14 +606,10 @@ public class MarkerShapePainter implements ShapePainter {
 
      public void paint(Graphics2D g2d,
                        GraphicsNodeRenderContext ctx) {
-        try{
-            if(markerGroup.getChildren().size() > 0){
-                markerGroup.paint(g2d, ctx);
-            }
-        }catch(InterruptedException e){
-            // ????????? Should we really have interrupted exceptions?
-        }
-    }
+         if(markerGroup.getChildren().size() > 0){
+             markerGroup.paint(g2d, ctx);
+         }
+     }
 
     /**
      * Returns the area painted by this painter
