@@ -327,22 +327,22 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         // 'x' attribute - default is -10%
         String xStr = maskElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
         if (xStr.length() == 0) {
-            xStr = "-10%";
+            xStr = SVG_MASK_X_DEFAULT_VALUE;
         }
         // 'y' attribute - default is -10%
         String yStr = maskElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
         if (yStr.length() == 0) {
-            yStr = "-10%";
+            yStr = SVG_MASK_Y_DEFAULT_VALUE;
         }
         // 'width' attribute - default is 120%
         String wStr = maskElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         if (wStr.length() == 0) {
-            wStr = "120%";
+            wStr = SVG_MASK_WIDTH_DEFAULT_VALUE;
         }
         // 'height' attribute - default is 120%
         String hStr = maskElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         if (hStr.length() == 0) {
-            hStr = "120%";
+            hStr = SVG_MASK_HEIGHT_DEFAULT_VALUE;
         }
         // 'maskUnits' attribute - default is 'objectBoundingBox'
         short unitsType;
@@ -391,13 +391,13 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         String xStr = getChainableAttributeNS
             (patternElement, null, SVG_X_ATTRIBUTE, ctx);
         if (xStr.length() == 0) {
-            xStr = "0%";
+            xStr = SVG_PATTERN_X_DEFAULT_VALUE;
         }
         // 'y' attribute - default is 0%
         String yStr = getChainableAttributeNS
             (patternElement, null, SVG_Y_ATTRIBUTE, ctx);
         if (yStr.length() == 0) {
-            yStr = "0%";
+            yStr = SVG_PATTERN_Y_DEFAULT_VALUE;
         }
         // 'width' attribute - required
         String wStr = getChainableAttributeNS
@@ -504,25 +504,25 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         String xStr = getChainableAttributeNS
             (filterElement, null, SVG_X_ATTRIBUTE, ctx);
         if (xStr.length() == 0) {
-            xStr = "-10%";
+            xStr = SVG_FILTER_X_DEFAULT_VALUE;
         }
         // 'y' attribute - default is -10%
         String yStr = getChainableAttributeNS
             (filterElement, null, SVG_Y_ATTRIBUTE, ctx);
         if (yStr.length() == 0) {
-            yStr = "-10%";
+            yStr = SVG_FILTER_Y_DEFAULT_VALUE;
         }
         // 'width' attribute - default is 120%
         String wStr = getChainableAttributeNS
             (filterElement, null, SVG_WIDTH_ATTRIBUTE, ctx);
         if (wStr.length() == 0) {
-            wStr = "120%";
+            wStr = SVG_FILTER_WIDTH_DEFAULT_VALUE;
         }
         // 'height' attribute - default is 120%
         String hStr = getChainableAttributeNS
             (filterElement, null, SVG_HEIGHT_ATTRIBUTE, ctx);
         if (hStr.length() == 0) {
-            hStr = "120%";
+            hStr = SVG_FILTER_HEIGHT_DEFAULT_VALUE;
         }
         // 'filterUnits' attribute - default is 'objectBoundingBox'
         short unitsType;
