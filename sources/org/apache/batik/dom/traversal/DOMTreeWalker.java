@@ -151,7 +151,7 @@ public class DOMTreeWalker implements TreeWalker {
      * <b>DOM</b>: Implements {@link TreeWalker#previousSibling()}.
      */
     public Node previousSibling() {
-        Node result = previousSibling(currentNode);
+        Node result = previousSibling(currentNode, root);
         if (result != null) {
             currentNode = result;
         }
@@ -162,7 +162,7 @@ public class DOMTreeWalker implements TreeWalker {
      * <b>DOM</b>: Implements {@link TreeWalker#nextSibling()}.
      */
     public Node nextSibling() {
-        Node result = nextSibling(currentNode);
+        Node result = nextSibling(currentNode, root);
         if (result != null) {
             currentNode = result;
         }
@@ -173,7 +173,7 @@ public class DOMTreeWalker implements TreeWalker {
      * <b>DOM</b>: Implements {@link TreeWalker#previousNode()}.
      */
     public Node previousNode() {
-        Node result = previousSibling(currentNode);
+        Node result = previousSibling(currentNode, root);
         if (result == null) {
             result = parentNode(currentNode);
             if (result != null) {
@@ -198,7 +198,7 @@ public class DOMTreeWalker implements TreeWalker {
         if ((result = firstChild(currentNode)) != null) {
             return currentNode = result;
         }
-        if ((result = nextSibling(currentNode)) != null) {
+        if ((result = nextSibling(currentNode, root)) != null) {
             return currentNode = result;
         }
         Node parent = currentNode;
@@ -207,7 +207,7 @@ public class DOMTreeWalker implements TreeWalker {
             if (parent == null) {
                 return null;
             }
-            if ((result = nextSibling(parent)) != null) {
+            if ((result = nextSibling(parent, root)) != null) {
                 return currentNode = result;
             }
         }
@@ -257,7 +257,7 @@ public class DOMTreeWalker implements TreeWalker {
             }
             // Fall through
         default: // NodeFilter.FILTER_REJECT
-            return nextSibling(result);
+            return nextSibling(result, n);
         }
     }
 
@@ -283,14 +283,14 @@ public class DOMTreeWalker implements TreeWalker {
             }
             // Fall through
         default: // NodeFilter.FILTER_REJECT
-            return previousSibling(result);
+            return previousSibling(result, n);
         }
     }
 
     /**
      * Returns the previous sibling of the given node.
      */
-    protected Node previousSibling(Node n) {
+    protected Node previousSibling(Node n, Node root) {
         if (n == root) {
             return null;
         }
@@ -301,7 +301,7 @@ public class DOMTreeWalker implements TreeWalker {
                 return null;
             }
             if (acceptNode(result) == NodeFilter.FILTER_SKIP) {
-                return previousSibling(result);
+                return previousSibling(result, root);
             }
             return null;
         }
@@ -315,14 +315,14 @@ public class DOMTreeWalker implements TreeWalker {
             }
             // Fall through
         default: // NodeFilter.FILTER_REJECT
-            return previousSibling(result);
+            return previousSibling(result, root);
         }
     }
 
     /**
      * Returns the next sibling of the given node.
      */
-    protected Node nextSibling(Node n) {
+    protected Node nextSibling(Node n, Node root) {
         if (n == root) {
             return null;
         }
@@ -333,7 +333,7 @@ public class DOMTreeWalker implements TreeWalker {
                 return null;
             }
             if (acceptNode(result) == NodeFilter.FILTER_SKIP) {
-                return nextSibling(result);
+                return nextSibling(result, root);
             }
             return null;
         }
@@ -347,7 +347,7 @@ public class DOMTreeWalker implements TreeWalker {
             }
             // Fall through
         default: // NodeFilter.FILTER_REJECT
-            return nextSibling(result);
+            return nextSibling(result, root);
         }
     }
 
