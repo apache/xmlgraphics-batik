@@ -638,8 +638,13 @@ public class Parser implements org.w3c.css.sac.Parser {
         case LexicalUnits.IDENTIFIER:
             val = scanner.currentValue();
             next();
-            return CSSLexicalUnit.createString(LexicalUnit.SAC_IDENT,
-                                               val, prev);
+            if (val.equalsIgnoreCase("inherit")) {
+                return CSSLexicalUnit.createSimple(LexicalUnit.SAC_INHERIT,
+                                                   prev);
+            } else {
+                return CSSLexicalUnit.createString(LexicalUnit.SAC_IDENT,
+                                                   val, prev);
+            }
         case LexicalUnits.URI:
             val = scanner.currentValue();
             next();
