@@ -356,14 +356,14 @@ public class RhinoInterpreter implements Interpreter {
                 // The window becomes the global object.
                 globalObject =
                     (ScriptableObject)globalObject.get(BIND_NAME_WINDOW, globalObject);
-		
-		// we need to init it as a global object...
-		ctx = enterContext();
-		try {
-		  ctx.initStandardObjects(globalObject);
-		} finally {
-		  Context.exit();
-		}
+
+                // we need to init it as a global object...
+                ctx = enterContext();
+                try {
+                    ctx.initStandardObjects(globalObject);
+                } finally {
+                    Context.exit();
+                }
             } catch (Exception e) {
                 // Cannot happen.
             }
@@ -383,6 +383,23 @@ public class RhinoInterpreter implements Interpreter {
             arg = Context.toObject(arg, globalObject);
             Object[] args = {arg};
             handler.call(ctx, globalObject, globalObject, args);
+        } finally {
+            Context.exit();
+        }
+    }
+
+    /**
+     * To be used by <code>WindowWrapper</code>.
+     */
+    void callMethod(ScriptableObject obj,
+                    String methodName,
+                    ArgumentsBuilder ab)
+        throws JavaScriptException {
+        Context ctx = enterContext();
+
+        ctx.setWrapHandler(wrapHandler);
+        try {
+            ScriptableObject.callMethod(obj, methodName, ab.buildArguments());
         } finally {
             Context.exit();
         }

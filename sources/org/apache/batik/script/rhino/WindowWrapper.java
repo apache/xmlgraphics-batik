@@ -20,6 +20,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
@@ -41,7 +42,7 @@ import org.w3c.dom.Document;
 public class WindowWrapper extends ScriptableObject {
 
     private final static Object[] EMPTY_ARGUMENTS = new Object[0];
-    
+
     /**
      * The rhino interpreter.
      */
@@ -61,12 +62,12 @@ public class WindowWrapper extends ScriptableObject {
     /**
      * The ecmascript constructor for the Window class.
      */
-    public static Object jsConstructor(Context cx, Object[] args, 
+    public static Object jsConstructor(Context cx, Object[] args,
                                        Function ctorObj, boolean inNewExpr) {
         WindowWrapper result = new WindowWrapper();
         result.window = (Window)((Wrapper)args[0]).unwrap();
         return result;
-    }    
+    }
 
     public String getClassName() {
         return "Window";
@@ -207,9 +208,9 @@ public class WindowWrapper extends ScriptableObject {
             throw Context.reportRuntimeError("invalid argument count");
         }
 
-        AccessControlContext acc = 
+        AccessControlContext acc =
             ((RhinoInterpreter)window.getInterpreter()).getAccessControlContext();
-        
+
         return AccessController.doPrivileged( new PrivilegedAction() {
                 public Object run() {
                     return window.parseXML
@@ -236,20 +237,26 @@ public class WindowWrapper extends ScriptableObject {
         RhinoInterpreter interp =
             (RhinoInterpreter)window.getInterpreter();
         final String uri = (String)NativeJavaObject.coerceType(String.class, args[0]);
-        final GetURLFunctionWrapper fw = new GetURLFunctionWrapper(interp, (Function)args[1], ww);
-        
-        AccessControlContext acc = 
+        Window.GetURLHandler urlHandler = null;
+        if (args[1] instanceof Function) {
+          urlHandler = new GetURLFunctionWrapper(interp, (Function)args[1], ww);
+        } else {
+          urlHandler = new GetURLObjectWrapper(interp, (NativeObject)args[1], ww);
+        }
+        final Window.GetURLHandler fw = urlHandler;
+
+        AccessControlContext acc =
             ((RhinoInterpreter)window.getInterpreter()).getAccessControlContext();
 
         if (len == 2) {
-            AccessController.doPrivileged( new PrivilegedAction() {
+            AccessController.doPrivileged(new PrivilegedAction() {
                     public Object run(){
                         window.getURL(uri, fw);
                         return null;
                     }
                 }, acc);
         } else {
-            AccessController.doPrivileged( new PrivilegedAction() {
+            AccessController.doPrivileged(new PrivilegedAction() {
                     public Object run() {
                         window.getURL
                             (uri, fw,
@@ -374,7 +381,7 @@ public class WindowWrapper extends ScriptableObject {
      */
     protected static class GetURLFunctionWrapper
         implements Window.GetURLHandler {
-        
+
         /**
          * The current interpreter.
          */
@@ -441,6 +448,81 @@ public class WindowWrapper extends ScriptableObject {
                         }
                     });
             } catch (JavaScriptException e) {
+                throw new WrappedException(e);
+            }
+        }
+    }
+
+    /**
+     * To wrap an object passed to getURL().
+     */
+    private static class GetURLObjectWrapper
+        implements Window.GetURLHandler {
+
+        /**
+         * The current interpreter.
+         */
+        private RhinoInterpreter interpreter;
+
+        /**
+         * The object wrapper.
+         */
+        private ScriptableObject object;
+
+        /**
+         * The WindowWrapper.
+         */
+        private WindowWrapper windowWrapper;
+
+        private Object[] array = new Object[1];
+        private static final String COMPLETE = "operationComplete";
+
+        /**
+         * Creates a wrapper.
+         */
+        public GetURLObjectWrapper(RhinoInterpreter ri,
+                                   ScriptableObject obj,
+                                   WindowWrapper ww) {
+            interpreter = ri;
+            object = obj;
+            windowWrapper = ww;
+        }
+
+        /**
+         * Called before 'getURL()' returns.
+         * @param success Whether the data was successfully retreived.
+         * @param mime The data MIME type.
+         * @param content The data.
+         */
+        public void getURLDone(final boolean success,
+                               final String mime,
+                               final String content) {
+            try {
+                interpreter.callMethod(object, COMPLETE,
+                                       new RhinoInterpreter.ArgumentsBuilder() {
+                                           public Object[] buildArguments() {
+                                               Object[] arguments = new Object[1];
+                                               ScriptableObject so =
+                                                   new NativeObject();
+                                               so.put("success", so,
+                                                      (success) ?
+                                                      Boolean.TRUE : Boolean.FALSE);
+                                               if (mime != null) {
+                                                   so.put("contentType", so,
+                                                          Context.toObject(mime,
+                                                                           windowWrapper));
+                                               }
+                                               if (content != null) {
+                                                   so.put("content", so,
+                                                          Context.toObject(content,
+                                                                           windowWrapper));
+                                               }
+                                               arguments[0] = so;
+                                               return arguments;
+                                           }
+                                       });
+            } catch (JavaScriptException e) {
+                Context.exit();
                 throw new WrappedException(e);
             }
         }
