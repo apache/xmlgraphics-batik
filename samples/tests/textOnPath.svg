@@ -66,7 +66,7 @@
          </g>
 
 
-         <g transform="translate(0,220)">
+         <g transform="translate(0,170)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
 	      <text font-size="20" style="text-anchor:start">
                 <textPath xlink:href="#Path1" startOffset="50%">Text <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
@@ -76,7 +76,7 @@
          </g>
 
 
-         <g transform="translate(150,220)">
+         <g transform="translate(150,170)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
 	      <text font-size="20" style="text-anchor:middle">
                 <textPath xlink:href="#Path1" startOffset="50%">Text <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
@@ -85,7 +85,7 @@
             <text font-size="10" x="35" y="70">text-anchor="middle"</text>
          </g>
 
-         <g transform="translate(300,220)">
+         <g transform="translate(300,170)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
 	      <text font-size="20" style="text-anchor:end">
                 <textPath xlink:href="#Path1" startOffset="100%">Text <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
@@ -95,7 +95,7 @@
          </g>
 
 
-        <g transform="translate(0,370)">
+        <g transform="translate(0,270)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
 	      <text font-size="20" style="text-anchor:start">
                 <textPath xlink:href="#Path1" startOffset="35">Text <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
@@ -105,7 +105,7 @@
          </g>
 
 
-         <g transform="translate(150,370)">
+         <g transform="translate(150,270)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
 	      <text font-size="20" style="text-anchor:middle">
                 <textPath xlink:href="#Path1" startOffset="35">Text <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
@@ -114,7 +114,7 @@
             <text font-size="10" x="35" y="70">text-anchor="middle"</text>
          </g>
 
-         <g transform="translate(300,370)">
+         <g transform="translate(300,270)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
 	      <text font-size="20" style="text-anchor:end">
                 <textPath xlink:href="#Path1" startOffset="35">Text <tspan fill="red" dy="-10">on</tspan><tspan dy="10"> a Path</tspan></textPath>
@@ -122,6 +122,36 @@
             <text font-size="10" x="35" y="60">startOffset="35"</text>
             <text font-size="10" x="35" y="70">text-anchor="end"</text>
          </g>
+
+
+
+        <g transform="translate(10,370)">
+            <use xlink:href="#Path2" style="fill:none; stroke:blue; stroke-width:2"/>
+            <text font-size="15">
+               <textPath xlink:href="#Path2"><tspan baseline-shift="super" fill="green">super</tspan> and <tspan baseline-shift="sub" fill="red">sub</tspan>scripts</textPath>
+            </text>
+            <text font-size="10" x="20" y="60">baseline-shift="super"</text>
+            <text font-size="10" x="20" y="70">and baseline-shift="sub"</text>
+        </g>
+
+
+         <g transform="translate(155,370)">
+            <use xlink:href="#Path2" style="fill:none; stroke:blue; stroke-width:2"/>
+	      <text font-size="15">
+                <textPath xlink:href="#Path2"><tspan baseline-shift="+20%" fill="green">positive</tspan> and <tspan baseline-shift="-20%" fill="red">negative </tspan></textPath>
+            </text>
+		<text font-size="10" x="20" y="60">baseline-shift="+/-20%"</text>
+         </g>
+
+        <g transform="translate(300,390)">
+            <g transform="scale(0.5)">
+            <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
+            <text font-size="30" x="30" y="-20">before path
+               <textPath xlink:href="#Path1" fill="red" startOffset="10%">on path</textPath> after path
+            </text>
+            </g>
+            <text font-size="10" x="15" y="40">text before/after textPath</text>
+        </g>
        
     </g>
 
