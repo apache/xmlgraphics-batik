@@ -650,7 +650,7 @@ public class ViewerFrame
      */
     public void close() {
         if (application.closeFrame(this)) {
-            hide();
+            setVisible(false);
         }
     }
 

@@ -234,7 +234,7 @@ public class Main implements ViewerFrame.Application {
         public CloseAction(ViewerFrame vf) { viewerFrame = vf; }
         public void actionPerformed(ActionEvent e) {
             if (closeFrame(viewerFrame)) {
-                viewerFrame.hide();
+                viewerFrame.setVisible(false);
             }
         }
     }

@@ -165,7 +165,7 @@ public class ConcreteTextSelector implements Selector {
                                                           renderContext);
                 dispatchSelectionEvent(
                         new SelectionEvent(null,
-                                SelectionEvent.SELECTION_CLEARED,
+                                SelectionEvent.SELECTION_START,
                                 null));
 
             } else if (isSelectEndGesture(evt)) {

@@ -155,6 +155,12 @@ public class JSVGCanvas
         new Cursor(Cursor.WAIT_CURSOR);
 
     /**
+     * The cursor indicating that a text selection operation is under way.
+     */
+    public final static Cursor TEXT_CURSOR =
+        new Cursor(Cursor.TEXT_CURSOR);
+
+    /**
      * The cursor which has been most recently requested by a background thread.
      */
     public Cursor requestedCursor = NORMAL_CURSOR;
@@ -706,8 +712,14 @@ public class JSVGCanvas
             if (selectionString != null) {
                  userAgent.displayMessage("Selection: "+selectionString);
             }
+            // [repaint will reset to "requested" cursor]
             repaint(); // in case immediate-mode XORs are out of sync
                        // with the regular repaint-on-request repaints
+        } else if (e.getType() == SelectionEvent.SELECTION_START) {
+            setCursor(TEXT_CURSOR);
+            userAgent.displayMessage("");
+            canvasSpaceHighlightShape = null;
+            selectionHighlightShape = null;
         } else if (e.getType() == SelectionEvent.SELECTION_CLEARED) {
             userAgent.displayMessage("");
             canvasSpaceHighlightShape = null;
