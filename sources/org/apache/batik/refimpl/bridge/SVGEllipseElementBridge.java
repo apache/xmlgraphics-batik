@@ -40,20 +40,20 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
         String s = svgElement.getAttributeNS(null, ATTR_CX);
         float cx = 0;
         if (s.length() != 0) {
-            cx = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.HORIZONTAL_LENGTH,
-                                              uctx);
+            cx = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_CX, s,
+                                             uctx,
+                                             UnitProcessor.HORIZONTAL_LENGTH);
         }
 
         // parse the cy attribute, (default is 0)
         s = svgElement.getAttributeNS(null, ATTR_CY);
         float cy = 0;
         if (s.length() != 0) {
-            cy = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.VERTICAL_LENGTH,
-                                              uctx);
+            cy = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_CY, s,
+                                             uctx,
+                                             UnitProcessor.VERTICAL_LENGTH);
         }
 
         // parse the rx attribute, (required and must be positive)
@@ -63,10 +63,10 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
             throw new MissingAttributeException(
                 Messages.formatMessage("ellipse.rx.required", null));
         } else {
-            rx = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.HORIZONTAL_LENGTH,
-                                              uctx);
+            rx = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_RX, s,
+                                             uctx,
+                                             UnitProcessor.HORIZONTAL_LENGTH);
             if (rx < 0) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("ellipse.rx.negative", null));
@@ -80,10 +80,10 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
             throw new MissingAttributeException(
                 Messages.formatMessage("ellipse.ry.required", null));
         } else {
-            ry = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.VERTICAL_LENGTH,
-                                              uctx);
+            ry = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_RY, s,
+                                             uctx,
+                                             UnitProcessor.VERTICAL_LENGTH);
             if (ry < 0) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("ellipse.ry.negative", null));

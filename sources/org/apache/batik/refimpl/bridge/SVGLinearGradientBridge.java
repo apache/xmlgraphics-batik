@@ -112,11 +112,15 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
 
         SVGElement svgPaintedElement = (SVGElement) paintedElement;
         Point2D p1
-            = SVGUtilities.convertPoint(svgPaintedElement,
-                                        x1, y1, units, paintedNode, uctx);
+            = SVGUtilities.convertGradientPoint(svgPaintedElement,
+                                                ATTR_X1, x1,
+                                                ATTR_Y1, y1,
+                                                units, uctx);
         Point2D p2
-            = SVGUtilities.convertPoint(svgPaintedElement,
-                                        x2, y2, units, paintedNode, uctx);
+            = SVGUtilities.convertGradientPoint(svgPaintedElement,
+                                                ATTR_X2, x2,
+                                                ATTR_Y2, y2,
+                                                units, uctx);
 
         // parse the 'spreadMethod' attribute, (default is PAD)
         String spreadMethod =
@@ -124,34 +128,31 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         if (spreadMethod.length() == 0) {
             spreadMethod = VALUE_PAD;
         }
+
         LinearGradientPaint.CycleMethodEnum cycleMethod =
             convertSpreadMethod(spreadMethod);
 
-        //
         // Extract gradient transform
-        //
         AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)), ctx.getParserFactory());
+            (new StringReader(paintElement.getAttributeNS(null,
+                             ATTR_GRADIENT_TRANSFORM)), ctx.getParserFactory());
 
-        at  = SVGUtilities.convertAffineTransform(at,
-                                                  paintedNode,
-                                                  units);
+        at  = SVGUtilities.convertAffineTransform(at, paintedNode, units);
 
-        //
         // Extract stop colors and intervals
-        //
         Vector stopVector = extractGradientStops(paintElement, ctx);
+
         // if no stop, fill is 'none'
         if (stopVector.size() == 0) {
             return null;
         }
+
         // if one stop, the fill is just one color
         if (stopVector.size() == 1) {
             return ((GradientStop) stopVector.get(0)).stopColor;
         }
-        //
+
         // Convert the stop offsets to intervals
-        //
         int nStops = stopVector.size();
         float curOffset = 0;
         if (nStops > 0) {
@@ -166,21 +167,18 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
             curOffset = stop.offset;
         }
 
-        //
         // Extract the color interpolation property
-        //
-        CSSPrimitiveValue colorInterpolation
-            = (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
+        CSSPrimitiveValue colorInterpolation =
+            (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
 
         LinearGradientPaint.ColorSpaceEnum colorSpace
             = LinearGradientPaint.SRGB;
+
         if(LINEAR_RGB.equals(colorInterpolation.getStringValue())){
             colorSpace = LinearGradientPaint.LINEAR_RGB;
         }
 
-        //
         // Build Paint
-        //
         Paint paint = null;
         if(nStops > 0){
             Color colors[] = new Color[nStops];

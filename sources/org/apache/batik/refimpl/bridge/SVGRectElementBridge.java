@@ -46,20 +46,20 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
         String s = svgElement.getAttributeNS(null, ATTR_X);
         float x = 0;
         if (s.length() != 0) {
-            x = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.HORIZONTAL_LENGTH,
-                                             uctx);
+            x = SVGUtilities.svgToUserSpace(svgElement,
+                                            ATTR_X, s,
+                                            uctx,
+                                            UnitProcessor.HORIZONTAL_LENGTH);
         }
 
         // parse the y attribute, (default is 0)
         s = svgElement.getAttributeNS(null, ATTR_Y);
         float y = 0;
         if (s.length() != 0) {
-            y = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.VERTICAL_LENGTH,
-                                             uctx);
+            y = SVGUtilities.svgToUserSpace(svgElement,
+                                            ATTR_Y, s,
+                                            uctx,
+                                            UnitProcessor.VERTICAL_LENGTH);
         }
 
         // parse the width attribute (required and must be positive)
@@ -69,10 +69,10 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             throw new MissingAttributeException(
                 Messages.formatMessage("rect.width.required", null));
         } else {
-            w = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.HORIZONTAL_LENGTH,
-                                             uctx);
+            w = SVGUtilities.svgToUserSpace(svgElement,
+                                            ATTR_WIDTH, s,
+                                            uctx,
+                                            UnitProcessor.HORIZONTAL_LENGTH);
             if (w < 0) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("rect.width.negative", null));
@@ -86,10 +86,10 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             throw new MissingAttributeException(
                 Messages.formatMessage("rect.height.required", null));
         } else {
-            h = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.VERTICAL_LENGTH,
-                                             uctx);
+            h = SVGUtilities.svgToUserSpace(svgElement,
+                                            ATTR_HEIGHT, s,
+                                            uctx,
+                                            UnitProcessor.VERTICAL_LENGTH);
             if (h < 0) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("rect.height.negative", null));
@@ -101,10 +101,10 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
         boolean rxs = s.length() != 0;
         float rx = 0;
         if (s.length() != 0) {
-            rx = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.HORIZONTAL_LENGTH,
-                                              uctx);
+            rx = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_RX, s,
+                                             uctx,
+                                             UnitProcessor.HORIZONTAL_LENGTH);
             if (rx < 0) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("rect.rx.negative", null));
@@ -117,10 +117,10 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
         boolean rys = s.length() != 0;
         float ry = 0;
         if (s.length() != 0) {
-            ry = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.VERTICAL_LENGTH,
-                                              uctx);
+            ry = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_RY, s,
+                                             uctx,
+                                             UnitProcessor.VERTICAL_LENGTH);
             if (ry < 0) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("rect.ry.negative", null));
