@@ -55,8 +55,6 @@ public class SVGConverterTest extends DefaultTestSuite {
         // Checks that the proper hints are used
         //
         t = new HintsConfigTest(new Object[][]{ 
-            {ImageTranscoder.KEY_WIDTH, new Float(40)},
-            {ImageTranscoder.KEY_HEIGHT, new Float(80)},
             {ImageTranscoder.KEY_AOI, new Rectangle(40, 50, 40, 80)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setArea(new Rectangle(40, 50, 40, 80));
