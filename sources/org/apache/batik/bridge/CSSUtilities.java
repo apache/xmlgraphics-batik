@@ -198,6 +198,33 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * Returns the rendering hints for the specified shape element or null
      * none has been specified. Checks the 'shape-rendering' property.
      *
+     * <p>Here is how the mapping between SVG rendering hints and the Java2D
+     * rendering hints is done:</p>
+     *
+     * <dl>
+     * <dt>'optimizeSpeed':</dt>
+     * <dd>
+     * <ul>
+     * <li>KEY_RENDERING=VALUE_RENDER_SPEED</li>
+     * <li>KEY_ANTIALIASING=VALUE_ANTIALIAS_OFF</li>
+     * </ul>
+     * </dd>
+     * <dt>'crispEdges':</dt>
+     * <dd>
+     * <ul>
+     * <li>KEY_RENDERING=VALUE_RENDER_DEFAULT</li>
+     * <li>KEY_ANTIALIASING=VALUE_ANTIALIAS_OFF</li>
+     * </ul>
+     * </dd>
+     * <dt>'geometricPrecision':</dt>
+     * <dd>
+     * <ul>
+     * <li>KEY_RENDERING=VALUE_RENDER_QUALITY</li>
+     * <li>KEY_ANTIALIASING=VALUE_ANTIALIAS_ON</li>
+     * </ul>
+     * </dd>
+     * </dl>
+     *
      * @param e the element
      */
     public static Map convertShapeRendering(Element e) {
@@ -235,6 +262,43 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     /**
      * Returns the rendering hints for the specified text element or null
      * none has been specified. Checks the 'text-rendering' property.
+     *
+     * <p>Here is how the mapping between SVG rendering hints and the Java2D
+     * rendering hints is done:</p>
+     *
+     * <dl>
+     * <dt>'optimizeSpeed':</dt>
+     * <dd>
+     * <ul>
+     * <li>KEY_RENDERING=VALUE_RENDER_SPEED</li>
+     * <li>KEY_ANTIALIASING=VALUE_ANTIALIAS_OFF</li>
+     * <li>KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_OFF</li>
+     * <li>KEY_FRACTIONALMETRICS=VALUE_FRACTIONALMETRICS_OFF</li>
+     * </ul>
+     * </dd>
+     * <dt>'optimizeLegibility':</dt>
+     * <dd>
+     * <ul>
+     * <li>KEY_RENDERING=VALUE_RENDER_QUALITY</li>
+     * <li>KEY_ANTIALIASING=VALUE_ANTIALIAS_ON</li>
+     * <li>KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON</li>
+     * <li>KEY_FRACTIONALMETRICS=VALUE_FRACTIONALMETRICS_OFF</li>
+     * </ul>
+     * </dd>
+     * <dt>'geometricPrecision':</dt>
+     * <dd>
+     * <ul>
+     * <li>KEY_RENDERING=VALUE_RENDER_QUALITY</li>
+     * <li>KEY_ANTIALIASING=VALUE_ANTIALIAS_DEFAULT</li>
+     * <li>KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_DEFAULT</li>
+     * <li>KEY_FRACTIONALMETRICS=VALUE_FRACTIONALMETRICS_ON</li>
+     * </ul>
+     * </dd>
+     * </dl>
+     *
+     * <p>Note that for text both KEY_TEXT_ANTIALIASING and KEY_ANTIALIASING are
+     * set as there is no guarantee that a Java2D text rendering primitive will
+     * be used to draw text (eg. SVG Font...).</p>
      *
      * @param e the element
      */
@@ -286,6 +350,26 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * Returns the rendering hints for the specified image element or null
      * none has been specified. Checks the 'image-rendering' property.
      *
+     * <p>Here is how the mapping between SVG rendering hints and the Java2D
+     * rendering hints is done:</p>
+     *
+     * <dl>
+     * <dt>'optimizeSpeed':</dt>
+     * <dd>
+     * <ul>
+     * <li>KEY_RENDERING=VALUE_RENDER_SPEED</li>
+     * <li>KEY_INTERPOLATION=VALUE_INTERPOLATION_NEAREST_NEIGHBOR</li>
+     * </ul>
+     * </dd>
+     * <dt>'optimizeQuality':</dt>
+     * <dd>
+     * <ul>
+     * <li>KEY_RENDERING=VALUE_RENDER_QUALITY</li>
+     * <li>KEY_INTERPOLATION=VALUE_INTERPOLATION_BICUBIC</li>
+     * </ul>
+     * </dd>
+     * </dl>
+     *
      * @param e the element
      */
     public static Map convertImageRendering(Element e) {
@@ -317,6 +401,26 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     /**
      * Returns the rendering hints for the specified element or null
      * none has been specified. Checks the 'color-rendering' property.
+     *
+     * <p>Here is how the mapping between SVG rendering hints and the Java2D
+     * rendering hints is done:</p>
+     *
+     * <dl>
+     * <dt>'optimizeSpeed':</dt>
+     * <dd>
+     * <ul>
+     * <li>KEY_COLOR_RENDERING=VALUE_COLOR_RENDER_SPEED</li>
+     * <li>KEY_ALPHA_INTERPOLATION=VALUE_ALPHA_INTERPOLATION_SPEED</li>
+     * </ul>
+     * </dd>
+     * <dt>'optimizeQuality':</dt>
+     * <dd>
+     * <ul>
+     * <li>KEY_COLOR_RENDERING=VALUE_COLOR_RENDER_QUALITY</li>
+     * <li>KEY_ALPHA_INTERPOLATION=VALUE_ALPHA_INTERPOLATION_QUALITY</li>
+     * </ul>
+     * </dd>
+     * </dl>
      *
      * @param e the element
      */
@@ -391,7 +495,7 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     // 'opacity'
     /////////////////////////////////////////////////////////////////////////
 
-    public final static Composite transparent = 
+    public final static Composite TRANSPARENT =
         AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0);
 
     /**
@@ -406,7 +510,7 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
             (CSS_OPACITY_PROPERTY);
         float opacity = PaintServer.convertOpacity(v);
         if (opacity <= 0f) {
-            return transparent;
+            return TRANSPARENT;
         } else if (opacity >= 1f) {
             return AlphaComposite.SrcOver;
         } else {
