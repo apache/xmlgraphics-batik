@@ -134,6 +134,12 @@
 
         </g> <!-- End Batik_Logo_Shadow -->
 
+        <g id="Batik_Tag_Box" >
+            <rect x="1" y="1" width="446" height="496" 
+                  style="fill:none; stroke:black" />
+            <use xlink:href="#Batik_Squiggle" 
+                 transform="translate(418,467) scale(0.5, 0.5)" />
+        </g> <!-- End Batik_Tag_Box -->
     </defs>
 
     <!-- This is what finially draws the logo -->
@@ -143,6 +149,6 @@
     <!-- ============================================================= -->
     <!-- Batik sample mark                                             -->
     <!-- ============================================================= -->
-    <use xlink:href="testTemplate.svg#BatikTag" />
+    <use xlink:href="#Batik_Tag_Box" />
     </g>
 </svg>

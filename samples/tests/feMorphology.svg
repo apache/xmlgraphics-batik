@@ -96,7 +96,7 @@
     <!-- ============================================================= -->
     <!-- Batik sample mark                                             -->
     <!-- ============================================================= -->
-    <use xlink:href="../testTemplate.svg/#BatikTag" />
+    <use xlink:href="../batikLogo.svg#Batik_Tag_Box" />
     
 </svg>
 

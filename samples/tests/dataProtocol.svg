@@ -592,6 +592,6 @@ B4zigcMAATTgDhjFA4cBAmjAHTCKBw4DBNCAO2AUDxwGCKABd8AoHjgMEGAA7tFY
     <!-- ============================================================= -->
     <!-- Batik sample mark                                             -->
     <!-- ============================================================= -->
-    <use xlink:href="../testTemplate.svg/#BatikTag" />
+    <use xlink:href="../batikLogo.svg#Batik_Tag_Box" />
     
 </svg>
