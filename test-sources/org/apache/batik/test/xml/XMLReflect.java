@@ -148,7 +148,6 @@ public class XMLReflect implements XMLReflectConstants{
                                          String propertyName,
                                          Object propertyValue)
         throws Exception {
-        System.err.println(">>>>>>>>>>> setObjectProperty (" + obj.getClass().getName() + ", " + propertyName + ", " + propertyValue + ")");
         Class cl = obj.getClass();
         Method m = null;
         try {
