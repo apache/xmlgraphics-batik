@@ -66,6 +66,7 @@ public class SVGGeneratorTests extends DefaultTestSuite {
      * getPackageName
      */
     public void setId(String id){
+        super.setId(id);
         String clName = getPackageName() + "." + id;
         Class cl = null;
 
@@ -89,19 +90,27 @@ public class SVGGeneratorTests extends DefaultTestSuite {
 
         Painter painter = (Painter)o;
 
-        addTest(makeSVGAccuracyTest(painter));
-        addTest(makeGeneratorContext(painter));
-        addTest(makeSVGRenderingAccuracyTest(painter, PLAIN_GENERATION_PREFIX));
-        addTest(makeSVGRenderingAccuracyTest(painter, CUSTOM_CONTEXT_GENERATION_PREFIX));
-        addTest(makeImageCompareTest(painter, PLAIN_GENERATION_PREFIX, 
+        addTest(makeSVGAccuracyTest(painter, id));
+        addTest(makeGeneratorContext(painter, id));
+        addTest(makeSVGRenderingAccuracyTest(painter, id, PLAIN_GENERATION_PREFIX));
+        addTest(makeSVGRenderingAccuracyTest(painter, id, CUSTOM_CONTEXT_GENERATION_PREFIX));
+        addTest(makeImageCompareTest(painter, id, PLAIN_GENERATION_PREFIX, 
                                      CUSTOM_CONTEXT_GENERATION_PREFIX));
     }
 
+    /**
+     * For the Generator test, the relevant name is the id
+     */
+    public String getName(){
+        return "SVGGeneratorTest - " + getId();
+    }
+        
     protected String getPackageName(){
         return "org.apache.batik.svggen";
     }
 
     private Test makeImageCompareTest(Painter painter,
+                                      String id,
                                       String prefixA,
                                       String prefixB){
         String cl = getNonQualifiedClassName(painter);
@@ -109,10 +118,13 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         String clB = prefixB + cl;
         String testReferenceA = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + clA + PNG_EXTENSION;
         String testReferenceB = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + clB + PNG_EXTENSION;
-        return new ImageCompareTest(testReferenceA, testReferenceB);
+        ImageCompareTest t = new ImageCompareTest(testReferenceA, testReferenceB);
+        t.setName(id + "-RenderingComparison");
+        t.setId(id + ".renderingComparison");
+        return t;
     }
 
-    private Test makeSVGRenderingAccuracyTest(Painter painter, String prefix){
+    private Test makeSVGRenderingAccuracyTest(Painter painter, String id, String prefix){
         String cl = prefix + getNonQualifiedClassName(painter);
         String testSource = GENERATOR_REFERENCE_BASE + cl + SVG_EXTENSION;
         String testReference = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + cl + PNG_EXTENSION;
@@ -122,27 +134,32 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         SVGRenderingAccuracyTest test = new SVGRenderingAccuracyTest(testSource, testReference);
         test.setVariationURL(variationURL);
         test.setSaveVariation(new File(saveVariation));
+        test.setName(id + "-" + prefix + "RenderingCheck");
+        test.setId(id + "." + prefix + "renderingCheck");
         return test;
     }
 
-    private Test makeGeneratorContext(Painter painter){
+    private Test makeGeneratorContext(Painter painter, String id){
         String cl = CUSTOM_CONTEXT_GENERATION_PREFIX + getNonQualifiedClassName(painter);
 
         GeneratorContext test 
             = new GeneratorContext(painter, makeURL(painter, CUSTOM_CONTEXT_GENERATION_PREFIX));
 
         test.setSaveSVG(new File(GENERATOR_REFERENCE_BASE + CANDIDATE_REF_DIR + "/" + cl + SVG_EXTENSION));
+        test.setName(id + "-ConfiguredContextGeneration");
+        test.setId(id + ".configuredContextGeneration");
         return test;
     }
 
-    private Test makeSVGAccuracyTest(Painter painter){
+    private Test makeSVGAccuracyTest(Painter painter, String id){
         String cl = PLAIN_GENERATION_PREFIX + getNonQualifiedClassName(painter);
 
         SVGAccuracyTest test 
             = new SVGAccuracyTest(painter, makeURL(painter, PLAIN_GENERATION_PREFIX));
 
         test.setSaveSVG(new File(GENERATOR_REFERENCE_BASE + CANDIDATE_REF_DIR + "/" + cl + SVG_EXTENSION));
-
+        test.setName(id + "-DefaultContextGeneration");
+        test.setId(id + ".defaultContextGeneration");
         return test;
     }
 
