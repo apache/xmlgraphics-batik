@@ -2228,84 +2228,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         int lastChar = getLastCharacterIndexForElement(aci,element);
 
-        //retrieve the text run for the text node
-        List list = getTextRuns((TextNode)node);
-
-        int visible = 0;
-
-        for(int k = firstChar ; k <= lastChar ; k++ ){
-
-            for( int l = 0 ; l < list.size() ; l++ ){
-                StrokingTextPainter.TextRun run = 
-                    (StrokingTextPainter.TextRun)list.get(l);
-
-                TextSpanLayout layout =  run.getLayout();
-
-                if ( layout.hasCharacterIndex(k) ){
-                    if ( layout.isOnATextPath() ){
-                        
-                        GVTGlyphVector vector = layout.getGlyphVector();
-
-                        //alt glyph ?
-                        if ( layout.isAltGlyph() ){
-                                //get the number of glyph visible here
-                            int glyphs = vector.getNumGlyphs();
-                            int visibleGlyphs = 0;
-                            for( int h=0 ; h < glyphs ; h++ ){
-                                if ( vector.isGlyphVisible(h)){
-                                    visibleGlyphs++;
-                                }
-                            }
-                                //get the number of character associated 
-                                //to this run
-                            int charactersInRun = 1;
-                            while ( layout.hasCharacterIndex( k+1 )){
-                                charactersInRun++;
-                                k++;
-                            }
-                            visible += (charactersInRun*visibleGlyphs/glyphs);
-                        }
-                        else{
-                            int lastGlyphIndexFound = -1;
-                            do{
-                                int glyphIndex = layout.getGlyphIndex(k);
-                                if(  glyphIndex == -1 ){
-                                    //probable missing glyph
-                                    if ( layout.isLeftToRight() ){
-                                        glyphIndex = 1 + lastGlyphIndexFound;
-                                    }
-                                    else{
-                                        glyphIndex = ( lastGlyphIndexFound == -1) 
-                                            ? vector.getNumGlyphs()-1
-                                            : lastGlyphIndexFound -1;
-                                    }
-                                }
-                                lastGlyphIndexFound = glyphIndex;
-                                if ( vector.isGlyphVisible( glyphIndex ) ){
-                                    visible++;
-                                }
-                            
-                                k++;
-                            }while (k <= lastChar && layout.hasCharacterIndex(k) );
-                            //got one too far;
-                            k--;
-                        }
-                             
-                    }
-                    else{
-                        visible++;
-                        while ( k < lastChar && layout.hasCharacterIndex(k+1) ){
-                            k++;
-                            visible++;
-                        }
-                    }
-                }
-            }
-        }
-
-        //return( lastChar - firstChar + 1 );
-        return visible;
-
+        return( lastChar - firstChar + 1 );
     }
 
 
@@ -2315,7 +2238,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected Rectangle2D getExtentOfChar(Element element,int charnum ){
 
-        AttributedCharacterIterator aci = ((TextNode)node).getAttributedCharacterIterator();
+        AttributedCharacterIterator aci;
+        aci = ((TextNode)node).getAttributedCharacterIterator();
 
         int firstChar = getFirstCharacterIndexForElement(aci,element);
 
@@ -2326,41 +2250,41 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         List list = getTextRuns((TextNode)node);
 
         //find the character 'charnum' in the text run
-        CharacterInformation info = getCharacterInformation(list, firstChar,charnum, aci);
+        CharacterInformation info;
+        info = getCharacterInformation(list, firstChar,charnum, aci);
             
-        if ( info != null ){
-
-            //retrieve the glyphvector containing the glyph
-            //for 'charnum'
-            GVTGlyphVector it = info.layout.getGlyphVector();
-
-            Shape b;
-
-            if ( info.glyphIndexStart == info.glyphIndexEnd ){
-                b = it.getGlyphOutline(info.glyphIndexStart);
-            }
-            else{
-                GeneralPath path = new GeneralPath();
-                for( int k = info.glyphIndexStart ; 
-                     k <= info.glyphIndexEnd;
-                     k++){
-
-                    path.append(it.getGlyphOutline(k),false);
-                }
-                b = path;
-            }
-
-            //get the transform for the node
-            // AffineTransform at = getCTM();
-            // b = at.createTransformedShape(b);
-            
-            //return the bounding box of the outline
-            return b.getBounds2D();
-
-        }
-        else{
+        if ( info == null )
             return null;
+
+        //retrieve the glyphvector containing the glyph
+        //for 'charnum'
+        GVTGlyphVector it = info.layout.getGlyphVector();
+
+        Shape b = null;
+
+        if ( info.glyphIndexStart == info.glyphIndexEnd ){
+            if (it.isGlyphVisible(info.glyphIndexStart))
+                b = it.getGlyphOutline(info.glyphIndexStart);
+        } else {
+            GeneralPath path = null;
+            for( int k = info.glyphIndexStart ; 
+                 k <= info.glyphIndexEnd;
+                 k++){
+                if (it.isGlyphVisible(k)) {
+                    if (path == null) 
+                        path = new GeneralPath(it.getGlyphOutline(k));
+                    else
+                        path.append(it.getGlyphOutline(k),false);
+                }
+            }
+            b = path;
         }
+
+        if (b == null) 
+            return null;
+                
+        //return the bounding box of the outline
+        return b.getBounds2D();
     }
 
 
@@ -2381,43 +2305,35 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         List list = getTextRuns((TextNode)node);
 
         //find the character 'charnum' in the text run
-        CharacterInformation info = getCharacterInformation(list, firstChar,charnum, aci);
+        CharacterInformation info;
+        info = getCharacterInformation(list, firstChar,charnum, aci);
 
-        if ( info != null ){
-            return getStartPoint( info );            
-        }
-        else{
+        if ( info == null )
             return null;
-        }
+        
+        return getStartPoint( info );            
     }
 
     protected Point2D getStartPoint(CharacterInformation info){
 
         GVTGlyphVector it = info.layout.getGlyphVector();
+        if (!it.isGlyphVisible(info.glyphIndexStart))
+            return null;
 
         Point2D b = it.getGlyphPosition(info.glyphIndexStart);
 
-        Point2D.Float result = new Point2D.Float();
-            
         AffineTransform glyphTransform;
         glyphTransform = it.getGlyphTransform(info.glyphIndexStart);
 
-        float x = 0,y = 0;
 
         //glyph are defined starting at position (0,0)
-        if ( glyphTransform != null ){
-            
+        Point2D.Float result = new Point2D.Float(0, 0);
+        if ( glyphTransform != null )
             //apply the glyph transformation to the start point
-            glyphTransform.transform(new Point2D.Double(x,y),result);
-            x = result.x;
-            y = result.y;
-        }
+            glyphTransform.transform(result,result);
 
-        x += b.getX();
-        y += b.getY();
-        
-        result.x = x;
-        result.y = y;
+        result.x += b.getX();
+        result.y += b.getY();
         return result;
     }
 
@@ -2427,7 +2343,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected Point2D getEndPositionOfChar(Element element,int charnum ){
 
-        AttributedCharacterIterator aci = ((TextNode)node).getAttributedCharacterIterator();
+        AttributedCharacterIterator aci;
+        aci = ((TextNode)node).getAttributedCharacterIterator();
 
         int firstChar = getFirstCharacterIndexForElement(aci,element);
 
@@ -2438,43 +2355,36 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         List list = getTextRuns((TextNode)node);
 
         //find the glyph information for the character 'charnum'
-        CharacterInformation info = getCharacterInformation(list, firstChar,charnum, aci);
+        CharacterInformation info;
+        info = getCharacterInformation(list, firstChar,charnum, aci);
             
-        if ( info != null ){
-            return getEndPoint(info);
-        }
-        else{
+        if ( info == null )
             return null;
-        }
+        return getEndPoint(info);
     }
 
     protected Point2D getEndPoint(CharacterInformation info){
 
         GVTGlyphVector it = info.layout.getGlyphVector();
+        if (!it.isGlyphVisible(info.glyphIndexEnd))
+            return null;
         
         Point2D b = it.getGlyphPosition(info.glyphIndexEnd);
-        
-        Point2D.Float result = new Point2D.Float();
         
         AffineTransform glyphTransform;
         glyphTransform = it.getGlyphTransform(info.glyphIndexEnd);
         
         GVTGlyphMetrics metrics = it.getGlyphMetrics(info.glyphIndexEnd);
         
-        float x = 0,y = 0;
+        
+        Point2D.Float result = new Point2D.Float
+            (metrics.getHorizontalAdvance(), 0);
             
-        x = metrics.getHorizontalAdvance();
-            
-        if ( glyphTransform != null ){
-                
-            glyphTransform.transform(new Point2D.Float(x,y),result);
-            x = result.x;
-            y = result.y;
-        }
-        x += b.getX();
-        y += b.getY();
-        result.x = x;
-        result.y = y;
+        if ( glyphTransform != null )
+            glyphTransform.transform(result,result);
+
+        result.x += b.getX();
+        result.y += b.getY();
         return result;
     }
 
@@ -2484,7 +2394,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected float getRotationOfChar(Element element, int charnum){
 
-        AttributedCharacterIterator aci = ((TextNode)node).getAttributedCharacterIterator();
+        AttributedCharacterIterator aci;
+        aci = ((TextNode)node).getAttributedCharacterIterator();
         //first the first character for the element
         int firstChar = getFirstCharacterIndexForElement(aci,element);
 
@@ -2495,58 +2406,49 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         List list = getTextRuns((TextNode)node);
 
         //find the glyph information for the character 'charnum'
-        CharacterInformation info = getCharacterInformation(list, firstChar,charnum, aci);
+        CharacterInformation info;
+        info = getCharacterInformation(list, firstChar,charnum, aci);
             
-
         double angle = 0.0;
         int nbGlyphs = 0;
 
         if ( info != null ){
-
             GVTGlyphVector it = info.layout.getGlyphVector();
 
             for( int k = info.glyphIndexStart ;
                  k <= info.glyphIndexEnd ;
                  k++ ){
+                if (!it.isGlyphVisible(k)) continue;
 
                 nbGlyphs++;
                 
-                double glyphAngle = 0.0;
-
                 //the glyph transform contains only a scale and a rotate.
                 AffineTransform glyphTransform = it.getGlyphTransform(k);
+                if ( glyphTransform == null ) continue;
 
-                if ( glyphTransform != null ){
-                    double cosTheta = glyphTransform.getScaleX();
-                    double sinTheta = glyphTransform.getShearX();
+                double glyphAngle = 0.0;
+                double cosTheta = glyphTransform.getScaleX();
+                double sinTheta = glyphTransform.getShearX();
                 
-                    //extract the angle
-                    if ( cosTheta == 0.0 ){
-                        if ( sinTheta > 0 ){
-                            glyphAngle = Math.PI;
-                        }
-                        else{
-                            glyphAngle = -Math.PI;
-                        }
-                    }
-                    else{
-                        glyphAngle = Math.atan(sinTheta/cosTheta);
-                        if ( cosTheta < 0 ){
-                            glyphAngle += Math.PI;
-                        }
-                    }
-                    //get a degrees value for the angle
-                    //SVG angle are clock wise java anticlockwise 
+                //extract the angle
+                if ( cosTheta == 0.0 ){
+                    if ( sinTheta > 0 ) glyphAngle = Math.PI;
+                    else                glyphAngle = -Math.PI;
+                } else {
+                    glyphAngle = Math.atan(sinTheta/cosTheta);
+                    if ( cosTheta < 0 )
+                        glyphAngle += Math.PI;
+                }
+                //get a degrees value for the angle
+                //SVG angle are clock wise java anticlockwise 
                 
-                    glyphAngle = (Math.toDegrees( - glyphAngle ) ) % 360.0;
-
+                glyphAngle = (Math.toDegrees( - glyphAngle ) ) % 360.0;
+                
                 //remove the orientation from the value
                 angle += glyphAngle - info.getComputedOrientationAngle();
-                }
-            
-            
             }
         }
+        if (nbGlyphs == 0) return 0;
         return (float)(angle / nbGlyphs );
     }
 
@@ -2567,7 +2469,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                        int nchars){
         float length = 0;
 
-        AttributedCharacterIterator aci = ((TextNode)node).getAttributedCharacterIterator();
+        AttributedCharacterIterator aci;
+        aci = ((TextNode)node).getAttributedCharacterIterator();
         TextNode textNode = (TextNode)node;
 
         int firstChar = getFirstCharacterIndexForElement(aci,element);
@@ -2577,39 +2480,71 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         List list = getTextRuns(textNode);
 
-        CharacterInformation currentInfo = getCharacterInformation
-            (list, firstChar,charnum,aci);
+        CharacterInformation currentInfo;
+        currentInfo = getCharacterInformation(list, firstChar,charnum,aci);
         CharacterInformation lastCharacterInRunInfo = null;
         int chIndex = currentInfo.characterIndex+1;
+        GVTGlyphVector vector = currentInfo.layout.getGlyphVector();
+        float [] advs = currentInfo.layout.getGlyphAdvances();
+        boolean [] glyphTrack = new boolean[advs.length];
+        for( int k = charnum +1; k < charnum +nchars ; k++) {
+            if (currentInfo.layout.isOnATextPath() ){
+                for (int gi = currentInfo.glyphIndexStart;
+                     gi <= currentInfo.glyphIndexEnd; gi++) {
+                    if ((vector.isGlyphVisible(gi)) && !glyphTrack[gi])
+                        length += advs[gi+1]-advs[gi];
+                    glyphTrack[gi] = true;
+                }
+                CharacterInformation newInfo;
+                newInfo = getCharacterInformation(list, firstChar, k, aci);
+                if (newInfo.layout != currentInfo.layout) {
+                    vector = newInfo.layout.getGlyphVector();
+                    advs = newInfo.layout.getGlyphAdvances();
+                    glyphTrack = new boolean[advs.length];
+                    chIndex = currentInfo.characterIndex+1;
+                }
+                currentInfo = newInfo;
+            } else {
+                //reach the next run
+                if ( currentInfo.layout.hasCharacterIndex(chIndex) ){
+                    chIndex++;
+                    continue;
+                }
 
-        for( int k = charnum +1; k < charnum +nchars ; k++){
+                lastCharacterInRunInfo = getCharacterInformation
+                    (list,firstChar,k-1,aci);
 
-            //reach the next run
-            if ( currentInfo.layout.hasCharacterIndex(chIndex) ){
-                chIndex++;
-                continue;
+                //if the text run change compute the distance between the 
+                //first character of the run and the last
+                length += distanceFirstLastCharacterInRun
+                    (currentInfo,lastCharacterInRunInfo);
+
+                currentInfo = getCharacterInformation(list,firstChar,k,aci);
+                chIndex = currentInfo.characterIndex+1;
+                vector  = currentInfo.layout.getGlyphVector();
+                advs    = currentInfo.layout.getGlyphAdvances();
+                glyphTrack = new boolean[advs.length];
+                lastCharacterInRunInfo = null;
             }
+        }
 
-            lastCharacterInRunInfo = getCharacterInformation
-                (list,firstChar,k-1,aci);
-
-            //if the text run change compute the distance between the 
-            //first character of the run and the last
+        if (currentInfo.layout.isOnATextPath() ){
+            for (int gi = currentInfo.glyphIndexStart;
+                 gi <= currentInfo.glyphIndexEnd; gi++) {
+                if ((vector.isGlyphVisible(gi)) && !glyphTrack[gi])
+                    length += advs[gi+1]-advs[gi];
+                glyphTrack[gi] = true;
+            }
+        } else {
+            if ( lastCharacterInRunInfo == null ){
+                lastCharacterInRunInfo = getCharacterInformation
+                    (list,firstChar,charnum+nchars-1,aci);
+            }
+            //add the length between the end position of the last character
+            //and the first character in the run
             length += distanceFirstLastCharacterInRun
                 (currentInfo,lastCharacterInRunInfo);
-
-            currentInfo = getCharacterInformation(list,firstChar,k,aci);
-            chIndex = currentInfo.characterIndex+1;
-            lastCharacterInRunInfo = null;
         }
-
-        if ( lastCharacterInRunInfo == null ){
-            lastCharacterInRunInfo = getCharacterInformation
-                (list,firstChar,charnum+nchars-1,aci);
-        }
-        //add the length between the end position of the last character
-        //and the first character in the run
-        length += distanceFirstLastCharacterInRun(currentInfo,lastCharacterInRunInfo);
 
         return length;
     }
@@ -2667,10 +2602,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * TODO : report the selection to the selection
      *  manager in JSVGComponent.
      */
-    protected void selectSubString(Element element, int charnum, int nchars){
-
-        AttributedCharacterIterator aci = 
-            ((TextNode)node).getAttributedCharacterIterator();
+    protected void selectSubString(Element element, int charnum, int nchars) {
+        AttributedCharacterIterator aci;
+        aci = ((TextNode)node).getAttributedCharacterIterator();
         TextNode textNode = (TextNode)node;
 
         int firstChar = getFirstCharacterIndexForElement(aci,element);
@@ -2682,13 +2616,12 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         int lastChar = getLastCharacterIndexForElement(aci,element);
 
-        CharacterInformation firstInfo = getCharacterInformation
-            (list, firstChar,charnum,aci);
-        CharacterInformation lastInfo = getCharacterInformation
-            (list, firstChar,charnum+nchars-1,aci);
+        CharacterInformation firstInfo, lastInfo;
+        firstInfo = getCharacterInformation(list, firstChar,charnum,aci);
+        lastInfo  = getCharacterInformation(list, firstChar,charnum+nchars-1,aci);
         
-        Mark firstMark = textNode.getMarkerForChar(firstInfo.characterIndex,true);
-        Mark lastMark;
+        Mark firstMark, lastMark;
+        firstMark = textNode.getMarkerForChar(firstInfo.characterIndex,true);
 
         if ( lastInfo != null && lastInfo.characterIndex <= lastChar ){
             lastMark = textNode.getMarkerForChar(lastInfo.characterIndex,false);
@@ -2811,142 +2744,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      *  character
      */
     protected CharacterInformation getCharacterInformation
-        (List list,int startIndex, int charnum, AttributedCharacterIterator aci)
+        (List list,int startIndex, int charnum, 
+         AttributedCharacterIterator aci)
     {
-        int visible = 0;
-        int k = 0;
-        StrokingTextPainter.TextRun run = null;
-        
-        for( k = startIndex ; (visible < (charnum+1)) ; k++ ){
-            if (k > aci.getEndIndex()) return null;
-            for( int l = 0 ; l < list.size() && (visible < (charnum+1)) ; l++){
-                run = (StrokingTextPainter.TextRun)list.get(l);
-
-                TextSpanLayout layout = run.getLayout();
-
-                if ( layout.hasCharacterIndex(k) ) {
-                    if ( layout.isOnATextPath() ){
-                        
-                        GVTGlyphVector vector = layout.getGlyphVector();
-
-                        //alt glyph ?
-                        if ( layout.isAltGlyph() ){
-                                //get the number of glyph visible here
-                            int glyphs = vector.getNumGlyphs();
-                            int visibleGlyphs = 0;
-                            for( int h=0 ; h < glyphs ; h++ ){
-                                if ( vector.isGlyphVisible(h)){
-                                    visibleGlyphs++;
-                                }
-                            }
-                                //get the number of character associated 
-                                //to this run
-                            int charactersInRun = 1;
-                            while ( layout.hasCharacterIndex( k+1 )){
-                                charactersInRun++;
-                                k++;
-                            }
-                            visible += (charactersInRun*visibleGlyphs/glyphs);
-                            
-                            if ( visible > charnum +1 ){
-                                visible = charnum +1;
-                            }
-
-                        }
-                        else{
-                            int lastGlyphIndexFound = -1;
-                            do{
-                                int glyphIndex = layout.getGlyphIndex(k);
-                                if(  glyphIndex == -1 ){
-                                    //probable missing glyph
-                                    if ( layout.isLeftToRight() ){
-                                        glyphIndex = 1 + lastGlyphIndexFound;
-                                    }
-                                    else{
-                                        glyphIndex = ( lastGlyphIndexFound == -1) 
-                                            ? vector.getNumGlyphs()-1
-                                            : lastGlyphIndexFound -1;
-                                    }
-                                }
-                                lastGlyphIndexFound = glyphIndex;
-                                if ( vector.isGlyphVisible( glyphIndex ) ){
-                                    visible++;
-                                }
-                                k++;
-                            }while ((visible < (charnum+1)) && layout.hasCharacterIndex(k) );
-                            //got one too far
-                            k--;
-                        }
-                    }
-                    else{
-                        visible++;
-                        while ( (visible < (charnum+1)) && layout.hasCharacterIndex(k+1) ){
-                            k++;
-                            visible++;
-                        }
-                    }
-                }
-            }
-        }
-
-        if ( visible != charnum+1 ){
-            return null;
-        }
-
         CharacterInformation info = new CharacterInformation();
-        info.characterIndex = k-1;
-        info.layout = run.getLayout();
+        info.characterIndex = startIndex+charnum;
 
-        //check is it is a altGlyph
-        if ( info.layout.isAltGlyph() ){
-            
-            //first visible glyph, last visible glyph
-            info.glyphIndexStart = 0;
-            info.glyphIndexEnd = info.layout.getGlyphCount()-1;
-            boolean visibleGlyph = false;
-            GVTGlyphVector vector = info.layout.getGlyphVector();  
-            for( int j = 0 ; j < vector.getNumGlyphs() ; j++ ){
-                if ( !visibleGlyph && vector.isGlyphVisible(j) ){
-                    info.glyphIndexStart = j;
-                    visibleGlyph = true;
-                }
-                if ( visibleGlyph && (!vector.isGlyphVisible(j)) ){
-                    info.glyphIndexEnd = j-1;
-                    break;
-                }
-            }
-
-        }
-        else{
-            
-            info.glyphIndexStart = info.layout.getGlyphIndex
-                (info.characterIndex);
-            
-            //special case when the missing glyph does not have a unicode
-            //associated to it, it will return -1
-            if ( info.glyphIndexStart == -1 ){
-                if ( info.layout.isLeftToRight() ){
-                    info.glyphIndexStart = info.layout.getGlyphIndex( info.characterIndex-1 )+1;
-                }
-                else{
-                    info.glyphIndexStart = info.layout.getGlyphIndex( info.characterIndex+1 ) -1;
-                    if ( info.glyphIndexStart == -2 ){
-                        info.glyphIndexStart = info.layout.getGlyphCount()-1;
-                    }
-                }
-            }
-            info.glyphIndexEnd = info.glyphIndexStart;
-            
-        }
-
-        return info;
-        /*
-          CharacterInformation info = new CharacterInformation();
-
-        info.characterIndex = characterIndex;
-        boolean found = false;
-
-        for (int i = 0 ; i < list.size() && !found ; i++) {
+        for (int i = 0; i < list.size(); i++) {
             StrokingTextPainter.TextRun run = 
                 (StrokingTextPainter.TextRun)list.get(i);
 
@@ -2956,14 +2760,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 aci.setIndex(info.characterIndex);
 
                 //check is it is a altGlyph
-                if ( aci.getAttribute(GVTAttributedCharacterIterator.
-                             TextAttribute.ALT_GLYPH_HANDLER) != null ){
-
+                if (aci.getAttribute(GVTAttributedCharacterIterator.
+                                     TextAttribute.ALT_GLYPH_HANDLER) != null){
                     info.glyphIndexStart = 0;
                     info.glyphIndexEnd = info.layout.getGlyphCount()-1;
-                }
-                else{
-
+                } else {
                     info.glyphIndexStart = info.layout.getGlyphIndex
                         (info.characterIndex);
 
@@ -2977,16 +2778,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                         info.glyphIndexEnd = info.glyphIndexStart;
                     }
                 }
-                found = true;
+                return info;
             }
         }
-        if ( !found ){
-            return( null );
-        }
-        else{
-            return( info );
-        }
-        */
+        return null;
     }
 
     /**
@@ -3013,71 +2808,4 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return layout.getComputedOrientationAngle(characterIndex);
         }
     }
-    /*
-    protected int countCharacter(AttributedCharacterIterator aci, Element element){
-
-        int firstChar = getFirstCharacterIndexForElement(aci,element);
-            
-        if (firstChar == -1)
-            return 0; // Element not part of aci (no chars in elem usually)
-        
-        int lastChar = getLastCharacterIndexForElement(aci,element);
-            
-        if (!(( element instanceof SVGTextElement ) || 
-              ( element instanceof SVGTextPathElement ))){
-            //is tref,tspan,altGlyph,a
-            return ( lastChar - firstChar + 1 );
-        }
-        else if ( element instanceof SVGTextPathElement ){
-
-            return getNumberOfVisibleCharacter(firstChar,lastChar);
-        }
-        else{
-            //text element
-            int counted = 0;
-            int currentChar = firstChar;
-
-            while ( currentChar > lastChar ){
-            
-                aci.setIndex(currentChar);
-
-                Element child = aci.get(GVTAttributedCharacterIterator.
-                                    TextAttribute.TEXT_COMPOUND_DELIMITER);
-            
-                if(  child == element ){
-                    //character associated to the <text> element 
-                    //directly
-                    int last = aci.runLimit(GVTAttributedCharacterIterator.
-                                            TextAttribute.TEXT_COMPOUND_DELIMITER);
-                    
-                    counted = last - currentChar+1;
-                    currentChar = last+1;
-                }
-                else{
-                    //character associated to a child of text
-                    int lastCharChild = getLastCharacterIndexForElement(aci,child);
-                    
-                    counted+= countCharacter(aci,child);
-                    //go to the next child or back to 
-                    //the <text> element characters
-                    currentChar = lastCharChild+1;
-                
-                }
-            }
-        }
-    }
-
-    protected int getNumberOfVisibleCharacters(int first, int last){
-
-        //get the layouts
-        List list = getTextRuns(textNode);
-
-        StrokingTextPainter.TextRun lastRunUsed = null;        
-        for( int i = first ; i <= last ; i++ ){
-            if ( lastRunUsed != null ){
-                
-            }
-        }
-    }
-    */
 }
