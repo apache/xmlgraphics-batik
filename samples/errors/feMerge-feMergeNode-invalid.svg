@@ -53,7 +53,7 @@
          <feImage xlink:href="#Circle2" result="Circle2" />
          <feMerge>
            <feMergeNode in="Circle1"/>
-           <defs/>
+           <rect/> <!-- a validate XML parser will catch this one -->
            <feMergeNode in="Circle2"/>
          </feMerge>
         </filter>
