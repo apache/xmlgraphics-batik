@@ -17,9 +17,9 @@ import java.awt.geom.Rectangle2D;
 
 import java.io.StringReader;
 
+import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
@@ -47,7 +47,8 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
 
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element) {
 
-        GraphicsNode gn = ctx.getGVTFactory().createCompositeGraphicsNode();
+        CompositeGraphicsNode gn;
+        gn = ctx.getGVTFactory().createCompositeGraphicsNode();
 
         // Initialize the transform
         AffineTransform at =
@@ -65,8 +66,7 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
                                                                 decl,
                                                                 uctx);
         if (rect != null) {
-            CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
-            cgn.setBackgroundEnable(rect);
+            gn.setBackgroundEnable(rect);
         }
 
         return gn;
