@@ -217,8 +217,8 @@ public class XMLInputHandler implements SquiggleInputHandler {
         SVGDocument outDoc = null;
 
         try {
-            outDoc = f.createDocument(uri, 
-                                      new StringReader(sw.toString()));
+            outDoc = f.createSVGDocument
+                (uri, new StringReader(sw.toString()));
         } catch (Exception e) {
             System.err.println("======================================");
             System.err.println(sw.toString());
