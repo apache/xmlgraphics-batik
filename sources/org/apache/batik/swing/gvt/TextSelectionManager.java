@@ -321,18 +321,17 @@ public class TextSelectionManager {
 
                 Graphics2D g2d = (Graphics2D)g;
 		if (xorMode) {
-		    int red = 255 - selectionOverlayColor.getRed();
-		    int green = 255 - selectionOverlayColor.getGreen();
-		    int blue = 255 - selectionOverlayColor.getBlue();
-		    g2d.setXORMode(new Color(red, green, blue));
-		}
-                g2d.setColor(selectionOverlayColor);
-                g2d.fill(s);
-	
-		if (selectionOverlayStrokeColor != null) {
-		    g2d.setStroke(new java.awt.BasicStroke(1.0f));
-		    g2d.setColor(selectionOverlayStrokeColor);
-		    g2d.draw(s);
+		    g2d.setColor(Color.black);
+		    g2d.setXORMode(Color.white);
+		    g2d.fill(s);
+		} else {
+		    g2d.setColor(selectionOverlayColor);
+		    g2d.fill(s);
+		    if (selectionOverlayStrokeColor != null) {
+			g2d.setStroke(new java.awt.BasicStroke(1.0f));
+			g2d.setColor(selectionOverlayStrokeColor);
+			g2d.draw(s);
+		    }
 		}
             }
         }
