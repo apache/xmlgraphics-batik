@@ -11,11 +11,6 @@ package org.apache.batik.bridge;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -70,6 +65,8 @@ public class SVGFeGaussianBlurElementBridge implements FilterPrimitiveBridge,
 
         GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
+
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
 
         // Extract standard deviation
         String stdDeviation =
@@ -147,7 +144,8 @@ public class SVGFeGaussianBlurElementBridge implements FilterPrimitiveBridge,
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
         PadRable pad = new PadRable8Bit(in, blurArea, PadMode.ZERO_PAD);
 

@@ -16,11 +16,6 @@ import java.util.StringTokenizer;
 
 import java.util.Map;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -72,6 +67,7 @@ public class SVGFeConvolveMatrixElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
         // Extract kernel Order (Size)
         String attrStr;
         attrStr = filterElement.getAttributeNS(null, SVG_ORDER_ATTRIBUTE);
@@ -277,7 +273,8 @@ public class SVGFeConvolveMatrixElementBridge implements FilterPrimitiveBridge,
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
         PadRable pad;
         pad = new PadRable8Bit(in, convolveArea, PadMode.ZERO_PAD);

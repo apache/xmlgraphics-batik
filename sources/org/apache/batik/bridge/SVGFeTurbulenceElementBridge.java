@@ -14,11 +14,6 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 import java.util.Map;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.Clip;
@@ -72,8 +67,9 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
                          Rectangle2D filterRegion,
                          Map filterMap){
 
-         GraphicsNodeRenderContext rc =
-                         bridgeContext.getGraphicsNodeRenderContext();
+        GraphicsNodeRenderContext rc =
+            bridgeContext.getGraphicsNodeRenderContext();
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
 
         // parse the baseFrequency attribute
         String baseFrequencyAttr =
@@ -161,7 +157,8 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
         TurbulenceRable turbulenceRable
             = new TurbulenceRable8Bit(turbulenceRegion);

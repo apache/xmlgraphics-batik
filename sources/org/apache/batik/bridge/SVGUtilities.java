@@ -956,7 +956,8 @@ public class SVGUtilities implements SVGConstants {
                                                  Rectangle2D filterRegion,
                                                  GraphicsNode node,
                                                  GraphicsNodeRenderContext rc,
-                                                 UnitProcessor.Context uctx) {
+                                                 UnitProcessor.Context uctx,
+                                                 DocumentLoader loader) {
 
         // Get coordinate system from the parent node.
         Node parentNode = filterPrimitiveElement.getParentNode();
@@ -964,7 +965,10 @@ public class SVGUtilities implements SVGConstants {
         if((parentNode != null) &&
                (parentNode.getNodeType() == parentNode.ELEMENT_NODE)) {
             Element parent = (Element) parentNode;
-            units = parent.getAttributeNS(null, SVG_PRIMITIVE_UNITS_ATTRIBUTE);
+            units = getChainableAttributeNS(parent,
+                                            null,
+                                            SVG_PRIMITIVE_UNITS_ATTRIBUTE,
+                                            loader);
         }
         if(units.length() == 0){
             units = SVG_USER_SPACE_ON_USE_VALUE;

@@ -14,11 +14,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.CompositeRable;
@@ -74,6 +69,7 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
 
         GraphicsNodeRenderContext rc =
                      bridgeContext.getGraphicsNodeRenderContext();
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
 
         // Extract sources, they are defined in the filterElement's children.
         List srcs = new LinkedList();
@@ -136,7 +132,8 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
         Filter filter = null;
         filter = new CompositeRable8Bit(srcs, CompositeRule.OVER, true);

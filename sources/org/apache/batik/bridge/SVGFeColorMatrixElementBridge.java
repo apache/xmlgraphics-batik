@@ -13,11 +13,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.ColorMatrixRable;
@@ -76,6 +71,7 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
 
         GraphicsNodeRenderContext rc =
                          bridgeContext.getGraphicsNodeRenderContext();
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
 
         // First, extract source
         String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
@@ -117,7 +113,8 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
         //
         // Extract the matrix type. Interpret the values accordingly.

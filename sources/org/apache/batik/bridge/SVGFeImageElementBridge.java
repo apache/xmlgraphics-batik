@@ -17,12 +17,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterPrimitiveBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MissingAttributeException;
-
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 
@@ -86,6 +80,7 @@ public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
 
         GraphicsNodeRenderContext rc =
                           bridgeContext.getGraphicsNodeRenderContext();
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
 
         SVGElement svgElement = (SVGElement) filterElement;
 
@@ -113,7 +108,8 @@ public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
                                                         filterRegion,
                                                         filteredNode,
                                                         rc,
-                                                        uctx);
+                                                        uctx,
+                                                        loader);
 
         Filter filter = null;
         if (uriStr.startsWith(PROTOCOL_DATA)) {
