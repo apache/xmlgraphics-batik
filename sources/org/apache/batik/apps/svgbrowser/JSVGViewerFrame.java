@@ -119,6 +119,8 @@ import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.apache.batik.util.gui.resource.ResourceManager;
 import org.apache.batik.util.gui.resource.ToolBarFactory;
 
+import org.apache.batik.ext.swing.JAffineTransformChooser;
+
 import org.apache.batik.xml.XMLUtilities;
 
 import org.w3c.dom.css.ViewCSS;
@@ -171,6 +173,7 @@ public class JSVGViewerFrame
     public final static String STYLE_SHEET_ACTION = "StyleSheetAction";
     public final static String MONITOR_ACTION = "MonitorAction";
     public final static String DOM_VIEWER_ACTION = "DOMViewerAction";
+    public final static String SET_TRANSFORM_ACTION = "SetTransformAction";
 
     /**
      * The cursor indicating that an operation is pending.
@@ -286,6 +289,11 @@ public class JSVGViewerFrame
     protected LanguageDialog languageDialog;
 
     /**
+     * The transform dialog
+     */
+    protected JAffineTransformChooser.Dialog transformDialog;
+
+    /**
      * The user style dialog.
      */
     protected UserStyleDialog styleSheetDialog;
@@ -373,6 +381,7 @@ public class JSVGViewerFrame
         listeners.put(STYLE_SHEET_ACTION, new StyleSheetAction());
         listeners.put(MONITOR_ACTION, new MonitorAction());
         listeners.put(DOM_VIEWER_ACTION, new DOMViewerAction());
+        listeners.put(SET_TRANSFORM_ACTION, new SetTransformAction());
 
         svgCanvas = new JSVGCanvas(userAgent, true, true);
 
@@ -1191,6 +1200,32 @@ public class JSVGViewerFrame
 
         public void update(boolean enabled) {
             menuItem.setEnabled(enabled);
+        }
+    }
+
+    /**
+     * To show the set transform dialog
+     */
+    public class SetTransformAction extends AbstractAction {
+        public SetTransformAction(){}
+        public void actionPerformed(ActionEvent e){
+            if (transformDialog == null){
+                transformDialog 
+                    = JAffineTransformChooser.createDialog
+                    (JSVGViewerFrame.this,
+                     resources.getString("SetTransform.title"),
+                     null);
+            }
+
+            AffineTransform at = svgCanvas.getRenderingTransform();
+            transformDialog.setTransform(at);
+
+            System.out.println("AT : " + at);
+            AffineTransform txf = transformDialog.showDialog();
+            System.out.println("TXF : " + txf);
+            if(txf != null){
+                svgCanvas.setRenderingTransform(txf);
+            }
         }
     }
 
