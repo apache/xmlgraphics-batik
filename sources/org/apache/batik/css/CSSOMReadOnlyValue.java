@@ -46,6 +46,13 @@ public class CSSOMReadOnlyValue implements CSSPrimitiveValue, CSSValueList {
     }
 
     /**
+     * Sets the underlying immutable value.
+     */
+    public void setImmutableValue(ImmutableValue v) {
+	value = v;
+    }
+
+    /**
      * Indicates whether some other object is "equal to" this one.
      * @param obj the reference object with which to compare.
      */

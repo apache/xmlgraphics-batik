@@ -24,45 +24,9 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class AbstractValueFactory implements ValueFactory {
-    /**
-     * The 'inherit' identifier value.
-     */
-    public final static ImmutableValue INHERIT = ImmutableInherit.INSTANCE;
-
-    /**
-     * The 'auto' string.
-     */
-    public final static String AUTO = "auto";
-
-    /**
-     * The 'none' string.
-     */
-    public final static String NONE = "none";
-
-    /**
-     * The 'normal' string.
-     */
-    public final static String NORMAL = "normal";
-
-    /**
-     * The 'auto' identifier.
-     */
-    public final static ImmutableValue AUTO_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, AUTO);
-
-    /**
-     * The 'none' identifier value.
-     */
-    public final static ImmutableValue NONE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, NONE);
-
-    /**
-     * The 'normal' identifier value.
-     */
-    public final static ImmutableValue NORMAL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, NORMAL);
-
+public abstract class AbstractValueFactory
+    implements ValueFactory,
+               ValueConstants {
     /**
      * The immutable factory.
      */
