@@ -8,10 +8,7 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.Hashtable;
-import java.util.HashSet;
+import java.util.*;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 
@@ -39,7 +36,7 @@ public class SVGTransformDescriptor implements SVGDescriptor, SVGSyntax{
      */
     public Map getAttributeMap(Map attrMap){
         if(attrMap == null)
-            attrMap = new Hashtable();
+            attrMap = new HashMap();
 
         attrMap.put(SVG_TRANSFORM_ATTRIBUTE, transform);
 
@@ -55,9 +52,9 @@ public class SVGTransformDescriptor implements SVGDescriptor, SVGSyntax{
      * @return a set containing Elements that represent the definition
      *         of the descriptor's attribute values
      */
-    public Set getDefinitionSet(Set defSet){
-        if(defSet == null)
-            defSet = new HashSet();
+    public List getDefinitionSet(List defSet) {
+        if (defSet == null)
+            defSet = new LinkedList();
 
         return defSet;
     }

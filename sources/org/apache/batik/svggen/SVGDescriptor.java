@@ -9,7 +9,7 @@
 package org.apache.batik.svggen;
 
 import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Defines the interface for a set of SVG attributes and
@@ -39,5 +39,5 @@ public interface SVGDescriptor{
      * @return a set containing Elements that represent the definition
      *         of the descriptor's attribute values
      */
-    public Set getDefinitionSet(Set defSet);
+    public List getDefinitionSet(List defSet);
 }

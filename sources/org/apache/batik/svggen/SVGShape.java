@@ -11,9 +11,6 @@ package org.apache.batik.svggen;
 import java.awt.geom.*;
 import java.awt.*;
 
-import java.util.Map;
-import java.util.Hashtable;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

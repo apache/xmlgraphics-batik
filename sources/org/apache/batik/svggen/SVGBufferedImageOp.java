@@ -8,14 +8,9 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.geom.*;
-import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.image.*;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -71,8 +66,8 @@ public class SVGBufferedImageOp extends AbstractSVGFilterConverter {
      * @return Set of filter Elements defining the BufferedImageOp this
      *         Converter has processed since it was created.
      */
-    public Set getDefinitionSet(){
-        Set filterSet = new HashSet(svgLookupOp.getDefinitionSet());
+    public List getDefinitionSet(){
+        List filterSet = new LinkedList(svgLookupOp.getDefinitionSet());
         filterSet.addAll(svgRescaleOp.getDefinitionSet());
         filterSet.addAll(svgConvolveOp.getDefinitionSet());
         filterSet.addAll(svgCustomBufferedImageOp.getDefinitionSet());

@@ -8,10 +8,7 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import org.w3c.dom.*;
 
@@ -49,7 +46,7 @@ public class SVGFontDescriptor implements SVGDescriptor, SVGSyntax {
 
     public Map getAttributeMap(Map attrMap){
         if(attrMap == null)
-            attrMap = new Hashtable();
+            attrMap = new HashMap();
 
         attrMap.put(SVG_FONT_SIZE_ATTRIBUTE, fontSize);
         attrMap.put(SVG_FONT_WEIGHT_ATTRIBUTE, fontWeight);
@@ -59,9 +56,9 @@ public class SVGFontDescriptor implements SVGDescriptor, SVGSyntax {
         return attrMap;
     }
 
-    public Set getDefinitionSet(Set defSet){
-        if(defSet == null)
-            defSet = new HashSet();
+    public List getDefinitionSet(List defSet){
+        if (defSet == null)
+            defSet = new LinkedList();
 
         return defSet;
     }

@@ -12,11 +12,6 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.awt.geom.Point2D;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

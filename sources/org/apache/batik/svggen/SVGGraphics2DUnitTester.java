@@ -878,7 +878,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
         traceSVGGC(modifiedSVGGC, converter);
 
-        Set defSet = converter.getDefinitionSet();
+        java.util.List defSet = converter.getDefinitionSet();
         Iterator iter = defSet.iterator();
         Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
         while(iter.hasNext()){

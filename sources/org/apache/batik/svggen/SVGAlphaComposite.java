@@ -8,13 +8,8 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.geom.*;
-import java.awt.*;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
+import java.awt.AlphaComposite;
+import java.util.*;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,7 +38,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
     /**
      * Map of all possible AlphaComposite filter equivalents
      */
-    private Map compositeDefsMap = new Hashtable();
+    private Map compositeDefsMap = new HashMap();
 
     /**
      * By default, access to the background is not required.
@@ -78,8 +73,8 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
     /**
      * @return set of all AlphaComposite filter definitions
      */
-    public Set getAlphaCompositeFilterSet() {
-        return new HashSet(compositeDefsMap.values());
+    public List getAlphaCompositeFilterSet() {
+        return new LinkedList(compositeDefsMap.values());
     }
 
     /**

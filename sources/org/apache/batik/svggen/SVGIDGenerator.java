@@ -9,7 +9,7 @@
 package org.apache.batik.svggen;
 
 import java.util.Map;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 /**
  * Generates id for an arbitrary number of prefix
@@ -19,7 +19,7 @@ import java.util.Hashtable;
  * @version $Id$
  */
 public class SVGIDGenerator {
-    private Map prefixMap = new Hashtable();
+    private Map prefixMap = new HashMap();
 
     public void SVGIDGenerator() {
     }

@@ -8,10 +8,7 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import org.w3c.dom.Element;
 
@@ -59,7 +56,7 @@ public class SVGStrokeDescriptor implements SVGDescriptor, SVGSyntax{
 
     public Map getAttributeMap(Map attrMap){
         if(attrMap == null)
-            attrMap = new Hashtable();
+            attrMap = new HashMap();
 
         attrMap.put(SVG_STROKE_WIDTH_ATTRIBUTE, strokeWidth);
         attrMap.put(SVG_STROKE_LINECAP_ATTRIBUTE, capStyle);
@@ -71,9 +68,9 @@ public class SVGStrokeDescriptor implements SVGDescriptor, SVGSyntax{
         return attrMap;
     }
 
-    public Set getDefinitionSet(Set defSet){
+    public List getDefinitionSet(List defSet){
         if(defSet == null)
-            defSet = new HashSet();
+            defSet = new LinkedList();
 
         return defSet;
     }

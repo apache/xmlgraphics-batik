@@ -15,12 +15,6 @@ import java.awt.image.BufferedImage;
 import java.awt.geom.Rectangle2D;
 import java.awt.Rectangle;
 
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Iterator;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

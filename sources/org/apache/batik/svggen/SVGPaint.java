@@ -16,12 +16,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.BufferedImage;
 import java.awt.geom.Rectangle2D;
 import java.awt.Rectangle;
-
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -79,8 +74,8 @@ public class SVGPaint implements SVGConverter {
      * @return Set of Elements defining the Paints this
      *         converter has processed since it was created
      */
-    public Set getDefinitionSet(){
-        Set paintDefs = new HashSet(svgLinearGradient.getDefinitionSet());
+    public List getDefinitionSet(){
+        List paintDefs = new LinkedList(svgLinearGradient.getDefinitionSet());
         paintDefs.addAll(svgTexturePaint.getDefinitionSet());
         paintDefs.addAll(svgCustomPaint.getDefinitionSet());
         paintDefs.addAll(svgColor.getDefinitionSet());

@@ -8,10 +8,7 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import org.w3c.dom.*;
 
@@ -23,8 +20,6 @@ import org.w3c.dom.*;
  * @see             org.apache.batik.svggen.SVGRenderingHints
  */
 public class SVGHintsDescriptor implements SVGDescriptor, SVGSyntax {
-    public static final String ERROR_NULL_INPUT = "none of the input arguments should be null";
-
     private String colorInterpolation;
     private String colorRendering;
     private String textRendering;
@@ -53,9 +48,9 @@ public class SVGHintsDescriptor implements SVGDescriptor, SVGSyntax {
         this.imageRendering = imageRendering;
     }
 
-    public Map getAttributeMap(Map attrMap){
-        if(attrMap == null)
-            attrMap = new Hashtable();
+    public Map getAttributeMap(Map attrMap) {
+        if (attrMap == null)
+            attrMap = new HashMap();
 
         attrMap.put(SVG_COLOR_INTERPOLATION_ATTRIBUTE, colorInterpolation);
         attrMap.put(SVG_COLOR_RENDERING_ATTRIBUTE, colorRendering);
@@ -66,9 +61,9 @@ public class SVGHintsDescriptor implements SVGDescriptor, SVGSyntax {
         return attrMap;
     }
 
-    public Set getDefinitionSet(Set defSet){
-        if(defSet == null)
-            defSet = new HashSet();
+    public List getDefinitionSet(List defSet) {
+        if (defSet == null)
+            defSet = new LinkedList();
 
         return defSet;
     }
