@@ -150,17 +150,10 @@ public class JAffineTransformChooser extends JGridBagPanel{
      * Default constructor
      */
     public JAffineTransformChooser(){
-        this(null);
+        build();
+        setAffineTransform(new AffineTransform());
     }
       
-    /**
-     * @param txf initial value for the <tt>AffineTransform</tt>
-     */
-    public JAffineTransformChooser(AffineTransform txf){
-        setAffineTransform(txf);
-        build();
-    }
-
     /**
      * Adds the control components into this panel.
      */
@@ -302,53 +295,48 @@ public class JAffineTransformChooser extends JGridBagPanel{
             txf = new AffineTransform();
         }
 
-        if(!txf.equals(this.txf)){
-            this.txf = txf;
-            
-            /**
-             * Now, update model
-             */
-            double[] m = new double[6];
-            txf.getMatrix(m);
-
-            // Translation
-            txModel.setValue(m[4]);
-            tyModel.setValue(m[5]);
-            
-            // Scale, in percentages
-            double sx = Math.sqrt(m[0]*m[0] + m[1]*m[1]);
-            double sy = Math.sqrt(m[2]*m[2] + m[3]*m[3]);
-            sxModel.setValue(100*sx);
-            syModel.setValue(100*sy);
-            
-            // Rotation
-            double theta = 0;
-            if(m[0] > 0){
-                theta = Math.atan2(m[1], m[0]);
-            }
-
-            // Rotate
-            rotateModel.setValue(RAD_TO_DEG*theta);
-            rxModel.setValue(0);
-            ryModel.setValue(0);
+        this.txf = txf;
+        
+        /**
+         * Now, update model
+         */
+        double[] m = new double[6];
+        txf.getMatrix(m);
+        
+        // Translation
+        txModel.setValue(m[4]);
+        tyModel.setValue(m[5]);
+        
+        // Scale, in percentages
+        double sx = Math.sqrt(m[0]*m[0] + m[1]*m[1]);
+        double sy = Math.sqrt(m[2]*m[2] + m[3]*m[3]);
+        sxModel.setValue(100*sx);
+        syModel.setValue(100*sy);
+        
+        // Rotation
+        double theta = 0;
+        if(m[0] > 0){
+            theta = Math.atan2(m[1], m[0]);
         }
         
+        // Rotate
+        rotateModel.setValue(RAD_TO_DEG*theta);
+        rxModel.setValue(0);
+        ryModel.setValue(0);
     }        
 
     /**
      * Displays the panel in a modal dialog box.
      * @param cmp the dialog's parent component
      * @param title the dialog's title
-     * @param txf transform
      *
      * @return null if the dialog was cancelled. Otherwise, the value entered
      *         by the user.
      */
     public static AffineTransform showDialog(Component cmp,
-                                             String title,
-                                             AffineTransform txf){
+                                             String title){
         final JAffineTransformChooser pane 
-            = new JAffineTransformChooser(txf);
+            = new JAffineTransformChooser();
 
         AffineTransformTracker tracker = new AffineTransformTracker(pane);
         JDialog dialog = new Dialog(cmp, title, true, pane, tracker, null);
@@ -366,14 +354,12 @@ public class JAffineTransformChooser extends JGridBagPanel{
      *
      * @param cmp the dialog's parent component
      * @param title the dialog's title
-     * @param txf transform
      *
      */
     public static Dialog createDialog(Component cmp,
-                                      String title,
-                                      AffineTransform txf){
+                                      String title){
         final JAffineTransformChooser pane 
-            = new JAffineTransformChooser(txf);
+            = new JAffineTransformChooser();
         
         AffineTransformTracker tracker = new AffineTransformTracker(pane);
         Dialog dialog = new Dialog(cmp, title, true, pane, tracker, null);
@@ -385,7 +371,7 @@ public class JAffineTransformChooser extends JGridBagPanel{
     
 
     public static void main(String args[]){
-        AffineTransform t = showDialog(null, "Hello", AffineTransform.getRotateInstance(DEG_TO_RAD*45, 100, 200));
+        AffineTransform t = showDialog(null, "Hello");
         // AffineTransform.getScaleInstance(.25, .25));
         // new AffineTransform()); 
         // AffineTransform.getShearInstance(1, 1));
@@ -404,7 +390,6 @@ public class JAffineTransformChooser extends JGridBagPanel{
      * Note: This needs to be fixed to deal with localization!
      */
     public static class Dialog extends JDialog {
-        private AffineTransform initialAffineTransform;
         private JAffineTransformChooser chooserPane;
         private AffineTransformTracker tracker;
 
@@ -501,7 +486,7 @@ public class JAffineTransformChooser extends JGridBagPanel{
         }
 
         public void show() {
-            initialAffineTransform = chooserPane.getAffineTransform();
+            tracker.reset();
             super.show();
         }
 
@@ -511,7 +496,7 @@ public class JAffineTransformChooser extends JGridBagPanel{
         }
 
         public void reset() {
-            chooserPane.setAffineTransform(initialAffineTransform);
+            chooserPane.setAffineTransform(new AffineTransform());
         }
 
         public void setTransform(AffineTransform at){
@@ -519,7 +504,6 @@ public class JAffineTransformChooser extends JGridBagPanel{
                 at = new AffineTransform();
             }
 
-            initialAffineTransform = at;
             chooserPane.setAffineTransform(at);
         }
 
@@ -558,6 +542,10 @@ class AffineTransformTracker implements ActionListener, Serializable {
 
     public AffineTransform getAffineTransform() {
         return txf;
+    }
+
+    public void reset(){
+        txf = null;
     }
 }
 
