@@ -41,6 +41,9 @@ import org.apache.batik.util.Service;
  * for compatability with core URL), in spite of the fact that the
  * real implemenation uses the protocol handlers as factories for
  * protocol specific instances of the ParsedURLData class.
+ *
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
+ * @version $Id$ 
  */
 public class ParsedURL {
 

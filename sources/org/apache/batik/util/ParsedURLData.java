@@ -21,6 +21,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Holds the data for more URL's
+ *
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
+ * @version $Id$ 
+ */
 public class ParsedURLData {
     
     String HTTP_USER_AGENT_HEADER      = "User-Agent";

@@ -23,17 +23,16 @@ public class TextHit {
 
     private int charIndex;
     private boolean leadingEdge;
-    private TextNode textNode;
-    private FontRenderContext frc;
 
     /**
      * Constructs a TextHit with the specified values.
      *
-     * @param charIndex The index of the character that has been hit. In the
-     * case of bidirectional text this will be the logical character index not
-     * the visual index. The index is relative to whole text within the selected
-     * TextNode.
-     * @param leadingEdge Indicates which side of the character has been hit.
+     * @param charIndex The index of the character that has been
+     * hit. In the case of bidirectional text this will be the logical
+     * character index not the visual index. The index is relative to
+     * whole text within the selected TextNode.
+     * @param leadingEdge Indicates which side of the character has
+     * been hit.  
      */
     public TextHit(int charIndex, boolean leadingEdge) {
         this.charIndex = charIndex;
@@ -56,43 +55,6 @@ public class TextHit {
      */
     public boolean isLeadingEdge() {
         return leadingEdge;
-    }
-
-    /**
-     * Sets the TextNode that is associated with this hit.
-     *
-     * @param textNode The textNode that has been hit.
-     */
-    public void setTextNode(TextNode textNode) {
-        this.textNode = textNode;
-    }
-
-
-    /**
-     * Sets the font render context at the time of the hit.
-     *
-     * @param frc The current font render context.
-     */
-    public void setFontRenderContext(FontRenderContext frc) {
-        this.frc = frc;
-    }
-
-    /**
-     * Returns the text node associated with this text hit.
-     *
-     * @return The text node that has been hit.
-     */
-    public TextNode getTextNode() {
-        return textNode;
-    }
-
-    /**
-     * Returns the font render context at the time of the text hit.
-     *
-     * @return The font render context.
-     */
-    public FontRenderContext getFontRenderContext() {
-        return frc;
     }
 }
 

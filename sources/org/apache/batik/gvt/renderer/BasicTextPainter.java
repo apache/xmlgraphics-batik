@@ -57,22 +57,6 @@ public abstract class BasicTextPainter implements TextPainter {
     protected FontRenderContext fontRenderContext =
 	new FontRenderContext(new AffineTransform(), true, true);
 
-    /**
-     * Internal Cache.
-     */
-    protected Mark cachedMark = null;
-
-    /**
-     * Internal Cache.
-     */
-    protected AttributedCharacterIterator cachedACI = null;
-
-    /**
-     * Internal Cache.
-     */
-    protected TextHit cachedHit = null;
-
-
     protected TextLayoutFactory getTextLayoutFactory() {
         return textLayoutFactory;
     }
@@ -83,12 +67,8 @@ public abstract class BasicTextPainter implements TextPainter {
      * The standard order of method calls for selection is:
      * selectAt(); [selectTo(),...], selectTo(); getSelection().
      */
-    public Mark selectAt(double x, double y,
-                         AttributedCharacterIterator aci,
-                         TextNode node) {
-        Mark newMark = hitTest(x, y, aci, node);
-        cachedHit = null;
-        return newMark;
+    public Mark selectAt(double x, double y, TextNode node) {
+        return hitTest(x, y, node);
     }
 
     /**
@@ -97,44 +77,26 @@ public abstract class BasicTextPainter implements TextPainter {
      * The standard order of method calls for selection is:
      * selectAt(); [selectTo(),...], selectTo(); getSelection().
      */
-    public Mark selectTo(double x, 
-			 double y,
-			 Mark beginMark,
-			 AttributedCharacterIterator aci,
-			 TextNode node) {
-        return hitTest(x, y, aci, node);
+    public Mark selectTo(double x, double y, Mark beginMark) {
+        return hitTest(x, y, beginMark.getTextNode());
     }
 
     /**
-     * Select the entire contents of an
-     * AttributedCharacterIterator, and
-     * return a Mark which encapsulates that selection action.
-     */
-    public Mark selectAll(double x, 
-			  double y,
-			  AttributedCharacterIterator aci,
-			  TextNode node) {
-        return hitTest(x, y, aci, node);
-    }
-
-
-    /**
-     * Gets a Rectangle2D in userspace coords which encloses the textnode glyphs
-     * composed from an AttributedCharacterIterator.
+     * Gets a Rectangle2D in userspace coords which encloses the
+     * textnode glyphs composed from an AttributedCharacterIterator.
      *
-     * @param node the TextNode to measure
-     */
+     * @param node the TextNode to measure */
      public Rectangle2D getBounds(TextNode node) {
          return getBounds(node, false, false);
      }
 
     /**
-     * Gets a Rectangle2D in userspace coords which encloses the textnode glyphs
-     * composed from an AttributedCharacterIterator, inclusive of glyph
-     * decoration (underline, overline, strikethrough).
+     * Gets a Rectangle2D in userspace coords which encloses the
+     * textnode glyphs composed from an AttributedCharacterIterator,
+     * inclusive of glyph decoration (underline, overline,
+     * strikethrough).
      *
-     * @param node the TextNode to measure
-     */
+     * @param node the TextNode to measure */
      public Rectangle2D getDecoratedBounds(TextNode node) {
          return getBounds(node, true, false);
      }
@@ -211,10 +173,7 @@ public abstract class BasicTextPainter implements TextPainter {
     /**
      * Returns the mark for the specified parameters.
      */
-    protected abstract Mark hitTest(double x, 
-				    double y, 
-				    AttributedCharacterIterator aci,
-				    TextNode node);
+    protected abstract Mark hitTest(double x, double y, TextNode node);
 
 
     // ------------------------------------------------------------------------
@@ -226,38 +185,31 @@ public abstract class BasicTextPainter implements TextPainter {
      */
     protected static class BasicMark implements Mark {
 	
-        private TextHit hit;
+        private TextNode       node;
         private TextSpanLayout layout;
-        private double x;
-        private double y;
+        private TextHit        hit;
 
 	/**
 	 * Constructs a new Mark with the specified parameters.
 	 */
-        protected BasicMark(double x, 
-			    double y, 
-			    TextSpanLayout layout, 
-			    TextHit hit) {
-            this.x = x;
-            this.y = y;
+        protected BasicMark(TextNode node,
+                            TextSpanLayout layout, 
+                            TextHit hit) {
+            this.hit    = hit;
+            this.node   = node;
             this.layout = layout;
-            this.hit = hit;
         }
 
         public TextHit getHit() {
             return hit;
         }
 
+        public TextNode getTextNode() {
+            return node;
+        }
+
         public TextSpanLayout getLayout() {
             return layout;
-        }
-
-        public double getX() {
-            return x;
-        }
-
-        public double getY() {
-            return y;
         }
     }
 }

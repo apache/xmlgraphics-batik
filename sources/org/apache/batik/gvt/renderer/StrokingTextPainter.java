@@ -150,10 +150,10 @@ public class StrokingTextPainter extends BasicTextPainter {
             chunkACIs[currentChunk].first();
 
             chunk = getTextChunk(node, 
-				 chunkACIs[currentChunk], 
-				 textRuns,
+                                 chunkACIs[currentChunk], 
+                                 textRuns,
                                  beginChunk, 
-				 lastChunkAdvance);
+                                 lastChunkAdvance);
 	    
             // Adjust according to text-anchor property value
             chunkACIs[currentChunk].first();
@@ -177,7 +177,8 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Returns an array of ACIs, one for each text chunck within the given
      * text node.
      */
-    private AttributedCharacterIterator[] getTextChunkACIs(AttributedCharacterIterator aci) {
+    private AttributedCharacterIterator[] getTextChunkACIs
+        (AttributedCharacterIterator aci) {
 
         List aciVector = new ArrayList();
         aci.first();
@@ -259,17 +260,19 @@ public class StrokingTextPainter extends BasicTextPainter {
         if (aci.current() != CharacterIterator.DONE) {
             int chunkStartIndex = aci.getIndex();
 
-            // find out if this chunck is the start or end of a text path chunck
-            // if it is, then we ignore any previous advance
-            TextPath chunkTextPath = (TextPath) aci.getAttribute(
-                   GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
+            // find out if this chunck is the start or end of a text
+            // path chunck if it is, then we ignore any previous
+            // advance
+            TextPath chunkTextPath = (TextPath) aci.getAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
             TextPath prevChunkTextPath = null;
             if (chunkStartIndex > 0) {
                 aci.setIndex(chunkStartIndex-1);
                 prevChunkTextPath = (TextPath) aci.getAttribute
-		    (GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
+                    (GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
                 aci.setIndex(chunkStartIndex);
             }
+
             if (prevChunkTextPath != chunkTextPath) {
                 advance = new Point2D.Float(0,0);
             }
@@ -322,7 +325,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                                                    (float)advance.getY());
                     }
                     TextSpanLayout layout = getTextLayoutFactory().
-                                       createTextLayout(runaci, offset, fontRenderContext);
+                        createTextLayout(runaci, offset, fontRenderContext);
                     TextRun run = new TextRun(layout, runaci, isChunkStart);
                     textRuns.add(run);
                     Point2D layoutAdvance = layout.getAdvance2D();
@@ -356,8 +359,8 @@ public class StrokingTextPainter extends BasicTextPainter {
      *
      * @return The new modified aci.
      */
-    private AttributedCharacterIterator createModifiedACIForFontMatching(
-                               TextNode node, AttributedCharacterIterator aci) {
+    private AttributedCharacterIterator createModifiedACIForFontMatching
+        (TextNode node, AttributedCharacterIterator aci) {
 
         aci.first();
         AttributedCharacterSpanIterator acsi = 
@@ -1080,13 +1083,38 @@ public class StrokingTextPainter extends BasicTextPainter {
     }
 
 
-    TextNode cachedNode;
+    public Mark getMark(TextNode node, int index, boolean leadingEdge) {
+        AttributedCharacterIterator aci;
+        aci = node.getAttributedCharacterIterator();
+        aci.setIndex(index);
+        int charIndex = ((Integer)aci.getAttribute
+         (GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
 
-    protected Mark hitTest(double x, 
-			   double y, 
-			   AttributedCharacterIterator aci,
-			   TextNode node) {
+        // get the list of text runs
+        List textRuns = getTextRuns(node, aci);
 
+        // for each text run, append any highlight it may contain for
+        // the current selection
+        for (int i = 0; i < textRuns.size(); ++i) {
+            TextRun textRun = (TextRun)textRuns.get(i);
+            TextSpanLayout layout = textRun.getLayout();
+
+            int idx = layout.getGlyphIndex(index);
+            if (idx != -1) {
+                TextHit textHit = new TextHit(charIndex, leadingEdge);
+                return new BasicTextPainter.BasicMark
+                    (node, layout, textHit);
+                                                      
+            }
+        }
+        // Couldn't find it's layout....
+        return null;
+    }
+
+    protected Mark hitTest(double x, double y, TextNode node) {
+        AttributedCharacterIterator aci;
+        aci = node.getAttributedCharacterIterator();
+                           
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
 
@@ -1096,81 +1124,51 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextSpanLayout layout = textRun.getLayout();
             TextHit textHit = layout.hitTestChar((float) x, (float) y);
             if (textHit != null && layout.getBounds().contains(x,y)) {
-                textHit.setTextNode(node);
-                textHit.setFontRenderContext(fontRenderContext);
-                cachedMark = new BasicTextPainter.BasicMark
-		    (x, y, layout, textHit);
-                cachedNode = node;
-                return cachedMark;
+                return new BasicTextPainter.BasicMark(node, layout, textHit);
             }
         }
 
-        if (cachedNode != node) {
-            // did not hit any of the layouts and the cachedMark is invalid for
-            // this text node, so create a dummy mark
-            TextHit textHit = new TextHit(0, false);
-            textHit.setTextNode(node);
-            textHit.setFontRenderContext(fontRenderContext);
-            cachedMark = new BasicTextPainter.BasicMark
-		(x,y,((TextRun)textRuns.get(0)).getLayout(), textHit);
-
-            cachedNode = node;
-        }
-
-	return cachedMark;
+        return null;
     }
 
     /**
      * Selects the first glyph in the text node.
      */
-    public Mark selectFirst(double x, 
-			    double y, 
-			    AttributedCharacterIterator aci,
-			    TextNode node) {
+    public Mark selectFirst(TextNode node) {
+        AttributedCharacterIterator aci;
+        aci = node.getAttributedCharacterIterator();
 
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
 
         aci.first();
         int charIndex = ((Integer)aci.getAttribute
-			 (GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
+                         (GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
         TextHit textHit = new TextHit(charIndex, false);
-        textHit.setTextNode(node);
-        textHit.setFontRenderContext(fontRenderContext);
-        cachedMark = new BasicTextPainter.BasicMark
-	    (x,y,((TextRun)textRuns.get(0)).getLayout(), textHit);
-
-        cachedNode = node;
-
-        return cachedMark;
+        return new BasicTextPainter.BasicMark
+            (node, ((TextRun)textRuns.get(0)).getLayout(), textHit);
     }
 
     /**
      * Selects the last glyph in the text node.
      */
-    public Mark selectLast(double x, 
-			   double y, 
-			   AttributedCharacterIterator aci,
-			   TextNode node) {
+    public Mark selectLast(TextNode node) {
 	
+        AttributedCharacterIterator aci;
+        aci = node.getAttributedCharacterIterator();
+
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
 
         TextSpanLayout lastLayout = 
-	    ((TextRun)textRuns.get(textRuns.size()-1)).getLayout();
+            ((TextRun)textRuns.get(textRuns.size()-1)).getLayout();
 
         int lastGlyphIndex = lastLayout.getGlyphCount()-1;
         aci.last();
 
-        int charIndex = ((Integer)aci.getAttribute(
-            GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
+        int charIndex = ((Integer)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
         TextHit textHit = new TextHit(charIndex, false);
-        textHit.setTextNode(node);
-        textHit.setFontRenderContext(fontRenderContext);
-        cachedMark = new BasicTextPainter.BasicMark(x,y,lastLayout,textHit);
-        cachedNode = node;
-
-        return cachedMark;
+        return  new BasicTextPainter.BasicMark(node, lastLayout, textHit);
     }
 
     /**
@@ -1180,8 +1178,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * <em>Note: The Mark instances passed must have been instantiated by
      * an instance of this enclosing TextPainter implementation.</em>
      */
-    public int[] getSelected(AttributedCharacterIterator aci,
-                             Mark startMark,
+    public int[] getSelected(Mark startMark,
                              Mark finishMark) {
 
         if (startMark == null || finishMark == null) {
@@ -1196,6 +1193,14 @@ public class StrokingTextPainter extends BasicTextPainter {
             throw new
             Error("This Mark was not instantiated by this TextPainter class!");
         }
+
+        TextNode textNode = start.getTextNode();
+        if (textNode != finish.getTextNode()) 
+            throw new Error("Markers are from different TextNodes!");
+
+        AttributedCharacterIterator aci;
+        aci = textNode.getAttributedCharacterIterator();
+                             
         int[] result = new int[2];
         result[0] = start.getHit().getCharIndex();
         result[1] = finish.getHit().getCharIndex();
@@ -1244,39 +1249,55 @@ public class StrokingTextPainter extends BasicTextPainter {
             begin = (BasicTextPainter.BasicMark) beginMark;
             end = (BasicTextPainter.BasicMark) endMark;
         } catch (ClassCastException cce) {
-            throw new
-            Error("This Mark was not instantiated by this TextPainter class!");
+            throw new Error
+                ("This Mark was not instantiated by this TextPainter class!");
         }
 
+        TextNode textNode = begin.getTextNode();
+        if (textNode != end.getTextNode()) 
+            throw new Error("Markers are from different TextNodes!");
+
         int beginIndex = begin.getHit().getCharIndex();
-        int endIndex = end.getHit().getCharIndex();
+        int endIndex   = end.getHit().getCharIndex();
+        if (beginIndex > endIndex) {
+            // Swap them...
+            BasicTextPainter.BasicMark tmpMark = begin;
+            begin = end; end = tmpMark;
+
+            int tmpIndex = beginIndex;
+            beginIndex = endIndex; endIndex = tmpIndex;
+        }
 
         TextSpanLayout beginLayout = null;
         TextSpanLayout endLayout = null;
-        if (begin != null && end != null) {
+        if ((begin != null) && (end != null)) {
             beginLayout = begin.getLayout();
-            endLayout = end.getLayout();
+            endLayout   = end.getLayout();
         }
-        if (beginLayout == null || endLayout == null) {
+
+        if ((beginLayout == null) || (endLayout == null)) {
             return null;
         }
 
         // get the list of text runs
-        TextNode textNode = begin.getHit().getTextNode();
-        List textRuns = getTextRuns(textNode, textNode.getAttributedCharacterIterator());
+        List textRuns = getTextRuns
+            (textNode, textNode.getAttributedCharacterIterator());
 
         GeneralPath highlightedShape = new GeneralPath();
 
-        // for each text run, append any highlight it may contain for the current selection
+        // for each text run, append any highlight it may contain for
+        // the current selection
         for (int i = 0; i < textRuns.size(); ++i) {
             TextRun textRun = (TextRun)textRuns.get(i);
             TextSpanLayout layout = textRun.getLayout();
 
-            Shape layoutHighlightedShape = layout.getHighlightShape(beginIndex, endIndex);
+            Shape layoutHighlightedShape = layout.getHighlightShape
+                (beginIndex, endIndex);
 
             // append the highlighted shape of this layout to the
             // overall hightlighted shape
-            if (layoutHighlightedShape != null && !layoutHighlightedShape.getBounds().isEmpty()) {
+            if (( layoutHighlightedShape != null) && 
+                (!layoutHighlightedShape.getBounds().isEmpty())) {
                 highlightedShape.append(layoutHighlightedShape, false);
             }
         }
