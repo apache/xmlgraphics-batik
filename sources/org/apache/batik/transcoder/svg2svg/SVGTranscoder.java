@@ -9,9 +9,12 @@
 package org.apache.batik.transcoder.svg2svg;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.transcoder.AbstractTranscoder;
 import org.apache.batik.transcoder.ErrorHandler;
 import org.apache.batik.transcoder.TranscoderException;
@@ -20,6 +23,8 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 
 import org.apache.batik.xml.scanner.LexicalException;
+
+import org.w3c.dom.Document;
 
 /**
  * This class is a trancoder from SVG to SVG.
@@ -137,14 +142,26 @@ public class SVGTranscoder extends AbstractTranscoder {
      */
     public void transcode(TranscoderInput input, TranscoderOutput output)
         throws TranscoderException {
-        // !!! TODO: other cases.
-        if (input.getReader() == null) {
-            throw new Error("Reader expected");
+        Reader r = input.getReader();
+        Writer w = output.getWriter();
+
+        if (r == null) {
+            Document d = input.getDocument();
+            if (d == null) {
+                throw new Error("Reader or Document expected");
+            }
+            StringWriter sw = new StringWriter();
+            try {
+                DOMUtilities.writeDocument(d, sw);
+            } catch (IOException e) {
+                throw new Error("IO");
+            }
+            r = new StringReader(sw.toString());
         }
-        if (output.getWriter() == null) {
+        if (w == null) {
             throw new Error("Writer expected");
         }
-        prettyPrint(input.getReader(), output.getWriter());
+        prettyPrint(r, w);
     }
 
 

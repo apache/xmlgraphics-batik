@@ -596,6 +596,7 @@ public class PrettyPrinter {
                 if (t != LexicalUnits.END_CHAR) {
                     throw fatalError("end", null);
                 }
+                scanner.next();
                 output.printDoctypeEnd(endSpace);
             } else {
                 if (doctypeOption == DOCTYPE_CHANGE) {
@@ -704,8 +705,8 @@ public class PrettyPrinter {
                     throw fatalError("end", null);
                 }
             }
+            scanner.next();
         }
-        scanner.next();
     }
 
     /**

@@ -112,6 +112,7 @@ public class Main {
             }
             transcoder.transcode(in, out);
         } catch (Exception e) {
+            e.printStackTrace();
             printUsage();
         }
     }
