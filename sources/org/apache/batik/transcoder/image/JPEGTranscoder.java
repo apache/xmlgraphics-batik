@@ -76,6 +76,11 @@ public class JPEGTranscoder extends ImageTranscoder {
             JPEGImageEncoder jpegEncoder = JPEGCodec.createJPEGEncoder(ostream);
             JPEGEncodeParam params = JPEGCodec.getDefaultJPEGEncodeParam(img);
             params.setQuality(quality, true);
+            float PixSzMM = userAgent.getPixelUnitToMillimeter();
+            int PixSzInch = (int)(25.4/PixSzMM+0.5);
+            params.setDensityUnit(JPEGEncodeParam.DENSITY_UNIT_DOTS_INCH);
+            params.setXDensity(PixSzInch);
+            params.setYDensity(PixSzInch);
             jpegEncoder.encode(img, params);
         } catch (IOException ex) {
             throw new TranscoderException(ex);

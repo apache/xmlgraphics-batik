@@ -289,12 +289,23 @@ public class PrintTranscoder extends SVGAbstractTranscoder
 
         // Check hint to know if scaling is really needed
         Boolean scaleToPage = (Boolean)hints.get(KEY_SCALE_TO_PAGE);
-        if(scaleToPage != null && !scaleToPage.booleanValue()){
+        if(scaleToPage != null && !scaleToPage.booleanValue()) {
+            /** I think should fix the off by 1.3333x bug
+                but since I can't print right now I'm leaving 
+                commented out.
+            float pixSzMM = userAgent.getPixelUnitToMillimeter();
+            float pixSzInch = (25.4/pixSzMM);
+            // Printing Graphics is always set up for 72dpi, so
+            // scale to user request.
+            scale = 72/pixSzInch;
+            ***/
             scale = 1;
         }
 
-        double xMargin = (pageFormat.getImageableWidth() - bounds.getWidth()*scale)/2;
-        double yMargin = (pageFormat.getImageableHeight() - bounds.getHeight()*scale)/2;
+        double xMargin = (pageFormat.getImageableWidth() - 
+                          bounds.getWidth()*scale)/2;
+        double yMargin = (pageFormat.getImageableHeight() - 
+                          bounds.getHeight()*scale)/2;
         g.translate(pageFormat.getImageableX() + xMargin,
                     pageFormat.getImageableY() + yMargin);
         g.scale(scale, scale);
@@ -628,7 +639,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // Pixel to millimeter
         setTranscoderFloatHint(transcoder,
                                KEY_PIXEL_TO_MM_STR,
-                               KEY_PIXEL_TO_MM);
+                               KEY_PIXEL_UNIT_TO_MILLIMETER);
 
         // Page orientation
         setTranscoderStringHint(transcoder,
