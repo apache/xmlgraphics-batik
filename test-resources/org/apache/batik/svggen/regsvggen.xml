@@ -10,98 +10,28 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<testSuite id="svggen" name="SVGGraphics2D Accuracy Testing">
-
-    <test id="ATransform" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.ATransform" />
-    </test>
-
-    <test id="AttributedCharacterIterator" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.AttributedCharacterIterator" />
-    </test>
-
-    <test id="BasicShapes" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.BasicShapes" />
-    </test>
-
-    <test id="BasicShapes2" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.BasicShapes2" />
-    </test>
-
-    <test id="BStroke" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.BStroke" />
-    </test>
-
-    <test id="Clip" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.Clip" />
-    </test>
-
-    <test id="Color1" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.Color1" />
-    </test>
-
-    <test id="Color2" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.Color2" />
-    </test>
-
-    <test id="DrawImage" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.DrawImage" />
-    </test>
-
-    <test id="Font1" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.Font1" />
-    </test>
-
-    <test id="Font2" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.Font2" />
-    </test>
-
-    <test id="GVector" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.GVector" />
-    </test>
-
-    <test id="Gradient" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.Gradient" />
-    </test>
-
-    <test id="GraphicObjects" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.GraphicObjects" />
-    </test>
-
-    <test id="IdentityTest" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.IdentityTest" />
-    </test>
-
-    <test id="Lookup" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.Lookup" />
-    </test>
-
-    <test id="NegativeLengths" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.NegativeLengths" />
-    </test>
-
-    <test id="Paints" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.Paints" />
-    </test>
-
-    <test id="RHints" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.RHints" />
-    </test>
-
-    <test id="Rescale" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.Rescale" />
-    </test>
-
-    <test id="ShearTest" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.ShearTest" />
-    </test>
-
-    <test id="Texture" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.Texture" />
-    </test>
-
-    <test id="TextSpacePreserve" class="org.apache.batik.svggen.SVGGeneratorTests">
-        <arg class="org.apache.batik.svggen.TextSpacePreserve" />
-    </test>
-    
+<testSuite id="svggen" name="SVGGraphics2D Accuracy Testing" class="org.apache.batik.svggen.SVGGeneratorTests">
+    <test id="ATransform" />
+    <test id="AttributedCharacterIterator" />
+    <test id="BasicShapes" />
+    <test id="BasicShapes2" />
+    <test id="BStroke" />
+    <test id="Clip" />
+    <test id="Color1" />
+    <test id="Color2" />
+    <test id="DrawImage" />
+    <test id="Font1" />
+    <test id="Font2" />
+    <test id="GVector" />
+    <test id="Gradient" />
+    <test id="GraphicObjects" />
+    <test id="IdentityTest" />
+    <test id="Lookup" />
+    <test id="NegativeLengths" />
+    <test id="Paints" />
+    <test id="RHints" />
+    <test id="Rescale" />
+    <test id="ShearTest" />
+    <test id="Texture" />
+    <test id="TextSpacePreserve" />    
 </testSuite>
