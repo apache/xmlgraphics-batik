@@ -152,6 +152,20 @@ public class SVGRenderingAccuracyTest implements Test{
         = "SVGRenderingAccuracyTest.message.error.could.not.generate.comparison.images";
 
     /**
+     * Messages expressing that the reference image could not be loaded.
+     * {0} : URL for the reference image.
+     */
+    public static final String COULD_NOT_LOAD_REFERENCE_IMAGE
+        = "SVGRenderingAccuracyTest.message.error.could.not.load.reference.image";
+
+    /**
+     * Messages expressing that the generated image could not be loaded.
+     * {0} : Path for the generated image.
+     */
+    public static final String COULD_NOT_LOAD_GENERATED_IMAGE
+        = "SVGRenderingAccuracyTest.message.error.could.not.load.generated.image";
+
+    /**
      * The gui resources file name
      */
     public final static String CONFIGURATION_RESOURCES =
@@ -411,8 +425,18 @@ public class SVGRenderingAccuracyTest implements Test{
         BufferedImage ref = ImageLoader.loadImage(refImgURL,
                                                   BufferedImage.TYPE_INT_ARGB);
 
+        if(ref == null){
+            throw new IOException(Messages.formatMessage(COULD_NOT_LOAD_REFERENCE_IMAGE,
+                                                         new Object[]{refImgURL.toString()}));
+        }
+
         BufferedImage gen = ImageLoader.loadImage(generatedFile,
                                                   BufferedImage.TYPE_INT_ARGB);
+
+        if(gen == null){
+            throw new IOException(Messages.formatMessage(COULD_NOT_LOAD_GENERATED_IMAGE,
+                                                         new Object[]{generatedFile.getAbsolutePath()}));
+        }
 
         BufferedImage cmp = new BufferedImage(ref.getWidth()*2,
                                               ref.getHeight(),
