@@ -22,5 +22,5 @@ CP=$JAVA_HOME/lib/tools.jar:$ANT_HOME/lib/build/ant_1_3.jar:./lib/build/parser.j
  
 # ----- Execute The Requested Build -------------------------------------------
 
-$JAVA_HOME/bin/java $ANT_OPTS -classpath $CP org.apache.tools.ant.Main -Dant.home=$ANT_HOME $*
+$JAVA_HOME/bin/java $ANT_OPTS -classpath $CP org.apache.tools.ant.Main -Dant.home=$ANT_HOME "$@"
 

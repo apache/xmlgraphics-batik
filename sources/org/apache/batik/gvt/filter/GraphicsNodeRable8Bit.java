@@ -45,6 +45,7 @@ public class GraphicsNodeRable8Bit
     extends    AbstractRable 
     implements GraphicsNodeRable, PaintRable {
 
+    private AffineTransform cachedGn2dev  = null;
     private AffineTransform cachedUsr2dev = null;
     private CachableRed     cachedRed = null;
 
@@ -229,15 +230,25 @@ public class GraphicsNodeRable8Bit
         // Get user space to device space transform
         AffineTransform usr2dev = renderContext.getTransform();
 
+        AffineTransform gn2dev;
         if (usr2dev == null) {
             usr2dev = new AffineTransform();
+            gn2dev  = usr2dev;
+        } else {
+            gn2dev = (AffineTransform)usr2dev.clone();
         }
 
-        if ((cachedUsr2dev != null) && 
-            (usr2dev.getScaleX()  == cachedUsr2dev.getScaleX()) &&
-            (usr2dev.getScaleY()  == cachedUsr2dev.getScaleY()) &&
-            (usr2dev.getShearX()  == cachedUsr2dev.getShearX()) &&
-            (usr2dev.getShearY()  == cachedUsr2dev.getShearY()))
+        // Get the nodes transform (so we can pick up changes in this.
+        AffineTransform gn2usr = node.getTransform();
+        if (gn2usr != null) {
+            gn2dev.concatenate(gn2usr);
+        }
+
+        if ((cachedGn2dev != null) && 
+            (gn2dev.getScaleX()  == cachedGn2dev.getScaleX()) &&
+            (gn2dev.getScaleY()  == cachedGn2dev.getScaleY()) &&
+            (gn2dev.getShearX()  == cachedGn2dev.getShearX()) &&
+            (gn2dev.getShearY()  == cachedGn2dev.getShearY()))
         {
             // Just some form of Translation
             double deltaX = (usr2dev.getTranslateX() - 
@@ -273,6 +284,7 @@ public class GraphicsNodeRable8Bit
         if((bounds2D.getWidth()  > 0) && 
            (bounds2D.getHeight() > 0)) {
             cachedUsr2dev = (AffineTransform)usr2dev.clone();
+            cachedGn2dev = gn2dev;
             cachedRed =  new GraphicsNodeRed8Bit
                 (node, usr2dev, getGraphicsNodeRenderContext(),
                  usePrimitivePaint, renderContext.getRenderingHints());
