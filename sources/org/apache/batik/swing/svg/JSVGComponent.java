@@ -84,6 +84,7 @@ import org.apache.batik.bridge.ExternalResourceSecurity;
 import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UpdateManager;
+import org.apache.batik.bridge.UpdateManagerAdapter;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.bridge.UserAgent;
@@ -651,26 +652,18 @@ public class JSVGComponent extends JGVTComponent {
             // We have to wait for the update manager to stop
             // before we install the new document otherwise bad
             // things can happen with the update manager.
-            updateManager.addUpdateManagerListener
-                (new UpdateManagerListener () {
-                        UpdateManager um = updateManager;
-                        public void managerStopped(UpdateManagerEvent e) {
-                            // Remove ourselves from the old update manger,
-                            // and install the new document.
-                            um.removeUpdateManagerListener(this);
-                            synchronized (JSVGComponent.this) {
-                                EventQueue.invokeLater(afterStopRunnable);
-                                afterStopRunnable = null;
-                            }
+            addUpdateManagerListener(new UpdateManagerAdapter () {
+                    UpdateManager um = updateManager;
+                    public void managerStopped(UpdateManagerEvent e) {
+                        // Remove ourselves from the old update manger,
+                        // and install the new document.
+                        um.removeUpdateManagerListener(this);
+                        synchronized (JSVGComponent.this) {
+                            EventQueue.invokeLater(afterStopRunnable);
+                            afterStopRunnable = null;
                         }
-                        // There really should be an updateManagerAdapter.
-                        public void managerStarted(UpdateManagerEvent e) { }
-                        public void managerSuspended(UpdateManagerEvent e) { }
-                        public void managerResumed(UpdateManagerEvent e) { }
-                        public void updateStarted(UpdateManagerEvent e) { }
-                        public void updateCompleted(UpdateManagerEvent e) { }
-                        public void updateFailed(UpdateManagerEvent e) { }
-                    });
+                    }
+                });
             stopProcessing();
         } else if (nextUpdateManager != null) {
             // We have to wait for the rendering to stop
@@ -723,9 +716,8 @@ public class JSVGComponent extends JGVTComponent {
         }  else {
             stopProcessing();
             synchronized (this) {
-                Runnable asr = afterStopRunnable;
+                EventQueue.invokeLater(afterStopRunnable);
                 afterStopRunnable = null;
-                asr.run();
             }
         }
     }

@@ -744,7 +744,13 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             return;
                         }
                         eir.count++;
-                        updateRunnableQueue.invokeLater(eir);
+                        synchronized (updateRunnableQueue.getIteratorLock()) {
+                            if (updateRunnableQueue.getThread() == null) {
+                                cancel();
+                                return;
+                            }
+                            updateRunnableQueue.invokeLater(eir);
+                        }
                         if (eir.error) {
                             cancel();
                         }
