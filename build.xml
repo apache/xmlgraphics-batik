@@ -1127,6 +1127,7 @@ To display the available targets type:
           description="Runs test suite whose file or uri is passed as an input">
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
+      <jvmarg value="-Xincgc" /> 
 <!--      <jvmarg value="-Xrunhprof:format=b" /> -->
 <!--      <jvmarg value="-Xrunhprof:net=localhost:1234,format=b" /> -->
       <jvmarg value="-Xmx512m"/>  <jvmarg value="-Xms64m"/>
