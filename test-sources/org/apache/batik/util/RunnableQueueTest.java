@@ -37,8 +37,11 @@ public class RunnableQueueTest extends AbstractTest {
      * @param sync     Should requests be made synchronously (from
      *                 different threads).
      */
-    public RunnableQueueTest(int nThreads, boolean sync) {
+    public RunnableQueueTest(int nThreads) {
         this.nThreads = nThreads;
+    }
+    public RunnableQueueTest(Integer nThreads) {
+        this((nThreads==null)?10:nThreads.intValue());
     }
         
         /**
@@ -203,7 +206,7 @@ public class RunnableQueueTest extends AbstractTest {
     }
 
     public static void main(String []args) {
-        RunnableQueueTest rqt = new RunnableQueueTest(20, false);
+        RunnableQueueTest rqt = new RunnableQueueTest(20);
         try {
             rqt.runImpl();
         } catch (Exception e) {
