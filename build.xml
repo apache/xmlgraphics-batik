@@ -248,13 +248,17 @@ To display the available targets type:
     </javac>
   </target>
 
-  <!-- Builds Jar Files needed for test purposes. This is done in the samples directory -->
-  <target name="testjar" depends="security2.jar" />
+  <!-- Builds Jar Files needed for test purposes. Note that compilation of jars is done -->
+  <!-- in a different directory than the usual 'classes' directory ({$dest}).           -->
+  <!-- Note that this is needed to avoid having the class files in the classes          -->
+  <!-- subdirectory, which interferes with the tests, because classes in that directory -->
+  <!-- are loaded first in the development version.                                     -->
+  <target name="testjars" depends="security2.jar, IWasLoaded.jar, IWasLoadedToo.jar, JarCheckPermissionsGranted.jar, JarCheckPermissionsDenied.jar" />
 
-  <target name       ="compilesamples"
+  <target name       ="compiletestjars"
           depends    ="compile"
-          description="Compiles the source files for the samples scripts">
-    <mkdir dir="${dest}/tmp"/>
+          description="Compiles the source files for the samples scripts and the test-resources">
+    <mkdir dir="${testresources}/classes"/>
 
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
 
@@ -267,13 +271,59 @@ To display the available targets type:
         <path refid="libs-build-classpath"/>
       </classpath>
     </javac>
+
+    <javac srcdir="${testresources}" destdir="${testresources}/classes"  deprecation="${deprecation}" 
+           debug="${debug}" optimize="${optimize}" >
+      <classpath>
+        <pathelement location="${dest}" />
+        <pathelement location="${testresources}/classes" />
+        <path refid="libs-classpath"/>
+        <path refid="libs-build-classpath"/>
+      </classpath>
+    </javac>
   </target>
 
-  <target name="security2.jar" depends="compilesamples" >
+  <target name="security2.jar" depends="compiletestjars" >
     <jar manifest="${samples}/tests/resources/java/resources/com/untrusted/script/security2.mf"
          jarfile="samples/tests/spec/scripting/security2.jar">
       <fileset dir="${samples}/tests/resources/java/classes">
         <include name="com/untrusted/script/**/*.class"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="IWasLoaded.jar" depends="compiletestjars" >
+    <jar manifest="${testresources}/org/apache/batik/bridge/IWasLoaded.mf"
+         jarfile="${testresources}/org/apache/batik/bridge/IWasLoaded.jar">
+      <fileset dir="${testresources}/classes">
+        <include name="org/apache/batik/bridge/IWasLoaded*.class"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="IWasLoadedToo.jar" depends="compiletestjars" >
+    <jar manifest="${testresources}/org/apache/batik/bridge/IWasLoadedToo.mf"
+         jarfile="${testresources}/org/apache/batik/bridge/IWasLoadedToo.jar">
+      <fileset dir="${testresources}/classes">
+        <include name="org/apache/batik/bridge/IWasLoadedToo*.class"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="JarCheckPermissionsDenied.jar" depends="compiletestjars" >
+    <jar manifest="${testresources}/org/apache/batik/bridge/JarCheckPermissionsDenied.mf"
+         jarfile="${testresources}/org/apache/batik/bridge/JarCheckPermissionsDenied.jar">
+      <fileset dir="${testresources}/classes">
+        <include name="org/apache/batik/bridge/JarCheckPermissionsDenied*.class"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="JarCheckPermissionsGranted.jar" depends="compiletestjars" >
+    <jar manifest="${testresources}/org/apache/batik/bridge/JarCheckPermissionsGranted.mf"
+         jarfile="${testresources}/org/apache/batik/bridge/JarCheckPermissionsGranted.jar">
+      <fileset dir="${testresources}/classes">
+        <include name="org/apache/batik/bridge/JarCheckPermissionsGranted*.class"/>
       </fileset>
     </jar>
   </target>
@@ -872,7 +922,7 @@ To display the available targets type:
   </target>
 
   <target name="regard"
-          depends="compiletest, testdirs"
+          depends="compiletest, testdirs, testjars"
           description="Runs test suite whose file or uri is passed as an input">
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
