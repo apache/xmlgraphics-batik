@@ -185,10 +185,14 @@ public class DecoratedShapeNode extends ShapeNode {
                 double next[] = new double[6];
                 int nextSegType = 0;
                 nextSegType = iter.currentSegment(next);
-                rotation = computeRotation((double[])null, 0, // no previous seg.
-                                           coords, segType,   // segment ending on start point
-                                           next, nextSegType, // segment out of start point
-                                           new double[]{ coords[0], coords[1] });
+                if(nextSegType == PathIterator.SEG_CLOSE){
+                    nextSegType = PathIterator.SEG_LINETO;
+                    next[0] = coords[0];
+                    next[1] = coords[1];
+                }
+                rotation = computeRotation((double[])null, 0,  // no previous seg.
+                                           coords, segType,    // segment ending on start point
+                                           next, nextSegType); // segment out of start point
                 
             }
         }
@@ -253,6 +257,10 @@ public class DecoratedShapeNode extends ShapeNode {
             if(lastSegType == PathIterator.SEG_MOVETO){
                 moveTo[0] = last[0];
                 moveTo[1] = last[1];
+            } else if(lastSegType == PathIterator.SEG_CLOSE){
+                lastSegType = PathIterator.SEG_LINETO;
+                last[0] = moveTo[0];
+                last[1] = moveTo[1];
             }
 
             iter.next();
@@ -264,17 +272,8 @@ public class DecoratedShapeNode extends ShapeNode {
         }
 
         // Turn the last segment into a position
-        Point2D markerPosition = null;
-        if(lastSegType != PathIterator.SEG_CLOSE){
-            markerPosition = getSegmentTerminatingPoint(last, lastSegType);
-        }
-        else{
-            markerPosition = getSegmentTerminatingPoint(coords, segType);
-        }
-
-        if(markerPosition == null){
-            return null;
-        }
+        Point2D markerPosition = 
+            getSegmentTerminatingPoint(last, lastSegType);
 
         // If the marker's orient property is NaN,
         // the slope needs to be computed
@@ -283,8 +282,7 @@ public class DecoratedShapeNode extends ShapeNode {
             rotation = computeRotation(lastButOne, 
                                        lastButOneSegType, 
                                        last, lastSegType,
-                                       null, 0,
-                                       moveTo);
+                                       null, 0);
         }
 
         // Now, compute the marker's proxy transform
@@ -307,8 +305,6 @@ public class DecoratedShapeNode extends ShapeNode {
      */
     private final Point2D getSegmentTerminatingPoint(double coords[], int segType){
         switch(segType){
-        case PathIterator.SEG_CLOSE:
-            return null;
         case PathIterator.SEG_CUBICTO:
             return new Point2D.Double(coords[4], coords[5]);
         case PathIterator.SEG_LINETO:
@@ -317,8 +313,11 @@ public class DecoratedShapeNode extends ShapeNode {
             return new Point2D.Double(coords[0], coords[1]);
         case PathIterator.SEG_QUADTO:
             return new Point2D.Double(coords[2], coords[3]);
+        case PathIterator.SEG_CLOSE:
         default:
-            return null;
+            throw new Error(); 
+            // Should never happen: close segments are 
+            // replaced with lineTo
         }
     }
 
@@ -361,6 +360,10 @@ public class DecoratedShapeNode extends ShapeNode {
         if(curSegType == PathIterator.SEG_MOVETO){
             moveTo[0] = cur[0];
             moveTo[1] = cur[1];
+        } else if(curSegType == PathIterator.SEG_CLOSE){
+            curSegType = PathIterator.SEG_LINETO;
+            cur[0] = moveTo[0];
+            cur[1] = moveTo[1];
         }
 
         iter.next();
@@ -372,12 +375,15 @@ public class DecoratedShapeNode extends ShapeNode {
             if(nextSegType == PathIterator.SEG_MOVETO){
                 moveTo[0] = next[0];
                 moveTo[1] = next[1];
+            } else if(nextSegType == PathIterator.SEG_CLOSE){
+                nextSegType = PathIterator.SEG_LINETO;
+                next[0] = moveTo[0];
+                next[1] = moveTo[1];
             }
 
             proxies.addElement(createMiddleMarker(prev, prevSegType,
                                                   cur, curSegType,
-                                                  next, nextSegType,
-                                                  moveTo));
+                                                  next, nextSegType));
             
             tmp = prev;
             prev = cur;
@@ -402,21 +408,10 @@ public class DecoratedShapeNode extends ShapeNode {
                                                  double[] cur,
                                                  int curSegType,
                                                  double[] next,
-                                                 int nextSegType,
-                                                 double[] moveTo){
+                                                 int nextSegType){
 
         // Turn the cur segment into a position
-        Point2D markerPosition = null;
-        if(curSegType != PathIterator.SEG_CLOSE){
-            markerPosition = getSegmentTerminatingPoint(cur, curSegType);
-        }
-        else{
-            markerPosition = new Point2D.Double(moveTo[0], moveTo[1]);
-        }
-
-        if(markerPosition == null){
-            return null;
-        }
+        Point2D markerPosition = getSegmentTerminatingPoint(cur, curSegType);
 
         // If the marker's orient property is NaN,
         // the slope needs to be computed
@@ -424,8 +419,7 @@ public class DecoratedShapeNode extends ShapeNode {
         if(Double.isNaN(rotation)){
             rotation = computeRotation(prev, prevSegType,
                                        cur, curSegType,
-                                       next, nextSegType,
-                                       moveTo);
+                                       next, nextSegType);
         }
 
         // Now, compute the marker's proxy transform
@@ -448,17 +442,16 @@ public class DecoratedShapeNode extends ShapeNode {
                                    double[] cur,
                                    int curSegType,
                                    double[] next,
-                                   int nextSegType,
-                                   double[] moveTo){
+                                   int nextSegType){
         // Compute in slope, i.e., the slope of the segment
         // going into the current point
         double[] inSlope = computeInSlope(prev, prevSegType, 
-                                          cur, curSegType, moveTo);
+                                          cur, curSegType);
 
         // Compute out slope, i.e., the slope of the segment
         // going out of the current point
         double[] outSlope = computeOutSlope(cur, curSegType, 
-                                            next, nextSegType, moveTo);
+                                            next, nextSegType);
 
         if(inSlope == null){
             inSlope = outSlope;
@@ -486,19 +479,9 @@ public class DecoratedShapeNode extends ShapeNode {
     private double[] computeInSlope(double[] prev,
                                     int prevSegType,
                                     double[] cur,
-                                    int curSegType,
-                                    double[] moveTo){
+                                    int curSegType){
         // Compute point into which the slope runs
-        Point2D curEndPoint = null;
-        if(curSegType != PathIterator.SEG_CLOSE){
-            curEndPoint = getSegmentTerminatingPoint(cur, curSegType);
-            if(curEndPoint == null){
-                return null;
-            }
-        }
-        else{
-            curEndPoint = new Point2D.Double(moveTo[0], moveTo[1]);
-        }
+        Point2D curEndPoint = getSegmentTerminatingPoint(cur, curSegType);
 
         double dx = 0, dy = 0;
         switch(curSegType){
@@ -510,21 +493,11 @@ public class DecoratedShapeNode extends ShapeNode {
             dy = curEndPoint.getY() - cur[1];
             break;
         case PathIterator.SEG_LINETO:
-        case PathIterator.SEG_CLOSE:
             //
             // This is equivalent to a line from the previous
             // segment's terminating point and the current end
             // point.
-            Point2D prevEndPoint = null;
-            if(prevSegType != PathIterator.SEG_CLOSE){
-                prevEndPoint = getSegmentTerminatingPoint(prev, prevSegType);
-                if(prevEndPoint == null){
-                    return null;
-                }
-            }
-            else{
-                prevEndPoint = new Point2D.Double(moveTo[0], moveTo[1]);
-            }
+            Point2D prevEndPoint = getSegmentTerminatingPoint(prev, prevSegType);
                 
             dx = curEndPoint.getX() - prevEndPoint.getX();
             dy = curEndPoint.getY() - prevEndPoint.getY();
@@ -536,9 +509,16 @@ public class DecoratedShapeNode extends ShapeNode {
             dx = curEndPoint.getX() - cur[2];
             dy = curEndPoint.getY() - cur[3];
             break;
+        case PathIterator.SEG_CLOSE:
+            // Should not have any close at this point
+            throw new Error();
         case PathIterator.SEG_MOVETO:
             // Cannot compute the slope
         default:
+            return null;
+        }
+
+        if(dx == 0 && dy == 0){
             return null;
         }
 
@@ -551,31 +531,15 @@ public class DecoratedShapeNode extends ShapeNode {
     private double[] computeOutSlope(double[] cur,
                                      int curSegType,
                                      double[] next,
-                                     int nextSegType,
-                                     double[] moveTo){
-        Point2D curEndPoint = null;
-        if(curSegType != PathIterator.SEG_CLOSE){
-            curEndPoint = getSegmentTerminatingPoint(cur, curSegType);
-            if(curEndPoint == null){
-                return null;
-            }
-        }
-        else{
-            curEndPoint = new Point2D.Double(moveTo[0], moveTo[1]);
-        }
+                                     int nextSegType){
+        Point2D curEndPoint = getSegmentTerminatingPoint(cur, curSegType);
         
         double dx = 0, dy = 0;
 
         switch(nextSegType){
         case PathIterator.SEG_CLOSE:
-            //
-            // This is equivalent to a line to the
-            // last moveTo. Use the slope between the
-            // last moveTo and the terminating point on 
-            // the current segment
-            //
-            dx = moveTo[0] - curEndPoint.getX();
-            dy = moveTo[1] - curEndPoint.getY();
+            // Should not happen at this point, because all close
+            // segments have been replaced by lineTo segments.
             break;
         case PathIterator.SEG_CUBICTO:
         case PathIterator.SEG_LINETO:
@@ -590,6 +554,10 @@ public class DecoratedShapeNode extends ShapeNode {
         case PathIterator.SEG_MOVETO:
             // Cannot compute the out slope
         default:
+            return null;
+        }
+
+        if(dx == 0 && dy == 0){
             return null;
         }
 
