@@ -9,7 +9,6 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
@@ -32,16 +31,14 @@ public class SVGOMFEConvolveMatrixElement
     implements SVGFEConvolveMatrixElement {
 
     /**
-     * The attribute initializer.
+     * The 'edgeMode' attribute values.
      */
-    protected final static AttributeInitializer attributeInitializer;
-    static {
-        attributeInitializer = new AttributeInitializer(1);
-        attributeInitializer.addAttribute(null,
-                                          null,
-                                          SVG_EDGE_MODE_ATTRIBUTE,
-                                          SVG_DUPLICATE_VALUE);
-    }
+    protected final static String[] EDGE_MODE_VALUES = {
+        "",
+        SVG_DUPLICATE_VALUE,
+        SVG_WRAP_VALUE,
+        SVG_NONE_VALUE
+    };
 
     /**
      * Creates a new SVGOMFEConvolveMatrixElement object.
@@ -54,7 +51,8 @@ public class SVGOMFEConvolveMatrixElement
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    public SVGOMFEConvolveMatrixElement(String prefix, AbstractDocument owner) {
+    public SVGOMFEConvolveMatrixElement(String prefix,
+                                        AbstractDocument owner) {
         super(prefix, owner);
     }
 
@@ -69,14 +67,15 @@ public class SVGOMFEConvolveMatrixElement
      * <b>DOM</b>: Implements { @link SVGFEConvolveMatrixElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO: getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getEdgeMode()}.
      */
     public SVGAnimatedEnumeration getEdgeMode() {
-        throw new RuntimeException("!!! TODO: getEdgeMode()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_EDGE_MODE_ATTRIBUTE, EDGE_MODE_VALUES, (short)1);
     }
 
     /**
@@ -104,6 +103,7 @@ public class SVGOMFEConvolveMatrixElement
      * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getTargetX()}.
      */
     public SVGAnimatedInteger getTargetX() {
+        // Default value relative to orderX...
         throw new RuntimeException("!!! TODO: getTargetX()");
     }
 
@@ -111,6 +111,7 @@ public class SVGOMFEConvolveMatrixElement
      * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getTargetY()}.
      */
     public SVGAnimatedInteger getTargetY() {
+        // Default value relative to orderY...
         throw new RuntimeException("!!! TODO: getTargetY()");
     }
 
@@ -118,6 +119,7 @@ public class SVGOMFEConvolveMatrixElement
      * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getDivisor()}.
      */
     public SVGAnimatedNumber getDivisor() {
+        // Default value relative to kernel matrix...
         throw new RuntimeException("!!! TODO: getDivisor()");
     }
 
@@ -126,7 +128,7 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getBias()}.
      */
     public SVGAnimatedNumber getBias() {
-        throw new RuntimeException("!!! TODO: getBias()");
+        return getAnimatedNumberAttribute(null, SVG_BIAS_ATTRIBUTE, 0f);
     }
 
     /**
@@ -160,14 +162,6 @@ public class SVGOMFEConvolveMatrixElement
             putLiveAttributeValue(null, SVG_PRESERVE_ALPHA_ATTRIBUTE, lav);
         }
         return (SVGAnimatedBoolean)lav;
-    }
-
-    /**
-     * Returns the AttributeInitializer for this element type.
-     * @return null if this element has no attribute with a default value.
-     */
-    protected AttributeInitializer getAttributeInitializer() {
-        return attributeInitializer;
     }
 
     /**

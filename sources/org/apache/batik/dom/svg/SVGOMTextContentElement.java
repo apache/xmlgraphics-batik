@@ -18,7 +18,6 @@ import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
-import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGAnimatedTransformList;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
@@ -37,6 +36,15 @@ import org.w3c.dom.svg.SVGRect;
  */
 public abstract class SVGOMTextContentElement
     extends    SVGStylableElement {
+
+    /**
+     * The 'lengthAdjust' attribute values.
+     */
+    protected final static String[] LENGTH_ADJUST_VALUES = {
+        "",
+        SVG_SPACING_ATTRIBUTE,
+        SVG_SPACING_AND_GLYPHS_VALUE
+    };
 
     /**
      * Creates a new SVGOMTextContentElement.
@@ -59,7 +67,21 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getTextLength()}.
      */
     public SVGAnimatedLength getTextLength() {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getTextLength()");
+        SVGAnimatedLength result =
+            (SVGAnimatedLength)getLiveAttributeValue
+            (null, SVG_TEXT_LENGTH_ATTRIBUTE);
+        if (result == null) {
+            result = new AbstractSVGAnimatedLength
+                (this, null, SVG_TEXT_LENGTH_ATTRIBUTE,
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH) {
+                    protected String getDefaultValue() {
+                        throw new RuntimeException("!!! TODO");
+                    }
+                };
+            putLiveAttributeValue(null, SVG_TEXT_LENGTH_ATTRIBUTE,
+                                  (LiveAttributeValue)result);
+        }
+        return result;
     }
 
     /**
@@ -67,7 +89,9 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTextContentElement#getLengthAdjust()}.
      */
     public SVGAnimatedEnumeration getLengthAdjust() {
-        throw new RuntimeException(" !!! SVGOMTextContentElement.getLengthAdjust()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_LENGTH_ADJUST_ATTRIBUTE,
+             LENGTH_ADJUST_VALUES, (short)1);
     }
 
     /**
@@ -220,6 +244,6 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-	return SVGTestsSupport.hasExtension(extension, this);
+	return SVGTestsSupport.hasExtension(this, extension);
     }
 }

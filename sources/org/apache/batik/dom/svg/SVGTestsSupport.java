@@ -50,7 +50,7 @@ public class SVGTestsSupport {
     /**
      * To implements {@link org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
-    public static boolean hasExtension(String extension, Element elt) {
+    public static boolean hasExtension(Element elt, String extension) {
 	throw new RuntimeException(" !!! TODO: hasExtension()");	
     }
 }

@@ -8,6 +8,8 @@
 
 package org.apache.batik.dom.svg;
 
+import java.awt.geom.AffineTransform;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
@@ -87,7 +89,12 @@ public class SVGLocatableSupport {
      * org.w3c.dom.svg.SVGLocatable#getCTM()}.
      */
     public static SVGMatrix getCTM(Element elt) {
-	throw new RuntimeException(" !!! TODO: getCTM()");
+        final SVGOMElement svgelt = (SVGOMElement)elt;
+        return new AbstractSVGMatrix() {
+                protected AffineTransform getAffineTransform() {
+                    return svgelt.getSVGContext().getCTM();
+                }
+            };
     }
 
     /**
@@ -102,7 +109,8 @@ public class SVGLocatableSupport {
      * To implement {@link
      * org.w3c.dom.svg.SVGLocatable#getTransformToElement(SVGElement)}.
      */
-    public static SVGMatrix getTransformToElement(SVGElement element, Element elt)
+    public static SVGMatrix getTransformToElement(Element elt,
+                                                  SVGElement element)
 	throws SVGException {
 	throw new RuntimeException(" !!! TODO: getTransformToElement()");
     }

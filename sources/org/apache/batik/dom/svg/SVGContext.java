@@ -38,4 +38,21 @@ public interface SVGContext {
      * the viewport coordinate system for the nearestViewportElement.
      */
     AffineTransform getCTM();
+
+    /**
+     * Returns the width of the viewport which directly contains the
+     * associated element.
+     */
+    float getViewportWidth();
+
+    /**
+     * Returns the height of the viewport which directly contains the
+     * associated element.
+     */
+    float getViewportHeight();
+
+    /**
+     * Returns the font-size on the associated element.
+     */
+    float getFontSize();
 }

@@ -26,6 +26,18 @@ public abstract class SVGOMComponentTransferFunctionElement
     implements SVGComponentTransferFunctionElement {
 
     /**
+     * The 'type' attribute values.
+     */
+    protected final static String[] TYPE_VALUES = {
+        "",
+        SVG_IDENTITY_VALUE,
+        SVG_TABLE_VALUE,
+        SVG_DISCRETE_VALUE,
+        SVG_LINEAR_VALUE,
+        SVG_GAMMA_VALUE
+    };
+
+    /**
      * Creates a new Element object.
      */
     protected SVGOMComponentTransferFunctionElement() {
@@ -46,7 +58,8 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getType()}.
      */
     public SVGAnimatedEnumeration getType() {
-        throw new RuntimeException("!!! TODO: getType");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_TYPE_ATTRIBUTE, TYPE_VALUES, (short)1);
     }
 
     /**
@@ -62,7 +75,7 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getSlope()}.
      */
     public SVGAnimatedNumber getSlope() {
-        throw new RuntimeException("!!! TODO: getSlope");
+        return getAnimatedNumberAttribute(null, SVG_SLOPE_ATTRIBUTE, 1f);
     }
 
     /**
@@ -70,7 +83,7 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getIntercept()}.
      */
     public SVGAnimatedNumber getIntercept() {
-        throw new RuntimeException("!!! TODO: getIntercept");
+        return getAnimatedNumberAttribute(null, SVG_INTERCEPT_ATTRIBUTE, 0f);
     }
 
     /**
@@ -78,7 +91,7 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getAmplitude()}.
      */
     public SVGAnimatedNumber getAmplitude() {
-        throw new RuntimeException("!!! TODO: getAmplitude");
+        return getAnimatedNumberAttribute(null, SVG_AMPLITUDE_ATTRIBUTE, 1f);
     }
 
     /**
@@ -86,7 +99,7 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getExponent()}.
      */
     public SVGAnimatedNumber getExponent() {
-        throw new RuntimeException("!!! TODO: getExponent");
+        return getAnimatedNumberAttribute(null, SVG_EXPONENT_ATTRIBUTE, 1f);
     }
 
     /**
@@ -94,6 +107,6 @@ public abstract class SVGOMComponentTransferFunctionElement
      * SVGComponentTransferFunctionElement#getOffset()}.
      */
     public SVGAnimatedNumber getOffset() {
-        throw new RuntimeException("!!! TODO: getOffset");
+        return getAnimatedNumberAttribute(null, SVG_OFFSET_ATTRIBUTE, 0f);
     }
 }

@@ -21,7 +21,6 @@ import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGAnimatedRect;
-import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGExternalResourcesRequired;
 import org.w3c.dom.svg.SVGMarkerElement;
 
@@ -46,6 +45,15 @@ public class SVGOMMarkerElement
                                           SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
                                           "xMidYMid meet");
     }
+
+    /**
+     * The units values.
+     */
+    protected final static String[] UNITS_VALUES = {
+        "",
+        SVG_USER_SPACE_ON_USE_VALUE,
+        SVG_STROKE_WIDTH_ATTRIBUTE
+    };
 
     /**
      * Creates a new SVGOMMarkerElement object.
@@ -73,35 +81,47 @@ public class SVGOMMarkerElement
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getRefX()}.
      */
     public SVGAnimatedLength getRefX() {
-	throw new RuntimeException(" !!! TODO: getRefX()");
+        return getAnimatedLengthAttribute
+            (null, SVG_REF_X_ATTRIBUTE, SVG_MARKER_REF_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getRefY()}.
      */
     public SVGAnimatedLength getRefY() {
-	throw new RuntimeException(" !!! TODO: getRefY()");
+        return getAnimatedLengthAttribute
+            (null, SVG_REF_Y_ATTRIBUTE, SVG_MARKER_REF_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getMarkerUnits()}.
      */
     public SVGAnimatedEnumeration getMarkerUnits() {
-	throw new RuntimeException(" !!! TODO: getMarkerUnits()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_MARKER_UNITS_ATTRIBUTE, UNITS_VALUES,
+             (short)2);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getMarkerWidth()}.
      */
     public SVGAnimatedLength getMarkerWidth() {
-	throw new RuntimeException(" !!! TODO: getMarkerWidth()");
+        return getAnimatedLengthAttribute
+            (null, SVG_MARKER_WIDTH_ATTRIBUTE,
+             SVG_MARKER_MARKER_WIDTH_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getMarkerHeight()}.
      */
     public SVGAnimatedLength getMarkerHeight() {
-	throw new RuntimeException(" !!! TODO: getMarkerHeight()");
+        return getAnimatedLengthAttribute
+            (null, SVG_MARKER_HEIGHT_ATTRIBUTE,
+             SVG_MARKER_MARKER_HEIGHT_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
@@ -126,7 +146,8 @@ public class SVGOMMarkerElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGMarkerElement#setOrientToAngle(SVGAngle)}.
+     * <b>DOM</b>: Implements {@link
+     * SVGMarkerElement#setOrientToAngle(SVGAngle)}.
      */
     public void setOrientToAngle(SVGAngle angle) {
 	throw new RuntimeException(" !!! TODO: setOrientToAngle()");

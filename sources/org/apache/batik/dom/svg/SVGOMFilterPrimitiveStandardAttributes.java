@@ -46,7 +46,9 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
      * org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes#getX()}.
      */
     public SVGAnimatedLength getX() {
-        throw new RuntimeException("!!! TODO: getX()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X_ATTRIBUTE, SVG_FILTER_PRIMITIVE_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
@@ -54,7 +56,9 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
      * org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes#getY()}.
      */
     public SVGAnimatedLength getY() {
-        throw new RuntimeException("!!! TODO: getY()");
+        return getAnimatedLengthAttribute
+            (null, SVG_Y_ATTRIBUTE, SVG_FILTER_PRIMITIVE_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
@@ -62,7 +66,10 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
      * org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        throw new RuntimeException("!!! TODO: getWidth()");
+        return getAnimatedLengthAttribute
+            (null, SVG_WIDTH_ATTRIBUTE,
+             SVG_FILTER_PRIMITIVE_WIDTH_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
@@ -70,7 +77,10 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
      * org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        throw new RuntimeException("!!! TODO: getHeight()");
+        return getAnimatedLengthAttribute
+            (null, SVG_HEIGHT_ATTRIBUTE,
+             SVG_FILTER_PRIMITIVE_HEIGHT_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
@@ -78,6 +88,6 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
      * org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes#getResult()}.
      */
     public SVGAnimatedString getResult() {
-        throw new RuntimeException("!!! TODO: getResult()");
+        return getAnimatedStringAttribute(null, SVG_RESULT_ATTRIBUTE);
     }
 }

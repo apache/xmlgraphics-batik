@@ -12,7 +12,6 @@ import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedTransformList;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
@@ -97,7 +96,7 @@ public class SVGOMTextElement
      */
     public SVGMatrix getTransformToElement(SVGElement element)
 	throws SVGException {
-	return SVGLocatableSupport.getTransformToElement(element, this);
+	return SVGLocatableSupport.getTransformToElement(this, element);
     }
 
     // SVGTransformable support /////////////////////////////////////////////

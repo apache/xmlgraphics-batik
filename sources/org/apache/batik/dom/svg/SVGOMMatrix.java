@@ -8,26 +8,38 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.util.SVGConstants;
+import java.awt.geom.AffineTransform;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGAnimatedString;
+import org.w3c.dom.DOMException;
+
+import org.w3c.dom.svg.SVGException;
+import org.w3c.dom.svg.SVGMatrix;
 
 /**
- * This class provides support for the SVGURIReference interface methods.
+ * This class provides an implementation of the {@link SVGMatrix}
+ * interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGURIReferenceSupport implements SVGConstants {
+public class SVGOMMatrix extends AbstractSVGMatrix {
+    
+    /**
+     * The AffineTransform used to implement the matrix.
+     */
+    protected AffineTransform affineTransform;
 
     /**
-     * To implement {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
+     * Creates a new SVGMatrix.
      */
-    public static SVGAnimatedString getHref(Element elt) {
-        return ((SVGOMElement)elt).
-            getAnimatedStringAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
-                                       "href");
+    public SVGOMMatrix(AffineTransform at) {
+        affineTransform = at;
+    }
+
+    /**
+     * Returns the associated AffineTransform.
+     */
+    protected AffineTransform getAffineTransform() {
+        return affineTransform;
     }
 }

@@ -194,7 +194,7 @@ public abstract class SVGStylableElement
      * org.w3c.dom.svg.SVGStylable#getClassName()}.
      */
     public SVGAnimatedString getClassName() {
-        throw new InternalError("Not implemented");
+        return getAnimatedStringAttribute(null, SVG_CLASS_ATTRIBUTE);
     }
 
     /**

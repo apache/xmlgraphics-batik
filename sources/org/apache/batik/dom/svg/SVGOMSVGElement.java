@@ -27,7 +27,6 @@ import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGAnimatedRect;
-import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
 import org.w3c.dom.svg.SVGLength;
@@ -110,28 +109,36 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link SVGSVGElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        throw new RuntimeException("!!! TODO: getX()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X_ATTRIBUTE, SVG_RECT_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGSVGElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        throw new RuntimeException("!!! TODO: getY()");
+        return getAnimatedLengthAttribute
+            (null, SVG_Y_ATTRIBUTE, SVG_SVG_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGSVGElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        throw new RuntimeException("!!! TODO: getWidth()");
+        return getAnimatedLengthAttribute
+            (null, SVG_WIDTH_ATTRIBUTE, SVG_SVG_WIDTH_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGSVGElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        throw new RuntimeException("!!! TODO: getHeight()");
+        return getAnimatedLengthAttribute
+            (null, SVG_HEIGHT_ATTRIBUTE, SVG_SVG_HEIGHT_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
@@ -473,7 +480,7 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-        return SVGTestsSupport.hasExtension(extension, this);
+        return SVGTestsSupport.hasExtension(this, extension);
     }
 
     /**

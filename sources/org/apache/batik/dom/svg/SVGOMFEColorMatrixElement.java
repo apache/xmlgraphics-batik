@@ -9,7 +9,6 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -28,16 +27,15 @@ public class SVGOMFEColorMatrixElement
     implements SVGFEColorMatrixElement {
 
     /**
-     * The attribute initializer.
+     * The 'type' attribute values.
      */
-    protected final static AttributeInitializer attributeInitializer;
-    static {
-        attributeInitializer = new AttributeInitializer(1);
-        attributeInitializer.addAttribute(null,
-                                          null,
-                                          SVG_TYPE_ATTRIBUTE,
-                                          SVG_MATRIX_VALUE);
-    }
+    protected final static String[] TYPE_VALUES = {
+        "",
+        SVG_MATRIX_VALUE,
+        SVG_SATURATE_VALUE,
+        SVG_HUE_ROTATE_VALUE,
+        SVG_LUMINANCE_TO_ALPHA_VALUE
+    };
 
     /**
      * Creates a new SVGOMFEColorMatrixElement object.
@@ -65,14 +63,15 @@ public class SVGOMFEColorMatrixElement
      * <b>DOM</b>: Implements {@link SVGFEColorMatrixElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO: getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEColorMatrixElement#getType()}.
      */
     public SVGAnimatedEnumeration getType() {
-        throw new RuntimeException("!!! TODO: getType()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_TYPE_ATTRIBUTE, TYPE_VALUES, (short)1);
     }
 
     /**
@@ -80,14 +79,6 @@ public class SVGOMFEColorMatrixElement
      */
     public SVGAnimatedNumberList getValues() {
         throw new RuntimeException("!!! TODO: getValues()");
-    }
-
-    /**
-     * Returns the AttributeInitializer for this element type.
-     * @return null if this element has no attribute with a default value.
-     */
-    protected AttributeInitializer getAttributeInitializer() {
-        return attributeInitializer;
     }
 
     /**

@@ -20,7 +20,6 @@ import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 import org.w3c.dom.svg.SVGAnimatedRect;
-import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGSymbolElement;
 
 /**

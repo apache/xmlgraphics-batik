@@ -55,6 +55,25 @@ public abstract class SVGOMGradientElement
     }
 
     /**
+     * The units values.
+     */
+    protected final static String[] UNITS_VALUES = {
+        "",
+        SVG_USER_SPACE_ON_USE_VALUE,
+        SVG_OBJECT_BOUNDING_BOX_VALUE
+    };
+
+    /**
+     * The 'spreadMethod' attribute values.
+     */
+    protected final static String[] SPREAD_METHOD_VALUES = {
+        "",
+        SVG_PAD_VALUE,
+        SVG_REFLECT_VALUE,
+        SVG_REPEAT_VALUE
+    };
+
+    /**
      * Creates a new SVGOMGradientElement object.
      */
     protected SVGOMGradientElement() {
@@ -82,7 +101,9 @@ public abstract class SVGOMGradientElement
      * org.w3c.dom.svg.SVGGradientElement#getGradientUnits()}.
      */
     public SVGAnimatedEnumeration getGradientUnits() {
-	throw new RuntimeException(" !!! TODO: getGradientUnits()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_GRADIENT_UNITS_ATTRIBUTE, UNITS_VALUES,
+             (short)2);
     }
  
     /**
@@ -90,7 +111,9 @@ public abstract class SVGOMGradientElement
      * org.w3c.dom.svg.SVGGradientElement#getSpreadMethod()}.
      */
     public SVGAnimatedEnumeration getSpreadMethod() {
-	throw new RuntimeException(" !!! TODO: getSpreadMethod()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_SPREAD_METHOD_ATTRIBUTE, SPREAD_METHOD_VALUES,
+             (short)1);
     }
  
     /**

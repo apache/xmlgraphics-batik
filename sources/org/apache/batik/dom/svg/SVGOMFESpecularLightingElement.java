@@ -52,14 +52,17 @@ public class SVGOMFESpecularLightingElement
      * <b>DOM</b>: Implements {@link SVGFESpecularLightingElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFESpecularLightingElement#getSurfaceScale()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGFESpecularLightingElement#getSurfaceScale()}.
      */
     public SVGAnimatedNumber getSurfaceScale() {
-        throw new RuntimeException("!!! TODO getSurfaceScale()");
+        return getAnimatedNumberAttribute(null,
+                                          SVG_SURFACE_SCALE_ATTRIBUTE,
+                                          1f);
     }
 
     /**
@@ -67,7 +70,9 @@ public class SVGOMFESpecularLightingElement
      * SVGFESpecularLightingElement#getSpecularConstant()}.
      */
     public SVGAnimatedNumber getSpecularConstant() {
-        throw new RuntimeException("!!! TODO getSpecularConstant()");
+        return getAnimatedNumberAttribute(null,
+                                          SVG_SPECULAR_CONSTANT_ATTRIBUTE,
+                                          1f);
     }
 
     /**
@@ -75,7 +80,9 @@ public class SVGOMFESpecularLightingElement
      * SVGFESpecularLightingElement#getSpecularExponent()}.
      */
     public SVGAnimatedNumber getSpecularExponent() {
-        throw new RuntimeException("!!! TODO getSpecularExponent()");
+        return getAnimatedNumberAttribute(null,
+                                          SVG_SPECULAR_EXPONENT_ATTRIBUTE,
+                                          1f);
     }
 
     /**

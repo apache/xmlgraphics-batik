@@ -21,6 +21,11 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import org.w3c.dom.svg.SVGAnimatedEnumeration;
+import org.w3c.dom.svg.SVGAnimatedInteger;
+import org.w3c.dom.svg.SVGAnimatedLength;
+import org.w3c.dom.svg.SVGAnimatedNumber;
+import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGFitToViewBox;
 import org.w3c.dom.svg.SVGSVGElement;
@@ -196,6 +201,97 @@ public abstract class SVGOMElement
      */
     public void setReadonly(boolean v) {
         readonly = v;
+    }
+
+    /**
+     * Manages the query of an SVGAnimatedString.
+     * @param ns The namespace of the attribute.
+     * @param ln The local name of the attribute.
+     */
+    protected SVGAnimatedString getAnimatedStringAttribute(String ns,
+                                                           String ln) {
+        SVGAnimatedString result =
+            (SVGAnimatedString)getLiveAttributeValue(ns, ln);
+        if (result == null) {
+            result = new SVGOMAnimatedString(this, ns, ln);
+            putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
+        }
+        return result;
+    }
+
+    /**
+     * Manages the query of an SVGAnimatedNumber.
+     * @param ns The namespace of the attribute.
+     * @param ln The local name of the attribute.
+     * @param val The value if the attribute is not specified.
+     */
+    protected SVGAnimatedNumber getAnimatedNumberAttribute(String ns,
+                                                           String ln,
+                                                           float  val) {
+        SVGAnimatedNumber result =
+            (SVGAnimatedNumber)getLiveAttributeValue(ns, ln);
+        if (result == null) {
+            result = new SVGOMAnimatedNumber(this, ns, ln, val);
+            putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
+        }
+        return result;
+    }
+
+    /**
+     * Manages the query of an SVGAnimatedInteger.
+     * @param ns The namespace of the attribute.
+     * @param ln The local name of the attribute.
+     * @param val The value if the attribute is not specified.
+     */
+    protected SVGAnimatedInteger getAnimatedIntegerAttribute(String ns,
+                                                             String ln,
+                                                             int    val) {
+        SVGAnimatedInteger result =
+            (SVGAnimatedInteger)getLiveAttributeValue(ns, ln);
+        if (result == null) {
+            result = new SVGOMAnimatedInteger(this, ns, ln, val);
+            putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
+        }
+        return result;
+    }
+
+    /**
+     * Manages the query of an SVGAnimatedEnumeration.
+     * @param ns The namespace of the attribute.
+     * @param ln The local name of the attribute.
+     * @param val The values in the enumeration.
+     * @param def The value if the attribute is not specified.
+     */
+    protected SVGAnimatedEnumeration
+        getAnimatedEnumerationAttribute(String ns, String ln,
+                                        String[] val, short def) {
+        SVGAnimatedEnumeration result =
+            (SVGAnimatedEnumeration)getLiveAttributeValue(ns, ln);
+        if (result == null) {
+            result = new SVGOMAnimatedEnumeration(this, ns, ln, val, def);
+            putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
+        }
+        return result;
+    }
+
+    /**
+     * Manages the query of an SVGAnimatedNumber.
+     * @param ns The namespace of the attribute.
+     * @param ln The local name of the attribute.
+     * @param val The value if the attribute is not specified.
+     * @param dir The length direction.
+     */
+    protected SVGAnimatedLength getAnimatedLengthAttribute(String ns,
+                                                           String ln,
+                                                           String val,
+                                                           short  dir) {
+        SVGAnimatedLength result =
+            (SVGAnimatedLength)getLiveAttributeValue(ns, ln);
+        if (result == null) {
+            result = new SVGOMAnimatedLength(this, ns, ln, val, dir);
+            putLiveAttributeValue(ns, ln, (LiveAttributeValue)result);
+        }
+        return result;
     }
 
     // Importation/Cloning ///////////////////////////////////////////

@@ -51,22 +51,21 @@ public class SVGOMFEPointLightElement
      * <b>DOM</b>: Implements {@link SVGFEPointLightElement#getX()}.
      */
     public SVGAnimatedNumber getX() {
-        throw new RuntimeException("!!! TODO getX()");
+        return getAnimatedNumberAttribute(null, SVG_X_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEPointLightElement#getY()}.
      */
     public SVGAnimatedNumber getY() {
-        throw new RuntimeException("!!! TODO getY()");
+        return getAnimatedNumberAttribute(null, SVG_Y_ATTRIBUTE, 0f);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEPointLightElement#getZ()}.
+     * <b>DOM</b>: Implements {@link SVGFEPointLightElement#getZ()}.
      */
     public SVGAnimatedNumber getZ() {
-        throw new RuntimeException("!!! TODO getZ()");
+        return getAnimatedNumberAttribute(null, SVG_Y_ATTRIBUTE, 0f);
     }
 
     /**

@@ -9,7 +9,6 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -31,16 +30,17 @@ public class SVGOMFECompositeElement
     implements SVGFECompositeElement {
 
     /**
-     * The attribute initializer.
+     * The 'operator' attribute values.
      */
-    protected final static AttributeInitializer attributeInitializer;
-    static {
-        attributeInitializer = new AttributeInitializer(1);
-        attributeInitializer.addAttribute(null,
-                                          null,
-                                          SVG_OPERATOR_ATTRIBUTE,
-                                          SVG_OVER_VALUE);
-    }
+    protected final static String[] OPERATOR_VALUES = {
+        "",
+        SVG_OVER_VALUE,
+        SVG_IN_VALUE,
+        SVG_OUT_VALUE,
+        SVG_ATOP_VALUE,
+        SVG_XOR_VALUE,
+        SVG_ARITHMETIC_VALUE
+    };
 
     /**
      * Creates a new SVGOMFECompositeElement object.
@@ -68,57 +68,50 @@ public class SVGOMFECompositeElement
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO: getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getIn2()}.
      */
     public SVGAnimatedString getIn2() {
-        throw new RuntimeException("!!! TODO: getIn2()");
+        return getAnimatedStringAttribute(null, SVG_IN2_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getOperator()}.
      */
     public SVGAnimatedEnumeration getOperator() {
-        throw new RuntimeException("!!! TODO: getOperator()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_OPERATOR_ATTRIBUTE, OPERATOR_VALUES, (short)1);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getK1()}.
      */
     public SVGAnimatedNumber getK1() {
-        throw new RuntimeException("!!! TODO: getK1()");
+        return getAnimatedNumberAttribute(null, SVG_K1_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getK2()}.
      */
     public SVGAnimatedNumber getK2() {
-        throw new RuntimeException("!!! TODO: getK2()");
+        return getAnimatedNumberAttribute(null, SVG_K2_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getK3()}.
      */
     public SVGAnimatedNumber getK3() {
-        throw new RuntimeException("!!! TODO: getK3()");
+        return getAnimatedNumberAttribute(null, SVG_K3_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFECompositeElement#getK4()}.
      */
     public SVGAnimatedNumber getK4() {
-        throw new RuntimeException("!!! TODO: getK4()");
-    }
-
-    /**
-     * Returns the AttributeInitializer for this element type.
-     * @return null if this element has no attribute with a default value.
-     */
-    protected AttributeInitializer getAttributeInitializer() {
-        return attributeInitializer;
+        return getAnimatedNumberAttribute(null, SVG_K4_ATTRIBUTE, 0f);
     }
 
     /**

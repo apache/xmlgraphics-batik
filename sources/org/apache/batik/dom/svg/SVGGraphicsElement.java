@@ -12,7 +12,6 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.svg.SVGAnimatedBoolean;
-import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGAnimatedTransformList;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
@@ -92,7 +91,7 @@ public abstract class SVGGraphicsElement extends SVGStylableElement {
      */
     public SVGMatrix getTransformToElement(SVGElement element)
 	throws SVGException {
-	return SVGLocatableSupport.getTransformToElement(element, this);
+	return SVGLocatableSupport.getTransformToElement(this, element);
     }
 
     // SVGTransformable support //////////////////////////////////////////////
@@ -181,6 +180,6 @@ public abstract class SVGGraphicsElement extends SVGStylableElement {
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-	return SVGTestsSupport.hasExtension(extension, this);
+	return SVGTestsSupport.hasExtension(this, extension);
     }
 }

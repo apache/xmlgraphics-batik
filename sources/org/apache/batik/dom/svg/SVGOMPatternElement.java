@@ -64,6 +64,15 @@ public class SVGOMPatternElement
     }
 
     /**
+     * The units values.
+     */
+    protected final static String[] UNITS_VALUES = {
+        "",
+        SVG_USER_SPACE_ON_USE_VALUE,
+        SVG_OBJECT_BOUNDING_BOX_VALUE
+    };
+
+    /**
      * Creates a new SVGOMPatternElement object.
      */
     protected SVGOMPatternElement() {
@@ -97,35 +106,46 @@ public class SVGOMPatternElement
      * <b>DOM</b>: Implements {@link SVGPatternElement#getPatternUnits()}.
      */
     public SVGAnimatedEnumeration getPatternUnits() {
-        throw new RuntimeException(" !!! TODO: getPatternUnits()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_PATTERN_UNITS_ATTRIBUTE, UNITS_VALUES,
+             (short)2);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGPatternElement#getPatternContentUnits()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGPatternElement#getPatternContentUnits()}.
      */
     public SVGAnimatedEnumeration getPatternContentUnits() {
-        throw new RuntimeException(" !!! TODO: getPatternUnits()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_PATTERN_CONTENT_UNITS_ATTRIBUTE, UNITS_VALUES,
+             (short)1);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGPatternElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        throw new RuntimeException(" !!! TODO: getX()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X_ATTRIBUTE, SVG_PATTERN_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGPatternElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        throw new RuntimeException(" !!! TODO: getY()");
+        return getAnimatedLengthAttribute
+            (null, SVG_Y_ATTRIBUTE, SVG_PATTERN_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGPatternElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        throw new RuntimeException(" !!! TODO: getWidth()");
+        return getAnimatedLengthAttribute
+            (null, SVG_WIDTH_ATTRIBUTE, SVG_PATTERN_WIDTH_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
@@ -133,7 +153,9 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGPatternElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        throw new RuntimeException(" !!! TODO: getHeight()");
+        return getAnimatedLengthAttribute
+            (null, SVG_HEIGHT_ATTRIBUTE, SVG_PATTERN_HEIGHT_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     // XLink support //////////////////////////////////////////////////////
@@ -240,7 +262,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-        return SVGTestsSupport.hasExtension(extension, this);
+        return SVGTestsSupport.hasExtension(this, extension);
     }
 
     /**

@@ -10,6 +10,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGRectElement;
@@ -50,42 +51,84 @@ public class SVGOMRectElement
      * <b>DOM</b>: Implements {@link SVGRectElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        throw new RuntimeException(" !!! TODO: getX()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X_ATTRIBUTE, SVG_RECT_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     } 
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        throw new RuntimeException(" !!! TODO: getY()");
-    } 
+        return getAnimatedLengthAttribute
+            (null, SVG_Y_ATTRIBUTE, SVG_RECT_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        throw new RuntimeException(" !!! TODO: getWidth()");
+        return getAnimatedLengthAttribute
+            (null, SVG_WIDTH_ATTRIBUTE, "",
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     } 
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        throw new RuntimeException(" !!! TODO: getHeight()");
-    } 
+        return getAnimatedLengthAttribute
+            (null, SVG_HEIGHT_ATTRIBUTE, "",
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getRx()}.
      */
     public SVGAnimatedLength getRx() {
-        throw new RuntimeException(" !!! TODO: getRx()");
+        SVGAnimatedLength result =
+            (SVGAnimatedLength)getLiveAttributeValue(null, SVG_RX_ATTRIBUTE);
+        if (result == null) {
+            result = new AbstractSVGAnimatedLength
+                (this, null, SVG_RX_ATTRIBUTE,
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH) {
+                    protected String getDefaultValue() {
+                        Attr attr = getAttributeNodeNS(null, SVG_RY_ATTRIBUTE);
+                        if (attr == null) {
+                            return "0";
+                        }
+                        return attr.getValue();
+                    }
+                };
+            putLiveAttributeValue(null, SVG_RX_ATTRIBUTE,
+                                  (LiveAttributeValue)result);
+        }
+        return result;
     } 
 
     /**
      * <b>DOM</b>: Implements {@link SVGRectElement#getRy()}.
      */
     public SVGAnimatedLength getRy() {
-        throw new RuntimeException(" !!! TODO: getRy()");
+        SVGAnimatedLength result =
+            (SVGAnimatedLength)getLiveAttributeValue(null, SVG_RY_ATTRIBUTE);
+        if (result == null) {
+            result = new AbstractSVGAnimatedLength
+                (this, null, SVG_RY_ATTRIBUTE,
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH) {
+                    protected String getDefaultValue() {
+                        Attr attr = getAttributeNodeNS(null, SVG_RX_ATTRIBUTE);
+                        if (attr == null) {
+                            return "0";
+                        }
+                        return attr.getValue();
+                    }
+                };
+            putLiveAttributeValue(null, SVG_RY_ATTRIBUTE,
+                                  (LiveAttributeValue)result);
+        }
+        return result;
     } 
 
     /**

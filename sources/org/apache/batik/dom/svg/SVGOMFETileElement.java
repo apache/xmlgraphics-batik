@@ -50,7 +50,7 @@ public class SVGOMFETileElement
      * <b>DOM</b>: Implements {@link SVGFETileElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**

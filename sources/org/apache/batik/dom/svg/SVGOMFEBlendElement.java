@@ -27,16 +27,16 @@ public class SVGOMFEBlendElement
     implements SVGFEBlendElement {
 
     /**
-     * The attribute initializer.
+     * The 'mode' attribute values.
      */
-    protected final static AttributeInitializer attributeInitializer;
-    static {
-        attributeInitializer = new AttributeInitializer(1);
-        attributeInitializer.addAttribute(null,
-                                          null,
-                                          SVG_MODE_ATTRIBUTE,
-                                          SVG_NORMAL_VALUE);
-    }
+    protected final static String[] MODE_VALUES = {
+        "",
+        SVG_NORMAL_VALUE,
+        SVG_MULTIPLY_VALUE,
+        SVG_SCREEN_VALUE,
+        SVG_DARKEN_VALUE,
+        SVG_LIGHTEN_VALUE
+    };
 
     /**
      * Creates a new SVGOMFEBlendElement object.
@@ -64,29 +64,22 @@ public class SVGOMFEBlendElement
      * <b>DOM</b>: Implements {@link SVGFEBlendElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO: getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEBlendElement#getIn2()}.
      */
     public SVGAnimatedString getIn2() {
-        throw new RuntimeException("!!! TODO: getIn2()");
+        return getAnimatedStringAttribute(null, SVG_IN2_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEBlendElement#getMode()}.
      */
     public SVGAnimatedEnumeration getMode() {
-        throw new RuntimeException("!!! TODO: getMode()");
-    }
-
-    /**
-     * Returns the AttributeInitializer for this element type.
-     * @return null if this element has no attribute with a default value.
-     */
-    protected AttributeInitializer getAttributeInitializer() {
-        return attributeInitializer;
+        return getAnimatedEnumerationAttribute
+            (null, SVG_MODE_ATTRIBUTE, MODE_VALUES, (short)1);
     }
 
     /**

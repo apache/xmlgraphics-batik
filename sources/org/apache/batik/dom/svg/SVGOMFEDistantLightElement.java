@@ -50,14 +50,14 @@ public class SVGOMFEDistantLightElement
      * <b>DOM</b>: Implements {@link SVGFEDistantLightElement#getAzimuth()}.
      */
     public SVGAnimatedNumber getAzimuth() {
-        throw new RuntimeException("!!! TODO: getAzimuth");
+        return getAnimatedNumberAttribute(null, SVG_AZIMUTH_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEDistantLightElement#getElevation()}.
      */
     public SVGAnimatedNumber getElevation() {
-        throw new RuntimeException("!!! TODO: getElevation()");
+        return getAnimatedNumberAttribute(null, SVG_ELEVATION_ATTRIBUTE, 0f);
     }
 
     /**
