@@ -410,6 +410,10 @@ public class PreferenceDialog extends JDialog
 
         showRendering.setEnabled
             (!model.getBoolean(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING));
+        grantScriptFileAccess.setEnabled
+            (model.getBoolean(PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING));
+        grantScriptNetworkAccess.setEnabled
+            (model.getBoolean(PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING));
 
         //
         // Initialize the proxy options
