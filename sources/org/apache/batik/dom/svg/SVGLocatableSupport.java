@@ -66,8 +66,7 @@ public class SVGLocatableSupport {
     }
 
     /**
-     * To implement {@link
-     * org.w3c.dom.svg.SVGLocatable#getBBox()}.
+     * To implement {@link org.w3c.dom.svg.SVGLocatable#getBBox()}.
      */
     public static SVGRect getBBox(Element elt) {
         final SVGOMElement svgelt = (SVGOMElement)elt;
@@ -112,8 +111,7 @@ public class SVGLocatableSupport {
     }
 
     /**
-     * To implement {@link
-     * org.w3c.dom.svg.SVGLocatable#getCTM()}.
+     * To implement {@link org.w3c.dom.svg.SVGLocatable#getCTM()}.
      */
     public static SVGMatrix getCTM(Element elt) {
         final SVGOMElement svgelt = (SVGOMElement)elt;
@@ -125,8 +123,7 @@ public class SVGLocatableSupport {
     }
 
     /**
-     * To implement {@link
-     * org.w3c.dom.svg.SVGLocatable#getScreenCTM()}.
+     * To implement {@link org.w3c.dom.svg.SVGLocatable#getScreenCTM()}.
      */
     public static SVGMatrix getScreenCTM(Element elt) {
         final SVGOMElement svgelt  = (SVGOMElement)elt;

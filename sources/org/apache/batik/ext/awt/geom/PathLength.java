@@ -250,7 +250,7 @@ public class PathLength {
 
     }
 
-    private int findUpperIndex(float length) {
+    public int findUpperIndex(float length) {
         if (!initialised)
             initialise();
 

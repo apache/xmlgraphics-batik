@@ -123,6 +123,15 @@ public abstract class BasicTextPainter implements TextPainter {
         public TextNode getTextNode() {
             return node;
         }
+
+    /**
+     * Returns the index of the character that has been hit.
+     *
+     * @return The character index.
+     */
+        public int getCharIndex() { 
+            return hit.getCharIndex(); 
+        }
     }
 }
 

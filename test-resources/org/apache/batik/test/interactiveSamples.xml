@@ -37,6 +37,7 @@
 
     <testGroup id="tests.spec.scripting" name="Interactive Scripting Tests"
                class="org.apache.batik.test.svg.JSVGRenderingAccuracyTest">
+        <test id="samples/tests/spec/scripting/addDescOnClick.svg" />
         <test id="samples/tests/spec/scripting/bug12933.svg" />
         <test id="samples/tests/spec/scripting/filterPatternUpdate.svg" />
         <test id="samples/tests/spec/scripting/gradientsUpdate.svg" />

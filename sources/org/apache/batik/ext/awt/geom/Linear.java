@@ -199,9 +199,7 @@ public class Linear implements Segment {
         return Math.sqrt(dx*dx+dy*dy);
     }
     public double getLength(double maxErr) {
-        double dx = p2.x-p1.x;
-        double dy = p2.y-p1.y;
-        return Math.sqrt(dx*dx+dy*dy);
+        return getLength();
     }
 
     public String toString() { 
