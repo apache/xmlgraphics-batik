@@ -8,10 +8,14 @@
 
 package org.apache.batik.script.rhino;
 
+import java.io.IOException;
+import java.io.StringReader;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.JavaScriptException;
+import org.mozilla.javascript.NativeBoolean;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -172,12 +176,41 @@ public class WindowWrapper extends ScriptableObject {
         int len = args.length;
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
-        if (len >= 2) {
-            return window.parseXML
-              ((String)NativeJavaObject.coerceType(String.class, args[0]),
-               (Document)NativeJavaObject.coerceType(Document.class, args[1]));
+        if (len < 2) {
+            throw Context.reportRuntimeError("invalid argument count");
         }
-        return null;
+        return window.parseXML
+            ((String)NativeJavaObject.coerceType(String.class, args[0]),
+             (Document)NativeJavaObject.coerceType(Document.class, args[1]));
+    }
+
+    /**
+     * Wraps the 'getURL' method of the Window interface.
+     */
+    public static void jsFunction_getURL(Context cx,
+                                         Scriptable thisObj,
+                                         Object[] args,
+                                         Function funObj)
+        throws JavaScriptException {
+        int len = args.length;
+        WindowWrapper ww = (WindowWrapper)thisObj;
+        Window window = ww.window;
+        if (len < 2) {
+            throw Context.reportRuntimeError("invalid argument count");
+        }
+        RhinoInterpreter interp =
+            (RhinoInterpreter)window.getInterpreter();
+        String uri;
+        uri = (String)NativeJavaObject.coerceType(String.class, args[0]);
+        GetURLFunctionWrapper fw;
+        fw = new GetURLFunctionWrapper(interp, (Function)args[1], ww);
+        if (len == 2) {
+            window.getURL(uri, fw);
+        } else {
+            window.getURL
+                (uri, fw,
+                 (String)NativeJavaObject.coerceType(String.class, args[2]));
+        }
     }
 
     /**
@@ -283,6 +316,85 @@ public class WindowWrapper extends ScriptableObject {
         public void run() {
             try {
                 interpreter.callHandler(function, arguments);
+            } catch (JavaScriptException e) {
+                throw new WrappedException(e);
+            }
+        }
+    }
+
+    /**
+     * To wrap a function passed to getURL().
+     */
+    protected static class GetURLFunctionWrapper
+        implements Window.GetURLHandler {
+        
+        /**
+         * The current interpreter.
+         */
+        protected RhinoInterpreter interpreter;
+
+        /**
+         * The function wrapper.
+         */
+        protected Function function;
+
+        /**
+         * The WindowWrapper.
+         */
+        protected WindowWrapper windowWrapper;
+
+        /**
+         * Creates a wrapper.
+         */
+        public GetURLFunctionWrapper(RhinoInterpreter ri, Function fct,
+                                     WindowWrapper ww) {
+            interpreter = ri;
+            function = fct;
+            windowWrapper = ww;
+        }
+
+        /**
+         * Called before 'getURL()' returns.
+         * @param success Whether the data was successfully retreived.
+         * @param mime The data MIME type.
+         * @param content The data.
+         */
+        public void getURLDone(final boolean success,
+                               final String mime,
+                               final String content) {
+            try {
+                interpreter.callHandler(function,
+                    new RhinoInterpreter.ArgumentsBuilder() {
+                        public Object[] buildArguments() {
+                            try {
+                                Object[] arguments = new Object[1];
+                                ScriptableObject so =
+                                    (ScriptableObject)interpreter.evaluate
+                                    (new StringReader("new Object()"));
+                                so.put("success", so,
+                                       Context.toObject((success) ?
+                                                        Boolean.TRUE :
+                                                        Boolean.FALSE,
+                                                        windowWrapper));
+                                if (mime != null) {
+                                    so.put("contentType", so,
+                                           Context.toObject(mime,
+                                                            windowWrapper));
+                                }
+                                if (content != null) {
+                                    so.put("content", so,
+                                           Context.toObject(content,
+                                                            windowWrapper));
+                                }
+                                arguments[0] = so;
+                                return arguments;
+                            } catch (IOException e) {
+                                throw new WrappedException(e);
+                            } catch (InterpreterException e) {
+                                throw new WrappedException(e);
+                            }
+                        }
+                    });
             } catch (JavaScriptException e) {
                 throw new WrappedException(e);
             }

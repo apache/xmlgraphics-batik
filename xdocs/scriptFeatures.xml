@@ -275,6 +275,39 @@
       This method returns a <code>org.w3c.dom.DocumentFragment</code> object.
       </p>
 
+
+      <!-- ========================================================= -->
+
+      <table>
+        <tr>
+          <td>Method <code>getURL</code>(<em>uri</em>,
+                                         <em>function</em>[,
+                                         <em>encoding</em>])</td>
+        
+        </tr>
+      </table>
+      <p>
+      Gets data from the given URI. This method returns immediately and
+      the given function is called when the data is fully downloaded.
+      </p>
+      <ul>
+        <li><em>uri</em>: A string representing the location of the data.</li>
+        <li><em>function</em>: A function called when the data is available,
+            or when the loading has failed. The argument passed to the
+            function is an ECMAScript Object with 3 properties:
+          <ul>
+            <li><em>success</em>: true if the data is available, false
+                otherwise,</li>
+            <li><em>contentType</em>: the content type of the data, if the
+                information is known by the viewer,</li>
+            <li><em>content</em>: A string representing the data.</li>
+          </ul>
+        </li>
+        <li><em>encoding</em>: The character encoding of the data file,
+            by default UTF-8 is used.</li>
+
+      </ul>
+
     </s1>
   </body>
 </document>
