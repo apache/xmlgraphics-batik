@@ -21,29 +21,14 @@ import java.util.List;
 public class RunnableQueue implements Runnable {
 
     /**
-     * The lock used to wait for Runnable objects to be available.
-     */
-    protected Object invocationLock = new Object();
-    
-    /**
-     * The lock used to suspend the queue execution.
-     */
-    protected Object suspendLock = new Object();
-
-    /**
      * whether this thread is suspended.
      */
     protected boolean suspended;
 
     /**
-     * The Runnable objects list's head.
+     * The Runnable objects list.
      */
-    protected Link head;
-
-    /**
-     * The Runnable objects list's tail.
-     */
-    protected Link tail;
+    protected DoublyLinkedList list = new DoublyLinkedList();
 
     /**
      * The object which handle run events.
@@ -53,7 +38,7 @@ public class RunnableQueue implements Runnable {
     /**
      * The current thread.
      */
-    protected volatile Thread runnableQueueThread;
+    protected Thread runnableQueueThread;
 
     /**
      * Creates a new RunnableQueue started in a new thread.
@@ -62,9 +47,14 @@ public class RunnableQueue implements Runnable {
      */
     public static RunnableQueue createRunnableQueue() {
         RunnableQueue result = new RunnableQueue();
-        new Thread(result).start();
-        while (result.getThread() == null) {
-            Thread.yield();
+        synchronized (result) {
+            new Thread(result).start();
+            while (result.getThread() == null) {
+                try { 
+                    result.wait();
+                } catch (InterruptedException ie) {
+                }
+            }
         }
         return result;
     }
@@ -73,48 +63,47 @@ public class RunnableQueue implements Runnable {
      * Runs this queue.
      */
     public void run() {
-        runnableQueueThread = Thread.currentThread();
+        synchronized (this) {
+            runnableQueueThread = Thread.currentThread();
+            notify();
+        }
+        Link l;
+        Runnable rable;
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                if (suspended) {
-                    if (runHandler != null) {
-                        runHandler.executionSuspended(this);
-                    }
-                    synchronized (suspendLock) {
-                        while (suspended) {
-                            suspendLock.wait();
-                        }
-                    }
-                    if (runHandler != null) {
-                        runHandler.executionResumed(this);
-                    }
-                }
-                if (head == null) {
-                    synchronized (invocationLock) {
-                        invocationLock.wait();
-                    }
-                }
-                Link l = head;
                 synchronized (this) {
-                    head = head.next;
-                }
-                l.runnable.run();
-                if (l.isLock()) {
-                    LockedLink ll = (LockedLink)l;
-                    synchronized (l) {
-                        while (!ll.isLocked()) {
-                            l.wait();
+                    if (suspended) {
+                        if (runHandler != null) {
+                            runHandler.executionSuspended(this);
                         }
-                        l.notify();
+                        while (suspended) {
+                            wait();
+                        }
+                        if (runHandler != null) {
+                            runHandler.executionResumed(this);
+                        }
                     }
+
+                    l = (Link)list.pop();
+                    if (l == null) {
+                        wait();
+                        continue; // start loop over again...
+                    }
+                    rable = l.runnable;
                 }
-                if (runHandler != null) {
-                    runHandler.runnableInvoked(this, l.runnable);
+                rable.run();
+                l.unlock();
+                synchronized (this) {
+                    if (runHandler != null) {
+                        runHandler.runnableInvoked(this, rable);
+                    }
                 }
             }
         } catch (InterruptedException e) {
         } finally {
-            runnableQueueThread = null;
+            synchronized (this) {
+                runnableQueueThread = null;
+            }
         }
     }
 
@@ -134,18 +123,11 @@ public class RunnableQueue implements Runnable {
      */
     public synchronized void invokeLater(Runnable r) {
         if (runnableQueueThread == null) {
-            throw new IllegalStateException("RunnableQueue not started");
+            throw new IllegalStateException
+                ("RunnableQueue not started or has exited");
         }
-
-        if (head == null) {
-            head = tail = new UnlockedLink(r);
-            synchronized (invocationLock) {
-                invocationLock.notify();
-            }
-        } else {
-            tail.next = new UnlockedLink(r);
-            tail = tail.next;
-        }
+        list.push(new Link(r));
+        notify();
     }
 
     /**
@@ -158,39 +140,34 @@ public class RunnableQueue implements Runnable {
      */
     public void invokeAndWait(Runnable r) throws InterruptedException {
         if (runnableQueueThread == null) {
-            throw new IllegalStateException("RunnableQueue not started");
+            throw new IllegalStateException
+                ("RunnableQueue not started or has exited");
         }
         if (runnableQueueThread == Thread.currentThread()) {
             throw new IllegalStateException
                 ("Cannot be called from the RunnableQueue thread");
         }
 
-        LockedLink l;
+        LockableLink l = new LockableLink(r);
         synchronized (this) {
-            if (head == null) {
-                l = new LockedLink(r);
-                head = tail = l;
-                synchronized (invocationLock) {
-                    invocationLock.notify();
-                }
-            } else {
-                l = new LockedLink(r);
-                tail.next = l;
-                tail = tail.next;
-            }
+            list.push(l);
+            notify();
         }
         l.lock();
     }
+
+    public synchronized boolean isSuspended() { return suspended; }
 
     /**
      * Suspends the execution of this queue.
      * @throws IllegalStateException if getThread() is null.
      */
-    public void suspendExecution() {
+    public synchronized void suspendExecution() {
         if (runnableQueueThread == null) {
-            throw new IllegalStateException("RunnableQueue not started");
+            throw new IllegalStateException
+                ("RunnableQueue not started or has exited");
         }
-
+        
         suspended = true;
     }
 
@@ -198,16 +175,15 @@ public class RunnableQueue implements Runnable {
      * Resumes the execution of this queue.
      * @throws IllegalStateException if getThread() is null.
      */
-    public void resumeExecution() {
+    public synchronized void resumeExecution() {
         if (runnableQueueThread == null) {
-            throw new IllegalStateException("RunnableQueue not started");
+            throw new IllegalStateException
+                ("RunnableQueue not started or has exited");
         }
 
-        synchronized (suspendLock) {
-            if (suspended) {
-                suspended = false;
-                suspendLock.notify();
-            }
+        if (suspended) {
+            suspended = false;
+            notify();
         }
     }
 
@@ -220,29 +196,33 @@ public class RunnableQueue implements Runnable {
      */
     public synchronized List getRunnableList() {
         if (runnableQueueThread == null) {
-            throw new IllegalStateException("RunnableQueue not started");
+            throw new IllegalStateException
+                ("RunnableQueue not started or has exited");
         }
 
         List result = new LinkedList();
-        Link l = head;
-        while (l != null) {
+        Link l, h;
+        l = h = (Link)list.getHead();
+        if (h==null) return result;
+        do {
             result.add(l.runnable);
-            l = l.next;
-        }
+            l = (Link)l.getNext();
+        } while (l != h);
+
         return result;
     }
 
     /**
      * Sets the RunHandler for this queue.
      */
-    public void setRunHandler(RunHandler rh) {
+    public synchronized void setRunHandler(RunHandler rh) {
         runHandler = rh;
     }
 
     /**
      * Returns the RunHandler or null.
      */
-    public RunHandler getRunHandler() {
+    public synchronized RunHandler getRunHandler() {
         return runHandler;
     }
 
@@ -272,17 +252,12 @@ public class RunnableQueue implements Runnable {
     /**
      * To store a Runnable.
      */
-    protected  abstract static class Link {
+    protected static class Link extends DoublyLinkedList.Node {
         
         /**
          * The Runnable.
          */
         public Runnable runnable;
-
-        /**
-         * The next link.
-         */
-        public Link next;
 
         /**
          * Creates a new link.
@@ -292,35 +267,16 @@ public class RunnableQueue implements Runnable {
         }
 
         /**
-         * Whether the link is a lock.
+         * unlock link and notify locker.  
+         * Basic implementation does nothing.
          */
-        public abstract boolean isLock();
-    }
-
-    /**
-     * To store a Runnable to invoke later.
-     */
-    protected static class UnlockedLink extends Link {
-
-        /**
-         * Creates a new link.
-         */
-        public UnlockedLink(Runnable r) {
-            super(r);
-        }
-
-        /**
-         * Whether the link is a lock.
-         */
-        public boolean isLock() {
-            return false;
-        }
+        public void unlock() throws InterruptedException { return; }
     }
 
     /**
      * To store a Runnable with an object waiting for him to be executed.
      */
-    protected static class LockedLink extends Link {
+    protected static class LockableLink extends Link {
 
         /**
          * Whether this link is actually locked.
@@ -330,15 +286,8 @@ public class RunnableQueue implements Runnable {
         /**
          * Creates a new link.
          */
-        public LockedLink(Runnable r) {
+        public LockableLink(Runnable r) {
             super(r);
-        }
-
-        /**
-         * Whether the link is a lock.
-         */
-        public boolean isLock() {
-            return true;
         }
 
         /**
@@ -355,6 +304,18 @@ public class RunnableQueue implements Runnable {
             locked = true;
             notify();
             wait();
+        }
+
+        /**
+         * unlocks this link.
+         */
+        public synchronized void unlock() throws InterruptedException {
+            while (!locked) {
+                // Wait until lock is called...
+                wait();
+            }
+            // Wake the locking thread...
+            notify();
         }
     }
 }
