@@ -83,7 +83,15 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         if (units.length() == 0) {
             units = VALUE_USER_SPACE_ON_USE;
         }
-        int unitsType = SVGUtilities.parseCoordinateSystem(units);
+        int unitsType;
+        try {
+            unitsType = SVGUtilities.parseCoordinateSystem(units);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("clipPath.units.invalid",
+                                       new Object[] {units,
+                                                     ATTR_CLIP_PATH_UNITS}));
+        }
         if (unitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
             // units are resolved using objectBoundingBox
             ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
