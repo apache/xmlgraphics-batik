@@ -11,6 +11,7 @@ package org.apache.batik.gvt.renderer;
 
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Color;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.Composite;
@@ -87,6 +88,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         paintDecorations(textRuns, g2d, TextSpanLayout.DECORATION_OVERLINE);
         paintTextRuns(textRuns, g2d, context);
         paintDecorations(textRuns, g2d, TextSpanLayout.DECORATION_STRIKETHROUGH);
+
     }
 
 
@@ -98,7 +100,6 @@ public class StrokingTextPainter extends BasicTextPainter {
         if (textRuns != null) {
             return textRuns;
         }
-
         AttributedCharacterIterator[] chunkACIs = node.getChunkACIs();
         if (chunkACIs == null) {
 
@@ -112,16 +113,13 @@ public class StrokingTextPainter extends BasicTextPainter {
             aci = as.getIterator();
             node.setAttributedCharacterIterator(aci);
 
-            // add font attributed to the aci
-            AttributedCharacterIterator fontaci = createModifiedACIForFontMatching(node, aci);
-            fontaci.first();
-
             // break the aci up into text chunks
-            chunkACIs = getTextChunkACIs(fontaci);
+            chunkACIs = getTextChunkACIs(aci);
 
             // reorder each chunk ACI for bidi text
             for (int i = 0; i < chunkACIs.length; i++) {
                 chunkACIs[i] = new BidiAttributedCharacterIterator(chunkACIs[i], frc);
+                chunkACIs[i] = createModifiedACIForFontMatching(node, chunkACIs[i]);
             }
             node.setChunkACIs(chunkACIs);
         }
@@ -142,15 +140,19 @@ public class StrokingTextPainter extends BasicTextPainter {
                                  beginChunk, lastChunkAdvance, frc);
 
             /* Adjust according to text-anchor property value */
-
+            chunkACIs[currentChunk].first();
             if (chunk != null) {
                 adjustChunkOffsets(textRuns, chunk.advance, chunk.begin, chunk.end);
                 beginChunk = chunk.end;
                 lastChunkAdvance = chunk.advance;
             }
+            chunkACIs[currentChunk].first();
             currentChunk++;
 
         } while (chunk != null && currentChunk < chunkACIs.length);
+
+        // cache the textRuns so don't need to recalculate
+        node.setTextRuns(textRuns);
         return textRuns;
     }
 
@@ -180,6 +182,8 @@ public class StrokingTextPainter extends BasicTextPainter {
 
                 AttributedCharacterIterator runaci =
                     new AttributedCharacterSpanIterator(aci, start, end);
+
+                runaci.first();
 
                 Float runX = (Float) runaci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.X);
@@ -263,6 +267,8 @@ public class StrokingTextPainter extends BasicTextPainter {
 
                 runaci =
                     new AttributedCharacterSpanIterator(aci, start, end);
+
+                runaci.first();
 
                 Float runX = (Float) runaci.getAttribute(
                      GVTAttributedCharacterIterator.TextAttribute.X);
@@ -480,7 +486,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextRun r = (TextRun) textRuns.get(n);
 
             int anchorType = r.getAnchorType();
-
             float dx = 0f;
             float dy = 0f;
 
@@ -512,6 +517,11 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
     }
 
+
+
+
+
+
     /**
      * Paints decorations of the specified type.
      */
@@ -527,6 +537,13 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextRun textRun = (TextRun)textRuns.get(i);
             AttributedCharacterIterator runaci = textRun.getACI();
             runaci.first();
+
+            Composite opacity = (Composite)
+                  runaci.getAttribute(GVTAttributedCharacterIterator.
+                                              TextAttribute.OPACITY);
+            if (opacity != null) {
+                g2d.setComposite(opacity);
+            }
 
             Paint paint = null;
             Stroke stroke = null;
@@ -594,7 +611,6 @@ public class StrokingTextPainter extends BasicTextPainter {
             prevPaint = paint;
             prevStroke = stroke;
             prevStrokePaint = strokePaint;
-
         }
 
         // if there is a decoration rect that hasn't been drawn yet, draw it now
@@ -676,7 +692,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     protected Shape getOutline(TextNode node, FontRenderContext frc,
                                     boolean includeDecoration) {
 
-        Shape outline = null;
+        GeneralPath outline = null;
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
 
         // get the list of text runs
@@ -686,46 +702,48 @@ public class StrokingTextPainter extends BasicTextPainter {
         for (int i = 0; i < textRuns.size(); ++i) {
             TextRun textRun = (TextRun)textRuns.get(i);
             TextSpanLayout textRunLayout = textRun.getLayout();
-            Shape textRunOutline = textRunLayout.getOutline();
-
-            if (includeDecoration && !textRunLayout.isVertical() && !textRunLayout.isOnATextPath()) {
-                AttributedCharacterIterator textRunACI = textRun.getACI();
-                int decorationTypes = 0;
-                if (textRunACI.getAttribute(GVTAttributedCharacterIterator.
-                                            TextAttribute.UNDERLINE) != null) {
-                    decorationTypes |= TextSpanLayout.DECORATION_UNDERLINE;
-                }
-                if (textRunACI.getAttribute(GVTAttributedCharacterIterator.
-                                            TextAttribute.OVERLINE) != null) {
-                    decorationTypes |= TextSpanLayout.DECORATION_OVERLINE;
-                }
-                if (textRunACI.getAttribute(GVTAttributedCharacterIterator.
-                                            TextAttribute.STRIKETHROUGH) != null) {
-                    decorationTypes |= TextSpanLayout.DECORATION_STRIKETHROUGH;
-                }
-                if (decorationTypes != 0) {
-                    if (!(textRunOutline instanceof GeneralPath)) {
-                        textRunOutline = new GeneralPath(textRunOutline);
-                    }
-                    ((GeneralPath) textRunOutline).setWindingRule(
-                                            GeneralPath.WIND_NON_ZERO);
-                    ((GeneralPath) textRunOutline).append(
-                        textRunLayout.getDecorationOutline(decorationTypes), false);
-                }
-            }
-
+            GeneralPath textRunOutline = new GeneralPath(textRunLayout.getOutline());
             if (outline == null) {
                outline = textRunOutline;
             } else {
-                if (!(outline instanceof GeneralPath)) {
-                    outline = new GeneralPath(outline);
-                }
-                ((GeneralPath) outline).setWindingRule(
-                                                    GeneralPath.WIND_NON_ZERO);
-                ((GeneralPath) outline).append(textRunOutline, false);
+                outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                outline.append(textRunOutline, false);
             }
-
         }
+
+        // append any decoration outlines
+        if (includeDecoration) {
+
+            Shape underline = getDecorationOutline(textRuns, TextSpanLayout.DECORATION_UNDERLINE);
+            Shape strikeThrough = getDecorationOutline(textRuns, TextSpanLayout.DECORATION_STRIKETHROUGH);
+            Shape overline = getDecorationOutline(textRuns, TextSpanLayout.DECORATION_OVERLINE);
+
+            if (underline != null) {
+                if (outline == null) {
+                    outline = new GeneralPath(underline);
+                } else {
+                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                    outline.append(underline, false);
+                }
+            }
+            if (strikeThrough != null) {
+                 if (outline == null) {
+                    outline = new GeneralPath(strikeThrough);
+                } else {
+                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                    outline.append(strikeThrough, false);
+                }
+            }
+            if (overline != null) {
+                if (outline == null) {
+                    outline = new GeneralPath(overline);
+                } else {
+                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                    outline.append(overline, false);
+                }
+            }
+        }
+
         return outline;
     }
 
@@ -740,7 +758,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     protected Shape getStrokeOutline(TextNode node, FontRenderContext frc,
                                      boolean includeDecoration) {
 
-        Shape outline = null;
+        GeneralPath outline = null;
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
 
         // get the list of text runs
@@ -752,6 +770,8 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             TextRun textRun = (TextRun)textRuns.get(i);
             AttributedCharacterIterator textRunACI = textRun.getACI();
+            textRunACI.first();
+
             TextSpanLayout textRunLayout = textRun.getLayout();
 
             Stroke stroke = (Stroke) textRunACI.getAttribute(
@@ -765,98 +785,243 @@ public class StrokingTextPainter extends BasicTextPainter {
                 textRunStrokeOutline = stroke.createStrokedShape(textRunOutline);
             }
 
-            if (includeDecoration && !textRunLayout.isVertical() && !textRunLayout.isOnATextPath()) {
-                Shape decorationStrokeOutline = null;
-
-                // look for stroked underline
-                if (textRunACI.getAttribute(GVTAttributedCharacterIterator.
-                                            TextAttribute.UNDERLINE) != null) {
-                    Stroke decorationStroke = (Stroke) textRunACI.getAttribute(
-                        GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
-                    Paint decorationStrokePaint = (Paint) textRunACI.getAttribute(
-                        GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
-                    if (decorationStroke != null && decorationStrokePaint != null) {
-                        Shape textRunUnderlineOutline = textRunLayout.getDecorationOutline(
-                            TextSpanLayout.DECORATION_UNDERLINE);
-                        decorationStrokeOutline
-                            = decorationStroke.createStrokedShape(textRunUnderlineOutline);
-                    }
-
-                }
-                if (textRunACI.getAttribute(GVTAttributedCharacterIterator.
-                                            TextAttribute.OVERLINE) != null) {
-                    Stroke decorationStroke = (Stroke) textRunACI.getAttribute(
-                        GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE);
-                    Paint decorationStrokePaint = (Paint) textRunACI.getAttribute(
-                        GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE_PAINT);
-                    if (decorationStroke != null && decorationStrokePaint != null) {
-                        Shape textRunOverlineOutline = textRunLayout.getDecorationOutline(
-                            TextSpanLayout.DECORATION_OVERLINE);
-                        if (decorationStrokeOutline == null) {
-                            decorationStrokeOutline
-                                = decorationStroke.createStrokedShape(textRunOverlineOutline);
-                        } else {
-                            if (!(decorationStrokeOutline instanceof GeneralPath)) {
-                                decorationStrokeOutline = new GeneralPath(decorationStrokeOutline);
-                            }
-                            ((GeneralPath)decorationStrokeOutline).append(
-                                decorationStroke.createStrokedShape(textRunOverlineOutline), false);
-                        }
-                    }
-
-                }
-                if (textRunACI.getAttribute(GVTAttributedCharacterIterator.
-                                            TextAttribute.STRIKETHROUGH) != null) {
-                    Stroke decorationStroke = (Stroke) textRunACI.getAttribute(
-                        GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE);
-                    Paint decorationStrokePaint = (Paint) textRunACI.getAttribute(
-                        GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE_PAINT);
-                    if (decorationStroke != null && decorationStrokePaint != null) {
-                        Shape textRunStrikethroughOutline = textRunLayout.getDecorationOutline(
-                            TextSpanLayout.DECORATION_STRIKETHROUGH);
-                         if (decorationStrokeOutline == null) {
-                            decorationStrokeOutline
-                                = decorationStroke.createStrokedShape(textRunStrikethroughOutline);
-                        } else {
-                            if (!(decorationStrokeOutline instanceof GeneralPath)) {
-                                decorationStrokeOutline = new GeneralPath(decorationStrokeOutline);
-                            }
-                            ((GeneralPath)decorationStrokeOutline).append(
-                                decorationStroke.createStrokedShape(textRunStrikethroughOutline), false);
-                        }
-                    }
-                }
-                if (decorationStrokeOutline != null) {
-                    if (textRunStrokeOutline != null) {
-                        if (!(textRunStrokeOutline instanceof GeneralPath)) {
-                            textRunStrokeOutline = new GeneralPath(textRunStrokeOutline);
-                        }
-                        ((GeneralPath) textRunStrokeOutline).setWindingRule(
-                                            GeneralPath.WIND_NON_ZERO);
-                        ((GeneralPath) textRunStrokeOutline).append(decorationStrokeOutline, false);
-                    } else {
-                        textRunStrokeOutline = decorationStrokeOutline;
-                    }
-                }
-            }
 
             if (textRunStrokeOutline != null) {
                 if (outline == null) {
-                    outline = textRunStrokeOutline;
+                    outline = new GeneralPath(textRunStrokeOutline);
                 } else {
-                    if (!(outline instanceof GeneralPath)) {
-                        outline = new GeneralPath(outline);
+                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                    outline.append(textRunStrokeOutline, false);
+                }
+            }
+        }
+
+        // append any stroked decoration outlines
+        if (includeDecoration) {
+
+            Shape underline = getDecorationStrokeOutline(textRuns, TextSpanLayout.DECORATION_UNDERLINE);
+            Shape strikeThrough = getDecorationStrokeOutline(textRuns, TextSpanLayout.DECORATION_STRIKETHROUGH);
+            Shape overline = getDecorationStrokeOutline(textRuns, TextSpanLayout.DECORATION_OVERLINE);
+
+            if (underline != null) {
+                if (outline == null) {
+                    outline = new GeneralPath(underline);
+                } else {
+                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                    outline.append(underline, false);
+                }
+            }
+            if (strikeThrough != null) {
+                 if (outline == null) {
+                    outline = new GeneralPath(strikeThrough);
+                } else {
+                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                    outline.append(strikeThrough, false);
+                }
+            }
+            if (overline != null) {
+                if (outline == null) {
+                    outline = new GeneralPath(overline);
+                } else {
+                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                    outline.append(overline, false);
+                }
+            }
+        }
+
+        return outline;
+    }
+
+
+    /**
+     * Returns the outline of the specified decoration type.
+     *
+     * @param textRuns The list of text runs to get the decoration outline for.
+     * @param decoratonType Indicates the type of decoration required.
+     * eg. underline, overline or strikethrough.
+     *
+     * @return The decoration outline or null if the text is not decorated.
+     */
+    private Shape getDecorationOutline(List textRuns, int decorationType) {
+
+        GeneralPath outline = null;
+
+        Paint prevPaint = null;
+        Paint prevStrokePaint = null;
+        Stroke prevStroke = null;
+        Rectangle2D decorationRect = null;
+
+        for (int i = 0; i < textRuns.size(); i++) {
+            TextRun textRun = (TextRun)textRuns.get(i);
+            AttributedCharacterIterator runaci = textRun.getACI();
+            runaci.first();
+
+            Paint paint = null;
+            Stroke stroke = null;
+            Paint strokePaint = null;
+            switch (decorationType) {
+                case TextSpanLayout.DECORATION_UNDERLINE :
+                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
+                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
+                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
+                    break;
+                case TextSpanLayout.DECORATION_OVERLINE :
+                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_PAINT);
+                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE);
+                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE_PAINT);
+                    break;
+                case TextSpanLayout.DECORATION_STRIKETHROUGH :
+                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_PAINT);
+                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE);
+                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE_PAINT);
+                    break;
+                default:
+                    // should never get here
+                    return null;
+            }
+
+            if (textRun.isFirstRunInChunk() || paint != prevPaint
+                || stroke != prevStroke || strokePaint != prevStrokePaint) {
+
+                // if there is a current decoration, added it to the overall outline
+                if (decorationRect != null) {
+                    if (outline == null) {
+                        outline = new GeneralPath(decorationRect);
+                    } else {
+                        outline.append(decorationRect, false);
                     }
-                    ((GeneralPath) outline).setWindingRule(
-                                                    GeneralPath.WIND_NON_ZERO);
-                    ((GeneralPath) outline).append(textRunStrokeOutline, false);
+                    decorationRect = null;
                 }
             }
 
+            if ((paint != null || strokePaint != null)
+                && !textRun.getLayout().isVertical()
+                && !textRun.getLayout().isOnATextPath()) {
+
+                // this text run should be decorated with the specified decoration type
+                // note: decorations are only supported for plain horizontal layouts
+
+                Shape decorationShape = textRun.getLayout().getDecorationOutline(decorationType);
+                if (decorationRect == null) {
+                    // create a new one
+                    decorationRect = decorationShape.getBounds2D();
+                } else {
+                    // extend the current one
+                    Rectangle2D bounds = decorationShape.getBounds2D();
+                    decorationRect.setRect(decorationRect.getMinX(), decorationRect.getMinY(),
+                        bounds.getMaxX() - decorationRect.getMinX(), decorationRect.getHeight());
+                }
+            }
+            prevPaint = paint;
+            prevStroke = stroke;
+            prevStrokePaint = strokePaint;
+        }
+
+        // if there is a decoration rect that hasn't been added to the overall outline
+        if (decorationRect != null) {
+            if (outline == null) {
+                outline = new GeneralPath(decorationRect);
+            } else {
+                outline.append(decorationRect, false);
+            }
         }
         return outline;
     }
 
+    /**
+     * Returns the stroke outline of the specified decoration type.
+     *
+     * @param textRuns The list of text runs to get the decoration outline for.
+     * @param decoratonType Indicates the type of decoration required.
+     * eg. underline, overline or strikethrough.
+     *
+     * @return The decoration outline or null if the text is not decorated.
+     */
+    private Shape getDecorationStrokeOutline(List textRuns, int decorationType) {
+
+        GeneralPath outline = null;
+
+        Paint prevPaint = null;
+        Paint prevStrokePaint = null;
+        Stroke prevStroke = null;
+        Rectangle2D decorationRect = null;
+
+        for (int i = 0; i < textRuns.size(); i++) {
+            TextRun textRun = (TextRun)textRuns.get(i);
+            AttributedCharacterIterator runaci = textRun.getACI();
+            runaci.first();
+
+            Paint paint = null;
+            Stroke stroke = null;
+            Paint strokePaint = null;
+            switch (decorationType) {
+                case TextSpanLayout.DECORATION_UNDERLINE :
+                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
+                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
+                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
+                    break;
+                case TextSpanLayout.DECORATION_OVERLINE :
+                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_PAINT);
+                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE);
+                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE_PAINT);
+                    break;
+                case TextSpanLayout.DECORATION_STRIKETHROUGH :
+                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_PAINT);
+                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE);
+                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE_PAINT);
+                    break;
+                default:
+                    // should never get here
+                    return null;
+            }
+
+            if (textRun.isFirstRunInChunk() || paint != prevPaint
+                || stroke != prevStroke || strokePaint != prevStrokePaint) {
+
+                // if there is a current decoration, added it to the overall outline
+                if (decorationRect != null  && prevStroke != null && prevStrokePaint != null) {
+                    if (outline == null) {
+                        outline = new GeneralPath(prevStroke.createStrokedShape(decorationRect));
+                    } else {
+                        outline.append(prevStroke.createStrokedShape(decorationRect), false);
+                    }
+                    decorationRect = null;
+                }
+            }
+
+            if ((paint != null || strokePaint != null)
+                && !textRun.getLayout().isVertical()
+                && !textRun.getLayout().isOnATextPath()) {
+
+                // this text run should be decorated with the specified decoration type
+                // note: decorations are only supported for plain horizontal layouts
+
+                Shape decorationShape = textRun.getLayout().getDecorationOutline(decorationType);
+                if (decorationRect == null) {
+                    // create a new one
+                    decorationRect = decorationShape.getBounds2D();
+                } else {
+                    // extend the current one
+                    Rectangle2D bounds = decorationShape.getBounds2D();
+                    decorationRect.setRect(decorationRect.getMinX(), decorationRect.getMinY(),
+                        bounds.getMaxX() - decorationRect.getMinX(), decorationRect.getHeight());
+                }
+            }
+            prevPaint = paint;
+            prevStroke = stroke;
+            prevStrokePaint = strokePaint;
+        }
+
+        // if there is a decoration rect that hasn't been added to the overall outline
+        if (decorationRect != null && prevStroke != null && prevStrokePaint != null) {
+             if (outline == null) {
+                outline = new GeneralPath(prevStroke.createStrokedShape(decorationRect));
+            } else {
+                outline.append(prevStroke.createStrokedShape(decorationRect), false);
+            }
+        }
+        return outline;
+    }
 
 
 
@@ -872,12 +1037,6 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         // get the list of text runs
         List textRuns = getTextRuns(node, aci, frc);
-
-        // store the textRuns in the textNode for much quicker highlighting
-        // note that we can't set this earlier because of problems with
-        // caching the info
-        node.setTextRuns(textRuns);
-
 
         // for each text run, see if its been hit
         for (int i = 0; i < textRuns.size(); ++i) {
@@ -918,11 +1077,6 @@ public class StrokingTextPainter extends BasicTextPainter {
         // get the list of text runs
         List textRuns = getTextRuns(node, aci, frc);
 
-        // store the textRuns in the textNode for much quicker highlighting
-        // note that we can't set this earlier because of problems with
-        // caching the info
-        node.setTextRuns(textRuns);
-
         aci.first();
         int charIndex = ((Integer)aci.getAttribute(
             GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
@@ -946,11 +1100,6 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         // get the list of text runs
         List textRuns = getTextRuns(node, aci, frc);
-
-        // store the textRuns in the textNode for much quicker highlighting
-        // note that we can't set this earlier because of problems with
-        // caching the info
-        node.setTextRuns(textRuns);
 
         TextSpanLayout lastLayout = ((TextRun)textRuns.get(textRuns.size()-1)).getLayout();
         int lastGlyphIndex = lastLayout.getGlyphCount()-1;
@@ -976,6 +1125,9 @@ public class StrokingTextPainter extends BasicTextPainter {
                              org.apache.batik.gvt.text.Mark startMark,
                              org.apache.batik.gvt.text.Mark finishMark) {
 
+        if (startMark == null || finishMark == null) {
+            return null;
+        }
         BasicTextPainter.Mark start;
         BasicTextPainter.Mark finish;
         try {
@@ -988,6 +1140,30 @@ public class StrokingTextPainter extends BasicTextPainter {
         int[] result = new int[2];
         result[0] = start.getHit().getCharIndex();
         result[1] = finish.getHit().getCharIndex();
+
+        // this next bit is to make sure that ligatures are selected properly
+        TextSpanLayout startLayout =  start.getLayout();
+        TextSpanLayout finishLayout = finish.getLayout();
+
+        int startGlyphIndex = startLayout.getGlyphIndex(result[0]);
+        int finishGlyphIndex = finishLayout.getGlyphIndex(result[1]);
+        int startCharCount = startLayout.getCharacterCount(startGlyphIndex, startGlyphIndex);
+        int finishCharCount = finishLayout.getCharacterCount(finishGlyphIndex, finishGlyphIndex);
+        if (startCharCount > 1) {
+            if (result[0] > result[1] && startLayout.isLeftToRight()) {
+                result[0] += startCharCount-1;
+            } else if (result[1] > result[0] && !startLayout.isLeftToRight()) {
+                result[0] -= startCharCount-1;
+            }
+        }
+        if (finishCharCount > 1) {
+            if (result[1] > result[0] && finishLayout.isLeftToRight()) {
+                result[1] += finishCharCount-1;
+            } else if (result[0] > result[1] && !finishLayout.isLeftToRight()) {
+                result[1] -= finishCharCount-1;
+            }
+        }
+
         return result;
     }
 
@@ -999,6 +1175,10 @@ public class StrokingTextPainter extends BasicTextPainter {
      */
     public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
                                    org.apache.batik.gvt.text.Mark endMark) {
+
+        if (beginMark == null || endMark == null) {
+            return null;
+        }
 
         BasicTextPainter.Mark begin;
         BasicTextPainter.Mark end;
@@ -1028,21 +1208,6 @@ public class StrokingTextPainter extends BasicTextPainter {
         FontRenderContext frc = begin.getHit().getFontRenderContext();
         List textRuns = getTextRuns(textNode, textNode.getAttributedCharacterIterator(), frc);
 
-        // determine whether selection is right to left or not, ie. whether
-        // beginLayout is before endLayout or not
-        boolean leftToRight = true;
-        for (int i = 0; i < textRuns.size(); ++i) {
-            TextRun textRun = (TextRun)textRuns.get(i);
-            TextSpanLayout layout = textRun.getLayout();
-            if (layout == beginLayout) {
-                break;
-            }
-            if (layout == endLayout) {
-                leftToRight = false;
-                break;
-            }
-        }
-
         GeneralPath highlightedShape = new GeneralPath();
 
         // for each text run, append any highlight it may contain for the current selection
@@ -1050,7 +1215,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextRun textRun = (TextRun)textRuns.get(i);
             TextSpanLayout layout = textRun.getLayout();
 
-            Shape layoutHighlightedShape = layout.getHighlightShape(beginIndex, endIndex, leftToRight);
+            Shape layoutHighlightedShape = layout.getHighlightShape(beginIndex, endIndex);
 
             // append the highlighted shape of this layout to the
             // overall hightlighted shape
