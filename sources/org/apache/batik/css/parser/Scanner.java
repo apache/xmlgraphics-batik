@@ -346,17 +346,9 @@ public class Scanner {
                 nextChar();
                 start = position - 1;
                 do {
-                    nextChar();
-                } while (current != -1 && current == '*');
-                if (current == '/') {
-                    nextChar();
-                    type = LexicalUnits.COMMENT;
-                    return;
-                }
-                do {
-                    do {
+                    while (current != -1 && current != '*') {
                         nextChar();
-                    } while (current != -1 && current != '*');
+                    }
                     do {
                         nextChar();
                     } while (current != -1 && current == '*');
