@@ -76,9 +76,9 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_QUALITY");
 
         t = new HintsConfigTest(new Object[][]{
-            {PNGTranscoder.KEY_INDEXED, Boolean.TRUE}}){
+            {PNGTranscoder.KEY_INDEXED, new Integer(8)}}){
                 protected void deltaConfigure(SVGConverter c){
-                    c.setIndexed(true);
+                    c.setIndexed(8);
                 }
             };
         addTest(t);
