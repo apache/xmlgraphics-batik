@@ -11,6 +11,8 @@ package org.apache.batik.swing.gvt;
 import java.awt.EventQueue;
 import java.awt.Shape;
 
+import java.awt.geom.AffineTransform;
+
 import java.awt.image.BufferedImage;
 
 import java.util.Collections;
@@ -49,6 +51,16 @@ public class GVTTreeRenderer extends Thread {
     protected int height;
 
     /**
+     * The user to device transform.
+     */
+    protected AffineTransform user2DeviceTransform;
+
+    /**
+     * Whether to enable the double buffering.
+     */
+    protected boolean doubleBuffering;
+
+    /**
      * The listeners.
      */
     protected List listeners = Collections.synchronizedList(new LinkedList());
@@ -56,12 +68,18 @@ public class GVTTreeRenderer extends Thread {
     /**
      * Creates a new GVTTreeRenderer.
      * @param r The renderer to use to paint.
+     * @param usr2dev The user to device transform.
+     * @param dbuffer Whether the double buffering should be enabled.
      * @param aoi The area of interest in the renderer space units.
      * @param width&nbsp;height The offscreen buffer size.
      */
-    public GVTTreeRenderer(ImageRenderer r, Shape aoi, int width, int height) {
+    public GVTTreeRenderer(ImageRenderer r, AffineTransform usr2dev,
+                           boolean dbuffer,
+                           Shape aoi, int width, int height) {
         renderer = r;
         areaOfInterest = aoi;
+        user2DeviceTransform = usr2dev;
+        doubleBuffering = dbuffer;
         this.width = width;
         this.height = height;
     }
@@ -73,18 +91,24 @@ public class GVTTreeRenderer extends Thread {
         try {
             firePrepareEvent();
 
+            renderer.setTransform(user2DeviceTransform);
+            renderer.setDoubleBuffered(doubleBuffering);
             renderer.updateOffScreen(width, height);
             renderer.clearOffScreen();
+
+            if (checkInterrupted()) {
+                return;
+            }
 
             fireStartedEvent(renderer.getOffScreen());
 
             renderer.repaint(areaOfInterest);
 
-            if (Thread.currentThread().isInterrupted()) {
-                fireCancelledEvent(renderer.getOffScreen());
-            } else {
-                fireCompletedEvent(renderer.getOffScreen());
+            if (checkInterrupted()) {
+                return;
             }
+
+            fireCompletedEvent(renderer.getOffScreen());
         } catch (Exception e) {
             e.printStackTrace();
             fireFailedEvent();
@@ -103,6 +127,22 @@ public class GVTTreeRenderer extends Thread {
      */
     public void removeGVTTreeRendererListener(GVTTreeRendererListener l) {
         listeners.remove(l);
+    }
+
+    /**
+     * Checks for this thread to be interrupted.
+     */
+    protected boolean checkInterrupted() {
+        // don't use isInterrupted() since that won't clear the
+        // interrupted state of this thread. If that isn't cleared
+        // then the next function that is declaired to throw
+        // InterruptedException will do so, this in particular
+        // effects class loading.
+        if (!Thread.interrupted())
+            return false;
+
+        fireCancelledEvent(renderer.getOffScreen());
+        return true;
     }
 
     /**

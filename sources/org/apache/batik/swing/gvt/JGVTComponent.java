@@ -148,6 +148,11 @@ public class JGVTComponent extends JComponent {
     protected TextSelectionManager textSelectionManager;
 
     /**
+     * Whether the double buffering is enabled.
+     */
+    protected boolean doubleBufferedRendering;
+
+    /**
      * Whether the GVT tree should be reactive to mouse and key events.
      */
     protected boolean eventsEnabled;
@@ -157,6 +162,11 @@ public class JGVTComponent extends JComponent {
      * this flag is ignored.
      */
     protected boolean selectableText;
+
+    /**
+     * Whether to suspend interactions.
+     */ 
+    protected boolean suspendInteractions;
 
     /**
      * Creates a new JGVTComponent.
@@ -173,7 +183,6 @@ public class JGVTComponent extends JComponent {
      *        if eventEnabled is false, this flag is ignored.
      */
     public JGVTComponent(boolean eventsEnabled, boolean selectableText) {
-        setDoubleBuffered(false);
         setBackground(Color.white);
 
         this.eventsEnabled = eventsEnabled;
@@ -190,13 +199,7 @@ public class JGVTComponent extends JComponent {
         addComponentListener(new ComponentAdapter() {
                 public void componentResized(ComponentEvent e) {
                     updateRenderingTransform();
-                    if (gvtTreeRenderer != null) {
-                        needRender = true;
-                        gvtTreeRenderer.interrupt();
-                    } else {
-                        image = null;
-                        renderGVTTree();
-                    }
+                    scheduleGVTRendering();
                 }
             });
 
@@ -229,10 +232,7 @@ public class JGVTComponent extends JComponent {
     public void stopProcessing() {
         if (gvtTreeRenderer != null) {
             gvtTreeRenderer.interrupt();
-            if (progressivePaintThread != null) {
-                progressivePaintThread.interrupt();
-                progressivePaintThread = null;
-            }
+            interruptProgressivePaintThread();
         }
     }
 
@@ -278,9 +278,33 @@ public class JGVTComponent extends JComponent {
     public void setProgressivePaint(boolean b) {
         if (progressivePaint != b) {
             progressivePaint = b;
-            if (progressivePaintThread != null) {
-                progressivePaintThread.interrupt();
-                progressivePaintThread = null;
+            interruptProgressivePaintThread();
+        }
+    }
+
+    /**
+     * Tells whether the progressive paint is enabled.
+     */
+    public boolean getProgressivePaint() {
+        return progressivePaint;
+    }
+
+    /**
+     * Repaints immediately the component.
+     */
+    public void immediateRepaint() {
+        if (java.awt.EventQueue.isDispatchThread()) {
+            Dimension dim = getSize();
+            paintImmediately(0, 0, dim.width, dim.height);
+        } else {
+            try {
+                java.awt.EventQueue.invokeAndWait(new Runnable() {
+                    public void run() {
+                        Dimension dim = getSize();
+                        paintImmediately(0, 0, dim.width, dim.height);
+                    }
+                });
+            } catch (Exception e) {
             }
         }
     }
@@ -319,7 +343,7 @@ public class JGVTComponent extends JComponent {
      */
     public void setPaintingTransform(AffineTransform at) {
         paintingTransform = at;
-        repaint();
+        immediateRepaint();
     }
 
     /**
@@ -335,6 +359,7 @@ public class JGVTComponent extends JComponent {
      */
     public void setRenderingTransform(AffineTransform at) {
         renderingTransform = at;
+        suspendInteractions = true;
         if (eventDispatcher != null) {
             try {
                 eventDispatcher.setBaseTransform(renderingTransform.createInverse());
@@ -342,14 +367,7 @@ public class JGVTComponent extends JComponent {
                 handleException(e);
             }
         }
-        paintingTransform = null;
-        if (gvtTreeRenderer != null) {
-            needRender = true;
-            gvtTreeRenderer.interrupt();
-        } else {
-            image = null;
-            renderGVTTree();
-        }
+        scheduleGVTRendering();
     }
 
     /**
@@ -361,10 +379,19 @@ public class JGVTComponent extends JComponent {
 
     /**
      * Sets whether this component should use double buffering to render
-     * SVG documents.
+     * SVG documents. The change will be effective during the next
+     * rendering.
      */
     public void setDoubleBufferedRendering(boolean b) {
-        // !!! TODO
+        doubleBufferedRendering = b;
+    }
+
+    /**
+     * Tells whether this component use double buffering to render
+     * SVG documents.
+     */
+    public boolean getDoubleBufferedRendering() {
+        return doubleBufferedRendering;
     }
 
     /**
@@ -395,7 +422,6 @@ public class JGVTComponent extends JComponent {
             renderer = rendererFactory.createImageRenderer();
             renderer.setTree(gvtRoot);
         }
-        renderer.setTransform(renderingTransform);
 
         // Area of interest computation.
         AffineTransform inv;
@@ -407,7 +433,9 @@ public class JGVTComponent extends JComponent {
         Shape s = inv.createTransformedShape(new Rectangle(0, 0, d.width, d.height));
 
         // Rendering thread setup.
-        gvtTreeRenderer = new GVTTreeRenderer(renderer, s, d.width, d.height);
+        gvtTreeRenderer = new GVTTreeRenderer(renderer, renderingTransform,
+                                              doubleBufferedRendering,
+                                              s, d.width, d.height);
         gvtTreeRenderer.setPriority(Thread.MIN_PRIORITY);
 
         Iterator it = gvtTreeRendererListeners.iterator();
@@ -436,7 +464,7 @@ public class JGVTComponent extends JComponent {
      * Updates the value of the transform used for rendering.
      */
     protected void updateRenderingTransform() {
-        // Do nothing
+        // Do nothing.
     }
 
     /**
@@ -457,6 +485,25 @@ public class JGVTComponent extends JComponent {
         }
         renderer = null;
         gvtRoot = null;
+    }
+
+    /**
+     * Schedules a new GVT rendering.
+     */
+    protected void scheduleGVTRendering() {
+        if (gvtTreeRenderer != null) {
+            needRender = true;
+            gvtTreeRenderer.interrupt();
+        } else {
+            renderGVTTree();
+        }
+    }
+
+    private void interruptProgressivePaintThread() {
+        if (progressivePaintThread != null) {
+            progressivePaintThread.interrupt();
+            progressivePaintThread = null;
+        }
     }
 
     /**
@@ -487,85 +534,93 @@ public class JGVTComponent extends JComponent {
          * Called when a rendering is in its preparing phase.
          */
         public void gvtRenderingPrepare(GVTTreeRendererEvent e) {
-            // Do nothing
+            suspendInteractions = true;
+            if (!progressivePaint && !doubleBufferedRendering) {
+                image = null;
+                immediateRepaint();
+            }
         }
 
         /**
          * Called when a rendering started.
-         * The data of the event is initialized to the old document.
          */
         public void gvtRenderingStarted(GVTTreeRendererEvent e) {
-            if (progressivePaint /* && !doubleBuffering */) {
+            paintingTransform = null;
+            if (progressivePaint && !doubleBufferedRendering) {
                 image = e.getImage();
                 progressivePaintThread = new Thread() {
                     public void run() {
+                        final Thread thisThread = this;
                         try {
                             while (!isInterrupted()) {
-                                repaint();
+                                java.awt.EventQueue.invokeAndWait(new Runnable() {
+                                    public void run() {
+                                        if (progressivePaintThread == thisThread) {
+                                            Dimension dim = getSize();
+                                            paintImmediately(0, 0,
+                                                             dim.width, dim.height);
+                                        }
+                                    }
+                                });
                                 sleep(200);
                             }
-                        } catch (InterruptedException e) {
+                        } catch (Exception e) {
                         }
                     }
                 };
                 progressivePaintThread.setPriority(Thread.MIN_PRIORITY + 1);
                 progressivePaintThread.start();
             }
+            suspendInteractions = false;
         }
         
         /**
          * Called when a rendering was completed.
          */
         public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
-            if (progressivePaintThread != null) {
-                progressivePaintThread.interrupt();
-                progressivePaintThread = null;
-            }
+            interruptProgressivePaintThread();
+
             gvtTreeRenderer = null;
-            image = e.getImage();
             if (needRender) {
-                image = null;
                 renderGVTTree();
                 needRender = false;
+            } else {
+                image = e.getImage();
+                immediateRepaint();
             }
             if (eventDispatcher != null) {
                 eventDispatcher.setRootNode(gvtRoot);
             }
-            repaint();
         }
         
         /**
          * Called when a rendering was cancelled.
          */
         public void gvtRenderingCancelled(GVTTreeRendererEvent e) {
-            if (progressivePaintThread != null) {
-                progressivePaintThread.interrupt();
-                progressivePaintThread = null;
-            }
-            gvtTreeRenderer = null;
-            image = null;
-            if (needRender) {
-                renderGVTTree();
-                needRender = false;
-            }
-            repaint();
+            renderingStopped();
         }
         
         /**
          * Called when a rendering failed.
          */
         public void gvtRenderingFailed(GVTTreeRendererEvent e) {
-            if (progressivePaintThread != null) {
-                progressivePaintThread.interrupt();
-                progressivePaintThread = null;
-            }
+            renderingStopped();
+        }
+
+        /**
+         * The actual implementation of gvtRenderingCancelled() and
+         * gvtRenderingFailed().
+         */
+        private void renderingStopped() {
+            interruptProgressivePaintThread();
+
             gvtTreeRenderer = null;
-            image = null;
             if (needRender) {
                 renderGVTTree();
                 needRender = false;
+            } else {
+                immediateRepaint();
             }
-            repaint();
         }
 
         // KeyListener //////////////////////////////////////////////////////////
@@ -712,7 +767,7 @@ public class JGVTComponent extends JComponent {
          * Selects an interactor, given an input event.
          */
         protected void selectInteractor(InputEvent ie) {
-            if (interactor == null) {
+            if (!suspendInteractions && interactor == null) {
                 Iterator it = interactors.iterator();
                 while (it.hasNext()) {
                     Interactor i = (Interactor)it.next();
