@@ -130,6 +130,13 @@ public class SVGComposite
 
         switch (rule.getRule()) {
         case CompositeRule.RULE_OVER:
+            if (!dstCM.hasAlpha()) {
+                if (use_int_pack) 
+                    return new OverCompositeContext_INT_PACK_NA(srcCM, dstCM);
+                else
+                    return new OverCompositeContext_NA  (srcCM, dstCM);
+            }
+
             if (!use_int_pack)
                 return new OverCompositeContext(srcCM, dstCM);
             
@@ -360,6 +367,53 @@ public class SVGComposite
     }
 
     /**
+     * This implements SRC_OVER for 4 band byte src data and
+     * 3 band byte dst data.
+     */
+    public static class OverCompositeContext_NA 
+        extends AlphaPreCompositeContext {
+        OverCompositeContext_NA(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
+            int [] srcPix = null;
+            int [] dstPix = null;
+
+            int x=dstOut.getMinX();
+            int w=dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int y1=y0 + dstOut.getHeight();
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            for (int y = y0; y<y1; y++) {
+                srcPix = src.getPixels  (x, y, w, 1, srcPix);
+                dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
+                int srcSP  = 0;
+                int dstSP  = 0;
+                int end = w*4;
+                while (srcSP<end) {
+                    final int dstM = (255-srcPix[srcSP+3])*norm;
+                    dstPix[dstSP] = 
+                        srcPix[srcSP] + ((dstPix[dstSP]*dstM +pt5)>>>24);
+                    ++srcSP; ++dstSP;
+                    dstPix[dstSP] = 
+                        srcPix[srcSP] + ((dstPix[dstSP]*dstM +pt5)>>>24);
+                    ++srcSP; ++dstSP;
+                    dstPix[dstSP] = 
+                        srcPix[srcSP] + ((dstPix[dstSP]*dstM +pt5)>>>24);
+                    srcSP+=2; ++dstSP;
+                }
+                dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+        }
+    }
+
+    /**
      * This implements SRC_OVER for Int packed data where the src is
      * premultiplied.
      */
@@ -391,6 +445,49 @@ public class SVGComposite
                         (((     srcP & 0xFF000000) +
                           (((((dstInP>>>24)     )*dstM+pt5)&0xFF000000)     ))|
                          ((     srcP & 0x00FF0000) +
+                          (((((dstInP>> 16)&0xFF)*dstM+pt5)&0xFF000000)>>> 8))|
+                         ((     srcP & 0x0000FF00) +
+                          (((((dstInP>>  8)&0xFF)*dstM+pt5)&0xFF000000)>>>16))|
+                         ((     srcP & 0x000000FF) +
+                          (((((dstInP     )&0xFF)*dstM+pt5)         )>>>24)));
+                }
+                srcSp    += srcAdjust;
+                dstInSp  += dstInAdjust;
+                dstOutSp += dstOutAdjust;
+            }
+        }
+    }
+
+    /**
+     * This implements SRC_OVER for Int packed data and dest has no Alpha...
+     */
+    public static class OverCompositeContext_INT_PACK_NA 
+        extends AlphaPreCompositeContext_INT_PACK {
+        OverCompositeContext_INT_PACK_NA(ColorModel srcCM, ColorModel dstCM) {
+            super (srcCM, dstCM);
+        }
+
+        // When we get here src data has been premultiplied.
+        public void precompose_INT_PACK
+            (final int width,           final int height,
+             final int [] srcPixels,    final int srcAdjust,    int srcSp,
+             final int [] dstInPixels,  final int dstInAdjust,  int dstInSp,
+             final int [] dstOutPixels, final int dstOutAdjust, int dstOutSp) {
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            int srcP, dstInP, dstM;
+            
+            for (int y = 0; y<height; y++) {
+                final int end = dstOutSp+width;
+                while (dstOutSp<end) {
+                    srcP   = srcPixels  [srcSp++];
+                    dstInP = dstInPixels[dstInSp++];
+                    
+                    dstM = (255-(srcP>>>24))*norm;
+                    dstOutPixels[dstOutSp++] = 
+                        (((     srcP & 0x00FF0000) +
                           (((((dstInP>> 16)&0xFF)*dstM+pt5)&0xFF000000)>>> 8))|
                          ((     srcP & 0x0000FF00) +
                           (((((dstInP>>  8)&0xFF)*dstM+pt5)&0xFF000000)>>>16))|
