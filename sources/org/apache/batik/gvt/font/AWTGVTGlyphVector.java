@@ -8,6 +8,7 @@
 
 package org.apache.batik.gvt.font;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
@@ -761,6 +762,12 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
 
         boolean useHinting = true;
         if ((stroke != null) && (strokePaint != null))
+            useHinting = false;
+
+        if (useHinting && 
+            (fillPaint != null) && !(fillPaint instanceof Color))
+            // The coordinate system is different for drawGlyphVector.
+            // So complex paints aren't positioned properly.
             useHinting = false;
 
         final int typeGRot   = AffineTransform.TYPE_GENERAL_ROTATION;
