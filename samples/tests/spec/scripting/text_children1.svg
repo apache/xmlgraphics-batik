@@ -1,0 +1,142 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Modification of text children                                          -->
+<!--                                                                        -->
+<!-- @author nicolas.socheleau@bitflash.com                                 -->
+<!-- @version $Id$                                                          -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+    <title>&lt;text&gt; children 'onload'</title>
+
+    <text x="50%" y="45" class="title">&lt;text&gt; children in 'onload'</text>
+
+    <script type="text/ecmascript"><![CDATA[
+    function addText(evt){
+        insertText(evt,'the quick ','tspan1');
+        appendText(evt,'fox');
+    }
+
+    function addCDATAText(evt){
+        insertCDATAText(evt,'the quick ','tspan2');
+        appendCDATAText(evt,'fox');
+    }
+
+    function insertText(evt,text,nextsiblingID) {
+
+        var elt = evt.target;
+        var doc = elt.getOwnerDocument();
+
+        var next = doc.getElementById(nextsiblingID);
+
+        var textnode = doc.createTextNode(text);
+
+        elt.insertBefore(textnode,next);
+    }
+
+    function insertCDATAText(evt,text,nextsiblingID) {
+
+        var elt = evt.target;
+        var doc = elt.getOwnerDocument();
+
+        var next = doc.getElementById(nextsiblingID);
+
+        var textnode = doc.createCDATASection(text);
+
+        elt.insertBefore(textnode,next);
+    }
+
+    function appendText(evt, text){
+        var elt = evt.target;
+        var doc = elt.getOwnerDocument();
+
+        var textnode = doc.createTextNode(text);
+
+        elt.appendChild(textnode);
+    }
+
+    function appendCDATAText(evt, text){
+        var elt = evt.target;
+        var doc = elt.getOwnerDocument();
+
+        var textnode = doc.createCDATASection(text);
+
+        elt.appendChild(textnode);
+    }
+
+    function removeText(evt) {
+        var elt = evt.target;
+
+        while ( elt.hasChildNodes() ){
+
+           var child = elt.getFirstChild();
+
+           elt.removeChild( child )
+        }
+    }
+    
+    ]]>
+    </script>
+
+    <g id="test-content">
+        <g style="font-size:40" >
+
+          <text x="70" y="135" style="fill:orange" 
+                onload="addText(evt)" >
+            <tspan id="tspan1" onload="appendText(evt,'brown')" style="fill:brown"></tspan>
+          </text>
+
+          <text x="70" y="175" style="fill:orange" 
+                onload="addCDATAText(evt)" >
+            <tspan id="tspan2" onload="appendCDATAText(evt,'brown')" style="fill:brown"></tspan>
+          </text>
+
+          <text x="70" y="335" style="fill:gold" 
+                onload="removeText(evt)" >
+            the quick brown fox
+          </text>
+          <text x="70" y="375" style="fill:gold" 
+                onload="removeText(evt)" ><![CDATA[
+            the quick brown fox
+          ]]></text>
+
+        </g>
+
+        <g style="stroke:black;fill:none;stroke-width:1;font-size:40">
+          <text x="70" y="135">
+            the quick <tspan>brown</tspan> fox
+          </text>
+          <text x="70" y="175">
+            the quick <tspan>brown</tspan> fox
+          </text>
+          <text x="70" y="335">
+            the quick brown fox
+          </text>
+          <text x="70" y="375">
+            the quick brown fox
+          </text>
+        </g>
+
+        <g style="fill:black; stroke:none; text-anchor:middle">
+                <text x="225" y="230" >insert nodes 
+                   <tspan style="font-size:8">( TEXT_NODE and CDATA_SECTION_NODE )</tspan>
+                </text>
+                <text x="225" y="430" >remove nodes 
+                   <tspan style="font-size:8">( TEXT_NODE and CDATA_SECTION_NODE )</tspan>
+                </text>
+        </g>
+    </g>
+</svg>
