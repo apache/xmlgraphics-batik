@@ -135,6 +135,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_POINTS_AT_Z = "pointsAtZ";
     String ATTR_POINTS = "points";
     String ATTR_PRESERVE_ASPECT_RATIO = "preserveAspectRatio";
+    String ATTR_PRIMITIVE_UNITS = "primitiveUnits";
     String ATTR_R = "r";
     String ATTR_RESULT = "result";
     String ATTR_RESULT_SCALE = "resultScale";

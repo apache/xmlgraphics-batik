@@ -77,9 +77,10 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
         
-        filterRegion = SVGUtilities.convertFilterRegion(filterElement,
-                                                        filteredNode,
-                                                        uctx);
+        filterRegion = SVGUtilities.convertFilterChainRegion(filterElement,
+                                                             filteredElement,
+                                                             filteredNode,
+                                                             uctx);
 
         // Build a ConcreteFilterChainRable
         FilterChainRable filterChain 
