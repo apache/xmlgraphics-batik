@@ -48,10 +48,9 @@ import org.apache.batik.ext.awt.image.rendered.AffineRed;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public class ConvolveMatrixRable8Bit 
-    extends    AbstractColorInterpRable 
-    implements ConvolveMatrixRable
-{
+public class ConvolveMatrixRable8Bit
+    extends    AbstractColorInterpolationRable
+    implements ConvolveMatrixRable {
 
     Kernel kernel;
     Point  target;
@@ -104,7 +103,7 @@ public class ConvolveMatrixRable8Bit
     public double getBias() {
         return bias;
     }
-    
+
     /**
      * Returns the shift value to apply to the result of convolution
      */
@@ -119,7 +118,7 @@ public class ConvolveMatrixRable8Bit
     public PadMode getEdgeMode() {
         return edgeMode;
     }
-    
+
     /**
      * Sets the current edge handling mode.
      */
@@ -132,7 +131,7 @@ public class ConvolveMatrixRable8Bit
      * Returns the [x,y] distance in user space between kernel values
      */
     public double [] getKernelUnitLength() {
-        if (kernelUnitLength == null) 
+        if (kernelUnitLength == null)
             return null;
 
         double [] ret = new double[2];
@@ -154,7 +153,7 @@ public class ConvolveMatrixRable8Bit
 
         if (this.kernelUnitLength == null)
             this.kernelUnitLength = new float[2];
-            
+
         this.kernelUnitLength[0] = (float)kernelUnitLength[0];
         this.kernelUnitLength[1] = (float)kernelUnitLength[1];
     }
@@ -207,13 +206,13 @@ public class ConvolveMatrixRable8Bit
         // These values represent the scale factor to the intermediate
         // coordinate system where we will apply our convolution.
         if (kernelUnitLength != null) {
-            if (kernelUnitLength[0] > 0.0) 
+            if (kernelUnitLength[0] > 0.0)
                 scaleX = 1/kernelUnitLength[0];
-        
-            if (kernelUnitLength[1] > 0.0) 
+
+            if (kernelUnitLength[1] > 0.0)
                 scaleY = 1/kernelUnitLength[1];
         }
-        
+
         Shape aoi = rc.getAreaOfInterest();
         if(aoi == null)
             aoi = getBounds2D();
@@ -226,7 +225,7 @@ public class ConvolveMatrixRable8Bit
         int ky = target.y;
 
         // Grow the region in usr space.
-        { 
+        {
             double rx0 = r.getX() -(kx/scaleX);
             double ry0 = r.getY() -(ky/scaleY);
             double rx1 = rx0 + r.getWidth()  + (kw-1)/scaleX;
@@ -240,7 +239,7 @@ public class ConvolveMatrixRable8Bit
         // an intermediate space which is scaled according to
         // kernelUnitLength and is axially aligned with our user
         // space.
-        AffineTransform srcAt 
+        AffineTransform srcAt
             = AffineTransform.getScaleInstance(scaleX, scaleY);
 
         // This is the affine transform between our intermediate
@@ -260,7 +259,7 @@ public class ConvolveMatrixRable8Bit
             return null;
 
         // org.apache.batik.test.gvt.ImageDisplay.printImage
-        //     ("Padded Image", ri, 
+        //     ("Padded Image", ri,
         //      new Rectangle(ri.getMinX()+22,ri.getMinY()+38,5,5));
 
         CachableRed cr = convertSourceCS(ri);
@@ -268,10 +267,10 @@ public class ConvolveMatrixRable8Bit
         Shape devShape = srcAt.createTransformedShape(aoi);
         Rectangle2D devRect = devShape.getBounds2D();
         r = devRect;
-        r = new Rectangle2D.Double(Math.floor(r.getX()-kx), 
+        r = new Rectangle2D.Double(Math.floor(r.getX()-kx),
                                    Math.floor(r.getY()-ky),
                                    Math.ceil (r.getX()+r.getWidth())-
-                                   Math.floor(r.getX())+(kw-1), 
+                                   Math.floor(r.getX())+(kw-1),
                                    Math.ceil (r.getY()+r.getHeight())-
                                    Math.floor(r.getY())+(kh-1));
 
@@ -283,14 +282,14 @@ public class ConvolveMatrixRable8Bit
         }
 
         // org.apache.batik.test.gvt.ImageDisplay.printImage
-        //     ("Padded Image", cr, 
+        //     ("Padded Image", cr,
         //      new Rectangle(cr.getMinX()+23,cr.getMinY()+39,5,5));
 
         if (bias != 0.0)
             throw new IllegalArgumentException
                 ("Only bias equal to zero is supported in ConvolveMatrix.");
-        
-        BufferedImageOp op = new ConvolveOp(kernel, 
+
+        BufferedImageOp op = new ConvolveOp(kernel,
                                             ConvolveOp.EDGE_NO_OP,
                                             rh);
 
@@ -301,7 +300,7 @@ public class ConvolveMatrixRable8Bit
         // build a WritableRaster.  This avoids a copy of the data.
         Raster rr = cr.getData();
         WritableRaster wr = GraphicsUtil.makeRasterWritable(rr, 0, 0);
-        
+
         // Here we update the translate to account for the phase shift
         // (if any) introduced by setting targetX, targetY in SVG.
         int phaseShiftX = target.x - kernel.getXOrigin();
@@ -328,19 +327,19 @@ public class ConvolveMatrixRable8Bit
             // Construct a linear sRGB cm without alpha...
             cm = new DirectColorModel(ColorSpace.getInstance
                                       (ColorSpace.CS_LINEAR_RGB), 24,
-                                      0x00FF0000, 0x0000FF00, 
-                                      0x000000FF, 0x0, false, 
+                                      0x00FF0000, 0x0000FF00,
+                                      0x000000FF, 0x0, false,
                                       DataBuffer.TYPE_INT);
 
-            
+
 
             // Create an image with that color model
             BufferedImage tmpSrcBI = new BufferedImage
                 (cm, cm.createCompatibleWritableRaster(wr.getWidth(),
-                                                       wr.getHeight()), 
+                                                       wr.getHeight()),
                  cm.isAlphaPremultiplied(), null);
 
-            // Copy the color data (no alpha) to that image 
+            // Copy the color data (no alpha) to that image
             // (dividing out alpha if needed).
             GraphicsUtil.copyData(srcBI, tmpSrcBI);
 
@@ -359,7 +358,7 @@ public class ConvolveMatrixRable8Bit
             // an alpha channel.
 
             // Create the Raster (note we are using 'cm' again).
-            WritableRaster dstWR = 
+            WritableRaster dstWR =
                 Raster.createWritableRaster
                 (cm.createCompatibleSampleModel(wr.getWidth(), wr.getHeight()),
                  destBI.getRaster().getDataBuffer(),
@@ -368,7 +367,7 @@ public class ConvolveMatrixRable8Bit
             // Create the BufferedImage.
             BufferedImage tmpDstBI = new BufferedImage
                 (cm, dstWR, cm.isAlphaPremultiplied(), null);
-            
+
             // Filter between the two image without alpha.
             tmpDstBI = op.filter(tmpSrcBI, tmpDstBI);
 
@@ -385,12 +384,12 @@ public class ConvolveMatrixRable8Bit
                                   destBI.getRaster(), dstRect,
                                   destBI.getRaster().getNumBands()-1);
         }
-        
+
         // Wrap it as a CachableRed
         cr = new BufferedImageCachableRed(destBI, destX, destY);
-        
+
         // org.apache.batik.test.gvt.ImageDisplay.printImage
-        //     ("Cropped Image", cr, 
+        //     ("Cropped Image", cr,
         //      new Rectangle(cr.getMinX()+22,cr.getMinY()+38,5,5));
         // org.apache.batik.test.gvt.ImageDisplay.printImage
         //     ("Cropped sRGB", GraphicsUtil.convertTosRGB(cr),
@@ -402,9 +401,9 @@ public class ConvolveMatrixRable8Bit
         // If we need to scale/rotate/translate the result do so now...
         if (!resAt.isIdentity())
             cr = new AffineRed(cr, resAt, null);
-        
+
         // return the result.
         return cr;
     }
-    
+
 }

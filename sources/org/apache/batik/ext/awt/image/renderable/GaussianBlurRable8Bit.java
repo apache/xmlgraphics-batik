@@ -39,8 +39,9 @@ import org.apache.batik.ext.awt.image.rendered.GaussianBlurRed8Bit;
  * @version $Id$
  */
 public class GaussianBlurRable8Bit
-    extends    AbstractColorInterpRable
+    extends    AbstractColorInterpolationRable
     implements GaussianBlurRable {
+
     /**
      * Deviation along the x-axis
      */
@@ -181,7 +182,7 @@ public class GaussianBlurRable8Bit
         AffineTransform resAt;
 
         int outsetX, outsetY;
-        if ((sdx < 10)           && 
+        if ((sdx < 10)           &&
             (sdy < 10)           &&
             eps_eq    (sdx, sdy) &&
             eps_abs_eq(sx/scaleX, sy/scaleY)) {
@@ -202,7 +203,7 @@ public class GaussianBlurRable8Bit
 
             // Limit std dev to 10.  Put any extra into our
             // residual matrix.  This will effectively linearly
-            // interpolate, but with such a large StdDev the 
+            // interpolate, but with such a large StdDev the
             // function is fairly smooth anyway...
             if (sdx > 10) {
                 scaleX = scaleX*10/sdx;
@@ -249,12 +250,12 @@ public class GaussianBlurRable8Bit
         } catch (NoninvertibleTransformException nte) {
             // Grow the region in usr space.
             r = aoi.getBounds2D();
-            r = new Rectangle2D.Double(r.getX()-outsetX/scaleX, 
+            r = new Rectangle2D.Double(r.getX()-outsetX/scaleX,
                                        r.getY()-outsetY/scaleY,
-                                       r.getWidth() +2*outsetX/scaleX, 
+                                       r.getWidth() +2*outsetX/scaleX,
                                        r.getHeight()+2*outsetY/scaleY);
         }
-        
+
         RenderedImage ri;
         ri = getSource().createRendering(new RenderContext(srcAt, r, rh));
         if (ri == null)
@@ -269,12 +270,12 @@ public class GaussianBlurRable8Bit
             // System.out.println("         CR :" + cr.getBounds());
             cr = new PadRed(cr, devRect, PadMode.ZERO_PAD, rh);
         }
-        
+
         cr = new GaussianBlurRed8Bit(cr, sdx, sdy, rh);
 
         if ((resAt != null) && (!resAt.isIdentity()))
             cr = new AffineRed(cr, resAt, rh);
-        
+
         return cr;
     }
 

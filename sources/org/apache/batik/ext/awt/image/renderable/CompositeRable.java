@@ -20,22 +20,23 @@ import org.apache.batik.ext.awt.image.CompositeRule;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public interface CompositeRable extends FilterColorInterp {
-      /**
-       * The sources to be composited togeather.
-       * @param srcs The list of images to be composited by the composite rule.
-       */
+public interface CompositeRable extends FilterColorInterpolation {
+
+    /**
+     * The sources to be composited togeather.
+     * @param srcs The list of images to be composited by the composite rule.
+     */
     public void setSources(List srcs);
 
-      /**
-       * Set the composite rule to use for combining the sources.
-       * @param cr Composite rule to use.
-       */
+    /**
+     * Set the composite rule to use for combining the sources.
+     * @param cr Composite rule to use.
+     */
     public void setCompositeRule(CompositeRule cr);
 
-      /**
-       * Get the composite rule in use for combining the sources.
-       * @return Composite rule currently in use.
-       */
+    /**
+     * Get the composite rule in use for combining the sources.
+     * @return Composite rule currently in use.
+     */
     public CompositeRule getCompositeRule();
 }

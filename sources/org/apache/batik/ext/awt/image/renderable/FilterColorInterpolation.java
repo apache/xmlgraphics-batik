@@ -18,22 +18,22 @@ import java.awt.color.ColorSpace;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public interface FilterColorInterp extends Filter {
+public interface FilterColorInterpolation extends Filter {
 
     /**
      * Returns true if this operation is to be performed in
      * the linear sRGB colorspace, returns false if the
      * operation is performed in gamma corrected sRGB.
      */
-    public boolean isCSLinear();
+    public boolean isColorSpaceLinear();
 
     /**
      * Sets the colorspace the operation will be performed in.
      * @param csLinear if true this operation will be performed in the
      * linear sRGB colorspace, if false the operation will be performed in
-     * gamma corrected sRGB.  
+     * gamma corrected sRGB.
      */
-    public void setCSLinear(boolean csLinear);
+    public void setColorSpaceLinear(boolean csLinear);
 
     /**
      * Returns the ColorSpace that the object will perform

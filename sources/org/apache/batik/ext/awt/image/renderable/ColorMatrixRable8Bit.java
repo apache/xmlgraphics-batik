@@ -22,7 +22,7 @@ import org.apache.batik.ext.awt.image.rendered.ColorMatrixRed;
  * @version $Id$
  */
 public class ColorMatrixRable8Bit
-    extends  AbstractColorInterpRable
+    extends    AbstractColorInterpolationRable
     implements ColorMatrixRable {
     /**
      * Predefined luminanceToAlpha matrix

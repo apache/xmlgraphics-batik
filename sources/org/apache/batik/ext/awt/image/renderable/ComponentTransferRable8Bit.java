@@ -27,14 +27,14 @@ import org.apache.batik.ext.awt.image.LinearTransfer;
 import org.apache.batik.ext.awt.image.GammaTransfer;
 
 /**
- * This class implements the interface expected from a component 
+ * This class implements the interface expected from a component
  * transfer operation.
- * 
+ *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class ComponentTransferRable8Bit 
-    extends AbstractColorInterpRable
+public class ComponentTransferRable8Bit
+    extends    AbstractColorInterpolationRable
     implements ComponentTransferRable {
 
     public static final int ALPHA = 0;
@@ -46,14 +46,14 @@ public class ComponentTransferRable8Bit
      * Array of transfer functions. There are four
      * elements. Elements may be null.
      */
-    private ComponentTransferFunction 
+    private ComponentTransferFunction
         functions[] = new ComponentTransferFunction[4];
 
     /**
      * Array of transfer functions. Elements are computed
      * lazily.
      */
-    private TransferFunction 
+    private TransferFunction
         txfFunc[] = new TransferFunction[4];
 
     public ComponentTransferRable8Bit(Filter src,
@@ -151,13 +151,13 @@ public class ComponentTransferRable8Bit
         if(srcRI == null)
             return null;
 
-        return new ComponentTransferRed(convertSourceCS(srcRI), 
+        return new ComponentTransferRed(convertSourceCS(srcRI),
                                         getTransferFunctions(),
                                         rc.getRenderingHints());
     }
 
     /**
-     * Builds an array of transfer functions for the 
+     * Builds an array of transfer functions for the
      * ComponentTransferOp.
      */
     private TransferFunction[] getTransferFunctions(){

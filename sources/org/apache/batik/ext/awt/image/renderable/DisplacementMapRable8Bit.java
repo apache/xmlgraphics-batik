@@ -40,9 +40,10 @@ import org.apache.batik.ext.awt.image.rendered.AffineRed;
  * @author <a href="mailto:sheng.pei@eng.sun.com>Sheng Pei</a>
  * @version $Id$
  */
-public class DisplacementMapRable8Bit 
-    extends AbstractColorInterpRable
-    implements DisplacementMapRable{
+public class DisplacementMapRable8Bit
+    extends    AbstractColorInterpolationRable
+    implements DisplacementMapRable {
+
     /**
      * Displacement scale factor
      */
@@ -61,9 +62,9 @@ public class DisplacementMapRable8Bit
     private ARGBChannel yChannelSelector;
 
     public DisplacementMapRable8Bit(List sources,
-                                        double scale,
-                                        ARGBChannel xChannelSelector,
-                                        ARGBChannel yChannelSelector){
+                                    double scale,
+                                    ARGBChannel xChannelSelector,
+                                    ARGBChannel yChannelSelector){
         setSources(sources);
         setScale(scale);
         setXChannelSelector(xChannelSelector);
@@ -90,7 +91,7 @@ public class DisplacementMapRable8Bit
     }
 
     /**
-     * Sets this filter sources. 
+     * Sets this filter sources.
      */
     public void setSources(List sources){
         if(sources.size() != 2){
@@ -153,8 +154,8 @@ public class DisplacementMapRable8Bit
         // update the current affine transform
         AffineTransform at = rc.getTransform();
 
-        // This splits out the scale from the rest of 
-        // the transformation. 
+        // This splits out the scale from the rest of
+        // the transformation.
         double sx = at.getScaleX();
         double sy = at.getScaleY();
 
@@ -178,7 +179,7 @@ public class DisplacementMapRable8Bit
         if ((scaleX == 0) && (scaleY == 0))
             return displaced.createRendering(rc);
 
-        
+
         AffineTransform srcAt
             = AffineTransform.getScaleInstance(atScaleX, atScaleY);
 
@@ -237,8 +238,8 @@ public class DisplacementMapRable8Bit
         // ensure map isn't pre-multiplied.
         GraphicsUtil.coerceData((WritableRaster)mapRas, mapCM, false);
 
-        
-        DisplacementMapOp op 
+
+        DisplacementMapOp op
             = new DisplacementMapOp(xChannelSelector,
                                     yChannelSelector,
                                     scaleX, scaleY,
@@ -247,7 +248,7 @@ public class DisplacementMapRable8Bit
         WritableRaster destRas = op.filter(displacedRas, null);
         destRas = destRas.createWritableTranslatedChild(0,0);
 
-        BufferedImage destBI = new BufferedImage(disCM, destRas, 
+        BufferedImage destBI = new BufferedImage(disCM, destRas,
                                                  disCM.isAlphaPremultiplied(),
                                                  null);
         //
@@ -262,7 +263,7 @@ public class DisplacementMapRable8Bit
         final int minX = mapRed.getMinX();
         final int minY = mapRed.getMinY();
 
-        CachableRed cr 
+        CachableRed cr
             = new BufferedImageCachableRed(destBI, minX, minY);
 
         if(!resAt.isIdentity()){

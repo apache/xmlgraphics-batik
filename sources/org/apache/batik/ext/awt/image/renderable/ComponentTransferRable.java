@@ -11,24 +11,25 @@ package org.apache.batik.ext.awt.image.renderable;
 import org.apache.batik.ext.awt.image.ComponentTransferFunction;
 
 /**
- * Defines the interface expected from a component 
+ * Defines the interface expected from a component
  * transfer operation.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public interface ComponentTransferRable extends FilterColorInterp {
+public interface ComponentTransferRable extends FilterColorInterpolation {
+
     /**
      * Returns the source to be offset.
      */
     public Filter getSource();
-    
+
     /**
      * Sets the source to be offset.
      * @param src image to offset.
      */
     public void setSource(Filter src);
-    
+
     /**
      * Returns the transfer function for the alpha channel
      */

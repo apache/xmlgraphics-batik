@@ -16,7 +16,7 @@ import java.awt.geom.Rectangle2D;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public interface TurbulenceRable extends FilterColorInterp {
+public interface TurbulenceRable extends FilterColorInterpolation {
 
     /**
      * Sets the turbulence region
@@ -25,30 +25,30 @@ public interface TurbulenceRable extends FilterColorInterp {
     public void setTurbulenceRegion(Rectangle2D turbulenceRegion);
 
     /**
-     * Get the turbulence region
+     * Gets the turbulence region
      */
      public Rectangle2D getTurbulenceRegion();
 
     /**
-     * Get the current seed value for the pseudo random number generator.
+     * Gets the current seed value for the pseudo random number generator.
      * @return The current seed value for the pseudo random number generator.
      */
     public int getSeed();
 
     /**
-     * Get the current base fequency in x direction.
+     * Gets the current base fequency in x direction.
      * @return The current base fequency in x direction.
      */
     public double getBaseFrequencyX();
 
     /**
-     * Get the current base fequency in y direction.
+     * Gets the current base fequency in y direction.
      * @return The current base fequency in y direction.
      */
     public double getBaseFrequencyY();
 
     /**
-     * Get the current number of octaves for the noise function .
+     * Gets the current number of octaves for the noise function .
      * @return The current number of octaves for the noise function .
      */
     public int getNumOctaves();
@@ -68,31 +68,31 @@ public interface TurbulenceRable extends FilterColorInterp {
     public boolean isFractalNoise();
 
     /**
-     * Set the seed value for the pseudo random number generator.
+     * Sets the seed value for the pseudo random number generator.
      * @param seed The new seed value for the pseudo random number generator.
      */
     public void setSeed(int seed);
 
     /**
-     * Set the base fequency in x direction.
+     * Sets the base fequency in x direction.
      * @param xfreq The new base fequency in x direction.
      */
     public void setBaseFrequencyX(double xfreq);
 
     /**
-     * Set the base fequency in y direction.
+     * Sets the base fequency in y direction.
      * @param yfreq The new base fequency in y direction.
      */
     public void setBaseFrequencyY(double yfreq);
 
     /**
-     * Set the number of octaves for the noise function .
+     * Sets the number of octaves for the noise function .
      * @param numOctaves The new number of octaves for the noise function .
      */
     public void setNumOctaves(int numOctaves);
 
     /**
-     * Set stitching state for tiles.
+     * Sets stitching state for tiles.
      * @param stitched true if the turbulence operator should stitch tiles.
      */
     public void setStitched(boolean stitched);
