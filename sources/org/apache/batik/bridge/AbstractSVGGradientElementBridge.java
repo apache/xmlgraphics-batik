@@ -11,8 +11,6 @@ package org.apache.batik.bridge;
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.geom.AffineTransform;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +19,7 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -189,21 +188,18 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
             }
             // check if there is circular dependencies
             SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
-            URL url;
-            try {
-                url = new URL(doc.getURLObject(), uri);
-            } catch (MalformedURLException ex) {
+            ParsedURL purl = new ParsedURL(doc.getURL(), uri);
+            if (!purl.complete())
                 throw new BridgeException(paintElement,
                                           ERR_URI_MALFORMED,
                                           new Object[] {uri});
 
-            }
-            if (contains(refs, url)) {
+            if (contains(refs, purl)) {
                 throw new BridgeException(paintElement,
                                           ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                                           new Object[] {uri});
             }
-            refs.add(url);
+            refs.add(purl);
             paintElement = ctx.getReferencedElement(paintElement, uri);
         }
     }
@@ -256,13 +252,11 @@ public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
      * @param urls the list of URLs
      * @param key the url to search for
      */
-    private static boolean contains(List urls, URL key) {
+    private static boolean contains(List urls, ParsedURL key) {
         Iterator iter = urls.iterator();
         while (iter.hasNext()) {
-            URL url = (URL)iter.next();
-            if (url.sameFile(key) && url.getRef().equals(key.getRef())) {
+            if (key.equals(iter.next()))
                 return true;
-            }
         }
         return false;
     }

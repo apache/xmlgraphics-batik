@@ -767,53 +767,33 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      */
     public GVTLineMetrics getLineMetrics(CharacterIterator ci, int beginIndex,
                                          int limit, FontRenderContext frc) {
-
-        // first create the character iterator that represents the subset
-        // from beginIndex to limit
-        String s = "";
-        char c = ci.setIndex(beginIndex);
-        int currentIndex = beginIndex;
-
-        while (c != ci.DONE && currentIndex < limit) {
-            s += c;
-            currentIndex++;
-            c = ci.next();
-        }
-
-        StringCharacterIterator sci = new StringCharacterIterator(s);
-        GVTGlyphVector gv = createGlyphVector(frc, sci);
-
         float fontHeight = fontFace.getUnitsPerEm();
         float scale = fontSize/fontHeight;
 
         float ascent = fontFace.getAscent() * scale;
         float descent = fontFace.getDescent() * scale;
 
-        int numGlyphs = gv.getNumGlyphs();
-
-        float[] baselineOffsets = new float[numGlyphs];
-        for (int i = 0; i < numGlyphs; i++) {
-            baselineOffsets[i] =
-                (float)( gv.getGlyphMetrics(i).getBounds2D().getMaxY()
-                         - gv.getGlyphPosition(i).getY());
-        }
+        float[] baselineOffsets = new float[3];
+        baselineOffsets[Font.ROMAN_BASELINE]   = 0;
+        baselineOffsets[Font.CENTER_BASELINE]  = (ascent+descent)/2-ascent;
+        baselineOffsets[Font.HANGING_BASELINE] = -ascent;
 
         float strikethroughOffset = fontFace.getStrikethroughPosition() *
             -scale;
         float strikethroughThickness = fontFace.getStrikethroughThickness() *
             scale;
-        float underlineOffset = fontFace.getUnderlinePosition() * scale;
+        float underlineOffset    = fontFace.getUnderlinePosition()  * scale;
         float underlineThickness = fontFace.getUnderlineThickness() * scale;
-        float overlineOffset = fontFace.getOverlinePosition() * -scale;
-        float overlineThickness = fontFace.getOverlineThickness() * scale;
+        float overlineOffset     = fontFace.getOverlinePosition()   * -scale;
+        float overlineThickness  = fontFace.getOverlineThickness()  * scale;
 
 
         return new GVTLineMetrics(ascent, Font.ROMAN_BASELINE,
                                   baselineOffsets, descent, fontHeight,
-                                  fontHeight, numGlyphs, strikethroughOffset,
-                                  strikethroughThickness, underlineOffset,
-                                  underlineThickness, overlineOffset,
-                                  overlineThickness);
+                                  fontHeight, limit-beginIndex, 
+                                  strikethroughOffset, strikethroughThickness,
+                                  underlineOffset, underlineThickness, 
+                                  overlineOffset, overlineThickness);
     }
 
     /**

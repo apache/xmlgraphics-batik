@@ -66,7 +66,7 @@ public interface ErrorConstants {
      * {0} = the uri
      */
     public static final String ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES
-        = "xlink:href.circularDependencies";
+        = "xlink.href.circularDependencies";
 
     /**
      * The error code when the bridge try to load a URI

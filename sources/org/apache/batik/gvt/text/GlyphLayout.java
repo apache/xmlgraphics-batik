@@ -2214,8 +2214,12 @@ public class GlyphLayout implements TextSpanLayout {
             gv.setGlyphPosition(i, new Point2D.Float(x, y));
         }
 
-        float x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
-        float y = lineLoc.y + (gp[2*i+1]-yOrig);
+        float x = xOrig;
+        float y = yOrig;
+        if (lineLoc != null) {
+            x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
+            y = lineLoc.y + (gp[2*i+1]-yOrig);
+        }
         gv.setGlyphPosition(i, new Point2D.Float(x, y));
     }
 }

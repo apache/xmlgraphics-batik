@@ -12,14 +12,14 @@ import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.color.NamedProfileCache;
+
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -94,13 +94,13 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
         String href = XLinkSupport.getXLinkHref(profile);
         ICC_Profile p = null;
         if (href != null) {
-            try{
-                URL baseURL = ((SVGOMDocument)doc).getURLObject();
-                URL url = new URL(baseURL, href);
-                p = ICC_Profile.getInstance(url.openStream());
-            } catch(MalformedURLException e) {
+            String baseURI= ((SVGOMDocument)doc).getURL();
+            ParsedURL purl = new ParsedURL(baseURI, href);
+            if (!purl.complete()) 
                 throw new BridgeException(paintedElement, ERR_URI_MALFORMED,
                                           new Object[] {href});
+            try{
+                p = ICC_Profile.getInstance(purl.openStream());
             } catch(IOException e) {
                 throw new BridgeException(paintedElement, ERR_URI_IO,
                                           new Object[] {href});

@@ -10,7 +10,6 @@ package org.apache.batik.bridge;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
