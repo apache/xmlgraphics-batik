@@ -22,7 +22,6 @@ import java.util.Vector;
 import java.util.StringTokenizer;
 import org.w3c.dom.Element;
 import org.apache.batik.gvt.text.ArabicTextHandler;
-import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTGlyphVector;
@@ -444,7 +443,9 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
                 if (glyphUnicodes[i].indexOf(c) == 0
                     && languageMatches(glyphLangs[i])
                     && orientationMatches(glyphOrientations[i])
-                    && formMatches(glyphUnicodes[i], glyphForms[i], aci, currentIndex)) {  // found a possible match
+                    && formMatches(glyphUnicodes[i], glyphForms[i], 
+                                   aci, currentIndex)) {  
+                    // found a possible match
 
                     if (glyphUnicodes[i].length() == 1)  { // not a ligature
                         foundMatchingGlyph = true;

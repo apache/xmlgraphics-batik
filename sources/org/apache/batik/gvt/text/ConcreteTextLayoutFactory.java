@@ -27,13 +27,16 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
      * AttributedCharacterIterator.
      *
      * @param aci The character iterator to be laid out
+     * @param charMap Indicates how chars in aci map to original
+     *                text char array.
      * @param offset The offset position for the text layout.
      * @param frc The font render context to use when creating the text layout.
      */
     public TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
+                                           int [] charMap,
                                            Point2D offset,
                                            FontRenderContext frc) {
-        return new GlyphLayout(aci, offset, frc);
+        return new GlyphLayout(aci, charMap, offset, frc);
     }
 }
 

@@ -32,6 +32,8 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
     private AttributedCharacterIterator aci;
     private AttributedCharacterIterator reorderedACI;
     private FontRenderContext frc;
+    private int chunkStart;
+    private int [] newCharOrder;
 
     private final static Map mirroredGlyphs = new HashMap(50);
 
@@ -45,83 +47,138 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
      * @param frc The current font render context
      */
     public BidiAttributedCharacterIterator(AttributedCharacterIterator aci, 
-                                           FontRenderContext           frc) {
+                                           FontRenderContext           frc,
+                                           int chunkStart) {
 
         this.frc = frc;
+        this.chunkStart = chunkStart;
         aci.first();
-
-        TextLayout tl = new TextLayout(aci, frc);
-        int aciBeginIndex = aci.getBeginIndex();
-        int numChars = tl.getCharacterCount();
         AttributedString as = new AttributedString(aci);
-        for (int i = 0; i < numChars; i++) {
-            as.addAttribute
-                (GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL,
-                 new Integer(tl.getCharacterLevel(i)), i, i+1);
+
+
+        // We Just want it to do BIDI for us...
+        // In 1.4 we might be able to use the BIDI class...
+        TextLayout tl = new TextLayout(as.getIterator(), frc);
+
+        int   numChars    = tl.getCharacterCount();
+        int[] charIndices = new int[numChars];
+        int[] charLevels  = new int[numChars];
+
+        int runStart   = 0;
+        int currBiDi   = tl.getCharacterLevel(0);
+        charIndices[0] = 0;
+        charLevels [0] = currBiDi;
+        int maxBiDi    = currBiDi;
+
+        for (int i = 1; i < numChars; i++) {
+            int newBiDi = tl.getCharacterLevel(i);
+            charIndices[i] = i;
+            charLevels [i] = newBiDi;
+
+            if (newBiDi != currBiDi) {
+                as.addAttribute
+                    (GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL,
+                     new Integer(currBiDi), runStart, i);
+                runStart = i;
+                currBiDi  = newBiDi;
+                if (newBiDi > maxBiDi) maxBiDi = newBiDi;
+            }
         }
+        as.addAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL,
+             new Integer(currBiDi), runStart, numChars);
 
         this.aci = as.getIterator();
 
         //  work out the new character order
-        int[] charIndices = new int[numChars];
-        int[] charLevels = new int[numChars];
-        for (int i = 0; i < numChars; i++) {
-            charIndices[i] = i;
-            charLevels[i] = tl.getCharacterLevel(i);
-        }
-        int[] newCharOrder = doBidiReorder(charIndices, charLevels, numChars);
+        newCharOrder = doBidiReorder(charIndices, charLevels, 
+                                           numChars, maxBiDi);
 
         // construct the string in the new order
-        String reorderedString = "";
+        StringBuffer reorderedString = new StringBuffer();
         char c;
         for (int i = 0; i < numChars; i++) {
             c = this.aci.setIndex(newCharOrder[i]);
 
             // check for mirrored char
             int bidiLevel = tl.getCharacterLevel(newCharOrder[i]);
-            if (Math.floor(bidiLevel/2.0) != Math.floor((bidiLevel+1)/2.0)) {
+            if ((bidiLevel & 0x01) != 0) {
                 // bidi level is odd so writing dir is right to left
-                Integer mirrorChar = (Integer)mirroredGlyphs.get(new Integer((int)c));
+                Integer mirrorChar = 
+                    (Integer)mirroredGlyphs.get(new Integer((int)c));
                 if (mirrorChar != null) {
                     // replace with the mirror char
                     c = (char)mirrorChar.intValue();
                 }
             }
 
-            reorderedString += c;
+            reorderedString.append(c);
         }
 
         // construct the reordered ACI
-        AttributedString reorderedAS = new AttributedString(reorderedString);
-        for (int i = 0; i < numChars; i++) {
-            this.aci.setIndex(newCharOrder[i]);
-            Map attributes = this.aci.getAttributes();
-            reorderedAS.addAttributes(attributes, i, i+1);
+        AttributedString reorderedAS 
+            = new AttributedString(reorderedString.toString());
+        Map [] attrs = new Map[numChars];
+        int start=this.aci.getBeginIndex();
+        int end  =this.aci.getEndIndex();
+        int index = start;
+        while (index < end) {
+            this.aci.setIndex(index);
+            Map attrMap = this.aci.getAttributes();
+            int extent = this.aci.getRunLimit();
+            for (int i=index; i<extent; i++)
+                attrs[i-start] = attrMap;
+            index = extent;
         }
+
+        runStart=0;
+        Map prevAttrMap = attrs[newCharOrder[0]];
+        for (int i = 1; i < numChars; i++) {
+            Map attrMap = attrs[newCharOrder[i]];
+            if (attrMap != prevAttrMap) {
+                // Change in attrs set last run...
+                reorderedAS.addAttributes(prevAttrMap, runStart, i);
+                prevAttrMap = attrMap;
+                runStart = i;
+            }
+        }
+        reorderedAS.addAttributes(prevAttrMap, runStart, numChars);
 
         // transfer any position atttributes to the new first char
         this.aci.first();
-        Float x = (Float) this.aci.getAttribute(
-                    GVTAttributedCharacterIterator.TextAttribute.X);
-        Float y = (Float) this.aci.getAttribute(
-                    GVTAttributedCharacterIterator.TextAttribute.Y);
+        Float x = (Float) this.aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.X);
+        Float y = (Float) this.aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.Y);
 
         if (x != null && !x.isNaN()) {
-            reorderedAS.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X,
-                new Float(Float.NaN), newCharOrder[0], newCharOrder[0]+1);
-            reorderedAS.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X, x, 0, 1);
+            reorderedAS.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.X,
+                 new Float(Float.NaN), newCharOrder[0], newCharOrder[0]+1);
+            reorderedAS.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.X, x, 0, 1);
         }
         if (y != null && !y.isNaN()) {
-            reorderedAS.addAttribute(GVTAttributedCharacterIterator.TextAttribute.Y,
-                new Float(Float.NaN), newCharOrder[0], newCharOrder[0]+1);
-            reorderedAS.addAttribute(GVTAttributedCharacterIterator.TextAttribute.Y, y, 0, 1);
+            reorderedAS.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.Y,
+                 new Float(Float.NaN), newCharOrder[0], newCharOrder[0]+1);
+            reorderedAS.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.Y, y, 0, 1);
         }
 
         // assign arabic form attributes to any arabic chars in the string
         reorderedAS = ArabicTextHandler.assignArabicForms(reorderedAS);
 
+        // Shift the values to match the source text string...
+        for (int i=0; i<newCharOrder.length; i++) {
+            newCharOrder[i] += chunkStart;
+        }
         reorderedACI = reorderedAS.getIterator();
     }
+
+    // Returns an array that give the character index in the source ACI for
+    // each character in this ACI.
+    public int[] getCharMap() { return newCharOrder; }
 
     /**
      * Calculates the display order of the characters based on the specified
@@ -133,32 +190,19 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
      *
      * @return An array contianing the reordered character indices.
      */
-    private int[] doBidiReorder(int[] charIndices, int[] charLevels, int numChars) {
+    private int[] doBidiReorder(int[] charIndices, int[] charLevels, 
+                                int numChars, int highestLevel) {
+        if (highestLevel == 0) return charIndices;
 
-        // check if all levels are 0, if so then just return the current charIndicies
-        boolean allZero = true;
-        int highestLevel = 0;
-        for (int i = 0; i < numChars; i++) {
-            if (charLevels[i] != 0) {
-                allZero = false;
-            }
-            if (charLevels[i] > highestLevel) {
-                highestLevel = charLevels[i];
-            }
-        }
-
-        if (allZero) {
-            return charIndices;
-        }
-
-        // find all groups of chars at the highest level and reverse their order
+        // find all groups of chars at the highest level and reverse
+        // their order
         int currentIndex = 0;
         while (currentIndex < numChars) {
 
             // find the first char at the highest index
-            while (currentIndex < numChars && charLevels[currentIndex] < highestLevel) {
+            while ((currentIndex < numChars) && 
+                   (charLevels[currentIndex] < highestLevel)) {
                 currentIndex++;
-                if (currentIndex == numChars) break;
             }
             if (currentIndex == numChars) {
                 // have reached the end of the string
@@ -166,24 +210,31 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
             }
             int startIndex = currentIndex;
 
+            currentIndex++;
             // now find the index where the run at the highestLevel end
-            while (currentIndex < numChars && charLevels[currentIndex] == highestLevel) {
+            while ((currentIndex < numChars) && 
+                   (charLevels[currentIndex] == highestLevel)) {
                 currentIndex++;
-                if (currentIndex == numChars) break;
             }
-            int endIndex = currentIndex - 1;
+            int endIndex = currentIndex-1;
 
             // now reverse the chars between startIndex and endIndex
-            int[] temp = new int[endIndex-startIndex+1];
-            for (int i = endIndex; i >= startIndex; i--) {
-                temp[endIndex-i] = charIndices[i];
-                charLevels[i]--;
-            }
-            for (int i = 0; i < temp.length; i++) {
-                charIndices[startIndex+i] = temp[i];
+
+            // Calculate the middle of the swap region, we include
+            // the middle char when region is an odd number of 
+            // chars wide so we properly decriment it's charLevel.
+            int middle = ((endIndex-startIndex)>>1)+1;
+            int tmp;
+            for (int i = 0; i<middle; i++) {
+                tmp = charIndices[startIndex+i];
+                charIndices[startIndex+i] = charIndices[endIndex-i];
+                charIndices[endIndex  -i] = tmp;
+
+                charLevels [startIndex+i] = highestLevel-1;
+                charLevels [endIndex  -i] = highestLevel-1;
             }
         }
-        return doBidiReorder(charIndices, charLevels, numChars);
+        return doBidiReorder(charIndices, charLevels, numChars, highestLevel-1);
     }
 
 
@@ -269,7 +320,8 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
      * Creates a copy of this iterator.
      */
     public Object clone() {
-        return new BidiAttributedCharacterIterator((AttributedCharacterIterator)aci.clone(), frc);
+        return new BidiAttributedCharacterIterator
+            ((AttributedCharacterIterator)aci.clone(), frc, chunkStart);
     }
 
     /**

@@ -688,63 +688,67 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
         // Fill
         Paint p = PaintServer.convertFillPaint(element, node, ctx);
-        as.addAttribute(TextAttribute.FOREGROUND, p, firstChar, lastChar+1);
+        as.addAttribute(TextAttribute.FOREGROUND, p, 
+                        firstChar, lastChar+1);
 
         // Stroke Paint
         Paint sp = PaintServer.convertStrokePaint(element, node, ctx);
-        as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT,
-                            sp, firstChar, lastChar+1);
+        as.addAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT,
+             sp, firstChar, lastChar+1);
 
         // Stroke
         Stroke stroke = PaintServer.convertStroke(element, ctx);
-        as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.STROKE,
-                            stroke, firstChar, lastChar+1);
+        as.addAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.STROKE,
+             stroke, firstChar, lastChar+1);
 
         // Text decoration
         if (textDecoration != null) {
+            as.addAttribute(GVTAttributedCharacterIterator.
+                            TextAttribute.UNDERLINE_PAINT, 
+                            textDecoration.underlinePaint,
+                            firstChar, lastChar+1);
 
             as.addAttribute(GVTAttributedCharacterIterator.
-                TextAttribute.UNDERLINE_PAINT, textDecoration.underlinePaint,
-                firstChar, lastChar+1);
+                            TextAttribute.UNDERLINE_STROKE_PAINT,
+                            textDecoration.underlineStrokePaint,
+                            firstChar, lastChar+1);
+            
+            as.addAttribute(GVTAttributedCharacterIterator.
+                            TextAttribute.UNDERLINE_STROKE,
+                            textDecoration.underlineStroke,
+                            firstChar, lastChar+1);
 
             as.addAttribute(GVTAttributedCharacterIterator.
-                TextAttribute.UNDERLINE_STROKE_PAINT,
-                textDecoration.underlineStrokePaint,
-                firstChar, lastChar+1);
+                            TextAttribute.OVERLINE_PAINT, 
+                            textDecoration.overlinePaint,
+                            firstChar, lastChar+1);
 
             as.addAttribute(GVTAttributedCharacterIterator.
-                TextAttribute.UNDERLINE_STROKE,
-                textDecoration.underlineStroke,
-                firstChar, lastChar+1);
+                            TextAttribute.OVERLINE_STROKE_PAINT,
+                            textDecoration.overlineStrokePaint,
+                            firstChar, lastChar+1);
 
             as.addAttribute(GVTAttributedCharacterIterator.
-                TextAttribute.OVERLINE_PAINT, textDecoration.overlinePaint,
-                firstChar, lastChar+1);
+                            TextAttribute.OVERLINE_STROKE,
+                            textDecoration.overlineStroke,
+                            firstChar, lastChar+1);
 
             as.addAttribute(GVTAttributedCharacterIterator.
-                TextAttribute.OVERLINE_STROKE_PAINT,
-                textDecoration.overlineStrokePaint,
-                firstChar, lastChar+1);
+                            TextAttribute.STRIKETHROUGH_PAINT,
+                            textDecoration.strikethroughPaint,
+                            firstChar, lastChar+1);
+            
+            as.addAttribute(GVTAttributedCharacterIterator.
+                            TextAttribute.STRIKETHROUGH_STROKE_PAINT,
+                            textDecoration.strikethroughStrokePaint,
+                            firstChar, lastChar+1);
 
             as.addAttribute(GVTAttributedCharacterIterator.
-                TextAttribute.OVERLINE_STROKE,
-                textDecoration.overlineStroke,
-                firstChar, lastChar+1);
-
-            as.addAttribute(GVTAttributedCharacterIterator.
-                TextAttribute.STRIKETHROUGH_PAINT,
-                textDecoration.strikethroughPaint,
-                firstChar, lastChar+1);
-
-            as.addAttribute(GVTAttributedCharacterIterator.
-                TextAttribute.STRIKETHROUGH_STROKE_PAINT,
-                textDecoration.strikethroughStrokePaint,
-                firstChar, lastChar+1);
-
-            as.addAttribute(GVTAttributedCharacterIterator.
-                TextAttribute.STRIKETHROUGH_STROKE,
-                textDecoration.strikethroughStroke,
-                firstChar, lastChar+1);
+                            TextAttribute.STRIKETHROUGH_STROKE,
+                            textDecoration.strikethroughStroke,
+                            firstChar, lastChar+1);
         }
 
         // do the same for each child element
