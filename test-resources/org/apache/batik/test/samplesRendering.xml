@@ -352,7 +352,6 @@
         <test id="samples/tests/spec/scripting/trefProperties.svg" />
         <test id="samples/tests/spec/scripting/tspan.svg" />
         <test id="samples/tests/spec/scripting/tspanProperties.svg" />
-        <test id="samples/tests/spec/scripting/use.svg" />
         <test id="samples/tests/spec/scripting/visibility.svg" />
         <test id="samples/tests/spec/scripting/viewBoxOnLoad.svg" />
         <test id="samples/tests/spec/scripting/xyModifOnLoad.svg" />

@@ -39,6 +39,7 @@
         <!-- <test id="samples/tests/spec/scripting/removeLast.svg" /> -->
         <test id="samples/tests/spec/scripting/svg.svg" />
         <test id="samples/tests/spec/scripting/svg2.svg" />
+        <test id="samples/tests/spec/scripting/use.svg" />
     </testGroup>
 
 </testSuite>
