@@ -233,7 +233,7 @@
           </tr>
           <tr>
             <td>Swing Components</td><td/><td/><td/><td>X</td>
-                                <td/><td/><td/><td/>
+                                <td/><td/><td>X</td><td/>
           </tr>
           <tr>
             <td>Rasterizer</td><td/><td/><td/><td/>
@@ -241,7 +241,7 @@
           </tr>
           <tr>
             <td>Browser</td><td/><td/><td/><td>X</td>
-                            <td/><td/><td/><td/>
+                            <td/><td/><td>X</td><td/>
           </tr>
         </table>
       </s1>
