@@ -207,6 +207,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     protected Rectangle2D getGlobalBounds() {
         if (root == null) {
+            // <!> FIXME : remove this when we can ask getBounds on composite
             return null;
         }
         Rectangle2D r = getBounds();
