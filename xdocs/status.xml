@@ -46,10 +46,10 @@
             static and dynamic SVG tests separately.
             </p>
            <p>
-            Static ratings : passed: 91, not passed: 3 (Total: 91/94)
+            Static ratings : passed: 93, not passed: 0 (Total: 93/93)
            </p>
            <p>
-            Dynamic ratings : passed: 5, not passed 27 (Total: 5/32)
+            Dynamic ratings : passed: 5, not passed 28 (Total: 5/33)
            </p>
         </s1>
 
@@ -463,6 +463,15 @@
 	      <td >&nbsp;</td>
 	    </tr>
 
+	    <tr>
+	      <td >metadata-sample-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+
+	    <tr>
+	      <td >text-decoration-BE-12.svg</td>
+	      <td >Issue with underline inheritance.</td>
+	    </tr>
 
         </table>
         </s2>
@@ -496,28 +505,15 @@
 
     <s1 title="Tests Not Passed by Batik">
        <s2 title="Static">
-        <table>
-	    <tr>
-	      <td >text-decoration-BE-12.svg</td>
-	      <td >Issue with underline inheritance.</td>
-	    </tr>
+    </s2>
 
+    <s2 title="Dynamic">
+        <table>
 	    <tr>
 	      <td >extend-multiNS-BE-01.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
 
-
-	    <tr>
-	      <td >metadata-sample-BE-01.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-
-        </table>
-    </s2>
-
-    <s2 title="Dynamic">
-        <table>
 	    <tr>
 	      <td >animation-add-BE-09.svg</td>
 	      <td >&nbsp;</td>
