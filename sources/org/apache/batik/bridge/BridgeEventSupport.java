@@ -324,8 +324,8 @@ class BridgeEventSupport implements SVGConstants {
         }
         public void mouseDragged(GraphicsNodeMouseEvent evt) {
             GraphicsNode node = evt.getRelatedNode();
+            GraphicsNodeMouseEvent evt2 = null;
             if (lastTarget != node) {
-                GraphicsNodeMouseEvent evt2 = null;
                 if (lastTarget != null) {
                     evt2 = new GraphicsNodeMouseEvent(lastTarget,
                                                       evt.MOUSE_EXITED,
@@ -354,7 +354,19 @@ class BridgeEventSupport implements SVGConstants {
                 }
             }
             try {
-                dispatchMouseEvent("mousemove", evt, true);
+                if (node != null) {
+                    evt2 = new GraphicsNodeMouseEvent(node,
+                                                      evt.MOUSE_MOVED,
+                                                      evt.getWhen(),
+                                                      evt.getModifiers(),
+                                                      evt.getX(),
+                                                      evt.getY(),
+                                                      evt.getClickCount(),
+                                                      null);
+                    dispatchMouseEvent("mousemove",
+                                       evt2,
+                                       true);
+                }
             } finally {
                 lastTarget = node;
             }
