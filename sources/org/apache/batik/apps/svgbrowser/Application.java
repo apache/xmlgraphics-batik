@@ -58,4 +58,11 @@ public interface Application {
      * @return null if no user style sheet was specified.
      */
     String getUserStyleSheetURI();
+
+    /**
+     * Returns the CSS media to use.
+     * @return empty string if no CSS media was specified.
+     */
+    String getMedia();
+
 }

@@ -47,6 +47,7 @@ import org.apache.batik.ext.swing.JGridBagPanel;
 import org.apache.batik.ext.swing.GridBagConstants;
 
 import org.apache.batik.util.PreferenceManager;
+import org.apache.batik.util.gui.CSSMediaPanel;
 import org.apache.batik.util.gui.LanguageDialog;
 import org.apache.batik.util.gui.UserStyleDialog;
 
@@ -177,6 +178,10 @@ public class PreferenceDialog extends JDialog
     public static final String PREFERENCE_KEY_PROXY_HOST
         = "preference.key.proxy.host";
 
+
+    public static final String PREFERENCE_KEY_CSS_MEDIA
+        = "preference.key.cssmedia";
+
     public static final String PREFERENCE_KEY_PROXY_PORT
         = "preference.key.proxy.port";
 
@@ -210,6 +215,8 @@ public class PreferenceDialog extends JDialog
     protected JCheckBox enableDoubleBuffering;
 
     protected JTextField host, port;
+
+    protected CSSMediaPanel cssMediaPanel;
 
     /**
      * Code indicating whether the dialog was OKayed
@@ -272,6 +279,10 @@ public class PreferenceDialog extends JDialog
         host.setText(model.getString(PREFERENCE_KEY_PROXY_HOST));
         port.setText(model.getString(PREFERENCE_KEY_PROXY_PORT));
 
+	//
+	// Initialize the CSS media
+	//
+	cssMediaPanel.setMedia(model.getString(PREFERENCE_KEY_CSS_MEDIA));
         //
         // Sets the dialog's title
         //
@@ -298,6 +309,8 @@ public class PreferenceDialog extends JDialog
                         host.getText());
         model.setString(PREFERENCE_KEY_PROXY_PORT,
                         port.getText());
+        model.setString(PREFERENCE_KEY_CSS_MEDIA,
+                        cssMediaPanel.getMediaAsString());
     }
 
     /**
@@ -434,8 +447,16 @@ public class PreferenceDialog extends JDialog
     }
 
     protected Component buildUserStyleSheet(){
+	JPanel panel = new JPanel(new BorderLayout());
+	panel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+
         userStylesheetPanel = new UserStyleDialog.Panel();
-        return userStylesheetPanel;
+	panel.add(userStylesheetPanel, BorderLayout.NORTH);
+
+	cssMediaPanel = new CSSMediaPanel();
+	panel.add(cssMediaPanel, BorderLayout.SOUTH);
+
+        return panel;
     }
 
     protected Component buildUserFont(){
