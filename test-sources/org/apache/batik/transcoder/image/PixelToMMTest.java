@@ -69,7 +69,7 @@ public class PixelToMMTest extends AbstractImageTranscoderTest {
     /**
      * Returns the reference image for this test.
      */
-    protected BufferedImage getReferenceImage() {
-	return createBufferedImage(resolveURL(refImageURI));
+    protected byte [] getReferenceImageData() {
+	return createBufferedImageData(resolveURL(refImageURI));
     }
 }
