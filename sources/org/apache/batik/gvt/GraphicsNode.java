@@ -58,6 +58,11 @@ public interface GraphicsNode {
     AffineTransform getTransform();
 
     /**
+     * Returns the inverse transform for this node.
+     */
+    AffineTransform getInverseTransform();
+
+    /**
      * Returns the concatenated transform of this node. i.e., this
      * node's transform preconcatenated with it's parent's transforms.
      */

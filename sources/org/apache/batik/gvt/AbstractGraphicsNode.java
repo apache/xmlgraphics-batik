@@ -68,6 +68,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
     protected AffineTransform transform;
 
     /**
+     * The inverse transform for this node, i.e., from parent node
+     * to this node.
+     */
+    protected AffineTransform inverseTransform;
+
+    /**
      * The compositing operation to be used when a graphics node is
      * painted on top of another one.
      */
@@ -135,6 +141,19 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
     public void setTransform(AffineTransform newTransform) {
         invalidateGeometryCache();
         this.transform = newTransform;
+        if(transform.getDeterminant() != 0){
+            try{
+                inverseTransform = transform.createInverse();
+            }catch(NoninvertibleTransformException e){
+                // Should never happen.
+                throw new Error();
+            }
+        }
+        else{
+            // The transform is not invertible. Use the same
+            // transform.
+            inverseTransform = transform;
+        }
     }
 
     /**
@@ -142,6 +161,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
      */
     public AffineTransform getTransform() {
         return transform;
+    }
+
+    /**
+     * Returns the inverse transform of this node
+     */
+    public AffineTransform getInverseTransform(){
+        return inverseTransform;
     }
 
     /**
