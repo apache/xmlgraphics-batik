@@ -41,6 +41,13 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new SVGAElementBridge();
+    }
+
+    /**
      * Creates a <tt>CompositeGraphicsNode</tt>.
      */
     protected GraphicsNode instantiateGraphicsNode() {
