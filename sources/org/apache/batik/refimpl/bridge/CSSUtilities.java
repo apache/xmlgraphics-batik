@@ -26,6 +26,8 @@ import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.bridge.MaskBridge;
 import org.apache.batik.bridge.PaintBridge;
 
+import org.apache.batik.dom.svg.SVGOMDocument;
+
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GVTFactory;
@@ -53,6 +55,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSValueList;
 import org.w3c.dom.css.RGBColor;
+import org.w3c.dom.css.ViewCSS;
 
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
@@ -168,7 +171,7 @@ public class CSSUtilities implements SVGConstants {
             
          Element clipPathElement = null;
          try {
-             clipPathElement = ur.importElement(uriString, false);
+             clipPathElement = ur.getElement(uriString);
          } catch (Exception ex) {
              ex.printStackTrace();
          }
@@ -187,10 +190,15 @@ public class CSSUtilities implements SVGConstants {
              return null;
          }
 
-         return clipBridge.createClip(ctx,
-                                      gn,
-                                      clipPathElement,
-                                      clipedElement);
+         SVGOMDocument doc = (SVGOMDocument)clipPathElement.getOwnerDocument();
+         ViewCSS v = ctx.getViewCSS();
+         ctx.setViewCSS((ViewCSS)doc.getDefaultView());
+         Clip result = clipBridge.createClip(ctx,
+                                             gn,
+                                             clipPathElement,
+                                             clipedElement);
+         ctx.setViewCSS(v);
+         return result;
     }
 
      /**
@@ -232,7 +240,7 @@ public class CSSUtilities implements SVGConstants {
             
          Element maskElement = null;
          try {
-             maskElement = ur.importElement(uriString, false);
+             maskElement = ur.getElement(uriString);
          } catch (Exception ex) {
              ex.printStackTrace();
          }
@@ -249,9 +257,14 @@ public class CSSUtilities implements SVGConstants {
              return null;
          }
 
-         return maskBridge.createMask(gn, ctx,
-                                      maskElement,
-                                      maskedElement);
+         SVGOMDocument doc = (SVGOMDocument)maskElement.getOwnerDocument();
+         ViewCSS v = ctx.getViewCSS();
+         ctx.setViewCSS((ViewCSS)doc.getDefaultView());
+         Mask result =  maskBridge.createMask(gn, ctx,
+                                              maskElement,
+                                              maskedElement);
+         ctx.setViewCSS(v);
+         return result;
      }
 
     /**
@@ -494,7 +507,7 @@ public class CSSUtilities implements SVGConstants {
             
         Element paintElement = null;
         try {
-            paintElement = ur.importElement(fillUri, false);
+            paintElement = ur.getElement(fillUri);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -507,8 +520,13 @@ public class CSSUtilities implements SVGConstants {
             // Now, use bridge to convert paint
             //
             if(paintBridge != null){
+                SVGOMDocument doc =
+                    (SVGOMDocument)paintElement.getOwnerDocument();
+                ViewCSS v = ctx.getViewCSS();
+                ctx.setViewCSS((ViewCSS)doc.getDefaultView());
                 paint = paintBridge.createFillPaint(ctx, node, svgElement,
                                                     paintElement);
+                ctx.setViewCSS(v);
             }
         } else {
             System.out.println("Could not find a paint definition for : " +
@@ -536,7 +554,7 @@ public class CSSUtilities implements SVGConstants {
             
         Element paintElement = null;
         try {
-            paintElement = ur.importElement(strokeUri, false);
+            paintElement = ur.getElement(strokeUri);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -549,8 +567,13 @@ public class CSSUtilities implements SVGConstants {
             // Now, use bridge to convert paint
             //
             if(paintBridge != null){
+                SVGOMDocument doc =
+                    (SVGOMDocument)paintElement.getOwnerDocument();
+                ViewCSS v = ctx.getViewCSS();
+                ctx.setViewCSS((ViewCSS)doc.getDefaultView());
                 paint = paintBridge.createStrokePaint(ctx, node, svgElement,
                                                       paintElement);
+                ctx.setViewCSS(v);
             }
         }
 
@@ -811,7 +834,7 @@ public class CSSUtilities implements SVGConstants {
             
             Element filterElement = null;
             try {
-                filterElement = ur.importElement(uriString, false);
+                filterElement = ur.getElement(uriString);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -820,6 +843,10 @@ public class CSSUtilities implements SVGConstants {
                     = (FilterBridge)ctx.getBridge(filterElement);
                 
                 if(filterBridge != null){
+                    SVGOMDocument doc =
+                        (SVGOMDocument)filterElement.getOwnerDocument();
+                    ViewCSS v = ctx.getViewCSS();
+                    ctx.setViewCSS((ViewCSS)doc.getDefaultView());
                     filter = filterBridge.create(node,
                                                  ctx,
                                                  filterElement,
@@ -827,6 +854,7 @@ public class CSSUtilities implements SVGConstants {
                                                  null,   // in
                                                  null,   // filterRegion
                                                  null);  // filterMap
+                    ctx.setViewCSS(v);
                 }
             } else {
                 System.out.println("Could not find : " + uriString +
