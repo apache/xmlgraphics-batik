@@ -98,7 +98,11 @@ public class RhinoClassLoader extends URLClassLoader {
      * can be read.
      */
     protected PermissionCollection getPermissions(CodeSource codesource) {
-        PermissionCollection perms = super.getPermissions(codesource);
+        PermissionCollection perms = null;
+
+        if (codesource != null) {
+            perms = super.getPermissions(codesource);
+        }
 
         if (documentURL != null && perms != null) {
             Permission p = null;
