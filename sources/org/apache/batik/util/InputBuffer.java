@@ -123,6 +123,7 @@ public class InputBuffer {
     public int next() throws IOException {
 	next(markSet);
 
+        /*
 	switch (current) {
 	case 10:
 	    break;
@@ -152,6 +153,7 @@ public class InputBuffer {
 	}
 	line++;
 	column = 1;
+        */
 
 	return current;
     }

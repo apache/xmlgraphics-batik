@@ -75,6 +75,20 @@ public class Scanner {
     }
 
     /**
+     * Returns the current line number.
+     */
+    public int getLine() {
+        return inputBuffer.getLine();
+    }
+
+    /**
+     * Returns the current column number.
+     */
+    public int getColumn() {
+        return inputBuffer.getColumn();
+    }
+
+    /**
      * The current lexical unit type like defined in LexicalUnits.
      */
     public int currentType() {
@@ -1037,7 +1051,7 @@ public class Scanner {
                          ScannerUtilities.isCSSNameCharacter((char)c));
                 return LexicalUnits.DIMENSION;
             }
-            return (integer) ? LexicalUnits.INTEGER : LexicalUnits.FLOAT;
+            return (integer) ? LexicalUnits.INTEGER : LexicalUnits.REAL;
         }
     }
 
