@@ -465,8 +465,7 @@ public class Main implements Application {
                     if (frame == null)
                         frame = createAndShowJSVGViewerFrame();
 
-                    frame.getJSVGCanvas().loadSVGDocument
-                        (uri);
+                    frame.showSVGDocument(uri);
                     frame = null;
                 } else {
                     // Let the user know that we are

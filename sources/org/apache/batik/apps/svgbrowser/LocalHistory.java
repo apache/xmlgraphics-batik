@@ -30,11 +30,10 @@ import org.apache.batik.swing.JSVGCanvas;
  * @version $Id$
  */
 public class LocalHistory {
-
     /**
-     * The canvas to manage.
+     * The frame to manage.
      */
-    protected JSVGCanvas svgCanvas;
+    protected JSVGViewerFrame svgFrame;    
 
     /**
      * The menu which contains the history.
@@ -82,10 +81,10 @@ public class LocalHistory {
      * @param mb The menubar used to display the history. It must
      *        contains one '@@@' item used as marker to place the
      *        history items.
-     * @param canvas The canvas to manage.
+     * @param svgFrame The frame to manage.
      */
-    public LocalHistory(JMenuBar mb, JSVGCanvas canvas) {
-        svgCanvas = canvas;
+    public LocalHistory(JMenuBar mb, JSVGViewerFrame svgFrame) {
+        this.svgFrame = svgFrame;
 
         // Find the marker.
         int mc = mb.getMenuCount();
@@ -116,7 +115,7 @@ public class LocalHistory {
         update();
         state = BACK_PENDING_STATE;
         currentURI -= 2;
-        svgCanvas.loadSVGDocument((String)visitedURIs.get(currentURI + 1));
+        svgFrame.showSVGDocument((String)visitedURIs.get(currentURI + 1));
     }
 
     /**
@@ -133,7 +132,7 @@ public class LocalHistory {
     public void forward() {
         update();
         state = FORWARD_PENDING_STATE;
-        svgCanvas.loadSVGDocument((String)visitedURIs.get(currentURI + 1));
+        svgFrame.showSVGDocument((String)visitedURIs.get(currentURI + 1));
     }
 
     /**
@@ -150,7 +149,7 @@ public class LocalHistory {
         update();
         state = RELOAD_PENDING_STATE;
         currentURI--;
-        svgCanvas.loadSVGDocument((String)visitedURIs.get(currentURI + 1));
+        svgFrame.showSVGDocument((String)visitedURIs.get(currentURI + 1));
     }
 
     /**
@@ -230,7 +229,7 @@ public class LocalHistory {
 	public void actionPerformed(ActionEvent e) {
 	    String uri = e.getActionCommand();
             currentURI = getItemIndex((JMenuItem)e.getSource()) - 1;
-	    svgCanvas.loadSVGDocument(uri);
+	    svgFrame.showSVGDocument(uri);
 	}
         public int getItemIndex(JMenuItem item) {
             int ic = menu.getItemCount();

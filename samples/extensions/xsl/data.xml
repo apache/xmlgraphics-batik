@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Courtesy of Max Froumentin. This document can be processed directly by    -->
+<!-- the Squiggle browser which will apply the stylesheet (if the              -->
+<!-- XMLInputHandler in  resources/META-INF/services/                          -->
+<!-- (the org.apache.batik.apps.svgbrowser.SquiggleInputHandler file) is       -->
+<!-- enabled.                                                                  -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@eng.sun.com                                         -->
+<!-- @version $Id$                                                             -->
+<!-- ========================================================================= -->
+<?xml-stylesheet href="data.xsl" type="text/xsl"?>
+<data depth="30">
+</data>
