@@ -19,7 +19,7 @@
   <separator/>
   <page id="index"    label="Overview" source="index.xml"/>
   <page id="status"   label="Status" source="status.xml" />
-  <external label="Snapshots" href="http://xml.apache.org/from-cvs/xml-batik/"/>
+  <page id="screenshots"   label="Screenshots" source="svgviewerScreenShot.xml" />
   <separator/>
   <page id="license"  label="License" source="license.xml"/>
   <external href="dist" label="Download"/>
@@ -40,6 +40,7 @@
   <separator/>
 
   <external label="CVS Repository" href="http://xml.apache.org/websrc/index.cgi/xml-batik/"/>
+  <external label="Snapshots" href="http://xml.apache.org/from-cvs/xml-batik/"/>
   <external label="Mail Archive" href="http://mail-archives.apache.org/"/>
   <external label="Bug Database" href="http://xml.apache.org/bugs/"/>
 </book>
