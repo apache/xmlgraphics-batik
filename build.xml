@@ -134,6 +134,7 @@ To display the available targets type:
     <echo message="   regard        --> runs the regard regression utility"/>
     <echo message="   runtestsuite  --> runs a TestSuite, given an XML test suite"/>
     <echo message="                     document"/>
+    <echo message="   showpainter   --> runs a Painter test instance to check its rendering."/>
     <echo message="   javadoc       --> generates the API documentation"/>
     <echo message="   site          --> generates the site documentation"/>
     <echo message="   sitedoc       --> generates the site documentation without"/>
@@ -730,6 +731,22 @@ To display the available targets type:
         <pathelement location="test-resources" />
       </classpath>
       <arg line="test-resources/org/apache/batik/test/regard.xml"/>
+    </java>
+  </target>
+
+  <target name="showpainter"
+          depends="compiletest, testdirs"
+          description="Runs test suite whose file or uri is passed as an input">
+    <java fork="yes"
+          classname="${class-prefix}.svggen.JPainterCompare">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <path refid="libs-build-classpath"/>
+        <pathelement location="resources" />
+        <pathelement location="test-resources" />
+      </classpath>
+      <arg line="${args}"/>
     </java>
   </target>
 
