@@ -37,7 +37,7 @@
 	  loadInstrument()
 
           function down(evt) {
-		target = evt.target.parentElement
+		target = evt.currentTarget
 		midiChannel.noteOn(target.id, 64)
 	        lastId = target.id
           }
@@ -51,7 +51,7 @@
 
           function drag(evt) {
 		if (lastId != -1) {
-		  target = evt.target.parentElement
+		  target = evt.currentTarget
 		  midiChannel.noteOn(target.id, 64)
 		  lastId = target.id
 		}
@@ -97,80 +97,79 @@
         
     </clipPath>
 
-    <g transform="translate(-100, 250) scale(2.4 3)" 
-	onmousedown="down(evt)" onmouseover="drag(evt)">
-      <use onmousedown="down(evt)" onmouseover="drag(evt)" id="24" xlink:href="#blank"/>
-      <use id="26" x="10" xlink:href="#blank"/>
-      <use id="25" x="7" xlink:href="#black"/>
-      <use id="28" x="20" xlink:href="#blank"/>
-      <use id="27" x="17" xlink:href="#black"/>
-      <use id="29" x="30" xlink:href="#blank"/>
-      <use id="31" x="40" xlink:href="#blank"/>
-      <use id="30" x="37" xlink:href="#black"/>
-      <use id="33" x="50" xlink:href="#blank"/>
-      <use id="32" x="47" xlink:href="#black"/>
-      <use id="35" x="60" xlink:href="#blank"/>
-      <use id="34" x="57" xlink:href="#black"/>
-      <use id="36" x="70" xlink:href="#blank"/>
-      <use id="38" x="80" xlink:href="#blank"/>
-      <use id="37" x="77" xlink:href="#black"/>
-      <use id="40" x="90" xlink:href="#blank"/>
-      <use id="39" x="87" xlink:href="#black"/>
-      <use id="41" x="100" xlink:href="#blank"/>
-      <use id="43" x="110" xlink:href="#blank"/>
-      <use id="42" x="107" xlink:href="#black"/>
-      <use id="45" x="120" xlink:href="#blank"/>
-      <use id="44" x="117" xlink:href="#black"/>
-      <use id="47" x="130" xlink:href="#blank"/>
-      <use id="46" x="127" xlink:href="#black"/>
-      <use id="48" x="140" xlink:href="#blank"/>    
-      <use id="50" x="150" xlink:href="#blank"/>    
-      <use id="49" x="147" xlink:href="#black"/>
-      <use id="52" x="160" xlink:href="#blank"/>
-      <use id="51" x="157" xlink:href="#black"/>
-      <use id="53" x="170" xlink:href="#blank"/>
-      <use id="55" x="180" xlink:href="#blank"/>
-      <use id="54" x="177" xlink:href="#black"/>
-      <use id="57" x="190" xlink:href="#blank"/>
-      <use id="56" x="187" xlink:href="#black"/>
-      <use id="59" x="200" xlink:href="#blank"/>
-      <use id="58" x="197" xlink:href="#black"/>
-      <use id="60" x="210" xlink:href="#blank"/>
-      <use id="62" x="220" xlink:href="#blank"/>
-      <use id="61" x="217" xlink:href="#black"/>
-      <use id="64" x="230" xlink:href="#blank"/>
-      <use id="63" x="227" xlink:href="#black"/>
-      <use id="65" x="240" xlink:href="#blank"/>
-      <use id="67" x="250" xlink:href="#blank"/>
-      <use id="66" x="247" xlink:href="#black"/>
-      <use id="69" x="260" xlink:href="#blank"/>
-      <use id="68" x="257" xlink:href="#black"/>
-      <use id="71" x="270" xlink:href="#blank"/>
-      <use id="70" x="267" xlink:href="#black"/>
-      <use id="72" x="280" xlink:href="#blank"/>
-      <use id="74" x="290" xlink:href="#blank"/>
-      <use id="73" x="287" xlink:href="#black"/>
-      <use id="76" x="300" xlink:href="#blank"/>
-      <use id="75" x="297" xlink:href="#black"/>
-      <use id="77" x="310" xlink:href="#blank"/>
-      <use id="79" x="320" xlink:href="#blank"/>
-      <use id="78" x="317" xlink:href="#black"/>
-      <use id="81" x="330" xlink:href="#blank"/>
-      <use id="80" x="327" xlink:href="#black"/>
-      <use id="83" x="340" xlink:href="#blank"/>
-      <use id="82" x="337" xlink:href="#black"/>
-      <use id="84" x="350" xlink:href="#blank"/>
-      <use id="86" x="360" xlink:href="#blank"/>
-      <use id="85" x="357" xlink:href="#black"/>
-      <use id="88" x="370" xlink:href="#blank"/>
-      <use id="87" x="367" xlink:href="#black"/>
-      <use id="89" x="380" xlink:href="#blank"/>
-      <use id="91" x="390" xlink:href="#blank"/>
-      <use id="90" x="387" xlink:href="#black"/>
-      <use id="93" x="400" xlink:href="#blank"/>
-      <use id="92" x="397" xlink:href="#black"/>
-      <use id="95" x="410" xlink:href="#blank"/>
-      <use id="94" x="407" xlink:href="#black"/>
+    <g transform="translate(-100, 250) scale(2.4 3)">
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="24" xlink:href="#blank"/>
+      <use  onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="26" x="10" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="25" x="7" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="28" x="20" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="27" x="17" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="29" x="30" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="31" x="40" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="30" x="37" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="33" x="50" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="32" x="47" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="35" x="60" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="34" x="57" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="36" x="70" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="38" x="80" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="37" x="77" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="40" x="90" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="39" x="87" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="41" x="100" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="43" x="110" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="42" x="107" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="45" x="120" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="44" x="117" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="47" x="130" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="46" x="127" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="48" x="140" xlink:href="#blank"/>    
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="50" x="150" xlink:href="#blank"/>    
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="49" x="147" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="52" x="160" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="51" x="157" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="53" x="170" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="55" x="180" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="54" x="177" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="57" x="190" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="56" x="187" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="59" x="200" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="58" x="197" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="60" x="210" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="62" x="220" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="61" x="217" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="64" x="230" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="63" x="227" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="65" x="240" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="67" x="250" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="66" x="247" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="69" x="260" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="68" x="257" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="71" x="270" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="70" x="267" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="72" x="280" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="74" x="290" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="73" x="287" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="76" x="300" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="75" x="297" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="77" x="310" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="79" x="320" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="78" x="317" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="81" x="330" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="80" x="327" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="83" x="340" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="82" x="337" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="84" x="350" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="86" x="360" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="85" x="357" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="88" x="370" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="87" x="367" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="89" x="380" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="91" x="390" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="90" x="387" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="93" x="400" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="92" x="397" xlink:href="#black"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="95" x="410" xlink:href="#blank"/>
+      <use onmousedown="down(evt)" onmouseup="up(evt)" onmouseover="drag(evt)" id="94" x="407" xlink:href="#black"/>
     </g>
 
     <defs>
