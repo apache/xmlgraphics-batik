@@ -653,11 +653,9 @@ public class JSVGComponent extends JGVTComponent {
             // before we install the new document otherwise bad
             // things can happen with the update manager.
             addUpdateManagerListener(new UpdateManagerAdapter () {
-                    UpdateManager um = updateManager;
                     public void managerStopped(UpdateManagerEvent e) {
-                        // Remove ourselves from the old update manger,
-                        // and install the new document.
-                        um.removeUpdateManagerListener(this);
+                        // Remove ourselves and install the new document.
+                        JSVGComponent.this.removeUpdateManagerListener(this);
                         synchronized (JSVGComponent.this) {
                             EventQueue.invokeLater(afterStopRunnable);
                             afterStopRunnable = null;
