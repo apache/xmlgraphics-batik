@@ -124,21 +124,21 @@ public class CSSUtilities implements SVGConstants {
              = ctx.getViewCSS().getComputedStyle(clipedElement, null);
 
          //
-         // Build Shape based on 'clip' attr.
+         // Build Shape based on 'clip-path' attr.
          //
-         CSSPrimitiveValue maskValue
+         CSSPrimitiveValue clipValue
              = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_CLIP_PATH);
          String uriString = null;
-         switch(maskValue.getPrimitiveType()){
+         switch(clipValue.getPrimitiveType()){
          case CSSPrimitiveValue.CSS_IDENT:
              // NONE
              break;
          case CSSPrimitiveValue.CSS_URI:
-             uriString = maskValue.getStringValue();
+             uriString = clipValue.getStringValue();
              break;
          default:
-             throw new Error("maskValue's primitive type is: " +
-                             maskValue.getPrimitiveType());
+             throw new Error("clipValue's primitive type is: " +
+                             clipValue.getPrimitiveType());
          }
 
          // <!> FIXME : Bad way to compute URI
