@@ -745,12 +745,10 @@ public abstract class AbstractParentNode extends AbstractNode {
 	public ExtendedNode append(ExtendedNode n) {
 	    if (lastChild == null) {
 		firstChild = n;
-		lastChild  = n;
-		children++;
-		return n;
-	    }
-	    lastChild.setNextSibling(n);
-	    n.setPreviousSibling(lastChild);
+	    } else {
+	      lastChild.setNextSibling(n);
+              n.setPreviousSibling(lastChild);
+            }
 	    lastChild = n;
 	    children++;
 	    return n;

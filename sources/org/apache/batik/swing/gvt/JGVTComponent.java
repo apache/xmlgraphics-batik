@@ -199,6 +199,7 @@ public class JGVTComponent extends JComponent {
      */
     public JGVTComponent(boolean eventsEnabled, boolean selectableText) {
         setBackground(Color.white);
+        // setDoubleBuffered(false);
 
         this.eventsEnabled = eventsEnabled;
         this.selectableText = selectableText;

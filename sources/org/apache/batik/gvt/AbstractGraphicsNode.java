@@ -260,8 +260,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      */
     public void setVisible(boolean isVisible) {
         fireGraphicsNodeChangeStarted();
-        invalidateGeometryCache();
         this.isVisible = isVisible;
+        invalidateGeometryCache();
         fireGraphicsNodeChangeCompleted();
     }
 
@@ -430,6 +430,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             if (ac.getAlpha() < 0.001)
                 return;         // No point in drawing
         }
+        Rectangle2D bounds = getBounds();
+        if (bounds == null) return;
 
         // Set up graphic context. It is important to setup the
         // transform first, because the clip is defined in this node's
@@ -460,16 +462,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         // Check if any painting is needed at all. Get the clip (in user space)
         // and see if it intersects with this node's bounds (in user space).
         boolean paintNeeded = true;
-        Rectangle2D bounds = getBounds();
         Shape g2dClip = curClip; //g2d.getClip();
         if (g2dClip != null) {
-            Rectangle2D clipBounds = g2dClip.getBounds2D();
-            if(bounds != null && !bounds.intersects(clipBounds.getX(),
-                                                    clipBounds.getY(),
-                                                    clipBounds.getWidth(),
-                                                    clipBounds.getHeight())){
+            Rectangle2D cb = g2dClip.getBounds2D();
+            if(!bounds.intersects(cb.getX(),     cb.getY(),
+                                  cb.getWidth(), cb.getHeight()))
                 paintNeeded = false;
-            }
         }
 
         // Only paint if needed.

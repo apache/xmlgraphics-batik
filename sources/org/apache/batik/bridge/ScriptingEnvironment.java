@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import java.net.URL;
@@ -37,6 +38,7 @@ import java.util.TimerTask;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.DeflaterOutputStream;
 
+import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.SAXDocumentFactory;
@@ -897,26 +899,34 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                         }
                     }
                 } catch (Exception exc) {
-                    /* nothing */
+                    /* nothing - try something else*/
                 }
             }
 
             // Parse as a generic XML document.
-                    SAXDocumentFactory sdf = new SAXDocumentFactory
-                        (doc.getImplementation(),
-                         XMLResourceDescriptor.getXMLParserClassName());
-                    try {
+            SAXDocumentFactory sdf;
+            if (doc != null) {
+                sdf = new SAXDocumentFactory
+                    (doc.getImplementation(),
+                     XMLResourceDescriptor.getXMLParserClassName());
+            } else {
+                sdf = new SAXDocumentFactory
+                    (new GenericDOMImplementation(),
+                     XMLResourceDescriptor.getXMLParserClassName());
+            }
+            try {
                 Document d = sdf.createDocument(uri, new StringReader(text));
                 if (doc == null) 
                     return d;
 
                 Node result = doc.createDocumentFragment();
-                        result.appendChild(doc.importNode(d.getDocumentElement(), true));
+                result.appendChild(doc.importNode(d.getDocumentElement(), 
+                                                  true));
                 return result;
-                    } catch (Exception ext) {
-                        if (userAgent != null)
-                            userAgent.displayError(ext);
-                    }
+            } catch (Exception ext) {
+                if (userAgent != null)
+                    userAgent.displayError(ext);
+            }
             
             return null;
         }
@@ -929,6 +939,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             getURL(uri, h, null);
         }
 
+        final static String DEFLATE="deflate";
+        final static String GZIP   ="gzip";
+        final static String UTF_8  ="UTF-8";
         /**
          * Implements {@link
          * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.URLResponseHandler,String)}.
@@ -949,13 +962,18 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             }
 
                             InputStream is = purl.openStream();
-                            if (e == null)
-                                e = purl.getContentEncoding();
                             Reader r;
-                            if (e == null) 
+                            if (e == null) {
+                                // Not really a char encoding.
                                 r = new InputStreamReader(is);
-                            else
-                                r = new InputStreamReader(is, e);
+                            } else {
+                                try {
+                                    r = new InputStreamReader(is, e);
+                                } catch (UnsupportedEncodingException uee) {
+                                    // Try with no encoding.
+                                    r = new InputStreamReader(is);
+                                }
+                            }
                             r = new BufferedReader(r);
                             final StringBuffer sb = new StringBuffer();
                             int read;
@@ -1002,9 +1020,6 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         }
 
 
-        final static String DEFLATE="deflate";
-        final static String GZIP   ="gzip";
-
         public void postURL(String uri, String content, URLResponseHandler h) {
             postURL(uri, content, h, "text/plain", null);
         }
@@ -1044,6 +1059,8 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                                         enc = enc.substring(DEFLATE.length()+1);
                                     else
                                         enc = "";
+                                    conn.setRequestProperty("Content-Encoding",
+                                                            DEFLATE);
                                 }
                                 if (enc.startsWith(GZIP)) {
                                     os = new GZIPOutputStream(os);
@@ -1051,12 +1068,14 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                                         enc = enc.substring(GZIP.length()+1);
                                     else
                                         enc ="";
+                                    conn.setRequestProperty("Content-Encoding",
+                                                            DEFLATE);
                                 }
                                 if (enc.length() != 0) {
                                     e = EncodingUtilities.javaEncoding(enc);
-                                    if (e == null) e = "UTF-8"; 
+                                    if (e == null) e = UTF_8; 
                                 } else {
-                                    e = enc;
+                                    e = UTF_8;
                                 }
                             }
                             Writer w;
@@ -1071,7 +1090,7 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
                             InputStream is = conn.getInputStream();
                             Reader r;
-                            e =  conn.getContentEncoding();
+                            e = UTF_8;
                             if (e == null) 
                                 r = new InputStreamReader(is);
                             else

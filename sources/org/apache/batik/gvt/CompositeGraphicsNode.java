@@ -42,7 +42,8 @@ import org.apache.batik.util.HaltingThread;
 public class CompositeGraphicsNode extends AbstractGraphicsNode 
     implements List {
 
-    public static final Rectangle2D VIEWPORT = new Rectangle(0, 0, 0, 0);
+    public static final Rectangle2D VIEWPORT  = new Rectangle();
+    public static final Rectangle2D NULL_RECT = new Rectangle();
 
     /**
      * The children of this composite graphics node.
@@ -186,17 +187,22 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * Returns the bounds of the area covered by this node's primitive paint.
      */
     public Rectangle2D getPrimitiveBounds() {
-        if (primitiveBounds != null) 
+        if (primitiveBounds != null) {
+            if (primitiveBounds == NULL_RECT) return null;
             return primitiveBounds;
+        }
 
         int i=0;
         Rectangle2D bounds = null;
         while ((bounds == null) && i < count) {
             bounds = children[i++].getTransformedBounds(IDENTITY);
         }
-        if (bounds == null) return null;
+        if (bounds == null) {
+            primitiveBounds = NULL_RECT;
+            return null;
+        }
+
         primitiveBounds = bounds;
-        
         Rectangle2D ctb = null;
         while (i < count) {
             ctb = children[i++].getTransformedBounds(IDENTITY);

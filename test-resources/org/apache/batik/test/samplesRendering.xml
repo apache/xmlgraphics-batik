@@ -430,5 +430,6 @@
         <test id="samples/tests/spec/scripting/styling.svg" />
         <test id="samples/tests/spec/scripting/text_content.svg" />
         <test id="samples/tests/spec/scripting/textProperties2.svg" />
+        <test id="samples/tests/spec/scripting/visibilityOnClick.svg" />
     </testGroup>
 </testSuite>

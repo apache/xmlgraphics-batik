@@ -19,6 +19,7 @@ package org.apache.batik.gvt;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * A graphics node that represents an image described as a graphics node.
@@ -38,9 +39,14 @@ public class ImageNode extends CompositeGraphicsNode {
     public void setVisible(boolean isVisible) {
         fireGraphicsNodeChangeStarted();
         this.isVisible = isVisible;
+        invalidateGeometryCache();
         fireGraphicsNodeChangeCompleted();
     }
 
+    public Rectangle2D getPrimitiveBounds() {
+        if (!isVisible)    return null;
+        return super.getPrimitiveBounds();
+    }
     /**
      * If hitCheckChildren is true then nodeHitAt will return
      * child nodes of this image. Otherwise it will only
