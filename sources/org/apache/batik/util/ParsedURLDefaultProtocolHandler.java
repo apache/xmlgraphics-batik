@@ -85,12 +85,13 @@ public class ParsedURLDefaultProtocolHandler
         idx = urlStr.indexOf('#');
         ret.ref = null;
         if (idx != -1) {
-            if (idx+1 < urlStr.length())
+            if (idx+1 < len)
                 ret.ref = urlStr.substring(idx+1);
             urlStr = urlStr.substring(0,idx);
+            len = urlStr.length();
         }
 
-        if (urlStr.length() == 0)
+        if (len == 0)
             return ret;
 
         // Protocol is only allowed to include -+.a-zA-Z
@@ -111,6 +112,7 @@ public class ParsedURLDefaultProtocolHandler
             }
             ch = urlStr.charAt(idx);
         }
+
         if (ch == ':') {
             // Has a protocol spec...
             ret.protocol = urlStr.substring(pidx, idx).toLowerCase();

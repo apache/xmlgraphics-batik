@@ -23,6 +23,7 @@ import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -859,13 +860,15 @@ public abstract class CSSUtilities
     public static void computeStyleAndURIs(Element refElement,
                                            Element localRefElement,
                                            String  uri) {
-        Attr xmlBase = localRefElement.getAttributeNodeNS
-            (XML_NAMESPACE_URI, "xml:base");
-        ParsedURL purl = new ParsedURL(uri);
+        String xmlBase = XMLBaseSupport.getCascadedXMLBase(localRefElement);
+        ParsedURL purl;
         if (xmlBase != null) {
             // We have a current base so merge it with our new base and
             // set the result...
-            purl = new ParsedURL(purl, xmlBase.getNodeValue());
+            purl = new ParsedURL(xmlBase, uri);
+        } else {
+            // No current base so just use the new uri.
+            purl = new ParsedURL(uri);
         }
 
         // Get the URL sans fragment.
