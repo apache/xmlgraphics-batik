@@ -80,5 +80,7 @@ public class BERenderingTest extends PreconfiguredRenderingTest {
         return SAVE_CANDIDATE_REFERENCE_SUFFIX;
     }
 
-
+    public BERenderingTest(){
+	setValidating(new Boolean(true));
+    }
 }
