@@ -11,6 +11,8 @@ package org.apache.batik.refimpl.bridge;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.bridge.UserAgent;
 
+import org.w3c.dom.svg.SVGAElement;
+
 /**
  * The default implementation of the user agent.
  *
@@ -53,5 +55,13 @@ public class DefaultUserAgent implements UserAgent {
      */
     public String getUserStyleSheetURI() {
         return null;
+    }
+
+    /**
+     * Opens a link.
+     * @param elt The activated link element.
+     */
+    public void openLink(SVGAElement elt) {
+        System.out.println("Linking not allowed.");
     }
 }

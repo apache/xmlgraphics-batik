@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.apache.batik.css.ElementNonCSSPresentationalHints;
 import org.apache.batik.css.ExtendedElementCSSInlineStyle;
-import org.apache.batik.css.HiddenChildElement;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
@@ -51,8 +50,7 @@ public class SVGOMSVGElement
     implements SVGSVGElement,
 	       OverrideStyleElement,
 	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints,
-               HiddenChildElement {
+	       ElementNonCSSPresentationalHints {
     /**
      * The contentScriptType attribute name.
      */
@@ -118,20 +116,6 @@ public class SVGOMSVGElement
      */
     public SVGOMSVGElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
-    }
-
-    /**
-     * The parent element of this element.
-     */
-    public Element getParentElement() {
-        return parentElement;
-    }
-
-    /**
-     * Sets the parent element.
-     */
-    public void setParentElement(Element elt) {
-        parentElement = elt;
     }
 
     /**

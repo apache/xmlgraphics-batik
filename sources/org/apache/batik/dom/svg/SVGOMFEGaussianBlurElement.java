@@ -49,7 +49,7 @@ public class SVGOMFEGaussianBlurElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "feGaussianBlur";
+        return TAG_FE_GAUSSIAN_BLUR;
     }
 
     /**

@@ -9,11 +9,13 @@
 package org.apache.batik.util.gui.resource;
 
 import java.awt.Event;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
 import javax.swing.Action;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -404,6 +406,44 @@ public class MenuFactory extends ResourceManager {
             i++;
         }
         if (code > 0 && modif > 0) {
+            if (i < str.length()) {
+                char curr = Character.toUpperCase(str.charAt(i));
+                switch (code) {
+                case 'U':
+                    if (str.length() - i != 1 || curr != 'P') {
+                        break;
+                    }
+                    code = KeyEvent.VK_UP;
+                    break;
+                case 'L':
+                    if (str.length() - i != 3 ||
+                        curr != 'E' ||
+                        Character.toUpperCase(str.charAt(i + 1)) != 'F' ||
+                        Character.toUpperCase(str.charAt(i + 2)) != 'T') {
+                        break;
+                    }
+                    code = KeyEvent.VK_LEFT;
+                    break;
+                case 'D':
+                    if (str.length() - i != 3 ||
+                        curr != 'O' ||
+                        Character.toUpperCase(str.charAt(i + 1)) != 'W' ||
+                        Character.toUpperCase(str.charAt(i + 2)) != 'N') {
+                        break;
+                    }
+                    code = KeyEvent.VK_DOWN;
+                    break;
+                case 'R':
+                    if (str.length() - i != 4 ||
+                        curr != 'I' ||
+                        Character.toUpperCase(str.charAt(i + 1)) != 'G' ||
+                        Character.toUpperCase(str.charAt(i + 2)) != 'H' ||
+                        Character.toUpperCase(str.charAt(i + 3)) != 'T') {
+                        break;
+                    }
+                    code = KeyEvent.VK_RIGHT;
+                }
+            }
             return KeyStroke.getKeyStroke(code, modif);
         }
         return null;

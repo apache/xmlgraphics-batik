@@ -9,6 +9,9 @@
 package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedNumberList;
@@ -29,6 +32,16 @@ public class SVGOMFEColorMatrixElement
      * The reference to the in attribute.
      */
     protected WeakReference inReference;
+
+    /**
+     * The attribute-value map map.
+     */
+    protected static Map attributeValues = new HashMap(3);
+    static {
+        Map values = new HashMap(2);
+        values.put("type",  "matrix");
+        attributeValues.put(null, values);
+    }
 
     /**
      * Creates a new SVGOMFEColorMatrixElement object.
@@ -82,4 +95,11 @@ public class SVGOMFEColorMatrixElement
         throw new RuntimeException(" !!! SVGFEColorMatrixElement#getValues()");
     }
 
+    /**
+     * Returns the default attribute values in a map.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected Map getDefaultAttributeValues() {
+        return attributeValues;
+    }
 }

@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.apache.batik.css.ElementWithID;
 import org.apache.batik.css.ElementWithPseudoClass;
+import org.apache.batik.css.HiddenChildElement;
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
@@ -47,8 +48,9 @@ public abstract class SVGOMElement
     implements SVGElement,
                ElementWithID,
                ElementWithPseudoClass,
-               SVGConstants
-{
+               HiddenChildElement,
+               SVGConstants {
+
     /**
      * The element ID attribute name.
      */
@@ -70,6 +72,11 @@ public abstract class SVGOMElement
     protected Map liveAttributeValues;
 
     /**
+     * The parent element.
+     */
+    protected Element parentElement;
+
+    /**
      * Creates a new Element object.
      */
     protected SVGOMElement() {
@@ -84,6 +91,20 @@ public abstract class SVGOMElement
         ownerDocument = owner;
         setPrefix(prefix);
 	initializeAttributes();
+    }
+
+    /**
+     * The parent element of this element.
+     */
+    public Element getParentElement() {
+        return parentElement;
+    }
+
+    /**
+     * Sets the parent element.
+     */
+    public void setParentElement(Element elt) {
+        parentElement = elt;
     }
 
     /**

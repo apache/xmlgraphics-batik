@@ -9,6 +9,9 @@
 package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -33,6 +36,16 @@ public class SVGOMFEBlendElement
      * The reference to the in2 attribute.
      */
     protected WeakReference in2Reference;
+
+    /**
+     * The attribute-value map map.
+     */
+    protected static Map attributeValues = new HashMap(3);
+    static {
+        Map values = new HashMap(2);
+        values.put("mode",  "normal");
+        attributeValues.put(null, values);
+    }
 
     /**
      * Creates a new SVGOMFEBlendElement object.
@@ -92,4 +105,11 @@ public class SVGOMFEBlendElement
         throw new RuntimeException(" !!! SVGFEBlendElement#getMode()");
     }
 
+    /**
+     * Returns the default attribute values in a map.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected Map getDefaultAttributeValues() {
+        return attributeValues;
+    }
 }

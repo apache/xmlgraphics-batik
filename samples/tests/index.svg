@@ -1,0 +1,136 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- This tests validates linking and provides an index for text files.        -->
+<!--                                                                           -->
+<!-- @author stephane@hillion.org                                              -->
+<!-- @version $Id$ -->
+<!-- ========================================================================= -->
+
+<svg width="450" height="500">
+  <style type="text/css"><![CDATA[
+    text.headfoot {
+      fill:          LavenderBlush;
+      stroke:        DarkViolet;
+      stroke-width:  2;
+      font-weight:   bold;
+    }
+    text.title {
+      font-size:     40;
+      text-anchor:   middle;
+    }
+    text.next {
+      font-size:       30;
+      text-anchor:     end;
+      text-decoration: underline;
+    }
+    text.link {
+      fill:            blue;
+      font-size:       16;
+      font-family:     serif;
+      text-decoration: underline;
+      text-anchor:     middle;
+    }
+  ]]>
+  </style>
+
+  <rect x="5" y="5" width="440" height="50" style="fill:Lavender"/>
+  <text class="title headfoot" x="50%" y="40">Test Files 1</text>
+
+  <rect x="5" y="60" width="440" height="30" style="fill:MistyRose"/>
+  <a xlink:href="colors.svg" xlink:show="new">
+    <text class="link" x="50%" y="80">
+      SVG Color Identifiers (color.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="95" width="440" height="30" style="fill:LightGoldenRodYellow"/>
+  <a xlink:href="turbulence.svg" xlink:show="new">
+    <text class="link" x="50%" y="115">
+      feTurbulence Effect (turbulence.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="130" width="440" height="30" style="fill:MistyRose"/>
+  <a xlink:href="colorMatrix.svg" xlink:show="new">
+    <text class="link" x="50%" y="150">
+      feColorMatrix Effect (colorMatrix.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="165" width="440" height="30"
+        style="fill:LightGoldenRodYellow"/>
+  <a xlink:href="componentTransfer.svg" xlink:show="new">
+    <text class="link" x="50%" y="185">
+      feComponentTransfer Effect (componentTransfer.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="200" width="440" height="30" style="fill:MistyRose"/>
+  <a xlink:href="componentTransfer2.svg" xlink:show="new">
+    <text class="link" x="50%" y="220">
+      feComponentTransfer Effect (componentTransfer2.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="235" width="440" height="30"
+        style="fill:LightGoldenRodYellow"/>
+  <a xlink:href="events_GVTtoDOM.svg" xlink:show="new">
+    <text class="link" x="50%" y="255">
+      Scripting &amp; Events (events_GVTtoDOM.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="270" width="440" height="30" style="fill:MistyRose"/>
+  <a xlink:href="events_transform.svg" xlink:show="new">
+    <text class="link" x="50%" y="290">
+      Scripting &amp; Events (events_transform.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="305" width="440" height="30"
+        style="fill:LightGoldenRodYellow"/>
+  <a xlink:href="filterRegions.svg" xlink:show="new">
+    <text class="link" x="50%" y="325">
+      Filter Regions (filterRegions.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="340" width="440" height="30" style="fill:MistyRose"/>
+  <a xlink:href="clip.svg" xlink:show="new">
+    <text class="link" x="50%" y="360">
+      Clipping (clip.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="375" width="440" height="30"
+        style="fill:LightGoldenRodYellow"/>
+  <a xlink:href="mask.svg" xlink:show="new">
+    <text class="link" x="50%" y="395">
+      Masking (mask.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="410" width="440" height="30" style="fill:MistyRose"/>
+  <a xlink:href="opacity.svg" xlink:show="new">
+    <text class="link" x="50%" y="430">
+      Group Opacity (opacity.svg)
+    </text>
+  </a>
+
+  <rect x="5" y="445" width="440" height="50" style="fill:Lavender"/>
+  <a xlink:href="index2.svg">
+    <text class="next headfoot" x="420" y="480">Next</text>
+  </a>
+
+</svg>

@@ -30,6 +30,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.NoninvertibleTransformException;
 
@@ -374,9 +375,9 @@ public class JSVGCanvas
             throw new Error();
         }
 
-        System.out.println("devAOI : " + devAOI);
-        System.out.println("usrAOI : " + dev2usr.createTransformedShape(devAOI).getBounds2D());
-        System.out.println("devAOI 2: " + transform.createTransformedShape(dev2usr.createTransformedShape(devAOI)).getBounds2D());
+        //System.out.println("devAOI : " + devAOI);
+        //System.out.println("usrAOI : " + dev2usr.createTransformedShape(devAOI).getBounds2D());
+        //System.out.println("devAOI 2: " + transform.createTransformedShape(dev2usr.createTransformedShape(devAOI)).getBounds2D());
         return dev2usr.createTransformedShape(devAOI);
     }
 
@@ -919,6 +920,11 @@ public class JSVGCanvas
         protected boolean repaint;
 
         /**
+         * An additional transform for the marker.
+         */
+        protected AffineTransform markerTransform = new AffineTransform();
+
+        /**
          * Used to draw marker
          */
         protected BasicStroke markerStroke
@@ -931,6 +937,9 @@ public class JSVGCanvas
          */
         public ThumbnailCanvas() {
             addComponentListener(new ThumbnailCanvasListener());
+            MouseListener ml = new MouseListener();
+            addMouseListener(ml);
+            addMouseMotionListener(ml);
         }
 
         /**
@@ -986,16 +995,20 @@ public class JSVGCanvas
                                  RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.drawImage(offscreenBuffer, null, 0, 0);
 
-            // Paint the marker
-            Dimension csize = JSVGCanvas.this.getSize();
-            Rectangle rect = new Rectangle(0, 0, csize.width, csize.height);
-
-            Shape s = JSVGCanvas.this.getAreaOfInterest(rect);
-            s = transform.createTransformedShape(s);
-            g2d.setColor(Color.black);
-            g2d.setStroke(markerStroke);
-            g2d.setXORMode(Color.white);
-            g2d.draw(s);
+            if (gvtRoot != null) {
+                // Paint the marker
+                Dimension csize = JSVGCanvas.this.getSize();
+                Rectangle rect = new Rectangle(0, 0, csize.width, csize.height);
+                
+                Shape s = JSVGCanvas.this.getAreaOfInterest(rect);
+                AffineTransform at = (AffineTransform)transform.clone();
+                at.preConcatenate(markerTransform);
+                s = at.createTransformedShape(s);
+                g2d.setColor(Color.black);
+                g2d.setStroke(markerStroke);
+                g2d.setXORMode(Color.white);
+                g2d.draw(s);
+            }
         }
 
         /**
@@ -1102,6 +1115,78 @@ public class JSVGCanvas
             }
         }
 
+        /**
+         * To handle the mouse events.
+         */
+        protected class MouseListener
+            extends    MouseAdapter
+            implements MouseMotionListener {
+            protected int sx, sy;
+            protected boolean in;
+
+            public MouseListener() {}
+            public void mousePressed(MouseEvent e) {
+                Dimension csize = JSVGCanvas.this.getSize();
+                Rectangle rect = new Rectangle(0, 0, csize.width, csize.height);
+                Shape s = JSVGCanvas.this.getAreaOfInterest(rect);
+                s = transform.createTransformedShape(s);
+
+                sx = e.getX();
+                sy = e.getY();
+                in = s.contains(sx, sy);
+            }
+            public void mouseDragged(MouseEvent e) {
+                if (in) {
+                    markerTransform =
+                        AffineTransform.getTranslateInstance(e.getX() - sx,
+                                                             e.getY() - sy);
+                    Dimension d = getSize();
+                    paintImmediately(0, 0, d.width, d.height);
+                }
+            }
+            public void mouseReleased(MouseEvent e) {
+                if (in) {
+                    in = false;
+
+                    int dx = e.getX() - sx;
+                    int dy = e.getY() - sy;
+                    
+                    markerTransform =
+                        AffineTransform.getTranslateInstance(dx, dy);
+                    Dimension d = getSize();
+                    paintImmediately(0, 0, d.width, d.height);
+
+                    Point2D pt0 = new Point2D.Float(0, 0);
+                    Point2D pt = new Point2D.Float(dx, dy);
+                    try {
+                        transform.inverseTransform(pt0, pt0);
+                        transform.inverseTransform(pt, pt);
+                    } catch (NoninvertibleTransformException ex) {
+                    }
+                    markerTransform =
+                        AffineTransform.getTranslateInstance
+                            (pt0.getX() - pt.getX(),
+                             pt0.getY() - pt.getY());
+                    JSVGCanvas.this.transform.concatenate(markerTransform);
+                    JSVGCanvas.this.updateBaseTransform();
+                    JSVGCanvas.this.repaint = true;
+                    JSVGCanvas.this.repaint();
+
+                    markerTransform = new AffineTransform();
+                }
+            }
+            public void mouseMoved(MouseEvent e) {
+            }
+            public void mouseExited(MouseEvent e) {
+                if (in) {
+                    in = false;
+                    markerTransform = new AffineTransform();
+                    
+                    Dimension d = getSize();
+                    paintImmediately(0, 0, d.width, d.height);
+                }
+            }
+        }
     }
 
 }

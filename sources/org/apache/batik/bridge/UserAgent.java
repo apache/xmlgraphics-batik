@@ -11,6 +11,8 @@ package org.apache.batik.bridge;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.gvt.event.EventDispatcher;
 
+import org.w3c.dom.svg.SVGAElement;
+
 /**
  * An interface that provides access to User Agent information needed by
  * the bridge.
@@ -45,4 +47,10 @@ public interface UserAgent {
      * @return null if no user style sheet was specified.
      */
     String getUserStyleSheetURI();
+
+    /**
+     * Opens a link.
+     * @param elt The activated link element.
+     */
+    void openLink(SVGAElement elt);
 }

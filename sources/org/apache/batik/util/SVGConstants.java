@@ -50,6 +50,7 @@ public interface SVGConstants extends CSSConstants {
     String TAG_FE_MERGE_NODE = "feMergeNode";
     String TAG_FE_MORPHOLOGY = "feMorphology";
     String TAG_FE_OFFSET = "feOffset";
+    String TAG_FE_POINT_LIGHT = "fePointLight";
     String TAG_FE_SPECULAR_LIGHTING = "feSpecularLighting";
     String TAG_FE_SPOT_LIGHT = "feSpotLight";
     String TAG_FE_TILE = "feTile";
@@ -82,6 +83,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_AMPLITUDE = "amplitude";
     String ATTR_AZIMUTH = "azimuth";
     String ATTR_BASE_FREQUENCY = "baseFrequency";
+    String ATTR_BIAS = "bias";
     String ATTR_CLIP_PATH = "clip-path";
     String ATTR_CLIP_PATH_UNITS = "clipPathUnits";
     String ATTR_COLOR_INTERPOLATION =
@@ -91,6 +93,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_CY = "cy";
     String ATTR_D = "d";
     String ATTR_DIFFUSE_CONSTANT = "diffuseConstant";
+    String ATTR_DIVISOR = "divisor";
     String ATTR_DX = "dx";
     String ATTR_DY = "dy";
     String ATTR_EDGE_MODE = "edgemode";
@@ -114,7 +117,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_GRADIENT_TRANSFORM = "gradientTransform";
     String ATTR_GRADIENT_UNITS = "gradientUnits";
     String ATTR_HEIGHT = "height";
-    String ATTR_HREF = "xlink:href";
+    String ATTR_HREF = "href";
     String ATTR_ID = "id";
     String ATTR_IMAGE_RENDERING = "image-rendering";
     String ATTR_IN = "in";
@@ -125,6 +128,8 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_K3 = "k3";
     String ATTR_K4 = "k4";
     String ATTR_KERNEL_MATRIX = "kernelMatrix";
+    String ATTR_KERNEL_UNIT_LENGTH_X = "kernelUnitLengthX";
+    String ATTR_KERNEL_UNIT_LENGTH_Y = "kernelUnitLengthY";
     String ATTR_LIGHT_COLOR = "lightColor";
     String ATTR_NUM_OCTAVES = "numOctaves";
     String ATTR_MASK = "mask";
@@ -134,11 +139,14 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_OPACITY = "opacity";
     String ATTR_OPERATOR = "operator";
     String ATTR_ORDER = "order";
+    String ATTR_ORDER_X = "orderX";
+    String ATTR_ORDER_Y = "orderY";
     String ATTR_PATTERN_UNITS = "patternUnits";
     String ATTR_POINTS_AT_X = "pointsAtX";
     String ATTR_POINTS_AT_Y = "pointsAtY";
     String ATTR_POINTS_AT_Z = "pointsAtZ";
     String ATTR_POINTS = "points";
+    String ATTR_PRESERVE_ALPHA = "preserveAlpha";
     String ATTR_PRESERVE_ASPECT_RATIO = "preserveAspectRatio";
     String ATTR_PRIMITIVE_UNITS = "primitiveUnits";
     String ATTR_R = "r";
@@ -170,6 +178,8 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_SYSTEM_LANGUAGE = "systemLanguage";
     String ATTR_TABLE = "table";
     String ATTR_TARGET = "target";
+    String ATTR_TARGET_X = "targetX";
+    String ATTR_TARGET_Y = "targetY";
     String ATTR_TABLE_VALUES = "tableValues";
     String ATTR_TEXT_ANCHOR = TEXT_ANCHOR_PROPERTY;
     String ATTR_TEXT_RENDERING = "text-rendering";
