@@ -19,8 +19,7 @@ import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.StringReader;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.text.AttributedString;

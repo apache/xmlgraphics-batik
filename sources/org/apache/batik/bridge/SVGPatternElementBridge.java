@@ -11,8 +11,6 @@ package org.apache.batik.bridge;
 import java.awt.Paint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +26,8 @@ import org.apache.batik.ext.awt.image.ConcreteComponentTransferFunction;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.PatternPaint;
+
+import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -233,21 +233,18 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
             // check if there is circular dependencies
             SVGOMDocument doc =
                 (SVGOMDocument)patternElement.getOwnerDocument();
-            URL url;
-            try {
-                url = new URL(doc.getURLObject(), uri);
-            } catch (MalformedURLException ex) {
+            ParsedURL purl = new ParsedURL(doc.getURL(), uri);
+            if (!purl.complete())
                 throw new BridgeException(patternElement,
                                           ERR_URI_MALFORMED,
                                           new Object[] {uri});
 
-            }
-            if (contains(refs, url)) {
+            if (contains(refs, purl)) {
                 throw new BridgeException(patternElement,
                                           ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                                           new Object[] {uri});
             }
-            refs.add(url);
+            refs.add(purl);
             patternElement = ctx.getReferencedElement(patternElement, uri);
         }
     }
@@ -284,18 +281,16 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
     }
 
     /**
-     * Returns true if the specified list of URLs contains the specified url.
+     * Returns true if the specified list of ParsedURLs contains the
+     * specified url.
      *
-     * @param urls the list of URLs
-     * @param key the url to search for
-     */
-    private static boolean contains(List urls, URL key) {
+     * @param urls the list of ParsedURLs
+     * @param key the url to search for */
+    private static boolean contains(List urls, ParsedURL key) {
         Iterator iter = urls.iterator();
         while (iter.hasNext()) {
-            URL url = (URL)iter.next();
-            if (url.sameFile(key) && url.getRef().equals(key.getRef())) {
+            if (key.equals(iter.next()))
                 return true;
-            }
         }
         return false;
     }

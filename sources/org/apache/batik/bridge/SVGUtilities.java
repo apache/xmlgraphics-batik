@@ -37,6 +37,7 @@ import org.apache.batik.parser.PreserveAspectRatioParser;
 import org.apache.batik.parser.PreserveAspectRatioParser;
 
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -259,25 +260,25 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                 return "";
             }
             SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
-            URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
-            try {
-                URL url = new URL(baseURL, uriStr);
-                Iterator iter = refs.iterator();
-                while (iter.hasNext()) {
-                    URL urlTmp = (URL)iter.next();
-                    if (urlTmp.sameFile(url) &&
-                        urlTmp.getRef().equals(url.getRef())) {
-                        throw new BridgeException
-                            (e, ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
-                             new Object[] {uriStr});
-                    }
-                }
-                URIResolver resolver = new URIResolver(svgDoc, loader);
-                e = resolver.getElement(url.toString(), e);
-                refs.add(url);
-            } catch(MalformedURLException ex) {
+            String baseURI = ((SVGOMDocument)svgDoc).getURL();
+
+            ParsedURL purl = new ParsedURL(baseURI, uriStr);
+            if (!purl.complete()) 
                 throw new BridgeException(e, ERR_URI_MALFORMED,
                                           new Object[] {uriStr});
+
+            Iterator iter = refs.iterator();
+            while (iter.hasNext()) {
+                if (purl.equals(iter.next())) 
+                    throw new BridgeException
+                        (e, ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
+                         new Object[] {uriStr});
+            }
+
+            try {
+                URIResolver resolver = new URIResolver(svgDoc, loader);
+                e = resolver.getElement(purl.toString(), e);
+                refs.add(purl);
             } catch(IOException ex) {
                 throw new BridgeException(e, ERR_URI_IO,
                                           new Object[] {uriStr});
