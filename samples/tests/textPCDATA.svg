@@ -1,0 +1,46 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Validates that CDATA sections in &lt;text&gt; elements are supported.     -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@sun.com                                             -->
+<!-- @version $Id$        -->
+<!-- ========================================================================= -->
+<?xml-stylesheet type="text/css" href="test.css" ?>
+
+<svg width="450" height="500" viewBox="0 0 450 500">
+
+    <g id="content">
+
+        <text class="title" x="50%" y="30">Character Data on &lt;text&gt;</text>
+
+        <!-- Simple case: CDATA only -->
+        <g class="label" text-anchor="middle" transform="translate(225, 120)">
+            <text>CDATA only</text>
+            <text fill="crimson" y="20"><![CDATA[<text> with a CDATA section]]></text>
+        </g>
+
+        <!-- text, CDATA, text -->
+        <g class="label" text-anchor="middle" transform="translate(225, 180)">
+            <text>text, CDATA, text</text>
+            <text fill="crimson" y="20" >Text first, then <![CDATA[CDATA section in <text>]]>, text again</text>
+        </g>
+
+        <!-- text, CDATA, tspan, CDATA, text -->
+        <g class="label" text-anchor="middle" transform="translate(225, 240)">
+            <text>text, CDATA, tspan, CDATA, text</text>
+            <text fill="crimson" y="20">text, <![CDATA[CDATA section in <text>]]>, <tspan fill="gold">tspan w/<![CDATA[CDATA section in <tspan>]]></tspan>, text again</text>
+        </g>
+
+    </g>
+</svg>
