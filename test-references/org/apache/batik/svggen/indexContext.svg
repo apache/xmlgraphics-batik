@@ -122,6 +122,10 @@
         <a xlink:href="ContextNegativeLengths.svg" xlink:show="new">
             <text class="link" y="1em">ContextNegativeLengths.svg</text>
         </a>
+
+        <a xlink:href="TextSpacePreserve.svg" xlink:show="new">
+            <text class="link" y="1em">TextSpacePreserve.svg</text>
+        </a>
     </g>
 
 </svg>
