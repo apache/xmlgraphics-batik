@@ -16,7 +16,10 @@ package org.apache.batik.parser;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface FragmentIdentifierHandler extends PreserveAspectRatioHandler {
+public interface FragmentIdentifierHandler
+    extends PreserveAspectRatioHandler,
+            TransformListHandler {
+
     /**
      * Invoked when the fragment identifier starts.
      * @exception ParseException if an error occured while processing the
@@ -42,12 +45,35 @@ public interface FragmentIdentifierHandler extends PreserveAspectRatioHandler {
         throws ParseException;
 
     /**
-     * Invoked when 'viewTarget(name)' has been parsed.
+     * Invoked when a view target specification starts.
+     * @exception ParseException if an error occured while processing the
+     *                           fragment identifier
+     */
+    void startViewTarget() throws ParseException;
+
+    /**
+     * Invoked when a identifier has been parsed within a view target
+     * specification.
      * @param name the target name.
      * @exception ParseException if an error occured while processing the
      *                           fragment identifier
      */
     void viewTarget(String name) throws ParseException;
+
+    /**
+     * Invoked when a view target specification ends.
+     * @exception ParseException if an error occured while processing the
+     *                           fragment identifier
+     */
+    void endViewTarget() throws ParseException;
+
+    /**
+     * Invoked when a 'zoomAndPan' specification has been parsed.
+     * @param magnify true if 'magnify' has been parsed.
+     * @exception ParseException if an error occured while processing the
+     *                           fragment identifier
+     */
+    void zoomAndPan(boolean magnify);
 
     /**
      * Invoked when the fragment identifier ends.
