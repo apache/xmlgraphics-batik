@@ -28,6 +28,7 @@ public class LineInfo {
     float                       lastCharWidth;
     float                       lineWidth;
     boolean                     partial;
+    Point2D.Float               verticalAlignOffset;
 
     /**
      * 
@@ -40,7 +41,8 @@ public class LineInfo {
                     float visualAdvance,
                     float lastCharWidth,
                     float lineWidth,
-                    boolean partial) {
+                    boolean partial,
+                    Point2D.Float verticalAlignOffset) {
         this.loc           = loc;
         this.aci           = aci;
         this.gv            = gv;
@@ -51,6 +53,7 @@ public class LineInfo {
         this.lastCharWidth = lastCharWidth;
         this.lineWidth     = lineWidth;
         this.partial       = partial;
+        this.verticalAlignOffset = verticalAlignOffset;
     }
 
     public Point2D.Float  getLocation()         { return loc; }
@@ -63,6 +66,7 @@ public class LineInfo {
     public float          getLastCharWidth()    { return lastCharWidth; }
     public float          getLineWidth()        { return lineWidth; }
     public boolean        isPartialLine()       { return partial; }
+    public Point2D.Float  getVerticalAlignOffset()    { return verticalAlignOffset; }
 
     public String         toString() { 
         return ("[LineInfo loc: " + loc + 
@@ -70,7 +74,8 @@ public class LineInfo {
                 " LWidth: " + lineWidth +
                 " Adv: " + advance + " VAdv: " + visualAdvance +
                 " LCW: " + lastCharWidth +
-                " Partial: " + partial);
+                " Partial: " + partial +
+                " verticalAlignOffset: " + verticalAlignOffset);
     }
 
 }

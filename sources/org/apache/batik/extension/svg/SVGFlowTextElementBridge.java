@@ -39,6 +39,9 @@ import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.MarginInfo;
 import org.apache.batik.gvt.text.TextPath;
+import org.apache.batik.gvt.text.RegionInfo;
+
+import org.apache.batik.util.SVGConstants;
 
 /**
  * Bridge class for the &lt;flowText> element.
@@ -338,47 +341,71 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
     }
 
     protected List getRegions(BridgeContext ctx, Element element)  {
+        List ret = new LinkedList();
         for (Node n = element.getFirstChild();
              n != null; n = n.getNextSibling()) {
             if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
             if (n.getNamespaceURI() != getNamespaceURI()) continue;
+
             Element e = (Element)n;
 
-            String ln = n.getLocalName();
-            if (ln.equals(BATIK_EXT_FLOW_LAYOUT_TAG)) {
-                return gatherRects(ctx, e);
-            }
-        }
-        return null;
-    }
-    
-    protected List gatherRects(BridgeContext ctx, Element rgn) {
-        List ret = new LinkedList();
-        for (Node n = rgn.getFirstChild(); 
-             n != null; n = n.getNextSibling()) {
-            if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
-            if (n.getNamespaceURI() != getNamespaceURI()) continue;
-            Element e = (Element)n;
+            String ln = e.getLocalName();
+            if (BATIK_EXT_FLOW_REGION_TAG.equals(ln)) {
+                // our default alignment is to the top of the flow rect.
+                float verticalAlignment = 0.0f;
+                String verticalAlignmentAttribute 
+                    = e.getAttribute(BATIK_EXT_VERTICAL_ALIGN_ATTRIBUTE);
 
-            String ln = n.getLocalName();
-            if (ln.equals(BATIK_EXT_FLOW_REGION_TAG)) {
-                UnitProcessor.Context uctx;
-                uctx = UnitProcessor.createContext(ctx, e);
-                Rectangle2D r2d = buildRect(uctx, e);
-                if (r2d != null)
-                    ret.add(r2d);
+                if ((verticalAlignmentAttribute != null) && 
+                    (verticalAlignmentAttribute.length() > 0)) {
+                    if (BATIK_EXT_ALIGN_TOP_VALUE.equals
+                        (verticalAlignmentAttribute)) {
+                        verticalAlignment = 0.0f;
+                    } else if (BATIK_EXT_ALIGN_MIDDLE_VALUE.equals 
+                               (verticalAlignmentAttribute)) {
+                        verticalAlignment = 0.5f;
+                    } else if (BATIK_EXT_ALIGN_BOTTOM_VALUE.equals 
+                               (verticalAlignmentAttribute)) {
+                        verticalAlignment = 1.0f;
+                    }
+                }
+
+                gatherRegionInfo(ctx, e, verticalAlignment, ret);
             }
         }
 
         return ret;
     }
+    
+    protected void gatherRegionInfo(BridgeContext ctx, Element rgn,
+                                    float verticalAlign, List regions) {
 
-    protected Rectangle2D buildRect(UnitProcessor.Context uctx,
-                                    Element e) {
+        for (Node n = rgn.getFirstChild(); 
+             n != null; n = n.getNextSibling()) {
+
+            if (n.getNodeType()     != Node.ELEMENT_NODE) continue;
+            if (n.getNamespaceURI() != getNamespaceURI()) continue;
+            Element e = (Element)n;
+
+            String ln = n.getLocalName();
+            if (ln.equals(SVGConstants.SVG_RECT_TAG)) {
+                UnitProcessor.Context uctx;
+                uctx = UnitProcessor.createContext(ctx, e);
+
+                RegionInfo ri = buildRegion(uctx, e, verticalAlign);
+                if (ri != null)
+                    regions.add(ri);
+            }
+        }
+    }
+
+    protected RegionInfo buildRegion(UnitProcessor.Context uctx,
+                                     Element e, 
+                                     float verticalAlignment) {
         String s;
 
         // 'x' attribute - default is 0
-        s = e.getAttributeNS(null, BATIK_EXT_X_ATTRIBUTE);
+        s = e.getAttribute(BATIK_EXT_X_ATTRIBUTE);
         float x = 0;
         if (s.length() != 0) {
             x = UnitProcessor.svgHorizontalCoordinateToUserSpace
@@ -386,7 +413,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         }
 
         // 'y' attribute - default is 0
-        s = e.getAttributeNS(null, BATIK_EXT_Y_ATTRIBUTE);
+        s = e.getAttribute(BATIK_EXT_Y_ATTRIBUTE);
         float y = 0;
         if (s.length() != 0) {
             y = UnitProcessor.svgVerticalCoordinateToUserSpace
@@ -394,7 +421,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         }
 
         // 'width' attribute - required
-        s = e.getAttributeNS(null, BATIK_EXT_WIDTH_ATTRIBUTE);
+        s = e.getAttribute(BATIK_EXT_WIDTH_ATTRIBUTE);
         float w;
         if (s.length() != 0) {
             w = UnitProcessor.svgHorizontalLengthToUserSpace
@@ -410,7 +437,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
 	}
 
         // 'height' attribute - required
-        s = e.getAttributeNS(null, BATIK_EXT_HEIGHT_ATTRIBUTE);
+        s = e.getAttribute(BATIK_EXT_HEIGHT_ATTRIBUTE);
         float h;
         if (s.length() != 0) {
             h = UnitProcessor.svgVerticalLengthToUserSpace
@@ -425,7 +452,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
 	    return null;
 	}
 
-        return new Rectangle2D.Float(x,y,w,h);
+        return new RegionInfo(x,y,w,h,verticalAlignment);
     }
 
     /**
@@ -544,7 +571,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
                                   TextPath textPath) {
         Map result = super.getAttributeMap(ctx, element, textPath);
         String s;
-        s = element.getAttributeNS(null, BATIK_EXT_PREFORMATTED_ATTRIBUTE);
+        s = element.getAttribute(BATIK_EXT_PREFORMATTED_ATTRIBUTE);
         if (s.length() != 0) {
             if (s.equals("true")) {
                 result.put(PREFORMATTED, Boolean.TRUE);
@@ -620,7 +647,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         String s;
         float top=0, right=0, bottom=0, left=0;
 
-        s = e.getAttributeNS(null, BATIK_EXT_MARGIN_ATTRIBUTE);
+        s = e.getAttribute(BATIK_EXT_MARGIN_ATTRIBUTE);
         try {
             if (s.length() != 0) {
                 float f = Float.parseFloat(s);
@@ -628,28 +655,28 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             }
         } catch(NumberFormatException nfe) { /* nothing */ }
 
-        s = e.getAttributeNS(null, BATIK_EXT_TOP_MARGIN_ATTRIBUTE);
+        s = e.getAttribute(BATIK_EXT_TOP_MARGIN_ATTRIBUTE);
         try {
             if (s.length() != 0) {
                 float f = Float.parseFloat(s);
                 top = f;
             }
         } catch(NumberFormatException nfe) { /* nothing */ }
-        s = e.getAttributeNS(null, BATIK_EXT_RIGHT_MARGIN_ATTRIBUTE);
+        s = e.getAttribute(BATIK_EXT_RIGHT_MARGIN_ATTRIBUTE);
         try {
             if (s.length() != 0) {
                 float f = Float.parseFloat(s);
                 right = f;
             }
         } catch(NumberFormatException nfe) { /* nothing */ }
-        s = e.getAttributeNS(null, BATIK_EXT_BOTTOM_MARGIN_ATTRIBUTE);
+        s = e.getAttribute(BATIK_EXT_BOTTOM_MARGIN_ATTRIBUTE);
         try {
             if (s.length() != 0) {
                 float f = Float.parseFloat(s);
                 bottom = f;
             }
         } catch(NumberFormatException nfe) { /* nothing */ }
-        s = e.getAttributeNS(null, BATIK_EXT_LEFT_MARGIN_ATTRIBUTE);
+        s = e.getAttribute(BATIK_EXT_LEFT_MARGIN_ATTRIBUTE);
         try {
             if (s.length() != 0) {
                 float f = Float.parseFloat(s);
@@ -657,37 +684,26 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             }
         } catch(NumberFormatException nfe) { /* nothing */ }
 
-        float flLeft  = left;
-        float flRight = right;
-
-        s = e.getAttributeNS(null, BATIK_EXT_FIRST_LINE_LEFT_MARGIN_ATTRIBUTE);
+        float indent = 0;
+        s = e.getAttribute(BATIK_EXT_INDENT_ATTRIBUTE);
         try {
             if (s.length() != 0) {
                 float f = Float.parseFloat(s);
-                flLeft = f;
+                indent = f;
             }
         } catch(NumberFormatException nfe) { /* nothing */ }
-
-        s = e.getAttributeNS(null,BATIK_EXT_FIRST_LINE_RIGHT_MARGIN_ATTRIBUTE);
-        try {
-            if (s.length() != 0) {
-                float f = Float.parseFloat(s);
-                flRight = f;
-            }
-        } catch(NumberFormatException nfe) { /* nothing */ }
-
 
         int justification = MarginInfo.JUSTIFY_START;
-        s = e.getAttributeNS(null, BATIK_EXT_JUSTIFICATION_ATTRIBUTE);
+        s = e.getAttribute(BATIK_EXT_JUSTIFICATION_ATTRIBUTE);
         try {
             if (s.length() != 0) {
-                if (s.equals("start")) {
+                if (BATIK_EXT_JUSTIFICATION_START_VALUE.equals(s)) {
                     justification = MarginInfo.JUSTIFY_START;
-                } else if (s.equals("middle")) {
+                } else if (BATIK_EXT_JUSTIFICATION_MIDDLE_VALUE.equals(s)) {
                     justification = MarginInfo.JUSTIFY_MIDDLE;
-                } else if (s.equals("end")) {
+                } else if (BATIK_EXT_JUSTIFICATION_END_VALUE.equals(s)) {
                     justification = MarginInfo.JUSTIFY_END;
-                } else if (s.equals("full")) {
+                } else if (BATIK_EXT_JUSTIFICATION_FULL_VALUE.equals(s)) {
                     justification = MarginInfo.JUSTIFY_FULL;
                 }
             }
@@ -695,8 +711,8 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
 
         String ln = e.getLocalName();
         boolean rgnBr = ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG);
-        return new MarginInfo(top, right, bottom, left, flLeft, flRight,
-                              justification, rgnBr);
+        return new MarginInfo(top, right, bottom, left, 
+                              indent, justification, rgnBr);
     }
 
 
