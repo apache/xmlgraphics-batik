@@ -1,0 +1,196 @@
+<?xml version="1.0"?>
+<!DOCTYPE document SYSTEM "./dtd/document-v10.dtd">
+
+<!--
+
+ ============================================================================
+                   The Apache Software License, Version 1.1
+ ============================================================================
+
+ Copyright (C) 1999-2003 The Apache Software Foundation. All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modifica-
+ tion, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of  source code must  retain the above copyright  notice,
+    this list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+ 3. The end-user documentation included with the redistribution, if any, must
+    include  the following  acknowledgment:  "This product includes  software
+    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+    Alternately, this  acknowledgment may  appear in the software itself,  if
+    and wherever such third-party acknowledgments normally appear.
+
+ 4. The names "Batik" and  "Apache Software Foundation" must  not  be
+    used to  endorse or promote  products derived from  this software without
+    prior written permission. For written permission, please contact
+    apache@apache.org.
+
+ 5. Products  derived from this software may not  be called "Apache", nor may
+    "Apache" appear  in their name,  without prior written permission  of the
+    Apache Software Foundation.
+
+ THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ This software  consists of voluntary contributions made  by many individuals
+ on  behalf of the Apache Software  Foundation. For more  information on the
+ Apache Software Foundation, please see <http://www.apache.org/>.
+
+-->
+
+<!-- ====================================================================== -->
+<!-- version $Id$ -->
+<!-- ====================================================================== -->
+<document>
+  <header>
+    <title>Downloading Batik</title>
+    <authors>
+      <person name="Thomas DeWeese" email="deweese@apache.org"/>
+    </authors>
+  </header>
+  <body>
+    <s1 title="Downloading Batik">
+      <p>
+        Use the links below to download the distributions of Batik
+        from one of our mirrors.  It is good practice to <a
+        href="[location]#Verify Releases">verify the integrity</a> of
+        the distribution files, especially if you are using one of our
+        mirror sites.  In order to do this you must use the signatures
+        from our <a href="http://www.apache.org/dist/batik/">main
+        distribution directory</a> .
+      </p>
+      <p>
+         Batik is only distributed as a <code>zip</code> archive.
+      </p>
+      <p>
+        If you do not see the file you need in the links below, please
+        see the <a href="http://www.apache.org/dist/batik/">master
+        distribution directory</a> or, preferably, its <a
+        href="[preferred]/batik/">mirror</a>.
+      </p>
+    </s1>
+    <s1 title="Mirror">
+      <p>
+        You are currently using <b>[preferred]</b>.  If you encounter
+        a problem with this mirror, please select another mirror.  If
+        all mirrors are failing, there are <i>backup</i> mirrors (at
+        the end of the mirrors list) that should be available.
+      </p>
+      <form action="[location]" method="get" id="SelectMirror">
+        Other mirrors: 
+	<select name="Preferred">
+          [if-any http][for http]
+          <option value="[http]">[http]</option>
+          [end][end][if-any ftp][for ftp]
+          <option value="[ftp]">[ftp]</option>
+          [end][end][if-any backup][for backup]
+          <option value="[backup]">[backup] (backup)</option>
+          [end][end]
+        </select>
+        <input type="submit" value="Change"/>
+      </form>
+    </s1>
+    <s1 name="Current Release of Batik">
+      <p>
+        Currently, Apache Batik 1.5 is the best available version, see
+        the <a href="[preferred]/batik/README.txt">release notes</a>.
+      </p>
+      <ul>
+	<li>Binary Release:
+          <a href="[preferred]/batik/batik-1.5.zip">batik-1.5.zip</a>
+          [
+          <a href="http://www.apache.org/dist/batik/batik-1.5.zip.asc">PGP</a>
+          ][
+          <a href="http://www.apache.org/dist/batik/batik-1.5.zip.md5">MD5</a>
+          ]
+        </li>
+	<li>Source Release:
+          <a href="[preferred]/batik/batik-src-1.5.zip">batik-1.5.zip</a>
+          [
+          <a href="http://www.apache.org/dist/batik/batik-src-1.5.zip.asc">PGP</a>
+          ][
+          <a href="http://www.apache.org/dist/batik/batik-src-1.5.zip.md5">MD5</a>
+          ]
+        </li>
+	<li>Documentation:
+          <a href="[preferred]/batik/batik-docs-1.5.zip">batik-1.5.zip</a>
+          [
+          <a href="http://www.apache.org/dist/batik/batik-docs-1.5.zip.asc">PGP</a>
+          ][
+          <a href="http://www.apache.org/dist/batik/batik-docs-1.5.zip.md5">MD5</a>
+          ]
+        </li>
+      </ul>
+    </s1>
+    <s1 title="Old Batik Releases">
+      <p>
+        Older releases of Batik can be found 
+        <a href="http://archive.apache.org/dist/batik/">here</a>.  
+        We highly recommend to not use those releases but upgrade to
+        Batik's <a href="[location]#Current Release of Batik">latest</a>
+        release.
+    </p>
+    </s1>
+    <s1 title="Verify Releases">
+      <p>
+        It is essential that you verify the integrity of the
+        downloaded files using the PGP or MD5 signatures.
+      </p>
+      <p>
+        The PGP signatures can be verified using PGP or GPG.  First
+        download the <a
+        href="http://www.apache.org/dist/batik/KEYS">KEYS</a> as well
+        as the <code>asc</code> signature file for the particular
+        distribution.  Make sure you get these files from the <a
+        href="http://www.apache.org/dist/batik/">main distribution
+        directory</a> , rather than from a mirror. Then verify the
+        signatures using
+      </p>
+      <p>
+	<code>
+          % pgpk -a KEYS <br/>
+          % pgpv batik-1.5.zip.asc<br/>
+        </code>
+        <em>or</em>
+        <br/>
+	<code>
+          % pgp -ka KEYS<br/>
+          % pgp batik-1.5.zip.asc<br/>
+        </code>
+        <em>or</em>
+        <br/>
+	<code>
+          % gpg --import KEYS<br/>
+          % gpg --verify batik-1.5.zip.asc
+        </code>
+      </p>
+      <p>
+        Alternatively, you can verify the MD5 signature on the files.
+        A unix program called <code>md5</code> or <code>md5sum</code>
+        is included in many unix distributions.  It is also available
+        as part of <a
+        href="http://www.gnu.org/software/textutils/textutils.html">GNU
+        Textutils</a> .  Windows users can get binary md5 programs
+        from <a href="http://www.fourmilab.ch/md5/">here</a> , <a
+        href="http://www.pc-tools.net/win32/freeware/console/">here</a>
+        , or <a href="http://www.slavasoft.com/fsum/">here</a> .
+      </p>
+      <p>
+        We highly recommend to verify the PGP signature, though.
+      </p>
+    </s1>
+  </body>
+</document>

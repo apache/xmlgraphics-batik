@@ -174,7 +174,7 @@ To display the available targets type:
   <target name="dist-zip" depends="build"/>
   <target name="build" depends="doc-zip, bin-zip, src-zip, jars, html" />
 
-  <target name="doc-zip" depends="html">
+  <target name="doc-zip" depends="init, html">
     <delete dir="${build}/docs/images/BE"/>
     <zip zipfile="${project}-docs-${version}.zip" basedir="${build}"
          includes="docs/javadoc/**"/>
@@ -196,7 +196,8 @@ To display the available targets type:
     <zip zipfile="${project}-${version}.zip" basedir="." includes="${build}/**"/> 
   </target>
 
-  <target name="src-zip">
+  <target name="src-zip" depends="init">
+    <echo message="xml-${project}"/>
     <zip zipfile="${project}-src-${version}.zip" basedir=".." 
          includes="xml-${project}/**" excludes="xml-${project}/test-references/**">
         <exclude name="xml-${project}/${project}-src-${version}.zip" />

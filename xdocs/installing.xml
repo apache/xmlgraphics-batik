@@ -124,7 +124,13 @@
           the Javadoc for the Batik source code.</li>
       </ul>
 
+      <p>Older releases are avaiable from the <link
+      href="http://archive.apache.org/dist/xml/batik">Apache
+      archives</link>.  However, we strongly recommend using
+      the current release of Batik.</p>
+
       <p>In all cases, the user should:</p>
+
       <ul>
         <li>Make sure a Java Development Kit (JDK) is installed on the
         computer where Batik will be installed. See <link
