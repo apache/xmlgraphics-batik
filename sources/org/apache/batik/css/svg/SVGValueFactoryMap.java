@@ -8,7 +8,10 @@
 
 package org.apache.batik.css.svg;
 
+import org.apache.batik.css.value.DefaultSystemColorResolver;
 import org.apache.batik.css.value.CommonValueFactoryMap;
+import org.apache.batik.css.value.SystemColorResolver;
+
 import org.w3c.css.sac.Parser;
 
 /**
@@ -21,11 +24,19 @@ import org.w3c.css.sac.Parser;
 public class SVGValueFactoryMap
     extends    CommonValueFactoryMap
     implements SVGValueConstants {
+
     /**
      * Creates a new ValueFactoryMap object.
      */
     public SVGValueFactoryMap(Parser p) {
-	super(p);
+        this(p, new DefaultSystemColorResolver());
+    }
+
+    /**
+     * Creates a new ValueFactoryMap object.
+     */
+    public SVGValueFactoryMap(Parser p, SystemColorResolver scr) {
+	super(p, scr);
 
 	put(CSS_ALIGNMENT_BASELINE_PROPERTY,
             new AlignmentBaselineFactory(p));
@@ -43,7 +54,7 @@ public class SVGValueFactoryMap
             new ColorProfileFactory(p));
 
 	put(CSS_COLOR_PROPERTY,
-            new SVGColorFactory(p, CSS_COLOR_PROPERTY));
+            new SVGColorFactory(p, CSS_COLOR_PROPERTY, scr));
 
 	put(CSS_COLOR_INTERPOLATION_PROPERTY,
             new ColorInterpolationFactory(p));
@@ -58,7 +69,7 @@ public class SVGValueFactoryMap
             new EnableBackgroundFactory(p));
 
 	put(CSS_FILL_PROPERTY,
-            new PaintFactory(p, CSS_FILL_PROPERTY));
+            new PaintFactory(p, CSS_FILL_PROPERTY, scr));
 
 	put(CSS_FILL_OPACITY_PROPERTY,
             new OpacityFactory(p, CSS_FILL_OPACITY_PROPERTY));
@@ -70,7 +81,7 @@ public class SVGValueFactoryMap
             new FilterFactory(p));
 
 	put(CSS_FLOOD_COLOR_PROPERTY,
-            new SimpleColorFactory(p, CSS_FLOOD_COLOR_PROPERTY));
+            new SimpleColorFactory(p, CSS_FLOOD_COLOR_PROPERTY, scr));
 
 	put(CSS_FLOOD_OPACITY_PROPERTY,
             new OpacityFactory(p, CSS_FLOOD_OPACITY_PROPERTY));
@@ -88,7 +99,7 @@ public class SVGValueFactoryMap
             new ImageRenderingFactory(p));
 
 	put(CSS_LIGHTING_COLOR_PROPERTY,
-            new SimpleColorFactory(p, CSS_LIGHTING_COLOR_PROPERTY));
+            new SimpleColorFactory(p, CSS_LIGHTING_COLOR_PROPERTY, scr));
 
 	put(CSS_MARKER_PROPERTY,
             new MarkerShorthandFactory(p));
@@ -115,13 +126,13 @@ public class SVGValueFactoryMap
             new ShapeRenderingFactory(p));
 
 	put(CSS_STOP_COLOR_PROPERTY,
-            new SimpleColorFactory(p, CSS_STOP_COLOR_PROPERTY));
+            new SimpleColorFactory(p, CSS_STOP_COLOR_PROPERTY, scr));
 
 	put(CSS_STOP_OPACITY_PROPERTY,
             new OpacityFactory(p, CSS_STOP_OPACITY_PROPERTY));
 
 	put(CSS_STROKE_PROPERTY,
-            new PaintFactory(p, CSS_STROKE_PROPERTY));
+            new PaintFactory(p, CSS_STROKE_PROPERTY, scr));
 
 	put(CSS_STROKE_DASHARRAY_PROPERTY,
             new StrokeDasharrayFactory(p));

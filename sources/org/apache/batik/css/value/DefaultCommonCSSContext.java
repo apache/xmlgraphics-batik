@@ -8,7 +8,12 @@
 
 package org.apache.batik.css.value;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.util.CSSConstants;
+
 import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
@@ -18,34 +23,21 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class DefaultCommonCSSContext implements CommonCSSContext {
-    /**
-     * 0.
-     */
-    protected final static ImmutableValue N_0 =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 0);
 
     /**
      * The default color.
      */
-    public final static CSSOMReadOnlyValue DEFAULT_COLOR_VALUE =
-	new CSSOMReadOnlyValue
-        (new ImmutableRGBColor(new CSSOMReadOnlyValue(N_0),
-                               new CSSOMReadOnlyValue(N_0),
-                               new CSSOMReadOnlyValue(N_0)));
+    public final static Color DEFAULT_COLOR = new Color(0, 0, 0);
 
     /**
      * The default font family.
      */
-    public final static CSSOMReadOnlyValue DEFAULT_FONT_FAMILY;
+    public final static List DEFAULT_FONT_FAMILY;
     static {
-	ImmutableValueList l = new ImmutableValueList();
-	ImmutableValue v;
-	v = new ImmutableString(CSSPrimitiveValue.CSS_STRING, "Arial");
-	l.append(new CSSOMReadOnlyValue(v));
-	v = new ImmutableString(CSSPrimitiveValue.CSS_STRING, "Helvetica");
-	l.append(new CSSOMReadOnlyValue(v));
-	l.append(new CSSOMReadOnlyValue(FontFamilyFactory.SANS_SERIF_VALUE));
-	DEFAULT_FONT_FAMILY = new CSSOMReadOnlyValue(l);
+        DEFAULT_FONT_FAMILY = new ArrayList(3);
+        DEFAULT_FONT_FAMILY.add("Arial");
+        DEFAULT_FONT_FAMILY.add("Helvetica");
+        DEFAULT_FONT_FAMILY.add(CSSConstants.CSS_SANS_SERIF_VALUE);
     }
 
     /**
@@ -56,14 +48,14 @@ public class DefaultCommonCSSContext implements CommonCSSContext {
     /**
      * The default color.
      */
-    public CSSOMReadOnlyValue getDefaultColorValue() {
-	return DEFAULT_COLOR_VALUE;
+    public Color getDefaultColorValue() {
+	return DEFAULT_COLOR;
     }
 
     /**
      * The font-family value.
      */
-    public CSSOMReadOnlyValue getDefaultFontFamilyValue() {
+    public List getDefaultFontFamilyValue() {
 	return DEFAULT_FONT_FAMILY;
     }
 
@@ -79,5 +71,43 @@ public class DefaultCommonCSSContext implements CommonCSSContext {
      */
     public void setUserStyleSheetURI(String s) {
         userStyleSheetURI = s;
+    }
+
+    /**
+     * Returns the font weight 'lighter' than the given weight.
+     */
+    public float getLighterFontWeight(float f) {
+        switch ((int)f) {
+        case 100: return 100;
+        case 200: return 100;
+        case 300: return 200;
+        case 400: return 300;
+        case 500: return 400;
+        case 600: return 400;
+        case 700: return 400;
+        case 800: return 400;
+        case 900: return 400;
+        default:
+            throw new IllegalArgumentException("" + f);
+        }
+    }
+
+    /**
+     * Returns the font weight 'bolder' than the given weight.
+     */
+    public float getBolderFontWeight(float f) {
+        switch ((int)f) {
+        case 100: return 600;
+        case 200: return 600;
+        case 300: return 600;
+        case 400: return 600;
+        case 500: return 600;
+        case 600: return 700;
+        case 700: return 800;
+        case 800: return 900;
+        case 900: return 900;
+        default:
+            throw new IllegalArgumentException("" + f);
+        }
     }
 }

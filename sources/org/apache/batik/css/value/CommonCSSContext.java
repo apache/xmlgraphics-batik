@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.value;
 
+import java.util.List;
+
 import org.apache.batik.css.CSSOMReadOnlyValue;
 
 /**
@@ -21,15 +23,76 @@ public interface CommonCSSContext {
     /**
      * The default color.
      */
-    CSSOMReadOnlyValue getDefaultColorValue();
+    Color getDefaultColorValue();
 
     /**
-     * The font-family value.
+     * The default font-family value.
+     * @return a list of string.
      */
-    CSSOMReadOnlyValue getDefaultFontFamilyValue();
+    List getDefaultFontFamilyValue();
 
     /**
      * The user style sheet URI.
      */
     String getUserStyleSheetURI();
+
+    /**
+     * Returns the font weight 'lighter' than the given weight.
+     */
+    float getLighterFontWeight(float f);
+
+    /**
+     * Returns the font weight 'bolder' than the given weight.
+     */
+    float getBolderFontWeight(float f);
+
+    /**
+     * To Store a CSS RGB color.
+     */
+    public class Color {
+        /**
+         * The red component.
+         */
+        protected int red;
+
+        /**
+         * The green component.
+         */
+        protected int green;
+
+        /**
+         * The blue component.
+         */
+        protected int blue;
+
+        /**
+         * Creates a new color.
+         */
+        public Color(int red, int green, int blue) {
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
+        }
+
+        /**
+         * Returns the red component.
+         */
+        public int getRed() {
+            return red;
+        }
+
+        /**
+         * Returns the green component.
+         */
+        public int getGreen() {
+            return green;
+        }
+
+        /**
+         * Returns the blue component.
+         */
+        public int getBlue() {
+            return blue;
+        }
+    }
 }

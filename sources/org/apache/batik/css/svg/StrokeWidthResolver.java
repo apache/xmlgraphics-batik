@@ -10,10 +10,12 @@ package org.apache.batik.css.svg;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
+
 import org.apache.batik.css.value.AbstractValueFactory;
 import org.apache.batik.css.value.ImmutableFloat;
 import org.apache.batik.css.value.ImmutableValue;
 import org.apache.batik.css.value.RelativeValueResolver;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.ViewCSS;
@@ -78,16 +80,20 @@ public class StrokeWidthResolver implements RelativeValueResolver {
 			     String priority,
 			     int origin) {
         if (value.getPrimitiveType() == CSSPrimitiveValue.CSS_PERCENTAGE) {
-            double vpw = context.getViewportWidth();
-            double vph = context.getViewportHeight();
-            double vpr = Math.sqrt(vpw * vpw + vph * vph);
-            double p = value.getFloatValue(CSSPrimitiveValue.CSS_PERCENTAGE);
-            float val = (float)(p * vpr / 100);
-            ImmutableValue iv = new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, val);
-            styleDeclaration.setPropertyCSSValue(getPropertyName(),
-                                                 new CSSOMReadOnlyValue(iv),
-                                                 priority,
-                                                 origin);
+            try {
+                double vpw = context.getViewportWidth(element);
+                double vph = context.getViewportHeight(element);
+                double vpr = Math.sqrt(vpw * vpw + vph * vph);
+                double p = value.getFloatValue(CSSPrimitiveValue.CSS_PERCENTAGE);
+                float val = (float)(p * vpr / 100);
+                ImmutableValue iv = new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, val);
+                styleDeclaration.setPropertyCSSValue(getPropertyName(),
+                                                     new CSSOMReadOnlyValue(iv),
+                                                     priority,
+                                                     origin);
+            } catch (IllegalStateException e) {
+                // Let the value unchanged.
+            }
         }
     }
 }

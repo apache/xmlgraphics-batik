@@ -10,7 +10,9 @@ package org.apache.batik.css.value;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
+
 import org.w3c.dom.Element;
+import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.ViewCSS;
 
 /**
@@ -21,6 +23,7 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class ColorResolver implements RelativeValueResolver {
+
     /**
      * The application context.
      */
@@ -52,7 +55,15 @@ public class ColorResolver implements RelativeValueResolver {
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return context.getDefaultColorValue();
+	CommonCSSContext.Color c = context.getDefaultColorValue();
+        return new CSSOMReadOnlyValue
+            (new ImmutableRGBColor
+                (new CSSOMReadOnlyValue(new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER,
+                                                           c.getRed())),
+                 new CSSOMReadOnlyValue(new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER,
+                                                           c.getGreen())),
+                 new CSSOMReadOnlyValue(new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER,
+                                                           c.getBlue()))));
     }
     
     /**

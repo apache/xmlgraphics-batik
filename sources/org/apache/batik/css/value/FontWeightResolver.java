@@ -11,8 +11,11 @@ package org.apache.batik.css.value;
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
 import org.apache.batik.css.HiddenChildElementSupport;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.ViewCSS;
 
 /**
@@ -23,6 +26,19 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class FontWeightResolver implements RelativeValueResolver {
+
+    /**
+     * The application context.
+     */
+    protected CommonCSSContext context;
+    
+    /**
+     * Creates a new FontWeightResolver object.
+     * @param ctx The application context.
+     */
+    public FontWeightResolver(CommonCSSContext ctx) {
+	context = ctx;
+    }
 
     /**
      * Whether the handled property is inherited or not.
@@ -63,83 +79,52 @@ public class FontWeightResolver implements RelativeValueResolver {
                              String priority,
                              int origin) {
         ImmutableValue im = value.getImmutableValue();
-        /**
-         * Note:  this implementation should change, since the spec says
-         * the next lighter/bolder "available" font should be chosen, and
-         * that if none available then increment/decrement by 100.
-         * Since at the moment we only have normal and bold fonts,
-         * the interim solution is a reasonable "fit".  Eventually this
-         * resolution must be done in the renderer instead of here.
-         */
+
         boolean b = im == ValueConstants.BOLDER_VALUE;
         if (b || im == ValueConstants.LIGHTER_VALUE) {
             Element p = HiddenChildElementSupport.getParentElement(element);
             CSSOMReadOnlyValue val;
             if (p == null) {
-                val = new CSSOMReadOnlyValue((b)
-                                             ? ValueConstants.NUMBER_600
-                                             : ValueConstants.NUMBER_300);
+                val = new CSSOMReadOnlyValue
+                    ((b)
+                     ? createFontWeight(context.getBolderFontWeight(400))
+                     : createFontWeight(context.getLighterFontWeight(400)));
             } else {
                 CSSOMReadOnlyStyleDeclaration sd;
                 sd = (CSSOMReadOnlyStyleDeclaration)view.getComputedStyle
                     (p, null);
                 CSSOMReadOnlyValue prop;
-                prop = (CSSOMReadOnlyValue)sd.getPropertyCSSValue
-                    (getPropertyName());
+                prop = (CSSOMReadOnlyValue)sd.getPropertyCSSValue(getPropertyName());
                 im = prop.getImmutableValue();
-                if (im == ValueConstants.NUMBER_100) {
-                    val = new CSSOMReadOnlyValue
-                        ((b)
-                         ? ValueConstants.NUMBER_600
-                         : ValueConstants.NUMBER_100);
-                } else if (im == ValueConstants.NUMBER_200) {
-                    val = new CSSOMReadOnlyValue
-                        ((b)
-                         ? ValueConstants.NUMBER_600
-                         : ValueConstants.NUMBER_100);
-                } else if (im == ValueConstants.NUMBER_300) {
-                    val = new CSSOMReadOnlyValue
-                        ((b)
-                         ? ValueConstants.NUMBER_600
-                         : ValueConstants.NUMBER_200);
-                } else if (im == ValueConstants.NUMBER_400 ||
-                           im == ValueConstants.NORMAL_VALUE) {
-                    val = new CSSOMReadOnlyValue
-                        ((b)
-                         ? ValueConstants.NUMBER_600
-                         : ValueConstants.NUMBER_300);
-                } else if (im == ValueConstants.NUMBER_500) {
-                    val = new CSSOMReadOnlyValue
-                        ((b)
-                         ? ValueConstants.NUMBER_600
-                         : ValueConstants.NUMBER_400);
-                } else if (im == ValueConstants.NUMBER_600) {
-                    val = new CSSOMReadOnlyValue
-                        ((b)
-                         ? ValueConstants.NUMBER_700
-                         : ValueConstants.NUMBER_400);
-                } else if (im == ValueConstants.NUMBER_700 ||
-                           im == ValueConstants.BOLD_VALUE) {
-                    val = new CSSOMReadOnlyValue
-                        ((b)
-                         ? ValueConstants.NUMBER_800
-                         : ValueConstants.NUMBER_400);
-                } else if (im == ValueConstants.NUMBER_800) {
-                    val = new CSSOMReadOnlyValue
-                        ((b)
-                         ? ValueConstants.NUMBER_900
-                         : ValueConstants.NUMBER_400);
-                } else {
-                    val = new CSSOMReadOnlyValue
-                        ((b)
-                         ? ValueConstants.NUMBER_900
-                         : ValueConstants.NUMBER_400);
-                }
+                float f = im.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+                val = new CSSOMReadOnlyValue
+                    ((b)
+                     ? createFontWeight(context.getBolderFontWeight(f))
+                     : createFontWeight(context.getLighterFontWeight(f)));
             }
             styleDeclaration.setPropertyCSSValue(getPropertyName(),
                                                  val,
                                                  priority,
                                                  origin);
+        }
+    }
+
+    /**
+     * Creates a font weight value.
+     */
+    protected ImmutableValue createFontWeight(float f) {
+        switch ((int)f) {
+        case 100: return ValueConstants.NUMBER_100;
+        case 200: return ValueConstants.NUMBER_200;
+        case 300: return ValueConstants.NUMBER_300;
+        case 400: return ValueConstants.NUMBER_400;
+        case 500: return ValueConstants.NUMBER_500;
+        case 600: return ValueConstants.NUMBER_600;
+        case 700: return ValueConstants.NUMBER_700;
+        case 800: return ValueConstants.NUMBER_800;
+        case 900: return ValueConstants.NUMBER_900;
+        default:
+            throw new InternalError();
         }
     }
 }
