@@ -30,6 +30,8 @@ import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 
+import org.apache.batik.util.XMLResourceDescriptor;
+
 /**
  * Validates the operation of the <tt>XMLTestSuireRunner</tt> by checking
  * that it runs the tests specified by the command line parameter and 
@@ -294,7 +296,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
         protected Document loadDummyTestRun() throws Exception{
             DocumentFactory df 
                 = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(), 
-                                         Messages.formatMessage(XMLTestSuiteRunner.XML_PARSER, null));
+                                         XMLResourceDescriptor.getXMLParserClassName());
             
             URL url = (new File(XMLTestSuiteRunnerValidator.dummyTestRun)).toURL();
             return df.createDocument(null,

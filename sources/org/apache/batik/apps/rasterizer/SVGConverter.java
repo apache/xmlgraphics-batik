@@ -168,12 +168,6 @@ public class SVGConverter {
         = "SVGConverter.error.while.rasterizing.file";
 
     //
-    // Configuration
-    //
-    public static final String CONFIG_XML_PARSER_CLASS_NAME
-        = "SVGConverter.config.xml.parser.class.name";
-
-    //
     // Class variables and constants 
     //
 
@@ -662,10 +656,6 @@ public class SVGConverter {
         if (area != null) {
             map.put(ImageTranscoder.KEY_AOI, area);           
         }
-
-        // Set parser. -------------------------------------------------------
-        map.put(ImageTranscoder.KEY_XML_PARSER_CLASSNAME, 
-                Messages.formatMessage(CONFIG_XML_PARSER_CLASS_NAME, null));
 
         // Set image quality. ------------------------------------------------
         if (quality > 0) {
