@@ -68,6 +68,13 @@ public class GVTBuilder implements SVGConstants {
             }
             ctx.getDocumentLoader().dispose(document);
         }
+
+        // <!> FIXME: TO BE REMOVED
+        if (ctx.isDynamic()) {
+            BridgeEventSupport.loadScripts(ctx, document);
+            BridgeEventSupport.addGVTListener(ctx, svgElement);
+        }
+
         return rootNode;
     }
 
