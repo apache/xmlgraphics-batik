@@ -707,83 +707,86 @@ public abstract class CSSEngine {
         }
 
         element = elt;
-
+        try {
         // Apply the non-CSS presentational hints to the result.
-        if (nonCSSPresentationalHints != null) {
-            NamedNodeMap attrs = elt.getAttributes();
-            int len = attrs.getLength();
-            for (int i = 0; i < len; i++) {
-                Node attr = attrs.item(i);
-                String an = attr.getNodeName();
-                if (nonCSSPresentationalHints.contains(an)) {
+            if (nonCSSPresentationalHints != null) {
+                NamedNodeMap attrs = elt.getAttributes();
+                int len = attrs.getLength();
+                for (int i = 0; i < len; i++) {
+                    Node attr = attrs.item(i);
+                    String an = attr.getNodeName();
+                    if (nonCSSPresentationalHints.contains(an)) {
+                        try {
+                            LexicalUnit lu;
+                            int idx = getPropertyIndex(an);
+                            lu = parser.parsePropertyValue
+                                (attr.getNodeValue());
+                            ValueManager vm = valueManagers[idx];
+                            Value v = vm.createValue(lu, this);
+                            putAuthorProperty(result, idx, v, false,
+                                              StyleMap.NON_CSS_ORIGIN);
+                        } catch (Exception e) {
+                            String m = e.getMessage();
+                            if (m == null) m = "";
+                            String u = ((documentURI == null)?"<unknown>":
+                                        documentURI.toString());
+                            String s = Messages.formatMessage
+                                ("property.syntax.error.at",
+                                 new Object[] { u, an, attr.getNodeValue(),m});
+                            throw new DOMException(DOMException.SYNTAX_ERR, s);
+                        }
+                    }
+                }
+            }
+
+            // Apply the document style-sheets to the result.
+            List snodes = getStyleSheetNodes();
+            int slen = snodes.size();
+            if (slen > 0) {
+                List rules = new ArrayList();
+                for (int i = 0; i < slen; i++) {
+                    CSSStyleSheetNode ssn = (CSSStyleSheetNode)snodes.get(i);
+                    StyleSheet ss = ssn.getCSSStyleSheet();
+                    if (ss != null &&
+                        (!ss.isAlternate() ||
+                         ss.getTitle() == null ||
+                         ss.getTitle().equals(alternateStyleSheet)) &&
+                        mediaMatch(ss.getMedia())) {
+                        addMatchingRules(rules, ss, elt, pseudo);
+                    }
+                }
+                addRules(elt, pseudo, result, rules, StyleMap.AUTHOR_ORIGIN);
+            }
+
+            // Apply the inline style to the result.
+            if (styleLocalName != null) {
+                String style = elt.getAttributeNS(styleNamespaceURI,
+                                                  styleLocalName);
+                if (style.length() > 0) {
                     try {
-                        LexicalUnit lu;
-                        int idx = getPropertyIndex(an);
-                        lu = parser.parsePropertyValue(attr.getNodeValue());
-                        ValueManager vm = valueManagers[idx];
-                        Value v = vm.createValue(lu, this);
-                        putAuthorProperty(result, idx, v, false,
-                                          StyleMap.NON_CSS_ORIGIN);
+                        parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
+                        parser.setConditionFactory(cssConditionFactory);
+                        styleDeclarationDocumentHandler.styleMap = result;
+                        parser.setDocumentHandler
+                            (styleDeclarationDocumentHandler);
+                        parser.parseStyleDeclaration(style);
+                        styleDeclarationDocumentHandler.styleMap = null;
                     } catch (Exception e) {
                         String m = e.getMessage();
                         if (m == null) m = "";
                         String u = ((documentURI == null)?"<unknown>":
                                     documentURI.toString());
                         String s = Messages.formatMessage
-                            ("property.syntax.error.at",
-                             new Object[] { u, an, attr.getNodeValue(),m});
+                            ("style.syntax.error.at",
+                             new Object[] { u, styleLocalName, style, m});
                         throw new DOMException(DOMException.SYNTAX_ERR, s);
                     }
                 }
             }
+        } finally {
+            element = null;
+            cssBaseURI = null;
         }
-
-        // Apply the document style-sheets to the result.
-        List snodes = getStyleSheetNodes();
-        int slen = snodes.size();
-        if (slen > 0) {
-            List rules = new ArrayList();
-            for (int i = 0; i < slen; i++) {
-                CSSStyleSheetNode ssn = (CSSStyleSheetNode)snodes.get(i);
-                StyleSheet ss = ssn.getCSSStyleSheet();
-                if (ss != null &&
-                    (!ss.isAlternate() ||
-                     ss.getTitle() == null ||
-                     ss.getTitle().equals(alternateStyleSheet)) &&
-                    mediaMatch(ss.getMedia())) {
-                    addMatchingRules(rules, ss, elt, pseudo);
-                }
-            }
-            addRules(elt, pseudo, result, rules, StyleMap.AUTHOR_ORIGIN);
-        }
-
-        // Apply the inline style to the result.
-        if (styleLocalName != null) {
-            String style = elt.getAttributeNS(styleNamespaceURI,
-                                              styleLocalName);
-            if (style.length() > 0) {
-                try {
-                    parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
-                    parser.setConditionFactory(cssConditionFactory);
-                    styleDeclarationDocumentHandler.styleMap = result;
-                    parser.setDocumentHandler(styleDeclarationDocumentHandler);
-                    parser.parseStyleDeclaration(style);
-                    styleDeclarationDocumentHandler.styleMap = null;
-                } catch (Exception e) {
-                    String m = e.getMessage();
-                    if (m == null) m = "";
-                    String u = ((documentURI == null)?"<unknown>":
-                                documentURI.toString());
-                    String s = Messages.formatMessage
-                        ("style.syntax.error.at",
-                         new Object[] { u, styleLocalName, style, m});
-                    throw new DOMException(DOMException.SYNTAX_ERR, s);
-                }
-            }
-        }
-        
-        element = null;
-        cssBaseURI = null;
 
         return result;
     }
@@ -905,7 +908,8 @@ public abstract class CSSEngine {
     }
 
     /**
-     * Parses and creates a property value.
+     * Parses and creates a property value from elt.
+     * @param elt  The element property is from.
      * @param prop The property name.
      * @param value The property value.
      */
@@ -929,6 +933,7 @@ public abstract class CSSEngine {
             throw new DOMException(DOMException.SYNTAX_ERR, s);
         } finally {
             element = null;
+            cssBaseURI = null;
         }
 
     }
@@ -937,15 +942,15 @@ public abstract class CSSEngine {
      * Parses and creates a style declaration.
      * @param value The style declaration text.
      */
-    public StyleDeclaration parseStyleDeclaration(String value) {
+    public StyleDeclaration parseStyleDeclaration(CSSStylableElement elt,
+                                                  String value) {
         try {
             parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
             parser.setConditionFactory(cssConditionFactory);
-            cssBaseURI = documentURI;
+            element = elt;
             styleDeclarationBuilder.styleDeclaration = new StyleDeclaration();
             parser.setDocumentHandler(styleDeclarationBuilder);
             parser.parseStyleDeclaration(value);
-            cssBaseURI = null;
             return styleDeclarationBuilder.styleDeclaration;
         } catch (Exception e) {
             String m = e.getMessage();
@@ -955,6 +960,9 @@ public abstract class CSSEngine {
             String s = Messages.formatMessage
                 ("syntax.error.at", new Object[] { u, m });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
+        } finally {
+            element = null;
+            cssBaseURI = null;
         }
     }
 
@@ -1093,22 +1101,25 @@ public abstract class CSSEngine {
         throws IOException {
         parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
         parser.setConditionFactory(cssConditionFactory);
-        cssBaseURI = uri;
-        styleSheetDocumentHandler.styleSheet = ss;
-        parser.setDocumentHandler(styleSheetDocumentHandler);
-        parser.parseStyleSheet(is);
-        cssBaseURI = null;
+        try {
+            cssBaseURI = uri;
+            styleSheetDocumentHandler.styleSheet = ss;
+            parser.setDocumentHandler(styleSheetDocumentHandler);
+            parser.parseStyleSheet(is);
 
-        // Load the imported sheets.
-        int len = ss.getSize();
-        for (int i = 0; i < len; i++) {
-            Rule r = ss.getRule(i);
-            if (r.getType() != ImportRule.TYPE) {
-                // @import rules must be the first rules.
-                break;
+            // Load the imported sheets.
+            int len = ss.getSize();
+            for (int i = 0; i < len; i++) {
+                Rule r = ss.getRule(i);
+                if (r.getType() != ImportRule.TYPE) {
+                    // @import rules must be the first rules.
+                    break;
+                }
+                ImportRule ir = (ImportRule)r;
+                parseStyleSheet(ir, ir.getURI());
             }
-            ImportRule ir = (ImportRule)r;
-            parseStyleSheet(ir, ir.getURI());
+        } finally {
+            cssBaseURI = null;
         }
     }
 
@@ -1715,9 +1726,10 @@ public abstract class CSSEngine {
                         ("style.syntax.error.at",
                          new Object[] { u, styleLocalName, decl, m });
                     throw new DOMException(DOMException.SYNTAX_ERR, s);
+                } finally {
+                    element = null;
+                    cssBaseURI = null;
                 }
-                element = null;
-                cssBaseURI = null;
             }
 
             // Fall through
@@ -2040,9 +2052,10 @@ public abstract class CSSEngine {
                     ("property.syntax.error.at",
                      new Object[] { u, property, evt.getNewValue(), m });
                 throw new DOMException(DOMException.SYNTAX_ERR, s);
+            } finally {
+                element = null;
+                cssBaseURI = null;
             }
-            element = null;
-            cssBaseURI = null;
             break;
 
         case MutationEvent.REMOVAL:

@@ -456,7 +456,7 @@ To display the available targets type:
        including the XML parser -->
   <target name="bean" depends="compile, prepare-build">
     <mkdir dir="${build}/tmp"/>
-    <unjar src="lib/xerces_2_3_0.jar" dest="${build}/tmp"/>
+    <unjar src="lib/xerces_2_5_0.jar" dest="${build}/tmp"/>
     <jar jarfile="${build}/lib/${project}-bean.jar"
          manifest="${src}/${project}-bean.mf">
       <manifest>

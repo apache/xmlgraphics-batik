@@ -403,7 +403,9 @@ public class JSVGComponent extends JGVTComponent {
 
     /**
      * Sets the document state. The given value must be one of
-     * AUTODETECT, ALWAYS_DYNAMIC or ALWAYS_STATIC.
+     * AUTODETECT, ALWAYS_DYNAMIC or ALWAYS_STATIC.  This only
+     * effects the loading of subsequent documents, it has no
+     * effect on the currently loaded document.
      */
     public void setDocumentState(int state) {
         documentState = state;
@@ -415,6 +417,15 @@ public class JSVGComponent extends JGVTComponent {
      * notifed when the rendering completes by registering a
      * GVTTreeRendererListener with the component and waiting for the
      * <tt>gvtRenderingCompleted</tt> event.
+     *
+     * An UpdateManager is only created for Dynamic documents.  By
+     * default the Canvas attempts to autodetect dynamic documents by
+     * looking for script elements and/or event attributes in the
+     * document, if it does not find these it assumes the document is
+     * static.  Callers of this method will almost certainly want to
+     * call setDocumentState(ALWAYS_DYNAMIC) before loading the document 
+     * (with setURI, setDocument, setSVGDocument etc.) so that an 
+     * UpdateManager is always created (even for apparently static documents).
      */
     public UpdateManager getUpdateManager() {
         if (svgLoadEventDispatcher != null) {
