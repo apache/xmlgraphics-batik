@@ -60,14 +60,14 @@ class CRC {
 
 
 class ChunkStream extends OutputStream implements DataOutput {
-    
+
     private String type;
     private ByteArrayOutputStream baos;
     private DataOutputStream dos;
 
     public ChunkStream(String type) throws IOException {
         this.type = type;
-        
+
         this.baos = new ByteArrayOutputStream();
         this.dos = new DataOutputStream(baos);
     }
@@ -91,7 +91,7 @@ class ChunkStream extends OutputStream implements DataOutput {
     public void writeByte(int v) throws IOException {
         dos.writeByte(v);
     }
-    
+
     public void writeBytes(String s) throws IOException {
         dos.writeBytes(s);
     }
@@ -264,7 +264,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     private byte[] greenPalette = null;
     private byte[] bluePalette = null;
     private byte[] alphaPalette = null;
-    
+
     private DataOutputStream dataOutput;
 
     public PNGImageEncoder(OutputStream output,
@@ -290,7 +290,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         cs.writeByte((byte)0);
         cs.writeByte((byte)0);
         cs.writeByte(interlace ? (byte)1 : (byte)0);
-        
+
         cs.writeToStream(dataOutput);
     }
 
@@ -311,12 +311,12 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         int minY = ras.getMinY();
         int width = ras.getWidth();
         int height = ras.getHeight();
-        
+
         xOffset *= numBands;
         xSkip *= numBands;
 
         int samplesPerByte = 8/bitDepth;
-        
+
         int numSamples = width*numBands;
         int[] samples = new int[numSamples];
 
@@ -356,7 +356,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             switch (bitDepth) {
             case 1: case 2: case 4:
                 // Image can only have a single band
-                
+
                 int mask = samplesPerByte - 1;
                 for (int s = xOffset; s < numSamples; s += xSkip) {
                     int val = clamp(samples[s] >> bitShift, maxValue);
@@ -399,10 +399,10 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             int filterType = param.filterRow(currRow, prevRow,
                                              filteredRows,
                                              bytesPerRow, bpp);
-            
+
             os.write(filterType);
             os.write(filteredRows[filterType], bpp, bytesPerRow);
-            
+
             // Swap current and previous rows
             byte[] swap = currRow;
             currRow = prevRow;
@@ -465,7 +465,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     private void writeCHRM() throws IOException {
         if (param.isChromaticitySet() || param.isSRGBIntentSet()) {
             ChunkStream cs = new ChunkStream("cHRM");
-            
+
             float[] chroma;
             if (!param.isSRGBIntentSet()) {
                 chroma = param.getChromaticity();
@@ -490,7 +490,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             } else {
                 gamma = 1.0F/2.2F; // SRGB gamma
             }
-            
+
             cs.writeInt((int)(gamma*100000));
             cs.writeToStream(dataOutput);
         }
@@ -538,7 +538,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             cs.writeByte(greenPalette[i]);
             cs.writeByte(bluePalette[i]);
         }
-            
+
         cs.writeToStream(dataOutput);
     }
 
@@ -567,7 +567,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
                 cs.writeShort(rgb[2]);
                 break;
             }
-            
+
             cs.writeToStream(dataOutput);
         }
     }
@@ -575,7 +575,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     private void writeHIST() throws IOException {
         if (param.isPaletteHistogramSet()) {
             ChunkStream cs = new ChunkStream("hIST");
-            
+
             int[] hist = param.getPaletteHistogram();
             for (int i = 0; i < hist.length; i++) {
                 cs.writeShort(hist[i]);
@@ -586,7 +586,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     }
 
     private void writeTRNS() throws IOException {
-        if (param.isTransparencySet() && 
+        if (param.isTransparencySet() &&
             (colorType != PNG_COLOR_GRAY_ALPHA) &&
             (colorType != PNG_COLOR_RGB_ALPHA)) {
             ChunkStream cs = new ChunkStream("tRNS");
@@ -656,7 +656,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
 
             Date date = param.getModificationTime();
             TimeZone gmt = TimeZone.getTimeZone("GMT");
-            
+
             GregorianCalendar cal = new GregorianCalendar(gmt);
             cal.setTime(date);
 
@@ -681,7 +681,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     private void writeTEXT() throws IOException {
         if (param.isTextSet()) {
             String[] text = param.getText();
-            
+
             for (int i = 0; i < text.length/2; i++) {
                 byte[] keyword = text[2*i].getBytes();
                 byte[] value = text[2*i + 1].getBytes();
@@ -700,7 +700,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     private void writeZTXT() throws IOException {
         if (param.isCompressedTextSet()) {
             String[] text = param.getCompressedText();
-            
+
             for (int i = 0; i < text.length/2; i++) {
                 byte[] keyword = text[2*i].getBytes();
                 byte[] value = text[2*i + 1].getBytes();
@@ -727,7 +727,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             char char3 = type.charAt(3);
 
             byte[] data = param.getPrivateChunkData(i);
-            
+
             ChunkStream cs = new ChunkStream(type);
             cs.write(data);
             cs.writeToStream(dataOutput);
@@ -763,7 +763,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             byte alpha = alphaPalette[i];
             if (alpha == (byte)0) {
                 param.setTransparentGray(i);
-                    
+
                 ++numTransparent;
                 if (numTransparent > 1) {
                     return null;
@@ -776,6 +776,12 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         return param;
     }
 
+    /**
+     * This method encodes a <code>RenderedImage</code> into PNG.
+     * The stream into which the PNG is dumped is not closed at
+     * the end of the operation, this should be done if needed
+     * by the caller of this method.
+     */
     public void encode(RenderedImage im) throws IOException {
         this.image = im;
         this.width = image.getWidth();
@@ -800,7 +806,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
                 this.bitShift = paramg.getBitShift();
             }
         }
-        
+
         // Get bit depth from image if not set in param
         if (this.bitDepth == -1) {
             // Get bit depth from channel 0 of the image
@@ -812,7 +818,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
                     throw new RuntimeException();
                 }
             }
-        
+
             // Round bit depth up to a power of 2
             if (bitDepth > 2 && bitDepth < 4) {
                 bitDepth = 4;
@@ -827,7 +833,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
 
         this.numBands = sampleModel.getNumBands();
         this.bpp = numBands*((bitDepth == 16) ? 2 : 1);
-        
+
         ColorModel colorModel = image.getColorModel();
         if (colorModel instanceof IndexColorModel) {
             if (bitDepth < 1 || bitDepth > 8) {
@@ -839,12 +845,12 @@ public class PNGImageEncoder extends ImageEncoderImpl {
 
             IndexColorModel icm = (IndexColorModel)colorModel;
             int size = icm.getMapSize();
-            
+
             redPalette = new byte[size];
             greenPalette = new byte[size];
             bluePalette = new byte[size];
             alphaPalette = new byte[size];
-            
+
             icm.getReds(redPalette);
             icm.getGreens(greenPalette);
             icm.getBlues(bluePalette);
@@ -870,7 +876,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
                 if (parami.isPaletteSet()) {
                     int[] palette = parami.getPalette();
                     size = palette.length/3;
-                    
+
                     int index = 0;
                     for (int i = 0; i < size; i++) {
                         redPalette[i] = (byte)palette[index++];
@@ -895,7 +901,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             if (param == null) {
                 param = new PNGEncodeParam.Gray();
             }
-            
+
             if (param.isTransparencySet()) {
                 skipAlpha = true;
                 numBands = 1;
@@ -940,7 +946,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         writeICCP();
         writeSBIT();
         writeSRGB();
-        
+
         writePLTE();
 
         writeHIST();
@@ -960,63 +966,5 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         writeIEND();
 
         dataOutput.flush();
-        dataOutput.close();
     }
-
-//     public static void main(String[] args) {
-//         try {
-//             SeekableStream stream = new FileSeekableStream(args[0]);
-//             String[] names = ImageCodec.getDecoderNames(stream);
-
-//             ImageDecoder dec =
-//                 ImageCodec.createImageDecoder(names[0], stream, null);
-//             RenderedImage im = dec.decodeAsRenderedImage();
-
-//             OutputStream output = new FileOutputStream(args[1]);
-
-//             PNGEncodeParam param = null;
-//             Object o = im.getProperty("encode_param");
-//             if ((o != null) && (o instanceof PNGEncodeParam)) {
-//                 param = (PNGEncodeParam)o;
-//             } else {
-//                 param = PNGEncodeParam.getDefaultEncodeParam(im);
-//             }
-
-//             if (param instanceof PNGEncodeParam.RGB) {
-//                 int[] rgb = { 50, 100, 150 };
-//                 ((PNGEncodeParam.RGB)param).setBackgroundRGB(rgb);
-//             }
-
-//             param.setChromaticity(0.32270F, 0.319F,
-//                                   0.65F, 0.32F,
-//                                   0.31F, 0.58F,
-//                                   0.16F, 0.04F);
-
-//             param.setGamma(3.5F);
-
-//             int[] sbits = { 8, 8, 8 };
-//             param.setSignificantBits(sbits);
-
-//             param.setSRGBIntent(0);
-
-//             String[] text = new String[4];
-//             text[0] = "Title";
-//             text[1] = "PNG Test Image";
-//             text[2] = "Author";
-//             text[3] = "Daniel Rice";
-//             param.setText(text);
-
-//             String[] ztext = new String[2];
-//             ztext[0] = "Description";
-//             ztext[1] = "A really incredibly long-winded description of extremely little if any substance whatsoever.";
-//             param.setCompressedText(ztext);
-
-//             ImageEncoder enc = new PNGImageEncoder(output, param);
-//             enc.encode(im);
-//         } catch (Exception e) {
-//             e.printStackTrace();
-//             System.exit(1);
-//         }
-//     }
-
 }

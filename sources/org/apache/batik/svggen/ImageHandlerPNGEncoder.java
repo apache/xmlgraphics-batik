@@ -71,7 +71,6 @@ public class ImageHandlerPNGEncoder extends AbstractImageHandlerEncoder {
             OutputStream os = new FileOutputStream(imageFile);
             ImageEncoder encoder = new PNGImageEncoder(os, null);
             encoder.encode(buf);
-            os.flush();
             os.close();
         } catch (IOException e) {
             throw new SVGGraphics2DIOException(ERR_WRITE+imageFile.getName());
