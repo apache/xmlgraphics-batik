@@ -132,11 +132,23 @@ public class AbstractZoomInteractor extends InteractorAdapter {
         if ((xCurrent - xStart) != 0 &&
             (yCurrent - yStart) != 0) {
 
+            int dx = xCurrent - xStart;
+            int dy = yCurrent - yStart;
+            
+            if (dx < 0) {
+                dx = -dx;
+                xStart = xCurrent;
+            }
+            if (dy < 0) {
+                dy = -dy;
+                yStart = yCurrent;
+            }
+
             Dimension size = c.getSize();
 
             // Zoom factor
-            float scaleX = size.width / (float)(xCurrent - xStart);
-            float scaleY = size.height / (float)(yCurrent - yStart);
+            float scaleX = size.width / (float)dx;
+            float scaleY = size.height / (float)dy;
             float scale = (scaleX < scaleY) ? scaleX : scaleY;
         
             // Zoom translate
