@@ -165,8 +165,7 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
         return null;
     }
 
-    public Rectangle2D getBounds() {
- 
+    public Rectangle2D getPrimitiveBounds() {
         Rectangle2D bounds = null;
         if(count > 0){
             bounds = children[0].getBounds();
@@ -180,37 +179,7 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
             bounds.add(node.getBounds());
         }
 
-        // The bounds are in this node's space so far
-        // Transform into parent node space.
-        if (transform != null){
-            bounds = transform.createTransformedShape(bounds).getBounds2D();
-        }
-
         return bounds;
-    }
-
-    public Rectangle2D getRenderBounds() {
-        Rectangle2D bounds = null;
-        if(count > 0){
-            bounds = children[0].getRenderBounds();
-        }
-        else{
-            bounds = new Rectangle(0, 0, 0, 0);
-        }
-
-        for (int i=1; i < count; ++i) {
-            GraphicsNode node = children[i];
-            bounds.add(node.getRenderBounds());
-        }
-
-        // The bounds are in this node's space so far
-        // Transform into parent node space.
-        if(transform != null){
-            bounds = transform.createTransformedShape(bounds).getBounds2D();
-        }
-
-        return bounds;
-        
     }
 
     public Shape getOutline() {

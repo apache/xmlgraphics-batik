@@ -8,6 +8,8 @@
 
 package org.apache.batik.refimpl.bridge;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 
@@ -27,6 +29,7 @@ import org.apache.batik.util.UnitProcessor;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
  * A factory for the &lt;rect> SVG element.
@@ -57,6 +60,12 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
              ctx.getParserFactory());
         node.setTransform(at);
 
+        // Set node composite
+        CSSPrimitiveValue opacityVal = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
+        Composite composite = CSSUtilities.convertOpacityToComposite(opacityVal);
+        node.setComposite(composite);
+
+        // Set node filter
         Filter filter = CSSUtilities.convertFilter(element, node, ctx);
         node.setFilter(filter);
 

@@ -34,8 +34,8 @@ public class ConcretePadRable extends AbstractRable
     Rectangle2D       padRect;
 
     public ConcretePadRable(Filter src,
-                     Rectangle2D padRect,
-                     PadMode     padMode) {
+                            Rectangle2D padRect,
+                            PadMode     padMode) {
         super.init(src, null);
         this.padRect = padRect;
         this.padMode = padMode;
@@ -115,45 +115,15 @@ public class ConcretePadRable extends AbstractRable
 
         AffineTransform at = rc.getTransform();
 
-        System.out.println("Src PadRect: " + srect);
-
         RenderContext srcRC = new RenderContext(at, srect, rh);
         RenderedImage ri = src.createRendering(srcRC);
 
-        // <!> HACK VINCENT : THE FOLLOWING CAUSES PROBLEMS
-
-        // <!> PROBLEM
         CachableRed cr = ConcreteRenderedImageCachableRed.wrap(ri);
 
         arect = at.createTransformedShape(arect).getBounds2D();
 
-        System.out.println("AOI PadRect: " + arect);
-
         // Use arect (my bounds intersect area of interest)
         return new PadRed(cr, arect.getBounds(), padMode, rh);
-
-        // <!> TEMPORARY UGLY FIX. Use qualified names because code will
-        //     eventually be removed.
-        /*final java.awt.Rectangle padRect = rc.getTransform().createTransformedShape(arect).getBounds();
-        java.awt.image.BufferedImage padded = new java.awt.image.BufferedImage(padRect.width,
-                                                                               padRect.height,
-                                                                               java.awt.image.BufferedImage.TYPE_INT_ARGB);
-
-        java.awt.Graphics2D g = padded.createGraphics();
-        g.translate(-padRect.x, -padRect.y);
-        g.drawRenderedImage(ri, null);
-        // g.drawRenderedImage(ri, AffineTransform.getTranslateInstance(ri.getMinX()-padRect.x, ri.getMinY()-padRect.y));
-        g.dispose();
-
-        return new ConcreteBufferedImageCachableRed(padded){
-                public int getMinX(){
-                    return padRect.x;
-                }
-
-                public int getMinY(){
-                    return padRect.y;
-                }
-            };*/
     }
 
     public Shape getDependencyRegion(int srcIndex, Rectangle2D outputRgn) {

@@ -52,5 +52,6 @@ public class SwingInitializer {
         UIManager.put("Table.font", fontRes);
         UIManager.put("Label.font", fontRes);
         UIManager.put("InternalFrameTitlePane.font", fontRes);
+        UIManager.put("CheckBoxMenuItem.font", fontRes);
     }
 }

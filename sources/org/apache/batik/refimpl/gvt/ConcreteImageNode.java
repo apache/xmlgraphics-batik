@@ -100,12 +100,7 @@ public class ConcreteImageNode extends AbstractGraphicsNode
     // Geometric methods
     //
 
-    public Rectangle2D getBounds() {
-        // <!> FIXME : TODO
-        return null;
-    }
-
-    public Rectangle2D getRenderBounds() {
+    public Rectangle2D getPrimitiveBounds() {
         // <!> FIXME : TODO
         return null;
     }

@@ -8,12 +8,15 @@
 
 package org.apache.batik.apps.svgviewer;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.batik.css.CSSDocumentHandler;
+
+import org.apache.batik.util.SwingInitializer;
 
 /**
  * This class represents a SVG viewer.
@@ -59,6 +62,9 @@ public class Main implements ViewerFrame.Application {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
+        Font font = new Font("Dialog", Font.PLAIN, 10);
+        SwingInitializer.swingDefaultsFontInit(font);
+
         CSSDocumentHandler.setParserClassName
             (bundle.getString(CSS_PARSER_CLASS_NAME_KEY));
         new Main(args);

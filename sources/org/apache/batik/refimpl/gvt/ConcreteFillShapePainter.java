@@ -44,4 +44,8 @@ public class ConcreteFillShapePainter implements FillShapePainter {
             g2d.fill(shape);
         }
     }
+
+    public Shape getPaintedArea(Shape shape){
+        return shape;
+    }
 }

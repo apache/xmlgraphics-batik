@@ -333,15 +333,16 @@ public interface GraphicsNode {
     //
 
     /**
-     * Returns the bounds of this node in user space.
+     * Returns the bounds of this node in user space. This includes
+     * primitive paint, filtering, clipping and masking.
      */
     Rectangle2D getBounds();
 
     /**
-     * Returns the bounds of the painted area of this node in its
-     * parent node space.
+     * Returns the bounds of the area covered by this node's 
+     * primitive paint.
      */
-    Rectangle2D getRenderBounds();
+    Rectangle2D getPrimitiveBounds();
 
     /**
      * Tests if the specified Point2D is inside the boundary of this

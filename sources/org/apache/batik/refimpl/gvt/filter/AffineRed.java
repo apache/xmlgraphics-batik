@@ -94,7 +94,6 @@ public class AffineRed extends AbstractRed {
 
         tmpPt = new Point(srcWR.getMinX(), srcWR.getMinY());
         tmpPt = aff.transform(tmpPt, null);
-        System.out.println("Tst1: " + tmpPt);
 
         // Translate what is at 0,0 (which will be what our current
         // minX/Y is) to our current minX,minY.
@@ -103,17 +102,14 @@ public class AffineRed extends AbstractRed {
 
         tmpPt = new Point(0, 0);
         tmpPt = aff.transform(tmpPt, null);
-        System.out.println("Tst2: " + tmpPt);
 
         Point2D srcPt = me2src.transform(new Point(wr.getMinX(), wr.getMinY()), null);
 
         Point2D destPt = new Point2D.Double(srcPt.getX()-srcWR.getMinX(), 
                                             srcPt.getY()-srcWR.getMinY());
-        System.out.println("Dest Pre: " + destPt);
 
         destPt = aff.transform(destPt, null);
 
-        System.out.println("Dest Trans: " + destPt);
 
         // Translate what will be at minX,minY to zero, zero
         // which where java2d will think the real minX,minY is.
@@ -121,7 +117,6 @@ public class AffineRed extends AbstractRed {
                            (-destPt.getX(), -destPt.getY()));
 
         destPt = aff.transform(new Point(0,0), null);
-        System.out.println("DestPt: " + destPt);
         AffineTransform invAff=null;
         try {
             invAff = aff.createInverse();
@@ -129,7 +124,6 @@ public class AffineRed extends AbstractRed {
             t.printStackTrace();
         }
         srcPt = invAff.transform(new Point(0,0), null);
-        System.out.println("SrcPt: " + srcPt);
 
         AffineTransformOp op = new AffineTransformOp(aff, hints);
 

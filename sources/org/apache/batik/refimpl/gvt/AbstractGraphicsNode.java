@@ -47,6 +47,7 @@ import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
 import org.apache.batik.gvt.event.CompositeGraphicsNodeEvent;
 import org.apache.batik.gvt.event.CompositeGraphicsNodeListener;
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.PadMode;
 
 /**
  * A partial implementation of the <tt>GraphicsNode</tt> interface.
@@ -288,13 +289,21 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             Shape defaultClip = g2d.getClip();
             Composite defaultComposite = g2d.getComposite();
 
-            RenderableImage nodeImage = rc.getGraphicsNodeRableFactory().createGraphicsNodeRable(this);
-
-            RenderableImage filteredImage = nodeImage;
-
+            Filter nodeImage 
+                = rc.getGraphicsNodeRableFactory().createGraphicsNodeRable(this);
+            Filter filteredImage = null;
+            
             if(filter != null){
                 traceFilter(filter, "=====>> ");
                 filteredImage = filter;
+            }
+            else{
+                // <!> NEED FIX & HACK. Problem in ConcreteGraphicsNodeRable is worked around by using
+                // ConcretePadRable. Needs to be fixed.
+                filteredImage = new org.apache.batik.refimpl.gvt.filter.ConcretePadRable(nodeImage,
+                                                                                         nodeImage.getBounds2D(),
+                                                                                         PadMode.ZERO_PAD);
+                // filteredImage = nodeImage;
             }
 
             if(clip != null){
@@ -543,6 +552,47 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
     // Geometric methods
     //
+
+    /**
+     * Compute the rendered bounds of this node based on
+     * it's renderBounds, i.e., the area painted by its 
+     * primitivePaint method. This is used in addition to 
+     * the mask, clip and filter to compute the area 
+     * actually rendered by this node.
+     */
+    public Rectangle2D getBounds(){
+        // Get the primitive bounds
+        Rectangle2D bounds = null;
+
+        // The painted region, before cliping, masking
+        // and compositing is either the area painted
+        // by the primitive paint or the area painted 
+        // by the filter.
+        if(filter == null){
+            bounds = getPrimitiveBounds();
+        }
+        else{
+            bounds = filter.getBounds2D();
+        }
+
+        // Factor in the clipping area, if any
+        if(clip != null){
+            bounds.intersect(bounds, 
+                             clip.getBounds2D(),
+                             bounds);
+        }
+
+        // Factor in the mask, if any
+        if(mask != null){
+            bounds.intersect(bounds,
+                             mask.getBounds2D(),
+                             bounds);
+        }
+
+        return bounds;
+    }
+
+        
 
     public boolean contains(Point2D p) {
         //System.out.println("Bounds "+getBounds()+"point "+p);

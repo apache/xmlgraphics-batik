@@ -13,13 +13,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.NoninvertibleTransformException;
 
 import java.awt.image.BufferedImage;
 
@@ -181,6 +184,21 @@ public class JSVGCanvas extends JComponent {
         g.fillRect(0, 0, w, h);
     }
 
+   /**
+    * @return the area of interest displayed in the viewer, in usr space.
+    */
+    private Shape getAreaOfInterest(Rectangle devAOI){
+        AffineTransform dev2usr = null;
+        try {
+            dev2usr = transform.createInverse();
+        } catch(NoninvertibleTransformException e){
+            // This should not happen. See setTransform
+            throw new Error();
+        }
+        return dev2usr.createTransformedShape(devAOI);
+    }
+
+
     /**
      * Paints this component.
      */
@@ -207,7 +225,11 @@ public class JSVGCanvas extends JComponent {
         }
         if (repaint) {
             clearBuffer(w, h);
-            renderer.repaint(new Rectangle2D.Float(0, 0, w, h));
+            renderer.setTransform(transform);
+            // The area of intereset is in user space.
+            long start = System.currentTimeMillis();
+            renderer.repaint(getAreaOfInterest(new Rectangle(0, 0, w, h)));
+            System.out.println("Took : " + (System.currentTimeMillis() - start) + " to paint");
         }
         repaint = false;
         Graphics2D g2d = (Graphics2D)g;

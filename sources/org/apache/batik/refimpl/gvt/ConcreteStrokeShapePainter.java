@@ -24,9 +24,14 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
  */
 public class ConcreteStrokeShapePainter implements StrokeShapePainter {
 
-    /** The stroke attribute used to draw the outline of the shape. */
+    /** 
+     * The stroke attribute used to draw the outline of the shape. 
+     */
     protected Stroke stroke;
-    /** The paint attribute used to draw the outline of the shape. */
+
+    /** 
+     * The paint attribute used to draw the outline of the shape. 
+     */
     protected Paint paint;
 
     /**
@@ -51,5 +56,9 @@ public class ConcreteStrokeShapePainter implements StrokeShapePainter {
             g2d.setStroke(stroke);
             g2d.draw(shape);
         }
+    }
+
+    public Shape getPaintedArea(Shape shape){
+        return stroke.createStrokedShape(shape);
     }
 }

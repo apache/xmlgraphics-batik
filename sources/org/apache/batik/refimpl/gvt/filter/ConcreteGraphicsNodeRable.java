@@ -116,7 +116,7 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
      * Initializes this image's members
      */
     public Rectangle2D getBounds2D(){
-        Rectangle2D imageRect = node.getRenderBounds();
+        Rectangle2D imageRect = node.getPrimitiveBounds();
 
         return imageRect;
     }
@@ -353,7 +353,8 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
                                 GraphicsNodeRenderContext.getGraphicsNodeRenderContext(renderContext));
 
             g.dispose();
-            renderedImage = new ConcreteBufferedImageCachableRed(offScreen) {
+
+            renderedImage = new ConcreteBufferedImageCachableRed(offScreen){
                         public int getMinX(){
                             return renderedArea.x;
                         }
@@ -361,7 +362,9 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
                         public int getMinY(){
                             return renderedArea.y;
                         }
-                    };
+            };
+            
+
         }
 
         return renderedImage;
