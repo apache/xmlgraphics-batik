@@ -36,14 +36,15 @@ import java.awt.font.TextHitInfo;
 public class BasicTextPainter implements TextPainter {
 
 /*
- * Strongly considering changing this API to take a TextNode rather than ACI, etc.
+ * Strongly considering changing this API to take a TextNode rather
+ * than ACI, etc.
  */
-
 
     /**
      * Paints the specified attributed character iterator using the
      * specified Graphics2D and rendering context.
-     * Note that the GraphicsNodeRenderContext contains a TextPainter reference.
+     * Note that the GraphicsNodeRenderContext contains a TextPainter
+     * reference.
      * @see org.apache.batik.gvt.TextPainter
      * @see org.apache.batik.gvt.GraphicsNodeRenderContext
      * @param shape the shape to paint
@@ -51,8 +52,9 @@ public class BasicTextPainter implements TextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-    public void paint(AttributedCharacterIterator aci, Point2D location, TextNode.Anchor anchor, 
-               Graphics2D g2d, GraphicsNodeRenderContext context) {
+    public void paint(AttributedCharacterIterator aci, Point2D location,
+               TextNode.Anchor anchor,
+                   Graphics2D g2d, GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
 
@@ -70,24 +72,24 @@ public class BasicTextPainter implements TextPainter {
         case TextNode.Anchor.ANCHOR_END:
             tx = -advance;
         }
-        layout.draw(g2d, (float)(location.getX() + tx), (float)location.getY());
-        //
-        // drawHighlight(textnode.getHighlightShape()); // maybe not the best way to do this...
-        //
+        layout.draw(g2d, (float)(location.getX() + tx),
+                         (float)location.getY());
     }
 
-    public org.apache.batik.gvt.text.Mark selectAt(double x, double y, 
-                         AttributedCharacterIterator aci, 
+    public org.apache.batik.gvt.text.Mark selectAt(double x, double y,
+                         AttributedCharacterIterator aci,
                          TextNode.Anchor anchor,
                          GraphicsNodeRenderContext context) {
         return hitTest(x, y, aci, anchor, context);
     }
 
     public org.apache.batik.gvt.text.Mark selectTo(double x, double y,
-                            org.apache.batik.gvt.text.Mark beginMark, 
-                            AttributedCharacterIterator aci, 
-                            TextNode.Anchor anchor,GraphicsNodeRenderContext context) {
-        org.apache.batik.gvt.text.Mark newMark = hitTest(x, y, aci, anchor, context);
+                            org.apache.batik.gvt.text.Mark beginMark,
+                            AttributedCharacterIterator aci,
+                            TextNode.Anchor anchor,
+                            GraphicsNodeRenderContext context) {
+        org.apache.batik.gvt.text.Mark newMark =
+             hitTest(x, y, aci, anchor, context);
 
         BasicTextPainter.Mark begin;
         BasicTextPainter.Mark end;
@@ -95,7 +97,8 @@ public class BasicTextPainter implements TextPainter {
             begin = (BasicTextPainter.Mark) beginMark;
             end = (BasicTextPainter.Mark) newMark;
         } catch (ClassCastException cce) {
-            throw new Error("This Mark was not instantiated by this TextPainter class!");
+            throw new
+            Error("This Mark was not instantiated by this TextPainter class!");
         }
         TextLayout layout = null;
         if (begin != null) {
@@ -103,35 +106,39 @@ public class BasicTextPainter implements TextPainter {
         }
         if (layout != null) {
             Shape highlightShape;
-            highlightShape = layout.getVisualHighlightShape(begin.getHit(), 
+            highlightShape = layout.getVisualHighlightShape(begin.getHit(),
                                                              end.getHit());
             /* TODO: set highlight in Mark, or in TextNode.
-             * The latter will require a change to the TextPainter interfaces to
+             * The latter will require a change to the TextPainter
+             * interfaces to
              * take a TextNode as a param rather than an ACI.
-             *  
+             *
              * textnode.setHighlightShape(highlightShape);
-             * 
+             *
              * Issue: if TextNode keeps a cache of highlight shape,
-             * then in the unlikely event that there are two renderers concurrently
+             * then in the unlikely event that there are two renderers
+             * concurrently
              * running, both of which do highlighting, weird stuff will happen.
-             */ 
+             */
         }
         return newMark;
     }
 
     public org.apache.batik.gvt.text.Mark selectAll(double x, double y,
-                            AttributedCharacterIterator aci, 
-                            TextNode.Anchor anchor, GraphicsNodeRenderContext context) {
-        org.apache.batik.gvt.text.Mark newMark = hitTest(x, y, aci, anchor, context);
+                            AttributedCharacterIterator aci,
+                            TextNode.Anchor anchor,
+                            GraphicsNodeRenderContext context) {
+        org.apache.batik.gvt.text.Mark newMark =
+                              hitTest(x, y, aci, anchor, context);
 
-            /* TODO: set highlight in Mark, or in TextNode.
-             * The latter will require a change to the TextPainter interfaces to
-             * take a TextNode as a param rather than an ACI.
-             *  
-             * Issue: if TextNode keeps a cache of highlight shape,
-             * then in the unlikely event that there are two renderers concurrently
-             * running, both of which do highlighting, weird stuff will happen.
-             */ 
+        /* TODO: set highlight in Mark, or in TextNode.
+         * The latter will require a change to the TextPainter interfaces to
+         * take a TextNode as a param rather than an ACI.
+         *
+         * Issue: if TextNode keeps a cache of highlight shape,
+         * then in the unlikely event that there are two renderers concurrently
+         * running, both of which do highlighting, weird stuff will happen.
+         */
 
         // Shape highlightShape = textnode.getBounds();
         // textnode.setHighlightShape(highlightShape);
@@ -140,7 +147,7 @@ public class BasicTextPainter implements TextPainter {
     }
 
     public int[] getSelected(AttributedCharacterIterator aci,
-                             org.apache.batik.gvt.text.Mark start, 
+                             org.apache.batik.gvt.text.Mark start,
                              org.apache.batik.gvt.text.Mark finish) {
         BasicTextPainter.Mark begin;
         BasicTextPainter.Mark end;
@@ -148,14 +155,15 @@ public class BasicTextPainter implements TextPainter {
             begin = (BasicTextPainter.Mark) start;
             end = (BasicTextPainter.Mark) finish;
         } catch (ClassCastException cce) {
-            throw new Error("This Mark was not instantiated by this TextPainter class!");
+            throw new
+            Error("This Mark was not instantiated by this TextPainter class!");
         }
         TextLayout layout = null;
         if (begin != null) {
             layout = begin.getLayout();
         }
         if (layout != null) {
-            return layout.getLogicalRangesForVisualSelection(begin.getHit(), 
+            return layout.getLogicalRangesForVisualSelection(begin.getHit(),
                                                              end.getHit());
         } else {
             return null;
@@ -163,8 +171,9 @@ public class BasicTextPainter implements TextPainter {
     }
 
     private org.apache.batik.gvt.text.Mark hitTest(
-                         double x, double y, AttributedCharacterIterator aci, 
-                         TextNode.Anchor anchor, GraphicsNodeRenderContext context) {
+                         double x, double y, AttributedCharacterIterator aci,
+                         TextNode.Anchor anchor,
+                         GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
         TextLayout layout = new TextLayout(aci, frc);
@@ -181,7 +190,8 @@ public class BasicTextPainter implements TextPainter {
         //      System.out.println("Testing point: "+(x+tx)+",; "+y);
         //      System.out.println("    in layout "+layout.getBounds());
         //      System.out.println("    with advance: "+layout.getAdvance());
-        TextHitInfo textHit = layout.hitTestChar((float) (x+tx), (float) y, layout.getBounds());
+        TextHitInfo textHit =
+            layout.hitTestChar((float) (x+tx), (float) y, layout.getBounds());
         //      if (textHit != null) System.out.println("HIT : "+textHit);
         return new BasicTextPainter.Mark(x, y, layout, textHit);
     }

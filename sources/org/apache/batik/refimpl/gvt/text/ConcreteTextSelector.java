@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.test.gvt;
+package org.apache.batik.refimpl.gvt.text;
 
 import java.awt.Toolkit;
 import java.awt.Graphics2D;
@@ -23,14 +23,14 @@ import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 
 /**
- * TestSelector.java:
+ * ConcreteTextSelector.java:
  * A simple implementation of GraphicsNodeMouseListener for text selection.
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 
-public class TestSelector implements Selector {
+public class ConcreteTextSelector implements Selector {
 
     private GraphicsNode selectionNode = null;
     private GraphicsNode currentNode = null;
@@ -42,7 +42,7 @@ public class TestSelector implements Selector {
     // strategy that sends highlight requests directly to the Renderer.
     private Graphics2D g2d;
 
-    public TestSelector(GraphicsNodeRenderContext rc) {
+    public ConcreteTextSelector(GraphicsNodeRenderContext rc) {
         renderContext = rc;
     }
 
@@ -284,7 +284,7 @@ public class TestSelector implements Selector {
     }
 
     private void copyToClipboard(Object o) {
-        String label="unknown return type";
+        String label="[unknown return type]";
         if (o instanceof CharacterIterator) {
             CharacterIterator iter = (CharacterIterator) o;
             char[] cbuff = new char[iter.getEndIndex()-iter.getBeginIndex()];

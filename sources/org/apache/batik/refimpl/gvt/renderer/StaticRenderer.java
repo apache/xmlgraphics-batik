@@ -20,6 +20,7 @@ import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRableFactory;
+import org.apache.batik.refimpl.gvt.text.ConcreteTextSelector;
 import java.util.Iterator;
 import java.util.Stack;
 import java.awt.Graphics2D;
@@ -124,7 +125,7 @@ public class StaticRenderer implements Renderer {
     public void setTree(GraphicsNode treeRoot){
         this.treeRoot = treeRoot;
         // associate selectable nodes with selector object(s)
-        //        initSelectors();
+        initSelectors();
     }
 
     /**
@@ -215,14 +216,12 @@ public class StaticRenderer implements Renderer {
     public void initSelectors() {
         Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
         Selector selector =
-            new org.apache.batik.test.gvt.TestSelector(nodeRenderContext);
+            new ConcreteTextSelector(nodeRenderContext);
         while (nodeIter.hasNext()) {
             GraphicsNode node = (GraphicsNode) nodeIter.next();
             if (node instanceof Selectable) {
-
-// temporarily disabled until we can debug ...
-/*              node.addGraphicsNodeMouseListener(
-                             (GraphicsNodeMouseListener) selector) */ ;
+                node.addGraphicsNodeMouseListener(
+                             (GraphicsNodeMouseListener) selector);
 
             }
         }
