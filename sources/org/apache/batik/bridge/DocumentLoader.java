@@ -20,7 +20,15 @@ import org.xml.sax.SAXException;
  */
 public interface DocumentLoader {
 
-    Document loadDocument(String uri) throws DOMException, 
-				SAXException, InterruptedException;
+    /**
+     * Returns a document from the specified uri.
+     * @param uri the uri of the document
+     */
+    Document loadDocument(String uri) throws DOMException,
+                                SAXException, InterruptedException;
 
+    /**
+     * Disposes and releases all resources allocated by this document loader.
+     */
+    void dispose();
 }
