@@ -273,14 +273,17 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
 
         //to be notified when a child is removed from the 
         //<text> element.
-        evtTarget.addEventListener("DOMNodeRemoved",
-                                   childNodeRemovedEventListener,
-                                   true);
+        evtTarget.addEventListener
+            ("DOMNodeRemoved", childNodeRemovedEventListener, true);
+        ctx.storeEventListener
+            (evtTarget, "DOMNodeRemoved", childNodeRemovedEventListener, true);
+        
         //to be notified when the modification of the subtree
         //of the <text> element is done
-        evtTarget.addEventListener("DOMSubtreeModified",
-                                   subtreeModifiedEventListener,
-                                   false);
+        evtTarget.addEventListener
+            ("DOMSubtreeModified", subtreeModifiedEventListener, false);
+        ctx.storeEventListener
+            (evtTarget, "DOMSubtreeModified", subtreeModifiedEventListener, false);
 
         // traverse the children to add context on 
         // <tspan>, <tref> and <textPath>
@@ -733,20 +736,18 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                 } else if (ln.equals(SVG_A_TAG)) {
                     EventTarget target = (EventTarget)nodeElement;
                     UserAgent ua = ctx.getUserAgent();
-                    target.addEventListener
-                        (SVG_EVENT_CLICK, 
-                         new SVGAElementBridge.AnchorListener(ua),
-                         false);
+                    EventListener l = new SVGAElementBridge.AnchorListener(ua);
+                    target.addEventListener(SVG_EVENT_CLICK, l, false);
+                    ctx.storeEventListener(target, SVG_EVENT_CLICK, l, false);
                     
-                    target.addEventListener
-                        (SVG_EVENT_MOUSEOVER,
-                         new SVGAElementBridge.CursorMouseOverListener(ua),
-                         false);
-                    
-                    target.addEventListener
-                        (SVG_EVENT_MOUSEOUT,
-                         new SVGAElementBridge.CursorMouseOutListener(ua),
-                         false);
+                    l = new SVGAElementBridge.CursorMouseOverListener(ua);
+                    target.addEventListener(SVG_EVENT_MOUSEOVER, l, false);
+                    ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, l, false);
+
+                    l = new SVGAElementBridge.CursorMouseOutListener(ua);
+                    target.addEventListener(SVG_EVENT_MOUSEOUT, l, false);
+                    ctx.storeEventListener(target, SVG_EVENT_MOUSEOUT, l, false);
+
                     fillAttributedStringBuffer(ctx,
                                                nodeElement,
                                                false,

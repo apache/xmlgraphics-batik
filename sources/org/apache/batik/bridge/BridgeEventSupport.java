@@ -70,8 +70,9 @@ public class BridgeEventSupport implements SVGConstants {
                 // add an unload listener on the SVGDocument to remove
                 // that listener for dispatching events
                 EventListener l = new GVTUnloadListener(dispatcher, listener);
-                ((EventTarget)doc).addEventListener("SVGUnload", l, false);
-                ctx.setUnloadListener(l);
+                EventTarget target = (EventTarget)doc;
+                target.addEventListener("SVGUnload", l, false);
+                ctx.storeEventListener(target, "SVGUnload", l, false);
             }
         }
     }
