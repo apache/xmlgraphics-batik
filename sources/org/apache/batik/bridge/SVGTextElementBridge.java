@@ -375,6 +375,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                 }
                 break;
             case Node.TEXT_NODE:
+            case Node.CDATA_SECTION_NODE:            
                 s = n.getNodeValue();
                 int[] indexMap = new int[s.length()];
                 as = createAttributedString
