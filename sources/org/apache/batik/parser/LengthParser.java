@@ -280,8 +280,6 @@ public class LengthParser extends AbstractParser {
         }
 
         switch (current) {
-        case -1: case 0xD: case 0xA: case 0x20: case 0x9:
-            return;
         case 'e':
             current = reader.read();
             switch (current) {
@@ -357,9 +355,6 @@ public class LengthParser extends AbstractParser {
             lengthHandler.percentage();
             current = reader.read();
             break;
-        default:
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
         }
     }
 }
