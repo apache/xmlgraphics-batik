@@ -23,13 +23,13 @@ public interface ClipBridge extends Bridge {
 
     /**
      * Creates a <tt>Shape</tt> using the specified context and element.
-     * @param clipedNode node targetted by the clip
+     * @param node the GraphicsNode clipedNode
      * @param ctx the context to use
      * @param clipElement element containing the clip definition
      * @param clipedElement the Element with the 'clip-path' attribute
      */
-    Shape createClip(GraphicsNode clipedNode,
-                     BridgeContext ctx,
+    Shape createClip(BridgeContext ctx,
+                     GraphicsNode node,
                      Element clipElement,
                      Element clipedElement);
 

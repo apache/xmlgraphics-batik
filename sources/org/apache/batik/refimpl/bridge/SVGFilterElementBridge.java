@@ -8,6 +8,7 @@
 
 package org.apache.batik.refimpl.bridge;
 
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.util.Hashtable;
 import java.util.Map;

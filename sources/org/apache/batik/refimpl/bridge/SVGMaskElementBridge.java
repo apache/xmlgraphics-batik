@@ -11,6 +11,7 @@ package org.apache.batik.refimpl.bridge;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 
 import java.io.StringReader;
@@ -59,15 +60,13 @@ public class SVGMaskElementBridge
                            Element maskElement,
                            Element maskedElement) {
 
-        // Get the mask region
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(maskElement,
-                                                          null);
+            = bridgeContext.getViewCSS().getComputedStyle(maskElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
+        // Get the mask region
         FilterRegion maskRegion = SVGUtilities.convertMaskRegion(maskElement,
                                                                  maskedElement,
                                                                  maskedNode,
@@ -75,27 +74,12 @@ public class SVGMaskElementBridge
 
         if(maskRegion == null) {
             throw new Error();
-        } else {
-            System.out.println("Mask region : " + maskRegion);
         }
 
-        //
-        // <!> FIX ME. HOW SHOULD WE CREATE A GVT TREE THAT REPRESENTS
-        //     THE MASK. THIS IS NOT CLEAN.
-        //
-
+        // Build the GVT tree that represents the mask
         GVTBuilder builder = bridgeContext.getGVTBuilder();
-
-        CompositeGraphicsNode maskNodeContent
+        CompositeGraphicsNode maskNode
             = bridgeContext.getGVTFactory().createCompositeGraphicsNode();
-
-        // get the transform on the maskElement and put it to the graphicsNode
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(maskElement.getAttributeNS(null, ATTR_TRANSFORM)),
-             bridgeContext.getParserFactory());
-        maskNodeContent.setTransform(at);
-
-        // build the GVT tree that represents the mask
         for(Node child=maskElement.getFirstChild();
             child != null;
             child = child.getNextSibling()){
@@ -104,37 +88,28 @@ public class SVGMaskElementBridge
                 GraphicsNode node
                     = builder.build(bridgeContext, e) ;
                 if(node != null){
-                    maskNodeContent.getChildren().add(node);
+                    maskNode.getChildren().add(node);
                 }
             }
         }
 
+        // <!> FIXME: Compute the global matrix of this mask Element
+        //            Here we just consider the additional transform on mask
+        AffineTransform at = AWTTransformProducer.createAffineTransform
+            (new StringReader(maskElement.getAttributeNS(null, ATTR_TRANSFORM)),
+             bridgeContext.getParserFactory());
+        maskNode.setTransform(at);
+
         // OTHER PROBLEM: SHOULD TAKE MASK REGION INTO ACCOUNT
-        GraphicsNode maskNode = maskNodeContent;
-
-        // <!> END FIX ME
-
-         if (maskNode == null) {
-             System.out.println("Null mask GN");
-             System.out.println("maskEl: " + maskElement);
-             return null;
-         }
-
-         Filter filter = maskedNode.getFilter();
-         if (filter == null) {
-             // Make the initial source as a RenderableImage
-             GraphicsNodeRableFactory gnrFactory
-                 = bridgeContext.getGraphicsNodeRableFactory();
-             filter = gnrFactory.createGraphicsNodeRable(maskedNode);
-         }
-
-        if (maskRegion == null){
-            throw new Error();
-        } else {
-            System.out.println("Mask region 2 : " + maskRegion);
+        Filter filter = maskedNode.getFilter();
+        if (filter == null) {
+            // Make the initial source as a RenderableImage
+            GraphicsNodeRableFactory gnrFactory
+                = bridgeContext.getGraphicsNodeRableFactory();
+            filter = gnrFactory.createGraphicsNodeRable(maskedNode);
         }
 
-         return new ConcreteMaskRable(filter, maskNode, maskRegion);
+        return new ConcreteMaskRable(filter, maskNode, maskRegion);
     }
 
     public void update(BridgeMutationEvent evt) {

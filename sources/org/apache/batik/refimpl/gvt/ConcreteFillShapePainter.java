@@ -48,8 +48,4 @@ public class ConcreteFillShapePainter implements FillShapePainter {
     public Shape getPaintedArea(Shape shape){
         return shape;
     }
-
-    public Shape getPaintedOutline(Shape shape){
-        return shape;
-    }
 }

@@ -53,13 +53,6 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     private Shape paintedArea;
 
     /**
-     * Cache: The painted outline. (same as the painted area except as
-     * we are using Area instead of GeneralPath to create the Shape in
-     * ConcreteCompositeShapePainter.
-     */
-    private Shape paintedOutline;
-
-    /**
      * Constructs a new empty shape node.
      */
     public ConcreteShapeNode() {}
@@ -120,7 +113,6 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         primitiveBounds = null;
         geometryBounds = null;
         paintedArea = null;
-        paintedOutline = null;
     }
 
     public boolean contains(Point2D p) {
@@ -154,12 +146,6 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     }
 
     public Shape getOutline() {
-        if (paintedOutline == null) {
-            if(shapePainter == null) {
-                return null;
-            }
-            paintedOutline = shapePainter.getPaintedOutline(shape);
-        }
-        return paintedOutline;
+        return shape;
     }
 }

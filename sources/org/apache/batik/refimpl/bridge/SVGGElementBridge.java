@@ -56,12 +56,15 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
         Composite composite = CSSUtilities.convertOpacityToComposite(val);
         gn.setComposite(composite);
 
+        // Set the node filter
         Filter filter = CSSUtilities.convertFilter(element, gn, ctx);
         gn.setFilter(filter);
 
+        // Set the node mask
         Mask mask = CSSUtilities.convertMask(element, gn, ctx);
         gn.setMask(mask);
 
+        // Set the node clip
         Shape clip = CSSUtilities.convertClipPath(element, gn, ctx);
         gn.setClippingArea(clip);
 

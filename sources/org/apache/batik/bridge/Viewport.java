@@ -6,31 +6,24 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.gvt;
-
-import java.awt.Shape;
-import java.awt.Graphics2D;
+package org.apache.batik.bridge;
 
 /**
- * Renders the shape of a <tt>ShapeNode</tt>.
+ * Defines a viewport.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public interface ShapePainter {
+public interface Viewport {
 
     /**
-     * Paints the specified shape using the specified Graphics2D and context.
-     * @param shape the shape to paint
-     * @param g2d the Graphics2D to use
-     * @param ctx the render context to use
+     * Returns the width of this viewport.
      */
-    void paint(Shape shape, Graphics2D g2d, GraphicsNodeRenderContext ctx);
+    public float getWidth();
 
     /**
-     * Returns the area painted by this painter for a given input shape
-     *
-     * @param shape the shape to paint
+     * Returns the height of this viewport.
      */
-    Shape getPaintedArea(Shape shape);
+    public float getHeight();
+
 }

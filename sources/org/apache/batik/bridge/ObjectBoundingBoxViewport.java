@@ -6,31 +6,21 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.gvt;
-
-import java.awt.Shape;
-import java.awt.Graphics2D;
+package org.apache.batik.bridge;
 
 /**
- * Renders the shape of a <tt>ShapeNode</tt>.
+ * Defines a viewport for 'objectBoundingBox'.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public interface ShapePainter {
+public class ObjectBoundingBoxViewport implements Viewport {
 
-    /**
-     * Paints the specified shape using the specified Graphics2D and context.
-     * @param shape the shape to paint
-     * @param g2d the Graphics2D to use
-     * @param ctx the render context to use
-     */
-    void paint(Shape shape, Graphics2D g2d, GraphicsNodeRenderContext ctx);
+    public float getWidth() {
+        return 1f;
+    }
 
-    /**
-     * Returns the area painted by this painter for a given input shape
-     *
-     * @param shape the shape to paint
-     */
-    Shape getPaintedArea(Shape shape);
+    public float getHeight() {
+        return 1f;
+    }
 }

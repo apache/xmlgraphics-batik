@@ -25,19 +25,19 @@ import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.parser.PreserveAspectRatioHandler;
 import org.apache.batik.parser.PreserveAspectRatioParser;
 import org.apache.batik.refimpl.gvt.AffineTransformSourceBoundingBox;
-import org.apache.batik.refimpl.gvt.CompositeAffineTransformSource;
 import org.apache.batik.refimpl.gvt.DimensionTransformer;
 import org.apache.batik.refimpl.gvt.DimensionTransformerBoundingBox;
 import org.apache.batik.refimpl.gvt.PointTransformer;
-import org.apache.batik.refimpl.gvt.PointTransformerIdentity;
 import org.apache.batik.refimpl.gvt.PointTransformerBoundingBox;
+import org.apache.batik.refimpl.gvt.PointTransformerIdentity;
 import org.apache.batik.refimpl.gvt.TransformedDimension;
 import org.apache.batik.refimpl.gvt.TransformedPoint;
 import org.apache.batik.refimpl.gvt.filter.FilterChainRegion;
 import org.apache.batik.refimpl.gvt.filter.FilterPrimitiveRegion;
 import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformer;
-import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformerIdentity;
 import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformerBoundingBox;
+import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformerIdentity;
+import org.apache.batik.util.awt.geom.CompositeAffineTransformSource;
 
 import org.apache.batik.util.awt.geom.Dimension2D_Double;
 import org.apache.batik.util.awt.geom.AffineTransformSource;
@@ -104,6 +104,69 @@ public class SVGUtilities implements SVGConstants {
      * Represents an identifier.
      */
     public final static int IDENTIFIER = 7;
+
+    /**
+     * Represents 'objectBoundingBox'.
+     */
+    public final static int OBJECT_BOUNDING_BOX = 0;
+
+    /**
+     * Represents 'userSpaceOnUse'.
+     */
+    public final static int USER_SPACE_ON_USE = 1;
+
+    /**
+     * Parse the given specified coordinate system.
+     */
+    public static int parseCoordinateSystem(String value) {
+        int len = value.length();
+        if (len == 0) {
+            value = VALUE_OBJECT_BOUNDING_BOX;
+            len = value.length();
+        }
+        if (len != 0) {
+            switch(value.charAt(0)) {
+            case 'u':
+                if (len == VALUE_USER_SPACE_ON_USE.length() &&
+                    value.charAt(1) == 's' &&
+                    value.charAt(2) == 'e' &&
+                    value.charAt(3) == 'r' &&
+                    value.charAt(4) == 'S' &&
+                    value.charAt(5) == 'p' &&
+                    value.charAt(6) == 'a' &&
+                    value.charAt(7) == 'c' &&
+                    value.charAt(8) == 'e' &&
+                    value.charAt(9) == 'O' &&
+                    value.charAt(10) == 'n' &&
+                    value.charAt(11) == 'U' &&
+                    value.charAt(12) == 's' &&
+                    value.charAt(13) == 'e') {
+                    return USER_SPACE_ON_USE;
+            }
+            case 'o':
+                if (len == VALUE_OBJECT_BOUNDING_BOX.length() &&
+                    value.charAt(1) == 'b' &&
+                    value.charAt(2) == 'j' &&
+                    value.charAt(3) == 'e' &&
+                    value.charAt(4) == 'c' &&
+                    value.charAt(5) == 't' &&
+                    value.charAt(6) == 'B' &&
+                    value.charAt(7) == 'o' &&
+                    value.charAt(8) == 'u' &&
+                    value.charAt(9) == 'n' &&
+                    value.charAt(10) == 'd' &&
+                    value.charAt(11) == 'i' &&
+                    value.charAt(12) == 'n' &&
+                    value.charAt(13) == 'g' &&
+                    value.charAt(14) == 'B' &&
+                    value.charAt(15) == 'o' &&
+                    value.charAt(16) == 'x') {
+                    return OBJECT_BOUNDING_BOX;
+                }
+            }
+        }
+        throw new Error("Bad coordinate system: "+value);
+    }
 
     /**
      * Parses the given 'in' attribute value.
@@ -548,7 +611,7 @@ public class SVGUtilities implements SVGConstants {
                                  Element filteredElement,
                                  GraphicsNode node,
                                  UnitProcessor.Context uctx){
-        return convertRegion(filterElement, filteredElement, 
+        return convertRegion(filterElement, filteredElement,
                              node, uctx, ATTR_FILTER_UNITS,
                              VALUE_OBJECT_BOUNDING_BOX,
                              VALUE_FILTER_X_DEFAULT,
@@ -566,7 +629,7 @@ public class SVGUtilities implements SVGConstants {
                           Element maskedElement,
                           GraphicsNode node,
                           UnitProcessor.Context uctx){
-        return convertRegion(maskElement, maskedElement, 
+        return convertRegion(maskElement, maskedElement,
                              node, uctx, ATTR_MASK_UNITS,
                              VALUE_OBJECT_BOUNDING_BOX,
                              VALUE_MASK_X_DEFAULT,
@@ -584,7 +647,7 @@ public class SVGUtilities implements SVGConstants {
                              Element maskedElement,
                              GraphicsNode node,
                              UnitProcessor.Context uctx){
-        return convertRegion(maskElement, maskedElement, 
+        return convertRegion(maskElement, maskedElement,
                              node, uctx, ATTR_PATTERN_UNITS,
                              VALUE_OBJECT_BOUNDING_BOX,
                              VALUE_PATTERN_X_DEFAULT,
@@ -847,7 +910,7 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
-     * Creates a float value for the input 
+     * Creates a float value for the input
      * value in 'units'
      */
     public static float
@@ -902,16 +965,16 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
-     * Creates an <tt>AffineTransformSource</tt> 
+     * Creates an <tt>AffineTransformSource</tt>
      */
-    public static AffineTransformSource 
+    public static AffineTransformSource
         convertAffineTransformSource(AffineTransform at,
                                      GraphicsNode node,
                                      String units){
-        
+
         AffineTransformSource ats = null;
         if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
-            AffineTransformSource ts = 
+            AffineTransformSource ts =
                 new DefaultAffineTransformSource(at);
             AffineTransformSource bbts =
                 new AffineTransformSourceBoundingBox(node);

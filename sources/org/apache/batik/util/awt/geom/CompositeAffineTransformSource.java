@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.refimpl.gvt;
+package org.apache.batik.util.awt.geom;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;

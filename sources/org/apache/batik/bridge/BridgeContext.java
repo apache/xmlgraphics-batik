@@ -42,14 +42,14 @@ public interface BridgeContext {
     /**
      * Returns the current viewport to use to compute percentages and units.
      */
-    SVGSVGElement getCurrentViewport();
+    Viewport getCurrentViewport();
 
     /**
      * Sets the current viewport to use to compute percentages and
      * units to the specified SVG element.
      * @param newViewport the new viewport
      */
-    void setCurrentViewport(SVGSVGElement newViewport);
+    void setCurrentViewport(Viewport newViewport);
 
     /**
      * Sets the document loader to use to load a document.

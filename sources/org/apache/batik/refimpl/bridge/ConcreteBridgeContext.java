@@ -18,6 +18,7 @@ import org.apache.batik.bridge.StyleReference;
 import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.Viewport;
 
 import org.apache.batik.script.InterpreterPool;
 
@@ -25,7 +26,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import org.w3c.dom.views.DocumentView;
 import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.svg.SVGSVGElement;
 
 import java.util.HashMap;
 import java.util.List;
@@ -125,7 +125,7 @@ public class ConcreteBridgeContext implements BridgeContext {
     /**
      * The viewport to use to compute percentages and units.
      */
-    private SVGSVGElement viewport;
+    private Viewport viewport;
 
     /**
      * Constructs a new empty <tt>BridgeContext</tt>.
@@ -134,11 +134,11 @@ public class ConcreteBridgeContext implements BridgeContext {
         updateManager = new BridgeUpdateManager(this);
     }
 
-    public SVGSVGElement getCurrentViewport() {
+    public Viewport getCurrentViewport() {
         return viewport;
     }
 
-    public void setCurrentViewport(SVGSVGElement newViewport) {
+    public void setCurrentViewport(Viewport newViewport) {
         this.viewport = newViewport;
     }
 

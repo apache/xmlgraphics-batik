@@ -11,6 +11,7 @@ package org.apache.batik.refimpl.bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.bridge.Viewport;
 
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -72,7 +73,7 @@ public class DefaultUnitProcessorContext implements UnitProcessor.Context {
     /**
      * Returns the viewport to use to compute the percentages and the units.
      */
-    public SVGSVGElement getViewport() {
+    public Viewport getViewport() {
         return ctx.getCurrentViewport();
     }
 }
