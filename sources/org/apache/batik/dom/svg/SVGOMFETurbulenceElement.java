@@ -11,9 +11,12 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.batik.dom.AbstractDocument;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedInteger;
@@ -74,7 +77,17 @@ public class SVGOMFETurbulenceElement
     protected transient WeakReference typeReference;
 
     /**
-     * The attribute-value map map.
+     * The reference to the base frequency x value.
+     */
+    protected transient WeakReference baseFrequencyXReference;
+
+    /**
+     * The reference to the base frequency y value.
+     */
+    protected transient WeakReference baseFrequencyYReference;
+
+    /**
+     * The attribute-value map.
      */
     protected static Map attributeValues = new HashMap(2);
     static {
@@ -139,7 +152,43 @@ public class SVGOMFETurbulenceElement
      * org.w3c.dom.svg.SVGFETurbulenceElement#getBaseFrequencyX()}.
      */
     public SVGAnimatedNumber getBaseFrequencyX() {
-        throw new RuntimeException("!!! TODO");
+        SVGAnimatedNumber result;
+        if (baseFrequencyXReference == null ||
+            (result = (SVGAnimatedNumber)baseFrequencyXReference.get()) == null) {
+            result = new SVGAnimatedNumber() {
+                public float getBaseVal() {
+                    Attr a = getAttributeNodeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE);
+                    if (a != null) {
+                        StringTokenizer st = new StringTokenizer(a.getValue(), " ");
+                        if (st.hasMoreTokens()) {
+                            return Float.parseFloat(st.nextToken());
+                        }
+                    }
+                    return 0;
+                }
+                public void setBaseVal(float baseVal) throws DOMException {
+                    String bfy = "";
+                    Attr a = getAttributeNodeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE);
+                    if (a != null) {
+                        StringTokenizer st = new StringTokenizer(a.getValue(), " ");
+                        if (st.hasMoreTokens()) {
+                            st.nextToken();
+                            if (st.hasMoreTokens()) {
+                                bfy = st.nextToken();
+                            }
+                        }
+                    }
+                    setAttributeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE,
+                                   Float.toString(baseVal) +
+                                   ((bfy.length() == 0) ? "" :" " + bfy));
+                }
+                public float getAnimVal() {
+                    throw new RuntimeException(" !!! TODO");
+                }
+            };
+            baseFrequencyXReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -147,7 +196,43 @@ public class SVGOMFETurbulenceElement
      * org.w3c.dom.svg.SVGFETurbulenceElement#getBaseFrequencyY()}.
      */
     public SVGAnimatedNumber getBaseFrequencyY() {
-        throw new RuntimeException("!!! TODO");
+        SVGAnimatedNumber result;
+        if (baseFrequencyYReference == null ||
+            (result = (SVGAnimatedNumber)baseFrequencyYReference.get()) == null) {
+            result = new SVGAnimatedNumber() {
+                public float getBaseVal() {
+                    Attr a = getAttributeNodeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE);
+                    if (a != null) {
+                        StringTokenizer st = new StringTokenizer(a.getValue(), " ");
+                        if (st.hasMoreTokens()) {
+                            String s = st.nextToken();
+                            if (st.hasMoreTokens()) {
+                                return Float.parseFloat(st.nextToken());
+                            }
+                            return Float.parseFloat(s);
+                        }
+                    }
+                    return 0;
+                }
+                public void setBaseVal(float baseVal) throws DOMException {
+                    Attr a = getAttributeNodeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE);
+                    String bfx = "0 ";
+                    if (a != null) {
+                        StringTokenizer st = new StringTokenizer(a.getValue(), " ");
+                        if (st.hasMoreTokens()) {
+                            bfx = st.nextToken() + " ";
+                        }
+                    }
+                    setAttributeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE,
+                                   bfx + Float.toString(baseVal));
+                }
+                public float getAnimVal() {
+                    throw new RuntimeException(" !!! TODO");
+                }
+            };
+            baseFrequencyXReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**

@@ -32,7 +32,7 @@
 
       <s1 title="Batik Commiters">
       <p>
-      The following people are active Batik developers and are the project's commiters:
+      The following people are active Batik developers and are the project's committers:
       </p>
         <dl>
           <dt>Thomas DeWeese (TD)</dt><dd><br />
@@ -151,12 +151,13 @@
               mailing lists.</li>
           <li><link href="mailto:natalian@cs.brown.edu">Nicholas Talian</link> - Contributed on gradients.</li>
           <li><link href="mailto:spei@cs.uiowa.edu">Sheng Pei</link> - Contributed on filters and the Regard tool.</li>
+          <li><link href="mailto:luano@asd.ie">Luan O'Carroll</link> - Contributed the WMF transcoder.</li>
         </ul>
       </s1>
 
       <s1 title="Areas of Expertise">
         <p>
-        The following table summarizes the areas of expertise of each commiter. It allows better
+        The following table summarizes the areas of expertise of each committer. It allows better
         coordination of both internal and external development efforts.
         </p>
 
@@ -174,39 +175,35 @@
                               <td/><td/><td/><td/>
           </tr>
           <tr>
-            <td>Bridge</td><td/><td/><td>X</td><td>X</td>
+            <td>Bridge</td><td/><td/><td>X</td><td/>
                            <td/><td>X</td><td>X</td><td>X</td>
           </tr>
           <tr>
-            <td>CSS Engine</td><td/><td/><td/><td>X</td>
+            <td>CSS</td><td/><td/><td/><td>X</td>
                                <td/><td/><td/><td/>
           </tr>
           <tr>
-            <td>Documentation</td><td/><td/><td>X</td><td>X</td>
+            <td>Documentation</td><td/><td/><td>X</td><td/>
                                   <td/><td/><td>X</td><td/>
-          </tr>
-          <tr>
-            <td>DOM Level 2</td><td/><td/><td/><td>X</td>
-                                <td/><td/><td/><td/>
           </tr>
           <tr>
             <td>SVG DOM</td><td/><td/><td/><td>X</td>
                             <td/><td/><td/><td/>
           </tr>
           <tr>
-            <td>GVT core</td><td/><td/><td>X</td><td/>
+            <td>GVT Core</td><td/><td/><td>X</td><td/>
                              <td/><td/><td>X</td><td>X</td>
           </tr>
           <tr>
-            <td>GVT filters</td><td>X</td><td/><td>X</td><td/>
+            <td>GVT Filters</td><td>X</td><td/><td>X</td><td/>
                                <td>X</td><td/><td/><td/>
           </tr>
           <tr>
-            <td>GVT renderer</td><td>X</td><td/><td>X</td><td/>
+            <td>GVT Renderer</td><td>X</td><td/><td>X</td><td/>
                                  <td/><td/><td>X</td><td/>
           </tr>
           <tr>
-            <td>GVT text</td><td/><td>X</td><td/><td/>
+            <td>GVT Text</td><td/><td>X</td><td/><td/>
                              <td>X</td><td/><td/><td/>
           </tr>
           <tr>
@@ -222,11 +219,15 @@
                               <td/><td>X</td><td/><td/>
           </tr>
           <tr>
-            <td>Transcoder</td><td/><td>X</td><td/><td/>
+            <td>Swing Components</td><td/><td/><td/><td>X</td>
+                                <td/><td/><td/><td/>
+          </tr>
+          <tr>
+            <td>Rasterizer</td><td/><td/><td/><td/>
                             <td/><td/><td>X</td><td/>
           </tr>
           <tr>
-            <td>Viewer</td><td/><td/><td/><td>X</td>
+            <td>Browser</td><td/><td/><td/><td>X</td>
                             <td/><td/><td/><td/>
           </tr>
         </table>

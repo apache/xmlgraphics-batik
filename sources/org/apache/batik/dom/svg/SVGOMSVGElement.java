@@ -64,14 +64,26 @@ public class SVGOMSVGElement
 	       ElementNonCSSPresentationalHints {
 
     /**
-     * The contentScriptType attribute name.
+     * The DefaultAttributeValueProducer for 'width'.
      */
-    public final static String CONTENT_SCRIPT_TYPE = "contentScriptType";
+    protected final static DefaultAttributeValueProducer
+        WIDTH_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_SVG_WIDTH_DEFAULT_VALUE;
+                }
+            };
 
     /**
-     * The contentStyleType attribute name.
+     * The DefaultAttributeValueProducer for 'height'.
      */
-    public final static String CONTENT_STYLE_TYPE = "contentStyleType";
+    protected final static DefaultAttributeValueProducer
+        HEIGHT_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_SVG_HEIGHT_DEFAULT_VALUE;
+                }
+            };
 
     /**
      * The attribute-value map map.
@@ -79,10 +91,10 @@ public class SVGOMSVGElement
     protected static Map attributeValues = new HashMap(3);
     static {
         Map values = new HashMap(7);
-        values.put("contentScriptType",    "text/ecmascript");
-        values.put("contentStyleType",     "text/css");
-        values.put("preserveAspectRatio",  "xMidYMid meet");
-        values.put("zoomAndPan",           "magnify");
+        values.put(SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE,   "text/ecmascript");
+        values.put(SVG_CONTENT_STYLE_TYPE_ATTRIBUTE,    "text/css");
+        values.put(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE, "xMidYMid meet");
+        values.put(SVG_ZOOM_AND_PAN_ATTRIBUTE,          "magnify");
         attributeValues.put(null, values);
 
         values = new HashMap(2);
@@ -144,7 +156,7 @@ public class SVGOMSVGElement
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -157,7 +169,7 @@ public class SVGOMSVGElement
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -170,7 +182,8 @@ public class SVGOMSVGElement
 	SVGAnimatedLength result;
 	if (widthReference == null ||
 	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "width", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE,
+                                             WIDTH_DEFAULT_VALUE_PRODUCER);
 	    widthReference = new WeakReference(result);
 	}
 	return result;
@@ -184,7 +197,8 @@ public class SVGOMSVGElement
 	SVGAnimatedLength result;
 	if (heightReference == null ||
 	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "height", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE,
+                                             HEIGHT_DEFAULT_VALUE_PRODUCER);
 	    heightReference = new WeakReference(result);
 	}
 	return result;
@@ -195,7 +209,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGSVGElement#getContentScriptType()}.
      */
     public String getContentScriptType() {
-	return getAttribute(CONTENT_SCRIPT_TYPE);
+	return getAttributeNS(null, SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE);
     }
 
     /**
@@ -203,7 +217,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGSVGElement#setContentScriptType(String)}.
      */
     public void setContentScriptType(String type) {
-	setAttribute(CONTENT_SCRIPT_TYPE, type);
+	setAttributeNS(null, SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE, type);
     }
 
     /**
@@ -211,7 +225,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGSVGElement#getContentStyleType()}.
      */
     public String getContentStyleType() {
-	return getAttribute(CONTENT_STYLE_TYPE);
+	return getAttributeNS(null, SVG_CONTENT_STYLE_TYPE_ATTRIBUTE);
     }
 
     /**
@@ -219,7 +233,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGSVGElement#setContentStyleType(String)}.
      */
     public void setContentStyleType(String type) {
-	setAttribute(CONTENT_STYLE_TYPE, type);
+	setAttributeNS(null, SVG_CONTENT_STYLE_TYPE_ATTRIBUTE, type);
     }
 
     /**

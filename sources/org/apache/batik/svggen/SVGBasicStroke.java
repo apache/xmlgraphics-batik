@@ -96,12 +96,12 @@ public class SVGBasicStroke extends AbstractSVGConverter{
     private static String joinToSVG(int lineJoin){
         switch(lineJoin){
         case BasicStroke.JOIN_BEVEL:
-            return SVG_LINE_JOIN_BEVEL_VALUE;
+            return SVG_BEVEL_VALUE;
         case BasicStroke.JOIN_ROUND:
-            return SVG_LINE_JOIN_ROUND_VALUE;
+            return SVG_ROUND_VALUE;
         case BasicStroke.JOIN_MITER:
         default:
-            return SVG_LINE_JOIN_MITER_VALUE;
+            return SVG_MITER_VALUE;
         }
     }
 
@@ -111,12 +111,12 @@ public class SVGBasicStroke extends AbstractSVGConverter{
     private static String endCapToSVG(int endCap){
         switch(endCap){
         case BasicStroke.CAP_BUTT:
-            return SVG_LINE_CAP_BUTT_VALUE;
+            return SVG_BUTT_VALUE;
         case BasicStroke.CAP_ROUND:
-            return SVG_LINE_CAP_ROUND_VALUE;
+            return SVG_ROUND_VALUE;
         default:
         case BasicStroke.CAP_SQUARE:
-            return SVG_LINE_CAP_SQUARE_VALUE;
+            return SVG_SQUARE_VALUE;
         }
     }
 }

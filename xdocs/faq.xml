@@ -459,7 +459,14 @@
 	    you can have a look at the <link href="install.html">installation instructions</link>.
 	    </p>
     </answer>
-    
+</faq>
+<faq>
+    <question>When I try to run Batik it results in a NoSuchMethodException.
+              What is the problem?</question>
+    <answer><p>There is certainly something wrong with your classpath. Clear your
+            CLASSPATH environment variable and be sure to remove all the libraries
+            which use the W3C's DOM bindings from jre/lib/ext before running
+            any of the Batik's applications.</p></answer>
 </faq>
 
 </faqs>

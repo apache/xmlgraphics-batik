@@ -93,35 +93,33 @@ public class SVGOMDocument
     protected static HashTable customFactories;
 
     /**
-     * The url of the document.
-     */
-    protected URL url;
-
-    /**
-     * Is this document immutable?
-     */
-    protected boolean readonly;
-
-    /**
-     * The default view.
-     */
-    protected AbstractView defaultView;
-
-    /**
-     * The document context.
-     */
-    protected SVGContext context;
-
-    /**
      * The SVG element factories.
      */
-    protected HashTable factories = new HashTable();
-    {
+    protected static HashTable factories = new HashTable();
+    static {
         factories.put(SVG_A_TAG,
                       new AElementFactory());
 
+        factories.put(SVG_ALT_GLYPH_TAG,
+                      new AltGlyphElementFactory());
+
+        factories.put(SVG_ALT_GLYPH_DEF_TAG,
+                      new AltGlyphDefElementFactory());
+
+        factories.put(SVG_ALT_GLYPH_ITEM_TAG,
+                      new AltGlyphItemElementFactory());
+
         factories.put(SVG_ANIMATE_TAG,
                       new AnimateElementFactory());
+
+        factories.put(SVG_ANIMATE_COLOR_TAG,
+                      new AnimateColorElementFactory());
+
+        factories.put(SVG_ANIMATE_MOTION_TAG,
+                      new AnimateMotionElementFactory());
+
+        factories.put(SVG_ANIMATE_TRANSFORM_TAG,
+                      new AnimateTransformElementFactory());
 
         factories.put(SVG_CIRCLE_TAG,
                       new CircleElementFactory());
@@ -131,6 +129,12 @@ public class SVGOMDocument
 
         factories.put(SVG_COLOR_PROFILE_TAG,
                       new ColorProfileElementFactory());
+
+        factories.put(SVG_CURSOR_TAG,
+                      new CursorElementFactory());
+
+        factories.put(SVG_DEFINITION_SRC_TAG,
+                      new DefinitionSrcElementFactory());
 
         factories.put(SVG_DEFS_TAG,
                       new DefsElementFactory());
@@ -213,11 +217,41 @@ public class SVGOMDocument
         factories.put(SVG_FE_TURBULENCE_TAG,
                       new FeTurbulenceElementFactory());
 
+        factories.put(SVG_FONT_TAG,
+                      new FontElementFactory());
+
+        factories.put(SVG_FONT_FACE_TAG,
+                      new FontFaceElementFactory());
+
+        factories.put(SVG_FONT_FACE_FORMAT_TAG,
+                      new FontFaceFormatElementFactory());
+
+        factories.put(SVG_FONT_FACE_NAME_TAG,
+                      new FontFaceNameElementFactory());
+
+        factories.put(SVG_FONT_FACE_SRC_TAG,
+                      new FontFaceSrcElementFactory());
+
+        factories.put(SVG_FONT_FACE_URI_TAG,
+                      new FontFaceUriElementFactory());
+
+        factories.put(SVG_FOREIGN_OBJECT_TAG,
+                      new ForeignObjectElementFactory());
+
         factories.put(SVG_FILTER_TAG,
                       new FilterElementFactory());
 
         factories.put(SVG_G_TAG,
                       new GElementFactory());
+
+        factories.put(SVG_GLYPH_TAG,
+                      new GlyphElementFactory());
+
+        factories.put(SVG_GLYPH_REF_TAG,
+                      new GlyphRefElementFactory());
+
+        factories.put(SVG_HKERN_TAG,
+                      new HkernElementFactory());
 
         factories.put(SVG_IMAGE_TAG,
                       new ImageElementFactory());
@@ -237,6 +271,12 @@ public class SVGOMDocument
         factories.put(SVG_METADATA_TAG,
                       new MetadataElementFactory());
 
+        factories.put(SVG_MISSING_GLYPH_TAG,
+                      new MissingGlyphElementFactory());
+
+        factories.put(SVG_MPATH_TAG,
+                      new MpathElementFactory());
+
         factories.put(SVG_PATH_TAG,
                       new PathElementFactory());
 
@@ -254,6 +294,9 @@ public class SVGOMDocument
 
         factories.put(SVG_RECT_TAG,
                       new RectElementFactory());
+
+        factories.put(SVG_SET_TAG,
+                      new SetElementFactory());
 
         factories.put(SVG_SCRIPT_TAG,
                       new ScriptElementFactory());
@@ -290,6 +333,12 @@ public class SVGOMDocument
 
         factories.put(SVG_USE_TAG,
                       new UseElementFactory());
+
+        factories.put(SVG_VIEW_TAG,
+                      new ViewElementFactory());
+
+        factories.put(SVG_VKERN_TAG,
+                      new VkernElementFactory());
     }
 
     /**
@@ -297,7 +346,7 @@ public class SVGOMDocument
      */
     public static void registerCustomElementFactory(String namespaceURI,
                                                     String localName,
-                                                    CustomElementFactory factory) {
+                                                    ElementFactory factory) {
         if (customFactories == null) {
             customFactories = new HashTable();
         }
@@ -307,6 +356,31 @@ public class SVGOMDocument
         }
         ht.put(localName, factory);
     }
+
+    /**
+     * The url of the document.
+     */
+    protected URL url;
+
+    /**
+     * Is this document immutable?
+     */
+    protected boolean readonly;
+
+    /**
+     * The default view.
+     */
+    protected AbstractView defaultView;
+
+    /**
+     * The document context.
+     */
+    protected SVGContext context;
+
+    /**
+     * The string representing the referrer.
+     */
+    protected String referrer;
 
     /**
      * Creates a new uninitialized document.
@@ -403,14 +477,14 @@ public class SVGOMDocument
      * org.w3c.dom.svg.SVGDocument#getReferrer()}.
      */
     public String getReferrer() {
-        throw new RuntimeException(" !!! TODO: SVGOMDocument.getReferrer()");
+        return referrer;
     }
 
     /**
      * Sets the referrer string.
      */
     public void setReferrer(String s) {
-        throw new RuntimeException(" !!! TODO: SVGOMDocument.setReferrer(String)");
+        referrer = s;
     }
 
     /**
@@ -432,7 +506,7 @@ public class SVGOMDocument
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGDocument#getURL()}
      */
     public String getURL() {
-        return url.toString();
+        return (url == null) ? null : url.toString();
     }
 
     /**
@@ -591,14 +665,14 @@ public class SVGOMDocument
                                          new Object[] { namespaceURI,
                                                         qualifiedName });
             }
-            return ef.create(DOMUtilities.getPrefix(qualifiedName));
+            return ef.create(DOMUtilities.getPrefix(qualifiedName), this);
         }
         if (namespaceURI != null) {
             if (customFactories != null) {
                 HashTable ht = (HashTable)customFactories.get(namespaceURI);
                 if (ht != null) {
                     String name = DOMUtilities.getLocalName(qualifiedName);
-                    CustomElementFactory cef = (CustomElementFactory)ht.get(name);
+                    ElementFactory cef = (ElementFactory)ht.get(name);
                     if (cef != null) {
                         return cef.create(DOMUtilities.getPrefix(qualifiedName), this);
                     }
@@ -713,292 +787,401 @@ public class SVGOMDocument
     // The element factories /////////////////////////////////////////////////
 
     /**
-     * This interface represents a factory of custom elements.
-     */
-    public interface CustomElementFactory {
-        /**
-         * Creates an instance of a custom element.
-         */
-        Element create(String prefix, Document doc);
-    }
-
-    /**
      * This interface represents a factory of elements.
      */
     protected interface ElementFactory {
         /**
          * Creates an instance of the associated element type.
          */
-        Element create(String prefix);
+        Element create(String prefix, Document doc);
     }
 
     /**
      * To create a 'a' element.
      */
-    protected class AElementFactory implements ElementFactory {
+    protected static class AElementFactory implements ElementFactory {
         public AElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMAElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMAElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'altGlyph' element.
+     */
+    protected static class AltGlyphElementFactory implements ElementFactory {
+        public AltGlyphElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_ALT_GLYPH_TAG);
+        }
+    }
+
+    /**
+     * To create a 'altGlyphDef' element.
+     */
+    protected static class AltGlyphDefElementFactory implements ElementFactory {
+        public AltGlyphDefElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_ALT_GLYPH_DEF_TAG);
+        }
+    }
+
+    /**
+     * To create a 'altGlyphItem' element.
+     */
+    protected static class AltGlyphItemElementFactory implements ElementFactory {
+        public AltGlyphItemElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_ALT_GLYPH_ITEM_TAG);
         }
     }
 
     /**
      * To create a 'animate' element.
      */
-    protected class AnimateElementFactory implements ElementFactory {
+    protected static class AnimateElementFactory implements ElementFactory {
         public AnimateElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
+        public Element create(String prefix, Document doc) {
             return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
+                                                   (AbstractDocument)doc,
                                                    SVG_ANIMATE_TAG);
+        }
+    }
+
+    /**
+     * To create a 'animateColor' element.
+     */
+    protected static class AnimateColorElementFactory implements ElementFactory {
+        public AnimateColorElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_ANIMATE_COLOR_TAG);
+        }
+    }
+
+    /**
+     * To create a 'animateMotion' element.
+     */
+    protected static class AnimateMotionElementFactory implements ElementFactory {
+        public AnimateMotionElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_ANIMATE_MOTION_TAG);
+        }
+    }
+
+    /**
+     * To create a 'animateTransform' element.
+     */
+    protected static class AnimateTransformElementFactory implements ElementFactory {
+        public AnimateTransformElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_ANIMATE_TRANSFORM_TAG);
         }
     }
 
     /**
      * To create a 'circle' element.
      */
-    protected class CircleElementFactory implements ElementFactory {
+    protected static class CircleElementFactory implements ElementFactory {
         public CircleElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMCircleElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMCircleElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'clip-path' element.
      */
-    protected class ClipPathElementFactory implements ElementFactory {
+    protected static class ClipPathElementFactory implements ElementFactory {
         public ClipPathElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMClipPathElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMClipPathElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'color-profile' element.
      */
-    protected class ColorProfileElementFactory implements ElementFactory {
+    protected static class ColorProfileElementFactory implements ElementFactory {
         public ColorProfileElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
+        public Element create(String prefix, Document doc) {
             return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
+                                                   (AbstractDocument)doc,
                                                    SVG_COLOR_PROFILE_TAG);
         }
     }
 
+    /**
+     * To create a 'cursor' element.
+     */
+    protected static class CursorElementFactory implements ElementFactory {
+        public CursorElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_CURSOR_TAG);
+        }
+    }
+
+    /**
+     * To create a 'definition-src' element.
+     */
+    protected static class DefinitionSrcElementFactory implements ElementFactory {
+        public DefinitionSrcElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_DEFINITION_SRC_TAG);
+        }
+    }
 
     /**
      * To create a 'defs' element.
      */
-    protected class DefsElementFactory implements ElementFactory {
+    protected static class DefsElementFactory implements ElementFactory {
         public DefsElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMDefsElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMDefsElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'desc' element.
      */
-    protected class DescElementFactory implements ElementFactory {
+    protected static class DescElementFactory implements ElementFactory {
         public DescElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMDescElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMDescElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'ellipse' element.
      */
-    protected class EllipseElementFactory implements ElementFactory {
+    protected static class EllipseElementFactory implements ElementFactory {
         public EllipseElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMEllipseElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMEllipseElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feBlend' element.
      */
-    protected class FeBlendElementFactory implements ElementFactory {
+    protected static class FeBlendElementFactory implements ElementFactory {
         public FeBlendElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEBlendElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEBlendElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feColorMatrix' element.
      */
-    protected class FeColorMatrixElementFactory implements ElementFactory {
+    protected static class FeColorMatrixElementFactory implements ElementFactory {
         public FeColorMatrixElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEColorMatrixElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEColorMatrixElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feComponentTransfer' element.
      */
-    protected class FeComponentTransferElementFactory
+    protected static class FeComponentTransferElementFactory
         implements ElementFactory {
         public FeComponentTransferElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
+        public Element create(String prefix, Document doc) {
             return new SVGOMFEComponentTransferElement(prefix,
-                                                       SVGOMDocument.this);
+                                                       (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feConvolveMatrix' element.
      */
-    protected class FeConvolveMatrixElementFactory implements ElementFactory {
+    protected static class FeConvolveMatrixElementFactory implements ElementFactory {
         public FeConvolveMatrixElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEConvolveMatrixElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEConvolveMatrixElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feComposite' element.
      */
-    protected class FeCompositeElementFactory
+    protected static class FeCompositeElementFactory
         implements ElementFactory {
         public FeCompositeElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFECompositeElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFECompositeElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feDiffuseLighting' element.
      */
-    protected class FeDiffuseLightingElementFactory implements ElementFactory {
+    protected static class FeDiffuseLightingElementFactory implements ElementFactory {
         public FeDiffuseLightingElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
+        public Element create(String prefix, Document doc) {
             return new SVGOMFEDiffuseLightingElement(prefix,
-                                                     SVGOMDocument.this);
+                                                     (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feDisplacementMap' element.
      */
-    protected class FeDisplacementMapElementFactory implements ElementFactory {
+    protected static class FeDisplacementMapElementFactory implements ElementFactory {
         public FeDisplacementMapElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
+        public Element create(String prefix, Document doc) {
             return new SVGOMFEDisplacementMapElement(prefix,
-                                                     SVGOMDocument.this);
+                                                     (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feDistantLight' element.
      */
-    protected class FeDistantLightElementFactory implements ElementFactory {
+    protected static class FeDistantLightElementFactory implements ElementFactory {
         public FeDistantLightElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEDistantLightElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEDistantLightElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feFlood' element.
      */
-    protected class FeFloodElementFactory implements ElementFactory {
+    protected static class FeFloodElementFactory implements ElementFactory {
         public FeFloodElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEFloodElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEFloodElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feFuncA' element.
      */
-    protected class FeFuncAElementFactory implements ElementFactory {
+    protected static class FeFuncAElementFactory implements ElementFactory {
         public FeFuncAElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEFuncAElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEFuncAElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feFuncR' element.
      */
-    protected class FeFuncRElementFactory implements ElementFactory {
+    protected static class FeFuncRElementFactory implements ElementFactory {
         public FeFuncRElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEFuncRElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEFuncRElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feFuncG' element.
      */
-    protected class FeFuncGElementFactory implements ElementFactory {
+    protected static class FeFuncGElementFactory implements ElementFactory {
         public FeFuncGElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEFuncGElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEFuncGElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -1006,80 +1189,80 @@ public class SVGOMDocument
     /**
      * To create a 'feFuncB' element.
      */
-    protected class FeFuncBElementFactory implements ElementFactory {
+    protected static class FeFuncBElementFactory implements ElementFactory {
         public FeFuncBElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEFuncBElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEFuncBElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feGaussianBlur' element.
      */
-    protected class FeGaussianBlurElementFactory implements ElementFactory {
+    protected static class FeGaussianBlurElementFactory implements ElementFactory {
         public FeGaussianBlurElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
+        public Element create(String prefix, Document doc) {
             return new SVGOMFEGaussianBlurElement(prefix,
-                                                  SVGOMDocument.this);
+                                                  (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feImage' element.
      */
-    protected class FeImageElementFactory implements ElementFactory {
+    protected static class FeImageElementFactory implements ElementFactory {
         public FeImageElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEImageElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEImageElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feMerge' element.
      */
-    protected class FeMergeElementFactory implements ElementFactory {
+    protected static class FeMergeElementFactory implements ElementFactory {
         public FeMergeElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEMergeElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEMergeElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feMergeNode' element.
      */
-    protected class FeMergeNodeElementFactory implements ElementFactory {
+    protected static class FeMergeNodeElementFactory implements ElementFactory {
         public FeMergeNodeElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEMergeNodeElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEMergeNodeElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feMorphology' element.
      */
-    protected class FeMorphologyElementFactory implements ElementFactory {
+    protected static class FeMorphologyElementFactory implements ElementFactory {
         public FeMorphologyElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
+        public Element create(String prefix, Document doc) {
             return new SVGOMFEMorphologyElement(prefix,
-                                                SVGOMDocument.this);
+                                                (AbstractDocument)doc);
         }
     }
 
@@ -1087,418 +1270,642 @@ public class SVGOMDocument
     /**
      * To create a 'feOffset' element.
      */
-    protected class FeOffsetElementFactory implements ElementFactory {
+    protected static class FeOffsetElementFactory implements ElementFactory {
         public FeOffsetElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEOffsetElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEOffsetElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'fePointLight' element.
      */
-    protected class FePointLightElementFactory implements ElementFactory {
+    protected static class FePointLightElementFactory implements ElementFactory {
         public FePointLightElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFEPointLightElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEPointLightElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feSpecularLighting' element.
      */
-    protected class FeSpecularLightingElementFactory implements ElementFactory {
+    protected static class FeSpecularLightingElementFactory implements ElementFactory {
         public FeSpecularLightingElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFESpecularLightingElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFESpecularLightingElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feSpotLight' element.
      */
-    protected class FeSpotLightElementFactory implements ElementFactory {
+    protected static class FeSpotLightElementFactory implements ElementFactory {
         public FeSpotLightElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFESpotLightElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFESpotLightElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feTile' element.
      */
-    protected class FeTileElementFactory implements ElementFactory {
+    protected static class FeTileElementFactory implements ElementFactory {
         public FeTileElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFETileElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFETileElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'feTurbulence' element
      */
-    protected class FeTurbulenceElementFactory implements ElementFactory{
+    protected static class FeTurbulenceElementFactory implements ElementFactory{
         public FeTurbulenceElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFETurbulenceElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFETurbulenceElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'font' element.
+     */
+    protected static class FontElementFactory implements ElementFactory {
+        public FontElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_FONT_TAG);
+        }
+    }
+
+    /**
+     * To create a 'font-face' element.
+     */
+    protected static class FontFaceElementFactory implements ElementFactory {
+        public FontFaceElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_FONT_FACE_TAG);
+        }
+    }
+
+    /**
+     * To create a 'font-face-format' element.
+     */
+    protected static class FontFaceFormatElementFactory implements ElementFactory {
+        public FontFaceFormatElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_FONT_FACE_FORMAT_TAG);
+        }
+    }
+
+    /**
+     * To create a 'font-face-name' element.
+     */
+    protected static class FontFaceNameElementFactory implements ElementFactory {
+        public FontFaceNameElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_FONT_FACE_NAME_TAG);
+        }
+    }
+
+    /**
+     * To create a 'font-face-src' element.
+     */
+    protected static class FontFaceSrcElementFactory implements ElementFactory {
+        public FontFaceSrcElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_FONT_FACE_SRC_TAG);
+        }
+    }
+
+    /**
+     * To create a 'font-face-uri' element.
+     */
+    protected static class FontFaceUriElementFactory implements ElementFactory {
+        public FontFaceUriElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_FONT_FACE_URI_TAG);
         }
     }
 
     /**
      * To create a 'filter' element.
      */
-    protected class FilterElementFactory implements ElementFactory {
+    protected static class FilterElementFactory implements ElementFactory {
         public FilterElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMFilterElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFilterElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'foreignObject' element.
+     */
+    protected static class ForeignObjectElementFactory implements ElementFactory {
+        public ForeignObjectElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_FOREIGN_OBJECT_TAG);
         }
     }
 
     /**
      * To create a 'g' element.
      */
-    protected class GElementFactory implements ElementFactory {
+    protected static class GElementFactory implements ElementFactory {
         public GElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMGElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMGElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'glyph' element.
+     */
+    protected static class GlyphElementFactory implements ElementFactory {
+        public GlyphElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_GLYPH_TAG);
+        }
+    }
+
+    /**
+     * To create a 'glyphRef' element.
+     */
+    protected static class GlyphRefElementFactory implements ElementFactory {
+        public GlyphRefElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_GLYPH_REF_TAG);
+        }
+    }
+
+    /**
+     * To create a 'hkern' element.
+     */
+    protected static class HkernElementFactory implements ElementFactory {
+        public HkernElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_HKERN_TAG);
         }
     }
 
     /**
      * To create a 'image' element.
      */
-    protected class ImageElementFactory implements ElementFactory {
+    protected static class ImageElementFactory implements ElementFactory {
         public ImageElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMImageElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMImageElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'line' element.
      */
-    protected class LineElementFactory implements ElementFactory {
+    protected static class LineElementFactory implements ElementFactory {
         public LineElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMLineElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMLineElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'linearGradient' element.
      */
-    protected class LinearGradientElementFactory implements ElementFactory {
+    protected static class LinearGradientElementFactory implements ElementFactory {
         public LinearGradientElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMLinearGradientElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMLinearGradientElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'mask' element.
      */
-    protected class MaskElementFactory implements ElementFactory {
+    protected static class MaskElementFactory implements ElementFactory {
         public MaskElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMMaskElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMMaskElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'marker' element.
      */
-    protected class MarkerElementFactory implements ElementFactory {
+    protected static class MarkerElementFactory implements ElementFactory {
         public MarkerElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   SVG_MARKER_TAG);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMMarkerElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'metadata' element.
      */
-    protected class MetadataElementFactory implements ElementFactory {
+    protected static class MetadataElementFactory implements ElementFactory {
         public MetadataElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMMetadataElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMMetadataElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'missing-glyph' element.
+     */
+    protected static class MissingGlyphElementFactory implements ElementFactory {
+        public MissingGlyphElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_MISSING_GLYPH_TAG);
+        }
+    }
+
+    /**
+     * To create a 'mpath' element.
+     */
+    protected static class MpathElementFactory implements ElementFactory {
+        public MpathElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_MPATH_TAG);
         }
     }
 
     /**
      * To create a 'path' element.
      */
-    protected class PathElementFactory implements ElementFactory {
+    protected static class PathElementFactory implements ElementFactory {
         public PathElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMPathElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMPathElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'pattern' element.
      */
-    protected class PatternElementFactory implements ElementFactory {
+    protected static class PatternElementFactory implements ElementFactory {
         public PatternElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMPatternElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMPatternElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'polygon' element.
      */
-    protected class PolygonElementFactory implements ElementFactory {
+    protected static class PolygonElementFactory implements ElementFactory {
         public PolygonElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMPolygonElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMPolygonElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'polyline' element.
      */
-    protected class PolylineElementFactory implements ElementFactory {
+    protected static class PolylineElementFactory implements ElementFactory {
         public PolylineElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMPolylineElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMPolylineElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'radialGradient' element.
      */
-    protected class RadialGradientElementFactory implements ElementFactory {
+    protected static class RadialGradientElementFactory implements ElementFactory {
         public RadialGradientElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMRadialGradientElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMRadialGradientElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'rect' element.
      */
-    protected class RectElementFactory implements ElementFactory {
+    protected static class RectElementFactory implements ElementFactory {
         public RectElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMRectElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMRectElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'set' element.
+     */
+    protected static class SetElementFactory implements ElementFactory {
+        public SetElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_SET_TAG);
         }
     }
 
     /**
      * To create a 'script' element.
      */
-    protected class ScriptElementFactory implements ElementFactory {
+    protected static class ScriptElementFactory implements ElementFactory {
         public ScriptElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMScriptElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMScriptElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'stop' element.
      */
-    protected class StopElementFactory implements ElementFactory {
+    protected static class StopElementFactory implements ElementFactory {
         public StopElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMStopElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMStopElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'style' element.
      */
-    protected class StyleElementFactory implements ElementFactory {
+    protected static class StyleElementFactory implements ElementFactory {
         public StyleElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMStyleElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMStyleElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create an 'svg' element.
      */
-    protected class SvgElementFactory implements ElementFactory {
+    protected static class SvgElementFactory implements ElementFactory {
         public SvgElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMSVGElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMSVGElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'switch' element.
      */
-    protected class SwitchElementFactory implements ElementFactory {
+    protected static class SwitchElementFactory implements ElementFactory {
         public SwitchElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMSwitchElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMSwitchElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'symbol' element.
      */
-    protected class SymbolElementFactory implements ElementFactory {
+    protected static class SymbolElementFactory implements ElementFactory {
         public SymbolElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMSymbolElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMSymbolElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'text' element.
      */
-    protected class TextElementFactory implements ElementFactory {
+    protected static class TextElementFactory implements ElementFactory {
         public TextElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMTextElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMTextElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'textPath' element.
      */
-    protected class TextPathElementFactory implements ElementFactory {
+    protected static class TextPathElementFactory implements ElementFactory {
         public TextPathElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMTextPathElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMTextPathElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'title' element.
      */
-    protected class TitleElementFactory implements ElementFactory {
+    protected static class TitleElementFactory implements ElementFactory {
         public TitleElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMTitleElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMTitleElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'tref' element.
      */
-    protected class TrefElementFactory implements ElementFactory {
+    protected static class TrefElementFactory implements ElementFactory {
         public TrefElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMTRefElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMTRefElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'tspan' element.
      */
-    protected class TspanElementFactory implements ElementFactory {
+    protected static class TspanElementFactory implements ElementFactory {
         public TspanElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMTSpanElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMTSpanElement(prefix, (AbstractDocument)doc);
         }
     }
 
     /**
      * To create a 'use' element.
      */
-    protected class UseElementFactory implements ElementFactory {
+    protected static class UseElementFactory implements ElementFactory {
         public UseElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
-        public Element create(String prefix) {
-            return new SVGOMUseElement(prefix, SVGOMDocument.this);
+        public Element create(String prefix, Document doc) {
+            return new SVGOMUseElement(prefix, (AbstractDocument)doc);
         }
     }
+
+    /**
+     * To create a 'view' element.
+     */
+    protected static class ViewElementFactory implements ElementFactory {
+        public ViewElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_VIEW_TAG);
+        }
+    }
+
+    /**
+     * To create a 'vkern' element.
+     */
+    protected static class VkernElementFactory implements ElementFactory {
+        public VkernElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   (AbstractDocument)doc,
+                                                   SVG_VKERN_TAG);
+        }
+    }
+
 }
