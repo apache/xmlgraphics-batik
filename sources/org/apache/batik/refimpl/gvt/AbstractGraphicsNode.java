@@ -380,7 +380,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         Rectangle2D bounds = getBounds();
         Shape g2dClip = g2d.getClip();
         if(g2dClip != null){
-            Rectangle2D clipBounds = g2dClip.getBounds();
+            Rectangle2D clipBounds = g2dClip.getBounds2D();
             if(!bounds.intersects(clipBounds.getX(),
                                   clipBounds.getY(),
                                   clipBounds.getWidth(),
@@ -446,10 +446,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     // Remove hard edged clip
                     g2d.setClip(null);
                 }
-                
+
                 Rectangle2D filterBounds = filteredImage.getBounds2D();
                 g2d.clip(filterBounds);
-                
+
                 org.apache.batik.util.awt.image.GraphicsUtil.drawImage
                     (g2d, filteredImage);
             }
@@ -671,7 +671,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         if (r == null) {
             return null;
         } else {
-            return getGlobalTransform().createTransformedShape(r).getBounds();
+            return getGlobalTransform().createTransformedShape(r).getBounds2D();
         }
     }
 
