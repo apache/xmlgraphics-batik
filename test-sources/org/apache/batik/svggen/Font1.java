@@ -26,7 +26,7 @@ public class Font1 implements Painter {
                            RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Set default font
-        g.setFont(new java.awt.Font("Lucida Sans", java.awt.Font.BOLD, 12));
+        g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
 
         // Colors used for labels and test output
         Color labelColor = new Color(0x666699);
@@ -36,7 +36,7 @@ public class Font1 implements Painter {
         // First, font size
         //
         java.awt.geom.AffineTransform defaultTransform = g.getTransform();
-        java.awt.Font defaultFont = new java.awt.Font("Lucida Sans", java.awt.Font.BOLD, 16);
+        java.awt.Font defaultFont = new java.awt.Font("Arial", java.awt.Font.BOLD, 16);
         g.setFont(defaultFont);
         FontRenderContext frc = g.getFontRenderContext();
         g.setPaint(labelColor);
@@ -88,10 +88,10 @@ public class Font1 implements Painter {
         //
         // Font families
         //
-        String fontFamilies[] = { "Lucida Sans",
-                                  "Lucida Bright",
-                                  "Lucida Console",
-                                  "Lucida Sans Typewriter" };
+        String fontFamilies[] = { "Arial",
+                                  "Times New Roman",
+                                  "Courier New",
+                                  "Verdana" };
 
         g.setFont(defaultFont);
         g.setPaint(labelColor);

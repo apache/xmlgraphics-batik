@@ -224,9 +224,10 @@ public class SVGAccuracyTest extends AbstractTest
                 }
                 ln++;
             }
+
             if(accurate){
                 // need to make sure newLine is null as well
-                newLine = refReader.readLine();
+                newLine = newReader.readLine();
                 if(newLine != null){
                     accurate = false;
                 }
@@ -248,11 +249,11 @@ public class SVGAccuracyTest extends AbstractTest
             save(bos.toByteArray());
             int cn = computeColumnNumber(refLine, newLine);
             String expectedChar = "eol";
-            if(refLine.length() > cn){
+            if(cn >= 0 && refLine != null && refLine.length() > cn){
                 expectedChar = (new Character(refLine.charAt(cn))).toString();
             }
             String foundChar = "null";
-            if(newLine != null && newLine.length() > cn){
+            if(cn >=0 && newLine != null && newLine.length() > cn){
                 foundChar = (new Character(newLine.charAt(cn))).toString();
             }
 
@@ -354,7 +355,7 @@ public class SVGAccuracyTest extends AbstractTest
         SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
         GraphicContextDefaults defaults 
             = new GraphicContextDefaults();
-        defaults.font = new Font("Lucida Sans", Font.PLAIN, 12);
+        defaults.font = new Font("Arial", Font.PLAIN, 12);
         ctx.setGraphicContextDefaults(defaults);
         return new SVGGraphics2D(ctx, false);
     }

@@ -28,7 +28,7 @@ public class GraphicObjects implements Painter {
 
         // Text
         g.setPaint(Color.black);
-        g.setFont(new Font("Lucida Bright", Font.PLAIN, 20));
+        g.setFont(new Font("Times New Roman", Font.PLAIN, 20));
         g.drawString("Hello SVG drawString(...)", 20, 40);
 
         g.translate(0, 70);
