@@ -1,0 +1,136 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!--
+
+ ============================================================================
+                   The Apache Software License, Version 1.1
+ ============================================================================
+
+ Copyright (C) 1999-2003 The Apache Software Foundation. All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modifica-
+ tion, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of  source code must  retain the above copyright  notice,
+    this list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+ 3. The end-user documentation included with the redistribution, if any, must
+    include  the following  acknowledgment:  "This product includes  software
+    developed  by the  Apache Software Foundation  (http://www.apache.org/)."
+    Alternately, this  acknowledgment may  appear in the software itself,  if
+    and wherever such third-party acknowledgments normally appear.
+
+ 4. The names "Batik" and  "Apache Software Foundation" must  not  be
+    used to  endorse or promote  products derived from  this software without
+    prior written permission. For written permission, please contact
+    apache@apache.org.
+
+ 5. Products  derived from this software may not  be called "Apache", nor may
+    "Apache" appear  in their name,  without prior written permission  of the
+    Apache Software Foundation.
+
+ THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ This software  consists of voluntary contributions made  by many individuals
+ on  behalf of the Apache Software  Foundation. For more  information on the
+ Apache Software Foundation, please see <http://www.apache.org/>.
+
+-->
+
+<!-- ====================================================================== -->
+<!-- Modification of a rect's attributes                                    -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+  <title>'display' property on 'onload'</title>
+
+  <text x="50%" y="45" class="title">'display' property on 'onload'</text>
+
+  <script type="text/ecmascript"><![CDATA[
+    function changeDisplay(evt, newValue) {
+    evt.target.getStyle().setProperty("display", newValue, "");
+    }
+    ]]></script>
+
+  <linearGradient id="grad">
+    <stop style="stop-color:crimson" offset="0" />
+    <stop style="stop-color:gold" offset="1" />
+  </linearGradient>
+
+  <g id="test-content" stroke="black" stroke-width="1">
+
+    <g onload="changeDisplay(evt, 'none')" style="display:inline">
+      <rect x="100" y="100" width="100" height="50" style="fill:#eee"/>
+      <rect x="150" y="100" width="100" height="50" style="fill:gold"/>
+      <rect x="200" y="100" width="100" height="50" style="fill:crimson"/>
+      <rect x="250" y="100" width="100" height="50" style="fill:url(#grad)"/>
+      <image x="300" y="100" width="50" height="50" 
+        xlink:href="../../resources/images/png2.png"/>
+    </g>
+    <g >
+      <rect x="100" y="175" width="100" height="50"
+        onload="changeDisplay(evt, 'none')" 
+        style="fill:#eee; display:inline"/>
+      <rect x="150" y="175" width="100" height="50" 
+        onload="changeDisplay(evt, 'none')" 
+        style="fill:gold; display:inline"/>
+      <rect x="200" y="175" width="100" height="50"
+        onload="changeDisplay(evt, 'none')" 
+        style="fill:crimson; display:inline"/>
+      <rect x="250" y="175" width="100" height="50" 
+        onload="changeDisplay(evt, 'none')" 
+        style="fill:url(#grad); display:inline"/>
+      <image x="300" y="175" width="50" height="50" 
+        onload="changeDisplay(evt, 'none')" 
+        xlink:href="../../resources/images/png2.png"/>
+    </g>
+
+    <g onload="changeDisplay(evt, 'inline')" style="display:none">
+      <rect x="100" y="250" width="100" height="50" style="fill:#eee"/>
+      <rect x="150" y="250" width="100" height="50" style="fill:gold"/>
+      <rect x="200" y="250" width="100" height="50" style="fill:crimson"/>
+      <rect x="250" y="250" width="100" height="50" style="fill:url(#grad)"/>
+      <image x="300" y="250" width="50" height="50" 
+        xlink:href="../../resources/images/png2.png"/>
+    </g>
+    <g >
+      <rect x="100" y="325" width="100" height="50"
+        onload="changeDisplay(evt, 'inline')" 
+        style="fill:#eee; display:none"/>
+      <rect x="150" y="325" width="100" height="50"
+        onload="changeDisplay(evt, 'inline')" 
+        style="fill:gold; display:none"/>
+      <rect x="200" y="325" width="100" height="50"
+        onload="changeDisplay(evt, 'inline')" 
+        style="fill:crimson; display:none"/>
+      <rect x="250" y="325" width="100" height="50"
+        onload="changeDisplay(evt, 'inline')" 
+         style="fill:url(#grad); display:none"/>
+      <image x="300" y="325" width="50" height="50" 
+        xlink:href="../../resources/images/png2.png"
+        onload="changeDisplay(evt, 'inline')" 
+         style="display:none"/>
+    </g>
+
+  </g>
+</svg>
