@@ -109,12 +109,10 @@
            <s2 title="Customize the Rhino interpreter">
 	   <p>
 	   A useful example of cutomization of the Rhino interpreter comes from the fact that the
-	   ECMAScript specification doesn't provide any I/O predefined facilities, that's why
-	   in the batikMusic.svg example of the distribution we use the Java API from scripting to
-	   output messages (<code>System.out.println('...')</code>). However it is very common for
-	   ECMAScript compatible languages to provide a function named <code>print</code> to output
-	   messages to the console. We will describe here an example of cutomization of the Batik Rhino
-	   interpreter to add such functionality to it. 
+	   ECMAScript specification doesn't provide any I/O predefined facilities to interact with
+	   the console . However it is very common for ECMAScript compatible languages to provide 
+           a function named <code>print</code> to output messages to the console. We will describe 
+           here an example of cutomization of the Batik Rhino interpreter to add such functionality to it. 
 	   </p>
 	   <p>
 	   You should first subclass the default Batik ECMAScript interpreter to add the functionality
