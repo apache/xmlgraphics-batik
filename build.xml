@@ -664,6 +664,8 @@ To display the available targets type:
     <mkdir dir="${test-references}/samples/candidate-variation"/>
     <mkdir dir="${test-references}/samples/tests/accepted-variation"/>
     <mkdir dir="${test-references}/samples/tests/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/extensions/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/extensions/candidate-variation"/>
     <mkdir dir="${test-references}/svgbe/accepted-variation"/>
     <mkdir dir="${test-references}/svgbe/candidate-variation"/>
     <mkdir dir="${test-references}/org/apache/batik/svggen/candidate-ref" />
