@@ -41,7 +41,9 @@ public class TileCacheRed extends AbstractTiledRed {
         if (tileWidth  > bounds.width)  tileWidth  = bounds.width;
         if (tileHeight > bounds.height) tileHeight = bounds.height;
         SampleModel sm = cm.createCompatibleSampleModel(tileWidth, tileHeight);
-        init(cr, cr.getBounds(), cm, sm, 0, 0, null);
+        init(cr, cr.getBounds(), cm, sm, 
+             cr.getTileGridXOffset(), cr.getTileGridYOffset(), 
+             null);
     }
 
     public void genRect(WritableRaster wr) {
