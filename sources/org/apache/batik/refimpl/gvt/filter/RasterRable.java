@@ -133,8 +133,6 @@ public class RasterRable
             BufferedImage bi = cache.request(url);
 
             if (bi == null) {
-                // TODO: We should probably manage a cache of
-                // referenced images whenever possible.
                 Image img = tk.createImage(url);
                 int myID;
                 synchronized (this) {
@@ -152,6 +150,11 @@ public class RasterRable
                     
                     break;
                 }
+
+                // TODO: If we get an error here we should
+                // construct an error image and return that...
+
+                mediaTracker.removeImage(img, myID);
 
                 bi = new BufferedImage(img.getWidth(null), 
                                        img.getHeight(null),
