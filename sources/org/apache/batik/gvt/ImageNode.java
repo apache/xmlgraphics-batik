@@ -28,10 +28,9 @@ public class ImageNode extends CompositeGraphicsNode {
     public ImageNode() {}
 
     /**
-     * Paints this node if visible.
+     * Paints this node.
      *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use
      */
     public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if (isVisible) {
@@ -43,10 +42,18 @@ public class ImageNode extends CompositeGraphicsNode {
     // Properties methods
     //
 
+    /**
+     * Sets the graphics node that represents the image.
+     *
+     * @param newImage the new graphics node that represents the image
+     */
     public void setImage(GraphicsNode newImage) {
         getChildren().add(0, newImage);
     }
 
+    /**
+     * Returns the graphics node that represents the image.
+     */
     public GraphicsNode getImage() {
         if (count > 0) {
             return children[0];

@@ -47,6 +47,31 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     protected AttributedCharacterIterator aci;
 
     /**
+     * The text of this <tt>TextNode</tt>.
+     */
+    protected String text;
+
+    /**
+     * The begin mark.
+     */
+    protected Mark beginMark = null;
+
+    /**
+     * The end mark.
+     */
+    protected Mark endMark = null;
+
+    /**
+     * The list of text runs.
+     */
+    protected List textRuns;
+
+    /**
+     * An array of text chunks.
+     */
+    protected AttributedCharacterIterator[] chunkACIs = null;
+
+    /**
      * Internal Cache: Bounds for this text node, without taking any of the
      * rendering attributes (e.g., stroke) into account
      */
@@ -58,29 +83,43 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     private Rectangle2D primitiveBounds;
 
     /**
-     * The text of this <tt>TextNode</tt>.
+     * Internal Cache: the outline.
      */
-    protected String text;
-
-    protected List textRuns;
-
+    private Shape outline;
 
     /**
      * Constructs a new empty <tt>TextNode</tt>.
      */
     public TextNode() {}
 
-
+    /**
+     * Returns a list of text runs.
+     */
     public List getTextRuns() {
         return textRuns;
     }
+
+    /**
+     * Sets the list of text runs of this text node.
+     *
+     * @param textRuns the new list of text runs
+     */
     public void setTextRuns(List textRuns) {
         this.textRuns = textRuns;
     }
-    public AttributedCharacterIterator[] chunkACIs = null;
+
+    /**
+     * Returns an array of text chuncks as AttributedCharacterIterator.
+     */
     public AttributedCharacterIterator[] getChunkACIs() {
         return chunkACIs;
     }
+
+    /**
+     * Sets the text chunks of this text node.
+     *
+     * @param chunkACIs the new text chunks of this text node
+     */
     public void setChunkACIs(AttributedCharacterIterator[] chunkACIs) {
         this.chunkACIs = chunkACIs;
     }
@@ -91,7 +130,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public String getText() {
         if (text == null) {
             StringBuffer buf = new StringBuffer(aci.getEndIndex());
-            for (char c=aci.first(); c != CharacterIterator.DONE; c=aci.next()) {
+            for (char c = aci.first(); 
+		 c != CharacterIterator.DONE; 
+		 c = aci.next()) {
                 buf.append(c);
             }
             text = buf.toString();
@@ -100,8 +141,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Sets the location of this raster text node.
-     * @param newLocation the new location of this raster image node
+     * Sets the location of this text node.
+     *
+     * @param newLocation the new location of this text node
      */
     public void setLocation(Point2D newLocation){
         invalidateGeometryCache();
@@ -109,8 +151,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Returns the location of this raster image node.
-     * @return the location of this raster image node
+     * Returns the location of this text node.
+     *
+     * @return the location of this text node
      */
     public Point2D getLocation(){
         return location;
@@ -118,6 +161,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
 
     /**
      * Sets the attributed character iterator of this text node.
+     *
      * @param newAci the new attributed character iterator
      */
     public void setAttributedCharacterIterator(AttributedCharacterIterator
@@ -131,6 +175,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
 
     /**
      * Returns the attributed character iterator of this text node.
+     *
      * @return the attributed character iterator
      */
     public AttributedCharacterIterator getAttributedCharacterIterator(){
@@ -142,9 +187,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     //
 
     /**
-     * Invalidates this <tt>TextNode</tt>. This node and all its
-     * ancestors have been informed that all its cached values related
-     * to its bounds must be recomputed.
+     * Invalidates this <tt>TextNode</tt>. This node and all its ancestors have
+     * been informed that all its cached values related to its bounds must be
+     * recomputed.  
      */
     protected void invalidateGeometryCache() {
         super.invalidateGeometryCache();
@@ -153,10 +198,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Returns the primitive bounds in user space of this text node.
+     * Returns the bounds of the area covered by this node's primitive paint.
      */
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc){
-
         if (primitiveBounds == null) {
             if (aci != null) {
                 primitiveBounds = rc.getTextPainter().getPaintedBounds(this,
@@ -172,7 +216,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Returns the geometric bounds in user space of this text node.
+     * Returns the bounds of the area covered by this node, without taking any
+     * of its rendering attribute into account. i.e., exclusive of any clipping,
+     * masking, filtering or stroking, for example.
      */
     public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
         if (geometryBounds == null){
@@ -190,23 +236,27 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Returns whether a given point is enclosed by the text node's bounds.
+     * Returns true if the specified Point2D is inside the boundary of this
+     * node, false otherwise.
+     *
+     * @param p the specified Point2D in the user space
      */
     public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
         return getBounds(rc).contains(p.getX(), p.getY());
     }
 
     /**
-     * Returns a shape which matches the text's geometry.
+     * Returns the outline of this node.
      */
     public Shape getOutline(GraphicsNodeRenderContext rc) {
-        Shape outline;
-        if (aci != null) {
-            outline = rc.getTextPainter().getDecoratedShape(
-                                              this, rc.getFontRenderContext());
-        } else {
-            outline = new Rectangle2D.Float(0, 0, 0, 0);
-        }
+	Shape outline;
+	if (aci != null) {
+	    outline = rc.getTextPainter().getDecoratedShape
+		(this, rc.getFontRenderContext());
+	} else {
+	    // don't cache this now
+	    return new Rectangle2D.Float(0, 0, 0, 0);
+	}
         return outline;
     }
 
@@ -214,11 +264,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     // Selection methods
     //
 
-    Mark beginMark = null;
-    Mark endMark = null;
-
     /**
      * Initializes the current selection to begin with the character at (x, y).
+     *
      * @param the anchor of this node
      */
     public boolean selectAt(double x, double y, GraphicsNodeRenderContext rc) {
@@ -228,22 +276,24 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
 
     /**
      * Extends the current selection to the character at (x, y)..
+     *
      * @param the anchor of this node
      */
     public boolean selectTo(double x, double y, GraphicsNodeRenderContext rc) {
-        Mark tmpMark = rc.getTextPainter().selectTo(x, y, beginMark, aci, this, rc);
-        boolean result = false;
+        Mark tmpMark = 
+	    rc.getTextPainter().selectTo(x, y, beginMark, aci, this, rc);
 
+        boolean result = false;
         if (tmpMark != endMark) {
             endMark = tmpMark;
             result = true;
         }
-
         return result;
     }
 
     /**
      * Extends the current selection to the character at (x, y)..
+     *
      * @param the anchor of this node
      */
     public boolean selectAll(double x, double y, GraphicsNodeRenderContext rc) {
@@ -254,6 +304,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
 
     /**
      * Gets the current text selection.
+     *
      * @return an object containing the selected content.
      */
     public Object getSelection(GraphicsNodeRenderContext rc) {
@@ -278,6 +329,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
+     * Returns the shape used to outline this text node.
+     *
      * @return a Shape which encloses the current text selection.
      */
     public Shape getHighlightShape(GraphicsNodeRenderContext rc) {
@@ -297,10 +350,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     //
 
     /**
-     * Paints this node if visible.
+     * Paints this node.
      *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use
      */
     public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if (isVisible) {
@@ -309,6 +361,11 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
 
     }
 
+    /**
+     * Paints this node without applying Filter, Mask, Composite, and clip.
+     *
+     * @param g2d the Graphics2D to use
+     */
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         //
         // DO NOT REMOVE: THE FOLLOWING IS A WORK AROUND
@@ -348,26 +405,29 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         public static final int ANCHOR_END    = 2;
 
         /**
-         * The anchor which enables the rendered characters to be
-         * aligned such that the start of the text string is at the
-         * initial current text location.
-         */
+         * The anchor which enables the rendered characters to be aligned such
+         * that the start of the text string is at the initial current text
+         * location.  
+	 */
         public static final Anchor START = new Anchor(ANCHOR_START);
 
         /**
-         * The anchor which enables the rendered characters to be
-         * aligned such that the middle of the text string is at the
-         * initial current text location.
-         */
+         * The anchor which enables the rendered characters to be aligned such
+         * that the middle of the text string is at the initial current text
+         * location.  
+	 */
         public static final Anchor MIDDLE = new Anchor(ANCHOR_MIDDLE);
 
         /**
-         * The anchor which enables the rendered characters to be
-         * aligned such that the end of the text string is at the
-         * initial current text location.
-         */
+         * The anchor which enables the rendered characters to be aligned such
+         * that the end of the text string is at the initial current text
+         * location.  
+	 */
         public static final Anchor END = new Anchor(ANCHOR_END);
 
+	/**
+	 * The anchor type.
+	 */
         private int type;
 
         /** No instance of this class. */

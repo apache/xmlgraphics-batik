@@ -36,8 +36,20 @@ public class RasterImageNode extends AbstractGraphicsNode {
      */
     protected Rectangle2D imageBounds;
 
-    protected AffineTransform img2usr, usr2img;
-    
+    /**
+     * The transform that go from the image to the user coordinate system.
+     */
+    protected AffineTransform img2usr;
+
+    /**
+     * The transform that go from the user to the image coordinate system.
+     */
+    protected AffineTransform usr2img;
+
+    /**
+     * This flag indicates whether or not the affine transforms have been
+     * computed.
+     */
     protected boolean calcAffine = true;
 
     /**
@@ -51,6 +63,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
 
     /**
      * Sets the raster image of this raster image node.
+     *
      * @param newImage the new raster image of this raster image node
      */
     public void setImage(Filter newImage) {
@@ -61,6 +74,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
 
     /**
      * Returns the raster image of this raster image node.
+     *
      * @return the raster image of this raster image node
      */
     public Filter getImage() {
@@ -69,6 +83,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
 
     /**
      * Sets the bounds of this raster image node.
+     *
      * @param newBounds the new bounds of this raster image node
      */
     public void setImageBounds(Rectangle2D newImageBounds) {
@@ -79,12 +94,16 @@ public class RasterImageNode extends AbstractGraphicsNode {
 
     /**
      * Returns the bounds of this raster image node.
+     *
      * @return the bounds of this raster image node
      */
     public Rectangle2D getImageBounds() {
         return (Rectangle2D) imageBounds.clone();
     }
 
+    /**
+     * Updates bith the user->image and image->user transform.
+     */
     protected void updateAffine() {
         
         float tx0 = image.getMinX();
@@ -117,27 +136,26 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * Paints this node without applying Filter, Mask, Composite and clip.
      *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use
      */
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        if ((image == null)||
+        if ((image == null) ||
             (imageBounds.getWidth()  == 0) ||
             (imageBounds.getHeight() == 0)) {
             return;
         }
 
-        if (calcAffine) 
+        if (calcAffine) {
             updateAffine();
+	}
 
         // get the current affine transform
         rc.setTransform(img2usr);
-
         rc.setAreaOfInterest(null);
 
         GraphicsUtil.drawImage(g2d, image, rc);
 
         // Restore default rendering attributes
-        rc.setTransform     (g2d.getTransform());
+        rc.setTransform(g2d.getTransform());
         rc.setAreaOfInterest(g2d.getClip());
     }
 
@@ -146,21 +164,23 @@ public class RasterImageNode extends AbstractGraphicsNode {
     //
 
     /**
-     * Returns the primitive bounds in user space of this text node.
+     * Returns the bounds of the area covered by this node's primitive paint.
      */
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         return (Rectangle2D) imageBounds.clone();
     }
 
     /**
-     * Returns the geometric bounds in user space of this text node.
+     * Returns the bounds of the area covered by this node, without taking any
+     * of its rendering attribute into account. i.e., exclusive of any clipping,
+     * masking, filtering or stroking, for example.
      */
     public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc) {
         return (Rectangle2D) imageBounds.clone();
     }
 
     /**
-     * Returns a shape which matches the text's geometry.
+     * Returns the outline of this node.
      */
     public Shape getOutline(GraphicsNodeRenderContext rc) {
         return (Rectangle2D) imageBounds.clone();

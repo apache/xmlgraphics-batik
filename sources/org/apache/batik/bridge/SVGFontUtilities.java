@@ -84,7 +84,8 @@ public abstract class SVGFontUtilities implements SVGConstants {
 
         // try to find a matching SVGFontFace element
         Document doc = textElement.getOwnerDocument();
-        NodeList fontFaceElements = doc.getElementsByTagName(SVG_FONT_FACE_TAG);
+        NodeList fontFaceElements = doc.getElementsByTagNameNS
+	    (SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
 
         Vector svgFontFamilies = new Vector();
 
@@ -108,11 +109,13 @@ public abstract class SVGFontUtilities implements SVGConstants {
 
                     fontElement = null;
 
-                    NodeList fontFaceSrcNodes = fontFaceElement.getElementsByTagName(SVG_FONT_FACE_SRC_TAG);
+                    NodeList fontFaceSrcNodes = 
+			fontFaceElement.getElementsByTagNameNS
+			(SVG_NAMESPACE_URI, SVG_FONT_FACE_SRC_TAG);
                     if (fontFaceSrcNodes.getLength() > 0) {
                         Element fontFaceSrcElement = (Element)fontFaceSrcNodes.item(0);
                         // see if there is a fontFaceUri child
-                        NodeList fontFaceUriNodes = fontFaceSrcElement.getElementsByTagName(SVG_FONT_FACE_URI_TAG);
+                        NodeList fontFaceUriNodes = fontFaceSrcElement.getElementsByTagNameNS(SVG_NAMESPACE_URI, SVG_FONT_FACE_URI_TAG);
                         if (fontFaceUriNodes.getLength() > 0) {
                             Element fontFaceUriElement = (Element)fontFaceUriNodes.item(0);
 
@@ -143,7 +146,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
 
                 if (fontElement != null) {
                     // create a font face
-                    NodeList fontFaceChildren = fontElement.getElementsByTagName(SVG_FONT_FACE_TAG);
+                    NodeList fontFaceChildren = fontElement.getElementsByTagNameNS(SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
                     Element fontFaceChild = (Element)fontFaceChildren.item(0);
                     SVGFontFaceElementBridge fontFaceBridge
                         = (SVGFontFaceElementBridge)ctx.getBridge(fontFaceChild);

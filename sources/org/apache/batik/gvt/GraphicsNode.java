@@ -167,8 +167,6 @@ public interface GraphicsNode {
      * Paints this node.
      *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use was interrupted during
-     * paint 
      */
     void paint(Graphics2D g2d, GraphicsNodeRenderContext rc);
 
@@ -176,7 +174,6 @@ public interface GraphicsNode {
      * Paints this node without applying Filter, Mask, Composite, and clip.
      *
      * @param g2d the Graphics2D to use
-     * @param rc the GraphicsNodeRenderContext to use
      */
     void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc);
 
@@ -278,8 +275,6 @@ public interface GraphicsNode {
     /**
      * Returns the bounds of this node in user space. This includes primitive
      * paint, filtering, clipping and masking.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     Rectangle2D getBounds(GraphicsNodeRenderContext rc);
 
@@ -289,15 +284,12 @@ public interface GraphicsNode {
      *
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
-     * @param rc the GraphicsNodeRenderContext 
      */
     Rectangle2D getTransformedBounds(AffineTransform txf, 
 				     GraphicsNodeRenderContext rc);
 
     /**
      * Returns the bounds of the area covered by this node's primitive paint.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc);
 
@@ -307,7 +299,6 @@ public interface GraphicsNode {
      *
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
-     * @param rc the GraphicsNodeRenderContext 
      */
     Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf, 
                                               GraphicsNodeRenderContext rc);
@@ -316,8 +307,6 @@ public interface GraphicsNode {
      * Returns the bounds of the area covered by this node, without taking any
      * of its rendering attribute into account. i.e., exclusive of any clipping,
      * masking, filtering or stroking, for example.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc);
 
@@ -330,7 +319,6 @@ public interface GraphicsNode {
      *
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
-     * @param rc the GraphicsNodeRenderContext 
      */
     Rectangle2D getTransformedGeometryBounds(AffineTransform txf, 
                                              GraphicsNodeRenderContext rc);
@@ -340,7 +328,6 @@ public interface GraphicsNode {
      * node, false otherwise.
      *
      * @param p the specified Point2D in the user space
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     boolean contains(Point2D p, GraphicsNodeRenderContext rc);
 
@@ -349,7 +336,6 @@ public interface GraphicsNode {
      * specified Rectangle2D, false otherwise.
      *
      * @param r the specified Rectangle2D in the user node space
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc);
 
@@ -358,14 +344,11 @@ public interface GraphicsNode {
      * children is sensitive to mouse events at p.
      *
      * @param p the specified Point2D in the user space
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc);
 
     /**
      * Returns the outline of this node.
-     *
-     * @param rc the GraphicsNodeRenderContext for which this dimension applies
      */
     Shape getOutline(GraphicsNodeRenderContext rc);
 }

@@ -11,7 +11,7 @@ package org.apache.batik.gvt;
 /**
  * The top-level graphics node of the GVT tree.
  *
- * @author <a href="mailto:etissandier@ilog.fr">Emmanuel Tissandier</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public class RootGraphicsNode extends CompositeGraphicsNode {
