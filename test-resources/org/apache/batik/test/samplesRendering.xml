@@ -267,6 +267,8 @@
         <test id="samples/tests/spec/scripting/transform.svg" />
         <test id="samples/tests/spec/scripting/transform2.svg" />
         <test id="samples/tests/spec/scripting/xyModifOnLoad.svg" />
+        <test id="samples/tests/spec/scripting/fill.svg" />
+        <test id="samples/tests/spec/scripting/visibility.svg" />
     </testGroup>
 
 </testSuite>
