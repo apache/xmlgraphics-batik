@@ -56,6 +56,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 
 import org.apache.batik.gvt.event.EventDispatcher;
+import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
@@ -165,6 +166,13 @@ public interface UserAgent {
      * @param cursor the new cursor
      */
     void setSVGCursor(Cursor cursor);
+
+    /**
+     * Informs the user agent that the text selection has changed.
+     * @param start The Mark for the start of the selection.
+     * @param end   The Mark for the end of the selection.
+     */
+    void setTextSelection(Mark start, Mark end);
 
     /**
      * Returns the class name of the XML parser.

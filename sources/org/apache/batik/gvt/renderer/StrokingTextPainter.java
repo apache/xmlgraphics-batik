@@ -164,7 +164,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         extendedAtts.add(FLOW_PARAGRAPH);
         extendedAtts.add(TEXT_COMPOUND_DELIMITER);
         extendedAtts.add(GVT_FONT);
-        extendedAtts.add(BIDI_LEVEL);
+        // extendedAtts.add(BIDI_LEVEL);
     }
 
     /**

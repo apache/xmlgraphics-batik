@@ -1888,11 +1888,16 @@ public abstract class CSSEngine {
             }
 
             if (nv == ov) continue;
-            if ((nv == null) || 
-                (!nv.equals(ov) && !nv.getCssText().equals(ov.getCssText()))) {
-                count++;
-                diffs[i] = true;
+            if ((nv != null) && (ov != null)) {
+                if (nv.equals(ov)) continue;
+                String ovCssText = ov.getCssText();
+                String nvCssText = nv.getCssText();
+                if ((nvCssText == ovCssText) ||
+                    ((nvCssText != null) && nvCssText.equals(ovCssText)))
+                    continue;
             }
+            count++;
+            diffs[i] = true;
         }
         int []props = null;
         if (count != 0) {

@@ -96,6 +96,7 @@ import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
+import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.swing.gvt.GVTTreeRenderer;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
@@ -2351,6 +2352,23 @@ public class JSVGComponent extends JGVTComponent {
         }
         
         /**
+         * Informs the user agent that the text selection has changed.
+         * @param start The Mark for the start of the selection.
+         * @param end   The Mark for the end of the selection.
+         */
+        public void setTextSelection(final Mark start, final Mark end) {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.setTextSelection(start, end);
+            } else {
+                EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            userAgent.setTextSelection(start, end);
+                        }
+                    });
+            }
+        }
+        
+        /**
          * Returns the class name of the XML parser.
          */
         public String getXMLParserClassName() {
@@ -3023,6 +3041,15 @@ public class JSVGComponent extends JGVTComponent {
         public void setSVGCursor(Cursor cursor) {
             if (cursor != JSVGComponent.this.getCursor())
                 JSVGComponent.this.setCursor(cursor);
+        }
+
+        /**
+         * Informs the user agent that the text selection has changed.
+         * @param start The Mark for the start of the selection.
+         * @param end   The Mark for the end of the selection.
+         */
+        public void setTextSelection(Mark start, Mark end) {
+            JSVGComponent.this.textSelectionManager.setSelection(start, end);
         }
 
         /**

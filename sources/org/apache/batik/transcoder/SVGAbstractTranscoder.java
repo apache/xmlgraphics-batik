@@ -182,6 +182,14 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         return new SAXSVGDocumentFactory(parserClassname);
     }
 
+    public void transcode(TranscoderInput input, TranscoderOutput output)
+            throws TranscoderException {
+ 
+        super.transcode(input, output);
+
+        if (ctx != null) 
+            ctx.dispose();
+    }
     /**
      * Transcodes the specified Document as an image in the specified output.
      *
@@ -296,7 +304,6 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         }
 
         this.root = gvtRoot;
-        ctx.dispose();
     }
 
     protected CanvasGraphicsNode getCanvasGraphicsNode(GraphicsNode gn) {

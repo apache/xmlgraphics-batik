@@ -312,9 +312,11 @@ public class GlyphLayout implements TextSpanLayout {
 
                 // System.out.println("DXY: [" + dx +","+dy+"]");
                 float [] gp = gv.getGlyphPositions(0, numGlyphs+1, null);
+                Point2D.Float pos = new Point2D.Float();
                 for (int i=0; i<=numGlyphs; i++) {
-                    gv.setGlyphPosition(i, new Point2D.Float(gp[2*i]+dx,
-                                                             gp[2*i+1]+dy));
+                    pos.x = gp[2*i  ]+dx;
+                    pos.y = gp[2*i+1]+dy;
+                    gv.setGlyphPosition(i, pos);
                 }
             }
 
@@ -1134,6 +1136,8 @@ public class GlyphLayout implements TextSpanLayout {
         float curr_x_pos = (float)offset.getX();
         float curr_y_pos = (float)offset.getY();
 
+        Point2D.Float pos = new Point2D.Float();
+
         while (i < numGlyphs) {
             //System.out.println("limit: " + runLimit + ", " + aciIndex);
             if (aciIndex+aciStart >= runLimit) {
@@ -1305,8 +1309,9 @@ public class GlyphLayout implements TextSpanLayout {
             }
 
             // set the new glyph position
-            gv.setGlyphPosition(i, new Point2D.Float
-                                (curr_x_pos+ox,curr_y_pos+oy));
+            pos.x = curr_x_pos+ox;
+            pos.y = curr_y_pos+oy;
+            gv.setGlyphPosition(i, pos);
 
             // calculte the position of the next glyph
             if (!ArabicTextHandler.arabicCharTransparent(ch)) {
@@ -1383,7 +1388,9 @@ public class GlyphLayout implements TextSpanLayout {
             i++;
         }
         // Update last glyph pos
-        gv.setGlyphPosition(i, new Point2D.Float(curr_x_pos,curr_y_pos));
+        pos.x = curr_x_pos;
+        pos.y = curr_y_pos;
+        gv.setGlyphPosition(i, pos);
 
         advance = new Point2D.Float((float)(curr_x_pos - offset.getX()), 
                                     (float)(curr_y_pos - offset.getY()));
@@ -1630,11 +1637,13 @@ public class GlyphLayout implements TextSpanLayout {
         float initY   = gp[1];
         float dx = 0f;
         float dy = 0f;
+        Point2D.Float pos = new Point2D.Float();
         for (int i = 0; i <= numGlyphs; i++) {
             dx = gp[2*i]  -initX;
             dy = gp[2*i+1]-initY;
-            gv.setGlyphPosition(i, new Point2D.Float(initX+dx*xScale,
-                                                     initY+dy*yScale));
+            pos.x = initX+dx*xScale;
+            pos.y = initY+dy*yScale;
+            gv.setGlyphPosition(i, pos);
 
             if ((stretchGlyphs) && (i != numGlyphs)) {
                 // stretch the glyph
@@ -1859,8 +1868,7 @@ public class GlyphLayout implements TextSpanLayout {
                 }
 
                 gv.setGlyphTransform(i, glyphPathTransform);
-                gv.setGlyphPosition(i, new Point2D.Double(charMidPoint.getX(),
-                                                          charMidPoint.getY()));
+                gv.setGlyphPosition (i, charMidPoint);
                 // keep track of the last glyph drawn to make calculating the
                 // textPathAdvance value easier later
                 lastGlyphDrawn = i;
@@ -2473,6 +2481,7 @@ public class GlyphLayout implements TextSpanLayout {
         // based on info collected in first trip through glyphVector...
         int lineEnd = 0;
         int i;
+        Point2D.Float pos = new Point2D.Float();
         for (i =0; i<numGlyphs; i++) {
             if (i == lineEnd) {
                 // Always comes through here on first char...
@@ -2515,19 +2524,19 @@ public class GlyphLayout implements TextSpanLayout {
                     break;
                 }
             }
-            float x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
-            float y = lineLoc.y + ((gp[2 * i + 1] - yOrig) + 
-                                   verticalAlignOffset);
-            gv.setGlyphPosition(i, new Point2D.Float(x, y));
+            pos.x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
+            pos.y = lineLoc.y + ((gp[2 * i + 1] - yOrig) + 
+                                 verticalAlignOffset);
+            gv.setGlyphPosition(i, pos);
         }
 
-        float x = xOrig;
-        float y = yOrig;
+        pos.x = xOrig;
+        pos.y = yOrig;
         if (lineLoc != null) {
-          x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
-            y = lineLoc.y + (gp[2 * i + 1] - yOrig) + verticalAlignOffset;
+          pos.x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
+          pos.y = lineLoc.y + (gp[2 * i + 1] - yOrig) + verticalAlignOffset;
         }
-        gv.setGlyphPosition(i, new Point2D.Float(x, y));
+        gv.setGlyphPosition(i, pos);
     }
 
     /**

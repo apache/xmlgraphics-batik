@@ -83,8 +83,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     private CharacterIterator ci;
 
     // This contains the glyphPostions after doing a performDefaultLayout
-    private Point2D[] defaultGlyphPositions;
-    private Point2D[] glyphPositions;
+    private Point2D      [] defaultGlyphPositions;
+    private Point2D.Float[] glyphPositions;
 
     // need to keep track of the glyphTransforms since GlyphVector doesn't
     // seem to
@@ -688,9 +688,14 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             glyphOutlines     [i] = null;
             glyphMetrics      [i] = null;
             Point2D glyphPos = defaultGlyphPositions[i];
-            glyphPositions[i] = new Point2D.Float
-                ((float)((glyphPos.getX() * scaleFactor)-shiftLeft),
-                 (float) (glyphPos.getY() * scaleFactor));
+            float x = (float)((glyphPos.getX() * scaleFactor)-shiftLeft);
+            float y = (float) (glyphPos.getY() * scaleFactor);
+            if (glyphPositions[i] == null) {
+                glyphPositions[i] = new Point2D.Float(x,y);
+            } else {
+                glyphPositions[i].x = x;
+                glyphPositions[i].y = y;
+            }
 
             // if c is a transparent arabic char then need to shift the
             // following glyphs left so that the current glyph is overwritten
@@ -711,8 +716,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      * Sets the position of the specified glyph within this GlyphVector.
      */
     public void setGlyphPosition(int glyphIndex, Point2D newPos) {
-        glyphPositions[glyphIndex] =
-            new Point2D.Float((float)newPos.getX(), (float)newPos.getY());
+        glyphPositions[glyphIndex].x = (float)newPos.getX();
+        glyphPositions[glyphIndex].y = (float)newPos.getY();
         outline       = null;
         visualBounds  = null;
         logicalBounds = null;
