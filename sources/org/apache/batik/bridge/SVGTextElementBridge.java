@@ -2071,7 +2071,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 attrName.equals(SVG_DY_ATTRIBUTE) ||
                 attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
                 //recompute the layout of the text node
-                textBridge.computeLayoutedText(ctx, e, node);
+                textBridge.computeLayoutedText(ctx, textBridge.e, 
+                                               textBridge.node);
             }
         }        
     }
@@ -2113,7 +2114,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 attrName.equals(SVG_DY_ATTRIBUTE) ||
                 attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
                 //recompute the layout of the text node
-                textBridge.computeLayoutedText(ctx, e, node);
+                textBridge.computeLayoutedText(ctx, textBridge.e, 
+                                               textBridge.node);
             }
         }        
     }
