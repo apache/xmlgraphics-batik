@@ -74,9 +74,11 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         Filter filter = CSSUtilities.convertFilter(element, node, ctx);
         node.setFilter(filter);
 
+        // Set the node mask
         Mask mask = CSSUtilities.convertMask(element, node, ctx);
         node.setMask(mask);
 
+        // Set the node clip
         Shape clip = CSSUtilities.convertClipPath(element, node, ctx);
         node.setClippingArea(clip);
 

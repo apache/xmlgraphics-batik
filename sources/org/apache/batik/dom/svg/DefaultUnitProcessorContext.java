@@ -9,6 +9,8 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.SVGViewport;
+import org.apache.batik.bridge.Viewport;
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.UnitProcessor;
@@ -74,8 +76,9 @@ public class DefaultUnitProcessorContext implements UnitProcessor.Context {
     /**
      * Returns the viewport to use to compute the percentages and the units.
      */
-    public SVGSVGElement getViewport() {
-        return (SVGSVGElement)
-            HiddenChildElementSupport.getParentElement(element);
+    public Viewport getViewport() {
+        return new SVGViewport((SVGSVGElement)
+            HiddenChildElementSupport.getParentElement(element),
+                               this);
     }
 }

@@ -172,7 +172,8 @@ public class CSSUtilities implements SVGConstants {
          // end of FIXME
 
          Element clipPathElement;
-         clipPathElement = clipedElement.getOwnerDocument().getElementById(uriString);
+         clipPathElement =
+             clipedElement.getOwnerDocument().getElementById(uriString);
 
          // Cannot access referenced mask
          if(clipPathElement == null){
@@ -186,7 +187,8 @@ public class CSSUtilities implements SVGConstants {
              return null;
          }
 
-         return clipBridge.createClip(gn, ctx,
+         return clipBridge.createClip(ctx,
+                                      gn,
                                       clipPathElement,
                                       clipedElement);
     }

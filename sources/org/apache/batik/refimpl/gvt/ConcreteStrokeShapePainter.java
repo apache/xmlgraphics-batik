@@ -55,8 +55,8 @@ public class ConcreteStrokeShapePainter implements StrokeShapePainter {
             g2d.setPaint(paint);
             g2d.setStroke(stroke);
 
-            //            Shape sShape = stroke.createStrokedShape(shape);
-            //            g2d.fill(sShape);
+            // Shape sShape = stroke.createStrokedShape(shape);
+            // g2d.fill(sShape);
             g2d.draw(shape);
         }
     }
@@ -69,9 +69,4 @@ public class ConcreteStrokeShapePainter implements StrokeShapePainter {
             return shape;
         }
     }
-
-    public Shape getPaintedOutline(Shape shape){
-        return stroke.createStrokedShape(shape);
-    }
-
 }

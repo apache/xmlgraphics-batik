@@ -8,20 +8,27 @@
 
 package org.apache.batik.refimpl.bridge;
 
-import java.io.StringReader;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.AffineTransform;
+import java.io.StringReader;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.ClipBridge;
 import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.ObjectBoundingBoxViewport;
+import org.apache.batik.bridge.Viewport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.refimpl.gvt.AffineTransformSourceBoundingBox;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.util.awt.geom.AffineTransformSource;
+import org.apache.batik.util.awt.geom.CompositeAffineTransformSource;
+import org.apache.batik.util.awt.geom.DefaultAffineTransformSource;
+import org.apache.batik.util.awt.geom.TransformedShape;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -29,7 +36,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.ViewCSS;
 
 /**
- * A factory for the &lt;clip-path&gt; SVG element.
+ * A factory for the &lt;clipPath&gt; SVG element.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -40,21 +47,26 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
      * Returns the <tt>Shape</tt> referenced by the input element's
      * <tt>clip-path</tt> attribute.
      */
-    public Shape createClip(GraphicsNode clipedNode,
-                            BridgeContext bridgeContext,
+    public Shape createClip(BridgeContext bridgeContext,
+                            GraphicsNode gn,
                             Element clipElement,
                             Element clipedElement) {
         CSSStyleDeclaration decl
-            = bridgeContext.getViewCSS().getComputedStyle(clipElement,
-                                                          null);
-
-        //
-        // <!> FIX ME : ignore 'objectBoundingBox' and 'userSpaceOnUse'
-        //
+            = bridgeContext.getViewCSS().getComputedStyle(clipElement, null);
 
         // Build the GVT tree that represents the clip path
+        //
+        // The silhouettes of the child elements are logically OR'd
+        // together to create a single silhouette which is then used to
+        // restrict the region onto which paint can be applied.
+        //
+        // The 'clipPath' element or any of its children can specify
+        // property 'clip-path'.
+        //
         Area area = new Area();
         GVTBuilder builder = bridgeContext.getGVTBuilder();
+        Viewport oldViewport = bridgeContext.getCurrentViewport();
+        bridgeContext.setCurrentViewport(new ObjectBoundingBoxViewport());
         for(Node child=clipElement.getFirstChild();
             child != null;
             child = child.getNextSibling()){
@@ -63,27 +75,47 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 GraphicsNode node
                     = builder.build(bridgeContext, e) ;
                 if(node != null){
-                    area.add(new Area(node.getOutline()));
+                    Area outline = new Area(node.getOutline());
+                    Shape clip = node.getClippingArea();
+                    if (clip != null) {
+                        outline.subtract(new Area(clip));  // child clip applied
+                    }
+                    area.add(outline);
                 }
             }
         }
-        GeneralPath clipPath = new GeneralPath(area);
+        bridgeContext.setCurrentViewport(oldViewport);
 
-        // apply the winding rule
+        // Apply the clip-path property of this clipPath Element
+        Shape clipedElementClipPath =
+            CSSUtilities.convertClipPath(clipElement, gn, bridgeContext);
+        if (clipedElementClipPath != null) {
+            area.subtract(new Area(clipedElementClipPath));
+        }
+
+        // Convert the Area to a path and apply the winding rule
+        GeneralPath path = new GeneralPath(area);
         CSSPrimitiveValue v;
         v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CLIP_RULE_PROPERTY);
         int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
             ? GeneralPath.WIND_NON_ZERO
             : GeneralPath.WIND_EVEN_ODD;
 
-        clipPath.setWindingRule(wr);
+        path.setWindingRule(wr);
 
-        // apply the transform on the clip-Path Element
+        // Compute the global matrix of this clipPath Element
         AffineTransform at = AWTTransformProducer.createAffineTransform
             (new StringReader(clipElement.getAttributeNS(null, ATTR_TRANSFORM)),
              bridgeContext.getParserFactory());
 
-        return at.createTransformedShape(clipPath);
+        String units = clipElement.getAttributeNS(null, ATTR_CLIP_PATH_UNITS);
+        if (units.length() == 0) {
+            units = VALUE_OBJECT_BOUNDING_BOX;
+        }
+        AffineTransformSource ats =
+            SVGUtilities.convertAffineTransformSource(at, gn, units);
+        Shape clipPath = new TransformedShape(path, ats);
+        return clipPath;
     }
 
     public void update(BridgeMutationEvent evt) {

@@ -16,6 +16,7 @@ import java.awt.geom.Rectangle2D;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.SVGViewport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.util.SVGConstants;
@@ -38,7 +39,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
 
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
-        SVGElement svgElement = (SVGElement) element;
+        SVGSVGElement svgElement = (SVGSVGElement) element;
         CSSStyleDeclaration cssDecl
             = ctx.getViewCSS().getComputedStyle(element, null);
         UnitProcessor.Context uctx
@@ -91,7 +92,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         BridgeEventSupport.addDOMListener(ctx, element);
         ctx.bind(element, node);
 
-        ctx.setCurrentViewport((SVGSVGElement)svgElement);
+        ctx.setCurrentViewport(new SVGViewport(svgElement, uctx));
         return node;
     }
 

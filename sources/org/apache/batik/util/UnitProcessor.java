@@ -23,6 +23,7 @@ import org.apache.batik.parser.LengthHandler;
 import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.ParserFactory;
+import org.apache.batik.bridge.Viewport;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -113,23 +114,23 @@ public abstract class UnitProcessor {
         float f = c.getPixelToMM();
         switch (t) {
         case CSSPrimitiveValue.CSS_PX:
-            return pixelsToNumber(v, e, d, c);
+            return v;
         case CSSPrimitiveValue.CSS_MM:
-            return pixelsToNumber(v / f, e, d, c);
+            return (v / f);
         case CSSPrimitiveValue.CSS_CM:
-            return pixelsToNumber(v * 10 / f, e, d, c);
+            return (v * 10 / f);
         case CSSPrimitiveValue.CSS_IN:
-            return pixelsToNumber(v * 25.4f / f, e, d, c);
+            return (v * 25.4f / f);
         case CSSPrimitiveValue.CSS_PT:
-            return pixelsToNumber(v * 25.4f / (72 * f), e, d, c);
+            return (v * 25.4f / (72 * f));
         case CSSPrimitiveValue.CSS_PC:
-            return pixelsToNumber(v * 25.4f / (6 * f), e, d, c);
+            return (v * 25.4f / (6 * f));
         case CSSPrimitiveValue.CSS_EMS:
-            return pixelsToNumber(emsToPixels(v, e, d, c), e, d, c);
+            return emsToPixels(v, e, d, c);
         case CSSPrimitiveValue.CSS_EXS:
-            return pixelsToNumber(exsToPixels(v, e, d, c), e, d, c);
+            return exsToPixels(v, e, d, c);
         case CSSPrimitiveValue.CSS_PERCENTAGE:
-            return pixelsToNumber(percentagesToPixels(v, e, d, c), e, d, c);
+            return percentagesToPixels(v, e, d, c);
         default:
             throw new RuntimeException
                 (formatMessage("invalid.css.unit",
@@ -148,6 +149,35 @@ public abstract class UnitProcessor {
      */
     public static float svgToUserSpace(short t, float v, SVGElement e, short d,
                                        Context c) throws RuntimeException {
+        if (t == SVGLength.SVG_LENGTHTYPE_NUMBER) {
+            return v;
+        }
+        float f = c.getPixelToMM();
+        switch (t) {
+        case SVGLength.SVG_LENGTHTYPE_PX:
+            return v;
+        case SVGLength.SVG_LENGTHTYPE_MM:
+            return (v / f);
+        case SVGLength.SVG_LENGTHTYPE_CM:
+            return (v * 10 / f);
+        case SVGLength.SVG_LENGTHTYPE_IN:
+            return (v * 25.4f / f);
+        case SVGLength.SVG_LENGTHTYPE_PT:
+            return (v * 25.4f / (72 * f));
+        case SVGLength.SVG_LENGTHTYPE_PC:
+            return (v * 25.4f / (6 * f));
+        case SVGLength.SVG_LENGTHTYPE_EMS:
+            return emsToPixels(v, e, d, c);
+        case SVGLength.SVG_LENGTHTYPE_EXS:
+            return exsToPixels(v, e, d, c);
+        case SVGLength.SVG_LENGTHTYPE_PERCENTAGE:
+            return percentagesToPixels(v, e, d, c);
+        default:
+            throw new RuntimeException
+                (formatMessage("invalid.svg.unit",
+                               new Object[] { new Integer(t) }));
+        }
+/*
         if (t == SVGLength.SVG_LENGTHTYPE_NUMBER) {
             return v;
         }
@@ -176,6 +206,8 @@ public abstract class UnitProcessor {
                 (formatMessage("invalid.svg.unit",
                                new Object[] { new Integer(t) }));
         }
+        */
+
     }
 
     /**
@@ -186,7 +218,7 @@ public abstract class UnitProcessor {
      * @param c The context.
      * @exception RuntimeException If an invalid unit type is specified.
      */
-    protected static float pixelsToNumber(float v, SVGElement e, short d,
+/*    protected static float pixelsToNumber(float v, SVGElement e, short d,
                                           Context c) {
         // Compute the current transformation matrix (CTM).
         AffineTransform ctm = null;
@@ -277,7 +309,7 @@ public abstract class UnitProcessor {
             return (float)(sgn * Math.sqrt(dx * dx + dy * dy));
         }
     }
-
+*/
     /**
      * Converts ems units to pixels units.
      * @param v the length value.
@@ -342,41 +374,15 @@ public abstract class UnitProcessor {
             throw new RuntimeException
                 (formatMessage("element.needed", null));
         }
-        SVGSVGElement svg = c.getViewport();
-        if (svg == null) {
-            throw new RuntimeException
-                (formatMessage("svg.element.needed", null));
-        }
-        // !!! Use a parser for SVGLength
         if (d == HORIZONTAL_LENGTH) {
-            SVGLength len = svg.getWidth().getBaseVal();
-            float w = svgToUserSpace(len.getUnitType(),
-                                     len.getValueInSpecifiedUnits(),
-                                     svg,
-                                     d,
-                                     c);
+            float w = c.getViewport().getWidth();
             return w * v / 100;
         } else if (d == VERTICAL_LENGTH) {
-            SVGLength len = svg.getHeight().getBaseVal();
-            float h = svgToUserSpace(len.getUnitType(),
-                                     len.getValueInSpecifiedUnits(),
-                                     svg,
-                                     d,
-                                     c);
+            float h = c.getViewport().getHeight();
             return h * v / 100;
         } else {
-            SVGLength len = svg.getWidth().getBaseVal();
-            double w = svgToUserSpace(len.getUnitType(),
-                                      len.getValueInSpecifiedUnits(),
-                                      svg,
-                                      HORIZONTAL_LENGTH,
-                                      c);
-            len = svg.getHeight().getBaseVal();
-            double h = svgToUserSpace(len.getUnitType(),
-                                      len.getValueInSpecifiedUnits(),
-                                      svg,
-                                      VERTICAL_LENGTH,
-                                      c);
+            double w = c.getViewport().getWidth();
+            double h = c.getViewport().getHeight();
             double vpp = Math.sqrt(w * w + h * h) / Math.sqrt(2);
             return (float)(vpp * v / 100);
         }
@@ -537,6 +543,6 @@ public abstract class UnitProcessor {
         /**
          * Returns the viewport used to compute percentages and units.
          */
-        SVGSVGElement getViewport();
+        Viewport getViewport();
     }
 }

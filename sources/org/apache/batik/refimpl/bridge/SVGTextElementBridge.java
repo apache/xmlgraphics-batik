@@ -151,12 +151,15 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                                     result);
         result.setAttributedCharacterIterator(as.getIterator());
 
+        // Set the node filter
         Filter filter = CSSUtilities.convertFilter(element, result, ctx);
         result.setFilter(filter);
 
+        // Set the node mask
         Mask mask = CSSUtilities.convertMask(element, result, ctx);
         result.setMask(mask);
 
+        // Set the node clip
         Shape clip = CSSUtilities.convertClipPath(element, result, ctx);
         result.setClippingArea(clip);
 

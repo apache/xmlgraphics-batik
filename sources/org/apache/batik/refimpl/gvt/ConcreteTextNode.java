@@ -198,22 +198,27 @@ public class ConcreteTextNode
     public Shape getOutline(){
         // HACK, until we change getBounds to take
         // GraphicsNodeRenderContext
-        java.awt.font.TextLayout layout
-            = new java.awt.font.TextLayout(aci,
-                  new java.awt.font.FontRenderContext(new AffineTransform(),
-                                                      true,
-                                                      true));
-        Rectangle2D bounds = layout.getBounds();
-        double tx = location.getX();
-        double ty = location.getY();
-        if (anchor == Anchor.MIDDLE) {
-            tx -= bounds.getWidth()/2;
-        } else if (anchor == Anchor.END) {
-            tx -= bounds.getWidth();
+        Shape outline;
+        if (aci != null) {
+            java.awt.font.TextLayout layout
+                = new java.awt.font.TextLayout(aci,
+                      new java.awt.font.FontRenderContext(new AffineTransform(),
+                                                          true,
+                                                          true));
+            Rectangle2D bounds = layout.getBounds();
+            double tx = location.getX();
+            double ty = location.getY();
+            if (anchor == Anchor.MIDDLE) {
+                tx -= bounds.getWidth()/2;
+            } else if (anchor == Anchor.END) {
+                tx -= bounds.getWidth();
+            }
+            AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
+            outline = layout.getOutline(t);
+        } else {
+            outline = new Rectangle2D.Float(0, 0, 0, 0);
         }
-
-        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
-        return layout.getOutline(t);
+        return outline;
     }
 
     //

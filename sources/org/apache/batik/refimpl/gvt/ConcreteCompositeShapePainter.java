@@ -74,14 +74,4 @@ public class ConcreteCompositeShapePainter implements CompositeShapePainter {
         }
         return paintedArea;
     }
-
-    public Shape getPaintedOutline(Shape shape) {
-        Area paintedArea = new Area();
-        if (painters != null) {
-            for (int i=0; i < count; ++i) {
-                paintedArea.add(new Area(painters[i].getPaintedArea(shape)));
-            }
-        }
-        return paintedArea;
-    }
 }

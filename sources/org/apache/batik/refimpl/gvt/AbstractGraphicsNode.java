@@ -217,23 +217,14 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public AffineTransform getGlobalTransform(){
-        AffineTransform ctm = null;
-        if(transform != null){
-            ctm = new AffineTransform(transform);
-        }
-        else{
-            ctm = new AffineTransform();
-        }
-
+        AffineTransform ctm = new AffineTransform();
         GraphicsNode node = this;
-        GraphicsNode parent = null;
-        while((parent = node.getParent()) != null){
-            if(parent.getTransform() != null){
-                ctm.preConcatenate(parent.getTransform());
+        while (node != null) {
+            if(node.getTransform() != null){
+                ctm.preConcatenate(node.getTransform());
             }
-            node = parent;
+            node = node.getParent();
         }
-
         return ctm;
     }
 
@@ -409,7 +400,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     bi = new BufferedImage(cm, wr,
                                            cm.isAlphaPremultiplied(), null);
                     g2d.setTransform(IDENTITY);
-                    g2d.drawImage(bi, null, 
+                    g2d.drawImage(bi, null,
                                   renderedNodeImage.getMinX(),
                                   renderedNodeImage.getMinY());
                 }
