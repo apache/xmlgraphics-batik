@@ -80,6 +80,7 @@
     <!-- ================================================================ -->
     <testGroup id="dom.svg.basic" name="Basic SVG DOM Testing"
                class="org.apache.batik.dom.svg.EcmaScriptSVGDOMTest">
+        <test id="bug30580"/>
         <test id="lengthTest"/>
         <test id="locatableTest"/>
         <test id="presentationAttrRemovalTest"/>

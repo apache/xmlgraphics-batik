@@ -81,6 +81,9 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     static final String PROPERTY_LINE_SEPARATOR = "line.separator";
     static final String PROPERTY_LINE_SEPARATOR_DEFAULT = "\n";
 
+    static final int DEFAULT_FIRST = 32;
+    static final int DEFAULT_LAST = 128;
+
     static {
         String  temp;
         try { 
@@ -296,7 +299,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
      * @param last The last character in the output range
      * @param forceAscii Force the use of the ASCII character map
      */
-    protected static void writeFontAsSVGFragment(PrintStream ps, Font font, String id, int first, int last, boolean forceAscii)
+    protected static void writeFontAsSVGFragment(PrintStream ps, Font font, String id, int first, int last, boolean autoRange, boolean forceAscii)
     throws Exception {
         //    StringBuffer sb = new StringBuffer();
         //    int horiz_advance_x = font.getHmtxTable().getAdvanceWidth(
@@ -350,8 +353,9 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             throw new Exception("Cannot find a suitable cmap table");
         }
 
-        // If this font includes arabic script, we want to specify substitutions
-        // for initial, medial, terminal & isolated cases.
+        // If this font includes arabic script, we want to specify
+        // substitutions for initial, medial, terminal & isolated
+        // cases.
         GsubTable gsub = (GsubTable) font.getTable(Table.GSUB);
         SingleSubst initialSubst = null;
         SingleSubst medialSubst = null;
@@ -380,6 +384,15 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             initialSubst, medialSubst, terminalSubst, ""));
 
         try {
+            if (first == -1) {
+                if (!autoRange) first = DEFAULT_FIRST;
+                else            first = cmapFmt.getFirst();
+            }
+            if (last == -1) {
+                if (!autoRange) last = DEFAULT_LAST;
+                else            last = cmapFmt.getLast();
+            }
+
             // Include our requested range
             for (int i = first; i <= last; i++) {
                 int glyphIndex = cmapFmt.mapCharCode(i);
@@ -679,6 +692,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     public static final String ARG_KEY_ID = "-id";
     public static final String ARG_KEY_ASCII = "-ascii";
     public static final String ARG_KEY_TESTCARD = "-testcard";
+    public static final String ARG_KEY_AUTO_RANGE = "-autorange";
     public static final String ARG_KEY_OUTPUT_PATH = "-o";
 
     /**
@@ -694,6 +708,7 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
             String ascii = parseArgs(args, ARG_KEY_ASCII);
             String testCard = parseArgs(args, ARG_KEY_TESTCARD);
             String outPath = parseArgs(args, ARG_KEY_OUTPUT_PATH);
+            String autoRange = parseArgs(args, ARG_KEY_AUTO_RANGE);
             PrintStream ps = null;
             FileOutputStream fos = null;
 
@@ -718,8 +733,9 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                     ps,
                     font,
                     id,
-                    (low != null ? Integer.parseInt(low) : 32),
-                    (high != null ? Integer.parseInt(high) : 127),
+                    (low != null ? Integer.parseInt(low) : -1),
+                    (high != null ? Integer.parseInt(high) : -1),
+                    (autoRange != null),
                     (ascii != null));
                 writeSvgDefsEnd(ps);
                 if (testCard != null) {

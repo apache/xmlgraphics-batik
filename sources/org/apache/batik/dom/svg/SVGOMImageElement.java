@@ -117,7 +117,7 @@ public class SVGOMImageElement
      * <b>DOM</b>: Implements {@link SVGImageElement#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
-        throw new RuntimeException(" !!! TODO: getPreserveAspectRatio()");
+        return SVGPreserveAspectRatioSupport.getPreserveAspectRatio(this);
     }
 
     /**

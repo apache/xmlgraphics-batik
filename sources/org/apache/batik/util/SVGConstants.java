@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2004  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -453,6 +453,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_LANG_ATTRIBUTE = "lang";
     String SVG_LENGTH_ADJUST_ATTRIBUTE = "lengthAdjust";
     String SVG_LIGHT_COLOR_ATTRIBUTE = "lightColor";
+    String SVG_LIGHTING_COLOR_ATTRIBUTE = "lighting-color";
     String SVG_LIMITING_CONE_ANGLE_ATTRIBUTE = "limitingConeAngle";
     String SVG_LOCAL_ATTRIBUTE = "local";
     String SVG_MARKER_HEIGHT_ATTRIBUTE = "markerHeight";
@@ -637,6 +638,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_MAGNIFY_VALUE = "magnify";
     String SVG_MATRIX_VALUE = "matrix";
     String SVG_MEDIAL_VALUE = "medial";
+    String SVG_MEET_VALUE = "meet";
     String SVG_MIDDLE_VALUE = "middle";
     String SVG_MITER_VALUE = "miter";
     String SVG_MOVE_VALUE = "move";
@@ -673,6 +675,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_SATURATION_VALUE = "saturation";
     String SVG_SCREEN_VALUE = "screen";
     String SVG_SE_RESIZE_VALUE = "se-resize";
+    String SVG_SLICE_VALUE = "slice";
     String SVG_SOURCE_ALPHA_VALUE = "SourceAlpha";
     String SVG_SOURCE_GRAPHIC_VALUE = "SourceGraphic";
     String SVG_SPACING_AND_GLYPHS_VALUE = "spacingAndGlyphs";
@@ -697,6 +700,15 @@ public interface SVGConstants extends CSSConstants {
     String SVG_WAIT_VALUE = "wait";
     String SVG_WRAP_VALUE = "wrap";
     String SVG_W_RESIZE_VALUE = "w-resize";
+    String SVG_XMAXYMAX_VALUE = "xMaxYMax";
+    String SVG_XMAXYMID_VALUE = "xMaxYMid";
+    String SVG_XMAXYMIN_VALUE = "xMaxYMin";
+    String SVG_XMIDYMAX_VALUE = "xMidYMax";
+    String SVG_XMIDYMID_VALUE = "xMidYMid";
+    String SVG_XMIDYMIN_VALUE = "xMidYMin";
+    String SVG_XMINYMAX_VALUE = "xMinYMax";
+    String SVG_XMINYMID_VALUE = "xMinYMid";
+    String SVG_XMINYMIN_VALUE = "xMinYMin";
     String SVG_XOR_VALUE = "xor";
     String SVG_ZERO_PERCENT_VALUE = "0%";
     String SVG_ZERO_VALUE = "0";

@@ -181,7 +181,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGFitToViewBox#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
-        throw new RuntimeException(" !!! TODO: getPreserveAspectRatio()");
+        return SVGPreserveAspectRatioSupport.getPreserveAspectRatio(this);
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////

@@ -17,6 +17,8 @@
  */
 package org.apache.batik.gvt.font;
 
+import java.util.Arrays;
+
 /**
  * The Kern class describes an entry in the "kerning table". It provides
  * a kerning value to be used when laying out characters side
@@ -60,6 +62,11 @@ public class Kern {
         this.firstUnicodeRanges = firstUnicodeRanges;
         this.secondUnicodeRanges = secondUnicodeRanges;
         this.kerningAdjust = adjustValue;
+
+        if (firstGlyphCodes != null) 
+            Arrays.sort(this.firstGlyphCodes);
+        if (secondGlyphCodes != null) 
+            Arrays.sort(this.secondGlyphCodes);
     }
 
     /**
@@ -68,19 +75,40 @@ public class Kern {
      *
      * @param glyphCode The id of the glyph to test.
      * @param glyphUnicode The unicode value of the glyph to test.
-     * @return True if this glyph is in the list of first glyphs for the kerning
-     * entry 
+     * @return True if this glyph is in the list of first glyphs for
+     * the kerning entry
      */
     public boolean matchesFirstGlyph(int glyphCode, String glyphUnicode) {
-        for (int i = 0; i < firstGlyphCodes.length; i++) {
-            if (firstGlyphCodes[i] == glyphCode) {
+        if (firstGlyphCodes != null) {
+            int pt = Arrays.binarySearch(firstGlyphCodes, glyphCode);
+            if (pt >= 0) return true;
+        }
+        if (glyphUnicode.length() < 1) return false;
+        char glyphChar = glyphUnicode.charAt(0);
+        for (int i = 0; i < firstUnicodeRanges.length; i++) {
+            if (firstUnicodeRanges[i].contains(glyphChar))
                 return true;
-            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the specified glyph is one of the glyphs considered
+     * as first by this kerning entry. Returns false otherwise.
+     *
+     * @param glyphCode The id of the glyph to test.
+     * @param glyphUnicode The unicode value of the glyph to test.
+     * @return True if this glyph is in the list of first glyphs for
+     *         the kerning entry
+     */
+    public boolean matchesFirstGlyph(int glyphCode, char glyphUnicode) {
+        if (firstGlyphCodes != null) {
+            int pt = Arrays.binarySearch(firstGlyphCodes, glyphCode);
+            if (pt >= 0) return true;
         }
         for (int i = 0; i < firstUnicodeRanges.length; i++) {
-            if (firstUnicodeRanges[i].contains(glyphUnicode)) {
+            if (firstUnicodeRanges[i].contains(glyphUnicode))
                 return true;
-            }
         }
         return false;
     }
@@ -96,15 +124,37 @@ public class Kern {
      * kerning entry 
      */
     public boolean matchesSecondGlyph(int glyphCode, String glyphUnicode) {
-        for (int i = 0; i < secondGlyphCodes.length; i++) {
-            if (secondGlyphCodes[i] == glyphCode) {
+        if (secondGlyphCodes != null) {
+            int pt = Arrays.binarySearch(secondGlyphCodes, glyphCode);
+            if (pt >= 0) return true;
+        }
+        if (glyphUnicode.length() < 1) return false;
+        char glyphChar = glyphUnicode.charAt(0);
+        for (int i = 0; i < secondUnicodeRanges.length; i++) {
+            if (secondUnicodeRanges[i].contains(glyphChar))
                 return true;
-            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the specified glyph is one of the glyphs considered
+     * as second by this kerning entry. Returns false otherwise.
+     *
+     * @param glyphCode The id of the glyph to test.
+     * @param glyphUnicode The unicode value of the glyph to test.
+
+     * @return True if this glyph is in the list of second glyphs for the
+     * kerning entry 
+     */
+    public boolean matchesSecondGlyph(int glyphCode, char glyphUnicode) {
+        if (secondGlyphCodes != null) {
+            int pt = Arrays.binarySearch(secondGlyphCodes, glyphCode);
+            if (pt >= 0) return true;
         }
         for (int i = 0; i < secondUnicodeRanges.length; i++) {
-            if (secondUnicodeRanges[i].contains(glyphUnicode)) {
+            if (secondUnicodeRanges[i].contains(glyphUnicode))
                 return true;
-            }
         }
         return false;
     }

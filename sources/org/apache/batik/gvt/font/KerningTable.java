@@ -46,10 +46,10 @@ public class KerningTable {
      *
      * @param glyphCode1 The id of the first glyph in the kerning pair
      * @param glyphCode2 The id of the second glyph in the kerning pair
-     * @param glyphUnicode1 The unicode value of the first glyph in the kerning
-     * pair
-     * @param glyphUnicode2 The unicode vlaue of the second glyph in the kerning
-     * pair
+     * @param glyphUnicode1 The unicode value of the first glyph in
+     * the kerning pair
+     * @param glyphUnicode2 The unicode vlaue of the second glyph in
+     * the kerning pair
      * @return The amount of kerning to be added when laying out the glyphs 
      */
     public float getKerningValue(int glyphCode1, 

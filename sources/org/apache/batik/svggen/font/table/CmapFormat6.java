@@ -38,6 +38,9 @@ public class CmapFormat6 extends CmapFormat {
         format = 6;
     }
 
+    public int getFirst() { return 0; }
+    public int getLast()  { return 0; }
+    
     public int mapCharCode(int charCode) {
         return 0;
     }

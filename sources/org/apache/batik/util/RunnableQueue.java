@@ -329,10 +329,13 @@ public class RunnableQueue implements Runnable {
                 }
             }
 
-            if (waitTillSuspended)
-                try {
-                    stateLock.wait();
-                } catch(InterruptedException ie) { }
+            if (waitTillSuspended) {
+                while (state == SUSPENDING) {
+                    try {
+                        stateLock.wait();
+                    } catch(InterruptedException ie) { }
+                }
+            }
         }
     }
 
