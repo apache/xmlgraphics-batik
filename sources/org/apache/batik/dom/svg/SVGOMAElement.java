@@ -76,8 +76,8 @@ public class SVGOMAElement
      * <b>DOM</b>: Implements {@link SVGAElement#getTarget()}.
      */
     public SVGAnimatedString getTarget() {
-        throw new RuntimeException("!!! TODO: getTarget()");
-    } 
+        return getAnimatedStringAttribute(null, SVG_TARGET_ATTRIBUTE);
+    }
 
     /**
      * Returns the AttributeInitializer for this element type.

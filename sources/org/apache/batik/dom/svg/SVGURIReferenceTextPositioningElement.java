@@ -36,7 +36,7 @@ public abstract class SVGURIReferenceTextPositioningElement
      * @param owner The owner document.
      */
     protected SVGURIReferenceTextPositioningElement(String prefix,
-                                                      AbstractDocument owner) {
+                                                    AbstractDocument owner) {
         super(prefix, owner);
     }
 

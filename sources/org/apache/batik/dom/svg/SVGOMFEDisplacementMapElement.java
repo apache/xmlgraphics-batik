@@ -28,20 +28,15 @@ public class SVGOMFEDisplacementMapElement
     implements SVGFEDisplacementMapElement {
 
     /**
-     * The attribute initializer.
+     * The 'xChannelSelector' and 'yChannelSelector' attributes values.
      */
-    protected final static AttributeInitializer attributeInitializer;
-    static {
-        attributeInitializer = new AttributeInitializer(2);
-        attributeInitializer.addAttribute(null,
-                                          null,
-                                          SVG_X_CHANNEL_SELECTOR_ATTRIBUTE,
-                                          SVG_A_VALUE);
-        attributeInitializer.addAttribute(null,
-                                          null,
-                                          SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE,
-                                          SVG_A_VALUE);
-    }
+    protected final static String[] CHANNEL_SELECTOR_VALUES = {
+        "",
+        SVG_R_VALUE,
+        SVG_G_VALUE,
+        SVG_B_VALUE,
+        SVG_A_VALUE
+    };
 
     /**
      * Creates a new SVGOMFEDisplacementMap object.
@@ -71,7 +66,7 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO: getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
@@ -79,7 +74,7 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getIn2()}.
      */
     public SVGAnimatedString getIn2() {
-        throw new RuntimeException("!!! TODO: getIn2()");
+        return getAnimatedStringAttribute(null, SVG_IN2_ATTRIBUTE);
     }
 
     /**
@@ -87,7 +82,7 @@ public class SVGOMFEDisplacementMapElement
      * org.w3c.dom.svg.SVGFEDisplacementMapElement#getScale()}.
      */
     public SVGAnimatedNumber getScale() {
-        throw new RuntimeException("!!! TODO: getScale()");
+        return getAnimatedNumberAttribute(null, SVG_SCALE_ATTRIBUTE, 0f);
     }
 
     /**
@@ -95,7 +90,9 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getXChannelSelector()}.
      */
     public SVGAnimatedEnumeration getXChannelSelector() {
-        throw new RuntimeException("!!! TODO: getXChannelSelector()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_X_CHANNEL_SELECTOR_ATTRIBUTE,
+             CHANNEL_SELECTOR_VALUES, (short)4);
     }
 
     /**
@@ -103,15 +100,9 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getYChannelSelector()}.
      */
     public SVGAnimatedEnumeration getYChannelSelector() {
-        throw new RuntimeException("!!! TODO: getYChannelSelector()");
-    }
-
-    /**
-     * Returns the AttributeInitializer for this element type.
-     * @return null if this element has no attribute with a default value.
-     */
-    protected AttributeInitializer getAttributeInitializer() {
-        return attributeInitializer;
+        return getAnimatedEnumerationAttribute
+            (null, SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE,
+             CHANNEL_SELECTOR_VALUES, (short)4);
     }
 
     /**

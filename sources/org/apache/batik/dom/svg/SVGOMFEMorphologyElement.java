@@ -9,12 +9,10 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.DoublyIndexedTable;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
-import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEMorphologyElement;
 
@@ -29,16 +27,13 @@ public class SVGOMFEMorphologyElement
     implements SVGFEMorphologyElement {
 
     /**
-     * The attribute initializer.
+     * The 'operator' attribute values.
      */
-    protected final static AttributeInitializer attributeInitializer;
-    static {
-        attributeInitializer = new AttributeInitializer(1);
-        attributeInitializer.addAttribute(null,
-                                          null,
-                                          SVG_OPERATOR_ATTRIBUTE,
-                                          SVG_ERODE_VALUE);
-    }
+    protected final static String[] OPERATOR_VALUES = {
+        "",
+        SVG_ERODE_VALUE,
+        SVG_DILATE_VALUE
+    };
 
     /**
      * Creates a new SVGOMFEMorphologyElement object.
@@ -66,14 +61,15 @@ public class SVGOMFEMorphologyElement
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getOperator()}.
      */
     public SVGAnimatedEnumeration getOperator() {
-        throw new RuntimeException(" !!! TODO getOperator()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_OPERATOR_ATTRIBUTE, OPERATOR_VALUES, (short)1);
     }
 
     /**
@@ -89,14 +85,6 @@ public class SVGOMFEMorphologyElement
     public SVGAnimatedLength getRadiusY() {
         throw new RuntimeException(" !!! TODO getRadiusY()");
     } 
-
-    /**
-     * Returns the AttributeInitializer for this element type.
-     * @return null if this element has no attribute with a default value.
-     */
-    protected AttributeInitializer getAttributeInitializer() {
-        return attributeInitializer;
-    }
 
     /**
      * Returns a new uninitialized instance of this object's class.

@@ -1,0 +1,36 @@
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- @author shillion@ilog.fr                                                  -->
+<!-- @version $Id$  -->
+<!-- ========================================================================= -->
+<testSuite id="dom.svg.unitTesting"
+           name="org.apache.batik.dom.svg package - Unit Testing">
+
+    <!-- ================================================================ -->
+    <!-- cloneNode test                                                   -->
+    <!-- ================================================================ -->
+    <test id="dom.svg.cloneNode"
+          class="org.apache.batik.dom.svg.CloneNodeTest" >
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/svg/test.svg" />
+        <arg class="java.lang.String" value="nodeID" />
+    </test>
+
+    <!-- ================================================================ -->
+    <!-- importNode test                                                  -->
+    <!-- ================================================================ -->
+    <test id="dom.svg.importNode"
+          class="org.apache.batik.dom.svg.ImportNodeTest" >
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/svg/test.svg" />
+        <arg class="java.lang.String" value="nodeID" />
+    </test>
+
+</testSuite>

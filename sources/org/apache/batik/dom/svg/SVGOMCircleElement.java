@@ -50,21 +50,27 @@ public class SVGOMCircleElement
      * <b>DOM</b>: Implements {@link SVGCircleElement#getCx()}.
      */
     public SVGAnimatedLength getCx() {
-        throw new RuntimeException("!!! TODO: getCx()");
+        return getAnimatedLengthAttribute
+            (null, SVG_CX_ATTRIBUTE, SVG_CIRCLE_CX_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGCircleElement#getCy()}.
      */
     public SVGAnimatedLength getCy() {
-        throw new RuntimeException("!!! TODO: getCy()");
+        return getAnimatedLengthAttribute
+            (null, SVG_CY_ATTRIBUTE, SVG_CIRCLE_CY_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGCircleElement#getR()}.
      */
     public SVGAnimatedLength getR() {
-        throw new RuntimeException("!!! TODO: getR()");
+        return getAnimatedLengthAttribute
+            (null, SVG_R_ATTRIBUTE, "",
+             SVGOMAnimatedLength.OTHER_LENGTH);
     }
 
     /**

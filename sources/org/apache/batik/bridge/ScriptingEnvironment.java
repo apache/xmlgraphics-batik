@@ -23,6 +23,7 @@ import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
 import org.apache.batik.dom.util.DocumentFactory;
+import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
@@ -49,6 +50,16 @@ import org.w3c.dom.events.EventTarget;
  * @version $Id$
  */
 public class ScriptingEnvironment extends BaseScriptingEnvironment {
+
+    /**
+     * Used in 'parseXML()'.
+     */
+    protected final static String FRAGMENT_PREFIX =
+        "<svg xmlns='" +
+        SVGConstants.SVG_NAMESPACE_URI +
+        "' xmlns:xlink='" +
+        XLinkSupport.XLINK_NAMESPACE_URI +
+        "'>";
 
     /**
      * The timer for periodic or delayed tasks.
@@ -643,12 +654,13 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             try {
                 Document d = df.createDocument(uri, new StringReader(text));
                 result = doc.createDocumentFragment();
-                result.appendChild(doc.importNode(d.getDocumentElement(), true));
+                result.appendChild(doc.importNode(d.getDocumentElement(),
+                                                  true));
             } catch (Exception ex) {
-                StringBuffer sb = new StringBuffer(text.length() 
-                                                   + "<svg>".length() 
-                                                   + "</svg>".length());
-                sb.append("<svg>");
+                StringBuffer sb = new StringBuffer(text.length() +
+                                                   FRAGMENT_PREFIX.length() +
+                                                   "</svg>".length());
+                sb.append(FRAGMENT_PREFIX);
                 sb.append(text);
                 sb.append("</svg>");
                 text = sb.toString();

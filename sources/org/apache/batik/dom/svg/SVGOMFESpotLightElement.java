@@ -51,56 +51,60 @@ public class SVGOMFESpotLightElement
      * <b>DOM</b>: Implements {@link SVGFESpotLightElement#getX()}.
      */
     public SVGAnimatedNumber getX() {
-        throw new RuntimeException("!!! TODO getX()");
+        return getAnimatedNumberAttribute(null, SVG_X_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFESpotLightElement#getY()}.
      */
     public SVGAnimatedNumber getY() {
-        throw new RuntimeException("!!! TODO getY()");
+        return getAnimatedNumberAttribute(null, SVG_Y_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFESpotLightElement#getZ()}.
      */
     public SVGAnimatedNumber getZ() {
-        throw new RuntimeException("!!! TODO getZ()");
+        return getAnimatedNumberAttribute(null, SVG_Z_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFESpotLightElement#getPointsAtX()}.
      */
     public SVGAnimatedNumber getPointsAtX() {
-        throw new RuntimeException("!!! TODO getPointsAtX()");
+        return getAnimatedNumberAttribute(null, SVG_POINTS_AT_X_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFESpotLightElement#getPointsAtY()}.
      */
     public SVGAnimatedNumber getPointsAtY() {
-        throw new RuntimeException("!!! TODO getPointsAtY()");
+        return getAnimatedNumberAttribute(null, SVG_POINTS_AT_Y_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFESpotLightElement#getPointsAtZ()}.
      */
     public SVGAnimatedNumber getPointsAtZ() {
-        throw new RuntimeException("!!! TODO getPointsAtZ()");
+        return getAnimatedNumberAttribute(null, SVG_POINTS_AT_Z_ATTRIBUTE, 0f);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFESpotLightElement#getSpecularExponent()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGFESpotLightElement#getSpecularExponent()}.
      */
     public SVGAnimatedNumber getSpecularExponent() {
-        throw new RuntimeException("!!! TODO getSpecularExponent()");
+        return getAnimatedNumberAttribute
+            (null, SVG_SPECULAR_EXPONENT_ATTRIBUTE, 1f);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFESpotLightElement#getLimitingConeAngle()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGFESpotLightElement#getLimitingConeAngle()}.
      */
     public SVGAnimatedNumber getLimitingConeAngle() {
-        throw new RuntimeException("!!! TODO getLimitingConeAngle()");
+        return getAnimatedNumberAttribute
+            (null, SVG_LIMITING_CONE_ANGLE_ATTRIBUTE, 0f);
     }
 
     /**

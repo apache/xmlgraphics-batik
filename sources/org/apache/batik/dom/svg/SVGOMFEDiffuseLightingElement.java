@@ -56,21 +56,27 @@ public class SVGOMFEDiffuseLightingElement
      * <b>DOM</b>: Implements {@link SVGFEDiffuseLightingElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO: getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFEDiffuseLightingElement#getSurfaceScale()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGFEDiffuseLightingElement#getSurfaceScale()}.
      */
     public SVGAnimatedNumber getSurfaceScale() {
-        throw new RuntimeException("!!! TODO: getSurfaceScale()");
+        return getAnimatedNumberAttribute(null,
+                                          SVG_SURFACE_SCALE_ATTRIBUTE,
+                                          1f);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFEDiffuseLightingElement#getDiffuseConstant()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGFEDiffuseLightingElement#getDiffuseConstant()}.
      */
     public SVGAnimatedNumber getDiffuseConstant() {
-        throw new RuntimeException("!!! TODO: getDiffuseConstant()");
+        return getAnimatedNumberAttribute(null,
+                                          SVG_DIFFUSE_CONSTANT_ATTRIBUTE,
+                                          1f);
     }
 
     /**

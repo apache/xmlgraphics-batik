@@ -26,6 +26,15 @@ public class SVGOMMaskElement
     implements SVGMaskElement {
 
     /**
+     * The units values.
+     */
+    protected final static String[] UNITS_VALUES = {
+        "",
+        SVG_USER_SPACE_ON_USE_VALUE,
+        SVG_OBJECT_BOUNDING_BOX_VALUE
+    };
+
+    /**
      * Creates a new SVGOMMaskElement object.
      */
     protected SVGOMMaskElement() {
@@ -51,14 +60,18 @@ public class SVGOMMaskElement
      * <b>DOM</b>: Implements {@link SVGMaskElement#getMaskUnits()}.
      */
     public SVGAnimatedEnumeration getMaskUnits() {
-        throw new RuntimeException(" !!! TODO: getMaskUnits");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_MASK_UNITS_ATTRIBUTE, UNITS_VALUES,
+             (short)2);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMaskElement#getMaskContentUnits()}.
      */
     public SVGAnimatedEnumeration getMaskContentUnits() {
-        throw new RuntimeException(" !!! TODO: getMaskContentUnits()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_MASK_CONTENT_UNITS_ATTRIBUTE, UNITS_VALUES,
+             (short)1);
     }
 
     /**

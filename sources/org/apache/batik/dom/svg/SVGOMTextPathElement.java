@@ -57,6 +57,24 @@ public class SVGOMTextPathElement
     }
 
     /**
+     * The 'method' attribute values.
+     */
+    protected final static String[] METHOD_VALUES = {
+        "",
+        SVG_ALIGN_VALUE,
+        SVG_STRETCH_VALUE
+    };
+
+    /**
+     * The 'spacing' attribute values.
+     */
+    protected final static String[] SPACING_VALUES = {
+        "",
+        SVG_AUTO_VALUE,
+        SVG_EXACT_VALUE
+    };
+
+    /**
      * Creates a new SVGOMTextPathElement object.
      */
     protected SVGOMTextPathElement() {
@@ -82,21 +100,26 @@ public class SVGOMTextPathElement
      * <b>DOM</b>: Implements {@link SVGTextPathElement#getStartOffset()}.
      */
     public SVGAnimatedLength getStartOffset() {
-        throw new RuntimeException("!!! TODO: ");
+        return getAnimatedLengthAttribute
+            (null, SVG_START_OFFSET_ATTRIBUTE,
+             SVG_TEXT_PATH_START_OFFSET_DEFAULT_VALUE,
+             SVGOMAnimatedLength.OTHER_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGTextPathElement#getMethod()}.
      */
     public SVGAnimatedEnumeration getMethod() {
-        throw new RuntimeException("!!! TODO:");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_METHOD_ATTRIBUTE, METHOD_VALUES, (short)1);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGTextPathElement#getSpacing()}.
      */
     public SVGAnimatedEnumeration getSpacing() {
-        throw new RuntimeException("!!! TODO:");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_SPACING_ATTRIBUTE, SPACING_VALUES, (short)2);
     }
 
 

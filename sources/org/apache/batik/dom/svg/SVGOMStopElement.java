@@ -51,7 +51,7 @@ public class SVGOMStopElement
      * org.w3c.dom.svg.SVGStopElement#getOffset()}.
      */
     public SVGAnimatedNumber getOffset() {
-        throw new RuntimeException(" !!! TODO: getOffset()");
+        return getAnimatedNumberAttribute(null, SVG_OFFSET_ATTRIBUTE, 0f);
     }
     
     /**

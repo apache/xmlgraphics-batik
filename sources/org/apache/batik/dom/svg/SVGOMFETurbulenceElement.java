@@ -16,7 +16,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedInteger;
 import org.w3c.dom.svg.SVGAnimatedNumber;
-import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFETurbulenceElement;
 
 /**
@@ -30,20 +29,22 @@ public class SVGOMFETurbulenceElement
     implements SVGFETurbulenceElement {
 
     /**
-     * The attribute initializer.
+     * The 'stitchTiles' attribute values.
      */
-    protected final static AttributeInitializer attributeInitializer;
-    static {
-        attributeInitializer = new AttributeInitializer(2);
-        attributeInitializer.addAttribute(null,
-                                          null,
-                                          SVG_STITCH_TILES_ATTRIBUTE,
-                                          SVG_NO_STITCH_VALUE);
-        attributeInitializer.addAttribute(null,
-                                          null,
-                                          SVG_TYPE_ATTRIBUTE,
-                                          SVG_TURBULENCE_VALUE);
-    }
+    protected final static String[] STITCH_TILES_VALUES = {
+        "",
+        SVG_STITCH_VALUE,
+        SVG_NO_STITCH_VALUE
+    };
+
+    /**
+     * The 'type' attribute values.
+     */
+    protected final static String[] TYPE_VALUES = {
+        "",
+        SVG_FRACTAL_NOISE_VALUE,
+        SVG_TURBULENCE_VALUE
+    };
 
     /**
      * Creates a new SVGOMFETurbulence object.
@@ -69,14 +70,16 @@ public class SVGOMFETurbulenceElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getBaseFrequencyX()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGFETurbulenceElement#getBaseFrequencyX()}.
      */
     public SVGAnimatedNumber getBaseFrequencyX() {
         throw new RuntimeException("!!! TODO getBaseFrequencyX()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getBaseFrequencyY()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGFETurbulenceElement#getBaseFrequencyY()}.
      */
     public SVGAnimatedNumber getBaseFrequencyY() {
         throw new RuntimeException("!!! TODO getBaseFrequencyY()");
@@ -86,36 +89,30 @@ public class SVGOMFETurbulenceElement
      * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getNumOctaves()}.
      */
     public SVGAnimatedInteger getNumOctaves() {
-        throw new RuntimeException("!!! TODO getNumOctaves()");
+        return getAnimatedIntegerAttribute(null, SVG_NUM_OCTAVES_ATTRIBUTE, 1);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getSeed()}.
      */
     public SVGAnimatedNumber getSeed() {
-        throw new RuntimeException("!!! TODO getSeed()");
+        return getAnimatedNumberAttribute(null, SVG_SEED_ATTRIBUTE, 0f);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getStitchTiles()}.
      */
     public SVGAnimatedEnumeration getStitchTiles() {
-        throw new RuntimeException("!!! TODO getStitchTiles()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_STITCH_TILES_ATTRIBUTE, STITCH_TILES_VALUES, (short)2);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getType()}.
      */
     public SVGAnimatedEnumeration getType() {
-        throw new RuntimeException("!!! TODO getType()");
-    }
-
-    /**
-     * Returns the AttributeInitializer for this element type.
-     * @return null if this element has no attribute with a default value.
-     */
-    protected AttributeInitializer getAttributeInitializer() {
-        return attributeInitializer;
+        return getAnimatedEnumerationAttribute
+            (null, SVG_TYPE_ATTRIBUTE, TYPE_VALUES, (short)2);
     }
 
     /**

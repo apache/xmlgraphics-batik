@@ -49,29 +49,37 @@ public class SVGOMEllipseElement
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getCx()}.
      */
     public SVGAnimatedLength getCx() {
-        throw new RuntimeException("!!! TODO: getCx()");
+        return getAnimatedLengthAttribute
+            (null, SVG_CX_ATTRIBUTE, SVG_ELLIPSE_CX_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getCy()}.
      */
     public SVGAnimatedLength getCy() {
-        throw new RuntimeException("!!! TODO: getCy()");
+        return getAnimatedLengthAttribute
+            (null, SVG_CY_ATTRIBUTE, SVG_ELLIPSE_CY_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getRx()}.
      */
     public SVGAnimatedLength getRx() {
-        throw new RuntimeException("!!! TODO: getRx()");
+        return getAnimatedLengthAttribute
+            (null, SVG_RX_ATTRIBUTE, "",
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGEllipseElement#getRy()}.
      */
     public SVGAnimatedLength getRy() {
-        throw new RuntimeException("!!! TODO: getRy()");
-    }
+        return getAnimatedLengthAttribute
+            (null, SVG_RY_ATTRIBUTE, "",
+             SVGOMAnimatedLength.VERTICAL_LENGTH); 
+   }
 
     /**
      * Returns a new uninitialized instance of this object's class.

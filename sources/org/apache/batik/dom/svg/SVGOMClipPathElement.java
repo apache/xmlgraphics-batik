@@ -27,6 +27,15 @@ public class SVGOMClipPathElement
     implements SVGClipPathElement {
 
     /**
+     * The clipPathUnits values.
+     */
+    protected final static String[] CLIP_PATH_UNITS_VALUES = {
+        "",
+        SVG_USER_SPACE_ON_USE_VALUE,
+        SVG_OBJECT_BOUNDING_BOX_VALUE
+    };
+
+    /**
      * Creates a new SVGOMClipPathElement object.
      */
     protected SVGOMClipPathElement() {
@@ -52,7 +61,9 @@ public class SVGOMClipPathElement
      * <b>DOM</b>: Implements {@link SVGClipPathElement#getClipPathUnits()}.
      */
     public SVGAnimatedEnumeration getClipPathUnits() {
-        throw new RuntimeException("!!! TODO: getClipPathUnits()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_CLIP_PATH_UNITS_ATTRIBUTE, CLIP_PATH_UNITS_VALUES,
+             (short)1);
     }
 
     /**

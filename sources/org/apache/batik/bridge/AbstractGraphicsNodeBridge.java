@@ -288,4 +288,28 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         }
         return ctm;
     }
+
+    /**
+     * Returns the width of the viewport which directly contains the
+     * given element.
+     */
+    public float getViewportWidth() {
+        return ctx.getBlockWidth(e);
+    }
+
+    /**
+     * Returns the height of the viewport which directly contains the
+     * given element.
+     */
+    public float getViewportHeight() {
+        return ctx.getBlockHeight(e);
+    }
+
+    /**
+     * Returns the font-size on the associated element.
+     */
+    public float getFontSize() {
+        return CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.FONT_SIZE_INDEX).getFloatValue();
+    }
 }

@@ -11,8 +11,6 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGAnimatedEnumeration;
-import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEOffsetElement;
@@ -54,7 +52,7 @@ public class SVGOMFEOffsetElement
      * SVGFEOffsetElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
@@ -62,7 +60,7 @@ public class SVGOMFEOffsetElement
      * org.w3c.dom.svg.SVGFEOffsetElement#getDx()}.
      */
     public SVGAnimatedNumber getDx() {
-        throw new RuntimeException("!!! TODO getDx()");
+        return getAnimatedNumberAttribute(null, SVG_DX_ATTRIBUTE, 0f);
     } 
 
     /**
@@ -70,8 +68,8 @@ public class SVGOMFEOffsetElement
      * org.w3c.dom.svg.SVGFEOffsetElement#getDy()}.
      */
     public SVGAnimatedNumber getDy() {
-        throw new RuntimeException("!!! TODO getDy()");
-    } 
+        return getAnimatedNumberAttribute(null, SVG_DY_ATTRIBUTE, 0f);
+    }
 
     /**
      * Returns a new uninitialized instance of this object's class.

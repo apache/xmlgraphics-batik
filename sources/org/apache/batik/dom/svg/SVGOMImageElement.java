@@ -81,28 +81,36 @@ public class SVGOMImageElement
      * <b>DOM</b>: Implements {@link SVGImageElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        throw new RuntimeException(" !!! TODO: getX()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X_ATTRIBUTE, SVG_IMAGE_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGImageElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        throw new RuntimeException(" !!! TODO: getY()");
+        return getAnimatedLengthAttribute
+            (null, SVG_Y_ATTRIBUTE, SVG_IMAGE_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGImageElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        throw new RuntimeException(" !!! TODO: getWidth()");
+        return getAnimatedLengthAttribute
+            (null, SVG_WIDTH_ATTRIBUTE, "",
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGImageElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        throw new RuntimeException(" !!! TODO: getHeight()");
+        return getAnimatedLengthAttribute
+            (null, SVG_HEIGHT_ATTRIBUTE, "",
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**

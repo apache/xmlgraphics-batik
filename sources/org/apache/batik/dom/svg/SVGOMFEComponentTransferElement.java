@@ -51,7 +51,7 @@ public class SVGOMFEComponentTransferElement
      * <b>DOM</b>: Implements {@link SVGFEComponentTransferElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO: getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**

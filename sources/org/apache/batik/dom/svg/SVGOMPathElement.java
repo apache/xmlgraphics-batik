@@ -11,7 +11,6 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGPathSegList;
 import org.w3c.dom.svg.SVGPathElement;

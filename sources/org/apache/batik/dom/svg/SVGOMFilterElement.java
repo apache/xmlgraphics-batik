@@ -65,6 +65,15 @@ public class SVGOMFilterElement
     }
 
     /**
+     * The units values.
+     */
+    protected final static String[] UNITS_VALUES = {
+        "",
+        SVG_USER_SPACE_ON_USE_VALUE,
+        SVG_OBJECT_BOUNDING_BOX_VALUE
+    };
+
+    /**
      * Creates a new SVGOMFilterElement object.
      */
     protected SVGOMFilterElement() {
@@ -90,42 +99,54 @@ public class SVGOMFilterElement
      * <b>DOM</b>: Implements {@link SVGFilterElement#getFilterUnits()}.
      */
     public SVGAnimatedEnumeration getFilterUnits() {
-        throw new RuntimeException(" !!! TODO: getFilterUnits()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_FILTER_UNITS_ATTRIBUTE, UNITS_VALUES,
+             (short)2);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFilterElement#getPrimitiveUnits()}.
      */
     public SVGAnimatedEnumeration getPrimitiveUnits() {
-        throw new RuntimeException(" !!! TODO: getFilterResX()");
+        return getAnimatedEnumerationAttribute
+            (null, SVG_PRIMITIVE_UNITS_ATTRIBUTE, UNITS_VALUES,
+             (short)1);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFilterElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        throw new RuntimeException(" !!! TODO: getX()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X_ATTRIBUTE, SVG_FILTER_X_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFilterElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        throw new RuntimeException(" !!! TODO: getY()");
+        return getAnimatedLengthAttribute
+            (null, SVG_Y_ATTRIBUTE, SVG_FILTER_Y_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFilterElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        throw new RuntimeException(" !!! TODO: getWidth()");
+        return getAnimatedLengthAttribute
+            (null, SVG_WIDTH_ATTRIBUTE, SVG_FILTER_WIDTH_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFilterElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        throw new RuntimeException(" !!! TODO: getHeight()");
+        return getAnimatedLengthAttribute
+            (null, SVG_HEIGHT_ATTRIBUTE, SVG_FILTER_HEIGHT_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**

@@ -13,7 +13,6 @@ import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEGaussianBlurElement;
@@ -54,18 +53,20 @@ public class SVGOMFEGaussianBlurElement
      * <b>DOM</b>: Implements {@link SVGFEGaussianBlurElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO: getIn1");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFEGaussianBlurElement#getStdDeviationX()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGFEGaussianBlurElement#getStdDeviationX()}.
      */
     public SVGAnimatedNumber getStdDeviationX() {
         throw new RuntimeException("!!! TODO: getStdDeviationX");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGFEGaussianBlurElement#getStdDeviationY()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGFEGaussianBlurElement#getStdDeviationY()}.
      */
     public SVGAnimatedNumber getStdDeviationY() {
         throw new RuntimeException("!!! TODO: getStdDeviationY");

@@ -12,6 +12,7 @@ import org.apache.batik.css.engine.CSSEngine;
 
 import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.AbstractNode;
 
 import org.apache.batik.dom.events.NodeEventTarget;
 
@@ -188,6 +189,30 @@ public abstract class AbstractElement
         return getLiveAttributeValue(ns, (ns == null)
                                      ? node.getNodeName()
                                      : node.getLocalName());
+    }
+
+    // Importation ////////////////////////////////////////////////////
+
+    /**
+     * Exports this node to the given document.
+     */
+    protected Node export(Node n, AbstractDocument d) {
+	super.export(n, d);
+        ((AbstractElement)n).initializeAttributes();
+
+	super.export(n, d);
+	return n;
+    }
+
+    /**
+     * Deeply exports this node to the given document.
+     */
+    protected Node deepExport(Node n, AbstractDocument d) {
+	super.export(n, d);
+        ((AbstractElement)n).initializeAttributes();
+
+	super.deepExport(n, d);
+	return n;
     }
 
     /**

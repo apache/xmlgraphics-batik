@@ -149,6 +149,6 @@ public abstract class SVGOMAnimationElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-	return SVGTestsSupport.hasExtension(extension, this);
+	return SVGTestsSupport.hasExtension(this, extension);
     }
 }

@@ -50,28 +50,36 @@ public class SVGOMLinearGradientElement
      * <b>DOM</b>: Implements {@link SVGLinearGradientElement#getX1()}.
      */
     public SVGAnimatedLength getX1() {
-        throw new RuntimeException(" !!! TODO: getX1()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X1_ATTRIBUTE, SVG_LINEAR_GRADIENT_X1_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGLinearGradientElement#getY1()}.
      */
     public SVGAnimatedLength getY1() {
-        throw new RuntimeException(" !!! TODO: getY1()");
+        return getAnimatedLengthAttribute
+            (null, SVG_Y1_ATTRIBUTE, SVG_LINEAR_GRADIENT_Y1_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGLinearGradientElement#getX2()}.
      */
     public SVGAnimatedLength getX2() {
-        throw new RuntimeException(" !!! TODO: getX2()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X2_ATTRIBUTE, SVG_LINEAR_GRADIENT_X2_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGLinearGradientElement#getY2()}.
      */
     public SVGAnimatedLength getY2() {
-        throw new RuntimeException(" !!! TODO: getY2()");
+        return getAnimatedLengthAttribute
+            (null, SVG_Y2_ATTRIBUTE, SVG_LINEAR_GRADIENT_Y2_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**

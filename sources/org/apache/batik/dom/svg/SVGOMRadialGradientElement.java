@@ -10,6 +10,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGRadialGradientElement;
@@ -51,7 +52,9 @@ public class SVGOMRadialGradientElement
      * org.w3c.dom.svg.SVGRadialGradientElement#getCx()}.
      */
     public SVGAnimatedLength getCx() {
-        throw new RuntimeException(" !!! TODO: getCx()");
+        return getAnimatedLengthAttribute
+            (null, SVG_CX_ATTRIBUTE, SVG_RADIAL_GRADIENT_CX_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     }
 
     /**
@@ -59,7 +62,9 @@ public class SVGOMRadialGradientElement
      * org.w3c.dom.svg.SVGRadialGradientElement#getCy()}.
      */
     public SVGAnimatedLength getCy() {
-        throw new RuntimeException(" !!! TODO: getCy()");
+        return getAnimatedLengthAttribute
+            (null, SVG_CY_ATTRIBUTE, SVG_RADIAL_GRADIENT_CY_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     }
 
     /**
@@ -67,7 +72,9 @@ public class SVGOMRadialGradientElement
      * org.w3c.dom.svg.SVGRadialGradientElement#getR()}.
      */
     public SVGAnimatedLength getR() {
-        throw new RuntimeException(" !!! TODO: getR()");
+        return getAnimatedLengthAttribute
+            (null, SVG_R_ATTRIBUTE, SVG_RADIAL_GRADIENT_R_DEFAULT_VALUE,
+             SVGOMAnimatedLength.OTHER_LENGTH);
     }
 
     /**
@@ -75,7 +82,24 @@ public class SVGOMRadialGradientElement
      * org.w3c.dom.svg.SVGRadialGradientElement#getFx()}.
      */
     public SVGAnimatedLength getFx() {
-        throw new RuntimeException(" !!! TODO: getFx()");
+        SVGAnimatedLength result =
+            (SVGAnimatedLength)getLiveAttributeValue(null, SVG_FX_ATTRIBUTE);
+        if (result == null) {
+            result = new AbstractSVGAnimatedLength
+                (this, null, SVG_FX_ATTRIBUTE,
+                 SVGOMAnimatedLength.HORIZONTAL_LENGTH) {
+                    protected String getDefaultValue() {
+                        Attr attr = getAttributeNodeNS(null, SVG_CX_ATTRIBUTE);
+                        if (attr == null) {
+                            return SVG_RADIAL_GRADIENT_CX_DEFAULT_VALUE;
+                        }
+                        return attr.getValue();
+                    }
+                };
+            putLiveAttributeValue(null, SVG_FX_ATTRIBUTE,
+                                  (LiveAttributeValue)result);
+        }
+        return result;
     }
 
     /**
@@ -83,7 +107,24 @@ public class SVGOMRadialGradientElement
      * org.w3c.dom.svg.SVGRadialGradientElement#getFy()}.
      */
     public SVGAnimatedLength getFy() {
-        throw new RuntimeException(" !!! TODO: getFy()");
+        SVGAnimatedLength result =
+            (SVGAnimatedLength)getLiveAttributeValue(null, SVG_FY_ATTRIBUTE);
+        if (result == null) {
+            result = new AbstractSVGAnimatedLength
+                (this, null, SVG_FY_ATTRIBUTE,
+                 SVGOMAnimatedLength.VERTICAL_LENGTH) {
+                    protected String getDefaultValue() {
+                        Attr attr = getAttributeNodeNS(null, SVG_CY_ATTRIBUTE);
+                        if (attr == null) {
+                            return SVG_RADIAL_GRADIENT_CY_DEFAULT_VALUE;
+                        }
+                        return attr.getValue();
+                    }
+                };
+            putLiveAttributeValue(null, SVG_FY_ATTRIBUTE,
+                                  (LiveAttributeValue)result);
+        }
+        return result;
     }
 
     /**

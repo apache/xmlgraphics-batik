@@ -11,8 +11,6 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGAnimatedEnumeration;
-import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEMergeNodeElement;
 
@@ -53,7 +51,7 @@ public class SVGOMFEMergeNodeElement
      * SVGFEMergeNodeElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        throw new RuntimeException("!!! TODO getIn1()");
+        return getAnimatedStringAttribute(null, SVG_IN_ATTRIBUTE);
     }
 
     /**

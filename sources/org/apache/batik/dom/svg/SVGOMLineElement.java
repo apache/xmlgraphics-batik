@@ -50,28 +50,36 @@ public class SVGOMLineElement
      * <b>DOM</b>: Implements {@link SVGLineElement#getX1()}.
      */
     public SVGAnimatedLength getX1() {
-        throw new RuntimeException(" !!! TODO: getX1()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X1_ATTRIBUTE, SVG_LINE_X1_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     } 
 
     /**
      * <b>DOM</b>: Implements {@link SVGLineElement#getY1()}.
      */
     public SVGAnimatedLength getY1() {
-        throw new RuntimeException(" !!! TODO: getY1()");
-    } 
+        return getAnimatedLengthAttribute
+            (null, SVG_Y1_ATTRIBUTE, SVG_LINE_Y1_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
+    }
 
     /**
      * <b>DOM</b>: Implements {@link SVGLineElement#getX2()}.
      */
     public SVGAnimatedLength getX2() {
-        throw new RuntimeException(" !!! TODO: getX2()");
+        return getAnimatedLengthAttribute
+            (null, SVG_X2_ATTRIBUTE, SVG_LINE_X2_DEFAULT_VALUE,
+             SVGOMAnimatedLength.HORIZONTAL_LENGTH);
     } 
 
     /**
      * <b>DOM</b>: Implements {@link SVGLineElement#getY2()}.
      */
     public SVGAnimatedLength getY2() {
-        throw new RuntimeException(" !!! TODO: getY2()");
+        return getAnimatedLengthAttribute
+            (null, SVG_Y2_ATTRIBUTE, SVG_LINE_Y2_DEFAULT_VALUE,
+             SVGOMAnimatedLength.VERTICAL_LENGTH);
     } 
 
     /**
