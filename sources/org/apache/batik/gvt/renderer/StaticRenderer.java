@@ -39,6 +39,7 @@ import java.awt.Rectangle;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.Raster;
 import java.awt.image.ColorModel;
@@ -179,7 +180,19 @@ public class StaticRenderer implements Renderer {
                  null,
                  nodeRenderContext.getRenderingHints());
             
-            rootCR = GraphicsUtil.wrap(rootGNR.createRendering(rc));
+            RenderedImage ri = rootGNR.createRendering(rc);
+            if (ri == null) {
+                // UGG no rendering so make up a blank one to fullfill
+                // our contract.
+                offScreen = new BufferedImage(offScreenWidth, 
+                                              offScreenHeight,
+                                              BufferedImage.TYPE_INT_ARGB);
+                raster = offScreen.getRaster();
+                rootCR = GraphicsUtil.wrap(offScreen);
+                return offScreen;
+            }
+
+            rootCR = GraphicsUtil.wrap(ri);
             rootCR = GraphicsUtil.convertTosRGB(rootCR);
         }
 
@@ -284,9 +297,9 @@ public class StaticRenderer implements Renderer {
      * coordinate system.
      */
     public void repaint(Shape area) throws InterruptedException {
-        if (area == null) {
+        if (area == null)
             return;
-        }
+
         // First, set the Area Of Interest in the renderContext
         nodeRenderContext.setTransform(usr2dev);
         nodeRenderContext.setAreaOfInterest(area);

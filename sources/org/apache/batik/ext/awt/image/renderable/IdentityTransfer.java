@@ -24,17 +24,16 @@ public class IdentityTransfer implements TransferFunction {
     /**
      * This byte array stores the lookuptable data
      */
-    public byte [] lutData;
+    public static byte [] lutData = new byte [256];
 
     /*
      * This method will build the lut data. Each entry
      * has the value as its index.
      */
-    private void buildLutData(){
-        lutData = new byte [256];
+    static {
         // as Identity, the lookup table contains
         // the same value as the index
-        for (int j=0; j<=255; j++){
+        for (int j=0; j<=255; j++) {
             lutData[j] = (byte)j;
         }
     }
@@ -44,7 +43,6 @@ public class IdentityTransfer implements TransferFunction {
      * to construct a LookUpTable object
      */
     public byte [] getLookupTable(){
-        buildLutData();
         return lutData;
     }
 }
