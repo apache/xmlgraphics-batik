@@ -135,19 +135,23 @@
       The following people have contributed to Batik:
       </p>
         <ul>
-          <li><link href="mailto:tissandi@ilog.fr">Emmanuel Tissandier</link> was one of the Batik project
-              founders and helped define and implement the initial Batik architecture</li>
-          <li><link href="mailto:luano@asd.ie">Luan O'Carroll</link> - Contributed the WMF transcoder.</li>
+          <li><link href="mailto:carnold@houston.rr.com">Curt Arnold</link> - Contributed many bug reports and fixes</li>
           <li><link href="mailto:pier.fumagalli@eng.sun.com">Pier Fumagalli</link>- is helping us with the Batik web site and
               mailing lists.</li>
+          <li><link href="mailto:keiron@aftexsw.com">Keiron Liddle</link> - A <link href="http://xml.apache.org/fop">FOP</link>
+              member who is working on an SVG to PDF transcoder that will be part of FOP but that will work in 
+              the Batik infrastructure</li>
           <li><link href="mailto:john.morrison@uk.experian.com">John Morrison</link> - Contributed a set of XSL stylesheets
               to generate SVG charts, such as line graphs, bar charts or pie charts</li>
-          <li><link href="mailto:david@steadystate.co.uk">David Schweinsberg</link> - Contributed the True Type Font to 
-              SVG Font converter</li>
+          <li><link href="mailto:luano@asd.ie">Luan O'Carroll</link> - Contributed the WMF transcoder.</li>
           <li><link href="mailto:spei@cs.uiowa.edu">Sheng Pei</link> - Contributed on filters and the Regard tool.</li>
           <li><link href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</link> - Co-author of the SVG Font support in 
               Batik in collaboration with <link href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</link></li>
+          <li><link href="mailto:david@steadystate.co.uk">David Schweinsberg</link> - Contributed the True Type Font to 
+              SVG Font converter</li>
           <li><link href="mailto:natalian@cs.brown.edu">Nicholas Talian</link> - Contributed on gradients.</li>
+          <li><link href="mailto:tissandi@ilog.fr">Emmanuel Tissandier</link> was one of the Batik project
+              founders and helped define and implement the initial Batik architecture</li>
         </ul>
       </s1>
 
