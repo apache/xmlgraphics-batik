@@ -797,15 +797,22 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/anneViewbox2.png" />
     </test>
 
-    <test id="samples/anne.svg#svgView(transform(translate(-100,-50))" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
-        <arg class="java.lang.String" value="samples/anne.svg#svgView(transform(translate(-100,-50))" />
+    <test id="samples/anne.svg#svgView(transform(translate(-100,-50)))" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/anne.svg#svgView(transform(translate(-100,-50)))" />
         <arg class="java.lang.String" value="test-references/samples/anneTransform1.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/anneTransform1.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/anneTransform1.png" />
     </test>
 
-    <test id="samples/anne.svg#svgView(transform(translate(225,250)rotate(45)translate(-225,-250))" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
-        <arg class="java.lang.String" value="samples/anne.svg#svgView(transform(translate(225,250)rotate(45)translate(-225,-250))" />
+    <test id="samples/anne.svg#svgView(transform(translate(225,250)rotate(45)translate(-225,-250)))" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/anne.svg#svgView(transform(translate(225,250)rotate(45)translate(-225,-250)))" />
+        <arg class="java.lang.String" value="test-references/samples/anneTransform2.png" />
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/anneTransform2.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/anneTransform2.png" />
+    </test>
+
+    <test id="samples/anne.svg#svgView(transform(rotate(45,255,250)))" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/anne.svg#svgView(transform(rotate(45,225,250)))" />
         <arg class="java.lang.String" value="test-references/samples/anneTransform2.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/anneTransform2.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/anneTransform2.png" />
