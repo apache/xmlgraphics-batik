@@ -45,12 +45,12 @@ public interface FilterChainRable extends Filter {
     /**
      * Sets the filter output area, in user space. 
      */
-    public void setFilterRegion(FilterRegion filterRegion);
+    public void setFilterRegion(Rectangle2D filterRegion);
 
     /**
      * Returns the filter output area, in user space
      */
-    public FilterRegion getFilterRegion();
+    public Rectangle2D getFilterRegion();
 
     /**
      * Sets the source for this chain. Should not be null

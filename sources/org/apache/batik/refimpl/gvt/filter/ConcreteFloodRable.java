@@ -10,7 +10,6 @@ package org.apache.batik.refimpl.gvt.filter;
 
 import org.apache.batik.gvt.filter.FloodRable;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 
 import java.awt.Color;
 import java.awt.Paint;
@@ -44,13 +43,13 @@ public class ConcreteFloodRable extends AbstractRable
     /**
      * Region to fill with floodPaint
      */
-    FilterRegion floodRegion;
+    Rectangle2D floodRegion;
 
     /**
      * @param floodRegion region to be filled with floodPaint
      * @param floodPaint paint to use to flood the floodRegion
      */
-    public ConcreteFloodRable(FilterRegion floodRegion, 
+    public ConcreteFloodRable(Rectangle2D floodRegion, 
                               Paint floodPaint) {
         setFloodPaint(floodPaint);
         setFloodRegion(floodRegion);
@@ -79,21 +78,20 @@ public class ConcreteFloodRable extends AbstractRable
     }
 
     public Rectangle2D getBounds2D() {
-        Rectangle2D floodRegionRect = floodRegion.getRegion();
-        return floodRegionRect;
+        return (Rectangle2D)floodRegion.clone();
     }
 
     /**
      * Returns the flood region
      */
-    public FilterRegion getFloodRegion(){
-        return floodRegion;
+    public Rectangle2D getFloodRegion(){
+        return (Rectangle2D)floodRegion.clone();
     }
 
     /**
      * Sets the flood region
      */
-    public void setFloodRegion(FilterRegion floodRegion){
+    public void setFloodRegion(Rectangle2D floodRegion){
         if(floodRegion == null){
             throw new IllegalArgumentException();
         }
@@ -109,17 +107,11 @@ public class ConcreteFloodRable extends AbstractRable
      */
 
     public RenderedImage createRendering(RenderContext rc) {
-        Rectangle2D newFloodRegionRect = getBounds2D();
-
         // Get user space to device space transform
-
         AffineTransform usr2dev = rc.getTransform();
         if (usr2dev == null) {
             usr2dev = new AffineTransform();
         }
-
-        // Find out the renderable area
-        // <!> FIX ME CHANGE: DO INTEGER APPROX.
 
         Rectangle2D imageRect = getBounds2D();
 
@@ -160,6 +152,7 @@ public class ConcreteFloodRable extends AbstractRable
                         }
                         };
 
+        System.out.println("renderedArea x/y/w/h: " + renderedArea.x + " / " + renderedArea.y + " / " + renderedArea.width + " / " + renderedArea.height);
         Graphics2D g = offScreen.createGraphics();
 
         // a simple fill such as this probably doesn't consider

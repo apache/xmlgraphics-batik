@@ -76,14 +76,18 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
 
-        filterRegion = SVGUtilities.convertFilterChainRegion(filterElement,
-                                                             filteredElement,
-                                                             filteredNode,
-                                                             uctx);
+        Rectangle2D filterRegionRect =
+            SVGUtilities.convertFilterChainRegion
+            (filterElement,
+             filteredElement,
+             filteredNode,
+             uctx);
+
+        filterRegion = new DummyFilterRegion(filterRegionRect);
 
         // Build a ConcreteFilterChainRable
         FilterChainRable filterChain
-            = new ConcreteFilterChainRable(sourceGraphic, filterRegion);
+            = new ConcreteFilterChainRable(sourceGraphic, filterRegionRect);
 
 
         // Get filter resolution. -1 means undefined.
@@ -104,8 +108,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             }
         }
 
-        // Set region and resolution in filterChain
-        filterChain.setFilterRegion(filterRegion);
+        // Set resolution in filterChain
         filterChain.setFilterResolutionX((int)filterResolutionX);
         filterChain.setFilterResolutionY((int)filterResolutionY);
 
@@ -172,40 +175,22 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
     }
 
     /**
-     * Implementation. Extracts the filter region from the x, y, width and
-     * height attributes
-     */
-    /*private Rectangle2D getFilterRegion(Element filterElement){
-        Rectangle2D filterRegion = null;
-        try{
-            float x = getFloatValue(filterElement, ATTR_X);
-            float y = getFloatValue(filterElement, ATTR_Y);
-            float width = getFloatValue(filterElement, ATTR_WIDTH);
-            float height = getFloatValue(filterElement, ATTR_HEIGHT);
-
-            filterRegion = new Rectangle2D.Float(x, y, width, height);
-        }catch(NumberFormatException e){
-            // Could not process filter region. Default to no region
-        }
-
-        return filterRegion;
-        }*/
-
-    /**
-     * Implementation. Extracts a value from the element, assuming it
-     * is a floating point value
-     */
-/*    private static float getFloatValue(Element filterElement, String attrName)
-        throws NumberFormatException{
-        return Float.parseFloat(filterElement.getAttributeNS(null, attrName));
-    }*/
-
-
-    /**
      * Update the <tt>Filter</tt> object to reflect the current
      * configuration in the <tt>Element</tt> that models the filter.
      */
     public void update(BridgeMutationEvent evt) {
         // <!> FIXME : TODO
+    }
+}
+
+class DummyFilterRegion implements FilterRegion{
+    Rectangle2D r;
+
+    public Rectangle2D getRegion(){
+        return (Rectangle2D)r.clone();
+    }
+
+    public DummyFilterRegion(Rectangle2D r){
+        this.r = r;
     }
 }

@@ -94,13 +94,13 @@ public class SVGFeFloodElementBridge implements FilterBridge, SVGConstants {
         }
 
 
-        final FilterRegion floodRegion
-            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                        filteredElement,
-                                                        filterRegion,
-                                                        units,
-                                                        filteredNode,
-                                                        uctx);
+        Rectangle2D floodRegion
+            = SVGUtilities.convertFilterPrimitiveRegion2(filterElement,
+                                                         filteredElement,
+                                                         filterRegion.getRegion(),
+                                                         units,
+                                                         filteredNode,
+                                                         uctx);
 
         // First, create the FloodRable that maps the input filter node
         FloodRable flood = new ConcreteFloodRable(floodRegion, floodColor);
