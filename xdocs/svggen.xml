@@ -11,6 +11,7 @@
 
 <!-- ========================================================================= -->
 <!-- author spei@cs.uiowa.edu                                                  -->
+<!-- author cjolif@ilog.fr                                                     -->
 <!-- version $Id$          -->      
 <!-- ========================================================================= -->
 <document>
@@ -20,6 +21,7 @@
         <authors>
             <person name="Sheng Pei" email="spei@cs.uiowa.edu"/>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
+	    <person name="Christophe Jolif" email="cjolif@ilog.fr"/>
         </authors>
     </header>
 
@@ -35,6 +37,7 @@
                 <ul>
                     <li><link href="#whatIsIt">What is <code>SVGGraphics2D</code>?</link></li>
                     <li><link href="#howToUse">How to use <code>SVGGraphics2D</code>?</link></li>
+                    <li><link href="#custom">How to customize SVG Generation process?</link></li>
                 </ul>                          
 
         </s1>
@@ -93,8 +96,8 @@
                 <p>
                 The following excerpted code example shows how to generate SVG content from Java graphics.
                 </p>
-        
                 <source>
+
 import java.awt.Rectangle;
 import java.awt.Graphics2D;
 import java.awt.Color;
@@ -135,8 +138,7 @@ public class TestSVGGen {
         Writer out = new OutputStreamWriter(System.out, "UTF-8");
         svgGenerator.stream(out, useCSS);
     }
-}
-                </source>
+}</source>
 
                 <p>
                 We can see that generating SVG content from our <code>TestSVGGen</code> instance is a three step
@@ -146,6 +148,7 @@ public class TestSVGGen {
                 1. Create an instance of <code>org.w3c.dom.Document</code> that the generator will use to build its XML content;
                 create a SVG generator using the <code>Document</code> instance.</p>
                         <source>
+
 // Get a DOMImplementation
 DOMImplementation domImpl =
     GenericDOMImplementation.getDOMImplementation();
@@ -155,32 +158,102 @@ Document document = domImpl.createDocument(null, "svg", null);
 
 // Create an instance of the SVG Generator
 SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
-
-                        </source>
+</source>
                 <p>
                 2. Invoke the rendering code on our SVG generator. In our example, we invoke <code>TestSVGGen</code>'s 
                    <code>paint</code> method: </p>
                         <source>
+
 // Ask the test to render into the SVG Graphics2D implementation
 TestSVGGen test = new TestSVGGen();
 test.paint(svgGenerator);
-
-                        </source>
+</source>
                 <p>
                 3. Stream out the SVG content. The SVG generator can stream its content into any <code>java.io.Writer</code>. In our 
                         example, we stream the content to the standard output stream:   </p>
                         <source>
+
 // Finally, stream out SVG to the standard output using UTF-8
 // character to byte encoding
 boolean useCSS = true; // we want to use CSS style attribute
 Writer out = new OutputStreamWriter(System.out, "UTF-8");
 svgGenerator.stream(out, useCSS);
-                        </source>
+</source>
                         <p>
-                        SVG has two ways of expressing properties, such as the fill color: either XML attributes or CSS values. 
+                        SVG has two ways of expressing properties, such as the fill color: either XML attributes or CSS inline properties. 
                         The 'useCss' parameter allows the user to control that option. 
                         </p>
                 </s1>
+  <anchor id="custom" />
+  <s1 title="SVG Generator Customization">
+  <p>
+  In the previous section, we have seen that the SVG generation process can be customized to output
+  SVG style as XML attributes or CSS inline properties. In this section we will talk about more 
+  advanced customization possibilities.
+  </p>
+  <p>
+  Instead of creating the <code>SVGGraphics2D</code> just by using the <code>Document</code> that will
+  be used as a factory for creating the SVG elements, we can use the constructor that use an
+  <code>SVGGeneratorContext</code> instance. By providing your own <code>SVGGeneratorContext</code>
+  instance, you will be able to do advanced customization.
+  </p>
+  <!-- several examples : styling, 2 (to be done), 3 (to be done) -->
+  <p>
+  Your needs in matter of styling may be different from the two provided options (XML attributes or
+  CSS inline properties). For example you may want to put the CSS properties in a stylesheet SVG 
+  element section and reference them through the class attribute. In this case
+  you will need to define a new <code>StyleHandler</code> as below.
+  </p>
+  <source>
 
+public class StyleSheetStyleHandler {
+    private CDATASection styleSheet;
+    // Build the handler with a reference to the StyleSheet section
+    public StyleSheetStyleHandler(CDATASection styleSheet) {
+        this.styleSheet = styleSheet;
+    }
+    public void setStyle(Element element, Map styleMap,
+                         SVGGeneratorContext generatorContext) {
+        Iterator iter = styleMap.keySet().iterator();
+	// create a new class id in the style sheet
+        String id = generatorContext.getIDGenerator().generateID("C");
+        styleSheet.appendData("."+id+" {");
+	// append each key/value pairs
+        while (iter.hasNext()) {
+            String key = (String)iter.next();
+            String value = (String)styleMap.get(key);
+            styleSheet.appendData(key+":"+value+";");
+        }
+        styleSheet.appendData("}\n");
+	// reference the class id of the style sheet on the element to be styled
+        element.setAttribute("class", id);
+    }
+}</source>
+  <p>Then you can create and use an <code>SVGGraphics2D</code> with a correctly configured 
+  <code>SVGGeneratorContext</code>.
+  </p>
+  <source>
+
+// configure the SVGGraphics2D for a given Document myFactory
+SVGGeneratorContext ctx = new SVGGeneratorContext(myFactory);
+CDATASection styleSheet = myFactory.createCDATASection("");
+ctx.setStyleHandler(new StyleSheetStyleHandler(styleSheet));
+SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
+
+// use the g2d to dump drawings (component.paint(g2d))
+
+// add a style sheet to the definition section
+Element root = g2d.getRoot();
+Element defs = root.getElementById(SVGSyntax.ID_PREFIX_GENERIC_DEFS);
+Element style = myFactory.createElementNS(SVGSyntax.SVG_NAMESPACE_URI, SVGSyntax.SVG_STYLE_TAG);
+style.setAttributeNS(null, SVGSyntax.SVG_TYPE_ATTRIBUTE, "text/css");
+style.appendChild(styleSheet);
+defs.appendChild(style);
+
+// dump the root content to a given Writer myWriter
+g2d.stream(root, myWriter);
+
+  </source>
+  </s1>
     </body>
 </document>
