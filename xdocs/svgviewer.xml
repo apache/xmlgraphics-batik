@@ -59,7 +59,7 @@
 
                 <p>If you downloaded the binary distribution of Batik, you should have
                 gotten a file called <em>batik-1.0beta.zip</em>, which, when expanded, 
-                created a <em>batik-svgviewer.jar</em> file. To start the viewer, simply
+                created a <em>batik-svgviewer.jar</em> file. To start the viewer, 
                 type the following on the command line:</p>
                 <p><em>cd &lt;installationDirectory&gt;</em></p>
                 <p><em>java -jar batik-svgviewer.jar</em></p>
@@ -93,13 +93,21 @@
                 <p>To start the viewer you should:</p><ul>
                     <li>Make sure the xml-batik directory is in your PATH environment variable</li>
                     <li>Make sure the ANT_HOME environment variable is set to the xml-batik directory</li>
+                    <li>Make sure that your JAVA_HOME environment variable is set to your JDK installation 
+                        directory</li>
                     <li>Open a command line window and go to the xml-batik directory where the Batik
                         distribution was expanded</li>
-                    <li>At the command prompt, type: <em>build svgviewer</em>. This will start the 
-                        viewer</li>
+                    <li><strong>UNIX users</strong>. If you have not done so already, make the build.sh script
+                        executable:<br />
+                        <em>chmod +x build.sh</em></li>
+                    <li>At the command prompt, type: <br />
+                        <strong>Windows: </strong><em>build svgviewer</em><br />
+                        <strong>UNIX: </strong><em>build.sh svgviewer</em><br />
+                        This will start the viewer</li>
                 </ul>
                 <p>You can pass options to the viewer as follows:</p>
-                <p><em>build svgviewer -Dargs="[-sf] [-lnf [lookAndFeelName]] [svgURL]"</em></p>
+                <p><strong>Windows: </strong><em>build svgviewer -Dargs="[-sf] [-lnf [lookAndFeelName]] [svgURL]"</em></p>
+                <p><strong>UNIX: </strong><em>build.sh svgviewer -Dargs="[-sf] [-lnf [lookAndFeelName]] [svgURL]"</em></p>
                 <p>Refer to "Starting the viewer for the binary distribution" for an explanation of these
                 options</p>
             </s2>
@@ -154,7 +162,7 @@
             <p>For example, if your proxy is firewall.eng.mycompany.com on port 8080:</p>
             <p><em>java -Dhttp.proxyHost=firewall.eng.mycompany.com -Dhttp.proxyPort=8080 -jar batik-svgviewer.jar</em></p>
             <p />
-            <p>For users of the binary distribution, you need to edit the <em>build.xml</em> file
+            <p>For users of the developer distribution, you need to edit the <em>build.xml</em> file
             in the root directory to set the equivalent properties:</p>
             <source>
     &lt;java fork="yes"

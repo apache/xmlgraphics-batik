@@ -87,7 +87,11 @@
                     For example, if you have downloaded batik-1.0beta.zip into /home/IamHere, type the
                     following at the command prompt:<br />
                     <code>cd /home/IamHere</code><br />
-                    <code>jar xvf batik-1.0beta.zip</code></li>
+                    <code>jar xvf batik-1.0beta.zip</code><br />
+                    <strong>IMPORTANT:</strong> UNIX users, do not use the <code>unzip</code> utility to
+                    unpack the various Batik zip files, as this would not set the directories access rights
+                    properly.
+                    </li>
                 <li>From there, following the instructions specific to the application you want to use.
                     For example, see the <link href="svgviewer.html">SVG Viewer</link> page or the
                     <link href="svgrasterizer.html">SVG Rasterizer</link> page for an explanation on

@@ -103,13 +103,22 @@
                 <p>To start the rasterizer you should:</p><ul>
                     <li>Make sure the xml-batik directory is in your PATH environment variable</li>
                     <li>Make sure the ANT_HOME environment variable is set to the xml-batik directory</li>
+                    <li>Make sure that your JAVA_HOME environment variable is set to your JDK installation 
+                        directory</li>
                     <li>Open a command line window and go to the xml-batik directory where the Batik
                         distribution was expanded</li>
-                    <li>At the command prompt, type: <em>build svgrasterizer</em>. This will printout a
+                    <li><strong>UNIX users</strong>. If you have not done so already, make the build.sh script
+                        executable:<br />
+                        <em>chmod +x build.sh</em></li>
+                    <li>At the command prompt, type: <br />
+                        <strong>Windows: </strong><em>build svgrasterizer</em>.<br />
+                        <strong>UNIX: </strong><em>build.sh svgrasterizer</em>.<br />
+                        This will printout a
                         help message for the rasterizer</li>
                 </ul>
                 <p>You can pass options to the rasterizer as follows:</p>
-                <p><em>build svgrasterizer -Dargs="[-d &lt;directory&gt;] [-m &lt;mimeType&gt;] [@files]"</em></p>
+                <p><strong>Windows: </strong><em>build svgrasterizer -Dargs="[-d &lt;directory&gt;] [-m &lt;mimeType&gt;] [@files]"</em></p>
+                <p><strong>UNIX: </strong><em>build.sh svgrasterizer -Dargs="[-d &lt;directory&gt;] [-m &lt;mimeType&gt;] [@files]"</em></p>
                 <p>Refer to <link href="#usingBinary">"Using the binary distribution" </link>for an explanation of these
                 options</p>
             </s2>
