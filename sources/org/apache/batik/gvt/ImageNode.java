@@ -83,7 +83,12 @@ public class ImageNode extends CompositeGraphicsNode {
      * @param newImage the new graphics node that represents the image
      */
     public void setImage(GraphicsNode newImage) {
-        getChildren().add(0, newImage);
+        fireGraphicsNodeChangeStarted();
+        invalidateGeometryCache();
+        if (count == 0) ensureCapacity(1);
+        children[0] = newImage;
+        count=1;
+        fireGraphicsNodeChangeCompleted();
     }
 
     /**
