@@ -27,6 +27,22 @@ public interface XMLConstants {
     String XMLNS_NAMESPACE_URI =
 	"http://www.w3.org/2000/xmlns/";
 
+    /**
+     * The xmlns prefix
+     */
+    String XMLNS_PREFIX = "xmlns";
+
+    /**
+     * The xlink namespace URI
+     */
+    String XLINK_NAMESPACE_URI
+        = "http://www.w3.org/1999/xlink";
+    
+    /**
+     * The xlink prefix
+     */
+    String XLINK_PREFIX = "xlink";
+
     String XML_PREFIX = "xml";
     String XML_LANG_ATTRIBUTE  = XML_PREFIX + ":lang";
     String XML_SPACE_ATTRIBUTE = XML_PREFIX + ":space";
