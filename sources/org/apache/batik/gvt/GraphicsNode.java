@@ -21,15 +21,16 @@ import java.util.Map;
 import java.util.EventListener;
 
 import java.beans.PropertyChangeListener;
+import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
-import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.gvt.filter.Clip;
+
 
 /**
  * The base class for all graphics nodes. A GraphicsNode encapsulates
@@ -41,13 +42,6 @@ import org.apache.batik.gvt.filter.Clip;
  * @version $Id$
  */
 public interface GraphicsNode {
-    /**
-     * Key for the AOI hint. This hint is used to propagate the AOI to Paint
-     * and PaintContext instances.
-     */
-    public static final RenderingHints.Key KEY_AREA_OF_INTEREST =
-        new AreaOfInterestHintKey();
-
     //
     // Properties methods
     //

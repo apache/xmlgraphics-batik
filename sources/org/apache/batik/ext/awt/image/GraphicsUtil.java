@@ -39,21 +39,21 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Iterator;
 
-import org.apache.batik.gvt.filter.AffineRable;
-import org.apache.batik.gvt.filter.CachableRed;
-import org.apache.batik.gvt.filter.CompositeRable;
-import org.apache.batik.gvt.filter.CompositeRule;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterChainRable;
+import org.apache.batik.ext.awt.image.renderable.AffineRable;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.renderable.CompositeRable;
+import org.apache.batik.ext.awt.image.renderable.CompositeRule;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
-import org.apache.batik.gvt.filter.ConcreteBufferedImageCachableRed;
-import org.apache.batik.gvt.filter.ConcreteRenderedImageCachableRed;
-import org.apache.batik.gvt.filter.Any2LsRGBRed;
-import org.apache.batik.gvt.filter.Any2sRGBRed;
+import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
+import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
+import org.apache.batik.ext.awt.image.rendered.Any2LsRGBRed;
+import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
 
 /**
  * Set of utility methods for Graphics.
@@ -332,8 +332,8 @@ public class GraphicsUtil {
         if (ri instanceof CachableRed)
             return (CachableRed) ri;
         if (ri instanceof BufferedImage)
-            return new ConcreteBufferedImageCachableRed((BufferedImage)ri);
-        return new ConcreteRenderedImageCachableRed(ri);
+            return new BufferedImageCachableRed((BufferedImage)ri);
+        return new RenderedImageCachableRed(ri);
     }
 
     protected static void copyData_INT_PACK(Raster src, WritableRaster dst) {

@@ -51,10 +51,11 @@ import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
 import org.apache.batik.gvt.event.CompositeGraphicsNodeEvent;
 import org.apache.batik.gvt.event.CompositeGraphicsNodeListener;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.gvt.filter.PadMode;
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
 
 /**
  * A partial implementation of the <tt>GraphicsNode</tt> interface.
@@ -367,7 +368,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
 
         Shape curClip = g2d.getClip();
-        g2d.setRenderingHint(KEY_AREA_OF_INTEREST, curClip);
+        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST, curClip);
         rc.setTransform(g2d.getTransform());
         rc.setRenderingHints(g2d.getRenderingHints());
         rc.setAreaOfInterest(curClip);

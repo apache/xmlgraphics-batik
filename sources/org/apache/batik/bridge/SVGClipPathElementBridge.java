@@ -25,11 +25,11 @@ import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapeNode;
-import org.apache.batik.gvt.filter.Clip;
-import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteClipRable;
+import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -168,7 +168,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 = ctx.getGraphicsNodeRableFactory();
             filter = gnrFactory.createGraphicsNodeRable(gn, rc);
         }
-        return new ConcreteClipRable(filter, clipPath);
+        return new ClipRable8Bit(filter, clipPath);
 
     }
 

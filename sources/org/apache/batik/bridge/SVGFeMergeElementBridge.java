@@ -21,14 +21,14 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.CompositeRable;
-import org.apache.batik.gvt.filter.CompositeRule;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.PadMode;
+import org.apache.batik.ext.awt.image.renderable.CompositeRable;
+import org.apache.batik.ext.awt.image.renderable.CompositeRule;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteCompositeRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
+import org.apache.batik.ext.awt.image.renderable.CompositeRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -139,9 +139,9 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
                                                         uctx);
 
         Filter filter = null;
-        filter = new ConcreteCompositeRable(srcs, CompositeRule.OVER);
+        filter = new CompositeRable8Bit(srcs, CompositeRule.OVER);
 
-        filter = new ConcretePadRable(filter,
+        filter = new PadRable8Bit(filter,
                                       primitiveRegion,
                                       PadMode.ZERO_PAD);;
 

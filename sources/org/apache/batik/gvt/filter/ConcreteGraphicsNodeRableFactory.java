@@ -28,6 +28,6 @@ public class ConcreteGraphicsNodeRableFactory implements GraphicsNodeRableFactor
      */
     public GraphicsNodeRable createGraphicsNodeRable(GraphicsNode node,
                                                 GraphicsNodeRenderContext rc){
-        return new ConcreteGraphicsNodeRable(node, rc);
+        return new GraphicsNodeRable8Bit(node, rc);
     }
 }

@@ -26,12 +26,12 @@ import org.apache.batik.bridge.Viewport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteMaskRable;
+import org.apache.batik.gvt.filter.MaskRable8Bit;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -157,7 +157,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
             filter = gnrFactory.createGraphicsNodeRable(maskedNode, rc);
         }
 
-        return new ConcreteMaskRable(filter, maskNode, maskRegion);
+        return new MaskRable8Bit(filter, maskNode, maskRegion);
     }
 
     public void update(BridgeMutationEvent evt) {

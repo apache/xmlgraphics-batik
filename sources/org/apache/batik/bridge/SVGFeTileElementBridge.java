@@ -17,10 +17,10 @@ import org.apache.batik.bridge.FilterPrimitiveBridge;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.TileRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.TileRable;
 
-import org.apache.batik.gvt.filter.ConcreteTileRable;
+import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -31,7 +31,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
  * This class bridges an SVG <tt>feTile</tt> filter element
- * with <tt>ConcreteTileRable</tt>.
+ * with <tt>TileRable8Bit</tt>.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
@@ -107,7 +107,7 @@ public class SVGFeTileElementBridge implements FilterPrimitiveBridge,
         TileRable tileRable = null;
 
         if (in != null){
-            tileRable = new ConcreteTileRable(in,
+            tileRable = new TileRable8Bit(in,
                                               tiledRegion,
                                               in.getBounds2D(),
                                               false);

@@ -8,6 +8,7 @@
 
 package org.apache.batik.gvt.filter;
 
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**

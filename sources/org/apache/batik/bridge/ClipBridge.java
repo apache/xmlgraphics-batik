@@ -10,7 +10,7 @@ package org.apache.batik.bridge;
 
 import java.awt.Shape;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.filter.Clip;
+import org.apache.batik.ext.awt.image.renderable.Clip;
 import org.w3c.dom.Element;
 
 /**

@@ -18,14 +18,14 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.MorphologyRable;
-import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.MorphologyRable;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteMorphologyRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
+import org.apache.batik.ext.awt.image.renderable.MorphologyRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -162,13 +162,13 @@ public class SVGFeMorphologyElementBridge implements FilterPrimitiveBridge,
                                                         rc,
                                                         uctx);
 
-        PadRable pad = new ConcretePadRable(in,
+        PadRable pad = new PadRable8Bit(in,
                                             primitiveRegion,
                                             PadMode.ZERO_PAD);
 
         // Build filter
         Filter filter =
-            new ConcreteMorphologyRable(pad, radiusX, radiusY, doDilation);
+            new MorphologyRable8Bit(pad, radiusX, radiusY, doDilation);
 
         // Get result attribute if any
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);

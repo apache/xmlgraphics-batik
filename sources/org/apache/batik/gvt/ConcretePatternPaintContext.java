@@ -28,16 +28,18 @@ import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.AffineRable;
+import org.apache.batik.ext.awt.image.renderable.AffineRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
 
-import org.apache.batik.gvt.filter.ConcreteAffineRable;
-import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
-import org.apache.batik.gvt.filter.ConcreteTileRable;
-import org.apache.batik.gvt.filter.TileRed;
+import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.TileRable;
+import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
+import org.apache.batik.ext.awt.image.rendered.TileRed;
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 
 /**
  * <tt>PaintContext</tt> for the <tt>ConcretePatterPaint</tt>
@@ -129,13 +131,13 @@ public class ConcretePatternPaintContext implements PaintContext {
         adjustTxf.concatenate(nodeTxf);
 
         GraphicsNodeRable gnr
-            = new ConcreteGraphicsNodeRable(node, gnrc);
+            = new GraphicsNodeRable8Bit(node, gnrc);
 
         AffineRable atr
-            = new ConcreteAffineRable(gnr, adjustTxf);
+            = new AffineRable8Bit(gnr, adjustTxf);
 
 
-        Shape aoiShape = (Shape)hints.get(GraphicsNode.KEY_AREA_OF_INTEREST);
+        Shape aoiShape = (Shape)hints.get(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST);
         Rectangle2D tiledRegion = (aoiShape == null? null : aoiShape.getBounds2D());
 
         Rectangle2D padBounds = (Rectangle2D)patternBounds.clone();
@@ -152,12 +154,12 @@ public class ConcretePatternPaintContext implements PaintContext {
         }
 
         PadRable pad
-            = new ConcretePadRable(atr,
+            = new PadRable8Bit(atr,
                                    padBounds,
                                    PadMode.ZERO_PAD);
 
-        ConcreteTileRable tileRable
-            = new ConcreteTileRable(pad,
+        TileRable tileRable
+            = new TileRable8Bit(pad,
                                     tiledRegion,
                                     patternBounds,
                                     overflow);

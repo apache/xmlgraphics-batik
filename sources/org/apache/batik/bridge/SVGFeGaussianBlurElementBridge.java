@@ -18,14 +18,14 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.GaussianBlurRable;
-import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.GaussianBlurRable;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteGaussianBlurRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
+import org.apache.batik.ext.awt.image.renderable.GaussianBlurRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -149,11 +149,11 @@ public class SVGFeGaussianBlurElementBridge implements FilterPrimitiveBridge,
                                                         rc,
                                                         uctx);
 
-        PadRable pad = new ConcretePadRable(in, blurArea, PadMode.ZERO_PAD);
+        PadRable pad = new PadRable8Bit(in, blurArea, PadMode.ZERO_PAD);
 
         // Build filter
         Filter filter = null;
-        filter = new ConcreteGaussianBlurRable(pad,
+        filter = new GaussianBlurRable8Bit(pad,
                                                stdDeviationX,
                                                stdDeviationY);
 

@@ -9,7 +9,7 @@
 package org.apache.batik.gvt;
 
 import java.awt.geom.Rectangle2D;
-import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 
 /**
  * A graphics node that represents a raster image.

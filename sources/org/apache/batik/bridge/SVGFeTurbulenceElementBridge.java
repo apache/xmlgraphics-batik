@@ -21,15 +21,15 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Clip;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
-import org.apache.batik.gvt.filter.TurbulenceRable;
+import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
+import org.apache.batik.ext.awt.image.renderable.TurbulenceRable;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteClipRable;
-import org.apache.batik.gvt.filter.ConcreteTurbulenceRable;
+import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.TurbulenceRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -40,7 +40,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
  * This class bridges an SVG <tt>feTurbulence</tt> filter element
- * with <tt>ConcreteTurbulenceRable</tt>.
+ * with <tt>TurbulenceRable8Bit</tt>.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
@@ -142,7 +142,7 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
         }
 
         //
-        // Now, build a ConcreteTurbulenceRable from the parameters
+        // Now, build a TurbulenceRable8Bit from the parameters
         //
 
         // Default region is the filter chain region
@@ -164,7 +164,7 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
                                                         uctx);
 
         TurbulenceRable turbulenceRable
-            = new ConcreteTurbulenceRable(turbulenceRegion);
+            = new TurbulenceRable8Bit(turbulenceRegion);
 
         turbulenceRable.setBaseFrequencyX(baseFrequencyX);
         turbulenceRable.setBaseFrequencyY(baseFrequencyY);

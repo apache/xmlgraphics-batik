@@ -20,13 +20,13 @@ import org.apache.batik.bridge.FilterPrimitiveBridge;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterChainRable;
-import org.apache.batik.gvt.filter.FloodRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
+import org.apache.batik.ext.awt.image.renderable.FloodRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 
-import org.apache.batik.gvt.filter.ConcreteFloodRable;
+import org.apache.batik.ext.awt.image.renderable.FloodRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -102,7 +102,7 @@ public class SVGFeFloodElementBridge implements FilterPrimitiveBridge,
                                                         uctx);
 
         // First, create the FloodRable that maps the input filter node
-        FloodRable flood = new ConcreteFloodRable(floodRegion, floodColor);
+        FloodRable flood = new FloodRable8Bit(floodRegion, floodColor);
 
         // Get result attribute if any
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);
