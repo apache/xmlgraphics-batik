@@ -56,7 +56,7 @@ public class RunnableQueueTest extends AbstractTest {
 
         for (int i=0; i<nThreads; i++) {
             Runnable rqRable = new RQRable(i, rand.nextInt(50)+1);
-            l.add(new TPRable(rq, i, rand.nextBoolean(),
+            l.add(new TPRable(rq, i, rand.nextInt(4)+1,
                               rand.nextInt(500)+1, 20, rqRable));
         }
 
@@ -102,41 +102,64 @@ public class RunnableQueueTest extends AbstractTest {
         }
     }
 
+    public static final int INVOKE_LATER     = 1;
+    public static final int INVOKE_AND_WAIT  = 2;
+    public static final int PREEMPT_LATER    = 3;
+    public static final int PREEMPT_AND_WAIT = 4;
+
     public class TPRable implements Runnable {
+
         RunnableQueue rq;
         int           idx;
-        boolean       invokeAndWait;
+        int           style;
         long          repeatDelay;
         int           count;
         Runnable      rqRable;
 
         TPRable(RunnableQueue rq, int idx, 
-                boolean invokeAndWait,
+                int style,
                 long    repeatDelay, int count,
                 Runnable rqRable) {
-            this.rq            = rq;
-            this.idx           = idx;
-            this.invokeAndWait = invokeAndWait;
-            this.repeatDelay   = repeatDelay;
-            this.count         = count;
-            this.rqRable       = rqRable;
+            this.rq           = rq;
+            this.idx          = idx;
+            this.style        = style;
+            this.repeatDelay  = repeatDelay;
+            this.count        = count;
+            this.rqRable      = rqRable;
         }
 
         public void run() {
             try {
                 while (count-- != 0) {
-                    if (invokeAndWait) {
-                        System.out.println("     InvW #" + idx);
-                        rq.invokeAndWait(rqRable);
-                        System.out.println("Done InvW #" + idx);
-                    } else {
+                    switch (style) {
+                    case INVOKE_LATER:
                         synchronized (rqRable) {
                             System.out.println("     InvL #" + idx);
                             rq.invokeLater(rqRable);
                             System.out.println("Done InvL #" + idx);
                             rqRable.wait();
                         }
+                        break;
+                    case INVOKE_AND_WAIT:
+                        System.out.println("     InvW #" + idx);
+                        rq.invokeAndWait(rqRable);
+                        System.out.println("Done InvW #" + idx);
+                        break;
+                    case PREEMPT_LATER:
+                        synchronized (rqRable) {
+                            System.out.println("     PreL #" + idx);
+                            rq.preemptLater(rqRable);
+                            System.out.println("Done PreL #" + idx);
+                            rqRable.wait();
+                        }
+                        break;
+                    case PREEMPT_AND_WAIT:
+                        System.out.println("     PreW #" + idx);
+                        rq.preemptAndWait(rqRable);
+                        System.out.println("Done PreW #" + idx);
+                        break;
                     }
+                        
                     if (repeatDelay < 0) 
                         break;
                     Thread.sleep(repeatDelay);

@@ -168,7 +168,8 @@ public class RunnableQueue implements Runnable {
     }
 
     /**
-     * Schedules the given Runnable object for a later invocation.
+     * Schedules the given Runnable object for a later invocation, and
+     * returns.
      * An exception is thrown if the RunnableQueue was not started.
      * @throws IllegalStateException if getThread() is null.
      */
@@ -184,7 +185,7 @@ public class RunnableQueue implements Runnable {
     }
 
     /**
-     * Waits until the given Runnable <tt>run()</tt> has returned.
+     * Waits until the given Runnable's <tt>run()</tt> has returned.
      * <em>Note: <tt>invokeAndWait()</tt> must not be called from the
      * current thread (for example from the <tt>run()</tt> method of the
      * argument).
@@ -204,6 +205,54 @@ public class RunnableQueue implements Runnable {
         LockableLink l = new LockableLink(r);
         synchronized (list) {
             list.push(l);
+            list.notify();
+        }
+        l.lock();
+    }
+
+
+    /**
+     * Schedules the given Runnable object for a later invocation, and
+     * returns. The given runnable preempts any runnable that is not
+     * currently executing (ie the next runnable started will be the
+     * one given).  An exception is thrown if the RunnableQueue was
+     * not started.  
+     * @throws IllegalStateException if getThread() is  null.  
+     */
+    public void preemptLater(Runnable r) {
+        if (runnableQueueThread == null) {
+            throw new IllegalStateException
+                ("RunnableQueue not started or has exited");
+        }
+        synchronized (list) {
+            list.unpop(new Link(r));
+            list.notify();
+        }
+    }
+
+    /**
+     * Waits until the given Runnable's <tt>run()</tt> has returned.
+     * The given runnable preempts any runnable that is not currently
+     * executing (ie the next runnable started will be the one given).
+     * <em>Note: <tt>preemptAndWait()</tt> must not be called from the
+     * current thread (for example from the <tt>run()</tt> method of the
+     * argument).
+     * @throws IllegalStateException if getThread() is null or if the
+     *         thread returned by getThread() is the current one.
+     */
+    public void preemptAndWait(Runnable r) throws InterruptedException {
+        if (runnableQueueThread == null) {
+            throw new IllegalStateException
+                ("RunnableQueue not started or has exited");
+        }
+        if (runnableQueueThread == Thread.currentThread()) {
+            throw new IllegalStateException
+                ("Cannot be called from the RunnableQueue thread");
+        }
+
+        LockableLink l = new LockableLink(r);
+        synchronized (list) {
+            list.unpop(l);
             list.notify();
         }
         l.lock();
