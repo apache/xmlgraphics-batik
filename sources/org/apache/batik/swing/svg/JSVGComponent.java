@@ -1020,6 +1020,10 @@ public class JSVGComponent extends JGVTComponent {
          * Called when a rendering started.
          */
         public void gvtRenderingStarted(GVTTreeRendererEvent e) {
+            super.gvtRenderingStarted(e);
+
+            // Don't know if more stuff should go here, but this works
+            // much better than not calling the base class.
         }
 
         /**

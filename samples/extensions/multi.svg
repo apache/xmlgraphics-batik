@@ -1,0 +1,53 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in  the LICENSE file.                                     -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- regularPoly extension tag test                                         -->
+<!--                                                                        -->
+<!-- @author Thomas.DeWeese@Kodak.com                                       -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<!-- <?xml-stylesheet type="text/css" href="extension.css" ?> -->
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body" width="450" height="500" xml:space="preserve" 
+     viewBox="0 0 450 500"
+     xmlns:batikExt="http://xml.apache.org/batik/ext">
+
+    <title>Multi-Image Extension Tag</title>
+  
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= -->
+    <g id="testContent" class="legend" style="text-anchor:middle">
+        <text x="225" y="40" class="title">Multi-Image Extension Tag</text>
+  
+        <g transform="translate(145, 145)">
+          <rect fill="#DAA" x="0" y="0" width="160" height="220"/>
+          <batikExt:multi-image id="img" xlink:href="multi1.jpg"
+                 x="20" y="20" width="120" height="180" 
+		 pixel-width="480" pixel-height="720">
+	     <batikExt:sub-image xlink:href="multi2.jpg" 
+	                pixel-width="240" pixel-height="360"/>
+	     <batikExt:sub-image xlink:href="multi3.jpg" 
+	                pixel-width="120" pixel-height="180"/>
+	     <batikExt:sub-image xlink:href="multi4.jpg" 
+	                pixel-width="60" pixel-height="90"/>
+	  </batikExt:multi-image>
+        </g>
+    </g>
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <!-- <use xlink:href="../batikLogo.svg#Batik_Tag_Box" /> -->
+</svg>
