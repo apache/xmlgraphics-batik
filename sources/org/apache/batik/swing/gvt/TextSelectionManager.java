@@ -92,7 +92,7 @@ public class TextSelectionManager {
     public TextSelectionManager(JGVTComponent comp,
                                 GraphicsNodeRenderContext rc,
                                 AWTEventDispatcher ed) {
-        textSelector = new ConcreteTextSelector(rc);
+        textSelector = new ConcreteTextSelector();
         textSelectionListener = new TextSelectionListener();
         textSelector.addSelectionListener(textSelectionListener);
         mouseListener = new MouseListener();

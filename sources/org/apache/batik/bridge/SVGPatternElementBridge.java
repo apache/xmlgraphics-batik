@@ -171,7 +171,7 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
         if(contentCoordSystem == SVGUtilities.OBJECT_BOUNDING_BOX){
             AffineTransform patternContentUnitsTransform
                 = new AffineTransform();
-            Rectangle2D objectBoundingBox = paintedNode.getGeometryBounds(rc);
+            Rectangle2D objectBoundingBox = paintedNode.getGeometryBounds();
             patternContentUnitsTransform.translate
                 (objectBoundingBox.getX(),
                  objectBoundingBox.getY());

@@ -287,7 +287,7 @@ public class FindDialog extends JDialog implements ActionMap {
         }
         System.out.println(((TextNode)gn).getText());
         if (enableZoom.isSelected()) {
-            Rectangle2D bounds = gn.getBounds(svgCanvas.getRenderContext());
+            Rectangle2D bounds = gn.getBounds();
             bounds = gn.getGlobalTransform().createTransformedShape
                 (bounds).getBounds();
             Dimension dim = svgCanvas.getSize();

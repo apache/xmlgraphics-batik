@@ -17,7 +17,6 @@ import java.util.List;
 import org.apache.batik.ext.awt.RadialGradientPaint;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 import org.w3c.dom.Element;
 
@@ -115,10 +114,8 @@ public class SVGRadialGradientElementBridge
 
         // additional transform to move to objectBoundingBox coordinate system
         if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {
-            GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
             transform = SVGUtilities.toObjectBBox(transform,
-                                                  paintedNode,
-                                                  rc);
+                                                  paintedNode);
         }
         UnitProcessor.Context uctx
             = UnitProcessor.createContext(ctx, paintElement);
