@@ -74,16 +74,16 @@ public class PreferenceDialog extends JDialog
     //////////////////////////////////////////////////////////////
 
     public static final String ICON_USER_LANGUAGE
-        = "org/apache/batik/apps/svgbrowser/resources/userLanguagePref.png";
+        = "PreferenceDialog.icon.userLanguagePref";
 
     public static final String ICON_USER_STYLESHEET
-        = "org/apache/batik/apps/svgbrowser/resources/userStylesheetPref.png";
+        = "PreferenceDialog.icon.userStylesheetPref";
 
     public static final String ICON_BEHAVIOR
-        = "org/apache/batik/apps/svgbrowser/resources/behaviorsPref.png";
+        = "PreferenceDialog.icon.behaviorsPref";
 
     public static final String ICON_NETWORK
-        = "org/apache/batik/apps/svgbrowser/resources/networkPref.png";
+        = "PreferenceDialog.icon.networkPref";
 
     public static final String LABEL_USER_OPTIONS 
         = "PreferenceDialog.label.user.options";
@@ -381,10 +381,10 @@ public class PreferenceDialog extends JDialog
         // Set Cell Renderer
         ClassLoader cl = this.getClass().getClassLoader();
         Map map= new Hashtable();
-        map.put(Resources.getString(LABEL_USER_LANGUAGE), new ImageIcon(cl.getResource(ICON_USER_LANGUAGE)));
-        map.put(Resources.getString(LABEL_USER_STYLESHEET), new ImageIcon(cl.getResource(ICON_USER_STYLESHEET)));
-        map.put(Resources.getString(LABEL_BEHAVIOR), new ImageIcon(cl.getResource(ICON_BEHAVIOR)));
-        map.put(Resources.getString(LABEL_NETWORK), new ImageIcon(cl.getResource(ICON_NETWORK)));
+        map.put(Resources.getString(LABEL_USER_LANGUAGE), new ImageIcon(cl.getResource(Resources.getString(ICON_USER_LANGUAGE))));
+        map.put(Resources.getString(LABEL_USER_STYLESHEET), new ImageIcon(cl.getResource(Resources.getString(ICON_USER_STYLESHEET))));
+        map.put(Resources.getString(LABEL_BEHAVIOR), new ImageIcon(cl.getResource(Resources.getString(ICON_BEHAVIOR))));
+        map.put(Resources.getString(LABEL_NETWORK), new ImageIcon(cl.getResource(Resources.getString(ICON_NETWORK))));
 
         list.setCellRenderer(new IconCellRenderer(map));
 
