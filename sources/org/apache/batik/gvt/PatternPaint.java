@@ -112,7 +112,8 @@ public class PatternPaint implements Paint {
         //
         if(overflow){
             Rectangle2D nodeBounds = comp.getBounds(gnrc);
-            // System.out.println("Node Bounds    : " + nodeBounds);
+            // System.out.println("Comp Bounds    : " + nodeBounds);
+            // System.out.println("Node Bounds    : " + node.getBounds(gnrc));
             padBounds.add(nodeBounds);
         }
 

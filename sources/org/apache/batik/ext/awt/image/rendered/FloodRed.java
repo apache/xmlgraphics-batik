@@ -24,11 +24,12 @@ import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 
 /**
- * This implementation of RenderableImage will render its input
- * GraphicsNode on demand for tiles.
+ * This implementation of RenderedImage will generate an infinate
+ * field of a single color.  It reports bounds but will in fact render
+ * out to infinity.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @version $Id$
+ * @version $Id$ 
  */
 public class FloodRed extends AbstractRed {
 

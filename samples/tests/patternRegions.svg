@@ -75,7 +75,7 @@
         <pattern id="pattern4" 
                  patternContentUnits="objectBoundingBox"
                  x="0" y="0" width=".75" height=".5" overflow="visible">
-            <circle cx="25%" cy=".33333333" r=".25" style="fill:red" />
+            <circle cx="0.0556%" cy=".33333333" r=".25" style="fill:red" />
             <rect x=".25" y=".33333333" width="0.375" height=".5" style="fill:green"/>
         </pattern>
 

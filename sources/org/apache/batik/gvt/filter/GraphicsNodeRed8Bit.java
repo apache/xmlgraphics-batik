@@ -112,6 +112,7 @@ public class GraphicsNodeRed8Bit extends AbstractTiledRed {
     }
 
     public void genRect(WritableRaster wr) {
+        // System.out.println("  Rect: " + wr.getBounds());
         BufferedImage offScreen
             = new BufferedImage(cm, 
                                 wr.createWritableTranslatedChild(0,0),

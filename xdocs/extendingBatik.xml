@@ -1,31 +1,85 @@
 <?xml version="1.0"?>
 <!DOCTYPE document SYSTEM "./dtd/document-v10.dtd">
 
-<!-- ========================================================================= -->
-<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
-<!--                                                                           -->
-<!-- This software is published under the terms of the Apache Software License -->
-<!-- version 1.1, a copy of which has been included with this distribution in  -->
-<!-- the LICENSE file.                                                         -->
-<!-- ========================================================================= -->
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in  the LICENSE file.                                     -->
+<!-- ====================================================================== -->
 
-<!-- ========================================================================= -->
-<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- ====================================================================== -->
+<!-- author vincent.hardy@eng.sun.com                                       -->
 <!-- version $Id$ -->
-<!-- ========================================================================= -->
+<!-- ====================================================================== -->
 
 <document>
     <header>
         <title>Extending Batik</title>
         <subtitle>Possible extensions</subtitle>
         <authors>
-            <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
+            <person name="Thomas DeWeese" email="thomas.deweese@kodak.com"/>
         </authors>
     </header>
 
     <body>
         <s1 title="Introduction">
-            <p>TO BE WRITTEN (VH)</p>
+            <p>The goal of this section is to provide an overview of
+               the built in extension mechanisms in Batik.  As an open
+               source project, people can of course make any extension
+               they feel is interesting, however Batik has been
+               designed with several forms of extension in mind.</p>
+
+            <p>The main areas extension are anticipated are:</p>
+            <ul>
+                <li><link href="#customXMLTags"> 
+                    Support for custom XML Tags
+                    </link></li>
+                <li><link href="#imageTagFormats"> 
+                    Support for new file formats in the 'image' tag.
+                    </link></li>
+                <li><link href="#urlProtocols">
+                    Support for new protocols in URL references.
+                    </link></li>
+                <li><link href="#transcoders">
+                    Support for new Transcoders.
+                    </link></li>
+            </ul>
+
+            <note>
+            If you feel that we have overlooked an important area for
+            extension please let your feelings be known on the mailing-lists.
+            </note>
+        </s1>
+
+        <s1 title="Custom XML Tags">
+            <p>
+            First one must ask "What does it mean to support custom 
+            XML tags?"
+            </p>
+            <p>
+            If your only interest if for the custom tags to appear in
+            the SVG DOM tree, you need do nothing more than provide
+            appropriate namespacing and DTD(s) (ie. simply make your
+            new content well formed XML).  Batik will ignore the parts
+            that aren't part of SVG.
+            </p>
+
+            <p>
+            If your interest is in having the new tag participate in
+            the generation of graphics then you must inform the Bridge
+            about your new tags.
+            </p>
+        </s1>
+
+        <s1 title="New File Formats">
+        </s1>
+
+        <s1 title="New Protocols">
+        </s1>
+
+        <s1 title="New Transcoders">
         </s1>
     </body>
 </document>
