@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/XSL/Transform/1.0">
+<xsl:stylesheet
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    version="1.0">
 
   <xsl:param name="stylebook.project"/>
   <xsl:param name="copyright"/>
@@ -188,7 +190,7 @@
 
   <xsl:template match="s2">
    <div align="right">
-    <table border="0" width="96%" cellspacing="0" cellpadding="0">
+    <table border="0" width="95%" cellspacing="0" cellpadding="0">
       <tr>
         <td width="9" height="7" valign="bottom" align="right"><img src="resources/bar-top-left.gif" width="9" height="7" vspace="0" hspace="0" border="0"/></td>
         <td background="resources/bar-border-top.gif"><img src="resources/void.gif" width="1" height="5" vspace="0" hspace="0" border="0"/></td>
@@ -208,7 +210,7 @@
         <td width="9" height="12" valign="top" align="left"><img src="resources/bar-bottom-right.gif" width="9" height="12" vspace="0" hspace="0" border="0"/></td>
       </tr>
      </table>
-     <table border="0" width="96%" cellspacing="0" cellpadding="0">
+     <table border="0" width="95%" cellspacing="0" cellpadding="0">
       <tr>
        <td>
         <font face="arial,helvetica,sanserif" color="#000000"><xsl:apply-templates/></font>
@@ -221,7 +223,7 @@
 
   <xsl:template match="s3">
    <div align="right">
-    <table border="0" width="94%" cellspacing="0" cellpadding="0">
+    <table border="0" width="90%" cellspacing="0" cellpadding="0">
       <tr>
         <td width="9" height="7" valign="bottom" align="right"><img src="resources/bar-top-left.gif" width="9" height="7" vspace="0" hspace="0" border="0"/></td>
         <td background="resources/bar-border-top.gif"><img src="resources/void.gif" width="1" height="5" vspace="0" hspace="0" border="0"/></td>
@@ -241,7 +243,7 @@
         <td width="9" height="12" valign="top" align="left"><img src="resources/bar-bottom-right.gif" width="9" height="12" vspace="0" hspace="0" border="0"/></td>
       </tr>
      </table>
-     <table border="0" width="94%" cellspacing="0" cellpadding="0">
+     <table border="0" width="90%" cellspacing="0" cellpadding="0">
       <tr>
        <td>
         <font face="arial,helvetica,sanserif" color="#000000"><xsl:apply-templates/></font>
@@ -254,7 +256,7 @@
 
   <xsl:template match="s4">
    <div align="right">
-    <table border="0" width="92%" cellspacing="0" cellpadding="0">
+    <table border="0" width="85%" cellspacing="0" cellpadding="0">
       <tr>
         <td width="9" height="7" valign="bottom" align="right"><img src="resources/bar-top-left.gif" width="9" height="7" vspace="0" hspace="0" border="0"/></td>
         <td background="resources/bar-border-top.gif"><img src="resources/void.gif" width="1" height="5" vspace="0" hspace="0" border="0"/></td>
@@ -274,7 +276,7 @@
         <td width="9" height="12" valign="top" align="left"><img src="resources/bar-bottom-right.gif" width="9" height="12" vspace="0" hspace="0" border="0"/></td>
       </tr>
      </table>
-     <table border="0" width="92%" cellspacing="0" cellpadding="0">
+     <table border="0" width="85%" cellspacing="0" cellpadding="0">
       <tr>
        <td>
         <font face="arial,helvetica,sanserif" color="#000000"><xsl:apply-templates/></font>
@@ -298,7 +300,7 @@
 <!-- ====================================================================== -->
 
   <xsl:template match="p">
-    <p><xsl:apply-templates/></p>
+    <p align="justify"><xsl:apply-templates/></p>
   </xsl:template>
 
   <xsl:template match="note">
@@ -377,7 +379,7 @@
    <xsl:apply-templates select="dd"/>   
   </li>
  </xsl:template>
- 
+
 <!-- ====================================================================== -->
 <!-- table section -->
 <!-- ====================================================================== -->

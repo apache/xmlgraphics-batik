@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/XSL/Transform/1.0">
+<xsl:stylesheet
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    version="1.0">
 
  <xsl:import href="copyover.xsl"/>
 
@@ -21,14 +23,24 @@
         <link rel="stylesheet" type="text/css" href="resources/simple.css" title="Simple Style"/>
       </head>
       <body>
-        <p class="legal">Apache Documentation</p>
-        <h1 class="title"><xsl:value-of select="document/header/title"/></h1>
-        <xsl:apply-templates/>
-        <p class="legal">Copyright &#169; <xsl:value-of select="$copyright"/>.<br/>All rights reserved.</p>
+
+        <!-- THE MAIN PANEL (SIDEBAR AND CONTENT) -->
+        <table id="main-panel">
+          <tr>
+            <!-- THE SIDE BAR -->
+            <td id="side-bar" valign="top">
+              <xsl:apply-templates select="document($stylebook.project)"/>
+            </td>
+            <!-- THE CONTENT PANEL -->
+            <td id="content-panel">
+              <xsl:apply-templates/>
+            </td>
+          </tr>
+        </table>
       </body>
     </html>
    </xsl:if>
-
+   
    <xsl:if test="book">
     <xsl:apply-templates/>
    </xsl:if>
@@ -55,7 +67,7 @@
   <xsl:template match="separator">
     <hr/>
   </xsl:template>
-
+  
 <!-- ====================================================================== -->
 <!-- header section -->
 <!-- ====================================================================== -->
@@ -105,7 +117,7 @@
   </xsl:template>
 
   <xsl:template match="source">
-   <pre><xsl:apply-templates/></pre>
+   <pre class="source"><xsl:apply-templates/></pre>
   </xsl:template>
 
   <xsl:template match="fixme">
@@ -126,14 +138,10 @@
   <li>
    <strong><xsl:value-of select="."/></strong>
    <xsl:text> - </xsl:text>
-   <xsl:value-of select="following::dd"/>
+   <xsl:apply-templates select="dd"/>   
   </li>
  </xsl:template>
-
- <xsl:template match="dd">
-  <!-- ignore since already used -->
- </xsl:template>
-
+ 
 <!-- ====================================================================== -->
 <!-- table section -->
 <!-- ====================================================================== -->
@@ -145,7 +153,7 @@
 <!-- ====================================================================== -->
 
 <!-- since we cloned the XHTML model, we don't need any futher styling      -->
-
+ 
 <!-- ====================================================================== -->
 <!-- images section -->
 <!-- ====================================================================== -->
@@ -153,7 +161,7 @@
  <xsl:template match="figure|img|icon">
   <img src="{@src}" alt="{@alt}" class="{name(.)}"/>
  </xsl:template>
-
+ 
 <!-- ====================================================================== -->
 <!-- links section -->
 <!-- ====================================================================== -->
@@ -176,6 +184,6 @@
 
  <xsl:template match="anchor">
    <a name="{@id}"><xsl:comment>anchor</xsl:comment></a>
- </xsl:template>
+ </xsl:template>  
 
 </xsl:stylesheet>

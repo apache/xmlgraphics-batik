@@ -105,7 +105,9 @@ To display the available targets type:
 
   <path id="libs-build-classpath">
     <fileset dir="lib/build">
-      <include name="*.jar"/>
+      <include name="stylebook*.jar"/>
+      <include name="xalan*.jar"/>
+      <include name="xerces*.jar"/>
     </fileset>
   </path>
 

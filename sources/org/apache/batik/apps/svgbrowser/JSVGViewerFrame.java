@@ -107,7 +107,6 @@ import org.apache.batik.transcoder.print.PrintTranscoder;
 
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.gui.DOMViewer;
-import org.apache.batik.util.gui.LanguageDialog;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;
 import org.apache.batik.util.gui.URIChooser;
@@ -159,6 +158,7 @@ public class JSVGViewerFrame
     public final static String PRINT_ACTION = "PrintAction";
     public final static String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
     public final static String EXPORT_AS_JPG_ACTION = "ExportAsJPGAction";
+    public final static String PREFERENCES_ACTION = "PreferencesAction";
     public final static String CLOSE_ACTION = "CloseAction";
     public final static String VIEW_SOURCE_ACTION = "ViewSourceAction";
     public final static String EXIT_ACTION = "ExitAction";
@@ -168,12 +168,6 @@ public class JSVGViewerFrame
     public final static String PREVIOUS_TRANSFORM_ACTION = "PreviousTransformAction";
     public final static String NEXT_TRANSFORM_ACTION = "NextTransformAction";
     public final static String STOP_ACTION = "StopAction";
-    public final static String DOUBLE_BUFFER_ACTION = "DoubleBufferAction";
-    public final static String AUTO_ADJUST_ACTION = "AutoAdjustAction";
-    public final static String SHOW_DEBUG_ACTION = "ShowDebugAction";
-    public final static String SHOW_RENDERING_ACTION = "ShowRenderingAction";
-    public final static String LANGUAGE_ACTION = "LanguageAction";
-    public final static String STYLE_SHEET_ACTION = "StyleSheetAction";
     public final static String MONITOR_ACTION = "MonitorAction";
     public final static String DOM_VIEWER_ACTION = "DOMViewerAction";
     public final static String SET_TRANSFORM_ACTION = "SetTransformAction";
@@ -288,11 +282,6 @@ public class JSVGViewerFrame
     protected DOMViewer domViewer;
 
     /**
-     * The language dialog.
-     */
-    protected LanguageDialog languageDialog;
-
-    /**
      * The Find dialog.
      */
     protected FindDialog findDialog;
@@ -303,11 +292,6 @@ public class JSVGViewerFrame
     protected JAffineTransformChooser.Dialog transformDialog;
 
     /**
-     * The user style dialog.
-     */
-    protected UserStyleDialog styleSheetDialog;
-
-    /**
      * The location bar.
      */
     protected LocationBar locationBar;
@@ -316,16 +300,6 @@ public class JSVGViewerFrame
      * The status bar.
      */
     protected StatusBar statusBar;
-
-    /**
-     * The user languages.
-     */
-    protected String userLanguages = "en";
-
-    /**
-     * The user style sheet URI.
-     */
-    protected String userStyleSheetURI;
 
     /**
      * The initial frame title.
@@ -343,20 +317,10 @@ public class JSVGViewerFrame
     protected TransformHistory transformHistory = new TransformHistory();
 
     /**
-     * the ShowRenderingAction.
-     */
-    protected ShowRenderingAction showRenderingAction = new ShowRenderingAction();
-
-    /**
      * Creates a new SVG viewer frame.
      */
     public JSVGViewerFrame(Application app) {
         application = app;
-
-        String s = Locale.getDefault().getLanguage();
-        if (!userLanguages.equals(s)) {
-            userLanguages = s + "," + userLanguages;
-        }
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -373,6 +337,7 @@ public class JSVGViewerFrame
         listeners.put(PRINT_ACTION, new PrintAction());
         listeners.put(EXPORT_AS_PNG_ACTION, new ExportAsPNGAction());
         listeners.put(EXPORT_AS_JPG_ACTION, new ExportAsJPGAction());
+        listeners.put(PREFERENCES_ACTION, new PreferencesAction());
         listeners.put(CLOSE_ACTION, new CloseAction());
         listeners.put(EXIT_ACTION, application.createExitAction(this));
         listeners.put(VIEW_SOURCE_ACTION, new ViewSourceAction());
@@ -382,12 +347,6 @@ public class JSVGViewerFrame
         listeners.put(PREVIOUS_TRANSFORM_ACTION, previousTransformAction);
         listeners.put(NEXT_TRANSFORM_ACTION, nextTransformAction);
         listeners.put(STOP_ACTION, stopAction);
-        listeners.put(DOUBLE_BUFFER_ACTION, new DoubleBufferAction());
-        listeners.put(AUTO_ADJUST_ACTION, new AutoAdjustAction());
-        listeners.put(SHOW_DEBUG_ACTION, new ShowDebugAction());
-        listeners.put(SHOW_RENDERING_ACTION, showRenderingAction);
-        listeners.put(LANGUAGE_ACTION, new LanguageAction());
-        listeners.put(STYLE_SHEET_ACTION, new StyleSheetAction());
         listeners.put(MONITOR_ACTION, new MonitorAction());
         listeners.put(DOM_VIEWER_ACTION, new DOMViewerAction());
         listeners.put(SET_TRANSFORM_ACTION, new SetTransformAction());
@@ -582,6 +541,20 @@ public class JSVGViewerFrame
     }
 
     /**
+     * Whether to show the debug traces.
+     */
+    public void setDebug(boolean b) {
+        debug = b;
+    }
+
+    /**
+     * Whether to auto adjust the canvas to the size of the document.
+     */
+    public void setAutoAdjust(boolean b) {
+        autoAdjust = b;
+    }
+
+    /**
      * Returns the main JSVGCanvas of this frame.
      */
     public JSVGCanvas getJSVGCanvas() {
@@ -591,7 +564,7 @@ public class JSVGViewerFrame
     /**
      * Needed to work-around JFileChooser bug with abstract Files
      */
-    public File makeAbsolute(File f){
+    private static File makeAbsolute(File f){
         if(!f.isAbsolute()){
             return f.getAbsoluteFile();
         }
@@ -700,29 +673,20 @@ public class JSVGViewerFrame
 
             // Copy the current settings to the new window.
             vf.autoAdjust = autoAdjust;
-            AutoAdjustAction aaa;
-            aaa = (AutoAdjustAction)vf.listeners.get(AUTO_ADJUST_ACTION);
-            aaa.menuItem.setSelected(autoAdjust);
-
             vf.debug = debug;
-            ShowDebugAction sda;
-            sda = (ShowDebugAction)vf.listeners.get(SHOW_DEBUG_ACTION);
-            sda.menuItem.setSelected(debug);
-
             vf.svgCanvas.setProgressivePaint(svgCanvas.getProgressivePaint());
-            ShowRenderingAction sra;
-            sra = (ShowRenderingAction)vf.listeners.get(SHOW_RENDERING_ACTION);
-            sra.menuItem.setSelected(svgCanvas.getProgressivePaint());
-
             vf.svgCanvas.setDoubleBufferedRendering
                 (svgCanvas.getDoubleBufferedRendering());
-            vf.showRenderingAction.update(!svgCanvas.getDoubleBufferedRendering());
-            DoubleBufferAction dba;
-            dba = (DoubleBufferAction)vf.listeners.get(DOUBLE_BUFFER_ACTION);
-            dba.menuItem.setSelected(svgCanvas.getDoubleBufferedRendering());
+        }
+    }
 
-            vf.userLanguages = userLanguages;
-            vf.userStyleSheetURI = userStyleSheetURI;
+    /**
+     * To show the preferences.
+     */
+    public class PreferencesAction extends AbstractAction {
+        public PreferencesAction() {}
+        public void actionPerformed(ActionEvent e) {
+            application.showPreferenceDialog(JSVGViewerFrame.this);
         }
     }
 
@@ -1150,81 +1114,6 @@ public class JSVGViewerFrame
     }
 
     /**
-     * To enable the double buffering.
-     */
-    public class DoubleBufferAction
-        extends AbstractAction
-        implements JComponentModifier {
-        public JCheckBoxMenuItem menuItem;
-        public DoubleBufferAction() {}
-        public void actionPerformed(ActionEvent e) {
-            boolean b = menuItem.isSelected();
-            showRenderingAction.update(!b);
-            svgCanvas.setDoubleBufferedRendering(b);
-        }
-
-        public void addJComponent(JComponent c) {
-            menuItem = (JCheckBoxMenuItem)c;
-        }
-    }
-
-    /**
-     * To adjust the window size on load.
-     */
-    public class AutoAdjustAction
-        extends AbstractAction
-        implements JComponentModifier {
-        public JCheckBoxMenuItem menuItem;
-        public AutoAdjustAction() {}
-        public void actionPerformed(ActionEvent e) {
-            autoAdjust = menuItem.isSelected();
-        }
-
-        public void addJComponent(JComponent c) {
-            menuItem = (JCheckBoxMenuItem)c;
-        }
-    }
-
-    /**
-     * To enable the debug traces.
-     */
-    public class ShowDebugAction
-        extends AbstractAction
-        implements JComponentModifier {
-        public JCheckBoxMenuItem menuItem;
-        public ShowDebugAction() {}
-        public void actionPerformed(ActionEvent e) {
-            debug = menuItem.isSelected();
-            time = System.currentTimeMillis();
-        }
-
-        public void addJComponent(JComponent c) {
-            menuItem = (JCheckBoxMenuItem)c;
-        }
-    }
-
-    /**
-     * To enable progressive rendering.
-     */
-    public class ShowRenderingAction
-        extends AbstractAction
-        implements JComponentModifier {
-        public JCheckBoxMenuItem menuItem;
-        public ShowRenderingAction() {}
-        public void actionPerformed(ActionEvent e) {
-            svgCanvas.setProgressivePaint(menuItem.isSelected());
-        }
-
-        public void addJComponent(JComponent c) {
-            menuItem = (JCheckBoxMenuItem)c;
-        }
-
-        public void update(boolean enabled) {
-            menuItem.setEnabled(enabled);
-        }
-    }
-
-    /**
      * To show the set transform dialog
      */
     public class SetTransformAction extends AbstractAction {
@@ -1244,50 +1133,6 @@ public class JSVGViewerFrame
             AffineTransform txf = transformDialog.showDialog();
             if(txf != null){
                 svgCanvas.setRenderingTransform(txf);
-            }
-        }
-    }
-
-    /**
-     * To show the language dialog.
-     */
-    public class LanguageAction extends AbstractAction {
-        public LanguageAction() {}
-        public void actionPerformed(ActionEvent e) {
-            if (languageDialog == null) {
-                languageDialog = new LanguageDialog(JSVGViewerFrame.this);
-
-                Rectangle fr = getBounds();
-                Dimension ld = languageDialog.getSize();
-                languageDialog.setLocation(fr.x + (fr.width  - ld.width) / 2,
-                                           fr.y + (fr.height - ld.height) / 2);
-                languageDialog.setLanguages(userLanguages);
-            }
-            if (languageDialog.showDialog() == LanguageDialog.OK_OPTION) {
-                userLanguages = languageDialog.getLanguages();
-            }
-        }
-    }
-
-    /**
-     * To display the user style options dialog.
-     */
-    public class StyleSheetAction extends AbstractAction {
-        public StyleSheetAction() {}
-        public void actionPerformed(ActionEvent e) {
-            if (styleSheetDialog == null) {
-                styleSheetDialog = new UserStyleDialog(JSVGViewerFrame.this);
-                styleSheetDialog.pack();
-                Rectangle fr = getBounds();
-                Dimension sd = styleSheetDialog.getSize();
-                styleSheetDialog.setLocation(fr.x + (fr.width  - sd.width) / 2,
-                                             fr.y + (fr.height - sd.height) / 2);
-                if (userStyleSheetURI != null) {
-                    styleSheetDialog.setPath(userStyleSheetURI);
-                }
-            }
-            if (styleSheetDialog.showDialog() == UserStyleDialog.OK_OPTION) {
-                userStyleSheetURI = styleSheetDialog.getPath();
             }
         }
     }
@@ -1614,14 +1459,25 @@ public class JSVGViewerFrame
      */
     public void linkActivated(LinkActivationEvent e) {
         String s = e.getReferencedURI();
-        if (s.indexOf("#") != -1) {
-            localHistory.update(e.getReferencedURI());
-            backAction.update();
-            forwardAction.update();
-
-            transformHistory = new TransformHistory();
-            previousTransformAction.update();
-            nextTransformAction.update();
+        if (svgDocument != null) {
+            try {
+                SVGOMDocument doc = (SVGOMDocument)svgDocument;
+                URL docURL = doc.getURLObject();
+                URL url = new URL(docURL, s);
+                if (!url.sameFile(docURL)) {
+                    return;
+                }
+            } catch (MalformedURLException ex) {
+            }
+            if (s.indexOf("#") != -1) {
+                localHistory.update(e.getReferencedURI());
+                backAction.update();
+                forwardAction.update();
+                
+                transformHistory = new TransformHistory();
+                previousTransformAction.update();
+                nextTransformAction.update();
+            }
         }
     }
 
@@ -1676,7 +1532,7 @@ public class JSVGViewerFrame
          * Returns the language settings.
          */
         public String getLanguages() {
-            return userLanguages;
+            return application.getLanguages();
         }
 
         /**
@@ -1684,7 +1540,7 @@ public class JSVGViewerFrame
          * @return null if no user style sheet was specified.
          */
         public String getUserStyleSheetURI() {
-            return userStyleSheetURI;
+            return application.getUserStyleSheetURI();
         }
 
         /**
