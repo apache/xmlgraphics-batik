@@ -378,7 +378,7 @@ public class RectListManagerTest extends AbstractTest {
             return mismatch;
         }
         public void run() {
-            mismatch = Base64Test.compareStreams (is1, is2, false);
+            mismatch = Base64Test.compareStreams (is1, is2, true);
         }
     }
 }
