@@ -134,63 +134,11 @@ public class ConcreteTextNode
      * Primitive bounds are in user space.
      */
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc){
-        // HACK, until we change getBounds to take GraphicsNodeRenderContext
-        // We don't consider stroke and/or fill yet,
+
         if (primitiveBounds == null) {
             if (aci != null) {
-                java.awt.font.TextLayout layout
-                    = new java.awt.font.TextLayout(aci,
-                      new java.awt.font.FontRenderContext(
-                                            new AffineTransform(),
-                                                true, true));
-
-                float tx = (float) location.getX();
-                float ty = (float) location.getY();
-                if (anchor == Anchor.MIDDLE) {
-                    tx -= layout.getAdvance()/2;
-                } else if (anchor == Anchor.END) {
-                    tx -= layout.getAdvance();
-                }
-
-                Rectangle2D layoutBounds = layout.getBounds();
-                primitiveBounds = new Rectangle2D.Float((float) (tx+layoutBounds.getX()),
-                                  (float) (ty+layoutBounds.getY()),
-                                  (float) layout.getAdvance(),
-                                  (float) layoutBounds.getHeight());
-
-                if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                        TextAttribute.UNDERLINE) != null) {
-                    // TODO: check WEIGHT attribute and adjust thickness
-                    double decorationThickness = layout.getAscent()/12f;
-                    double y =
-                        layout.getDescent()/2 + decorationThickness/2f;
-
-                    primitiveBounds.setRect(primitiveBounds.getX(), primitiveBounds.getY(),
-                                 primitiveBounds.getWidth(), primitiveBounds.getHeight()+y);
-                }
-
-                if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                        TextAttribute.OVERLINE) != null) {
-                    // TODO: check WEIGHT attribute and adjust thickness
-                    double decorationThickness = layout.getAscent()/12f;
-                    double dy =
-                        layout.getAscent()*0.1 + decorationThickness/2f;
-                    primitiveBounds.setRect(primitiveBounds.getX(), primitiveBounds.getY(),
-                                 primitiveBounds.getWidth(), primitiveBounds.getHeight()+dy);
-                }
-
-                BasicStroke stroke = (BasicStroke) aci.getAttribute(
-                        GVTAttributedCharacterIterator.TextAttribute.STROKE);
-
-                if (stroke != null) {
-                     float strokeHalfThickness = stroke.getLineWidth();
-                     primitiveBounds.setRect(
-                           primitiveBounds.getX()-strokeHalfThickness,
-                           primitiveBounds.getY()-strokeHalfThickness,
-                           primitiveBounds.getWidth()+strokeHalfThickness,
-                           primitiveBounds.getHeight()+strokeHalfThickness);
-                }
-
+                primitiveBounds = rc.getTextPainter().getBounds(this,
+                                       rc.getFontRenderContext(), true, true);
             } else {
                 // Don't cache if ACI is null
                 return new Rectangle2D.Float(0, 0, 0, 0);
@@ -207,26 +155,8 @@ public class ConcreteTextNode
 
         if (geometryBounds == null){
             if (aci != null) {
-                java.awt.font.TextLayout layout
-                    = new java.awt.font.TextLayout(aci,
-                      new java.awt.font.FontRenderContext(
-                                            new AffineTransform(),
-                                                true, true));
-
-                float tx = (float) location.getX();
-                float ty = (float) location.getY();
-                if (anchor == Anchor.MIDDLE) {
-                    tx -= layout.getAdvance()/2;
-                } else if (anchor == Anchor.END) {
-                    tx -= layout.getAdvance();
-                }
-
-                Rectangle2D layoutBounds = layout.getBounds();
-                geometryBounds = new Rectangle2D.Float((float) (tx+layoutBounds.getX()),
-                                  (float) (ty+layoutBounds.getY()),
-                                  (float) layout.getAdvance(),
-                                  (float) layoutBounds.getHeight());
-
+                geometryBounds = rc.getTextPainter().getBounds(this,
+                                      rc.getFontRenderContext(), false, false);
             } else {
                 // Don't cache if ACI is null
                 return new Rectangle2D.Float(0, 0, 0, 0);
@@ -248,26 +178,9 @@ public class ConcreteTextNode
      */
     public Shape getOutline(GraphicsNodeRenderContext rc) {
 
-        // HACK, until we change getBounds to take
-        // GraphicsNodeRenderContext
         Shape outline;
         if (aci != null) {
-            java.awt.font.TextLayout layout
-                = new java.awt.font.TextLayout(aci,
-                      new java.awt.font.FontRenderContext(
-                                            new AffineTransform(),
-                                                          true,
-                                                          true));
-            double tx = location.getX();
-            double ty = location.getY();
-            if (anchor == Anchor.MIDDLE) {
-                tx -= layout.getAdvance()/2;
-            } else if (anchor == Anchor.END) {
-                tx -= layout.getAdvance();
-            }
-            AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
-            outline = layout.getOutline(t);
-            // must we add decorations?
+            outline = rc.getTextPainter().getOutline(this, rc.getFontRenderContext(), true);
         } else {
             outline = new Rectangle2D.Float(0, 0, 0, 0);
         }
@@ -396,7 +309,7 @@ public class ConcreteTextNode
         // Paint the text
         TextPainter textPainter = rc.getTextPainter();
         if(textPainter != null) {
-            textPainter.paint(aci, location, anchor, g2d, rc);
+            textPainter.paint(this, g2d, rc);
         }
         // g2d.translate(-location.getX(), -location.getY());
 
