@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" 
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in  the LICENSE file.                                     -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Tests text-anchor on tspan elements                                    -->
+<!--                                                                        -->
+<!-- @author deweese@apache.org                                             -->
+<!-- @version $Id$    -->
+<!-- ====================================================================== -->
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg width="450" height="500" viewBox="0 0 450 500">
+
+    <text class="title" x="50%" y="40">textLength with Anchor</text>
+
+
+   <defs>
+      <g id="fill-rgn">
+         <rect x="200" y="10" width="50" height="20"
+                 fill="#DDE8FF" stroke="none"/>
+         <line x1="225" y1="8" x2="225" y2="32" stroke="red"/>
+      </g>
+
+      <g id="bg1">
+         <rect x="50"  y="0" width ="350" height="50"
+               fill="lightGrey" stroke="black"/>
+         <use xlink:href="#fill-rgn"/>
+      </g>
+
+      <g id="bg2">
+         <rect x="50"  y="0" width ="350" height="50"
+               fill="white" stroke="black"/>
+         <use xlink:href="#fill-rgn"/>
+      </g>
+   </defs>
+   
+   <g font-size="12" >
+      <!-- no lengthadjust -->
+      <g transform="translate(0,  50)">
+              <use xlink:href="#bg1"/>
+              <text x="225" y="24" text-anchor="middle">xml-batik</text>
+              <text x="225" y="45" text-anchor="middle">No textLength</text>
+      </g>
+      
+      <!-- With lengthAdjust spacingAndGlyphs -->
+      <g transform="translate(0, 100)">
+              <use xlink:href="#bg2"/>
+              <text x="225" y="24" text-anchor="middle" textLength="50"
+                      lengthAdjust="spacingAndGlyphs">B</text>
+              <text x="225" y="45" text-anchor="middle">textLength="50" lengthAdjust="spacingAndGlyphs"</text>
+      </g>
+      
+      <!-- with lengthAdjust spacing -->
+      <g transform="translate(0, 150)">
+              <use xlink:href="#bg1"/>
+              <text x="225" y="24" text-anchor="middle" textLength="50"
+                      lengthAdjust="spacing">B</text>
+              <text x="225" y="45" text-anchor="middle">textLength="50" lengthAdjust="spacing"</text>
+      </g>
+      
+      <!-- with lengthAdjust spacing -->
+      <g transform="translate(0, 200)">
+              <use xlink:href="#bg2"/>
+              <text x="225" y="24" text-anchor="middle" textLength="50"
+                      lengthAdjust="spacingAndGlyphs">Batik</text>
+              <text x="225" y="45" text-anchor="middle">textLength="50" lengthAdjust="spacingAndGlyphs"</text>
+      </g>
+      
+      <!-- with lengthAdjust spacing -->
+      <g transform="translate(0, 250)">
+              <use xlink:href="#bg1"/>
+              <text x="225" y="24" text-anchor="middle" textLength="50"
+                      lengthAdjust="spacing">Batik</text>
+              <text x="225" y="45" text-anchor="middle">textLength="50" lengthAdjust="spacing"</text>
+      </g>
+      
+      <!-- large number -->
+      <g transform="translate(0, 300)">
+              <use xlink:href="#bg2"/>
+              <text x="225" y="24" text-anchor="middle" textLength="50"
+                      lengthAdjust="spacingAndGlyphs">Apache Batik</text>
+              <text x="225" y="45" text-anchor="middle">textLength="50" lengthAdjust="spacingAndGlyphs" (shrinking)</text>
+      </g>
+      
+      <!-- large number, no anchor -->
+      <g transform="translate(0, 350)">
+              <use xlink:href="#bg1"/>
+              <text x="200" y="24" textLength="50"
+                      lengthAdjust="spacingAndGlyphs">Apache Batik</text>
+              <text x="225" y="45" text-anchor="middle">textLength="50" lengthAdjust="spacingAndGlyphs" (no anchor)</text>
+      </g>
+      
+      <!-- large number, tspan -->
+      <g transform="translate(0, 400)">
+              <use xlink:href="#bg2"/>
+              <text x="225" y="24" text-anchor="middle" textLength="50" 
+                    lengthAdjust="spacingAndGlyphs">Apache <tspan fill="red">Batik</tspan>!!</text>
+              <text x="225" y="45" text-anchor="middle">textLength="50" lengthAdjust="spacingAndGlyphs" (tspan)</text>
+      </g>
+   </g>
+
+   <!-- ============================================================= -->
+   <!-- Batik sample mark                                             -->
+   <!-- ============================================================= -->
+   <use xlink:href="../../../batikLogo.svg#Batik_Tag_Box" />
+</svg>

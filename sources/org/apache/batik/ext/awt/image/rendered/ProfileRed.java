@@ -89,17 +89,19 @@ public class ProfileRed extends AbstractRed {
      *    Note that if the number of components in the input image and 
      *    the number of components in the replacing ColorSpace do not 
      *    match, it is not possible to apply the conversion.
-     * d. A new BufferedImage is built, using the new ComponentColorModel 
-     *    and the data from the original image converted to the ComponentColorModel
-     *    built in a. The alpha channel is excluded from that new BufferedImage.
+     * d. A new BufferedImage is built, using the new
+     *    ComponentColorModel and the data from the original image
+     *    converted to the ComponentColorModel built in a. The alpha
+     *    channel is excluded from that new BufferedImage.
      * e. The BufferedImage created in d. is converted to sRGB using
      *    ColorConvertOp
      * f. The alpha channel information is integrated back into the image.
      *
-     * IMPORTANT NOTE: The code uses a BandedSampleModel in c.) and d.) and discard the 
-     * alpha channel during the color conversions (it is restored in f.)), because of
-     * bugs in the interleaved model with alpha. The BandedSampleModel did not cause
-     * any bug as of JDK 1.3.
+     * IMPORTANT NOTE: The code uses a BandedSampleModel in c.) and
+     * d.) and discard the alpha channel during the color conversions
+     * (it is restored in f.)), because of bugs in the interleaved
+     * model with alpha. The BandedSampleModel did not cause any bug
+     * as of JDK 1.3.  
      */
     public WritableRaster copyData(WritableRaster argbWR){
         try{
@@ -140,25 +142,27 @@ public class ProfileRed extends AbstractRed {
             if(!(imgCM instanceof ComponentColorModel) ||
                !(img.getSampleModel() instanceof BandedSampleModel)){
                 ComponentColorModel imgCompCM 
-                    = new ComponentColorModel(imgCS,                         // Same ColorSpace as img
-                                              imgCM.getComponentSize(),      // Array of number of bits per components
-                                              imgCM.hasAlpha(),              // Same alpha as img
-                                              imgCM.isAlphaPremultiplied(),  // Same premultiplication as img
-                                              imgCM.getTransparency(),       // Same transparency as img
-                                              DataBuffer.TYPE_BYTE);         // 8 bits per components.
+                    = new ComponentColorModel
+                        (imgCS,                      // Same ColorSpace as img
+                         imgCM.getComponentSize(),   // Number of bits/comp
+                         imgCM.hasAlpha(),             // Same alpha as img
+                         imgCM.isAlphaPremultiplied(), // Same premult as img  
+                         imgCM.getTransparency(),      // Same trans as img 
+                         DataBuffer.TYPE_BYTE);        // 8 bit/component.
 
                 WritableRaster wr 
-                    = Raster.createBandedRaster(DataBuffer.TYPE_BYTE,
-                                                argbWR.getWidth(), argbWR.getHeight(),
-                                                imgCompCM.getNumComponents(),
-                                                new Point(0, 0));
+                    = Raster.createBandedRaster
+                    (DataBuffer.TYPE_BYTE,
+                     argbWR.getWidth(), argbWR.getHeight(),
+                     imgCompCM.getNumComponents(),
+                     new Point(0, 0));
                 
-                BufferedImage imgComp 
-                    = new BufferedImage(imgCompCM, wr, imgCompCM.isAlphaPremultiplied(), null);
+                BufferedImage imgComp = new BufferedImage
+                    (imgCompCM, wr, imgCompCM.isAlphaPremultiplied(), null);
 
-                BufferedImage srcImg
-                    = new BufferedImage(imgCM, srcWR.createWritableTranslatedChild(0, 0),
-                                        imgCM.isAlphaPremultiplied(), null);
+                BufferedImage srcImg = new BufferedImage
+                    (imgCM, srcWR.createWritableTranslatedChild(0, 0),
+                     imgCM.isAlphaPremultiplied(), null);
                 
                 Graphics2D g = imgComp.createGraphics();
                 g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
@@ -170,11 +174,11 @@ public class ProfileRed extends AbstractRed {
             }
 
             /**
-             * Now, the input image is using a component color model. We can
-             * therefore create an image with the new profile, using a ComponentColorModel
-             * as well, because we know the number of components match (this was checked
-             * at the begining of this routine).
-             */
+             * Now, the input image is using a component color
+             * model. We can therefore create an image with the new
+             * profile, using a ComponentColorModel as well, because
+             * we know the number of components match (this was
+             * checked at the begining of this routine).  */
             ComponentColorModel newCM 
                 = new ComponentColorModel(colorSpace,                    // ****** New ColorSpace ********
                                           imgCM.getComponentSize(),      // Array of number of bits per components
@@ -185,34 +189,30 @@ public class ProfileRed extends AbstractRed {
             
             // Build a raster with bands 0, 1 and 2 of img's raster
             DataBufferByte data = (DataBufferByte)srcWR.getDataBuffer();
-            srcWR = Raster.createBandedRaster(data, img.getWidth(), img.getHeight(), 
-                                           img.getWidth(), new int[]{0, 1, 2},
-                                           new int[]{0, 0, 0}, new Point(0, 0));
-            BufferedImage newImg = new BufferedImage(newCM, srcWR,
-                                                     newCM.isAlphaPremultiplied(), null);
+            srcWR = Raster.createBandedRaster
+                (data, img.getWidth(), img.getHeight(), 
+                 img.getWidth(), new int[]{0, 1, 2},
+                 new int[]{0, 0, 0}, new Point(0, 0));
+            BufferedImage newImg = new BufferedImage
+                (newCM, srcWR, newCM.isAlphaPremultiplied(), null);
 
             /**
              * Now, convert the image to sRGB
              */
-            ComponentColorModel sRGBCompCM =
-                new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
-                                        new int[]{8, 8, 8},
-                                        false,
-                                        false,
-                                        Transparency.OPAQUE,
-                                        DataBuffer.TYPE_BYTE);
+            ComponentColorModel sRGBCompCM = new ComponentColorModel
+                (ColorSpace.getInstance(ColorSpace.CS_sRGB),
+                 new int[]{8, 8, 8},
+                 false,
+                 false,
+                 Transparency.OPAQUE,
+                 DataBuffer.TYPE_BYTE);
 
-            WritableRaster wr 
-                = Raster.createBandedRaster(DataBuffer.TYPE_BYTE,
-                                            img.getWidth(), img.getHeight(),
-                                            sRGBCompCM.getNumComponents(),
-                                            new Point(0, 0));
+            WritableRaster wr = Raster.createBandedRaster
+                (DataBuffer.TYPE_BYTE, img.getWidth(), img.getHeight(),
+                 sRGBCompCM.getNumComponents(), new Point(0, 0));
 
-            BufferedImage sRGBImage 
-                = new BufferedImage(sRGBCompCM,
-                                    wr,
-                                    false,
-                                    null);
+            BufferedImage sRGBImage = new BufferedImage
+                (sRGBCompCM, wr, false, null);
             ColorConvertOp colorConvertOp = new ColorConvertOp(null);
             colorConvertOp.filter(newImg, sRGBImage);
 
@@ -222,7 +222,8 @@ public class ProfileRed extends AbstractRed {
             DataBufferByte rgbData = (DataBufferByte)wr.getDataBuffer();
             byte[][] imgBanks = data.getBankData();
             byte[][] rgbBanks = rgbData.getBankData();
-            byte[][] argbBanks = {rgbBanks[0], rgbBanks[1], rgbBanks[2], imgBanks[3]};
+            byte[][] argbBanks = {rgbBanks[0], rgbBanks[1], 
+                                  rgbBanks[2], imgBanks[3]};
             DataBufferByte argbData = new DataBufferByte(argbBanks, imgBanks[0].length);
             srcWR = Raster.createBandedRaster(argbData, img.getWidth(), img.getHeight(),
                                            img.getWidth(), new int[]{0, 1, 2, 3},

@@ -40,6 +40,7 @@ import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFamily;
+import org.apache.batik.gvt.font.GVTGlyphMetrics;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.BidiAttributedCharacterIterator;
@@ -95,6 +96,11 @@ public class StrokingTextPainter extends BasicTextPainter {
     public static final 
         AttributedCharacterIterator.Attribute ANCHOR_TYPE
         = GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE;
+
+    public static final Integer ADJUST_SPACING =
+        GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING;
+    public static final Integer ADJUST_ALL =
+        GVTAttributedCharacterIterator.TextAttribute.ADJUST_ALL;
 
     static Set extendedAtts = new HashSet();
 
@@ -179,8 +185,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         TextChunk chunk, prevChunk=null;
         int currentChunk = 0;
         do {
-	    // Text Chunks contain one or more TextRuns, which they create from
-	    // the ACI.
+	    // Text Chunks contain one or more TextRuns, which they
+	    // create from the ACI.
             chunkACIs[currentChunk].first();
 
             chunk = getTextChunk(node, 
@@ -192,8 +198,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             // Adjust according to text-anchor property value
             chunkACIs[currentChunk].first();
             if (chunk != null) {
-                adjustChunkOffsets(textRuns, chunk.advance, 
-                                   chunk.begin, chunk.end);
+                adjustChunkOffsets(textRuns, chunk);
             }
             prevChunk = chunk;
             currentChunk++;
@@ -595,14 +600,84 @@ public class StrokingTextPainter extends BasicTextPainter {
      * to account for any text anchor properties.
      */
     private void adjustChunkOffsets(List textRuns, 
-                                    Point2D advance,
-                                    int beginChunk, 
-                                    int endChunk) {
-
-        TextRun r = (TextRun) textRuns.get(beginChunk);
+                                    TextChunk chunk) {
+        TextRun r          = (TextRun) textRuns.get(chunk.begin);
             int anchorType = r.getAnchorType();
+        Float   length     = r.getLength();
+        Integer lengthAdj  = r.getLengthAdjust();
+        Point2D advance = chunk.advance;
+
             float dx = 0f;
             float dy = 0f;
+
+        boolean doAdjust = true;
+        if ((length == null) || length.isNaN())
+            doAdjust = false;
+        
+        int numChars = 0;
+        for (int n=chunk.begin; n<chunk.end; ++n) {
+            r = (TextRun) textRuns.get(n);
+            AttributedCharacterIterator aci = r.getACI();
+            numChars += aci.getEndIndex()-aci.getBeginIndex();
+        }
+        if ((lengthAdj == 
+             GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING) &&
+            (numChars == 1)) 
+            doAdjust = false;
+
+        float xScale = 1;
+        float yScale = 1;
+        if (doAdjust) {
+            if (lengthAdj == 
+                GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING) {
+                
+            }
+            if (lengthAdj ==
+                GVTAttributedCharacterIterator.TextAttribute.ADJUST_ALL) {
+            }
+
+            float delta = 0;
+            r = (TextRun)textRuns.get(chunk.end-1);
+            TextSpanLayout  layout          = r.getLayout();
+            GVTGlyphMetrics lastCharMetrics = 
+                layout.getGlyphMetrics(layout.getGlyphCount()-1);
+            Rectangle2D     lastCharBounds  = lastCharMetrics.getBounds2D();
+
+            if (r.getLayout().isVertical()) {
+                if (lengthAdj == ADJUST_SPACING) {
+                    yScale = (float)
+                        ((length.floatValue()-lastCharBounds.getHeight())/
+                         (advance.getY()-lastCharBounds.getHeight()));
+                } else {
+                    yScale = (float)(length.floatValue()/advance.getY());
+                }
+                dy = delta;
+            } else {
+                if (lengthAdj == ADJUST_SPACING) {
+                    xScale = (float)
+                        ((length.floatValue()-lastCharBounds.getWidth())/
+                         (advance.getX()-lastCharBounds.getWidth()));
+                } else {
+                    xScale = (float)(length.floatValue()/advance.getX());
+                }
+                dx = delta;
+            }
+
+            // System.out.println("Adv: " + advance + " Len: " + length +
+            //                    " scale: [" + xScale + ", " + yScale + "]");
+            Point2D.Float adv = new Point2D.Float(0,0);
+            for (int n=chunk.begin; n<chunk.end; ++n) {
+                r = (TextRun) textRuns.get(n);
+                layout = r.getLayout();
+                layout.setScale(xScale, yScale, lengthAdj==ADJUST_SPACING);
+                Point2D lAdv = layout.getAdvance2D();
+                adv.x += lAdv.getX();
+                adv.y += lAdv.getY();
+            }
+            chunk.advance = adv;
+        }
+
+        advance = chunk.advance;
 
             switch(anchorType){
             case TextNode.Anchor.ANCHOR_MIDDLE:
@@ -618,17 +693,26 @@ public class StrokingTextPainter extends BasicTextPainter {
                 // leave untouched
             }
 
-        for (int n=beginChunk; n<endChunk; ++n) {
-            r = (TextRun) textRuns.get(n);
+        
+        r = (TextRun) textRuns.get(chunk.begin);
             TextSpanLayout layout = r.getLayout();
             Point2D        offset = layout.getOffset();
+        float initX = (float)offset.getX();
+        float initY = (float)offset.getY();
 
-            if (layout.isVertical())
+        for (int n=chunk.begin; n<chunk.end; ++n) {
+            r = (TextRun) textRuns.get(n);
+            layout = r.getLayout();
+            offset = layout.getOffset();
+            if (layout.isVertical()) {
+                float adj = (float)((offset.getY()-initY)*yScale);
                 offset = new Point2D.Float((float) offset.getX(),
-                                           (float) offset.getY()+dy);
-            else
-                offset = new Point2D.Float((float) offset.getX()+dx,
+                                           (float)initY+adj+dy);
+            } else {
+                float adj = (float)((offset.getX()-initX)*xScale);
+                offset = new Point2D.Float((float)initX+adj+dx,
                                            (float) offset.getY());
+            }
             layout.setOffset(offset);
         }
     }
@@ -1416,6 +1500,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         private TextSpanLayout layout;
         private int anchorType;
         private boolean firstRunInChunk;
+        private Float length;
+        private Integer lengthAdjust;
 
         public TextRun(TextSpanLayout layout, 
 		       AttributedCharacterIterator aci, 
@@ -1425,13 +1511,14 @@ public class StrokingTextPainter extends BasicTextPainter {
             this.aci = aci;
             this.aci.first();
             this.firstRunInChunk = firstRunInChunk;
+            this.anchorType = TextNode.Anchor.ANCHOR_START;
+
             TextNode.Anchor anchor = (TextNode.Anchor) aci.getAttribute
 		(GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE);
-            anchorType = TextNode.Anchor.ANCHOR_START;
-
             if (anchor != null) {
-                anchorType = anchor.getType();
+                this.anchorType = anchor.getType();
             }
+
             // if writing mode is right to left, then need to reverse the
             // text anchor positions
             if (aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.WRITING_MODE)
@@ -1443,6 +1530,11 @@ public class StrokingTextPainter extends BasicTextPainter {
                 }
                 // leave middle as is
             }
+
+            length = (Float) aci.getAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH);
+            lengthAdjust = (Integer) aci.getAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.LENGTH_ADJUST);
         }
 
         public AttributedCharacterIterator getACI() {
@@ -1455,6 +1547,14 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         public int getAnchorType() {
             return anchorType;
+        }
+
+        public Float getLength() {
+            return length;
+        }
+
+        public Integer getLengthAdjust() {
+            return lengthAdjust;
         }
 
         public boolean isFirstRunInChunk() {

@@ -14,6 +14,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 
+import org.apache.batik.gvt.font.GVTGlyphMetrics;
+
 /**
  * Class that performs layout of attributed text strings into
  * glyph sets paintable by TextPainter instances.
@@ -78,6 +80,11 @@ public interface TextSpanLayout {
      */
     public Point2D getAdvance2D();
 
+    /**
+     * Returns the Metrics for a particular glyph.
+     */
+    public GVTGlyphMetrics getGlyphMetrics(int glyphIndex);
+
     public Point2D getTextPathAdvance();
 
     /**
@@ -86,6 +93,17 @@ public interface TextSpanLayout {
      * glyph positioning attributes.
      */
     public Point2D getOffset();
+
+    /**
+     * Sets the scaling factor to use for string.  if ajdSpacing is
+     * true then only the spacing between glyphs will be adjusted
+     * otherwise the glyphs and the spaces between them will be
+     * adjusted.
+     * @param xScale Scale factor to apply in X direction.
+     * @param yScale Scale factor to apply in Y direction.
+     * @param adjSpacing True if only spaces should be adjusted.
+     */
+    public void setScale(float xScale, float yScale, boolean adjSpacing);
 
     /**
      * Sets the text position used for the implicit origin

@@ -54,11 +54,13 @@ public class GlyphLayout implements TextSpanLayout {
     private AffineTransform transform;
     private Point2D advance;
     private Point2D offset;
+    private float   xScale=1;
+    private float   yScale=1;
     private Point2D prevCharPosition;
     private TextPath textPath;
     private Point2D textPathAdvance;
     private int []  charMap;
-    private boolean vertical;
+    private boolean vertical, adjSpacing=true;
 
     private static final AttributedCharacterIterator.Attribute X
         = GVTAttributedCharacterIterator.TextAttribute.X;
@@ -142,7 +144,7 @@ public class GlyphLayout implements TextSpanLayout {
         // do the glyph layout
         this.gv.performDefaultLayout();
         doExplicitGlyphLayout(false);
-        adjustTextSpacing();
+        adjustTextSpacing(false);
         doPathLayout(false);
     }
 
@@ -185,6 +187,25 @@ public class GlyphLayout implements TextSpanLayout {
     }
 
     /**
+     * Sets the scaling factor to use for string.  if ajdSpacing is
+     * true then only the spacing between glyphs will be adjusted
+     * otherwise the glyphs and the spaces between them will be
+     * adjusted.
+     * @param xScale Scale factor to apply in X direction.
+     * @param yScale Scale factor to apply in Y direction.
+     * @param adjSpacing True if only spaces should be adjusted.
+     */
+    public void setScale(float xScale, float yScale, boolean adjSpacing) {
+        this.xScale = xScale;
+        this.yScale = yScale;
+        this.adjSpacing = adjSpacing;
+        this.gv.performDefaultLayout();
+        doExplicitGlyphLayout(false);
+        adjustTextSpacing(true);
+        doPathLayout(true);
+    }
+
+    /**
      * Sets the text position used for the implicit origin
      * of glyph layout. Ignored if multiple explicit glyph
      * positioning attributes are present in ACI
@@ -194,7 +215,7 @@ public class GlyphLayout implements TextSpanLayout {
         this.offset = offset;
         this.gv.performDefaultLayout();
         doExplicitGlyphLayout(true);
-        adjustTextSpacing();
+        adjustTextSpacing(true);
         doPathLayout(true);
     }
 
@@ -249,6 +270,11 @@ public class GlyphLayout implements TextSpanLayout {
      */
     public Point2D getAdvance2D() {
         return advance;
+    }
+
+
+    public GVTGlyphMetrics getGlyphMetrics(int glyphIndex) {
+        return gv.getGlyphMetrics(glyphIndex);
     }
 
     /**
@@ -1077,28 +1103,28 @@ public class GlyphLayout implements TextSpanLayout {
     /**
      * Does any spacing adjustments that may have been specified.
      */
-    protected void adjustTextSpacing() {
+    protected void adjustTextSpacing(boolean applyScaling) {
 
         aci.first();
         Boolean customSpacing =  (Boolean) aci.getAttribute(
                GVTAttributedCharacterIterator.TextAttribute.CUSTOM_SPACING);
-        Float length = (Float) aci.getAttribute(
-               GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH);
-        Integer lengthAdjust = (Integer) aci.getAttribute(
-              GVTAttributedCharacterIterator.TextAttribute.LENGTH_ADJUST);
         if ((customSpacing != null) && customSpacing.booleanValue()) {
-            applySpacingParams(length, lengthAdjust,
-               (Float) aci.getAttribute(
-               GVTAttributedCharacterIterator.TextAttribute.KERNING),
-               (Float) aci.getAttribute(
-               GVTAttributedCharacterIterator.TextAttribute.LETTER_SPACING),
-               (Float) aci.getAttribute(
-               GVTAttributedCharacterIterator.TextAttribute.WORD_SPACING));
+            advance = doSpacing
+                ((Float) aci.getAttribute
+                 (GVTAttributedCharacterIterator.TextAttribute.KERNING),
+                 (Float) aci.getAttribute
+                 (GVTAttributedCharacterIterator.TextAttribute.LETTER_SPACING),
+                 (Float) aci.getAttribute
+                 (GVTAttributedCharacterIterator.TextAttribute.WORD_SPACING));
         }
 
-        if (lengthAdjust ==
-            GVTAttributedCharacterIterator.TextAttribute.ADJUST_ALL) {
-             applyStretchTransform(length);
+        if (!applyScaling)
+            return;
+
+        if (adjSpacing) {
+            rescaleSpacing();
+        } else {
+            applyStretchTransform();
         }
     }
 
@@ -1107,90 +1133,78 @@ public class GlyphLayout implements TextSpanLayout {
      *
      * @param length The required length of the text.
      */
-    protected void applyStretchTransform(Float length) {
-        if (length!= null && !length.isNaN()) {
-            double xscale = 1d;
-            double yscale = 1d;
-            if (vertical) {
-                yscale = length.floatValue()/gv.getVisualBounds().getHeight();
-            } else {
-                xscale = length.floatValue()/gv.getVisualBounds().getWidth();
-            }
-            Point2D startPos = gv.getGlyphPosition(0);
-            for (int i = 0; i < gv.getNumGlyphs(); i++) {
-                // transform the glyph position
-                Point2D glyphPos = gv.getGlyphPosition(i);
-                AffineTransform t = AffineTransform.getTranslateInstance
-                    (startPos.getX(), startPos.getY());
-                t.scale(xscale,yscale);
-                t.translate(-startPos.getX(), -startPos.getY());
-                Point2D newGlyphPos = new Point2D.Float();
-                t.transform(glyphPos, newGlyphPos);
-                gv.setGlyphPosition(i, newGlyphPos);
-
-                // stretch the glyph
-                AffineTransform glyphTransform = gv.getGlyphTransform(i);
-                if (glyphTransform != null) {
-                    glyphTransform.preConcatenate
-                        (AffineTransform.getScaleInstance(xscale, yscale));
-                    gv.setGlyphTransform(i, glyphTransform);
-                } else {
-                    gv.setGlyphTransform
-                        (i, AffineTransform.getScaleInstance(xscale, yscale));
-                }
-            }
-            advance = new Point2D.Float((float)(advance.getX()*xscale),
-                                        (float)(advance.getY()*yscale));
+    protected void applyStretchTransform() {
+        if (vertical) {
+            xScale = 1;
+        } else {
+            yScale = 1;
         }
+
+        if ((xScale == 1) && (yScale==1)) 
+            return;
+
+        // System.out.println("Scale: [" + xScale + ", " + yScale + "]");
+
+        Point2D startPos = gv.getGlyphPosition(0);
+        for (int i = 0; i < gv.getNumGlyphs(); i++) {
+            // transform the glyph position
+            Point2D glyphPos = gv.getGlyphPosition(i);
+            AffineTransform t = AffineTransform.getTranslateInstance
+                (startPos.getX(), startPos.getY());
+            t.scale(xScale,yScale);
+            t.translate(-startPos.getX(), -startPos.getY());
+            Point2D newGlyphPos = new Point2D.Float();
+            t.transform(glyphPos, newGlyphPos);
+            gv.setGlyphPosition(i, newGlyphPos);
+
+            // stretch the glyph
+            AffineTransform glyphTransform = gv.getGlyphTransform(i);
+            if (glyphTransform != null) {
+                glyphTransform.preConcatenate
+                    (AffineTransform.getScaleInstance(xScale, yScale));
+                gv.setGlyphTransform(i, glyphTransform);
+            } else {
+                gv.setGlyphTransform
+                    (i, AffineTransform.getScaleInstance(xScale, yScale));
+            }
+        }
+        advance = new Point2D.Float((float)(advance.getX()*xScale),
+                                    (float)(advance.getY()*yScale));
     }
 
-
     /**
-     * Adjusts the spacing according to the specified parameters.
-     *
-     * @param length The required text length.
-     * @param lengthAdjust Indicates the method to use when adjusting
-     * the text length.
-     * @param kern The kerning adjustment to apply to the space
-     * between each char.
-     * @param letterSpacing The amount of spacing required between each char.
-     * @param wordSpacing The amount of spacing required between each word. */
-    protected void applySpacingParams(Float length,
-                                      Integer lengthAdjust,
-                                      Float kern,
-                                      Float letterSpacing,
-                                      Float wordSpacing) {
-
-       /**
-        * Two passes required when textLength is specified:
-        * First, apply spacing properties,
-        * then adjust spacing with new advances based on ratio
-        * of expected length to actual advance.
-        */
-
-        advance = doSpacing(kern, letterSpacing, wordSpacing);
-        if ((lengthAdjust ==
-             GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING) &&
-                 length!= null && !length.isNaN()) { // adjust if necessary
-            float xscale = 1f;
-            float yscale = 1f;
-            if (!vertical) {
-                float gvWidth = (float)gv.getVisualBounds().getWidth();
-                float lastCharWidth = (float)gv.getGlyphMetrics
-                    (gv.getNumGlyphs()-1).getBounds2D().getWidth();
-                if (gvWidth > lastCharWidth) {
-                    // System.out.println("Len: " + length.floatValue() +
-                    //                    " LCW: " + lastCharWidth + 
-                    //                    " Wid: " + gvWidth);
-                    xscale = ((length.floatValue()-lastCharWidth)/
-                              (gvWidth-lastCharWidth));
-                }
-            } else {
-                yscale = (length.floatValue()/
-                          (float) gv.getVisualBounds().getHeight());
-            }
-            rescaleSpacing(xscale, yscale);
+     * Rescales the spacing between each char by the specified scale factors.
+     */
+    protected void rescaleSpacing() {
+        if (vertical) {
+            xScale = 1;
+        } else {
+            yScale = 1;
         }
+        if ((xScale == 1) && (yScale==1)) 
+            return;
+        Rectangle2D bounds = gv.getVisualBounds();
+        float initX = (float) bounds.getX();
+        float initY = (float) bounds.getY();
+        int numGlyphs = gv.getNumGlyphs();
+        float dx = 0f;
+        float dy = 0f;
+        for (int i = 0; i < numGlyphs; i++) {
+            Point2D gpos = gv.getGlyphPosition(i);
+            dx = (float)gpos.getX()-initX;
+            dy = (float)gpos.getY()-initY;
+            gv.setGlyphPosition(i, new Point2D.Float(initX+dx*xScale,
+                                                     initY+dy*yScale));
+        }
+        Rectangle2D glyphB = gv.getGlyphMetrics(numGlyphs-1).getBounds2D();
+        float xAdj = 0;
+        float yAdj = 0;
+        if (vertical) yAdj = (float)glyphB.getHeight();
+        else          xAdj = (float)glyphB.getWidth();
+
+        advance = new Point2D.Float
+            ((float)(initX+dx*xScale-offset.getX()+xAdj),
+             (float)(initY+dy*yScale-offset.getY()+yAdj));
     }
 
     /**
@@ -1376,36 +1390,6 @@ public class GlyphLayout implements TextSpanLayout {
         return newAdvance;
     }
 
-    /**
-     * Rescales the spacing between each char by the specified scale factors.
-     *
-     * @param xscale The amount to scale in the x direction.
-     * @param yscale The amount to scale in the y direction.
-     */
-    protected void rescaleSpacing(float xscale, float yscale) {
-        Rectangle2D bounds = gv.getVisualBounds();
-        float initX = (float) bounds.getX();
-        float initY = (float) bounds.getY();
-        int numGlyphs = gv.getNumGlyphs();
-        float dx = 0f;
-        float dy = 0f;
-        for (int i = 0; i < numGlyphs; i++) {
-            Point2D gpos = gv.getGlyphPosition(i);
-            dx = (float)gpos.getX()-initX;
-            dy = (float)gpos.getY()-initY;
-            gv.setGlyphPosition(i, new Point2D.Float(initX+dx*xscale,
-                                                     initY+dy*yscale));
-        }
-        Rectangle2D glyphB = gv.getGlyphMetrics(numGlyphs-1).getBounds2D();
-        float xAdj = 0;
-        float yAdj = 0;
-        if (vertical) yAdj = (float)glyphB.getHeight();
-        else          xAdj = (float)glyphB.getWidth();
-
-        advance = new Point2D.Float
-            ((float)(initX+dx*xscale-offset.getX()+xAdj),
-             (float)(initY+dy*yscale-offset.getY()+yAdj));
-    }
 
     /**
      * Returns true if the specified character is within one of the Latin
