@@ -12,19 +12,26 @@ import java.io.StringReader;
 import java.net.URL;
 
 import org.apache.batik.css.value.ValueFactory;
+
 import org.apache.batik.css.event.CSSStyleDeclarationChangeEvent;
 import org.apache.batik.css.event.CSSStyleDeclarationChangeListener;
 import org.apache.batik.css.event.CSSStyleRuleChangeListener;
 import org.apache.batik.css.event.CSSStyleRuleChangeSupport;
 import org.apache.batik.css.event.CSSPropertyChangeEvent;
+
+import org.apache.batik.css.parser.ExtendedParser;
+
 import org.apache.batik.css.value.ValueFactoryMap;
+
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.css.sac.Parser;
 import org.w3c.css.sac.SelectorList;
+
 import org.w3c.dom.DOMException;
+
 import org.w3c.dom.css.CSSRule;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSStyleRule;
@@ -74,6 +81,11 @@ public class CSSOMStyleRule
      * The base URI.
      */
     protected URL baseURI;
+
+    /**
+     * Indicates whether or not the CSS parser supports methods with String.
+     */
+    protected boolean isExtendedParser;
     
     /**
      * Creates a new rule set.
@@ -84,6 +96,7 @@ public class CSSOMStyleRule
 			  ValueFactoryMap m) {
 	super(ss, pr);
 	parser = p;
+	isExtendedParser = (parser instanceof ExtendedParser);
 	factories = m;
 	style = new CSSOMStyleDeclaration(this, p);
 	style.setValueFactoryMap(m);
@@ -135,11 +148,15 @@ public class CSSOMStyleRule
 	    style.addCSSStyleDeclarationChangeListener(this);
 	    style.fireCSSStyleDeclarationChangeStart();
 
-	    InputSource is = new InputSource(new StringReader(cssText));
 	    parser.setSelectorFactory(SELECTOR_FACTORY);
 	    parser.setConditionFactory(CONDITION_FACTORY);
 	    parser.setDocumentHandler(ruleHandler);
-	    parser.parseRule(is);
+	    if (isExtendedParser) {
+		((ExtendedParser)parser).parseRule(cssText);
+	    } else {
+		InputSource is = new InputSource(new StringReader(cssText));
+		parser.parseRule(is);
+	    }
 	} catch (DOMException e) {
 	    style.fireCSSStyleDeclarationChangeCancel();
 	    fireCSSStyleRuleChangeCancel();
