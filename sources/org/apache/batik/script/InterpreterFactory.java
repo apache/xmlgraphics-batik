@@ -10,7 +10,8 @@ package org.apache.batik.script;
 
 /**
  * An hight level interface that represents a factory allowing
- * to create instances of <code>Interpreter</code> interface implementation.
+ * to create instances of a particular <code>Interpreter</code> interface
+ * implementation.
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */

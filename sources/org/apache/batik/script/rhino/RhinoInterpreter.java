@@ -36,7 +36,7 @@ public class RhinoInterpreter implements Interpreter {
     private Scriptable scope = null;
     private Context context = null;
 
-    private static String[] TO_IMPORT = {
+    private static String[] TO_BE_IMPORTED = {
         "java.lang",
         "org.w3c.dom",
         "org.w3c.dom.css",
@@ -60,9 +60,9 @@ public class RhinoInterpreter implements Interpreter {
             ImporterTopLevel importer = new ImporterTopLevel();
             scope = context.initStandardObjects(importer);
             // import Java lang package & DOM Level 2 & SVG DOM packages
-            NativeJavaPackage[] p= new NativeJavaPackage[TO_IMPORT.length];
-            for (int i = 0; i < TO_IMPORT.length; i++) {
-                p[i] = new NativeJavaPackage(TO_IMPORT[i]);
+            NativeJavaPackage[] p= new NativeJavaPackage[TO_BE_IMPORTED.length];
+            for (int i = 0; i < TO_BE_IMPORTED.length; i++) {
+                p[i] = new NativeJavaPackage(TO_BE_IMPORTED[i]);
             }
             importer.importPackage(context, scope, p, null);
             context.setWrapHandler(new EventTargetWrapHandler(this));

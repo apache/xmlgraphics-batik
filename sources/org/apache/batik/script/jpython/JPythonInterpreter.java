@@ -10,7 +10,10 @@ package org.apache.batik.script.jpython;
 
 import java.io.*;
 import java.util.Locale;
-import org.apache.batik.script.*;
+
+import org.apache.batik.script.Interpreter;
+import org.apache.batik.script.InterpreterException;
+
 import org.python.util.*;
 
 /**
