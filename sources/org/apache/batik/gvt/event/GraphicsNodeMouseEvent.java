@@ -8,6 +8,7 @@
 
 package org.apache.batik.gvt.event;
 
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
@@ -82,6 +83,10 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      */
     float y;
 
+    int screenX;
+
+    int screenY;
+
     /**
      * Indicates the number of quick consecutive clicks of a mouse button.
      */
@@ -101,17 +106,22 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      * @param when the time the event occurred
      * @param modifiers the modifier keys down while event occurred
      * @param x,&nbsp;y the mouse coordinates
+     * @param screenX,&nbsp;screenY the mouse coordinates relative to the screen
      * @param clickCount the number of clicks
      * @param relatedNode the related node
      * @see #getRelatedNode
      */
     public GraphicsNodeMouseEvent(GraphicsNode source, int id,
                                   long when, int modifiers,
-                                  float x, float y, int clickCount,
+                                  float x, float y, 
+                                  int screenX, int screenY, 
+                                  int clickCount,
                                   GraphicsNode relatedNode) {
         super(source, id, when, modifiers);
         this.x = x;
         this.y = y;
+        this.screenX = screenX;
+        this.screenY = screenY;
         this.clickCount = clickCount;
         this.relatedNode = relatedNode;
     }
@@ -144,6 +154,31 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      */
     public float getY() {
         return y;
+    }
+
+    /**
+     * Returns the horizontal x position of the event relative to the
+     * screen.
+     * @return x a float indicating horizontal position relative to the screen
+     */
+    public int getScreenX() {
+        return screenX;
+    }
+
+    /**
+     * Returns the vertical y position of the event relative to the screen.
+     * @return y a float indicating vertical position relative to the screen
+     */
+    public int getScreenY() {
+        return screenY;
+    }
+
+    /**
+     * Returns the (x, y) position of the event relative to the screen.
+     * @return a Point object containing the x and y coordinates
+     */
+    public Point getScreenPoint() {
+        return new Point(screenX, screenY);
     }
 
     /**
