@@ -10,6 +10,8 @@ package org.apache.batik.css.value;
 
 import java.awt.SystemColor;
 
+import org.apache.batik.css.value.SystemColorResolver.Color;
+
 /**
  * This class provides a default implementation of a SystemColorResolver.
  *
