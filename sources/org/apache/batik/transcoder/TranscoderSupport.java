@@ -32,7 +32,7 @@ public class TranscoderSupport {
     public TranscoderSupport() { }
 
     /**
-     * Returns the transcoding hints of this transcoder.
+     * Returns a copy of the transcoding hints of this transcoder.
      */
     public TranscodingHints getTranscodingHints() {
         return new TranscodingHints(hints);
@@ -49,12 +49,29 @@ public class TranscoderSupport {
     }
 
     /**
+     * Removes the value of a single preference for the transcoding process.
+     * @param key the key of the hint to remove
+     */
+    public void removeTranscodingHint(TranscodingHints.Key key) {
+        hints.remove(key);
+    }
+
+    /**
      * Replaces the values of all preferences for the transcoding algorithms
      * with the specified hints.
      * @param hints the rendering hints to be set
      */
     public void setTranscodingHints(Map hints) {
         this.hints.putAll(hints);
+    }
+
+    /**
+     * Sets the values of all preferences for the transcoding algorithms
+     * with the specified hints.
+     * @param hints the rendering hints to be set
+     */
+    public void setTranscodingHints(TranscodingHints hints) {
+        this.hints = hints;
     }
 
     /**

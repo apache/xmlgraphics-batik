@@ -140,6 +140,7 @@ public class Main {
                 error("Bad svg file : "+s);
             }
         }
+        System.exit(0);
     }
 }
 

@@ -41,11 +41,24 @@ public interface Transcoder {
     void addTranscodingHint(TranscodingHints.Key key, Object value);
 
     /**
+     * Removes the value of a single preference for the transcoding process.
+     * @param key the key of the hint to remove
+     */
+    void removeTranscodingHint(TranscodingHints.Key key);
+
+    /**
      * Replaces the values of all preferences for the transcoding algorithms
      * with the specified hints.
      * @param hints the rendering hints to be set
      */
     void setTranscodingHints(Map hints);
+
+    /**
+     * Sets the values of all preferences for the transcoding algorithms
+     * with the specified hints.
+     * @param hints the rendering hints to be set
+     */
+    void setTranscodingHints(TranscodingHints hints);
 
     /**
      * Sets the error handler this transcoder may use to report
