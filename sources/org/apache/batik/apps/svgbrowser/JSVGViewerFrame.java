@@ -103,6 +103,7 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import org.apache.batik.transcoder.print.PrintTranscoder;
 
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.LanguageDialog;
 import org.apache.batik.util.gui.LocationBar;
@@ -947,7 +948,7 @@ public class JSVGViewerFrame
                     try {
                         Document  doc = new PlainDocument();
 
-                        InputStream is = u.openStream();
+                        InputStream is = ParsedURL.checkGZIP(u.openStream());
 
                         try {
                             is = new GZIPInputStream(is);

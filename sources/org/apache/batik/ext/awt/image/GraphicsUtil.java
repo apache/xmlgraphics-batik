@@ -37,6 +37,7 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
+import java.awt.image.ComponentSampleModel;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.renderable.RenderableImage;
@@ -55,6 +56,7 @@ import org.apache.batik.ext.awt.image.rendered.Any2LsRGBRed;
 import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.FormatRed;
 import org.apache.batik.ext.awt.image.rendered.MultiplyAlphaRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
@@ -169,6 +171,23 @@ public class GraphicsUtil {
                 cr = convertToLsRGB(cr);
         }
 
+        srcCM = cr.getColorModel();
+        ColorModel g2dCM = getDestinationColorModel(g2d);
+        ColorModel drawCM = g2dCM;
+        if (g2dCM == null) {
+            // If we can't find out about our device assume
+            // it's not premultiplied (Just because this
+            // seems to work for us!).
+            drawCM = coerceColorModel(drawCM, false);
+        } else if (drawCM.hasAlpha() && g2dCM.hasAlpha() &&
+                   (drawCM.isAlphaPremultiplied() !=
+                    g2dCM .isAlphaPremultiplied())) {
+            drawCM = coerceColorModel(drawCM,
+                                      g2dCM.isAlphaPremultiplied());
+        }
+
+        cr = FormatRed.construct(cr, drawCM);
+
         // Scaling up so do it after color conversion.
         if (!at.isIdentity() && (determinant > 1.0))
             cr = new AffineRed(cr, at, g2d.getRenderingHints());
@@ -199,7 +218,7 @@ public class GraphicsUtil {
                 clipR = clipR.intersection(gcR);
             }
 
-            if ( false) {
+            if (false) {
                 // There has been a problem where the render tries to
                 // request a zero pixel high region (due to a bug in the
                 // complex clip handling).  I have at least temporarily
@@ -254,25 +273,11 @@ public class GraphicsUtil {
             }
 
             srcCM = cr.getColorModel();
-            ColorModel g2dCM = getDestinationColorModel(g2d);
-            ColorModel drawCM = srcCM;
-            if (g2dCM == null) {
-                // If we can't find out about our device assume
-                // it's not premultiplied (Just because this
-                // seems to work for us!).
-                drawCM = coerceColorModel(drawCM, false);
-            } else if (drawCM.hasAlpha() && g2dCM.hasAlpha() &&
-                       (drawCM.isAlphaPremultiplied() !=
-                        g2dCM .isAlphaPremultiplied())) {
-                drawCM = coerceColorModel(drawCM,
-                                          g2dCM.isAlphaPremultiplied());
-            }
-
             SampleModel srcSM = cr.getSampleModel();
             WritableRaster wr;
             wr = Raster.createWritableRaster(srcSM, new Point(0,0));
             BufferedImage bi = new BufferedImage
-                (drawCM, wr, drawCM.isAlphaPremultiplied(), null);
+                (srcCM, wr, srcCM.isAlphaPremultiplied(), null);
 
             int xt0 = cr.getMinTileX();
             int xt1 = xt0+cr.getNumXTiles();
@@ -339,7 +344,6 @@ public class GraphicsUtil {
 
                     // System.out.println("Generating tile: " + twr);
                     cr.copyData(twr);
-                    coerceData(twr, srcCM, drawCM.isAlphaPremultiplied());
 
                     // Make sure we only draw the region that was written...
                     BufferedImage subBI;
@@ -387,7 +391,9 @@ public class GraphicsUtil {
         Shape           origClip = g2d.getClip();
         RenderingHints  origRH   = g2d.getRenderingHints();
 
-        g2d.clip(rc.getAreaOfInterest());
+        Shape clip = rc.getAreaOfInterest();
+        if (clip != null)
+            g2d.clip(clip);
         g2d.transform(rc.getTransform());
         g2d.setRenderingHints(rc.getRenderingHints());
 
@@ -767,11 +773,11 @@ public class GraphicsUtil {
         int width  = x1-x0+1;
         int height = y1-y0+1;
 
-        Object data = null;
+        int [] data = null;
 
         for (int y = y0; y <= y1 ; y++)  {
-            data = src.getDataElements(x0,y,width,1,data);
-            dst.setDataElements(x0,y,width,1,data);
+            data = src.getPixels(x0,y,width,1,data);
+            dst.setPixels       (x0,y,width,1,data);
         }
     }
 
@@ -987,7 +993,9 @@ public class GraphicsUtil {
         int    bands = wr.getNumBands();
         float  norm;
         if (newAlphaPreMult) {
-            if (is_INT_PACK_Data(wr.getSampleModel(), true))
+            if (is_BYTE_COMP_Data(wr.getSampleModel()))
+                mult_BYTE_COMP_Data(wr);
+            else if (is_INT_PACK_Data(wr.getSampleModel(), true))
                 mult_INT_PACK_Data(wr);
             else {
                 norm = 1/255;
@@ -1004,7 +1012,9 @@ public class GraphicsUtil {
                     }
             }
         } else {
-            if (is_INT_PACK_Data(wr.getSampleModel(), true))
+            if (is_BYTE_COMP_Data(wr.getSampleModel()))
+                divide_BYTE_COMP_Data(wr);
+            else if (is_INT_PACK_Data(wr.getSampleModel(), true))
                 divide_INT_PACK_Data(wr);
             else {
                 for (int y=0; y<wr.getHeight(); y++)
@@ -1023,6 +1033,9 @@ public class GraphicsUtil {
 
         return coerceColorModel(cm, newAlphaPreMult);
     }
+
+
+    
 
 
     /**
@@ -1075,9 +1088,11 @@ public class GraphicsUtil {
             if ((srcAlpha == false) ||
                 (src.isAlphaPremultiplied() == dst.isAlphaPremultiplied())) {
                 // They match one another so just copy everything...
-                dst.setData(src.getRaster());
+                copyData(src.getRaster(), dst.getRaster());
                 return;
             }
+
+        // System.out.println("Using Slow CopyData");
 
         int [] pixel = null;
         Raster         srcR  = src.getRaster();
@@ -1088,6 +1103,7 @@ public class GraphicsUtil {
         int dx = destP.x-srcRect.x;
         int dy = destP.y-srcRect.y;
 
+        int w  = srcRect.width;
         int x0 = srcRect.x;
         int y0 = srcRect.y;
         int x1 = x0+srcRect.width-1;
@@ -1095,63 +1111,143 @@ public class GraphicsUtil {
 
         if (!srcAlpha) {
             // Src has no alpha dest does so set alpha to 1.0 everywhere.
-            int [] oPix = new int[bands];
-            for (int y=y0; y<y1; y++)
-                for (int x=x0; x<x1; x++) {
-                    oPix[bands-1] = 255;
-                    for (int b=0; b<bands-1; b++)
-                        oPix[b] = pixel[b];
-                    dstR.setPixel(x+dx, y+dy,oPix);
+            // System.out.println("Add Alpha");
+            int [] oPix = new int[bands*w];
+            int out = (w*bands)-1; // The 2 skips alpha channel
+            while(out >= 0) {
+                // Fill alpha channel with 255's 
+                oPix[out] = 255;
+                out -= bands;
+            }
+
+            int b, in;
+            for (int y=y0; y<=y1; y++) {
+                pixel = srcR.getPixels(x0,y,w,1,pixel);
+                in  = w*(bands-1)-1;
+                out = (w*bands)-2; // The 2 skips alpha channel on last pix
+                switch (bands) {
+                case 4:
+                    while(in >= 0) {
+                        oPix[out--] = pixel[in--];
+                        oPix[out--] = pixel[in--];
+                        oPix[out--] = pixel[in--];
+                        out--;
+                    }
+                    break;
+                default:
+                    while(in >= 0) {
+                        for (b=0; b<bands-1; b++)
+                            oPix[out--] = pixel[in--];
+                        out--;
+                    }
                 }
+                dstR.setPixels(x0+dx, y+dy, w, 1, oPix);
+            }
         } else if (dstAlpha && dst.isAlphaPremultiplied()) {
             // Src and dest have Alpha but we need to multiply it for dst.
-            norm = 1/(float)255;
-            for (int y=y0; y<y1; y++)
-                for (int x=x0; x<x1; x++) {
-                    pixel = srcR.getPixel(x,y,pixel);
-                    int a = pixel[bands-1];
-                    if ((a >= 0) && (a < 255)) {
-                        float alpha = a*norm;
-                        for (int b=0; b<bands-1; b++)
-                            pixel[b] = (int)(pixel[b]*alpha+0.5f);
+            // System.out.println("Mult Case");
+            int a, b, alpha, in, fpNorm = (1<<24)/255, pt5 = 1<<23;
+            for (int y=y0; y<=y1; y++) {
+                pixel = srcR.getPixels(x0,y,w,1,pixel);
+                in=bands*w-1;
+                switch (bands) {
+                case 4:
+                    while(in >= 0) {
+                        a = pixel[in]; 
+                        if (a == 255)
+                            in -= 4;
+                        else {
+                            in--;
+                            alpha = fpNorm*a;
+                            pixel[in] = (pixel[in]*alpha+pt5)>>>24; in--;
+                            pixel[in] = (pixel[in]*alpha+pt5)>>>24; in--;
+                            pixel[in] = (pixel[in]*alpha+pt5)>>>24; in--;
+                        }
                     }
-                    dstR.setPixel(x+dx, y+dy,pixel);
-                }
+                    break;
+                default:
+                    while(in >= 0) {
+                        a = pixel[in]; 
+                        if (a == 255)
+                            in -= bands;
+                        else {
+                            in--;
+                            alpha = fpNorm*a;
+                            for (b=0; b<bands-1; b++) {
+                                pixel[in] = (pixel[in]*alpha+pt5)>>>24;
+                                in--;
+                            }
+                        }
+                    }
+                };
+                dstR.setPixels(x0+dx, y+dy, w, 1, pixel);
+            }
         } else if (dstAlpha && !dst.isAlphaPremultiplied()) {
             // Src and dest have Alpha but we need to divide it out for dst.
-            for (int y=y0; y<y1; y++)
-                for (int x=x0; x<x1; x++) {
-                    pixel = srcR.getPixel(x,y,pixel);
-                    int a = pixel[bands-1];
-                    if ((a > 0) && (a < 255)) {
-                        float ialpha = 255/(float)a;
-                        for (int b=0; b<bands-1; b++)
-                            pixel[b] = (int)(pixel[b]*ialpha+0.5f);
+            // System.out.println("Div Case");
+            int a, b, ialpha, in, fpNorm = 0x00FF0000, pt5 = 1<<15;
+            for (int y=y0; y<=y1; y++) {
+                pixel = srcR.getPixels(x0,y,w,1,pixel);
+                in=(bands*w)-1;
+                switch(bands) {
+                case 4:
+                    while(in >= 0) {
+                        a = pixel[in];
+                        if ((a <= 0) || (a >= 255)) 
+                            in -= 4;
+                        else {
+                            in--;
+                            ialpha = fpNorm/a;
+                            pixel[in] = (pixel[in]*ialpha+pt5)>>>16; in--;
+                            pixel[in] = (pixel[in]*ialpha+pt5)>>>16; in--;
+                            pixel[in] = (pixel[in]*ialpha+pt5)>>>16; in--;
+                        }
                     }
-                    dstR.setPixel(x+dx, y+dy,pixel);
+                    break;
+                default:
+                    while(in >= 0) {
+                        a = pixel[in];
+                        if ((a <= 0) || (a >= 255)) 
+                            in -= bands;
+                        else {
+                            in--;
+                            ialpha = fpNorm/a;
+                            for (b=0; b<bands-1; b++) {
+                                pixel[in] = (pixel[in]*ialpha+pt5)>>>16;
+                                in--;
+                            }
+                        }
+                    }
                 }
+                dstR.setPixels(x0+dx, y+dy, w, 1, pixel);
+            }
         } else if (src.isAlphaPremultiplied()) {
-            int [] oPix = new int[bands];
+            int [] oPix = new int[bands*w];
             // Src has alpha dest does not so unpremult and store...
-            for (int y=y0; y<y1; y++)
-                for (int x=x0; x<x1; x++) {
-                    pixel = srcR.getPixel(x,y,pixel);
-                    int a = pixel[bands];
+            // System.out.println("Remove Alpha, Div Case");
+            int a, b, ialpha, in, out, fpNorm = 0x00FF0000, pt5 = 1<<15;
+            for (int y=y0; y<=y1; y++) {
+                pixel = srcR.getPixels(x0,y,w,1,pixel);
+                in  = (bands+1)*w -1;
+                out = (bands*w)-1;
+                while(in >= 0) {
+                    a = pixel[in]; in--;
                     if (a > 0) {
                         if (a < 255) {
-                            float ialpha = 255/(float)a;
-                            for (int b=0; b<bands-1; b++)
-                                oPix[b] = (int)(pixel[b]*ialpha+0.5f);
-                        } else {
-                            for (int b=0; b<bands-1; b++)
-                                oPix[b] = pixel[b];
-                        }
+                            ialpha = fpNorm/a;
+                            for (b=0; b<bands; b++)
+                                oPix[out--] = (pixel[in--]*ialpha+pt5)>>>16;
+                        } else
+                            for (b=0; b<bands; b++)
+                                oPix[out--] = pixel[in--];
                     } else {
-                        for (int b=0; b<bands-1; b++)
-                            oPix[b] = 255;
+                        in -= bands;
+                        for (b=0; b<bands; b++)
+                            oPix[out--] = 255;
                     }
-                    dstR.setPixel(x+dx, y+dy,oPix);
                 }
+                dstR.setPixels(x0+dx, y+dy, w, 1, oPix);
+            }
         } else {
             // Src has unpremult alpha, dest does not have alpha,
             // just copy the color channels over.
@@ -1195,7 +1291,7 @@ public class GraphicsUtil {
 
     public static boolean is_INT_PACK_Data(SampleModel sm,
                                            boolean requireAlpha) {
-          // Check ColorModel is of type DirectColorModel
+        // Check ColorModel is of type DirectColorModel
         if(!(sm instanceof SinglePixelPackedSampleModel)) return false;
 
         // Check transfer type
@@ -1217,7 +1313,17 @@ public class GraphicsUtil {
             (masks[3] != 0xff000000)) return false;
 
         return true;
-   }
+    }
+
+        public static boolean is_BYTE_COMP_Data(SampleModel sm) {
+            // Check ColorModel is of type DirectColorModel
+            if(!(sm instanceof ComponentSampleModel))    return false;
+
+            // Check transfer type
+            if(sm.getDataType() != DataBuffer.TYPE_BYTE) return false;
+
+            return true;
+        }
 
     protected static void divide_INT_PACK_Data(WritableRaster wr) {
         // System.out.println("Divide Int");
@@ -1288,6 +1394,93 @@ public class GraphicsUtil {
                                   ((((pixel&0x0000FF)*a)>>8)&0x0000FF));
                 }
                 sp++;
+            }
+        }
+    }
+
+
+    protected static void divide_BYTE_COMP_Data(WritableRaster wr) {
+        // System.out.println("Multiply Int: " + wr);
+
+        ComponentSampleModel csm;
+        csm = (ComponentSampleModel)wr.getSampleModel();
+
+        final int width = wr.getWidth();
+
+        final int scanStride = csm.getScanlineStride();
+        final int pixStride  = csm.getPixelStride();
+        final int [] bandOff = csm.getBandOffsets();
+
+        DataBufferByte db = (DataBufferByte)wr.getDataBuffer();
+        final int base
+            = (db.getOffset() +
+               csm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
+                             wr.getMinY()-wr.getSampleModelTranslateY()));
+        
+
+        int a=0;
+        int aOff = bandOff[bandOff.length-1];
+        int bands = bandOff.length-1;
+        int b, i;
+        // Access the pixel data array
+        final byte pixels[] = db.getBankData()[0];
+        for (int y=0; y<wr.getHeight(); y++) {
+            int sp = base + y*scanStride;
+            final int end = sp + width*pixStride;
+            while (sp < end) {
+              a = pixels[sp+aOff]&0xFF;
+              if (a==0) {
+                for (b=0; b<bands; b++) 
+                  pixels[sp+bandOff[b]] = (byte)0xFF;
+              } else if (a<255) {
+                int aFP = (0x00FF0000/a);
+                for (b=0; b<bands; b++) {
+                  i = sp+bandOff[b];
+                  pixels[i] = (byte)(((pixels[i]&0xFF)*aFP)>>>16);
+                }
+              }
+              sp+=pixStride;
+            }
+        }
+    }
+
+    protected static void mult_BYTE_COMP_Data(WritableRaster wr) {
+        // System.out.println("Multiply Int: " + wr);
+
+        ComponentSampleModel csm;
+        csm = (ComponentSampleModel)wr.getSampleModel();
+
+        final int width = wr.getWidth();
+
+        final int scanStride = csm.getScanlineStride();
+        final int pixStride  = csm.getPixelStride();
+        final int [] bandOff = csm.getBandOffsets();
+
+        DataBufferByte db = (DataBufferByte)wr.getDataBuffer();
+        final int base
+            = (db.getOffset() +
+               csm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
+                             wr.getMinY()-wr.getSampleModelTranslateY()));
+        
+
+        int a=0;
+        int aOff = bandOff[bandOff.length-1];
+        int bands = bandOff.length-1;
+        int b, i;
+
+        // Access the pixel data array
+        final byte pixels[] = db.getBankData()[0];
+        for (int y=0; y<wr.getHeight(); y++) {
+            int sp = base + y*scanStride;
+            final int end = sp + width*pixStride;
+            while (sp < end) {
+              a = pixels[sp+aOff]&0xFF;
+              if (a!=0xFF)
+                for (b=0; b<bands; b++) {
+                  i = sp+bandOff[b];
+                  pixels[i] = (byte)(((pixels[i]&0xFF)*a)>>8);
+                }
+              sp+=pixStride;
             }
         }
     }

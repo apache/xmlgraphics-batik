@@ -21,9 +21,10 @@ import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.RasterRable;
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
+import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,8 +38,6 @@ import org.w3c.dom.svg.SVGDocument;
  */
 public class SVGFeImageElementBridge
     extends SVGAbstractFilterPrimitiveElementBridge {
-
-    final static String PROTOCOL_DATA = "data:";
 
     /**
      * Constructs a new bridge for the &lt;feImage> element.
@@ -91,47 +90,41 @@ public class SVGFeImageElementBridge
                                                         ctx);
 
         Filter filter = null;
+        // try to load the image as an svg document
+        SVGDocument svgDoc = (SVGDocument)filterElement.getOwnerDocument();
+        ParsedURL purl;
+        URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
+        if (baseURL != null)
+            purl = new ParsedURL(baseURL.toString(), uriStr);
+        else
+            purl = new ParsedURL(uriStr);
+        
+        // try to load an SVG document
+        DocumentLoader loader = ctx.getDocumentLoader();
+        URIResolver resolver = new URIResolver(svgDoc, loader);
         try {
-            if (uriStr.startsWith(PROTOCOL_DATA)) {
-                filter = createBase64FeImage(ctx, primitiveRegion, uriStr);
+            Element refElement = null;
+            Node n = resolver.getNode(purl.toString());
+            if (n.getNodeType() == n.DOCUMENT_NODE) {
+                refElement = ((SVGDocument)n).getRootElement();
+            } else if (n.getNodeType() == Node.ELEMENT_NODE) {
+                refElement = (Element)n;
             } else {
-                // try to load the image as an svg document
-                SVGDocument svgDoc
-                    = (SVGDocument)filterElement.getOwnerDocument();
-                URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
-                URL url = new URL(baseURL, uriStr);
-                // try to load an SVG document
-                DocumentLoader loader = ctx.getDocumentLoader();
-                URIResolver resolver = new URIResolver(svgDoc, loader);
-                try {
-                    Element refElement = null;
-                    Node n = resolver.getNode(url.toString());
-                    if (n.getNodeType() == n.DOCUMENT_NODE) {
-                        refElement = ((SVGDocument)n).getRootElement();
-                    } else if (n.getNodeType() == Node.ELEMENT_NODE) {
-                        refElement = (Element)n;
-                    } else {
-                        throw new BridgeException
-                            (filterElement, ERR_URI_IMAGE_INVALID,
-                             new Object[] {uriStr});
-                    }
-                    filter = createSVGFeImage
-                        (ctx, primitiveRegion, refElement);
-                } catch (BridgeException ex) {
-                    throw ex;
-                } catch (Exception ex) { /* Nothing to do */ }
-                if (filter == null) {
-                    // try to load the image as a raster image (JPG or PNG)
-                    filter = createRasterFeImage(ctx, primitiveRegion, url);
-                }
+                throw new BridgeException
+                    (filterElement, ERR_URI_IMAGE_INVALID,
+                     new Object[] {uriStr});
             }
-        } catch (MalformedURLException ex) {
-            throw new BridgeException(filterElement, ERR_URI_MALFORMED,
-                                      new Object[] {"xlink:href", uriStr});
-        } catch (IOException ex) {
-            throw new BridgeException(filterElement, ERR_URI_IO,
-                                      new Object[] {"xlink:href", uriStr});
+            filter = createSVGFeImage
+                (ctx, primitiveRegion, refElement);
+        } catch (BridgeException ex) {
+            throw ex;
+        } catch (Exception ex) { /* Nothing to do */ }
+        
+        if (filter == null) {
+            // try to load the image as a raster image (JPG or PNG)
+            filter = createRasterFeImage(ctx, primitiveRegion, purl);
         }
+
         if (filter == null) {
             throw new BridgeException(filterElement, ERR_URI_IMAGE_INVALID,
                                       new Object[] {"xlink:href", uriStr});
@@ -170,33 +163,6 @@ public class SVGFeImageElementBridge
     }
 
     /**
-     * Returns a Filter that represents an raster image encoded in the
-     * base 64 format.
-     *
-     * @param ctx the bridge context
-     * @param primitiveRegion the primitive region
-     * @param uriStr the uri of the image
-     */
-    protected static Filter createBase64FeImage(BridgeContext ctx,
-                                                Rectangle2D primitiveRegion,
-                                                String uri) {
-
-
-        // Need to fit the raster image to the filter region so that
-        // we have the same behavior as raster images in the <image> element.
-        Filter filter = RasterRable.create(uri, null, null);
-
-        Rectangle2D bounds = filter.getBounds2D();
-        AffineTransform scale = new AffineTransform();
-        scale.translate(primitiveRegion.getX(), primitiveRegion.getY());
-        scale.scale(primitiveRegion.getWidth()/bounds.getWidth(),
-                    primitiveRegion.getHeight()/bounds.getHeight());
-        scale.translate(-bounds.getX(), -bounds.getY());
-
-        return new AffineRable8Bit(filter, scale);
-    }
-
-    /**
      * Returns a Filter that represents an raster image (JPG or PNG).
      *
      * @param ctx the bridge context
@@ -204,18 +170,18 @@ public class SVGFeImageElementBridge
      * @param url the url of the image
      */
     protected static Filter createRasterFeImage(BridgeContext ctx,
-                                                Rectangle2D primitiveRegion,
-                                                URL url) {
+                                                Rectangle2D   primitiveRegion,
+                                                ParsedURL     purl) {
 
         // Need to fit the raster image to the filter region so that
         // we have the same behavior as raster images in the <image> element.
-        Filter filter = RasterRable.create(url, null, null);
+        Filter filter = ImageTagRegistry.getRegistry().readURL(purl);
 
         Rectangle2D bounds = filter.getBounds2D();
         AffineTransform scale = new AffineTransform();
         scale.translate(primitiveRegion.getX(), primitiveRegion.getY());
-        scale.scale(primitiveRegion.getWidth()/bounds.getWidth(),
-                    primitiveRegion.getHeight()/bounds.getHeight());
+        scale.scale(primitiveRegion.getWidth()/(bounds.getWidth()-1),
+                    primitiveRegion.getHeight()/(bounds.getHeight()-1));
         scale.translate(-bounds.getX(), -bounds.getY());
 
         return new AffineRable8Bit(filter, scale);

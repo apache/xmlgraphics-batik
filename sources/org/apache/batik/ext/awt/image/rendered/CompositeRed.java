@@ -117,7 +117,7 @@ public class CompositeRed extends AbstractRed {
         }
 
         // fix my sample model so it makes sense given my size.
-        SampleModel sm = fixSampleModel(src, myBounds);
+        SampleModel sm = fixSampleModel(src, cm, myBounds);
 
         // System.out.println("Comp: " + myBounds);
         // System.out.println("  SM: " + sm.getWidth()+"x"+sm.getHeight());
@@ -248,6 +248,7 @@ public class CompositeRed extends AbstractRed {
          * much larger than my width.
          */
     protected static SampleModel fixSampleModel(CachableRed src,
+                                                ColorModel  cm,
                                                 Rectangle   bounds) {
         int defSz = AbstractTiledRed.getDefaultTileSize();
 
@@ -277,7 +278,7 @@ public class CompositeRed extends AbstractRed {
         // System.out.println("t: " + tw + "x" + th);
         // System.out.println("sz: " + w + "x" + h);
 
-        return sm.createCompatibleSampleModel(w, h);
+        return cm.createCompatibleSampleModel(w, h);
     }
 
     protected static ColorModel fixColorModel(CachableRed src) {

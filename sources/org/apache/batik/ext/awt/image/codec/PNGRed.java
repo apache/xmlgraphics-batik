@@ -1085,7 +1085,7 @@ public class PNGRed extends AbstractRed {
         }
 
         fileGamma = chunk.getInt4(0)/100000.0F;
-
+        // System.out.println("Gamma: " + fileGamma);
         float exp =
             performGammaCorrection ? displayExponent/userExponent : 1.0F;
         if (encodeParam != null) {

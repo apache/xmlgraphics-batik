@@ -25,12 +25,13 @@ import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.RasterRable;
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;
 import org.apache.batik.gvt.RasterImageNode;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
+import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,8 +49,6 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$
  */
 public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
-
-    public final static String PROTOCOL_DATA = "data:";
 
     /**
      * Constructs a new bridge for the &lt;image> element.
@@ -79,39 +78,33 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                       new Object[] {"xlink:href", uriStr});
         }
         GraphicsNode node = null;
+        // try to load the image as an svg document
+        SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
+        ParsedURL purl;
+        URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
+        if (baseURL != null)
+            purl = new ParsedURL(baseURL.toString(), uriStr);
+        else
+            purl = new ParsedURL(uriStr);
+        
+        // try to load an SVG document
+        DocumentLoader loader = ctx.getDocumentLoader();
+        URIResolver resolver = new URIResolver(svgDoc, loader);
         try {
-            if (uriStr.startsWith(PROTOCOL_DATA)) {
-                // load the image as a base 64 encoded image
-                node = createBase64ImageNode(ctx, e, uriStr);
-            } else {
-                // try to load the image as an svg document
-                SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
-                URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
-                URL url = new URL(baseURL, uriStr);
-                // try to load an SVG document
-                DocumentLoader loader = ctx.getDocumentLoader();
-                URIResolver resolver = new URIResolver(svgDoc, loader);
-                try {
-                    Node n = resolver.getNode(url.toString());
-                    if (n.getNodeType() == n.DOCUMENT_NODE) {
-                        SVGDocument imgDocument = (SVGDocument)n;
-                        node = createSVGImageNode(ctx, e, imgDocument);
-                    }
-                } catch (BridgeException ex) {
-                    throw ex;
-                } catch (Exception ex) { /* Nothing to do */ }
-                if (node == null) {
-                    // try to load the image as a raster image (JPG or PNG)
-                    node = createRasterImageNode(ctx, e, url);
-                }
+            Node n = resolver.getNode(purl.toString());
+            if (n.getNodeType() == n.DOCUMENT_NODE) {
+                SVGDocument imgDocument = (SVGDocument)n;
+                node = createSVGImageNode(ctx, e, imgDocument);
             }
-        } catch (MalformedURLException ex) {
-            throw new BridgeException(e, ERR_URI_MALFORMED,
-                                      new Object[] {uriStr});
-        } catch (IOException ex) {
-            throw new BridgeException(e, ERR_URI_IO,
-                                      new Object[] {uriStr});
+        } catch (BridgeException ex) {
+            throw ex;
+        } catch (Exception ex) { /* Nothing to do */ }
+
+        if (node == null) {
+            // try to load the image as a raster image (JPG or PNG)
+            node = createRasterImageNode(ctx, e, purl);
         }
+
         if (node == null) {
             throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
                                       new Object[] {uriStr});
@@ -152,26 +145,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Returns a GraphicsNode that represents an raster image encoded
-     * in the base 64 format.
-     *
-     * @param ctx the bridge context
-     * @param e the image element
-     * @param uriStr the uri of the image
-     */
-    protected static GraphicsNode createBase64ImageNode(BridgeContext ctx,
-                                                        Element e,
-                                                        String uriStr) {
-        RasterImageNode node = new RasterImageNode();
-        // create the image
-        Rectangle2D bounds = getImageBounds(ctx, e);
-        node.setImage
-            (RasterRable.create(uriStr, bounds, extractColorSpace(e, ctx)));
-        node.setImageBounds(bounds);
-        return node;
-    }
-
-    /**
      * Returns a GraphicsNode that represents an raster image in JPEG
      * or PNG format.
      *
@@ -180,13 +153,16 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * @param uriStr the uri of the image
      */
     protected static GraphicsNode createRasterImageNode(BridgeContext ctx,
-                                                        Element e,
-                                                        URL url) {
+                                                        Element       e,
+                                                        ParsedURL     purl) {
         RasterImageNode node = new RasterImageNode();
         // create the image
         Rectangle2D bounds = getImageBounds(ctx, e);
-        node.setImage
-            (RasterRable.create(url, bounds, extractColorSpace(e, ctx)));
+
+        ImageTagRegistry reg = ImageTagRegistry.getRegistry();
+        Filter           img = reg.readURL(purl, extractColorSpace(e, ctx));
+        node.setImage(img);
+
         node.setImageBounds(bounds);
         return node;
     }

@@ -10,7 +10,9 @@ package org.apache.batik.util;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.zip.GZIPInputStream;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,12 +22,67 @@ import java.net.MalformedURLException;
 
 public class ParsedURL {
 
+    /**
+         * GZIP header magic number.
+         */
+    public final static byte GZIP_MAGIC[] = {(byte)0x8b, (byte)0x1f};
+
+    /**
+         * This is a utility function others can call that checks if
+         * is is a GZIP stream if so it returns a GZIPInputStream that
+         * will decode the contents, otherwise it returns (or a
+         * buffered version of is) untouched.
+         * @param is Stream that may potentially be a GZIP stream.
+         */
+    public static InputStream checkGZIP(InputStream is) 
+        throws IOException {
+
+            if (!is.markSupported())
+                is = new BufferedInputStream(is);
+            byte data[] = new byte[2];
+            try {
+                is.mark(2);
+                is.read(data);
+                is.reset();
+            } catch (Throwable t) {
+                is.reset();
+                return is;
+            }
+        if ((data[0] == GZIP_MAGIC[0]) &&
+            (data[1] == GZIP_MAGIC[1]))
+            return new GZIPInputStream(is);
+        return is;
+    }
+
     static class URLData {
         public String protocol = null;
         public String host     = null;
         public int    port     = -1;
         public String path     = null;
         public String ref      = null;
+
+        public URLData() {
+        }
+
+        public URLData(URL url) {
+            protocol = url.getProtocol();
+            if ((protocol != null) && (protocol.length() == 0)) 
+                protocol = null;
+
+            host = url.getHost();
+            if ((host != null) && (host.length() == 0)) 
+                host = null;
+
+            port     = url.getPort();
+
+            path     = url.getPath();
+            if ((path != null) && (path.length() == 0)) 
+                path = null;
+
+            ref      = url.getRef();
+            if ((ref != null) && (ref.length() == 0))  
+                ref = null;
+        }
 
         protected URL buildURL() throws MalformedURLException {
             String file = "";
@@ -38,6 +95,19 @@ public class ParsedURL {
                 return new URL(protocol, host, file);
 
             return new URL(protocol, host, port, file);
+        }
+
+        public boolean equals(Object obj) {
+            if (! (obj instanceof ParsedURL)) 
+                return false;
+            ParsedURL purl = (ParsedURL)obj;
+            String s1 = toString();
+            String s2 = purl.toString();
+            return (s1.equals(s2));
+        }
+
+        public int hashCode() {
+            return toString().hashCode();
         }
         
         public boolean complete() {
@@ -59,7 +129,7 @@ public class ParsedURL {
             }
 
             if (url != null)
-                return url.openStream();
+                return checkGZIP(url.openStream());
 
             return null;
         }
@@ -112,9 +182,20 @@ public class ParsedURL {
         data = parseURL(urlStr);
     }
 
+    public ParsedURL(URL url) {
+        data = new URLData(url);
+    }
+
     public ParsedURL(String baseStr, String urlStr) {
         if (baseStr != null)
             data = parseURL(baseStr, urlStr);
+        else
+            data = parseURL(urlStr);
+    }
+
+    public ParsedURL(URL baseURL, String urlStr) {
+        if (baseURL != null)
+            data = parseURL(new ParsedURL(baseURL), urlStr);
         else
             data = parseURL(urlStr);
     }
@@ -236,32 +317,14 @@ public class ParsedURL {
         }
 
         public URLData parseURL(String urlStr) {
-            URLData ret = new URLData();
-
             try {
                 URL url = new URL(urlStr);
-                ret.protocol = url.getProtocol();
-                if ((ret.protocol != null) && (ret.protocol.length() == 0)) 
-                    ret.protocol = null;
-
-                ret.host = url.getHost();
-                if ((ret.host != null) && (ret.host.length() == 0)) 
-                    ret.host = null;
-
-                ret.port     = url.getPort();
-
-                ret.path     = url.getPath();
-                if ((ret.path != null) && (ret.path.length() == 0)) 
-                    ret.path = null;
-
-                ret.ref      = url.getRef();
-                if ((ret.ref != null) && (ret.ref.length() == 0))  
-                    ret.ref = null;
-            
-                return ret;
+                return new URLData(url);
             } catch (MalformedURLException mue) {
                 // Built in URL wouldn't take it...
             }
+
+            URLData ret = new URLData();
 
             int pidx=0, idx;
             int len = urlStr.length();
@@ -400,7 +463,7 @@ public class ParsedURL {
             public InputStream openStream() throws IOException {
                 byte [] data = path.getBytes();
                 InputStream is = new ByteArrayInputStream(data);
-                return new Base64DecodeStream(is);
+                return checkGZIP(new Base64DecodeStream(is));
             }
         }
 

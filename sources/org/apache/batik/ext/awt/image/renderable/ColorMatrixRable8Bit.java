@@ -10,21 +10,11 @@ package org.apache.batik.ext.awt.image.renderable;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
-import java.awt.Point;
-import java.awt.Shape;
-import java.awt.RenderingHints;
-
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.awt.image.BandCombineOp;
-import java.awt.image.ColorModel;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.ColorMatrixRed;
-import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 
 /**
  * Implements the interface expected from a color matrix

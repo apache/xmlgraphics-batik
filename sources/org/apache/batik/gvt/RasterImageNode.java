@@ -15,6 +15,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * A graphics node that represents a raster image.
@@ -35,6 +36,10 @@ public class RasterImageNode extends AbstractGraphicsNode {
      */
     protected Rectangle2D imageBounds;
 
+    protected AffineTransform img2usr, usr2img;
+    
+    protected boolean calcAffine = true;
+
     /**
      * Constructs a new empty <tt>RasterImageNode</tt>.
      */
@@ -51,6 +56,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
     public void setImage(Filter newImage) {
         invalidateGeometryCache();
         this.image = newImage;
+        calcAffine = true;
     }
 
     /**
@@ -68,6 +74,7 @@ public class RasterImageNode extends AbstractGraphicsNode {
     public void setImageBounds(Rectangle2D newImageBounds) {
         invalidateGeometryCache();
         this.imageBounds = newImageBounds;
+        calcAffine = true;
     }
 
     /**
@@ -76,6 +83,30 @@ public class RasterImageNode extends AbstractGraphicsNode {
      */
     public Rectangle2D getImageBounds() {
         return (Rectangle2D) imageBounds.clone();
+    }
+
+    protected void updateAffine() {
+        
+        float tx0 = image.getMinX();
+        float ty0 = image.getMinY();
+
+        float sx  = (float)(imageBounds.getWidth() /image.getWidth());
+        float sy  = (float)(imageBounds.getHeight()/image.getHeight());
+
+        float tx1 = (float)imageBounds.getX();
+        float ty1 = (float)imageBounds.getY();
+
+        // Make the affine go from our src Img's coord system to
+        // the device coord system, including scaling to our bounds.
+        img2usr = AffineTransform.getTranslateInstance          ( tx1,  ty1);
+        img2usr.concatenate(AffineTransform.getScaleInstance    ( sx ,  sy ));
+        img2usr.concatenate(AffineTransform.getTranslateInstance(-tx0, -ty0));
+
+        usr2img = AffineTransform.getTranslateInstance          ( tx0,  ty0);
+        usr2img.concatenate(AffineTransform.getScaleInstance    (1/sx, 1/sy));
+        usr2img.concatenate(AffineTransform.getTranslateInstance(-tx1, -ty1));
+
+        calcAffine = false;
     }
 
     //
@@ -95,48 +126,18 @@ public class RasterImageNode extends AbstractGraphicsNode {
             return;
         }
 
+        if (calcAffine) 
+            updateAffine();
+
         // get the current affine transform
-        AffineTransform origAt = g2d.getTransform();
-        AffineTransform at     = (AffineTransform)origAt.clone();
+        rc.setTransform(img2usr);
 
-        float tx0 = image.getMinX();
-        float ty0 = image.getMinY();
+        rc.setAreaOfInterest(null);
 
-        float sx  = (float)(imageBounds.getWidth() /image.getWidth());
-        float sy  = (float)(imageBounds.getHeight()/image.getHeight());
-
-        float tx1 = (float)imageBounds.getX();
-        float ty1 = (float)imageBounds.getY();
-
-        // Make the affine go from our src Img's coord system to
-        // the device coord system, including scaling to our bounds.
-        at.concatenate(AffineTransform.getTranslateInstance(tx1, ty1));
-        at.concatenate(AffineTransform.getScaleInstance    (sx, sy));
-        at.concatenate(AffineTransform.getTranslateInstance(-tx0, -ty0));
-
-        AffineTransform usr2src = new AffineTransform();
-        usr2src.concatenate(AffineTransform.getTranslateInstance(tx0, ty0));
-        usr2src.concatenate(AffineTransform.getScaleInstance    (1/sx, 1/sy));
-        usr2src.concatenate(AffineTransform.getTranslateInstance(-tx1, -ty1));
-
-        Shape aoi = g2d.getClip();
-        if(aoi == null) {
-            aoi = getImageBounds();
-        }
-
-        Shape newAOI = usr2src.createTransformedShape(aoi);
-        rc.setTransform(at);
-        rc.setAreaOfInterest(newAOI);
-        RenderedImage renderedNodeImage = image.createRendering(rc);
-
-        if(renderedNodeImage != null){
-            g2d.setTransform(IDENTITY);
-            g2d.drawRenderedImage(renderedNodeImage, IDENTITY);
-        }
+        GraphicsUtil.drawImage(g2d, image, rc);
 
         // Restore default rendering attributes
-        g2d.setTransform(origAt);
-        rc.setTransform(origAt);
+        rc.setTransform     (g2d.getTransform());
         rc.setAreaOfInterest(g2d.getClip());
     }
 

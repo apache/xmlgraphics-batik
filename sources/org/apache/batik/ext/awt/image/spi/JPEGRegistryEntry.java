@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.awt.image.BufferedImage;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.codec.PNGRed;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.renderable.DeferRable;
@@ -31,10 +30,19 @@ public class JPEGRegistryEntry
         super("JPEG", exts, 0, signature);
     }
 
-    public Filter handleStream(InputStream inIS) {
-        final DeferRable dr = new DeferRable();
-        final InputStream is = inIS;
-	
+    /**
+     * Decode the Stream into a RenderableImage
+     *
+     * @param is The input stream that contains the image.
+     * @param needRawData If true the image returned should not have
+     *                    any default color correction the file may 
+     *                    specify applied.  
+     */
+    public Filter handleStream(InputStream inIS, boolean needRawData) {
+
+        final DeferRable  dr  = new DeferRable();
+        final InputStream is  = inIS;
+
         Thread t = new Thread() {
                 public void run() {
                     Filter filt;
@@ -46,7 +54,7 @@ public class JPEGRegistryEntry
                         filt = new RedRable(GraphicsUtil.wrap(image));
                     } catch (IOException ioe) {
                         // Something bad happened here...
-                        filt = getBrokenLinkImage();
+                        filt = ImageTagRegistry.getBrokenLinkImage();
                     }
 
                     dr.setSource(filt);

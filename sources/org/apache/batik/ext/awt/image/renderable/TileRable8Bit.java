@@ -251,6 +251,23 @@ public class TileRable8Bit extends AbstractRable implements TileRable{
         Rectangle tiledArea = tileAt.createTransformedShape
             (aoiRect).getBounds();
 
+        // Serious hack alert!!!
+        // In some cases the bounds are set to cover the whole area.
+        // when they get scaled up sometimes the lower bounds go
+        // to Integer.MIN_VALUE, and width/height to Integer.MAX_VALUE,
+        // but this only covers the negative quarter of the canvas!!!
+        // So if width and height are MAX_VALUE then we assume this
+        // clipping has happened and we recenter the range.
+        // Yes this is a serious hack and I appologies for it.
+        // I wouldn't need to do this if PatternPaintContext knew
+        // what it's bounds were going to be....
+        if ((tiledArea.width  == Integer.MAX_VALUE)||
+            (tiledArea.height == Integer.MAX_VALUE)) {
+            tiledArea = new Rectangle(Integer.MIN_VALUE/4, 
+                                      Integer.MIN_VALUE/4, 
+                                      Integer.MAX_VALUE/2, 
+                                      Integer.MAX_VALUE/2);
+        }
         // System.out.println("tiledArea: " + tiledArea);
 
         TileRed tiledRed = new TileRed(tileRed, tiledArea, dw, dh);

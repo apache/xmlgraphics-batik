@@ -56,6 +56,10 @@ public class PatternPaintContext implements PaintContext {
     private RenderedImage tiled;
 
 
+    private static Rectangle EVERYTHING = 
+        new Rectangle(Integer.MIN_VALUE/4, Integer.MIN_VALUE/4, 
+                      Integer.MAX_VALUE/2, Integer.MAX_VALUE/2);
+
     /**
      * @param destCM     ColorModel that receives the paint data
      * @param usr2dev    user space to device space transform
@@ -89,11 +93,11 @@ public class PatternPaintContext implements PaintContext {
         // System.out.println("Tile: " + tile);
 
         Filter tileRable = new TileRable8Bit(tile,
-                                             userBounds,
+                                             EVERYTHING,
                                              patternRegion,
                                              overflow);
 
-        RenderContext rc = new RenderContext(usr2dev,  userBounds, hints);
+        RenderContext rc = new RenderContext(usr2dev,  EVERYTHING, hints);
 
         tiled = tileRable.createRendering(rc);
 

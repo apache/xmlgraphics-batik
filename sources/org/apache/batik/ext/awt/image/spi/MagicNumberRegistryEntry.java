@@ -25,7 +25,7 @@ public abstract class MagicNumberRegistryEntry
     extends AbstractRegistryEntry 
     implements StreamRegistryEntry {
 
-    static final float MAGIC_NUMBER_PRIORITY = 1000;
+    public static final float PRIORITY = 1000;
 
     /**
      * Inner class that represents one magic number. Simply consists
@@ -112,7 +112,7 @@ public abstract class MagicNumberRegistryEntry
     public MagicNumberRegistryEntry(String name,
                                     String ext,
                                     int offset, byte[]magicNumber) {
-        super(name, MAGIC_NUMBER_PRIORITY, ext);
+        super(name, PRIORITY, ext);
         magicNumbers    = new MagicNumber[1];
         magicNumbers[0] = new MagicNumber(offset, magicNumber);
     }
@@ -127,7 +127,7 @@ public abstract class MagicNumberRegistryEntry
     public MagicNumberRegistryEntry(String name,
                                     String ext,
                                     MagicNumber [] magicNumbers) {
-        super(name, MAGIC_NUMBER_PRIORITY, ext);
+        super(name, PRIORITY, ext);
         this.magicNumbers = magicNumbers;
     }
 
@@ -142,7 +142,7 @@ public abstract class MagicNumberRegistryEntry
     public MagicNumberRegistryEntry(String    name,
                                     String [] exts,
                                     int offset, byte[]magicNumber) {
-        super(name, MAGIC_NUMBER_PRIORITY, exts);
+        super(name, PRIORITY, exts);
         magicNumbers    = new MagicNumber[1];
         magicNumbers[0] = new MagicNumber(offset, magicNumber);
     }
@@ -156,7 +156,7 @@ public abstract class MagicNumberRegistryEntry
     public MagicNumberRegistryEntry(String    name,
                                     String [] exts,
                                     MagicNumber [] magicNumbers) {
-        super(name, MAGIC_NUMBER_PRIORITY, exts);
+        super(name, PRIORITY, exts);
         this.magicNumbers = magicNumbers;
     }
     
