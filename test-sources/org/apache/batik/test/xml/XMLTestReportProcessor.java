@@ -64,6 +64,18 @@ public class XMLTestReportProcessor
     }
 
     /**
+     * Error message if report directory does not exist.
+     */
+    public static final String ERROR_REPORT_DIRECTORY_UNUSABLE
+        = "xml.XMLTestReportProcessor.error.report.directory.unusable";
+								 
+    /**
+     * Error message if report resources directory does not exist.
+     */
+    public static final String ERROR_REPORT_RESOURCES_DIRECTORY_UNUSABLE
+        = "xml.XMLTestReportProcessor.error.report.resources.directory.unusable";
+
+    /**
      * Prefix for the files created by this processor
      */
     public static final String XML_TEST_REPORT_PREFIX
@@ -95,13 +107,6 @@ public class XMLTestReportProcessor
         = Messages.formatMessage("XMLTestReportProcessor.config.xml.test.report.resources.default.directory", null);
 								 
     /**
-     * Error message if report directory does not exist.
-     */
-    public static final String REPORT_DIRECTORY_DOES_NOT_EXIST
-        = "XMLTestReportProcessor.messages.error.report.directory.does.not.exist";
-								 
-
-    /**
      * The XMLReportConsumer instance is notified whenever 
      * this object generates a new report.
      */
@@ -128,7 +133,17 @@ public class XMLTestReportProcessor
     public void processReport(TestReport report) 
         throws TestException {
 
+        /**
+         * First, try to create the directories for the 
+         * report and report resources if they do not exist
+         */
+        checkDirectory(getReportDirectory(), 
+                       ERROR_REPORT_DIRECTORY_UNUSABLE);
+        checkDirectory(getReportResourcesDirectory(), 
+                       ERROR_REPORT_RESOURCES_DIRECTORY_UNUSABLE);
+        
         try {
+            
             /**
              * Create a new document and build the root
              * <testReport> element. Then, process the 
@@ -163,17 +178,37 @@ public class XMLTestReportProcessor
     }
 
     /**
+     * Checks that the input File represents a directory that
+     * can be used. If the directory does not exist, this method
+     * will attempt to create it.
+     */
+    public void checkDirectory(File dir,
+                               String errorCode) 
+        throws TestException {
+        boolean dirOK = false;
+        try{
+            if(!dir.exists()){
+                dirOK = dir.mkdir();
+            }
+            else if(dir.isDirectory()){
+                dirOK = true;
+            }
+        }finally{
+            if(!dirOK){
+                throw new TestException(errorCode,
+                                        new Object[] {dir.getAbsolutePath()},
+                                        null);
+                
+            }
+        }
+    }
+
+    /**
      * By default, the report directory is given by a configuration 
      * variable.
      */
-    public File getReportDirectory()
-        throws IOException {
+    public File getReportDirectory() {
         File file = new File(XML_TEST_REPORT_DEFAULT_DIRECTORY);
-        if( !file.exists() ){
-            throw new IOException(Messages.formatMessage(REPORT_DIRECTORY_DOES_NOT_EXIST, 
-                                                         new Object[]{XML_TEST_REPORT_DEFAULT_DIRECTORY}));
-        }
-        
         return file;
     }
 
@@ -181,8 +216,7 @@ public class XMLTestReportProcessor
      * By default, the report resources directory is
      * given by a configuration variable.
      */
-    public File getReportResourcesDirectory()
-        throws IOException {
+    public File getReportResourcesDirectory() {
         return new File(XML_TEST_REPORT_RESOURCES_DEFAULT_DIRECTORY);
     }
 

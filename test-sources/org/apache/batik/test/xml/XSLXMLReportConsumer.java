@@ -16,6 +16,8 @@ import org.apache.xalan.xslt.XSLTInputSource;
 import org.apache.xalan.xslt.XSLTResultTarget;
 import org.apache.xalan.xslt.XSLTProcessor;
 
+import org.apache.batik.test.TestException;
+
 /**
  * This implementation of the <tt>XMLTestReportProcessor.XMLReportConsumer</tt>
  * interface simply applies an XSL transformation to the input
@@ -26,6 +28,12 @@ import org.apache.xalan.xslt.XSLTProcessor;
  */
 public class XSLXMLReportConsumer 
     implements XMLTestReportProcessor.XMLReportConsumer {
+    /**
+     * Error code used when the output directory cannot be used
+     */
+    public static final String ERROR_OUTPUT_DIRECTORY_UNUSABLE 
+        = "xml.XSLXMLReportConsumer.error.output.directory.unusable";
+
     /**
      * Stylesheet URI
      */
@@ -82,13 +90,37 @@ public class XSLXMLReportConsumer
      * Returns a new file in the outputDirectory, with 
      * the requested prefix/suffix
      */
-    public File createNewReportOutput() throws IOException{
+    public File createNewReportOutput() throws Exception{
         File dir = new File(outputDirectory);
-        System.out.println("outputDirectory : " + outputDirectory);
-        System.out.println("outputPrefix    : " + outputPrefix);
-        System.out.println("outputSuffix    : " + outputSuffix);
+        checkDirectory(dir);
         return File.createTempFile(outputPrefix,
                                    outputSuffix,
                                    dir);
     }
+
+    /**
+     * Checks that the input File represents a directory that
+     * can be used. If the directory does not exist, this method
+     * will attempt to create it.
+     */
+    public void checkDirectory(File dir) 
+        throws TestException {
+        boolean dirOK = false;
+        try{
+            if(!dir.exists()){
+                dirOK = dir.mkdir();
+            }
+            else if(dir.isDirectory()){
+                dirOK = true;
+            }
+        }finally{
+            if(!dirOK){
+                throw new TestException(ERROR_OUTPUT_DIRECTORY_UNUSABLE,
+                                        new Object[] {dir.getAbsolutePath()},
+                                        null);
+                
+            }
+        }
+    }
+
 }
