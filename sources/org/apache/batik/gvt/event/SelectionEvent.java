@@ -30,6 +30,11 @@ public class SelectionEvent {
     public static final int SELECTION_CLEARED = 3;
 
     /**
+     * The id for the "selection started" event.
+     */
+    public static final int SELECTION_START = 4;
+
+    /**
      * The id for the "selection completed" event.
      * (Selection process is complete).
      */

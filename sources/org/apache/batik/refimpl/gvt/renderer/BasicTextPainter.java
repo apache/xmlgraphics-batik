@@ -132,27 +132,24 @@ public class BasicTextPainter implements TextPainter {
             int[] indices = null;
             try {
                 indices = new int[2];
-                indices[0] = begin.getHit().getCharIndex();
-                indices[1] = end.getHit().getCharIndex();
+                indices[0] = (begin.getHit().isLeadingEdge()) ? 
+                              begin.getHit().getCharIndex() : 
+                              begin.getHit().getCharIndex()+1;
+                indices[1] = (end.getHit().isLeadingEdge()) ? 
+                              end.getHit().getCharIndex() :
+                              end.getHit().getCharIndex()+1;
                 if (indices[0] > indices[1]) {
                     int temp = indices[0];
                     indices[0] = indices[1];
-                    indices[1] =
-                        (begin.getHit().isLeadingEdge()) ? temp : temp+1;
-                } else {
-                    if (!end.getHit().isLeadingEdge()) {
-                        indices[1] += 1;
-                    }
-                }
+                    indices[1] = temp;
+                } 
             } catch (Exception e) {
                 return null;
             }
             if (indices[0] < 0) {
                 indices[0] = 0;
             }
-            // we no longer use visual selection, we use logical one
-            // return layout.getLogicalRangesForVisualSelection(begin.getHit(),
-            //                                       end.getHit());
+
             return indices;
         } else {
             return null;
@@ -186,16 +183,17 @@ public class BasicTextPainter implements TextPainter {
             int firsthit = 0;
             int lasthit = 0;
             if (begin != end) {
-                firsthit = begin.getHit().getCharIndex();
-                lasthit = end.getHit().getCharIndex();
+                firsthit = (begin.getHit().isLeadingEdge()) ? 
+                              begin.getHit().getCharIndex() : 
+                              begin.getHit().getCharIndex()+1;
+                lasthit = (end.getHit().isLeadingEdge()) ? 
+                              end.getHit().getCharIndex() :
+                              end.getHit().getCharIndex()+1;
                 if (firsthit > lasthit) {
                     int temp = firsthit;
                     firsthit = lasthit;
-                    lasthit = (begin.getHit().isLeadingEdge()) ? temp : temp+1;
-                } else {
-                    lasthit =
-                        (end.getHit().isLeadingEdge()) ? lasthit : lasthit+1;
-                }
+                    lasthit = temp;
+                } 
             } else {
                 lasthit = layout.getCharacterCount();
             }
