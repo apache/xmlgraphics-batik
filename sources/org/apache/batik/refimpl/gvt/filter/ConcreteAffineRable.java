@@ -32,7 +32,7 @@ public class ConcreteAffineRable extends AbstractRable
     AffineTransform affine;
     AffineTransform invAffine;
 
-    ConcreteAffineRable(Filter src, AffineTransform affine) {
+    public ConcreteAffineRable(Filter src, AffineTransform affine) {
         init(src);
         setAffine(affine);
     }

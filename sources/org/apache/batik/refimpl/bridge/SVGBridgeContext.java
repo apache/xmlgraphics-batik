@@ -21,26 +21,50 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         implements SVGConstants {
 
     public SVGBridgeContext() {
-        putBridge(SVG_NAMESPACE_URI, TAG_CIRCLE, new SVGCircleElementBridge());
+        putBridge(SVG_NAMESPACE_URI, TAG_CIRCLE,
+                  new SVGCircleElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, TAG_ELLIPSE,
                   new SVGEllipseElementBridge());
-        putBridge(SVG_NAMESPACE_URI, TAG_FILTER, new SVGFilterElementBridge());
+
+        putBridge(SVG_NAMESPACE_URI, TAG_FILTER,
+                  new SVGFilterElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, TAG_FE_FLOOD,
                   new SVGFeFloodElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, TAG_FE_GAUSSIAN_BLUR,
                   new SVGFeGaussianBlurElementBridge());
+
+        putBridge(SVG_NAMESPACE_URI, TAG_FE_OFFSET,
+                  new SVGFeOffsetElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, TAG_FE_TURBULENCE,
                   new SVGFeTurbulenceElementBridge());
-        putBridge(SVG_NAMESPACE_URI, TAG_G, new SVGGElementBridge());
-        putBridge(SVG_NAMESPACE_URI, TAG_LINE, new SVGLineElementBridge());
-        putBridge(SVG_NAMESPACE_URI, TAG_PATH, new SVGPathElementBridge());
+
+        putBridge(SVG_NAMESPACE_URI, TAG_G,
+                  new SVGGElementBridge());
+
+        putBridge(SVG_NAMESPACE_URI, TAG_LINE,
+                  new SVGLineElementBridge());
+
+        putBridge(SVG_NAMESPACE_URI, TAG_PATH,
+                  new SVGPathElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, TAG_POLYLINE,
                   new SVGPolylineElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, TAG_POLYGON,
                   new SVGPolygonElementBridge());
-        putBridge(SVG_NAMESPACE_URI, TAG_RECT, new SVGRectElementBridge()); 
-        putBridge(SVG_NAMESPACE_URI, TAG_SVG, new SVGSVGElementBridge());
-        putBridge(SVG_NAMESPACE_URI, TAG_TEXT, new SVGTextElementBridge());
+
+        putBridge(SVG_NAMESPACE_URI, TAG_RECT,
+                  new SVGRectElementBridge());
+
+        putBridge(SVG_NAMESPACE_URI, TAG_SVG,
+                  new SVGSVGElementBridge());
+
+        putBridge(SVG_NAMESPACE_URI, TAG_TEXT,
+                  new SVGTextElementBridge());
     }
 
 }
