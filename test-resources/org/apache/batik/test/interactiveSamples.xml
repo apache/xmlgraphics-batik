@@ -23,6 +23,7 @@
         <test id="samples/tests/spec/interactivity/keyEvents.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
         </test>
+        <test id="samples/tests/spec/interactivity/pointerEvents.svg" />
     </testGroup>
 
     <testGroup id="tests.spec.scripting" name="Interactive Scripting Tests"
