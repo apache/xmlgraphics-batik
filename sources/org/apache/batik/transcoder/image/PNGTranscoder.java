@@ -60,15 +60,15 @@ public class PNGTranscoder extends ImageTranscoder {
         }
         PNGEncodeParam.RGB params =
             (PNGEncodeParam.RGB)PNGEncodeParam.getDefaultEncodeParam(img);
-        params.setBackgroundRGB(new int [] { 255, 255, 255 });
+	params.setBackgroundRGB(new int [] { 255, 255, 255 });
         // We are using sRGB (gamma 2.2).
-        params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
+	params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
 
         //
         // This is a trick so that viewers which do not support the alpha
         // channel will see a white background (and not a black one).
         //
-        boolean forceTransparentWhite = true;
+        boolean forceTransparentWhite = false;
 
         if (hints.containsKey(KEY_FORCE_TRANSPARENT_WHITE)) {
             forceTransparentWhite = 
