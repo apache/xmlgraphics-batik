@@ -76,7 +76,10 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {SVG_R_ATTRIBUTE, s});
         }
-
+	// A value of zero disables rendering of the element
+	if (r == 0) {
+	    return;
+	}
         float x = cx - r;
         float y = cy - r;
         float w = r * 2;
