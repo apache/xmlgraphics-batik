@@ -1,9 +1,5 @@
-grant codeBase "${app.jar.base}/lib/xerces_2_3_0.jar" {
-
-
+grant codeBase "${app.jar.base}/lib/xerces_2_5_0.jar" {
   permission java.security.AllPermission;
-
-
 };
 
 
