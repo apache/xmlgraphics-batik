@@ -101,7 +101,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_DIVISOR_ATTRIBUTE = "divisor";
     String SVG_DX_ATTRIBUTE = "dx";
     String SVG_DY_ATTRIBUTE = "dy";
-    String SVG_EDGE_MODE_ATTRIBUTE = "edgemode";
+    String SVG_EDGE_MODE_ATTRIBUTE = "edgeMode";
     String SVG_ELEVATION_ATTRIBUTE = "elevation";
     String SVG_ENABLE_BACKGROUND_ATTRIBUTE = CSS_ENABLE_BACKGROUND_PROPERTY;
     String SVG_EXPONENT_ATTRIBUTE = "exponent";
@@ -133,6 +133,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_K3_ATTRIBUTE = "k3";
     String SVG_K4_ATTRIBUTE = "k4";
     String SVG_KERNEL_MATRIX_ATTRIBUTE = "kernelMatrix";
+    String SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE = "kernelUnitLength";
     String SVG_KERNEL_UNIT_LENGTH_X_ATTRIBUTE = "kernelUnitLengthX";
     String SVG_KERNEL_UNIT_LENGTH_Y_ATTRIBUTE = "kernelUnitLengthY";
     String ATTR_LIGHT_COLOR = "lightColor";
@@ -147,7 +148,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_OFFSET_ATTRIBUTE = "offset";
     String ATTR_OPACITY = CSS_OPACITY_PROPERTY;
     String SVG_OPERATOR_ATTRIBUTE = "operator";
-    String ATTR_ORDER = "order";
+    String SVG_ORDER_ATTRIBUTE = "order";
     String SVG_ORDER_X_ATTRIBUTE = "orderX";
     String SVG_ORDER_Y_ATTRIBUTE = "orderY";
     String ATTR_PATTERN_CONTENT_UNITS = "patternContentUnits";

@@ -220,7 +220,7 @@ public class ConcreteGaussianBlurRable
             return null;
 
         CachableRed cr;
-        cr = new ConcreteRenderedImageCachableRed(ri);
+        cr = ConcreteRenderedImageCachableRed.wrap(ri);
 
         Shape devShape = srcAt.createTransformedShape(aoi);
         r = devShape.getBounds2D();
@@ -231,7 +231,7 @@ public class ConcreteGaussianBlurRable
         if (!r.getBounds().equals(cr.getBounds()))
             cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
         
-        ColorModel cm = ri.getColorModel();
+        ColorModel cm = cr.getColorModel();
 
         // OK this is a bit of a cheat. We Pull the DataBuffer out of
         // The read-only raster that getData gives us. And use it to

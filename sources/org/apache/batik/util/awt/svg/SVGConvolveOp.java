@@ -76,7 +76,7 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
                 domFactory.createElement(SVG_FE_CONVOLVE_MATRIX_TAG);
 
             // Convert the kernel size
-            feConvolveMatrixDef.setAttribute(ATTR_ORDER,
+            feConvolveMatrixDef.setAttribute(SVG_ORDER_ATTRIBUTE,
                                              kernel.getWidth() + SPACE +
                                              kernel.getHeight());
 
