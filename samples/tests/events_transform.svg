@@ -24,7 +24,7 @@
         onmousedown="System.err.println('You clicked on the red rectangle')"/>
 
     <rect x="10" y="70" width="40" height="40" style="fill:yellow;stroke:none" 
-        onmousedown="yellow(evt)"/>
+        onmousedown="System.err.println('You clicked on the yellow rectangle')"/>
 
     <rect x="70" y="70" width="40" height="40" style="fill:green;stroke:none" 
         onmousedown="System.err.println('You clicked on the green rectangle')" />
