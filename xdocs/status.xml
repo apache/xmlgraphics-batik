@@ -46,7 +46,7 @@
             static and dynamic SVG tests separately.
             </p>
            <p>
-            Static ratings : passed: 62, close: 6, not at all: 26 (Total: 68/94)
+            Static ratings : passed: 67, close: 8, not at all: 19 (Total: 75/94)
            </p>
            <p>
             Dynamic ratings : passed: 2, not at all: 30 (Total: 2/32)
@@ -314,7 +314,19 @@
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
+	      <td >text-extTref-BE-18.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
 	      <td ><link href="http://xml.apache.org/batik/images/BE/text-font-BE-15.png">text-font-BE-15.svg</link></td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-selection-BE-13.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-spacing-BE-14.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
@@ -322,8 +334,20 @@
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
+	      <td >text-textLength-BE-17.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-tref-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-tspan-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
 	      <td ><link href="http://xml.apache.org/batik/images/BE/text-whiteSpace-BE-06.png">text-whiteSpace-BE-06.svg</link></td>
-	      <td >Note that exact appearance of this test depends on platform font metrics.</td>
+	      <td >&nbsp;</td>
 	    </tr>
         </table>
         </s2>
@@ -366,11 +390,19 @@
 	    </tr>
 	    <tr>
 	      <td >text-decoration-BE-12.svg</td>
-	      <td >Whitespace consolidation incomplete.  Underline stroke not inherited independent of glyph stroke.</td>
+	      <td >Underline stroke not inherited independent of glyph stroke.</td>
 	    </tr>
 	    <tr>
 	      <td >text-font-BE-16.svg</td>
 	      <td >"light" weight not available for default fonts.</td>
+	    </tr>
+	    <tr>
+	      <td >text-i18n-BE-09.svg</td>
+	      <td >Contains vertical layout, which is not yet supported.  Depends on installed system fonts.</td>
+	    </tr>
+	    <tr>
+	      <td >text-textAnchor-BE-05.svg</td>
+	      <td >Contains a textPath element, which is not yet implemented.</td>
 	    </tr>
         </table>
 
@@ -451,36 +483,8 @@
 	      <td ><em>glyphRun</em> not yet implemented.</td>
 	    </tr>
 	    <tr>
-	      <td >text-i18n-BE-09.svg</td>
-	      <td >(Depends on system fonts installed.)</td>
-	    </tr>
-	    <tr>
-	      <td >text-selection-BE-13.svg</td>
-	      <td >Block of text at bottom half of screen does not display.</td>
-	    </tr>
-	    <tr>
-	      <td >text-spacing-BE-14.svg</td>
-	      <td >Text spacing not yet implemented.</td>
-	    </tr>
-	    <tr>
-	      <td >text-textAnchor-BE-05.svg</td>
-	      <td >tspan element "x" and "y" positioning not yet implemented.</td>
-	    </tr>
-	    <tr>
-	      <td >text-textLength-BE-17.svg</td>
-	      <td >Author-specified text metrics not yet implemented.</td>
-	    </tr>
-	    <tr>
 	      <td >text-textOnPath-BE-03.svg</td>
 	      <td ><em>textPath</em> not yet implemented.</td>
-	    </tr>
-	    <tr>
-	      <td >text-tref-BE-04.svg</td>
-	      <td >Explicit positioning (x, y) of tref not yet implemented.</td>
-	    </tr>
-	    <tr>
-	      <td >text-tspan-BE-02.svg</td>
-	      <td >Per-glyph tspan positioning (x, y) not yet implemented.</td>
 	    </tr>
         </table>
     </s2>
