@@ -303,7 +303,7 @@ To display the available targets type:
   <target name="awt-util-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-awt-util.jar">
       <fileset dir="${dest}">
-        <include name="${package-prefix}/util/awt/**/*.class"/>
+        <include name="${package-prefix}/ext/awt/**/*.class"/>
       </fileset>
     </jar>
   </target>
@@ -381,11 +381,9 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-gvt.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/gvt/**/*.class"/>
-        <include name="${package-prefix}/refimpl/gvt/**/*.class"/>
       </fileset>
       <fileset dir="${resources}">
         <include name="${package-prefix}/gvt/**/resources/*"/>
-        <include name="${package-prefix}/refimpl/gvt/**/resources/**"/>
       </fileset>
     </jar>
   </target>
@@ -396,11 +394,9 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-parser.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/parser/**/*.class"/>
-        <include name="${package-prefix}/refimpl/parser/**/*.class"/>
       </fileset>
       <fileset dir="${resources}">
         <include name="${package-prefix}/parser/**/resources/*"/>
-        <include name="${package-prefix}/refimpl/parser/**/resources/**"/>
       </fileset>
     </jar>
   </target>
@@ -411,11 +407,9 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-script.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/script/**/*.class"/>
-        <include name="${package-prefix}/refimpl/script/**/*.class"/>
       </fileset>
       <fileset dir="${resources}">
         <include name="${package-prefix}/script/**/resources/*"/>
-        <include name="${package-prefix}/refimpl/script/**/resources/**"/>
       </fileset>
     </jar>
   </target>
@@ -426,11 +420,9 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-transcoder.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/transcoder/**/*.class"/>
-        <include name="${package-prefix}/refimpl/transcoder/**/*.class"/>
       </fileset>
       <fileset dir="${resources}">
         <include name="${package-prefix}/transcoder/**/resources/*"/>
-        <include name="${package-prefix}/refimpl/transcoder/**/resources/**"/>
       </fileset>
     </jar>
   </target>
@@ -454,17 +446,11 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-bridge.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/bridge/**/*.class"/>
-        <include name="${package-prefix}/rasterizer/**/*.class"/>
-        <include name="${package-prefix}/refimpl/bridge/**/*.class"/>
-        <include name="${package-prefix}/refimpl/raterizer/**/*.class"/>
-        <include name="${package-prefix}/refimpl/util/**/*.class"/>
+        <include name="${package-prefix}/swing/**/*.class"/>
       </fileset>
       <fileset dir="${resources}">
         <include name="${package-prefix}/bridge/**/resources/*"/>
-        <include name="${package-prefix}/rasterizer/**/resources/*"/>
-        <include name="${package-prefix}/refimpl/bridge/**/resources/**"/>
-        <include name="${package-prefix}/refimpl/rasterizer/**/resources/**"/>
-        <include name="${package-prefix}/refimpl/util/**/resources/**"/>
+        <include name="${package-prefix}/swing/**/resources/*"/>
       </fileset>
     </jar>
   </target>
