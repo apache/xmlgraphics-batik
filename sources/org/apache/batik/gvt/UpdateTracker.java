@@ -76,8 +76,8 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             Rectangle2D srcNRgn = gn.getBounds();
             AffineTransform nat = gn.getTransform();
             nodeBounds.put(gnWRef, srcNRgn); // remember the new bounds...
-            // System.out.println("Old: " + srcORgn);
-            // System.out.println("New: " + srcNRgn);
+            // System.out.println("Rgns: " + srcORgn + " - " + srcNRgn);
+            // System.out.println("ATs: " + oat + " - " + nat);
             Shape oRgn = srcORgn;
             Shape nRgn = srcNRgn;
 
@@ -119,6 +119,10 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
             if (gn == null) {
                 // We made it to the root graphics node so add them.
+                // System.out.println
+                //     ("Adding: " + oat + " - " + nat + "\n" +
+                //      org.ImageDisplay.stringShape(oRgn) + "\n" +
+                //      org.ImageDisplay.stringShape(nRgn) + "\n");
                 ret.add(oRgn);
                 ret.add(nRgn);
             }
@@ -137,14 +141,19 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         GraphicsNode gn = gnce.getGraphicsNode();
         WeakReference gnWRef = gn.getWeakReference();
 
+        boolean doPut = false;
         if (dirtyNodes == null) {
             dirtyNodes = new HashMap();
-            dirtyNodes.put(gnWRef, gn.getTransform());
-        } else {
-            Object o = dirtyNodes.get(gnWRef);
-            if (o == null)
-                dirtyNodes.put(gnWRef, gn.getTransform());
+            doPut = true;
+        } else if (!dirtyNodes.containsKey(gnWRef)) 
+            doPut = true;
+
+        if (doPut) {
+            AffineTransform at = gn.getTransform();
+            if (at != null) at = (AffineTransform)at.clone();
+            dirtyNodes.put(gnWRef, at);
         }
+
 
         Object o = nodeBounds.get(gnWRef);
         while (o == null) {
