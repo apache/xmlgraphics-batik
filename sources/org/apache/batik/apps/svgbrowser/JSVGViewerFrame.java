@@ -9,8 +9,10 @@
 package org.apache.batik.apps.svgbrowser;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
@@ -33,8 +35,11 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Reader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,6 +52,8 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import java.util.zip.GZIPInputStream;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -55,7 +62,12 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 
@@ -129,6 +141,7 @@ public class JSVGViewerFrame
     public final static String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
     public final static String EXPORT_AS_JPG_ACTION = "ExportAsJPGAction";
     public final static String CLOSE_ACTION = "CloseAction";
+    public final static String VIEW_SOURCE_ACTION = "ViewSourceAction";
     public final static String EXIT_ACTION = "ExitAction";
     public final static String RESET_TRANSFORM_ACTION = "ResetTransformAction";
     public final static String ZOOM_IN_ACTION = "ZoomInAction";
@@ -284,6 +297,7 @@ public class JSVGViewerFrame
         listeners.put(EXPORT_AS_JPG_ACTION, new ExportAsJPGAction());
         listeners.put(CLOSE_ACTION, new CloseAction());
         listeners.put(EXIT_ACTION, application.createExitAction(this));
+        listeners.put(VIEW_SOURCE_ACTION, new ViewSourceAction());
         listeners.put(RESET_TRANSFORM_ACTION, new ResetTransformAction());
         listeners.put(ZOOM_IN_ACTION, new ZoomInAction());
         listeners.put(ZOOM_OUT_ACTION, new ZoomOutAction());
@@ -663,6 +677,83 @@ public class JSVGViewerFrame
                     }.start();
                 }
             }
+        }
+    }
+
+    /**
+     * To view the source of the current document.
+     */
+    public class ViewSourceAction extends AbstractAction {
+        public ViewSourceAction() {}
+        public void actionPerformed(ActionEvent e) {
+            if (svgDocument == null) {
+                return;
+            }
+            
+            new Thread() {
+                public void run() {
+                    char [] buffer = new char[4096];
+
+                    URL u = ((SVGOMDocument)svgDocument).getURLObject();
+
+                    JFrame fr = new JFrame(u.toString());
+                    fr.setSize(resources.getInteger("ViewSource.width"),
+                               resources.getInteger("ViewSource.height"));
+                    JTextArea ta  = new JTextArea();
+                    ta.setLineWrap(true);
+                    ta.setFont(new Font("monospaced", Font.PLAIN, 12));
+                
+                    JScrollPane scroll = new JScrollPane();
+                    scroll.getViewport().add(ta);
+                    scroll.setVerticalScrollBarPolicy
+                        (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+                    fr.getContentPane().add(scroll, BorderLayout.CENTER);
+                    
+                    try {
+                        Document  doc = new PlainDocument();
+
+                        InputStream is = u.openStream();
+                    
+                        try {
+                            is = new GZIPInputStream(is);
+                        } catch (IOException ex) {
+                            is.close();
+                            is = u.openStream();
+                        }
+                        try {
+                            Reader in = new InputStreamReader(is, "Unicode");
+                            int nch;
+                            while ((nch = in.read(buffer, 0, buffer.length)) != -1) {
+                                doc.insertString(doc.getLength(),
+                                                 new String(buffer, 0, nch), null);
+                            }
+                        } catch (java.io.CharConversionException ioce) {
+                            // try default encoding...
+                            doc = new PlainDocument();
+                            is = u.openStream();
+                            try {
+                                Reader in = new InputStreamReader(is);
+                                int nch;
+                                while ((nch = in.read(buffer, 0, buffer.length))!=-1){
+                                    doc.insertString(doc.getLength(),
+                                                     new String(buffer, 0, nch), null);
+                                }
+                            } catch (Exception ex) {
+                                // !!! TODO : dialog
+                                System.err.println(ex.toString());
+                            }
+                        }
+
+                        ta.setDocument(doc);
+                        ta.setEditable(false);
+                        ta.setBackground(Color.white);
+                        fr.show();
+                    } catch (Exception ex) {
+                        // !!! TODO : dialog
+                        System.err.println(ex.toString());
+                    }
+                }
+            }.start();
         }
     }
 
