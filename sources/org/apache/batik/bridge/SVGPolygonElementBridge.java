@@ -74,10 +74,10 @@ public class SVGPolygonElementBridge extends SVGDecoratedShapeElementBridge {
     }
 
     protected boolean hasStartMarker(){
-        return false;
+        return true;
     }
 
     protected boolean hasEndMarker(){
-        return false;
+        return true;
     }
 }

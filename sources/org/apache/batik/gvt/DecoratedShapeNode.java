@@ -84,7 +84,6 @@ public class DecoratedShapeNode extends ShapeNode {
     private CompositeGraphicsNode markerGroup = new CompositeGraphicsNode();
 
     public void setStartMarker(Marker startMarker){
-        System.out.println("Setting start : " + startMarker);
         this.startMarker = startMarker;
         this.startMarkerProxy = null;
         invalidateGeometryCache();
@@ -92,7 +91,6 @@ public class DecoratedShapeNode extends ShapeNode {
     }
 
     public void setMiddleMarker(Marker middleMarker){
-        System.out.println("Setting middle");
         this.middleMarker = middleMarker;
         this.middleMarkerProxies = null;
         invalidateGeometryCache();
@@ -100,7 +98,6 @@ public class DecoratedShapeNode extends ShapeNode {
     }
 
     public void setEndMarker(Marker endMarker){
-        System.out.println("Setting end");
         this.endMarker = endMarker;
         this.endMarkerProxy = null;
         invalidateGeometryCache();
@@ -124,7 +121,6 @@ public class DecoratedShapeNode extends ShapeNode {
      * markers
      */
     private CompositeGraphicsNode buildMarkerGroup(){
-        System.out.println("Building markerGroup : " + startMarker);
         if(startMarker != null && startMarkerProxy == null){
             startMarkerProxy = buildStartMarkerProxy();
         }
@@ -153,7 +149,6 @@ public class DecoratedShapeNode extends ShapeNode {
             children.add(endMarkerProxy);
         }
 
-        System.out.println("List has : " + children.size() + " children");
         return group;
     }
 
@@ -162,7 +157,6 @@ public class DecoratedShapeNode extends ShapeNode {
      * <tt>Marker</tt> to be drawn at the start position
      */
     public ProxyGraphicsNode buildStartMarkerProxy(){
-        System.out.println("Building startMarkerProxy");
         PathIterator iter = getShape().getPathIterator(null);
 
         // Get initial point on the path
@@ -170,7 +164,6 @@ public class DecoratedShapeNode extends ShapeNode {
         int segType = 0;
 
         if(iter.isDone()){
-            System.out.println("No points in Shape");
             return null;
         }
 
@@ -468,8 +461,6 @@ public class DecoratedShapeNode extends ShapeNode {
         double outSlope = computeOutSlope(cur, curSegType, 
                                           next, nextSegType, moveTo);
 
-        System.out.println("inSlope / outSlope : " + inSlope + "/" + outSlope);
-
         if(Double.isNaN(inSlope)){
             inSlope = outSlope;
         }
@@ -586,7 +577,6 @@ public class DecoratedShapeNode extends ShapeNode {
         if(curSegType != PathIterator.SEG_CLOSE){
             curEndPoint = getSegmentTerminatingPoint(cur, curSegType);
             if(curEndPoint == null){
-                System.out.println("Cannot compute curEndPoint");
                 return Double.NaN;
             }
         }

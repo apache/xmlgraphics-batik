@@ -84,6 +84,10 @@ public abstract class SVGDecoratedShapeElementBridge
         // Extract the marker properties
         //
         
+        // 
+        // <!> TO BE REMOVED WHEN marker IMPLEMENTED AS SHORT-HAND
+        //
+
         // Start with marker, a short-hand for start/middle/end
         Marker marker = CSSUtilities.convertMarker(svgElement,
                                                    CSS_MARKER_PROPERTY,
@@ -95,6 +99,9 @@ public abstract class SVGDecoratedShapeElementBridge
             node.setEndMarker(marker);
         }
         else{
+
+            // <!> END TO BE REMOVED
+
             // Extract start, middle and end markers
             if(hasStartMarker()){
                 Marker startMarker 
