@@ -314,6 +314,7 @@ public class DOMNodeIterator implements NodeIterator {
 
         // The previous of root is null
         if (referenceNode == root) {
+            referenceNode = null;
             return;
         }
         

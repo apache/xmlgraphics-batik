@@ -278,7 +278,7 @@ To display the available targets type:
   </target>
 
 
-  <!-- All batik in a jar (dependencies: none) -->
+  <!-- All batik in a single jar (dependencies: none) -->
   <target name="all-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-all.jar">
       <fileset dir="${dest}">
@@ -290,6 +290,44 @@ To display the available targets type:
     </jar>
   </target>
 
+
+  <!-- What is needed to the JSVGCanvas bean in a jar,
+       including the XML parser -->
+  <target name="bean" depends="compile, prepare-build">
+    <mkdir dir="${build}/tmp"/>
+    <unjar src="lib/crimson-parser.jar" dest="${build}/tmp"/>
+    <jar jarfile="${build}/lib/${project}-bean.jar"
+         manifest="${src}/${project}-bean.mf">
+      <fileset dir="${dest}">
+        <include name="org/w3c/**"/>
+        <include name="org/xml/**"/>
+        <include name="${package-prefix}/bridge/*.class"/>
+        <include name="${package-prefix}/css/**/*.class"/>
+        <include name="${package-prefix}/dom/**/*.class"/>
+        <include name="${package-prefix}/ext/**/*.class"/>
+        <include name="${package-prefix}/gvt/**/*.class"/>
+        <include name="${package-prefix}/i18n/**/*.class"/>
+        <include name="${package-prefix}/parser/**/*.class"/>
+        <include name="${package-prefix}/script/**/*.class"/>
+        <include name="${package-prefix}/swing/**/*.class"/>
+        <include name="${package-prefix}/util/*.class"/>
+        <include name="${package-prefix}/xml/*.class"/>
+      </fileset>
+      <fileset dir="${resources}">
+        <include name="${package-prefix}/bridge/**"/>
+        <include name="${package-prefix}/css/**"/>
+        <include name="${package-prefix}/dom/**"/>
+        <include name="${package-prefix}/ext/**"/>
+        <include name="${package-prefix}/parser/**"/>
+        <include name="${package-prefix}/swing/**"/>
+        <include name="${package-prefix}/util/resources/**"/>
+      </fileset>
+      <fileset dir="${build}/tmp">
+        <include name="org/**"/>
+      </fileset>
+    </jar>
+    <delete dir="${build}/tmp"/>
+  </target>
 
   <!-- External packages (dependencies: none) -->
   <target name="ext-jar" depends="compile, prepare-build">

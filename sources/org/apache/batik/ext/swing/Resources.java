@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.batik.util.gui.resource.ResourceManager;
 
 /**
  * This class manages the message for the Swing extensions.
@@ -39,10 +40,17 @@ public class Resources {
         new LocalizableSupport(RESOURCES);
 
     /**
+     * The resource manager to decode messages.
+     */
+    protected static ResourceManager resourceManager =
+        new ResourceManager(localizableSupport.getResourceBundle());
+
+    /**
      * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
      */
     public static void setLocale(Locale l) {
         localizableSupport.setLocale(l);
+        resourceManager = new ResourceManager(localizableSupport.getResourceBundle());
     }
 
     /**
@@ -63,11 +71,11 @@ public class Resources {
 
     public static String getString(String key)
         throws MissingResourceException {
-        return formatMessage(key, null);
+        return resourceManager.getString(key);
     }
 
     public static int getInteger(String key) 
         throws MissingResourceException {
-        return localizableSupport.getResourceManager().getInteger(key);
+        return resourceManager.getInteger(key);
     }
 }
