@@ -69,6 +69,13 @@ public class BridgeContext implements ErrorConstants {
     protected Map interpreterMap = new HashMap(7);
 
     /**
+     * A hash map of all the font families already matched. This is
+     * to reduce the number of instances of GVTFontFamilies and to
+     * hopefully reduce the time taken to search for a matching SVG font.
+     */
+    private static HashMap fontFamilyMap;
+
+    /**
      * The viewports.
      * key is an Element -
      * value is a Viewport
@@ -209,6 +216,17 @@ public class BridgeContext implements ErrorConstants {
     }
 
     /**
+     * Returns the map of font families
+     */
+    public HashMap getFontFamilyMap(){
+        if (fontFamilyMap == null){
+            fontFamilyMap = new HashMap();
+        }
+
+        return fontFamilyMap;
+    }
+
+    /**
      * Returns the text painter that will be used be text nodes.
      */
     public TextPainter getTextPainter() {
@@ -228,6 +246,9 @@ public class BridgeContext implements ErrorConstants {
      * @param document the document
      */
     protected void setDocument(Document document) {
+        if (this.document != document){
+            fontFamilyMap = null;
+        }
         this.document = document;
     }
 
