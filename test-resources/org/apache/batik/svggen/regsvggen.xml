@@ -19,6 +19,7 @@
     <test id="Bug4389" />
     <test id="Bug4945" />
     <test id="Bug6535" />
+    <test id="Bug17965" />
     <test id="Clip" />
     <test id="Color1" />
     <test id="Color2" />
