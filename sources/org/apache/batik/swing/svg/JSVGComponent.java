@@ -741,6 +741,7 @@ public class JSVGComponent extends JGVTComponent {
             String href = elt.getHref().getBaseVal();
 
             if (show.equals("new")) {
+                fireLinkActivatedEvent(elt, href);
                 if (svgUserAgent != null) {
                     URL oldURI = ((SVGOMDocument)svgDocument).getURLObject();
                     URL newURI = null;
@@ -753,10 +754,11 @@ public class JSVGComponent extends JGVTComponent {
 
                     href = newURI.toString();
 
-                    svgUserAgent.openLink(href);
-                    fireLinkActivatedEvent(elt, href);
-                    return;
+                    svgUserAgent.openLink(href, true);
+                } else {
+                    JSVGComponent.this.loadSVGDocument(href);
                 }
+                return;
             }
 
             // Avoid reloading if possible.
@@ -782,7 +784,11 @@ public class JSVGComponent extends JGVTComponent {
                 }
             }
             fireLinkActivatedEvent(elt, href);
-            JSVGComponent.this.loadSVGDocument(href);
+            if (svgUserAgent != null) {
+                svgUserAgent.openLink(href, false);
+            } else {
+                JSVGComponent.this.loadSVGDocument(href);
+            }
         }
 
         /**

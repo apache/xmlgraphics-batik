@@ -1364,16 +1364,22 @@ public class JSVGViewerFrame
         if (title == null) {
             title = getTitle();
         }
-        int i = s.lastIndexOf("/");
-        if (i == -1) {
-            i = s.lastIndexOf("\\");
+
+        String dt = svgDocument.getTitle();
+        if (dt.length() != 0) {
+            setTitle(title + ":" + dt);
+        } else {
+            int i = s.lastIndexOf("/");
             if (i == -1) {
-                setTitle(title + ":" + s);
+                i = s.lastIndexOf("\\");
+                if (i == -1) {
+                    setTitle(title + ":" + s);
+                } else {
+                    setTitle(title + ":" + s.substring(i + 1));
+                }
             } else {
                 setTitle(title + ":" + s.substring(i + 1));
             }
-        } else {
-            setTitle(title + ":" + s.substring(i + 1));
         }
 
         localHistory.update(s);
@@ -1649,12 +1655,16 @@ public class JSVGViewerFrame
         }
 
         /**
-         * Opens a link in a new component.
-         * @param doc The current document.
+         * Opens a link.
          * @param uri The document URI.
+         * @param newc Whether the link should be activated in a new component.
          */
-        public void openLink(String uri) {
-            application.openLink(uri);
+        public void openLink(String uri, boolean newc) {
+            if (newc) {
+                application.openLink(uri);
+            } else {
+                svgCanvas.loadSVGDocument(uri);
+            }
         }
 
         /**
