@@ -24,6 +24,7 @@ import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
 /**
  * A graphics node that represents text.
@@ -141,6 +142,27 @@ public class ConcreteTextNode
                                                 true, true));
 
                 primitiveBounds = layout.getBounds();
+
+                if (aci.getAttribute(GVTAttributedCharacterIterator.
+                                        TextAttribute.UNDERLINE) != null) {
+                    // TODO: check WEIGHT attribute and adjust thickness
+                    double decorationThickness = layout.getAscent()/12f;
+                    double y =
+                        layout.getDescent()/2 + decorationThickness/2f;
+
+                    primitiveBounds.setRect(primitiveBounds.getX(), primitiveBounds.getY(),
+                                 primitiveBounds.getWidth(), primitiveBounds.getHeight()+y);
+                }
+
+                if (aci.getAttribute(GVTAttributedCharacterIterator.
+                                        TextAttribute.OVERLINE) != null) {
+                    // TODO: check WEIGHT attribute and adjust thickness
+                    double decorationThickness = layout.getAscent()/12f;
+                    double dy =
+                        layout.getAscent()*0.1 + decorationThickness/2f;
+                    geometryBounds.setRect(primitiveBounds.getX(), primitiveBounds.getY(),
+                                 primitiveBounds.getWidth(), primitiveBounds.getHeight()+dy);
+                }
                 double tx = location.getX();
                 double ty = location.getY();
                 if (anchor == Anchor.MIDDLE) {
@@ -173,6 +195,28 @@ public class ConcreteTextNode
                                                           true,
                                                           true));
                 geometryBounds = layout.getBounds();
+
+                if (aci.getAttribute(GVTAttributedCharacterIterator.
+                                        TextAttribute.UNDERLINE) != null) {
+                    // TODO: check WEIGHT attribute and adjust thickness
+                    double decorationThickness = layout.getAscent()/12f;
+                    double y =
+                        layout.getDescent()/2 + decorationThickness/2f;
+
+                    geometryBounds.setRect(geometryBounds.getX(), geometryBounds.getY(),
+                                 geometryBounds.getWidth(), geometryBounds.getHeight()+y);
+                }
+
+                if (aci.getAttribute(GVTAttributedCharacterIterator.
+                                        TextAttribute.OVERLINE) != null) {
+                    // TODO: check WEIGHT attribute and adjust thickness
+                    double decorationThickness = layout.getAscent()/12f;
+                    double dy =
+                        layout.getAscent()*0.1 + decorationThickness/2f;
+                    geometryBounds.setRect(geometryBounds.getX(), geometryBounds.getY(),
+                                 geometryBounds.getWidth(), geometryBounds.getHeight()+dy);
+                }
+
                 double tx = location.getX();
                 double ty = location.getY();
                 if (anchor == Anchor.MIDDLE) {
@@ -222,6 +266,7 @@ public class ConcreteTextNode
             }
             AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
             outline = layout.getOutline(t);
+            // must we add decorations?
         } else {
             outline = new Rectangle2D.Float(0, 0, 0, 0);
         }
