@@ -162,6 +162,10 @@ public class ParsedURLDefaultProtocolHandler
      * @param urlStr the string to parse as a URL.  
      */
     public ParsedURLData parseURL(ParsedURL baseURL, String urlStr) {
+        // Reference to same document (including fragment, and query).
+        if (urlStr.length() == 0) 
+            return baseURL.data;
+
         int idx = urlStr.indexOf(':');
         if (idx != -1) {
             String protocol = urlStr.substring(0,idx).toLowerCase();
@@ -177,7 +181,7 @@ public class ParsedURLDefaultProtocolHandler
                 // Just a Protocol???
                 return parseURL(urlStr);
 
-            if (urlStr.charAt(idx) == '/')
+            if (urlStr.charAt(idx) == '/') 
                 // Absolute URL...
                 return parseURL(urlStr);
 
@@ -186,9 +190,16 @@ public class ParsedURLDefaultProtocolHandler
             urlStr = urlStr.substring(idx);
         }
 
-        if (urlStr.startsWith("/"))
-            // Absolute path.
+        if (urlStr.startsWith("/")) {
+            if ((urlStr.length() > 1) &&
+                (urlStr.charAt(1) == '/')) {
+                // Relative but only uses protocol from base
+                return parseURL(baseURL.getProtocol() + ":" + urlStr);
+            }
+            // Relative 'absolute' path, uses protocol and authority
+            // (host) from base
             return parseURL(baseURL.getPortStr() + urlStr);
+        }
 
         if (urlStr.startsWith("#"))
             return parseURL(baseURL.getPortStr() + 
