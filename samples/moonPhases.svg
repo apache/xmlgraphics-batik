@@ -14,7 +14,7 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<svg  width="450" height="500" viewBox="0 0 450 500" xml:space="preserve">
+<svg id="body" width="450" height="500" viewBox="0 0 450 500" xml:space="preserve">
 	<g id="Background" style="fill-rule:nonzero;clip-rule:nonzero;stroke:#000000;stroke-miterlimit:4;">
 		<radialGradient id="aigrd1" cx="110.8491" cy="257.335" r="296.7467" fx="110.8491" fy="257.335" gradientTransform="matrix(1.1222 0 0 1.0225 -26.394 -5.624)" gradientUnits="userSpaceOnUse">
 			<stop  offset="0" style="stop-color:#FFFFFF"/>
@@ -332,6 +332,9 @@
 			<stop  offset="1" style="stop-color:#000000"/>
 		</radialGradient>
 		<path style="fill:url(#aigrd26);stroke:none;" d="M202.925,453.209c0,2.011-1.613,3.641-3.604,3.641c-1.991,0-3.604-1.63-3.604-3.641c0-2.01,1.614-3.64,3.604-3.64c1.991,0,3.604,1.63,3.604,3.64z"/>
+
+        <switch>
+            <g systemLanguage="fr">
 		<g transform="translate(340, 0)" fill="white" stroke="none" >
 		<text  y="455.0063" >Nouvelle</text><text  y="465.0063">lune</text>
 		<text  y="407.3906">Premier</text><text  y="417.3906">croissant</text>
@@ -346,6 +349,25 @@
 		<text x="89.7632" y="297.918" text-anchor="start" fill="black">Soleil</text>
 		<text x="180" y="427" fill="white" stroke="none" text-anchor="start" >Lune</text>
 		<text x="230.2129" y="393" fill="white" stroke="none" text-anchor="start" >Terre</text>
+            </g>
+
+            <g systemLanguage="en">
+		<g transform="translate(340, 0)" fill="white" stroke="none" >
+		<text  y="455.0063" >New</text><text  y="465.0063">moon</text>
+		<text  y="407.3906">Waxing</text><text  y="417.3906">crescent</text>
+		<text  y="356.3438" >Waxing</text><text  y="366.3438">quarter</text>
+  		<text  y="306.0146" >Near</text><text  y="316.0146">full</text> 
+		<text  y="263.7744" >Full</text><text  y="273.7744">moon</text>
+		<text  y="212.3188" >Near</text><text  y="222.3188">full</text> 
+		<text  y="165.4707" >Waining</text><text  y="175.4707">quarter</text>
+		<text  y="113.2466" >Waining</text><text  y="123.2466">crescent</text>
+		<text  y="67.1665" >New</text><text  y="77.1665">moon</text>
+		</g>
+		<text x="89.7632" y="297.918" text-anchor="start" fill="black">Sun</text>
+		<text x="180" y="427" fill="white" stroke="none" text-anchor="start" >Moon</text>
+		<text x="230.2129" y="393" fill="white" stroke="none" text-anchor="start" >Earth</text>
+            </g>
+        </switch>
 
 		<g>
 			<radialGradient id="aigrd27" cx="220.3228" cy="110.8154" r="16.6436" fx="220.3228" fy="110.8154" gradientUnits="userSpaceOnUse">
@@ -496,6 +518,10 @@
 				</feMerge>
 			</filter>
 		</defs>
+
+        <switch>
+
+        <g systemLanguage="fr">
 		<g transform="translate(100, 130)" text-anchor="middle" fill="white" 
 			stroke="none" font-size="16" font-family="Verdana"
 			filter="url(#bgRect)">
@@ -503,6 +529,20 @@
 			<text y="16">de</text>
 			<text y="32">la lune</text>
 		</g>
+        </g>
+
+
+        <g systemLanguage="en">
+		<g transform="translate(100, 130)" text-anchor="middle" fill="white" 
+			stroke="none" font-size="16" font-family="Verdana"
+			filter="url(#bgRect)">
+			<text>The phases</text>
+			<text y="16">of</text>
+			<text y="32">the moon</text>
+		</g>
+        </g>
+
+        </switch>
 	
 	</g>
 
@@ -616,10 +656,7 @@
 			</g>
 		</g>
 	</g>
+    <rect width="100%" height="100%" stroke="white" stroke-width="3" fill="none"/>
 
-    <!-- ============================================================= -->
-    <!-- Batik sample mark                                             -->
-    <!-- ============================================================= -->
-    <use xlink:href="batikLogo.svg#Batik_Tag_Box" />
 </svg>
 
