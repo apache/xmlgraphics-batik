@@ -100,7 +100,7 @@ public class BaseScriptingEnvironment {
      * Tells whether the given SVG element is dynamic.
      */
     public static boolean isDynamicElement(Element elt) {
-        if (elt.getNamespaceURI().equals(SVGConstants.SVG_NAMESPACE_URI)) {
+        if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
             String name = elt.getLocalName();
             if (name.equals(SVGConstants.SVG_SCRIPT_TAG)) {
                 return true;
