@@ -14,6 +14,7 @@ import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,6 +23,7 @@ import java.util.Map;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
+import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.gvt.CompositeGraphicsNode;
@@ -60,12 +62,12 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Creates a graphics node using the specified BridgeContext and
-     * for the specified element.
+     * Creates a graphics node using the specified BridgeContext and for the
+     * specified element.
      *
      * @param ctx the bridge context to use
      * @param e the element that describes the graphics node to build
-     * @return a graphics node that represents the specified element
+     * @return a graphics node that represents the specified element 
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
 
@@ -87,7 +89,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
         ParsedURL purl = new ParsedURL(baseURL, uriStr);
 
-
         // try to load an SVG document
         DocumentLoader loader = ctx.getDocumentLoader();
         URIResolver resolver = new URIResolver(svgDoc, loader);
@@ -99,8 +100,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             }
         } catch (BridgeException ex) {
             throw ex;
-        } catch (Exception ex) { 
-            /* Nothing to do */ 
+        } catch (Exception ex) {
+            /* Nothing to do */
         }
 
         if (node == null) {
@@ -148,19 +149,18 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Returns a GraphicsNode that represents an raster image in JPEG
-     * or PNG format.
+     * Returns a GraphicsNode that represents an raster image in JPEG or PNG
+     * format.
      *
      * @param ctx the bridge context
      * @param e the image element
-     * @param uriStr the uri of the image
+     * @param uriStr the uri of the image 
      */
     protected static GraphicsNode createRasterImageNode(BridgeContext ctx,
                                                         Element       e,
                                                         ParsedURL     purl) {
+
         RasterImageNode node = new RasterImageNode();
-        // create the image
-        Rectangle2D bounds = getImageBounds(ctx, e);
 
         ImageTagRegistry reg = ImageTagRegistry.getRegistry();
         Filter           img = reg.readURL(purl, extractColorSpace(e, ctx));
@@ -171,8 +171,11 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             return createSVGImageNode(ctx, e, errDoc);
         }
         node.setImage(img);
+	node.setImageBounds(img.getBounds2D());
+        Rectangle2D bounds = getImageBounds(ctx, e);
 
-        node.setImageBounds(bounds);
+	initializeViewport(ctx, e, node, bounds);
+
         return node;
     }
 
@@ -205,39 +208,67 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         svgElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
                                   String.valueOf(bounds.getHeight()));
 
-        AffineTransform at
-            = ViewBox.getPreserveAspectRatioTransform(svgElement,
-                                                      (float)bounds.getWidth(),
-                                                      (float)bounds.getHeight());
-        at.preConcatenate(AffineTransform.getTranslateInstance(bounds.getX(),
-                                                               bounds.getY()));
-        result.setTransform(at);
-
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, svgElement);
         result.getChildren().add(node);
 
-        /*
-        // resolve x, y, width, height and preserveAspectRatio on image
+	initializeViewport(ctx, element, result, bounds);
 
-        Rectangle2D bounds = getImageBounds(ctx, element);
+        return result;
+    }
+
+    /**
+     * Initializes according to the specified element, the specified graphics
+     * node with the specified bounds. This method takes into account the
+     * 'viewBox', 'preserveAspectRatio', and 'clip' properties. According to
+     * those properties, a AffineTransform and a clip is set.
+     *
+     * @param ctx the bridge context
+     * @param e the image element that defines the properties
+     * @param node the graphics node
+     * @param bounds the bounds of the image element 
+     */
+    protected static void initializeViewport(BridgeContext ctx,
+					     Element e,
+					     GraphicsNode node,
+					     Rectangle2D bounds) {
+	
+        // 'viewBox' and 'preserveAspectRatio'
         float x = (float)bounds.getX();
         float y = (float)bounds.getY();
         float w = (float)bounds.getWidth();
         float h = (float)bounds.getHeight();
         AffineTransform at
-            = ViewBox.getPreserveAspectRatioTransform(element, w, h);
+            = ViewBox.getPreserveAspectRatioTransform(e, w, h);
         at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
-        result.setTransform(at);
-        try {
-            at = at.createInverse(); // clip in user space
-            Filter filter = new GraphicsNodeRable8Bit
-                (node, ctx.getGraphicsNodeRenderContext());
-            Shape clip = at.createTransformedShape
-                (new Rectangle2D.Float(x, y, w, h));
-            result.setClip(new ClipRable8Bit(filter, clip));
-        } catch (java.awt.geom.NoninvertibleTransformException ex) {}
-        */
-        return result;
+        node.setTransform(at);
+
+        // 'overflow' and 'clip'
+        Shape clip = null;
+        if (CSSUtilities.convertOverflow(e)) { // overflow:hidden
+            float [] offsets = CSSUtilities.convertClip(e);
+            if (offsets == null) { // clip:auto
+                clip = new Rectangle2D.Float(x, y, w, h);
+            } else { // clip:rect(<x> <y> <w> <h>)
+                // offsets[0] = top
+                // offsets[1] = right
+                // offsets[2] = bottom
+                // offsets[3] = left
+                clip = new Rectangle2D.Float(x+offsets[3],
+                                             y+offsets[0],
+                                             w-offsets[1],
+                                             h-offsets[2]);
+            }
+        }
+
+        if (clip != null) {
+	    try {
+		at = at.createInverse(); // clip in user space
+		Filter filter = new GraphicsNodeRable8Bit
+		    (node, ctx.getGraphicsNodeRenderContext());
+		clip = at.createTransformedShape(clip);
+		node.setClip(new ClipRable8Bit(filter, clip));
+	    } catch (java.awt.geom.NoninvertibleTransformException ex) {}
+	}
     }
 
     /**

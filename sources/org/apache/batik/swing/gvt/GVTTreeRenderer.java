@@ -117,6 +117,10 @@ public class GVTTreeRenderer extends Thread {
             // this sometimes happens with SVG Fonts since the glyphs are
             // not built till the rendering stage
             fireFailedEvent();
+        } catch (InterruptedException e) {
+            // this sometimes happens with SVG Fonts since the glyphs are
+            // not built till the rendering stage
+            fireFailedEvent();
         } catch (Exception e) {
             e.printStackTrace();
             fireFailedEvent();
