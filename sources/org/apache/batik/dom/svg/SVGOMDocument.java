@@ -118,6 +118,9 @@ public class SVGOMDocument
         factories.put(TAG_CIRCLE,
                       new CircleElementFactory());
 
+        factories.put(TAG_CLIP_PATH,
+                      new ClipPathElementFactory());
+
         factories.put(TAG_DEFS,
                       new DefsElementFactory());
 
@@ -142,16 +145,16 @@ public class SVGOMDocument
         factories.put(TAG_FE_DISPLACEMENT_MAP,
                       new FeDisplacementMapElementFactory());
 
-        factories.put(TAG_FE_FUNC_A,        
+        factories.put(TAG_FE_FUNC_A,
                       new FeFuncAElementFactory());
-        
-        factories.put(TAG_FE_FUNC_R,        
+
+        factories.put(TAG_FE_FUNC_R,
                       new FeFuncRElementFactory());
 
-        factories.put(TAG_FE_FUNC_G,        
+        factories.put(TAG_FE_FUNC_G,
                       new FeFuncGElementFactory());
 
-        factories.put(TAG_FE_FUNC_B,        
+        factories.put(TAG_FE_FUNC_B,
                       new FeFuncBElementFactory());
 
         factories.put(TAG_FE_FLOOD,
@@ -656,6 +659,20 @@ public class SVGOMDocument
     }
 
     /**
+     * To create a 'clip-path' element.
+     */
+    protected class ClipPathElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_CLIP_PATH);
+        }
+    }
+
+    /**
      * To create a 'defs' element.
      */
     protected class DefsElementFactory implements ElementFactory {
@@ -840,7 +857,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMFEGaussianBlurElement(prefix, 
+            return new SVGOMFEGaussianBlurElement(prefix,
                                                   SVGOMDocument.this);
         }
     }

@@ -17,6 +17,8 @@ package org.apache.batik.util;
 public interface CSSConstants {
     // The CSS property names.
     //
+    String CLIP_RULE_PROPERTY = "clip-rule";
+
     String FILL_PROPERTY = "fill";
     String FILL_OPACITY_PROPERTY = "fill-opacity";
     String FILL_RULE_PROPERTY = "fill-rule";
