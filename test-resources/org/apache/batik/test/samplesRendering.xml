@@ -187,6 +187,13 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/extensions/candidate-variation/star.png" />
     </test>
  
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/extensions/histogramNormalization.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/extensions/histogramNormalization.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/extensions/accepted-variation/histogramNormalization.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/extensions/candidate-variation/histogramNormalization.png" />
+    </test>
+ 
     <!-- ======================================================================= -->
     <!-- Samples tests files                                                     -->
     <!-- ======================================================================= -->
@@ -566,6 +573,28 @@
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/svg.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/svg.png" />
     </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/symbolViewBox.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/symbolViewBox.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/symbolViewBox.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/symbolViewBox.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/symbolViewBoxOverflow.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/symbolViewBoxOverflow.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/symbolViewBoxOverflow.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/symbolViewBoxOverflow.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/symbolViewBoxClip.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/symbolViewBoxClip.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/symbolViewBoxClip.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/symbolViewBoxClip.png" />
+    </test>
+
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/systemColors.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/systemColors.png" />
