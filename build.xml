@@ -138,7 +138,7 @@ To display the available targets type:
   </target>
 
   <!-- Build .............................................................. -->
-  <target name="dist-zip" depends="build">
+  <target name="dist-zip" depends="build"/>
   <target name="build" depends="jars, html">
     <delete dir="${build}/docs/images/BE"/>
     <zip zipfile="${project}-docs-${version}.zip" basedir="${build}"
@@ -161,7 +161,7 @@ To display the available targets type:
   </target>
 
 
-  <target name="dist-tgz" depends="build-tgz">
+  <target name="dist-tgz" depends="build-tgz"/>
   <target name="build-tgz" depends="jars, html">
     <delete dir="${build}/docs/images/BE"/>
     <tar tarfile="${project}-docs-${version}.tar" basedir="${build}"
