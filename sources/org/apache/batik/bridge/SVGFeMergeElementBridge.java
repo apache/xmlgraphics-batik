@@ -81,9 +81,15 @@ public class SVGFeMergeElementBridge
             return null; // <!> FIXME: no subelement found, result unspecified
         }
 
+        if (srcs.size() == 0) {
+            return null; // <!> FIXME: no subelement found, result unspecified
+        }
+
         // the default region is the input sources regions union
         Iterator iter = srcs.iterator();
-        Rectangle2D defaultRegion = ((Filter)iter.next()).getBounds2D();
+        Rectangle2D defaultRegion = 
+            (Rectangle2D)((Filter)iter.next()).getBounds2D().clone();
+
         while (iter.hasNext()) {
             defaultRegion.add(((Filter)iter.next()).getBounds2D());
         }

@@ -80,17 +80,10 @@ public class SVGFeOffsetElementBridge
             return null; // disable the filter
         }
 
-        // The default region is the union of the input sources
-        // regions unless 'in' is 'SourceGraphic' in which case the
-        // default region is the filterChain's region
-        Filter sourceGraphics = (Filter)filterMap.get(SVG_SOURCE_GRAPHIC_VALUE);
-        Rectangle2D defaultRegion;
-        if (in == sourceGraphics) {
-            defaultRegion = filterRegion;
-        } else {
-            defaultRegion = in.getBounds2D();
-        }
-
+        // Default region is the size of in (if in is SourceGraphic or
+        // SourceAlpha it will already include a pad/crop to the
+        // proper filter region size).
+        Rectangle2D defaultRegion = in.getBounds2D();
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,

@@ -97,17 +97,9 @@ public class SVGFeCompositeElementBridge
             return null; // disable the filter
         }
 
-        // The default region is the union of the input sources
-        // regions unless 'in' is 'SourceGraphic' in which case the
-        // default region is the filterChain's region
-        Filter sourceGraphics = (Filter)filterMap.get(SVG_SOURCE_GRAPHIC_VALUE);
         Rectangle2D defaultRegion;
-        if (in == sourceGraphics) {
-            defaultRegion = filterRegion;
-        } else {
-            defaultRegion = in.getBounds2D();
-            defaultRegion.add(in2.getBounds2D());
-        }
+        defaultRegion = (Rectangle2D)in.getBounds2D().clone();
+        defaultRegion.add(in2.getBounds2D());
 
         // get filter primitive chain region
         Rectangle2D primitiveRegion

@@ -22,6 +22,8 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.FilterChainRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
+import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
@@ -69,6 +71,9 @@ public class SVGFilterElementBridge extends AbstractSVGBridge
 
         // make the initial source as a RenderableImage
         Filter sourceGraphic = filteredNode.getGraphicsNodeRable(true);
+        // Pad out to filterRegion
+        sourceGraphic = new PadRable8Bit(sourceGraphic, filterRegion, 
+                                         PadMode.ZERO_PAD);
 
         // build a FilterChainRable8Bit
         FilterChainRable filterChain

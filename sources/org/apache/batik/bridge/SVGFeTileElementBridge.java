@@ -70,7 +70,6 @@ public class SVGFeTileElementBridge
         // Get the tiled region. For feTile, the default for the
         // filter primitive subregion is the parent filter region.
         Rectangle2D defaultRegion = filterRegion;
-
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
