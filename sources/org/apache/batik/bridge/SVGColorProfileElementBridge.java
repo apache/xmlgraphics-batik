@@ -99,11 +99,9 @@ public class SVGColorProfileElementBridge extends AbstractSVGBridge
                 URL url = new URL(baseURL, href);
                 p = ICC_Profile.getInstance(url.openStream());
             } catch(MalformedURLException e) {
-                e.printStackTrace(System.err);
                 throw new BridgeException(paintedElement, ERR_URI_MALFORMED,
                                           new Object[] {href});
             } catch(IOException e) {
-                e.printStackTrace(System.err);
                 throw new BridgeException(paintedElement, ERR_URI_IO,
                                           new Object[] {href});
                 // ??? IS THAT AN ERROR FOR THE SVG SPEC ???

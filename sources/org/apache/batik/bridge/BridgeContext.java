@@ -272,7 +272,7 @@ public class BridgeContext implements ErrorConstants {
             URIResolver ur = new URIResolver(document, documentLoader);
             Element ref = ur.getElement(uri);
             if (ref == null) {
-                throw new BridgeException(e, ERR_URI_MALFORMED,
+                throw new BridgeException(e, ERR_URI_REFERENCE_A_DOCUMENT,
                                           new Object[] {uri});
             } else {
                 return ref;
