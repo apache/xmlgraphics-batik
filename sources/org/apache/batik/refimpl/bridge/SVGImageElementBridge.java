@@ -194,6 +194,18 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         CompositeGraphicsNode result =
             ctx.getGVTFactory().createCompositeGraphicsNode();
 
+        CSSStyleDeclaration decl;
+        decl = ctx.getViewCSS().getComputedStyle(element, null);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx, decl);
+
+        Rectangle2D rect = CSSUtilities.convertEnableBackground((SVGElement)element,
+                                                                decl,
+                                                                uctx);
+        if (rect != null) {
+            result.setBackgroundEnable(rect);
+        }
+
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, svgElement);
         result.getChildren().add(node);
 

@@ -13,17 +13,20 @@ import java.awt.Composite;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 
 import java.io.StringReader;
 
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,6 +35,7 @@ import org.w3c.dom.views.DocumentView;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.svg.SVGElement;
 
 /**
  * A factory for the &lt;switch&gt; SVG element.
@@ -45,13 +49,26 @@ public class SVGSwitchElementBridge
 
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
-        GraphicsNode gn = ctx.getGVTFactory().createCompositeGraphicsNode();
+        CompositeGraphicsNode gn;
+        gn = ctx.getGVTFactory().createCompositeGraphicsNode();
         AffineTransform at =
             SVGUtilities.convertAffineTransform(element,
                                                 ATTR_TRANSFORM,
                                                 ctx.getParserFactory());
 
         gn.setTransform(at);
+
+        CSSStyleDeclaration decl;
+        decl = ctx.getViewCSS().getComputedStyle(element, null);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx, decl);
+
+        Rectangle2D rect = CSSUtilities.convertEnableBackground((SVGElement)element,
+                                                                decl,
+                                                                uctx);
+        if (rect != null) {
+            gn.setBackgroundEnable(rect);
+        }
 
         return gn;
     }
