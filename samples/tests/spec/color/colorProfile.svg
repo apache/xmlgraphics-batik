@@ -101,19 +101,6 @@
                 <rect x="100" y="25" width="25" height="25" fill="rgb(255, 255, 255)" />
             </g>
 
-            <g id="testColorsICCAuto">
-                <rect x="0" y="0" width="25" height="25" fill="rgb(179, 70, 25) icc-color(colorChange, 0.702, 0.2745, 0.098)" />
-                <rect x="25" y="0" width="25" height="25" fill="rgb(138, 237, 76) icc-color(colorChange, 0.5412, 0.9294, 0.298)" />
-                <rect x="50" y="0" width="25" height="25" fill="rgb(88, 35, 244) icc-color(colorChange, 0.3451, 0.1373, 0.9569)" />
-                <rect x="75" y="0" width="25" height="25" fill="rgb(168, 241, 253) icc-color(colorChange, 0.6588, 0.9451, 0.9922)" />
-                <rect x="100" y="0" width="25" height="25" fill="rgb(205, 81, 242) icc-color(colorChange, 0.8039, 0.3176, 0.949)" />
-                <rect x="0" y="25" width="25" height="25" fill="rgb(234, 251, 82) icc-color(colorChange, 0.9176, 0.9843, 0.3216)" />
-                <rect x="25" y="25" width="25" height="25" fill="rgb(0, 0, 0) icc-color(colorChange, 0.0, 0.0, 0.0)" />
-                <rect x="50" y="25" width="25" height="25" fill="rgb(109, 109, 109) icc-color(colorChange, 0.4275, 0.4275, 0.4275)" />
-                <rect x="75" y="25" width="25" height="25" fill="rgb(188, 188, 188) icc-color(colorChange, 0.7373, 0.7373, 0.7373)" />
-                <rect x="100" y="25" width="25" height="25" fill="rgb(255, 255, 255) icc-color(colorChange, 1.0, 1.0, 1.0)" />
-            </g>
-
 			<color-profile name="changeColorAuto" 
                            rendering-intent="auto"
                            xlink:href="../../resources/icc/changeColor.icm"/>
@@ -280,7 +267,7 @@ Rf8DTS4R1NiSnhkAAAAASUVORK5CYIIR
             <rect x="75" y="0" width="25" height="25" fill="rgb(168, 241, 253) icc-color(changeColorAuto, 0.6588, 0.9451, 0.9922)" />
             <rect x="100" y="0" width="25" height="25" fill="rgb(205, 81, 242) icc-color(changeColorAuto, 0.8039, 0.3176, 0.949)" />
             <rect x="0" y="25" width="25" height="25" fill="rgb(234, 251, 82) icc-color(changeColorAuto, 0.9176, 0.9843, 0.3216)" />
-            <rect x="25" y="25" width="25" height="25" fill="rgb(0, 0, 0) icc-color(changeColorAuto, 0.0, 0.0, 0.0)" />
+            <rect x="25" y="25" width="25" height="25" fill="red icc-color(changeColorAuto, 0.0, 0.0, 0.0)" />
             <rect x="50" y="25" width="25" height="25" fill="rgb(109, 109, 109) icc-color(changeColorAuto, 0.4275, 0.4275, 0.4275)" />
             <rect x="75" y="25" width="25" height="25" fill="rgb(188, 188, 188) icc-color(changeColorAuto, 0.7373, 0.7373, 0.7373)" />
             <rect x="100" y="25" width="25" height="25" fill="rgb(255, 255, 255) icc-color(changeColorAuto, 1.0, 1.0, 1.0)" />

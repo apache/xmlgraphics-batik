@@ -61,6 +61,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
+import java.util.zip.ZipException;
 
 /**
  * Holds the data for more URL's
@@ -111,6 +113,33 @@ public class ParsedURLData {
         if ((data[0] == GZIP_MAGIC[0]) &&
             (data[1] == GZIP_MAGIC[1]))
             return new GZIPInputStream(is);
+
+        if (((data[0]&0x0F)  == 8) &&
+            ((data[0]>>>4)   <= 7)) {
+            // Check for a zlib (deflate) stream 
+            int chk = ((((int)data[0])&0xFF)*256+
+                       (((int)data[1])&0xFF));
+            if ((chk %31)  == 0) {
+                try {
+                    // I'm not really as certain of this check
+                    // as I would like so I want to force it
+                    // to decode part of the stream.
+                    is.mark(100);
+                    InputStream ret = new InflaterInputStream(is);
+                    if (!ret.markSupported())
+                        ret = new BufferedInputStream(ret);
+                    ret.mark(2);
+                    ret.read(data);
+                    is.reset();
+                    ret = new InflaterInputStream(is);
+                    return ret;
+                } catch (ZipException ze) {
+                    is.reset();
+                    return is;
+                }
+            }
+        }
+        
         return is;
     }
 

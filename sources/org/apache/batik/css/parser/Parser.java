@@ -978,8 +978,9 @@ public class Parser implements ExtendedParser, Localizable {
         default:
             switch (current) {
             case LexicalUnits.INTEGER:
-                int s = (plus) ? 1 : -1;
-                int val = s * Integer.parseInt(scanner.getStringValue());
+                String sval = scanner.getStringValue();
+                if (!plus) sval = "-"+sval;
+                int val = Integer.parseInt(sval);
                 nextIgnoreSpaces();
                 return CSSLexicalUnit.createInteger(val, prev);
             case LexicalUnits.REAL:
