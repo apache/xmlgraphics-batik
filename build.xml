@@ -61,6 +61,7 @@ To display the available targets type:
     <property name="Project" value="Batik"/>
     <property name="project" value="batik"/>
     <property name="year"    value="2000"/>
+    <property name="version" value="1.0beta"/>
 
     <property name="src"             value="sources"/>
     <property name="resources"       value="resources"/>
@@ -114,6 +115,7 @@ To display the available targets type:
     <echo message=""/>
     <echo message=" Available targets are:"/>
     <echo message=""/>
+    <echo message="   build      --> build the distributions"/>
     <echo message="   compile    --> compiles the source code"/>
     <echo message="   svgviewer  --> runs the SVG viewer"/>
     <echo message="   regard     --> runs the regard regression utility"/>
@@ -131,6 +133,27 @@ To display the available targets type:
     <echo message=" See the comments in the build.xml file for more details."/>
     <echo message=""/>
     <echo message=""/>
+  </target>
+
+  <!-- Build .............................................................. -->
+  <target name="build" depends="jars, html">
+    <zip zipfile="${project}-docs-${version}.zip" basedir="${build}"
+         includes="docs/**"/>
+    <delete dir="${build}/docs/javadoc"/>
+
+    <copy file="README" todir="${build}"/>
+    <copy file="LICENSE" todir="${build}"/>
+    <copy file="LICENSE.rhino" todir="${build}"/>
+    <copy todir="${build}/samples">
+      <fileset dir="samples"/>
+    </copy>
+    <zip zipfile="${build}/samples.zip" basedir="samples"/>
+    <zip zipfile="${project}-${version}.zip" basedir="${build}"/>
+
+    <cvs cvsRoot=":pserver:anoncvs@xml.apache.org:/home/cvspublic"
+         package="xml-batik"
+         dest="repository"/>
+    <zip zipfile="${project}-src-${version}.zip" basedir="repository"/>
   </target>
 
 
@@ -191,7 +214,7 @@ To display the available targets type:
 
   <!-- All batik in a jar (dependencies: none) -->
   <target name="all-jar" depends="compile, prepare-build">
-    <jar jarfile="${build}/${project}-all.jar">
+    <jar jarfile="${build}/lib/${project}-all.jar">
       <fileset dir="${dest}">
         <include name="**"/>
       </fileset>
@@ -389,7 +412,7 @@ To display the available targets type:
   <!-- SVG Viewer (dependencies: all) -->
   <target name="svg-viewer-jar" depends="compile, prepare-build">
     <jar manifest="${src}/${project}-viewer.mf"
-         jarfile="${build}/${project}-svg-viewer.jar">
+         jarfile="${build}/${project}-svgviewer.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgviewer/**/*.class"/>
       </fileset>
@@ -464,7 +487,7 @@ To display the available targets type:
     <mkdir dir="${docs}"/>
   </target>
 
-  <target name="html" depends="javadoc, prepare-docs"/>
+  <target name="html" depends="javadoc, htmldoc"/>
   <target name="htmldoc" depends="prepare-docs">
     <copy file="${xdocs}/site-book.xml"
           tofile="${xdocs}/book.xml"
@@ -542,6 +565,9 @@ To display the available targets type:
           depends="clean-compile, clean-docs"
           description="Cleans everything">
     <delete dir="${build}"/>
+    <delete file="${project}-${version}.zip"/>
+    <delete file="${project}-docs-${version}.zip"/>
+    <delete file="${project}-src-${version}.zip"/>
   </target>
 
 </project>
