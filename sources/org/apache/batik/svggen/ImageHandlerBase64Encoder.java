@@ -47,16 +47,21 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
         int width = image.getWidth(null);
         int height = image.getHeight(null);
 
-        if(width>0 && height>0){
+        if(width==0 || height==0){
             handleEmptyImage(imageElement);
         }
         else{
-            BufferedImage buf = new BufferedImage(width, height,
-                                                  BufferedImage.TYPE_INT_ARGB);
-
-            Graphics2D g = buf.createGraphics();
-            g.drawImage(image, 0, 0, null);
-            handleHREF((RenderedImage)buf, imageElement);
+            if(image instanceof RenderedImage){
+                handleHREF((RenderedImage)image, imageElement);
+            }
+            else{
+                BufferedImage buf = new BufferedImage(width, height,
+                                                      BufferedImage.TYPE_INT_ARGB);
+                
+                Graphics2D g = buf.createGraphics();
+                g.drawImage(image, 0, 0, null);
+                handleHREF((RenderedImage)buf, imageElement);
+            }
         }
     }
 

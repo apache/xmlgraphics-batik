@@ -8,6 +8,7 @@
 
 package org.apache.batik.svggen;
 
+import java.awt.Graphics2D;
 import java.awt.TexturePaint;
 import java.awt.image.RenderedImage;
 import java.awt.image.BufferedImage;
@@ -96,10 +97,42 @@ public class SVGTexturePaint extends AbstractSVGConverter{
                                     doubleString(anchorRect.getHeight()));
 
             //
-            // Now, add an image element for the image
+            // Now, add an image element for the image. 
             //
+            BufferedImage textureImage = (BufferedImage)texture.getImage();
             Element imageElement = domFactory.createElement(SVG_IMAGE_TAG);
-            imageHandler.handleImage((RenderedImage)texture.getImage(), imageElement);
+
+            //
+            // Rescale the image to fit the anchor rectangle
+            //
+            if(textureImage.getWidth() > 0 && 
+               textureImage.getHeight() > 0){
+                
+                // Rescale only if necessary
+                if(textureImage.getWidth() != anchorRect.getWidth() ||
+                   textureImage.getHeight() != anchorRect.getHeight()){
+
+                    // Rescale only if anchor area is not a point or a line
+                    if(anchorRect.getWidth() > 0 &&
+                       anchorRect.getHeight() > 0){
+                        double scaleX = anchorRect.getWidth()/textureImage.getWidth();
+                        double scaleY = anchorRect.getHeight()/textureImage.getHeight();
+                        BufferedImage newImage 
+                            = new BufferedImage((int)(scaleX*textureImage.getWidth()),
+                                                (int)(scaleY*textureImage.getHeight()),
+                                                BufferedImage.TYPE_INT_ARGB);
+
+                        Graphics2D g = newImage.createGraphics();
+                        g.scale(scaleX, scaleY);
+                        g.drawImage(textureImage, 0, 0, null);
+                        g.dispose();
+
+                        textureImage = newImage;
+                    }
+                }
+            }
+                        
+            imageHandler.handleImage((RenderedImage)textureImage, imageElement);
             patternDef.appendChild(imageElement);
 
             patternDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID,

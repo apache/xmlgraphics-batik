@@ -34,6 +34,43 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
     public static final String ERROR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP =
         "BufferedImage LookupOp should have 1, 3 or 4 lookup arrays";
 
+	/**
+	 * Gamma for linear to sRGB convertion
+	 */
+	private static final double GAMMA = 1./2.4;
+
+	/**
+	 * Lookup table for linear to sRGB value 
+     * forward and backward mapping
+	 */
+	private static final int linearToSRGBLut[] = new int[256];
+	private static final int sRGBToLinear[] = new int[256];
+
+	static{
+		for(int i=0; i<256; i++){
+            // linear to sRGB
+			float value = i/255f;
+			if(value <= 0.0031308){
+				value *= 12.92f;
+            }
+			else{
+				value = 1.055f * ((float) Math.pow(value, GAMMA)) - 0.055f;
+            }
+			linearToSRGBLut[i] = Math.round(value*255);
+
+            // sRGB to linear
+            value = i/255f;
+            if(value <= 0.04045){
+                value /= 12.92f;
+            }
+            else{
+                value = (float)Math.pow((value + 0.055f)/1.055f, 1/GAMMA);
+            }
+            
+			sRGBToLinear[i] = Math.round(value*255);
+		}	
+	}
+
     /**
      * @param domFactory used to build Elements
      */
@@ -176,7 +213,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
             for(int i=0; i<offset; i++){
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
-                                // lookupTableBuf[j].append(Integer.toString(i));
+                    // lookupTableBuf[j].append(Integer.toString(i));
                     lookupTableBuf[j].append(doubleString(i/255., 1000));
                     lookupTableBuf[j].append(SPACE);
                 }
@@ -210,21 +247,23 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
             for(int i=0; i<offset; i++){
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
-                                // lookupTableBuf[j].append(Integer.toString(i));
+                    // lookupTableBuf[j].append(Integer.toString(i));
                     lookupTableBuf[j].append(doubleString(i/255., 1000));
                     lookupTableBuf[j].append(SPACE);
                 }
             }
-            for(int i=offset; i<=255; i++){
+            for(int i=0; i<=255; i++){
                 // Fill in source array
-                for(int j=0; j<nComponents; j++) src[j] = (byte)(0xff & i);
+                for(int j=0; j<nComponents; j++) {
+                    src[j] = (byte)(0xff & i);
+                }
 
                 // Get destination values
                 ((ByteLookupTable)lookupTable).lookupPixel(src, dest);
 
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
-                                // lookupTableBuf[j].append(Integer.toString(0xff & dest[j]));
+                    // lookupTableBuf[j].append(Integer.toString(0xff & dest[j]));
                     lookupTableBuf[j].append(doubleString((0xff & dest[j])/255., 1000));
                     lookupTableBuf[j].append(SPACE);
                 }
@@ -235,9 +274,9 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
         for(int i=0; i<nComponents; i++)
             lookupTables[i] = lookupTableBuf[i].toString().trim();
 
-        for(int i=0; i<lookupTables.length; i++){
+        /*for(int i=0; i<lookupTables.length; i++){
             System.out.println(lookupTables[i]);
-        }
+            }*/
 
         return lookupTables;
     }
