@@ -85,8 +85,8 @@
                     </ul>
                 <p>For example:</p>
                 <ul>
-                    <li><em>java -jar batik-svg.jar -tab-width 2 -newline cr-lf src.svg dest.svg</em> will format 'src.svg' and write it to 'dest.svg' using a tabulation width of 2 and dos-style newlines.</li>
-                    <li><em>java -jar batik-svg.jar -no-format -doctype change -public-id "-//W3C//DTD SVG 20000802//EN" -system-id "http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd" src.svg dest.svg</em> will format 'src.svg' and write it to 'dest.svg', unchanged except the doctype external id which will be replaced by the specified one.</li>
+                    <li><em>java -jar batik-svgpp.jar -tab-width 2 -newline cr-lf src.svg dest.svg</em> will format 'src.svg' and write it to 'dest.svg' using a tabulation width of 2 and dos-style newlines.</li>
+                    <li><em>java -jar batik-svgpp.jar -no-format -doctype change -public-id "-//W3C//DTD SVG 20000802//EN" -system-id "http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd" src.svg dest.svg</em> will format 'src.svg' and write it to 'dest.svg', unchanged except the doctype external id which will be replaced by the specified one.</li>
                 </ul>
             </s2>
 
