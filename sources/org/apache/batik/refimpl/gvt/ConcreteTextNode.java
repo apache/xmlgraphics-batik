@@ -103,6 +103,9 @@ public class ConcreteTextNode
         return anchor;
     }
 
+    /**
+     * Primitive bounds are in user space. 
+     */
     public Rectangle2D getPrimitiveBounds(){
         // HACK, until we change getBounds to take
         // GraphicsNodeRenderContext
@@ -125,7 +128,6 @@ public class ConcreteTextNode
         }
 
         AffineTransform t = AffineTransform.getTranslateInstance(tx, ty); 
-        t.concatenate(transform);
 
         bounds = t.createTransformedShape(bounds).getBounds();
 
@@ -226,16 +228,6 @@ public class ConcreteTextNode
     }
 
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        // Save default rendering attributes
-        AffineTransform defaultTransform = g2d.getTransform();
-        RenderingHints defaultHints = g2d.getRenderingHints();
-        // Apply the rendering attributes of this node
-        if (transform != null) {
-            g2d.transform(transform);
-        }
-        if (hints != null) {
-            g2d.setRenderingHints(hints);
-        }
         g2d.translate(location.getX(), location.getY());
 
         // Paint the text
@@ -245,9 +237,6 @@ public class ConcreteTextNode
         }
         g2d.translate(-location.getX(), -location.getY());
 
-        // Restore default rendering attributes
-        g2d.setTransform(defaultTransform);
-        g2d.setRenderingHints(defaultHints);
     }
 
 }
