@@ -45,9 +45,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -658,24 +655,23 @@ public class JSVGViewerFrame
                             }
                         }
                     }catch(SecurityException se){
-                        // Could not patch the file URI for security reasons (e.g.,
-                        // when run as an unsigned JavaWebStart jar): file access is
-                        // not allowed. Loading will fail, but there is nothing
-                        // more to do at this point.
+                        // Could not patch the file URI for security
+                        // reasons (e.g., when run as an unsigned
+                        // JavaWebStart jar): file access is not
+                        // allowed. Loading will fail, but there is
+                        // nothing more to do at this point.
                     }
 
                     if (st != null) {
                         if (svgDocument != null) {
-                            try {
-                                SVGOMDocument doc = (SVGOMDocument)svgDocument;
-                                URL docURL = doc.getURLObject();
-                                URL url = new URL(docURL, st);
-                                String fi = svgCanvas.getFragmentIdentifier();
-                                fi = (fi == null) ? "" : fi;
-                                if (docURL.equals(url) && t.equals(fi)) {
-                                    return;
-                                }
-                            } catch (MalformedURLException ex) {
+                            SVGOMDocument doc = (SVGOMDocument)svgDocument;
+                            ParsedURL docPURL 
+                                = new ParsedURL(svgDocument.getURL());
+                            ParsedURL purl = new ParsedURL(docPURL, st);
+                            String fi = svgCanvas.getFragmentIdentifier();
+                            fi = (fi == null) ? "" : fi;
+                            if (docPURL.equals(purl) && t.equals(fi)) {
+                                return;
                             }
                         }
                         if (t.length() != 0) {
@@ -821,15 +817,12 @@ public class JSVGViewerFrame
                     }
                     if (s != null) {
                         if (svgDocument != null) {
-                            try {
-                                SVGOMDocument doc = (SVGOMDocument)svgDocument;
-                                URL docURL = doc.getURLObject();
-                                URL url = new URL(docURL, s);
-                                String fi = svgCanvas.getFragmentIdentifier();
-                                if (docURL.equals(url) && t.equals(fi)) {
-                                    return;
-                                }
-                            } catch (MalformedURLException ex) {
+                            ParsedURL docPURL 
+                                = new ParsedURL(svgDocument.getURL());
+                            ParsedURL purl = new ParsedURL(docPURL, s);
+                            String fi = svgCanvas.getFragmentIdentifier();
+                            if (docPURL.equals(purl) && t.equals(fi)) {
+                                return;
                             }
                         }
                         if (t.length() != 0) {
@@ -963,6 +956,7 @@ public class JSVGViewerFrame
                         if (fragment != null) {
                             uri += "#"+fragment;
                         }
+
                         //
                         // Build a PrintTranscoder to handle printing
                         // of the svgDocument object
@@ -1179,9 +1173,8 @@ public class JSVGViewerFrame
                 return;
             }
 
-            final ParsedURL u
-                = new ParsedURL(((SVGOMDocument)svgDocument).getURLObject());
-
+            final ParsedURL u = new ParsedURL(svgDocument.getURL());
+            
             final JFrame fr = new JFrame(u.toString());
             fr.setSize(resources.getInteger("ViewSource.width"),
                        resources.getInteger("ViewSource.height"));
@@ -1594,7 +1587,7 @@ public class JSVGViewerFrame
         }
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
-        String s = ((SVGOMDocument)svgDocument).getURLObject().toString();
+        String s = svgDocument.getURL();
         String t = svgCanvas.getFragmentIdentifier();
         if (t != null) {
             s += "#" + t;
@@ -1868,17 +1861,14 @@ public class JSVGViewerFrame
     public void linkActivated(LinkActivationEvent e) {
         String s = e.getReferencedURI();
         if (svgDocument != null) {
-            try {
-                SVGOMDocument doc = (SVGOMDocument)svgDocument;
-                URL docURL = doc.getURLObject();
-                URL url = new URL(docURL, s);
-                if (!url.sameFile(docURL)) {
-                    return;
-                }
-            } catch (MalformedURLException ex) {
+            ParsedURL docURL = new ParsedURL(svgDocument.getURL());
+            ParsedURL url    = new ParsedURL(docURL, s);
+            if (!url.sameFile(docURL)) {
+                return;
             }
+
             if (s.indexOf("#") != -1) {
-                localHistory.update(e.getReferencedURI());
+                localHistory.update(s);
                 backAction.update();
                 forwardAction.update();
 
@@ -2033,11 +2023,72 @@ public class JSVGViewerFrame
         }
 
         /**
-         * Returns a customized the pixel to mm factor.
+         * Returns the size of a px CSS unit in millimeters.
+         */
+        public float getPixelUnitToMillimeter() {
+            return 0.26458333333333333333333333333333f; // 96dpi
+        }
+        
+        /**
+         * Returns the size of a px CSS unit in millimeters.
+         * This will be removed after next release.
+         * @see #getPixelUnitToMillimeter();
          */
         public float getPixelToMM() {
-            return 0.264583333333333333333f; // 96 dpi
+            return getPixelUnitToMillimeter();
+            
         }
+
+        /** 
+         * Returns the  medium font size. 
+         */
+        public float getMediumFontSize() {
+            // <!> FIXME: Should that 72 be 96?
+            return 9f * 25.4f / (72f * getPixelUnitToMillimeter());
+        }
+
+        /**
+         * Returns a lighter font-weight.
+         */
+        public float getLighterFontWeight(float f) {
+            // Round f to nearest 100...
+            int weight = ((int)((f+50)/100))*100;
+            switch (weight) {
+            case 100: return 100;
+            case 200: return 100;
+            case 300: return 200;
+            case 400: return 300;
+            case 500: return 400;
+            case 600: return 400;
+            case 700: return 400;
+            case 800: return 400;
+            case 900: return 400;
+            default:
+                throw new IllegalArgumentException("Bad Font Weight: " + f);
+            }
+        }
+
+        /**
+         * Returns a bolder font-weight.
+         */
+        public float getBolderFontWeight(float f) {
+            // Round f to nearest 100...
+            int weight = ((int)((f+50)/100))*100;
+            switch (weight) {
+            case 100: return 600;
+            case 200: return 600;
+            case 300: return 600;
+            case 400: return 600;
+            case 500: return 600;
+            case 600: return 700;
+            case 700: return 800;
+            case 800: return 900;
+            case 900: return 900;
+            default:
+                throw new IllegalArgumentException("Bad Font Weight: " + f);
+            }
+        }
+
 
         /**
          * Returns the language settings.
@@ -2121,8 +2172,8 @@ public class JSVGViewerFrame
          *        script was found.
          */
         public ScriptSecurity getScriptSecurity(String scriptType,
-                                                URL scriptURL,
-                                                URL docURL){
+                                                ParsedURL scriptURL,
+                                                ParsedURL docURL){
             if (!application.canLoadScriptType(scriptType)) {
                 return new NoLoadScriptSecurity(scriptType);
             } else {

@@ -16,9 +16,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import java.security.Policy;
 
 import java.util.HashMap;
@@ -52,6 +49,7 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.batik.util.SVGConstants;
 
 import org.apache.batik.util.ApplicationSecurityEnforcer;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.gui.resource.ResourceManager;
 
 /**
@@ -288,13 +286,12 @@ public class Main implements Application {
                 
                 if(uri == null){
                     uri = arguments[i];
-                    URL url = null;
-                    try{
-                        url = new URL(arguments[i]);
-                    }catch(MalformedURLException e){
+                    ParsedURL purl = null;
+                    purl = new ParsedURL(arguments[i]);
+
+                    if (!purl.complete())
                         // This is not a valid uri
                         uri = null;
-                    }
                 }
 
                 if (uri != null) {

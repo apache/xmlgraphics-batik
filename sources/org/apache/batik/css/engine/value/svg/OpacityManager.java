@@ -8,8 +8,6 @@
 
 package org.apache.batik.css.engine.value.svg;
 
-import java.net.URL;
-
 import org.apache.batik.css.engine.CSSEngine;
 
 import org.apache.batik.css.engine.value.AbstractValueManager;

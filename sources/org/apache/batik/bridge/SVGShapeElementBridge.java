@@ -22,7 +22,6 @@ import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
-import org.apache.batik.gvt.StrokeShapePainter;
 
 import org.w3c.dom.Element;
 

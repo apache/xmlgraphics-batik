@@ -8,10 +8,9 @@
 
 package org.apache.batik.bridge;
 
-import java.net.URL;
-
 import org.apache.batik.test.*;
 import org.apache.batik.util.ApplicationSecurityEnforcer;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.test.svg.SelfContainedSVGOnLoadTest;
 
 /**
@@ -80,15 +79,17 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
     
     class TestUserAgent extends UserAgentAdapter {
         public ScriptSecurity getScriptSecurity(String scriptType,
-                                                URL scriptURL,
-                                                URL docURL){
+                                                ParsedURL scriptPURL,
+                                                ParsedURL docPURL){
             if (scripts.indexOf(scriptType) == -1){
                 return new NoLoadScriptSecurity(scriptType);
             } else {
                 if (constrain){
-                    return new DefaultScriptSecurity(scriptType, scriptURL, docURL);
+                    return new DefaultScriptSecurity
+                        (scriptType, scriptPURL, docPURL);
                 } else {
-                    return new RelaxedScriptSecurity(scriptType, scriptURL, docURL);
+                    return new RelaxedScriptSecurity
+                        (scriptType, scriptPURL, docPURL);
                 }
             }
         }

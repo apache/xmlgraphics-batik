@@ -975,55 +975,38 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Returns a lighter font-weight.
      */
     public float getLighterFontWeight(float f) {
-        // <!> FIXME: delegates to the UserAgent.
-        switch ((int)f) {
-        case 100: return 100;
-        case 200: return 100;
-        case 300: return 200;
-        case 400: return 300;
-        case 500: return 400;
-        case 600: return 400;
-        case 700: return 400;
-        case 800: return 400;
-        case 900: return 400;
-        default:
-            throw new IllegalArgumentException("" + f);
-        }
+        return userAgent.getLighterFontWeight(f);
     }
 
     /**
      * Returns a bolder font-weight.
      */
     public float getBolderFontWeight(float f) {
-        // <!> FIXME: delegates to the UserAgent.
-        switch ((int)f) {
-        case 100: return 600;
-        case 200: return 600;
-        case 300: return 600;
-        case 400: return 600;
-        case 500: return 600;
-        case 600: return 700;
-        case 700: return 800;
-        case 800: return 900;
-        case 900: return 900;
-        default:
-            throw new IllegalArgumentException("" + f);
-        }
+        return userAgent.getBolderFontWeight(f);
     }
 
     /**
-     * Returns the pixel to millimeters conversion factor.
+     * Returns the size of a px CSS unit in millimeters.
      */
-    public float getPixelToMillimeters() {
-        return userAgent.getPixelToMM();
+    public float getPixelUnitToMillimeter() {
+        return userAgent.getPixelUnitToMillimeter();
+    }
+
+    /**
+     * Returns the size of a px CSS unit in millimeters.
+     * This will be removed after next release.
+     * @see #getPixelUnitToMillimeter();
+     */
+    public float getPixelToMillimeter() {
+        return getPixelUnitToMillimeter();
+            
     }
 
     /**
      * Returns the medium font size.
      */
     public float getMediumFontSize() {
-        // <!> FIXME: delegates to the UserAgent.
-        return 9f * 25.4f / (72f * getPixelToMillimeters());
+        return userAgent.getMediumFontSize();
     }
 
     /**

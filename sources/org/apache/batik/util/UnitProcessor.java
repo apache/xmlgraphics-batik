@@ -149,15 +149,15 @@ public abstract class UnitProcessor {
         case SVGLength.SVG_LENGTHTYPE_PX:
             return v;
         case SVGLength.SVG_LENGTHTYPE_MM:
-            return (v / ctx.getPixelToMM());
+            return (v / ctx.getPixelUnitToMillimeter());
         case SVGLength.SVG_LENGTHTYPE_CM:
-            return (v * 10f / ctx.getPixelToMM());
+            return (v * 10f / ctx.getPixelUnitToMillimeter());
         case SVGLength.SVG_LENGTHTYPE_IN:
-            return (v * 25.4f / ctx.getPixelToMM());
+            return (v * 25.4f / ctx.getPixelUnitToMillimeter());
         case SVGLength.SVG_LENGTHTYPE_PT:
-            return (v * 25.4f / (72f * ctx.getPixelToMM()));
+            return (v * 25.4f / (72f * ctx.getPixelUnitToMillimeter()));
         case SVGLength.SVG_LENGTHTYPE_PC:
-            return (v * 25.4f / (6f * ctx.getPixelToMM()));
+            return (v * 25.4f / (6f * ctx.getPixelUnitToMillimeter()));
         case SVGLength.SVG_LENGTHTYPE_EMS:
             return emsToPixels(v, d, ctx);
         case SVGLength.SVG_LENGTHTYPE_EXS:
@@ -187,15 +187,15 @@ public abstract class UnitProcessor {
         case SVGLength.SVG_LENGTHTYPE_PX:
             return v;
         case SVGLength.SVG_LENGTHTYPE_MM:
-            return (v * ctx.getPixelToMM());
+            return (v * ctx.getPixelUnitToMillimeter());
         case SVGLength.SVG_LENGTHTYPE_CM:
-            return (v * ctx.getPixelToMM() / 10f);
+            return (v * ctx.getPixelUnitToMillimeter() / 10f);
         case SVGLength.SVG_LENGTHTYPE_IN:
-            return (v * ctx.getPixelToMM() / 25.4f);
+            return (v * ctx.getPixelUnitToMillimeter() / 25.4f);
         case SVGLength.SVG_LENGTHTYPE_PT:
-            return (v * (72f * ctx.getPixelToMM()) / 25.4f);
+            return (v * (72f * ctx.getPixelUnitToMillimeter()) / 25.4f);
         case SVGLength.SVG_LENGTHTYPE_PC:
-            return (v * (6f * ctx.getPixelToMM()) / 25.4f);
+            return (v * (6f * ctx.getPixelUnitToMillimeter()) / 25.4f);
         case SVGLength.SVG_LENGTHTYPE_EMS:
             return pixelsToEms(v, d, ctx);
         case SVGLength.SVG_LENGTHTYPE_EXS:
@@ -411,7 +411,14 @@ public abstract class UnitProcessor {
         Element getElement();
 
         /**
-         * Returns the pixel to mm factor.
+         * Returns the size of a px CSS unit in millimeters.
+         */
+        float getPixelUnitToMillimeter();
+
+        /**
+         * Returns the size of a px CSS unit in millimeters.
+         * This will be removed after next release.
+         * @see #getPixelUnitToMillimeter();
          */
         float getPixelToMM();
 

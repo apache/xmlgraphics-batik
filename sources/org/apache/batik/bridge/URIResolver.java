@@ -97,19 +97,7 @@ public class URIResolver {
         String    frag  = purl.getRef();
         if ((frag != null) && (documentURI != null)) {
             ParsedURL pDocURL = new ParsedURL(documentURI);
-
-            // Check if the rest of the URL matches...
-            // if so then return the referenced element.
-            if ((pDocURL.getPort()      == purl.getPort()) &&
-                ((pDocURL.getPath()     == purl.getPath()) 
-                 || ((pDocURL.getPath()!=null) 
-                     && pDocURL.getPath().equals(purl.getPath()))) &&
-                ((pDocURL.getHost()     == purl.getHost()) 
-                 || ((pDocURL.getHost()!=null) 
-                     && pDocURL.getHost().equals(purl.getHost()))) &&
-                ((pDocURL.getProtocol()     == purl.getProtocol()) 
-                 || ((pDocURL.getProtocol()!=null) 
-                     && pDocURL.getProtocol().equals(purl.getProtocol()))))
+            if (pDocURL.sameFile(purl))
                 return document.getElementById(frag);
         }
 

@@ -353,10 +353,10 @@ public class MainTest extends DefaultTestSuite {
 
         t = new MainConfigTest("-dpi 5.08"){
                 public TestReport validate(SVGConverter c){
-                    if(c.getPixelToMillimeter() == 5f){
+                    if(c.getPixelUnitToMillimeter() == 5f){
                         return reportSuccess();
                     } else {
-                        return reportError("-dpi", "5f", "" + c.getPixelToMillimeter());
+                        return reportError("-dpi", "5f", "" + c.getPixelUnitToMillimeter());
                     }
                 }
             };

@@ -13,9 +13,8 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 
-import java.net.URL;
-
 import org.apache.batik.gvt.event.EventDispatcher;
+import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
@@ -72,9 +71,31 @@ public interface UserAgent {
     boolean showConfirm(String message);
 
     /**
-     * Returns the pixel to mm factor.
+     * Returns the size of a px CSS unit in millimeters.
+     */
+    float getPixelUnitToMillimeter();
+
+    /**
+     * Returns the size of a px CSS unit in millimeters.
+     * This will be removed after next release.
+     * @see #getPixelUnitToMillimeter();
      */
     float getPixelToMM();
+
+    /** 
+     * Returns the  medium font size. 
+     */
+    float getMediumFontSize();
+
+    /**
+     * Returns a lighter font-weight.
+     */
+    float getLighterFontWeight(float f);
+
+    /**
+     * Returns a bolder font-weight.
+     */
+    float getBolderFontWeight(float f);
 
     /**
      * Returns the language settings.
@@ -173,7 +194,7 @@ public interface UserAgent {
      *        script was found.
      */
     ScriptSecurity getScriptSecurity(String scriptType,
-                                     URL scriptURL,
-                                     URL docURL);
+                                     ParsedURL scriptURL,
+                                     ParsedURL docURL);
     
 }

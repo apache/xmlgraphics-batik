@@ -8,7 +8,7 @@
 
 package org.apache.batik.bridge;
 
-import java.net.URL;
+import org.apache.batik.util.ParsedURL;
 
 /**
  * This implementation for the <tt>ScriptSecurity</tt> interface.
@@ -27,6 +27,7 @@ public class RelaxedScriptSecurity  implements ScriptSecurity {
      * @throws SecurityException if the script should not be loaded.
      */
     public void checkLoadScript(){
+        /* do nothing */
     }
 
     /**
@@ -40,8 +41,9 @@ public class RelaxedScriptSecurity  implements ScriptSecurity {
      *        script was found.
      */
     public RelaxedScriptSecurity(String scriptType,
-                                 URL scriptURL,
-                                 URL docURL){
+                                 ParsedURL scriptURL,
+                                 ParsedURL docURL){
+        /* do nothing */
     }
 }
 

@@ -11,8 +11,7 @@ package org.apache.batik.apps.rasterizer;
 import java.io.InputStream;
 import java.io.IOException;
 
-import java.net.URL;
-import java.net.MalformedURLException;
+import org.apache.batik.util.ParsedURL;
 
 /*
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
@@ -23,6 +22,7 @@ public class SVGConverterURLSource implements SVGConverterSource {
      * SVG file extension 
      */
     protected static final String SVG_EXTENSION = ".svg";
+    protected static final String SVGZ_EXTENSION = ".svgz";
 
     //
     // Reported when the URL for one of the sources is
@@ -34,20 +34,17 @@ public class SVGConverterURLSource implements SVGConverterSource {
     public static final String ERROR_INVALID_URL
         = "SVGConverterURLSource.error.invalid.url";
 
-    URL url;
+    ParsedURL purl;
     String name;
 
     public SVGConverterURLSource(String url) throws SVGConverterException{
-        try{
-            this.url = new URL(url);
-        } catch (MalformedURLException e){
-            throw new SVGConverterException(ERROR_INVALID_URL, 
-                                            new Object[]{url});
-        }
+        this.purl = new ParsedURL(url);
 
         // Get the path portion
-        String path = this.url.getFile();
-        if (path == null || !path.toLowerCase().endsWith(SVG_EXTENSION)){
+        String path = this.purl.getPath();
+        if (path == null || 
+            !(path.toLowerCase().endsWith(SVG_EXTENSION) ||
+              path.toLowerCase().endsWith(SVGZ_EXTENSION))){
             throw new SVGConverterException(ERROR_INVALID_URL,
                                             new Object[]{url});
         }
@@ -65,14 +62,14 @@ public class SVGConverterURLSource implements SVGConverterSource {
         // The following will force creation of different output file names
         // for urls with references (e.g., anne.svg#svgView(viewBox(0,0,4,5)))
         //
-        String ref = this.url.getRef();
-        if (ref != null && !"".equals(ref)) {
+        String ref = this.purl.getRef();
+        if (ref != null && (ref.length()!=0)) {
             name += "" + ref.hashCode();
         }
     }
 
     public String toString(){
-        return url.toString();
+        return purl.toString();
     }
 
     public String getURI(){
@@ -84,11 +81,11 @@ public class SVGConverterURLSource implements SVGConverterSource {
             return false;
         }
 
-        return url.equals(((SVGConverterURLSource)o).url);
+        return purl.equals(((SVGConverterURLSource)o).purl);
     }
 
     public InputStream openStream() throws IOException {
-        return url.openStream();
+        return purl.openStream();
     }
 
     public boolean isSameAs(String srcStr){

@@ -99,9 +99,11 @@ public class DynamicRenderer extends StaticRenderer {
 
         updateWorkingBuffers();
         if ((rootCR == null)           ||
-            (workingBaseRaster == null))
+            (workingBaseRaster == null)) {
+            // System.out.println("RootCR: " + rootCR);
+            // System.out.println("wrkBaseRaster: " + workingBaseRaster);
             return;
-
+        }
         cr = rootCR;
         syncRaster = workingBaseRaster;
         copyRaster = workingRaster;
@@ -201,7 +203,7 @@ public class DynamicRenderer extends StaticRenderer {
                 iter = devRLM.iterator();
                 while (iter.hasNext()) {
                     Rectangle r = (Rectangle)iter.next();
-                    // System.out.println("Render: " + r);
+                    System.out.println("Render: " + r);
                     WritableRaster dst = copyRaster.createWritableChild
                         (r.x, r.y, r.width, r.height, r.x, r.y, null);
                     cr.copyData(dst);

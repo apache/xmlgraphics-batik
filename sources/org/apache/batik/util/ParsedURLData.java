@@ -342,6 +342,24 @@ public class ParsedURLData {
         return portStr;
     }
 
+    protected boolean sameFile(ParsedURLData other) {
+        if (this == other) return true;
+
+        // Check if the rest of the two PURLs matche other than
+        // the 'ref'
+        if ((port      == other.port) &&
+            ((path     == other.path) 
+             || ((path!=null) && path.equals(other.path))) &&
+            ((host     == other.host) 
+             || ((host!=null) && host.equals(other.host))) &&
+            ((protocol == other.protocol) 
+             || ((protocol!=null) && protocol.equals(other.protocol))))
+            return true;
+
+        return false;
+    }
+
+
     /**
      * Return a string representation of the data.
      */

@@ -126,33 +126,33 @@ public abstract class LengthManager extends AbstractValueManager {
             CSSContext ctx = engine.getCSSContext();
             float v = value.getFloatValue();
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
-                                  v / ctx.getPixelToMillimeters());
+                                  v / ctx.getPixelUnitToMillimeter());
 
         case CSSPrimitiveValue.CSS_CM:
             ctx = engine.getCSSContext(); 
             v = value.getFloatValue();
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
-                                  v * 10f / ctx.getPixelToMillimeters());
+                                  v * 10f / ctx.getPixelUnitToMillimeter());
 
         case CSSPrimitiveValue.CSS_IN:
             ctx = engine.getCSSContext();
             v = value.getFloatValue();
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
-                                  v * 25.4f / ctx.getPixelToMillimeters());
+                                  v * 25.4f / ctx.getPixelUnitToMillimeter());
 
         case CSSPrimitiveValue.CSS_PT:
             ctx = engine.getCSSContext();
             v = value.getFloatValue();
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   v * 25.4f /
-                                  (72f * ctx.getPixelToMillimeters()));
+                                  (72f * ctx.getPixelUnitToMillimeter()));
 
         case CSSPrimitiveValue.CSS_PC:
             ctx = engine.getCSSContext();
             v = value.getFloatValue();
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER,
                                   (v * 25.4f /
-                                   (6f * ctx.getPixelToMillimeters())));
+                                   (6f * ctx.getPixelUnitToMillimeter())));
 
         case CSSPrimitiveValue.CSS_EMS:
             sm.putFontSizeRelative(idx, true);

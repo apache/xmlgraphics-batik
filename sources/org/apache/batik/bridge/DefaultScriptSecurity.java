@@ -8,7 +8,7 @@
 
 package org.apache.batik.bridge;
 
-import java.net.URL;
+import org.apache.batik.util.ParsedURL;
 
 /**
  * Default implementation for the <tt>ScriptSecurity</tt> interface.
@@ -61,8 +61,8 @@ public class DefaultScriptSecurity implements ScriptSecurity {
      *        script was found.
      */
     public DefaultScriptSecurity(String scriptType,
-                                 URL scriptURL,
-                                 URL docURL){
+                                 ParsedURL scriptURL,
+                                 ParsedURL docURL){
         // Make sure that the archives comes from the same host
         // as the document itself
         if (docURL == null) {
@@ -70,18 +70,14 @@ public class DefaultScriptSecurity implements ScriptSecurity {
                 (Messages.formatMessage(ERROR_CANNOT_ACCESS_DOCUMENT_URL,
                                         new Object[]{scriptURL}));
         } else {
-            String docHost = docURL.getHost();
+            String docHost    = docURL.getHost();
             String scriptHost = scriptURL.getHost();
             
-            if ( !(
-                   (docHost == null && scriptHost == null)
-                   ||
-                   (docHost.equals(scriptHost))
-                   ) ){
+            if ((docHost != scriptHost) &&
+                ((docHost == null) || (!docHost.equals(scriptHost))))
                 se = new SecurityException
                     (Messages.formatMessage(ERROR_SCRIPT_FROM_DIFFERENT_URL,
                                             new Object[]{scriptURL}));
-            }
         }
         
     }

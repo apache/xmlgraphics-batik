@@ -142,13 +142,13 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_LANGUAGE");
 
         t = new HintsConfigTest(new Object[][]{
-            {ImageTranscoder.KEY_PIXEL_TO_MM, new Float(.5f)}}){
+            {ImageTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER, new Float(.5f)}}){
                 protected void deltaConfigure(SVGConverter c){
-                    c.setPixelToMillimeter(.5f);
+                    c.setPixelUnitToMillimeter(.5f);
                 }
             };
         addTest(t);
-        t.setId("HintsConfigTest.KEY_PIXEL_TO_MM");
+        t.setId("HintsConfigTest.KEY_PIXEL_UNIT_TO_MILLIMETER");
 
         t = new HintsConfigTest(new Object[][]{
             {ImageTranscoder.KEY_XML_PARSER_VALIDATING, new Boolean(true)}}){

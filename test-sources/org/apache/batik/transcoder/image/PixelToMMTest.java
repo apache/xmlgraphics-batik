@@ -19,11 +19,11 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 
 /**
- * Test the ImageTranscoder with the KEY_PIXEL_TO_MM transcoding hint.
+ * Test the ImageTranscoder with the KEY_PIXEL_UNIT_TO_MILLIMETER
+ * transcoding hint.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @version $Id$ 
- */
+ * @version $Id$ */
 public class PixelToMMTest extends AbstractImageTranscoderTest {
 
     /** The URI of the input image. */
@@ -45,31 +45,31 @@ public class PixelToMMTest extends AbstractImageTranscoderTest {
     public PixelToMMTest(String inputURI, 
 			 String refImageURI, 
 			 Float px2mm) {
-	this.inputURI = inputURI;
-	this.refImageURI = refImageURI;
-	this.px2mm = px2mm;
+        this.inputURI = inputURI;
+        this.refImageURI = refImageURI;
+        this.px2mm = px2mm;
     }
 
     /**
      * Creates the <tt>TranscoderInput</tt>.
      */
     protected TranscoderInput createTranscoderInput() {
-	return new TranscoderInput(resolveURL(inputURI).toString());
+        return new TranscoderInput(resolveURL(inputURI).toString());
     }
     
     /**
      * Creates a Map that contains additional transcoding hints.
      */
     protected Map createTranscodingHints() {
-	Map hints = new HashMap(3);
-	hints.put(ImageTranscoder.KEY_PIXEL_TO_MM, px2mm);
-	return hints;
+        Map hints = new HashMap(3);
+        hints.put(ImageTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER, px2mm);
+        return hints;
     }
 
     /**
      * Returns the reference image for this test.
      */
     protected byte [] getReferenceImageData() {
-	return createBufferedImageData(resolveURL(refImageURI));
+        return createBufferedImageData(resolveURL(refImageURI));
     }
 }

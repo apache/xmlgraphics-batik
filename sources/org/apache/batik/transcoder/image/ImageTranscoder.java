@@ -9,52 +9,16 @@
 package org.apache.batik.transcoder.image;
 
 import java.awt.AlphaComposite;
-import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Shape;
 
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
-import org.apache.batik.bridge.BaseScriptingEnvironment;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeException;
-import org.apache.batik.bridge.BridgeExtension;
-import org.apache.batik.bridge.DefaultScriptSecurity;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.NoLoadScriptSecurity;
-import org.apache.batik.bridge.RelaxedScriptSecurity;
-import org.apache.batik.bridge.ScriptSecurity;
-import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.ViewBox;
-
-import org.apache.batik.css.engine.CSSEngine;
-
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.util.DocumentFactory;
-
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
@@ -62,27 +26,13 @@ import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
-import org.apache.batik.transcoder.XMLAbstractTranscoder;
-import org.apache.batik.transcoder.image.resources.Messages;
+import org.apache.batik.transcoder.SVGAbstractTranscoder;
 
 import org.apache.batik.transcoder.keys.BooleanKey;
-import org.apache.batik.transcoder.keys.FloatKey;
-import org.apache.batik.transcoder.keys.LengthKey;
 import org.apache.batik.transcoder.keys.PaintKey;
-import org.apache.batik.transcoder.keys.PaintKey;
-import org.apache.batik.transcoder.keys.Rectangle2DKey;
-import org.apache.batik.transcoder.keys.StringKey;
 
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLResourceDescriptor;
 
-import org.w3c.dom.DOMException;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGAElement;
-import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.svg.SVGSVGElement;
 
 /**
  * This class enables to transcode an input to an image of any format.
@@ -105,32 +55,18 @@ import org.w3c.dom.svg.SVGSVGElement;
  * <p><tt>KEY_LANGUAGE</tt> to set the default language to use (may be
  * used by a &lt;switch> SVG element for example),
  * <tt>KEY_USER_STYLESHEET_URI</tt> to fix the URI of a user
- * stylesheet, and <tt>KEY_PIXEL_TO_MM</tt> to specify the pixel to
- * millimeter conversion factor.
+ * stylesheet, and <tt>KEY_MM_PER_PIXEL</tt> to specify the number of
+ * millimeters in each pixel .
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @version $Id$
+ * @version $Id$ 
  */
-public abstract class ImageTranscoder extends XMLAbstractTranscoder {
-    /** The user agent dedicated to an <tt>ImageTranscoder</tt>. */
-    protected UserAgent userAgent = new ImageTranscoderUserAgent();
+public abstract class ImageTranscoder extends SVGAbstractTranscoder {
 
     /**
      * Constructs a new <tt>ImageTranscoder</tt>.
      */
     protected ImageTranscoder() {
-        hints.put(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
-                  SVGConstants.SVG_NAMESPACE_URI);
-        hints.put(KEY_DOCUMENT_ELEMENT,
-                  SVGConstants.SVG_SVG_TAG);
-        hints.put(KEY_DOM_IMPLEMENTATION,
-                  ExtensibleSVGDOMImplementation.getDOMImplementation());
-        hints.put(KEY_MEDIA,
-                  "screen");
-        hints.put(KEY_EXECUTE_ONLOAD, 
-                  Boolean.FALSE);
-        hints.put(KEY_ALLOWED_SCRIPT_TYPES,
-                  DEFAULT_ALLOWED_SCRIPT_TYPES);
     }
 
     /**
@@ -146,122 +82,28 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
                              TranscoderOutput output)
             throws TranscoderException {
 
-        if (!(document instanceof SVGOMDocument)) {
-            throw new TranscoderException(
-                Messages.formatMessage("notsvg", null));
-        }
+        // Sets up root, curTxf & curAoi
+        super.transcode(document, uri, output);
 
-        BridgeContext ctx = new BridgeContext(userAgent);
-        SVGOMDocument svgDoc = (SVGOMDocument)document;
-        SVGSVGElement root = svgDoc.getRootElement();
-
-        // build the GVT tree
-        GVTBuilder builder = new GVTBuilder();
-        ImageRendererFactory rendFactory = new ConcreteImageRendererFactory();
-        // flag that indicates if the document is dynamic
-        boolean isDynamic = 
-            (hints.containsKey(KEY_EXECUTE_ONLOAD) &&
-             ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue() &&
-             BaseScriptingEnvironment.isDynamicDocument(svgDoc));
-        ctx.setDynamic(isDynamic);
-
-        GraphicsNode gvtRoot;
-        try {
-            gvtRoot = builder.build(ctx, svgDoc);
-            // dispatch an 'onload' event if needed
-            if (ctx.isDynamic()) {
-                BaseScriptingEnvironment se = new BaseScriptingEnvironment(ctx);
-                se.loadScripts();
-                se.dispatchSVGLoadEvent();
-            }
-        } catch (BridgeException ex) {
-            throw new TranscoderException(ex);
-        }
-        // get the 'width' and 'height' attributes of the SVG document
-        float docWidth = (float)ctx.getDocumentSize().getWidth();
-        float docHeight = (float)ctx.getDocumentSize().getHeight();
-        ctx = null;
-        builder = null;
-
-        // compute the image's width and height according the hints
-        float imgWidth = -1;
-        if (hints.containsKey(KEY_WIDTH)) {
-            imgWidth = ((Float)hints.get(KEY_WIDTH)).floatValue();
-        }
-        float imgHeight = -1;
-        if (hints.containsKey(KEY_HEIGHT)) {
-            imgHeight = ((Float)hints.get(KEY_HEIGHT)).floatValue();
-        }
-        float width, height;
-        if (imgWidth > 0 && imgHeight > 0) {
-            width = imgWidth;
-            height = imgHeight;
-        } else if (imgHeight > 0) {
-            width = (docWidth * imgHeight) / docHeight;
-            height = imgHeight;
-        } else if (imgWidth > 0) {
-            width = imgWidth;
-            height = (docHeight * imgWidth) / docWidth;
-        } else {
-            width = docWidth;
-            height = docHeight;
-        }
-        // compute the preserveAspectRatio matrix
-        AffineTransform Px;
-        String ref = null;
-        try {
-            ref = new URL(uri).getRef();
-        } catch (MalformedURLException ex) {
-            // nothing to do, catched previously
-        }
-
-        try {
-            Px = ViewBox.getViewTransform(ref, root, width, height);
-        } catch (BridgeException ex) {
-            throw new TranscoderException(ex);
-        }
-
-        if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
-            // The document has no viewBox, we need to resize it by hand.
-            // we want to keep the document size ratio
-            float d = Math.max(docWidth, docHeight);
-            float dd = Math.max(width, height);
-            float scale = dd/d;
-            Px = AffineTransform.getScaleInstance(scale, scale);
-        }
-        // take the AOI into account if any
-        if (hints.containsKey(KEY_AOI)) {
-            Rectangle2D aoi = (Rectangle2D)hints.get(KEY_AOI);
-            // transform the AOI into the image's coordinate system
-            aoi = Px.createTransformedShape(aoi).getBounds2D();
-            AffineTransform Mx = new AffineTransform();
-            double sx = width / aoi.getWidth();
-            double sy = height / aoi.getHeight();
-            Mx.scale(sx, sy);
-            double tx = -aoi.getX();
-            double ty = -aoi.getY();
-            Mx.translate(tx, ty);
-            // take the AOI transformation matrix into account
-            // we apply first the preserveAspectRatio matrix
-            Px.preConcatenate(Mx);
-        }
         // prepare the image to be painted
         int w = (int)(width+0.5);
         int h = (int)(height+0.5);
 
         // paint the SVG document using the bridge package
         // create the appropriate renderer
+        ImageRendererFactory rendFactory = new ConcreteImageRendererFactory();
         ImageRenderer renderer = rendFactory.createStaticImageRenderer();
         renderer.updateOffScreen(w, h);
-        renderer.setTransform(Px);
-        renderer.setTree(gvtRoot);
-        gvtRoot = null; // We're done with it...
+        renderer.setTransform(curTxf);
+        renderer.setTree(this.root);
+        this.root = null; // We're done with it...
 
         try {
             // now we are sure that the aoi is the image size
             Shape raoi = new Rectangle2D.Float(0, 0, width, height);
             // Warning: the renderer's AOI must be in user space
-            renderer.repaint(Px.createInverse().createTransformedShape(raoi));
+            renderer.repaint(curTxf.createInverse().
+                             createTransformedShape(raoi));
             BufferedImage rend = renderer.getOffScreen();
             renderer = null; // We're done with it...
 
@@ -286,19 +128,6 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
     }
 
     /**
-     * Creates a <tt>DocumentFactory</tt> that is used to create an SVG DOM
-     * tree. The specified DOM Implementation is ignored and the Batik
-     * SVG DOM Implementation is automatically used.
-     *
-     * @param domImpl the DOM Implementation (not used)
-     * @param parserClassname the XML parser classname
-     */
-    protected DocumentFactory createDocumentFactory(DOMImplementation domImpl,
-                                                    String parserClassname) {
-        return new SAXSVGDocumentFactory(parserClassname);
-    }
-
-    /**
      * Creates a new image with the specified dimension.
      * @param width the image width in pixels
      * @param height the image height in pixels
@@ -315,513 +144,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         throws TranscoderException;
 
     // --------------------------------------------------------------------
-    // UserAgent implementation
-    // --------------------------------------------------------------------
-
-    /**
-     * A user agent implementation for <tt>ImageTranscoder</tt>.
-     */
-    protected class ImageTranscoderUserAgent implements UserAgent {
-        /**
-         * Vector containing the allowed script types
-         */
-        protected Vector scripts;
-
-        /**
-         * Returns the default size of this user agent (400x400).
-         */
-        public Dimension2D getViewportSize() {
-            return new Dimension(400, 400);
-        }
-
-        /**
-         * Displays the specified error message using the <tt>ErrorHandler</tt>.
-         */
-        public void displayError(String message) {
-            try {
-                ImageTranscoder.this.handler.error
-                    (new TranscoderException(message));
-            } catch (TranscoderException ex) {
-                throw new RuntimeException();
-            }
-        }
-
-        /**
-         * Displays the specified error using the <tt>ErrorHandler</tt>.
-         */
-        public void displayError(Exception e) {
-            try {
-                ImageTranscoder.this.handler.error
-                    (new TranscoderException(e));
-            } catch (TranscoderException ex) {
-                throw new RuntimeException();
-            }
-        }
-
-        /**
-         * Displays the specified message using the <tt>ErrorHandler</tt>.
-         */
-        public void displayMessage(String message) {
-            try {
-                ImageTranscoder.this.handler.warning
-                    (new TranscoderException(message));
-            } catch (TranscoderException ex) {
-                throw new RuntimeException();
-            }
-        }
-
-        /**
-         * Shows an alert dialog box.
-         */
-        public void showAlert(String message) {
-        }
-
-        /**
-         * Shows a prompt dialog box.
-         */
-        public String showPrompt(String message) {
-            return null;
-        }
-
-        /**
-         * Shows a prompt dialog box.
-         */
-        public String showPrompt(String message, String defaultValue) {
-            return null;
-        }
-
-        /**
-         * Shows a confirm dialog box.
-         */
-        public boolean showConfirm(String message) {
-            return false;
-        }
-
-        /**
-         * Returns the pixel to millimeter conversion factor specified in the
-         * <tt>TranscodingHints</tt> or 0.3528 if any.
-         */
-        public float getPixelToMM() {
-            if (ImageTranscoder.this.hints.containsKey(KEY_PIXEL_TO_MM)) {
-                return ((Float)ImageTranscoder.this.hints.get(KEY_PIXEL_TO_MM)).floatValue();
-            } else {
-		//return 0.3528f; // 72 dpi
-		return 0.26458333333333333333333333333333f; // 96dpi
-            }
-        }
-
-        /**
-         * Returns the user language specified in the
-         * <tt>TranscodingHints</tt> or "en" (english) if any.
-         */
-        public String getLanguages() {
-            if (ImageTranscoder.this.hints.containsKey(KEY_LANGUAGE)) {
-                return (String)ImageTranscoder.this.hints.get(KEY_LANGUAGE);
-            } else {
-                return "en";
-            }
-        }
-
-        /**
-         * Returns the user stylesheet specified in the
-         * <tt>TranscodingHints</tt> or null if any.
-         */
-        public String getUserStyleSheetURI() {
-            return (String)ImageTranscoder.this.hints.get(KEY_USER_STYLESHEET_URI);
-        }
-
-        /**
-         * Returns the XML parser to use from the TranscodingGetHints().
-         */
-        public String getXMLParserClassName() {
-            if (ImageTranscoder.this.hints.containsKey(KEY_XML_PARSER_CLASSNAME)) {
-                return (String)ImageTranscoder.this.hints.get(KEY_XML_PARSER_CLASSNAME);
-            } else {
-                return XMLResourceDescriptor.getXMLParserClassName();
-            }
-        }
-
-	/**
-	 * Returns true if the XML parser must be in validation mode, false
-	 * otherwise.
-	 */
-	public boolean isXMLParserValidating() {
-	    return ((Boolean)ImageTranscoder.this.hints.get
-		    (KEY_XML_PARSER_VALIDATING)).booleanValue();
-	}
-	
-        /**
-         * Returns this user agent's CSS media.
-         */
-        public String getMedia() {
-            return (String)hints.get(KEY_MEDIA);
-        }
-
-        /**
-         * Returns this user agent's alternate style-sheet title.
-         */
-        public String getAlternateStyleSheet() {
-            return (String)hints.get(KEY_ALTERNATE_STYLESHEET);
-        }
-
-        /**
-         * Unsupported operation.
-         */
-        public EventDispatcher getEventDispatcher() {
-            return null;
-        }
-
-        /**
-         * Unsupported operation.
-         */
-        public void openLink(SVGAElement elt) { }
-
-        /**
-         * Unsupported operation.
-         */
-        public void setSVGCursor(Cursor cursor) { }
-
-        /**
-         * Unsupported operation.
-         */
-        public void runThread(Thread t) { }
-
-        /**
-         * Unsupported operation.
-         */
-        public AffineTransform getTransform() {
-            return null;
-        }
-
-        /**
-         * Unsupported operation.
-         */
-        public Point getClientAreaLocationOnScreen() {
-            return new Point();
-        }
-
-        /**
-         * Tells whether the given feature is supported by this
-         * user agent.
-         */
-        public boolean hasFeature(String s) {
-            return FEATURES.contains(s);
-        }
-
-        protected Set extensions = new HashSet();
-
-        /**
-         * Tells whether the given extension is supported by this
-         * user agent.
-         */
-        public boolean supportExtension(String s) {
-            return extensions.contains(s);
-        }
-
-        /**
-         * Lets the bridge tell the user agent that the following
-         * ex   tension is supported by the bridge.
-         */
-        public void registerExtension(BridgeExtension ext) {
-            Iterator i = ext.getImplementedExtensions();
-            while (i.hasNext())
-                extensions.add(i.next());
-        }
-
-
-        /**
-         * Notifies the UserAgent that the input element 
-         * has been found in the document. This is sometimes
-         * called, for example, to handle &lt;a&gt; or
-         * &lt;title&gt; elements in a UserAgent-dependant
-         * way.
-         */
-        public void handleElement(Element elt, Object data){
-        }
-
-        /**
-         * Returns the security settings for the given script
-         * type, script url and document url
-         * 
-         * @param scriptType type of script, as found in the 
-         *        type attribute of the &lt;script&gt; element.
-         * @param scriptURL url for the script, as defined in
-         *        the script's xlink:href attribute. If that
-         *        attribute was empty, then this parameter should
-         *        be null
-         * @param docURL url for the document into which the 
-         *        script was found.
-         */
-        public ScriptSecurity getScriptSecurity(String scriptType,
-                                                URL scriptURL,
-                                                URL docURL){
-            if (scripts == null){
-                computeAllowedScripts();
-            }
-
-            if (!scripts.contains(scriptType)) {
-                return new NoLoadScriptSecurity(scriptType);
-            }
-
-
-            boolean constrainOrigin = true;
-
-            if (ImageTranscoder.this.hints.containsKey(KEY_CONSTRAIN_SCRIPT_ORIGIN)) {
-                constrainOrigin =
-                    ((Boolean)ImageTranscoder.this.hints.get
-                     (KEY_CONSTRAIN_SCRIPT_ORIGIN)).booleanValue();
-            } 
-
-            if (constrainOrigin) {
-                return new DefaultScriptSecurity(scriptType, scriptURL, docURL);
-            } else {
-                return new RelaxedScriptSecurity(scriptType, scriptURL, docURL);
-            }
-        }
-
-        /**
-         * Helper method. Builds a Vector containing the allowed
-         * values for the &lt;script&gt; element's type attribute.
-         */
-        protected void computeAllowedScripts(){
-            scripts = new Vector();
-            if (!ImageTranscoder.this.hints.containsKey(KEY_ALLOWED_SCRIPT_TYPES)) {
-                return;
-            }
-
-            String allowedScripts 
-                = (String)ImageTranscoder.this.hints.get(KEY_ALLOWED_SCRIPT_TYPES);
-                
-            StringTokenizer st = new StringTokenizer(allowedScripts, ",");
-            while (st.hasMoreTokens()) {
-                scripts.addElement(st.nextToken());
-            }
-        }
-
-    }
-
-    protected final static Set FEATURES = new HashSet();
-    static {
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_LANG_FEATURE);
-        FEATURES.add(SVGConstants.SVG_ORG_W3C_SVG_STATIC_FEATURE);
-    }
-
-    // --------------------------------------------------------------------
     // Keys definition
     // --------------------------------------------------------------------
-
-    /**
-     * The 'onload' execution key.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_EXECUTE_ONLOAD</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Boolean</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">false</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify if scripts added on the 'onload' event 
-     * attribute must be invoked.</TD></TR>
-     * </TABLE> 
-     */
-    public static final TranscodingHints.Key KEY_EXECUTE_ONLOAD
-        = new BooleanKey();
-
-    /**
-     * The image width key.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_WIDTH</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Float</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">The width of the top most svg element</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the width of the image to create.</TD></TR>
-     * </TABLE> */
-    public static final TranscodingHints.Key KEY_WIDTH
-        = new LengthKey();
-
-    /**
-     * The image height key.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_HEIGHT</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Float</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">The height of the top most svg element</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the height of the image to create.</TD></TR>
-     * </TABLE> */
-    public static final TranscodingHints.Key KEY_HEIGHT
-        = new LengthKey();
-
-    /**
-     * The area of interest key.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_AOI</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Rectangle2D</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">The document's size</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the area of interest to render. The
-     * rectangle coordinates must be specified in pixels and in the
-     * document coordinates system.</TD></TR>
-     * </TABLE>
-     */
-    public static final TranscodingHints.Key KEY_AOI
-        = new Rectangle2DKey();
-
-    /**
-     * The language key.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_LANGUAGE</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">String</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">"en"</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the preferred language of the document.
-     * </TD></TR>
-     * </TABLE>
-     */
-    public static final TranscodingHints.Key KEY_LANGUAGE
-        = new StringKey();
-
-    /**
-     * The media key.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_MEDIA</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">String</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">"screen"</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the media to use with CSS.
-     * </TD></TR>
-     * </TABLE>
-     */
-    public static final TranscodingHints.Key KEY_MEDIA
-        = new StringKey();
-
-    /**
-     * The alternate stylesheet key.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_ALTERNATE_STYLESHEET</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">String</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">null</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the alternate style sheet title.
-     * </TD></TR>
-     * </TABLE>
-     */
-    public static final TranscodingHints.Key KEY_ALTERNATE_STYLESHEET
-        = new StringKey();
-
-    /**
-     * The user stylesheet URI key.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_USER_STYLESHEET_URI</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">String</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">null</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the user style sheet.</TD></TR>
-     * </TABLE>
-     */
-    public static final TranscodingHints.Key KEY_USER_STYLESHEET_URI
-        = new StringKey();
-
-    /**
-     * The pixel to millimeter conversion factor key.
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_PIXEL_TO_MM</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Float</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">0.33</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specify the pixel to millimeter conversion factor.
-     * </TD></TR>
-     * </TABLE>
-     */
-    public static final TranscodingHints.Key KEY_PIXEL_TO_MM
-        = new FloatKey();
 
     /**
      * The image background paint key.
@@ -886,70 +210,4 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      */
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
         = new BooleanKey();
-
-    /**
-     * The set of supported script languages (i.e., the set of possible
-     * values for the &lt;script&gt; tag's type attribute).
-     *
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_ALLOWED_SCRIPT_TYPES</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">String (Comma separated values)</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">text/ecmascript, application/java-archive</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">Specifies the allowed values for the type attribute
-     * in the &lt;script&gt; element. This is a comma separated list. The
-     * special value '*' means that all script types are allowed.
-     * </TD></TR>
-     * </TABLE>
-     */
-    public static final TranscodingHints.Key KEY_ALLOWED_SCRIPT_TYPES
-        = new StringKey();
-
-    /**
-     * Default value for the KEY_ALLOWED_SCRIPT_TYPES key
-     */
-    public static final String DEFAULT_ALLOWED_SCRIPT_TYPES
-        = SVGConstants.SVG_SCRIPT_TYPE_ECMASCRIPT + ", " 
-        + SVGConstants.SVG_SCRIPT_TYPE_JAVA;
-
-    /**
-     * Controls whether or not scripts can only be loaded from the 
-     * same location as the document which references them.
-     *
-     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
-     * <TD VALIGN="TOP">KEY_CONSTRAIN_SCRIPT_ORIGIN</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">boolean</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
-     * <TD VALIGN="TOP">true</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
-     * <TD VALIGN="TOP">No</TD></TR>
-     * <TR>
-     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
-     * <TD VALIGN="TOP">When set to true, script elements referencing
-     * files from a different origin (server) than the document containing
-     * the script element will not be loaded. When set to true, script elements
-     * may reference script files from any origin.
-     * </TD></TR>
-     * </TABLE>
-     */
-    public static final TranscodingHints.Key KEY_CONSTRAIN_SCRIPT_ORIGIN
-        = new BooleanKey();
-
-
 }

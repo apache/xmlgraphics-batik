@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ import java.util.StringTokenizer;
 
 import java.util.jar.Manifest;
 
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 
 import org.apache.batik.dom.util.DOMUtilities;
@@ -51,6 +51,7 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 
 import org.w3c.dom.svg.SVGSVGElement;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * This class is the base class for SVG scripting.
@@ -243,18 +244,25 @@ public class BaseScriptingEnvironment {
             if (type.equals(SVGConstants.SVG_SCRIPT_TYPE_JAVA)) {
                 try {
                     String href = XLinkSupport.getXLinkHref(script);
-                    URL url;
-                    url = new URL(XMLBaseSupport.getCascadedXMLBase(script));
-                    url = new URL(url, href);
+                    ParsedURL purl = new ParsedURL
+                        (XMLBaseSupport.getCascadedXMLBase(script), href);
 
-                    checkCompatibleScriptURL(type, url);
-                    URL docURL = ((SVGOMDocument)document).getURLObject();
+                    checkCompatibleScriptURL(type, purl);
+                    ParsedURL docPURL 
+                        = new ParsedURL(((SVGDocument)document).getURL());
 
-                    DocumentJarClassLoader cll 
-                        = new DocumentJarClassLoader(url, docURL);
+                    DocumentJarClassLoader cll;
+                    URL docURL = null;
+                    try {
+                        docURL = new URL(docPURL.toString());
+                    } catch (MalformedURLException mue) { 
+                        /* nothing just let docURL be null */
+                    }
+                    cll = new DocumentJarClassLoader
+                        (new URL(purl.toString()), docURL);
                     
                     // Get the 'Script-Handler' entry in the manifest.
-                    url = cll.findResource("META-INF/MANIFEST.MF");
+                    URL url = cll.findResource("META-INF/MANIFEST.MF");
                     if (url == null) {
                         continue;
                     }
@@ -305,11 +313,9 @@ public class BaseScriptingEnvironment {
                 Reader reader;
                 if (href.length() > 0) {
                     // External script.
-                    URL url;
-                    url = new URL(XMLBaseSupport.getCascadedXMLBase(script));
-                    url = new URL(url, href);
-                    checkCompatibleScriptURL(type, url);
-                    ParsedURL purl = new ParsedURL(url);
+                    ParsedURL purl = new ParsedURL
+                        (XMLBaseSupport.getCascadedXMLBase(script), href);
+                    checkCompatibleScriptURL(type, purl);
                     reader = new InputStreamReader(purl.openStream());
                 } else {
                     // Inline script.
@@ -349,15 +355,16 @@ public class BaseScriptingEnvironment {
      * compatible. A SecurityException is thrown if loading
      * the script is not allowed.
      */
-    private void checkCompatibleScriptURL(String scriptType, URL scriptURL){
-        URL docURL = ((SVGOMDocument)document).getURLObject();
+    private void checkCompatibleScriptURL(String scriptType, 
+                                          ParsedURL scriptPURL){
+        ParsedURL docPURL = new ParsedURL(((SVGDocument)document).getURL());
         ScriptSecurity security = userAgent.getScriptSecurity(scriptType,
-                                                              scriptURL,
-                                                              docURL);
+                                                              scriptPURL,
+                                                              docPURL);
 
         if (security == null) {
-            security = new DefaultScriptSecurity(scriptType, scriptURL,
-                                                 docURL);
+            security = new DefaultScriptSecurity(scriptType, scriptPURL,
+                                                 docPURL);
         }
 
         security.checkLoadScript();

@@ -74,9 +74,9 @@ public class PNGTranscoder extends ImageTranscoder {
         // perceptual
         params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
 
-        float pixToMM = userAgent.getPixelToMM();
-        // Pixs in 1 Meter
-        int numPix      = (int)(1000/pixToMM+0.5);
+        float PixSzMM = userAgent.getPixelUnitToMillimeter();
+        // num Pixs in 1 Meter
+        int numPix      = (int)((1000/PixSzMM)+0.5);
         params.setPhysicalDimension(numPix, numPix, 1); // 1 means 'pix/meter'
 
         //
