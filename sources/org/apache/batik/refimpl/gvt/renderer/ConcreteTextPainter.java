@@ -13,6 +13,7 @@ import java.text.AttributedCharacterIterator;
 import java.awt.image.renderable.RenderContext;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
+import java.awt.geom.Point2D;
 
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.TextNode;
@@ -32,7 +33,7 @@ public class ConcreteTextPainter extends BasicTextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-    public void paint(AttributedCharacterIterator aci, TextNode.Anchor anchor, 
+    public void paint(AttributedCharacterIterator aci, Point2D location, TextNode.Anchor anchor, 
                       Graphics2D g2d, GraphicsNodeRenderContext context){
         // Compute aci size to be able to draw it
         TextLayout layout = new TextLayout(aci, context.getFontRenderContext());
@@ -46,7 +47,7 @@ public class ConcreteTextPainter extends BasicTextPainter {
         case TextNode.Anchor.ANCHOR_END:
             tx = -advance;
         }
-        layout.draw(g2d, tx, 0);
+        layout.draw(g2d, (float)(location.getX() + tx), (float)(location.getY()));
     }
 
 }

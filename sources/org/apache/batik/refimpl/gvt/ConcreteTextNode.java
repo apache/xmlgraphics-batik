@@ -233,14 +233,14 @@ public class ConcreteTextNode
     }
 
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        g2d.translate(location.getX(), location.getY());
+        // g2d.translate(location.getX(), location.getY());
 
         // Paint the text
         TextPainter textPainter = rc.getTextPainter();
         if(textPainter != null) {
-            textPainter.paint(aci, anchor, g2d, rc);
+            textPainter.paint(aci, location, anchor, g2d, rc);
         }
-        g2d.translate(-location.getX(), -location.getY());
+        // g2d.translate(-location.getX(), -location.getY());
 
     }
 
