@@ -420,7 +420,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param g2d the Graphics2D to use
      */
     public void paint(Graphics2D g2d){
-
         // first, make sure we haven't been interrupted
         if (Thread.currentThread().isInterrupted()) {
             return;
@@ -455,14 +454,14 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
 
         Shape curClip = g2d.getClip();
-        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST,
+        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST, 
                              curClip);
 
         // Check if any painting is needed at all. Get the clip (in user space)
         // and see if it intersects with this node's bounds (in user space).
         boolean paintNeeded = true;
         Rectangle2D bounds = getBounds();
-        Shape g2dClip = g2d.getClip();
+        Shape g2dClip = curClip; //g2d.getClip();
         if (g2dClip != null) {
             Rectangle2D clipBounds = g2dClip.getBounds2D();
             if(bounds != null && !bounds.intersects(clipBounds.getX(),
@@ -478,10 +477,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             AffineTransform txf = g2d.getTransform();
             boolean antialiasedClip = false;
             if(clip != null){
-                antialiasedClip =
-                    isAntialiasedClip(g2d.getTransform(),
+                antialiasedClip = false;
+                    /*                    isAntialiasedClip(g2d.getTransform(),
                                       g2d.getRenderingHints(),
-                                      clip.getClipPath());
+                                      clip.getClipPath());*/
             }
 
             boolean useOffscreen = isOffscreenBufferNeeded();
@@ -535,7 +534,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
         g2d.setTransform(defaultTransform);
         g2d.setClip(defaultClip);
-        g2d.setComposite(defaultComposite);
+        if (composite != null) {
+            g2d.setComposite(defaultComposite);
+        }
     }
 
     /**
@@ -572,7 +573,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected boolean isAntialiasedClip(AffineTransform usr2dev,
                                         RenderingHints hints,
                                         Shape clip){
-        boolean antialiased = false;
         //
         // Antialias clip if:
         // + Antialiasing is on *or* rendering quality is on
@@ -586,6 +586,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         // of the current Graphics2D's clip and this node's clip)
         // is not a rectangle.
         //
+        boolean antialiased = false;
         if((hints.get(RenderingHints.KEY_ANTIALIASING) ==
             RenderingHints.VALUE_ANTIALIAS_ON) ||
            (hints.get(RenderingHints.KEY_RENDERING) ==
@@ -596,8 +597,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 antialiased = true;
             }
         }
-        // return antialiased;
-        return false;
+        return antialiased;
     }
 
     //

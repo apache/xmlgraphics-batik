@@ -105,13 +105,7 @@ public class RepaintManager {
      * in the image have been modified and need to be rerendered..
      */
     public void modifiedAreas(List areas) {
-        AffineTransform at = renderer.getTransform();
-        Iterator i = areas.iterator();
-        while (i.hasNext()) {
-            Shape s = (Shape)i.next();
-            Rectangle r = at.createTransformedShape(s).getBounds();
-            renderer.flush(r);
-        }
+        renderer.flush(areas);
     }
 
     /**

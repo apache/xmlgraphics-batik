@@ -52,12 +52,20 @@ public class DynamicRenderer extends StaticRenderer {
     RectListManager damagedAreas;
 
     protected CachableRed setupCache(CachableRed img) {
-        /* Don't do any caching of content for dynamic case */
+        // Don't do any caching of content for dynamic case
         return img;
     }
 
     public void flush(Rectangle r) {
-        /* Since we don't cache we don't need to flush */
+        // Since we don't cache we don't need to flush
+        return;
+    }
+
+    /**
+     * Flush a list of rectangles of cached image data.
+     */
+    public void flush(List areas) {
+        // Since we don't cache we don't need to flush
         return;
     }
 
