@@ -1291,8 +1291,8 @@ To display the available targets type:
              windowtitle="${Project} Javadoc"
              doctitle="${Project} API Specification ${version}${revisionType}${revisionNumber}"
              bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved.">
-      <sourcepath refid="src"/>
-      <sourcepath refid="src-jdk"/>
+      <sourcepath path="${src}"/>
+      <sourcepath path="${src-jdk}"/>
       <classpath refid="libs-classpath"/>
       <link href="http://www.w3.org/2003/01/dom2-javadoc/"/>
       <link href="http://java.sun.com/j2se/1.3/docs/api/"/>
