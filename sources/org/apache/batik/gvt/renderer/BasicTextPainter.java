@@ -60,7 +60,8 @@ public class BasicTextPainter implements TextPainter {
          *     works for J2SE base implementation of AttributeCharacterIterator
          */
 
-        TextSpanLayout layout = getOffsetAdjustedTextLayout(aci, frc);
+        TextSpanLayout layout =
+            getOffsetAdjustedTextLayout(aci, node.getLocation(), frc);
 
         layout.draw(g2d);
     }
@@ -81,10 +82,11 @@ public class BasicTextPainter implements TextPainter {
      */
     public org.apache.batik.gvt.text.Mark selectAt(double x, double y,
                          AttributedCharacterIterator aci,
+                         TextNode node,
                          GraphicsNodeRenderContext context) {
 
         org.apache.batik.gvt.text.Mark
-              newMark = hitTest(x, y, aci, context);
+              newMark = hitTest(x, y, aci, node, context);
         cachedHit = null;
         return newMark;
     }
@@ -99,9 +101,10 @@ public class BasicTextPainter implements TextPainter {
     public org.apache.batik.gvt.text.Mark selectTo(double x, double y,
                             org.apache.batik.gvt.text.Mark beginMark,
                             AttributedCharacterIterator aci,
+                            TextNode node,
                             GraphicsNodeRenderContext context) {
         org.apache.batik.gvt.text.Mark newMark =
-             hitTest(x, y, aci, context);
+             hitTest(x, y, aci, node, context);
 
         return newMark;
     }
@@ -113,9 +116,10 @@ public class BasicTextPainter implements TextPainter {
      */
     public org.apache.batik.gvt.text.Mark selectAll(double x, double y,
                             AttributedCharacterIterator aci,
+                            TextNode node,
                             GraphicsNodeRenderContext context) {
         org.apache.batik.gvt.text.Mark newMark =
-                              hitTest(x, y, aci, context);
+                              hitTest(x, y, aci, node, context);
         return newMark;
     }
 
@@ -263,7 +267,8 @@ public class BasicTextPainter implements TextPainter {
      */
      public Rectangle2D getPaintedBounds(TextNode node,
                FontRenderContext frc) {
-         return getBounds(node, frc, true, true);
+         Rectangle2D r = getBounds(node, frc, true, true);
+         return r;
      }
 
     /*
@@ -282,8 +287,10 @@ public class BasicTextPainter implements TextPainter {
                boolean includeDecoration,
                boolean includeStrokeWidth) {
 
-         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
-         TextSpanLayout layout = getOffsetAdjustedTextLayout(aci, context);
+         AttributedCharacterIterator aci =
+             node.getAttributedCharacterIterator();
+         TextSpanLayout layout =
+             getOffsetAdjustedTextLayout(aci, node.getLocation(), context);
 
          Rectangle2D bounds;
 
@@ -301,7 +308,6 @@ public class BasicTextPainter implements TextPainter {
                  bounds = layout.getBounds();
              }
          }
-
         return bounds;
 
      }
@@ -317,7 +323,8 @@ public class BasicTextPainter implements TextPainter {
                                     boolean includeDecoration) {
         Shape outline;
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
-        TextSpanLayout layout = getOffsetAdjustedTextLayout(aci, frc);
+        TextSpanLayout layout =
+            getOffsetAdjustedTextLayout(aci, node.getLocation(), frc);
 
         outline = layout.getOutline();
 
@@ -392,7 +399,7 @@ public class BasicTextPainter implements TextPainter {
         return outline;
     }
 
-    /* 
+    /*
      * Note: this method only works if the layout is constructed
      * from the entire "text chunk"!  If there are multiple
      * text chunks in this node, this code will fail.
@@ -400,15 +407,17 @@ public class BasicTextPainter implements TextPainter {
      */
 
     private TextSpanLayout getOffsetAdjustedTextLayout(
-                     AttributedCharacterIterator aci, FontRenderContext frc) {
+                     AttributedCharacterIterator aci,
+                     Point2D location,
+                     FontRenderContext frc) {
 
         TextSpanLayout layout = getTextLayoutFactory().createTextLayout(aci,
-                          new Point2D.Float(0f, 0f),
+                          location,
                           new java.awt.font.FontRenderContext(
                                             new AffineTransform(),
                                                           true,
                                                           true));
- 
+
         TextNode.Anchor anchor = (TextNode.Anchor) aci.getAttribute(
                      GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE);
         int anchorType = TextNode.Anchor.ANCHOR_START;
@@ -451,11 +460,13 @@ public class BasicTextPainter implements TextPainter {
 
     private org.apache.batik.gvt.text.Mark hitTest(
                          double x, double y, AttributedCharacterIterator aci,
+                         TextNode node,
                          GraphicsNodeRenderContext context) {
 
         FontRenderContext frc = context.getFontRenderContext();
 
-        TextSpanLayout layout = getOffsetAdjustedTextLayout(aci, frc);
+        TextSpanLayout layout =
+            getOffsetAdjustedTextLayout(aci, node.getLocation(),  frc);
 
         TextHit textHit =
             layout.hitTestChar((float) x, (float) y);
