@@ -55,7 +55,7 @@
         </clipPath>
 
         <clipPath id="clip" clipPathUnits="objectBoundingBox">
-            <circle cx=".5" cy=".5" r="18%"/>
+            <circle cx=".5" cy=".5" r="16%"/>
         </clipPath>
 
         <!-- ============================================== -->
