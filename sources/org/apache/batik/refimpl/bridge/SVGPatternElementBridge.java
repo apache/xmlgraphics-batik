@@ -116,9 +116,12 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             GraphicsNode patternNode = builder.build(ctx, child) ;
             // check if a GVT node has been created
             if (patternNode == null) {
+                continue; // skip element as <pattern> can contain <defs>...
+                /*
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("pattern.subelement.illegal",
                                            new Object[] {node.getLocalName()}));
+                                           */
             }
             hasChildren = true;
             patternContentNode.getChildren().add(patternNode);
