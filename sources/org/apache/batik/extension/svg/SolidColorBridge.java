@@ -12,8 +12,6 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.util.Map;
 import java.util.HashMap;
-import java.net.URL;
-import java.net.MalformedURLException;
 
 import org.apache.batik.bridge.AbstractSVGBridge;
 import org.apache.batik.bridge.BridgeContext;
@@ -34,6 +32,7 @@ import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
@@ -114,22 +113,15 @@ public class SolidColorBridge
             }
 
             SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
-            URL url;
-            try {
-                url = new URL(doc.getURLObject(), uri);
-            } catch (MalformedURLException ex) {
-                throw new BridgeException(paintElement,
-                                          ERR_URI_MALFORMED,
-                                          new Object[] {uri});
-            
-            }
+            ParsedURL purl = new ParsedURL(doc.getURL(), uri);
+
             // check if there is circular dependencies
-            if (refs.containsKey(url)) {
+            if (refs.containsKey(purl)) {
                 throw new BridgeException(paintElement,
                                           ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                                           new Object[] {uri});
             }
-            refs.put(url, url);
+            refs.put(purl, purl);
             paintElement = ctx.getReferencedElement(paintElement, uri);
         }
     }
@@ -169,23 +161,16 @@ public class SolidColorBridge
             }
 
             SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
-            URL url;
-            try {
-                url = new URL(doc.getURLObject(), uri);
-            } catch (MalformedURLException ex) {
-                throw new BridgeException(paintElement,
-                                          ERR_URI_MALFORMED,
-                                          new Object[] {uri});
-            
-            }
+            ParsedURL purl = new ParsedURL(doc.getURL(), uri);
+
             // check if there is circular dependencies
-            if (refs.containsKey(url)) {
+            if (refs.containsKey(purl)) {
                 throw new BridgeException
                     (paintElement,
                      ERR_XLINK_HREF_CIRCULAR_DEPENDENCIES,
                      new Object[] {uri});
             }
-            refs.put(url, url);
+            refs.put(purl, purl);
             paintElement = ctx.getReferencedElement(paintElement, uri);
         }
     }
