@@ -203,7 +203,27 @@ public abstract class UnitProcessor {
                 AffineTransform at;
                 at = AWTTransformProducer.createAffineTransform(r, pf);
                 ctm.preConcatenate(at);
+            } else if (t == e) {
+                break;
             } else if (t instanceof SVGSVGElement) {
+                SVGSVGElement elt = (SVGSVGElement)t;
+                // !!! Use a parser for SVGLength
+                SVGLength len = elt.getWidth().getBaseVal();
+                float w = svgToUserSpace(len.getUnitType(),
+                                         len.getValueInSpecifiedUnits(),
+                                         elt,
+                                         HORIZONTAL_LENGTH,
+                                         c);
+                len = elt.getHeight().getBaseVal();
+                float h = svgToUserSpace(len.getUnitType(),
+                                         len.getValueInSpecifiedUnits(),
+                                         elt,
+                                         VERTICAL_LENGTH,
+                                         c);
+                AffineTransform at;
+                at = SVGUtilities.getPreserveAspectRatioTransform
+                    ((SVGElement)t, w, h, c.getParserFactory());
+                ctm.preConcatenate(at);
                 break;
             }
         }
