@@ -13,9 +13,10 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-gui-util.jar \
             lib/batik-awt-util.jar \
             lib/batik-util.jar \
-            lib/batik-xml.jar \
             lib/batik-root.jar \
             lib/batik-svggen.jar \
+            lib/batik-xml.jar \
+            lib/xml-apis.jar \
             batik-squiggle.jar \
             batik-rasterizer.jar \
             batik-pp.jar \

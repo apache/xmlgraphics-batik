@@ -12,6 +12,8 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-awt-util.jar \
             lib/batik-util.jar \
             lib/batik-xml.jar \
+            lib/xml-apis.jar \
             lib/crimson-parser.jar \
             lib/js.jar
+            
 Main-Class: org.apache.batik.apps.slideshow.Main
