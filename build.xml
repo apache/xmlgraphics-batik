@@ -546,9 +546,9 @@ To display the available targets type:
     <java fork="yes"
           classname="${class-prefix}.apps.regard.Main">
       <classpath>
+        <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
         <pathelement location="resources" />
-        <pathelement location="${dest}" />
       </classpath>
       <arg value="${args}"/>
     </java>
@@ -561,9 +561,9 @@ To display the available targets type:
           classname="${class-prefix}.apps.regsvggen.Main">
       <classpath>
         <path refid="libs-classpath"/>
+        <pathelement location="${dest}" />
         <pathelement location="resources" />
         <pathelement location="regsvggen/classes" />
-        <pathelement location="${dest}" />
       </classpath>
       <arg value="${args}"/>
     </java>
