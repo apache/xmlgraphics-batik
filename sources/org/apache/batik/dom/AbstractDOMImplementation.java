@@ -70,7 +70,7 @@ public abstract class AbstractDOMImplementation
         } else {
             String[] va = (String[])v;
             for (int i = 0; i < va.length; i++) {
-                if (v.equals(va[i])) {
+                if (version.equals(va[i])) {
                     return true;
                 }
             }
