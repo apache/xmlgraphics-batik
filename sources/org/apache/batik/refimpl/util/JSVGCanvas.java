@@ -899,8 +899,6 @@ public class JSVGCanvas
      */
     protected void paintOverlays(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                             RenderingHints.VALUE_ANTIALIAS_ON);
 
         g2d.setXORMode(Color.white);
         if (markerTop != null) {
@@ -920,6 +918,8 @@ public class JSVGCanvas
             g2d.draw(docBBox);
         }
         if (canvasSpaceHighlightShape != null) {
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                             RenderingHints.VALUE_ANTIALIAS_OFF);
             g2d.setColor(selectionXORColor);
             g2d.fill(canvasSpaceHighlightShape);
         }

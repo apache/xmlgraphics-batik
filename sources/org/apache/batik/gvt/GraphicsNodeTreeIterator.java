@@ -39,7 +39,6 @@ public class GraphicsNodeTreeIterator implements Iterator {
         }
 
         public boolean hasNext() {
-            if (current == root) System.out.println("Nodecount: "+icount);
             return (current != root);
         }
 

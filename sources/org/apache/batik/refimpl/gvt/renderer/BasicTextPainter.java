@@ -137,15 +137,18 @@ public class BasicTextPainter implements TextPainter {
                 if (indices[0] > indices[1]) {
                     int temp = indices[0];
                     indices[0] = indices[1];
-                    indices[1] = 
+                    indices[1] =
                         (begin.getHit().isLeadingEdge()) ? temp : temp+1;
                 } else {
                     if (!end.getHit().isLeadingEdge()) {
-                        indices[1] += 1;   
+                        indices[1] += 1;
                     }
                 }
             } catch (Exception e) {
                 return null;
+            }
+            if (indices[0] < 0) {
+                indices[0] = 0;
             }
             // we no longer use visual selection, we use logical one
             // return layout.getLogicalRangesForVisualSelection(begin.getHit(),
@@ -157,12 +160,12 @@ public class BasicTextPainter implements TextPainter {
     }
 
 
-    public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark, 
+    public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
                                    org.apache.batik.gvt.text.Mark endMark) {
 
         // TODO: later we can return more complex things like
         // noncontiguous selections
-     
+
         BasicTextPainter.Mark begin;
         BasicTextPainter.Mark end;
         try {
@@ -190,11 +193,14 @@ public class BasicTextPainter implements TextPainter {
                     firsthit = lasthit;
                     lasthit = (begin.getHit().isLeadingEdge()) ? temp : temp+1;
                 } else {
-                    lasthit = 
+                    lasthit =
                         (end.getHit().isLeadingEdge()) ? lasthit : lasthit+1;
                 }
             } else {
                 lasthit = layout.getCharacterCount();
+            }
+            if (firsthit < 0) {
+                firsthit = 0;
             }
             shape = layout.getLogicalHighlightShape(
                                     firsthit,
