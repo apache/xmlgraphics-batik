@@ -79,6 +79,7 @@ public interface SVGConstants extends CSSConstants {
     /**
      * Attribute names
      */
+    String ATTR_AMPLITUDE = "amplitude";
     String ATTR_AZIMUTH = "azimuth";
     String ATTR_BASE_FREQUENCY = "baseFrequency";
     String ATTR_CLIP_PATH = "clip-path";
@@ -95,6 +96,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_EDGE_MODE = "edgemode";
     String ATTR_ELEVATION = "elevation";
     String ATTR_ENABLE_BACKGROUND = "enable-background";
+    String ATTR_EXPONENT = "exponent";
     String ATTR_FILL = FILL_PROPERTY;
     String ATTR_FILL_OPACITY = FILL_OPACITY_PROPERTY;
     String ATTR_FILL_RULE = FILL_RULE_PROPERTY;

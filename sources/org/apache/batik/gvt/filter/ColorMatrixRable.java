@@ -8,16 +8,22 @@
 
 package org.apache.batik.gvt.filter;
 
-import org.apache.batik.gvt.GraphicsNode;
-
 /**
- * Implements a GaussianBlur operation, where the blur size is
- * defined by standard deviations along the x and y axis.
+ * Defines the interface expected from a color matrix
+ * operation
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public interface GaussianBlurRable extends Filter {
+public interface ColorMatrixRable extends Filter {
+    /**
+     * Identifier used to refer to predefined matrices
+     */
+    public static final int TYPE_MATRIX             = 0;
+    public static final int TYPE_SATURATE           = 1;
+    public static final int TYPE_HUE_ROTATE         = 2;
+    public static final int TYPE_LUMINANCE_TO_ALPHA = 3;
+
     /**
      * Returns the source to be offset.
      */
@@ -30,24 +36,16 @@ public interface GaussianBlurRable extends Filter {
     public void setSource(Filter src);
 
     /**
-     * The deviation along the x axis, in user space.
-     * @param stdDeviationX should be greater than zero.
+     * Returns the type of this color matrix. 
+     * @return one of TYPE_MATRIX, TYPE_SATURATE, TYPE_HUE_ROTATE,
+     *         TYPE_LUMINANCE_TO_ALPHA
      */
-    public void setStdDeviationX(double stdDeviationX);
+    public int getType();
 
     /**
-     * The deviation along the y axis, in user space.
-     * @param stdDeviationY should be greater than zero
+     * Returns the rows of the color matrix. This uses
+     * the same convention as BandCombineOp.
      */
-    public void setStdDeviationY(double stdDeviationY);
-
-    /**
-     * Returns the deviation along the x-axis, in user space.
-     */
-    public double getStdDeviationX();
-
-    /**
-     * Returns the deviation along the y-axis, in user space.
-     */
-    public double getStdDeviationY();
+    public float[][] getMatrix();
+    
 }

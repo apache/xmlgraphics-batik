@@ -251,6 +251,7 @@ public class CSSUtilities implements SVGConstants {
                                              UnitProcessor.OTHER_LENGTH,
                                              uctx);
         }
+
         Stroke stroke = new BasicStroke(width,
                                         linecap,
                                         linejoin,

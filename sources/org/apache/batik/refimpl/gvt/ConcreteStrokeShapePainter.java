@@ -54,7 +54,10 @@ public class ConcreteStrokeShapePainter implements StrokeShapePainter {
         if (stroke != null && paint != null) {
             g2d.setPaint(paint);
             g2d.setStroke(stroke);
-            g2d.draw(shape);
+            
+            Shape sShape = stroke.createStrokedShape(shape);
+            g2d.fill(sShape);
+            //g2d.draw(shape);
         }
     }
 

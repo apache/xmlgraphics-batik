@@ -143,9 +143,12 @@ public class GraphicsNodeRenderContext extends RenderContext{
      *        this instance.
      */
     public GraphicsNodeRenderContext(RenderContext ctx){
-        super(ctx.getTransform(), 
-              ctx.getAreaOfInterest(), 
-              ctx.getRenderingHints()
+        this(ctx.getTransform(), 
+             ctx.getAreaOfInterest(), 
+             ctx.getRenderingHints(),
+             ctx.getRenderingHints() != null ? (FontRenderContext)ctx.getRenderingHints().get(KEY_FONT_RENDER_CONTEXT) : null,
+             ctx.getRenderingHints() != null ? (TextPainter)ctx.getRenderingHints().get(KEY_TEXT_PAINTER) : null,
+             ctx.getRenderingHints() != null ? (GraphicsNodeRableFactory)ctx.getRenderingHints().get(KEY_GRAPHICS_NODE_RABLE_FACTORY) : null
               );
     }
 
@@ -164,6 +167,10 @@ public class GraphicsNodeRenderContext extends RenderContext{
         setTextPainter(textPainter);
         setFontRenderContext(frc);
         setGraphicsNodeRableFactory(gnrFactory);
+
+        if(gnrFactory == null){
+            throw new IllegalArgumentException();
+        }
     }
 
 }

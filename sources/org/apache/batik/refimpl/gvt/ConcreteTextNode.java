@@ -114,10 +114,6 @@ public class ConcreteTextNode
                   new java.awt.font.FontRenderContext(new AffineTransform(),
                                                       true,
                                                       true));
-        if (transform == null) {
-            transform = new java.awt.geom.AffineTransform();
-        }
-
         Rectangle2D bounds = layout.getBounds();
         double tx = location.getX();
         double ty = location.getY();
@@ -147,12 +143,16 @@ public class ConcreteTextNode
                   new java.awt.font.FontRenderContext(new AffineTransform(),
                                                       true,
                                                       true));
-        AffineTransform t;
-        if (transform == null) {
-            transform = new java.awt.geom.AffineTransform();
+        Rectangle2D bounds = layout.getBounds();
+        double tx = location.getX();
+        double ty = location.getY();
+        if (anchor == Anchor.MIDDLE) {
+            tx -= bounds.getWidth()/2;
+        } else if (anchor == Anchor.END) {
+            tx -= bounds.getWidth();
         }
-        t = transform; 
-        t.translate(location.getX(), location.getY());
+
+        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty); 
         return layout.getOutline(t);
     }
 

@@ -250,7 +250,7 @@ public class ConcreteTurbulenceRable
                                              null);
 
         // Clear area outside area of interest
-        Graphics2D g = bi.createGraphics();
+        /*Graphics2D g = bi.createGraphics();
         RenderingHints hints = rc.getRenderingHints();
         if(hints == null){
             hints = new RenderingHints(null);
@@ -263,7 +263,7 @@ public class ConcreteTurbulenceRable
         g.setPaint(CLEAR_PAINT);
         g.translate(-rasterRect.x, -rasterRect.y);
         g.fill(nonAoi);
-        g.dispose();
+        g.dispose();*/
 
         RenderedImage result = new ConcreteBufferedImageCachableRed(bi){
                 public int getMinX(){
