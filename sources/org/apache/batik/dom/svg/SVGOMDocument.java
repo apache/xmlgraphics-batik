@@ -89,6 +89,11 @@ public class SVGOMDocument
         new LocalizableSupport(RESOURCES);
 
     /**
+     * The custom elements factories.
+     */
+    protected static HashTable customFactories;
+
+    /**
      * The url of the document.
      */
     protected URL url;
@@ -280,6 +285,22 @@ public class SVGOMDocument
 
         factories.put(TAG_USE,
                       new UseElementFactory());
+    }
+
+    /**
+     * Allows the user to register a new element factory.
+     */
+    public static void registerCustomElementFactory(String namespaceURI,
+                                                    String localName,
+                                                    CustomElementFactory factory) {
+        if (customFactories == null) {
+            customFactories = new HashTable();
+        }
+        HashTable ht = (HashTable)customFactories.get(namespaceURI);
+        if (ht == null) {
+            ht = new HashTable();
+        }
+        ht.put(localName, factory);
     }
 
     /**
@@ -549,24 +570,34 @@ public class SVGOMDocument
     public Element createElementNS(String namespaceURI, String qualifiedName)
         throws DOMException {
 
-        if (!SVGDOMImplementation.SVG_NAMESPACE_URI.equals(namespaceURI)) {
-            if (namespaceURI == null) {
-                return new GenericElement(qualifiedName.intern(), this);
-            } else {
-                return new GenericElementNS(namespaceURI.intern(),
-                                            qualifiedName.intern(),
-                                            this);
+        if (SVGDOMImplementation.SVG_NAMESPACE_URI.equals(namespaceURI)) {
+            String name = DOMUtilities.getLocalName(qualifiedName);
+            ElementFactory ef = (ElementFactory)factories.get(name);
+            if (ef == null) {
+                throw createDOMException(DOMException.NOT_FOUND_ERR,
+                                         "invalid.element",
+                                         new Object[] { namespaceURI,
+                                                        qualifiedName });
             }
+            return ef.create(DOMUtilities.getPrefix(qualifiedName));
         }
-        String name = DOMUtilities.getLocalName(qualifiedName);
-        ElementFactory ef = (ElementFactory)factories.get(name);
-        if (ef == null) {
-            throw createDOMException(DOMException.NOT_FOUND_ERR,
-                                     "invalid.element",
-                                     new Object[] { namespaceURI,
-                                                    qualifiedName });
+        if (namespaceURI != null) {
+            if (customFactories != null) {
+                HashTable ht = (HashTable)customFactories.get(namespaceURI);
+                if (ht != null) {
+                    String name = DOMUtilities.getLocalName(qualifiedName);
+                    CustomElementFactory cef = (CustomElementFactory)ht.get(name);
+                    if (cef != null) {
+                        return cef.create(DOMUtilities.getPrefix(qualifiedName), this);
+                    }
+                }
+            }
+            return new GenericElementNS(namespaceURI.intern(),
+                                        qualifiedName.intern(),
+                                        this);
+        } else {
+            return new GenericElement(qualifiedName.intern(), this);
         }
-        return ef.create(DOMUtilities.getPrefix(qualifiedName));
     }
 
     // AbstractDocument ///////////////////////////////////////////////
@@ -668,6 +699,16 @@ public class SVGOMDocument
     }
 
     // The element factories /////////////////////////////////////////////////
+
+    /**
+     * This interface represents a factory of custom elements.
+     */
+    public interface CustomElementFactory {
+        /**
+         * Creates an instance of a custom element.
+         */
+        Element create(String prefix, Document doc);
+    }
 
     /**
      * This interface represents a factory of elements.
