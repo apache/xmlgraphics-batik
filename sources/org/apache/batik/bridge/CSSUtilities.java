@@ -385,26 +385,26 @@ public abstract class CSSUtilities
                       RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
             hints.put(RenderingHints.KEY_ANTIALIASING,
                       RenderingHints.VALUE_ANTIALIAS_OFF);
-            hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
-                      RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            // hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
+            //           RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
             break;
         case 'l': // optimizeLegibility
+            hints.put(RenderingHints.KEY_RENDERING,
+                      RenderingHints.VALUE_RENDER_QUALITY);
+            hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,
+                      RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            hints.put(RenderingHints.KEY_ANTIALIASING,
+                      RenderingHints.VALUE_ANTIALIAS_ON);
+            // hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
+            //           RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            break;
+        case 'c': // geometricPrecision
             hints.put(RenderingHints.KEY_RENDERING,
                       RenderingHints.VALUE_RENDER_QUALITY);
             hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,
                       RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             hints.put(RenderingHints.KEY_ANTIALIASING,
                       RenderingHints.VALUE_ANTIALIAS_ON);
-            hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
-                      RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
-            break;
-        case 'c': // geometricPrecision
-            hints.put(RenderingHints.KEY_RENDERING,
-                      RenderingHints.VALUE_RENDER_QUALITY);
-            hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,
-                      RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
-            hints.put(RenderingHints.KEY_ANTIALIASING,
-                      RenderingHints.VALUE_ANTIALIAS_DEFAULT);
             hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
                       RenderingHints.VALUE_FRACTIONALMETRICS_ON);
             break;

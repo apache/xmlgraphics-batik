@@ -472,15 +472,19 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     }
 
     private static final boolean outlinesPositioned;
+    private static final boolean glyphVectorTransformWorks;
 
     static {
         String s = System.getProperty("java.specification.version");
         if ("1.4".compareTo(s) <= 0) {
             outlinesPositioned = true;
+            glyphVectorTransformWorks = true;
         } else if ("Mac OS X".equals(System.getProperty("os.name"))) {
             outlinesPositioned = true;
+            glyphVectorTransformWorks = false;  // Note sure about this...
         } else {
             outlinesPositioned = false;
+            glyphVectorTransformWorks = false;
         }
     }
 
@@ -743,26 +747,113 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      */
     public void draw(Graphics2D graphics2D,
                      AttributedCharacterIterator aci) {
+        int numGlyphs = getNumGlyphs();
 
         aci.first();
+        Paint fillPaint = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
+        Stroke stroke = (Stroke) aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.STROKE);
+        Paint strokePaint = (Paint) aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+        if ((fillPaint == null) && ((strokePaint == null) ||
+                                    (stroke == null)))
+            return;
+
+        boolean useHinting = true;
+        if ((stroke != null) && (strokePaint != null))
+            useHinting = false;
+
+        final int typeGRot   = AffineTransform.TYPE_GENERAL_ROTATION;
+        final int typeGTrans = AffineTransform.TYPE_GENERAL_TRANSFORM;
+        if (useHinting) {
+            // Check if usr->dev transform has general rotation,
+            // or shear..
+            AffineTransform at = graphics2D.getTransform();
+            int type = at.getType();
+            if (((type & typeGTrans) != 0) || ((type & typeGRot)  != 0))
+                useHinting = false;
+        }
+            
+        if (useHinting) {
+            double [] mat = new double[4];
+            for (int i=0; i<numGlyphs; i++) {
+                if (!glyphVisible[i]) {
+                    useHinting = false;
+                    break;
+                }
+                AffineTransform at = glyphTransforms[i];
+                if (at != null) {
+                    int type = at.getType();
+                    if ((type & ~AffineTransform.TYPE_TRANSLATION) == 0) {
+                        // Just translation
+                    } else if (glyphVectorTransformWorks &&
+                               ((type & typeGTrans) == 0) &&
+                               ((type & typeGRot)   == 0)) {
+                        // It's a simple 90Deg rotate, and we can put
+                        // it into the GlyphVector.
+                    } else {
+                        // we can't (or it doesn't make sense
+                        // to use the GlyphVector.
+                        useHinting = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (useHinting) {
+            double sf = scaleFactor;
+            double [] mat = new double[6];
+            for (int i=0; i< numGlyphs; i++) {
+                Point2D         pos = glyphPositions[i];
+                double x = pos.getX();
+                double y = pos.getY();
+                AffineTransform at = glyphTransforms[i];
+                if (at != null) {
+                    // Scale the translate portion of matrix,
+                    // and add it into the position.
+                    at.getMatrix(mat);
+                    x += mat[4];
+                    y += mat[5];
+                    if ((mat[0] != 1) || (mat[1] != 0) ||
+                        (mat[2] != 0) || (mat[3] != 1)) {
+                        // More than just translation.
+                        mat[4] = 0; mat[5] = 0;
+                        at = new AffineTransform(mat);
+                    } else {
+                        at = null;
+                    }
+                }
+                pos = new Point2D.Double(x/sf, y/sf);
+                awtGlyphVector.setGlyphPosition(i, pos);
+                awtGlyphVector.setGlyphTransform(i, at);
+            }
+            graphics2D.scale(sf, sf);
+            graphics2D.setPaint(fillPaint);
+            graphics2D.drawGlyphVector(awtGlyphVector, 0, 0);
+            graphics2D.scale(1/sf, 1/sf);
+
+            for (int i=0; i< numGlyphs; i++) {
+                Point2D         pos = defaultGlyphPositions[i];
+                awtGlyphVector.setGlyphPosition(i, pos);
+                awtGlyphVector.setGlyphTransform(i, null);
+            }
+
+        } else {
         Shape outline = getOutline();
 
         // check if we need to fill this glyph
-        Paint paint = (Paint) aci.getAttribute(TextAttribute.FOREGROUND);
-        if (paint != null) {
-            graphics2D.setPaint(paint);
+            if (fillPaint != null) {
+                graphics2D.setPaint(fillPaint);
             graphics2D.fill(outline);
         }
 
         // check if we need to draw the outline of this glyph
-        Stroke stroke = (Stroke) aci.getAttribute
-            (GVTAttributedCharacterIterator.TextAttribute.STROKE);
-        paint = (Paint) aci.getAttribute
-            (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-        if (stroke != null && paint != null) {
+            if (stroke != null && strokePaint != null) {
             graphics2D.setStroke(stroke);
-            graphics2D.setPaint(paint);
+                graphics2D.setPaint(strokePaint);
             graphics2D.draw(outline);
+            }
         }
     }
 }

@@ -40,6 +40,9 @@ public abstract class BasicTextPainter implements TextPainter {
     protected FontRenderContext fontRenderContext =
 	new FontRenderContext(new AffineTransform(), true, true);
 
+    protected FontRenderContext aaOffFontRenderContext =
+	new FontRenderContext(new AffineTransform(), false, true);
+
     protected TextLayoutFactory getTextLayoutFactory() {
         return textLayoutFactory;
     }
