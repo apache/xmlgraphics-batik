@@ -135,7 +135,7 @@ public class RhinoInterpreter implements Interpreter {
             // we now have the window object as the global object from the
             // launch of the interpreter.
             // 1. it works around a Rhino bug introduced in 15R4 (but fixed
-            // by a later patch.
+            // by a later patch).
             // 2. it sounds cleaner.
             WindowWrapper wWrapper = new WindowWrapper(ctx);
             globalObject = wWrapper;
@@ -143,8 +143,12 @@ public class RhinoInterpreter implements Interpreter {
             NativeJavaPackage[] p= new NativeJavaPackage[TO_BE_IMPORTED.length];
             for (int i = 0; i < TO_BE_IMPORTED.length; i++) {
                 p[i] = new NativeJavaPackage(TO_BE_IMPORTED[i]);
-            }
-            wWrapper.importPackage(ctx, globalObject, p, null);
+            } try {
+	      ScriptableObject.callMethod(globalObject, "importPackage", p);
+	    } catch (JavaScriptException e) {
+	      // cannot happen as we know the method is there and
+	      // the parameters are ok
+	    }
         } finally {
             Context.exit();
         }
