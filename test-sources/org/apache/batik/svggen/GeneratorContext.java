@@ -90,7 +90,7 @@ public class GeneratorContext extends SVGAccuracyTest implements SVGConstants {
         // Set the default font to use
         GraphicContextDefaults defaults 
             = new GraphicContextDefaults();
-        defaults.font = new Font("Lucida Sans", Font.PLAIN, 12);
+        defaults.font = new Font("Arial", Font.PLAIN, 12);
         ctx.setGraphicContextDefaults(defaults);
 
         //
