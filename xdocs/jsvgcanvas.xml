@@ -16,8 +16,8 @@
 
 <document>
     <header>
-        <title>Batik - Architecture</title>
-        <subtitle>Batik's modules explained</subtitle>
+        <title>Batik - JSVGCanvas</title>
+        <subtitle>Batik's SVG Viewing Component</subtitle>
         <authors>
             <person name="Thierry Kormann" email="tkormann@apache.org"/>
         </authors>
