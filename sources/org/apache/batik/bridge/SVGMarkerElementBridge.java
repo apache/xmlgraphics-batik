@@ -117,10 +117,12 @@ public class SVGMarkerElementBridge implements MarkerBridge,
             return null;
         }
 
-        // 'orient' attribute - default is 'auto'
+        // 'orient' attribute - default is '0'
         double orient;
         s = markerElement.getAttributeNS(null, SVG_ORIENT_ATTRIBUTE);
-        if (s.length() == 0 || VALUE_AUTO.equals(s)) {
+        if (s.length() == 0) {
+            orient = 0;
+        } else if (VALUE_AUTO.equals(s)) {
             orient = Double.NaN;
         } else {
             try {
