@@ -33,20 +33,24 @@ public interface ErrorHandler {
 
     /**
      * Invoked when an error occured while transcoding.
-     * @param ex the error informations encapsulated in a TranscoderException */
-    void error(TranscoderException ex);
+     * @param ex the error informations encapsulated in a TranscoderException
+     * @exception TranscoderException if the method want to forward the exception
+     */
+    void error(TranscoderException ex) throws TranscoderException;
 
     /**
      * Invoked when an fatal error occured while transcoding.
      * @param ex the fatal error informations encapsulated in a
      * TranscoderException
+     * @exception TranscoderException if the method want to forward the exception
      */
-    void fatalError(TranscoderException ex);
+    void fatalError(TranscoderException ex) throws TranscoderException;
 
     /**
      * Invoked when a warning occured while transcoding.
      * @param ex the warning informations encapsulated in a TranscoderException
+     * @exception TranscoderException if the method want to forward the exception
      */
-    void warning(TranscoderException ex);
+    void warning(TranscoderException ex) throws TranscoderException;
 
 }
