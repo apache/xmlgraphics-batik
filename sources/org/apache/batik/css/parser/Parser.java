@@ -769,6 +769,9 @@ public class Parser
                 int op = nextIgnoreSpaces();
                 switch (op) {
                 default:
+                    throw createCSSParseException("right.bracket");
+                case LexicalUnits.RIGHT_BRACKET:
+                    nextIgnoreSpaces();
                     c = conditionFactory.createAttributeCondition(name, null, false,
                                                                   null);
                     break;
@@ -1694,19 +1697,19 @@ public class Parser
     protected void reportError(CSSParseException e) {
         errorHandler.error(e);
 
-        int brackets = 1;
+        int cbraces = 1;
         for (;;) {
             switch (current) {
             case LexicalUnits.EOF:
                 return;
             case LexicalUnits.SEMI_COLON:
-            case LexicalUnits.RIGHT_BRACKET:
-                if (--brackets == 0) {
+            case LexicalUnits.RIGHT_CURLY_BRACE:
+                if (--cbraces == 0) {
                     nextIgnoreSpaces();
                     return;
                 }
-            case LexicalUnits.LEFT_BRACKET:
-                brackets++;
+            case LexicalUnits.LEFT_CURLY_BRACE:
+                cbraces++;
             }
             nextIgnoreSpaces();
         }
