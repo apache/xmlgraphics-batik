@@ -143,6 +143,14 @@ public class FragmentIdentifierParser extends AbstractParser {
                                                new Integer(current) });
                     break ident;
                 }
+                read();
+                if (current != '"' && current != '\'') {
+                    reportError("character.expected",
+                                new Object[] { new Character('\''),
+                                               new Integer(current) });
+                    break ident;
+                }
+                char q = (char)current;
                 inputBuffer.resetMark();
                 read();
                 parseIdentifier();
@@ -153,6 +161,13 @@ public class FragmentIdentifierParser extends AbstractParser {
                 id = new String(c, 0, c.length - 2);
                 fragmentIdentifierHandler.idReference(id);
 
+                if (current != q) {
+                    reportError("character.expected",
+                                new Object[] { new Character(q),
+                                               new Integer(current) });
+                    break ident;
+                }
+                read();
                 if (current != ')') {
                     reportError("character.expected",
                                 new Object[] { new Character(')'),
