@@ -44,6 +44,15 @@ import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.ViewCSS;
 
+// For ClipSource
+import java.util.Iterator;
+import java.util.List;
+import java.util.LinkedList;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Rectangle2D;
+import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+
 /**
  * A factory for the &lt;clipPath&gt; SVG element.
  *
@@ -72,7 +81,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         // The 'clipPath' element or any of its children can specify
         // property 'clip-path'.
         //
-        Area area = new Area();
+        ClipSource area = new ClipSource();
         GVTBuilder builder = bridgeContext.getGVTBuilder();
         Viewport oldViewport = bridgeContext.getCurrentViewport();
         bridgeContext.setCurrentViewport(new ObjectBoundingBoxViewport());
@@ -96,8 +105,8 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 GraphicsNode node
                     = builder.build(bridgeContext, (Element)child) ;
                 if(node != null){
-                    Area outline =
-                        new Area(new TransformedShape(node.getOutline(), ats));
+                    Shape outline = new TransformedShape(node.getOutline(), ats);
+                    ClipSource clipSource = new ClipSource(outline);
                     // compute clip-path on the child
                     ShapeNode outlineNode =
                         bridgeContext.getGVTFactory().createShapeNode();
@@ -108,22 +117,20 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                     if (clip != null) {
                         Shape clipPath = clip.getClipPath();
                         if (clipPath != null) {
-                            outline.subtract(new Area(clipPath));
+                            clipSource.subtract(new ClipSource(clipPath));
                         }
                     }
-                    area.add(outline);
+                    area.add(clipSource);
                 }
             }
         }
-
-
-        Shape childrenClipPath = area; //new TransformedShape(area, ats);
+        //Shape childrenClipPath = area;
 
         //
         // Now clipPath represents the current clip path defined by the
         // children of the clipPath element in user space.
         //
-        Shape clipPath = childrenClipPath;
+        ClipSource clipPath = area;
 
         // Get the clip-path property of this clipPath Element in user space
         ShapeNode outlineNode = bridgeContext.getGVTFactory().createShapeNode();
@@ -133,20 +140,20 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                                          outlineNode,
                                          bridgeContext);
         if (clipElementClipPath != null) {
-            Area merge = new Area(clipPath);
-            merge.subtract(new Area(clipElementClipPath.getClipPath()));
+            ClipSource merge = new ClipSource(clipPath);
+            merge.subtract(new ClipSource(clipElementClipPath.getClipPath()));
             clipPath = merge;
         }
 
         // Convert the Area to a path and apply the winding rule
-        GeneralPath clip = new GeneralPath(clipPath);
+        //GeneralPath clip = new GeneralPath(clipPath);
         CSSPrimitiveValue v;
         v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CLIP_RULE_PROPERTY);
         int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
             ? GeneralPath.WIND_NON_ZERO
             : GeneralPath.WIND_EVEN_ODD;
 
-        clip.setWindingRule(wr);
+        clipPath.setWindingRule(wr);
         bridgeContext.setCurrentViewport(oldViewport); // restore the viewport
 
         // OTHER PROBLEM: SHOULD TAKE MASK REGION INTO ACCOUNT
@@ -157,10 +164,112 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 = bridgeContext.getGraphicsNodeRableFactory();
             filter = gnrFactory.createGraphicsNodeRable(gn);
         }
-        return new ConcreteClipRable(filter, clip);
+        return new ConcreteClipRable(filter, clipPath);
     }
 
     public void update(BridgeMutationEvent evt) {
         // <!> FIXME : TODO
+    }
+}
+
+class ClipSource implements Shape {
+
+    private Shape resolvedArea;
+    private List addList = new LinkedList();
+    private List subtractList = new LinkedList();
+    private Shape source;
+    private int clipRule;
+
+    public ClipSource() {
+    }
+
+    public ClipSource(Shape shape) {
+        this.source = shape;
+    }
+
+    public void add(ClipSource area) {
+        addList.add(area);
+    }
+
+    public void subtract(ClipSource area) {
+        subtractList.add(area);
+    }
+
+    public void setWindingRule(int clipRule) {
+        this.clipRule = clipRule;
+    }
+
+    protected void resolve() {
+        if (resolvedArea == null) {
+            Area area;
+            if (source != null) {
+                area = new Area(source);
+            } else {
+                area = new Area();
+            }
+            for(Iterator iter = addList.iterator(); iter.hasNext();) {
+                ClipSource source = (ClipSource) iter.next();
+                area.add(new Area(source));
+            }
+            for(Iterator iter = subtractList.iterator(); iter.hasNext();) {
+                ClipSource source = (ClipSource) iter.next();
+                area.subtract(new Area(source));
+            }
+            addList = null;
+            subtractList = null;
+            GeneralPath clipPath = new GeneralPath(area);
+            clipPath.setWindingRule(clipRule);
+            resolvedArea = clipPath;
+        }
+    }
+
+    public Rectangle getBounds() {
+        resolve();
+        return resolvedArea.getBounds();
+    }
+
+    public Rectangle2D getBounds2D() {
+        resolve();
+        return resolvedArea.getBounds2D();
+    }
+
+    public boolean contains(double x, double y) {
+        resolve();
+        return resolvedArea.contains(x, y);
+    }
+
+    public boolean contains(Point2D p) {
+        resolve();
+        return resolvedArea.contains(p);
+    }
+
+    public boolean intersects(double x, double y, double w, double h) {
+        resolve();
+        return resolvedArea.intersects(x, y, w, h);
+    }
+
+    public boolean intersects(Rectangle2D r) {
+        resolve();
+        return resolvedArea.intersects(r);
+    }
+
+    public boolean contains(double x, double y, double w, double h) {
+        resolve();
+        return resolvedArea.contains(x, y, w, h);
+    }
+
+    public boolean contains(Rectangle2D r) {
+        resolve();
+        return resolvedArea.contains(r);
+    }
+
+    public PathIterator getPathIterator(AffineTransform at) {
+        resolve();
+        return resolvedArea.getPathIterator(at);
+    }
+
+    public PathIterator getPathIterator(AffineTransform at, double flatness) {
+        resolve();
+        return resolvedArea.getPathIterator(at, flatness);
     }
 }
