@@ -109,6 +109,22 @@ public class BaseScriptingEnvironment {
                 return true;
             }
             if (elt.getAttributeNS
+                (null, SVGConstants.SVG_ONKEYUP_ATTRIBUTE).length() > 0) {
+                return true;
+            }
+            if (elt.getAttributeNS
+                (null, SVGConstants.SVG_ONKEYDOWN_ATTRIBUTE).length() > 0) {
+                return true;
+            }
+            if (elt.getAttributeNS
+                (null, SVGConstants.SVG_ONKEYPRESS_ATTRIBUTE).length() > 0) {
+                return true;
+            }
+            if (elt.getAttributeNS
+                (null, SVGConstants.SVG_ONLOAD_ATTRIBUTE).length() > 0) {
+                return true;
+            }
+            if (elt.getAttributeNS
                 (null, SVGConstants.SVG_ONERROR_ATTRIBUTE).length() > 0) {
                 return true;
             }

@@ -368,18 +368,6 @@ public class BridgeEventSupport implements SVGConstants {
         }
 
         /**
-         * Returns the mouse coordinates on the screen using the
-         * specified client mouse coordinates.
-         *
-         * @param coords the mouse coordinates in the client space
-         */
-        protected Point getScreenMouseLocation(Point coords) {
-            Point screen = new Point(ua.getClientAreaLocationOnScreen());
-            screen.translate(coords.x, coords.y);
-            return screen;
-        }
-
-        /**
          * Returns the element that is the target of the specified
          * event or null if any.
          *
