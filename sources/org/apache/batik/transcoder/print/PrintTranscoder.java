@@ -33,6 +33,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -54,6 +57,7 @@ import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
 import org.apache.batik.gvt.renderer.StrokingTextPainter;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeExtension;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
@@ -435,32 +439,34 @@ public class PrintTranscoder extends XMLAbstractTranscoder
                              TranscoderOutput output)
             throws TranscoderException {
 
-        // We can only handle SVG documents.
         if (!(document instanceof SVGOMDocument)) {
-            // <!> TO BE FIXED WHEN WE DO ERROR HANDLING PROPERLY
+           // <!> TO BE FIXED WHEN WE DO ERROR HANDLING PROPERLY
             throw new TranscoderException("");
         }
-
         SVGDocument svgDoc = (SVGDocument)document;
         SVGSVGElement root = svgDoc.getRootElement();
-
-        //
-        // Initialize the SVG document with the appropriate context
-        //
-        String parserClassname = (String)hints.get(KEY_XML_PARSER_CLASSNAME);
+        // initialize the SVG document with the appropriate context
         DefaultSVGContext svgCtx = new DefaultSVGContext();
         svgCtx.setPixelToMM(userAgent.getPixelToMM());
         ((SVGOMDocument)document).setSVGContext(svgCtx);
 
-        //
-        // Get the 'width' and 'height' attributes of the SVG document
-        //
-        float docWidth = (int)root.getWidth().getBaseVal().getValue();
-        float docHeight = (int)root.getHeight().getBaseVal().getValue();
+        // build the GVT tree
+        GVTBuilder builder = new GVTBuilder();
+        GraphicsNodeRenderContext rc = getRenderContext();
+        BridgeContext ctx = new BridgeContext(userAgent, rc);
+        GraphicsNode gvtRoot;
+        try {
+            gvtRoot = builder.build(ctx, svgDoc);
+        } catch (BridgeException ex) {
+            throw new TranscoderException(ex);
+        }
+        // get the 'width' and 'height' attributes of the SVG document
+        float docWidth = (float)ctx.getDocumentSize().getWidth();
+        float docHeight = (float)ctx.getDocumentSize().getHeight();
+        ctx = null;
+        builder = null;
 
-        //
-        // Compute the image's width and height according the hints
-        //
+        // compute the image's width and height according the hints
         float imgWidth = -1;
         if (hints.containsKey(KEY_WIDTH)) {
             imgWidth = ((Float)hints.get(KEY_WIDTH)).floatValue();
@@ -483,12 +489,21 @@ public class PrintTranscoder extends XMLAbstractTranscoder
             width = docWidth;
             height = docHeight;
         }
+        // compute the preserveAspectRatio matrix
+        AffineTransform Px;
+        String ref = null;
+        try {
+            ref = new URL(uri).getRef();
+        } catch (MalformedURLException ex) {
+            // nothing to do, catched previously
+        }
 
-        //
-        // Compute the preserveAspectRatio matrix
-        //
-        AffineTransform Px =
-            ViewBox.getPreserveAspectRatioTransform(root, width, height);
+        try {
+            Px = ViewBox.getViewTransform(ref, root, width, height);
+        } catch (BridgeException ex) {
+            throw new TranscoderException(ex);
+        }
+
         if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
             // The document has no viewBox, we need to resize it by hand.
             // we want to keep the document size ratio
@@ -497,10 +512,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
             float scale = dd/d;
             Px = AffineTransform.getScaleInstance(scale, scale);
         }
-
-        //
-        // Take the AOI into account if any
-        //
+        // take the AOI into account if any
         if (hints.containsKey(KEY_AOI)) {
             Rectangle2D aoi = (Rectangle2D)hints.get(KEY_AOI);
             // transform the AOI into the image's coordinate system
@@ -508,29 +520,19 @@ public class PrintTranscoder extends XMLAbstractTranscoder
             AffineTransform Mx = new AffineTransform();
             double sx = width / aoi.getWidth();
             double sy = height / aoi.getHeight();
+            Mx.scale(sx, sy);
             double tx = -aoi.getX();
             double ty = -aoi.getY();
             Mx.translate(tx, ty);
             // take the AOI transformation matrix into account
             // we apply first the preserveAspectRatio matrix
             Px.preConcatenate(Mx);
-
             curAOI = aoi;
-        }
-        else{
+        } else {
             curAOI = new Rectangle2D.Float(0, 0, width, height);
         }
-
         curTxf = Px;
-
-        //
-        // Build the GVT tree
-        //
-        GVTBuilder builder = new GVTBuilder();
-        GraphicsNodeRenderContext rc = getRenderContext();
-        BridgeContext ctx = new BridgeContext(userAgent, rc);
-        this.root = builder.build(ctx, svgDoc);
-
+        this.root = gvtRoot;
     }
 
     /**
@@ -837,18 +839,18 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          * <tt>TranscodingHints</tt> or null if any.
          */
         public String getUserStyleSheetURI() {
-            if (PrintTranscoder.this.hints.containsKey(KEY_XML_PARSER_CLASSNAME)) {
-                return (String)PrintTranscoder.this.hints.get(KEY_XML_PARSER_CLASSNAME);
-            } else {
-                return XMLResourceDescriptor.getXMLParserClassName();
-            }
+            return (String)PrintTranscoder.this.hints.get(KEY_USER_STYLESHEET_URI);
         }
 
         /**
          * Returns the XML parser to use from the TranscodingHints.
          */
         public String getXMLParserClassName() {
-            return (String)PrintTranscoder.this.hints.get(KEY_XML_PARSER_CLASSNAME);
+            if (PrintTranscoder.this.hints.containsKey(KEY_XML_PARSER_CLASSNAME)) {
+                return (String)PrintTranscoder.this.hints.get(KEY_XML_PARSER_CLASSNAME);
+            } else {
+                return XMLResourceDescriptor.getXMLParserClassName();
+            }
         }
 
         /**
