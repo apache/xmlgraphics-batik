@@ -658,10 +658,10 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             Element elt = (Element)evt.getCurrentTarget();
             // Find the scripting language
             Element e = elt;
-            while (e == null ||
-                   !SVGConstants.SVG_NAMESPACE_URI.equals
-                   (e.getNamespaceURI()) ||
-                   !SVGConstants.SVG_SVG_TAG.equals(e.getLocalName())) {
+            while (e != null &&
+                   (!SVGConstants.SVG_NAMESPACE_URI.equals
+                    (e.getNamespaceURI()) ||
+                    !SVGConstants.SVG_SVG_TAG.equals(e.getLocalName()))) {
                 e = SVGUtilities.getParentElement(e);
             }
             if (e == null) {

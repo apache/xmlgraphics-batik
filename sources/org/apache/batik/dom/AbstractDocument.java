@@ -96,6 +96,11 @@ public abstract class AbstractDocument
     protected transient WeakHashMap elementsByTagNames;
 
     /**
+     * The ElementsByTagNameNS lists.
+     */
+    protected transient WeakHashMap elementsByTagNamesNS;
+
+    /**
      * Creates a new document.
      */
     protected AbstractDocument() {
@@ -302,9 +307,7 @@ public abstract class AbstractDocument
     /**
      * Returns an ElementsByTagName object from the cache, if any.
      */
-    public ElementsByTagName getElementsByTagName(Node n,
-                                                  String ns,
-                                                  String ln) {
+    public ElementsByTagName getElementsByTagName(Node n, String ln) {
         if (elementsByTagNames == null) {
             return null;
         }
@@ -313,14 +316,13 @@ public abstract class AbstractDocument
         if (t == null) {
             return null;
         }
-        return (ElementsByTagName)t.get(ns, ln);
+        return (ElementsByTagName)t.get(null, ln);
     }
 
     /**
      * Puts an ElementsByTagName object in the cache.
      */
-    public void putElementsByTagName(Node n, String ns, String ln,
-                                     ElementsByTagName l) {
+    public void putElementsByTagName(Node n, String ln, ElementsByTagName l) {
         if (elementsByTagNames == null) {
             elementsByTagNames = new WeakHashMap(11);
         }
@@ -328,6 +330,39 @@ public abstract class AbstractDocument
         t = (SoftDoublyIndexedTable)elementsByTagNames.get(n);
         if (t == null) {
             elementsByTagNames.put(n, t = new SoftDoublyIndexedTable());
+        }
+        t.put(null, ln, l);
+    }
+
+    /**
+     * Returns an ElementsByTagNameNS object from the cache, if any.
+     */
+    public ElementsByTagNameNS getElementsByTagNameNS(Node n,
+                                                    String ns,
+                                                    String ln) {
+        if (elementsByTagNamesNS == null) {
+            return null;
+        }
+        SoftDoublyIndexedTable t;
+        t = (SoftDoublyIndexedTable)elementsByTagNamesNS.get(n);
+        if (t == null) {
+            return null;
+        }
+        return (ElementsByTagNameNS)t.get(ns, ln);
+    }
+
+    /**
+     * Puts an ElementsByTagNameNS object in the cache.
+     */
+    public void putElementsByTagNameNS(Node n, String ns, String ln,
+                                       ElementsByTagNameNS l) {
+        if (elementsByTagNamesNS == null) {
+            elementsByTagNamesNS = new WeakHashMap(11);
+        }
+        SoftDoublyIndexedTable t;
+        t = (SoftDoublyIndexedTable)elementsByTagNamesNS.get(n);
+        if (t == null) {
+            elementsByTagNamesNS.put(n, t = new SoftDoublyIndexedTable());
         }
         t.put(ns, ln, l);
     }

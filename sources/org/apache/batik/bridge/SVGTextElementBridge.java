@@ -1083,7 +1083,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                        GVTAttributedCharacterIterator.
                        TextAttribute.ORIENTATION_AUTO);
             break;
-        default:
+        case CSSPrimitiveValue.CSS_DEG:
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.VERTICAL_ORIENTATION,
                        GVTAttributedCharacterIterator.
@@ -1091,6 +1091,28 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.VERTICAL_ORIENTATION_ANGLE,
                        new Float(val.getFloatValue()));
+            break;
+        case CSSPrimitiveValue.CSS_RAD:
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.VERTICAL_ORIENTATION,
+                       GVTAttributedCharacterIterator.
+                       TextAttribute.ORIENTATION_ANGLE);
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.VERTICAL_ORIENTATION_ANGLE,
+                       new Float(val.getFloatValue() * 180 / Math.PI));
+            break;
+        case CSSPrimitiveValue.CSS_GRAD:
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.VERTICAL_ORIENTATION,
+                       GVTAttributedCharacterIterator.
+                       TextAttribute.ORIENTATION_ANGLE);
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.VERTICAL_ORIENTATION_ANGLE,
+                       new Float(val.getFloatValue() * 9 / 5));
+            break;
+        default:
+            // Cannot happen
+            throw new InternalError();
         }
 
         // text spacing properties...

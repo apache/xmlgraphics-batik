@@ -842,34 +842,6 @@ public abstract class CSSUtilities
         CSSEngine refEngine = CSSUtilities.getCSSEngine(refElement);
         
         engine.importCascadedStyleMaps(refElement, refEngine, localRefElement);
-
-        /*
-        Attr xmlBase = localRefElement.getAttributeNodeNS
-            (XML_NAMESPACE_URI, "xml:base");
-        if (xmlBase != null) {
-            // We have a current base so merge it with our new base and
-            // set the result...
-            ParsedURL purl = new ParsedURL(uri, xmlBase.getNodeValue());
-            uri = purl.toString();
-        }
-        localRefElement.setAttributeNS(XML_NAMESPACE_URI,
-                                       "xml:base",
-                                       uri);
-
-        SVGOMDocument document
-            = (SVGOMDocument)localRefElement.getOwnerDocument();
-        AbstractViewCSS view = (AbstractViewCSS)document.getDefaultView();
-
-
-        SVGOMDocument refDocument
-            = (SVGOMDocument)refElement.getOwnerDocument();
-        AbstractViewCSS refView = (AbstractViewCSS)refDocument.getDefaultView();
-
-        HiddenChildElementSupport.setStyle(localRefElement,
-                                           view,
-                                           refElement,
-                                           refView);
-        */
     }
 
     /////////////////////////////////////////////////////////////////////////

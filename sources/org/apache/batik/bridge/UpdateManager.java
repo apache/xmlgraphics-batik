@@ -268,7 +268,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
             throw new IllegalStateException("UpdateManager not started.");
         }
 
-        // Invoke first to cancel the pending tasksaalder@bsf.ca
+        // Invoke first to cancel the pending tasks
         updateRunnableQueue.preemptLater(new Runnable() {
                 public void run() {
                     synchronized (UpdateManager.this) {

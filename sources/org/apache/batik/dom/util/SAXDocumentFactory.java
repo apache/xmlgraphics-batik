@@ -290,12 +290,19 @@ public class SAXDocumentFactory
 	for (int i = 0; i < len; i++) {
 	    String aname = attributes.getQName(i);
 	    if (aname.equals("xmlns")) {
-		namespaces.put("", attributes.getValue(i));
+                String ns = attributes.getValue(i);
+                if (ns.length() == 0) {
+                    ns = null;
+                }
+		namespaces.put("", ns);
 	    } else {
 		if (aname.startsWith("xmlns:")) {
+                    String ns = attributes.getValue(i);
+                    if (ns.length() == 0) {
+                        ns = null;
+                    }
 		    int idx = aname.indexOf(':');
-		    namespaces.put(aname.substring(idx + 1),
-				   attributes.getValue(i));
+		    namespaces.put(aname.substring(idx + 1), ns);
 		}
 	    }
 	}
