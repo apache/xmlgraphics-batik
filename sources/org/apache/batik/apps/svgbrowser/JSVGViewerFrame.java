@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -30,6 +31,8 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,6 +40,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,6 +62,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
@@ -124,6 +130,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.svg.SVGDocument;
 
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextListener;
+
 /**
  * This class represents a SVG viewer swing frame.
  *
@@ -165,6 +174,83 @@ public class JSVGViewerFrame
         }
     }
 
+    static JFrame debuggerFrame = null;
+    static Class  debuggerClass = null;
+    static Method clearAllBreakpoints = null;
+    static Method scriptGo = null;
+    static Method setExitAction = null;
+    static {
+        try {
+            debuggerClass = JSVGViewerFrame.class.getClassLoader().loadClass
+                ("org.mozilla.javascript.tools.debugger.Main");
+            clearAllBreakpoints = debuggerClass.getMethod
+                ("clearAllBreakpoints", null);
+            scriptGo = debuggerClass.getMethod
+                ("go", null);
+            setExitAction = debuggerClass.getMethod
+                ("setExitAction", new Class[] {Runnable.class});
+        } catch (Throwable t) {
+            debuggerClass = null;
+            clearAllBreakpoints = null;
+            scriptGo = null;
+            setExitAction = null;
+        }
+    }
+
+    public static void showDebugger() {
+        if (debuggerClass == null) return;
+        if (debuggerFrame == null) {
+            try {
+                Constructor c = debuggerClass.getConstructor
+                    (new Class [] { String.class });
+                debuggerFrame = (JFrame)c.newInstance
+                    (new Object[] { "Rhino JavaScript Debugger" });
+                // Customize the menubar a bit, disable menu
+                // items that can't be used and change 'Exit' to 'Close'.
+                JMenuBar menuBar = debuggerFrame.getJMenuBar();
+                JMenu    menu    = menuBar.getMenu(0);
+                menu.getItem(0).setEnabled(false); // Open...
+                menu.getItem(1).setEnabled(false); // Run...
+                menu.getItem(3).setText
+                    (Resources.getString("Close.text")); // Exit -> "Close"
+                menu.getItem(3).setAccelerator
+                    (KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.CTRL_MASK));
+
+                debuggerFrame.setSize(600, 460);
+                debuggerFrame.pack();
+                WindowAdapter wa = new WindowAdapter() {
+                        public void windowClosing(WindowEvent e) {
+                            hideDebugger();
+                        }};
+                setExitAction.invoke(debuggerFrame, 
+                                     new Object [] { new Runnable() {
+                                             public void run() {
+                                                 hideDebugger();
+                                             }}});
+                debuggerFrame.addWindowListener(wa);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                return;
+            }
+        }
+        if (debuggerFrame != null) {
+            debuggerFrame.setVisible(true);
+            Context.addContextListener((ContextListener)debuggerFrame);
+        }
+    }
+
+    public static void hideDebugger() {
+        if (debuggerFrame == null)
+            return;
+        Context.removeContextListener((ContextListener)debuggerFrame);
+        debuggerFrame.setVisible(false);
+        try {
+            clearAllBreakpoints.invoke(debuggerFrame, null);
+            scriptGo.invoke(debuggerFrame, null);
+        } catch (Throwable t) {
+        }
+    }
+
     /**
      * The gui resources file name
      */
@@ -203,6 +289,7 @@ public class JSVGViewerFrame
     public final static String FIND_DIALOG_ACTION = "FindDialogAction";
     public final static String THUMBNAIL_DIALOG_ACTION = "ThumbnailDialogAction";
     public final static String FLUSH_ACTION = "FlushAction";
+    public final static String TOGGLE_DEBUGGER_ACTION = "ToggleDebuggerAction";
 
     /**
      * The cursor indicating that an operation is pending.
@@ -514,6 +601,7 @@ public class JSVGViewerFrame
         listeners.put(FIND_DIALOG_ACTION, new FindDialogAction());
         listeners.put(THUMBNAIL_DIALOG_ACTION, new ThumbnailDialogAction());
         listeners.put(FLUSH_ACTION, new FlushAction());
+        listeners.put(TOGGLE_DEBUGGER_ACTION, new ToggleDebuggerAction());
 
         JPanel p = null;
         try {
@@ -1035,7 +1123,7 @@ public class JSVGViewerFrame
     }
 
     /**
-     * To go forward to the previous document
+     * To go forward to the next document
      */
     public class ForwardAction extends    AbstractAction
                                implements JComponentModifier {
@@ -1363,6 +1451,28 @@ public class JSVGViewerFrame
             svgCanvas.flush();
             // Force redraw...
             svgCanvas.setRenderingTransform(svgCanvas.getRenderingTransform());
+        }
+    }
+
+    /**
+     * To toggle visiblity of JavaScript Debugger.
+     */
+    public class ToggleDebuggerAction extends AbstractAction {
+        public ToggleDebuggerAction() {
+            super("Toggle Debugger Action");
+            if (debuggerClass == null)
+                setEnabled(false);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            if (debuggerClass == null) {
+                setEnabled(false);
+                return;
+            }
+            if ((debuggerFrame == null) || !debuggerFrame.isShowing())
+                showDebugger();
+            else
+                hideDebugger();
         }
     }
 

@@ -290,6 +290,21 @@ public class MenuFactory extends ResourceManager {
     protected void initializeJMenuItem(JMenuItem item, String name)
 	throws ResourceFormatException,
 	       MissingListenerException {
+        // Action
+	try {
+	    Action a = actions.getAction(getString(name+ACTION_SUFFIX));
+	    if (a == null) {
+		throw new MissingListenerException("", "Action",
+                                                   name+ACTION_SUFFIX);
+	    }
+	    item.setAction(a);
+            item.setText(getString(name+TEXT_SUFFIX));
+	    if (a instanceof JComponentModifier) {
+		((JComponentModifier)a).addJComponent(item);
+	    }
+	} catch (MissingResourceException e) {
+	}
+
 	// Icon
 	try {
 	    String s = getString(name+ICON_SUFFIX);
@@ -326,20 +341,6 @@ public class MenuFactory extends ResourceManager {
                          bundle.getClass().getName(),
                          name+ACCELERATOR_SUFFIX);
 		}
-	    }
-	} catch (MissingResourceException e) {
-	}
-
-        // Action
-	try {
-	    Action a = actions.getAction(getString(name+ACTION_SUFFIX));
-	    if (a == null) {
-		throw new MissingListenerException("", "Action",
-                                                   name+ACTION_SUFFIX);
-	    }
-	    item.addActionListener(a);
-	    if (a instanceof JComponentModifier) {
-		((JComponentModifier)a).addJComponent(item);
 	    }
 	} catch (MissingResourceException e) {
 	}
