@@ -241,6 +241,11 @@ public class BasicTextPainter implements TextPainter {
         return shape;
     }
 
+
+    private Mark cachedMark = null;
+    private AttributedCharacterIterator cachedACI = null;
+    private TextHitInfo cachedHit = null;
+
     private org.apache.batik.gvt.text.Mark hitTest(
                          double x, double y, AttributedCharacterIterator aci,
                          TextNode.Anchor anchor,
@@ -258,13 +263,23 @@ public class BasicTextPainter implements TextPainter {
         case TextNode.Anchor.ANCHOR_END:
             tx = advance;
         }
+        TextHitInfo textHit =
+            layout.hitTestChar((float) (x+tx), (float) y, layout.getBounds());
+
         //System.out.println("Testing point: "+(x+tx)+",; "+y);
         //System.out.println("    in layout "+layout.getBounds());
         //System.out.println("    with advance: "+layout.getAdvance());
-        TextHitInfo textHit =
-            layout.hitTestChar((float) (x+tx), (float) y, layout.getBounds());
         //if (textHit != null) System.out.println("HIT : "+textHit);
-        return new BasicTextPainter.Mark(x, y, layout, textHit);
+
+        if ((aci != cachedACI) || 
+            (textHit == null) || 
+            (textHit.getInsertionIndex() != cachedHit.getInsertionIndex())) {
+            cachedMark = new BasicTextPainter.Mark(x, y, layout, textHit);
+            cachedACI = aci;
+            cachedHit = textHit;
+        } // else old mark is still valid, return it.
+  
+        return cachedMark;
     }
 
     /**
