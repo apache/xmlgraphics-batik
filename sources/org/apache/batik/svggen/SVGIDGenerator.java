@@ -21,7 +21,7 @@ import java.util.HashMap;
 public class SVGIDGenerator {
     private Map prefixMap = new HashMap();
 
-    public void SVGIDGenerator() {
+    public SVGIDGenerator() {
     }
 
     /**
