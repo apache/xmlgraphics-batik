@@ -88,6 +88,11 @@ public class StatusBar extends JPanel {
     protected String mainMessage;
 
     /**
+     * The temporary message
+     */
+    protected String temporaryMessage;
+
+    /**
      * The current display thread.
      */
     protected Thread displayThread;
@@ -192,9 +197,9 @@ public class StatusBar extends JPanel {
         if (displayThread != null) {
             displayThread.interrupt();
         }
+        temporaryMessage = s;
         displayThread = new DisplayThread();
         displayThread.start();
-        message.setText(s);
     }
 
     /**
@@ -220,6 +225,7 @@ public class StatusBar extends JPanel {
         }
 
         public void run() {
+            message.setText(temporaryMessage);
             try {
                 Thread.sleep(5000);
             } catch(InterruptedException e) {
