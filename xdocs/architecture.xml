@@ -16,7 +16,7 @@
 
 <document>
     <header>
-        <title>Batik - Architecture</title>
+        <title>Batik - Architecture Overview</title>
         <subtitle>Batik's modules explained</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
@@ -25,8 +25,85 @@
 
     <body>
         <s1 title="Introduction">
-            <p>Coming soon....</p>
-            <p>In the meanwhile, UML diagrams for Batik are available following this <link href="http://opensource.objectsbydesign.com/batik/index.html">link.</link></p>
+            <p>This document briefly describes the Batik architecture and the role of each of 
+            its modules. For detailed module design, you can refer to the 
+            <link href="http://opensource.objectsbydesign.com/batik/index.html">Batik UML diagrams.</link></p>
+            <p>There are three types of components in the Batik archtitecture:</p>
+            <ul>
+                <li><link href="#applicationComponents">Application Components</link></li>
+                <li><link href="#coreComponents">Core Components</link></li>
+                <li><link href="#lowLevelComponents">Low Level Components</link></li>
+            </ul>
+            <p>The following figure illustrates these three components types. </p>
+            <figure src="images/HighLevelArchitecture.png" alt="Batik Architecture" />
+            <p>Application Components illustrate how to use
+            the Core Components and let users evaluate the Batik software easily by experimenting
+            with its features.</p>
+            <p>The Core Components are the heart of Batik and the primary deliverables for the 
+            projects. These are the components that developers use to manipulate, generate, create, 
+            convert and render SVG content</p>
+            <p>Finally, the Low Level Components are used internally by the Core Components to 
+            accomplish their work. These components are not typically used by developers directly.</p> 
+        </s1>
+
+        <anchor id="applicationComponents" />
+        <s1 title="Application Components">
+            <p>As mentioned earlier, the Application Components illustrate the functionalities that Batik
+            offers. </p>
+            <p>For example, the <link href="svgviewer.html">SVG Browser</link> is built using several
+            Batik Core Components (such as the <code>JSVGCanvas</code> GUI component or the <code>ImageTranscoder</code>s)
+            and illustrates how Batik lets you view, zoom, pan and rotate SVG documents, but also search them
+            and convert them to other formats (such as JPEG or PNG).</p>
+            <p>The <link href="svgpp">SVG Pretty Printer</link> is another example that shows how Batik
+            lets you manipulate and transform SVG content, here for the purposed of tidying up potentially
+            disorganized SVG files</p>
+            <p>The <link href="ttf2svg">SVG Font Converter</link> illustrates how Batik can help you embed
+            SVG Font definitions in SVG file by providing an application that converts ranges of characters
+            from a True Type Font format to the SVG Font format.</p>
+            <p>Finally, the <link href="svgrasterizer.html">SVG Rasterizer</link> shows how to leverage the     
+            <link href="rasterizerTutorial">Transcoder API</link> to convert to and from SVG content</p> 
+            <p>
+            Note that even though the Application Components are meant to be usefull and fun to use, they
+            are not the primary deliverables of the Batik project. Instead, they are illustrations of how the
+            Batik core components might be used and combined.</p>
+        </s1>
+
+        <anchor id="coreComponents" />
+        <s1 title="Core Components">
+            <p>The Batik core components are the heart of the Batik architecture. They can be used individually
+            or in combinations for various purposes, and the <link href="#applicationComponents">Application Components</link>
+            offer some usage examples.
+            </p>
+            <ul>
+                <li><link href="svggen.html"><code>SVGGraphics2D</code></link> is a modules that lets all
+                Java technology application easily convert their graphics to the SVG format, as easily as
+                they draw to a screen or a printer, by leveraging the Java 2D API's extensible design.</li>
+                <li><link href="domapi.html"><code>SVG DOM</code></link> an implementation of the SVG DOM API defined
+                in the SVG recommendation. It lets the programmer manipulate SVG documents in a Java program.</li>
+                <li><link href="jsvgcanvas.html"><code>JSVGCanvas</code></link> is a UI component that can display
+                SVG content and let the user interact with that content (zoom, pan, rotate, text selection, etc...)</li>
+                <li><code>Bridge</code> this component, more rarely used directly, can convert an
+                SVG document into the internal representation Batik uses for graphics, based on the 
+                Graphic Vector Toolkit, GVT</li>
+            </ul>
+        </s1>
+
+        <anchor id="lowLevelComponents" />
+        <s1 title="Low Level Components">
+            <p>The Low Level Components are not expected to be used directly by developers using the Batik
+            API. Rather, they are supporting the operation of the Core Components. The Low Level Components
+            include:</p>
+            <ul>
+                <li>The <code>Graphic Vector Toolkit</code> (GVT), which represents a view of the DOM tree
+                that is more suitable for for rendering and event handling purposes. </li>
+                <li>The <code>Renderer</code> is responsible for rendering a GVT tree and perform any 
+                type of task that may be necessary. For example, a raster based Renderer may perform
+                some caching (the default Renderer in Batik does that). However, a Renderer could perform
+                any task it deems necessary and does not have to be raster based.</li>
+                <li>The <code>Micro Parsers</code>. These are parsers for complex SVG attributes such as
+                <code>transform</code> or <code>color</code> attributes, which higher level modules 
+                rely on</li>
+            </ul>
         </s1>
     </body>
 </document>
