@@ -291,9 +291,14 @@
         <test id="samples/tests/spec/scripting/textProperties.svg" />
         <test id="samples/tests/spec/scripting/nestedsvg.svg" />
         <test id="samples/tests/spec/scripting/text.svg" />
+        <test id="samples/tests/spec/scripting/textAllProperties.svg" />
+        <test id="samples/tests/spec/scripting/textpathProperties.svg" />
+        <test id="samples/tests/spec/scripting/trefProperties.svg" />
+        <test id="samples/tests/spec/scripting/tspan.svg" />
         <test id="samples/tests/spec/scripting/text_children1.svg" />
         <test id="samples/tests/spec/scripting/text_children2.svg" />
         <test id="samples/tests/spec/scripting/text_children3.svg" />
+        <test id="samples/tests/spec/scripting/tspanProperties.svg" />
     </testGroup>
 
 </testSuite>

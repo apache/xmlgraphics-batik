@@ -1,0 +1,49 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Modification of a tspan attributes                                     -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @author nicolas.socheleau@bitflash.com                                 -->
+<!-- @version $Id$                                                          -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+    <title>&lt;tspan&gt; CSS properties on 'onload'</title>
+
+    <text x="50%" y="45" class="title">&lt;tspan&gt; CSS properties on 'onload'</text>
+
+    <script type="text/ecmascript"><![CDATA[
+        function changeStyle(evt, newValue) {
+                evt.target.setAttribute("style", newValue);
+        }
+    ]]></script>
+
+    <g id="test-content" style="font-size:18">
+
+     <text x="100" y="100"><tspan onload="changeStyle(evt, 'font-family:Impact')">font-family:Arial</tspan></text>
+     <text x="100" y="140"><tspan onload="changeStyle(evt, 'font-size:32')">font-size:32</tspan></text>
+     <text x="100" y="180"><tspan onload="changeStyle(evt, 'fill:crimson')">fill:crimson</tspan></text>
+     <text x="100" y="220"><tspan onload="changeStyle(evt, 'stroke:orange;font-size:18')">stroke:orange; font-size:18</tspan></text>
+
+     <text x="50%" y="260"><tspan onload="changeStyle(evt, 'text-anchor:start')">text-anchor:start</tspan></text>
+     <text x="50%" y="300"><tspan onload="changeStyle(evt, 'text-anchor:middle')">text-anchor:middle</tspan></text>
+     <text x="50%" y="340"><tspan onload="changeStyle(evt, 'text-anchor:end')">text-anchor:end</tspan></text>
+     <text x="100" y="380"><tspan onload="changeStyle(evt, 'font-weight:bold')">font-weight:bold</tspan></text>
+     <text x="100" y="420"><tspan onload="changeStyle(evt, 'font-style:italic')">font-style:italic</tspan></text>
+     <text x="100" y="460"><tspan onload="changeStyle(evt, 'letter-spacing:10')">letter-spacing:10</tspan></text>
+
+    </g>
+</svg>

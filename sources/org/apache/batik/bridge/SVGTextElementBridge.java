@@ -18,6 +18,7 @@ import java.awt.Stroke;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.StringReader;
 
 import java.text.AttributedCharacterIterator;
@@ -216,7 +217,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         return false;
     }
 
-    // Listener implementation //////////////////////////////////
+    // Listener implementation ----------------------------------------------
 
     /**
      * The DOM EventListener to receive 'DOMNodeRemoved' event.
@@ -233,7 +234,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
          * Handles 'DOMNodeRemoved' event type.
          */
         public void handleEvent(Event evt) {
-            
             handleDOMChildNodeRemovedEvent((MutationEvent)evt);            
         }
     }
@@ -253,12 +253,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
          * Handles 'DOMSubtreeModified' event type.
          */
         public void handleEvent(Event evt) {
-
             handleDOMSubtreeModifiedEvent((MutationEvent)evt);
         }
     }
 
-    // BridgeUpdateHandler implementation //////////////////////////////////
+    // BridgeUpdateHandler implementation -----------------------------------
 
     /**
      * This method insures that any modification to a text
@@ -282,12 +281,57 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         evtTarget.addEventListener("DOMSubtreeModified",
                                    subtreeModifiedEventListener,
                                    false);
+
+        // traverse the children to add context on 
+        // <tspan>, <tref> and <textPath>
+        Node child  = e.getFirstChild();
+        while (child != null) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                addContextToChild(ctx,(Element)child);
+            }
+            child = child.getNextSibling();
+        }
+    }
+
+    /**
+     * Add to the element children of the node, a
+     * <code>SVGContext</code> to support dynamic updated . This is
+     * recurssive, the children of the nodes are also traversed to add
+     * to the support elements their context
+     *
+     * @param ctx a <code>BridgeContext</code> value
+     * @param e an <code>Element</code> value
+     *
+     * @see org.apache.batik.dom.svg.SVGContext
+     * @see org.apache.batik.bridge.BridgeUpdateHandler
+     */
+    protected void addContextToChild(BridgeContext ctx,Element e) {
+        if (e.getNamespaceURI().equals(SVG_NAMESPACE_URI)) {
+            if (e.getLocalName().equals(SVG_TSPAN_TAG)) {
+                ((SVGOMElement)e).setSVGContext
+                    (new TspanBridge(ctx, this, e));
+            } else if (e.getLocalName().equals(SVG_TEXT_PATH_TAG)) {
+                ((SVGOMElement)e).setSVGContext
+                    (new TextPathBridge(ctx, this, e));
+            } else if (e.getLocalName().equals(SVG_TREF_TAG)) {
+                ((SVGOMElement)e).setSVGContext
+                    (new TRefBridge(ctx, this, e));
+            }
+        }
+
+        Node child  = e.getFirstChild();
+        while (child != null) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                addContextToChild(ctx, (Element)child);
+            }        
+            child = child.getNextSibling();
+        }
     }
 
     /**
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
-    public void handleDOMNodeInsertedEvent(MutationEvent evt){
+    public void handleDOMNodeInsertedEvent(MutationEvent evt) {
         Node childNode = (Node)evt.getTarget();
         
         //check the type of the node inserted before discard the layout
@@ -299,19 +343,21 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                 layoutedText = null;
                 break;
             case Node.ELEMENT_NODE:
-                String nodeName = childNode.getNodeName();
-                if (nodeName.equals(SVG_TSPAN_TAG) ||
-                    nodeName.equals(SVG_ALT_GLYPH_TAG) ||
-                    nodeName.equals(SVG_A_TAG) ||
-                    nodeName.equals(SVG_TEXT_PATH_TAG) ||
-                    nodeName.equals(SVG_TREF_TAG)) {
-                    
-                    layoutedText = null;
+                if (childNode.getNamespaceURI().equals(SVG_NAMESPACE_URI)) {
+                    String nodeName = childNode.getLocalName();
+                    if (nodeName.equals(SVG_TSPAN_TAG) ||
+                        nodeName.equals(SVG_ALT_GLYPH_TAG) ||
+                        nodeName.equals(SVG_A_TAG) ||
+                        nodeName.equals(SVG_TEXT_PATH_TAG) ||
+                        nodeName.equals(SVG_TREF_TAG)) {
+                        
+                        layoutedText = null;
+                    }
                 }
                 break;
             default:
         }
-        if ( layoutedText == null ){
+        if (layoutedText == null) {
             computeLayoutedText();
         }
     }
@@ -319,47 +365,45 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
     /**
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
-    public void handleDOMNodeRemovedEvent(MutationEvent evt){
-
+    public void handleDOMNodeRemovedEvent(MutationEvent evt) {
         EventTarget evtTarget = (EventTarget)evt.getTarget();
-
         evtTarget.removeEventListener("DOMNodeRemoved",
-                                   childNodeRemovedEventListener,
-                                   true);
+                                      childNodeRemovedEventListener,
+                                      true);
         evtTarget.removeEventListener("DOMSubtreeModified",
-                                   subtreeModifiedEventListener,
-                                   false);
-
+                                      subtreeModifiedEventListener,
+                                      false);
         super.handleDOMNodeRemovedEvent(evt);
     }
 
     /**
      * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
      */
-    public void handleDOMChildNodeRemovedEvent(MutationEvent evt){
-
+    public void handleDOMChildNodeRemovedEvent(MutationEvent evt) {
         Node childNode = (Node)evt.getTarget();
         
         //check the type of the node inserted before discard the layout
         //in the case of <title> or <desc> or <metadata>, the layout
         //is unchanged
-        switch( childNode.getNodeType() ){
+        switch (childNode.getNodeType()) {
             case Node.TEXT_NODE:
             case Node.CDATA_SECTION_NODE:
                 //the parent has to be a displayed node
-                if ( isParentDisplayed( childNode ) ){
+                if (isParentDisplayed( childNode)) {
                     layoutedText = null;
                 }
                 break;
             case Node.ELEMENT_NODE:
-                String nodeName = childNode.getNodeName();
-                if (nodeName.equals(SVG_TSPAN_TAG) ||
-                    nodeName.equals(SVG_ALT_GLYPH_TAG) ||
-                    nodeName.equals(SVG_A_TAG) ||
-                    nodeName.equals(SVG_TEXT_PATH_TAG) ||
-                    nodeName.equals(SVG_TREF_TAG)) {
-                    
-                    layoutedText = null;
+                if (childNode.getNamespaceURI().equals(SVG_NAMESPACE_URI)) {
+                    String nodeName = childNode.getLocalName();
+                    if (nodeName.equals(SVG_TSPAN_TAG) ||
+                        nodeName.equals(SVG_ALT_GLYPH_TAG) ||
+                        nodeName.equals(SVG_A_TAG) ||
+                        nodeName.equals(SVG_TEXT_PATH_TAG) ||
+                        nodeName.equals(SVG_TREF_TAG)) {
+                        
+                        layoutedText = null;
+                    }
                 }
                 break;
             default:
@@ -374,7 +418,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
     public void handleDOMSubtreeModifiedEvent(MutationEvent evt){
         //an operation occured onto the children of the
         //text element, check if the layout was discarded
-        if ( layoutedText == null ){
+        if (layoutedText == null) {
             computeLayoutedText();
         }
     }
@@ -384,14 +428,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
      * is fired.
      */
     public void handleDOMCharacterDataModified(MutationEvent evt){
-
         Node childNode = (Node)evt.getTarget();
-
         //if the parent is displayed, then discard the layout.
-        if ( isParentDisplayed( childNode ) ){
+        if (isParentDisplayed(childNode)) {
             layoutedText = null;
         }
     }
+
     /**
      * Indicate of the parent of a node is
      * a displayed element.
@@ -402,19 +445,20 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
      *   &lt;tspan&gt;, &lt;tref&gt;, &lt;textPath&gt;, &lt;a&gt;,
      *   &lt;altGlyph&gt;
      */
-    protected boolean isParentDisplayed( Node childNode ){
+    protected boolean isParentDisplayed(Node childNode) {
         Node parentNode = childNode.getParentNode();
+        if (parentNode.getNodeType() == Node.ELEMENT_NODE) {
+            if (parentNode.getNamespaceURI().equals(SVG_NAMESPACE_URI)) {
+                String nodeName = parentNode.getLocalName();
+                if (nodeName.equals(SVG_TEXT_TAG) ||
+                    nodeName.equals(SVG_TSPAN_TAG) ||
+                    nodeName.equals(SVG_ALT_GLYPH_TAG) ||
+                    nodeName.equals(SVG_A_TAG) ||
+                    nodeName.equals(SVG_TEXT_PATH_TAG) ||
+                    nodeName.equals(SVG_TREF_TAG)) {
                 
-        if ( parentNode.getNodeType() == Node.ELEMENT_NODE ){
-            String nodeName = parentNode.getNodeName();
-            if (nodeName.equals(SVG_TEXT_TAG) ||
-                nodeName.equals(SVG_TSPAN_TAG) ||
-                nodeName.equals(SVG_ALT_GLYPH_TAG) ||
-                nodeName.equals(SVG_A_TAG) ||
-                nodeName.equals(SVG_TEXT_PATH_TAG) ||
-                nodeName.equals(SVG_TREF_TAG)) {
-                
-                return true;
+                    return true;
+                }
             }
         }
         return false;
@@ -428,8 +472,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
      * update <code>layoutedText</code> with the new
      * value.
      */
-    protected void computeLayoutedText()
-    {
+    protected void computeLayoutedText() {
         AttributedString as = buildAttributedString(ctx, e);
         addGlyphPositionAttributes(as, e, ctx);
         layoutedText = new AttributedString(as.getIterator());
@@ -447,6 +490,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
      * Avoid creating one ShapePainter per CSS property change
      */
     private boolean hasNewACI;
+
+    /**
+     * This is the element a CSS property has changed.
+     */
+    private Element cssProceedElement;
 
     /**
      * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
@@ -512,8 +560,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
             }
             }
         }
+        //optimize the calculation of
+        //the painting attributes and decoration
+        //by only recomputing the section for the element
+        cssProceedElement = evt.getElement();
         // go for the other CSS properties
         super.handleCSSEngineEvent(evt);
+        cssProceedElement = null;
     }
 
     /**
@@ -534,13 +587,31 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         case SVGCSSEngine.TEXT_DECORATION_INDEX: {
             if (!hasNewACI) {
                 hasNewACI = true;
-                AttributedString as = 
-                    new AttributedString(layoutedText.getIterator());
                 TextNode tn = (TextNode)node;
+                AttributedString as;
+
+                TextDecoration parentDecoration;
+
+                if ( cssProceedElement == e ){
+                    parentDecoration = new TextDecoration();
+                    as = new AttributedString(layoutedText.getIterator());
+                }
+                else{
+                    //if a child CSS property has changed, then
+                    //retrieve the parent text decoration
+                    //and only update the section of the AtrtibutedString of
+                    //the child
+                    parentDecoration = getParentTextDecoration
+                        (tn.getAttributedCharacterIterator(), 
+                         cssProceedElement);
+                    as = new AttributedString
+                        (tn.getAttributedCharacterIterator());
+                }
                 tn.setAttributedCharacterIterator(as.getIterator());
-                TextDecoration textDecoration = 
-                    getTextDecoration(e, tn, new TextDecoration(), ctx);
-                addPaintAttributes(as, e, tn, textDecoration, ctx);
+                TextDecoration textDecoration = getTextDecoration
+                    (cssProceedElement, tn, parentDecoration, ctx);
+                addPaintAttributes
+                    (as, cssProceedElement, tn, textDecoration, ctx);
                 tn.setAttributedCharacterIterator(as.getIterator());
             }
             break;
@@ -1518,6 +1589,85 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
 
 
     /**
+     * Retrieve in the AttributeString the closest parent
+     * of the node 'child' and extract the text decorations
+     * of the parent.
+     *
+     * @param aci an <code>AttributedCharacterIterator</code> value
+     * @param child an <code>Element</code> value
+     * @return a <code>TextDecoration</code> value
+     */
+    protected TextDecoration getParentTextDecoration
+        (AttributedCharacterIterator aci, 
+         Element child){
+
+        Element parent = null;
+
+        // calculate which chars in the string belong to the parent
+        int firstChar = -1;
+        for (int i = 0; i < aci.getEndIndex(); i++) {
+            aci.setIndex(i);
+            Element delimeter = (Element)aci.getAttribute(
+            GVTAttributedCharacterIterator.
+            TextAttribute.TEXT_COMPOUND_DELIMITER);
+            if ( nodeAncestorOf(delimeter,child) ){
+                parent = delimeter;
+                firstChar = i;
+            }
+            if (delimeter == child || nodeAncestorOf(child, delimeter)) {
+                break;
+            }
+        }
+
+        TextDecoration textDecoration = new TextDecoration();
+
+        if ( parent == null){
+            //no parent
+            return textDecoration;
+        }
+
+        aci.setIndex(firstChar);
+
+        textDecoration.underlinePaint = 
+            (Paint)aci.getAttribute(GVTAttributedCharacterIterator.
+                                    TextAttribute.UNDERLINE_PAINT);
+
+        textDecoration.underlineStrokePaint = 
+            (Paint)aci.getAttribute(GVTAttributedCharacterIterator.
+                                    TextAttribute.UNDERLINE_STROKE_PAINT);
+
+        textDecoration.underlineStroke = 
+            (Stroke)aci.getAttribute(GVTAttributedCharacterIterator.
+                                     TextAttribute.UNDERLINE_STROKE);
+
+        textDecoration.overlinePaint = 
+            (Paint)aci.getAttribute(GVTAttributedCharacterIterator.
+                                    TextAttribute.OVERLINE_PAINT);
+
+        textDecoration.overlineStrokePaint = 
+            (Paint)aci.getAttribute(GVTAttributedCharacterIterator.
+                                    TextAttribute.OVERLINE_STROKE_PAINT);
+
+        textDecoration.overlineStroke = 
+            (Stroke)aci.getAttribute(GVTAttributedCharacterIterator.
+                                     TextAttribute.OVERLINE_STROKE);
+
+        textDecoration.strikethroughPaint = 
+            (Paint)aci.getAttribute(GVTAttributedCharacterIterator.
+                                    TextAttribute.STRIKETHROUGH_PAINT);
+
+        textDecoration.strikethroughStrokePaint = 
+            (Paint)aci.getAttribute(GVTAttributedCharacterIterator.
+                                    TextAttribute.STRIKETHROUGH_STROKE_PAINT);
+
+        textDecoration.strikethroughStroke = 
+            (Stroke)aci.getAttribute(GVTAttributedCharacterIterator.
+                                     TextAttribute.STRIKETHROUGH_STROKE);
+
+        return textDecoration;
+    }
+
+    /**
      * Constructs a TextDecoration object for the specified element. This will
      * contain all of the decoration properties to be used when drawing the
      * text.
@@ -1636,5 +1786,219 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
             strikethroughStrokePaint = td.strikethroughStrokePaint;
             strikethroughStroke = td.strikethroughStroke;
         }
+    }
+
+    /**
+     * Implementation of <ode>SVGContext</code> for
+     * the children of &lt;text&gt;
+     */
+    protected abstract class AbstractTextChildSVGContext 
+        implements SVGContext {
+
+        /** Bridge Context */
+        protected BridgeContext ctx;
+
+        /** Text bridge parent */
+        protected SVGTextElementBridge textBridge;
+
+        /** Element */
+        protected Element e;
+
+        /**
+         * Initialize the <code>SVGContext</code> implementation
+         * with the bridgeContext, the parent bridge, and the
+         * element supervised by this context
+         */
+        public AbstractTextChildSVGContext(BridgeContext ctx,
+                                           SVGTextElementBridge parent,
+                                           Element e) {
+            this.ctx = ctx;
+            this.textBridge = parent;
+            this.e = e;
+        }
+        
+        /**
+         * Return the pixel to millimeters factor.
+         */
+        public float getPixelToMM() {
+            return ctx.getUserAgent().getPixelToMM();
+        }
+
+        /**
+         * Returns the tight bounding box in current user space (i.e.,
+         * after application of the transform attribute, if any) on the
+         * geometry of all contained graphics elements, exclusive of
+         * stroke-width and filter effects).
+         */
+        public Rectangle2D getBBox() {
+            //text children does not support getBBox
+            //return textBridge.getBBox();
+            return null;
+        }
+
+        /**
+         * Returns the transformation matrix from current user units
+         * (i.e., after application of the transform attribute, if any) to
+         * the viewport coordinate system for the nearestViewportElement.
+         */
+        public AffineTransform getCTM() {
+            // text children does not support transform attribute
+            //return textBridge.getCTM();
+            return null;
+        }
+
+        /**
+         * Returns the global transformation matrix from the current
+         * element to the root.
+         */
+        public AffineTransform getGlobalTransform() {
+            //return node.getGlobalTransform();
+            return null;
+        }
+
+        /**
+         * Returns the width of the viewport which directly contains the
+         * given element.
+         */
+        public float getViewportWidth() {
+            return ctx.getBlockWidth(e);
+        }
+        
+        /**
+         * Returns the height of the viewport which directly contains the
+         * given element.
+         */
+        public float getViewportHeight() {
+            return ctx.getBlockHeight(e);
+        }
+        
+        /**
+         * Returns the font-size on the associated element.
+         */
+        public float getFontSize() {
+            return CSSUtilities.getComputedStyle
+                (e, SVGCSSEngine.FONT_SIZE_INDEX).getFloatValue();
+        }
+    }
+
+    /**
+     * Implementation for the <code>BridgeUpdateHandler</code>
+     * for the child elements of &lt;text&gt;.
+     * This implementation relies on the parent bridge
+     * which contains the <code>TextNode</code>
+     * representing the node this context supervised.
+     * All operations are done by the parent bridge
+     * <code>SVGTextElementBridge</code> which can determine
+     * the impact of a change of one of its children for the others.
+     */
+    protected abstract class AbstractTextChildBridgeUpdateHandler 
+        extends AbstractTextChildSVGContext implements BridgeUpdateHandler {
+
+        /**
+         * Initialize the BridgeUpdateHandler implementation.
+         */
+        public AbstractTextChildBridgeUpdateHandler
+            (BridgeContext ctx,
+             SVGTextElementBridge parent,
+             Element e) {
+
+            super(ctx,parent,e);
+        }
+        /**
+         * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
+         */
+        public void handleDOMAttrModifiedEvent(MutationEvent evt) {
+            //nothing to do
+        }
+
+        /**
+         * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
+         */
+        public void handleDOMNodeInsertedEvent(MutationEvent evt) {
+            textBridge.handleDOMNodeInsertedEvent(evt);
+        }
+
+        /**
+         * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
+         */
+        public void handleDOMNodeRemovedEvent(MutationEvent evt) {
+            //nothing to do
+            dispose();
+        }
+
+        /**
+         * Invoked when an MutationEvent of type 'DOMCharacterDataModified' 
+         * is fired.
+         */
+        public void handleDOMCharacterDataModified(MutationEvent evt) {
+            textBridge.handleDOMCharacterDataModified(evt);
+        }
+
+        /**
+         * Invoked when an CSSEngineEvent is fired.
+         */
+        public void handleCSSEngineEvent(CSSEngineEvent evt) {
+            textBridge.handleCSSEngineEvent(evt);
+        }
+
+        /**
+         * Disposes this BridgeUpdateHandler and releases all resources.
+         */
+        public void dispose(){
+            ((SVGOMElement)e).setSVGContext(null);
+        }
+    }
+
+    /**
+     * BridgeUpdateHandle for &lt;tref&gt; element.
+     */
+    protected class TRefBridge extends AbstractTextChildBridgeUpdateHandler {
+        public TRefBridge(BridgeContext ctx,
+                          SVGTextElementBridge parent,
+                          Element e) {
+            super(ctx,parent,e);
+        }
+    }
+
+    /**
+     * BridgeUpdateHandle for &lt;textPath&gt; element.
+     */
+    protected class TextPathBridge 
+        extends AbstractTextChildBridgeUpdateHandler{
+
+        public TextPathBridge(BridgeContext ctx,
+                              SVGTextElementBridge parent,
+                              Element e){
+            super(ctx,parent,e);
+        }
+    }
+
+    /**
+     * BridgeUpdateHandle for &lt;tspan&gt; element.
+     */
+    protected class TspanBridge extends AbstractTextChildBridgeUpdateHandler {
+
+        public TspanBridge(BridgeContext ctx,
+                           SVGTextElementBridge parent,
+                           Element e){
+            super(ctx,parent,e);
+        }
+        
+        /**
+         * Handle the dynamic update for the attributes of 
+         * &lt;tspan&gt; : 'x', 'y', 'dx', 'dy' and 'rotate'.
+         */
+        public void handleDOMAttrModifiedEvent(MutationEvent evt){
+            String attrName = evt.getAttrName();
+            if (attrName.equals(SVG_X_ATTRIBUTE) ||
+                attrName.equals(SVG_Y_ATTRIBUTE) ||
+                attrName.equals(SVG_DX_ATTRIBUTE) ||
+                attrName.equals(SVG_DY_ATTRIBUTE) ||
+                attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
+                
+                //recompute the layout of the text node
+                textBridge.computeLayoutedText();
+            }
+        }        
     }
 }
