@@ -64,6 +64,10 @@
             <property name="Secure" class="java.lang.Boolean" value="true" />
         </test>
 
+        <test id="ecmaCheckPermissionsDenied2">
+            <property name="Secure" class="java.lang.Boolean" value="true" />
+        </test>
+
         <test id="ecmaCheckPermissionsGranted">
             <property name="Secure" class="java.lang.Boolean" value="false" />
         </test>
@@ -71,6 +75,22 @@
         <test id="ecmaCheckNoLoad">
             <property name="Scripts" class="java.lang.String" 
                       value="application/java-archive" />
+        </test>
+
+        <test id="ecmaCheckNoLoad2">
+            <property name="Scripts" class="java.lang.String" 
+                      value="application/java-archive" />
+        </test>
+
+        <test id="ecmaCheckNoLoad2">
+            <property name="Scripts" class="java.lang.String" 
+                      value="text/ecmascript" />
+            <property name="Constrain" class="java.lang.Boolean" 
+                      value="true" />
+            <property name="Document" class="java.lang.Boolean" 
+                      value="false" />
+            <property name="Embed" class="java.lang.Boolean" 
+                      value="false" />
         </test>
 
         <test id="ecmaCheckLoad">
