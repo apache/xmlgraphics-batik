@@ -39,7 +39,7 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @version $Id$
  * @see                org.apache.batik.svggen.SVGAlphaComposite
  */
-public class SVGAlphaComposite extends AbstractSVGConverter{
+public class SVGAlphaComposite extends AbstractSVGConverter {
     /**
      * Map of all possible AlphaComposite filter equivalents
      */
@@ -51,10 +51,10 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
     private boolean backgroundAccessRequired = false;
 
     /**
-     * @param domFactory  for use by SVGAlphaComposite to build Elements
+     * @param generatorContext for use by SVGAlphaComposite to build Elements
      */
-    public SVGAlphaComposite(Document domFactory){
-        super(domFactory);
+    public SVGAlphaComposite(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
 
         //
         // Initialize map of AlphaComposite filter definitions
@@ -78,7 +78,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
     /**
      * @return set of all AlphaComposite filter definitions
      */
-    public Set getAlphaCompositeFilterSet(){
+    public Set getAlphaCompositeFilterSet() {
         return new HashSet(compositeDefsMap.values());
     }
 
@@ -86,7 +86,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
      * @return true if background access is required for any
      *         of the converted AlphaComposite rules
      */
-    public boolean requiresBackgroundAccess(){
+    public boolean requiresBackgroundAccess() {
         return backgroundAccessRequired;
     }
 
@@ -100,7 +100,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
      *         with the related definitions
      * @see org.apache.batik.svggen.SVGDescriptor
      */
-    public SVGDescriptor toSVG(GraphicContext gc){
+    public SVGDescriptor toSVG(GraphicContext gc) {
         return toSVG((AlphaComposite)gc.getComposite());
     }
 
@@ -109,7 +109,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
      * @return an SVGCompositeDescriptor that defines how to map the
      *         input composite in SVG
      */
-    public SVGCompositeDescriptor toSVG(AlphaComposite composite){
+    public SVGCompositeDescriptor toSVG(AlphaComposite composite) {
         SVGCompositeDescriptor compositeDesc =
             (SVGCompositeDescriptor)descMap.get(composite);
 
@@ -137,8 +137,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
                 filterAttrBuf.append(URL_SUFFIX);
 
                 filterValue = filterAttrBuf.toString();
-            }
-            else
+            } else
                 filterValue = SVG_NONE_VALUE;
 
             compositeDesc = new SVGCompositeDescriptor(opacityValue, filterValue,
@@ -147,7 +146,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
             descMap.put(composite, compositeDesc);
         }
 
-        if(composite.getRule() != AlphaComposite.SRC_OVER)
+        if (composite.getRule() != AlphaComposite.SRC_OVER)
             backgroundAccessRequired = true;
 
         return compositeDesc;
@@ -158,7 +157,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
      * @exception Error if an AlphaComposite with SRC_OVER rule in passed to
      *            this method.
      */
-    private Element compositeToSVG(AlphaComposite composite){
+    private Element compositeToSVG(AlphaComposite composite) {
         // operator is equivalent to rule
         String operator = null;
 
@@ -223,33 +222,48 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
             throw new Error();
         }
 
-        Element compositeFilter = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FILTER_TAG);
+        Element compositeFilter =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_FILTER_TAG);
         compositeFilter.setAttributeNS(null, ATTR_ID, id);
         compositeFilter.setAttributeNS(null, SVG_FILTER_UNITS_ATTRIBUTE,
                                      SVG_OBJECT_BOUNDING_BOX_VALUE);
         compositeFilter.setAttributeNS(null, SVG_X_ATTRIBUTE, VALUE_ZERO_PERCENT);
         compositeFilter.setAttributeNS(null, SVG_Y_ATTRIBUTE, VALUE_ZERO_PERCENT);
-        compositeFilter.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, VALUE_HUNDRED_PERCENT);
-        compositeFilter.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, VALUE_HUNDRED_PERCENT);
+        compositeFilter.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
+                                       VALUE_HUNDRED_PERCENT);
+        compositeFilter.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
+                                       VALUE_HUNDRED_PERCENT);
 
-        Element feComposite = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_COMPOSITE_TAG);
+        Element feComposite =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_FE_COMPOSITE_TAG);
         feComposite.setAttributeNS(null, SVG_OPERATOR_ATTRIBUTE, operator);
         feComposite.setAttributeNS(null, SVG_IN_ATTRIBUTE, input1);
         feComposite.setAttributeNS(null, SVG_IN2_ATTRIBUTE, input2);
         feComposite.setAttributeNS(null, SVG_K2_ATTRIBUTE, k2);
         feComposite.setAttributeNS(null, ATTR_RESULT, VALUE_COMPOSITE);
 
-        Element feFlood = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_FLOOD_TAG);
+        Element feFlood =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_FE_FLOOD_TAG);
         feFlood.setAttributeNS(null, SVG_FLOOD_COLOR_ATTRIBUTE, "white");
         feFlood.setAttributeNS(null, SVG_FLOOD_OPACITY_ATTRIBUTE, "1");
         feFlood.setAttributeNS(null, ATTR_RESULT, VALUE_FLOOD);
 
 
-        Element feMerge = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_MERGE_TAG);
-        Element feMergeNodeFlood = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_MERGE_NODE_TAG);
+        Element feMerge =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_FE_MERGE_TAG);
+        Element feMergeNodeFlood =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_FE_MERGE_NODE_TAG);
         feMergeNodeFlood.setAttributeNS(null, SVG_IN_ATTRIBUTE, VALUE_FLOOD);
-        Element feMergeNodeComposite = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_MERGE_NODE_TAG);
-        feMergeNodeComposite.setAttributeNS(null, SVG_IN_ATTRIBUTE, VALUE_COMPOSITE);
+        Element feMergeNodeComposite =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_FE_MERGE_NODE_TAG);
+        feMergeNodeComposite.setAttributeNS(null, SVG_IN_ATTRIBUTE,
+                                            VALUE_COMPOSITE);
 
         feMerge.appendChild(feMergeNodeFlood);
         feMerge.appendChild(feMergeNodeComposite);

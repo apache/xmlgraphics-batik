@@ -21,18 +21,18 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGEllipse extends SVGGraphicObjectConverter{
+public class SVGEllipse extends SVGGraphicObjectConverter {
     /**
-     * @param domFactory used to build Elements
+     * @param generatorContext used to build Elements
      */
-    public SVGEllipse(Document domFactory){
-        super(domFactory);
+    public SVGEllipse(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
      * @param ellipse the Ellipse2D object to be converted
      */
-    public Element toSVG(Ellipse2D ellipse){
+    public Element toSVG(Ellipse2D ellipse) {
         if(ellipse.getWidth() == ellipse.getHeight())
             return toSVGCircle(ellipse);
         else
@@ -43,12 +43,17 @@ public class SVGEllipse extends SVGGraphicObjectConverter{
      * @param ellipse the Ellipse2D object to be converted to a circle
      */
     private Element toSVGCircle(Ellipse2D ellipse){
-        Element svgCircle = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_CIRCLE_TAG);
+        Element svgCircle =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_CIRCLE_TAG);
         svgCircle.setAttributeNS(null, SVG_CX_ATTRIBUTE,
-                               doubleString(ellipse.getX() + ellipse.getWidth()/2));
+                                 doubleString(ellipse.getX() +
+                                              ellipse.getWidth()/2));
         svgCircle.setAttributeNS(null, SVG_CY_ATTRIBUTE,
-                               doubleString(ellipse.getY() + ellipse.getHeight()/2));
-        svgCircle.setAttributeNS(null, SVG_R_ATTRIBUTE, doubleString(ellipse.getWidth()/2));
+                                 doubleString(ellipse.getY() +
+                                              ellipse.getHeight()/2));
+        svgCircle.setAttributeNS(null, SVG_R_ATTRIBUTE,
+                                 doubleString(ellipse.getWidth()/2));
         return svgCircle;
     }
 
@@ -56,15 +61,19 @@ public class SVGEllipse extends SVGGraphicObjectConverter{
      * @param ellipse the Ellipse2D object to be converted to an ellipse
      */
     private Element toSVGEllipse(Ellipse2D ellipse){
-        Element svgCircle = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_ELLIPSE_TAG);
+        Element svgCircle =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_ELLIPSE_TAG);
         svgCircle.setAttributeNS(null, SVG_CX_ATTRIBUTE,
-                               doubleString(ellipse.getX() + ellipse.getWidth()/2));
+                               doubleString(ellipse.getX() +
+                                            ellipse.getWidth()/2));
         svgCircle.setAttributeNS(null, SVG_CY_ATTRIBUTE,
-                               doubleString(ellipse.getY() + ellipse.getHeight()/2));
+                               doubleString(ellipse.getY() +
+                                            ellipse.getHeight()/2));
         svgCircle.setAttributeNS(null, SVG_RX_ATTRIBUTE,
-                               doubleString(ellipse.getWidth()/2));
+                                 doubleString(ellipse.getWidth()/2));
         svgCircle.setAttributeNS(null, SVG_RY_ATTRIBUTE,
-                               doubleString(ellipse.getHeight()/2));
+                                 doubleString(ellipse.getHeight()/2));
         return svgCircle;
     }
 }

@@ -50,8 +50,9 @@ import org.apache.batik.ext.awt.g2d.TransformStackElement;
  * @version $Id$
  */
 public class DOMGroupManager implements SVGSyntax {
-    static final String ERROR_GC_NULL = "gc should not be null";
-    static final String ERROR_DOMTREEMANAGER_NULL = "domTreeManager should not be null";
+    private static final String ERROR_GC_NULL = "gc should not be null";
+    private static final String ERROR_DOMTREEMANAGER_NULL =
+        "domTreeManager should not be null";
 
     /**
      * Reference to the GraphicContext this manager will use to
@@ -103,14 +104,14 @@ public class DOMGroupManager implements SVGSyntax {
      */
     void recycleCurrentGroup(){
         // Create new initial current group node
-        currentGroup = domTreeManager.domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        currentGroup = domTreeManager.getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
     }
 
     /**
      * Add a node to the current group, if possible
      * @param element child Element to add to the group
      */
-    public void addElement(Element element){
+    public void addElement(Element element) {
         //
         // If this is the first child to be added to the
         // currentGroup, 'freeze' the style attributes.
@@ -119,46 +120,48 @@ public class DOMGroupManager implements SVGSyntax {
             currentGroup.appendChild(element);
 
             groupGC = domTreeManager.gcConverter.toSVG(gc);
-            SVGGraphicContext deltaGC = processDeltaGC(groupGC, domTreeManager.defaultGC);
+            SVGGraphicContext deltaGC = processDeltaGC(groupGC,
+                                                       domTreeManager.defaultGC);
             setAttributes(currentGroup, deltaGC.getGroupContext());
             setAttributes(element, deltaGC.getGraphicElementContext());
             setTransform(currentGroup, deltaGC.getTransformStack());
             domTreeManager.appendGroup(currentGroup, this);
-        }
-        else{
-            if(gc.isTransformStackValid()){
-                                //
-                                // There are children nodes already. Find
-                                // out delta between current gc and group
-                                // context
-                                //
+        } else {
+            if(gc.isTransformStackValid()) {
+                //
+                // There are children nodes already. Find
+                // out delta between current gc and group
+                // context
+                //
                 SVGGraphicContext elementGC = domTreeManager.gcConverter.toSVG(gc);
                 SVGGraphicContext deltaGC = processDeltaGC(elementGC, groupGC);
 
-                                // If there are less than the maximum number
-                                // of differences, then add the node to the current
-                                // group and set its attributes
+                // If there are less than the maximum number
+                // of differences, then add the node to the current
+                // group and set its attributes
                 trimContextForElement(deltaGC, element);
-                if(countOverrides(deltaGC) <= domTreeManager.maxGCOverrides){
+                if(countOverrides(deltaGC) <= domTreeManager.maxGCOverrides) {
                     currentGroup.appendChild(element);
                     setAttributes(element, deltaGC.getGroupContext());
                     setAttributes(element, deltaGC.getGraphicElementContext());
                     setTransform(element, deltaGC.getTransformStack());
-                }
-                else{
+                } else {
                     //
                     // Need to create a new current group
                     //
-                    currentGroup = domTreeManager.domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+                    currentGroup =
+                        domTreeManager.getDOMFactory().
+                        createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                     addElement(element);
                 }
-            }
-            else{
-                                //
-                                // Transform stack is invalid. Create a new current
-                                // group and validate the stack
-                                //
-                currentGroup = domTreeManager.domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+            } else {
+                //
+                // Transform stack is invalid. Create a new current
+                // group and validate the stack
+                //
+                currentGroup =
+                    domTreeManager.getDOMFactory().
+                    createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                 gc.validateTransformStack();
                 addElement(element);
             }
@@ -225,7 +228,8 @@ public class DOMGroupManager implements SVGSyntax {
      * in gc that are different from the values in referenceGc will be
      * present in the delta. Other values will no.
      */
-    private SVGGraphicContext processDeltaGC(SVGGraphicContext gc, SVGGraphicContext referenceGc){
+    private SVGGraphicContext processDeltaGC(SVGGraphicContext gc,
+                                             SVGGraphicContext referenceGc) {
         Map groupDelta = processDeltaMap(gc.getGroupContext(),
                                          referenceGc.getGroupContext());
         Map graphicElementDelta = gc.getGraphicElementContext();
@@ -233,7 +237,8 @@ public class DOMGroupManager implements SVGSyntax {
         TransformStackElement gcTransformStack[] = gc.getTransformStack();
         TransformStackElement referenceStack[] = referenceGc.getTransformStack();
         int deltaStackLength = gcTransformStack.length - referenceStack.length;
-        TransformStackElement deltaTransformStack[] = new TransformStackElement[deltaStackLength];
+        TransformStackElement deltaTransformStack[] =
+            new TransformStackElement[deltaStackLength];
 
         System.arraycopy(gcTransformStack, referenceStack.length, deltaTransformStack, 0, deltaStackLength);
 
@@ -275,7 +280,7 @@ public class DOMGroupManager implements SVGSyntax {
             String key = (String)iter.next();
             String value = (String)map.get(key);
             String refValue = (String)referenceMap.get(key);
-            if(!value.equals(refValue)){
+            if(!value.equals(refValue)) {
                                 /*if(key.equals(ATTR_TRANSFORM)){
                                   // Special handling for the transform attribute.
                                   // At this point in the processing, the transform

@@ -21,20 +21,21 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGLine extends SVGGraphicObjectConverter{
+public class SVGLine extends SVGGraphicObjectConverter {
     /**
-     * @param domFactory used to build Elements
+     * @param generatorContext used to build Elements
      */
-    public SVGLine(Document domFactory){
-        super(domFactory);
+    public SVGLine(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
      * @param line the Line2D object to be converted
      */
-    public Element toSVG(Line2D line){
-        Element svgLine = domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                     SVG_LINE_TAG);
+    public Element toSVG(Line2D line) {
+        Element svgLine =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_LINE_TAG);
         svgLine.setAttributeNS(null, ATTR_X1, doubleString(line.getX1()));
         svgLine.setAttributeNS(null, ATTR_Y1, doubleString(line.getY1()));
         svgLine.setAttributeNS(null, ATTR_X2, doubleString(line.getX2()));

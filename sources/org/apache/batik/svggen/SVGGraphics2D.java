@@ -52,14 +52,15 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @see                org.apache.batik.svggen.ExtensionHandler
  * @see                org.w3c.dom.Document
  */
-public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGSyntax{
+public class SVGGraphics2D extends AbstractGraphics2D
+    implements Cloneable, SVGSyntax {
     /*
      * Error messages
      */
-    public static final String ERROR_DOM_FACTORY_NULL = "domFactory should not be null";
-    public static final String ERROR_IMAGE_HANDLER_NULL = "imageHandler should not be null";
-    public static final String ERROR_EXTENSION_HANDLER_NULL = "extensionHandler should not be null";
-    public static final String ERROR_CANVAS_SIZE_NULL = "canvas size should not be null";
+    private static final String ERROR_CANVAS_SIZE_NULL =
+        "canvas size should not be null";
+    private static final String ERROR_CONTEXT_NULL =
+        "generatorContext should not be null";
 
     /*
      * Constants definitions
@@ -75,22 +76,6 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
      */
     public static final int DEFAULT_MAX_GC_OVERRIDES = 3;
 
-    /**
-     * Factory used by this Graphics2D to create Elements
-     * that make the SVG DOM Tree
-     */
-    private Document domFactory;
-
-    /**
-     * Handler that defines how images are referenced in the
-     * generated SVG fragment. This allows different strategies
-     * to be used to handle images.
-     * @see org.apache.batik.svggen.ImageHandler
-     * @see org.apache.batik.svggen.ImageHandlerBase64Encoder
-     * @see org.apache.batik.svggen.ImageHandlerPNGEncoder
-     * @see org.apache.batik.svggen.ImageHandlerJPEGEncoder
-     */
-    private ImageHandler imageHandler;
 
     /**
      * The DOMTreeManager manages the process of creating
@@ -113,6 +98,11 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
     private DOMGroupManager domGroupManager;
 
     /**
+     * Contains some information for SVG generation.
+     */
+    private SVGGeneratorContext generatorCtx;
+
+    /**
      * Used to convert Java 2D API Shape objects to equivalent SVG
      * elements
      */
@@ -121,7 +111,8 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
     /**
      * SVG Canvas size
      */
-    private Dimension svgCanvasSize = new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    private Dimension svgCanvasSize =
+        new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
     /**
      * Used to create proper font metrics
@@ -138,14 +129,14 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
     /**
      * @return SVG Canvas size, as set in the root svg element
      */
-    public Dimension getSVGCanvasSize(){
+    public final Dimension getSVGCanvasSize(){
         return svgCanvasSize;
     }
 
     /**
      * @param SVG Canvas size
      */
-    public void setSVGCanvasSize(Dimension svgCanvasSize){
+    public final void setSVGCanvasSize(Dimension svgCanvasSize){
         if(svgCanvasSize == null)
             throw new IllegalArgumentException(ERROR_CANVAS_SIZE_NULL);
 
@@ -153,9 +144,16 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
     }
 
     /**
+     * @return the SVGGeneratorContext used by this SVGGraphics2D instance.
+     */
+    public final SVGGeneratorContext getGeneratorContext() {
+        return generatorCtx;
+    }
+
+    /**
      * @return the DOMTreeManager used by this SVGGraphics2D instance
      */
-    public DOMTreeManager getDOMTreeManager(){
+    public final DOMTreeManager getDOMTreeManager(){
         return domTreeManager;
     }
 
@@ -163,32 +161,29 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
      * @return the Document used as a DOM object factory by this
      *         SVGGraphics2D instance
      */
-    public Document getDOMFactory(){
-        return domFactory;
+    public final Document getDOMFactory(){
+        return generatorCtx.domFactory;
     }
 
     /**
      * @return the ImageHandler used by this SVGGraphics2D instance
      */
-    public ImageHandler getImageHandler(){
-        return imageHandler;
+    public final ImageHandler getImageHandler(){
+        return generatorCtx.imageHandler;
     }
 
     /**
      * @return the extension handler used by this SVGGraphics2D instance
      */
-    public ExtensionHandler getExtensionHandler(){
-        return domTreeManager.extensionHandler;
+    public final ExtensionHandler getExtensionHandler(){
+        return generatorCtx.extensionHandler;
     }
 
     /**
      * @param new extension handler this SVGGraphics2D should use
      */
-    public void setExtensionHandler(ExtensionHandler extensionHandler){
-        if(extensionHandler==null)
-            throw new IllegalArgumentException(ERROR_EXTENSION_HANDLER_NULL);
-
-        domTreeManager.setExtensionHandler(extensionHandler);
+    public final void setExtensionHandler(ExtensionHandler extensionHandler) {
+        generatorCtx.setExtensionHandler(extensionHandler);
     }
 
     /**
@@ -196,8 +191,8 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
      *        this Graphics2D generates.
      * @exception IllegalArgumentException if domFactory is null.
      */
-    public SVGGraphics2D(Document domFactory){
-        this(domFactory, new ImageHandlerBase64Encoder(), new DefaultExtensionHandler(), false);
+    public SVGGraphics2D(Document domFactory) {
+        this(SVGGeneratorContext.createDefault(domFactory), false);
     }
 
     /**
@@ -215,30 +210,35 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
     public SVGGraphics2D(Document domFactory,
                          ImageHandler imageHandler,
                          ExtensionHandler extensionHandler,
-                         boolean textAsShapes){
+                         boolean textAsShapes) {
+        this(new SVGGeneratorContext(domFactory), textAsShapes);
+        generatorCtx.setImageHandler(imageHandler);
+        generatorCtx.setExtensionHandler(extensionHandler);
+    }
+
+    /**
+     * @param generatorContext the <code>SVGGeneratorContext</code> instance
+     * that will provide all useful information to the generator.
+     * @param textAsShapes if true, all text is turned into SVG shapes in the
+     *        convertion. No SVG text is output.
+     */
+    public SVGGraphics2D(SVGGeneratorContext generatorCtx,
+                         boolean textAsShapes) {
         super(textAsShapes);
 
-        if(domFactory==null)
-            throw new IllegalArgumentException(ERROR_DOM_FACTORY_NULL);
+        if (generatorCtx == null)
+            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
 
-        if(imageHandler==null)
-            throw new IllegalArgumentException(ERROR_IMAGE_HANDLER_NULL);
+        this.generatorCtx = generatorCtx;
 
-        if(extensionHandler==null)
-            throw new IllegalArgumentException(ERROR_EXTENSION_HANDLER_NULL);
-
-        this.domFactory = domFactory;
-        this.imageHandler = imageHandler;
         this.gc = new GraphicContext(new AffineTransform());
-        this.shapeConverter = new SVGShape(domFactory);
+        this.shapeConverter = new SVGShape(generatorCtx);
         this.domTreeManager = new DOMTreeManager(gc,
-                                                 domFactory,
-                                                 extensionHandler,
-                                                 imageHandler,
+                                                 generatorCtx,
                                                  DEFAULT_MAX_GC_OVERRIDES);
         this.domGroupManager = new DOMGroupManager(this.gc, this.domTreeManager);
         this.domTreeManager.addGroupManager(this.domGroupManager);
-        this.textAsShapes = textAsShapes;
+
     }
 
     /**
@@ -246,10 +246,9 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
      *
      * @see #create
      */
-    public SVGGraphics2D(SVGGraphics2D g){
+    public SVGGraphics2D(SVGGraphics2D g) {
         super(g);
-        this.domFactory = g.domFactory;
-        this.imageHandler = g.imageHandler;
+        this.generatorCtx = g.generatorCtx;
         this.gc.validateTransformStack();
         this.shapeConverter = g.shapeConverter;
         this.domTreeManager = g.domTreeManager;
@@ -268,11 +267,13 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
     /**
      * @param svgFileName name of the file where SVG content
      *        should be written
-     * @param useCss defines whether the output SVG should use CSS style properties
-     *               as opposed to plain attributes.
+     * @param useCss defines whether the output SVG should use CSS style
+     * properties as opposed to plain attributes.
      */
     public void stream(String svgFileName, boolean useCss) throws IOException {
-        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(svgFileName), DEFAULT_XML_ENCODING);
+        OutputStreamWriter writer =
+            new OutputStreamWriter(new FileOutputStream(svgFileName),
+                                   DEFAULT_XML_ENCODING);
         stream(writer, useCss);
         writer.flush();
         writer.close();
@@ -287,8 +288,8 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
 
     /**
      * @param writer used to writer out the SVG content
-     * @param useCss defines whether the output SVG should use CSS style properties
-     *               as opposed to plain attributes.
+     * @param useCss defines whether the output SVG should use CSS
+     * style properties as opposed to plain attributes.
      */
     public void stream(Writer writer, boolean useCss) throws IOException {
         Element svgRoot = getRoot();
@@ -305,12 +306,14 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
     /**
      * @param svgRoot root element to stream out
      * @param writer output
-     * @param useCss defines whether the output SVG should use CSS style properties
-     *               as opposed to plain attributes.
+     * @param useCss defines whether the output SVG should use CSS style
+     * properties as opposed to plain attributes.
      */
-    public void stream(Element svgRoot, Writer writer, boolean useCss) throws IOException{
+    public void stream(Element svgRoot, Writer writer, boolean useCss)
+        throws IOException {
         PrintWriter out = new PrintWriter(writer);
-        DocumentFragment svgDocument = svgRoot.getOwnerDocument().createDocumentFragment();
+        DocumentFragment svgDocument =
+            svgRoot.getOwnerDocument().createDocumentFragment();
         svgDocument.appendChild(svgRoot);
 
         /*if(useCss){
@@ -379,8 +382,10 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
     public Element getRoot(){
         Element svgRoot = domTreeManager.getRoot();
         if(svgCanvasSize != null){
-            svgRoot.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "" + svgCanvasSize.width);
-            svgRoot.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "" + svgCanvasSize.height);
+            svgRoot.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
+                                   "" + svgCanvasSize.width);
+            svgRoot.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
+                                   "" + svgCanvasSize.height);
         }
         return svgRoot;
     }
@@ -477,14 +482,15 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
      */
     public boolean drawImage(Image img, int x, int y,
                              ImageObserver observer){
-        Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
+        Element imageElement =
+            getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
         imageElement.setAttributeNS(null, SVG_X_ATTRIBUTE, Integer.toString(x));
         imageElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, Integer.toString(y));
         imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
                                   Integer.toString(img.getWidth(null)));
         imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
                                   Integer.toString(img.getHeight(null)));
-        imageHandler.handleImage(img, imageElement);
+        getImageHandler().handleImage(img, imageElement);
         domGroupManager.addElement(imageElement);
         return true;
     }
@@ -526,12 +532,15 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
     public boolean drawImage(Image img, int x, int y,
                              int width, int height,
                              ImageObserver observer){
-        Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-        imageHandler.handleImage(img, imageElement);
+        Element imageElement =
+            getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
+        getImageHandler().handleImage(img, imageElement);
         imageElement.setAttributeNS(null, SVG_X_ATTRIBUTE, Integer.toString(x));
         imageElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, Integer.toString(y));
-        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, Integer.toString(width));
-        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, Integer.toString(height));
+        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
+                                    Integer.toString(width));
+        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
+                                    Integer.toString(height));
         domGroupManager.addElement(imageElement);
         return true;
     }
@@ -713,7 +722,8 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
                     gc.transform(inverseTransform);
                 }
                 else{
-                    AffineTransform savTransform = new AffineTransform(gc.getTransform());
+                    AffineTransform savTransform =
+                    new AffineTransform(gc.getTransform());
                     gc.transform(transform);
                     drawImage(img, x, y, null);
                     gc.setTransform(savTransform);
@@ -727,25 +737,31 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
                 //
                 // Try and convert to an SVG filter
                 //
-                SVGFilterDescriptor filterDesc = domTreeManager.getFilterConverter().toSVG(op, null);
+                SVGFilterDescriptor filterDesc =
+                domTreeManager.getFilterConverter().toSVG(op, null);
                 if(filterDesc != null){
-                    //
-                    // Because other filters may be needed to represent the
-                    // composite that applies to this image, a group is created that
-                    // contains the image element.
-                    //
-                    Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-                    imageHandler.handleImage((Image)img, imageElement);
-                    imageElement.setAttributeNS(null, SVG_X_ATTRIBUTE, Integer.toString(x));
-                    imageElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, Integer.toString(y));
-                    imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                                Integer.toString(img.getWidth(null)));
-                    imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                                                Integer.toString(img.getHeight(null)));
-                    imageElement.setAttributeNS(null, SVG_FILTER_ATTRIBUTE,
-                                                filterDesc.getFilterValue());
-                    Element imageGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-                    imageGroup.appendChild(imageElement);
+                //
+                // Because other filters may be needed to represent the
+                // composite that applies to this image, a group is created that
+                // contains the image element.
+                //
+                Element imageElement =
+                getDOMFactory().
+                createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
+                getImageHandler().handleImage((Image)img, imageElement);
+                imageElement.setAttributeNS(null, SVG_X_ATTRIBUTE,
+                Integer.toString(x));
+                imageElement.setAttributeNS(null, SVG_Y_ATTRIBUTE,
+                Integer.toString(y));
+                imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
+                Integer.toString(img.getWidth(null)));
+                imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
+                Integer.toString(img.getHeight(null)));
+                imageElement.setAttributeNS(null, SVG_FILTER_ATTRIBUTE,
+                filterDesc.getFilterValue());
+                Element imageGroup = generatorCtx.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                SVG_G_TAG);
+                imageGroup.appendChild(imageElement);
 
                     domGroupManager.addElement(imageGroup);
                 }
@@ -764,8 +780,8 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
             // Input image is not sRGB non premultiplied.
             // Do not try conversion: apply filter and paint
             //
-            img = op.filter(img, null);
-            drawImage(img, x, y, null);
+        img = op.filter(img, null);
+        drawImage(img, x, y, null);
             // }
     }
 
@@ -791,13 +807,18 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
      * @see #setClip
      */
     public void drawRenderedImage(RenderedImage img,
-                                  AffineTransform xform){
-        Element image = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-        imageHandler.handleImage(img, image);
-        image.setAttributeNS(null, SVG_X_ATTRIBUTE, Integer.toString(img.getMinX()));
-        image.setAttributeNS(null, SVG_Y_ATTRIBUTE, Integer.toString(img.getMinY()));
-        image.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, Integer.toString(img.getWidth()));
-        image.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, Integer.toString(img.getHeight()));
+                                  AffineTransform xform) {
+        Element image =
+            getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
+        getImageHandler().handleImage(img, image);
+        image.setAttributeNS(null, SVG_X_ATTRIBUTE,
+                             Integer.toString(img.getMinX()));
+        image.setAttributeNS(null, SVG_Y_ATTRIBUTE,
+                             Integer.toString(img.getMinY()));
+        image.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
+                             Integer.toString(img.getWidth()));
+        image.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
+                             Integer.toString(img.getHeight()));
 
         AffineTransform finalTransform = null;
         if(xform.getDeterminant() != 0){
@@ -842,7 +863,7 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
      * are used is required, then a <code>RenderedImage</code> should be
      * obtained directly from the <code>RenderableImage</code>
      * and rendered using
-     *{@link #drawRenderedImage(RenderedImage, AffineTransform) drawRenderedImage}.
+     *{@link #drawRenderedImage(RenderedImage, AffineTransform)}.
      * @param img the image to be rendered
      * @param xform the transformation from image space into user space
      * @see #transform
@@ -854,8 +875,9 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
      */
     public void drawRenderableImage(RenderableImage img,
                                     AffineTransform xform){
-        Element image = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-        imageHandler.handleImage(img, image);
+        Element image = getDOMFactory().createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_IMAGE_TAG);
+        getImageHandler().handleImage(img, image);
         image.setAttributeNS(null, SVG_X_ATTRIBUTE,
                            AbstractSVGConverter.doubleString(img.getMinX()));
         image.setAttributeNS(null, SVG_Y_ATTRIBUTE,
@@ -908,17 +930,20 @@ public class SVGGraphics2D extends AbstractGraphics2D implements Cloneable, SVGS
      * @see #setComposite
      * @see #setClip
      */
-    public void drawString(String s, float x, float y){
-        if(textAsShapes == false){
-            Element text = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_TEXT_TAG);
-            text.setAttributeNS(null, SVG_X_ATTRIBUTE, AbstractSVGConverter.doubleString(x));
-            text.setAttributeNS(null, SVG_Y_ATTRIBUTE, AbstractSVGConverter.doubleString(y));
+    public void drawString(String s, float x, float y) {
+        if (!textAsShapes) {
+            Element text =
+                getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_TEXT_TAG);
+            text.setAttributeNS(null, SVG_X_ATTRIBUTE,
+                                AbstractSVGConverter.doubleString(x));
+            text.setAttributeNS(null, SVG_Y_ATTRIBUTE,
+                                AbstractSVGConverter.doubleString(y));
             text.setAttributeNS(null, ATTR_STROKE, SVG_NONE_VALUE);
-            text.appendChild(domFactory.createTextNode(s));
+            text.appendChild(getDOMFactory().createTextNode(s));
             domGroupManager.addElement(text);
-        }
-        else{
-            GlyphVector gv = getFont().createGlyphVector(getFontRenderContext(), s);
+        } else {
+            GlyphVector gv = getFont().
+                createGlyphVector(getFontRenderContext(), s);
             drawGlyphVector(gv, x, y);
         }
     }

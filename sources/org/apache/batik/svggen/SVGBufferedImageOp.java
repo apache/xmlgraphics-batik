@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
  * @see                org.apache.batik.svggen.SVGRescaleOp
  * @see                org.apache.batik.svggen.SVGConvolveOp
  */
-public class SVGBufferedImageOp extends AbstractSVGFilterConverter{
+public class SVGBufferedImageOp extends AbstractSVGFilterConverter {
     /**
      * All LookupOp convertion is handed to svgLookupOp
      */
@@ -48,31 +48,24 @@ public class SVGBufferedImageOp extends AbstractSVGFilterConverter{
     private SVGConvolveOp svgConvolveOp;
 
     /**
-     * All custom BufferedImageOp convertion is handed to svgCustomBufferedImageOp
+     * All custom BufferedImageOp convertion is handed to '
+     * svgCustomBufferedImageOp.
      */
     private SVGCustomBufferedImageOp svgCustomBufferedImageOp;
 
     /**
-     * @param domFactory used by the converter to create Element and other
-     *        needed DOM objects
-     * @param extensionHandler can be invoked to handle unknown BufferedImageOp
+     * @param generatorContext used by the converter to create Element and other
+     *        needed DOM objects and to handle unknown BufferedImageOp
      *        implementations.
      */
-    public SVGBufferedImageOp(Document domFactory, ExtensionHandler extensionHandler){
-        super(domFactory);
-        this.svgLookupOp = new SVGLookupOp(domFactory);
-        this.svgRescaleOp = new SVGRescaleOp(domFactory);
-        this.svgConvolveOp = new SVGConvolveOp(domFactory);
-        this.svgCustomBufferedImageOp = new SVGCustomBufferedImageOp(domFactory, extensionHandler);
+    public SVGBufferedImageOp(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
+        this.svgLookupOp = new SVGLookupOp(generatorContext);
+        this.svgRescaleOp = new SVGRescaleOp(generatorContext);
+        this.svgConvolveOp = new SVGConvolveOp(generatorContext);
+        this.svgCustomBufferedImageOp =
+            new SVGCustomBufferedImageOp(generatorContext);
     }
-
-    /**
-     * @param new extension handler this object should use
-     */
-    void setExtensionHandler(ExtensionHandler extensionHandler){
-        this.svgCustomBufferedImageOp = new SVGCustomBufferedImageOp(domFactory, extensionHandler);
-    }
-
 
     /**
      * @return Set of filter Elements defining the BufferedImageOp this
@@ -112,7 +105,8 @@ public class SVGBufferedImageOp extends AbstractSVGFilterConverter{
      */
     public SVGFilterDescriptor toSVG(BufferedImageOp op,
                                      Rectangle filterRect){
-        SVGFilterDescriptor filterDesc = svgCustomBufferedImageOp.toSVG(op, filterRect);
+        SVGFilterDescriptor filterDesc =
+            svgCustomBufferedImageOp.toSVG(op, filterRect);
 
         if(filterDesc == null){
             if(op instanceof LookupOp)

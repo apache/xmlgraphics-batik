@@ -27,7 +27,7 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGClip extends AbstractSVGConverter{
+public class SVGClip extends AbstractSVGConverter {
     /**
      * Descriptor to use where there is no clip on an element
      */
@@ -40,11 +40,11 @@ public class SVGClip extends AbstractSVGConverter{
     private SVGShape shapeConverter;
 
     /**
-     * @param domFactory used to build Elements
+     * @param generatorContext used to build Elements
      */
-    public SVGClip(Document domFactory){
-        super(domFactory);
-        this.shapeConverter = new SVGShape(domFactory);
+    public SVGClip(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
+        this.shapeConverter = new SVGShape(generatorContext);
     }
 
     /**
@@ -56,7 +56,7 @@ public class SVGClip extends AbstractSVGConverter{
      *         with the related definitions
      * @see org.apache.batik.svggen.SVGDescriptor
      */
-    public SVGDescriptor toSVG(GraphicContext gc){
+    public SVGDescriptor toSVG(GraphicContext gc) {
         Shape userClip = gc.getClip();
         return toSVG(userClip);
     }
@@ -67,10 +67,10 @@ public class SVGClip extends AbstractSVGConverter{
      *         new clipPath element definition may have been
      *         added to clipDefsMap.
      */
-    public SVGClipDescriptor toSVG(Shape clip){
+    public SVGClipDescriptor toSVG(Shape clip) {
         SVGClipDescriptor clipDesc = null;
 
-        if(clip != null){
+        if (clip != null) {
             StringBuffer clipPathAttrBuf = new StringBuffer(URL_PREFIX);
 
             // First, convert to a GeneralPath so that the
@@ -80,7 +80,7 @@ public class SVGClip extends AbstractSVGConverter{
             ClipKey clipKey = new ClipKey(clipPath);
             clipDesc = (SVGClipDescriptor)descMap.get(clipKey);
 
-            if(clipDesc == null){
+            if (clipDesc == null) {
                 Element clipDef = clipToSVG(clip);
                 clipPathAttrBuf.append(SIGN_POUND);
                 clipPathAttrBuf.append(clipDef.getAttributeNS(null, ATTR_ID));
@@ -92,8 +92,7 @@ public class SVGClip extends AbstractSVGConverter{
                 descMap.put(clipKey, clipDesc);
                 defSet.add(clipDef);
             }
-        }
-        else
+        } else
             clipDesc = NO_CLIP;
 
         return clipDesc;
@@ -106,10 +105,16 @@ public class SVGClip extends AbstractSVGConverter{
      * @param clip path to convert to an SVG clipPath
      *        element
      */
-    private Element clipToSVG(Shape clip){
-        Element clipDef = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_CLIP_PATH_TAG);
-        clipDef.setAttributeNS(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE, SVG_USER_SPACE_ON_USE_VALUE);
-        clipDef.setAttributeNS(null, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_CLIP_PATH));
+    private Element clipToSVG(Shape clip) {
+        Element clipDef =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_CLIP_PATH_TAG);
+        clipDef.setAttributeNS(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE,
+                               SVG_USER_SPACE_ON_USE_VALUE);
+
+        clipDef.setAttributeNS(null, ATTR_ID,
+                               generatorContext.
+                               idGenerator.generateID(ID_PREFIX_CLIP_PATH));
 
         Element clipPath = shapeConverter.toSVG(clip);
         clipDef.appendChild(clipPath);

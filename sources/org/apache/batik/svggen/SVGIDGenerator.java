@@ -14,11 +14,15 @@ import java.util.Hashtable;
 /**
  * Generates id for an arbitrary number of prefix
  *
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class SVGIDGenerator {
-    private static Map prefixMap = new Hashtable();
+    private Map prefixMap = new Hashtable();
+
+    public void SVGIDGenerator() {
+    }
 
     /**
      * Generates an id for the given prefix. This class keeps
@@ -28,9 +32,9 @@ public class SVGIDGenerator {
      *               be generated.
      * @return a value of the form <prefix><n>
      */
-    public static String generateID(String prefix){
+    public String generateID(String prefix) {
         Integer maxId = (Integer)prefixMap.get(prefix);
-        if(maxId == null){
+        if (maxId == null) {
             maxId = new Integer(0);
             prefixMap.put(prefix, maxId);
         }

@@ -30,52 +30,50 @@ import org.w3c.dom.Element;
  * @version $Id$
  * @see                org.apache.batik.svggen.SVGBufferedImageOp
  */
-public class SVGLookupOp extends AbstractSVGFilterConverter{
-    public static final String ERROR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP =
+public class SVGLookupOp extends AbstractSVGFilterConverter {
+    private static final String ERROR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP =
         "BufferedImage LookupOp should have 1, 3 or 4 lookup arrays";
 
-        /**
-         * Gamma for linear to sRGB convertion
-         */
-        private static final double GAMMA = 1./2.4;
+    /**
+     * Gamma for linear to sRGB convertion
+     */
+    private static final double GAMMA = 1./2.4;
 
-        /**
-         * Lookup table for linear to sRGB value
+    /**
+     * Lookup table for linear to sRGB value
      * forward and backward mapping
-         */
-        private static final int linearToSRGBLut[] = new int[256];
-        private static final int sRGBToLinear[] = new int[256];
+     */
+    private static final int linearToSRGBLut[] = new int[256];
+    private static final int sRGBToLinear[] = new int[256];
 
-        static{
-                for(int i=0; i<256; i++){
+    static {
+        for(int i=0; i<256; i++) {
             // linear to sRGB
-                        float value = i/255f;
-                        if(value <= 0.0031308){
-                                value *= 12.92f;
+            float value = i/255f;
+            if (value <= 0.0031308) {
+                value *= 12.92f;
+            } else {
+                value = 1.055f * ((float) Math.pow(value, GAMMA)) - 0.055f;
             }
-                        else{
-                                value = 1.055f * ((float) Math.pow(value, GAMMA)) - 0.055f;
-            }
-                        linearToSRGBLut[i] = Math.round(value*255);
+            linearToSRGBLut[i] = Math.round(value*255);
 
             // sRGB to linear
             value = i/255f;
             if(value <= 0.04045){
                 value /= 12.92f;
-            }
-            else{
+            } else {
                 value = (float)Math.pow((value + 0.055f)/1.055f, 1/GAMMA);
             }
 
-                        sRGBToLinear[i] = Math.round(value*255);
-                }
+            sRGBToLinear[i] = Math.round(value*255);
         }
+    }
 
     /**
-     * @param domFactory used to build Elements
+     * @param generatorContext used to build Elements
      */
-    public SVGLookupOp(Document domFactory){
-        super(domFactory);
+    public SVGLookupOp(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
@@ -91,8 +89,8 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
      * @see org.apache.batik.svggen.SVGFilterDescriptor
      */
     public SVGFilterDescriptor toSVG(BufferedImageOp filter,
-                                     Rectangle filterRect){
-        if(filter instanceof LookupOp)
+                                     Rectangle filterRect) {
+        if (filter instanceof LookupOp)
             return toSVG((LookupOp)filter);
         else
             return null;
@@ -106,16 +104,21 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
      */
     public SVGFilterDescriptor toSVG(LookupOp lookupOp) {
         // Reuse definition if lookupOp has already been converted
-        SVGFilterDescriptor filterDesc = (SVGFilterDescriptor)descMap.get(lookupOp);
+        SVGFilterDescriptor filterDesc =
+            (SVGFilterDescriptor)descMap.get(lookupOp);
 
-        if(filterDesc == null){
+        Document domFactory = generatorContext.domFactory;
+
+        if (filterDesc == null) {
             //
             // First time filter is converted: create its corresponding
             // SVG filter
             //
-            Element filterDef = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FILTER_TAG);
+            Element filterDef = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                           SVG_FILTER_TAG);
             Element feComponentTransferDef =
-                domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_COMPONENT_TRANSFER_TAG);
+                domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                           SVG_FE_COMPONENT_TRANSFER_TAG);
 
             // Append transfer function for each component, setting
             // the attributes corresponding to the scale and offset.
@@ -129,9 +132,12 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
             //   Red, Green, Blue and Alpha components
             String lookupTables[] = convertLookupTables(lookupOp);
 
-            Element feFuncR = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_FUNC_R_TAG);
-            Element feFuncG = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_FUNC_G_TAG);
-            Element feFuncB = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_FUNC_B_TAG);
+            Element feFuncR = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                         SVG_FE_FUNC_R_TAG);
+            Element feFuncG = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                         SVG_FE_FUNC_G_TAG);
+            Element feFuncB = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                         SVG_FE_FUNC_B_TAG);
             Element feFuncA = null;
             String type = VALUE_TYPE_TABLE;
 
@@ -139,22 +145,30 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
                 feFuncR.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
                 feFuncG.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
                 feFuncB.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
-                feFuncR.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
-                feFuncG.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
-                feFuncB.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
+                feFuncR.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE,
+                                       lookupTables[0]);
+                feFuncG.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE,
+                                       lookupTables[0]);
+                feFuncB.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE,
+                                       lookupTables[0]);
             }
             else if(lookupTables.length >= 3){
                 feFuncR.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
                 feFuncG.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
                 feFuncB.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
-                feFuncR.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
-                feFuncG.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[1]);
-                feFuncB.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[2]);
+                feFuncR.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE,
+                                       lookupTables[0]);
+                feFuncG.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE,
+                                       lookupTables[1]);
+                feFuncB.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE,
+                                       lookupTables[2]);
 
                 if(lookupTables.length == 4){
-                    feFuncA = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_FUNC_A_TAG);
+                    feFuncA = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                         SVG_FE_FUNC_A_TAG);
                     feFuncA.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
-                    feFuncA.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[3]);
+                    feFuncA.setAttributeNS(null, SVG_TABLE_VALUES_ATTRIBUTE,
+                                           lookupTables[3]);
                 }
             }
 
@@ -165,8 +179,11 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
                 feComponentTransferDef.appendChild(feFuncA);
 
             filterDef.appendChild(feComponentTransferDef);
-            filterDef.setAttributeNS(null, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_FE_COMPONENT_TRANSFER));
 
+            filterDef.
+                setAttributeNS(null, ATTR_ID,
+                               generatorContext.idGenerator.
+                               generateID(ID_PREFIX_FE_COMPONENT_TRANSFER));
             //
             // Create a filter descriptor
             //
@@ -177,7 +194,8 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
             filterAttrBuf.append(filterDef.getAttributeNS(null, ATTR_ID));
             filterAttrBuf.append(URL_SUFFIX);
 
-            filterDesc = new SVGFilterDescriptor(filterAttrBuf.toString(), filterDef);
+            filterDesc = new SVGFilterDescriptor(filterAttrBuf.toString(),
+                                                 filterDef);
 
             defSet.add(filterDef);
             descMap.put(lookupOp, filterDesc);
@@ -263,8 +281,8 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
 
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
-                    // lookupTableBuf[j].append(Integer.toString(0xff & dest[j]));
-                    lookupTableBuf[j].append(doubleString((0xff & dest[j])/255., 1000));
+                    lookupTableBuf[j].append(doubleString((0xff & dest[j])/255.,
+                                                          1000));
                     lookupTableBuf[j].append(SPACE);
                 }
             }

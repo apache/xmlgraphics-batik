@@ -34,12 +34,15 @@ import org.apache.batik.ext.awt.RenderingHintsKeyExt;
  * @see             org.apache.batik.svggen.ImageHandlerJPEGEncoder
  * @see             org.apache.batik.svggen.ImageHandlerPNGEncoder
  */
-public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler{
-    static final String ERROR_NULL_INPUT = "imageDir should not be null";
-    static final String ERROR_IMAGE_DIR_DOES_NOT_EXIST = "imageDir does not exist";
-    static final String ERROR_CANNOT_USE_IMAGE_DIR_AS_URL = "cannot convert imageDir to a URL value : ";
+public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
+    private static final String ERROR_NULL_INPUT =
+        "imageDir should not be null";
+    private static final String ERROR_IMAGE_DIR_DOES_NOT_EXIST =
+        "imageDir does not exist";
+    private static final String ERROR_CANNOT_USE_IMAGE_DIR_AS_URL =
+        "cannot convert imageDir to a URL value : ";
 
-    static final AffineTransform IDENTITY = new AffineTransform();
+    private static final AffineTransform IDENTITY = new AffineTransform();
 
     /**
      * Directory where all images are placed
@@ -52,27 +55,30 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler{
     private String urlRoot = "";
 
     /**
+     * @param generatorContext the context in which the handler will work.
      * @param imageDir directory where this handler should generate images.
      *        If null, an IllegalArgumentException is thrown.
      * @param urlRoot root for the urls that point to images created by this
      *        image handler. If null, then the url corresponding to imageDir
      *        is used.
      */
-    public AbstractImageHandlerEncoder(String imageDir, String urlRoot){
-        if(imageDir == null)
+    public AbstractImageHandlerEncoder(SVGGeneratorContext generatorContext,
+                                       String imageDir, String urlRoot) {
+        super(generatorContext);
+        if (imageDir == null)
             throw new IllegalArgumentException(ERROR_NULL_INPUT);
 
         File imageDirFile = new File(imageDir);
-        if(!imageDirFile.exists())
+        if (!imageDirFile.exists())
             throw new IllegalArgumentException(ERROR_IMAGE_DIR_DOES_NOT_EXIST);
 
         this.imageDir = imageDir;
-        if(urlRoot != null)
+        if (urlRoot != null)
             this.urlRoot = urlRoot;
-        else{
+        else {
             try{
                 this.urlRoot = imageDirFile.toURL().toString();
-            }catch(MalformedURLException e){
+            } catch(MalformedURLException e) {
                 throw new IllegalArgumentException(ERROR_CANNOT_USE_IMAGE_DIR_AS_URL + e.getMessage());
             }
         }
@@ -84,7 +90,8 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler{
      */
     protected void handleHREF(Image image, Element imageElement){
         // Create an buffered image where the image will be drawn
-        Dimension size = new Dimension(image.getWidth(null), image.getHeight(null));
+        Dimension size = new Dimension(image.getWidth(null),
+                                       image.getHeight(null));
         BufferedImage buf = buildBufferedImage(size);
 
         java.awt.Graphics2D g = buf.createGraphics();
@@ -143,16 +150,16 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler{
         saveBufferedImageToFile(imageElement, buf);
     }
 
-    private void saveBufferedImageToFile(Element imageElement, BufferedImage buf){
+    private void saveBufferedImageToFile(Element imageElement, BufferedImage buf) {
         // Create a new file in image directory
         File imageFile = null;
 
         // While the files we are generating exist, try to create another
         // id that is unique.
-        while(imageFile == null){
-            String fileId = SVGIDGenerator.generateID(getPrefix());
+        while (imageFile == null) {
+            String fileId = generatorContext.idGenerator.generateID(getPrefix());
             imageFile = new File(imageDir, fileId + getSuffix());
-            if(imageFile.exists())
+            if (imageFile.exists())
                 imageFile = null;
         }
 
@@ -160,16 +167,20 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler{
         encodeImage(buf, imageFile);
 
         // Update HREF
-        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, ATTR_XLINK_HREF, urlRoot + "/" + imageFile.getName());
+        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
+                                    ATTR_XLINK_HREF, urlRoot + "/" +
+                                    imageFile.getName());
     }
 
     /**
-     * @return the suffix used by this encoder. E.g., ".jpg" for ImageHandlerJPEGEncoder
+     * @return the suffix used by this encoder. E.g., ".jpg" for
+     * ImageHandlerJPEGEncoder
      */
     public abstract String getSuffix();
 
     /**
-     * @return the prefix used by this encoder. E.g., "jpegImage" for ImageHandlerJPEGEncoder
+     * @return the prefix used by this encoder. E.g., "jpegImage" for
+     * ImageHandlerJPEGEncoder
      */
     public abstract String getPrefix();
 

@@ -14,7 +14,7 @@ import java.util.Set;
 
 /**
  * Defines the interface for classes that are able to convert
- * a BufferedImageOp filter
+ * a BufferedImageOp filter.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$

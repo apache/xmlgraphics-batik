@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @see             org.apache.batik.svggen.ImageHandlerJPEGEncoder
  * @see             org.apache.batik.svggen.ImageHandlerPNGEncoder
  */
-public class ImageHandlerPNGEncoder extends AbstractImageHandlerEncoder{
+public class ImageHandlerPNGEncoder extends AbstractImageHandlerEncoder {
     /**
      * @param imageDir directory where this handler should generate images.
      *        If null, an IllegalArgumentException is thrown.
@@ -40,19 +40,22 @@ public class ImageHandlerPNGEncoder extends AbstractImageHandlerEncoder{
      *        image handler. If null, then the url corresponding to imageDir
      *        is used.
      */
-    public ImageHandlerPNGEncoder(String imageDir, String urlRoot){
-        super(imageDir, urlRoot);
+    public ImageHandlerPNGEncoder(SVGGeneratorContext generatorContext,
+                                  String imageDir, String urlRoot) {
+        super(generatorContext, imageDir, urlRoot);
     }
 
     /**
-     * @return the suffix used by this encoder. E.g., ".png" for ImageHandlerPNGEncoder
+     * @return the suffix used by this encoder. E.g., ".png" for
+     * ImageHandlerPNGEncoder.
      */
     public final String getSuffix(){
         return ".png";
     }
 
     /**
-     * @return the prefix used by this encoder. E.g., "pngImage" for ImageHandlerPNGEncoder
+     * @return the prefix used by this encoder. E.g., "pngImage" for
+     * ImageHandlerPNGEncoder.
      */
     public final String getPrefix(){
         return "pngImage";
@@ -79,6 +82,7 @@ public class ImageHandlerPNGEncoder extends AbstractImageHandlerEncoder{
      * supported by PNG.
      */
     public BufferedImage buildBufferedImage(Dimension size){
-        return new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+        return new BufferedImage(size.width, size.height,
+                                 BufferedImage.TYPE_INT_ARGB);
     }
 }

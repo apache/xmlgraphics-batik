@@ -27,12 +27,12 @@ import org.w3c.dom.Element;
  * @version $Id$
  * @see                org.apache.batik.svggen.SVGBufferedImageOp
  */
-public class SVGConvolveOp extends AbstractSVGFilterConverter{
+public class SVGConvolveOp extends AbstractSVGFilterConverter {
     /**
-     * @param domFactory used to build Elements
+     * @param generatorContext used to build Elements
      */
-    public SVGConvolveOp(Document domFactory){
-        super(domFactory);
+    public SVGConvolveOp(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
@@ -63,17 +63,21 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
      */
     public SVGFilterDescriptor toSVG(ConvolveOp convolveOp){
         // Reuse definition if convolveOp has already been converted
-        SVGFilterDescriptor filterDesc = (SVGFilterDescriptor)descMap.get(convolveOp);
+        SVGFilterDescriptor filterDesc =
+            (SVGFilterDescriptor)descMap.get(convolveOp);
+        Document domFactory = generatorContext.domFactory;
 
-        if(filterDesc == null){
+        if (filterDesc == null) {
             //
             // First time filter is converted: create its corresponding
             // SVG filter
             //
             Kernel kernel = convolveOp.getKernel();
-            Element filterDef = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FILTER_TAG);
+            Element filterDef =
+                domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FILTER_TAG);
             Element feConvolveMatrixDef =
-                domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_FE_CONVOLVE_MATRIX_TAG);
+                domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                           SVG_FE_CONVOLVE_MATRIX_TAG);
 
             // Convert the kernel size
             feConvolveMatrixDef.setAttributeNS(null, SVG_ORDER_ATTRIBUTE,
@@ -88,11 +92,15 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
                 kernelMatrixBuf.append(SPACE);
             }
 
-            feConvolveMatrixDef.setAttributeNS(null, SVG_KERNEL_MATRIX_ATTRIBUTE,
-                                             kernelMatrixBuf.toString().trim());
+            feConvolveMatrixDef.
+                setAttributeNS(null, SVG_KERNEL_MATRIX_ATTRIBUTE,
+                               kernelMatrixBuf.toString().trim());
 
             filterDef.appendChild(feConvolveMatrixDef);
-            filterDef.setAttributeNS(null, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_FE_CONVOLVE_MATRIX));
+
+            filterDef.setAttributeNS(null, ATTR_ID,
+                                     generatorContext.idGenerator.
+                                     generateID(ID_PREFIX_FE_CONVOLVE_MATRIX));
 
             // Convert the edge mode
             if(convolveOp.getEdgeCondition() == ConvolveOp.EDGE_NO_OP)
@@ -112,7 +120,8 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
             filterAttrBuf.append(filterDef.getAttributeNS(null, ATTR_ID));
             filterAttrBuf.append(URL_SUFFIX);
 
-            filterDesc = new SVGFilterDescriptor(filterAttrBuf.toString(), filterDef);
+            filterDesc = new SVGFilterDescriptor(filterAttrBuf.toString(),
+                                                 filterDef);
 
             defSet.add(filterDef);
             descMap.put(convolveOp, filterDesc);

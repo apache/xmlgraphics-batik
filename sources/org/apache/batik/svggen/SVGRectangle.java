@@ -21,18 +21,18 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGRectangle extends SVGGraphicObjectConverter{
+public class SVGRectangle extends SVGGraphicObjectConverter {
     /**
-     * @param domFactory used to build Elements
+     * @param generatorContext used to build Elements
      */
-    public SVGRectangle(Document domFactory){
-        super(domFactory);
+    public SVGRectangle(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
     }
 
     /**
      * @param rect rectangle object to convert to SVG
      */
-    public Element toSVG(Rectangle2D rect){
+    public Element toSVG(Rectangle2D rect) {
         return toSVG((RectangularShape)rect);
     }
 
@@ -40,10 +40,12 @@ public class SVGRectangle extends SVGGraphicObjectConverter{
     /**
      * @param rect rectangle object to convert to SVG
      */
-    public Element toSVG(RoundRectangle2D rect){
+    public Element toSVG(RoundRectangle2D rect) {
         Element svgRect = toSVG((RectangularShape)rect);
-        svgRect.setAttributeNS(null, SVG_RX_ATTRIBUTE, doubleString(rect.getArcWidth()/2));
-        svgRect.setAttributeNS(null, SVG_RY_ATTRIBUTE, doubleString(rect.getArcHeight()/2));
+        svgRect.setAttributeNS(null, SVG_RX_ATTRIBUTE,
+                               doubleString(rect.getArcWidth()/2));
+        svgRect.setAttributeNS(null, SVG_RY_ATTRIBUTE,
+                               doubleString(rect.getArcHeight()/2));
         return svgRect;
     }
 
@@ -51,13 +53,16 @@ public class SVGRectangle extends SVGGraphicObjectConverter{
     /**
      * @param rect rectangle object to convert to SVG
      */
-    private Element toSVG(RectangularShape rect){
-        Element svgRect = domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                     SVG_RECT_TAG);
+    private Element toSVG(RectangularShape rect) {
+        Element svgRect =
+            generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_RECT_TAG);
         svgRect.setAttributeNS(null, SVG_X_ATTRIBUTE, doubleString(rect.getX()));
         svgRect.setAttributeNS(null, SVG_Y_ATTRIBUTE, doubleString(rect.getY()));
-        svgRect.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, doubleString(rect.getWidth()));
-        svgRect.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, doubleString(rect.getHeight()));
+        svgRect.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
+                               doubleString(rect.getWidth()));
+        svgRect.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
+                               doubleString(rect.getHeight()));
 
         return svgRect;
     }

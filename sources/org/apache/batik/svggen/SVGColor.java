@@ -81,7 +81,7 @@ public class SVGColor extends AbstractSVGConverter{
      *         with the related definitions
      * @see org.apache.batik.svggen.SVGDescriptor
      */
-    public SVGDescriptor toSVG(GraphicContext gc){
+    public SVGDescriptor toSVG(GraphicContext gc) {
         Paint paint = gc.getPaint();
         return toSVG((Color)paint);
     }
@@ -90,7 +90,7 @@ public class SVGColor extends AbstractSVGConverter{
      * Converts a Color object to a set of two corresponding
      * values: a CSS color string and an opacity value.
      */
-    public static SVGPaintDescriptor toSVG(Color color){
+    public static SVGPaintDescriptor toSVG(Color color) {
         //
         // First, convert the color value
         //
