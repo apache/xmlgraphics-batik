@@ -129,12 +129,12 @@ public class Main {
             }
         }
         /*TranscoderFactory factory =
-            ConcreteTranscoderFactory.getTranscoderFactoryImplementation();
-            */
+          ConcreteTranscoderFactory.getTranscoderFactoryImplementation();
+        */
         ImageTranscoder t = null;
         if (mimeType.equals("image/jpg") ||
-                mimeType.equals("image/jpeg") ||
-                mimeType.equals("image/jpe")) {
+            mimeType.equals("image/jpeg") ||
+            mimeType.equals("image/jpe")) {
             t = new JPEGTranscoder();
             t.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
                                  "org.apache.crimson.parser.XMLReaderImpl");
@@ -160,33 +160,73 @@ public class Main {
 
         for (Iterator iter = svgFiles.iterator(); iter.hasNext();) {
             String s = (String) iter.next();
-            File f = new File(s);
-            String uri = f.getName();
-            if (uri.endsWith(".svg")) {
-                uri = uri.substring(0, uri.lastIndexOf(".svg"));
-                int k = mimeType.lastIndexOf('/');
-                if (k > 0) {
-                    String ext = mimeType.substring(k+1);
-                    if (ext.length() > 0) {
-                        uri += "."+ext;
-                    }
-                } else {
-                    uri += "."+mimeType;
+            URL url = getSVGURL(s);
+            if(url != null){
+                String uri = url.getFile();
+                int j = uri.lastIndexOf('/');
+                if(j > 0){
+                    uri = uri.substring(j);
                 }
-            }
-            if (directory == null) {
-                directory = f.getParent();
-            }
-            File output = new File(directory, uri);
-            try {
-                writeImage((ImageTranscoder)t,
-                           f.toURL().toString(),
-                           output.getAbsolutePath());
-            } catch (MalformedURLException ex) {
-                error("Bad svg file : "+s);
+
+                if (uri.endsWith(".svg")) {
+                    uri = uri.substring(0, uri.lastIndexOf(".svg"));
+                    int k = mimeType.lastIndexOf('/');
+                    if (k > 0) {
+                        String ext = mimeType.substring(k+1);
+                        if (ext.length() > 0) {
+                            uri += "."+ext;
+                        }
+                    } else {
+                        uri += "."+mimeType;
+                    }
+                }
+                if (directory == null) {
+                    directory = getDirectory(s);
+                }
+						
+                if (directory != null) {
+                    File output = new File(directory, uri);
+							
+                    writeImage((ImageTranscoder)t,
+                               url.toString(),
+                               output.getAbsolutePath());
+
+                }
+                else{
+                    error("No valid output directory for : " + s);
+                }
             }
         }
         System.exit(0);
     }
+
+	public static URL getSVGURL(String s) {
+		URL url = null;
+
+		try{
+			File f = new File(s);
+			if(f.exists()){
+				url = f.toURL();
+			}
+			else{
+				url = new URL(s);
+			}
+		}catch(MalformedURLException e){
+			error("Bad svg file: " + s);
+		}
+
+		return url;
+	}
+
+	public static String getDirectory(String s){
+		File f = new File(s);
+		if(f.exists()){
+			return f.getParent();
+		}
+		else{
+			return null;
+		}
+	}
+
 }
 
