@@ -17,7 +17,6 @@ import java.net.*;
 
 import org.w3c.dom.Element;
 
-import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 
 /**
@@ -35,13 +34,6 @@ import org.apache.batik.ext.awt.RenderingHintsKeyExt;
  * @see             org.apache.batik.svggen.ImageHandlerPNGEncoder
  */
 public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
-    private static final String ERROR_NULL_INPUT =
-        "imageDir should not be null";
-    private static final String ERROR_IMAGE_DIR_DOES_NOT_EXIST =
-        "imageDir does not exist";
-    private static final String ERROR_CANNOT_USE_IMAGE_DIR_AS_URL =
-        "cannot convert imageDir to a URL value : ";
-
     private static final AffineTransform IDENTITY = new AffineTransform();
 
     /**
@@ -57,18 +49,19 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
     /**
      * @param generatorContext the context in which the handler will work.
      * @param imageDir directory where this handler should generate images.
-     *        If null, an IllegalArgumentException is thrown.
+     *        If null, an SVGGraphics2DRuntimeException is thrown.
      * @param urlRoot root for the urls that point to images created by this
      *        image handler. If null, then the url corresponding to imageDir
      *        is used.
      */
-    public AbstractImageHandlerEncoder(String imageDir, String urlRoot) {
+    public AbstractImageHandlerEncoder(String imageDir, String urlRoot)
+        throws SVGGraphics2DIOException {
         if (imageDir == null)
-            throw new IllegalArgumentException(ERROR_NULL_INPUT);
+            throw new SVGGraphics2DRuntimeException(ERR_IMAGE_DIR_NULL);
 
         File imageDirFile = new File(imageDir);
         if (!imageDirFile.exists())
-            throw new IllegalArgumentException(ERROR_IMAGE_DIR_DOES_NOT_EXIST);
+            throw new SVGGraphics2DRuntimeException(ERR_IMAGE_DIR_DOES_NOT_EXIST);
 
         this.imageDir = imageDir;
         if (urlRoot != null)
@@ -76,8 +69,10 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
         else {
             try{
                 this.urlRoot = imageDirFile.toURL().toString();
-            } catch(MalformedURLException e) {
-                throw new IllegalArgumentException(ERROR_CANNOT_USE_IMAGE_DIR_AS_URL + e.getMessage());
+            } catch (MalformedURLException e) {
+                throw new SVGGraphics2DIOException(ERR_CANNOT_USE_IMAGE_DIR+
+                                                   e.getMessage(),
+                                                   e);
             }
         }
     }
@@ -87,7 +82,8 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
      * Element parameter
      */
     protected void handleHREF(Image image, Element imageElement,
-                              SVGGeneratorContext generatorContext){
+                              SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
         // Create an buffered image where the image will be drawn
         Dimension size = new Dimension(image.getWidth(null),
                                        image.getHeight(null));
@@ -109,7 +105,8 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
      * Element parameter
      */
     protected void handleHREF(RenderedImage image, Element imageElement,
-                              SVGGeneratorContext generatorContext){
+                              SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
         // Create an buffered image where the image will be drawn
         Dimension size = new Dimension(image.getWidth(), image.getHeight());
         BufferedImage buf = buildBufferedImage(size);
@@ -132,7 +129,8 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
      * Element parameter
      */
     protected void handleHREF(RenderableImage image, Element imageElement,
-                              SVGGeneratorContext generatorContext){
+                              SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
         // Create an buffered image where the image will be drawn
         Dimension size = new Dimension((int)Math.ceil(image.getWidth()),
                                        (int)Math.ceil(image.getHeight()));
@@ -153,9 +151,10 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
 
     private void saveBufferedImageToFile(Element imageElement,
                                          BufferedImage buf,
-                                         SVGGeneratorContext generatorContext) {
+                                         SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
         if (generatorContext == null)
-            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
+            throw new SVGGraphics2DRuntimeException(ERR_CONTEXT_NULL);
 
         // Create a new file in image directory
         File imageFile = null;
@@ -173,7 +172,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
         encodeImage(buf, imageFile);
 
         // Update HREF
-        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
+        imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
                                     ATTR_XLINK_HREF, urlRoot + "/" +
                                     imageFile.getName());
     }
@@ -194,7 +193,8 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
      * Derived classes should implement this method and encode the input
      * BufferedImage as needed
      */
-    public abstract void encodeImage(BufferedImage buf, File imageFile);
+    public abstract void encodeImage(BufferedImage buf, File imageFile)
+        throws SVGGraphics2DIOException;
 
     /**
      * This method creates a BufferedImage of the right size and type

@@ -14,8 +14,6 @@ import java.awt.image.renderable.RenderableImage;
 
 import org.w3c.dom.Element;
 
-import org.apache.batik.dom.util.XLinkSupport;
-
 /**
  * This interface default implementation of the ImageHandler
  * interface simply puts a place holder in the xlink:href
@@ -25,15 +23,15 @@ import org.apache.batik.dom.util.XLinkSupport;
  * @version $Id$
  * @see             org.apache.batik.svggen.SVGGraphics2D
  */
-public class DefaultImageHandler implements ImageHandler {
-    static final String ERROR_CONTEXT_NULL =
-        "generatorContext should not be null";
+public class DefaultImageHandler implements ImageHandler, ErrorConstants {
+    // reducing the dependency on dom package by doing this only once:
+    static final String XLINK_NAMESPACE_URI =
+        org.apache.batik.dom.util.XLinkSupport.XLINK_NAMESPACE_URI;
 
     /**
      * Build a <code>DefaultImageHandler</code>.
      */
-    public DefaultImageHandler() {
-    }
+    public DefaultImageHandler() {}
 
     /**
      * The handler should set the xlink:href tag and the width and
@@ -52,7 +50,17 @@ public class DefaultImageHandler implements ImageHandler {
         //
         // Now, set the href
         //
-        handleHREF(image, imageElement, generatorContext);
+        try {
+            handleHREF(image, imageElement, generatorContext);
+        } catch (SVGGraphics2DIOException e) {
+            try {
+                generatorContext.errorHandler.handleError(e);
+            } catch (SVGGraphics2DIOException io) {
+                // we need a runtime exception because
+                // java.awt.Graphics2D method doesn't throw exceptions..
+                throw new SVGGraphics2DRuntimeException(io);
+            }
+        }
     }
 
     /**
@@ -72,7 +80,17 @@ public class DefaultImageHandler implements ImageHandler {
         //
         // Now, set the href
         //
-        handleHREF(image, imageElement, generatorContext);
+        try {
+            handleHREF(image, imageElement, generatorContext);
+        } catch (SVGGraphics2DIOException e) {
+            try {
+                generatorContext.errorHandler.handleError(e);
+            } catch (SVGGraphics2DIOException io) {
+                // we need a runtime exception because
+                // java.awt.Graphics2D method doesn't throw exceptions..
+                throw new SVGGraphics2DRuntimeException(io);
+            }
+        }
     }
 
     /**
@@ -80,7 +98,8 @@ public class DefaultImageHandler implements ImageHandler {
      * height attributes.
      */
     public void handleImage(RenderableImage image, Element imageElement,
-                            SVGGeneratorContext generatorContext) {
+                            SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
         //
         // First, set the image width and height
         //
@@ -92,7 +111,17 @@ public class DefaultImageHandler implements ImageHandler {
         //
         // Now, set the href
         //
-        handleHREF(image, imageElement, generatorContext);
+        try {
+            handleHREF(image, imageElement, generatorContext);
+        } catch (SVGGraphics2DIOException e) {
+            try {
+                generatorContext.errorHandler.handleError(e);
+            } catch (SVGGraphics2DIOException io) {
+                // we need a runtime exception because
+                // java.awt.Graphics2D method doesn't throw exceptions..
+                throw new SVGGraphics2DRuntimeException(io);
+            }
+        }
     }
 
     /**
@@ -100,9 +129,10 @@ public class DefaultImageHandler implements ImageHandler {
      * Element parameter
      */
     protected void handleHREF(Image image, Element imageElement,
-                              SVGGeneratorContext generatorContext) {
+                              SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
         // Simply write a placeholder
-        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
+        imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
                                     ATTR_XLINK_HREF, image.toString());
     }
 
@@ -111,9 +141,10 @@ public class DefaultImageHandler implements ImageHandler {
      * Element parameter
      */
     protected void handleHREF(RenderedImage image, Element imageElement,
-                              SVGGeneratorContext generatorContext) {
+                              SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
         // Simply write a placeholder
-        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
+        imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
                                     ATTR_XLINK_HREF, image.toString());
     }
 
@@ -122,9 +153,10 @@ public class DefaultImageHandler implements ImageHandler {
      * Element parameter
      */
     protected void handleHREF(RenderableImage image, Element imageElement,
-                              SVGGeneratorContext generatorContext) {
+                              SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
         // Simply write a placeholder
-        imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
+        imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
                                     ATTR_XLINK_HREF, image.toString());
     }
 }

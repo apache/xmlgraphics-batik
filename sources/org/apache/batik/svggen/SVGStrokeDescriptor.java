@@ -23,8 +23,6 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGStrokeDescriptor implements SVGDescriptor, SVGSyntax{
-    public static final String ERROR_NULL_ARGUMENT = "None of the stroke attribute values should be null";
-
     private String strokeWidth;
     private String capStyle;
     private String joinStyle;
@@ -33,15 +31,16 @@ public class SVGStrokeDescriptor implements SVGDescriptor, SVGSyntax{
     private String dashOffset;
 
 
-    public SVGStrokeDescriptor(String strokeWidth, String capStyle, String joinStyle,
-                               String miterLimit, String dashArray, String dashOffset){
+    public SVGStrokeDescriptor(String strokeWidth, String capStyle,
+                               String joinStyle, String miterLimit,
+                               String dashArray, String dashOffset){
         if(strokeWidth == null ||
            capStyle == null    ||
            joinStyle == null   ||
            miterLimit == null  ||
            dashArray == null   ||
            dashOffset == null)
-            throw new IllegalArgumentException(ERROR_NULL_ARGUMENT);
+            throw new SVGGraphics2DRuntimeException(ErrorConstants.ERR_STROKE_NULL);
 
         this.strokeWidth = strokeWidth;
         this.capStyle = capStyle;

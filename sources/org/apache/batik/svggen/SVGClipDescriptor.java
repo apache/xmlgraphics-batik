@@ -24,8 +24,6 @@ import org.w3c.dom.*;
  * @see           org.apache.batik.svggen.SVGDescriptor
  */
 public class SVGClipDescriptor implements SVGDescriptor, SVGSyntax{
-    public static final String ERROR_NULL_INPUT = "clipPathValue should not be null";
-
     private String clipPathValue;
     private Element clipPathDef;
 
@@ -34,8 +32,8 @@ public class SVGClipDescriptor implements SVGDescriptor, SVGSyntax{
      * @param attribute value referencing clipPathDef
      */
     public SVGClipDescriptor(String clipPathValue, Element clipPathDef){
-        if(clipPathValue == null)
-            throw new IllegalArgumentException(ERROR_NULL_INPUT);
+        if (clipPathValue == null)
+            throw new SVGGraphics2DRuntimeException(ErrorConstants.ERR_CLIP_NULL);
 
         this.clipPathValue = clipPathValue;
         this.clipPathDef = clipPathDef;

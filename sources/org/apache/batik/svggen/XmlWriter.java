@@ -24,10 +24,11 @@ import org.w3c.dom.*;
  * @version $Id$
  */
 class XmlWriter implements SVGConstants {
-    static private String       EOL;
-    static private String TAG_END = " />";
-    static private String TAG_START = "</";
-    static private String SPACE = " ";
+
+    static private String EOL;
+    static private final String TAG_END = " />";
+    static private final String TAG_START = "</";
+    static private final String SPACE = " ";
 
     static {
         String  temp;
@@ -41,11 +42,8 @@ class XmlWriter implements SVGConstants {
         private int indentLevel;
 
         public IndentWriter(Writer proxied){
-            if(proxied == null)
-                throw new IllegalArgumentException();
-
-            // if(proxied instanceof OutputStreamWriter)
-            //  System.out.println("Encoding : " + ((OutputStreamWriter)proxied).getEncoding());
+            if (proxied == null)
+                throw new SVGGraphics2DRuntimeException(ErrorConstants.ERR_PROXY);
 
             this.proxied = proxied;
         }
@@ -111,7 +109,8 @@ class XmlWriter implements SVGConstants {
     /**
      * Writes the attribute's value.
      */
-    private static void writeChildrenXml(Attr attr, IndentWriter out) throws IOException{
+    private static void writeChildrenXml(Attr attr, IndentWriter out)
+        throws IOException {
         String value = attr.getValue();
         for (int i = 0; i < value.length (); i++) {
             int c = value.charAt (i);
@@ -131,7 +130,8 @@ class XmlWriter implements SVGConstants {
      * prevent illegal comments:  between consecutive dashes ("--")
      * or if the last character of the comment is a dash.
      */
-    private static void writeXml(Comment comment, IndentWriter out) throws IOException {
+    private static void writeXml(Comment comment, IndentWriter out)
+        throws IOException {
         char data[] = comment.getData().toCharArray();
         out.write ("<!--");
         if (data != null) {
@@ -158,7 +158,8 @@ class XmlWriter implements SVGConstants {
         out.write ("-->");
     }
 
-    private static void writeXml(Text text, IndentWriter out) throws IOException{
+    private static void writeXml(Text text, IndentWriter out)
+        throws IOException {
         char data[] = text.getData().toCharArray();
         int     start = 0, last = 0;
 
@@ -196,7 +197,8 @@ class XmlWriter implements SVGConstants {
         out.write (data, start, last - start);
     }
 
-    private static void writeXml(CDATASection cdataSection, IndentWriter out) throws IOException{
+    private static void writeXml(CDATASection cdataSection, IndentWriter out)
+        throws IOException {
         char[] data = cdataSection.getData().toCharArray();
         out.write ("<![CDATA[");
         for (int i = 0; i < data.length; i++) {
@@ -217,7 +219,8 @@ class XmlWriter implements SVGConstants {
         out.write ("]]>");
     }
 
-    private static void writeXml(Element element, IndentWriter out) throws IOException{
+    private static void writeXml(Element element, IndentWriter out)
+        throws IOException, SVGGraphics2DIOException {
         out.write (TAG_START, 0, 1);    // "<"
         out.write (element.getTagName());
 
@@ -248,7 +251,8 @@ class XmlWriter implements SVGConstants {
         }
     }
 
-    private static void writeChildrenXml(Element element, IndentWriter out) throws IOException {
+    private static void writeChildrenXml(Element element, IndentWriter out)
+        throws IOException, SVGGraphics2DIOException {
         NodeList children = element.getChildNodes();
         if (children == null)
             return;
@@ -275,11 +279,13 @@ class XmlWriter implements SVGConstants {
         }
     }
 
-    private static void writeDocumentHeader(IndentWriter out) throws IOException {
+    private static void writeDocumentHeader(IndentWriter out)
+        throws IOException {
         String  encoding = null;
 
-        if(out.getProxied() instanceof OutputStreamWriter)
-            encoding = java2std (((OutputStreamWriter)out.getProxied()).getEncoding ());
+        if (out.getProxied() instanceof OutputStreamWriter)
+            encoding =
+                java2std(((OutputStreamWriter)out.getProxied()).getEncoding());
 
         out.write ("<?xml version=\"1.0\"");
         if (encoding != null) {
@@ -302,13 +308,15 @@ class XmlWriter implements SVGConstants {
         out.write (EOL);
     }
 
-    private static void writeXml (Document document, IndentWriter out) throws IOException{
+    private static void writeXml(Document document, IndentWriter out)
+        throws IOException, SVGGraphics2DIOException {
         writeDocumentHeader(out);
         NodeList childList = document.getChildNodes();
         writeXml(childList, out);
     }
 
-    private static void writeXml(NodeList childList, IndentWriter out) throws IOException{
+    private static void writeXml(NodeList childList, IndentWriter out)
+        throws IOException, SVGGraphics2DIOException {
         int     length = childList.getLength ();
 
         if (length == 0)
@@ -320,7 +328,7 @@ class XmlWriter implements SVGConstants {
         }
     }
 
-    static String java2std (String encodingName){
+    static String java2std(String encodingName) {
         if (encodingName == null)
             return null;
 
@@ -364,33 +372,47 @@ class XmlWriter implements SVGConstants {
         return encodingName;
     }
 
-    public static void writeXml(Node node, Writer writer) throws IOException {
-        // System.out.println("Writing class: " + node.getClass().getName());
-        IndentWriter out = null;
-        if(writer instanceof IndentWriter)
-            out = (IndentWriter)writer;
-        else
-            out = new IndentWriter(writer);
+    public static void writeXml(Node node, Writer writer)
+        throws SVGGraphics2DIOException {
+        try {
+            IndentWriter out = null;
+            if (writer instanceof IndentWriter)
+                out = (IndentWriter)writer;
+            else
+                out = new IndentWriter(writer);
 
-        if(node instanceof Attr)
-            writeXml((Attr)node, out);
-        else if(node instanceof Comment)
-            writeXml((Comment)node, out);
-        else if(node instanceof Text)
-            writeXml((Text)node, out);
-        else if(node instanceof CDATASection)
-            writeXml((CDATASection)node, out);
-        else if(node instanceof Document)
-            writeXml((Document)node, out);
-        else if(node instanceof DocumentFragment){
-            writeDocumentHeader(out);
-            NodeList childList = node.getChildNodes();
-            writeXml(childList, out);
-        }
-        else if(node instanceof Element)
-            writeXml((Element)node, out);
-        else {
-            System.err.println("Unable to write node of type: " + node.getClass().getName());
+            switch (node.getNodeType()) {
+            case Node.ATTRIBUTE_NODE:
+                writeXml((Attr)node, out);
+                break;
+            case Node.COMMENT_NODE:
+                writeXml((Comment)node, out);
+                break;
+            case Node.TEXT_NODE:
+                writeXml((Text)node, out);
+                break;
+            case Node.CDATA_SECTION_NODE:
+                writeXml((CDATASection)node, out);
+                break;
+            case Node.DOCUMENT_NODE:
+                writeXml((Document)node, out);
+                break;
+            case Node.DOCUMENT_FRAGMENT_NODE:
+                writeDocumentHeader(out);
+                NodeList childList = node.getChildNodes();
+                writeXml(childList, out);
+                break;
+            case Node.ELEMENT_NODE:
+                writeXml((Element)node, out);
+                break;
+            default:
+                throw
+                    new SVGGraphics2DRuntimeException(ErrorConstants.INVALID_NODE+
+                                                      node.getClass().
+                                                      getName());
+            }
+        } catch (IOException io) {
+            throw new SVGGraphics2DIOException(io);
         }
     }
 }

@@ -40,7 +40,8 @@ public class ImageHandlerPNGEncoder extends AbstractImageHandlerEncoder {
      *        image handler. If null, then the url corresponding to imageDir
      *        is used.
      */
-    public ImageHandlerPNGEncoder(String imageDir, String urlRoot) {
+    public ImageHandlerPNGEncoder(String imageDir, String urlRoot)
+        throws SVGGraphics2DIOException {
         super(imageDir, urlRoot);
     }
 
@@ -64,15 +65,16 @@ public class ImageHandlerPNGEncoder extends AbstractImageHandlerEncoder {
      * Derived classes should implement this method and encode the input
      * BufferedImage as needed
      */
-    public void encodeImage(BufferedImage buf, File imageFile){
-        try{
+    public void encodeImage(BufferedImage buf, File imageFile)
+        throws SVGGraphics2DIOException {
+        try {
             OutputStream os = new FileOutputStream(imageFile);
             ImageEncoder encoder = new PNGImageEncoder(os, null);
             encoder.encode(buf);
             os.flush();
             os.close();
-        }catch(IOException e){
-            throw new Error("Could not write imageFile: " + imageFile.getName());
+        } catch (IOException e) {
+            throw new SVGGraphics2DIOException(ERR_WRITE+imageFile.getName());
         }
     }
 
