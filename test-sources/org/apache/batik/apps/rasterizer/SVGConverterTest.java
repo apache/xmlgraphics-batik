@@ -150,7 +150,7 @@ public class SVGConverterTest extends DefaultTestSuite {
         //
         // Check destination
         //
-        t = new DestConfigTest(new String[] { "samples/anne.png" },
+        t = new DestConfigTest(new String[] { "samples/anne.svg" },
                                new String[] { "test-reports/anne.png"}){
                 protected void setDestination(SVGConverter c){
                     c.setDst(new File("test-reports/anne.png"));
