@@ -143,7 +143,7 @@ public class Main implements Application {
             }
             createAndShowJSVGViewerFrame();
             if (index < arguments.length) {
-                mainFrame.getJSVGComponent().loadSVGDocument
+                mainFrame.getJSVGCanvas().loadSVGDocument
                     (new File(arguments[index]).toURL().toString());
             }
         } catch (Exception e) {
@@ -273,7 +273,7 @@ public class Main implements Application {
      */
     public void openLink(String url) {
         JSVGViewerFrame f = createAndShowJSVGViewerFrame();
-        f.getJSVGComponent().loadSVGDocument(url);
+        f.getJSVGCanvas().loadSVGDocument(url);
     }
 
     /**
