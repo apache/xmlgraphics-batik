@@ -85,24 +85,6 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             }
         }
 
-        // Apply the clip-path property of this clipPath Element
-        Shape clipElementClipPath =
-            CSSUtilities.convertClipPath(clipElement, gn, bridgeContext);
-        if (clipElementClipPath != null) {
-            area.subtract(new Area(clipElementClipPath));
-        }
-        bridgeContext.setCurrentViewport(oldViewport);
-
-        // Convert the Area to a path and apply the winding rule
-        GeneralPath path = new GeneralPath(area);
-        CSSPrimitiveValue v;
-        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CLIP_RULE_PROPERTY);
-        int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
-            ? GeneralPath.WIND_NON_ZERO
-            : GeneralPath.WIND_EVEN_ODD;
-
-        path.setWindingRule(wr);
-
         // Compute the global matrix of this clipPath Element
         AffineTransform at = AWTTransformProducer.createAffineTransform
             (new StringReader(clipElement.getAttributeNS(null, ATTR_TRANSFORM)),
@@ -114,8 +96,34 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         }
         AffineTransformSource ats =
             SVGUtilities.convertAffineTransformSource(at, gn, units);
-        Shape clipPath = new TransformedShape(path, ats);
-        return clipPath;
+        Shape childrenClipPath = new TransformedShape(area, ats);
+
+        //
+        // Now clipPath represents the current clip path defined by the
+        // children of the clipPath element in user space.
+        //
+        Shape clipPath = childrenClipPath;
+
+        // Get the clip-path property of this clipPath Element in user space
+        Shape clipElementClipPath =
+            CSSUtilities.convertClipPath(clipElement, gn, bridgeContext);
+        if (clipElementClipPath != null) {
+            Area merge = new Area(clipPath);
+            merge.subtract(new Area(clipElementClipPath));
+            clipPath = merge;
+        }
+
+        // Convert the Area to a path and apply the winding rule
+        GeneralPath clip = new GeneralPath(clipPath);
+        CSSPrimitiveValue v;
+        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CLIP_RULE_PROPERTY);
+        int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
+            ? GeneralPath.WIND_NON_ZERO
+            : GeneralPath.WIND_EVEN_ODD;
+
+        clip.setWindingRule(wr);
+        bridgeContext.setCurrentViewport(oldViewport); // restore the viewport
+        return clip;
     }
 
     public void update(BridgeMutationEvent evt) {
