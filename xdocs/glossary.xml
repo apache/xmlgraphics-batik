@@ -73,9 +73,7 @@
         <s1 title="SVG Parser">
 
         <p>
-        The SVG Parser is the module that is able to receive an SVG document
-        and build an internal representation of that document. Batik contains
-        'micro parsers' specific to SVG to convert SVG specific attributes,
+        The SVG Parser module contains 'micro parsers' specific to SVG to convert SVG specific attributes,
         such as path data, transforms or color values into equivalent Java 
         objects such as java.awt.geom.GeneralPath, java.awt.geom.AffineTransform
         or java.awt.Color.
