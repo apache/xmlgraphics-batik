@@ -9,6 +9,7 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.GraphicsEnvironment;
 import java.awt.Paint;
 import java.awt.RenderingHints;
@@ -102,6 +103,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         TextNode result = ctx.getGVTFactory().createTextNode();
         result.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                 RenderingHints.VALUE_ANTIALIAS_ON);
+
 
         CSSStyleDeclaration cssDecl
             = ctx.getViewCSS().getComputedStyle(element, null);
@@ -652,6 +654,16 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         default:
             result.put(TextAttribute.WIDTH,
                        TextAttribute.WIDTH_REGULAR);
+        }
+
+        // Opacity
+        CSSPrimitiveValue opacityVal =
+            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
+        if (opacityVal != null) {
+            Composite composite =
+                CSSUtilities.convertOpacityToComposite(opacityVal);
+            result.put(GVTAttributedCharacterIterator.TextAttribute.OPACITY,
+                                                                     composite);
         }
 
         // Fill

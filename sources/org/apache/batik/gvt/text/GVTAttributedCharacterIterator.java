@@ -31,7 +31,7 @@ import java.text.AttributedString;
  * @version $Id$
  */
 
-public interface GVTAttributedCharacterIterator extends 
+public interface GVTAttributedCharacterIterator extends
                                    AttributedCharacterIterator {
 
     /**
@@ -45,19 +45,19 @@ public interface GVTAttributedCharacterIterator extends
     public void setString(AttributedString s);
 
     /**
-     * Sets values of a per-character attribute associated with the content 
+     * Sets values of a per-character attribute associated with the content
      *     string.
      * Characters from <tt>beginIndex</tt> to <tt>endIndex</tt>
-     *     (zero-offset) are assigned values for attribute key <tt>attr</tt> 
+     *     (zero-offset) are assigned values for attribute key <tt>attr</tt>
      *     from the array <tt>attValues.</tt>
-     * If the length of attValues is less than character span 
-     *     <tt>(endIndex-beginIndex)</tt> the last value is duplicated; 
+     * If the length of attValues is less than character span
+     *     <tt>(endIndex-beginIndex)</tt> the last value is duplicated;
      *     if attValues is longer than the character span
-     *     the extra values are ignored.  
+     *     the extra values are ignored.
      * Note that if either beginIndex or endIndex are outside the bounds
      *     of the current character array they are clipped accordingly.
      */
-    public void setAttributeArray(TextAttribute attr, 
+    public void setAttributeArray(TextAttribute attr,
                         Object[] attValues, int beginIndex, int endIndex);
 
     //From java.text.AttributedCharacterIterator
@@ -109,7 +109,7 @@ public interface GVTAttributedCharacterIterator extends
     /**
      * Get the index of the first character of the run with
      *      respect to the given attribute containing the current character.
-     * @param attribute The attribute for whose appearance the first offset 
+     * @param attribute The attribute for whose appearance the first offset
      *      is requested.
      */
     public int getRunStart(AttributedCharacterIterator.Attribute attribute);
@@ -195,10 +195,10 @@ public interface GVTAttributedCharacterIterator extends
      * Attribute keys that identify SVG text attributes.  Anchor point for
      * attribute values of X, Y, and ROTATION is determined by the character's
      * font and other attributes.
-     * We duplicate the features of java.awt.font.TextAttribute rather than   
+     * We duplicate the features of java.awt.font.TextAttribute rather than
      * subclassing because java.awt.font.TextAttribute is <em>final</em>.
      */
-    public static class TextAttribute extends 
+    public static class TextAttribute extends
                                                                             AttributedCharacterIterator.Attribute {
 
         /** Construct a TextAttribute key with name s */
@@ -213,52 +213,70 @@ public interface GVTAttributedCharacterIterator extends
         public final static TextAttribute Y = new TextAttribute("Y");
 
         /** Rotation for character, in degrees.*/
-        public final static TextAttribute ROTATION = new TextAttribute("ROTATION");
+        public final static TextAttribute ROTATION =
+                                          new TextAttribute("ROTATION");
+
+        /** Overall opacity of rendered text.*/
+        public final static TextAttribute OPACITY =
+                                          new TextAttribute("OPACITY");
 
         /** Stroke used to paint character outline.*/
-        public final static TextAttribute STROKE = new TextAttribute("STROKE");
+        public final static TextAttribute STROKE =
+                                          new TextAttribute("STROKE");
 
         /** Paint used to stroke character outline */
-        public final static TextAttribute STROKE_PAINT = new TextAttribute("STROKE_PAINT");
+        public final static TextAttribute STROKE_PAINT =
+                                          new TextAttribute("STROKE_PAINT");
 
         /** Underline flag for character.*/
-        public final static TextAttribute UNDERLINE = new TextAttribute("UNDERLINE");
+        public final static TextAttribute UNDERLINE =
+                                          new TextAttribute("UNDERLINE");
 
         /** Overline flag for character.*/
-        public final static TextAttribute OVERLINE = new TextAttribute("OVERLINE");
+        public final static TextAttribute OVERLINE =
+                                      new TextAttribute("OVERLINE");
 
         /** Stroke used to paint character underline.*/
-        public final static TextAttribute UNDERLINE_STROKE = new TextAttribute("UNDERLINE_STROKE");
+        public final static TextAttribute UNDERLINE_STROKE =
+                                      new TextAttribute("UNDERLINE_STROKE");
 
         /** Paint used to fill character underline.*/
-        public final static TextAttribute UNDERLINE_PAINT = new TextAttribute("UNDERLINE_PAINT");
+        public final static TextAttribute UNDERLINE_PAINT =
+                                      new TextAttribute("UNDERLINE_PAINT");
 
         /** Paint used to stroke character outline for underline.*/
-        public final static TextAttribute UNDERLINE_STROKE_PAINT = new TextAttribute("UNDERLINE_STROKE_PAINT");
+        public final static TextAttribute UNDERLINE_STROKE_PAINT =
+                                  new TextAttribute("UNDERLINE_STROKE_PAINT");
 
-	/** Flag indicating that chars are to be "struck through" */
-	public final static TextAttribute STRIKETHROUGH = new TextAttribute("STRIKETHROUGH");
+        /** Flag indicating that chars are to be "struck through" */
+        public final static TextAttribute STRIKETHROUGH =
+                                          new TextAttribute("STRIKETHROUGH");
 
-        /** Author-expected width for bounding box containing all text string glyphs.*/
-        public final static TextAttribute BBOX_WIDTH = new TextAttribute("BBOX_WIDTH");
+        /** Author-expected width for bounding box containing
+         *  all text string glyphs.
+         */
+        public final static TextAttribute BBOX_WIDTH =
+                                          new TextAttribute("BBOX_WIDTH");
 
         /** Font variant to be used for this character span.
          * @see org.apache.batik.gvt.text.GVTAttributedCharacterIterator.TextAttribute#SMALL_CAPS
          */
-        public final static TextAttribute FONT_VARIANT = 
-            new TextAttribute("FONT_VARIANT");
+        public final static TextAttribute FONT_VARIANT =
+                                          new TextAttribute("FONT_VARIANT");
 
         /** Value for FONT_VARIANT specifying small caps */
         public final static Integer SMALL_CAPS = new Integer(0x10);
 
-	/** Value for UNDERLINE specifying underlining-on */
-	public final static Integer UNDERLINE_ON = java.awt.font.TextAttribute.UNDERLINE_ON;
+        /** Value for UNDERLINE specifying underlining-on */
+        public final static Integer UNDERLINE_ON =
+                            java.awt.font.TextAttribute.UNDERLINE_ON;
 
-	/** Value for OVERLINE specifying overlining-on */
-	public final static Boolean OVERLINE_ON = new Boolean(true);
+        /** Value for OVERLINE specifying overlining-on */
+        public final static Boolean OVERLINE_ON = new Boolean(true);
 
-	/** Value for STRIKETHROUGH specifying strikethrough-on */
-	public final static Boolean STRIKETHROUGH_ON = java.awt.font.TextAttribute.STRIKETHROUGH_ON;
+        /** Value for STRIKETHROUGH specifying strikethrough-on */
+        public final static Boolean STRIKETHROUGH_ON =
+                            java.awt.font.TextAttribute.STRIKETHROUGH_ON;
 
 
     }
@@ -277,12 +295,12 @@ public interface GVTAttributedCharacterIterator extends
          * Usually returns a copy since AttributedCharacterIterator instances
          * are often immutable.  The effect of the attribute modification
          * is implementation dependent.
-         * @param aci an AttributedCharacterIterator whose attributes are 
+         * @param aci an AttributedCharacterIterator whose attributes are
          *     to be modified.
-         * @return an instance of AttributedCharacterIterator with mutated 
+         * @return an instance of AttributedCharacterIterator with mutated
          *     attributes.
          */
-        public AttributedCharacterIterator 
+        public AttributedCharacterIterator
             mutateAttributes(AttributedCharacterIterator aci);
 
     }
