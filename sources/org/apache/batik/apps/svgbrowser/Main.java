@@ -591,7 +591,7 @@ public class Main implements Application {
                           resources.getInteger("Frame.height"));
         mainFrame.setIconImage(frameIcon.getImage());
         mainFrame.setTitle(resources.getString("Frame.title"));
-        mainFrame.show();
+        mainFrame.setVisible(true);
         viewerFrames.add(mainFrame);
         setPreferences(mainFrame);
         return mainFrame;

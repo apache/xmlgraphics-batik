@@ -40,8 +40,6 @@ public class SVGEllipse extends SVGGraphicObjectConverter {
      */
     public SVGEllipse(SVGGeneratorContext generatorContext) {
         super(generatorContext);
-
-        svgLine = new SVGLine(generatorContext);
     }
 
     /**
@@ -100,6 +98,8 @@ public class SVGEllipse extends SVGGraphicObjectConverter {
             // Degenerate to a line
             Line2D line = new Line2D.Double(ellipse.getX(), ellipse.getY(), ellipse.getX(), 
                                             ellipse.getY() + ellipse.getHeight());
+            if (svgLine == null)
+                svgLine = new SVGLine(generatorContext);
             return svgLine.toSVG(line);
         }
         else if(ellipse.getWidth() > 0 && ellipse.getHeight() == 0){
@@ -107,6 +107,8 @@ public class SVGEllipse extends SVGGraphicObjectConverter {
             Line2D line = new Line2D.Double(ellipse.getX(), ellipse.getY(),
                                             ellipse.getX() + ellipse.getWidth(),
                                             ellipse.getY());
+            if (svgLine == null)
+                svgLine = new SVGLine(generatorContext);
             return svgLine.toSVG(line);
         }
         return null;

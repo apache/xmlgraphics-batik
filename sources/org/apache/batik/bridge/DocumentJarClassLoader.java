@@ -20,6 +20,7 @@ package org.apache.batik.bridge;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSource;
+import java.security.cert.Certificate;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Policy;
@@ -52,7 +53,8 @@ public class DocumentJarClassLoader extends URLClassLoader {
         super(new URL[]{jarURL});
 
         if (documentURL != null) {
-            documentCodeSource = new CodeSource(documentURL, null);
+            documentCodeSource = new CodeSource
+                (documentURL, (Certificate[])null);
         }
     }
 

@@ -206,9 +206,9 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      */
     public List getMedia() {
 	List media = new ArrayList(listModel.size());
-	Enumeration enum = listModel.elements();
-	while (enum.hasMoreElements()) {
-	    media.add(enum.nextElement());
+	Enumeration e = listModel.elements();
+	while (e.hasMoreElements()) {
+	    media.add(e.nextElement());
 	}
 	return media;
     }
@@ -218,9 +218,9 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
      */
     public String getMediaAsString() {
 	StringBuffer buffer = new StringBuffer();
-	Enumeration enum = listModel.elements();
-	while (enum.hasMoreElements()) {
-	    buffer.append((String)enum.nextElement());
+	Enumeration e = listModel.elements();
+	while (e.hasMoreElements()) {
+	    buffer.append((String)e.nextElement());
 	    buffer.append(" ");
 	}
 	return buffer.toString();

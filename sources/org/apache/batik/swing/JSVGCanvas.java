@@ -950,7 +950,7 @@ public class JSVGCanvas extends JSVGComponent {
                 JDialog dialog =
                     pane.createDialog(JSVGCanvas.this, "ERROR");
                 dialog.setModal(false);
-                dialog.show(); // Safe to be called from any thread
+                dialog.setVisible(true); // Safe to be called from any thread
             }
         }
 
@@ -965,7 +965,7 @@ public class JSVGCanvas extends JSVGComponent {
                     new JErrorPane(ex, JOptionPane.ERROR_MESSAGE);
                 JDialog dialog = pane.createDialog(JSVGCanvas.this, "ERROR");
                 dialog.setModal(false);
-                dialog.show(); // Safe to be called from any thread
+                dialog.setVisible(true); // Safe to be called from any thread
             }
         }
 

@@ -77,7 +77,7 @@ public class SVGUserAgentGUIAdapter extends SVGUserAgentAdapter{
         JOptionPane pane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE);
         JDialog dialog = pane.createDialog(parentComponent, "ERROR");
         dialog.setModal(false);
-        dialog.show();
+        dialog.setVisible(true);
     }
 
     /**
@@ -87,7 +87,7 @@ public class SVGUserAgentGUIAdapter extends SVGUserAgentAdapter{
         JErrorPane pane = new JErrorPane(ex, JOptionPane.ERROR_MESSAGE);
         JDialog dialog = pane.createDialog(parentComponent, "ERROR");
         dialog.setModal(false);
-        dialog.show();
+        dialog.setVisible(true);
     }
 
     /**
