@@ -62,7 +62,7 @@
     <page id="rasterizerTutorial" label="Transcoder API"           source="rasterizerTutorial.xml"/>
     <separator/>
     <page id="scripting"          label="Scripting Intro"          source="scriptIntro.xml" />
-    <page id="scriptfeatures"     label="Scripting Features"       source="scriptFeatures.xml" />
+    <page id="scriptFeatures"     label="Scripting Features"       source="scriptFeatures.xml" />
     <page id="javaScripting"      label="Java Scripting"           source="javaScripting.xml" />
     <page id="security"           label="Security"                 source="security.xml" />
     <separator />
