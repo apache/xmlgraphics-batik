@@ -410,7 +410,7 @@ public abstract class AbstractElement
 	if (attributes != null) {
 	    NamedNodeMap map = attributes;
 	    for (int i = map.getLength() - 1; i >= 0; i--) {
-		AbstractAttr aa = (AbstractAttr)map.item(i).cloneNode(false);
+		AbstractAttr aa = (AbstractAttr)map.item(i).cloneNode(true);
 		if (aa instanceof AbstractAttrNS) {
 		    ae.setAttributeNodeNS(aa);
 		} else {
