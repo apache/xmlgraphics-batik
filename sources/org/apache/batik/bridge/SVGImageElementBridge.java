@@ -143,14 +143,15 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                       new Object[] {uriStr});
         }
 
+        imageNode.setImage(node);
+
         // 'image-rendering' and 'color-rendering'
         RenderingHints hints = CSSUtilities.convertImageRendering(e, null);
         hints = CSSUtilities.convertColorRendering(e, hints);
         if (hints != null) {
-            node.setRenderingHints(hints);
+            imageNode.setRenderingHints(hints);
         }
 
-        imageNode.setImage(node);
         return imageNode;
     }
 
