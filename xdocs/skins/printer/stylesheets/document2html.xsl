@@ -21,7 +21,7 @@
         <link rel="stylesheet" type="text/css" href="resources/simple.css" title="Simple Style"/>
       </head>
       <body>
-        <p class="legal">Cocoon Documentation</p>
+        <p class="legal">Apache Documentation</p>
         <h1 class="title"><xsl:value-of select="document/header/title"/></h1>
         <xsl:apply-templates/>
         <p class="legal">Copyright &#169; <xsl:value-of select="$copyright"/>.<br/>All rights reserved.</p>

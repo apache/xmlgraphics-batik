@@ -75,7 +75,7 @@
         <p>
         You will find a detailed description of the set of SVG features
         Batik supports on the 
-        <link href="http://xml.apache.org/xml-batik/status.xml">Status</link>
+        <link href="status.html">Status</link>
         page.
         </p>
         </s1>
@@ -104,7 +104,7 @@
         </note>
         </s1>
 
-        <s1 title="Contribute To The Batik Project">
+        <s1 title="Contributing to the Batik Project">
         <p>
         The Batik Project is an open volunteer project based on the spirit of the
         <link href="http://www.apache.org">Apache Software Foundation</link> (ASF).
@@ -118,7 +118,7 @@
         For direct participation, we suggest you to subscribe to the
         <link href="http://xml.apache.org/mail.html">Batik mailing list</link>
         (follow the link for information on how to subscribe and to access the mail
-        list archives), to checkout the <link href="http://xml.apache.org/websrc/index.cgi/xml-batik/">latest code</link>.
+        list archives), and to checkout the <link href="http://xml.apache.org/websrc/index.cgi/xml-batik/">latest code</link>.
         </p>
         </s1>
     </body>
