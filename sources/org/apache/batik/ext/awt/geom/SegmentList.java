@@ -103,7 +103,7 @@ public class SegmentList {
 
     public int size() { return segments.size(); }
 
-    public SplitResults split(double y) {
+    public SegmentList.SplitResults split(double y) {
         Iterator iter = segments.iterator();
         SegmentList above = null;
         SegmentList below = null;
@@ -139,10 +139,10 @@ public class SegmentList {
                 below.add(resBelow[i]);
             }
         }
-        return new SplitResults(above, below);
+        return new SegmentList.SplitResults(above, below);
     }
 
-    public class SplitResults {
+    public static class SplitResults {
         SegmentList above, below;
         public SplitResults(SegmentList above, SegmentList below) {
             this.above = above;
