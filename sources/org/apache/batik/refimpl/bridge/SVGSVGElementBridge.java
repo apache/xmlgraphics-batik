@@ -84,6 +84,10 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
             at = at.createInverse(); // clip in user space
             node.setClippingArea(at.createTransformedShape(new Rectangle2D.Float(x, y, w, h)));
         } catch (java.awt.geom.NoninvertibleTransformException ex) {}
+
+        // <!> TODO only when binding is enabled
+        BridgeEventSupport.addDOMListener(ctx, element);
+
         return node;
     }
 

@@ -51,7 +51,7 @@ import org.w3c.dom.svg.SVGElement;
  */
 public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
     protected final static Map fonts = new HashMap(11);
-    static { 
+    static {
         fonts.put("serif",           "Serif");
         fonts.put("Times",           "Serif");
         fonts.put("Times New Roman", "Serif");
@@ -96,7 +96,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                                (SVGElement)element,
                                                UnitProcessor.VERTICAL_LENGTH,
                                                uctx);
-        
+
         result.setLocation(new Point2D.Float(x, y));
 
         // !!! TODO better text handling
@@ -148,7 +148,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         }
         s = (s == null) ? "SansSerif" : s;
         as.addAttribute(TextAttribute.FAMILY, s);
-                        
+
         // Font weight
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue
             (FONT_WEIGHT_PROPERTY);
@@ -282,7 +282,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 }
             }
         }
-       
+
 
         // Fill
         Paint p = CSSUtilities.convertFillToPaint(cssDecl);
@@ -298,9 +298,9 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         }
 
         // Stroke
-        Stroke stroke 
+        Stroke stroke
             = CSSUtilities.convertStrokeToBasicStroke((SVGElement)element,
-                                                      ctx, 
+                                                      ctx,
                                                       cssDecl,
                                                       uctx);
 
@@ -317,6 +317,9 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         Mask mask = CSSUtilities.convertMask(element, result, ctx);
         result.setMask(mask);
 
+        // <!> TODO only when binding is enabled
+        BridgeEventSupport.addDOMListener(ctx, element);
+        ctx.bind(element, result);
 
         return result;
     }

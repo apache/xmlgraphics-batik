@@ -133,6 +133,9 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         Mask   mask   = CSSUtilities.convertMask(element, node, ctx);
         node.setMask(mask);
 
+        // <!> TODO only when binding is enabled
+        BridgeEventSupport.addDOMListener(ctx, element);
+
         return node;
     }
 
