@@ -118,7 +118,6 @@ public class StaticRenderer implements Renderer {
                 ILLEGAL_ARGUMENT_ZERO_WIDTH_OR_HEIGHT +
                 " : offScreen.getWidth() = " + offScreen.getWidth() +
                 " / offScreen.getHeight() = " + offScreen.getHeight() );
-
         this.offScreen = offScreen;
     }
 
@@ -221,7 +220,7 @@ public class StaticRenderer implements Renderer {
     public void initSelectors() {
         Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
         if (textSelector == null) {
-	    textSelector =
+            textSelector =
                 new ConcreteTextSelector(nodeRenderContext);
         }
         while (nodeIter.hasNext()) {

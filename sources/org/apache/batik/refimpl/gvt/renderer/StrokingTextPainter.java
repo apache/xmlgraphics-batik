@@ -156,41 +156,17 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             // paint over-and-underlines first, then layer glyphs over them
 
-            // thickness divisor: text decoration thickness is
-            // equal to the text advance divided by this number
-            float thick_div;
-            Object textWeight = runaci.getAttribute(TextAttribute.WEIGHT);
-            if (textWeight == TextAttribute.WEIGHT_REGULAR) {
-                thick_div = 12f;
-            } else if (textWeight == TextAttribute.WEIGHT_BOLD) {
-                thick_div = 9f;
-            } else if (textWeight == TextAttribute.WEIGHT_LIGHT) {
-                thick_div = 16f;
-            } else if (textWeight == TextAttribute.WEIGHT_DEMIBOLD) {
-                thick_div = 10f;
-            } else if (textWeight == TextAttribute.WEIGHT_DEMILIGHT) {
-                thick_div = 14f;
-            } else if (textWeight == TextAttribute.WEIGHT_EXTRABOLD) {
-                thick_div = 8f;
-            } else if (textWeight == TextAttribute.WEIGHT_EXTRA_LIGHT) {
-                thick_div = 18f;
-            } else if (textWeight == TextAttribute.WEIGHT_SEMIBOLD) {
-                thick_div = 11f;
-            } else if (textWeight == TextAttribute.WEIGHT_ULTRABOLD) {
-                thick_div = 7f;
-            } else {
-                thick_div = 12f;
-            }
+            float thickness = getDecorationThickness(runaci, layout);
 
             if (underline && !layout.isVertical()) {
-                paintUnderline(textRun, location, x, thick_div, g2d);
+                paintUnderline(textRun, location, x, thickness, g2d);
             }
             boolean overline =
                 (runaci.getAttribute(GVTAttributedCharacterIterator.
                                      TextAttribute.OVERLINE) != null);
 
             if (overline && !layout.isVertical()) {
-                paintOverline(textRun, location, x, thick_div, g2d);
+                paintOverline(textRun, location, x, thickness, g2d);
             }
 
 
@@ -223,7 +199,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                             TextAttribute.STRIKETHROUGH_ON);
             // paint strikethrough last
             if (strikethrough && !layout.isVertical()) {
-                paintStrikethrough(textRun, location, x, thick_div, g2d);
+                paintStrikethrough(textRun, location, x, thickness, g2d);
             }
             x += textRun.getLayout().getAdvance();
         }
@@ -238,14 +214,14 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Paints the overline for a given ACI.
      */
     private void paintOverline(TextRun textRun, Point2D location,
-                     double xoffset, float thickness_divisor, Graphics2D g2d) {
+                     double xoffset, float thickness, Graphics2D g2d) {
         AttributedCharacterIterator runaci = textRun.getACI();
         TextLayout layout = textRun.getLayout();
         double y = location.getY() +
             layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE] +
                 layout.getAscent()*1.1;
         Stroke overlineStroke =
-            new BasicStroke((float) layout.getAscent()/thickness_divisor);
+            new BasicStroke(thickness);
         java.awt.Shape overlineShape =
                     overlineStroke.createStrokedShape(
                            new java.awt.geom.Line2D.Double(
@@ -278,40 +254,42 @@ public class StrokingTextPainter extends BasicTextPainter {
      * the underline fill and stroke to differ from that of the text glyphs.
      */
     private void paintUnderline(TextRun textRun, Point2D location,
-                    double xoffset, float thickness_divisor, Graphics2D g2d) {
+                    double xoffset, float thickness, Graphics2D g2d) {
         AttributedCharacterIterator runaci = textRun.getACI();
         TextLayout layout = textRun.getLayout();
         double y = location.getY() +
                    (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
                         + layout.getDescent())/2;
         Stroke underlineStroke =
-            new BasicStroke((float) layout.getAscent()/thickness_divisor);
+            new BasicStroke(thickness);
         java.awt.Shape underlineShape =
                     underlineStroke.createStrokedShape(
                            new java.awt.geom.Line2D.Double(
                            location.getX()+xoffset, y,
                            location.getX()+xoffset+layout.getAdvance(), y));
+
         // TODO: change getAdvance to getVisibleAdvance for
         // ACIs which do not inherit their underline attribute
         // (not sure how to implement this yet)
+
         Paint paint = (Paint) runaci.getAttribute(
             GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
         if (paint != null) {
             g2d.setPaint(paint);
             g2d.fill(underlineShape);
+            //    System.out.println("Filling "+underlineShape+" with paint "+paint);
         }
         Stroke stroke = (Stroke) runaci.getAttribute(
             GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
         paint = (Paint) runaci.getAttribute(
             GVTAttributedCharacterIterator.
                 TextAttribute.UNDERLINE_STROKE_PAINT);
-        if (stroke != null) {
+        if ((stroke != null) && (paint != null)) {
             g2d.setStroke(stroke);
-        }
-        if (paint != null) {
             g2d.setPaint(paint);
+            g2d.draw(underlineShape);
         }
-        g2d.draw(underlineShape);
+
     }
 
     /**
@@ -320,17 +298,17 @@ public class StrokingTextPainter extends BasicTextPainter {
      * internal strikethrough but computes it manually.
      */
     private void paintStrikethrough(TextRun textRun, Point2D location,
-                     double xoffset, float thickness_divisor, Graphics2D g2d) {
+                     double xoffset, float thickness, Graphics2D g2d) {
         AttributedCharacterIterator runaci = textRun.getACI();
         TextLayout layout = textRun.getLayout();
         double y = location.getY()+
             (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
-             - layout.getAscent())/1.8;
-                     // XXX: 1.8 is a hack for cosmetic reasons
+             - layout.getAscent())/2.8;
+                     // XXX: 2.8 is a hack for cosmetic reasons
         // TODO: the strikethrough offset should be calculated
         // from the font instead!
         Stroke strikethroughStroke =
-            new BasicStroke((float) layout.getAscent()/thickness_divisor);
+            new BasicStroke(thickness);
         java.awt.Shape strikethroughShape =
                     strikethroughStroke.createStrokedShape(
                            new java.awt.geom.Line2D.Double(
@@ -353,6 +331,37 @@ public class StrokingTextPainter extends BasicTextPainter {
             g2d.setPaint(paint);
         }
         g2d.draw(strikethroughShape);
+    }
+
+
+    private float getDecorationThickness(AttributedCharacterIterator aci,
+                                                         TextLayout layout) {
+            // thickness divisor: text decoration thickness is
+            // equal to the text advance divided by this number
+            float thick_div;
+            Object textWeight = aci.getAttribute(TextAttribute.WEIGHT);
+            if (textWeight == TextAttribute.WEIGHT_REGULAR) {
+                thick_div = 14f;
+            } else if (textWeight == TextAttribute.WEIGHT_BOLD) {
+                thick_div = 11f;
+            } else if (textWeight == TextAttribute.WEIGHT_LIGHT) {
+                thick_div = 18f;
+            } else if (textWeight == TextAttribute.WEIGHT_DEMIBOLD) {
+                thick_div = 12f;
+            } else if (textWeight == TextAttribute.WEIGHT_DEMILIGHT) {
+                thick_div = 16f;
+            } else if (textWeight == TextAttribute.WEIGHT_EXTRABOLD) {
+                thick_div = 10f;
+            } else if (textWeight == TextAttribute.WEIGHT_EXTRA_LIGHT) {
+                thick_div = 20f;
+            } else if (textWeight == TextAttribute.WEIGHT_SEMIBOLD) {
+                thick_div = 13f;
+            } else if (textWeight == TextAttribute.WEIGHT_ULTRABOLD) {
+                thick_div = 9f;
+            } else {
+                thick_div = 14f;
+            }
+        return layout.getAscent()/thick_div;
     }
 
     /**

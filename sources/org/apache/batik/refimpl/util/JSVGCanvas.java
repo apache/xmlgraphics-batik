@@ -140,6 +140,11 @@ public class JSVGCanvas
         new Cursor(Cursor.WAIT_CURSOR);
 
     /**
+     * The cursor which has been most recently requested by a background thread.
+     */
+    public Cursor requestedCursor = NORMAL_CURSOR;
+
+    /**
      * The global offscreen buffer.
      */
     protected BufferedImage globalBuffer;
@@ -377,7 +382,7 @@ public class JSVGCanvas
 
         public void run() {
             setRootNode(root, bridgeContext);
-            setCursor(NORMAL_CURSOR);
+            requestCursor(NORMAL_CURSOR);
         }
     }
 
@@ -419,6 +424,22 @@ public class JSVGCanvas
         Rectangle2D r = transform.createTransformedShape(aoi).getBounds();
         repaint((int)r.getX()-1, (int)r.getY()-1,
                 (int)r.getWidth()+2, (int)r.getHeight()+2);
+    }
+
+    /**
+     * Sets the value of the requested cursor, but in a thread-safe way.
+     * The requested cursor will be set during the next call to paintComponent.
+     */
+    protected synchronized void requestCursor(Cursor newCursor) {
+        this.requestedCursor = newCursor;
+    }
+
+    /**
+     * Gets the value of the requested cursor, but in a thread-safe way.
+     * The requested cursor will be set during the next call to paintComponent.
+     */
+    protected synchronized Cursor getRequestedCursor() {
+        return requestedCursor;
     }
 
     /**
@@ -508,6 +529,18 @@ public class JSVGCanvas
         g.fillRect(0, 0, w, h);
     }
 
+
+    /**
+     * Clears a specific buffer.
+     */
+    protected void clearBuffer(BufferedImage buffer, int w, int h) {
+        Graphics2D g = buffer.createGraphics();
+        g.setComposite(AlphaComposite.SrcOver);
+        g.setClip(0, 0, w, h);
+        g.setPaint(Color.white);
+        g.fillRect(0, 0, w, h);
+    }
+
    /**
     * @return the area of interest displayed in the viewer, in usr space.
     */
@@ -543,6 +576,12 @@ public class JSVGCanvas
             return;
         }
 
+        // Check to see if a cursor request has been queued before a repaint()
+
+        Cursor rCursor = getRequestedCursor();
+        if (getCursor() != rCursor) {
+            setCursor(rCursor);
+        }
         updateBuffer(w, h);
         if (bufferNeedsRendering) {
             renderer = rendererFactory.createRenderer(buffer);
@@ -570,10 +609,9 @@ public class JSVGCanvas
                 g2d.fillRect(0, 0, w, h);
             }
 
-            clearBuffer(w, h);
             renderer.setTransform(transform);
-            repaintAOI();
-            bufferNeedsRendering = false;
+            repaintAOI(renderer, size, buffer);
+            bufferNeedsRendering = false; // repaint is already queued
             return;
         } else { // buffer is current, just transform and draw it
 
@@ -585,8 +623,17 @@ public class JSVGCanvas
                 int ty = (int)panTransform.getTranslateY();
                 paintPanRegions(g2d, tx, ty, w, h);
                 g2d.transform(panTransform);
+            } else {
+                g2d.setComposite(AlphaComposite.SrcOver);
+                g2d.setClip(0, 0, w, h);
+                g2d.setPaint(Color.white);
+                g2d.fillRect(0, 0, w, h);
             }
             g2d.drawImage(buffer, null, 0, 0);
+
+            // Note that the above assumes that read access to buffer
+            // is safe while background threads may still be working...
+            // which may be overly optimistic.
 
             paintOverlays(g);
         }
@@ -694,28 +741,52 @@ public class JSVGCanvas
     /**
      * To repaint the buffer.
      */
-    protected void repaintAOI() {
+    protected void repaintAOI(Renderer renderer, Dimension size, BufferedImage buffer) {
 
-        Dimension size = getSize();
+        // Issue:  we now may have multiple repaintAOI runnables alive
+        //   at the same time (for instance, if we do 2 pans in quick succession).
+        //   This is of course inefficient.  It would be better to interrupt the old
+        //   thread when a new one is created.
 
-        long t1 = System.currentTimeMillis();
-        setCursor(WAIT_CURSOR);
+        Shape aoi = getAreaOfInterest(new Rectangle(0, 0, size.width, size.height));
+        Thread t = new Thread(new RenderBufferAOIRunnable(renderer, aoi, buffer, size));
+        t.setPriority(Thread.MIN_PRIORITY);
+        t.start();
+    }
 
-        /* TODO: make sure renderer.repaint is
-         *  thread safe, and never called until the document is
-         *  initialized, etc., make sure there are no race conditions
-         *  on size, etc... then put this call in a background thread
-         *  (as it was previously).
-         */
-        renderer.repaint(getAreaOfInterest
-                             (new Rectangle(0, 0, size.width, size.height)));
+    class RenderBufferAOIRunnable implements Runnable {
 
-        long t2 = System.currentTimeMillis();
-        System.out.println("----------- Rendering --------- " +
+        private Shape aoi;
+        private Renderer renderer;
+        private BufferedImage buffer;
+        private Dimension size;
+
+        RenderBufferAOIRunnable(Renderer renderer, Shape aoi, BufferedImage buffer,
+                                                                     Dimension size) {
+            this.renderer = renderer;
+            this.aoi = aoi;
+            this.buffer = buffer; // Hack, should be able to get this from renderer
+            this.size = size;
+        }
+
+        public void run() {
+            long t1 = System.currentTimeMillis();
+            requestCursor(WAIT_CURSOR);
+            synchronized (buffer) {
+
+                // if we don't synchronize, we can accidentlly
+                // paint twice after clearing twice
+
+                clearBuffer(buffer, (int) (this.size.getWidth()),
+                                    (int) (this.size.getHeight()));
+                renderer.repaint(aoi);
+            }
+            long t2 = System.currentTimeMillis();
+            System.out.println("----------- Rendering --------- " +
                                (t2 - t1) + " ms");
-
-        setCursor(NORMAL_CURSOR);
-        repaint();
+            requestCursor(NORMAL_CURSOR);
+            JSVGCanvas.this.repaint();
+        }
     }
 
     /**
@@ -949,7 +1020,7 @@ public class JSVGCanvas
         }
 
         protected void endOperation(int x, int y) {
-            setCursor(cursor);
+            setCursor(getRequestedCursor());
             cursor = null;
 
             if (mouseExited) {
