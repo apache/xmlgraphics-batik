@@ -101,6 +101,7 @@ public class SVGFeOffsetElementBridge
         // on the input is required.
         PadRable pad = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
         Filter filter = new AffineRable8Bit(pad, at);
+        filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);
 
         // handle the 'color-interpolation-filters' property
         handleColorInterpolationFilters(filter, filterElement);
