@@ -38,6 +38,7 @@ public class DOMUtilities extends XMLUtilities {
         Document result = impl.createDocument(root.getNamespaceURI(),
                                               root.getNodeName(),
                                               null);
+        Element rroot = result.getDocumentElement();
         boolean before = true;
         for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling()) {
             if (n == root) {
@@ -46,14 +47,18 @@ public class DOMUtilities extends XMLUtilities {
                     NamedNodeMap attr = root.getAttributes();
                     int len = attr.getLength();
                     for (int i = 0; i < len; i++) {
-                        root.setAttributeNode((Attr)deepCloneNode(attr.item(i), doc));
+                        rroot.setAttributeNode((Attr)deepCloneNode(attr.item(i),
+                                                                   result));
                     }
-            }
+                }
+                deepCloneChildren(root, rroot, result);
             } else {
-                if (before) {
-                    result.insertBefore(deepCloneNode(n, result), root);
-                } else {
-                    result.appendChild(deepCloneNode(n, result));
+                if (n.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
+                    if (before) {
+                        result.insertBefore(deepCloneNode(n, result), rroot);
+                    } else {
+                        result.appendChild(deepCloneNode(n, result));
+                    }
                 }
             }
         }
@@ -94,7 +99,7 @@ public class DOMUtilities extends XMLUtilities {
         case Node.COMMENT_NODE:
             return doc.createComment(n.getNodeValue());
         default:
-            throw  new Error("Internal error");
+            throw  new Error("Internal error (" + n.getNodeType() + ")");
         }
     }
 

@@ -160,7 +160,7 @@ public abstract class AbstractElement
 	if (attributes == null) {
 	    attributes = createAttributes();
 	}
-	return (Attr)attributes.setNamedItem(newAttr);
+	return (Attr)attributes.setNamedItemNS(newAttr);
     }
 
     /**

@@ -45,7 +45,7 @@ public class DocumentHandlerAdapter implements DocumentHandler {
      * org.w3c.css.sac.DocumentHandler#comment(String)}.
      */
     public void comment(String text) throws CSSException {
-	throw new CSSException("Illegal CSS Text");
+        // Comments ignored by default
     }
 
     /**
