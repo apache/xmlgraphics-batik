@@ -33,7 +33,9 @@ import org.apache.batik.ext.awt.image.rendered.TileRed;
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
-public class TileRable8Bit extends AbstractRable implements TileRable{
+public class TileRable8Bit 
+    extends    AbstractColorInterpolationRable 
+    implements TileRable{
     /**
      * Tile region
      */
@@ -235,7 +237,7 @@ public class TileRable8Bit extends AbstractRable implements TileRable{
         RenderContext tileRc  = new RenderContext(tileAt, srcRect, rh);
         // RenderedImage tileRed = new DemandRed(source, tileRc);
         RenderedImage tileRed = source.createRendering(tileRc);
-
+        
         // System.out.println("TileRed: " + 
         //                    GraphicsUtil.wrap(tileRed).getBounds());
 
@@ -269,7 +271,7 @@ public class TileRable8Bit extends AbstractRable implements TileRable{
                                       Integer.MAX_VALUE/2);
         }
         // System.out.println("tiledArea: " + tiledArea);
-
+        tileRed = convertSourceCS(tileRed);
         TileRed tiledRed = new TileRed(tileRed, tiledArea, dw, dh);
 
         // org.apache.batik.test.gvt.ImageDisplay.showImage("Tile", tiledRed);

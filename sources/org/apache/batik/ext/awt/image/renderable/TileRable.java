@@ -16,7 +16,7 @@ import java.awt.geom.Rectangle2D;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public interface TileRable extends Filter {
+public interface TileRable extends FilterColorInterpolation {
     /**
      * Returns the tile region
      */

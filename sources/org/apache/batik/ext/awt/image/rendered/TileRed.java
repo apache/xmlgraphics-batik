@@ -133,8 +133,62 @@ public class TileRed extends AbstractRed implements TileGenerator {
              tile.getMinX(), tile.getMinY(), null);
 
         if (raster != null) {
-            fillRasterFrom(raster, tile);
-            this.tile = null;  // don't need it (It's in the raster).
+            int minX   = raster.getMinX();
+            int minY   = raster.getMinY();
+            int width  = raster.getWidth();
+            int height = raster.getHeight();
+
+            // This is a fairly expensive operation so do it once
+            // upfront.  If we wanted this to go even faster we could
+            // bypass copyData alltogeather and do the copy loops
+            // directly.
+            boolean int_pack = GraphicsUtil.is_INT_PACK_Data(sm, false);
+
+            WritableRaster fromRaster = raster.createWritableChild
+                (minX, minY, xStep, yStep, minX, minY, null);
+
+            // Fill one 'tile' of the input....
+            fillRasterFrom(fromRaster, tile);
+            this.tile = null;  // don't need it anymore (It's in the raster).
+            
+            // Now replicate that out to the rest of the 
+            // raster.  We keep growing the size of the
+            // chunk we replicate by 2x.
+
+            // Start replicating across the first row...
+            int step=xStep;
+            for (int x=xStep; x<width; x+=step, step*=2) {
+                int w = step;
+                if (x+w > width) w = width-x;
+                WritableRaster toRaster = raster.createWritableChild
+                    (minX+x, minY, w, yStep, minX, minY, null);
+
+                if (int_pack)
+                    GraphicsUtil.copyData_INT_PACK(fromRaster, toRaster);
+                else
+                    GraphicsUtil.copyData_FALLBACK(fromRaster, toRaster);
+
+                fromRaster = raster.createWritableChild
+                    (minX, minY, x+w, yStep, minX, minY, null);
+            }
+
+            // Next replicate that row down to the bottom of the raster...
+            step = yStep;
+            for (int y=yStep; y<height; y+=step, step*=2) {
+                int h = step;
+                if (y+h > height) h = height-y;
+                WritableRaster toRaster = raster.createWritableChild
+                    (minX, minY+y, width, h, minX, minY, null);
+
+                if (int_pack)
+                    GraphicsUtil.copyData_INT_PACK(fromRaster, toRaster);
+                else
+                    GraphicsUtil.copyData_FALLBACK(fromRaster, toRaster);
+
+
+                fromRaster = raster.createWritableChild
+                    (minX, minY, width, y+h, minX, minY, null);
+            }
         }
         else {
             this.tile        = tile;
