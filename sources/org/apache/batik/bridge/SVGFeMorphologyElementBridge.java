@@ -29,13 +29,20 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeMorphologyElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
 
     /**
      * Constructs a new bridge for the &lt;feMorphology> element.
      */
     public SVGFeMorphologyElementBridge() {}
+
+    /**
+     * Returns 'feMorphology'.
+     */
+    public String getLocalName() {
+        return SVG_FE_MORPHOLOGY_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified

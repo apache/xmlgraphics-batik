@@ -13,12 +13,13 @@ import java.awt.geom.AffineTransform;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.parser.ParseException;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;
 
 /**
- * The base bridge class for SVG graphics node.
+ * The base bridge class for SVG graphics node. By default, the namespace URI is
+ * the SVG namespace. Override the <tt>getNamespaceURI</tt> if you want to add
+ * custom <tt>GraphicsNode</tt> with a custom namespace.
  *
  * <p>This class handles various attributes that are defined on most
  * of the SVG graphic elements as described in the SVG
@@ -36,9 +37,8 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class AbstractGraphicsNodeBridge implements GraphicsNodeBridge,
-                                                            SVGConstants,
-                                                            ErrorConstants {
+public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
+    implements GraphicsNodeBridge, ErrorConstants {
 
     /**
      * Constructs a new abstract bridge.

@@ -32,6 +32,13 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
     public SVGPathElementBridge() {}
 
     /**
+     * Returns 'path'.
+     */
+    public String getLocalName() {
+        return SVG_PATH_TAG;
+    }
+
+    /**
      * Constructs a path according to the specified parameters.
      *
      * @param ctx the bridge context to use

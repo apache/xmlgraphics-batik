@@ -25,13 +25,20 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeDiffuseLightingElementBridge
-    extends SVGFeAbstractLightingElementBridge {
+    extends AbstractSVGLightingElementBridge {
 
 
     /**
      * Constructs a new bridge for the &lt;feDiffuseLighting> element.
      */
     public SVGFeDiffuseLightingElementBridge() {}
+
+    /**
+     * Returns 'feDiffuseLighting'.
+     */
+    public String getLocalName() {
+        return SVG_FE_DIFFUSE_LIGHTING_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified

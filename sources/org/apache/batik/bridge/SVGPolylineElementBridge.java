@@ -32,6 +32,13 @@ public class SVGPolylineElementBridge extends SVGDecoratedShapeElementBridge {
     public SVGPolylineElementBridge() {}
 
     /**
+     * Returns 'polyline'.
+     */
+    public String getLocalName() {
+        return SVG_POLYLINE_TAG;
+    }
+
+    /**
      * Constructs a polyline according to the specified parameters.
      *
      * @param ctx the bridge context to use

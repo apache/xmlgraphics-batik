@@ -20,7 +20,6 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
@@ -31,12 +30,20 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
+public class SVGClipPathElementBridge extends AbstractSVGBridge
+    implements ClipBridge {
 
     /**
-     * Constructs a new SVGClipPathElementBridge.
+     * Constructs a new bridge for the &lt;clipPath> element.
      */
     public SVGClipPathElementBridge() {}
+
+    /**
+     * Returns 'clipPath'.
+     */
+    public String getLocalName() {
+        return SVG_CLIP_PATH_TAG;
+    }
 
     /**
      * Creates a <tt>Clip</tt> according to the specified parameters.

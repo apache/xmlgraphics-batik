@@ -18,7 +18,6 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.filter.MaskRable8Bit;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -29,7 +28,20 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
+public class SVGMaskElementBridge extends AbstractSVGBridge
+    implements MaskBridge {
+
+    /**
+     * Constructs a new bridge for the &lt;mask> element.
+     */
+    public SVGMaskElementBridge() {}
+
+    /**
+     * Returns 'mask'.
+     */
+    public String getLocalName() {
+        return SVG_MASK_TAG;
+    }
 
     /**
      * Creates a <tt>Mask</tt> according to the specified parameters.

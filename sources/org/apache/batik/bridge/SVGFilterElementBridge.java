@@ -25,7 +25,6 @@ import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,14 +35,20 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFilterElementBridge implements FilterBridge,
-                                               SVGConstants,
-                                               ErrorConstants {
+public class SVGFilterElementBridge extends AbstractSVGBridge
+    implements FilterBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;filter> element.
      */
     public SVGFilterElementBridge() {}
+
+    /**
+     * Returns 'filter'.
+     */
+    public String getLocalName() {
+        return SVG_FILTER_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> according to the specified parameters.

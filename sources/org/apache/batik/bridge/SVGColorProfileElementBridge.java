@@ -32,13 +32,20 @@ import org.w3c.dom.NodeList;
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$ */
-public class SVGColorProfileElementBridge
-    implements Bridge, ErrorConstants, SVGConstants {
+public class SVGColorProfileElementBridge extends AbstractSVGBridge
+    implements ErrorConstants {
 
     /**
      * Profile cache
      */
     public NamedProfileCache cache = new NamedProfileCache();
+
+    /**
+     * Returns 'colorProfile'.
+     */
+    public String getLocalName() {
+        return SVG_COLOR_PROFILE_TAG;
+    }
 
     /**
      * Creates an ICC_ColorSpace according to the specified parameters.

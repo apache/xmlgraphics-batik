@@ -9,24 +9,17 @@
 package org.apache.batik.bridge;
 
 /**
- * A tagging interface that all bridges must implement. A bridge is
- * responsible on creating an appropriate object according to an Element.
+ * Bridge class for the &lt;missing-glyph> element.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public interface Bridge {
+public class SVGMissingGlyphElementBridge extends SVGGlyphElementBridge {
 
     /**
-     * Returns the namespace URI of the element this <tt>Bridge</tt> is
-     * dedicated to.
+     * Returns 'missing-glyph'.
      */
-    String getNamespaceURI();
-
-    /**
-     * Returns the local name of the element this <tt>Bridge</tt> is dedicated
-     * to.
-     */
-    String getLocalName();
-
+    public String getLocalName() {
+        return SVG_MISSING_GLYPH_TAG;
+    }
 }

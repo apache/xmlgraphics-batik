@@ -21,8 +21,6 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.util.CSSConstants;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,13 +31,13 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class SVGAbstractGradientElementBridge
-    implements PaintBridge, SVGConstants, CSSConstants, ErrorConstants {
+public abstract class AbstractSVGGradientElementBridge extends AbstractSVGBridge
+    implements PaintBridge, ErrorConstants {
 
     /**
-     * Constructs a new SVGAbstractGradientElementBridge.
+     * Constructs a new AbstractSVGGradientElementBridge.
      */
-    protected SVGAbstractGradientElementBridge() {}
+    protected AbstractSVGGradientElementBridge() {}
 
     /**
      * Creates a <tt>Paint</tt> according to the specified parameters.
@@ -289,7 +287,15 @@ public abstract class SVGAbstractGradientElementBridge
     /**
      * Bridge class for the gradient &lt;stop> element.
      */
-    public static class SVGStopElementBridge implements Bridge {
+    public static class SVGStopElementBridge extends AbstractSVGBridge
+        implements Bridge {
+
+        /**
+         * Returns 'stop'.
+         */
+        public String getLocalName() {
+            return SVG_STOP_TAG;
+        }
 
         /**
          * Creates a <tt>Stop</tt> according to the specified parameters.

@@ -8,13 +8,13 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.gvt.font.Glyph;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.gvt.font.Glyph;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 /**
@@ -23,12 +23,19 @@ import org.apache.batik.dom.svg.SVGOMDocument;
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
-public class SVGAltGlyphElementBridge implements Bridge, SVGConstants {
+public class SVGAltGlyphElementBridge extends AbstractSVGBridge {
 
     /**
      * Constructs a new bridge for the &lt;altGlyph> element.
      */
     public SVGAltGlyphElementBridge() {
+    }
+
+    /**
+     * Returns 'altGlyph'.
+     */
+    public String getLocalName() {
+        return SVG_ALT_GLYPH_TAG;
     }
 
     /**

@@ -18,7 +18,6 @@ import org.apache.batik.ext.awt.image.renderable.FilterAlphaRable;
 import org.apache.batik.ext.awt.image.renderable.FloodRable8Bit;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.BackgroundRable8Bit;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -29,13 +28,13 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class SVGAbstractFilterPrimitiveElementBridge
-    implements FilterPrimitiveBridge, SVGConstants, ErrorConstants {
+public abstract class AbstractSVGFilterPrimitiveElementBridge
+    extends AbstractSVGBridge implements FilterPrimitiveBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for a filter primitive element.
      */
-    protected SVGAbstractFilterPrimitiveElementBridge() {}
+    protected AbstractSVGFilterPrimitiveElementBridge() {}
 
     /**
      * Returns the input source of the specified filter primitive

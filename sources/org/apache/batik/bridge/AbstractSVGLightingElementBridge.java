@@ -15,7 +15,6 @@ import org.apache.batik.ext.awt.image.DistantLight;
 import org.apache.batik.ext.awt.image.Light;
 import org.apache.batik.ext.awt.image.PointLight;
 import org.apache.batik.ext.awt.image.SpotLight;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,13 +25,13 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class SVGFeAbstractLightingElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+public abstract class AbstractSVGLightingElementBridge
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
      * Constructs a new bridge for the lighting filter primitives.
      */
-    protected SVGFeAbstractLightingElementBridge() {}
+    protected AbstractSVGLightingElementBridge() {}
 
     /**
      * Returns the light from the specified lighting filter primitive
@@ -57,10 +56,10 @@ public abstract class SVGFeAbstractLightingElementBridge
             Element e = (Element)n;
             Bridge bridge = ctx.getBridge(e);
             if (bridge == null ||
-                !(bridge instanceof SVGFeAbstractLightElementBridge)) {
+                !(bridge instanceof AbstractSVGLightElementBridge)) {
                 continue;
             }
-            return ((SVGFeAbstractLightElementBridge)bridge).createLight
+            return ((AbstractSVGLightElementBridge)bridge).createLight
                 (ctx, filterElement, e, color);
         }
         return null;
@@ -104,8 +103,8 @@ public abstract class SVGFeAbstractLightingElementBridge
     /**
      * The base bridge class for light element.
      */
-    protected static abstract class SVGFeAbstractLightElementBridge
-        implements Bridge {
+    protected static abstract class AbstractSVGLightElementBridge
+        extends AbstractSVGBridge {
 
         /**
          * Creates a <tt>Light</tt> according to the specified parameters.
@@ -134,12 +133,19 @@ public abstract class SVGFeAbstractLightingElementBridge
      * Bridge class for the &lt;feSpotLight> element.
      */
     public static class SVGFeSpotLightElementBridge
-        extends SVGFeAbstractLightElementBridge {
+        extends AbstractSVGLightElementBridge {
 
         /**
          * Constructs a new bridge for a light element.
          */
         public SVGFeSpotLightElementBridge() {}
+
+        /**
+         * Returns 'feSpotLight'.
+         */
+        public String getLocalName() {
+            return SVG_FE_SPOT_LIGHT_TAG;
+        }
 
         /**
          * Creates a <tt>Light</tt> according to the specified parameters.
@@ -195,12 +201,19 @@ public abstract class SVGFeAbstractLightingElementBridge
      * Bridge class for the &lt;feDistantLight> element.
      */
     public static class SVGFeDistantLightElementBridge
-        extends SVGFeAbstractLightElementBridge {
+        extends AbstractSVGLightElementBridge {
 
         /**
          * Constructs a new bridge for a light element.
          */
         public SVGFeDistantLightElementBridge() {}
+
+        /**
+         * Returns 'feDistantLight'.
+         */
+        public String getLocalName() {
+            return SVG_FE_DISTANT_LIGHT_TAG;
+        }
 
         /**
          * Creates a <tt>Light</tt> according to the specified parameters.
@@ -231,12 +244,19 @@ public abstract class SVGFeAbstractLightingElementBridge
      * Bridge class for the &lt;fePointLight> element.
      */
     public static class SVGFePointLightElementBridge
-        extends SVGFeAbstractLightElementBridge {
+        extends AbstractSVGLightElementBridge {
 
         /**
          * Constructs a new bridge for a light element.
          */
         public SVGFePointLightElementBridge() {}
+
+        /**
+         * Returns 'fePointLight'.
+         */
+        public String getLocalName() {
+            return SVG_FE_POINT_LIGHT_TAG;
+        }
 
         /**
          * Creates a <tt>Light</tt> according to the specified parameters.

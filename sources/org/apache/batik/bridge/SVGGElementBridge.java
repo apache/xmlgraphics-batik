@@ -31,6 +31,13 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     public SVGGElementBridge() {}
 
     /**
+     * Returns 'g'.
+     */
+    public String getLocalName() {
+        return SVG_G_TAG;
+    }
+
+    /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
      *
      * @param ctx the bridge context to use

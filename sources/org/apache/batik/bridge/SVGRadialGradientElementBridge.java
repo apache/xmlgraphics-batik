@@ -28,13 +28,20 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGRadialGradientElementBridge
-    extends SVGAbstractGradientElementBridge {
+    extends AbstractSVGGradientElementBridge {
 
 
     /**
      * Constructs a new SVGRadialGradientElementBridge.
      */
     public SVGRadialGradientElementBridge() {}
+
+    /**
+     * Returns 'radialGradient'.
+     */
+    public String getLocalName() {
+        return SVG_RADIAL_GRADIENT_TAG;
+    }
 
     /**
      * Builds a radial gradient according to the specified parameters.

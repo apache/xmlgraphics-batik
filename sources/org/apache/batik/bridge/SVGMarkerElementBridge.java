@@ -23,8 +23,6 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.Marker;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-import org.apache.batik.util.CSSConstants;
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -40,15 +38,20 @@ import org.w3c.dom.svg.SVGElement;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGMarkerElementBridge implements MarkerBridge,
-                                               CSSConstants,
-                                               SVGConstants,
-                                               ErrorConstants {
+public class SVGMarkerElementBridge extends AbstractSVGBridge
+    implements MarkerBridge, ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;marker> element.
      */
     protected SVGMarkerElementBridge() {}
+
+    /**
+     * Returns 'marker'.
+     */
+    public String getLocalName() {
+        return SVG_MARKER_TAG;
+    }
 
     /**
      * Creates a <tt>Marker</tt> according to the specified parameters.

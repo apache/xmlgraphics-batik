@@ -30,6 +30,13 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
     public SVGCircleElementBridge() {}
 
     /**
+     * Returns 'circle'.
+     */
+    public String getLocalName() {
+        return SVG_CIRCLE_TAG;
+    }
+
+    /**
      * Constructs a circle according to the specified parameters.
      *
      * @param ctx the bridge context to use

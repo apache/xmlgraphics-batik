@@ -25,12 +25,19 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeFloodElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;feFlood> element.
      */
     public SVGFeFloodElementBridge() {}
+
+    /**
+     * Returns 'feFlood'.
+     */
+    public String getLocalName() {
+        return SVG_FE_FLOOD_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified

@@ -31,8 +31,6 @@ import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.PatternPaint;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 
-import org.apache.batik.util.SVGConstants;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -42,14 +40,20 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGPatternElementBridge implements PaintBridge,
-                                                SVGConstants,
-                                                ErrorConstants {
+public class SVGPatternElementBridge extends AbstractSVGBridge
+    implements PaintBridge, ErrorConstants {
 
     /**
      * Constructs a new SVGPatternElementBridge.
      */
     public SVGPatternElementBridge() {}
+
+    /**
+     * Returns 'pattern'.
+     */
+    public String getLocalName() {
+        return SVG_PATTERN_TAG;
+    }
 
     /**
      * Creates a <tt>Paint</tt> according to the specified parameters.
@@ -117,22 +121,22 @@ public class SVGPatternElementBridge implements PaintBridge,
         // +-------------------------------+
         // + patternContentUnitsTransform  |
         // +-------------------------------+
-        // 
+        //
         // where:
-        //   - viewPortTranslation is the transform that translate to the viewPort's 
+        //   - viewPortTranslation is the transform that translate to the viewPort's
         //     origin.
-        //   - preserveAspectRatioTransform is the transformed implied by the 
+        //   - preserveAspectRatioTransform is the transformed implied by the
         //     preserveAspectRatio attribute.
-        //   - patternContentUnitsTransform is the transform implied by the 
+        //   - patternContentUnitsTransform is the transform implied by the
         //     patternContentUnits attribute.
         //
-        // Note that there is an additional transform from the tiling space to the 
+        // Note that there is an additional transform from the tiling space to the
         // user space (patternTransform) that is passed separately to the PatternPaintContext.
         //
         GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
-        AffineTransform patternContentTransform 
-            = new AffineTransform(); 
-        
+        AffineTransform patternContentTransform
+            = new AffineTransform();
+
         //
         // Process viewPortTranslation
         //
@@ -148,19 +152,19 @@ public class SVGPatternElementBridge implements PaintBridge,
             (patternElement, null, SVG_VIEW_BOX_ATTRIBUTE, ctx);
 
         if (viewBoxStr.length() > 0) {
-            // There is a viewBox attribute. Then, take 
+            // There is a viewBox attribute. Then, take
             // preserveAspectRatio into account.
             String aspectRatioStr = SVGUtilities.getChainableAttributeNS
                (patternElement, null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE, ctx);
             float w = (float)patternRegion.getWidth();
             float h = (float)patternRegion.getHeight();
-            AffineTransform preserveAspectRatioTransform 
+            AffineTransform preserveAspectRatioTransform
                 = ViewBox.getPreserveAspectRatioTransform
                 (patternElement, viewBoxStr, aspectRatioStr, w, h);
 
             patternContentTransform.concatenate(preserveAspectRatioTransform);
         }
-        
+
         //
         // Process patternContentUnitsTransform
         //

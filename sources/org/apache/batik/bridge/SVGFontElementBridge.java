@@ -8,7 +8,6 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -18,12 +17,19 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
-public class SVGFontElementBridge implements Bridge, SVGConstants {
+public class SVGFontElementBridge extends AbstractSVGBridge {
 
     /**
      * Constructs a new bridge for the &lt;font> element.
      */
     public SVGFontElementBridge() {
+    }
+
+    /**
+     * Returns 'font'.
+     */
+    public String getLocalName() {
+        return SVG_FONT_TAG;
     }
 
     /**

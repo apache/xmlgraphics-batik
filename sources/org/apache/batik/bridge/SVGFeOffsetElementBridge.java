@@ -28,12 +28,19 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeOffsetElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;feOffset> element.
      */
     public SVGFeOffsetElementBridge() {}
+
+    /**
+     * Returns 'feOffset'.
+     */
+    public String getLocalName() {
+        return SVG_FE_OFFSET_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified

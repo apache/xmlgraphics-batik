@@ -56,6 +56,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     public SVGImageElementBridge() {}
 
     /**
+     * Returns 'image'.
+     */
+    public String getLocalName() {
+        return SVG_IMAGE_TAG;
+    }
+
+    /**
      * Creates a graphics node using the specified BridgeContext and
      * for the specified element.
      *
@@ -86,7 +93,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             purl = new ParsedURL(baseURL.toString(), uriStr);
         else
             purl = new ParsedURL(uriStr);
-        
+
         // try to load an SVG document
         DocumentLoader loader = ctx.getDocumentLoader();
         URIResolver resolver = new URIResolver(svgDoc, loader);

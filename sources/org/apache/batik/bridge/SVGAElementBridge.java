@@ -34,6 +34,13 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
     public SVGAElementBridge() {}
 
     /**
+     * Returns 'a'.
+     */
+    public String getLocalName() {
+        return SVG_A_TAG;
+    }
+
+    /**
      * Creates a <tt>CompositeGraphicsNode</tt>.
      */
     protected GraphicsNode instantiateGraphicsNode() {

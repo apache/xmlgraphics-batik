@@ -26,12 +26,19 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeTurbulenceElementBridge
-    extends SVGAbstractFilterPrimitiveElementBridge {
+    extends AbstractSVGFilterPrimitiveElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;feTurbulence> element.
      */
     public SVGFeTurbulenceElementBridge() {}
+
+    /**
+     * Returns 'feTurbulence'.
+     */
+    public String getLocalName() {
+        return SVG_FE_TURBULENCE_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified

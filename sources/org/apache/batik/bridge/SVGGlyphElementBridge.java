@@ -8,27 +8,30 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.gvt.font.Glyph;
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Attr;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+
+import java.io.StringReader;
+
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.awt.geom.Point2D;
-import java.awt.geom.AffineTransform;
-import java.awt.Shape;
+
 import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.ShapeNode;
+import org.apache.batik.gvt.ShapePainter;
+import org.apache.batik.gvt.font.Glyph;
+
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PathParser;
-import java.io.StringReader;
-import org.apache.batik.gvt.ShapePainter;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Bridge class for the &lt;glyph> element.
@@ -36,12 +39,20 @@ import org.apache.batik.gvt.ShapePainter;
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
-public class SVGGlyphElementBridge implements Bridge, SVGConstants, ErrorConstants {
+public class SVGGlyphElementBridge extends AbstractSVGBridge
+    implements ErrorConstants {
 
     /**
      * Constructs a new bridge for the &lt;glyph> element.
      */
     protected SVGGlyphElementBridge() {}
+
+    /**
+     * Returns 'glyph'.
+     */
+    public String getLocalName() {
+        return SVG_GLYPH_TAG;
+    }
 
     /**
      * Constructs a new Glyph that represents the specified &lt;glyph> element
@@ -56,8 +67,11 @@ public class SVGGlyphElementBridge implements Bridge, SVGConstants, ErrorConstan
      *
      * @return The new Glyph.
      */
-    public Glyph createGlyph(BridgeContext ctx, Element glyphElement,
-                             Element textElement, int glyphCode, float fontSize,
+    public Glyph createGlyph(BridgeContext ctx,
+                             Element glyphElement,
+                             Element textElement,
+                             int glyphCode,
+                             float fontSize,
                              SVGFontFace fontFace) {
 
         // build the GVT tree that represents the glyph
@@ -69,7 +83,8 @@ public class SVGGlyphElementBridge implements Bridge, SVGConstants, ErrorConstan
 
         float fontHeight = fontFace.getUnitsPerEm();
         float scale = fontSize/fontHeight;
-        AffineTransform scaleTransform = AffineTransform.getScaleInstance(scale, -scale);
+        AffineTransform scaleTransform
+            = AffineTransform.getScaleInstance(scale, -scale);
 
         // create a shape node that represents the d attribute
         String d = glyphElement.getAttributeNS(null, SVG_D_ATTRIBUTE);
@@ -82,13 +97,15 @@ public class SVGGlyphElementBridge implements Bridge, SVGConstants, ErrorConstan
                 pathParser.setPathHandler(app);
                 pathParser.parse(new StringReader(d));
             } catch (ParseException ex) {
-                throw new BridgeException(glyphElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                throw new BridgeException(glyphElement,
+                                          ERR_ATTRIBUTE_VALUE_MALFORMED,
                                           new Object [] {SVG_D_ATTRIBUTE});
             } finally {
-
                 // transform the shape into the correct coord system
                 Shape shape = app.getShape();
-                Shape transformedShape = scaleTransform.createTransformedShape(shape);
+                Shape transformedShape
+                    = scaleTransform.createTransformedShape(shape);
+
                 shapeNode.setShape(transformedShape);
 
                 // set up the painter for the d part of the glyph
@@ -121,9 +138,13 @@ public class SVGGlyphElementBridge implements Bridge, SVGConstants, ErrorConstan
             // need to clone the parent font element and glyph element
             // this is so that the glyph doesn't inherit anything past the font element
             //
-            Element fontElementClone = (Element)glyphElement.getParentNode().cloneNode(false);
+            Element fontElementClone
+                = (Element)glyphElement.getParentNode().cloneNode(false);
+
             // copy all font attributes over
-            NamedNodeMap fontAttributes = glyphElement.getParentNode().getAttributes();
+            NamedNodeMap fontAttributes
+                = glyphElement.getParentNode().getAttributes();
+
             int numAttributes = fontAttributes.getLength();
             for (int i = 0; i < numAttributes; i++) {
                 fontElementClone.setAttributeNode((Attr)fontAttributes.item(i));
@@ -144,7 +165,8 @@ public class SVGGlyphElementBridge implements Bridge, SVGConstants, ErrorConstan
                 Node childNode = clonedGlyphChildren.item(i);
                 if (childNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element childElement = (Element)childNode;
-                    GraphicsNode childGraphicsNode = builder.build(ctx, childElement);
+                    GraphicsNode childGraphicsNode =
+                        builder.build(ctx, childElement);
                     glyphChildrenNode.add(childGraphicsNode);
                 }
             }
@@ -155,10 +177,11 @@ public class SVGGlyphElementBridge implements Bridge, SVGConstants, ErrorConstan
         // set up glyph attributes
 
         // unicode
-        String unicode = glyphElement.getAttributeNS(null, SVG_UNICODE_ATTRIBUTE);
-
+        String unicode
+            = glyphElement.getAttributeNS(null, SVG_UNICODE_ATTRIBUTE);
         // glyph-name
-        String nameList = glyphElement.getAttributeNS(null, SVG_GLYPH_NAME_ATTRIBUTE);
+        String nameList
+            = glyphElement.getAttributeNS(null, SVG_GLYPH_NAME_ATTRIBUTE);
         Vector names = new Vector();
         StringTokenizer st = new StringTokenizer(nameList, " ,");
         while (st.hasMoreTokens()) {
@@ -166,10 +189,12 @@ public class SVGGlyphElementBridge implements Bridge, SVGConstants, ErrorConstan
         }
 
         // orientation
-        String orientation = glyphElement.getAttributeNS(null, SVG_ORIENTATION_ATTRIBUTE);
+        String orientation
+            = glyphElement.getAttributeNS(null, SVG_ORIENTATION_ATTRIBUTE);
 
         // arabicForm
-        String arabicForm = glyphElement.getAttributeNS(null, SVG_ARABIC_FORM_ATTRIBUTE);
+        String arabicForm
+            = glyphElement.getAttributeNS(null, SVG_ARABIC_FORM_ATTRIBUTE);
 
         // lang
         String lang = glyphElement.getAttributeNS(null, SVG_LANG_ATTRIBUTE);

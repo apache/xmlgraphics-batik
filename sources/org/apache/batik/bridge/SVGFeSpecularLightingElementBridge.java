@@ -26,13 +26,20 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGFeSpecularLightingElementBridge
-    extends SVGFeAbstractLightingElementBridge {
+    extends AbstractSVGLightingElementBridge {
 
 
     /**
      * Constructs a new bridge for the &lt;feSpecularLighting> element.
      */
     public SVGFeSpecularLightingElementBridge() {}
+
+    /**
+     * Returns 'feSpecularLighting'.
+     */
+    public String getLocalName() {
+        return SVG_FE_SPECULAR_LIGHTING_TAG;
+    }
 
     /**
      * Creates a <tt>Filter</tt> primitive according to the specified
