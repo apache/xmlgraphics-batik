@@ -69,7 +69,7 @@
         href="[location]#Verify Releases">verify the integrity</a> of
         the distribution files, especially if you are using one of our
         mirror sites.  In order to do this you must use the signatures
-        from our <a href="http://www.apache.org/dist/batik/">main
+        from our <a href="http://www.apache.org/dist/xml/batik/">main
         distribution directory</a> .
       </p>
       <p>
@@ -77,7 +77,7 @@
       </p>
       <p>
         If you do not see the file you need in the links below, please
-        see the <a href="http://www.apache.org/dist/batik/">master
+        see the <a href="http://www.apache.org/dist/xml/batik/">master
         distribution directory</a> or, preferably, its <a
         href="[preferred]/batik/">mirror</a>.
       </p>
@@ -112,25 +112,25 @@
 	<li>Binary Release:
           <a href="[preferred]/batik/batik-1.5.zip">batik-1.5.zip</a>
           [
-          <a href="http://www.apache.org/dist/batik/batik-1.5.zip.asc">PGP</a>
+          <a href="http://www.apache.org/dist/xml/batik/batik-1.5.zip.asc">PGP</a>
           ][
-          <a href="http://www.apache.org/dist/batik/batik-1.5.zip.md5">MD5</a>
+          <a href="http://www.apache.org/dist/xml/batik/batik-1.5.zip.md5">MD5</a>
           ]
         </li>
 	<li>Source Release:
           <a href="[preferred]/batik/batik-src-1.5.zip">batik-1.5.zip</a>
           [
-          <a href="http://www.apache.org/dist/batik/batik-src-1.5.zip.asc">PGP</a>
+          <a href="http://www.apache.org/dist/xml/batik/batik-src-1.5.zip.asc">PGP</a>
           ][
-          <a href="http://www.apache.org/dist/batik/batik-src-1.5.zip.md5">MD5</a>
+          <a href="http://www.apache.org/dist/xml/batik/batik-src-1.5.zip.md5">MD5</a>
           ]
         </li>
 	<li>Documentation:
           <a href="[preferred]/batik/batik-docs-1.5.zip">batik-1.5.zip</a>
           [
-          <a href="http://www.apache.org/dist/batik/batik-docs-1.5.zip.asc">PGP</a>
+          <a href="http://www.apache.org/dist/xml/batik/batik-docs-1.5.zip.asc">PGP</a>
           ][
-          <a href="http://www.apache.org/dist/batik/batik-docs-1.5.zip.md5">MD5</a>
+          <a href="http://www.apache.org/dist/xml/batik/batik-docs-1.5.zip.md5">MD5</a>
           ]
         </li>
       </ul>
@@ -138,7 +138,7 @@
     <s1 title="Old Batik Releases">
       <p>
         Older releases of Batik can be found 
-        <a href="http://archive.apache.org/dist/batik/">here</a>.  
+        <a href="http://archive.apache.org/dist/xml/batik/">here</a>.  
         We highly recommend to not use those releases but upgrade to
         Batik's <a href="[location]#Current Release of Batik">latest</a>
         release.
@@ -152,10 +152,10 @@
       <p>
         The PGP signatures can be verified using PGP or GPG.  First
         download the <a
-        href="http://www.apache.org/dist/batik/KEYS">KEYS</a> as well
+        href="http://www.apache.org/dist/xml/batik/KEYS">KEYS</a> as well
         as the <code>asc</code> signature file for the particular
         distribution.  Make sure you get these files from the <a
-        href="http://www.apache.org/dist/batik/">main distribution
+        href="http://www.apache.org/dist/xml/batik/">main distribution
         directory</a> , rather than from a mirror. Then verify the
         signatures using
       </p>
@@ -189,7 +189,7 @@
         , or <a href="http://www.slavasoft.com/fsum/">here</a> .
       </p>
       <p>
-        We highly recommend to verify the PGP signature, though.
+        The PGP signature can provide a much higher level of assurance.
       </p>
     </s1>
   </body>

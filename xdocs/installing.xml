@@ -93,7 +93,7 @@
       <p>To install Batik, you will need to go to the <link
           href="http://www.apache.org/dyn/closer.cgi/xml/batik">download area</link> and download one or more
         ZIP file containing the distribution of your choice. It is
-        good practice to <link href="verify">verify the
+        good practice to <link href="#verify">verify the
           integrity</link> of the distribution files, especially if
         you are using one of our mirror sites. Here are the
         various components you will find in the download area and
@@ -275,10 +275,10 @@
       <p>
         The PGP signatures can be verified using PGP or GPG.  First
         download the <link
-        href="http://www.apache.org/dist/batik/KEYS">KEYS</link> as
+        href="http://www.apache.org/dist/xml/batik/KEYS">KEYS</link> as
         well as the <code>asc</code> signature file for the particular
         distribution you choose.  Make sure you get these files from
-        the <link href="http://www.apache.org/dist/batik/">main
+        the <link href="http://www.apache.org/dist/xml/batik/">main
         distribution directory</link> , rather than from a
         mirror. Then verify the signatures using
       </p>

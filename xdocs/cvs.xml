@@ -78,12 +78,10 @@
           following commands (if you are using a GUI CVS client,
           configure it appropriately):<br/>
           
-          <code>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic</code><br/>
-          <code>login</code><br/> 
+          <code>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login</code><br/> 
           <code>password: anoncvs</code><br/> 
           <br/> 
-          <code>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic</code><br/>
-          <code>checkout xml-batik</code><br/><br/>
+          <code>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-batik</code><br/><br/>
         </li>
 
         <li>The second and probably easiest is by downloading a <link
@@ -98,7 +96,7 @@
             build</link>.  The '-cvs-' packages contain a complete
           copy of CVS.  The '-src-' packages contain only what is
           needed to build and run Batik.  The biggest difference
-          being that cVS includes the <link href="test.html">test
+          being that CVS includes the <link href="test.html">test
             infrastructure</link>.<br/>
         </li>
 
@@ -106,7 +104,8 @@
             href="http://cvs.apache.org/viewcvs.cgi/xml-batik"
             >viewcvs</link>.  This provides the ability to traverse
           the CVS repository over the web, and check differences
-          between versions.
+          between versions.  This is generally only useful for tracking
+          a small number of files/changes.
         </li>
       </ul>
     </s1>
