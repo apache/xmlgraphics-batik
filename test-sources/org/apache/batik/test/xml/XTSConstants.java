@@ -23,6 +23,7 @@ public interface XTSConstants {
     // XTS tags
     /////////////////////////////////////////////////////////////////////////
     String XTS_ARG_TAG        = "arg";
+    String XTS_PROPERTY_TAG   = "property";
     String XTS_TEST_TAG       = "test";
     String XTS_TEST_SUITE_TAG = "testSuite";
     String XTS_TEST_REPORT_PROCESSOR_TAG = "testReportProcessor";
