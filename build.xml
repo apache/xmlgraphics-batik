@@ -1,4 +1,3 @@
-
 <!--
 
 
@@ -587,59 +586,7 @@ To display the available targets type:
     <mkdir dir="${test-references}/samples/tests/candidate-variation"/>
     <mkdir dir="${test-references}/svgbe/accepted-variation"/>
     <mkdir dir="${test-references}/svgbe/candidate-variation"/>
-
-    <java fork="yes"
-          classname="${class-prefix}.test.xml.XMLTestSuiteRunner"
-          jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
-      <classpath>
-        <pathelement location="${dest}" />
-        <path refid="libs-classpath"/>
-        <path refid="libs-build-classpath"/>
-        <pathelement location="resources" />
-        <pathelement location="test-resources" />
-      </classpath>
-      <arg line="test-resources/org/apache/batik/test/regard.xml"/>
-    </java>
-  </target>
-
-  <target name="regardbe"
-          depends="compiletest"
-          description="Runs test suite whose file or uri is passed as an input">
-    <mkdir dir="${test-reports}"/>
-    <mkdir dir="${test-references}/svgbe/accepted-variation"/>
-    <mkdir dir="${test-references}/svgbe/candidate-variation"/>
-    <java fork="yes"
-          classname="${class-prefix}.test.xml.XMLTestSuiteRunner"
-          jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
-      <classpath>
-        <pathelement location="${dest}" />
-        <path refid="libs-classpath"/>
-        <path refid="libs-build-classpath"/>
-        <pathelement location="resources" />
-        <pathelement location="test-resources" />
-      </classpath>
-      <arg line="test-resources/org/apache/batik/test/regardbe.xml"/>
-    </java>
-  </target>
-
-  <target name="regardtext"
-          depends="compiletest"
-          description="Runs test suite whose file or uri is passed as an input">
-    <mkdir dir="${test-reports}"/>
-    <mkdir dir="${test-references}/svgbe/accepted-variation"/>
-    <mkdir dir="${test-references}/svgbe/candidate-variation"/>
-    <java fork="yes"
-          classname="${class-prefix}.test.xml.XMLTestSuiteRunner"
-          jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
-      <classpath>
-        <pathelement location="${dest}" />
-        <path refid="libs-classpath"/>
-        <path refid="libs-build-classpath"/>
-        <pathelement location="resources" />
-        <pathelement location="test-resources" />
-      </classpath>
-      <arg line="test-resources/org/apache/batik/test/regardtext.xml"/>
-    </java>
+    <mkdir dir="${test-references}/org/apache/batik/svggen/candidate-ref" />
   </target>
 
   <target name="ttf2svg"
@@ -660,14 +607,6 @@ To display the available targets type:
   <target name="regard"
           depends="compiletest, testdirs"
           description="Runs test suite whose file or uri is passed as an input">
-    <mkdir dir="${test-reports}"/>
-    <mkdir dir="${test-references}/samples/accepted-variation"/>
-    <mkdir dir="${test-references}/samples/candidate-variation"/>
-    <mkdir dir="${test-references}/samples/tests/accepted-variation"/>
-    <mkdir dir="${test-references}/samples/tests/candidate-variation"/>
-    <mkdir dir="${test-references}/svgbe/accepted-variation"/>
-    <mkdir dir="${test-references}/svgbe/candidate-variation"/>
-
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner"
           jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
@@ -678,11 +617,9 @@ To display the available targets type:
         <pathelement location="resources" />
         <pathelement location="test-resources" />
       </classpath>
-      <arg line="test-resources/org/apache/batik/test/regardtext.xml"/>
+      <arg line="test-resources/org/apache/batik/test/regard.xml"/>
     </java>
   </target>
-
-
 
   <target name="runtestsuite"
           depends="compiletest, testdirs"
