@@ -1743,6 +1743,25 @@ public class JSVGComponent extends JGVTComponent {
         public float getPixelToMM() { return getPixelUnitToMillimeter(); }
 
 
+        /**
+         * Returns the default font family.
+         */
+        public String getDefaultFontFamily() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getDefaultFontFamily();
+            } else {
+                class Query implements Runnable {
+                    String result;
+                    public void run() {
+                        result = userAgent.getDefaultFontFamily();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
         public float getMediumFontSize() {
             if (EventQueue.isDispatchThread()) {
                 return userAgent.getMediumFontSize();
@@ -2340,6 +2359,16 @@ public class JSVGComponent extends JGVTComponent {
          */
         public float getPixelToMM() { return getPixelUnitToMillimeter(); }
 
+        /**
+         * Returns the default font family.
+         */
+        public String getDefaultFontFamily() {
+            if (svgUserAgent != null) {
+                return svgUserAgent.getDefaultFontFamily();
+            }
+            return "Arial, Helvetica, sans-serif";
+        }
+
         /** 
          * Returns the  medium font size. 
          */
@@ -2347,7 +2376,7 @@ public class JSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 return svgUserAgent.getMediumFontSize();
             }
-            // <!> FIXME: Should that 72 be 96?
+            // 9pt (72pt = 1in)
             return 9f * 25.4f / (72f * getPixelUnitToMillimeter());
         }
 

@@ -72,6 +72,11 @@ public interface SVGUserAgent {
      */
     float getPixelToMM();
 
+    /**
+     * Returns the default font family.
+     */
+    String getDefaultFontFamily();
+
     /** 
      * Returns the  medium font size. 
      */

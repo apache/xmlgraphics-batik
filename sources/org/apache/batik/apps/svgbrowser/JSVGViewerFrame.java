@@ -2238,6 +2238,13 @@ public class JSVGViewerFrame
             
         }
 
+        /**
+         * Returns the default font family.
+         */
+        public String getDefaultFontFamily() {
+            return "Arial, Helvetica, sans-serif";
+        }
+
         /** 
          * Returns the  medium font size. 
          */

@@ -994,6 +994,19 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
+     * Returns the value corresponding to the default font.
+     */
+    public Value getDefaultFontFamily() {
+        // No cache needed since the default font family is asked only
+        // one time on the root element (only if it does not have its
+        // own font-family).
+        SVGOMDocument doc = (SVGOMDocument)document;
+        String str = userAgent.getDefaultFontFamily();
+        return doc.getCSSEngine().parsePropertyValue
+            (SVGConstants.CSS_FONT_FAMILY_PROPERTY, str);
+    }
+
+    /**
      * Returns a lighter font-weight.
      */
     public float getLighterFontWeight(float f) {
