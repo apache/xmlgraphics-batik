@@ -872,6 +872,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * changed.
      */
     protected void invalidateGeometryCache() {
+        // If our bounds are invalid then our parents bounds
+        // must be invalid also. So just return.
+        if (bounds == null) return;
+
         if (parent != null) {
             ((AbstractGraphicsNode) parent).invalidateGeometryCache();
         }
