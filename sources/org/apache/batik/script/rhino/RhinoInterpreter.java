@@ -69,8 +69,25 @@ public class RhinoInterpreter implements Interpreter {
         }
     };
 
-    // store last 32 precompiled objects.
+    /**
+     * store last 32 precompiled objects.
+     */
     private static final int MAX_CACHED_SCRIPTS = 32;
+
+    /**
+     * Constant used to describe an SVG source
+     */
+    public static final String SOURCE_NAME_SVG = "<SVG>";
+
+    /**
+     * Name of the "window" object when referenced by scripts
+     */
+    public static final String BIND_NAME_WINDOW = "window";
+
+    /**
+     * Instantiate the "window" object
+     */
+    public static final String ECMA_WINDOW_INSTANTIATION = "window = new Window(window)";
 
     private ScriptableObject globalObject = null;
     private LinkedList compiledScripts = new LinkedList();
@@ -193,7 +210,7 @@ public class RhinoInterpreter implements Interpreter {
         try {
             rv = ctx.evaluateReader(globalObject,
                                     scriptreader,
-                                    "<SVG>",
+                                    SOURCE_NAME_SVG,
                                     1, rhinoClassLoader);
         } catch (JavaScriptException e) {
             // exception from JavaScript (possibly wrapping a Java Ex)
@@ -258,7 +275,7 @@ public class RhinoInterpreter implements Interpreter {
                         try {
                             return ctx.compileReader(globalObject,
                                                      new StringReader(scriptstr),
-                                                     "<SVG>",
+                                                     SOURCE_NAME_SVG,
                                                      1, rhinoClassLoader);
                         } catch(IOException io) {
                             // Should never happen: we are using a string
@@ -327,18 +344,18 @@ public class RhinoInterpreter implements Interpreter {
             Context.exit();
         }
 
-        if (name.equals("window") && object instanceof Window) {
+        if (name.equals(BIND_NAME_WINDOW) && object instanceof Window) {
             try {
                 // Defines the 'Window' class.
                 ScriptableObject.defineClass(globalObject,
                                              WindowWrapper.class);
 
                 // Wrap the given window object.
-                evaluate(new StringReader("window = new Window(window)"));
+                evaluate(new StringReader(ECMA_WINDOW_INSTANTIATION));
 
                 // The window becomes the global object.
                 globalObject =
-                    (ScriptableObject)globalObject.get("window", globalObject);
+                    (ScriptableObject)globalObject.get(BIND_NAME_WINDOW, globalObject);
             } catch (Exception e) {
                 // Cannot happen.
             }

@@ -44,6 +44,11 @@ public class InterpreterPool {
         "org.apache.batik.script.jacl.JaclInterpreterFactory";
 
     /**
+     * Name of the "document" object when referenced by scripts
+     */
+    public static final String BIND_NAME_DOCUMENT = "document";
+
+    /**
      * The default InterpreterFactory map.
      */
     protected static Map defaultFactories = new HashMap(7);
@@ -102,7 +107,7 @@ public class InterpreterPool {
                 interpreter = factory.createInterpreter
                     (((SVGOMDocument)document).getURLObject());
                 if (document != null) {
-                    interpreter.bindObject("document", document);
+                    interpreter.bindObject(BIND_NAME_DOCUMENT, document);
                 }
             } catch (Exception t) {
                 // may happen if the batik interpreters class is here but
