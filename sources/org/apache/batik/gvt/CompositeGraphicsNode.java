@@ -215,18 +215,19 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
         if (count > 0 && getBounds(rc).contains(p)) {
+            Point2D pt = null;
+            Point2D cp = null; // Propagated to children
             for (int i=0; i < count; ++i) {
-                AffineTransform t = children[i].getTransform();
-                if (t == null) {
-                    t = IDENTITY;
-                } else {
-                    // put the coordinates to children space
-                    try {
-                        t = t.createInverse();
-                    } catch (NoninvertibleTransformException ex) {}
+                AffineTransform t = children[i].getInverseTransform();
+                if(t != null){
+                    pt = t.transform(p, pt);
+                    cp = pt;
                 }
-                Point2D pt = t.transform(p, null);
-                if (children[i].contains(pt, rc)) {
+                else{
+                    cp = p;
+                }
+
+                if (children[i].contains(cp, rc)) {
                     return true;
                 }
             }
@@ -239,18 +240,18 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             //
             // Go backward because the children are in rendering order
             //
+            Point2D pt = null;
+            Point2D cp = null; // Propagated to children
             for (int i=count-1; i >= 0; --i) {
-                AffineTransform t = children[i].getTransform();
-                if (t == null) {
-                    t = IDENTITY;
-                } else {
-                    // put the coordinates to children space
-                    try {
-                        t = t.createInverse();
-                    } catch (NoninvertibleTransformException ex) {}
+                AffineTransform t = children[i].getInverseTransform();
+                if(t != null){
+                    pt = t.transform(p, pt);
+                    cp = pt;
                 }
-                Point2D pt = t.transform(p, null);
-                GraphicsNode node = children[i].nodeHitAt(pt, rc);
+                else{
+                    cp = p;
+                }
+                GraphicsNode node = children[i].nodeHitAt(cp, rc);
                 if (node != null) {
                     return node;
                 }
