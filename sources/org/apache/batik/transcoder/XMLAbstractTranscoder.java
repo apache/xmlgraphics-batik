@@ -106,6 +106,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
                                                 input.getURI(),
                                                 input.getReader());
                 } else if (input.getURI() != null) {
+                    System.out.println("Creating Document from URI...");
                     document = f.createDocument(namespaceURI,
                                                 documentElement,
                                                 input.getURI());
@@ -113,6 +114,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
             } catch (DOMException ex) {
                 handler.fatalError(new TranscoderException(ex));
             } catch (IOException ex) {
+                ex.printStackTrace();
                 handler.fatalError(new TranscoderException(ex));
             }
         }
@@ -177,7 +179,8 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_XML_PARSER_CLASSNAME
-        = new StringKey(0);
+        = new StringKey(10);
+    public static final String KEY_XML_PARSER_CLASSNAME_STR = "xmlParserClassName";
 
     /**
      * Document element key.
@@ -201,7 +204,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_DOCUMENT_ELEMENT
-        = new StringKey(2);
+        = new StringKey(12);
 
     /**
      * Document element namespace URI key.
@@ -226,7 +229,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_DOCUMENT_ELEMENT_NAMESPACE_URI
-        = new StringKey(3);
+        = new StringKey(13);
 
     /**
      * DOM Implementation key.
@@ -250,24 +253,12 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_DOM_IMPLEMENTATION
-        = new DOMImplKey(0);
-
-    /**
-     * A transcoding Key represented as a string.
-     */
-    private static class StringKey extends TranscodingHints.Key {
-        public StringKey(int privatekey) {
-            super(privatekey);
-        }
-        public boolean isCompatibleValue(Object v) {
-            return (v instanceof String);
-        }
-    }
+        = new DOMImplKey(14);
 
     /**
      * A transcoding Key represented as a DOMImplementation.
      */
-    private static class DOMImplKey extends TranscodingHints.Key {
+    public static class DOMImplKey extends TranscodingHints.Key {
         public DOMImplKey(int privatekey) {
             super(privatekey);
         }
