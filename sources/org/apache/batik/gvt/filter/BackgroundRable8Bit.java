@@ -95,6 +95,9 @@ public class BackgroundRable8Bit
                                  GraphicsNode child,
                                  GraphicsNodeRenderContext rc,
                                  Rectangle2D  init) {
+        // System.out.println("CGN: " + cgn);
+        // System.out.println("Child: " + child);
+
         List children = cgn.getChildren();
         Iterator i = children.iterator();
         Rectangle2D r2d = null;
@@ -103,9 +106,12 @@ public class BackgroundRable8Bit
             if (gn == child)
                 break;
 
+            // System.out.println("GN: " + gn);
             Rectangle2D cr2d = gn.getBounds(rc);
             AffineTransform at = gn.getTransform();
-            cr2d = at.createTransformedShape(cr2d).getBounds2D();
+            if (at != null)
+                cr2d = at.createTransformedShape(cr2d).getBounds2D();
+
             if (r2d == null) r2d = cr2d;
             r2d.add(cr2d);
         }
@@ -137,7 +143,6 @@ public class BackgroundRable8Bit
             // No background enable so check our parent's value.
             r2d = getViewportBounds(gn.getParent(), gn, rc);
 
-
         // No background for any ancester (error) return null
         if (r2d == null)
             return null;
@@ -154,15 +159,17 @@ public class BackgroundRable8Bit
             return addBounds(cgn, child, rc, null);
         }
 
-        try {
-            // We have a partial bound from parent, so map it to gn's
-            // coordinate system...
-            AffineTransform at = gn.getTransform();
-            at = at.createInverse();
-            r2d = at.createTransformedShape(r2d).getBounds2D();
-        } catch (NoninvertibleTransformException nte) {
-            // Degenerate case return null;
-            r2d = null;
+        // We have a partial bound from parent, so map it to gn's
+        // coordinate system...
+        AffineTransform at = gn.getTransform();
+        if (at != null) {
+            try {
+                at = at.createInverse();
+                r2d = at.createTransformedShape(r2d).getBounds2D();
+            } catch (NoninvertibleTransformException nte) {
+                // Degenerate case return null;
+                r2d = null;
+            }
         }
 
         if (child != null) {
@@ -207,15 +214,17 @@ public class BackgroundRable8Bit
         if (r2d == CompositeGraphicsNode.VIEWPORT)
             return r2d;
 
-        try {
-            // background has a definite bound so map it to gn's
-            // coordinate system...
-            AffineTransform at = gn.getTransform();
-            at = at.createInverse();
-            r2d = at.createTransformedShape(r2d).getBounds2D();
-        } catch (NoninvertibleTransformException nte) {
-            // Degenerate case return null;
-            r2d = null;
+        AffineTransform at = gn.getTransform();
+        if (at != null) {
+            try {
+                // background has a definite bound so map it to gn's
+                // coordinate system...
+                at = at.createInverse();
+                r2d = at.createTransformedShape(r2d).getBounds2D();
+            } catch (NoninvertibleTransformException nte) {
+                // Degenerate case return null;
+                r2d = null;
+            }
         }
 
         return r2d;
@@ -255,8 +264,10 @@ public class BackgroundRable8Bit
 
         Vector srcs = new Vector();
         if (r2d == null) {
+            Rectangle2D paoi = aoi;
             AffineTransform at = gn.getTransform();
-            Rectangle2D paoi = at.createTransformedShape(aoi).getBounds2D();
+            if (at != null)
+                paoi = at.createTransformedShape(aoi).getBounds2D();
             Filter f = getBackground(gn.getParent(), gn, rc, paoi);
             if (f != null)
               srcs.add(f);
@@ -277,9 +288,11 @@ public class BackgroundRable8Bit
                 if (childGN == child)
                     break;
 
-                AffineTransform at = childGN.getTransform();
                 Rectangle2D cbounds = childGN.getBounds(rc);
-                cbounds = at.createTransformedShape(cbounds).getBounds2D();
+                AffineTransform at = childGN.getTransform();
+                if (at != null) 
+                    cbounds = at.createTransformedShape(cbounds).getBounds2D();
+
                 if (aoi.intersects(cbounds)) {
                     GraphicsNodeRable gnr;
                     gnr  = gnrf.createGraphicsNodeRable(childGN, rc);
@@ -303,12 +316,14 @@ public class BackgroundRable8Bit
             // sure to map the filter from the parents user space
             // to the childs user space...
 
-            try {
-                AffineTransform at = child.getTransform();
-                at = at.createInverse();
-                ret = new AffineRable8Bit(ret, at);
-            } catch (NoninvertibleTransformException nte) {
-                ret = null;
+            AffineTransform at = child.getTransform();
+            if (at != null) {
+                try {
+                    at = at.createInverse();
+                    ret = new AffineRable8Bit(ret, at);
+                } catch (NoninvertibleTransformException nte) {
+                    ret = null;
+                }
             }
         }
 
