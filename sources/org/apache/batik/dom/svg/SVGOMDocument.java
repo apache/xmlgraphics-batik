@@ -196,6 +196,9 @@ public class SVGOMDocument
         factories.put(TAG_LINE,
                       new LineElementFactory());
 
+        factories.put(TAG_LINEAR_GRADIENT,
+                      new LinearGradientElementFactory());
+
         factories.put(TAG_MASK,
                       new MaskElementFactory());
 
@@ -207,6 +210,9 @@ public class SVGOMDocument
 
         factories.put(TAG_POLYLINE,
                       new PolylineElementFactory());
+
+        factories.put(TAG_RADIAL_GRADIENT,
+                      new RadialGradientElementFactory());
 
         factories.put(TAG_RECT,
                       new RectElementFactory());
@@ -1010,6 +1016,20 @@ public class SVGOMDocument
     }
 
     /**
+     * To create a 'linearGradient' element.
+     */
+    protected class LinearGradientElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_LINEAR_GRADIENT);
+        }
+    }
+
+    /**
      * To create a 'mask' element.
      */
     protected class MaskElementFactory implements ElementFactory {
@@ -1056,6 +1076,20 @@ public class SVGOMDocument
          */
         public Element create(String prefix) {
             return new SVGOMPolylineElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'radialGradient' element.
+     */
+    protected class RadialGradientElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_RADIAL_GRADIENT);
         }
     }
 

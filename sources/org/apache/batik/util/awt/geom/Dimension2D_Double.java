@@ -17,7 +17,9 @@ import java.awt.geom.Dimension2D;
  * @version $Id$
  */
 public class Dimension2D_Double extends Dimension2D{
+
     double width, height;
+
     public Dimension2D_Double() {
     }
 
@@ -27,7 +29,7 @@ public class Dimension2D_Double extends Dimension2D{
     }
 
     /**
-     * Returns the width of this <code>Dimension</code> in double 
+     * Returns the width of this <code>Dimension</code> in double
      * precision.
      * @return the width of this <code>Dimension</code>.
      */
@@ -36,7 +38,7 @@ public class Dimension2D_Double extends Dimension2D{
     }
 
     /**
-     * Returns the height of this <code>Dimension</code> in double 
+     * Returns the height of this <code>Dimension</code> in double
      * precision.
      * @return the height of this <code>Dimension</code>.
      */
@@ -45,14 +47,14 @@ public class Dimension2D_Double extends Dimension2D{
     }
 
     /**
-     * Sets the size of this <code>Dimension</code> object to the 
+     * Sets the size of this <code>Dimension</code> object to the
      * specified width and height.
      * This method is included for completeness, to parallel the
-     * {@link java.awt.Component#getSize getSize} method of 
+     * {@link java.awt.Component#getSize getSize} method of
      * {@link java.awt.Component}.
      * @param width  the new width for the <code>Dimension</code>
      * object
-     * @param height  the new height for the <code>Dimension</code> 
+     * @param height  the new height for the <code>Dimension</code>
      * object
      */
     public void setSize(double width, double height){

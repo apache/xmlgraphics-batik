@@ -246,6 +246,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_PAD = "pad";
     String VALUE_PRESERVE = "preserve";
     String VALUE_REFLECT = "reflect";
+    String VALUE_REPEAT = "repeat";
     String VALUE_SOURCE_GRAPHIC = "SourceGraphic";
     String VALUE_SRGB = "sRGB";
     String VALUE_START = "start";
