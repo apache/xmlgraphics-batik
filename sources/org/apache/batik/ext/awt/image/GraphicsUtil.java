@@ -285,22 +285,40 @@ public class GraphicsUtil {
 
             boolean useDrawRenderedImage = false;
 
-            SampleModel srcSM = cr.getSampleModel();
-            if ((srcSM.getWidth()*srcSM.getHeight()) >
+            SampleModel srcSM;
+            srcCM = cr.getColorModel();
+            srcSM = cr.getSampleModel();
+            if ((srcSM.getWidth()*srcSM.getHeight()) >=
                 (clipR.width*clipR.height))
                 // if srcSM tiles are larger than the clip size
                 // then just draw the renderedImage 
                 useDrawRenderedImage = true;
 
+            WritableRaster wr;
             if (useDrawRenderedImage) {
-                // org.ImageDisplay.showImage("foo: ", cr);
                 // This can be significantly faster but can also
-                // require much more memory.
-                g2d.drawRenderedImage(cr, IDENTITY);
+                // require much more memory, so we only use it when
+                // the clip size is smaller than the tile size.
+                wr = srcCM.createCompatibleWritableRaster
+                    (clipR.width, clipR.height);
+
+                // If we push caching down the tree farther
+                // Then this code path should probably try to
+                // align with cr's tile grid to promote tile caching
+                // (this of course will increase the memory required
+                // in this path).
+                cr.copyData(wr.createWritableTranslatedChild
+                            (clipR.x, clipR.y));
+                BufferedImage bi = new BufferedImage
+                    (srcCM, wr, srcCM.isAlphaPremultiplied(), null);
+                
+                // Any of the drawImage calls that take an
+                // Affine are prone to the 'CGGStackRestore: gstack 
+                // underflow' bug on Mac OS X.  This should work
+                // around that problem.
+                g2d.drawImage(bi, clipR.x, clipR.y, null);
             } else {
                 // Use tiles to draw image...
-                srcCM = cr.getColorModel();
-                WritableRaster wr;
                 wr = Raster.createWritableRaster(srcSM, new Point(0,0));
                 BufferedImage bi = new BufferedImage
                     (srcCM, wr, srcCM.isAlphaPremultiplied(), null);
