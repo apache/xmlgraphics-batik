@@ -26,9 +26,9 @@ public interface SVGConstants extends CSSConstants {
     /////////////////////////////////////////////////////////////////////////
 
     String SVG_PUBLIC_ID =
-        "-//W3C//DTD SVG 20001102//EN";
+        "-//W3C//DTD SVG 1.0//EN";
     String SVG_SYSTEM_ID =
-        "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd";
+        "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd";
     String SVG_NAMESPACE_URI =
         "http://www.w3.org/2000/svg";
     String SVG_VERSION =
