@@ -126,8 +126,14 @@ class BridgeEventSupport {
         // with SVGElement's only
         SVGSVGElement svgElement = (SVGSVGElement)
             ((SVGElement)element).getOwnerSVGElement();
-        if (svgElement == null)
-            svgElement = (SVGSVGElement)element;
+        if (svgElement == null) {
+            if (element instanceof SVGSVGElement) {
+                svgElement = (SVGSVGElement)element;
+            } else {
+                // Disable scripting
+                return;
+            }
+        }
         String language = svgElement.getContentScriptType();
         Interpreter interpret =
             ctx.getInterpreterPool().

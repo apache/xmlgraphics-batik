@@ -18,6 +18,11 @@ import org.apache.batik.bridge.GVTBuilder;
 
 import org.apache.batik.css.AbstractViewCSS;
 import org.apache.batik.css.HiddenChildElement;
+import org.apache.batik.css.AbstractViewCSS;
+import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
+import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.css.HiddenChildElement;
+import org.apache.batik.css.value.ImmutableString;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
@@ -34,6 +39,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSValue;
+import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.svg.SVGDocument;
@@ -176,12 +184,26 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                 
                 String href = XLinkSupport.getXLinkHref(e);
                 try {
-                    Element inst = ur.importElement(href, true);
+                    Node n = ur.getNode(href);
+                    if (n.getOwnerDocument() == null) {
+                        throw new Error("Can't use documents");
+                    }
+                    Element elt = (Element)n;
+                    boolean local =
+                        n.getOwnerDocument() == e.getOwnerDocument();
+
+                    Element inst;
+                    if (local) {
+                        inst = (Element)elt.cloneNode(true);
+                    } else {
+                        inst = (Element)e.getOwnerDocument().
+                            importNode(elt, true);
+                    }
 
                     if (inst instanceof SVGSymbolElement) {
                         Element tmp = e.getOwnerDocument().createElementNS
                             (SVG_NAMESPACE_URI, TAG_SVG);
-                        for (Node n = inst.getFirstChild();
+                        for (n = inst.getFirstChild();
                              n != null;
                              n = inst.getFirstChild()) {
                             tmp.appendChild(n);
@@ -214,6 +236,16 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                         }
                     }
 
+                    if (!local) {
+                        SVGOMDocument doc;
+                        doc = (SVGOMDocument)elt.getOwnerDocument();
+                        SVGOMDocument d;
+                        d = (SVGOMDocument)e.getOwnerDocument();
+                        computeStyleAndURIs(elt,  (ViewCSS)doc.getDefaultView(),
+                                            inst, (ViewCSS)d.getDefaultView(),
+                                           ((SVGOMDocument)doc).getURLObject());
+                    }
+
                     buildGraphicsNode(ctx,
                                       (CompositeGraphicsNode)childGVTNode,
                                       inst);
@@ -241,4 +273,60 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
             }
         }
     }
+
+    /**
+     * Partially computes the style in the use tree and set it in
+     * the target tree.
+     */
+    public void computeStyleAndURIs(Element use, ViewCSS uv,
+                                    Element def, ViewCSS dv, URL url)
+        throws MalformedURLException {
+        String href = XLinkSupport.getXLinkHref(def);
+
+        if (!href.equals("")) {
+            XLinkSupport.setXLinkHref(def, new URL(url, href).toString());
+        }
+
+        CSSOMReadOnlyStyleDeclaration usd;
+        AbstractViewCSS uview = (AbstractViewCSS)uv;
+
+        usd = (CSSOMReadOnlyStyleDeclaration)uview.computeStyle(use, null);
+        updateURIs(usd, url);
+        ((AbstractViewCSS)dv).setComputedStyle(def, null, usd);
+
+        for (Node un = use.getFirstChild(), dn = def.getFirstChild();
+             un != null;
+             un = un.getNextSibling(), dn = dn.getNextSibling()) {
+            if (un.getNodeType() == Node.ELEMENT_NODE) {
+                computeStyleAndURIs((Element)un, uv, (Element)dn, dv, url);
+            }
+        }
+    }
+
+    /**
+     * Updates the URIs in the given style declaration.
+     */
+    protected void updateURIs(CSSOMReadOnlyStyleDeclaration sd, URL url)
+        throws MalformedURLException {
+        int len = sd.getLength();
+        for (int i = 0; i < len; i++) {
+            String name = sd.item(i);
+            CSSValue val = sd.getLocalPropertyCSSValue(name);
+            if (val != null &&
+                val.getCssValueType() ==
+                CSSPrimitiveValue.CSS_PRIMITIVE_VALUE) {
+                CSSPrimitiveValue pv = (CSSPrimitiveValue)val;
+                if (pv.getPrimitiveType() == CSSPrimitiveValue.CSS_URI) {
+                    CSSOMReadOnlyValue v =
+                        new CSSOMReadOnlyValue
+                        (new ImmutableString(CSSPrimitiveValue.CSS_URI,
+                               new URL(url, pv.getStringValue()).toString()));
+                    sd.setPropertyCSSValue(name, v,
+                                           sd.getLocalPropertyPriority(name),
+                                           sd.getLocalPropertyOrigin(name));
+                }
+            }
+        }
+    }
+    
 }
