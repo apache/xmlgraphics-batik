@@ -28,6 +28,7 @@ import java.awt.event.WindowEvent;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.File;
 import java.io.Reader;
 
@@ -898,8 +899,18 @@ public class ViewerFrame
         java.util.List components = new LinkedList();
         public StopAction() {}
         public void actionPerformed(ActionEvent e) {
-            thread.stop();
+	    /*
+	     * Lines below removed because they are unsafe,
+	     * (and were causing hangs);
+	     * thread should stop itself by checking a
+	     * flag instead - or, better, using Thread.interrupt()
+	     * and calls to isInterrupted().
+	     */
+	    //thread.stop();
             //canvas.stopDocumentViewThread();
+	    // TODO: replace class-scope flag with
+	    // thread.setIsRunning(false); (etc.)
+	    //thread.interrupt();
             isRunning = false;
             update();
         }
@@ -1017,10 +1028,11 @@ public class ViewerFrame
          * The thread main method.
          */
         public void run() {
-            ThreadDeath td = null;
+            InterruptedException ie = null;
             try {
                 statusBar.setMainMessage
                     (resources.getString("Document.loading"));
+		sleep(0); // allows swap, checks for interrupt
                 setCursor(WAIT_CURSOR);
 
                 isRunning = true;
@@ -1034,8 +1046,10 @@ public class ViewerFrame
 
                 SVGDocumentFactory df = new SVGDocumentFactory
                     (application.getXMLParserClassName());
+		checkInterrupt(); 
                 URL url = new URL(uri);
                 InputStream is = url.openStream();
+		checkInterrupt();
                 try {
                     is = new GZIPInputStream(is);
                 } catch (IOException e) {
@@ -1043,9 +1057,10 @@ public class ViewerFrame
                     is = url.openStream();
                 }
                 Reader r = new InputStreamReader(is);
-
+                
+		checkInterrupt();
                 doc = df.createDocument(documentURI, new InputSource(r));
-
+                
                 DefaultSVGContext dc = new DefaultSVGContext();
                 dc.setUserAgent(ViewerFrame.this);
                 dc.setUserStyleSheetURI(userStyleSheetURI);
@@ -1065,6 +1080,7 @@ public class ViewerFrame
                     setTitle(resources.getString("Frame.title") + ": " + title);
                 }
 
+		checkInterrupt();
                 domViewer.setDocument(doc, (ViewCSS)doc.getDocumentElement());
 
                 statusBar.setMainMessage(resources.getString
@@ -1082,6 +1098,7 @@ public class ViewerFrame
                     pack();
                 }
 
+		checkInterrupt();
                 canvas.setSVGDocument(doc);
 
                 t1 = System.currentTimeMillis();
@@ -1097,8 +1114,11 @@ public class ViewerFrame
                         = resources.getString("Description.no_description");
                 }
 
-            } catch (ThreadDeath e) {
-                td = e;
+            } catch (InterruptedException e) {
+	        System.out.println("Document loading thread interrupted.");
+                ie = e;
+	    } catch (InterruptedIOException iioe) {
+	        System.out.println("Interrupted during document I/O.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1110,9 +1130,26 @@ public class ViewerFrame
             statusBar.setMainMessage("");
             statusBar.setMessage(resources.getString("Document.done"));
 
-            if (td != null) {
-                throw td;
+            if (ie != null) {
+	      // throw ie; Doesn't need to be rethrown, thread dies here.
             }
         }
+
+      private void checkInterrupt() throws InterruptedException {
+	  // TODO: use Thread.interrupt(), etc. instead of this flag.
+	  // if (isInterrupted()) {
+	  if (!isRunning) {
+	    throw new InterruptedException();
+	  }
+      }
     }
 }
+
+
+
+
+
+
+
+
+
