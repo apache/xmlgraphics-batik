@@ -17,7 +17,7 @@
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
 
-<svg width="450" height="500">
+<svg id="body" width="450" height="500">
   <style type="text/css"><![CDATA[
     text.headfoot {
       font-family:   'SunSansCondensed-Demi';
