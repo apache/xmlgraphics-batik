@@ -46,12 +46,6 @@ public interface TextSpanLayout {
     public void draw(Graphics2D g2d);
 
     /**
-     * Returns the outline of the completed glyph layout, transformed
-     * by an AffineTransform.
-     */
-    public Shape getOutline();
-
-    /**
      * Returns the outline of the specified decorations on the glyphs,
      * transformed by an AffineTransform.
      * @param decorationType an integer indicating the type(s) of decorations
@@ -63,14 +57,22 @@ public interface TextSpanLayout {
 
     /**
      * Returns the rectangular bounds of the completed glyph layout.
+     * This includes stroking information, this does not include
+     * deocrations.
      */
-    public Rectangle2D getBounds();
+    public Rectangle2D getBounds2D();
 
     /**
-     * Returns the rectangular bounds of the completed glyph layout,
-     * inclusive of "decoration" (underline, overline, etc.)
+     * Returns the bounds of the geometry (this is always the bounds
+     * of the outline).
      */
-    public Rectangle2D getDecoratedBounds();
+    public Rectangle2D getGeometricBounds();
+
+    /**
+     * Returns the outline of the completed glyph layout, transformed
+     * by an AffineTransform.
+     */
+    public Shape getOutline();
 
     /**
      * Returns the current text position at the completion

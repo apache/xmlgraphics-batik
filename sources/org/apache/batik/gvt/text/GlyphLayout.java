@@ -399,19 +399,21 @@ public class GlyphLayout implements TextSpanLayout {
     /**
      * Returns the rectangular bounds of the completed glyph layout.
      */
-    public Rectangle2D getBounds() {
+    public Rectangle2D getBounds2D() {
         syncLayout();
-
-        return gv.getVisualBounds();
+        return gv.getBounds2D(aci);
     }
 
     /**
      * Returns the rectangular bounds of the completed glyph layout,
      * inclusive of "decoration" (underline, overline, etc.)
      */
-    public Rectangle2D getDecoratedBounds() {
-        return getBounds().createUnion
-            (getDecorationOutline(DECORATION_ALL).getBounds2D());
+    public Rectangle2D getGeometricBounds() {
+        syncLayout();
+        Rectangle2D gvB, decB;
+        gvB = gv.getGeometricBounds();
+        decB = getDecorationOutline(DECORATION_ALL).getBounds2D();
+        return gvB.createUnion(decB);
     }
 
     /**
@@ -1454,7 +1456,7 @@ public class GlyphLayout implements TextSpanLayout {
         if ((xScale == 1) && (yScale==1)) 
             return;
 
-        Rectangle2D bounds = gv.getVisualBounds();
+        Rectangle2D bounds = gv.getGeometricBounds();
         AffineTransform scaleAT = 
             AffineTransform.getScaleInstance(xScale, yScale);
 

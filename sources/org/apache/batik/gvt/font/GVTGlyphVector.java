@@ -57,7 +57,9 @@ public interface GVTGlyphVector {
 
     /**
      *  Returns the logical bounds of the specified glyph within this
-     *  GlyphVector.
+     *  GlyphVector.  This is a good bound for hit detection and 
+     *  highlighting it is not tight in any sense, and in some (rare) 
+     * cases may exclude parts of the glyph.
      */
     Shape getGlyphLogicalBounds(int glyphIndex);
 
@@ -96,7 +98,10 @@ public interface GVTGlyphVector {
     Shape getGlyphVisualBounds(int glyphIndex);
 
     /**
-     *  Returns the logical bounds of this GlyphVector.
+     *  Returns the logical bounds of this GlyphVector.  This is a
+     *  good bound for hit detection and highlighting it is not tight
+     *  in any sense, and in some (rare) * cases may exclude parts of
+     *  the glyph.
      */
     Rectangle2D getLogicalBounds();
 
@@ -122,7 +127,13 @@ public interface GVTGlyphVector {
      * tightest rectangle enclosing all non-background pixels in the rendered
      * representation of this GlyphVector.
      */
-    Rectangle2D getVisualBounds();
+    Rectangle2D getGeometricBounds();
+
+    /**
+     * Returns a tight bounds on the GylphVector including stroking.
+     * @param aci Required to get painting attributes of glyphVector.
+     */
+    Rectangle2D getBounds2D(AttributedCharacterIterator aci);
 
     /**
      * Assigns default positions to each glyph in this GlyphVector.

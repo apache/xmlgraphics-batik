@@ -38,6 +38,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     private FontRenderContext frc;
     private GeneralPath       outline;
     private Rectangle2D       logicalBounds;
+    private Rectangle2D       bounds2D;
     private Shape[]           glyphLogicalBounds;
     private boolean[]         glyphVisible;
     private Point2D           endPos;
@@ -56,6 +57,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         this.glyphs = glyphs;
         this.frc = frc;
         outline = null;
+        bounds2D = null;
         logicalBounds = null;
         glyphLogicalBounds = new Shape[glyphs.length];
         glyphVisible = new boolean[glyphs.length];
@@ -550,8 +552,32 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         return glyphs[glyphIndex].getOutline();
     }
 
-   /**
+    /**
+     * Returns a tight bounds on the GylphVector including stroking.
+     */
+    public Rectangle2D getBounds2D(AttributedCharacterIterator aci) {
+        // System.out.println("GlyphVector.getBounds2D Called: " + this);
+        if (bounds2D != null) 
+            return bounds2D;
+
+        Rectangle2D b=null;
+        for (int i = 0; i < getNumGlyphs(); i++) {
+            if (!glyphVisible[i])  continue;
+
+            Rectangle2D glyphBounds = glyphs[i].getBounds2D();
+            // System.out.println("GB["+i+"]: " + glyphBounds);
+            if (glyphBounds == null) continue;
+            if (b == null) b=glyphBounds;
+            else b = glyphBounds.createUnion(b);
+        }
+
+        bounds2D = b;
+        return bounds2D;
+    }
+
+    /**
      *  Returns the logical bounds of this GlyphVector.
+     * This is a bound useful for hit detection and highlighting.
      */
     public Rectangle2D getLogicalBounds() {
         if (logicalBounds == null) {
@@ -608,11 +634,11 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     }
 
     /**
-     * Returns the visual bounds of this GlyphVector The visual bounds is the
-     * tightest rectangle enclosing all non-background pixels in the rendered
-     * representation of this GlyphVector.
+     * Returns the geometric bounds of this GlyphVector. The geometric
+     * bounds is the tightest rectangle enclosing the geometry of the
+     * glyph vector (not including stroke).
      */
-    public Rectangle2D getVisualBounds() {
+    public Rectangle2D getGeometricBounds() {
         return getOutline().getBounds2D();
     }
 
@@ -630,6 +656,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
             currentX += glyphs[i].getHorizAdvX();
             logicalBounds = null;
             outline = null;
+            bounds2D = null;
         }
         endPos = new Point2D.Float(currentX, currentY);
     }
@@ -651,6 +678,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         glyphs[glyphIndex].setPosition(newPos);
         glyphLogicalBounds[glyphIndex] = null;
         outline = null;
+        bounds2D = null;
         logicalBounds = null;
     }
 
@@ -665,6 +693,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         glyphs[glyphIndex].setTransform(newTX);
         glyphLogicalBounds[glyphIndex] = null;
         outline = null;
+        bounds2D = null;
         logicalBounds = null;
     }
 
@@ -677,6 +706,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
         glyphVisible[glyphIndex] = visible;
         outline = null;
+        bounds2D = null;
         logicalBounds = null;
         glyphLogicalBounds[glyphIndex] = null;
     }
