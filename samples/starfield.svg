@@ -213,6 +213,9 @@
             }
         }
 
+        var controlPanelDy;
+        var controlPanelSgn;
+
         //
         // Shows/hides the control panel.
         //
@@ -222,10 +225,14 @@
                 showControlPanel = !showControlPanel
                 if (showControlPanel) {
                     updateText("help", helpText2)
-                    setTimeout(controlPanelAnimation, 50, 20, 1)
+                    controlPanelDy  = 20
+                    controlPanelSgn = 1
+                    setTimeout("controlPanelAnimation()", 50)
                 } else {
                     updateText("help", helpText1)
-                    setTimeout(controlPanelAnimation, 50, 0, -1)
+                    controlPanelDy  = 0
+                    controlPanelSgn = -1
+                    setTimeout("controlPanelAnimation()", 50)
                 }
             }            
         }
@@ -233,13 +240,14 @@
         //
         // Animates the control panel.
         //
-        function controlPanelAnimation(n, sgn) {
+        function controlPanelAnimation() {
             var elt = document.getElementById("control-panel");
             
-            elt.setAttributeNS(null, "transform", "translate(0 " + ((n - 100) * sgn) + ")");
+            elt.setAttributeNS(null, "transform", "translate(0 " + ((controlPanelDy - 100) * controlPanelSgn) + ")");
 
-            if (n < 200) {
-                setTimeout(controlPanelAnimation, 50, n + 20, sgn)
+            if (controlPanelDy < 200) {
+                controlPanelDy += 20
+                setTimeout("controlPanelAnimation()", 50)
             } else {
                 controlPanelMoving = false;
             }
