@@ -118,11 +118,11 @@ public class SVGFeTurbulenceElementBridge
         turbulenceRable.setStitched(stitchTiles);
         turbulenceRable.setFractalNoise(isFractalNoise);
 
-        // update the filter Map
-        updateFilterMap(filterElement, turbulenceRable, filterMap);
-
         // handle the 'color-interpolation-filters' property
         handleColorInterpolationFilters(turbulenceRable, filterElement);
+
+        // update the filter Map
+        updateFilterMap(filterElement, turbulenceRable, filterMap);
 
         return turbulenceRable;
     }

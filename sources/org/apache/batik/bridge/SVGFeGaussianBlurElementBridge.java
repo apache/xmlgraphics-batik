@@ -133,14 +133,14 @@ public class SVGFeGaussianBlurElementBridge
         Filter blur = new GaussianBlurRable8Bit
             (pad, stdDeviationXY[0], stdDeviationXY[1]);
 
+        // handle the 'color-interpolation-filters' property
+        handleColorInterpolationFilters(blur, filterElement);
+
         PadRable filter
             = new PadRable8Bit(blur, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);
-
-        // handle the 'color-interpolation-filters' property
-        handleColorInterpolationFilters(filter, filterElement);
 
         return filter;
     }

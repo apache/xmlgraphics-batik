@@ -122,13 +122,14 @@ public class SVGFeCompositeElementBridge
         srcs.add(in2);
         srcs.add(in);
         Filter filter = new CompositeRable8Bit(srcs, rule, true);
+
+        // handle the 'color-interpolation-filters' property
+        handleColorInterpolationFilters(filter, filterElement);
+
         filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);
-
-        // handle the 'color-interpolation-filters' property
-        handleColorInterpolationFilters(filter, filterElement);
 
         return filter;
     }

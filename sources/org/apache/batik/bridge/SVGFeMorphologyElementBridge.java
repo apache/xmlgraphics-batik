@@ -119,14 +119,14 @@ public class SVGFeMorphologyElementBridge
         Filter morphology
             = new MorphologyRable8Bit(pad, radii[0], radii[1], isDilate);
 
+        // handle the 'color-interpolation-filters' property
+        handleColorInterpolationFilters(morphology, filterElement);
+
         PadRable filter = new PadRable8Bit
             (morphology, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);
-
-        // handle the 'color-interpolation-filters' property
-        handleColorInterpolationFilters(filter, filterElement);
 
         return filter;
     }

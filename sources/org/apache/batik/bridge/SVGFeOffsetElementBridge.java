@@ -109,11 +109,11 @@ public class SVGFeOffsetElementBridge
         PadRable pad = new PadRable8Bit(in, primitiveRegion, PadMode.ZERO_PAD);
         Filter filter = new AffineRable8Bit(pad, at);
 
-        // update the filter Map
-        updateFilterMap(filterElement, filter, filterMap);
-
         // handle the 'color-interpolation-filters' property
         handleColorInterpolationFilters(filter, filterElement);
+
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
         return filter;
     }

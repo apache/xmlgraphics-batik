@@ -137,13 +137,13 @@ public class SVGFeImageElementBridge
                                       new Object[] {"xlink:href", uriStr});
         }
 
+        // handle the 'color-interpolation-filters' property
+        handleColorInterpolationFilters(filter, filterElement);
+
         filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);
-
-        // handle the 'color-interpolation-filters' property
-        handleColorInterpolationFilters(filter, filterElement);
 
         return filter;
     }
