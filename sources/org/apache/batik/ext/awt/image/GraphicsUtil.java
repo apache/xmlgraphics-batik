@@ -191,8 +191,8 @@ public class GraphicsUtil {
                 big2d.setPaint(Color.white);
                 big2d.fill(clip);
                 big2d.dispose();
-                org.apache.batik.test.gvt.ImageDisplay.showImage
-                    ("Big2d: ", bi);
+                // org.apache.batik.test.gvt.ImageDisplay.showImage
+                //     ("Big2d: ", bi);
             }
         }
 
