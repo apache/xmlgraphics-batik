@@ -126,7 +126,7 @@ public class SVGPaint implements SVGConverter {
         // want to override the way a Paint is managed!
         SVGPaintDescriptor paintDesc = svgCustomPaint.toSVG(paint);
 
-        if (paint == null) {
+        if (paintDesc == null) {
             if (paint instanceof Color)
                 paintDesc = svgColor.toSVG((Color)paint);
             else if (paint instanceof GradientPaint)
