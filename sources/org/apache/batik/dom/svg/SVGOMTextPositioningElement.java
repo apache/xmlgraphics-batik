@@ -66,35 +66,40 @@ public abstract class SVGOMTextPositioningElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTextElement#getX()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTextPositioningElement#getX()}.
      */
     public SVGAnimatedLengthList getX() {
         throw new RuntimeException(" !!! SVGOMTextPositioningElement.getX()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTextElement#getY()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTextPositioningElement#getY()}.
      */
     public SVGAnimatedLengthList getY() {
         throw new RuntimeException(" !!! SVGOMTextPositioningElement.getY()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTextElement#getDx()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTextPositioningElement#getDx()}.
      */
     public SVGAnimatedLengthList getDx() {
         throw new RuntimeException(" !!! SVGOMTextPositioningElement.getDx()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTextElement#getDy()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTextPositioningElement#getDy()}.
      */
     public SVGAnimatedLengthList getDy() {
         throw new RuntimeException(" !!! SVGOMTextPositioningElement.getDy()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTextElement#getRotate()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTextPositioningElement#getRotate()}.
      */
     public SVGAnimatedTextRotate getRotate() {
         throw new RuntimeException(" !!! SVGOMTextPositioningElement.getRotate()");

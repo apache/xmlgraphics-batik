@@ -114,7 +114,7 @@ public class SVGOMFEConvolveMatrixElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
+     * <b>DOM</b>: Implements { @link !!!
      * SVGFEConvolveMatrixElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
@@ -215,7 +215,7 @@ public class SVGOMFEConvolveMatrixElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEConvolveMatrixElementElement#getBias()}.
+     * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getBias()}.
      */
     public SVGAnimatedNumber getBias() {
 	SVGAnimatedNumber result;
@@ -261,7 +261,7 @@ public class SVGOMFEConvolveMatrixElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEConvolveMatrixElementElement#getPreserveAlpha()}.
+     * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getPreserveAlpha()}.
      */
     public SVGAnimatedBoolean getPreserveAlpha() {
 	SVGAnimatedBoolean result;

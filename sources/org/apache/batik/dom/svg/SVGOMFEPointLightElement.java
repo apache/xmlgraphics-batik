@@ -64,7 +64,7 @@ public class SVGOMFEPointLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEPointLightElementElement#getX()}.
+     * org.w3c.dom.svg.SVGFEPointLightElement#getX()}.
      */
     public SVGAnimatedNumber getX() {
 	SVGAnimatedNumber result;
@@ -78,7 +78,7 @@ public class SVGOMFEPointLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEPointLightElementElement#getY()}.
+     * org.w3c.dom.svg.SVGFEPointLightElement#getY()}.
      */
     public SVGAnimatedNumber getY() {
 	SVGAnimatedNumber result;
@@ -92,7 +92,7 @@ public class SVGOMFEPointLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEPointLightElementElement#getZ()}.
+     * org.w3c.dom.svg.SVGFEPointLightElement#getZ()}.
      */
     public SVGAnimatedNumber getZ() {
 	SVGAnimatedNumber result;

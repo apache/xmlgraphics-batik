@@ -59,7 +59,7 @@ public class SVGOMFEDistantLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEDistantLightElementElement#getAzimuth()}.
+     * org.w3c.dom.svg.SVGFEDistantLightElement#getAzimuth()}.
      */
     public SVGAnimatedNumber getAzimuth() {
 	SVGAnimatedNumber result;
@@ -73,7 +73,7 @@ public class SVGOMFEDistantLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEDistantLightElementElement#getElevation()}.
+     * org.w3c.dom.svg.SVGFEDistantLightElement#getElevation()}.
      */
     public SVGAnimatedNumber getElevation() {
 	SVGAnimatedNumber result;

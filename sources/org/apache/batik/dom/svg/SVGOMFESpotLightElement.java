@@ -76,7 +76,7 @@ public class SVGOMFESpotLightElement
      * @param owner The owner document.
      */
     public SVGOMFESpotLightElement(String prefix,
-                                         AbstractDocument owner) {
+                                   AbstractDocument owner) {
         super(prefix, owner);
     }
 
@@ -89,7 +89,7 @@ public class SVGOMFESpotLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFESpotLightElementElement#getX()}.
+     * org.w3c.dom.svg.SVGFESpotLightElement#getX()}.
      */
     public SVGAnimatedNumber getX() {
 	SVGAnimatedNumber result;
@@ -103,7 +103,7 @@ public class SVGOMFESpotLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFESpotLightElementElement#getY()}.
+     * org.w3c.dom.svg.SVGFESpotLightElement#getY()}.
      */
     public SVGAnimatedNumber getY() {
 	SVGAnimatedNumber result;
@@ -117,7 +117,7 @@ public class SVGOMFESpotLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFESpotLightElementElement#getZ()}.
+     * org.w3c.dom.svg.SVGFESpotLightElement#getZ()}.
      */
     public SVGAnimatedNumber getZ() {
 	SVGAnimatedNumber result;
@@ -131,7 +131,7 @@ public class SVGOMFESpotLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFESpotLightElementElement#getPointsAtX()}.
+     * org.w3c.dom.svg.SVGFESpotLightElement#getPointsAtX()}.
      */
     public SVGAnimatedNumber getPointsAtX() {
 	SVGAnimatedNumber result;
@@ -145,7 +145,7 @@ public class SVGOMFESpotLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFESpotLightElementElement#getPointsAtY()}.
+     * org.w3c.dom.svg.SVGFESpotLightElement#getPointsAtY()}.
      */
     public SVGAnimatedNumber getPointsAtY() {
 	SVGAnimatedNumber result;
@@ -159,7 +159,7 @@ public class SVGOMFESpotLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFESpotLightElementElement#getPointsAtZ()}.
+     * org.w3c.dom.svg.SVGFESpotLightElement#getPointsAtZ()}.
      */
     public SVGAnimatedNumber getPointsAtZ() {
 	SVGAnimatedNumber result;
@@ -173,7 +173,7 @@ public class SVGOMFESpotLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFESpotLightElementElement#getSpecularExponent()}.
+     * org.w3c.dom.svg.SVGFESpotLightElement#getSpecularExponent()}.
      */
     public SVGAnimatedNumber getSpecularExponent() {
 	SVGAnimatedNumber result;
@@ -189,7 +189,7 @@ public class SVGOMFESpotLightElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFESpotLightElementElement#getLimitingConeAngle()}.
+     * org.w3c.dom.svg.SVGFESpotLightElement#getLimitingConeAngle()}.
      */
     public SVGAnimatedNumber getLimitingConeAngle() {
 	SVGAnimatedNumber result;

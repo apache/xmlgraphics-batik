@@ -107,7 +107,7 @@ public class SVGOMFEDisplacementMapElement
     
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEPointLightElementElement#getScale()}.
+     * org.w3c.dom.svg.SVGFEDisplacementMapElement#getScale()}.
      */
     public SVGAnimatedNumber getScale() {
 	SVGAnimatedNumber result;

@@ -228,6 +228,26 @@ public class JSVGCanvas
     protected ParserFactory parserFactory = new ParserFactory();
 
     /**
+     * The zoom handler.
+     */
+    protected ZoomHandler zoomHandler;
+
+    /**
+     * The rotation angle
+     */
+    protected double rotateAngle;
+
+    /**
+     * The rotation cosinus
+     */
+    protected double rotateCos = 1;
+
+    /**
+     * The initial scale factor.
+     */
+    protected double initialScale = 1;
+
+    /**
      * Used to draw marker
      */
     protected BasicStroke markerStroke
@@ -280,6 +300,17 @@ public class JSVGCanvas
     }
 
     /**
+     * Sets the zoom handler.
+     */
+    public void setZoomHandler(ZoomHandler h) {
+        zoomHandler = h;
+    }
+
+    public interface ZoomHandler {
+        public void zoomChanged(float f);
+    }
+
+    /**
      * Returns the current renderer factory.
      */
     public RendererFactory getRendererFactory() {
@@ -314,9 +345,15 @@ public class JSVGCanvas
                                                 false);
         }
 
-        if (userAgent.getEventDispatcher() != null)
+        if (userAgent.getEventDispatcher() != null) {
             userAgent.getEventDispatcher().setRootNode(gvtRoot);
+        }
 
+        rotateAngle = 0;
+        rotateCos = 1;
+        if (zoomHandler != null) {
+            zoomHandler.zoomChanged(1);
+        }
         repaint = true;
         repaint();
 
@@ -570,11 +607,12 @@ public class JSVGCanvas
 
         transform = SVGUtilities.getPreserveAspectRatioTransform
             (elt, w, h, parserFactory);
+
+        initialScale = transform.getScaleX();
         updateBaseTransform();
     }
 
-    private void updateBaseTransform()
-    {
+    protected void updateBaseTransform() {
         // for event dispatching inside GVT with the right transformer
         AbstractEventDispatcher dispatcher =
             (AbstractEventDispatcher)userAgent.getEventDispatcher();
@@ -582,7 +620,7 @@ public class JSVGCanvas
             try {
                 dispatcher.setBaseTransform(transform.createInverse());
             } catch (NoninvertibleTransformException e) {
-                // this should not happened
+                // this should not happen
                 throw new Error();
             }
         }
@@ -632,6 +670,11 @@ public class JSVGCanvas
                 return;
             }
             computeTransform();
+            rotateAngle = 0;
+            rotateCos = 1;
+            if (zoomHandler != null) {
+                zoomHandler.zoomChanged(1);
+            }
             if (thumbnailCanvas != null) {
                 thumbnailCanvas.repaint();
             }
@@ -645,6 +688,11 @@ public class JSVGCanvas
         public UnzoomAction() {}
         public void actionPerformed(ActionEvent e) {
             computeTransform();
+            rotateAngle = 0;
+            rotateCos = 1;
+            if (zoomHandler != null) {
+                zoomHandler.zoomChanged(1);
+            }
             repaint = true;
             repaint();
             if (thumbnailCanvas != null) {
@@ -662,6 +710,10 @@ public class JSVGCanvas
             transform.preConcatenate
                 (AffineTransform.getScaleInstance(2, 2));
             updateBaseTransform();
+            if (zoomHandler != null) {
+                zoomHandler.zoomChanged((float)(transform.getScaleX() /
+                                                rotateCos / initialScale));
+            }
             repaint = true;
             repaint();
             if (thumbnailCanvas != null) {
@@ -679,6 +731,10 @@ public class JSVGCanvas
             transform.preConcatenate
                 (AffineTransform.getScaleInstance(0.5, 0.5));
             updateBaseTransform();
+            if (zoomHandler != null) {
+                zoomHandler.zoomChanged((float)(transform.getScaleX() /
+                                                rotateCos / initialScale));
+            }
             repaint = true;
             repaint();
             if (thumbnailCanvas != null) {
@@ -829,6 +885,10 @@ public class JSVGCanvas
 
                 transform.preConcatenate(at);
                 updateBaseTransform();
+                if (zoomHandler != null) {
+                    zoomHandler.zoomChanged((float)(transform.getScaleX() /
+                                                    rotateCos / initialScale));
+                }
                 repaint = true;
                 repaint();
                 if (thumbnailCanvas != null) {
@@ -838,6 +898,10 @@ public class JSVGCanvas
                 clearRotateMarker();
                 transform.preConcatenate(rotateTransform);
                 updateBaseTransform();
+                if (zoomHandler != null) {
+                    zoomHandler.zoomChanged((float)(transform.getScaleX() /
+                                                    rotateCos / initialScale));
+                }
                 repaint = true;
                 repaint();
                 if (thumbnailCanvas != null) {
@@ -869,6 +933,10 @@ public class JSVGCanvas
                 double dx = x - dim.width / 2;
                 double dy = y - dim.height / 2;
                 double cos = -dy / Math.sqrt(dx * dx + dy * dy);
+
+                rotateAngle = rotateAngle +
+                    ((dx > 0) ? Math.acos(cos) : -Math.acos(cos));
+                rotateCos = Math.cos(rotateAngle);
 
                 rotateTransform =
                     AffineTransform.getRotateInstance

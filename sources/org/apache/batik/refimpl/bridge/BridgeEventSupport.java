@@ -48,6 +48,7 @@ import java.awt.geom.Point2D;
  * call pieces of script when necessary and to attach a listener
  * on the GVT root to propagate GVT events to the DOM.
  * @author <a href="mailto:cjolif@ilog.fr>Christophe Jolif</a>
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 class BridgeEventSupport {
@@ -105,7 +106,7 @@ class BridgeEventSupport {
         "repeatEvent"
     };
 
-    private BridgeEventSupport() {}
+    protected BridgeEventSupport() {}
 
     /**
      * Creates and add a listener on the element to call script
@@ -174,33 +175,41 @@ class BridgeEventSupport {
 
     public static void loadScripts(BridgeContext ctx, Document doc) {
         NodeList list = doc.getElementsByTagName("script");
-        UserAgent ua = ctx.getUserAgent();
+        final UserAgent ua = ctx.getUserAgent();
         String language = null;
-        StringBuffer script = null;
         Element selement = null;
         for (int i = 0; i < list.getLength(); i++) {
             language = (selement = (Element)list.item(i)).
                 getAttribute("type");
-            Interpreter interpret =
+            final Interpreter interpret =
                 ctx.getInterpreterPool().
                 getInterpreter(language);
             if (interpret != null) {
-                script = new StringBuffer();
+                final StringBuffer script = new StringBuffer();
                 for (Node n = selement.getFirstChild(); n != null;
                      n = n.getNextSibling()) {
                     script.append(n.getNodeValue());
                 }
-                try {
-                    interpret.evaluate(new StringReader(script.toString()));
-                } catch (IOException io) {
-                    // will never appeared we don't use a file
-                } catch (InterpreterException e) {
-                    if (ua != null)
-                        ua.displayError("scripting error: "+e.getMessage());
-                }
+                // Interpret the script in a thread.
+                Thread t = new Thread() {
+                        public void run() {
+                            setPriority(Thread.MIN_PRIORITY);
+                            try {
+                                interpret.evaluate
+                                    (new StringReader(script.toString()));
+                            } catch (IOException io) {
+                                // will never appeared we don't use a file
+                            } catch (InterpreterException e) {
+                                if (ua != null)
+                                    ua.displayError("scripting error: " + 
+                                                    e.getMessage());
+                            }
+                        }
+                    };
+                ua.runThread(t);
             } else
                 if (ua != null)
-                    ua.displayError("unknow language: "+language);
+                    ua.displayError("unknown language: "+language);
         }
     }
 
@@ -295,14 +304,21 @@ class BridgeEventSupport {
 
         public void handleEvent(Event evt) {
             interpreter.bindObject(EVENT_NAME, evt);
-            try {
-                interpreter.evaluate(new StringReader(script));
-            } catch (IOException io) {
-                // will never appeared we don't use a file
-            } catch (InterpreterException e) {
-                if (ua != null)
-                    ua.displayError("scripting error: "+e.getMessage());
-            }
+            Thread t = new Thread() {
+                    public void run() {
+                        setPriority(Thread.MIN_PRIORITY);
+                        try {
+                            interpreter.evaluate(new StringReader(script));
+                        } catch (IOException io) {
+                            // will never appeared we don't use a file
+                        } catch (InterpreterException e) {
+                            if (ua != null)
+                                ua.displayError("scripting error: " +
+                                                e.getMessage());
+                        }
+                    }
+                };
+            ua.runThread(t);
         }
     }
 }

@@ -33,6 +33,7 @@ import java.util.Map;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
@@ -43,6 +44,7 @@ import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -249,75 +251,127 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                                          (Element)n,
                                                          node,
                                                          false));
+                } else if (n.getLocalName().equals("tref")) {
+                    s = XLinkSupport.getXLinkHref((Element)n);
+                    if (s.startsWith("#")) {
+                        Document doc = n.getOwnerDocument();
+                        Element ref = doc.getElementById(s.substring(1));
+                        s = getElementContent(ref);
+                        AttributedString as;
+                        Map map = getAttributeMap(ctx, (Element)n, node);
+                        as = createAttributedString(s, map, preserve, top, 
+                                                    first, last);
+                        if (as != null) {
+                            result.add(as);
+                        }
+                    } else {
+                        System.out.println(" !!! <tref> Non local URI");
+                    }
                 }
                 break;
             case Node.TEXT_NODE:
                 s = n.getNodeValue();
-                StringBuffer sb = new StringBuffer();
-                if (preserve) {
-                    for (int i = 0; i < s.length(); i++) {
-                        char c = s.charAt(i);
-                        switch (c) {
-                        case 10:
-                        case 13:
-                        case '\t':
-                            sb.append(' ');
-                            break;
-                        default:
-                            sb.append(c);
-                        }
-                    }
-                } else {
-                    boolean space = false;
-                    for (int i = 0; i < s.length(); i++) {
-                        char c = s.charAt(i);
-                        switch (c) {
-                        case 10:
-                        case 13:
-                            space = false;
-                            break;
-                        case ' ':
-                        case '\t':
-                            if (!space) {
-                                sb.append(' ');
-                                space = true;
-                            }
-                            break;
-                        default:
-                            sb.append(c);
-                            space = false;
-
-                        }
-                    }
-                    if (top) {
-                        if (first) {
-                            while (sb.length() > 0) {
-                                if (sb.charAt(0) == ' ') {
-                                    sb.deleteCharAt(0);
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-                        if (last) {
-                            int len;
-                            while ((len = sb.length()) > 0) {
-                                if (sb.charAt(len - 1) == ' ') {
-                                    sb.deleteCharAt(len - 1);
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (sb.length() > 0) {
-                    result.add(new AttributedString(sb.toString(), m));
+                AttributedString as = createAttributedString(s, m, preserve,
+                                                             top, first, last);
+                if (as != null) {
+                    result.add(as);
                 }
             }
             first = false;
         }
         return result;
+    }
+
+    /**
+     * Returns the content of the given element.
+     */
+    protected String getElementContent(Element e) {
+        StringBuffer result = new StringBuffer();
+        for (Node n = e.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            switch (n.getNodeType()) {
+            case Node.ELEMENT_NODE:
+                result.append(getElementContent((Element)n));
+                break;
+            case Node.TEXT_NODE:
+                result.append(n.getNodeValue());
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Creates an attributes string from the content of the given string.
+     */
+    protected AttributedString createAttributedString(String s,
+                                                      Map m,
+                                                      boolean preserve,
+                                                      boolean top,
+                                                      boolean first,
+                                                      boolean last) {
+        StringBuffer sb = new StringBuffer();
+        if (preserve) {
+            for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                switch (c) {
+                case 10:
+                case 13:
+                case '\t':
+                    sb.append(' ');
+                    break;
+                default:
+                    sb.append(c);
+                }
+            }
+        } else {
+            boolean space = false;
+            for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                switch (c) {
+                case 10:
+                case 13:
+                    space = false;
+                    break;
+                case ' ':
+                case '\t':
+                    if (!space) {
+                        sb.append(' ');
+                        space = true;
+                    }
+                    break;
+                default:
+                    sb.append(c);
+                    space = false;
+                    
+                }
+            }
+            if (top) {
+                if (first) {
+                    while (sb.length() > 0) {
+                        if (sb.charAt(0) == ' ') {
+                            sb.deleteCharAt(0);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                if (last) {
+                    int len;
+                    while ((len = sb.length()) > 0) {
+                        if (sb.charAt(len - 1) == ' ') {
+                            sb.deleteCharAt(len - 1);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (sb.length() > 0) {
+            return new AttributedString(sb.toString(), m);
+        }
+        return null;
     }
 
     /**

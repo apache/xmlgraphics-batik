@@ -128,7 +128,7 @@ public class SVGOMFECompositeElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGComponentTransferFunctionElement#getK1()}.
+     * org.w3c.dom.svg.SVGFECompositeElement#getK1()}.
      */
     public SVGAnimatedNumber getK1() {
 	SVGAnimatedNumber result;
@@ -142,7 +142,7 @@ public class SVGOMFECompositeElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGComponentTransferFunctionElement#getK2()}.
+     * org.w3c.dom.svg.SVGFECompositeElement#getK2()}.
      */
     public SVGAnimatedNumber getK2() {
 	SVGAnimatedNumber result;
@@ -156,7 +156,7 @@ public class SVGOMFECompositeElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGComponentTransferFunctionElement#getK3()}.
+     * org.w3c.dom.svg.SVGFECompositeElement#getK3()}.
      */
     public SVGAnimatedNumber getK3() {
 	SVGAnimatedNumber result;
@@ -170,7 +170,7 @@ public class SVGOMFECompositeElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGComponentTransferFunctionElement#getK4()}.
+     * org.w3c.dom.svg.SVGFECompositeElement#getK4()}.
      */
     public SVGAnimatedNumber getK4() {
 	SVGAnimatedNumber result;
