@@ -66,6 +66,7 @@ public class DocumentLoader {
         this.userAgent = userAgent;
         documentFactory = new SAXSVGDocumentFactory
             (userAgent.getXMLParserClassName(), true);
+	documentFactory.setValidating(userAgent.isXMLParserValidating());
     }
 
     /**
@@ -80,8 +81,6 @@ public class DocumentLoader {
         }
         DocumentState state = (DocumentState)cacheMap.get(uri);
         if (state == null) {
-            //System.out.println("loading: "+uri);
-            // load the document
             Document document = documentFactory.createDocument(uri);
             DefaultSVGContext ctx
                 = (DefaultSVGContext)((SVGOMDocument)document).getSVGContext();

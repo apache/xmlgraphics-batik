@@ -44,6 +44,12 @@ public interface Application {
     String getXMLParserClassName();
 
     /**
+     * Returns true if the XML parser must be in validation mode, false
+     * otherwise.
+     */
+    boolean isXMLParserValidating();
+
+    /**
      * Shows the preference dialog.
      */
     void showPreferenceDialog(JSVGViewerFrame f);

@@ -122,6 +122,9 @@ public class PreferenceDialog extends JDialog
     public static final String LABEL_SELECTION_XOR_MODE
         = "PreferenceDialog.label.selection.xor.mode";
 
+    public static final String LABEL_IS_XML_PARSER_VALIDATING
+        = "PreferenceDialog.label.is.xml.parser.validating";
+
     public static final String LABEL_HOST
         = "PreferenceDialog.label.host";
 
@@ -162,6 +165,9 @@ public class PreferenceDialog extends JDialog
     
     public static final String PREFERENCE_KEY_LANGUAGES
         = "preference.key.languages";
+    
+    public static final String PREFERENCE_KEY_IS_XML_PARSER_VALIDATING
+        = "preference.key.is.xml.parser.validating";
 
     public static final String PREFERENCE_KEY_USER_STYLESHEET
         = "preference.key.user.stylesheet";
@@ -220,6 +226,8 @@ public class PreferenceDialog extends JDialog
     protected JCheckBox enableDoubleBuffering;
 
     protected JCheckBox selectionXorMode;
+
+    protected JCheckBox isXMLParserValidating;
 
     protected JTextField host, port;
 
@@ -281,6 +289,8 @@ public class PreferenceDialog extends JDialog
         showDebugTrace.setSelected(model.getBoolean(PREFERENCE_KEY_SHOW_DEBUG_TRACE));
         selectionXorMode.setSelected(model.getBoolean(PREFERENCE_KEY_SELECTION_XOR_MODE));
 
+        isXMLParserValidating.setSelected(model.getBoolean(PREFERENCE_KEY_IS_XML_PARSER_VALIDATING));
+
         //
         // Initialize the proxy options
         //
@@ -313,9 +323,10 @@ public class PreferenceDialog extends JDialog
                          enableDoubleBuffering.isSelected());
         model.setBoolean(PREFERENCE_KEY_SHOW_DEBUG_TRACE,
                          showDebugTrace.isSelected());
-
         model.setBoolean(PREFERENCE_KEY_SELECTION_XOR_MODE,
 			 selectionXorMode.isSelected());
+        model.setBoolean(PREFERENCE_KEY_IS_XML_PARSER_VALIDATING,
+			 isXMLParserValidating.isSelected());
 
         model.setString(PREFERENCE_KEY_PROXY_HOST,
                         host.getText());
@@ -485,14 +496,19 @@ public class PreferenceDialog extends JDialog
             = new JCheckBox(Resources.getString(LABEL_ENABLE_DOUBLE_BUFFERING));
         showDebugTrace
             = new JCheckBox(Resources.getString(LABEL_SHOW_DEBUG_TRACE));
+
         selectionXorMode
             = new JCheckBox(Resources.getString(LABEL_SELECTION_XOR_MODE));
+
+        isXMLParserValidating
+            = new JCheckBox(Resources.getString(LABEL_IS_XML_PARSER_VALIDATING));
 
         p.add(showRendering,    0, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(autoAdjustWindow, 0, 1, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(enableDoubleBuffering, 0, 2, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(showDebugTrace,   0, 3, 1, 1, WEST, HORIZONTAL, 1, 0);
         p.add(selectionXorMode,   0, 4, 1, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(isXMLParserValidating,   0, 5, 1, 1, WEST, HORIZONTAL, 1, 0);
 
         p.setBorder(BorderFactory.createCompoundBorder
                     (BorderFactory.createTitledBorder
@@ -543,6 +559,7 @@ public class PreferenceDialog extends JDialog
         defaults.put(PREFERENCE_KEY_LANGUAGES, "fr");
         defaults.put(PREFERENCE_KEY_SHOW_RENDERING, Boolean.TRUE);
         defaults.put(PREFERENCE_KEY_SELECTION_XOR_MODE, Boolean.FALSE);
+        defaults.put(PREFERENCE_KEY_IS_XML_PARSER_VALIDATING, Boolean.FALSE);
         defaults.put(PREFERENCE_KEY_AUTO_ADJUST_WINDOW, Boolean.TRUE);
         defaults.put(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING, Boolean.TRUE);
         defaults.put(PREFERENCE_KEY_SHOW_DEBUG_TRACE, Boolean.TRUE);

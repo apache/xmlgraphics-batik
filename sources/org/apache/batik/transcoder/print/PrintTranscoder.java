@@ -824,19 +824,32 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          * <tt>TranscodingHints</tt> or null if any.
          */
         public String getUserStyleSheetURI() {
-            return (String)PrintTranscoder.this.hints.get(KEY_USER_STYLESHEET_URI);
+            return (String)PrintTranscoder.this.hints.get
+		(KEY_USER_STYLESHEET_URI);
         }
 
         /**
          * Returns the XML parser to use from the TranscodingHints.
          */
         public String getXMLParserClassName() {
-            if (PrintTranscoder.this.hints.containsKey(KEY_XML_PARSER_CLASSNAME)) {
-                return (String)PrintTranscoder.this.hints.get(KEY_XML_PARSER_CLASSNAME);
+            if (PrintTranscoder.this.hints.containsKey
+		(KEY_XML_PARSER_CLASSNAME)) {
+
+                return (String)PrintTranscoder.this.hints.get
+		    (KEY_XML_PARSER_CLASSNAME);
             } else {
                 return XMLResourceDescriptor.getXMLParserClassName();
             }
         }
+
+	/**
+	 * Returns true if the XML parser must be in validation mode, false
+	 * otherwise.
+	 */
+	public boolean isXMLParserValidating() {
+	    return ((Boolean)PrintTranscoder.this.hints.get
+		    (KEY_XML_PARSER_VALIDATING)).booleanValue();
+	}
 
         /**
          * Returns this user agent's CSS media.

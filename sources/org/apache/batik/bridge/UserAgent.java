@@ -32,90 +32,96 @@ public interface UserAgent {
     /**
      * Returns the event dispatcher to use.
      */
-    public EventDispatcher getEventDispatcher();
+    EventDispatcher getEventDispatcher();
 
     /**
      * Returns the default size of the viewport.
      */
-    public Dimension2D getViewportSize();
+    Dimension2D getViewportSize();
 
     /**
      * Displays an error resulting from the specified Exception.
      */
-    public void displayError(Exception ex);
+    void displayError(Exception ex);
 
     /**
      * Displays a message in the User Agent interface.
      */
-    public void displayMessage(String message);
+    void displayMessage(String message);
 
     /**
      * Returns the pixel to mm factor.
      */
-    public float getPixelToMM();
+    float getPixelToMM();
 
     /**
      * Returns the language settings.
      */
-    public String getLanguages();
+    String getLanguages();
 
     /**
      * Returns the user stylesheet uri.
      * @return null if no user style sheet was specified.
      */
-    public String getUserStyleSheetURI();
+    String getUserStyleSheetURI();
 
     /**
      * Opens a link.
      * @param elt The activated link element.
      */
-    public void openLink(SVGAElement elt);
+    void openLink(SVGAElement elt);
 
     /**
      * Informs the user agent to change the cursor.
      * @param cursor the new cursor
      */
-    public void setSVGCursor(Cursor cursor);
+    void setSVGCursor(Cursor cursor);
 
     /**
      * Returns the class name of the XML parser.
      */
-    public String getXMLParserClassName();
+    String getXMLParserClassName();
+
+    /**
+     * Returns true if the XML parser must be in validation mode, false
+     * otherwise.
+     */
+    boolean isXMLParserValidating();
 
     /**
      * Returns the <code>AffineTransform</code> currently
      * applied to the drawing by the UserAgent.
      */
-    public AffineTransform getTransform();
+    AffineTransform getTransform();
 
     /**
      * Returns this user agent's CSS media.
      */
-    public String getMedia();
+    String getMedia();
 
     /**
      * Returns the location on the screen of the
      * client area in the UserAgent.
      */
-    public Point getClientAreaLocationOnScreen();
+    Point getClientAreaLocationOnScreen();
 
     /**
      * Tells whether the given feature is supported by this
      * user agent.
      */
-    public boolean hasFeature(String s);
+    boolean hasFeature(String s);
 
     /**
      * Tells whether the given extension is supported by this
      * user agent.
      */
-    public boolean supportExtension(String s);
+    boolean supportExtension(String s);
 
     /**
      * Lets the bridge tell the user agent that the following
      * extension is supported by the bridge.
      */
-    public void registerExtension(BridgeExtension ext);
+    void registerExtension(BridgeExtension ext);
 
     /**
      * Notifies the UserAgent that the input element 
@@ -124,5 +130,5 @@ public interface UserAgent {
      * &lt;title&gt; elements in a UserAgent-dependant
      * way.
      */
-    public void handleElement(Element elt, Object data);
+    void handleElement(Element elt, Object data);
 }

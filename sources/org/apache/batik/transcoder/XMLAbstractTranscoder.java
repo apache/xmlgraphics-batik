@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.dom.util.SAXDocumentFactory;
+import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.DOMImplementationKey;
 import org.apache.batik.transcoder.keys.StringKey;
 
@@ -48,7 +49,9 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
     /**
      * Constructs a new <tt>XMLAbstractTranscoder</tt>.
      */
-    protected XMLAbstractTranscoder() {}
+    protected XMLAbstractTranscoder() {
+	hints.put(KEY_XML_PARSER_VALIDATING, Boolean.FALSE);
+    }
 
     /**
      * Transcodes the specified XML input in the specified output. All
@@ -76,7 +79,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
                 (String)hints.get(KEY_DOCUMENT_ELEMENT);
             DOMImplementation domImpl =
                 (DOMImplementation)hints.get(KEY_DOM_IMPLEMENTATION);
-
+	    
             if (parserClassname == null) {
                 parserClassname = XMLResourceDescriptor.getXMLParserClassName();
             }
@@ -97,6 +100,9 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
             }
             // parse the XML document
             DocumentFactory f = createDocumentFactory(domImpl, parserClassname);
+	    boolean b =
+		((Boolean)hints.get(KEY_XML_PARSER_VALIDATING)).booleanValue();
+	    f.setValidating(b);
             try {
                 if (input.getInputStream() != null) {
                     document = f.createDocument(namespaceURI,
@@ -143,7 +149,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      */
     protected DocumentFactory createDocumentFactory(DOMImplementation domImpl,
                                                     String parserClassname) {
-        return new SAXDocumentFactory(domImpl, parserClassname);
+	return new SAXDocumentFactory(domImpl, parserClassname);
     }
 
     /**
@@ -185,6 +191,29 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
      */
     public static final TranscodingHints.Key KEY_XML_PARSER_CLASSNAME
         = new StringKey();
+
+    /**
+     * The validation mode of the XML parser.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_XML_PARSER_VALIDATING</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Boolean</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">false</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the validation mode of the XML parser.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_XML_PARSER_VALIDATING
+        = new BooleanKey();
 
     /**
      * Document element key.

@@ -910,6 +910,17 @@ public class JSVGComponent extends JGVTComponent {
             return "org.apache.crimson.parser.XMLReaderImpl";
         }
 
+	/**
+	 * Returns true if the XML parser must be in validation mode, false
+	 * otherwise depending on the SVGUserAgent.
+	 */
+	public boolean isXMLParserValidating() {
+            if (svgUserAgent != null) {
+                return svgUserAgent.isXMLParserValidating();
+            }
+            return false;
+	}
+	
         /**
          * Returns the <code>AffineTransform</code> currently
          * applied to the drawing by the UserAgent.
