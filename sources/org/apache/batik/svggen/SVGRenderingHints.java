@@ -110,11 +110,11 @@ public class SVGRenderingHints extends AbstractSVGConverter{
             //
             Object antialiasing = hints.get(hints.KEY_ANTIALIASING);
             if(antialiasing == hints.VALUE_ANTIALIAS_ON){
-                textRendering = SVG_GEOMETRIC_PRECISION_VALUE;
+                textRendering = SVG_OPTIMIZE_LEGIBILITY_VALUE;
                 shapeRendering = SVG_GEOMETRIC_PRECISION_VALUE;
             }
             else if(antialiasing == hints.VALUE_ANTIALIAS_OFF){
-                textRendering = SVG_OPTIMIZE_LEGIBILITY_VALUE;
+                textRendering = SVG_GEOMETRIC_PRECISION_VALUE;
                 shapeRendering = SVG_CRISP_EDGES_VALUE;
             }
             else if(antialiasing == hints.VALUE_ANTIALIAS_DEFAULT){
@@ -127,9 +127,9 @@ public class SVGRenderingHints extends AbstractSVGConverter{
             //
             Object textAntialiasing = hints.get(hints.KEY_TEXT_ANTIALIASING);
             if(textAntialiasing == hints.VALUE_TEXT_ANTIALIAS_ON)
-                textRendering = SVG_GEOMETRIC_PRECISION_VALUE;
-            else if(textAntialiasing == hints.VALUE_TEXT_ANTIALIAS_OFF)
                 textRendering = SVG_OPTIMIZE_LEGIBILITY_VALUE;
+            else if(textAntialiasing == hints.VALUE_TEXT_ANTIALIAS_OFF)
+                textRendering = SVG_GEOMETRIC_PRECISION_VALUE;
             else if(textAntialiasing == hints.VALUE_TEXT_ANTIALIAS_DEFAULT)
                 textRendering = SVG_AUTO_VALUE;
 

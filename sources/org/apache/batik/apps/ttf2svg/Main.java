@@ -8,6 +8,8 @@
 
 package org.apache.batik.apps.ttf2svg;
 
+import org.apache.batik.svggen.font.SVGFont;
+
 /**
  * This test runs the True Type Font to SVG Font converter, the 
  * tool that allows some characters from a font to be converted
@@ -17,5 +19,8 @@ package org.apache.batik.apps.ttf2svg;
  * @version $Id$
  */
 public class Main {
+    public static void main(String[] args){
+        SVGFont.main(args);
+    }
 }
 
