@@ -901,10 +901,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
          * Appends a String and its associated attributes.
          */
         public void append(String s, Map m) {
-            strings.add(s);
-            attributes.add(m);
-            count++;
-            length += s.length();
+          if (s.length() == 0) return;
+          strings.add(s);
+          attributes.add(m);
+          count++;
+          length += s.length();
         }
 
         /**
@@ -1021,18 +1022,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
             return;
         }
-        // get all of the glyph position attribute values
-        String xAtt = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
-        String yAtt = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-        String dxAtt = element.getAttributeNS(null, SVG_DX_ATTRIBUTE);
-        String dyAtt = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
-        String rotateAtt = element.getAttributeNS(null, SVG_ROTATE_ATTRIBUTE);
-
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
         AttributedCharacterIterator aci = as.getIterator();
 
         // calculate which chars in the string belong to this element
-        int firstChar = 0;
+        int firstChar = -1;
         for (int i = 0; i < aci.getEndIndex(); i++) {
             aci.setIndex(i);
             Element delimeter = (Element)aci.getAttribute(
@@ -1043,6 +1036,9 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                 break;
             }
         }
+        // No match so no chars to annotate.
+        if (firstChar == -1) return;
+
         int lastChar = aci.getEndIndex()-1;
         for (int i = aci.getEndIndex()-1; i >= 0; i--) {
             aci.setIndex(i);
@@ -1054,6 +1050,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                 break;
             }
         }
+
+        // get all of the glyph position attribute values
+        String xAtt = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        String yAtt = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        String dxAtt = element.getAttributeNS(null, SVG_DX_ATTRIBUTE);
+        String dyAtt = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
+        String rotateAtt = element.getAttributeNS(null, SVG_ROTATE_ATTRIBUTE);
+
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
 
         ArrayList al;
         int len;
