@@ -8,19 +8,26 @@
 
 package org.apache.batik.apps.svgbrowser;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.Rectangle;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
 
 import java.util.Map;
 import java.util.Hashtable;
 
+import javax.swing.border.Border;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -30,6 +37,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
+import javax.swing.UIManager;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -63,6 +72,18 @@ public class PreferenceDialog extends JDialog
     //////////////////////////////////////////////////////////////
     // GUI Resources Keys
     //////////////////////////////////////////////////////////////
+
+    public static final String ICON_USER_LANGUAGE
+        = "org/apache/batik/apps/svgbrowser/resources/userLanguagePref.png";
+
+    public static final String ICON_USER_STYLESHEET
+        = "org/apache/batik/apps/svgbrowser/resources/userStylesheetPref.png";
+
+    public static final String ICON_BEHAVIOR
+        = "org/apache/batik/apps/svgbrowser/resources/behaviorsPref.png";
+
+    public static final String ICON_NETWORK
+        = "org/apache/batik/apps/svgbrowser/resources/networkPref.png";
 
     public static final String LABEL_USER_OPTIONS 
         = "PreferenceDialog.label.user.options";
@@ -114,6 +135,9 @@ public class PreferenceDialog extends JDialog
 
     public static final String TITLE_NETWORK
         = "PreferenceDialog.title.network";
+
+    public static final String TITLE_DIALOG
+        = "PreferenceDialog.title.dialog";
     
     public static final String CONFIG_HOST_TEXT_FIELD_LENGTH 
         = "PreferenceDialog.config.host.text.field.length";
@@ -240,6 +264,11 @@ public class PreferenceDialog extends JDialog
         //
         host.setText(model.getString(PREFERENCE_KEY_PROXY_HOST));
         port.setText(model.getString(PREFERENCE_KEY_PROXY_PORT));
+
+        //
+        // Sets the dialog's title
+        //
+        setTitle(Resources.getString(TITLE_DIALOG));
     }
 
     /**
@@ -268,15 +297,14 @@ public class PreferenceDialog extends JDialog
      * Builds the UI for this dialog
      */
     protected void buildGUI(){
-        JGridBagPanel panel = new JGridBagPanel();
+        JPanel panel = new JPanel(new BorderLayout());
 
         Component config = buildConfigPanel();
         Component list = buildConfigPanelList();
 
-        panel.add(list,   0, 0, 1, 1, CENTER, BOTH, 0, 1);
-        panel.add(config, 1, 0, 1, 1, CENTER, BOTH, 1, 1);
-
-        panel.add(buildButtonsPanel(), 0, 1, 2, 1, EAST, HORIZONTAL, 1, 0);
+        panel.add(list, BorderLayout.WEST);
+        panel.add(config, BorderLayout.CENTER);
+        panel.add(buildButtonsPanel(), BorderLayout.SOUTH);
         panel.setBorder(BorderFactory.createEmptyBorder(2, 2, 0, 0));
 
         getContentPane().add(panel);
@@ -311,15 +339,27 @@ public class PreferenceDialog extends JDialog
                 }
             });
 
+        addKeyListener(new KeyAdapter(){
+                public void keyPressed(KeyEvent e){
+                    System.out.println("Got key event");
+                    if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                        setVisible(false);
+                        returnCode = CANCEL_OPTION;
+                        dispose();
+                    }
+                }
+            });
+
         return p;
     }
 
     protected Component buildConfigPanelList(){
         String[] configList 
-            = { Resources.getString(LABEL_USER_LANGUAGE),
-                Resources.getString(LABEL_USER_STYLESHEET),
+            = { Resources.getString(LABEL_NETWORK),
+                Resources.getString(LABEL_USER_LANGUAGE),
                 Resources.getString(LABEL_BEHAVIOR),
-                Resources.getString(LABEL_NETWORK)};
+                Resources.getString(LABEL_USER_STYLESHEET),
+                };
 
         final JList list = new JList(configList);
         list.addListSelectionListener(new ListSelectionListener(){
@@ -329,6 +369,17 @@ public class PreferenceDialog extends JDialog
                     }
                 }
             });
+        list.setVisibleRowCount(4);
+
+        // Set Cell Renderer
+        ClassLoader cl = this.getClass().getClassLoader();
+        Map map= new Hashtable();
+        map.put(Resources.getString(LABEL_USER_LANGUAGE), new ImageIcon(cl.getResource(ICON_USER_LANGUAGE)));
+        map.put(Resources.getString(LABEL_USER_STYLESHEET), new ImageIcon(cl.getResource(ICON_USER_STYLESHEET)));
+        map.put(Resources.getString(LABEL_BEHAVIOR), new ImageIcon(cl.getResource(ICON_BEHAVIOR)));
+        map.put(Resources.getString(LABEL_NETWORK), new ImageIcon(cl.getResource(ICON_NETWORK)));
+
+        list.setCellRenderer(new IconCellRenderer(map));
 
         list.setSelectedIndex(0);
 
@@ -417,10 +468,10 @@ public class PreferenceDialog extends JDialog
         port = new JTextField(Resources.getInteger(CONFIG_PORT_TEXT_FIELD_LENGTH));
         JLabel portLabel = new JLabel(Resources.getString(LABEL_PORT));
         p.add(hostLabel, 0, 0, 1, 1, WEST, HORIZONTAL, 0, 0);
-        p.add(host, 0, 1, 1, 1, CENTER, HORIZONTAL, 0, 0);
+        p.add(host, 0, 1, 1, 1, CENTER, HORIZONTAL, 1, 0);
         p.add(portLabel, 1, 0, 1, 1, WEST, HORIZONTAL, 0, 0);
         p.add(port, 1, 1, 1, 1, CENTER, HORIZONTAL, 0, 0);
-        p.add(new JLabel(""), 2, 1, 1, 1, CENTER, HORIZONTAL, 1, 0);
+        p.add(new JLabel(""), 2, 1, 1, 1, CENTER, HORIZONTAL, 0, 0);
 
         p.setBorder(BorderFactory.createCompoundBorder
                     (BorderFactory.createTitledBorder
@@ -488,3 +539,200 @@ class ConfigurationPanelSelector {
     }
 }
 
+class IconCellRendererOld extends JLabel implements ListCellRenderer {
+    Map iconMap;
+
+    public IconCellRendererOld(Map iconMap){
+        this.iconMap = iconMap;
+
+        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    }
+    public Component getListCellRendererComponent
+        (
+         JList list,
+         Object value,            // value to display
+         int index,               // cell index
+         boolean isSelected,      // is the cell selected
+         boolean cellHasFocus)    // the list and the cell have the focus
+    {
+        String s = value.toString();
+        setText(s);
+        ImageIcon icon = (ImageIcon)iconMap.get(s);
+        if(icon != null){
+            setIcon(icon);
+            setHorizontalAlignment(CENTER);
+            setHorizontalTextPosition(CENTER);
+            setVerticalTextPosition(BOTTOM);
+        }
+        // if (isSelected) {
+        setBackground(java.awt.Color.red); // list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
+            /*}
+        else {
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
+            }*/
+            // setEnabled(list.isEnabled());
+            // setFont(list.getFont());
+        return this;
+    }
+}
+
+class IconCellRenderer extends JLabel
+    implements ListCellRenderer
+{
+    protected Map map;
+    protected static Border noFocusBorder;
+
+    /**
+     * Constructs a default renderer object for an item
+     * in a list.
+     */
+    public IconCellRenderer(Map map) {
+	super();
+    this.map = map;
+       	noFocusBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
+	setOpaque(true);
+	setBorder(noFocusBorder);
+    }
+
+
+    public Component getListCellRendererComponent(
+        JList list,
+	Object value,
+        int index,
+        boolean isSelected,
+        boolean cellHasFocus)
+    {
+        
+        setComponentOrientation(list.getComponentOrientation());
+        
+	if (isSelected) {
+	    setBackground(list.getSelectionBackground());
+	    setForeground(list.getSelectionForeground());
+	}
+	else {
+	    setBackground(list.getBackground());
+	    setForeground(list.getForeground());
+	}
+
+	setBorder((cellHasFocus) ? UIManager.getBorder("List.focusCellHighlightBorder") : noFocusBorder);
+
+	/*if (value instanceof Icon) {
+	    setIcon((Icon)value);
+	    setText("");
+	}
+	else {
+	    setIcon(null);
+	    setText((value == null) ? "" : value.toString());
+        }*/
+
+    setText(value.toString());
+        ImageIcon icon = (ImageIcon)map.get(value.toString());
+        if(icon != null){
+            setIcon(icon);
+            setHorizontalAlignment(CENTER);
+            setHorizontalTextPosition(CENTER);
+            setVerticalTextPosition(BOTTOM);
+        }
+	setEnabled(list.isEnabled());
+	setFont(list.getFont());
+
+	return this;
+    }
+
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void validate() {}
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void revalidate() {}
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void repaint(long tm, int x, int y, int width, int height) {}
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void repaint(Rectangle r) {}
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+	// Strings get interned...
+	if (propertyName=="text")
+	    super.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void firePropertyChange(String propertyName, byte oldValue, byte newValue) {}
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void firePropertyChange(String propertyName, char oldValue, char newValue) {}
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void firePropertyChange(String propertyName, short oldValue, short newValue) {}
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void firePropertyChange(String propertyName, int oldValue, int newValue) {}
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void firePropertyChange(String propertyName, long oldValue, long newValue) {}
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void firePropertyChange(String propertyName, float oldValue, float newValue) {}
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void firePropertyChange(String propertyName, double oldValue, double newValue) {}
+
+   /**
+    * Overridden for performance reasons.
+    * See the <a href="#override">Implementation Note</a>
+    * for more information.
+    */
+    public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {}
+}
