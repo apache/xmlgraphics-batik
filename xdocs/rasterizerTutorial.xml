@@ -55,7 +55,8 @@ input and output format, a specific transcoder may or may not support
 a particular type of input or output. For example, the image
 transcoders accept an SVG <code>org.w3c.dom.Document</code>, a
 <code>Reader</code>, an <code>InputStream</code>, or a
-<code>URI</code> as an input but only support a byte stream output.
+<code>URI</code> as an input but only supports a byte stream for the 
+output.
 <br /><br />
 </dd>
 
@@ -83,12 +84,11 @@ implementation lets you create an output using a
 
 <dt><code>TranscodingHints</code></dt>
 <dd>
-The <code>TranscodingHints</code> class contains different hints than can
+The <code>TranscodingHints</code> class contains different hints which can
 be used to control the various options or parameters of a
 transcoder. Each transcoder provides its own set of hints. A hint is
 specified by (key, value) pair. For example, the
-<code>JPEGTranscoder</code> provides a hint to control the compression
-rate.
+<code>JPEGTranscoder</code> provides a hint to control the encoding quality.
 <br /><br />
 </dd>
 
@@ -106,7 +106,7 @@ instead of stack trace.
 <s1 title="How to Use the Image Transcoder API">
 <p>
 The <code>org.apache.batik.transcoder.image</code> package provides an
-easy way to transcode a SVG document to a raster image such as JPEG or
+easy way to transcode an SVG document to a raster image such as JPEG or
 PNG. Additional raster image formats can be added by subclassing the
 <code>ImageTranscoder</code> and implementing the
 <code>writeImage</code> method. Although, in next sections, the
@@ -120,6 +120,8 @@ The following example, using the <code>JPEGTranscoder</code> shows how to
 trasnform a SVG document to a JPEG image.
 </p>
 <source>
+SaveAsJpeg.java
+===============
 import java.io.*;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -154,17 +156,17 @@ public class SaveAsJPEG {
 <p>
 The code creates a <code>JPEGTranscoder</code> and sets the
 transcoding hints. The first hint indicates the XML parser to use. The
-second hint fixes the compression rate. Then, an input and an output
+second hint sets the encoding quality. Then, an input and an output
 are created. The input is created using the first command line
-argument that should represent a URI. The output is a byte stream
-representing a file called "out.jpg". At last, the
+argument which should represent a URI. The output is a byte stream
+representing a file called "out.jpg". Finally, the
 <code>transcode</code> method is invoked and the byte stream is
 closed.
 </p>
 <p>
 Although not shown above, the program might have specified additional
 hints to indicate a user style sheet, the preferred language of the
-document or the background color for example.
+document or the background color.
 </p>
 <p>
 <strong>Try this:</strong>
@@ -180,7 +182,7 @@ document or the background color for example.
 <s2 title="Defining the Size of the Image">
 <p>
 By adding the following line of code to the previous example, you will
-specify the raster image size. The new transcoding hint
+specify the raster image size (in pixels). The new transcoding hint
 <code>KEY_WIDTH</code> lets you specify the raster image width. As the
 raster image height is not provided (using the
 <code>KEY_HEIGHT</code>), the transcoder will compute the raster image
@@ -207,6 +209,9 @@ in the SVG document's space. The following example shows how you can
 split a SVG document into 4 tiles.
 </p>
 <source>
+SaveAsJPEGTiles.java
+====================
+
 import java.io.*;
 import java.awt.*;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
