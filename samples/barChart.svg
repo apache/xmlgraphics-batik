@@ -13,7 +13,8 @@
 <!-- Illustrates how SVG can be used for high quality graphs.                  -->
 <!--                                                                           -->
 <!-- @author vincent.hardy@eng.sun.com                                         -->
-<!-- @version $Id$ -->
+<!-- @author neeme.praks@one.lv                                                -->
+<!-- @version $Id$        -->
 <!-- ========================================================================= -->
 
 <?xml-stylesheet type="text/css" href="tests/test.css" ?>
@@ -25,62 +26,74 @@
 
 		<g id="GridAndLegend" style="stroke:none;">
             <g stroke="black">
-			<path d="M27.272,240.141l316.355,0.147"/>
-			<path d="M27.272,202.845h316.355"/>
-			<path d="M27.272,165.401h316.355"/>
-			<path d="M27.272,127.957h316.355"/>
-			<path d="M27.272,90.514l316.355,0.147"/>
-			<path d="M27.272,53.07l316.355,0.147"/>
-			<path d="M27.272,15.774h316.355"/>
-			<path d="M27.272,240.141l316.355,0.147"/>
-			<path d="M27.272,240.141l316.355,0.147"/>
-			<path d="M27.272,245.448v-5.307"/>
-			<path d="M106.287,245.448l0.147-5.307"/>
-			<path d="M185.45,245.448v-5.307"/>
-			<path d="M264.612,245.448v-5.307"/>
-			<path d="M27.272,240.141V15.774"/>
-			<path d="M27.272,240.141V15.774"/>
-			<path d="M22.112,240.141l5.16,0.147"/>
-			<path d="M22.112,202.845h5.16"/>
-			<path d="M22.112,165.401h5.16"/>
-			<path d="M22.112,127.957h5.16"/>
-			<path d="M22.112,90.514l5.16,0.147"/>
-			<path style="fill:none;" d="M22.112,53.07l5.16,0.147" />
-			<path d="M22.112,15.774h5.16" />
+
+		<!-- "floor" and "wall" -->
+			<path fill="lightgray" stroke="darkgray" d="M 27,240 l   15,-15 v -224 l -15,15" />
+			<path fill="lightgray" stroke="darkgray" d="M 41,225 v -224     h  316 v 224" />
+			<path fill="darkgray" stroke="none"      d="M 27,240 l   15,-15 h  316 l -15,15" />
+
+		<!-- axis lines -->
+			<path d="M 27,240 h  316"/>
+			<path d="M 27,240 v -224"/>
+
+		<!-- value axis major gridlines -->
+			<g style="fill:none;">
+				<path d="M 27,202 l 15,-15 h 316" />
+				<path d="M 27,165 l 15,-15 h 316" />
+				<path d="M 27,127 l 15,-15 h 316" />
+				<path d="M 27, 90 l 15,-15 h 316" />
+				<path d="M 27, 53 l 15,-15 h 316" />
+			</g>
+
+		<!-- category axis major ticks -->
+			<path d="M  27,245 v -5"/>
+			<path d="M 106,245 v -5"/>
+			<path d="M 185,245 v -5"/>
+			<path d="M 264,245 v -5"/>
+
+		<!-- value axis minor ticks -->
+			<path d="M 22,240 h 5"/>
+			<path d="M 22,202 h 5"/>
+			<path d="M 22,165 h 5"/>
+			<path d="M 22,127 h 5"/>
+			<path d="M 22, 90 h 5"/>
+			<path d="M 22, 53 h 5"/>
+			<path d="M 22, 15 h 5"/>
             </g>
 
-			<text transform="matrix(1 0 0 1 54.0181 256.1836)">Shoe</text>
-			<text transform="matrix(1 0 0 1 142.0815 256.1836)">Car</text>
-			<text transform="matrix(1 0 0 1 211.1733 256.1836)">Travel</text>
-			<text transform="matrix(1 0 0 1 285.7813 256.1836)">Computer</text>
-			<text transform="matrix(1 0 0 1 13.1763 247.1855)"><tspan x="0" y="0">0</tspan></text>
-			<text transform="matrix(1 0 0 1 6.9829 209.4468)"><tspan x="0" y="0">1</tspan><tspan x="6.193" y="0">0</tspan></text>
-			<text transform="matrix(1 0 0 1 6.9829 171.561)"><tspan x="0" y="0">2</tspan><tspan x="6.193" y="0">0</tspan></text>
-			<text transform="matrix(1 0 0 1 6.9829 134.7065)"><tspan x="0" y="0">3</tspan><tspan x="6.193" y="0">0</tspan></text>
-			<text transform="matrix(1 0 0 1 6.9829 96.9688)"><tspan x="0" y="0">4</tspan><tspan x="6.193" y="0">0</tspan></text>
-			<text transform="matrix(1 0 0 1 6.9829 60.1143)"><tspan x="0" y="0">5</tspan><tspan x="6.193" y="0">0</tspan></text>
-			<text transform="matrix(1 0 0 1 6.9829 22.228)"><tspan x="0" y="0">6</tspan><tspan x="6.193" y="0">0</tspan></text>
+			<text transform="matrix(1 0 0 1 54  256)">Shoe</text>
+			<text transform="matrix(1 0 0 1 142 256)">Car</text>
+			<text transform="matrix(1 0 0 1 211 256)">Travel</text>
+			<text transform="matrix(1 0 0 1 285 256)">Computer</text>
+
+			<text transform="matrix(1 0 0 1 13 247)"><tspan x="0" y="0">0</tspan></text>
+			<text transform="matrix(1 0 0 1  6 209)"><tspan x="0" y="0">10</tspan></text>
+			<text transform="matrix(1 0 0 1  6 171)"><tspan x="0" y="0">20</tspan></text>
+			<text transform="matrix(1 0 0 1  6 134)"><tspan x="0" y="0">30</tspan></text>
+			<text transform="matrix(1 0 0 1  6  96)"><tspan x="0" y="0">40</tspan></text>
+			<text transform="matrix(1 0 0 1  6  60)"><tspan x="0" y="0">50</tspan></text>
+			<text transform="matrix(1 0 0 1  6  22)"><tspan x="0" y="0">60</tspan></text>
 		</g>
 
 		<g id="ShoeBar">
-			<path style="fill:#7575C3;" d="M47.025,202.845v37.296h39.508v-37.296H47.025z"/>
-			<path style="fill:#8686E0;" d="M86.533,240.141v-37.296l15.626-15.626v37.297l-15.626,15.625z"/>
-			<path style="fill:#5B5B97;" d="M86.533,202.845H47.025l15.626-15.626h39.507l-15.626,15.626z"/>
+			<path style="fill:#8686E0;" d="M  86,240 v  -37 l 15    -15 v  37 l -15,15 z"/>
+			<path style="fill:#5B5B97;" d="M  86,203 h  -39 l 15    -15 h  39 l -15,15 z"/>
+			<path style="fill:#7575C3;" d="M  47,203 v   37 h 39 v  -37 H  47 z"/>
 		</g>
 		<g id="CarBar">
-			<path style="fill:#8686E0;" d="M165.549,240.141v-74.74l15.625-15.626v74.74l-15.625,15.625z"/>
-			<path style="fill:#5B5B97;" d="M165.549,165.401h-39.508l15.626-15.626h39.507l-15.625,15.626z"/>
-			<path style="fill:#7575C3;" d="M126.041,165.401v74.74h39.508v-74.74h-39.508z"/>
+			<path style="fill:#8686E0;" d="M 165,240 v  -74 l 15    -15 v  74 l -15,15 z"/>
+			<path style="fill:#5B5B97;" d="M 165,166 h  -39 l 15    -15 h  39 l -15,15 z"/>
+			<path style="fill:#7575C3;" d="M 126,166 v   74 h 39 v  -74 h -39 z"/>
 		</g>
 		<g id="TravelBar">
-			<path style="fill:#8686E0;" d="M244.711,240.141v-37.296l15.626-15.626v37.297l-15.626,15.625z"/>
-			<path style="fill:#5B5B97;" d="M244.711,202.845h-39.508l15.626-15.626h39.508l-15.626,15.626z"/>
-			<path style="fill:#7575C3;" d="M205.203,202.845v37.296h39.508v-37.296h-39.508z"/>
+			<path style="fill:#8686E0;" d="M 244,240 v  -37 l 15    -15 v  37 l -15,15 z"/>
+			<path style="fill:#5B5B97;" d="M 244,203 h  -39 l 15    -15 h  39 l -15,15 z"/>
+			<path style="fill:#7575C3;" d="M 205,203 v   37 h 39 v  -37 h -39 z"/>
 		</g>
 		<g id="ComputerBar">
-			<path style="fill:#8686E0;" d="M323.874,240.141V15.774L339.5,0.147v224.368l-15.626,15.625z"/>
-			<path style="fill:#5B5B97;" d="M323.874,15.774h-39.655l15.626-15.626H339.5l-15.626,15.626z"/>
-			<path style="fill:#7575C3;" d="M284.218,15.774v224.367h39.655V15.774h-39.655z"/>
+			<path style="fill:#8686E0;" d="M 323,240 v -224 l 15    -15 v 224 l -15,15 z"/>
+			<path style="fill:#5B5B97;" d="M 323, 16 h  -39 l 15    -15 h  39 l -15,15 z"/>
+			<path style="fill:#7575C3;" d="M 284, 16 v  224 h 39 v -224 h -39 z"/>
 		</g>
 
     </g>
