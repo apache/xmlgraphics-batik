@@ -16,6 +16,7 @@ import org.apache.batik.css.event.CSSStyleDeclarationChangeSupport;
 import org.apache.batik.css.event.CSSValueChangeListener;
 
 import org.apache.batik.css.parser.ExtendedParser;
+import org.apache.batik.css.parser.ExtendedParserWrapper;
 
 import org.apache.batik.css.value.ValueFactory;
 import org.apache.batik.css.value.ValueFactoryMap;
@@ -52,7 +53,7 @@ public class CSSOMStyleDeclaration
     /**
      * The CSS parser.
      */
-    protected Parser parser;
+    protected ExtendedParser parser;
 
     /**
      * The properties.
@@ -84,18 +85,14 @@ public class CSSOMStyleDeclaration
      */
     protected CSSStyleDeclarationChangeSupport declarationChangeSupport;
 
-    /**
-     * Indicates whether or not the CSS parser supports methods with String.
-     */
-    protected boolean isExtendedParser;
 
     /**
      * Creates a new CSSStyleDeclaration object.
      */
     public CSSOMStyleDeclaration() {
 	try {
-	    parser = CSSDocumentHandler.createParser();
-	    isExtendedParser = (parser instanceof ExtendedParser);
+	    Parser p = CSSDocumentHandler.createParser();
+	    parser = ExtendedParserWrapper.wrap(p);
 	} catch (Exception e) {
 	    throw new RuntimeException(e.getMessage());
 	}
@@ -105,8 +102,7 @@ public class CSSOMStyleDeclaration
      * Creates a new CSSStyleDeclaration object.
      */
     public CSSOMStyleDeclaration(CSSRule r, Parser p) {
-	parser = p;
-	isExtendedParser = (parser instanceof ExtendedParser);
+	parser = ExtendedParserWrapper.wrap(p);
 	parentRule = r;
     }
 
@@ -223,12 +219,7 @@ public class CSSOMStyleDeclaration
 	properties = new PropertyMap();
 	try {
 	    parser.setDocumentHandler(handler);
-	    if (isExtendedParser) {
-		((ExtendedParser)parser).parseStyleDeclaration(cssText);
-	    } else {
-		Reader r = new StringReader(cssText);
-		parser.parseStyleDeclaration(new InputSource(r));
-	    }
+	    parser.parseStyleDeclaration(cssText);
 	} catch (DOMException e) {
 	    properties = pm;
 	    oldProperties = null;
@@ -338,13 +329,7 @@ public class CSSOMStyleDeclaration
 	try {
 	    ValueFactory f;
             f = factories.get(propertyName.toLowerCase().intern());
-	    LexicalUnit lu;
-	    if (isExtendedParser) {
-		lu = ((ExtendedParser)parser).parsePropertyValue(value);
-	    } else {
-		InputSource is = new InputSource(new StringReader(value));
-		lu = parser.parsePropertyValue(is);
-	    }
+	    LexicalUnit lu = parser.parsePropertyValue(value);
 	    f.createCSSValue(lu, this, prio);
 	} catch (Exception e) {
             e.printStackTrace();

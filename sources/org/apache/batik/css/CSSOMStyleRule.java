@@ -20,6 +20,7 @@ import org.apache.batik.css.event.CSSStyleRuleChangeSupport;
 import org.apache.batik.css.event.CSSPropertyChangeEvent;
 
 import org.apache.batik.css.parser.ExtendedParser;
+import org.apache.batik.css.parser.ExtendedParserWrapper;
 
 import org.apache.batik.css.value.ValueFactoryMap;
 
@@ -60,7 +61,7 @@ public class CSSOMStyleRule
     /**
      * The CSS parser.
      */
-    protected Parser parser;
+    protected ExtendedParser parser;
     
     /**
      * The value factory map.
@@ -83,11 +84,6 @@ public class CSSOMStyleRule
     protected URL baseURI;
 
     /**
-     * Indicates whether or not the CSS parser supports methods with String.
-     */
-    protected boolean isExtendedParser;
-    
-    /**
      * Creates a new rule set.
      */
     public CSSOMStyleRule(CSSStyleSheet ss,
@@ -95,8 +91,7 @@ public class CSSOMStyleRule
 			  Parser p,
 			  ValueFactoryMap m) {
 	super(ss, pr);
-	parser = p;
-	isExtendedParser = (parser instanceof ExtendedParser);
+	parser = ExtendedParserWrapper.wrap(p);
 	factories = m;
 	style = new CSSOMStyleDeclaration(this, p);
 	style.setValueFactoryMap(m);
@@ -151,12 +146,7 @@ public class CSSOMStyleRule
 	    parser.setSelectorFactory(SELECTOR_FACTORY);
 	    parser.setConditionFactory(CONDITION_FACTORY);
 	    parser.setDocumentHandler(ruleHandler);
-	    if (isExtendedParser) {
-		((ExtendedParser)parser).parseRule(cssText);
-	    } else {
-		InputSource is = new InputSource(new StringReader(cssText));
-		parser.parseRule(is);
-	    }
+	    parser.parseRule(cssText);
 	} catch (DOMException e) {
 	    style.fireCSSStyleDeclarationChangeCancel();
 	    fireCSSStyleRuleChangeCancel();

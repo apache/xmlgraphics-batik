@@ -16,6 +16,7 @@ import org.apache.batik.css.CSSOMStyleDeclaration;
 import org.apache.batik.css.CSSOMValue;
 
 import org.apache.batik.css.parser.ExtendedParser;
+import org.apache.batik.css.parser.ExtendedParserWrapper;
 
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
@@ -36,20 +37,15 @@ public abstract class AbstractValueFactory
     /**
      * The CSS parser.
      */
-    protected Parser parser;
+    protected ExtendedParser parser;
 
-    /**
-     * Indicates whether or not the CSS parser supports methods with String.
-     */
-    protected boolean isExtendedParser;
 
     /**
      * To creates a new ValueFactory object.
      * @param p The CSS parser used to parse the CSS texts.
      */
     protected AbstractValueFactory(Parser p) {
-	parser = p;
-	isExtendedParser = (parser instanceof ExtendedParser);
+	parser = ExtendedParserWrapper.wrap(p);
     }
 
     /**
@@ -63,8 +59,7 @@ public abstract class AbstractValueFactory
      * Sets the parser used by this factory.
      */
     public void setParser(Parser p) {
-        parser = p;
-	isExtendedParser = (parser instanceof ExtendedParser);
+	parser = ExtendedParserWrapper.wrap(p);
     }
 
     /**
@@ -74,12 +69,7 @@ public abstract class AbstractValueFactory
     public ImmutableValue createValue(String text) throws DOMException {
 	try {
 	    LexicalUnit lu;
-	    if (isExtendedParser) {
-		lu = ((ExtendedParser)parser).parsePropertyValue(text);
-	    } else {
-		InputSource is = new InputSource(new StringReader(text));
-		lu = parser.parsePropertyValue(is);
-	    }
+	    lu = parser.parsePropertyValue(text);
 	    return createValue(lu);
 	} catch (IOException e) {
             // Should never happen
