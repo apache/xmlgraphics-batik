@@ -11,6 +11,7 @@ package org.apache.batik.transcoder.wmf.tosvg;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Vector;
 
 import org.apache.batik.transcoder.wmf.WMFConstants;
 
@@ -20,28 +21,42 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
  * @author <a href="mailto:luano@asd.ie">Luan O'Carroll</a>
  * @version $Id$
  */
-public class WMFRecordStore extends RecordStore implements WMFConstants{
-
-    private byte js2B[] = new byte[ 2 ];
-    private byte js4B[] = new byte[ 4 ];
+public class WMFRecordStore implements WMFConstants{
 
     public WMFRecordStore(){
+      reset();
+    }
+
+    /**
+     * Resets the internal storage and viewport coordinates.
+     */
+    public void reset(){
+      numRecords = 0;
+      vpX = 0;
+      vpY = 0;
+      vpW = 1000;
+      vpH = 1000;
+      numObjects = 0;
+      records = new Vector( 20, 20 );
+      objectVector = new Vector();
     }
 
     private short readShort( DataInputStream is  ) throws IOException{
-        is.read( js2B );
-        int iTemp = ((0xff) & js2B[ 1 ] ) << 8;
+        byte js[] = new byte[ 2 ];
+        is.read( js );
+        int iTemp = ((0xff) & js[ 1 ] ) << 8;
         short i = (short)(0xffff & iTemp);
-        i |= ((0xff) & js2B[ 0 ] );
+        i |= ((0xff) & js[ 0 ] );
         return i;
     }
 
     private int readInt( DataInputStream is  ) throws IOException {
-        is.read( js4B );
-        int i = ((0xff) & js4B[ 3 ] ) << 24;
-        i |= ((0xff) & js4B[ 2 ] ) << 16;
-        i |= ((0xff) & js4B[ 1 ] ) << 8;
-        i |= ((0xff) & js4B[ 0 ] );
+        byte js[] = new byte[ 4 ];
+        is.read( js );
+        int i = ((0xff) & js[ 3 ] ) << 24;
+        i |= ((0xff) & js[ 2 ] ) << 16;
+        i |= ((0xff) & js[ 1 ] ) << 8;
+        i |= ((0xff) & js[ 0 ] );
         return i;
     }
 
@@ -206,6 +221,11 @@ public class WMFRecordStore extends RecordStore implements WMFConstants{
                     mr.AddElement( new Integer( i1 ));
                     mr.AddElement( new Integer( i0 ));
                     records.addElement( mr );
+
+                    if ( functionId == WMFConstants.META_SETWINDOWEXT ) {
+                      vpW = i0;
+                      vpH = i1;
+                    }
                 }
                 break;
 
@@ -245,8 +265,6 @@ public class WMFRecordStore extends RecordStore implements WMFConstants{
                     int width = readShort( is );
                     int colorref =  readInt( is );
                     int height = readShort( is );
-                    for ( int j = 5; j < recSize; j++ )
-                       readShort( is );
 
                     int red = colorref & 0xff;
                     int green = ( colorref & 0xff00 ) >> 8;
@@ -438,4 +456,143 @@ public class WMFRecordStore extends RecordStore implements WMFConstants{
         }
     }
 
+    synchronized void setReading( boolean state ){
+      bReading = state;
+    }
+
+    synchronized boolean isReading(){
+      return bReading;
+    }
+
+    /**
+     * Adds a GdiObject to the internal handle table.
+     * Wmf files specify the index as given in EMF records such as
+     * EMRCREATEPENINDIRECT whereas WMF files always use 0.
+     *
+     * This function should not normally be called by an application.
+     */
+    public void addObjectAt( int type, Object obj, int idx ) {
+      if (( idx == 0 ) || ( idx > numObjects )) {
+        addObject( type, obj );
+        return;
+      }
+      lastObjectIdx = idx;
+      for ( int i = 0; i < numObjects; i++ ) {
+        GdiObject gdi = (GdiObject)objectVector.elementAt( i );
+        if ( i == idx ) {
+          gdi.Setup( type, obj );
+          break;
+        }
+      }
+    }
+
+    /**
+     * Returns the current URL
+     */
+    public URL getUrl() {
+      return url;
+    }
+
+    /**
+     * Sets the current URL
+     */
+    public void setUrl( URL newUrl) {
+      url = newUrl;
+    }
+
+    /**
+     * Returns a GdiObject from the handle table
+     */
+    public GdiObject getObject( int idx ) {
+      return (GdiObject)objectVector.elementAt( idx );
+    }
+
+    /**
+     * Returns a meta record.
+     */
+    public MetaRecord getRecord( int idx ) {
+      return (MetaRecord)records.elementAt( idx );
+    }
+
+    /**
+     * Returns a number of records in the image
+     */
+    public int getNumRecords() {
+      return numRecords;
+    }
+
+    /**
+     * Returns the number of GdiObjects in the handle table
+     */
+    public int getNumObjects() {
+      return numObjects;
+    }
+
+    /**
+     * Returns the viewport x origin
+     */
+    public int getVpX() {
+      return vpX;
+    }
+
+    /**
+     * Returns the viewport y origin
+     */
+    public int getVpY() {
+      return vpY;
+    }
+
+    /**
+     * Returns the viewport width
+     */
+    public int getVpW() {
+      return vpW;
+    }
+
+    /**
+     * Returns the viewport height
+     */
+    public int getVpH() {
+      return vpH;
+    }
+
+    /**
+     * Sets the viewport x origin
+     */
+    public void setVpX( int newValue ) {
+      vpX = newValue;
+    }
+
+    /**
+     * Sets the viewport y origin
+     */
+    public void setVpY( int newValue ) {
+      vpY = newValue;
+    }
+
+    /**
+     * Sets the viewport width
+     */
+    public void setVpW( int newValue ) {
+      vpW = newValue;
+    }
+
+    /**
+     * Sets the viewport height
+     */
+    public void setVpH( int newValue ) {
+      vpH = newValue;
+    }
+
+
+    transient private URL url;
+
+    transient protected int numRecords;
+    transient protected int numObjects;
+    transient public int lastObjectIdx;
+    transient protected int vpX, vpY, vpW, vpH;
+    transient protected Vector	records;
+    transient protected Vector	objectVector;
+
+    transient protected boolean bReading = false;
 }
