@@ -27,7 +27,7 @@ For creating a distribution the following steps must be done:
 
  3) commit the updated splash screens into CVS:
     cvs commit xdocs/images/splash.png  xdocs/images/splash.svg
-    cvs commit resources/org/apache/batik/apps/svgbrowser/resources/batikSplash.png
+    cvs commit resources/org/apache/batik/apps/svgbrowser/resources/squiggle.png
 
  4) tag the release on CVS:
       cvs rtag <tag> <module>
