@@ -9,6 +9,7 @@
 package org.apache.batik.ext.awt.image.renderable;
 
 import java.awt.Shape;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -36,7 +37,7 @@ public class RedRable
         this.src = src;
     }
 
-    public synchronized CachableRed getSource() {
+    public CachableRed getSource() {
         return src;
     }
 
@@ -55,21 +56,28 @@ public class RedRable
         if (rh == null) rh = new RenderingHints(null);
 
         Shape aoi = rc.getAreaOfInterest();
-        if(aoi == null) aoi = getBounds2D();
+        Rectangle aoiR;
+        if (aoi != null) 
+            aoiR = aoi.getBounds();
+        else
+            aoiR = getBounds2D().getBounds();
 
         // get the current affine transform
         AffineTransform at = rc.getTransform();
 
-        // Get the device bounds, we will crop the affine to those
-        // bounds.
-        Shape devAOI = at.createTransformedShape(aoi);
-
         // For high quality output we should really apply a Gaussian
         // Blur when we are scaling the image down significantly this
         // helps to prevent aliasing in the result image.
-        CachableRed cr = new AffineRed(getSource(), at, rh);
-        cr = new PadRed(cr, devAOI.getBounds(), PadMode.ZERO_PAD, rh);
+        CachableRed cr = getSource();
 
-        return cr;
+        if (aoiR.intersects(cr.getBounds()) == false)
+            return null;
+        aoiR = aoiR.intersection(cr.getBounds());
+
+        // Get the device bounds, we will crop the affine to those
+        // bounds.
+        Rectangle devAOI = at.createTransformedShape(aoiR).getBounds();
+
+        return new AffineRed(cr, at, rh);
     }
 }

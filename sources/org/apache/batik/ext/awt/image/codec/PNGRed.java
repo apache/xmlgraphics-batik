@@ -40,6 +40,7 @@ import java.util.zip.InflaterInputStream;
 
 import org.apache.batik.ext.awt.image.rendered.AbstractRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 public class PNGRed extends AbstractRed {
 
@@ -1836,8 +1837,8 @@ public class PNGRed extends AbstractRed {
     }
 
     public WritableRaster copyData(WritableRaster wr) {
-	wr.setRect(theTile);
-	return wr;
+        GraphicsUtil.copyData(theTile, wr);
+        return wr;
     }
 
     // RenderedImage stuff

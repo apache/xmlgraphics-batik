@@ -9,7 +9,8 @@
 package org.apache.batik.ext.awt.image.rendered;
 
 import  java.awt.image.Raster;
-import  java.lang.ref.WeakReference;
+import  java.lang.ref.Reference;
+import  java.lang.ref.SoftReference;
 
 /**
  * This is a useful class that wraps a Raster for patricipation in
@@ -21,9 +22,9 @@ import  java.lang.ref.WeakReference;
 public class TileLRUMember implements LRUCache.LRUObj {
     private static final boolean DEBUG = false;
 			
-	private LRUCache.LRUNode myNode  = null;
-	private WeakReference    wRaster = null;
-	private Raster           hRaster = null;
+	protected LRUCache.LRUNode myNode  = null;
+	protected Reference        wRaster = null;
+	protected Raster           hRaster = null;
 
 	public TileLRUMember() { }
 
@@ -33,7 +34,7 @@ public class TileLRUMember implements LRUCache.LRUObj {
 
 	public void setRaster(Raster ras) {
 	    hRaster = ras;
-	    wRaster = new WeakReference(ras);
+	    wRaster = new SoftReference(ras);
 	}
 
 	public boolean checkRaster() {

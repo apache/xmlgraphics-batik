@@ -62,8 +62,7 @@ public class TileGrid implements TileStore {
         } 
         item.setRaster(ras);
 		
-        if (item.lruGet() != null) cache.touch(item);
-        else                       cache.add(item);
+        cache.add(item);
 
         if (DEBUG) System.out.println("Setting: (" + (x+minTileX) + ", " + 
                                       (y+minTileY) + ")");

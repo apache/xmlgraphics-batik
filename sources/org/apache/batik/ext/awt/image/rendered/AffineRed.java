@@ -42,8 +42,6 @@ public class AffineRed extends AbstractRed {
     AffineTransform src2me;
     AffineTransform me2src;
 
-    TileGrid tiles;
-
     public AffineTransform getTransform() {
         return (AffineTransform)src2me.clone();
     }
@@ -67,9 +65,11 @@ public class AffineRed extends AbstractRed {
         }
 
         // Calculate my bounds by applying the affine transform to
-        // my input data..
+        // my input data..codec/
+        Rectangle srcBounds = src.getBounds();
+        // srcBounds.grow(-1,-1);
         Rectangle myBounds;
-        myBounds = src2me.createTransformedShape(src.getBounds()).getBounds();
+        myBounds = src2me.createTransformedShape(srcBounds).getBounds();
 
         // If the output buffer is not premultiplied in certain cases it
         // fails to properly divide out the Alpha (it always does

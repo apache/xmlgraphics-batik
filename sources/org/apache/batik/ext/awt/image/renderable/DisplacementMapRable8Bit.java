@@ -140,6 +140,11 @@ public class DisplacementMapRable8Bit
     }
 
     public RenderedImage createRendering(RenderContext rc) {
+        // The source image to be displaced.
+        Filter displaced = (Filter)getSources().elementAt(0);
+        // The map giving the displacement.
+        Filter map = (Filter)getSources().elementAt(1);
+
         RenderingHints rh = rc.getRenderingHints();
         if (rh == null) rh = new RenderingHints(null);
 
@@ -161,6 +166,17 @@ public class DisplacementMapRable8Bit
         double atScaleX = Math.sqrt(sx*sx + shy*shy);
         double atScaleY = Math.sqrt(sy*sy + shx*shx);
 
+        // Now, apply the filter
+        //
+        int scaleX = (int)(scale*atScaleX);
+        int scaleY = (int)(scale*atScaleY);
+
+        // If both scale factors are zero then we don't
+        // affect the source image so just return it...
+        if ((scaleX == 0) && (scaleY == 0))
+            return displaced.createRendering(rc);
+
+        
         AffineTransform srcAt
             = AffineTransform.getScaleInstance(atScaleX, atScaleY);
 
@@ -169,10 +185,8 @@ public class DisplacementMapRable8Bit
             origAOI = getBounds2D();
 
         Rectangle2D aoiR = origAOI.getBounds2D();
-        //
+
         // Get a rendering from the displacement map
-        //
-        Filter map = (Filter)getSources().elementAt(1);
         PadRable mapPad = new PadRable8Bit(map, aoiR, PadMode.ZERO_PAD);
 
         RenderContext srcRc = new RenderContext(srcAt, aoiR, rh);
@@ -188,11 +202,6 @@ public class DisplacementMapRable8Bit
                                       aoiR.getY()      - scale/2,
                                       aoiR.getWidth()  + scale,
                                       aoiR.getHeight() + scale);
-
-        //
-        // Now, get a rendering from the image source
-        //
-        Filter displaced = (Filter)getSources().elementAt(0);
 
         Rectangle2D displacedRect = displaced.getBounds2D();
         if (aoiR.intersects(displacedRect) == false)
@@ -215,12 +224,6 @@ public class DisplacementMapRable8Bit
 
         // Get Raster for mapRed
         Raster mapRas       = mapRed.getData();
-        
-        //
-        // Now, apply the filter
-        //
-        int scaleX = (int)(scale*atScaleX);
-        int scaleY = (int)(scale*atScaleY);
         
         DisplacementMapOp op 
             = new DisplacementMapOp(xChannelSelector,
