@@ -21,9 +21,9 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.ColorMatrixRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.ColorMatrixRable;
+import org.apache.batik.ext.awt.image.renderable.ComponentTransferRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.ConcreteComponentTransferFunction;
 
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
@@ -188,14 +188,14 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
 
         // take the opacity into account. opacity is implemented by a Filter
         if (opacity != 1) {
-            float[][] matrix = { {1, 0, 0, 0, 0},
-                                 {0, 1, 0, 0, 0},
-                                 {0, 0, 1, 0, 0},
-                                 {0, 0, 0, opacity, 0} };
-
-            ColorMatrixRable filter = ColorMatrixRable8Bit.buildMatrix(matrix);
-            Filter contentRable = patternContentNode.getGraphicsNodeRable();
-            filter.setSource(contentRable);
+            Filter filter = patternContentNode.getGraphicsNodeRable();
+            filter = new ComponentTransferRable8Bit
+                (filter,
+                 ConcreteComponentTransferFunction.getLinearTransfer
+                 (opacity, 0), //alpha
+                 ConcreteComponentTransferFunction.getIdentityTransfer(), //Red
+                 ConcreteComponentTransferFunction.getIdentityTransfer(), //Grn
+                 ConcreteComponentTransferFunction.getIdentityTransfer());//Blu
             patternContentNode.setFilter(filter);
         }
 

@@ -189,13 +189,13 @@ public class TextSelectionManager {
             AffineTransform at = component.getRenderingTransform();
             if (selectionHighlight != null) {
                 r = at.createTransformedShape(selectionHighlight).getBounds();
+                outset(r, 1);
             }
 
             selectionHighlight = e.getHighlightShape();
             if (selectionHighlight != null) {
                 if (r != null) {
-                    Rectangle r2;
-                    r2 = at.createTransformedShape(selectionHighlight).getBounds();
+                    Rectangle r2 = getHighlightBounds();
                     component.paintImmediately(r.union(r2));
                 } else {
                     component.paintImmediately(getHighlightBounds());
@@ -207,14 +207,25 @@ public class TextSelectionManager {
 
     }
 
+    protected Rectangle outset(Rectangle r, int amount) {
+        r.x -= amount;
+        r.y -= amount;
+        r.width  += 2*amount;
+        r.height += 2*amount;
+        return r;
+    }
+
     /**
      * The highlight bounds.
      */
     protected Rectangle getHighlightBounds() {
         AffineTransform at = component.getRenderingTransform();
         Shape s = at.createTransformedShape(selectionHighlight);
-        return s.getBounds();
+        return outset(s.getBounds(), 1);
     }
+
+    static final Color fillColor   = new Color(200, 200, 200, 100);
+    static final Color strokeColor = new Color(0,     0,   0, 255);
 
     /**
      * The selection overlay.
@@ -231,10 +242,14 @@ public class TextSelectionManager {
 
                 Graphics2D g2d = (Graphics2D)g;
 
-                g2d.setXORMode(Color.white);
-                g2d.setColor(Color.black);
-
+                // g2d.setXORMode(Color.white);
+                // g2d.setColor(Color.black);
+                g2d.setColor(fillColor);
                 g2d.fill(s);
+
+                g2d.setStroke(new java.awt.BasicStroke(2.0f));
+                g2d.setColor(strokeColor);
+                g2d.draw(s);
             }
         }
     }
