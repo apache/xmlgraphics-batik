@@ -28,27 +28,32 @@
         <s1 title="Batik Overview">
 
         <p>
-        <img src="images/logo.gif" alt="Batik Logo"/>
-        Batik is a Java based toolkit for applications which handle
-        images in the <link href="http://www.w3.org/TR/SVG/">Scalable Vector Graphics (SVG)</link> format for
-        various purposes, such as viewing, generation or manipulation.
+        <img src="images/logo.gif" alt="Batik Logo"/> Batik is a Java
+        based toolkit for applications that want to use images in the
+        <link href="http://www.w3.org/TR/SVG/">Scalable Vector
+        Graphics (SVG)</link> format for various purposes, such as
+        viewing, generation or manipulation.
         </p>
+
         <p>
-        The project's ambition is to give developers a set of core modules which can be used together 
-        or individually to support specific SVG solutions. Examples of modules are SVG parsers, SVG 
-        generators and SVG DOM implementations. Another ambition for the Batik project is to make 
-        it highly extensible (for example, Batik allows the developer to handle custom SVG tags).
-        Even though the goal of the project is to provide a set 
-        of core modules, one of the deliveries is a full fledged SVG Viewer implementation which 
-        validates the various modules and their inter-operability. 
+        The project's ambition is to give developers a set of core 
+        modules which can be used together or individually to support 
+        specific SVG solutions. Example modules are, SVG parsers, SVG 
+        generators and SVG DOM implementations. Another ambition for 
+        the Batik project is to make it highly extensible (for 
+        example, Batik allows the developer to handle custom SVG 
+        tags). Even though the goal of the project is to provide a 
+        set of core modules, one of the deliverables is a full fledged 
+        SVG Viewer implementation which validates the various modules 
+        and their inter-operability. 
         </p>
 
         </s1>
 
         <s1 title="Applications of Batik">
         <p><img src="images/batikUses.jpg" alt="Batik use cases" />
-        With Batik, you can manipulate SVG documents on all platforms where
-        Java is available. You can also use the various Batik modules to
+        With Batik, you can manipulate SVG documents anywhere Java is
+        available. You can also use the various Batik modules to
         generate, manipulate, transcode and search SVG images in your 
         applications.
         </p>
@@ -77,7 +82,9 @@
         <p>
         The SVG specification can be found on the 
         <link href="http://www.w3.org/TR/SVG/">W3C site</link>. Batik 1.0 is conformant
-        with the November 2nd, 2000 Candidate Recommendation Specification.
+        with the November 2nd, 2000 Candidate Recommendation Specification. Note that because
+        SVG is not a final Recommendation yet, it may still change. The Batik team will
+        keep the implementation current with the latest specification developments.
         </p>
          </s1>
 
@@ -99,7 +106,7 @@
         <s1 title="Download Batik">
         <p>
         You can get Batik on the 
-        <link href="http://xml.apache.org/xml-batik/download/">download page</link>.
+        <link href="dist">download page</link>.
         </p>
         <note>
         All other libraries needed by Batik are included in the distribution.
