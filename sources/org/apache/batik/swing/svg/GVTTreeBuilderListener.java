@@ -18,7 +18,6 @@ public interface GVTTreeBuilderListener {
 
     /**
      * Called when a build started.
-     * The data of the event is initialized to the old document.
      */
     void gvtBuildStarted(GVTTreeBuilderEvent e);
 

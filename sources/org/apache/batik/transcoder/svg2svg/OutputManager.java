@@ -520,8 +520,9 @@ public class OutputManager {
         level--;
         if (name != null) {
             if (prettyPrinter.getFormat()) {
-                if (line != ((Integer)startingLines.get(0)).intValue() ||
-                    column + name.length + 3 >= prettyPrinter.getDocumentWidth()) {
+                if (xmlSpace.get(0) != Boolean.TRUE &&
+                    (line != ((Integer)startingLines.get(0)).intValue() ||
+                     column + name.length + 3 >= prettyPrinter.getDocumentWidth())) {
                     printNewline();
                     printString(margin.toString());
                 }
