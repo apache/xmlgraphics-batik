@@ -197,7 +197,7 @@ To display the available targets type:
     <gzip zipfile="${project}-${version}.tar.gz" src="${project}-${version}.tar"/>
     <delete file="${project}-docs-${version}.tar"/>
 
-    <cvs cvsRoot=":pserver:anoncvs@xml.apache.org:/home/cvspublic"
+    <cvs cvsRoot=":pserver:anoncvs@cvs.apache.org:/home/cvspublic"
          package="xml-batik"
          dest="xml-${project}"/>
     <tar tarfile="${project}-src-${version}.tar" basedir="." includes="xml-${project}"/>

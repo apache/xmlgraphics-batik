@@ -1,0 +1,78 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in  the LICENSE file.                                     -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- regularPoly extension tag test                                         -->
+<!--                                                                        -->
+<!-- @author Thomas.DeWeese@Kodak.com                                       -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="extension.css" ?>
+
+<svg id="body" width="450" height="500" xml:space="preserve" 
+     viewBox="0 0 450 500"
+     xmlns:batikExt="http://xml.apache.org/batik/ext">
+
+    <title>Histogram Normalization Extension Tag</title>
+  
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= -->
+    <g id="testContent" class="legend" style="text-anchor:middle">
+        <text x="225" y="40" class="title">Histogram Normalization Extension Tag</text>
+  
+        <g transform="translate(0, 75)">
+          <rect fill="#DAA" x="25" y="0" width="160" height="220"/>
+          <image xlink:href="histogramNormalization.jpg"
+                 x="45" y="20" width="120" height="180"/>
+          <text x="105" y="235" text-anchor="middle">Before</text>
+        </g>
+
+        <g transform="translate(240,75)" >
+            <switch>
+              <g requiredExtensions=
+                 "http://xml.apache.org/batik/ext/histogramNormalization/1.0">
+                <rect fill="#ADA" x="25" y="0" width="160" height="220"/>
+
+                <filter id="fix">
+                    <feComponentTransfer>
+                       <feFuncR type="gamma" exponent=".95"/>
+                       <feFuncG type="gamma" exponent=".95"/>
+                       <feFuncB type="gamma" exponent=".95"/>
+                    </feComponentTransfer>
+                    <batikExt:histogramNormalization trim="2"/>
+                </filter>
+                <image filter="url(#fix)" 
+                       xlink:href="histogramNormalization.jpg"
+                       x="45" y="20" width="120" height="180"/>
+                <text x="105" y="235" text-anchor="middle">With Extension</text>
+              </g>
+             
+              <g >
+                <rect fill="#DAA" x="25" y="0" width="160" height="220"/>
+                <image xlink:href="histogramNormalization.jpg"
+                       x="45" y="20" width="120" height="180"/>
+                <text x="105" y="235" text-anchor="middle">Extension not present</text>
+              </g>
+            </switch>
+
+        </g>
+
+
+    </g>
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="../batikLogo.svg#Batik_Tag_Box" />
+</svg>
