@@ -82,23 +82,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
      */
     public void setContext(ViewCSS v, Element elt) {
         viewCSS = v;
-        element = getParentElement(elt);
-    }
-
-    /**
-     * Returns the parent element of the given one, or null.
-     */
-    protected Element getParentElement(Element e) {
-	for (Node n = e.getParentNode(); n != null; n = n.getParentNode()) {
-	    if (n.getNodeType() == Node.ELEMENT_NODE) {
-		return (Element)n;
-	    }
-	}
-        if (e instanceof HiddenChildElement) {
-            return ((HiddenChildElement)e).getParentElement();
-        }
-        // Should never append
-	return null;
+        element = HiddenChildElementSupport.getParentElement(elt);
     }
 
     /**

@@ -9,12 +9,16 @@
 package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.batik.css.ElementNonCSSPresentationalHints;
 import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.css.HiddenChildElement;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -59,28 +63,21 @@ public class SVGOMSVGElement
      */
     public final static String CONTENT_STYLE_TYPE = "contentStyleType";
 
-    // The default attribute values registration.
+    /**
+     * The attribute-value map map.
+     */
+    protected static Map attributeValues = new HashMap(3);
     static {
-	registerDefaultAttributeValue("svg",
-                                      null,
-				      "contentScriptType",
-				      "text/ecmascript");
-	registerDefaultAttributeValue("svg",
-				      null,
-				      "contentStyleType",
-				      "text/css");
-	registerDefaultAttributeValue("svg",
-                                      null,
-				      "preserveAspectRatio",
-				      "xMidYMid meet");
-	registerDefaultAttributeValue("svg",
-				      XMLSupport.XMLNS_NAMESPACE_URI,
-				      "xmlns",
-				      SVGDOMImplementation.SVG_NAMESPACE_URI);
-	registerDefaultAttributeValue("svg",
-				      null,
-				      "zoomAndPan",
-				      "magnify");
+        Map values = new HashMap(7);
+        values.put("contentScriptType",    "text/ecmascript");
+        values.put("contentStyleType",     "text/css");
+        values.put("preserveAspectRatio",  "xMidYMid meet");
+        values.put("zoomAndPan",           "magnify");
+        attributeValues.put(null, values);
+
+        values = new HashMap(2);
+        values.put("xmlns", SVGDOMImplementation.SVG_NAMESPACE_URI);
+        attributeValues.put(XMLSupport.XMLNS_NAMESPACE_URI, values);
     }
 
     /**
@@ -235,6 +232,14 @@ public class SVGOMSVGElement
      */
     public SVGRect getViewport() {
 	throw new RuntimeException(" !!! TODO: SVGOMSVGElement.getViewport()");
+    }
+
+    /**
+     * Returns the default attribute values in a map.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected Map getDefaultAttributeValues() {
+        return attributeValues;
     }
 
     // ElementNonCSSPresentationalHints ////////////////////////////////////

@@ -15,13 +15,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.batik.css.ElementWithID;
 import org.apache.batik.css.ElementWithPseudoClass;
+import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractElement;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
+import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
@@ -42,17 +46,14 @@ public abstract class SVGOMElement
     extends    AbstractElement
     implements SVGElement,
                ElementWithID,
-               ElementWithPseudoClass {
+               ElementWithPseudoClass,
+               SVGConstants
+{
     /**
      * The element ID attribute name.
      */
     protected final static String ID_NAME = "id";
 
-    /**
-     * The { element name, attribute value map } map.
-     */
-    protected static Map elementDefaultValues = new HashMap(11);
-    
     /**
      * Is this element immutable?
      */
@@ -104,9 +105,11 @@ public abstract class SVGOMElement
      * org.w3c.dom.svg.SVGElement#getOwnerSVGElement()}.
      */
     public SVGSVGElement getOwnerSVGElement() {
-        for (Node n = getParentNode(); n != null; n = n.getParentNode()) {
-            if (n instanceof SVGSVGElement) {
-                return (SVGSVGElement)n;
+        for (Element e = HiddenChildElementSupport.getParentElement(this);
+             e != null;
+             e = HiddenChildElementSupport.getParentElement(e)) {
+            if (e instanceof SVGSVGElement) {
+                return (SVGSVGElement)e;
             }
         }
         return null;
@@ -268,32 +271,15 @@ public abstract class SVGOMElement
     }
 
     /**
-     * Registers a default attribute value.
-     */
-    protected static void registerDefaultAttributeValue(String element,
-							String nsURI,
-							String name,
-							String value) {
-	Map attrValues = (Map)elementDefaultValues.get(element);
-	if (attrValues == null) {
-	    elementDefaultValues.put(element, attrValues = new HashMap(11));
-	}
-	Map attrs = (Map)attrValues.get(nsURI);
-	if (attrs == null) {
-	    attrValues.put(nsURI, attrs = new HashMap(11));
-	}
-	attrs.put(name, value);
-    }
-
-    /**
      * Resets an attribute to the default value.
      * @return true if a default value is known for the given attribute.
      */
     protected boolean resetAttribute(String nsURI, String name) {
-	Map m = (Map)elementDefaultValues.get(getLocalName());
+        Map m = getDefaultAttributeValues();
 	if (m == null) {
 	    return false;
-	}
+        }
+
 	m = (Map)m.get(nsURI);
 	if (m == null) {
 	    return false;
@@ -307,10 +293,18 @@ public abstract class SVGOMElement
     }
 
     /**
+     * Returns the default attribute values in a map.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected Map getDefaultAttributeValues() {
+        return null;
+    }
+
+    /**
      * Initializes the attributes of this element to their default value.
      */
     protected void initializeAttributes() {
-	Map m = (Map)elementDefaultValues.get(getLocalName());
+	Map m = getDefaultAttributeValues();
 	if (m == null) {
 	    return;
 	}
@@ -441,7 +435,8 @@ public abstract class SVGOMElement
             // Reset the attribute to its default value
             if (!resetAttribute(this.namespaceURI, name)) {
                 // Mutation event
-                SVGOMElement.this.fireDOMAttrModifiedEvent(name, n.getNodeValue(), "");
+                SVGOMElement.this.fireDOMAttrModifiedEvent
+                    (name, n.getNodeValue(), "");
             }
 	    return n;
 	}

@@ -942,6 +942,7 @@ public class ViewerFrame
                 System.out.println("--------------------------------");
                 System.out.println(" Document loading time: " +
                                    (t2 - t1) + " ms");
+                System.out.println("--------------------------------");
 
                 String title = doc.getTitle();
                 if (title.equals("")) {
@@ -974,6 +975,7 @@ public class ViewerFrame
                 System.out.println("--------------------------------");
                 System.out.println(" Tree construction time: " +
                                    (t1 - t2) + " ms");
+                System.out.println("--------------------------------");
 
                 description
                     =  SVGUtilities.getDescription(doc.getRootElement());

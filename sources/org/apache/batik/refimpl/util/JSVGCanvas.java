@@ -146,11 +146,6 @@ public class JSVGCanvas
     protected GVTBuilder builder;
 
     /**
-     * The bridge context.
-     */
-    protected BridgeContext bridgeContext;
-
-    /**
      * The SVG document to render.
      */
     protected SVGDocument document;
@@ -216,6 +211,11 @@ public class JSVGCanvas
     protected ThumbnailCanvas thumbnailCanvas;
 
     /**
+     * The parser factory.
+     */
+    protected ParserFactory parserFactory = new ParserFactory();
+
+    /**
      * Used to draw marker
      */
     protected BasicStroke markerStroke
@@ -248,15 +248,6 @@ public class JSVGCanvas
         rendererFactory = new StaticRendererFactory();
 
         builder = new ConcreteGVTBuilder();
-        bridgeContext = new SVGBridgeContext();
-        bridgeContext.setGVTFactory
-            (ConcreteGVTFactory.getGVTFactoryImplementation());
-        bridgeContext.setParserFactory(new ParserFactory());
-        bridgeContext.setUserAgent(userAgent);
-        bridgeContext.setGraphicsNodeRableFactory
-            (new ConcreteGraphicsNodeRableFactory());
-        ((SVGBridgeContext)bridgeContext).setInterpreterPool
-            (new ConcreteInterpreterPool());
 
         addComponentListener(new CanvasListener());
         MouseListener ml = new MouseListener();
@@ -290,7 +281,7 @@ public class JSVGCanvas
     public void setSVGDocument(SVGDocument doc) {
         if (document != null) {
             // fire the unload event
-            Event evt = document.createEvent("SVGEvents");
+            Event evt = document.createEvent("SVGEvent");
             evt.initEvent("SVGUnload", false, false);
             ((EventTarget)(document.
                            getRootElement())).
@@ -300,8 +291,9 @@ public class JSVGCanvas
         if (document == null) {
             gvtRoot = null;
         } else {
-            bridgeContext.setViewCSS((ViewCSS)doc.getDocumentElement());
-            gvtRoot = builder.build(bridgeContext, document);
+            BridgeContext bc = createBridgeContext(doc);
+            bc.setViewCSS((ViewCSS)doc.getDocumentElement());
+            gvtRoot = builder.build(bc, document);
             computeTransform();
         }
 
@@ -314,6 +306,21 @@ public class JSVGCanvas
         if (thumbnailCanvas != null) {
             thumbnailCanvas.fullRepaint();
         }
+    }
+
+    /**
+     * Creates a new bridge context.
+     */
+    protected BridgeContext createBridgeContext(SVGDocument doc) {
+        BridgeContext result = new SVGBridgeContext();
+        result.setGVTFactory(ConcreteGVTFactory.getGVTFactoryImplementation());
+        result.setParserFactory(parserFactory);
+        result.setUserAgent(userAgent);
+        result.setGraphicsNodeRableFactory
+            (new ConcreteGraphicsNodeRableFactory());
+        ((SVGBridgeContext)result).setInterpreterPool
+            (new ConcreteInterpreterPool());
+        return result;
     }
 
     /**
@@ -509,7 +516,7 @@ public class JSVGCanvas
         int h = size.height;
 
         transform = SVGUtilities.getPreserveAspectRatioTransform
-            (elt, w, h, bridgeContext.getParserFactory());
+            (elt, w, h, parserFactory);
     }
 
     /**
@@ -527,9 +534,20 @@ public class JSVGCanvas
          * The thread main method.
          */
         public void run() {
+ 
             Dimension size = getSize();
+
+            long t1 = System.currentTimeMillis();
+            System.out.println("-----------start---------------------");
+
             renderer.repaint(getAreaOfInterest
                              (new Rectangle(0, 0, size.width, size.height)));
+
+            long t2 = System.currentTimeMillis();
+            System.out.println(" Tree rendering time: " +
+                               (t2 - t1) + " ms");
+            System.out.println("-----------end-----------------------");
+
             repaintThread = null;
             repaint();
         }
@@ -1002,7 +1020,7 @@ public class JSVGCanvas
             int h = size.height;
 
             transform = SVGUtilities.getPreserveAspectRatioTransform
-                (elt, w, h, bridgeContext.getParserFactory());
+                (elt, w, h, parserFactory);
             if (transform.isIdentity()) {
                 float dw = elt.getWidth().getBaseVal().getValue();
                 float dh = elt.getHeight().getBaseVal().getValue();

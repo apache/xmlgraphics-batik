@@ -112,44 +112,110 @@ public class SVGOMDocument
      */
     protected HashTable factories = new HashTable();
     {
-        factories.put(TAG_A,                new AElementFactory());
-        factories.put(TAG_CIRCLE,           new CircleElementFactory());
-        factories.put(TAG_DEFS,             new DefsElementFactory());
-        factories.put(TAG_DESC,             new DescElementFactory());
-        factories.put(TAG_ELLIPSE,          new EllipseElementFactory());
-        factories.put(TAG_FE_BLEND,         new FeBlendElementFactory());
-        factories.put(TAG_FE_COLOR_MATRIX,  new FeColorMatrixElementFactory());
+        factories.put(TAG_A,
+                      new AElementFactory());
+
+        factories.put(TAG_CIRCLE,
+                      new CircleElementFactory());
+
+        factories.put(TAG_DEFS,
+                      new DefsElementFactory());
+
+        factories.put(TAG_DESC,
+                      new DescElementFactory());
+
+        factories.put(TAG_ELLIPSE,
+                      new EllipseElementFactory());
+
+        factories.put(TAG_FE_BLEND,
+                      new FeBlendElementFactory());
+
+        factories.put(TAG_FE_COLOR_MATRIX,
+                      new FeColorMatrixElementFactory());
+
         factories.put(TAG_FE_COMPONENT_TRANSFER,
                       new FeComponentTransferElementFactory());
+
         factories.put(TAG_FE_DIFFUSE_LIGHTING,
                       new FeDiffuseLightingElementFactory());
+
         factories.put(TAG_FE_DISPLACEMENT_MAP,
                       new FeDisplacementMapElementFactory());
-        factories.put(TAG_FE_FLOOD,         new FeFloodElementFactory());
-        factories.put(TAG_FE_GAUSSIAN_BLUR, new FeGaussianBlurElementFactory());
-        factories.put(TAG_FE_IMAGE,         new FeImageElementFactory());
-        factories.put(TAG_FE_MERGE,         new FeMergeElementFactory());
-        factories.put(TAG_FE_MORPHOLOGY,    new FeMorphologyElementFactory());
-        factories.put(TAG_FE_OFFSET,        new FeOffsetElementFactory());
+
+        factories.put(TAG_FE_FLOOD,
+                      new FeFloodElementFactory());
+
+        factories.put(TAG_FE_GAUSSIAN_BLUR,
+                      new FeGaussianBlurElementFactory());
+
+        factories.put(TAG_FE_IMAGE,
+                      new FeImageElementFactory());
+
+        factories.put(TAG_FE_MERGE,
+                      new FeMergeElementFactory());
+
+        factories.put(TAG_FE_MORPHOLOGY,
+                      new FeMorphologyElementFactory());
+
+        factories.put(TAG_FE_OFFSET,
+                      new FeOffsetElementFactory());
+
         factories.put(TAG_FE_SPECULAR_LIGHTING,
                       new FeSpecularLightingElementFactory());
-        factories.put(TAG_FE_TILE,          new FeTileElementFactory());
-        factories.put(TAG_FE_TURBULENCE,    new FeTurbulenceElementFactory());
-        factories.put(TAG_FILTER,           new FilterElementFactory());
-        factories.put(TAG_G,                new GElementFactory());
-        factories.put(TAG_IMAGE,            new ImageElementFactory());
-        factories.put(TAG_LINE,             new LineElementFactory());
-        factories.put(TAG_PATH,             new PathElementFactory());
-        factories.put(TAG_POLYGON,          new PolygonElementFactory());
-        factories.put(TAG_POLYLINE,         new PolylineElementFactory());
-        factories.put(TAG_RECT,             new RectElementFactory());
-        factories.put(TAG_STYLE,            new StyleElementFactory());
-        factories.put(TAG_SVG,              new SvgElementFactory());
-        factories.put(TAG_SWITCH,           new SwitchElementFactory());
-        factories.put(TAG_SYMBOL,           new SymbolElementFactory());
-        factories.put(TAG_TEXT,             new TextElementFactory());
-        factories.put(TAG_TITLE,            new TitleElementFactory());
-        factories.put(TAG_USE,              new UseElementFactory());
+
+        factories.put(TAG_FE_TILE,
+                      new FeTileElementFactory());
+
+        factories.put(TAG_FE_TURBULENCE,
+                      new FeTurbulenceElementFactory());
+
+        factories.put(TAG_FILTER,
+                      new FilterElementFactory());
+
+        factories.put(TAG_G,
+                      new GElementFactory());
+
+        factories.put(TAG_IMAGE,
+                      new ImageElementFactory());
+
+        factories.put(TAG_LINE,
+                      new LineElementFactory());
+
+        factories.put(TAG_PATH,
+                      new PathElementFactory());
+
+        factories.put(TAG_POLYGON,
+                      new PolygonElementFactory());
+
+        factories.put(TAG_POLYLINE,
+                      new PolylineElementFactory());
+
+        factories.put(TAG_RECT,
+                      new RectElementFactory());
+
+        factories.put(TAG_SCRIPT,
+                      new ScriptElementFactory());
+
+        factories.put(TAG_STYLE,
+                      new StyleElementFactory());
+
+        factories.put(TAG_SVG,
+                      new SvgElementFactory());
+
+        factories.put(TAG_SWITCH,
+                      new SwitchElementFactory());
+
+        factories.put(TAG_SYMBOL,
+                      new SymbolElementFactory());
+
+        factories.put(TAG_TEXT,
+                      new TextElementFactory());
+
+        factories.put(TAG_TITLE,
+                      new TitleElementFactory());
+
+        factories.put(TAG_USE,
+                      new UseElementFactory());
     }
 
     /**
@@ -900,6 +966,18 @@ public class SVGOMDocument
          */
         public Element create(String prefix) {
             return new SVGOMRectElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'script' element.
+     */
+    protected class ScriptElementFactory implements ElementFactory {
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMScriptElement(prefix, SVGOMDocument.this);
         }
     }
 

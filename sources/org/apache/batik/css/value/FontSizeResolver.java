@@ -10,7 +10,10 @@ package org.apache.batik.css.value;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.css.value.ImmutableValue;
+import org.apache.batik.util.CSSConstants;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -23,7 +26,9 @@ import org.w3c.dom.css.ViewCSS;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class FontSizeResolver implements RelativeValueResolver {
+public class FontSizeResolver
+    implements RelativeValueResolver,
+               CSSConstants {
     /**
      * The medium CSS value.
      */
@@ -41,7 +46,7 @@ public class FontSizeResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "font-size";
+	return FONT_SIZE_PROPERTY;
     }
 
     /**
@@ -72,7 +77,7 @@ public class FontSizeResolver implements RelativeValueResolver {
 	boolean b = im == FontSizeFactory.SMALLER_VALUE;
         CSSOMReadOnlyValue val = null;
         if (b || im == FontSizeFactory.LARGER_VALUE) {
-            Element p = getParentElement(element);
+            Element p = HiddenChildElementSupport.getParentElement(element);
             if (p == null) {
                 val = new CSSOMReadOnlyValue((b)
                                              ? FontSizeFactory.SMALL_VALUE
@@ -131,17 +136,5 @@ public class FontSizeResolver implements RelativeValueResolver {
                 }
             }
         }
-    }
-
-    /**
-     * Returns the parent element of the given one, or null.
-     */
-    protected Element getParentElement(Element e) {
-	for (Node n = e.getParentNode(); n != null; n = n.getParentNode()) {
-	    if (n.getNodeType() == Node.ELEMENT_NODE) {
-		return (Element)n;
-	    }
-	}
-	return null;
     }
 }

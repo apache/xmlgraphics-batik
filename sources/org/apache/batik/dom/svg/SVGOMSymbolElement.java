@@ -8,10 +8,14 @@
 
 package org.apache.batik.dom.svg;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
+
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
@@ -31,12 +35,14 @@ public class SVGOMSymbolElement
     implements SVGSymbolElement,
 	       OverrideStyleElement,
 	       ExtendedElementCSSInlineStyle {
-    // The default attribute values registration.
+    /**
+     * The attribute-value map map.
+     */
+    protected static Map attributeValues = new HashMap(3);
     static {
-	registerDefaultAttributeValue("symbol",
-				      null,
-				      "preserveAspectRatio",
-				      "xMidYMid meet");
+        Map values = new HashMap(2);
+        values.put("preserveAspectRatio", "xMidYMid meet");
+        attributeValues.put(null, values);
     }
 
     /**
@@ -60,6 +66,14 @@ public class SVGOMSymbolElement
      */
     public String getLocalName() {
         return "symbol";
+    }
+
+    /**
+     * Returns the default attribute values in a map.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected Map getDefaultAttributeValues() {
+        return attributeValues;
     }
 
     // SVGStylable support ///////////////////////////////////////////////////

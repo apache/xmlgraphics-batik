@@ -56,7 +56,7 @@ public class SVGOMAElement
 	SVGAnimatedString result;
 	if (targetReference == null ||
 	    (result = (SVGAnimatedString)targetReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, "target");
+	    result = new SVGOMAnimatedString(this, null, ATTR_TARGET);
 	    targetReference = new WeakReference(result);
 	}
 	return result;

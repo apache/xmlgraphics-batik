@@ -14,6 +14,7 @@ import org.apache.batik.dom.svg.SVGDocumentLoader;
 import org.apache.batik.refimpl.bridge.BufferedDocumentLoader;
 import org.apache.batik.refimpl.bridge.BufferedDocumentLoader;
 import org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRableFactory;
+import org.apache.batik.refimpl.script.ConcreteInterpreterPool;
 
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.css.ViewCSS;
@@ -34,5 +35,6 @@ public class DefaultBridgeContext extends SVGBridgeContext {
         setUserAgent(new DefaultUserAgent());
         setViewCSS((ViewCSS) svgDocument.getRootElement());
         setGraphicsNodeRableFactory(new ConcreteGraphicsNodeRableFactory());
+        setInterpreterPool(new ConcreteInterpreterPool());
     }
 }
