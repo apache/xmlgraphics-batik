@@ -68,7 +68,7 @@ public abstract class NumberParser extends AbstractParser {
                     if ((expDig != 0) || (current != '0')) {
                                 // Ignore leading zeros.
                         expDig++;
-                        expDig = expDig*10+(current-'0');
+                        exp = exp*10+(current-'0');
                     }
                 }
                 eJustRead = false;
