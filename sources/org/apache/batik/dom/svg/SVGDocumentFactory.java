@@ -81,11 +81,12 @@ public class SVGDocumentFactory extends DocumentFactory {
 	    if (uris.indexOf(systemId) != -1) {
 		return new InputSource
 		    (getClass().getResource
-                     ("resources/svg-20000802.dtd").toString());
+                     ("resources/svg-20001102.dtd").toString());
 	    }
         } catch (MissingResourceException e) {
             throw new SAXException(e);
         }
+        // Let the SAX parser find the entity.
 	return null;
     }
 }

@@ -16,9 +16,9 @@ package org.apache.batik.util;
  */
 public interface SVGConstants extends CSSConstants {
     String SVG_PUBLIC_ID =
-        "-//W3C//DTD SVG 20000802//EN";
+        "-//W3C//DTD SVG 20001102//EN";
     String SVG_SYSTEM_ID =
-        "http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd";
+        "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd";
     String SVG_NAMESPACE_URI =
         "http://www.w3.org/2000/svg";
 
