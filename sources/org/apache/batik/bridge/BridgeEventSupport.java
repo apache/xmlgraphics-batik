@@ -213,7 +213,7 @@ public class BridgeEventSupport implements SVGConstants {
         }
 
         public void mouseExited(GraphicsNodeMouseEvent evt) {
-            Point clientXY = getClientMouseLocation(evt.getPoint2D());
+            Point clientXY = evt.getClientPoint();
             // Get the 'new' node for the DOM event.
             GraphicsNode node = evt.getRelatedNode();
             Element targetElement = getEventTarget(node, clientXY);
@@ -232,7 +232,7 @@ public class BridgeEventSupport implements SVGConstants {
         }
 
         public void mouseMoved(GraphicsNodeMouseEvent evt) {
-            Point clientXY = getClientMouseLocation(evt.getPoint2D());
+            Point clientXY = evt.getClientPoint();
             GraphicsNode node = evt.getGraphicsNode();
             Element targetElement = getEventTarget(node, clientXY);
             Element holdLTE = lastTargetElement;
@@ -273,7 +273,7 @@ public class BridgeEventSupport implements SVGConstants {
         protected void dispatchMouseEvent(String eventType,
                                           GraphicsNodeMouseEvent evt,
                                           boolean cancelable) {
-            Point clientXY = getClientMouseLocation(evt.getPoint2D());
+            Point clientXY = evt.getClientPoint();
             GraphicsNode node = evt.getGraphicsNode();
             Element targetElement = getEventTarget(node, clientXY);
             Element relatedElement = getRelatedElement(evt);
@@ -375,22 +375,6 @@ public class BridgeEventSupport implements SVGConstants {
                 button = 2;
             }
             return button;
-        }
-
-        /**
-         * Returns the client mouse coordinates using the specified
-         * mouse coordinates in the GVT Tree space.
-         *
-         * @param coords the mouse coordinates in the GVT tree space
-         */
-        protected Point getClientMouseLocation(Point2D coords) {
-            AffineTransform transform = ua.getTransform();
-            Point2D p = coords;
-            if (transform != null && !transform.isIdentity()) {
-                p = transform.transform(coords, null);
-            }
-            return new Point((int)Math.floor(coords.getX()),
-                             (int)Math.floor(coords.getY()));
         }
 
         /**
