@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
@@ -143,7 +144,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * key is an Element -
      * value is a Viewport
      */
-    protected Map viewportMap = new HashMap();
+    protected Map viewportMap = new WeakHashMap();
 
     /**
      * The viewport stack. Used in building time.
@@ -160,21 +161,34 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * key is an SVG Element -
      * value is a GraphicsNode
      */
-    protected HashMap elementNodeMap;
+    protected Map elementNodeMap;
 
     /**
      * Binding Map:
      * key is GraphicsNode -
      * value is a SVG Element.
      */
-    protected HashMap nodeElementMap;
+    protected Map nodeElementMap;
 
     /**
      * Bridge Map:
      * Keys are namespace URI - values are HashMap (with keys are local
      * name and values are a Bridge instance).
      */
-    protected HashMap namespaceURIMap;
+    protected Map namespaceURIMap;
+
+    /**
+     * Element Data Map:
+     * This is a general location for elements to 'cache'
+     * data.  Such as the graphics tree for a pattern or
+     * the Gradient arrays.
+     *
+     * This is a weak hash map and the data is referenced
+     * by SoftReference so both must be referenced elsewhere
+     * to stay live.
+     */
+    protected Map elementDataMap;
+
 
     /**
      * The interpreter pool used to handle scripts.
@@ -357,6 +371,35 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     protected void setFontFamilyMap(Map fontFamilyMap) {
         this.fontFamilyMap = fontFamilyMap;
+    }
+
+    /**
+     * Set Element Data.
+     * Associates data object with element so it can be
+     * retrieved later.
+     */
+    public void setElementData(Node n, Object data) {
+        if (elementDataMap == null)
+            elementDataMap = new WeakHashMap();
+        elementDataMap.put(n, new SoftReference(data));
+    }
+
+    /**
+     * Set Element Data.
+     * Associates data object with element so it can be
+     * retrieved later.
+     */
+    public Object getElementData(Node n) {
+        if (elementDataMap == null)
+            return null;
+        Object o = elementDataMap.get(n);
+        if (o == null) return null;
+        SoftReference sr = (SoftReference)o;
+        o = sr.get();
+        if (o == null) {
+            elementDataMap.remove(n);
+        }
+        return o;
     }
 
     /**
@@ -640,11 +683,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     public void bind(Element element, GraphicsNode node) {
         if (elementNodeMap == null) {
-            elementNodeMap = new HashMap();
-            nodeElementMap = new HashMap();
+            elementNodeMap = new WeakHashMap();
+            nodeElementMap = new WeakHashMap();
         }
-        elementNodeMap.put(element, node);
-        nodeElementMap.put(node, element);
+        elementNodeMap.put(element, new SoftReference(node));
+        nodeElementMap.put(node, new SoftReference(element));
     }
 
     /**
@@ -656,9 +699,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         if (elementNodeMap == null) {
             return;
         }
-        GraphicsNode node = (GraphicsNode)elementNodeMap.get(element);
+        GraphicsNode node = null;
+        SoftReference sr = (SoftReference)elementNodeMap.get(element);
+        if (sr != null)
+            node = (GraphicsNode)sr.get();
         elementNodeMap.remove(element);
-        nodeElementMap.remove(node);
+        if (node != null)
+            nodeElementMap.remove(node);
     }
 
     /**
@@ -669,10 +716,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     public GraphicsNode getGraphicsNode(Element element) {
         if (elementNodeMap != null) {
-            return (GraphicsNode)elementNodeMap.get(element);
-        } else {
-            return null;
+            SoftReference sr = (SoftReference)elementNodeMap.get(element);
+            if (sr != null) 
+                return (GraphicsNode)sr.get();
         }
+        return null;
     }
 
     /**
@@ -683,10 +731,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     public Element getElement(GraphicsNode node) {
         if (nodeElementMap != null) {
-            return (Element)nodeElementMap.get(node);
-        } else {
-            return null;
+            SoftReference sr = (SoftReference)nodeElementMap.get(node);
+            if (sr != null) 
+                return (Element)sr.get();
         }
+        return null;
     }
 
     // Bridge management /////////////////////////////////////////////////////
