@@ -800,6 +800,29 @@ public abstract class CSSEngine {
     }
 
     /**
+     * Parses and creates a new style-sheet.
+     * @param is The input source used to read the document.
+     * @param uri The base URI.
+     * @param media The target media of the style-sheet.
+     */
+    public StyleSheet parseStyleSheet(InputSource is, URL uri, String media)
+        throws DOMException {
+        StyleSheet ss = new StyleSheet();
+        try {
+            ss.setMedia(parser.parseMedia(media));
+            parseStyleSheet(ss, is, uri);
+        } catch (Exception e) {
+            String m = e.getMessage();
+            String s =
+                Messages.formatMessage("syntax.error.at",
+                                       new Object[] { documentURI.toString(),
+                                                      (m == null) ? "" : m });
+            throw new DOMException(DOMException.SYNTAX_ERR, s);
+        }
+        return ss;
+    }
+
+    /**
      * Parses and fills the given style-sheet.
      * @param ss The stylesheet to fill.
      * @param uri The base URI.

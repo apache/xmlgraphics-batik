@@ -8,12 +8,13 @@
 
 package org.apache.batik.css.engine.value;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.w3c.css.sac.LexicalUnit;
 
 import org.w3c.dom.DOMException;
+
+import org.apache.batik.util.ParsedURL;
 
 /**
  * This class provides a base implementation for the value factories.
@@ -32,11 +33,7 @@ public abstract class AbstractValueFactory {
      * Resolves an URI.
      */
     protected static String resolveURI(URL base, String value) {
-        try {
-            value = new URL(base, value).toString();
-        } catch (MalformedURLException e) {
-        }
-        return value;
+        return new ParsedURL(base, value).toString();
     }
 
     /**
