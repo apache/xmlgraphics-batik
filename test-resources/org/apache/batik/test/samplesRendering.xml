@@ -373,6 +373,7 @@
         <test id="samples/tests/spec/scripting/visibility.svg" />
         <test id="samples/tests/spec/scripting/viewBoxOnLoad.svg" />
         <test id="samples/tests/spec/scripting/xyModifOnLoad.svg" />
+        <test id="samples/tests/spec/scripting/zeroSize.svg" />
     </testGroup>
 
 </testSuite>
