@@ -205,14 +205,14 @@ public class StaticRenderer implements Renderer {
         g.clip(nodeRenderContext.getAreaOfInterest());
 
         // Render tree
-        long t0 = System.currentTimeMillis();
+/*        long t0 = System.currentTimeMillis();*/
         if(treeRoot != null) {
             treeRoot.paint(g, nodeRenderContext);
-            long t1 = System.currentTimeMillis();
+/*            long t1 = System.currentTimeMillis();
             GraphicsNode copy = treeRoot.renderingClone();
             long t2 = System.currentTimeMillis();
             System.out.println("Rendering time: "+(t1-t0));
-            System.out.println("Cloning time: "+(t2-t1));
+            System.out.println("Cloning time: "+(t2-t1));*/
         }
     }
 
