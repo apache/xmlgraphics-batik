@@ -338,7 +338,8 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
         imageHandler.handleImage((RenderedImage)testImage, imageElement,
                                  getContext(domFactory));
-        System.out.println("Generated xlink:href is : " + imageElement.getAttributeNS(null, SVGSyntax.SVG_HREF_ATTRIBUTE));
+        System.out.println("Generated xlink:href is : " +
+                           imageElement.getAttributeNS(AbstractImageHandlerEncoder.XLINK_NAMESPACE_URI, "href"));
     }
 
     public void testImageHandlerPNGEncoder() throws Exception {
@@ -366,7 +367,9 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
         imageHandler.handleImage((RenderedImage)testImage, imageElement,
                                  getContext(domFactory));
-        System.out.println("Generated xlink:href is : " + imageElement.getAttributeNS(null, SVGSyntax.ATTR_XLINK_HREF));
+        System.out.println("Generated xlink:href is : " + imageElement.
+                           getAttributeNS(AbstractImageHandlerEncoder.XLINK_NAMESPACE_URI,
+                                          "href"));
     }
 
     public void testSVGAlphaComposite() throws Exception {

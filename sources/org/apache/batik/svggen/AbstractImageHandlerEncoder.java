@@ -9,17 +9,16 @@
 package org.apache.batik.svggen;
 
 import java.awt.Graphics2D;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.image.RenderedImage;
 import java.awt.image.BufferedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.awt.geom.AffineTransform;
+import java.lang.reflect.Method;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.awt.Dimension;
 import org.w3c.dom.Element;
-
-import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * This abstract implementation of the ImageHandler interface
@@ -47,6 +46,44 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
      * Value for the url root corresponding to the directory
      */
     private String urlRoot = "";
+
+    // for createGraphics method.
+    private static Method createGraphics = null;
+    private static boolean initDone = false;
+    private final static Class[] paramc = new Class[] {BufferedImage.class};
+    private static Object[] paramo = null;
+
+    /**
+     * This method creates a <code>Graphics2D</code> from a
+     * <code>BufferedImage</code>. If Batik extensions to AWT are
+     * in the CLASSPATH it uses them, otherwise, it uses the regular
+     * AWT method.
+     */
+    private static Graphics2D createGraphics(BufferedImage buf) {
+        if (!initDone) {
+            try {
+                Class clazz = Class.forName("org.apache.batik.ext.awt.image.GraphicsUtil");
+                createGraphics = clazz.getMethod("createGraphics", paramc);
+                paramo = new Object[1];
+            } catch (Throwable t) {
+                // happen only if Batik extensions are not their
+            } finally {
+                initDone = true;
+            }
+        }
+        if (createGraphics == null)
+            return buf.createGraphics();
+        else {
+            paramo[0] = buf;
+            Graphics2D g2d = null;
+            try {
+                g2d = (Graphics2D)createGraphics.invoke(null, paramo);
+            } catch (Exception e) {
+                // should not happened
+            }
+            return g2d;
+        }
+    }
 
     /**
      * @param generatorContext the context in which the handler will work.
@@ -91,7 +128,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
                                        image.getHeight(null));
         BufferedImage buf = buildBufferedImage(size);
 
-        Graphics2D g = GraphicsUtil.createGraphics(buf);
+        Graphics2D g = createGraphics(buf);
 
         g.drawImage(image, 0, 0, null);
         g.dispose();
@@ -111,7 +148,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
         Dimension size = new Dimension(image.getWidth(), image.getHeight());
         BufferedImage buf = buildBufferedImage(size);
 
-        Graphics2D g = GraphicsUtil.createGraphics(buf);
+        Graphics2D g = createGraphics(buf);
 
         g.drawRenderedImage(image, IDENTITY);
         g.dispose();
@@ -132,7 +169,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
                                        (int)Math.ceil(image.getHeight()));
         BufferedImage buf = buildBufferedImage(size);
 
-        Graphics2D g = GraphicsUtil.createGraphics(buf);
+        Graphics2D g = createGraphics(buf);
 
         g.drawRenderableImage(image, IDENTITY);
         g.dispose();
