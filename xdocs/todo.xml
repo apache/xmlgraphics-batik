@@ -80,11 +80,6 @@
 
         <action context="code"
                 assigned-to="BH">
-            Small font-size layout problem.
-        </action>
-
-        <action context="code"
-                assigned-to="BH">
             Text selection.
         </action>
 
@@ -112,6 +107,18 @@
                 assigned-to="DJ">
             SVG Font support
         </action>
+
+        <action context="code"
+                assigned-to="CJ">
+            Fix issue with passing a script function
+            instead of a listener.
+        </action>
+
+        <action context="code"
+                assigned-to="CJ">
+            Make sure we pass dom-eventListeners-BE-04.svg
+        </action>
+
     </actions>
 
     <actions priority="medium">
