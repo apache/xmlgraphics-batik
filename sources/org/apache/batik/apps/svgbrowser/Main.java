@@ -819,14 +819,8 @@ public class Main implements Application {
         StringBuffer lastVisitedBuffer = new StringBuffer();
 
         for (int i=0; i<lastVisited.size(); i++) {
-            try {
-                lastVisitedBuffer.append
-                    (URLEncoder.encode(lastVisited.elementAt(i).toString(),
-                                       "UTF-8"));
-            } catch (UnsupportedEncodingException ex) {
-                // should never happen, UTF-8 should always be available
-                ex.printStackTrace();
-            }
+            lastVisitedBuffer.append
+                (URLEncoder.encode(lastVisited.elementAt(i).toString()));
             lastVisitedBuffer.append(URI_SEPARATOR);
         }
         
@@ -872,12 +866,7 @@ public class Main implements Application {
         }
 
         for (int i=0; i<n; i++) {
-            try {
-                lastVisited.addElement(URLDecoder.decode(st.nextToken(), "UTF-8"));
-            } catch (UnsupportedEncodingException ex) {
-                // should never happen, UTF-8 should always be available
-                ex.printStackTrace();
-            }
+                lastVisited.addElement(URLDecoder.decode(st.nextToken()));
         }
     }
 }

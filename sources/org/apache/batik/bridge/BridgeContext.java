@@ -181,9 +181,10 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected TextPainter textPainter;
 
     /**
-     * Indicates that no DOM listeners should be registered.
-     * In this case the generated GVT tree should be totally
-     * independent of the DOM tree.
+     * Indicates that no DOM listeners should be registered.  In this
+     * case the generated GVT tree should be totally independent of
+     * the DOM tree (in practice text holds references to the source
+     * text elements for font resolution).
      */
     public final static int STATIC      = 0;
     /**

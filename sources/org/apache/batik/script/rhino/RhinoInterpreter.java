@@ -186,6 +186,12 @@ public class RhinoInterpreter implements Interpreter {
             ctx.setWrapFactory(wrapFactory);
             ctx.setSecurityController(securityController);
             ctx.setClassShutter(new RhinoClassShutter());
+
+            // No class loader so don't try and optmize.
+            if (rhinoClassLoader == null) {
+                ctx.setOptimizationLevel(-1);
+                ctx.setCachingEnabled(false);
+            }
         }
         ctx = Context.enter(ctx);
 
@@ -352,11 +358,14 @@ public class RhinoInterpreter implements Interpreter {
     }
 
     /**
-     * For <code>RhinoInterpreter</code> this method does nothing.
+     * For <code>RhinoInterpreter</code> this method flushes the
+     * Rhino caches to avoid memory leaks.
      */
     public void dispose() {
-        Context.setCachingEnabled(false);
-        Context.setCachingEnabled(true);
+        if (rhinoClassLoader != null) {
+            Context.setCachingEnabled(false);
+            Context.setCachingEnabled(true);
+        }
     }
 
     /**

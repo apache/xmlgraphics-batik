@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
@@ -87,6 +88,11 @@ import java.util.Enumeration;
  */
 public class SVGOnLoadExceptionTest extends AbstractTest {
     /**
+     * Value for the script having successfully run.
+     */
+    public static final String RAN = "ran";
+
+    /**
      * Error when the expected exception did not occur
      */
     public static final String ERROR_EXCEPTION_DID_NOT_OCCUR
@@ -105,6 +111,12 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
      */
     public static final String ERROR_UNEXPECTED_ERROR_CODE
         = "SVGOnLoadExceptionTest.error.unexpected.error.code";
+
+    /**
+     * Error when the script does not run as expected.
+     */
+    public static final String ERROR_SCRIPT_DID_NOT_RUN
+        = "SVGOnLoadExceptionTest.error.script.did.not.run";
 
     /**
      * Entry describing the unexpected exception
@@ -129,6 +141,12 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
      */
     public static final String ENTRY_KEY_EXPECTED_EXCEPTION
         = "SVGOnLoadExceptionTest.entry.key.expected.exception";
+
+    /**
+     * Entry describing the unexpected exception
+     */
+    public static final String ENTRY_KEY_UNEXPECTED_RESULT
+        = "SVGOnLoadExceptionTest.entry.key.unexpected.result";
 
     /**
      * Value used to disable error code check on BridgeExceptions
@@ -354,16 +372,18 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
                 permissions.add(new FilePermission(fileName, "read"));
                 permissions.add(new RuntimePermission("accessDeclaredMembers"));
 
-                ProtectionDomain domain = new ProtectionDomain(null, permissions);
-                AccessControlContext ctx = new AccessControlContext
-                    (new ProtectionDomain[] {domain});
+                ProtectionDomain domain;
+                AccessControlContext ctx;
+                domain = new ProtectionDomain(null, permissions);
+                ctx = new AccessControlContext(new ProtectionDomain[]{domain});
 
                 try {
-                    return (TestReport)AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                            public Object run() throws Exception {
-                                return testImpl();
-                            }
-                        }, ctx);
+                    return (TestReport)AccessController.doPrivileged
+                        (new PrivilegedExceptionAction() {
+                                public Object run() throws Exception {
+                                    return testImpl();
+                                }
+                            }, ctx);
                 } catch (PrivilegedActionException pae) {
                     throw pae.getException();
                 }
@@ -390,6 +410,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         try {
             doc = f.createDocument(svgURL);
         } catch(Exception e){
+            e.printStackTrace();
             return handleException(e);
         } 
         
@@ -423,12 +444,26 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         } 
         
         //
-        // If we got here, it means that the expected exception did not
-        // happen. Report an error
-        //
-        TestReport report = reportError(ERROR_EXCEPTION_DID_NOT_OCCUR);
-        report.addDescriptionEntry(ENTRY_KEY_EXPECTED_EXCEPTION,
-                                   expectedExceptionClass);
+        // If we got here, it means that an exception did not
+        // happen. Check if this is expected.
+        TestReport report = null;
+        if (expectedExceptionClass == null) {
+            // No error was expected then check that the script ran.
+            Element elem = doc.getElementById("testResult");
+            String s = elem.getAttributeNS(null, "result");
+            if (RAN.equals(s)) {
+                report = reportSuccess();
+            } else {
+                report = reportError(ERROR_SCRIPT_DID_NOT_RUN);
+                report.addDescriptionEntry(ENTRY_KEY_UNEXPECTED_RESULT,
+                                           s);
+            }
+        }
+        if (report == null) {
+            report = reportError(ERROR_EXCEPTION_DID_NOT_OCCUR);
+            report.addDescriptionEntry(ENTRY_KEY_EXPECTED_EXCEPTION,
+                                       expectedExceptionClass);
+        }
         return report;
     }
 
@@ -512,11 +547,11 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
                     result = new RelaxedScriptSecurity(scriptType,
                                                      scriptURL,
                                                      docURL);
-                } else if ("DOCUMENT".equals(resourceOrigin)) {
+                } else if ("DOCUMENT".equals(scriptOrigin)) {
                     result = new DefaultScriptSecurity(scriptType,
                                                      scriptURL,
                                                      docURL);
-                } else if ("EMBEDED".equals(resourceOrigin)) {
+                } else if ("EMBEDED".equals(scriptOrigin)) {
                     result = new EmbededScriptSecurity(scriptType,
                                                      scriptURL,
                                                      docURL);

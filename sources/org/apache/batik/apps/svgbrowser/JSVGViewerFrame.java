@@ -124,6 +124,7 @@ import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.TIFFTranscoder;
 import org.apache.batik.transcoder.print.PrintTranscoder;
+import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
@@ -1330,10 +1331,13 @@ public class JSVGViewerFrame
                                      svgDoc.getURL());
                             }
 
-                            // if (prettyPrint) {
-                            // } else {
+                            if (prettyPrint) {
+                                SVGTranscoder trans = new SVGTranscoder();
+                                trans.transcode(new TranscoderInput(svgDoc), 
+                                                new TranscoderOutput(writer));
+                            } else {
                                 DOMUtilities.writeDocument(svgDoc, writer);
-                                // }
+                            }
 
                             writer.close();
 
