@@ -1,17 +1,147 @@
 <?xml version="1.0"?>
 
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- This file contains the list of action items for the team members. It      -->
+<!-- contains three priorities (high, medium and low) of action items. In each -->
+<!-- priority, a list of actions define what needs to be done. Each action has -->
+<!-- a person assigned to it (by initials) and a context. The current contexts -->
+<!-- are:                                                                      -->
+<!--  + core                                                                   -->
+<!--  + docs                                                                   -->
+<!--  + apps.xxx (e.g. apps.svgviewer, apps.rasteriser                         -->
+<!--  + gvt                                                                    -->
+<!--  + bridge                                                                 -->
+<!--  + gvt.text                                                               -->
+<!--  + docs.demo                                                              -->
+<!--  + gvt.filter                                                             -->
+<!--                                                                           -->
+<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- version $Id$                                                              -->
+<!-- ========================================================================= -->
 <!DOCTYPE todo SYSTEM "./dtd/todo-v10.dtd">
 
-<todo title="Things To Do for Cocoon 1.x">
- <devs>
-  <person name="Stefano Mazzocchi" email="stefano@apache.org" id="SM"/>
-  <!-- add the developers here using ID as IDREF (make sure they are unique) -->
- </devs>
+<todo title="Things To Do Batik">
+    <devs>
+        <person name="Thomas De Weese" email="Thomas.DeWeese@Kodak.com" id="TD" />
+        <person name="Bill Haneman" email="bill.haneman@ireland.sun.com" id="BH" />
+        <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com" id="VH" />
+        <person name="Stephane Hillion" email="Stephane.Hillion@sophia.inria.fr" id="SH" />
+        <person name="Dean Jackson" email="dean.jackson@cmis.csiro.au" id="DJ" />
+        <person name="Christophe Jolif" email="cjolif@ilog.fr" id="CJ" />
+        <person name="Thierry Kormann" email="Thierry.Kormann@sophia.inria.fr" id="TK" />
+        <person name="Emmanuel Tissandier" email="tissandi@ilog.fr" id="ET" />
+        <!-- add the developers here using ID as IDREF (make sure they are unique) -->
+    </devs>
 
- <actions priority="low">
-  <action context="docs">
-   Cleanup and improve documentation.
-  </action>
- </actions>
+    <actions priority="high">
+        <action context="docs"
+                assigned-to="VH">
+            Figure out how to publish documentation on web site.
+        </action>
 
+        <action context="docs" 
+                assigned-to="VH, TK">
+            Create initial version of documentation set.
+        </action>
+
+        <action context="core"
+                assigned-to="SH">
+            External use support
+        </action>
+
+        <action context="core"
+                assigned-to="SH, TK">
+            objectBoundingBox, userSpaceOnUser for masks, clip-path
+            and patterns.
+        </action>
+
+        <action context="apps.svgviewer"
+                assigned-to="">
+            Error handling (tolerance on DOCTYPE and processing errors).
+        </action>
+
+        <action context="core"
+                assigned-to="SH">
+            images with SVG source.
+        </action>
+
+        <action context="gvt"
+                assigned-to="BH">
+            tspan support
+        </action>
+
+        <action context="bridge"
+                assigned-to="TK">
+            tspan support
+        </action>
+
+        <action context="core"
+                assigned-to="VH">
+            Patterns
+        </action>
+
+        <action context="core"
+                assigned-to="BH, VH, TK">
+            Small font-size layout problem.
+        </action>
+
+        <action context="gvt.text"
+                assigned-to="BH">
+            Text selection.
+        </action>
+
+        <action context="docs.demo"
+                assigned-to="VH">
+            SVG Viewer page with Screen Shots.
+        </action>
+
+        <action context="docs.demo"
+                assigned-to="TK">
+            SVG Viewer Pluggin page
+        </action>
+
+        <action context="docs.demo"
+                assigned-to="TK">
+            SVG Rasterizer image examples
+        </action>
+
+        <action context="docs.demo"
+                assigned-to="VH">
+            SVG Generator sample page
+        </action>
+
+        <action context="core"
+                assigned-to="DJ">
+            SVG Font support
+        </action>
+    </actions>
+
+    <actions priority="medium">
+        <action context="gvt.filter"
+                assigned-to="VH">
+            hueRotate bug in ColorMatrix.
+        </action>
+
+        <action context="bridge"
+                assigned-to="VH, SH">
+            Use consistent naming conventions for value
+            constants in CSSConstants and SVGConstants
+        </action>
+
+        <action context="apps.svgviewer"
+                assigned-to="SH, TK">
+            Implement a Shift+Reload that forces reload of 
+            raster images referenced in an SVG document (i.e.,
+            do not use the one cached by the JVM).
+        </action>
+
+    </actions>
 </todo>

@@ -8,11 +8,14 @@
     <answer>
         <p>
         The goal of the Batik project is to provide a framework for Java language applications 
-        which manipulate SVG content for various purposes, such as generation, manipulation or viewing. 
-        The project's ambition is to give the developer a set of core modules which can be used together 
+        which manipulate SVG (Scalable Vector Graphics) content for various purposes, such as 
+        generation, manipulation or viewing. 
+        </p>
+        <p>
+        The project's ambition is to give developers a set of core modules which can be used together 
         or individually to support specific SVG solutions. Examples of modules are SVG parsers, SVG 
         generators and SVG DOM implementations. Even though the goal of the project is to provide a set 
-        of core modules, one of the delivery is a full fledged SVG Viewer implementation which 
+        of core modules, one of the deliveries is a full fledged SVG Viewer implementation which 
         validates the various modules and their inter-operability. 
         </p>
     </answer>
@@ -41,7 +44,7 @@
         <p>
         Batik started out because several teams doing SVG related projects decided to join 
         efforts with the idea that the whole will be greater than the sum of the parts. The
-        following companies or institutions are part of the team that contributed and 
+        following companies or institutions are part of the team that contributed and/or
         created the initial Batik project:
         <ul>
             <li><link href="http://www.csiro.au/">CSIRO</link></li>
@@ -64,7 +67,7 @@
     <answer>
         <p>
         The process for contributing to Batik is the same as for other Java projects 
-        at Apache. For example, a formal description of that process can be found on the 
+        at Apache. A formal description of that process can be found, for example, on the 
         <link href="http://jakarta.apache.org/guidelines/index.html">Jakarta</link> web
         site.
         </p>
@@ -75,15 +78,17 @@
         <p>
         Batik contains several modules that can be used independantly: an SVG parser,
         a object oriented vector tookit (GVT), a set of extensions to the Java 2D API
-        (such as Paints and filters).
+        (such as Paints and filters) and more.
         However, Batik comes with three applications: an SVG viewer (in the 
-        org.apache.batik.apps.svgviewer package) an SVG rasterizer (int the 
-        org.apache.batik.apps.rasterizer package) and an SVG Generator that allows
+        org.apache.batik.apps.svgviewer package) an SVG rasterizer (in the 
+        org.apache.batik.apps.rasterizer package) and an SVG Generator 
+        (in the org.apache.batik.util.awt.svg package) that allows
         all Java applications to export their graphics to the SVG format. 
         </p>
         <p>
         The SVG viewer can display SVG documents and lets the user zoom, pan 
-        and rotate any SVG document.
+        and rotate any SVG document, view the SVG source, link between SVG 
+        documents, view a tree representation of the SVG DOM and more.
         </p>
         <p>
         The SVG rasterizer lets the user convert SVG files to raster formats such
@@ -133,10 +138,10 @@
         packages are useful for that purpose. However, there are many types
         of graphics which can be generated, such as stock quotes, statistical
         data, etc... For that type of graphics, there are many ways to generate
-        SVG content. For example, if you data (say stock information) is contained
-        in an XML document, you could use XSL to transform your XML data into
-        SVG. If you data comes from a data base and you retrieve that data
-        from a servlet on a Web server (e.g., using JDBC), you could use the 
+        SVG content. For example, if your data (say stock information) is contained
+        in an XML document, you could use XSLT to transform your XML data into
+        SVG. If your data comes from a data base and you retrieve that data
+        in a servlet on a Web server (e.g., using JDBC), you could use the 
         Java binding for the DOM API to generate an SVG document from the 
         data base data. You could also use Batik's SVG generator and use the
         Java 2D API to generate that graphic.
@@ -147,8 +152,8 @@
         <ul>
             <li><link href="http://xml.apache.org/xalan-j/index.html">Xalan for XSLT</link></li>
             <li><link href="http://xml.apache.org/xerces-j/index.html>Xerces</link> and
-                <link href="??">Crimson</link> for the DOM API</link></li>
-            <li><link href="http://xml.apache.org/batik/svggen">SVG Generator</link></li>
+                <link href="http://java.sun.com/xml/download.html">Crimson</link> for the DOM API</link></li>
+            <li><link href="http://xml.apache.org/xml-batik/svggen">SVG Generator</link></li>
         </ul>
     </answer>
 
@@ -168,10 +173,17 @@
     <question>How can I see a demo?</question>
     <answer>
         <p>
-        You can either <link href="http://xml.apache.org/batik/download">download</link>
-        Batik and run the viewer or follow this <link href="http://xml.apache.org/batik/demo/">link</link>
+        You can either <link href="http://xml.apache.org/xml-batik/download">download</link>
+        Batik and run the viewer or follow this <link href="http://xml.apache.org/xml-batik/demo/pluggin">link</link>
         to see an on-line demo of Batik's capabilities.
         </p>
+        <p>
+        You can also see 
+        <link href="http://xml.apache.org/xml-batik/demo/svgviewerScreenShot">screenshots</link> 
+        of the Batik SVG viewer, images created from the 
+        <link href="http://xml.apache.org/xml-batik/demo/rasterizerImages">rasterizer</link>
+        and an <link href="http://xml.apache.org/xml-batik/demo/svggenExample">example</link>
+        of how to use the SVG Graphics2D generator.
     </answer>
 
     <question>What other SVG products are out there?</question>
@@ -218,7 +230,7 @@
     <question>How much of SVG does Batik implement?</question>
     <answer>
         <p>
-        The following <link href="http://xml.apache.org/batik/status">status page</link>
+        The following <link href="http://xml.apache.org/xml-batik/status">status page</link>
         show how much of the SVG specification Batik implements by showing which 
         of the tests in the SVG Basic Effectivity test suite Batik successfully passes.
         </p>
@@ -244,7 +256,7 @@
         is not yet available on your platform) to run Batik.
         </p>
         <p>
-        To install Batik you need to <link href="http://xml.apache.org/batik/download">download</link>
+        To install Batik you need to <link href="http://xml.apache.org/xml-batik/download">download</link>
         the binary or source distribution and unzip it on your computer.
         </p>
         <p>
