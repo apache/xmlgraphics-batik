@@ -543,7 +543,7 @@ public abstract class SVGStylableElement
         implements LiveAttributeValue,
                    CSSOMSVGStyleDeclaration.ValueProvider,
                    CSSOMSVGStyleDeclaration.ModificationHandler, 
-                   CSSEngine.MainPropertyReciever {
+                   CSSEngine.MainPropertyReceiver {
         
         /**
          * The associated CSS object.
@@ -679,7 +679,7 @@ public abstract class SVGStylableElement
             }
         }
 
-        public void setMainPoperty(String name, Value v, boolean important) {
+        public void setMainProperty(String name, Value v, boolean important) {
             int idx = cssEngine.getPropertyIndex(name);
             if (idx == -1) 
                 return;   // unknown property
