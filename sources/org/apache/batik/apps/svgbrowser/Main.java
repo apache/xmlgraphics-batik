@@ -353,18 +353,18 @@ public class Main implements Application {
             manager = new XMLPreferenceManager("batik-preferences.xml", defaults);
             try {
                 manager.load();
-            } catch (IOException e) {
+                setPreferences(manager);
+            } catch (Exception e) {
             }
-            setPreferences(manager);
             preferenceDialog = new PreferenceDialog(manager);
         }
         if (preferenceDialog.showDialog() == PreferenceDialog.OK_OPTION) {
             PreferenceManager manager = preferenceDialog.getPreferenceManager();
             try {
                 manager.save();
-            } catch (IOException e) {
+                setPreferences(manager);
+            } catch (Exception e) {
             }
-            setPreferences(manager);
         }
     }
 
@@ -385,6 +385,11 @@ public class Main implements Application {
                 (PreferenceDialog.PREFERENCE_KEY_AUTO_ADJUST_WINDOW);
             vf.setAutoAdjust(aa);
         }
+
+        System.setProperty("proxyHost", manager.getString
+                           (PreferenceDialog.PREFERENCE_KEY_PROXY_HOST));
+        System.setProperty("proxyPort", manager.getString
+                           (PreferenceDialog.PREFERENCE_KEY_PROXY_PORT));
     }
 
     /**
