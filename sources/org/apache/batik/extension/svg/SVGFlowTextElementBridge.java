@@ -362,7 +362,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             Element e = (Element)n;
 
             String ln = n.getLocalName();
-            if (ln.equals(BATIK_EXT_FLOW_RECT_TAG)) {
+            if (ln.equals(BATIK_EXT_REGION_TAG)) {
                 Rectangle2D r2d = buildRect(uctx, e);
                 if (r2d != null)
                     ret.add(r2d);

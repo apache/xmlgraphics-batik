@@ -37,8 +37,8 @@
       <batik:flowText xmlns:batik="http://xml.apache.org/batik/ext"
              font-size="20" xml:space="preserve">
          <batik:flowRegion>
-	    <batik:rect x="17"  y="80" width="200" height="400"/>
-	    <batik:rect x="233" y="80" width="200" height="400"/>
+	    <batik:region x="17"  y="80" width="200" height="400"/>
+	    <batik:region x="233" y="80" width="200" height="400"/>
          </batik:flowRegion>
          <batik:flowDiv>
 	    <batik:flowPara bottom-margin="10" >This is an <batik:flowSpan font-size="40" fill="crimson">ex&#x00AD;ample</batik:flowSpan> of a very long string that is split &#x200D;across multi&#x00AD;ple lines via text wrap&#x0AD;ping.</batik:flowPara>
