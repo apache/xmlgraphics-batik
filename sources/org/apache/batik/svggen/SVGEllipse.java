@@ -67,22 +67,4 @@ public class SVGEllipse extends SVGGraphicObjectConverter{
                                doubleString(ellipse.getHeight()/2));
         return svgCircle;
     }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception {
-        Ellipse2D ellipses [] = { new Ellipse2D.Float(0, 0, 100, 100),
-                                  new Ellipse2D.Double(40, 40, 240, 240),
-                                  new Ellipse2D.Float(0, 0, 100, 200),
-                                  new Ellipse2D.Float(40, 100, 240, 200) };
-
-        Document domFactory = TestUtil.getDocumentPrototype();
-        SVGEllipse converter = new SVGEllipse(domFactory);
-        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        for(int i=0; i<ellipses.length; i++)
-            group.appendChild(converter.toSVG(ellipses[i]));
-
-        TestUtil.trace(group, System.out);
-    }
 }

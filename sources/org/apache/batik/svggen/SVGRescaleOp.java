@@ -170,49 +170,4 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
 
         return filterDesc;
     }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception{
-        Document domFactory = TestUtil.getDocumentPrototype();
-
-        RescaleOp rescaleOps[] = { new RescaleOp(3, 25, null),
-                                   new RescaleOp(new float[]{ 1, 2, 3 }, new float[]{10, 20, 30}, null),
-                                   new RescaleOp(new float[]{ 1, 2, 3, 4 }, new float[]{10, 20, 30, 40}, null),
-        };
-
-        SVGRescaleOp converter = new SVGRescaleOp(domFactory);
-
-        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
-        Element rectGroupOne = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        Element rectGroupTwo = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-
-        for(int i=0; i<rescaleOps.length; i++){
-            SVGFilterDescriptor filterDesc = converter.toSVG(rescaleOps[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
-            rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
-            rectGroupOne.appendChild(rect);
-        }
-
-        for(int i=0; i<rescaleOps.length; i++){
-            SVGFilterDescriptor filterDesc = converter.toSVG(rescaleOps[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
-            rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
-            rectGroupTwo.appendChild(rect);
-        }
-
-        Iterator iter = converter.getDefinitionSet().iterator();
-        while(iter.hasNext()){
-            Element feComponentTransferDef = (Element)iter.next();
-            defs.appendChild(feComponentTransferDef);
-        }
-
-        group.appendChild(defs);
-        group.appendChild(rectGroupOne);
-        group.appendChild(rectGroupTwo);
-
-        TestUtil.trace(group, System.out);
-    }
 }

@@ -117,46 +117,4 @@ public class SVGColor extends AbstractSVGConverter{
 
         return new SVGPaintDescriptor(cssColor, alphaString);
     }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception{
-
-        Color  testColors[] = {
-            new Color(0x00, 0xff, 0xff), // aqua
-            new Color(0x00, 0x00, 0x00), // black
-            new Color(0x00, 0x00, 0xff), // blue
-            new Color(0xff, 0x00, 0xff), // fuchsia
-            new Color(0x80, 0x80, 0x80), // gray
-            new Color(0x00, 0x80, 0x00), // green
-            new Color(0x00, 0xff, 0x00), // lime
-            new Color(0x80, 0x00, 0x00), // maroon
-            new Color(0x00, 0x00, 0x80), // navy
-            new Color(0x80, 0x80, 00),   // olive
-            new Color(0x80, 0x00, 0x80), // purple
-            new Color(0xff, 0x00, 0x00), // red
-            new Color(0xc0, 0xc0, 0xc0), // silver
-            new Color(0x00, 0x80, 0x80), // teal
-            new Color(0xff, 0xff, 0xff), // white
-            new Color(0xff, 0xff, 0x00), // yellow
-            new Color(30, 40, 50),       // arbitrary 1
-            new Color(255, 30, 200),     // arbitraty 2
-            new Color(0, 0, 0, 128),     // arbitrary with alpha
-            new Color(255, 255, 255, 64),// arbitrary with alpha
-        };
-
-        Document domFactory = TestUtil.getDocumentPrototype();
-        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        for(int i=0; i<testColors.length; i++){
-            SVGPaintDescriptor paintDesc = toSVG(testColors[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                      SVG_RECT_TAG);
-            rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, paintDesc.getPaintValue());
-            rect.setAttributeNS(null, SVG_FILL_OPACITY_ATTRIBUTE, paintDesc.getOpacityValue());
-            group.appendChild(rect);
-        }
-
-        TestUtil.trace(group, System.out);
-    }
 }

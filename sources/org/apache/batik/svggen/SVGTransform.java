@@ -179,45 +179,4 @@ public class SVGTransform extends AbstractSVGConverter{
         return (matrix[0] == 1 && matrix[2] == 0 && matrix[4] == 0 &&
                 matrix[1] == 0 && matrix[3] == 1 && matrix[5] == 0);
     }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]){
-        GraphicContext gc = new GraphicContext();
-        gc.translate(20, 20);
-        gc.rotate(Math.PI/4);
-        gc.shear(.5, .5);
-        gc.scale(20, 20);
-
-        AffineTransform txf = new AffineTransform();
-        txf.translate(60, 60);
-        gc.transform(txf);
-
-        String svgTransform = SVGTransform.toSVGTransform(gc);
-        System.out.println("SVG Transform: " + svgTransform);
-
-        gc.setTransform(new AffineTransform());
-        gc.translate(45, 45);
-
-        svgTransform = SVGTransform.toSVGTransform(gc);
-        System.out.println("SVG Transform: " + svgTransform);
-
-        gc.setTransform(new AffineTransform());
-        gc.translate(10, 10);
-        gc.translate(30, 30);
-        gc.scale(2, 3);
-        gc.scale(3, 2);
-        gc.rotate(Math.PI/2);
-        gc.rotate(Math.PI/2);
-        gc.translate(100, 100);
-        gc.translate(-100, -100);
-        gc.scale(2, 2);
-        gc.scale(.5, .5);
-        gc.rotate(Math.PI/2);
-        gc.rotate(-Math.PI/2);
-
-        svgTransform = SVGTransform.toSVGTransform(gc);
-        System.out.println("SVG Transform: " + svgTransform);
-    }
 }

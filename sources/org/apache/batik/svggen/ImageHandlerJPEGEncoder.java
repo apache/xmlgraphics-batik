@@ -82,37 +82,4 @@ public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder{
     public BufferedImage buildBufferedImage(Dimension size){
         return new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB);
     }
-
-    public static final String USAGE = "java org.apache.batik.svggen.ImageHandlerJPEGEncoder <imageDir> <urlRoot>";
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) {
-        if(args.length < 2){
-            System.out.println(USAGE);
-            System.exit(0);
-        }
-
-        String imageDir = args[0];
-        String urlRoot = args[1];
-
-        ImageHandler imageHandler = new ImageHandlerJPEGEncoder(imageDir, urlRoot);
-        Document domFactory = TestUtil.getDocumentPrototype();
-        Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVGSyntax.SVG_IMAGE_TAG);
-
-        BufferedImage testImage = new BufferedImage(60, 40, BufferedImage.TYPE_INT_ARGB);
-        java.awt.Graphics2D g = testImage.createGraphics();
-        g.setPaint(Color.white);
-        g.fillRect(0, 0, 60, 40);
-        g.setPaint(Color.green);
-        g.fillRect(0, 0, 20, 40);
-        g.setPaint(Color.red);
-        g.fillRect(40, 0, 60, 40);
-        g.dispose();
-
-        imageHandler.handleImage((RenderedImage)testImage, imageElement);
-        System.out.println("Generated xlink:href is : " + imageElement.getAttributeNS(null, SVGSyntax.ATTR_XLINK_HREF));
-        System.exit(0);
-    }
 }

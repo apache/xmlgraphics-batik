@@ -393,43 +393,4 @@ class XmlWriter implements SVGConstants {
             System.err.println("Unable to write node of type: " + node.getClass().getName());
         }
     }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception {
-        Document domFactory = TestUtil.getDocumentPrototype();
-
-        Element root = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_SVG_TAG);
-        Element genericDefs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
-        Element topLevelGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        Element topLevelDefs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
-        Element groupA = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        Element groupB = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        Comment comment = domFactory.createComment("This is the topLevelGroup comment");
-
-        topLevelGroup.appendChild(comment);
-        topLevelGroup.appendChild(topLevelDefs);
-        topLevelGroup.appendChild(groupA);
-        topLevelGroup.appendChild(groupB);
-
-        root.appendChild(genericDefs);
-        root.appendChild(topLevelGroup);
-
-        domFactory.appendChild(root);
-
-        TestUtil.trace(root, System.out);
-
-        System.out.println("\n=======================================");
-
-        try{
-            Writer out =  new OutputStreamWriter(System.out);
-            XmlWriter.writeXml(domFactory, out);
-            out.flush();
-            out.close();
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        }
-    }
 }

@@ -46,7 +46,7 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class DOMTreeManager implements SVGSyntax{
+public class DOMTreeManager implements SVGSyntax {
     static final String ERROR_GC_NULL = "gc should not be null";
     static final String ERROR_FACTORY_NULL = "nodeFactory should not be null";
     static final String ERROR_MAXGCOVERRIDES_OUTOFRANGE = "maxGcOverrides should be greater than zero";
@@ -378,90 +378,5 @@ public class DOMTreeManager implements SVGSyntax{
         recycleTopLevelGroup(false);
 
         return topLevelGroup;
-    }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception {
-        Document domFactory = TestUtil.getDocumentPrototype();
-
-        GraphicContext gc = new GraphicContext(new AffineTransform());
-        DOMTreeManager domTreeManager
-            = new DOMTreeManager(gc,
-                                 domFactory,
-                                 new DefaultExtensionHandler(),
-                                 new DefaultImageHandler(),
-                                 2);
-
-        DOMGroupManager domGroupManager
-            = new DOMGroupManager(gc, domTreeManager);
-
-        //
-        // Do the following:
-        // + Add one rect element
-        // + Modify the Paint (modif 1)
-        // + Add one ellipse element. Should be under the same group
-        // + Modify the Composite (modif 2, ignored, as it does not apply to a group)
-        // + Add one circle element. Should be under the same group
-        // + Modify the Clip (modif 2bis)
-        // + Modify the Transform (modif 3, over limit)
-        // + Add one path element: Should be under a new group.
-        // + Set the transform to a new transform (new group trigger)
-        // + Add a polygon: should be under a new group
-        //
-
-        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                  SVG_RECT_TAG);
-        Element ellipse = domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                     SVG_ELLIPSE_TAG);
-        Element circle = domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                    SVG_CIRCLE_TAG);
-        Element path = domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                  SVG_PATH_TAG);
-        Element polygon = domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                     SVG_POLYGON_TAG);
-
-        rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, SVG_NONE_VALUE);
-        polygon.setAttributeNS(null, ATTR_STROKE, SVG_NONE_VALUE);
-
-        domGroupManager.addElement(rect);
-
-        // Modif 1
-        gc.setPaint(Color.red);
-
-        // Ellipse element
-        domGroupManager.addElement(ellipse);
-
-        // Modif 2
-        gc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN, .5f));
-
-        // Circle element
-        domGroupManager.addElement(circle);
-
-        // Modif 2bis
-        gc.setClip(new Rectangle(30, 30, 60, 60));
-
-        // Modif 3
-        gc.translate(45, 45);
-
-        GraphicContext gc2 = (GraphicContext)gc.clone();
-        DOMGroupManager domGroupManager2
-            = new DOMGroupManager(gc2, domTreeManager);
-
-        // Path element (should be in a new group)
-        domGroupManager2.addElement(path);
-
-        // Modify transform
-        gc2.setTransform(AffineTransform.getScaleInstance(45, 50));
-
-        // Polygon element (should be in a new group as well).
-        domGroupManager2.addElement(polygon);
-
-        //
-        // Now, trace the resulting tree
-        //
-        Element topLevelGroup = domTreeManager.getTopLevelGroup();
-        TestUtil.trace(topLevelGroup, System.out);
     }
 }

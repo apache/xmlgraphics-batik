@@ -142,39 +142,4 @@ public class SVGLinearGradient extends AbstractSVGConverter{
 
         return gradientDesc;
     }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception{
-        Document domFactory = TestUtil.getDocumentPrototype();
-
-        GradientPaint gradient = new GradientPaint(20, 20,
-                                                   Color.black,
-                                                   300, 300,
-                                                   new Color(220, 230, 240),
-                                                   true);
-
-        SVGLinearGradient converter = new SVGLinearGradient(domFactory);
-
-        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
-
-        SVGPaintDescriptor gradientDesc = converter.toSVG(gradient);
-
-        Iterator iter = converter.getDefinitionSet().iterator();
-        while(iter.hasNext()){
-            Element linearGradientDef = (Element)iter.next();
-            defs.appendChild(linearGradientDef);
-        }
-
-        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
-        rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, gradientDesc.getPaintValue());
-        rect.setAttributeNS(null, SVG_FILL_OPACITY_ATTRIBUTE, gradientDesc.getOpacityValue());
-
-        group.appendChild(defs);
-        group.appendChild(rect);
-
-        TestUtil.trace(group, System.out);
-    }
 }
