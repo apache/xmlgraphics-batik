@@ -228,6 +228,25 @@ public class JSVGViewerFrame
         new Cursor(Cursor.DEFAULT_CURSOR);
 
     /**
+     * Name for the os-name property
+     */
+    public final static String PROPERTY_OS_NAME 
+        = Resources.getString("JSVGViewerFrame.property.os.name");
+
+    /**
+     * Name for the os.name default
+     */
+    public final static String PROPERTY_OS_NAME_DEFAULT 
+        = Resources.getString("JSVGViewerFrame.property.os.name.default");
+
+    /**
+     * Name for the os.name property prefix we are looking
+     * for in OpenAction to work around JFileChooser bug
+     */
+    public final static String PROPERTY_OS_WINDOWS_PREFIX 
+        = Resources.getString("JSVGViewerFrame.property.os.windows.prefix");
+
+    /**
      * The resource bundle
      */
     protected static ResourceBundle bundle;
@@ -702,7 +721,18 @@ public class JSVGViewerFrame
         public OpenAction() {
         }
         public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = new JFileChooser(makeAbsolute(currentPath));
+            JFileChooser fileChooser = null;
+
+            // Apply work around Windows problem when security is enabled 
+            String os = System.getProperty(PROPERTY_OS_NAME, PROPERTY_OS_NAME_DEFAULT);
+            SecurityManager sm = System.getSecurityManager();
+            if ( sm != null && os.indexOf(PROPERTY_OS_WINDOWS_PREFIX) != -1 ){
+                fileChooser = new JFileChooser(makeAbsolute(currentPath),
+                                               new WindowsAltFileSystemView());
+            } else {
+                fileChooser = new JFileChooser(makeAbsolute(currentPath));
+            }
+
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
                 (JFileChooser.FILES_ONLY);
