@@ -66,9 +66,15 @@ public class SVGGeneratorContext implements ErrorConstants {
     ErrorHandler errorHandler;
 
     /**
+     * Do we accept SVG Fonts generation?
+     */
+    boolean svgFont = false;
+
+    /**
      * Builds an instance of <code>SVGGeneratorContext</code> with the given
      * <code>domFactory</code> but let the user set later the other contextual
-     * information. Please note that none of the parameter below should be <code>null</code>.
+     * information. Please note that none of the parameter below should be
+     * <code>null</code>.
      * @see #setIDGenerator
      * @see #setExtensionHandler
      * @see #setImageHandler
@@ -221,5 +227,21 @@ public class SVGGeneratorContext implements ErrorConstants {
         if (errorHandler == null)
             throw new SVGGraphics2DRuntimeException(ERR_ERROR_HANDLER_NULL);
         this.errorHandler = errorHandler;
+    }
+
+    /**
+     * Returns <code>true</code> if we should generate SVG Fonts for
+     * texts.
+     */
+    final public boolean isEmbededFontsEnabled() {
+        return svgFont;
+    }
+
+    /**
+     * Sets if we should generate SVG Fonts for texts. Default value
+     * is <code>false</code>.
+     */
+    final public void setEmbededFontsEnabled(boolean svgFont) {
+        this.svgFont = svgFont;
     }
 }

@@ -20,9 +20,7 @@ import org.w3c.dom.*;
  * @see             org.apache.batik.svggen.SVGFont
  */
 public class SVGFontDescriptor implements SVGDescriptor, SVGSyntax {
-
     private Element def;
-
     private String fontSize;
     private String fontWeight;
     private String fontStyle;
