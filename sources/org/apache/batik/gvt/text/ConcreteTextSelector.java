@@ -311,34 +311,42 @@ public class ConcreteTextSelector implements Selector {
         }
     }
 
-    private void copyToClipboard(Object o) {
-        // first see if we can access the clipboard
-        SecurityManager securityManager = System.getSecurityManager();
-        boolean canAccessClipboard = true;
-        if (securityManager != null) {
-            try {
-                securityManager.checkSystemClipboardAccess();
-            } catch (SecurityException e) {
-                canAccessClipboard = false;
-            }
-        }
-        if (canAccessClipboard) {
-            String label = "";
-            if (o instanceof CharacterIterator) {
-                CharacterIterator iter = (CharacterIterator) o;
-                char[] cbuff = new char[iter.getEndIndex()-iter.getBeginIndex()];
-                if (cbuff.length > 0) {
-                    cbuff[0] = iter.first();
-                }
-                for (int i=1; i<cbuff.length;++i) {
-                    cbuff[i] = iter.next();
-                }
-                label = new String(cbuff);
-            }
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            StringSelection selection = new StringSelection(label);
-            clipboard.setContents(selection, selection);
-        }
+    private void copyToClipboard(final Object o) {
+	//
+	// HACK: getSystemClipboard sometimes deadlocks on linux when called
+	// from the AWT Thread. The Thread creation prevents that.
+	//
+	new Thread() {
+	    public void run() {
+		// first see if we can access the clipboard
+		SecurityManager securityManager = System.getSecurityManager();
+		boolean canAccessClipboard = true;
+		if (securityManager != null) {
+		    try {
+			securityManager.checkSystemClipboardAccess();
+		    } catch (SecurityException e) {
+			canAccessClipboard = false;
+		    }
+		}
+		if (canAccessClipboard) {
+		    String label = "";
+		    if (o instanceof CharacterIterator) {
+			CharacterIterator iter = (CharacterIterator) o;
+			char[] cbuff = new char[iter.getEndIndex()-iter.getBeginIndex()];
+			if (cbuff.length > 0) {
+			    cbuff[0] = iter.first();
+			}
+			for (int i=1; i<cbuff.length;++i) {
+			    cbuff[i] = iter.next();
+			}
+			label = new String(cbuff);
+		    }
+		    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		    StringSelection selection = new StringSelection(label);
+		    clipboard.setContents(selection, selection);
+		}
+	    }
+	}.start();
     }
 
     private void report(GraphicsNodeEvent evt, String message) {

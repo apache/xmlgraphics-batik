@@ -78,7 +78,11 @@ public abstract class BasicTextPainter implements TextPainter {
      * selectAt(); [selectTo(),...], selectTo(); getSelection().
      */
     public Mark selectTo(double x, double y, Mark beginMark) {
-        return hitTest(x, y, beginMark.getTextNode());
+	if (beginMark == null) {
+	    return null;
+	} else {
+	    return hitTest(x, y, beginMark.getTextNode());
+	}
     }
 
     /**
