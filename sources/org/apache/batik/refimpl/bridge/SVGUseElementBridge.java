@@ -93,6 +93,9 @@ public class SVGUseElementBridge
         return gn;
     }
 
+    public void build(GraphicsNode node, BridgeContext ctx, Element elt) {
+    }
+
     public void update(BridgeMutationEvent evt) {
         // <!> FIXME : TODO
     }
