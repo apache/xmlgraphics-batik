@@ -84,6 +84,7 @@ public class JSVGCanvas
     extends    JComponent
     implements ActionMap {
     // The actions names.
+    public final static String UNZOOM_ACTION = "UnzoomAction";
     public final static String ZOOM_IN_ACTION = "ZoomInAction";
     public final static String ZOOM_OUT_ACTION = "ZoomOutAction";
 
@@ -179,6 +180,11 @@ public class JSVGCanvas
      */
     protected Line2D markerRight;
 
+    /**
+     * The repaint thread.
+     */
+    protected Thread repaintThread;
+
    /**
      * Used to draw marker
      */
@@ -215,6 +221,7 @@ public class JSVGCanvas
         addMouseListener(ml);
         addMouseMotionListener(ml);
 
+        listeners.put(UNZOOM_ACTION, new UnzoomAction());
         listeners.put(ZOOM_IN_ACTION, new ZoomInAction());
         listeners.put(ZOOM_OUT_ACTION, new ZoomOutAction());
     }
@@ -323,10 +330,12 @@ public class JSVGCanvas
         if (repaint) {
             clearBuffer(w, h);
             renderer.setTransform(transform);
-            // The area of intereset is in user space.
-            long start = System.currentTimeMillis();
-            renderer.repaint(getAreaOfInterest(new Rectangle(0, 0, w, h)));
-            System.out.println("Took : " + (System.currentTimeMillis() - start) + " to paint");
+       
+            if (repaintThread != null) {
+                repaintThread.stop();
+            }
+            repaintThread = new RepaintThread();
+            repaintThread.start();
         }
         repaint = false;
         Graphics2D g2d = (Graphics2D)g;
@@ -379,6 +388,29 @@ public class JSVGCanvas
     }
 
     /**
+     * To repaint the buffer.
+     */
+    protected class RepaintThread extends Thread {
+        /**
+         * Creates a new thread.
+         */
+        public RepaintThread() {
+            setPriority(Thread.MIN_PRIORITY);
+        }
+        
+        /**
+         * The thread main method.
+         */
+        public void run() {
+            Dimension size = getSize();
+            renderer.repaint(getAreaOfInterest
+                             (new Rectangle(0, 0, size.width, size.height)));
+            repaint();
+            repaintThread = null;
+        }
+    }
+
+    /**
      * To correctly resize the view.
      */
     protected class CanvasListener extends ComponentAdapter {
@@ -391,6 +423,18 @@ public class JSVGCanvas
         }
     }
 
+    /**
+     * To reset the zoom.
+     */
+    public class UnzoomAction extends AbstractAction {
+        public UnzoomAction() {}
+        public void actionPerformed(ActionEvent e) {
+            computeTransform();
+            repaint = true;
+            repaint();
+        }
+    }
+    
     /**
      * To zoom in the document.
      */
