@@ -19,6 +19,8 @@ import java.awt.Paint;
  * @version $Id$
  */
 public class FillShapePainter implements ShapePainter {
+    /** The Shape to be painted */
+    protected Shape shape;
 
     /** The paint attribute used to fill the shape. */
     protected Paint paint;
@@ -26,8 +28,14 @@ public class FillShapePainter implements ShapePainter {
     /**
      * Constructs a new <tt>FillShapePainter</tt> that can be used to fill
      * a <tt>Shape</tt>.
+     *
+     * @param shape Shape to be painted by this painter. Should not be null
      */
-    public FillShapePainter() {}
+    public FillShapePainter(Shape shape) {
+        if(shape == null){
+            throw new IllegalArgumentException();
+        }
+    }
 
     /**
      * Sets the paint used to fill a shape.
@@ -45,9 +53,8 @@ public class FillShapePainter implements ShapePainter {
      * @param g2d the Graphics2D to use
      * @param ctx the render context to use
      */
-     public void paint(Shape shape,
-                       Graphics2D g2d,
-                      GraphicsNodeRenderContext ctx) {
+     public void paint(Graphics2D g2d,
+                       GraphicsNodeRenderContext ctx) {
         if (paint != null) {
             g2d.setPaint(paint);
             g2d.fill(shape);
@@ -59,7 +66,25 @@ public class FillShapePainter implements ShapePainter {
      *
      * @param shape the shape to paint
      */
-    public Shape getPaintedArea(Shape shape){
+    public Shape getPaintedArea(GraphicsNodeRenderContext rc){
+        return shape;
+    }
+
+    /**
+     * Sets the Shape this painter is associated with.
+     * @param shape new shape this painter should be associated with.
+     *        should not be null.
+     */
+    public void setShape(Shape shape){
+        this.shape = shape;
+    }
+
+    /**
+     * Gets the Shape this painter is associated with.
+     *
+     * @return shape associated with this Painter.
+     */
+    public Shape getShape(){
         return shape;
     }
 }

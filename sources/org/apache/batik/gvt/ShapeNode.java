@@ -66,6 +66,9 @@ public class ShapeNode extends AbstractGraphicsNode {
     public void setShape(Shape newShape) {
         invalidateGeometryCache();
         this.shape = newShape;
+        if(this.shapePainter != null){
+            this.shapePainter.setShape(newShape);
+        }
     }
 
     /**
@@ -84,6 +87,9 @@ public class ShapeNode extends AbstractGraphicsNode {
     public void setShapePainter(ShapePainter newShapePainter) {
         invalidateGeometryCache();
         this.shapePainter = newShapePainter;
+        if(shape != this.shapePainter.getShape()){
+            shapePainter.setShape(shape);
+        }
     }
 
     /**
@@ -106,7 +112,7 @@ public class ShapeNode extends AbstractGraphicsNode {
      */
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if (shapePainter != null) {
-            shapePainter.paint(shape, g2d, rc);
+            shapePainter.paint(g2d, rc);
         }
     }
 
@@ -180,7 +186,7 @@ public class ShapeNode extends AbstractGraphicsNode {
             if ((shape == null) || (shapePainter == null)) {
                 return null;
             }
-            paintedArea = shapePainter.getPaintedArea(shape);
+            paintedArea = shapePainter.getPaintedArea(rc);
             primitiveBounds = paintedArea.getBounds2D();
         }
         return primitiveBounds;

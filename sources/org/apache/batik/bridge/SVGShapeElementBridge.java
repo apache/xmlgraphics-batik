@@ -77,9 +77,11 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
                                               cssDecl);
 
         // Initialize the style properties
-        ShapePainter painter
-            = CSSUtilities.convertStrokeAndFill(svgElement, node,
-                                                ctx, cssDecl, uctx);
+        ShapePainter painter = convertPainter(svgElement,
+                                              node,
+                                              cssDecl,
+                                              uctx, ctx);
+
         node.setShapePainter(painter);
 
         // Set node composite
@@ -104,6 +106,15 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
         ctx.bind(element, node);
+    }
+
+    protected ShapePainter convertPainter(SVGElement svgElement,
+                                          ShapeNode node,
+                                          CSSStyleDeclaration cssDecl,
+                                          UnitProcessor.Context uctx,
+                                          BridgeContext ctx){
+        return CSSUtilities.convertStrokeAndFill(node.getShape(), svgElement, node,
+                                                 ctx, cssDecl, uctx);
     }
 
     public void update(BridgeMutationEvent evt) {

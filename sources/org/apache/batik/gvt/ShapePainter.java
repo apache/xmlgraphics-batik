@@ -21,16 +21,28 @@ public interface ShapePainter {
 
     /**
      * Paints the specified shape using the specified Graphics2D and context.
-     * @param shape the shape to paint
      * @param g2d the Graphics2D to use
      * @param ctx the render context to use
      */
-    void paint(Shape shape, Graphics2D g2d, GraphicsNodeRenderContext ctx);
+    void paint(Graphics2D g2d, GraphicsNodeRenderContext ctx);
 
     /**
-     * Returns the area painted by this painter for a given input shape
+     * Returns the area painted by this painter
      *
-     * @param shape the shape to paint
      */
-    Shape getPaintedArea(Shape shape);
+    Shape getPaintedArea(GraphicsNodeRenderContext rc);
+
+    /**
+     * Sets the Shape this painter is associated with.
+     * @param shape new shape this painter should be associated with.
+     *        should not be null.
+     */
+    public void setShape(Shape shape);
+
+    /**
+     * Gets the Shape this painter is associated with.
+     *
+     * @return shape associated with this Painter.
+     */
+    public Shape getShape();
 }
