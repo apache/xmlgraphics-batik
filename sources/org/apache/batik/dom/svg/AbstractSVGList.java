@@ -406,7 +406,7 @@ public abstract class AbstractSVGList {
         //set the parent
         item.setParent(this);
 
-        if ( itemList.size() < 1 ){
+        if ( itemList.size() <= 1 ){
             resetAttribute();
         }
         else{
