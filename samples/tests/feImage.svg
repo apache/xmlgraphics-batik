@@ -17,15 +17,17 @@
 <!-- @version $Id $  -->
 <!-- ========================================================================= -->
 
+<?xml-stylesheet type="text/css" href="test.css" ?>
+
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
-<title>Composite Test</title>
+<title>feImage Test</title>
 
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
     <g id="testContent">
 
-      <text x="175" y="40" class="title">
+      <text x="225" y="40" class="title">
     	feImage Test
       </text>
   
@@ -55,7 +57,7 @@
         <!-- ============================================== -->
         <!-- Composite_1_*                                  -->
         <!-- ============================================== -->
-        <g transform="translate(0 20)" class="row1" >
+        <g transform="translate(40 20)" class="row1" >
     	  <g id="c1" transform="translate(20 0)">
               <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
     	      <rect x="0" y="0" width="120" height="120" 
@@ -65,7 +67,7 @@
               </text>
     	  </g>
              
-    	  <g id="c2" transform="translate(160 0)">
+    	  <g id="c2" transform="translate(120 200)">
               <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
     	      <rect x="0" y="0" width="480" height="480" 
 	            transform="scale(0.25 0.25)"
@@ -76,7 +78,7 @@
     	  </g>
   
   
-    	  <g id="c2" transform="translate(300 0)">
+    	  <g id="c2" transform="translate(220 0)">
               <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
     	      <rect x="0" y="0" width="480" height="480" 
                     transform="scale(0.25)"
