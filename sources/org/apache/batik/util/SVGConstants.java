@@ -63,6 +63,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_IMAGE_TAG = "image";
     String TAG_LINE = "line";
     String TAG_LINEAR_GRADIENT = "linearGradient";
+    String SVG_MARKER_TAG = "marker";
     String SVG_MASK_TAG = "mask";
     String SVG_METADATA_TAG = "metadata";
     String TAG_PATH = "path";
@@ -141,19 +142,23 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_LENGTH_ADJUST = "lengthAdjust";
     String ATTR_LIGHT_COLOR = "lightColor";
     String SVG_LIMITING_CONE_ANGLE_ATTRIBUTE = "limitingConeAngle";
-    String SVG_NUM_OCTAVES_ATTRIBUTE = "numOctaves";
+    String SVG_MARKER_HEIGHT_ATTRIBUTE = "markerHeight";
+    String SVG_MARKER_WIDTH_ATTRIBUTE = "markerWidth";
+    String SVG_MARKER_UNITS_ATTRIBUTE = "markerUnits";
     String ATTR_MASK = CSS_MASK_PROPERTY;
     String ATTR_MASK_CONTENT_UNITS = "maskContentUnits";
     String SVG_MASK_UNITS_ATTRIBUTE = "maskUnits";
     String ATTR_MEDIA = "media";
     String ATTR_METHOD = "method";
     String SVG_MODE_ATTRIBUTE = "mode";
+    String SVG_NUM_OCTAVES_ATTRIBUTE = "numOctaves";
     String SVG_OFFSET_ATTRIBUTE = "offset";
     String ATTR_OPACITY = CSS_OPACITY_PROPERTY;
     String SVG_OPERATOR_ATTRIBUTE = "operator";
     String SVG_ORDER_ATTRIBUTE = "order";
     String SVG_ORDER_X_ATTRIBUTE = "orderX";
     String SVG_ORDER_Y_ATTRIBUTE = "orderY";
+    String SVG_ORIENT_ATTRIBUTE = "orient";
     String ATTR_PATTERN_CONTENT_UNITS = "patternContentUnits";
     String ATTR_PATTERN_TRANSFORM = "patternTransform";
     String ATTR_PATTERN_UNITS = "patternUnits";
@@ -166,6 +171,8 @@ public interface SVGConstants extends CSSConstants {
     String SVG_PRIMITIVE_UNITS_ATTRIBUTE = "primitiveUnits";
     String SVG_R_ATTRIBUTE = "r";
     String ATTR_RADIUS = "radius";
+    String SVG_REFX_ATTRIBUTE = "refX";
+    String SVG_REFY_ATTRIBUTE = "refY";
     String ATTR_RESULT = "result";
     String ATTR_RESULT_SCALE = "resultScale";
     String SVG_RX_ATTRIBUTE = "rx";
@@ -306,6 +313,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_START = "start";
     String SVG_STITCH_VALUE = "stitch";
     String VALUE_STRETCH = "stretch";
+    String SVG_STROKE_WIDTH_VALUE = "strokeWidth";
     String SVG_TABLE_VALUE = "table";
     String SVG_TURBULENCE_VALUE = "turbulence";
     String VALUE_TYPE_LINEAR = "linear";
@@ -347,18 +355,18 @@ public interface SVGConstants extends CSSConstants {
     String SVG_DEFAULT_VALUE_ELLIPSE_CX = "0";
     String SVG_DEFAULT_VALUE_ELLIPSE_CY = "0";
 
-    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K1 = "0";
-    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K2 = "0";
-    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K3 = "0";
-    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K4 = "0";
-    String SVG_DEFAULT_VALUE_FE_COMPOSITE_OPERATOR = SVG_OVER_VALUE;
-
     String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_TABLE_VALUES = "";
     String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_SLOPE = "1";
     String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_INTERCEPT = "0";
     String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_AMPLITUDE = "1";
     String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_EXPONENT = "1";
     String SVG_DEFAULT_VALUE_COMPONENT_TRANSFER_FUNCTION_OFFSET = "0";
+
+    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K1 = "0";
+    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K2 = "0";
+    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K3 = "0";
+    String SVG_DEFAULT_VALUE_FE_COMPOSITE_K4 = "0";
+    String SVG_DEFAULT_VALUE_FE_COMPOSITE_OPERATOR = SVG_OVER_VALUE;
 
     String SVG_DEFAULT_VALUE_FE_CONVOLVE_MATRIX_EDGE_MODE = SVG_DUPLICATE_VALUE;
 
@@ -395,11 +403,18 @@ public interface SVGConstants extends CSSConstants {
     String SVG_DEFAULT_VALUE_FILTER_PRIMITIVE_UNITS =
         SVG_USER_SPACE_ON_USE_VALUE;
 
-    String SVG_DEFAULT_VALUE_MASK_MASK_UNITS =
-        SVG_USER_SPACE_ON_USE_VALUE;
-
     String SVG_DEFAULT_VALUE_IMAGE_X = "0";
     String SVG_DEFAULT_VALUE_IMAGE_Y = "0";
+
+    String SVG_DEFAULT_VALUE_MARKER_REFX = "0";
+    String SVG_DEFAULT_VALUE_MARKER_REFY = "0";
+    String SVG_DEFAULT_VALUE_MARKER_MARKER_WIDTH = "3";
+    String SVG_DEFAULT_VALUE_MARKER_MARKER_HEIGHT = "3";
+    String SVG_DEFAULT_VALUE_MARKER_MARKER_UNITS = "strokeWidth";
+    String SVG_DEFAULT_VALUE_MARKER_ORIENT = "0";
+
+    String SVG_DEFAULT_VALUE_MASK_MASK_UNITS =
+        SVG_USER_SPACE_ON_USE_VALUE;
 
     String DEFAULT_VALUE_FILTER_X = "-10%";
     String DEFAULT_VALUE_FILTER_Y = "-10%";

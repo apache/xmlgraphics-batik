@@ -23,6 +23,7 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.ClipBridge;
 import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
+import org.apache.batik.bridge.MarkerBridge;
 import org.apache.batik.bridge.MaskBridge;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -31,6 +32,7 @@ import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import org.apache.batik.gvt.Marker;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
 import org.apache.batik.ext.awt.image.renderable.Clip;
@@ -596,6 +598,76 @@ public class CSSUtilities implements SVGConstants {
         default:
             throw new Error(); // can't be reached
         }
+    }
+
+    /**
+     * Converts a marker property to a Marker object
+     */
+    public static Marker convertMarker(SVGElement paintedElement,
+                                       String markerProperty,
+                                       BridgeContext ctx,
+                                       CSSStyleDeclaration decl,
+                                       UnitProcessor.Context uctx){
+        CSSPrimitiveValue v =
+            (CSSPrimitiveValue) decl.getPropertyCSSValue(markerProperty);
+
+        if(v == null){
+            System.out.println(markerProperty + " Null marker value...");
+            return null;
+        }
+
+        switch(v.getPrimitiveType()){
+        case CSSPrimitiveValue.CSS_IDENT:
+            // value is 'none'
+            System.out.println(markerProperty + "Marker value is none ..");
+            return null;
+        case CSSPrimitiveValue.CSS_URI:
+            System.out.println(markerProperty + "Marker value is : " + v.getStringValue());
+            return convertURIToMarker(v.getStringValue(),
+                                      paintedElement, 
+                                      ctx, decl, uctx);
+        default:
+            throw new Error(); // can't be reached.
+        }
+    }
+
+    /**
+     * Converts a URI to a Marker
+     */
+    public static Marker convertURIToMarker(String markerURI,
+                                            SVGElement paintedElement,
+                                            BridgeContext ctx,
+                                            CSSStyleDeclaration decl,
+                                            UnitProcessor.Context uctx){
+        URIResolver ur =
+            new URIResolver((SVGDocument)paintedElement.getOwnerDocument(),
+                            ctx.getDocumentLoader());
+
+        Element markerElement = null;
+        try {
+            markerElement = ur.getElement(markerURI);
+        } catch (Exception ex) {
+            throw new IllegalAttributeValueException
+                (Messages.formatMessage("bad.uri",
+                                        new Object[] {markerURI}));
+        }
+
+        Bridge bridge = ctx.getBridge(markerElement);
+        if ((bridge == null) || !(bridge instanceof MarkerBridge)){
+            throw new IllegalAttributeValueException
+                    (Messages.formatMessage("marker.reference.illegal",
+                                           new Object[] {markerElement.getLocalName()}));
+        }
+
+        MarkerBridge markerBridge = (MarkerBridge)bridge;
+        SVGOMDocument doc = (SVGOMDocument)markerElement.getOwnerDocument();
+        ViewCSS v = ctx.getViewCSS();
+        ctx.setViewCSS((ViewCSS)doc.getDefaultView());
+        Marker marker = markerBridge.buildMarker(ctx, 
+                                                 markerElement,
+                                                 paintedElement);
+        return marker;
+                                                 
     }
 
     /**

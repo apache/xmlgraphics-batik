@@ -81,7 +81,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     //
 
     /**
-     * Returns the list of children or null if any.
+     * Returns the list of children. Never null.
      */
     public List getChildren() {
         return this;

@@ -47,6 +47,7 @@ public class SVGViewCSS
 	addRelativeValueResolver(new GlyphOrientationVerticalResolver());
 	addRelativeValueResolver(new ImageRenderingResolver());
 	addRelativeValueResolver(new LightingColorResolver());
+	addRelativeValueResolver(new MarkerResolver(CSS_MARKER_PROPERTY));
 	addRelativeValueResolver(new MarkerResolver(CSS_MARKER_END_PROPERTY));
 	addRelativeValueResolver(new MarkerResolver(CSS_MARKER_MID_PROPERTY));
 	addRelativeValueResolver(new MarkerResolver(CSS_MARKER_START_PROPERTY));
