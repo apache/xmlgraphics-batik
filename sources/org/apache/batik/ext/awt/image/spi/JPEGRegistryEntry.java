@@ -29,13 +29,19 @@ import org.apache.batik.util.ParsedURL;
 public class JPEGRegistryEntry 
     extends MagicNumberRegistryEntry {
 
-    static final byte [] signature   = {(byte)0xFF, (byte)0xd8, 
+    static final byte [] sigJFIF   = {(byte)0xFF, (byte)0xd8, 
                                       (byte)0xFF, (byte)0xe0};
+    static final byte [] sigEXIF   = {(byte)0xFF, (byte)0xd8, 
+                                      (byte)0xFF, (byte)0xe1};
     static final String [] exts      = {"jpeg", "jpg" };
     static final String [] mimeTypes = {"image/jpeg", "image/jpg" };
+    static final MagicNumber [] magicNumbers = {
+        new MagicNumber(0, sigJFIF),
+        new MagicNumber(0, sigEXIF)
+    };
 
     public JPEGRegistryEntry() {
-        super("JPEG", exts, mimeTypes, 0, signature);
+        super("JPEG", exts, mimeTypes, magicNumbers);
     }
 
     /**
@@ -51,7 +57,6 @@ public class JPEGRegistryEntry
     public Filter handleStream(InputStream inIS, 
                                ParsedURL   origURL,
                                boolean     needRawData) {
-
         final DeferRable  dr  = new DeferRable();
         final InputStream is  = inIS;
         final String      errCode;
