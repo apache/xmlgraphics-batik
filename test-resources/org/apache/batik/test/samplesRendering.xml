@@ -902,5 +902,13 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/cssMediaProjection.png"/>
     </test>
 
+    <test id="samples/tests/externalPaints.svg" class="org.apache.batik.test.svg.SVGMediaRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/externalPaints.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/externalPaints.png"/>
+        <arg class="java.lang.String" value="projection"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/externalPaints.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/externalPaints.png"/>
+    </test>
+
 
 </testSuite>
