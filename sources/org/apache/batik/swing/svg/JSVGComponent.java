@@ -341,9 +341,8 @@ public class JSVGComponent extends JGVTComponent {
         addSVGLoadEventDispatcherListener((SVGListener)listener);
     }
 
-    public void removeNotify() {
+    public void dispose() {
         setSVGDocument(null);
-        super.removeNotify();
     }
 
     /**

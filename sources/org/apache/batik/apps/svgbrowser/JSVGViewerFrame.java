@@ -2092,7 +2092,7 @@ public class JSVGViewerFrame
      */
     public void managerStopped(UpdateManagerEvent e) {
         if (debug) {
-            System.out.println("Update Manager Stopped");
+            System.out.println("Update manager stopped");
         }
         managerStopped = true;
         playAction.update(false);
