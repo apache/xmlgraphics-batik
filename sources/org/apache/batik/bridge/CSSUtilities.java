@@ -612,17 +612,14 @@ public class CSSUtilities implements SVGConstants {
             (CSSPrimitiveValue) decl.getPropertyCSSValue(markerProperty);
 
         if(v == null){
-            System.out.println(markerProperty + " Null marker value...");
             return null;
         }
 
         switch(v.getPrimitiveType()){
         case CSSPrimitiveValue.CSS_IDENT:
             // value is 'none'
-            System.out.println(markerProperty + "Marker value is none ..");
             return null;
         case CSSPrimitiveValue.CSS_URI:
-            System.out.println(markerProperty + "Marker value is : " + v.getStringValue());
             return convertURIToMarker(v.getStringValue(),
                                       paintedElement, 
                                       ctx, decl, uctx);
