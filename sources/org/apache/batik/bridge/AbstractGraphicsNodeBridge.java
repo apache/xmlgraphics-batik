@@ -22,6 +22,7 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGFitToViewBox;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -258,9 +259,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * stroke-width and filter effects).
      */
     public Rectangle2D getBBox() {
-        AffineTransform ctm = node.getGlobalTransform();
-        Rectangle2D bounds = node.getPrimitiveBounds();
-        return ctm.createTransformedShape(bounds).getBounds2D();
+        return node.getPrimitiveBounds();
     }
 
     /**
@@ -273,19 +272,16 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         AffineTransform ctm = new AffineTransform();
         Element elt = e;
         while (elt != null) {
-            AffineTransform gnT = gn.getTransform();
-            if (gnT != null) {
-                ctm.preConcatenate(gnT);
+            AffineTransform at = gn.getTransform();
+            if (at != null) {
+                ctm.preConcatenate(at);
             }
-            if (elt.getNamespaceURI().equals(SVG_NAMESPACE_URI) &&
-                (elt.getLocalName().equals(SVG_SVG_TAG) ||
-                 elt.getLocalName().equals(SVG_SYMBOL_TAG))) {
-                return ctm;
-            } else {
-                elt = (Element)elt.getParentNode();
-                gn = gn.getParent();
+            elt = SVGCSSEngine.getParentCSSStylableElement(elt);
+            gn = gn.getParent();
+            if (elt instanceof SVGFitToViewBox) {
+                break;
             }
         }
-        return null;
+        return ctm;
     }
 }
