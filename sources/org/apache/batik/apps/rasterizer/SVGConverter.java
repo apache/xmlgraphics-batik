@@ -219,6 +219,9 @@ public class SVGConverter {
     /** Validation flag */
     protected boolean validate = false;
 
+    /** Execute the 'onload' scripts flag */
+    protected boolean executeOnload = false;
+
     /** Sources files or URLs */
     protected Vector sources = null;
 
@@ -474,6 +477,25 @@ public class SVGConverter {
     public boolean getValidate(){
         return validate;
     }
+
+    /**
+     * Sets whether or not scripts attached to the DOM using 'onload'
+     * event attribute must be executed before rasterizing.
+     *
+     * @param b true means scripts will be executed
+     */
+    public void setExecuteOnload(boolean b){
+        this.executeOnload = b;
+    }
+
+    /**
+     * Returns true if the scripts attached to the DOM using 'onload'
+     * event attribute is going to be executed before rasterizing,
+     * false otherwise.
+     */
+    public boolean getExecuteOnload(){
+        return executeOnload;
+    }
     
     /**
      * Returns true if f is a File. f is found to be a file if
@@ -706,6 +728,8 @@ public class SVGConverter {
                     new Boolean(validate));
         }
 
+        // Set onload
+        map.put(ImageTranscoder.KEY_EXECUTE_ONLOAD, new Boolean(executeOnload));
         
         return map;
     }

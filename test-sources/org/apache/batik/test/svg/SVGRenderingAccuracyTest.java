@@ -948,13 +948,15 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
     public ImageTranscoder getTestImageTranscoder(){
         ImageTranscoder t = new InternalPNGTranscoder();
         t.addTranscodingHint(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE,
-                             new Boolean(false));
+                             Boolean.FALSE);
         t.addTranscodingHint(PNGTranscoder.KEY_BACKGROUND_COLOR,
                              new Color(0,0,0,0));
+        t.addTranscodingHint(PNGTranscoder.KEY_EXECUTE_ONLOAD,
+                             Boolean.TRUE);
 
         if (validate){
             t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_VALIDATING,
-                                 new Boolean(true));
+                                 Boolean.TRUE);
             t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
                                  VALIDATING_PARSER);
         }
