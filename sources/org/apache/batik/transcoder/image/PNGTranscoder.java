@@ -153,7 +153,7 @@ public class PNGTranscoder extends ImageTranscoder {
         try {
             PNGImageEncoder pngEncoder = new PNGImageEncoder(ostream, params);
             pngEncoder.encode(img);
-            ostream.close();
+            ostream.flush();
         } catch (IOException ex) {
             throw new TranscoderException(ex);
         }

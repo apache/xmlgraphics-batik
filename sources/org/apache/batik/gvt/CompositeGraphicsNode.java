@@ -180,35 +180,36 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * Returns the bounds of the area covered by this node's primitive paint.
      */
     public Rectangle2D getPrimitiveBounds() {
-        if (primitiveBounds == null) {
-            int i=0;
-            Rectangle2D bounds = null;
-            while ((bounds == null) && i < count) {
-                bounds = children[i++].getTransformedBounds(IDENTITY);
-            }
-            if (bounds == null) return null;
-            primitiveBounds = bounds;
+        if (primitiveBounds != null) 
+            return primitiveBounds;
 
-            Rectangle2D ctb = null;
-            while (i < count) {
-                ctb = children[i++].getTransformedBounds(IDENTITY);
-                if (ctb != null) {
-                    if (primitiveBounds == null) {
-                        // another thread has set the primitive bounds to null,
-                        // need to recall this function
-                        return null;
-                    } else {
-                        primitiveBounds.add(ctb);
-                    }
+        int i=0;
+        Rectangle2D bounds = null;
+        while ((bounds == null) && i < count) {
+            bounds = children[i++].getTransformedBounds(IDENTITY);
+        }
+        if (bounds == null) return null;
+        primitiveBounds = bounds;
+        
+        Rectangle2D ctb = null;
+        while (i < count) {
+            ctb = children[i++].getTransformedBounds(IDENTITY);
+            if (ctb != null) {
+                if (primitiveBounds == null) {
+                    // another thread has set the primitive bounds to null,
+                    // need to recall this function
+                    return null;
+                } else {
+                    primitiveBounds.add(ctb);
                 }
             }
-
-            // Make sure we haven't been interrupted
-            if (Thread.currentThread().isInterrupted()) {
-                // The Thread has been interrupted.
-                // Invalidate any cached values and proceed.
-                invalidateGeometryCache();
-            }
+        }
+        
+        // Make sure we haven't been interrupted
+        if (Thread.currentThread().isInterrupted()) {
+            // The Thread has been interrupted.
+            // Invalidate any cached values and proceed.
+            invalidateGeometryCache();
         }
         return primitiveBounds;
     }

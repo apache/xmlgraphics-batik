@@ -50,8 +50,10 @@
 
 package org.apache.batik.util;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.MissingResourceException;
 
 /**
  * This class describes the XML resources needed to use the various batik
@@ -78,12 +80,12 @@ public class XMLResourceDescriptor {
      * The resources file name
      */
     public final static String RESOURCES =
-        "org.apache.batik.util.resources.XMLResourceDescriptor";
+        "resources/XMLResourceDescriptor.properties";
 
     /**
      * The resource bundle
      */
-    protected static ResourceBundle bundle;
+    protected static Properties parserProps = null;;
 
     /**
      * The class name of the XML parser to use.
@@ -95,8 +97,19 @@ public class XMLResourceDescriptor {
      */
     protected static String cssParserClassName;
 
-    static {
-        bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
+    protected static synchronized Properties getParserProps() {
+        if (parserProps != null) return parserProps;
+
+        parserProps = new Properties();
+        try { 
+            Class cls = XMLResourceDescriptor.class;
+            InputStream is = cls.getResourceAsStream(RESOURCES);
+            parserProps.load(is);
+        } catch (IOException ioe) { 
+            throw new MissingResourceException(ioe.getMessage(),
+                                               RESOURCES, null); 
+        }
+        return parserProps;
     }
 
     /**
@@ -109,7 +122,8 @@ public class XMLResourceDescriptor {
      */
     public static String getXMLParserClassName() {
         if (xmlParserClassName == null) {
-            xmlParserClassName = bundle.getString(XML_PARSER_CLASS_NAME_KEY);
+            xmlParserClassName = getParserProps().getProperty
+                (XML_PARSER_CLASS_NAME_KEY);
         }
         return xmlParserClassName;
     }
@@ -135,7 +149,8 @@ public class XMLResourceDescriptor {
      */
     public static String getCSSParserClassName() {
         if (cssParserClassName == null) {
-            cssParserClassName = bundle.getString(CSS_PARSER_CLASS_NAME_KEY);
+            cssParserClassName = getParserProps().getProperty
+                (CSS_PARSER_CLASS_NAME_KEY);
         }
         return cssParserClassName;
     }

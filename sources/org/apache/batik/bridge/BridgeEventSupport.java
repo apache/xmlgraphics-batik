@@ -124,6 +124,11 @@ public class BridgeEventSupport implements SVGConstants {
                 isDown = true;
                 dispatchKeyEvent("keydown", evt);
             }
+            if (evt.getKeyChar() == KeyEvent.CHAR_UNDEFINED) {
+                // We will not get a KEY_TYPED event for this char
+                // so generate a keypress event here.
+                dispatchKeyEvent("keypress", evt);
+            }
         }
 
         /**

@@ -23,9 +23,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import java.util.Properties;
 
