@@ -417,9 +417,10 @@ public class ShapeNode extends AbstractGraphicsNode {
     }
 
     /**
-     * Returns the bounds of the area covered by this node, without taking any
-     * of its rendering attribute into account. i.e., exclusive of any clipping,
-     * masking, filtering or stroking, for example.
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into account. i.e.,
+     * exclusive of any clipping, masking, filtering or stroking, for
+     * example.
      */
     public Rectangle2D getGeometryBounds(){
         if (geometryBounds == null) {

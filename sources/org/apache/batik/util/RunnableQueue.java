@@ -164,7 +164,11 @@ public class RunnableQueue implements Runnable {
                     if (preemptCount != 0) preemptCount--;
                     if (l == null) {
                         // No item to run, wait till there is one.
-                        list.wait();
+                        try {
+                            list.wait();
+                        } catch (InterruptedException ie) {
+                            // just loop again.
+                        }
                         continue; // start loop over again...
                     }
 

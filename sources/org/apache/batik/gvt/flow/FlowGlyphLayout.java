@@ -290,6 +290,7 @@ public class FlowGlyphLayout extends GlyphLayout {
         }
         
         aciIdx = aci.getBeginIndex();
+        int aciEnd = aci.getEndIndex();
         char ch = aci.setIndex(aciIdx);
         
         int aciWordStart = aciIdx;
@@ -349,7 +350,7 @@ public class FlowGlyphLayout extends GlyphLayout {
             }
 
             aciIdx += chCnt;
-            if (aciIdx > runLimit) {
+            if ((aciIdx > runLimit) && (aciIdx < aciEnd)) {
                 // Possible font size/style change so record current
                 // line metrics and start fresh.
                 GVTLineMetrics lm = gvtFont.getLineMetrics
