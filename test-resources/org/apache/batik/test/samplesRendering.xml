@@ -321,6 +321,7 @@
         <test id="samples/tests/spec/scripting/maskClipUpdate.svg" />
         <test id="samples/tests/spec/scripting/markerUpdate.svg" />
         <test id="samples/tests/spec/scripting/filterPatternUpdate.svg" />
+        <test id="samples/tests/spec/scripting/use.svg" />
     </testGroup>
 
 </testSuite>
