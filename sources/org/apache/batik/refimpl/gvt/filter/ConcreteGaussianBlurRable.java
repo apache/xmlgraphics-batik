@@ -202,7 +202,6 @@ public class ConcreteGaussianBlurRable
 
             srcAt = at;
             resAt = null;
-            System.out.println("No resAt\n");
         } else {
             // Scale to device coords.
             srcAt = AffineTransform.getScaleInstance(scaleX, scaleY);
@@ -212,7 +211,6 @@ public class ConcreteGaussianBlurRable
             resAt = new AffineTransform(sx/scaleX, shy/scaleX,
                                         shx/scaleY,  sy/scaleY,
                                         tx, ty);
-            System.out.println("Using resAt\n");
         }
 
         
@@ -224,7 +222,7 @@ public class ConcreteGaussianBlurRable
         CachableRed cr;
         cr = new ConcreteRenderedImageCachableRed(ri);
 
-        Shape devShape = srcAt.createTransformedShape(aoi.getBounds2D());
+        Shape devShape = srcAt.createTransformedShape(aoi);
         r = devShape.getBounds2D();
         r = new Rectangle2D.Double(r.getX()-blurRadX, 
                                    r.getY()-blurRadY,

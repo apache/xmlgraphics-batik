@@ -117,38 +117,48 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
         destPt.setLocation(srcPt.getX(), srcPt.getY());
         return destPt;
     }
-    private void checkCompatible(ColorModel colorModel){
+
+    private void checkCompatible(ColorModel  colorModel,
+                                 SampleModel sampleModel){
         ColorSpace cs = colorModel.getColorSpace();
 
         // Check that model is sRGB or linear RGB
-        if((cs != sRGB) || (cs != lRGB))
-            throw new IllegalArgumentException("Expected CS_sRGB or CS_LINEAR_RGB color model");
+        if((!cs.equals(sRGB)) && (!cs.equals(lRGB)))
+            throw new IllegalArgumentException
+                ("Expected CS_sRGB or CS_LINEAR_RGB color model");
 
         // Check ColorModel is of type DirectColorModel
         if(!(colorModel instanceof DirectColorModel))
-            throw new IllegalArgumentException("colorModel should be an instance of DirectColorModel");
+            throw new IllegalArgumentException
+                ("colorModel should be an instance of DirectColorModel");
 
         // Check transfer type
-        if(colorModel.getTransferType() != DataBuffer.TYPE_INT)
-            throw new IllegalArgumentException("colorModel's transferType should be DataBuffer.TYPE_INT");
+        if(sampleModel.getDataType() != DataBuffer.TYPE_INT)
+            throw new IllegalArgumentException
+                ("colorModel's transferType should be DataBuffer.TYPE_INT");
 
         // Check red, green, blue and alpha mask
         DirectColorModel dcm = (DirectColorModel)colorModel;
         if(dcm.getRedMask() != 0x00ff0000)
-            throw new IllegalArgumentException("red mask in source should be 0xff000000");
+            throw new IllegalArgumentException
+                ("red mask in source should be 0x00ff0000");
         if(dcm.getGreenMask() != 0x0000ff00)
-            throw new IllegalArgumentException("green mask in source should be 0xff000000");
+            throw new IllegalArgumentException
+                ("green mask in source should be 0x0000ff00");
         if(dcm.getBlueMask() != 0x000000ff)
-            throw new IllegalArgumentException("blue mask in source should be 0xff000000");
+            throw new IllegalArgumentException
+                ("blue mask in source should be 0x000000ff");
         if(dcm.getAlphaMask() != 0xff000000)
-            throw new IllegalArgumentException("alpha mask in source should be 0xff000000");
+            throw new IllegalArgumentException
+                ("alpha mask in source should be 0xff000000");
     }
 
-    private boolean isCompatible(ColorModel colorModel){
+    private boolean isCompatible(ColorModel  colorModel,
+				 SampleModel sampleModel){
         ColorSpace cs = colorModel.getColorSpace();
         // Check that model is sRGB or linear RGB
         if((cs != ColorSpace.getInstance(ColorSpace.CS_sRGB))
-           ||
+           &&
            (cs != ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)))
             return false;
 
@@ -157,7 +167,7 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
             return false;
 
         // Check transfer type
-        if(colorModel.getTransferType() != DataBuffer.TYPE_INT)
+        if(sampleModel.getDataType() != DataBuffer.TYPE_INT)
             return false;
 
         // Check red, green, blue and alpha mask
@@ -176,14 +186,14 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
     private void checkCompatible(SampleModel model){
         // Check model is ok: should be SinglePixelPackedSampleModel
         if(!(model instanceof SinglePixelPackedSampleModel))
-            throw new IllegalArgumentException("TurbulenceOp only works with Rasters using SinglePixelPackedSampleModels");
+            throw new IllegalArgumentException("DisplacementMapOp only works with Rasters using SinglePixelPackedSampleModels");
         // Check number of bands
         int nBands = model.getNumBands();
         if(nBands!=4)
-            throw new IllegalArgumentException("TurbulenceOp only words with Rasters having 4 bands");
+            throw new IllegalArgumentException("DisplacementMapOp only words with Rasters having 4 bands");
         // Check that integer packed.
         if(model.getDataType()!=DataBuffer.TYPE_INT)
-            throw new IllegalArgumentException("TurbulenceOp only works with Rasters using DataBufferInts");
+            throw new IllegalArgumentException("DisplacementMapOp only works with Rasters using DataBufferInts");
         // Check bit masks
         int bitOffsets[] = ((SinglePixelPackedSampleModel)model).getBitOffsets();
         for(int i=0; i<bitOffsets.length; i++){
@@ -204,13 +214,16 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
 
     public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM){
         BufferedImage dest = null;
-        if(destCM==null){
+        if(destCM==null)
             destCM = ColorModel.getRGBdefault();
-        }
-        else
-            checkCompatible(destCM);
-        dest = new BufferedImage(destCM, destCM.createCompatibleWritableRaster(src.getWidth(), src.getHeight()),destCM.isAlphaPremultiplied(), null);
-        return dest;
+
+
+        WritableRaster wr;
+        wr = destCM.createCompatibleWritableRaster(src.getWidth(),
+                                                   src.getHeight());
+        checkCompatible(destCM, wr.getSampleModel());
+        return new BufferedImage(destCM, wr,
+                                 destCM.isAlphaPremultiplied(), null);
     }
 
     /**
@@ -332,7 +345,7 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
     }// end of the filter() method for Raster
 
     public BufferedImage filter(BufferedImage src, BufferedImage dest){
-        if (src == null && dest == null)
+        if (src == null)
             throw new NullPointerException("src image should not be null if dest is null");
 
         // Now, check destination. If compatible, it is used as is. Otherwise
@@ -344,7 +357,7 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
         }
         else{
             // Check that the destination ColorModel is compatible
-            if(!isCompatible(dest.getColorModel()))
+            if(!isCompatible(dest.getColorModel(), dest.getSampleModel()))
                 dest = createCompatibleDestImage(src, null);
         }
 

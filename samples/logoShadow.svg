@@ -22,7 +22,7 @@
     <!-- ============================================================= -->
     <defs>
         <filter id="blurFilterBothBounds"  filterUnits="userSpaceOnUse" x="0" y="0" width="500" height="500" filterRes="200">
-            <feGaussianBlur stdDeviation="2 3" filterUnits="userSpaceOnUse" x="0" y="0" width="500" height="500"/> 
+            <feGaussianBlur stdDeviation="3 3" filterUnits="userSpaceOnUse" x="0" y="0" width="500" height="500"/> 
         </filter>
     </defs>
 
