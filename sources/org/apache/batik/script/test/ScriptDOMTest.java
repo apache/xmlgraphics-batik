@@ -41,8 +41,7 @@ public class ScriptDOMTest {
         }
 
         System.out.println("--- Creating an text/ecmascript interpreter ---");
-        final Interpreter interpreter1 = pool.getInterpreter("text/ecmascript",
-                                                             null);
+        final Interpreter interpreter1 = pool.getInterpreter("text/ecmascript");
         if (interpreter1 == null) {
             System.err.println("*** Can't find a text/ecmascript interpret ***");
         } else {
@@ -85,8 +84,7 @@ public class ScriptDOMTest {
         }
 
         System.out.println("--- Creating an text/python interpreter ---");
-        final Interpreter interpreter2 = pool.getInterpreter("text/python",
-                                                             null);
+        final Interpreter interpreter2 = pool.getInterpreter("text/python");
         if (interpreter2 == null) {
             System.err.println("*** Can't find a text/python interpret ***");
         } else {
@@ -129,8 +127,7 @@ public class ScriptDOMTest {
         }
 
         System.out.println("--- Creating an text/tcl interpreter ---");
-        final Interpreter interpreter3 = pool.getInterpreter("text/tcl",
-                                                             null);
+        final Interpreter interpreter3 = pool.getInterpreter("text/tcl");
         if (interpreter3 == null) {
             System.err.println("*** Can't find a text/tcl interpret ***");
         } else {

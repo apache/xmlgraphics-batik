@@ -320,7 +320,7 @@ public class JSVGCanvas
         result.setGraphicsNodeRableFactory
             (new ConcreteGraphicsNodeRableFactory());
         ((SVGBridgeContext)result).setInterpreterPool
-            (new ConcreteInterpreterPool());
+            (new ConcreteInterpreterPool(doc));
         return result;
     }
 
@@ -518,6 +518,22 @@ public class JSVGCanvas
 
         transform = SVGUtilities.getPreserveAspectRatioTransform
             (elt, w, h, parserFactory);
+        updateBaseTransform();
+    }
+
+    private void updateBaseTransform()
+    {
+        // for event dispatching inside GVT with the right transformer
+        AbstractEventDispatcher dispatcher =
+            (AbstractEventDispatcher)userAgent.getEventDispatcher();
+        if (dispatcher != null) {
+            try {
+                dispatcher.setBaseTransform(transform.createInverse());
+            } catch (NoninvertibleTransformException e) {
+                // this should not happened
+                throw new Error();
+            }
+        }
     }
 
     /**
@@ -593,6 +609,7 @@ public class JSVGCanvas
         public void actionPerformed(ActionEvent e) {
             transform.preConcatenate
                 (AffineTransform.getScaleInstance(2, 2));
+            updateBaseTransform();
             repaint = true;
             repaint();
             if (thumbnailCanvas != null) {
@@ -609,6 +626,7 @@ public class JSVGCanvas
         public void actionPerformed(ActionEvent e) {
             transform.preConcatenate
                 (AffineTransform.getScaleInstance(0.5, 0.5));
+            updateBaseTransform();
             repaint = true;
             repaint();
             if (thumbnailCanvas != null) {
@@ -725,6 +743,7 @@ public class JSVGCanvas
             if (panTransform != null) {
                 panTransform.translate(x - sx, y - sy);
                 transform.preConcatenate(panTransform);
+                updateBaseTransform();
                 repaint = true;
                 repaint();
                 if (thumbnailCanvas != null) {
@@ -757,6 +776,7 @@ public class JSVGCanvas
                 at.translate(-sx, -sy);
 
                 transform.preConcatenate(at);
+                updateBaseTransform();
                 repaint = true;
                 repaint();
                 if (thumbnailCanvas != null) {
@@ -765,6 +785,7 @@ public class JSVGCanvas
             } else if (rotateMarker != null) {
                 clearRotateMarker();
                 transform.preConcatenate(rotateTransform);
+                updateBaseTransform();
                 repaint = true;
                 repaint();
                 if (thumbnailCanvas != null) {

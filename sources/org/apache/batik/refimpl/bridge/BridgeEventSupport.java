@@ -115,7 +115,7 @@ class BridgeEventSupport {
         Interpreter interpret =
             ctx.getInterpreterPool().
             getInterpreter(((SVGElement)element).getOwnerSVGElement().
-                           getContentScriptType(), element.getOwnerDocument());
+                           getContentScriptType());
         // <!> TODO we need to memo listeners to be able to remove
         // them later.
         // <!> TODO be smarter : don't look for doc attr on other

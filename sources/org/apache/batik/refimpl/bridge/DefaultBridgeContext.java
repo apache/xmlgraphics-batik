@@ -36,6 +36,6 @@ public class DefaultBridgeContext extends SVGBridgeContext {
         setUserAgent(new DefaultUserAgent());
         setViewCSS((ViewCSS) svgDocument.getRootElement());
         setGraphicsNodeRableFactory(new ConcreteGraphicsNodeRableFactory());
-        setInterpreterPool(new ConcreteInterpreterPool());
+        setInterpreterPool(new ConcreteInterpreterPool(svgDocument));
     }
 }

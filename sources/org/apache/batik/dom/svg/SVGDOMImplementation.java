@@ -70,6 +70,7 @@ public class SVGDOMImplementation
         features.put("CSS",            "2.0");
         features.put("StyleSheets",    "2.0");
         features.put("SVG",            "1.0");
+        features.put("SVGEvents",      "1.0");
     }
 
     /**
