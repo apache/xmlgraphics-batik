@@ -51,8 +51,10 @@
 package org.apache.batik.bridge;
 
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.gvt.ShapeNode;
+import org.apache.batik.gvt.ShapePainter;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.MutationEvent;
 
@@ -135,12 +137,6 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
                                       new Object[] {SVG_RY_ATTRIBUTE, s});
         }
 
-	// A value of zero disables rendering of the element
-	if ((rx == 0) || (ry == 0)) {
-            shapeNode.setShape(null);
-	    return;
-	}
-
         shapeNode.setShape(new Ellipse2D.Float(cx-rx, cy-ry, rx*2, ry*2));
     }
 
@@ -161,5 +157,14 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }
+    }
+
+    protected ShapePainter createShapePainter(BridgeContext ctx,
+                                              Element e,
+                                              ShapeNode shapeNode) {
+        Rectangle2D r2d = shapeNode.getShape().getBounds2D();
+        if ((r2d.getWidth() == 0) || (r2d.getHeight() == 0))
+            return null;
+        return super.createShapePainter(ctx, e, shapeNode);
     }
 }

@@ -107,6 +107,8 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * @return the bounds of this raster image node
      */
     public Rectangle2D getImageBounds() {
+        if (image == null)
+            return null;
         return (Rectangle2D) image.getBounds2D().clone();
     }
 
@@ -142,6 +144,8 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * Returns the bounds of the area covered by this node's primitive paint.
      */
     public Rectangle2D getPrimitiveBounds() {
+        if (image == null)
+            return null;
         return image.getBounds2D();
     }
 
@@ -151,6 +155,8 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * masking, filtering or stroking, for example.
      */
     public Rectangle2D getGeometryBounds() {
+        if (image == null)
+            return null;
         return image.getBounds2D();
     }
 
@@ -160,6 +166,8 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * of clipping, masking or filtering.
      */
     public Rectangle2D getSensitiveBounds() {
+        if (image == null)
+            return null;
         return image.getBounds2D();
     }
 
@@ -167,6 +175,8 @@ public class RasterImageNode extends AbstractGraphicsNode {
      * Returns the outline of this node.
      */
     public Shape getOutline() {
+        if (image == null)
+            return null;
         return image.getBounds2D();
     }
 }

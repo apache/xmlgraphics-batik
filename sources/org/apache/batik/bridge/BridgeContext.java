@@ -1038,7 +1038,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         Iterator iter = interpreterMap.values().iterator();
         while (iter.hasNext()) {
             Interpreter interpreter = (Interpreter)iter.next();
-            interpreter.dispose();
+            if (interpreter != null)
+                interpreter.dispose();
         }
         interpreterMap.clear();
 

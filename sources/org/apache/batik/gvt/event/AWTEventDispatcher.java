@@ -431,7 +431,7 @@ public class AWTEventDispatcher implements EventDispatcher,
         }
 
         GraphicsNode node = root.nodeHitAt(gnp);
-
+        
         // If the receiving node has changed, send a notification
         // check if we enter a new node
         Point screenPos;
