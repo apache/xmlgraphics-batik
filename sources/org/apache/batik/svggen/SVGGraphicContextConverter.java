@@ -59,7 +59,7 @@ public class SVGGraphicContextConverter {
         compositeConverter = new SVGComposite(generatorContext);
         clipConverter = new SVGClip(generatorContext);
         hintsConverter = new SVGRenderingHints();
-        fontConverter = new SVGFont();
+        fontConverter = new SVGFont(generatorContext);
 
         int i=0;
         converters[i++] = paintConverter;

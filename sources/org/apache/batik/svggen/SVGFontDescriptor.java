@@ -20,6 +20,9 @@ import org.w3c.dom.*;
  * @see             org.apache.batik.svggen.SVGFont
  */
 public class SVGFontDescriptor implements SVGDescriptor, SVGSyntax {
+
+    private Element def;
+
     private String fontSize;
     private String fontWeight;
     private String fontStyle;
@@ -31,7 +34,8 @@ public class SVGFontDescriptor implements SVGDescriptor, SVGSyntax {
     public SVGFontDescriptor(String fontSize,
                              String fontWeight,
                              String fontStyle,
-                             String fontFamily){
+                             String fontFamily,
+                             Element def){
         if (fontSize == null ||
             fontWeight == null ||
             fontStyle == null ||
@@ -42,6 +46,7 @@ public class SVGFontDescriptor implements SVGDescriptor, SVGSyntax {
         this.fontWeight = fontWeight;
         this.fontStyle = fontStyle;
         this.fontFamily = fontFamily;
+        this.def = def;
     }
 
     public Map getAttributeMap(Map attrMap){
@@ -56,9 +61,16 @@ public class SVGFontDescriptor implements SVGDescriptor, SVGSyntax {
         return attrMap;
     }
 
+    public Element getDef(){
+        return def;
+    }
+
     public List getDefinitionSet(List defSet){
         if (defSet == null)
             defSet = new LinkedList();
+
+        if(def != null && !defSet.contains(def))
+            defSet.add(def);
 
         return defSet;
     }

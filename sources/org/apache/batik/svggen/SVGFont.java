@@ -12,6 +12,16 @@ import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 import java.awt.font.TextAttribute;
+import java.awt.font.GlyphVector;
+import java.awt.font.GlyphMetrics;
+import java.awt.font.LineMetrics;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
+import java.awt.Shape;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 
@@ -120,6 +130,61 @@ public class SVGFont extends AbstractSVGConverter {
     }
 
     /**
+     * The common font size to use when generating all SVG fonts.
+     */
+    static final int COMMON_FONT_SIZE = 100;
+
+    /**
+     * Used to keep track of which characters have been rendered by each font
+     * used.
+     */
+    static Map fontStringMap = new HashMap();
+
+    /**
+     * @param generatorContext used to build Elements
+     */
+    public SVGFont(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
+        fontStringMap = new HashMap();
+    }
+
+    /**
+     * Records that the specified font has been used to draw the text string.
+     * This is so we can keep track of which glyphs are required for each
+     * SVG font that is generated.
+     */
+    public static void recordFontUsage(String string, Font font) {
+
+        Font commonSizeFont = createCommonSizeFont(font);
+        String fontKey = commonSizeFont.getFamily() + commonSizeFont.getStyle();
+        String textUsingFont = (String)fontStringMap.get(fontKey);
+        if (textUsingFont == null) {
+            // font has not been used before
+            textUsingFont = "";
+        }
+        // append any new characters to textUsingFont
+        char ch;
+        for (int i = 0; i < string.length(); i++) {
+            ch = string.charAt(i);
+            if (textUsingFont.indexOf(ch) == -1) {
+                textUsingFont += ch;
+            }
+        }
+        fontStringMap.put(fontKey, textUsingFont);
+    }
+
+    /**
+     * Creates a new Font that is of the common font size used for generating
+     * SVG fonts. The new Font will be the same as the specified font, with
+     * only its size attribute modified.
+     */
+    private static Font createCommonSizeFont(Font font) {
+        HashMap attributes = new HashMap(font.getAttributes());
+        attributes.put(TextAttribute.SIZE, new Float(COMMON_FONT_SIZE));
+        return new Font(attributes);
+    }
+
+    /**
      * Converts part or all of the input GraphicContext into
      * a set of attribute/value pairs and related definitions
      *
@@ -130,21 +195,184 @@ public class SVGFont extends AbstractSVGConverter {
      * @see org.apache.batik.svggen.SVGDescriptor
      */
     public SVGDescriptor toSVG(GraphicContext gc) {
-        return toSVG(gc.getFont());
+        return toSVG(gc.getFont(), gc.getFontRenderContext());
     }
 
     /**
      * @param font Font object which should be converted to a set
      *        of SVG attributes
+     * @param frc The FontRenderContext which will be used to generate glyph
+     * elements for the SVGFont definition element
      * @return description of attribute values that describe the font
      */
-    public static SVGFontDescriptor toSVG(Font font) {
+    public SVGFontDescriptor toSVG(Font font, FontRenderContext frc) {
+
         String fontSize = "" + font.getSize();
         String fontWeight = weightToSVG(font);
         String fontStyle = styleToSVG(font);
         String fontFamilyStr = familyToSVG(font);
-        return new SVGFontDescriptor(fontSize, fontWeight,
-                                     fontStyle, fontFamilyStr);
+
+        Font commonSizeFont = createCommonSizeFont(font);
+        String fontKey = commonSizeFont.getFamily() + commonSizeFont.getStyle();
+
+        String textUsingFont = (String)fontStringMap.get(fontKey);
+
+        if (textUsingFont == null) {
+            // this font hasn't been used by any text yet,
+            // so don't create an SVG Font element for it
+            return new SVGFontDescriptor(fontSize, fontWeight,
+                                         fontStyle, fontFamilyStr,
+                                         null);
+        }
+
+        Document domFactory = generatorContext.domFactory;
+
+        // see if a description already exists for this font
+        SVGFontDescriptor fontDesc =
+            (SVGFontDescriptor)descMap.get(fontKey);
+
+        Element fontDef;
+
+        if (fontDesc != null) {
+
+            // use the SVG Font element that has already been created
+            fontDef = fontDesc.getDef();
+
+        } else {
+
+            // create a new SVG Font element
+            fontDef = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                 SVG_FONT_TAG);
+
+            //
+            // create the font-face element
+            //
+            Element fontFace = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                          SVG_FONT_FACE_TAG);
+            String svgFontFamilyString = fontFamilyStr;
+            if (fontFamilyStr.startsWith("'") && fontFamilyStr.endsWith("'")) {
+                // get rid of the quotes
+                svgFontFamilyString
+                    = fontFamilyStr.substring(1, fontFamilyStr.length()-1);
+            }
+            fontFace.setAttributeNS(null, SVG_FONT_FAMILY_ATTRIBUTE,
+                                    svgFontFamilyString);
+            fontFace.setAttributeNS(null, SVG_FONT_WEIGHT_ATTRIBUTE,
+                                    fontWeight);
+            fontFace.setAttributeNS(null, SVG_FONT_STYLE_ATTRIBUTE,
+                                    fontStyle);
+            fontFace.setAttributeNS(null, SVG_UNITS_PER_EM_ATTRIBUTE,
+                                    ""+COMMON_FONT_SIZE);
+            fontDef.appendChild(fontFace);
+
+            //
+            // create missing glyph element
+            //
+            Element missingGlyphElement
+                = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                             SVG_MISSING_GLYPH_TAG);
+
+            int missingGlyphCode[] = new int[1];
+            missingGlyphCode[0] = commonSizeFont.getMissingGlyphCode();
+            GlyphVector gv = commonSizeFont.createGlyphVector(frc, missingGlyphCode);
+            Shape missingGlyphShape = gv.getGlyphOutline(0);
+            GlyphMetrics gm = gv.getGlyphMetrics(0);
+
+            // need to turn the missing glyph upside down to be in the font
+            // coordinate system (i.e Y axis up)
+            AffineTransform at = AffineTransform.getScaleInstance(1, -1);
+            missingGlyphShape = at.createTransformedShape(missingGlyphShape);
+
+            missingGlyphElement.setAttributeNS(null, SVG_D_ATTRIBUTE,
+                                    SVGPath.toSVGPathData(missingGlyphShape));
+            missingGlyphElement.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE,
+                                               "" + gm.getAdvance());
+            fontDef.appendChild(missingGlyphElement);
+
+            // set the font's default horizontal advance to be the same as
+            // the missing glyph
+            fontDef.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE,  "" + gm.getAdvance());
+
+            // set the ascent and descent attributes
+            LineMetrics lm = commonSizeFont.getLineMetrics("By", frc);
+            fontFace.setAttributeNS(null, SVG_ASCENT_ATTRIBUTE, "" + lm.getAscent());
+            fontFace.setAttributeNS(null, SVG_DESCENT_ATTRIBUTE, "" + lm.getDescent());
+
+            //
+            // Font ID
+            //
+            fontDef.setAttributeNS(null, ATTR_ID,
+                                   generatorContext.idGenerator.
+                                   generateID(ID_PREFIX_FONT));
+        }
+
+        //
+        // add any new glyphs to the fontDef here
+        //
+
+        // process the characters in textUsingFont backwards since the new chars
+        // are at the end, can stop when find a char that already has a glyph
+        for (int i = textUsingFont.length()-1; i >= 0; i--) {
+            char c = textUsingFont.charAt(i);
+            boolean foundGlyph = false;
+            NodeList fontChildren = fontDef.getChildNodes();
+            for (int j = 0; j < fontChildren.getLength(); j++) {
+                if (fontChildren.item(j) instanceof Element) {
+                    Element childElement = (Element)fontChildren.item(j);
+                    if (childElement.getAttributeNS(null,
+                            SVG_UNICODE_ATTRIBUTE).equals(""+c)) {
+                        foundGlyph = true;
+                        break;
+                    }
+                }
+            }
+            if (!foundGlyph) {
+                // need to create one
+                Element glyphElement
+                    = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                 SVG_GLYPH_TAG);
+
+                GlyphVector gv = commonSizeFont.createGlyphVector(frc, ""+c);
+                Shape glyphShape = gv.getGlyphOutline(0);
+                GlyphMetrics gm = gv.getGlyphMetrics(0);
+
+                // need to turn the glyph upside down to be in the font
+                // coordinate system (i.e Y axis up)
+                AffineTransform at = AffineTransform.getScaleInstance(1, -1);
+                glyphShape = at.createTransformedShape(glyphShape);
+
+                glyphElement.setAttributeNS(null, SVG_D_ATTRIBUTE,
+                                            SVGPath.toSVGPathData(glyphShape));
+                glyphElement.setAttributeNS(null, SVG_HORIZ_ADV_X_ATTRIBUTE,
+                                            "" + gm.getAdvance());
+                glyphElement.setAttributeNS(null, SVG_UNICODE_ATTRIBUTE,
+                                            "" + c);
+
+                fontDef.appendChild(glyphElement);
+            } else {
+                // have reached the chars in textUsingFont that already
+                // have glyphs, don't need to process any further
+                break;
+            }
+        }
+
+        //
+        // create a new font description for this instance of the font usage
+        //
+        SVGFontDescriptor newFontDesc
+            = new SVGFontDescriptor(fontSize, fontWeight,
+                                    fontStyle, fontFamilyStr,
+                                    fontDef);
+
+        //
+        // Update maps so that the font def can be reused if needed
+        //
+        if (fontDesc == null) {
+            descMap.put(fontKey, newFontDesc);
+            defSet.add(fontDef);
+        }
+
+        return newFontDesc;
     }
 
     /**
