@@ -46,7 +46,7 @@
     <!-- ======================= -->
     <!-- Tutorials               -->
     <!-- ======================= -->
-    <page id="rasterizerTutorial" label="Image Transcoder Tutorial" source="rasterizerTutorial.xml"/>
+    <page id="rasterizerTutorial" label="Transcoder API" source="rasterizerTutorial.xml"/>
     <separator />
 
     <!-- ======================= -->

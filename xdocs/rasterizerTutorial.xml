@@ -269,11 +269,111 @@ determine which part of the SVG document has to be rendered - then
 that part could be zoom in or out depending on the specified raster
 image size.
 </p>
-
+<p>
+<strong>Try this:</strong>
+</p>
+<ol>
+<li>Compile and run the program: TileProducer.java. You will need the "anne.svg" document.<br />
+<code>% java TileProducder</code></li>
+<li>Take a look at: tileTopRight.jpg, tileTopRight.jpg, tileBottomRight.jpg
+ and tileBottomLeft.jpg</li>
+</ol>
 </s2>
 
 <s2 title="Generating an Image from a SVG DOM Tree">
+<p>
+The following code creates and saves a SVG DOM tree.
+</p>
+<source>
+import java.io.*;
+import org.apache.batik.transcoder.image.JPEGTranscoder;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.DOMImplementation;
 
+public class DOMRasterizer {
+
+    public Document createDocument() {
+        <strong>DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+        String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+        Document document =
+            impl.createDocument(svgNS, "svg", null);
+        Element root = document.getDocumentElement();</strong>
+        root.setAttributeNS(null, "width", "450");
+        root.setAttributeNS(null, "height", "500");
+
+        Element e;
+        e = document.createElementNS(svgNS, "rect");
+        e.setAttributeNS(null, "x", "10");
+        e.setAttributeNS(null, "y", "10");
+        e.setAttributeNS(null, "width", "200");
+        e.setAttributeNS(null, "height", "300");
+        e.setAttributeNS(null, "style", "fill:red;stroke:black;stroke-width:4");
+        root.appendChild(e);
+
+        e = document.createElementNS(svgNS, "circle");
+        e.setAttributeNS(null, "cx", "225");
+        e.setAttributeNS(null, "cy", "250");
+        e.setAttributeNS(null, "r", "100");
+        e.setAttributeNS(null, "style", "fill:green;fill-opacity:.5");
+        root.appendChild(e);
+
+        return document;
+    }
+
+    public void save(Document document) throws Exception {
+        JPEGTranscoder t = new JPEGTranscoder();
+        t.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,
+                             new Float(.8));
+        <strong>TranscoderInput input = new TranscoderInput(document);</strong>
+        OutputStream ostream = new FileOutputStream("out.jpg");
+        TranscoderOutput output = new TranscoderOutput(ostream);
+        t.transcode(input, output);
+        ostream.flush();
+        ostream.close();
+    }
+
+    public static void main(String [] args) throws Exception {
+        DOMRasterizer rasterizer = new DOMRasterizer();
+        Document document = rasterizer.createDocument();
+        rasterizer.save(document);
+        System.exit(0);
+    }
+}
+</source>
+<p>
+This code is divided into two distinct parts. 
+</p>
+<dl>
+<dt>Creating a SVG DOM tree</dt>
+<dd>
+<br />See the <code>createDocument</code> method<br /> Three steps are
+required at this time. The first one consists on getting the Batik SVG
+DOM implementation (via the SVGDOMImplementation class). Then, you can
+create a <code>org.w3c.dom.Document</code> (which is a SVG Document by
+the way) by invoking the <code>createDocument</code> method with the
+svg namespace URI and the "svg" document element. At last, you can get
+the document element and start to build your DOM tree.  <br /><br />
+</dd>
+<dt>Rasterizing your DOM</dt>
+<dd>
+<br />See the <code>save</code> method<br /> Similar to the previous
+examples, you can transcode a SVG document to a raster image by
+creating a <code>TransocderInput</code> with this time, the SVG Document.
+<br /><br />
+</dd>
+</dl>
+<p>
+<strong>Try this:</strong>
+</p>
+<ol>
+<li>Compile and run the program: DOMRasterizer.java.<br />
+<code>% java DOMRasterizer</code></li>
+<li>Take a look at: out.jpg</li>
+</ol>
 </s2>
 
 </s1>

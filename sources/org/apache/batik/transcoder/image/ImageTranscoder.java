@@ -22,7 +22,6 @@ import java.awt.image.BufferedImage;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
@@ -86,8 +85,6 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * Constructs a new <tt>ImageTranscoder</tt>.
      */
     protected ImageTranscoder() {
-        CSSDocumentHandler.setParserClassName(
-            "org.apache.batik.css.parser.Parser");
         hints.put(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
                   SVGConstants.SVG_NAMESPACE_URI);
         hints.put(KEY_DOCUMENT_ELEMENT,
