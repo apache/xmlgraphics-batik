@@ -124,6 +124,8 @@ public class SVGRadialGradientElementBridge
                                              SVG_R_ATTRIBUTE,
                                              coordSystemType,
                                              uctx);
+	// A value of zero will cause the area to be painted as a single color
+	// using the color and opacity of the last gradient stop.
         if (r == 0) {
             return colors[colors.length-1];
         } else {

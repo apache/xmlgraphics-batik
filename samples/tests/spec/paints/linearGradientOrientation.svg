@@ -27,7 +27,7 @@
     <!-- ============================================================= -->
     <g id="testContent">
     <text x="225" y="50" class="title">Linear Gradient Orientation</text>
-
+<g transform="translate(0 -30)">
 <!-- ############################### -->
 <g id="board" style="fill:none; stroke:black;">
 
@@ -53,6 +53,10 @@
 		<rect x="75" y="120" width="150" height="50" />
 		<rect x="225" y="120" width="150" height="50" />
 	</g>
+	<g transform="translate(75 340)">
+		<rect x="75" y="100" width="150" height="20" style="fill:#eee"/>
+		<rect x="75" y="120" width="150" height="50" />
+	</g>
 	<g style="stroke:none; fill:black; text-anchor:middle; font-size:12">
 		<text x="150" y="114">x1 &lt; x2 / y1 = y2</text>
 		<text x="300" y="114">x1 > x2 / y1 = y2</text>
@@ -68,6 +72,9 @@
 		<g transform="translate(0 260)">
 			<text x="150" y="114">x1 > x2 / y1 &lt; y2</text>
 			<text x="300" y="114">x1 > x2 / y1 > y2</text>
+		</g>
+		<g transform="translate(75 340)">
+			<text x="150" y="114">x1 = x2 = y1 = y2</text>
 		</g>
 	</g>
 </g>
@@ -103,6 +110,11 @@
 			xlink:href="#genericGrad" />
 	<linearGradient id="grad8" x1="1" y1="1" x2="0" y2="0"
 			xlink:href="#genericGrad" />
+
+	<!-- ### fifth board ### -->
+	<linearGradient id="grad9" x1=".5" y1=".5" x2=".5" y2=".5"
+			xlink:href="#genericGrad" />
+
 </defs>
 
 
@@ -124,6 +136,11 @@
 	<rect x="235" y="130" width="130" height="30" fill="url(#grad8)"/>
 </g>
 
+<g transform="translate(75 340)">
+	<rect x="85" y="130" width="130" height="30" fill="url(#grad9)"/>
+</g>
+
+    </g>
     </g>
 
     <!-- ============================================================= -->
