@@ -68,8 +68,10 @@
       <p>This page discusses the following Batik installation issues:</p>
       <ul>
         <li><link href="#systemRequirements">System requirements</link></li>
-        <li><link href="#distributions">Choosing a distribution to download</link></li>
+        <li><link href="#distributions"
+            >Choosing a distribution to download</link></li>
         <li><link href="#optionalComponents">Optional components</link></li>
+        <li><link href="#jarFiles">Jar file dependencies</link></li>
         <li><link href="#verify">Verifying a distribution</link></li>
       </ul>
     </s1>

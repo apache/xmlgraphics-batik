@@ -62,11 +62,14 @@ function Card(doc, value, suite, deck, faceup) {
   this.suite = suite;
   this.deck  = deck;
   
-  this.elem = doc.createElementNS(svgns, "svg");
-  this.elem.setAttribute("x", "0");
-  this.elem.setAttribute("y", "0");
-  this.elem.setAttribute("width", "100");
-  this.elem.setAttribute("height", "100");
+  this.elem = doc.createElementNS(svgns, "g");
+  this.svg = doc.createElementNS(svgns, "svg");
+  this.svg.setAttribute("x", "0");
+  this.svg.setAttribute("y", "0");
+  this.svg.setAttribute("width", "100");
+  this.svg.setAttribute("height", "100");
+  this.elem.appendChild(this.svg);
+
   var id;
   switch(suite) {
   case SUITE_DIAMOND: id = "d"; break;
@@ -89,14 +92,14 @@ function Card(doc, value, suite, deck, faceup) {
   this.card.setAttribute("y", "0");
   this.card.setAttribute("width", "100%");
   this.card.setAttribute("height", "100%");
-  this.elem.appendChild(this.card);
+  this.svg.appendChild(this.card);
   this.rect = doc.createElementNS(svgns, "rect");
   this.rect.setAttribute("x", "0");
   this.rect.setAttribute("y", "0");
   this.rect.setAttribute("width", "100%");
   this.rect.setAttribute("height", "100%");
   this.rect.setAttribute("style", "visibility:hidden; pointer-events:fill");
-  this.elem.appendChild(this.rect);
+  this.svg.appendChild(this.rect);
   
   return this;
 }
@@ -159,15 +162,14 @@ Card.prototype.asString = function() {
 Card.prototype.setPos = function(x, y) {
   this.x = x;
   this.y = y;
-  this.elem.setAttribute("x", ""+x);
-  this.elem.setAttribute("y", ""+y);
+  this.elem.setAttribute("transform", "translate("+x+","+y+")");
 }
 
 Card.prototype.setSize = function(w, h) {
   this.w = w;
   this.h = h;
-  this.elem.setAttribute("width",  ""+w);
-  this.elem.setAttribute("height", ""+h);
+  this.svg.setAttribute("width",  ""+w);
+  this.svg.setAttribute("height", ""+h);
 }
 
 Card.prototype.moveTo = function(x, y, step) {

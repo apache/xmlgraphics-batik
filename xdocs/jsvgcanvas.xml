@@ -65,9 +65,9 @@ in visual application builders.
 
 <p>
 
-<em>Note:</em> If you try this example, do not forget to set your classpath so
-that it contains the Batik classes and resources, and Crimson (lib/crimson-parser.jar).
-
+<em>Note:</em> If you try this example, do not forget to set your
+classpath so that it contains the Batik classes and resources, as well
+as Xerces (lib/xerces_2_5_0.jar) and the XML API's jar (lib/xml-apis.jar).
 </p>
 
 <source>
