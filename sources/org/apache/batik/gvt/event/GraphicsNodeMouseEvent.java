@@ -22,33 +22,52 @@ import org.apache.batik.gvt.GraphicsNode;
 public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
 
     /**
-     * The id for the "mouseClicked" event.
+     * The first number in the range of ids used for composite events.
      */
-    public static final int MOUSE_CLICKED = MouseEvent.MOUSE_CLICKED;
+    static final int MOUSE_FIRST = 500;
+
     /**
-     * The id for the "mousePressed" event.
+     * The id for the "mouseClicked" event. This MouseEvent occurs when a mouse
+     * button is pressed and released.
      */
-    public static final int MOUSE_PRESSED = MouseEvent.MOUSE_PRESSED;
+    public static final int MOUSE_CLICKED = MOUSE_FIRST;
+
     /**
-     * The id for the "mouseReleased" event.
+     * The id for the "mousePressed" event. This MouseEvent occurs when a mouse
+     * button is pushed down.
      */
-    public static final int MOUSE_RELEASED = MouseEvent.MOUSE_RELEASED;
+    public static final int MOUSE_PRESSED = MOUSE_FIRST + 1;
+
     /**
-     * The id for the "mouseEntered" event.
+     * The id for the "mouseReleased" event. This MouseEvent occurs when a mouse
+     * button is let up.
      */
-    public static final int MOUSE_ENTERED = MouseEvent.MOUSE_ENTERED;
+    public static final int MOUSE_RELEASED = MOUSE_FIRST + 2;
+
     /**
-     * The id for the "mouseExited" event.
+     * The id for the "mouseMoved" event. This MouseMotionEvent occurs
+     * when the mouse position changes.
      */
-    public static final int MOUSE_EXITED = MouseEvent.MOUSE_EXITED;
+    public static final int MOUSE_MOVED = MOUSE_FIRST + 3;
+
     /**
-     * The id for the "mouseDragged" event.
+     * The id for the "mouseEntered" event. This MouseEvent occurs
+     * when the mouse cursor enters a graphics node's area.
      */
-    public static final int MOUSE_DRAGGED = MouseEvent.MOUSE_DRAGGED;
+    public static final int MOUSE_ENTERED = MOUSE_FIRST + 4;
+
     /**
-     * The id for the "mouseMoved" event.
+     * The id for the "mouseExited" event. This MouseEvent occurs when
+     * the mouse cursor leaves a graphics node's area.
      */
-    public static final int MOUSE_MOVED = MouseEvent.MOUSE_MOVED;
+    public static final int MOUSE_EXITED = MOUSE_FIRST + 5;
+
+    /**
+     * The id for the "mouseDragged" event. This MouseEvent
+     * occurs when the mouse position changes while the "drag"
+     * modifier is active (for example, the shift key).
+     */
+    public static final int MOUSE_DRAGGED = MOUSE_FIRST + 6;
 
     /**
      * The graphics node mouse events x coordinate.

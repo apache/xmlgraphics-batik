@@ -21,16 +21,22 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 public class CompositeGraphicsNodeEvent extends GraphicsNodeEvent {
 
     /**
+     * The first number in the range of ids used for composite events.
+     */
+    static final int COMPOSITE_FIRST = 100;
+
+    /**
      * The id for the "graphicsNodeAdded" event.
      */
-    public static final int GRAPHICS_NODE_ADDED = 0;
+    public static final int GRAPHICS_NODE_ADDED = COMPOSITE_FIRST;
+
     /**
      * The id for the "graphicsNodeRemoved" event.
      */
-    public static final int GRAPHICS_NODE_REMOVED = 1;
+    public static final int GRAPHICS_NODE_REMOVED = COMPOSITE_FIRST+1;
 
     /** The graphics node that was added or removed. */
-    protected GraphicsNode child;
+    GraphicsNode child;
 
     /**
      * Constructs a new composite graphics node.
