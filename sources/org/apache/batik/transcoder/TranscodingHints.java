@@ -83,7 +83,7 @@ public class TranscodingHints extends HashMap {
     public Object put(Object key, Object value) {
         if (!((Key) key).isCompatibleValue(value)) {
             throw new IllegalArgumentException(value+
-                                               " incompatible with"+
+                                               " incompatible with "+
                                                key);
         }
         return super.put(key, value);

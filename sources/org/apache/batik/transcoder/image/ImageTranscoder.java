@@ -18,6 +18,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
@@ -112,31 +113,19 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         DefaultSVGContext svgCtx = new DefaultSVGContext();
         svgCtx.setPixelToMM(userAgent.getPixelToMM());
         ((SVGOMDocument)document).setSVGContext(svgCtx);
-
-        // get the width and height attributes of the SVG document
-        int docWidth = (int)root.getWidth().getBaseVal().getValue();
-        int docHeight = (int)root.getHeight().getBaseVal().getValue();
-        // get transcoding hints
-        Paint bgcolor = null;
-        if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
-            bgcolor = (Paint)hints.get(KEY_BACKGROUND_COLOR);
-        }
-        int imgWidth = -1;
-        if (hints.containsKey(KEY_WIDTH)) {
-            imgWidth = ((Integer)hints.get(KEY_WIDTH)).intValue();
-        }
-        int imgHeight = -1;
-        if (hints.containsKey(KEY_HEIGHT)) {
-            imgHeight = ((Integer)hints.get(KEY_HEIGHT)).intValue();
-        }
-        Rectangle aoi;
-        if (hints.containsKey(KEY_AOI)) {
-            aoi = (Rectangle)hints.get(KEY_AOI);
-        } else {
-            aoi = new Rectangle(0, 0, docWidth, docHeight);
-        }
+        // get the 'width' and 'height' attributes of the SVG document
+        float docWidth = (int)root.getWidth().getBaseVal().getValue();
+        float docHeight = (int)root.getHeight().getBaseVal().getValue();
         // compute the image's width and height according the hints
-        int width, height;
+        float imgWidth = -1;
+        if (hints.containsKey(KEY_WIDTH)) {
+            imgWidth = ((Float)hints.get(KEY_WIDTH)).floatValue();
+        }
+        float imgHeight = -1;
+        if (hints.containsKey(KEY_HEIGHT)) {
+            imgHeight = ((Float)hints.get(KEY_HEIGHT)).floatValue();
+        }
+        float width, height;
         if (imgWidth > 0 && imgHeight > 0) {
             width = imgWidth;
             height = imgHeight;
@@ -150,25 +139,9 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             width = docWidth;
             height = docHeight;
         }
-
-        //
-        // Compute the zoom factor and position considering the image size
-        // and the aoi coordinates and dimension
-        //
-        //      [preserveAspectRatio]
-        //      [scale]
-        // Px = [translate]
-        //
-        // With:
-        //
-        // [preserveAspectRatio] : initial scale factor to fit image size
-        // [scale] : take into account the size of the aoi
-        // [translate] : take into account the (x, y) coordinates of the aoi
-        //
-
-        // preserve aspect ratio matrix
-        AffineTransform Px;
-        Px = SVGUtilities.getPreserveAspectRatioTransform(root, width, height);
+        // compute the preserveAspectRatio matrix
+        AffineTransform Px =
+            SVGUtilities.getPreserveAspectRatioTransform(root, width, height);
         if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
             // The document has no viewBox, we need to resize it by hand.
             // we want to keep the document size ratio
@@ -177,28 +150,37 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             float scale = dd/d;
             Px = AffineTransform.getScaleInstance(scale, scale);
         }
-        // aoi translation matrix
-        AffineTransform Mx =
-            AffineTransform.getTranslateInstance(-aoi.x, -aoi.y);
-        // aoi scale factor
-        float sx = (float)docWidth / aoi.width;
-        float sy = (float)docHeight / aoi.height;
-        Mx.preConcatenate(AffineTransform.getScaleInstance(sx, sy));
-
-        Px.concatenate(Mx);
-
+        // take the AOI into account if any
+        if (hints.containsKey(KEY_AOI)) {
+            Rectangle2D aoi = (Rectangle2D)hints.get(KEY_AOI);
+            // transform the AOI into the image's coordinate system
+            aoi = Px.createTransformedShape(aoi).getBounds2D();
+            AffineTransform Mx = new AffineTransform();
+            double sx = width / aoi.getWidth();
+            double sy = height / aoi.getHeight();
+            Mx.scale(sx, sy);
+            double tx = -aoi.getX();
+            double ty = -aoi.getY();
+            Mx.translate(tx, ty);
+            // take the AOI transformation matrix into account
+            // we apply first the preserveAspectRatio matrix
+            Px.preConcatenate(Mx);
+        }
         // build the GVT tree
         GVTBuilder builder = new ConcreteGVTBuilder();
         BridgeContext ctx = new DefaultBridgeContext(userAgent, svgDoc);
         GraphicsNode gvtRoot = builder.build(ctx, svgDoc);
         // prepare the image to be painted
-        BufferedImage img = createImage(width, height);
+        int w = (int)width;
+        int h = (int)height;
+        BufferedImage img = createImage(w, h);
         Graphics2D g2d = img.createGraphics();
-        g2d.setClip(0, 0, width, height);
-        if (bgcolor != null) {
+        g2d.setClip(0, 0, w, h);
+        if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
+            Paint bgcolor = (Paint)hints.get(KEY_BACKGROUND_COLOR);
             g2d.setComposite(AlphaComposite.Src);
             g2d.setPaint(bgcolor);
-            g2d.fillRect(0, 0, width, height);
+            g2d.fillRect(0, 0, w, h);
         }
         g2d.setComposite(AlphaComposite.SrcOver);
         // paint the SVG document using the bridge package
@@ -206,7 +188,10 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         renderer.setTransform(Px);
         renderer.setTree(gvtRoot);
         try {
-            renderer.repaint(aoi);
+            // now we are sure that the aoi is the image size
+            Shape raoi = new Rectangle2D.Float(0, 0, width, height);
+            // Warning: the renderer's AOI must be in user space
+            renderer.repaint(Px.createInverse().createTransformedShape(raoi));
             writeImage(img, output);
         } catch (Exception ex) {
             throw new TranscoderException(ex);
@@ -380,7 +365,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * <TD VALIGN="TOP">KEY_WIDTH</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Integer</TD></TR>
+     * <TD VALIGN="TOP">Float</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
      * <TD VALIGN="TOP">The width of the top most svg element</TD></TR>
@@ -402,7 +387,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * <TD VALIGN="TOP">KEY_HEIGHT</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Integer</TD></TR>
+     * <TD VALIGN="TOP">Float</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
      * <TD VALIGN="TOP">The height of the top most svg element</TD></TR>
@@ -449,7 +434,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * <TD VALIGN="TOP">KEY_AOI</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
-     * <TD VALIGN="TOP">Rectangle</TD></TR>
+     * <TD VALIGN="TOP">Rectangle2D</TD></TR>
      * <TR>
      * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
      * <TD VALIGN="TOP">The document's size</TD></TR>
@@ -464,7 +449,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_AOI
-        = new RectangleKey(0);
+        = new Rectangle2DKey(0);
 
     /**
      * The language key.
@@ -569,7 +554,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             super(privatekey);
         }
         public boolean isCompatibleValue(Object v) {
-            return (v instanceof Integer);
+            return (v instanceof Float && ((Float)v).floatValue() > 0);
         }
     }
 
@@ -588,12 +573,12 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
     /**
      * A transcoding Key represented as a rectangle.
      */
-    private static class RectangleKey extends TranscodingHints.Key {
-        public RectangleKey(int privatekey) {
+    private static class Rectangle2DKey extends TranscodingHints.Key {
+        public Rectangle2DKey(int privatekey) {
             super(privatekey);
         }
         public boolean isCompatibleValue(Object v) {
-            return (v instanceof Rectangle);
+            return (v instanceof Rectangle2D);
         }
     }
 }
