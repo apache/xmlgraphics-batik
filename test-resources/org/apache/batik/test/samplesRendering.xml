@@ -498,6 +498,7 @@
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/variation/linkingTransform.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/variation-candidate/linkingTransform.png" />
     </test>
+
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/linkingViewBox.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/solaris/linkingViewBox.png" />
