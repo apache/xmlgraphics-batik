@@ -27,6 +27,9 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Rectangle;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
@@ -453,6 +456,10 @@ public class Main {
         
         g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
                                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+
+        Shape clip = new Rectangle(0, 0, 300, 400);
+        clip = new GeneralPath(clip);
+        g.setClip(clip);
 
         painter.paint(g);
         g.dispose();

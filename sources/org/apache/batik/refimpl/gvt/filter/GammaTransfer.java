@@ -47,7 +47,7 @@ public class GammaTransfer implements TransferFunction {
      * Three floats as the input for the Gamma function
      */
     public GammaTransfer(float amplitude, float exponent, float offset){
-        this.amplitude = exponent;
+        this.amplitude = amplitude;
         this.exponent = exponent;
         this.offset = offset;
     }

@@ -23,8 +23,6 @@ import org.w3c.dom.Document;
 public abstract class SVGGraphicObjectConverter implements SVGSyntax{
     public static final String ERROR_DOM_FACTORY_NULL = "domFactory should not be null";
 
-    public static final int DEFAULT_PRECISION = 10000;
-
     /**
      * Used by converters to create Elements and other DOM objects
      */
@@ -47,12 +45,6 @@ public abstract class SVGGraphicObjectConverter implements SVGSyntax{
      *         ".0" that a standard convertion gives.
      */
     public static String doubleString(double value){
-        return doubleString(value, DEFAULT_PRECISION);
-    }
-
-    public static String doubleString(double value, int precision){
-        value = Math.round(value*precision)/(double)precision;
-
         if(((int)value) == value)
             return Integer.toString((int)value);
         else
