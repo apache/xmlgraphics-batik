@@ -38,6 +38,7 @@ import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -280,6 +281,12 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                 gnb.buildGraphicsNode(gn, ctx, e);
                 gvtChildList.add(gn);
             } else if (childGVTNode != null) {
+                // we have to remove the graphics node if it has been added
+                gvtChildList.remove(childGVTNode);
+            }
+            throw new BuilderException(e, ex.getMessage());
+        } catch (DOMException ex) {
+            if (childGVTNode != null) {
                 // we have to remove the graphics node if it has been added
                 gvtChildList.remove(childGVTNode);
             }

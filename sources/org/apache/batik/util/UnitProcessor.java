@@ -96,7 +96,7 @@ public abstract class UnitProcessor {
         case CSSPrimitiveValue.CSS_PERCENTAGE:
             return percentagesToPixels(v, e, d, c);
         default:
-            throw new RuntimeException
+            throw new IllegalArgumentException
                 (Messages.formatMessage("invalid.css.unit",
                                         new Object[] { new Integer(t) }));
         }
@@ -137,7 +137,7 @@ public abstract class UnitProcessor {
         case SVGLength.SVG_LENGTHTYPE_PERCENTAGE:
             return percentagesToPixels(v, e, d, c);
         default:
-            throw new RuntimeException
+            throw new IllegalArgumentException
                 (Messages.formatMessage("invalid.svg.unit",
                                         new Object[] { new Integer(t) }));
         }
