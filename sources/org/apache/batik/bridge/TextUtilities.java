@@ -24,7 +24,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
  * @version $Id$
  */
-public abstract class TextUtilities implements CSSConstants {
+public abstract class TextUtilities implements CSSConstants, ErrorConstants {
 
     /**
      * Returns the float array that represents a set of horizontal
@@ -81,7 +81,7 @@ public abstract class TextUtilities implements CSSConstants {
             values.add
                 (new Float(UnitProcessor.svgVerticalCoordinateToUserSpace
                            (st.nextToken(), attrName, uctx)));
-            c++; 
+            c++;
         }
         float[] floats = new float[c];
         for (int i=0; i<c; ++i) {
@@ -89,6 +89,32 @@ public abstract class TextUtilities implements CSSConstants {
         }
         return floats;
     }
+
+
+    public static float[] svgRotateArrayToFloats(Element element,
+                                                 String attrName,
+                                                 String valueStr,
+                                                 BridgeContext ctx) {
+
+        StringTokenizer st = new StringTokenizer(valueStr, ", ", false);
+        float[] floats = new float[st.countTokens()];
+        int c = 0;
+        String s;
+        while (st.hasMoreTokens()) {
+            try {
+                s = st.nextToken();
+                floats[c] = (float)Math.toRadians(SVGUtilities.convertSVGNumber(s));
+                c++;
+            } catch (NumberFormatException ex) {
+                throw new BridgeException
+                    (element, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                     new Object [] {attrName, valueStr});
+            }
+        }
+        return floats;
+    }
+
+
 
     /**
      * Converts the font-size CSS value to a float value.

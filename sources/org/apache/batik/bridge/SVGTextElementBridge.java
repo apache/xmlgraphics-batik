@@ -47,6 +47,7 @@ import org.apache.batik.gvt.font.UnresolvedFontFamily;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
@@ -150,6 +151,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                   GraphicsNode node) {
         e.normalize();
         AttributedString as = buildAttributedString(ctx, e, node);
+        addGlyphPositionAttributes(as, e, ctx);
+
         ((TextNode)node).setAttributedCharacterIterator(as.getIterator());
 
         // 'filter'
@@ -341,11 +344,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                     as = createAttributedString(s, map, indexMap, preserve,
                                                 stripFirst, last && top);
                     if (as != null) {
-                        // NOTE: we get position attributes from the
-                        // surrounding text or tspan node, not the tref
-                        // link target
-                        addGlyphPositionAttributes
-                            (as, true, indexMap, ctx, nodeElement);
                         stripLast = !preserve &&
                             (as.getIterator().first() == ' ');
                         if (stripLast) {
@@ -372,10 +370,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                 as = createAttributedString
                     (s, m, indexMap, preserve, stripFirst, last && top);
                 if (as != null) {
-                    if (first) {
-                        addGlyphPositionAttributes
-                            (as, !top, indexMap, ctx, element);
-                    }
                     stripLast =
                         !preserve && (as.getIterator().first() == ' ');
                     if (stripLast && !result.isEmpty()) {
@@ -499,102 +493,147 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         return as;
     }
 
+    // returns true if node1 is an ancestor of node2
+    private boolean nodeAncestorOf(Node node1, Node node2) {
+        Node parent = node2.getParentNode();
+        while (parent != null && parent != node1) {
+            parent = parent.getParentNode();
+        }
+        if (parent == node1) {
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * Adds glyph position attributes to an AttributedString.
      */
     protected void addGlyphPositionAttributes(AttributedString as,
-                                              boolean isChild,
-                                              int[] indexMap,
-                                              BridgeContext ctx,
-                                              Element element) {
+                                              Element element,
+                                              BridgeContext ctx) {
 
-        UnitProcessor.Context uctx
-            = UnitProcessor.createContext(ctx, element);
+        // get all of the glyph position attribute values
+        String xAtt = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        String yAtt = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        String dxAtt = element.getAttributeNS(null, SVG_DX_ATTRIBUTE);
+        String dyAtt = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
+        String rotateAtt = element.getAttributeNS(null, SVG_ROTATE_ATTRIBUTE);
 
-        int asLength = as.getIterator().getEndIndex();
-        // AttributedStrings always start at index 0, we hope!
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
+        AttributedCharacterIterator aci = as.getIterator();
 
-        // glyph and sub-element positions
-        String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
-        if (s.length() != 0) {
-            float x[] = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
-                (element, SVG_X_ATTRIBUTE, s, ctx);
-
-            as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X,
-                            new Float(Float.NaN), 0, asLength);
-
-            if ((x.length > 1) || (isChild)) {
-                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT, Boolean.TRUE, 0, asLength);
+        // calculate which chars in the string belong to this element
+        int firstChar = 0;
+        for (int i = 0; i < aci.getEndIndex(); i++) {
+            aci.setIndex(i);
+            Element delimeter = (Element)aci.getAttribute(
+            GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+            if (delimeter == element || nodeAncestorOf(element, delimeter)) {
+                firstChar = i;
+                break;
             }
+        }
+        int lastChar = aci.getEndIndex()-1;
+        for (int i = aci.getEndIndex()-1; i >= 0; i--) {
+            aci.setIndex(i);
+            Element delimeter = (Element)aci.getAttribute(
+                GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+            if (delimeter == element || nodeAncestorOf(element, delimeter)) {
+                lastChar = i;
+                break;
+            }
+        }
 
-            for (int i=0; i<asLength; ++i) {
-                if (i < x.length) {
-                    as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X, new Float(x[i]), i, i+1);
+        // process the x attribute
+        if (xAtt.length() != 0) {
+            float x[] = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
+                        (element, SVG_X_ATTRIBUTE, xAtt, ctx);
+
+            for (int i = 0; i < x.length; i++) {
+                if (firstChar+i <= lastChar) {
+                    as.addAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.X,
+                         new Float(x[i]), firstChar+i, firstChar+i+1);
                 }
             }
         }
 
-        // parse the y attribute, (default is 0)
-        s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-
-        if (s.length() != 0) {
+       // process the y attribute
+        if (yAtt.length() != 0) {
             float y[] = TextUtilities.svgVerticalCoordinateArrayToUserSpace
-                (element, SVG_Y_ATTRIBUTE, s, ctx);
+                (element, SVG_Y_ATTRIBUTE, yAtt, ctx);
 
-            as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.Y,
-                            new Float(Float.NaN), 0, asLength);
-
-            if ((y.length > 1) || (isChild)) {
-                as.addAttribute
-                    (GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT, Boolean.TRUE, 0, asLength);
-            }
-
-            for (int i=0; i<asLength; ++i) {
-                if (i < y.length) {
+            for (int i = 0; i < y.length; i++) {
+                if (firstChar+i <= lastChar) {
                     as.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.Y,
-                         new Float(y[i]), i, i+1);
+                         new Float(y[i]), firstChar+i, firstChar+i+1);
                 }
             }
         }
 
-        s = element.getAttributeNS(null, SVG_DX_ATTRIBUTE);
-        if (s.length() != 0) {
-            float x[] = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
-                (element, SVG_DX_ATTRIBUTE, s, ctx);
+        // process dx attribute
+        if (dxAtt.length() != 0) {
+            float dx[] = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
+                (element, SVG_DX_ATTRIBUTE, dxAtt, ctx);
 
-            as.addAttribute
-                (GVTAttributedCharacterIterator.TextAttribute.DX,
-                 new Float(Float.NaN), 0, asLength);
-
-            for (int i=0; i<asLength; ++i) {
-                if (i < x.length) {
+            for (int i = 0; i < dx.length; i++) {
+                if (firstChar+i <= lastChar) {
                     as.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.DX,
-                         new Float(x[i]), i, i+1);
+                         new Float(dx[i]), firstChar+i, firstChar+i+1);
                 }
             }
         }
 
-        // parse the y attribute, (default is 0)
-        s = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
-        if (s.length() != 0) {
-            float y[] = TextUtilities.svgVerticalCoordinateArrayToUserSpace
-                (element, SVG_DY_ATTRIBUTE, s, ctx);
+        // process dy attribute
+        if (dyAtt.length() != 0) {
+            float dy[] = TextUtilities.svgVerticalCoordinateArrayToUserSpace
+                (element, SVG_DY_ATTRIBUTE, dyAtt, ctx);
 
-            as.addAttribute
-                (GVTAttributedCharacterIterator.TextAttribute.DY,
-                 new Float(Float.NaN), 0, asLength);
-
-            for (int i=0; i<asLength; ++i) {
-                if (i < y.length) {
+            for (int i = 0; i < dy.length; i++) {
+                if (firstChar+i <= lastChar) {
                     as.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.DY,
-                         new Float(y[i]), i, i+1);
+                         new Float(dy[i]), firstChar+i, firstChar+i+1);
                 }
+            }
+        }
+
+        // process rotate attribute
+        if (rotateAtt.length() != 0) {
+            float rotate[] = TextUtilities.svgRotateArrayToFloats
+                (element, SVG_ROTATE_ATTRIBUTE, rotateAtt, ctx);
+
+            if (rotate.length == 1) {  // not a list
+                // each char will have the same rotate value
+                as.addAttribute
+                    (GVTAttributedCharacterIterator.TextAttribute.ROTATION,
+                    new Float(rotate[0]), firstChar, lastChar+1);
+
+            } else {  // its a list
+                // set each rotate value from the list
+                for (int i = 0; i < rotate.length; i++) {
+                    if (firstChar+i <= lastChar) {
+                        as.addAttribute
+                            (GVTAttributedCharacterIterator.TextAttribute.ROTATION,
+                            new Float(rotate[i]), firstChar+i, firstChar+i+1);
+                    }
+                }
+            }
+        }
+
+        // do the same for each child element
+        NodeList children = element.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                addGlyphPositionAttributes(as, (Element)child, ctx);
             }
         }
     }
+
 
     /**
      * Returns the map to pass to the current characters.
