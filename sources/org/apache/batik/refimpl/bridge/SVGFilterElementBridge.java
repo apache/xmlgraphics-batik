@@ -99,9 +99,9 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
         float filterResolutionX = -1; // -1 means undefined
         if (filterResolution[0] != null) {
             filterResolutionX = filterResolution[0].floatValue();
-        }
-        if (filterResolutionX == 0) {
-            return null; // zero value disable rendering of the filtered element
+            if (filterResolutionX == 0) {
+                return null; // zero value disable rendering of the filter
+            }
         }
         if (filterResolutionX < 0) {
             // A negative value is an error
@@ -111,9 +111,9 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
         float filterResolutionY = filterResolutionX; // default is filterResX
         if (filterResolution[1] != null) {
             filterResolutionY = filterResolution[1].floatValue();
-        }
-        if (filterResolutionY == 0) {
-            return null; // zero value disable rendering of the filtered element
+            if (filterResolutionY == 0) {
+                return null; // zero value disable rendering of the filter
+            }
         }
         if (filterResolutionY < 0) {
             // A negative value is an error
