@@ -89,4 +89,10 @@ public interface Application {
      */
     boolean constrainScriptOrigin();
 
+    /**
+     * Returns true if resources origin should be constrained to
+     * be the same as the corresponding document's origin
+     */
+    boolean constrainExternalResourceOrigin();
+
 }

@@ -42,11 +42,6 @@ public class RhinoClassLoader extends URLClassLoader {
     protected CodeSource codeSource;
 
     /**
-     * The protection Domain for this class loader
-     */
-    protected ProtectionDomain rhinoProtectionDomain;
-
-    /**
      * The AccessControlContext which can be associated with 
      * code loaded by this class loader if it was running
      * stand-alone (i.e., not invoked by code with lesser
@@ -70,10 +65,10 @@ public class RhinoClassLoader extends URLClassLoader {
         // Create the Rhino ProtectionDomain
         // and AccessControlContext
         //
-        rhinoProtectionDomain 
+        ProtectionDomain rhinoProtectionDomain 
             = new ProtectionDomain(codeSource,
                                    getPermissions(codeSource));
-
+        
         rhinoAccessControlContext
             = new AccessControlContext(new ProtectionDomain[]{
                 rhinoProtectionDomain});
@@ -86,13 +81,6 @@ public class RhinoClassLoader extends URLClassLoader {
                              byte[] data){
         // System.out.println("========================== Trying to load : " + name);
         return super.defineClass(name, data, 0, data.length, codeSource);
-    }
-
-    /**
-     * Returns the ProtectionDomain to which Rhino code belongs
-     */
-    public ProtectionDomain getProtectionDomain(){
-        return rhinoProtectionDomain;
     }
 
     /**

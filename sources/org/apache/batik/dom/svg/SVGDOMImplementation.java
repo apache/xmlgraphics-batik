@@ -42,6 +42,7 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.css.sac.Parser;
+import org.w3c.css.sac.InputSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -137,7 +138,8 @@ public class SVGDOMImplementation
         CSSEngine result = new SVGCSSEngine(doc, doc.getURLObject(), ep, ctx);
         URL url = getClass().getResource("resources/UserAgentStyleSheet.css");
         if (url != null) {
-            result.setUserAgentStyleSheet(result.parseStyleSheet(url, "all"));
+            InputSource is = new InputSource(url.toString());
+            result.setUserAgentStyleSheet(result.parseStyleSheet(is, url, "all"));
         }
         doc.setCSSEngine(result);
         return result;

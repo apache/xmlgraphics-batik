@@ -109,6 +109,13 @@ public class DocumentLoader {
     }
 
     /**
+     * Returns the userAgent used by this DocumentLoader
+     */
+    public UserAgent getUserAgent(){
+        return userAgent;
+    }
+
+    /**
      * Disposes and releases all resources allocated by this document loader.
      */
     public void dispose() {

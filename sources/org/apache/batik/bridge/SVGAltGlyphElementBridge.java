@@ -65,7 +65,16 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
 
         // get the referenced element
         String uri = XLinkSupport.getXLinkHref(altGlyphElement);
-        Element refElement = ctx.getReferencedElement(altGlyphElement, uri);
+
+        Element refElement = null;
+
+        try {
+            refElement = ctx.getReferencedElement(altGlyphElement, uri);
+        } catch (BridgeException e) {
+            if (ERR_URI_UNSECURE.equals(e.getCode())) {
+                ctx.getUserAgent().displayError(e);
+            }
+        }
 
         if (refElement == null) {
             // couldn't find the referenced element
@@ -217,7 +226,12 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
                                                        glyphUri);
         } catch (BridgeException e) {
             // this is ok, it is possible that the glyph at the given
-            // uri is not available
+            // uri is not available. 
+
+            // Display an error message if a security exception occured
+            if (ERR_URI_UNSECURE.equals(e.getCode())) {
+                ctx.getUserAgent().displayError(e);
+            }
         }
 
         if (refGlyphElement == null

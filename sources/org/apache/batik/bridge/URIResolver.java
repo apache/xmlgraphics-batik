@@ -82,7 +82,7 @@ public class URIResolver {
      * @return The referenced Node/Document or null if element can't be found.
      */
     public Node getNode(String uri, Element ref)
-        throws MalformedURLException, IOException {
+        throws MalformedURLException, IOException, SecurityException {
 
         String baseURI = XMLBaseSupport.getCascadedXMLBase(ref);
         if ((baseURI == null) &&
@@ -102,7 +102,16 @@ public class URIResolver {
         }
 
         // uri is not a reference into this document, so load the 
-        // document it does reference.
+        // document it does reference after doing a security 
+        // check with the UserAgent
+        ParsedURL pDocURL = null;
+        if (documentURI != null) {
+            pDocURL = new ParsedURL(documentURI);
+        }
+
+        UserAgent userAgent = documentLoader.getUserAgent();
+        userAgent.checkLoadExternalResource(purl, pDocURL);
+        
         Document doc = documentLoader.loadDocument(purl.toString());
         if (frag != null)
             return doc.getElementById(frag);

@@ -35,6 +35,7 @@ import org.apache.batik.util.Service;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.css.sac.Parser;
+import org.w3c.css.sac.InputSource;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
@@ -175,15 +176,17 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
             }
         }
 
+        URL durl = doc.getURLObject();
         CSSEngine result = new SVGCSSEngine(doc,
-                                            doc.getURLObject(),
+                                            durl,
                                             ep,
                                             vms,
                                             sms,
                                             ctx);
         URL url = getClass().getResource("resources/UserAgentStyleSheet.css");
         if (url != null) {
-            result.setUserAgentStyleSheet(result.parseStyleSheet(url, "all"));
+            InputSource is = new InputSource(url.toString());
+            result.setUserAgentStyleSheet(result.parseStyleSheet(is, url, "all"));
         }
         doc.setCSSEngine(result);
         return result;

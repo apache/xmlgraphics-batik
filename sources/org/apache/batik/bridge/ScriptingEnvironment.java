@@ -258,7 +258,6 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             }
         }
 
-
         interpreter.bindObject(EVENT_NAME, evt);
         interpreter.bindObject(ALTERNATE_EVENT_NAME, evt);
             

@@ -80,8 +80,11 @@ import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
 import org.apache.batik.bridge.DefaultScriptSecurity;
+import org.apache.batik.bridge.DefaultExternalResourceSecurity;
 import org.apache.batik.bridge.NoLoadScriptSecurity;
 import org.apache.batik.bridge.RelaxedScriptSecurity;
+import org.apache.batik.bridge.ExternalResourceSecurity;
+import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
@@ -2188,6 +2191,86 @@ public class JSVGViewerFrame
                 }
             }
         }
+
+        /**
+         * This method throws a SecurityException if the script
+         * of given type, found at url and referenced from docURL
+         * should not be loaded.
+         * 
+         * This is a convenience method to call checkLoadScript
+         * on the ScriptSecurity strategy returned by 
+         * getScriptSecurity.
+         *
+         * @param scriptType type of script, as found in the 
+         *        type attribute of the &lt;script&gt; element.
+         * @param scriptURL url for the script, as defined in
+         *        the script's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public void checkLoadScript(String scriptType,
+                                    ParsedURL scriptURL,
+                                    ParsedURL docURL) throws SecurityException {
+            ScriptSecurity s = getScriptSecurity(scriptType,
+                                                 scriptURL,
+                                                 docURL);
+            if (s != null) {
+                s.checkLoadScript();
+            }
+        }
+
+        /**
+         * Returns the security settings for the given 
+         * resource url and document url
+         * 
+         * @param resourceURL url for the resource, as defined in
+         *        the resource's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        resource was found.
+         */
+        public ExternalResourceSecurity 
+            getExternalResourceSecurity(ParsedURL resourceURL,
+                                        ParsedURL docURL){
+            if (application.constrainExternalResourceOrigin()) {
+                return new DefaultExternalResourceSecurity(resourceURL, 
+                                                           docURL);
+            } else {
+                return new RelaxedExternalResourceSecurity(resourceURL,
+                                                           docURL);
+            }
+        }
+
+        /**
+         * This method throws a SecurityException if the resource
+         * found at url and referenced from docURL
+         * should not be loaded.
+         * 
+         * This is a convenience method to call checkLoadExternalResource
+         * on the ExternalResourceSecurity strategy returned by 
+         * getExternalResourceSecurity.
+         *
+         * @param scriptURL url for the script, as defined in
+         *        the script's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public void 
+            checkLoadExternalResource(ParsedURL resourceURL,
+                                      ParsedURL docURL) throws SecurityException {
+            ExternalResourceSecurity s 
+                =  getExternalResourceSecurity(resourceURL, docURL);
+            
+            if (s != null) {
+                s.checkLoadExternalResource();
+            }
+        }
+        
     }
 
     /**

@@ -10,6 +10,8 @@ package org.apache.batik.css.engine;
 
 import org.apache.batik.css.engine.value.Value;
 
+import org.apache.batik.util.ParsedURL;
+
 import org.w3c.dom.Element;
 
 /**
@@ -64,5 +66,20 @@ public interface CSSContext {
      * given element.
      */
     float getBlockHeight(Element elt);
+
+    /**
+     * This method should throw a SecurityException if the resource
+     * found at url and referenced from docURL should not be loaded.
+     * 
+     * @param scriptURL url for the script, as defined in
+     *        the script's xlink:href attribute. If that
+     *        attribute was empty, then this parameter should
+     *        be null
+     * @param docURL url for the document into which the 
+     *        script was found.
+     */
+    public void 
+        checkLoadExternalResource(ParsedURL resourceURL,
+                                  ParsedURL docURL) throws SecurityException;
 
 }

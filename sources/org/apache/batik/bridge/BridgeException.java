@@ -96,4 +96,11 @@ public class BridgeException extends RuntimeException {
         }
         return Messages.formatMessage(code, fullparams);
     }
+
+    /**
+     * Returns the exception's error code
+     */
+    public String getCode() {
+        return code;
+    }
 }
