@@ -117,9 +117,12 @@ public class StyleDeclaration {
         }
         for (int i = 0; i < count; i++) {
             if (indexes[i] == idx) {
-                // Replace existing property values...
-                values    [i] = v;
-                priorities[i] = prio;
+                // Replace existing property values, 
+                // unless they are important!
+                if (prio || (priorities[i] == prio)) {
+                    values    [i] = v;
+                    priorities[i] = prio;
+                }
                 return;
             }
         }

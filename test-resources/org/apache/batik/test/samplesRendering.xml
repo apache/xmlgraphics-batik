@@ -298,6 +298,7 @@
          <test id="samples/tests/spec/styling/cssMediaList.svg" />
          <test id="samples/tests/spec/styling/emptyStyle.svg" />
          <test id="samples/tests/spec/styling/fontShorthand.svg" />
+         <test id="samples/tests/spec/styling/important.svg" />
          <test id="samples/tests/spec/styling/smiley.svg" />
          <test id="samples/tests/spec/styling/styleElement.svg" />
 

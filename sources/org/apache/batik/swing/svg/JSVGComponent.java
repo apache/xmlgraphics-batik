@@ -203,16 +203,29 @@ public class JSVGComponent extends JGVTComponent {
 
     /**
      * Means that all document must be considered as dynamic.
+     *
+     * Indicates that all DOM listeners should be registered. This supports
+     * 'interactivity' (anchors and cursors), as well as DOM modifications
+     * listeners to update the GVT rendering tree.
      */
     public final static int ALWAYS_DYNAMIC = 1; 
 
     /**
      * Means that all document must be considered as static.
+     *
+     * Indicates that no DOM listeners should be registered.
+     * In this case the generated GVT tree should be totally
+     * independent of the DOM tree (in practice text holds
+     * references to the source text elements for font resolution).
      */
     public final static int ALWAYS_STATIC = 2;
 
     /**
      * Means that all document must be considered as interactive.
+     *
+     * Indicates that DOM listeners should be registered to support,
+     * 'interactivity' this includes anchors and cursors, but does not
+     * include support for DOM modifications.
      */
     public final static int ALWAYS_INTERACTIVE = 3;
 
