@@ -929,15 +929,11 @@ public class CSSUtilities implements SVGConstants {
 
     // This is a bit of a hack but we set the flood bounds to
     // -floatmax/2 -> floatmax/2 (should cover the area ok).
-    static FilterRegion infiniteFilterRegion = new FilterRegion() {
-            public Rectangle2D getRegion() {
-                return new Rectangle2D.Float(-Float.MAX_VALUE/2,
-                                             -Float.MAX_VALUE/2,
-                                             Float.MAX_VALUE,
-                                             Float.MAX_VALUE);
-            }
-        };
-
+    static Rectangle2D infiniteFilterRegion 
+        = new Rectangle2D.Float(-Float.MAX_VALUE/2,
+                                -Float.MAX_VALUE/2,
+                                Float.MAX_VALUE,
+                                Float.MAX_VALUE);
     /**
      * Converts the input value to a ratio. If the input value ends
      * with a % character, it is considered a percentage. Otherwise,

@@ -9,7 +9,7 @@
 package org.apache.batik.gvt.filter;
 
 import java.awt.Paint;
-import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Fills the input image with a given paint
@@ -35,12 +35,12 @@ public interface FloodRable extends Filter {
      * Sets the flood region
      * @param floodRegion region to flood with floodPaint
      */
-    public void setFloodRegion(FilterRegion floodRegion);
+    public void setFloodRegion(Rectangle2D floodRegion);
     
     /**
      * Get the flood region
      */
-     public FilterRegion getFloodRegion();
+     public Rectangle2D getFloodRegion();
 }
 
 

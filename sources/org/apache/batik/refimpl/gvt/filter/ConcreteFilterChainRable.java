@@ -17,7 +17,6 @@ import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.FilterChainRable;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadRable;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.FilterResRable;
 import org.apache.batik.gvt.filter.PadMode;
 
@@ -71,12 +70,12 @@ public class ConcreteFilterChainRable extends AbstractRable
     /**
      * Filter region
      */
-    private FilterRegion filterRegion;
+    private Rectangle2D filterRegion;
 
     /**
      * Default constructor.
      */
-    public ConcreteFilterChainRable(Filter source, FilterRegion filterRegion){
+    public ConcreteFilterChainRable(Filter source, Rectangle2D filterRegion){
         if(source == null){
             throw new IllegalArgumentException();
         }
@@ -86,7 +85,7 @@ public class ConcreteFilterChainRable extends AbstractRable
 
         // Build crop with chain source and dummy region (will be lazily evaluated
         // later on).
-        Rectangle2D padRect = new Rectangle2D.Float(0, 0, 0, 0);
+        Rectangle2D padRect = (Rectangle2D)filterRegion.clone();
         crop = new ConcretePadRable(source, padRect, 
                                     PadMode.ZERO_PAD);
 
@@ -175,16 +174,18 @@ public class ConcreteFilterChainRable extends AbstractRable
      * Sets the filter output area, in user space. 
      * A null value is illegal.
      */
-    public void setFilterRegion(FilterRegion filterRegion){
+    public void setFilterRegion(Rectangle2D filterRegion){
         if(filterRegion == null){
             throw new IllegalArgumentException();
         }
+
+        this.filterRegion = filterRegion;
      }
 
     /**
      * Returns the filter output area, in user space
      */
-    public FilterRegion getFilterRegion(){
+    public Rectangle2D getFilterRegion(){
         return filterRegion;
     }
 
@@ -220,24 +221,10 @@ public class ConcreteFilterChainRable extends AbstractRable
      * Returns this filter's bounds
      */
     public Rectangle2D getBounds2D(){
-        return filterRegion.getRegion();
+        return (Rectangle2D)filterRegion.clone();
     }
 
     public RenderedImage createRendering(RenderContext context){
-        // Update crop region
-        crop.setPadRect(filterRegion.getRegion());
-
-        /**
-        AffineTransform usr2dev = context.getTransform();
-        if(usr2dev.getShearX() != 0 || 
-           usr2dev.getShearY() != 0){
-            Clip clip = new ConcreteClipRable(crop, 
-                                              filterRegion.getRegion());
-            return clip.createRendering(context);
-        }
-        else{
-            return crop.createRendering(context);
-            }*/
         return crop.createRendering(context);
     }
 }
