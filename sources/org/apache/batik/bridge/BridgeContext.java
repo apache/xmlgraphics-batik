@@ -51,6 +51,16 @@ public interface BridgeContext {
     UserAgent getUserAgent();
 
     /**
+     * Returns the GVT builder that is currently used to build the GVT tree.
+     */
+    GVTBuilder getGVTBuilder();
+
+    /**
+     * Sets the GVT builder used to build the GVT tree.
+     */
+    void setGVTBuilder(GVTBuilder gvtBuilder);
+
+    /**
      * Sets the User agent.
      */
     void setUserAgent(UserAgent ua);

@@ -18,6 +18,7 @@ import java.io.StringReader;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.MaskBridge;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
@@ -25,6 +26,7 @@ import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
+import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
@@ -44,9 +46,10 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * A factory for the &lt;mask&gt; SVG element.
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGMaskElementBridge 
+public class SVGMaskElementBridge
     implements MaskBridge, SVGConstants {
 
     /**
@@ -57,54 +60,60 @@ public class SVGMaskElementBridge
                            BridgeContext bridgeContext,
                            Element maskElement,
                            Element maskedElement) {
-        
+
         // Get the mask region
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(maskElement, 
+            = bridgeContext.getViewCSS().getComputedStyle(maskElement,
                                                           null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
-        
+
         FilterRegion maskRegion = SVGUtilities.convertMaskRegion(maskElement,
                                                                  maskedElement,
                                                                  maskedNode,
                                                                  uctx);
 
-        if(maskRegion == null){
+        if(maskRegion == null) {
             throw new Error();
-        }
-        else{
+        } else {
             System.out.println("Mask region : " + maskRegion);
         }
 
-        // 
+        //
         // <!> FIX ME. HOW SHOULD WE CREATE A GVT TREE THAT REPRESENTS
         //     THE MASK. THIS IS NOT CLEAN.
         //
 
-        org.apache.batik.bridge.GVTBuilder builder 
-            = new org.apache.batik.refimpl.bridge.ConcreteGVTBuilder();
+        GVTBuilder builder = bridgeContext.getGVTBuilder();
 
-        CompositeGraphicsNode maskNodeContent 
+        CompositeGraphicsNode maskNodeContent
             = bridgeContext.getGVTFactory().createCompositeGraphicsNode();
 
+        // get the transform on the maskElement and put it to the graphicsNode
+        AffineTransform at = AWTTransformProducer.createAffineTransform
+            (new StringReader(maskElement.getAttributeNS(null, ATTR_TRANSFORM)),
+             bridgeContext.getParserFactory());
+        maskNodeContent.setTransform(at);
+
+        // build the GVT tree that represents the mask
         for(Node child=maskElement.getFirstChild();
             child != null;
             child = child.getNextSibling()){
             if(child.getNodeType() == child.ELEMENT_NODE){
                 Element e = (Element)child;
-                GraphicsNode node 
+                GraphicsNode node
                     = builder.build(bridgeContext, e) ;
                 if(node != null){
                     maskNodeContent.getChildren().add(node);
                 }
             }
         }
-        
+
         // OTHER PROBLEM: SHOULD TAKE MASK REGION INTO ACCOUNT
         GraphicsNode maskNode = maskNodeContent;
+        maskNodeContent.setClippingArea(maskRegion.getRegion()); // ???
 
         // <!> END FIX ME
 
@@ -122,10 +131,9 @@ public class SVGMaskElementBridge
              filter = gnrFactory.createGraphicsNodeRable(maskedNode);
          }
 
-        if(maskRegion == null){
+        if (maskRegion == null){
             throw new Error();
-        }
-        else{
+        } else {
             System.out.println("Mask region 2 : " + maskRegion);
         }
 

@@ -222,7 +222,7 @@ public class JSVGCanvas
         = new BasicStroke(1, BasicStroke.CAP_SQUARE,
                           BasicStroke.JOIN_MITER,
                           10,
-                          new float[]{4, 4}, 0);
+                          new float[]{1, 3}, 0);
     /**
      * Creates a new SVG canvas.
      */
@@ -293,6 +293,7 @@ public class JSVGCanvas
         } else {
             BridgeContext bc = createBridgeContext(doc);
             bc.setViewCSS((ViewCSS)doc.getDocumentElement());
+            bc.setGVTBuilder(builder);
             gvtRoot = builder.build(bc, document);
             computeTransform();
         }
@@ -534,7 +535,7 @@ public class JSVGCanvas
          * The thread main method.
          */
         public void run() {
- 
+
             Dimension size = getSize();
 
             long t1 = System.currentTimeMillis();

@@ -736,16 +736,19 @@ public class ViewerFrame
                     (resources.getInteger("Thumbnail.width"),
                      resources.getInteger("Thumbnail.height"));
 
+                JPanel p;
+                /*
                 listeners.put("ThumbnailCloseButtonAction",
                               new CloseButtonAction());
                 JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
                 ButtonFactory bf = new ButtonFactory(bundle, ViewerFrame.this);
                 p.add(bf.createJButton("ThumbnailCloseButton"));
                 thumbnailFrame.getContentPane().add("South", p);
-
+                */
 
                 p = new JPanel(new BorderLayout());
                 thumbnailFrame.getContentPane().add(p);
+                /*
                 p.setBorder(BorderFactory.createCompoundBorder
                             (BorderFactory.createCompoundBorder
                              (BorderFactory.createTitledBorder
@@ -753,7 +756,7 @@ public class ViewerFrame
                                resources.getString("Thumbnail.border_title")),
                               BorderFactory.createEmptyBorder(5, 5, 5, 5)),
                              BorderFactory.createLoweredBevelBorder()));
-
+                             */
 
                 p.add("Center", canvas.getThumbnail());
 

@@ -58,7 +58,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         aci.first();
         /*
          * We iterate through the spans over extended attributes,
-         * instantiating TextLayout elements as we go, and 
+         * instantiating TextLayout elements as we go, and
          * accumulate an overall advance for the text display.
          */
         while (aci.current() != CharacterIterator.DONE) {
@@ -96,28 +96,29 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         /*
          * Adjust for Anchor (above), then
-         * we render each of the TextLayout glyphsets 
+         * we render each of the TextLayout glyphsets
          * in turn.
          */
         for (int i=0; i<textRuns.size(); ++i) {
             TextRun textRun = (TextRun) textRuns.get(i);
             AttributedCharacterIterator runaci = textRun.getACI();
             runaci.first();
+
+            textRun.getLayout().draw(g2d, x, 0f);
             Stroke stroke = (Stroke) runaci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.STROKE);
             Paint paint = (Paint) runaci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
             if (paint != null) {
                 AffineTransform t = AffineTransform.getTranslateInstance(x, 0f);
-                //Stroke oldStroke = g2d.getStroke();
-                Paint oldPaint = g2d.getPaint();
+                // Stroke oldStroke = g2d.getStroke();
+                // Paint oldPaint = g2d.getPaint();
                 g2d.setStroke(stroke);
                 g2d.setPaint(paint);
                 g2d.draw(textRun.getLayout().getOutline(t));
-                //g2d.setStroke(oldStroke);
-                g2d.setPaint(oldPaint);
+                // g2d.setStroke(oldStroke);
+                // g2d.setPaint(oldPaint);
             }
-            textRun.getLayout().draw(g2d, x, 0f);
             x += textRun.getLayout().getAdvance();
         }
 
