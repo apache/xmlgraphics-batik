@@ -57,11 +57,23 @@ public class SVGSwitchElementBridge extends AbstractSVGBridge
                 Element ref = (Element)n;
                 if (n instanceof SVGTests
                     && SVGUtilities.matchUserAgent(ref, ctx.getUserAgent())) {
-                    return builder.build(ctx, ref);
+                    refNode = builder.build(ctx, ref);
+                    break;
                 }
             }
         }
-        return null;
+        if (refNode == null) {
+            return null;
+        }
+        CompositeGraphicsNode group = new CompositeGraphicsNode();
+        group.add(refNode);
+        // 'transform'
+        String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
+        if (s.length() != 0) {
+            group.setTransform
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
+        }
+        return group;
     }
 
     /**
