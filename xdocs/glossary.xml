@@ -24,7 +24,8 @@
     </header>
 
     <body>
-        <s1 id="GVT" title="GVT, Graphic Vector Toolkit">
+        <anchor id="GVT" />
+        <s1 title="GVT, Graphic Vector Toolkit">
 
         <p>
         GVT (Graphic Vector Toolkit) is an object oriented framework that 
@@ -34,7 +35,8 @@
 
         </s1>
 
-        <s1 id="SVGDOM" title="SVG DOM">
+        <anchor id="SVGDOM" />
+        <s1 title="SVG DOM">
 
         <p>
         The SVG DOM (Document Object Model) defines the API that programming
@@ -48,7 +50,8 @@
 
         </s1>
 
-        <s1 id="SVGGenerator" title="SVG Generator">
+        <anchor id="SVGGenerator" />
+        <s1 title="SVG Generator">
 
         <p>
         The SVG Generator is a component of Batik that allows Java applications 
@@ -66,7 +69,8 @@
 
         </s1>
 
-        <s1 id="SVGParser" title="SVG Parser">
+        <anchor id="SVGParser" />
+        <s1 title="SVG Parser">
 
         <p>
         The SVG Parser is the module that is able to receive an SVG document
