@@ -55,15 +55,18 @@ public class JSVGRenderingAccuracyTest extends SamplesRenderingTest
     FileOutputStream fos;
     TestReport failReport = null;
     boolean done;
+    JSVGCanvasHandler handler = null;
 
     public TestReport encode(URL srcURL, FileOutputStream fos) {
         this.srcURL = srcURL;
         this.fos    = fos;
 
-        JSVGCanvasHandler handler = new JSVGCanvasHandler(this, this);
+        handler = new JSVGCanvasHandler(this, this);
         done = false;
         handler.runCanvas(srcURL.toString());
-        
+
+        handler = null;
+
         if (failReport != null) return failReport;
         
         DefaultTestReport report = new DefaultTestReport(this);
@@ -74,14 +77,14 @@ public class JSVGRenderingAccuracyTest extends SamplesRenderingTest
     public void scriptDone() {
         synchronized (this) {
             done = true;
-            // The canvasUpdate will notify the handler that the
-            // canvas can be shut down.
+            handler.scriptDone();
         }
     }
 
     /* JSVGCanvasHandler.Delegate Interface */
-    public void canvasInit(JSVGCanvas canvas) {
+    public boolean canvasInit(JSVGCanvas canvas) {
         canvas.setURI(srcURL.toString());
+        return true;
     }
 
     public void canvasLoaded(JSVGCanvas canvas) {

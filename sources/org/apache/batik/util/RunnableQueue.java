@@ -158,7 +158,13 @@ public class RunnableQueue implements Runnable {
                     rable = l.runnable;
                 }
 
-                rable.run();
+                try {
+                    rable.run();
+                } catch (Throwable t) {
+                    // Might be nice to notify someone directly.
+                    // But this is more or less what Swing does.
+                    t.printStackTrace();
+                }
                 l.unlock();
                 runnableInvoked(rable);
             }

@@ -503,7 +503,7 @@ public class JSVGCanvas extends JSVGComponent {
     /**
      * A swing action to reset the rendering transform of the canvas.
      */
-    protected class ResetTransformAction extends AbstractAction {
+    public class ResetTransformAction extends AbstractAction {
         public void actionPerformed(ActionEvent evt) {
             fragmentIdentifier = null;
             resetRenderingTransform();
@@ -517,7 +517,7 @@ public class JSVGCanvas extends JSVGComponent {
      * 0,0 so scale and rotate occur around the middle of
      * the display.
      */
-    protected class AffineAction extends AbstractAction {
+    public class AffineAction extends AbstractAction {
         AffineTransform at;
         public AffineAction(AffineTransform at) {
             this.at = at;
@@ -545,7 +545,7 @@ public class JSVGCanvas extends JSVGComponent {
      * A swing action to apply a zoom factor to the canvas.
      * This can be used to zoom in (scale > 1) and out (scale <1).
      */
-    protected class ZoomAction extends AffineAction {
+    public class ZoomAction extends AffineAction {
         public ZoomAction(double scale) {
             super(AffineTransform.getScaleInstance(scale, scale));
         }
@@ -557,21 +557,21 @@ public class JSVGCanvas extends JSVGComponent {
     /**
      * A swing action to zoom in the canvas.
      */
-    protected class ZoomInAction extends ZoomAction {
+    public class ZoomInAction extends ZoomAction {
         ZoomInAction() { super(2); }
     }
 
     /**
      * A swing action to zoom out the canvas.
      */
-    protected class ZoomOutAction extends ZoomAction {
+    public class ZoomOutAction extends ZoomAction {
         ZoomOutAction() { super(.5); }
     }
 
     /**
      * A swing action to Rotate the canvas.
      */
-    protected class RotateAction extends AffineAction {
+    public class RotateAction extends AffineAction {
         public RotateAction(double theta) {
             super(AffineTransform.getRotateInstance(theta));
         }
@@ -580,7 +580,7 @@ public class JSVGCanvas extends JSVGComponent {
     /**
      * A swing action to Pan/scroll the canvas.
      */
-    protected class ScrollAction extends AffineAction {
+    public class ScrollAction extends AffineAction {
         public ScrollAction(double tx, double ty) {
             super(AffineTransform.getTranslateInstance(tx, ty));
         }
@@ -590,7 +590,7 @@ public class JSVGCanvas extends JSVGComponent {
      * A swing action to scroll the canvas to the right,
      * by a fixed amount
      */
-    protected class ScrollRightAction extends ScrollAction {
+    public class ScrollRightAction extends ScrollAction {
         public ScrollRightAction(int inc) {
             super(-inc, 0);
         }
@@ -600,7 +600,7 @@ public class JSVGCanvas extends JSVGComponent {
      * A swing action to scroll the canvas to the left,
      * by a fixed amount
      */
-    protected class ScrollLeftAction extends ScrollAction {
+    public class ScrollLeftAction extends ScrollAction {
         public ScrollLeftAction(int inc) {
             super(inc, 0);
         }
@@ -610,7 +610,7 @@ public class JSVGCanvas extends JSVGComponent {
      * A swing action to scroll the canvas up,
      * by a fixed amount
      */
-    protected class ScrollUpAction extends ScrollAction {
+    public class ScrollUpAction extends ScrollAction {
         public ScrollUpAction(int inc) {
             super(0, inc);
         }
@@ -620,7 +620,7 @@ public class JSVGCanvas extends JSVGComponent {
      * A swing action to scroll the canvas down,
      * by a fixed amount
      */
-    protected class ScrollDownAction extends ScrollAction {
+    public class ScrollDownAction extends ScrollAction {
         public ScrollDownAction(int inc) {
             super(0, -inc);
         }

@@ -9,6 +9,7 @@
 package org.apache.batik.swing;
 
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -19,12 +20,14 @@ import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.Test;
 import org.apache.batik.test.TestReport;
 
+
 import org.apache.batik.bridge.ScriptingEnvironment;
 import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
+import org.apache.batik.util.RunnableQueue;
 
 import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
@@ -44,7 +47,9 @@ public class JSVGCanvasHandler {
 
     public interface Delegate {
         public String getName();
-        public void canvasInit(JSVGCanvas canvas);
+        // Returns true if a load event was triggered.  In this case
+        // the handler will wait for the load event to complete/fail.
+        public boolean canvasInit(JSVGCanvas canvas);
         public void canvasLoaded(JSVGCanvas canvas);
         public void canvasRendered(JSVGCanvas canvas);
         public boolean canvasUpdated(JSVGCanvas canvas);
@@ -95,14 +100,15 @@ public class JSVGCanvasHandler {
     LoadListener ll = null;
     UpdateRenderListener url = null;
     
-    boolean renderFailed;
-    boolean loadFailed;
-    boolean abort;
+    boolean failed;
+    boolean abort = false;
+    boolean done  = false;
     Object loadMonitor = new Object();
     Object renderMonitor = new Object();
     
     Delegate delegate;
     Test host;
+    String desc;
 
     public JSVGCanvasHandler(Test host, Delegate delegate) {
         this.host     = host;
@@ -113,118 +119,96 @@ public class JSVGCanvasHandler {
     public JSVGCanvas getCanvas() { return canvas; }
 
     public void runCanvas(String desc) {
-        DefaultTestReport report = new DefaultTestReport(host);
-        loadFailed = true;
-        renderFailed = true;
-        
-        frame = new JFrame(delegate.getName());
-        canvas = new JSVGCanvas();
-        frame.getContentPane().add(canvas);
-        frame.setSize(new Dimension(450, 500));
-        frame.setVisible(true);
-        wl = new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    synchronized (loadMonitor) {
-                        abort = true;
-                        loadMonitor.notifyAll();
-                    }
-                    synchronized (renderMonitor) {
-                        abort = true;
-                        renderMonitor.notifyAll();
-                    }
-                }
-            };
-        frame.addWindowListener(wl);
-
-        irl = new InitialRenderListener();
-        canvas.addGVTTreeRendererListener(irl);
-        ll = new LoadListener();
-        canvas.addSVGDocumentLoaderListener(ll);
+        this.desc = desc;
         try {
-            
-            delegate.canvasInit(canvas);
-            
-            synchronized (renderMonitor) {
-                synchronized (loadMonitor) {
-                    try { loadMonitor.wait(); }
-                    catch(InterruptedException ie) { /* nothing */ }
-                    if (abort || loadFailed) {
-                        report.setErrorCode(ERROR_CANNOT_LOAD_SVG);
-                        report.setDescription(new TestReport.Entry[] { 
-                            new TestReport.Entry
-                            (fmt(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                             fmt(ERROR_CANNOT_LOAD_SVG, 
-                                 new Object[]{desc}))
-                        });
-                        report.setPassed(false);
-                        delegate.failure(report);
-                        return;
-                    }
-                    delegate.canvasLoaded(canvas);
-                }
-
-                try { renderMonitor.wait(); }
-                catch(InterruptedException ie) { /* nothing */ }
-                if (abort || renderFailed) {
-                    report.setErrorCode(ERROR_SVG_RENDER_FAILED);
-                    report.setDescription(new TestReport.Entry[] { 
-                        new TestReport.Entry
-                        (fmt(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                         fmt(ERROR_SVG_RENDER_FAILED, 
-                             new Object[]{desc}))
-                    });
-                    report.setPassed(false);
-                    delegate.failure(report);
-                    return;
-                }
-                delegate.canvasRendered(canvas);
-
-                updateManager = canvas.getUpdateManager();
-                if (updateManager != null) {
-                    url = new UpdateRenderListener();
-                    updateManager.addUpdateManagerListener(url);
-                    updateManager.getUpdateRunnableQueue().invokeLater
-                        (new Runnable() {
-                                UpdateManager um = updateManager;
-                                public void run() {
-                                    ScriptingEnvironment scriptEnv;
-                                    scriptEnv = um.getScriptingEnvironment();
-                                    Interpreter interp;
-                                    interp    = scriptEnv.getInterpreter();
-                                    interp.bindObject(REGARD_TEST_INSTANCE, 
-                                                      host);
-                                    try {
-                                        interp.evaluate(REGARD_START_SCRIPT);
-                                    } catch (InterpreterException ie) {
-                                        // Could not wait if no start script.
+            EventQueue.invokeAndWait(new Runnable() {
+                    public void run() {
+                        frame = new JFrame(delegate.getName());
+                        canvas = new JSVGCanvas();
+                        frame.getContentPane().add(canvas);
+                        frame.setSize(new Dimension(450, 500));
+                        wl = new WindowAdapter() {
+                                public void windowClosing(WindowEvent e) {
+                                    synchronized (loadMonitor) {
+                                        abort = true;
+                                        loadMonitor.notifyAll();
+                                    }
+                                    synchronized (renderMonitor) {
+                                        abort = true;
+                                        renderMonitor.notifyAll();
                                     }
                                 }
-                            });
+                            };
+                        frame.addWindowListener(wl);
+                        frame.setVisible(true);
 
-                    boolean done = false;
-                    while (!done) {
-                        try { renderMonitor.wait(); }
-                        catch (InterruptedException ie) { /* nothing */ }
-                        if (abort || renderFailed) {
-                            report.setErrorCode(ERROR_SVG_UPDATE_FAILED);
-                            report.setDescription(new TestReport.Entry[] { 
-                                new TestReport.Entry
-                                (fmt(ENTRY_KEY_ERROR_DESCRIPTION, null),
-                                 fmt(ERROR_SVG_UPDATE_FAILED, 
-                                     new Object[]{desc}))
-                            });
-                            report.setPassed(false);
-                            delegate.failure(report);
-                            return;
-                        }
-                        done = delegate.canvasUpdated(canvas);
+                        irl = new InitialRenderListener();
+                        canvas.addGVTTreeRendererListener(irl);
+                        ll = new LoadListener();
+                        canvas.addSVGDocumentLoaderListener(ll);
+                    }});
+        } catch (Throwable t) { }
+
+        if ( abort) return;
+
+        try {
+            synchronized (renderMonitor) {
+                synchronized (loadMonitor) {
+                    if (delegate.canvasInit(canvas)) {
+                        checkLoad();
                     }
                 }
+
+                if ( abort) return;
+
+                checkRender();
+                if ( abort) return;
+
+                try {
+                    EventQueue.invokeAndWait(new Runnable() {
+                            public void run() {
+                                updateManager = canvas.getUpdateManager();
+                                if (updateManager == null)
+                                    return;
+                                url = new UpdateRenderListener();
+                                updateManager.addUpdateManagerListener(url);
+                            }});
+                } catch (Throwable t) { t.printStackTrace(); }
+                if ( abort) return;
+
+                if (updateManager == null)
+                    return;
+
+                bindHost();
+
+                if ( abort) return;
+
+                while (!done) {
+                    checkUpdate();
+                    if ( abort) return;
+                }
             }
+        } catch (Throwable t) {
+            t.printStackTrace();
         } finally {
             delegate.canvasDone(canvas);
             dispose();
         }
+    }
+
+    public void scriptDone() {
+        if (updateManager == null) return;
+        
+        updateManager.getUpdateRunnableQueue().invokeLater
+            (new Runnable() {
+                    public void run() {
+                        synchronized(renderMonitor) {
+                            done = true;
+                            failed = false;
+                            renderMonitor.notifyAll();
+                        }
+                    }
+                });
     }
     
     public void dispose() {
@@ -242,17 +226,73 @@ public class JSVGCanvasHandler {
         canvas = null;
         frame = null;
     }
-    
+
+    public void checkSomething(Object monitor, String errorCode) {
+        synchronized (monitor) {
+            failed = true;
+            try { monitor.wait(); }
+            catch(InterruptedException ie) { /* nothing */ }
+            if (abort || failed) {
+                DefaultTestReport report = new DefaultTestReport(host);
+                report.setErrorCode(errorCode);
+                report.setDescription(new TestReport.Entry[] { 
+                    new TestReport.Entry
+                    (fmt(ENTRY_KEY_ERROR_DESCRIPTION, null),
+                     fmt(errorCode, new Object[]{desc}))
+                });
+                report.setPassed(false);
+                delegate.failure(report);
+                done = true;
+                return;
+            }
+        }
+    }
+
+    public void checkLoad() {
+        checkSomething(loadMonitor, ERROR_CANNOT_LOAD_SVG);
+        delegate.canvasLoaded(canvas);
+    }
+
+    public void checkRender() {
+        checkSomething(renderMonitor, ERROR_SVG_RENDER_FAILED);
+        delegate.canvasRendered(canvas);
+    }
+
+    public void checkUpdate() {
+        checkSomething(renderMonitor, ERROR_SVG_UPDATE_FAILED);
+        if (!done)
+            done = delegate.canvasUpdated(canvas);
+    }
+
+    public void bindHost() {
+        RunnableQueue rq;
+        rq = updateManager.getUpdateRunnableQueue();
+        rq.invokeLater(new Runnable() {
+                UpdateManager um = updateManager;
+                public void run() {
+                    ScriptingEnvironment scriptEnv;
+                    scriptEnv = um.getScriptingEnvironment();
+                    Interpreter interp;
+                    interp    = scriptEnv.getInterpreter();
+                    interp.bindObject(REGARD_TEST_INSTANCE, 
+                                      host);
+                    try {
+                        interp.evaluate(REGARD_START_SCRIPT);
+                    } catch (InterpreterException ie) {
+                        // Could not wait if no start script.
+                    }
+                }
+            });
+    }
     class UpdateRenderListener implements UpdateManagerListener {
         public void updateCompleted(UpdateManagerEvent e) {
             synchronized(renderMonitor){
-                renderFailed = false;
+                failed = false;
                 renderMonitor.notifyAll();
             }
         }
         public void updateFailed(UpdateManagerEvent e) {
             synchronized(renderMonitor){
-                renderFailed = true;
                 renderMonitor.notifyAll();
             }
         }
@@ -266,7 +306,7 @@ public class JSVGCanvasHandler {
     class InitialRenderListener extends GVTTreeRendererAdapter {
         public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
             synchronized(renderMonitor){
-                renderFailed = false;
+                failed = false;
                 renderMonitor.notifyAll();
             }
         }
@@ -288,7 +328,7 @@ public class JSVGCanvasHandler {
     class LoadListener extends SVGDocumentLoaderAdapter {
         public void documentLoadingCompleted(SVGDocumentLoaderEvent e) {
             synchronized(loadMonitor){
-                loadFailed = false;
+                failed = false;
                 loadMonitor.notifyAll();
             }
         }

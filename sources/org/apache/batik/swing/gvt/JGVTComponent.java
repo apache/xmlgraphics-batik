@@ -675,6 +675,7 @@ public class JGVTComponent extends JComponent {
             textSelectionManager = null;
         }
         renderer = null;
+        image = null;
         gvtRoot = null;
     }
 
@@ -822,6 +823,10 @@ public class JGVTComponent extends JComponent {
                 needRender = false;
             } else {
                 immediateRepaint();
+            }
+
+            if (eventDispatcher != null) {
+                eventDispatcher.setRootNode(gvtRoot);
             }
         }
 
