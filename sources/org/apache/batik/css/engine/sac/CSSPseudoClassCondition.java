@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.engine.sac;
 
+import java.util.Set;
+
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.w3c.dom.Element;
 
@@ -83,6 +85,12 @@ public class CSSPseudoClassCondition extends AbstractAttributeCondition {
 	return (e instanceof CSSStylableElement)
 	    ? ((CSSStylableElement)e).isPseudoInstanceOf(getValue())
 	    : false;
+    }
+
+    /**
+     * Fills the given set with the attribute names found in this selector.
+     */
+    public void fillAttributeSet(Set attrSet) {
     }
 
     /**

@@ -24,9 +24,10 @@ public class CSSClassCondition extends CSSAttributeCondition {
     /**
      * Creates a new CSSAttributeCondition object.
      */
-    public CSSClassCondition(String namespaceURI,
+    public CSSClassCondition(String localName,
+                             String namespaceURI,
                              String value) {
-	super("class", namespaceURI, true, value);
+	super(localName, namespaceURI, true, value);
     }
     
     /**

@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.engine.sac;
 
+import java.util.Set;
+
 import org.w3c.css.sac.ElementSelector;
 
 /**
@@ -66,5 +68,11 @@ public abstract class AbstractElementSelector
      */
     public String getLocalName() {
 	return localName;
+    }
+
+    /**
+     * Fills the given set with the attribute names found in this selector.
+     */
+    public void fillAttributeSet(Set attrSet) {
     }
 }

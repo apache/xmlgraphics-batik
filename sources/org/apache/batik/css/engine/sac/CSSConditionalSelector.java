@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.engine.sac;
 
+import java.util.Set;
+
 import org.w3c.css.sac.Condition;
 import org.w3c.css.sac.ConditionalSelector;
 import org.w3c.css.sac.SimpleSelector;
@@ -69,6 +71,14 @@ public class CSSConditionalSelector
     public boolean match(Element e, String pseudoE) {
 	return ((ExtendedSelector)getSimpleSelector()).match(e, pseudoE) &&
 	       ((ExtendedCondition)getCondition()).match(e, pseudoE);
+    }
+
+    /**
+     * Fills the given set with the attribute names found in this selector.
+     */
+    public void fillAttributeSet(Set attrSet) {
+	((ExtendedSelector)getSimpleSelector()).fillAttributeSet(attrSet);
+        ((ExtendedCondition)getCondition()).fillAttributeSet(attrSet);
     }
 
     /**

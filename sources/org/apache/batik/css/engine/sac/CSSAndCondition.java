@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.engine.sac;
 
+import java.util.Set;
+
 import org.w3c.css.sac.Condition;
 import org.w3c.dom.Element;
 
@@ -40,6 +42,14 @@ public class CSSAndCondition extends AbstractCombinatorCondition {
     public boolean match(Element e, String pseudoE) {
 	return ((ExtendedCondition)getFirstCondition()).match(e, pseudoE) &&
                ((ExtendedCondition)getSecondCondition()).match(e, pseudoE);
+    }
+
+    /**
+     * Fills the given set with the attribute names found in this selector.
+     */
+    public void fillAttributeSet(Set attrSet) {
+	((ExtendedCondition)getFirstCondition()).fillAttributeSet(attrSet);
+        ((ExtendedCondition)getSecondCondition()).fillAttributeSet(attrSet);
     }
 
     /**

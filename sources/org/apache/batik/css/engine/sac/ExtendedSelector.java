@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.engine.sac;
 
+import java.util.Set;
+
 import org.w3c.css.sac.Selector;
 import org.w3c.dom.Element;
 
@@ -28,4 +30,9 @@ public interface ExtendedSelector extends Selector {
      * Returns the specificity of this selector.
      */
     int getSpecificity();
+
+    /**
+     * Fills the given set with the attribute names found in this selector.
+     */
+    void fillAttributeSet(Set attrSet);
 }

@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.engine.sac;
 
+import java.util.Set;
+
 import org.w3c.css.sac.LangCondition;
 import org.w3c.dom.Element;
 
@@ -73,6 +75,13 @@ public class CSSLangCondition
      */
     public boolean match(Element e, String pseudoE) {
 	return e.getAttribute("lang").startsWith(getLang());
+    }
+
+    /**
+     * Fills the given set with the attribute names found in this selector.
+     */
+    public void fillAttributeSet(Set attrSet) {
+        attrSet.add("lang");
     }
 
     /**

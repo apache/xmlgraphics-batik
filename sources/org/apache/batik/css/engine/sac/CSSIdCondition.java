@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.engine.sac;
 
+import java.util.Set;
+
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.w3c.dom.Element;
 
@@ -20,11 +22,24 @@ import org.w3c.dom.Element;
  */
 
 public class CSSIdCondition extends AbstractAttributeCondition {
+
+    /**
+     * The id attribute namespace URI.
+     */
+    protected String namespaceURI;
+
+    /**
+     * The id attribute local name.
+     */
+    protected String localName;
+
     /**
      * Creates a new CSSAttributeCondition object.
      */
-    public CSSIdCondition(String value) {
+    public CSSIdCondition(String ns, String ln, String value) {
 	super(value);
+        namespaceURI = ns;
+        localName = ln;
     }
 
     /**
@@ -40,7 +55,7 @@ public class CSSIdCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getNamespaceURI()}.
      */    
     public String getNamespaceURI() {
-	return null;
+	return namespaceURI;
     }
 
     /**
@@ -48,7 +63,7 @@ public class CSSIdCondition extends AbstractAttributeCondition {
      * org.w3c.css.sac.AttributeCondition#getLocalName()}.
      */
     public String getLocalName() {
-	return "id";
+	return localName;
     }
 
     /**
@@ -66,6 +81,13 @@ public class CSSIdCondition extends AbstractAttributeCondition {
 	return (e instanceof CSSStylableElement)
 	    ? ((CSSStylableElement)e).getXMLId().equals(getValue())
 	    : false;
+    }
+
+    /**
+     * Fills the given set with the attribute names found in this selector.
+     */
+    public void fillAttributeSet(Set attrSet) {
+        attrSet.add(localName);
     }
 
     /**

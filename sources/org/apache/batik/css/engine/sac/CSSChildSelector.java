@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.engine.sac;
 
+import java.util.Set;
+
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SimpleSelector;
 import org.w3c.dom.Element;
@@ -48,6 +50,14 @@ public class CSSChildSelector extends AbstractDescendantSelector {
 		   ((ExtendedSelector)getSimpleSelector()).match(e, pseudoE);
 	}
 	return false;
+    }
+
+    /**
+     * Fills the given set with the attribute names found in this selector.
+     */
+    public void fillAttributeSet(Set attrSet) {
+        ((ExtendedSelector)getAncestorSelector()).fillAttributeSet(attrSet);
+        ((ExtendedSelector)getSimpleSelector()).fillAttributeSet(attrSet);
     }
 
     /**

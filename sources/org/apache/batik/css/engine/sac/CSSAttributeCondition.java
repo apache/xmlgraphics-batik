@@ -8,6 +8,8 @@
 
 package org.apache.batik.css.engine.sac;
 
+import java.util.Set;
+
 import org.w3c.dom.Element;
 
 /**
@@ -101,6 +103,13 @@ public class CSSAttributeCondition extends AbstractAttributeCondition {
 	    return !e.getAttribute(getLocalName()).equals("");
 	}
 	return e.getAttribute(getLocalName()).equals(val);
+    }
+
+    /**
+     * Fills the given set with the attribute names found in this selector.
+     */
+    public void fillAttributeSet(Set attrSet) {
+        attrSet.add(localName);
     }
 
     /**

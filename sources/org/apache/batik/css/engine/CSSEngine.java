@@ -277,14 +277,54 @@ public abstract class CSSEngine {
     protected EventListener domAttrModifiedListener;
 
     /**
+     * The DOMNodeInserted event listener.
+     */
+    protected EventListener domNodeInsertedListener;
+
+    /**
+     * The DOMNodeRemoved event listener.
+     */
+    protected EventListener domNodeRemovedListener;
+
+    /**
+     * The DOMSubtreeModified event listener.
+     */
+    protected EventListener domSubtreeModifiedListener;
+
+    /**
+     * The DOMCharacterDataModified event listener.
+     */
+    protected EventListener domCharacterDataModifiedListener;
+
+    /**
+     * Whether a style sheet as been removed from the document.
+     */
+    protected boolean styleSheetRemoved;
+
+    /**
+     * The right sibling of the last removed node.
+     */
+    protected Node removedStylableElementSibling;
+
+    /**
      * The listeners.
      */
     protected List listeners = Collections.synchronizedList(new LinkedList());
 
     /**
+     * The attributes found in stylesheets selectors.
+     */
+    protected Set selectorAttributes;
+
+    /**
      * Used to fire a change event for all the properties.
      */
     protected final int[] ALL_PROPERTIES;
+
+    /**
+     * The CSS condition factory.
+     */
+    protected CSSConditionFactory cssConditionFactory;
 
     /**
      * Creates a new CSSEngine.
@@ -327,6 +367,8 @@ public abstract class CSSEngine {
         classNamespaceURI = cns;
         classLocalName = cln;
         cssContext = ctx;
+
+        cssConditionFactory = new CSSConditionFactory(cns, cln, null, "id");
 
         int len = vm.length;
         indexes = new StringIntMap(len);
@@ -373,6 +415,23 @@ public abstract class CSSEngine {
             et.addEventListener("DOMAttrModified",
                                 domAttrModifiedListener,
                                 false);
+            domNodeInsertedListener = new DOMNodeInsertedListener();
+            et.addEventListener("DOMNodeInserted",
+                                domNodeInsertedListener,
+                                false);
+            domNodeRemovedListener = new DOMNodeRemovedListener();
+            et.addEventListener("DOMNodeRemoved",
+                                domNodeRemovedListener,
+                                false);
+            domSubtreeModifiedListener = new DOMSubtreeModifiedListener();
+            et.addEventListener("DOMSubtreeModified",
+                                domSubtreeModifiedListener,
+                                false);
+            domCharacterDataModifiedListener =
+                new DOMCharacterDataModifiedListener();
+            et.addEventListener("DOMCharacterDataModified",
+                                domCharacterDataModifiedListener,
+                                false);
             styleDeclarationUpdateHandler =
                 new StyleDeclarationUpdateHandler();
         }
@@ -393,6 +452,18 @@ public abstract class CSSEngine {
             EventTarget et = (EventTarget)document;
             et.removeEventListener("DOMAttrModified",
                                    domAttrModifiedListener,
+                                   false);
+            et.removeEventListener("DOMNodeInserted",
+                                   domNodeInsertedListener,
+                                   false);
+            et.removeEventListener("DOMNodeRemoved",
+                                   domNodeRemovedListener,
+                                   false);
+            et.removeEventListener("DOMSubtreeModified",
+                                   domSubtreeModifiedListener,
+                                   false);
+            et.removeEventListener("DOMCharacterDataModified",
+                                   domCharacterDataModifiedListener,
                                    false);
         }
     }
@@ -642,7 +713,7 @@ public abstract class CSSEngine {
             if (style.length() > 0) {
                 try {
                     parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
-                    parser.setConditionFactory(CSSConditionFactory.INSTANCE);
+                    parser.setConditionFactory(cssConditionFactory);
                     styleDeclarationDocumentHandler.styleMap = result;
                     parser.setDocumentHandler(styleDeclarationDocumentHandler);
                     parser.parseStyleDeclaration(style);
@@ -723,10 +794,63 @@ public abstract class CSSEngine {
     public List getStyleSheetNodes() {
         if (styleSheetNodes == null) {
             styleSheetNodes = new ArrayList();
+            selectorAttributes = new HashSet();
             // Find all the style-sheets in the document.
             findStyleSheetNodes(document);
+            int len = styleSheetNodes.size();
+            for (int i = 0; i < len; i++) {
+                CSSStyleSheetNode ssn;
+                ssn = (CSSStyleSheetNode)styleSheetNodes.get(i);
+                StyleSheet ss = ssn.getCSSStyleSheet();
+                if (ss != null) {
+                    findSelectorAttributes(selectorAttributes, ss);
+                }
+            }
         }
         return styleSheetNodes;
+    }
+
+    /**
+     * An auxiliary method for getStyleSheets().
+     */
+    protected void findStyleSheetNodes(Node n) {
+        if (n instanceof CSSStyleSheetNode) {
+            styleSheetNodes.add(n);
+        }
+        for (Node nd = n.getFirstChild();
+             nd != null;
+             nd = nd.getNextSibling()) {
+            findStyleSheetNodes(nd);
+        }
+    }
+
+    /**
+     * Finds the selector attributes in the given stylesheet.
+     */
+    protected void findSelectorAttributes(Set attrs, StyleSheet ss) {
+        int len = ss.getSize();
+        for (int i = 0; i < len; i++) {
+            Rule r = ss.getRule(i);
+            switch (r.getType()) {
+            case StyleRule.TYPE:
+                StyleRule style = (StyleRule)r;
+                SelectorList sl = style.getSelectorList();
+                int slen = sl.getLength();
+                for (int j = 0; j < slen; j++) {
+                    ExtendedSelector s = (ExtendedSelector)sl.item(j);
+                    s.fillAttributeSet(attrs);
+                }
+                break;
+
+            case MediaRule.TYPE:
+            case ImportRule.TYPE:
+                MediaRule mr = (MediaRule)r;
+                if (mediaMatch(mr.getMediaList())) {
+                    findSelectorAttributes(attrs, mr);
+                }
+                break;
+            }
+        }
     }
 
     /**
@@ -760,7 +884,7 @@ public abstract class CSSEngine {
     public StyleDeclaration parseStyleDeclaration(String value) {
         try {
             parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
-            parser.setConditionFactory(CSSConditionFactory.INSTANCE);
+            parser.setConditionFactory(cssConditionFactory);
             cssBaseURI = documentURI;
             styleDeclarationBuilder.styleDeclaration = new StyleDeclaration();
             parser.setDocumentHandler(styleDeclarationBuilder);
@@ -893,7 +1017,7 @@ public abstract class CSSEngine {
     protected void parseStyleSheet(StyleSheet ss, InputSource is, URL uri)
         throws IOException {
         parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
-        parser.setConditionFactory(CSSConditionFactory.INSTANCE);
+        parser.setConditionFactory(cssConditionFactory);
         cssBaseURI = uri;
         styleSheetDocumentHandler.styleSheet = ss;
         parser.setDocumentHandler(styleSheetDocumentHandler);
@@ -912,20 +1036,6 @@ public abstract class CSSEngine {
             parseStyleSheet(ir, ir.getURI());
         }
         
-    }
-
-    /**
-     * An auxiliary method for getStyleSheets().
-     */
-    protected void findStyleSheetNodes(Node n) {
-        if (n instanceof CSSStyleSheetNode) {
-            styleSheetNodes.add(n);
-        }
-        for (Node nd = n.getFirstChild();
-             nd != null;
-             nd = nd.getNextSibling()) {
-            findStyleSheetNodes(nd);
-        }
     }
 
     /**
@@ -1481,7 +1591,7 @@ public abstract class CSSEngine {
                 element = elt;
                 try {
                     parser.setSelectorFactory(CSSSelectorFactory.INSTANCE);
-                    parser.setConditionFactory(CSSConditionFactory.INSTANCE);
+                    parser.setConditionFactory(cssConditionFactory);
                     styleDeclarationUpdateHandler.styleMap = style;
                     parser.setDocumentHandler(styleDeclarationUpdateHandler);
                     parser.parseStyleDeclaration(decl);
@@ -1533,10 +1643,6 @@ public abstract class CSSEngine {
                      n != null;
                      n = n.getNextSibling()) {
                     propagateChanges(n, ALL_PROPERTIES);
-                    c = getImportedChild(n);
-                    if (c != null) {
-                        propagateChanges(c, ALL_PROPERTIES);
-                    }
                 }
             } else {
                 int count = 0;
@@ -1589,16 +1695,12 @@ public abstract class CSSEngine {
                     
                     Node c = getImportedChild(elt);
                     if (c != null) {
-                        propagateChanges(c, ALL_PROPERTIES);
+                        propagateChanges(c, props);
                     }
                     for (Node n = elt.getFirstChild();
                          n != null;
                          n = n.getNextSibling()) {
                         propagateChanges(n, props);
-                        c = getImportedChild(n);
-                        if (c != null) {
-                            propagateChanges(c, props);
-                        }
                     }
                 }
             }
@@ -1622,6 +1724,55 @@ public abstract class CSSEngine {
             }
         }
         style.putComputed(n, false);
+    }
+
+    /**
+     * Invalidates all the stylable elements descendant of the given
+     * node, and the node.
+     */
+    protected void invalidateTreeProperties(Node node) {
+        if (node instanceof CSSStylableElement) {
+            CSSStylableElement elt = (CSSStylableElement)node;
+            StyleMap style = elt.getComputedStyleMap(null);
+            if (style != null) {
+                elt.setComputedStyleMap(null, null);
+                firePropertiesChangedEvent(elt, ALL_PROPERTIES);
+            }
+        }
+
+        Node c = getImportedChild(node);
+        if (c != null) {
+            propagateChanges(c, ALL_PROPERTIES);
+        }
+        for (Node n = node.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            invalidateTreeProperties(n);
+        }
+    }
+
+    /**
+     * Invalidates all the properties of the given node.
+     */
+    protected void invalidateProperties(Node node) {
+        if (node instanceof CSSStylableElement) {
+            CSSStylableElement elt = (CSSStylableElement)node;
+            StyleMap style = elt.getComputedStyleMap(null);
+            if (style != null) {
+                elt.setComputedStyleMap(null, null);
+                firePropertiesChangedEvent(elt, ALL_PROPERTIES);
+            }
+        }
+
+        Node c = getImportedChild(node);
+        if (c != null) {
+            propagateChanges(c, ALL_PROPERTIES);
+        }
+        for (Node n = node.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            propagateChanges(n, ALL_PROPERTIES);
+        }
     }
 
     /**
@@ -1699,16 +1850,12 @@ public abstract class CSSEngine {
         if (props != null) {
             Node c = getImportedChild(node);
             if (c != null) {
-                propagateChanges(c, ALL_PROPERTIES);
+                propagateChanges(c, props);
             }
             for (Node n = node.getFirstChild();
                  n != null;
                  n = n.getNextSibling()) {
                 propagateChanges(n, props);
-                c = getImportedChild(n);
-                if (c != null) {
-                    propagateChanges(c, props);
-                }
             }
         }
     }
@@ -1858,15 +2005,100 @@ public abstract class CSSEngine {
 
         Node c = getImportedChild(elt);
         if (c != null) {
-            propagateChanges(c, ALL_PROPERTIES);
+            propagateChanges(c, props);
         }
         for (Node n = elt.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
             propagateChanges(n, props);
-            c = getImportedChild(n);
-            if (c != null) {
-                propagateChanges(c, props);
+        }
+    }
+
+    /**
+     * To handle the insertion of a CSSStyleSheetNode in the
+     * associated document.
+     */
+    protected class DOMNodeInsertedListener implements EventListener {
+        public void handleEvent(Event evt) {
+            EventTarget et = evt.getTarget();
+            if (et instanceof CSSStyleSheetNode) {
+                styleSheetNodes = null;
+
+                // Invalidate all the CSSStylableElements in the document.
+                invalidateTreeProperties(document.getDocumentElement());
+                return;
+            }
+            if (et instanceof CSSStylableElement) {
+                // Invalidate the CSSStylableElement siblings, to
+                // correctly match the adjacent selectors and
+                // first-child pseudo-class.
+                for (Node n = ((Node)evt.getTarget()).getNextSibling();
+                     n != null;
+                     n = n.getNextSibling()) {
+                    invalidateProperties(n);
+                }
+            }
+        }
+    }
+
+    /**
+     * To handle the removal of a CSSStyleSheetNode from the
+     * associated document.
+     */
+    protected class DOMNodeRemovedListener implements EventListener {
+        public void handleEvent(Event evt) {
+            EventTarget et = evt.getTarget();
+            if (et instanceof CSSStyleSheetNode) {
+                // Wait for the DOMSubtreeModified to do the invalidations
+                // because at this time the node is in the tree.
+                styleSheetRemoved = true;
+            } else if (et instanceof CSSStylableElement) {
+                // Wait for the DOMSubtreeModified to do the invalidations
+                // because at this time the node is in the tree.
+                removedStylableElementSibling = ((Node)et).getNextSibling();
+            }
+            // Clears the computed styles in the removed tree.
+            disposeStyleMaps((Node)et);
+        }
+    }
+
+    /**
+     * To handle the removal of a CSSStyleSheetNode from the
+     * associated document.
+     */
+    protected class DOMSubtreeModifiedListener implements EventListener {
+        public void handleEvent(Event evt) {
+            if (styleSheetRemoved) {
+                styleSheetRemoved = false;
+                styleSheetNodes = null;
+
+                // Invalidate all the CSSStylableElements in the document.
+                invalidateTreeProperties(document.getDocumentElement());
+            } else if (removedStylableElementSibling != null) {
+                // Invalidate the CSSStylableElement siblings, to
+                // correctly match the adjacent selectors and
+                // first-child pseudo-class.
+                for (Node n = removedStylableElementSibling;
+                     n != null;
+                     n = n.getNextSibling()) {
+                    invalidateProperties(n);
+                }
+                removedStylableElementSibling = null;
+            }
+        }
+    }
+
+    /**
+     * To handle the modification of a CSSStyleSheetNode.
+     */
+    protected class DOMCharacterDataModifiedListener implements EventListener {
+        public void handleEvent(Event evt) {
+            Node n = (Node)evt.getTarget();
+            if (n.getParentNode() instanceof CSSStyleSheetNode) {
+                styleSheetNodes = null;
+
+                // Invalidate all the CSSStylableElements in the document.
+                invalidateTreeProperties(document.getDocumentElement());
             }
         }
     }
@@ -1907,52 +2139,44 @@ public abstract class CSSEngine {
                     return;
                 }
             }
-            if ((attrNS == null && classNamespaceURI == null) ||
-                (attrNS != null && attrNS.equals(classNamespaceURI))) {
-                String name = (attrNS == null)
-                    ? attr.getNodeName()
-                    : attr.getLocalName();
-                if (name.equals(classLocalName)) {
-                    // The class attribute has been modified...
-                    // ...invalidate all the properties.
 
-                    elt.setComputedStyleMap(null, null);
-
-                    firePropertiesChangedEvent(elt, ALL_PROPERTIES);
+            String name = (attrNS == null)
+                ? attr.getNodeName()
+                : attr.getLocalName();
                     
-                    Node c = getImportedChild(elt);
-                    if (c != null) {
-                        propagateChanges(c, ALL_PROPERTIES);
-                    }
-                    for (Node n = elt.getFirstChild();
-                         n != null;
-                         n = n.getNextSibling()) {
-                        propagateChanges(n, ALL_PROPERTIES);
-                        c = getImportedChild(n);
-                        if (c != null) {
-                            propagateChanges(c, ALL_PROPERTIES);
-                        }
-                    }
+            if (nonCSSPresentationalHints != null) {
+                if ((attrNS == null &&
+                     nonCSSPresentationalHintsNamespaceURI == null) ||
+                    (attrNS != null &&
+                     attrNS.equals(nonCSSPresentationalHintsNamespaceURI))) {
+                    if (nonCSSPresentationalHints.contains(name)) {
+                        // The 'name' attribute which represents a non CSS
+                        // presentational hint has been modified.
 
-                    return;
+                        nonCSSPresentationalHintUpdated(elt, style, name,
+                                                        mevt);
+                        return;
+                    }
                 }
             }
-            if (nonCSSPresentationalHints == null) {
-                return;
-            }
-            if ((attrNS == null &&
-                 nonCSSPresentationalHintsNamespaceURI == null) ||
-                (attrNS != null &&
-                 attrNS.equals(nonCSSPresentationalHintsNamespaceURI))) {
-                String name = (attrNS == null)
-                    ? attr.getNodeName()
-                    : attr.getLocalName();
 
-                if (nonCSSPresentationalHints.contains(name)) {
-                    // The 'name' attribute which represents a non CSS
-                    // presentational hint has been modified.
+            if (selectorAttributes != null &&
+                selectorAttributes.contains(name)) {
+                // An attribute has been modified, invalidate all the
+                // properties to correctly match attribute selectors.
 
-                    nonCSSPresentationalHintUpdated(elt, style, name, mevt);
+                elt.setComputedStyleMap(null, null);
+
+                firePropertiesChangedEvent(elt, ALL_PROPERTIES);
+                
+                Node c = getImportedChild(elt);
+                if (c != null) {
+                    propagateChanges(c, ALL_PROPERTIES);
+                }
+                for (Node n = elt.getFirstChild();
+                     n != null;
+                     n = n.getNextSibling()) {
+                    propagateChanges(n, ALL_PROPERTIES);
                 }
             }
         }
