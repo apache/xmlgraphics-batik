@@ -532,7 +532,13 @@ public class JSVGViewerFrame
                       cMap.get(JSVGCanvas.ZOOM_OUT_ACTION));
 
         listeners.put(PREVIOUS_TRANSFORM_ACTION, previousTransformAction);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_K, KeyEvent.CTRL_MASK);
+        imap.put(key, previousTransformAction);
+
         listeners.put(NEXT_TRANSFORM_ACTION, nextTransformAction);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK);
+        imap.put(key, nextTransformAction);
+
         listeners.put(USE_STYLESHEET_ACTION, useStylesheetAction);
         listeners.put(PLAY_ACTION, playAction);
         listeners.put(PAUSE_ACTION, pauseAction);
