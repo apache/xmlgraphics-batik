@@ -79,6 +79,13 @@ public class XMLTestReportProcessor
      */
     public static final String XML_TEST_REPORT_RESOURCES_DEFAULT_DIRECTORY 
         = Messages.formatMessage("XMLTestReportProcessor.config.xml.test.report.resources.default.directory", null);
+								 
+    /**
+     * Error message if report directory does not exist.
+     */
+    public static final String REPORT_DIRECTORY_DOES_NOT_EXIST
+        = "XMLTestReportProcessor.messages.error.report.directory.does.not.exist";
+								 
 
     /**
      * Recursively processes the input <tt>TestReport</tt> and
@@ -123,7 +130,13 @@ public class XMLTestReportProcessor
      */
     public File getReportDirectory()
         throws IOException {
-        return new File(XML_TEST_REPORT_DEFAULT_DIRECTORY);
+        File file = new File(XML_TEST_REPORT_DEFAULT_DIRECTORY);
+				if( !file.exists() ){
+					throw new IOException(Messages.formatMessage(REPORT_DIRECTORY_DOES_NOT_EXIST, 
+																											new Object[]{XML_TEST_REPORT_DEFAULT_DIRECTORY}));
+				}
+
+				return file;
     }
 
     /**
