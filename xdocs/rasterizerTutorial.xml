@@ -30,15 +30,14 @@
   <p>
     The goal of the transcoder API (package
     <code>org.apache.batik.transcoder</code>) is to provide a generic
-    API for transcoding an input to an output. First, this section
+    API for transcoding an input to an output. First, this document
     explains the basic transcoder API that <code>Transcoder</code>,
     <code>TranscoderInput</code> and <code>TranscoderOutput</code>
     define -- and thus all transcoders have in common. Next, it
     describes how to use the image transcoder API (package
     <code>org.apache.batik.transcoder.image</code>) which lets you
     rasterize an SVG document fragment to a raster image such as JPEG
-    or PNG. After that, this section shows you how to use specialized
-    API to implement your own transcoder.
+    or PNG.
   </p>
 </s1>
 
@@ -131,21 +130,21 @@ public class SaveAsJPEG {
     public static void main(String [] args) throws Exception {
 
         // create a JPEG transcoder
-        JPEGTranscoder t = new JPEGTranscoder();
+        <strong>JPEGTranscoder t = new JPEGTranscoder();</strong>
         // set the transcoding hints
-        t.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                             "org.apache.crimson.parser.XMLReaderImpl");
-        t.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,
-                             new Float(.8));
+        <strong>t.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                             "org.apache.crimson.parser.XMLReaderImpl");</strong>
+        <strong>t.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,
+                             new Float(.8));</strong>
         // create the transcoder input
         String svgURI = new File(args[0]).toURL().toString();
-        TranscoderInput input = new TranscoderInput(svgURI);
+        <strong>TranscoderInput input = new TranscoderInput(svgURI);</strong>
         // create the transcoder output
         OutputStream ostream = new FileOutputStream("out.jpg");
-        TranscoderOutput output = new TranscoderOutput(ostream);
+        <strong>TranscoderOutput output = new TranscoderOutput(ostream);</strong>
         // save the image
-        t.transcode(input, output);
-        // flush and close the stream and exit
+        <strong>t.transcode(input, output);</strong>
+        // flush and close the stream then exit
         ostream.flush();
         ostream.close();
         System.exit(0);
@@ -157,14 +156,15 @@ The code creates a <code>JPEGTranscoder</code> and sets the
 transcoding hints. The first hint indicates the XML parser to use. The
 second hint fixes the compression rate. Then, an input and an output
 are created. The input is created using the first command line
-argument that should represent a URI. The output is a byte stream from
-a file called "out.jpg". At last, the <code>transcode</code> method is
-invoked and the byte stream is closed.
+argument that should represent a URI. The output is a byte stream
+representing a file called "out.jpg". At last, the
+<code>transcode</code> method is invoked and the byte stream is
+closed.
 </p>
 <p>
-Although not shown above, the program might set additional hints to
-indicate a user style sheet, the preferred language of the document or
-the background color for example.
+Although not shown above, the program might have specified additional
+hints to indicate a user style sheet, the preferred language of the
+document or the background color for example.
 </p>
 <p>
 <strong>Try this:</strong>
@@ -180,9 +180,9 @@ the background color for example.
 <s2 title="Defining the Size of the Image">
 <p>
 By adding the following line of code to the previous example, you will
-control the raster image size. The new transcoding hint
-<code>KEY_WIDTH</code> lets you specify the raster image width. As
-the raster image height is not provided (using the
+specify the raster image size. The new transcoding hint
+<code>KEY_WIDTH</code> lets you specify the raster image width. As the
+raster image height is not provided (using the
 <code>KEY_HEIGHT</code>), the transcoder will compute the raster image
 dimension by keeping the aspect ratio of the SVG document.
 </p>
@@ -192,16 +192,87 @@ t.addTranscodingHint(JPEGTranscoder.KEY_WIDTH, new Integer(100));
 <p>
 The transcoder will have the same behavior if you specify the
 <code>KEY_HEIGHT</code> without initializing the
-<code>KEY_WIDTH</code>. In all cases (even if both keys are provided),
-the apsect ratio of the SVG docuemnt is preserved.
+<code>KEY_WIDTH</code>. In all cases (though both keys are provided),
+the transcoder will preserve the apsect ratio of the SVG document.
 </p>
 </s2>
 
-<s2 title="Controling the Content of the Image">
+<s2 title="Selecting an Area of Interest">
+<p>
+The image transcoder lets you specify an area of interest (ie. a part
+of the SVG document). The key <code>KEY_AOI</code> enables to select
+the region of the SVG document to render. The value of this key must
+be a <code>java.awt.Rectangle</code> specified in pixels and described
+in the SVG document's space. The following example shows how you can
+split a SVG document into 4 tiles.
+</p>
+<source>
+import java.io.*;
+import java.awt.*;
+import org.apache.batik.transcoder.image.JPEGTranscoder;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+
+public class TileProducer {
+
+    JPEGTranscoder trans = new JPEGTranscoder();
+
+    public TileProducer() {
+        trans.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                 "org.apache.crimson.parser.XMLReaderImpl");
+        trans.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,
+                                 new Float(.8));
+    }
+
+    public void tile(String inputFilename,
+                     String outputFilename,
+                     Rectangle aoi) throws Exception {
+        <strong>trans.addTranscodingHint(JPEGTranscoder.KEY_WIDTH,
+                                 new Integer(aoi.width));</strong>
+        <strong>trans.addTranscodingHint(JPEGTranscoder.KEY_HEIGHT,
+                                 new Integer(aoi.height));</strong>
+        <strong>trans.addTranscodingHint(JPEGTranscoder.KEY_AOI, aoi);</strong>
+        String svgURI = new File(inputFilename).toURL().toString();
+        TranscoderInput input = new TranscoderInput(svgURI);
+        OutputStream ostream = new FileOutputStream(outputFilename);
+        TranscoderOutput output = new TranscoderOutput(ostream);
+        trans.transcode(input, output);
+        ostream.flush();
+        ostream.close();
+    }
+
+    public static void main(String [] args) throws Exception {
+        TileProducer p = new TileProducer();
+        <strong>String in = "samples/anne.svg";
+        int documentWidth = 450;
+        int documentHeight = 500;</strong>
+        int dw2 = documentWidth / 2;
+        int dh2 = documentHeight / 2;
+        p.tile(in, "tileTopLeft.jpg", new Rectangle(0, 0, dw2, dh2));
+        p.tile(in, "tileTopRight.jpg", new Rectangle(dw2, 0, dw2, dh2));
+        p.tile(in, "tileBottomLeft.jpg", new Rectangle(0, dh2, dw2, dh2));
+        p.tile(in, "tileBottomRight.jpg", new Rectangle(dw2, dh2, dw2, dh2));
+        System.exit(0);
+    }
+}
+</source>
+<p>
+This code splits the same document "anne.svg" into four tiles of the
+same size. Considering the document and its original size, we can
+determine four regions. Then we rasterize each region using the
+<code>KEY_AOI</code> key. Note that we also specify the image width
+and height to be the same as the area of interest width and height (so
+we keep a 1:1 zoom factor). You can of course combine the
+<code>KEY_WIDTH</code>, <code>KEY_HEIGHT</code> keys with the
+<code>KEY_AOI</code>. In that case, first the area of interest will
+determine which part of the SVG document has to be rendered - then
+that part could be zoom in or out depending on the specified raster
+image size.
+</p>
 
 </s2>
 
-<s2 title="Generating an Image from the DOM">
+<s2 title="Generating an Image from a SVG DOM Tree">
 
 </s2>
 
