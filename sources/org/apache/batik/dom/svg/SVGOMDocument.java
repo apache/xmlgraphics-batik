@@ -298,7 +298,7 @@ public class SVGOMDocument
         }
         HashTable ht = (HashTable)customFactories.get(namespaceURI);
         if (ht == null) {
-            ht = new HashTable();
+            customFactories.put(namespaceURI, ht = new HashTable());
         }
         ht.put(localName, factory);
     }
