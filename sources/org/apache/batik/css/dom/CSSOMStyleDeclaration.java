@@ -266,15 +266,15 @@ public class CSSOMStyleDeclaration implements CSSStyleDeclaration {
          */
         public StyleDeclarationValue(String prop) {
             super(null);
-            valueProvider = this;
-            setModificationHandler(new AbstractModificationHandler() {
+            this.valueProvider = this;
+            this.setModificationHandler(new AbstractModificationHandler() {
                     protected Value getValue() {
                         return StyleDeclarationValue.this.getValue();
                     }
                     public void textChanged(String text) throws DOMException {
                         if (values == null ||
                             values.get(this) == null ||
-                            handler == null) {
+                            StyleDeclarationValue.this.handler == null) {
                             throw new DOMException
                                 (DOMException.NO_MODIFICATION_ALLOWED_ERR, "");
                         }
