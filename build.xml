@@ -289,8 +289,6 @@ To display the available targets type:
         <include name="${package-prefix}/util/*.class"/>
         <include name="${package-prefix}/util/resources/*.class"/>
         <include name="${package-prefix}/util/svg/*.class"/>
-        <include name="${package-prefix}/xml/*.class"/>
-        <include name="${package-prefix}/xml/scanner/*.class"/>
       </fileset>
       <fileset dir="${resources}">
         <include name="${package-prefix}/util/resources/**"/>
@@ -525,7 +523,7 @@ To display the available targets type:
         <path refid="libs-classpath"/>
         <pathelement location="resources" />
       </classpath>
-      <arg value="${args}"/>
+      <arg line="${args}"/>
     </java>
   </target>
 
@@ -539,7 +537,7 @@ To display the available targets type:
         <path refid="libs-classpath"/>
         <pathelement location="resources" />
       </classpath>
-      <arg value="${args}"/>
+      <arg line="${args}"/>
     </java>
   </target>
 
@@ -553,7 +551,7 @@ To display the available targets type:
         <path refid="libs-classpath"/>
         <pathelement location="resources" />
       </classpath>
-      <arg value="${args}"/>
+      <arg line="${args}"/>
     </java>
   </target>
 
@@ -567,7 +565,7 @@ To display the available targets type:
         <path refid="libs-classpath"/>
         <pathelement location="resources" />
       </classpath>
-      <arg value="${args}"/>
+      <arg line="${args}"/>
     </java>
   </target>
 
@@ -582,7 +580,7 @@ To display the available targets type:
         <pathelement location="resources" />
         <pathelement location="regsvggen/classes" />
       </classpath>
-      <arg value="${args}"/>
+      <arg line="${args}"/>
     </java>
   </target>
 

@@ -36,11 +36,19 @@ public interface SVGConstants extends CSSConstants {
     // SVG tags
     /////////////////////////////////////////////////////////////////////////
 
-    String SVG_ANIMATE_TAG = "animate";
     String SVG_A_TAG = "a";
+    String SVG_ALT_GLYPH_TAG = "altGlyph";
+    String SVG_ALT_GLYPH_DEF_TAG = "altGlyphDef";
+    String SVG_ALT_GLYPH_ITEM_TAG = "altGlyphItem";
+    String SVG_ANIMATE_TAG = "animate";
+    String SVG_ANIMATE_COLOR_TAG = "animateColor";
+    String SVG_ANIMATE_MOTION_TAG = "animateMotion";
+    String SVG_ANIMATE_TRANSFORM_TAG = "animateTransform";
     String SVG_CIRCLE_TAG = "circle";
     String SVG_CLIP_PATH_TAG = "clipPath";
     String SVG_COLOR_PROFILE_TAG = "color-profile";
+    String SVG_CURSOR_TAG = "cursor";
+    String SVG_DEFINITION_SRC_TAG = "definition-src";
     String SVG_DEFS_TAG = "defs";
     String SVG_DESC_TAG = "desc";
     String SVG_ELLIPSE_TAG = "ellipse";
@@ -68,20 +76,33 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FE_SPOT_LIGHT_TAG = "feSpotLight";
     String SVG_FE_TILE_TAG = "feTile";
     String SVG_FE_TURBULENCE_TAG = "feTurbulence";
+    String SVG_FONT_TAG = "font";
+    String SVG_FONT_FACE_TAG = "font-face";
+    String SVG_FONT_FACE_FORMAT_TAG = "font-face-format";
+    String SVG_FONT_FACE_NAME_TAG = "font-face-name";
+    String SVG_FONT_FACE_SRC_TAG = "font-face-src";
+    String SVG_FONT_FACE_URI_TAG = "font-face-uri";
+    String SVG_FOREIGN_OBJECT_TAG = "foreignObject";
     String SVG_FILTER_TAG = "filter";
     String SVG_G_TAG = "g";
+    String SVG_GLYPH_TAG = "glyph";
+    String SVG_GLYPH_REF_TAG = "glyphRef";
+    String SVG_HKERN_TAG = "hkern";
     String SVG_IMAGE_TAG = "image";
-    String SVG_LINEAR_GRADIENT_TAG = "linearGradient";
     String SVG_LINE_TAG = "line";
+    String SVG_LINEAR_GRADIENT_TAG = "linearGradient";
     String SVG_MARKER_TAG = "marker";
     String SVG_MASK_TAG = "mask";
     String SVG_METADATA_TAG = "metadata";
+    String SVG_MISSING_GLYPH_TAG = "missing-glyph";
+    String SVG_MPATH_TAG = "mpath";
     String SVG_PATH_TAG = "path";
     String SVG_PATTERN_TAG = "pattern";
     String SVG_POLYGON_TAG = "polygon";
     String SVG_POLYLINE_TAG = "polyline";
     String SVG_RADIAL_GRADIENT_TAG = "radialGradient";
     String SVG_RECT_TAG = "rect";
+    String SVG_SET_TAG = "set";
     String SVG_SCRIPT_TAG = "script";
     String SVG_STOP_TAG = "stop";
     String SVG_STYLE_TAG = "style";
@@ -94,6 +115,8 @@ public interface SVGConstants extends CSSConstants {
     String SVG_TREF_TAG = "tref";
     String SVG_TSPAN_TAG = "tspan";
     String SVG_USE_TAG = "use";
+    String SVG_VIEW_TAG = "view";
+    String SVG_VKERN_TAG = "vkern";
 
     /////////////////////////////////////////////////////////////////////////
     // SVG attributes
@@ -107,6 +130,8 @@ public interface SVGConstants extends CSSConstants {
     String SVG_CLIP_PATH_UNITS_ATTRIBUTE = "clipPathUnits";
     String SVG_COLOR_INTERPOLATION_ATTRIBUTE = CSS_COLOR_INTERPOLATION_PROPERTY;
     String SVG_COLOR_RENDERING_ATTRIBUTE = CSS_COLOR_RENDERING_PROPERTY;
+    String SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE = "contentScriptType";
+    String SVG_CONTENT_STYLE_TYPE_ATTRIBUTE = "contentStyleType";
     String SVG_CX_ATTRIBUTE = "cx";
     String SVG_CY_ATTRIBUTE = "cy";
     String SVG_DIFFUSE_CONSTANT_ATTRIBUTE = "diffuseConstant";
@@ -182,8 +207,8 @@ public interface SVGConstants extends CSSConstants {
     String SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE = "preserveAspectRatio";
     String SVG_PRIMITIVE_UNITS_ATTRIBUTE = "primitiveUnits";
     String SVG_RADIUS_ATTRIBUTE = "radius";
-    String SVG_REFX_ATTRIBUTE = "refX";
-    String SVG_REFY_ATTRIBUTE = "refY";
+    String SVG_REF_X_ATTRIBUTE = "refX";
+    String SVG_REF_Y_ATTRIBUTE = "refY";
     String SVG_RENDERING_INTENT_ATTRIBUTE = "rendering-intent";
     String SVG_RESULT_ATTRIBUTE = "result";
     String SVG_RESULT_SCALE_ATTRIBUTE = "resultScale";
@@ -238,13 +263,22 @@ public interface SVGConstants extends CSSConstants {
     String SVG_Y_ATTRIBUTE = "y";
     String SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE = "yChannelSelector";
     String SVG_Z_ATTRIBUTE = "z";
+    String SVG_ZOOM_AND_PAN_ATTRIBUTE = "zoomAndPan";
 
     /////////////////////////////////////////////////////////////////////////
     // SVG attribute value
     /////////////////////////////////////////////////////////////////////////
 
-    String SVG_ADJUST_SPACINGANDGLYPHS_VALUE = "spacingAndGlyphs";
-    String SVG_ADJUST_SPACING_VALUE = "spacing";
+    String SVG_100_VALUE = "100";
+    String SVG_200_VALUE = "200";
+    String SVG_300_VALUE = "300";
+    String SVG_400_VALUE = "400";
+    String SVG_500_VALUE = "500";
+    String SVG_600_VALUE = "600";
+    String SVG_700_VALUE = "700";
+    String SVG_800_VALUE = "800";
+    String SVG_900_VALUE = "900";
+    String SVG_ABSOLUTE_COLORIMETRIC_VALUE = "absolute-colorimetric";
     String SVG_ALIGN_VALUE = "align";
     String SVG_ARITHMETIC_VALUE = "arithmetic";
     String SVG_ATOP_VALUE = "atop";
@@ -252,12 +286,17 @@ public interface SVGConstants extends CSSConstants {
     String SVG_A_VALUE = "A";
     String SVG_BACKGROUND_ALPHA_VALUE = "BackgroundAlpha";
     String SVG_BACKGROUND_IMAGE_VALUE = "BackgroundImage";
+    String SVG_BEVEL_VALUE = "bevel";
+    String SVG_BOLDER_VALUE = "bolder";
+    String SVG_BOLD_VALUE = "bold";
+    String SVG_BUTT_VALUE = "butt";
     String SVG_B_VALUE = "B";
     String SVG_COMPOSITE_VALUE = "composite";
     String SVG_CRISP_EDGES_VALUE = "crispEdges";
     String SVG_DARKEN_VALUE = "darken";
     String SVG_DIGIT_ONE_VALUE = "1";
     String SVG_DILATE_VALUE = "dilate";
+    String SVG_DISABLE_VALUE = "disable";
     String SVG_DISCRETE_VALUE = "discrete";
     String SVG_DUPLICATE_VALUE = "duplicate";
     String SVG_END_VALUE = "end";
@@ -267,22 +306,6 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FALSE_VALUE = "false";
     String SVG_FILL_PAINT_VALUE = "FillPaint";
     String SVG_FLOOD_VALUE = "flood";
-    String SVG_FONT_STYLE_ITALIC_VALUE = "italic";
-    String SVG_FONT_STYLE_NORMAL_VALUE = "normal";
-    String SVG_FONT_STYLE_OBLIQUE_VALUE = "oblique";
-    String SVG_FONT_WEIGHT_100_VALUE = "100";
-    String SVG_FONT_WEIGHT_200_VALUE = "200";
-    String SVG_FONT_WEIGHT_300_VALUE = "300";
-    String SVG_FONT_WEIGHT_400_VALUE = "400";
-    String SVG_FONT_WEIGHT_500_VALUE = "500";
-    String SVG_FONT_WEIGHT_600_VALUE = "600";
-    String SVG_FONT_WEIGHT_700_VALUE = "700";
-    String SVG_FONT_WEIGHT_800_VALUE = "800";
-    String SVG_FONT_WEIGHT_900_VALUE = "900";
-    String SVG_FONT_WEIGHT_BOLDER_VALUE = "bolder";
-    String SVG_FONT_WEIGHT_BOLD_VALUE = "bold";
-    String SVG_FONT_WEIGHT_LIGHTER_VALUE = "lighter";
-    String SVG_FONT_WEIGHT_NORMAL_VALUE = "normal";
     String SVG_FRACTAL_NOISE_VALUE = "fractalNoise";
     String SVG_GAMMA_VALUE = "gamma";
     String SVG_GEOMETRIC_PRECISION_VALUE = "geometricPrecision";
@@ -291,18 +314,16 @@ public interface SVGConstants extends CSSConstants {
     String SVG_HUNDRED_PERCENT_VALUE = "100%";
     String SVG_IDENTITY_VALUE = "identity";
     String SVG_IN_VALUE = "in";
+    String SVG_ITALIC_VALUE = "italic";
     String SVG_LIGHTEN_VALUE = "lighten";
+    String SVG_LIGHTER_VALUE = "lighter";
     String SVG_LINEAR_RGB_VALUE = "linearRGB";
     String SVG_LINEAR_VALUE = "linear";
-    String SVG_LINE_CAP_BUTT_VALUE = "butt";
-    String SVG_LINE_CAP_ROUND_VALUE = "round";
-    String SVG_LINE_CAP_SQUARE_VALUE = "square";
-    String SVG_LINE_JOIN_BEVEL_VALUE = "bevel";
-    String SVG_LINE_JOIN_MITER_VALUE = "miter";
-    String SVG_LINE_JOIN_ROUND_VALUE = "round";
     String SVG_LUMINANCE_TO_ALPHA_VALUE = "luminanceToAlpha";
+    String SVG_MAGNIFY_VALUE = "magnify";
     String SVG_MATRIX_VALUE = "matrix";
     String SVG_MIDDLE_VALUE = "middle";
+    String SVG_MITER_VALUE = "miter";
     String SVG_MULTIPLY_VALUE = "multiply";
     String SVG_NEW_VALUE = "new";
     String SVG_NINETY_VALUE = "90";
@@ -311,6 +332,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_NORMAL_VALUE = "normal";
     String SVG_NO_STITCH_VALUE = "noStitch";
     String SVG_OBJECT_BOUNDING_BOX_VALUE = "objectBoundingBox";
+    String SVG_OBLIQUE_VALUE = "oblique";
     String SVG_ONE_VALUE = "1";
     String SVG_OPAQUE_VALUE = "1";
     String SVG_OPTIMIZE_LEGIBILITY_VALUE = "optimizeLegibility";
@@ -319,19 +341,21 @@ public interface SVGConstants extends CSSConstants {
     String SVG_OUT_VALUE = "out";
     String SVG_OVER_VALUE = "over";
     String SVG_PAD_VALUE = "pad";
+    String SVG_PERCEPTUAL_VALUE = "perceptual";
     String SVG_PRESERVE_VALUE = "preserve";
     String SVG_REFLECT_VALUE = "reflect";
-    String SVG_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC_VALUE = "absolute-colorimetric";
-    String SVG_RENDERING_INTENT_AUTO_VALUE = "auto";
-    String SVG_RENDERING_INTENT_PERCEPTUAL_VALUE = "perceptual";
-    String SVG_RENDERING_INTENT_RELATIVE_COLORIMETRIC_VALUE = "relative-colorimetric";
-    String SVG_RENDERING_INTENT_SATURATION_VALUE = "saturation";
+    String SVG_RELATIVE_COLORIMETRIC_VALUE = "relative-colorimetric";
     String SVG_REPEAT_VALUE = "repeat";
+    String SVG_ROUND_VALUE = "round";
     String SVG_R_VALUE = "R";
     String SVG_SATURATE_VALUE = "saturate";
+    String SVG_SATURATION_VALUE = "saturation";
     String SVG_SCREEN_VALUE = "screen";
     String SVG_SOURCE_ALPHA_VALUE = "SourceAlpha";
     String SVG_SOURCE_GRAPHIC_VALUE = "SourceGraphic";
+    String SVG_SPACING_AND_GLYPHS_VALUE = "spacingAndGlyphs";
+    String SVG_SPACING_VALUE = "spacing";
+    String SVG_SQUARE_VALUE = "square";
     String SVG_SRGB_VALUE = "sRGB";
     String SVG_START_VALUE = "start";
     String SVG_STITCH_VALUE = "stitch";
@@ -341,8 +365,6 @@ public interface SVGConstants extends CSSConstants {
     String SVG_TABLE_VALUE = "table";
     String SVG_TRUE_VALUE = "true";
     String SVG_TURBULENCE_VALUE = "turbulence";
-    String SVG_TYPE_LINEAR_VALUE = "linear";
-    String SVG_TYPE_TABLE_VALUE = "table";
     String SVG_USER_SPACE_ON_USE_VALUE = "userSpaceOnUse";
     String SVG_WRAP_VALUE = "wrap";
     String SVG_XOR_VALUE = "xor";

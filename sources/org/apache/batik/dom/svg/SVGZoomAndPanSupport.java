@@ -9,6 +9,9 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractNode;
+
+import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGZoomAndPan;
@@ -19,26 +22,7 @@ import org.w3c.dom.svg.SVGZoomAndPan;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGZoomAndPanSupport {
-    /**
-     * The zoomAndPan attribute name.
-     */
-    public final static String ZOOM_AND_PAN = "zoomAndPan";
-
-    /**
-     * The disable zoomAndPan attribute value.
-     */
-    public final static String DISABLE = "disable";
-
-    /**
-     * The magnify zoomAndPan attribute value.
-     */
-    public final static String MAGNIFY = "magnify";
-
-    /**
-     * The disable zoomAndPan attribute value.
-     */
-    public final static String ZOOM = "zoom";
+public class SVGZoomAndPanSupport implements SVGConstants {
 
     /**
      * This class does not need to be instantiated.
@@ -53,13 +37,10 @@ public class SVGZoomAndPanSupport {
 	throws DOMException {
 	switch (val) {
 	case SVGZoomAndPan.SVG_ZOOMANDPAN_DISABLE:
-	    elt.setAttribute(ZOOM_AND_PAN, DISABLE);
+	    elt.setAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE, SVG_DISABLE_VALUE);
 	    break;
 	case SVGZoomAndPan.SVG_ZOOMANDPAN_MAGNIFY:
-	    elt.setAttribute(ZOOM_AND_PAN, MAGNIFY);
-	    break;
-	case SVGZoomAndPan.SVG_ZOOMANDPAN_ZOOM:
-	    elt.setAttribute(ZOOM_AND_PAN, ZOOM);
+	    elt.setAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE, SVG_MAGNIFY_VALUE);
 	    break;
 	default:
 	    throw ((AbstractNode)elt).createDOMException
@@ -73,12 +54,9 @@ public class SVGZoomAndPanSupport {
      * Returns the ZoomAndPan attribute value.
      */
     public static short getZoomAndPan(Element elt) {
-	String s = elt.getAttribute(ZOOM_AND_PAN);
-	if (s.equals(MAGNIFY)) {
+	String s = elt.getAttributeNS(null, SVG_ZOOM_AND_PAN_ATTRIBUTE);
+	if (s.equals(SVG_MAGNIFY_VALUE)) {
 	    return SVGZoomAndPan.SVG_ZOOMANDPAN_MAGNIFY;
-	}
-	if (s.equals(ZOOM)) {
-	    return SVGZoomAndPan.SVG_ZOOMANDPAN_ZOOM;
 	}
 	return SVGZoomAndPan.SVG_ZOOMANDPAN_DISABLE;
     }

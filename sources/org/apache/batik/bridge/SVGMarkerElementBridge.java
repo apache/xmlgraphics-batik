@@ -211,18 +211,18 @@ public class SVGMarkerElementBridge implements MarkerBridge,
 
         // 'refX' attribute - default is 0
         float refX = 0;
-        s = markerElement.getAttributeNS(null, SVG_REFX_ATTRIBUTE);
+        s = markerElement.getAttributeNS(null, SVG_REF_X_ATTRIBUTE);
         if (s.length() != 0) {
             refX = UnitProcessor.svgHorizontalCoordinateToUserSpace
-                (s, SVG_REFX_ATTRIBUTE, uctx);
+                (s, SVG_REF_X_ATTRIBUTE, uctx);
         }
 
         // 'refY' attribute - default is 0
         float refY = 0;
-        s = markerElement.getAttributeNS(null, SVG_REFY_ATTRIBUTE);
+        s = markerElement.getAttributeNS(null, SVG_REF_Y_ATTRIBUTE);
         if (s.length() != 0) {
             refY = UnitProcessor.svgVerticalCoordinateToUserSpace
-                (s, SVG_REFY_ATTRIBUTE, uctx);
+                (s, SVG_REF_Y_ATTRIBUTE, uctx);
         }
 
         // TK: Warning at this time, refX and refY are relative to the

@@ -12,6 +12,7 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-gui-util.jar \
             lib/batik-awt-util.jar \
             lib/batik-util.jar \
+            lib/batik-xml.jar \
             lib/crimson-parser.jar \
             lib/js.jar \
             lib/xalan-1.2.1.jar \
