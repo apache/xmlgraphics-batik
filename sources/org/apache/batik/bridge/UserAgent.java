@@ -83,11 +83,6 @@ public interface UserAgent {
     void setSVGCursor(Cursor cursor);
 
     /**
-     * Runs the given thread.
-     */
-    void runThread(Thread t);
-
-    /**
      * Returns the class name of the XML parser.
      */
     String getXMLParserClassName();

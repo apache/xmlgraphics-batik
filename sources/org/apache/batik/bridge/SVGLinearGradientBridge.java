@@ -13,18 +13,14 @@ import java.awt.Paint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Vector;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.PaintBridge;
+import org.apache.batik.bridge.resources.Messages;
+import org.apache.batik.ext.awt.LinearGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
-import org.apache.batik.ext.awt.LinearGradientPaint;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -78,6 +74,7 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
 
         GraphicsNodeRenderContext rc =
                          ctx.getGraphicsNodeRenderContext();
+        DocumentLoader loader = ctx.getDocumentLoader();
 
         //
         // Get unit processor to compute gradient control points
@@ -89,31 +86,51 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
         // parse the gradientUnits attribute, (default is 'objectBoundingBox')
-        String units = paintElement.getAttributeNS(null, ATTR_GRADIENT_UNITS);
+        String units =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_GRADIENT_UNITS,
+                                                 loader);
         if(units.length() == 0){
             units = SVG_OBJECT_BOUNDING_BOX_VALUE;
         }
 
         // parse the x1 attribute, (default is 0%)
-        String x1 = paintElement.getAttributeNS(null, ATTR_X1);
+        String x1 =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_X1,
+                                                 loader);
         if (x1.length() == 0){
             x1 = "0%";
         }
 
         // parse the y1 attribute, (default is 0%)
-        String y1 = paintElement.getAttributeNS(null, ATTR_Y1);
+        String y1 =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_Y1,
+                                                 loader);
         if (y1.length() == 0){
             y1 = "0%";
         }
 
         // parse the x2 attribute, (default is 100%)
-        String x2 = paintElement.getAttributeNS(null, ATTR_X2);
+        String x2 =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_X2,
+                                                 loader);
         if (x2.length() == 0){
             x2 = "100%";
         }
 
         // parse the y2 attribute, (default is 0%)
-        String y2 = paintElement.getAttributeNS(null, ATTR_Y2);
+        String y2 =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_Y2,
+                                                 loader);
         if (y2.length() == 0){
             y2 = "0%";
         }
@@ -141,7 +158,10 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
 
         // parse the 'spreadMethod' attribute, (default is PAD)
         String spreadMethod =
-            paintElement.getAttributeNS(null, ATTR_SPREAD_METHOD);
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_SPREAD_METHOD,
+                                                 loader);
         if (spreadMethod.length() == 0) {
             spreadMethod = VALUE_PAD;
         }

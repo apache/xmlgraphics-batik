@@ -14,18 +14,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Vector;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.PaintBridge;
+import org.apache.batik.bridge.resources.Messages;
+import org.apache.batik.ext.awt.RadialGradientPaint;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
-import org.apache.batik.ext.awt.RadialGradientPaint;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -77,8 +73,9 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
                                 Element paintedElement,
                                 Element paintElement){
 
-       GraphicsNodeRenderContext rc =
+        GraphicsNodeRenderContext rc =
                          ctx.getGraphicsNodeRenderContext();
+        DocumentLoader loader = ctx.getDocumentLoader();
 
         //
         // Get unit processor to compute gradient control points
@@ -90,37 +87,61 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
         // parse the gradientUnits attribute, (default is 'objectBoundingBox')
-        String units = paintElement.getAttributeNS(null, ATTR_GRADIENT_UNITS);
+        String units =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_GRADIENT_UNITS,
+                                                 loader);
         if(units.length() == 0){
             units = SVG_OBJECT_BOUNDING_BOX_VALUE;
         }
 
         // parse the cx attribute, (default is 50%)
-        String cx = paintElement.getAttributeNS(null, SVG_CX_ATTRIBUTE);
+        String cx =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 SVG_CX_ATTRIBUTE,
+                                                 loader);
         if(cx.length() == 0){
             cx = "50%";
         }
 
         // parse the cy attribute, (default is 50%)
-        String cy = paintElement.getAttributeNS(null, SVG_CY_ATTRIBUTE);
+        String cy =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 SVG_CY_ATTRIBUTE,
+                                                 loader);
         if(cy.length() == 0){
             cy = "50%";
         }
 
         // parse the r attribute, (default is 50%)
-        String r = paintElement.getAttributeNS(null, SVG_R_ATTRIBUTE);
+        String r =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 SVG_R_ATTRIBUTE,
+                                                 loader);
         if(r.length() == 0){
             r = "50%";
         }
 
         // parse the fx attribute, (default is same as cx)
-        String fx = paintElement.getAttributeNS(null, ATTR_FX);
+        String fx =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_FX,
+                                                 loader);
         if(fx.length() == 0){
             fx = cx;
         }
 
         // parse the fy attribute, (default is same as cy)
-        String fy = paintElement.getAttributeNS(null, ATTR_FY);
+        String fy =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_FY,
+                                                 loader);
         if(fy.length() == 0){
             fy = cy;
         }
@@ -152,7 +173,10 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
 
         // parse the 'spreadMethod' attribute, (default is PAD)
         String spreadMethod =
-            paintElement.getAttributeNS(null, ATTR_SPREAD_METHOD);
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_SPREAD_METHOD,
+                                                 loader);
         if (spreadMethod.length() == 0) {
             spreadMethod = VALUE_PAD;
         }
