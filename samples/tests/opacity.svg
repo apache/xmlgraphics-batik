@@ -19,7 +19,7 @@ Validates opacity, fill-opacity and stroke opacity
 <style type="text/css">
   <![CDATA[
   .top {
-    fill: red;
+    fill: rgb(255, 255, 0);
     stroke: black;
     stroke-width: 8;
   }
@@ -42,8 +42,9 @@ Validates opacity, fill-opacity and stroke opacity
 <!-- ====================================================================== -->
 <!-- top part, test fill-opacity and stroke-opacity                         -->
 <!-- ====================================================================== -->
-<rect x="10" y="120" width="560" height="30" style="fill:#0000FF"/>
-<rect x="10" y="170" width="560" height="30" style="fill:#00FF00"/>
+
+<rect x="10" y="120" width="560" height="30" style="fill:#00ff00"/>
+<rect x="10" y="170" width="560" height="30" style="fill:green"/>
 
 <circle cx="90" cy="160" r="60" class="top"/>
 <text x="40" y="240">o:1 fo:1 so:1</text> 
@@ -61,10 +62,11 @@ Validates opacity, fill-opacity and stroke opacity
 <!-- bottom part, test fill-opacity and stroke-opacity with opacity         -->
 <!-- ====================================================================== -->
 
-<rect x="10" y="280" width="560" height="30" style="fill:#0000FF"/>
-<rect x="10" y="330" width="560" height="30" style="fill:#00FF00"/>
+<rect x="10" y="280" width="560" height="30" style="fill:#00ff00"/>
+<rect x="10" y="330" width="560" height="30" style="fill:green"/>
 
 <circle cx="90" cy="320" r="60" class="top" style="opacity:.5"/>
+
 <text x="40" y="400">o:0.5 fo:1 so:1</text> 
 
 <circle cx="220" cy="320" r="60" class="top" style="fill-opacity:.5; opacity:.5"/>
