@@ -10,6 +10,7 @@ package org.apache.batik.css.value;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.css.HiddenChildElementSupport;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSValue;
@@ -68,7 +69,7 @@ public class VisibilityResolver implements RelativeValueResolver {
 			     String priority,
 			     int origin) {
 	if (value.getCssValueType() == CSSValue.CSS_INHERIT) {
-	    Element elt = getParentElement(element);
+	    Element elt = HiddenChildElementSupport.getParentElement(element);
 	    if (elt != null) {
 		CSSOMReadOnlyStyleDeclaration sd;
 		String prop = getPropertyName();
@@ -81,17 +82,5 @@ public class VisibilityResolver implements RelativeValueResolver {
                      sd.getPropertyOrigin(prop));
 	    }
 	}
-    }
-
-    /**
-     * Returns the parent element of the given one, or null.
-     */
-    protected Element getParentElement(Element e) {
-	for (Node n = e.getParentNode(); n != null; n = n.getParentNode()) {
-	    if (n.getNodeType() == Node.ELEMENT_NODE) {
-		return (Element)n;
-	    }
-	}
-	return null;
     }
 }

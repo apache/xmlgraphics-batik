@@ -8,9 +8,6 @@
 
 package org.apache.batik.css;
 
-import org.apache.batik.css.event.CSSStyleDeclarationChangeListener;
-import org.apache.batik.css.event.CSSStyleDeclarationChangeSupport;
-import org.apache.batik.css.event.CSSValueChangeListener;
 import org.apache.batik.css.value.ImmutableInherit;
 import org.apache.batik.css.value.ValueFactory;
 import org.apache.batik.css.value.ValueFactoryMap;
@@ -56,11 +53,6 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     protected PropertyMap properties = new PropertyMap();
 
     /**
-     * The style declaration change event support.
-     */
-    protected CSSStyleDeclarationChangeSupport declarationChangeSupport;
-
-    /**
      * The ViewCSS.
      */
     protected ViewCSS viewCSS;
@@ -101,75 +93,6 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
 	    result += ve.priority + ";\n";
 	}
 	return result;
-    }
-
-    /**
-     * Notifies this style declaration that a CSSValue as changed.
-     */
-    public void cssValueChange(String prop, CSSValue oldV, CSSValue newV) {
-	if (declarationChangeSupport != null) {
-	    declarationChangeSupport.fireCSSPropertyChange(prop, oldV, newV);
-	}
-    }
-
-    /**
-     * Adds a CSSStyleDeclarationChangeListener to the listener list.
-     * @param listener The CSSStyleDeclarationChangeListener to be added
-     */
-    public void addCSSStyleDeclarationChangeListener
-	(CSSStyleDeclarationChangeListener listener) {
-	if (declarationChangeSupport == null) {
-	    declarationChangeSupport =
-                new CSSStyleDeclarationChangeSupport(this);
-	}
-	declarationChangeSupport.addCSSStyleDeclarationChangeListener
-            (listener);
-    }
-    
-    /**
-     * Removes a CSSStyleDeclarationChangeListener from the listener list.
-     * @param listener The CSSStyleDeclarationChangeListener to be removed
-     */
-    public void removeCSSStyleDeclarationChangeListener
-	(CSSStyleDeclarationChangeListener listener) {
-	if (declarationChangeSupport == null) {
-	    return;
-	}
-	declarationChangeSupport.removeCSSStyleDeclarationChangeListener
-            (listener);
-    }
-
-    /**
-     * Reports the start of a CSSStyleDeclaration update to any registered
-     * listeners.
-     */
-    public void fireCSSStyleDeclarationChangeStart() {
-	if (declarationChangeSupport == null) {
-	    return;
-	}
-	declarationChangeSupport.fireCSSStyleDeclarationChangeStart();
-    }
-
-    /**
-     * Reports the cancellation of a CSSStyleDeclaration update to any
-     * registered listeners.
-     */
-    public void fireCSSStyleDeclarationChangeCancel() {
-	if (declarationChangeSupport == null) {
-	    return;
-	}
-	declarationChangeSupport.fireCSSStyleDeclarationChangeCancel();
-    }
-
-    /**
-     * Reports the end of a CSSStyleDeclaration update to any registered
-     * listeners.
-     */
-    public void fireCSSStyleDeclarationChangeEnd() {
-	if (declarationChangeSupport == null) {
-	    return;
-	}
-	declarationChangeSupport.fireCSSStyleDeclarationChangeEnd();
     }
 
     /**
@@ -238,7 +161,6 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
 	ValueEntry ve = (ValueEntry)properties.put(propertyName,
 						 new ValueEntry(v, imp, orig));
 	CSSValue oldV = (ve == null) ? null : ve.value;
-	cssValueChange(propertyName, oldV, v);
     }
 
     /**
