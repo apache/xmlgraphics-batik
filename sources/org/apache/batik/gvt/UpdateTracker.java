@@ -34,7 +34,8 @@ import org.apache.batik.gvt.event.GraphicsNodeChangeEvent;
 public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
     Map dirtyNodes = null;
-    Map nodeBounds = new HashMap();
+    Map fromBounds = new HashMap();
+    Map toBounds   = new HashMap();
 
     public UpdateTracker(){
     }
@@ -69,16 +70,16 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             AffineTransform oat;
             oat = (AffineTransform)dirtyNodes.get(gnWRef);
             
-            Rectangle2D srcORgn = (Rectangle2D)nodeBounds.get(gnWRef);
+            Rectangle2D srcORgn = (Rectangle2D)fromBounds.remove(gnWRef);
 
-            Rectangle2D srcNRgn = gn.getBounds();
+            Rectangle2D srcNRgn = (Rectangle2D)toBounds.remove(gnWRef);
+            if (srcNRgn == null) srcNRgn = gn.getBounds();
             AffineTransform nat = gn.getTransform();
 
             if (nat != null){
                 nat = (nat == null) ? null : new AffineTransform(nat);
             }
 
-            nodeBounds.put(gnWRef, srcNRgn); // remember the new bounds...
             // System.out.println("Rgns: " + srcORgn + " - " + srcNRgn);
             // System.out.println("ATs: " + oat + " - " + nat);
             Shape oRgn = srcORgn;
@@ -100,15 +101,6 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                     break; // We reached the top of the tree
 
                 gnWRef = gn.getWeakReference();
-
-                if (dirtyNodes.containsKey(gnWRef))
-                    break; // We already have the parent in the list of
-                           // dirty nodes. so let it handle this...
-
-                if (nodeBounds.containsKey(gnWRef)) {
-                    // Update the bounds in the nodeBounds array
-                    nodeBounds.put(gnWRef, gn.getBounds());
-                }
 
                 AffineTransform at = gn.getTransform();
 
@@ -179,12 +171,22 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             dirtyNodes.put(gnWRef, at);
         }
 
+        Rectangle2D r2d = gnce.getFrom();
+        if (r2d == null) 
+            r2d = gn.getBounds();
+        if (r2d != null) {
+            Rectangle2D rgn = (Rectangle2D)fromBounds.remove(gnWRef);
+            if (rgn != null)
+                r2d.add(rgn);
+            fromBounds.put(gnWRef, r2d);
+        }
 
-        while (!nodeBounds.containsKey(gnWRef)) {
-            nodeBounds.put(gnWRef, gn.getBounds());
-            gn = gn.getParent();
-            if (gn == null) break;
-            gnWRef = gn.getWeakReference();
+        r2d = gnce.getTo();
+        if (r2d != null) {
+            Rectangle2D rgn = (Rectangle2D)toBounds.remove(gnWRef);
+            if (rgn != null)
+                r2d.add(rgn);
+            toBounds.put(gnWRef, r2d);
         }
     }
 
@@ -193,26 +195,5 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
      */
     public void clear() {
         dirtyNodes = null;
-    }
-
-    public static class DirtyInfo {
-        // Always references a GraphicsNode.
-        WeakReference   gn;
-
-        // The transform from gn to parent at time of construction.
-        AffineTransform gn2parent;
-
-        public DirtyInfo(GraphicsNode gn, AffineTransform at) {
-            this.gn     = gn.getWeakReference();
-            this.gn2parent = at;
-        }
-
-        public GraphicsNode getGraphicsNode() {
-            return (GraphicsNode)gn.get();
-        }
-
-        public AffineTransform getGn2Parent() {
-            return gn2parent;
-        }
     }
 }

@@ -8,6 +8,7 @@
 
 package org.apache.batik.gvt.event;
 
+import java.awt.geom.Rectangle2D;
 import java.awt.event.InputEvent;
 import org.apache.batik.gvt.GraphicsNode;
 
@@ -38,6 +39,9 @@ public class GraphicsNodeChangeEvent extends GraphicsNodeEvent {
      */
     public static final int CHANGE_COMPLETED = CHANGE_FIRST+1;
 
+    protected Rectangle2D from;
+    protected Rectangle2D to;
+
     /**
      * Constructs a new graphics node event with the specified source and ID.
      * @param source the graphics node where the event originated
@@ -46,6 +50,9 @@ public class GraphicsNodeChangeEvent extends GraphicsNodeEvent {
     public GraphicsNodeChangeEvent(GraphicsNode source, int id) {
         super(source, id);
     }
+    public void setFrom(Rectangle2D from) { this.from = from; }
+    public void setTo  (Rectangle2D to)   { this.to = to; }
 
-
+    public Rectangle2D getFrom() { return from; }
+    public Rectangle2D getTo()   { return to; }
 }
