@@ -37,7 +37,8 @@
     <test id="ShearTest" />
     <test id="Texture" />
     <test id="TextSpacePreserve" />    
-    <test id="TransformCollapse" />
+    <test id="TransformCollapse" /> 
 
+    <test id="ShowSVG" class="org.apache.batik.svggen.ShowGraphics2DOutput" />
     <test id="GetRootTest" class="org.apache.batik.svggen.GetRootTest" />
 </testSuite>
