@@ -739,6 +739,8 @@ To display the available targets type:
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>
+        <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.xsl" />
+        <exclude name="${package-prefix}/apps/svgbrowser/resources/squiggle.svg" />
       </fileset>
     </jar>
     <move file="${resources}/${package-prefix}/apps/svgbrowser/resources/svgbrowser.policy"
@@ -1074,6 +1076,14 @@ To display the available targets type:
     </java>
 
     <java fork="yes"
+          classname="org.apache.xalan.xslt.Process" >
+        <classpath>
+            <path refid="libs-build-classpath"/>
+        </classpath>
+        <arg line="-PARAM version ${version} -PARAM revisionType revisionType${revisionType} -PARAM revisionNumber revisionNumber${revisionNumber} -in ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.xsl -xsl ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.xsl -out ${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.svg" />
+    </java>
+
+    <java fork="yes"
           classname="${class-prefix}.apps.rasterizer.Main">
       <classpath>
         <pathelement location="${dest}" />
@@ -1082,7 +1092,17 @@ To display the available targets type:
       </classpath>
       <arg line="${xdocs}/images/splash.svg"/>
     </java>
-    <copy file="${xdocs}/images/splash.png" tofile="${resources}/org/apache/batik/apps/svgbrowser/resources/batikSplash.png" />
+
+    <java fork="yes"
+          classname="${class-prefix}.apps.rasterizer.Main">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+      </classpath>
+      <arg line="${resources}/org/apache/batik/apps/svgbrowser/resources/squiggle.svg"/>
+    </java>
+
   </target>
 
 
