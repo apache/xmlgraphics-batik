@@ -59,6 +59,7 @@ import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSValueList;
 import org.w3c.dom.css.RGBColor;
 import org.w3c.dom.css.ViewCSS;
+import org.w3c.dom.css.Rect;
 import org.w3c.dom.svg.SVGICCColor;
 import org.w3c.dom.svg.SVGColor;
 import org.w3c.dom.svg.SVGDocument;
@@ -298,6 +299,44 @@ public class CSSUtilities implements SVGConstants {
         return new Color(r, g, b, Math.round(o * 255f));
     }
 
+    /**
+     * Returns true if the 'overflow' property value is 'hidden',
+     * false otherwise.
+     * @param e the element with the 'overflow' property
+     */
+    public static boolean convertOverflow(Element e) {
+        CSSStyleDeclaration decl = getComputedStyle(e);
+        CSSPrimitiveValue overflow =
+            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_OVERFLOW_PROPERTY);
+        String s = overflow.getStringValue();
+        return (s.charAt(0) == 'h');
+    }
+
+    /**
+     * Returns an array of float number representing the clip rect or
+     * null if 'auto'. The float are in the order top, right, bottom, left.
+     * @param e the element with the 'clip' property
+     */
+    public static float[] convertClip(Element e) {
+        CSSStyleDeclaration decl = getComputedStyle(e);
+        CSSPrimitiveValue clip =
+            (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_CLIP_PROPERTY);
+        switch (clip.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_RECT:
+            float [] off = new float[4];
+            Rect r = clip.getRectValue();
+            off[0] = r.getTop().getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+            off[1] = r.getRight().getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+            off[2] = r.getBottom().getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+            off[3] = r.getLeft().getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+            return off;
+        case CSSPrimitiveValue.CSS_IDENT:
+            return null; // auto
+        default:
+            throw new Error(); // can't be reached
+        }
+    }
+
      /**
       * Returns the <tt>Shape</tt> referenced by the input element's
       * <tt>clip-path</tt> attribute.
@@ -523,13 +562,13 @@ public class CSSUtilities implements SVGConstants {
 
             case SVGPaint.SVG_PAINTTYPE_URI_NONE:
                 // If silentConvertURIPaint returns null, this
-                // will return null, hence be equivalent to a 
+                // will return null, hence be equivalent to a
                 // value of none.
-                return silentConvertURIPaint(element, node, ctx, decl, 
+                return silentConvertURIPaint(element, node, ctx, decl,
                                              uctx, p, opacity, isStroke);
-                
+
             case SVGPaint.SVG_PAINTTYPE_URI_CURRENTCOLOR:
-                paint = silentConvertURIPaint(element, node, ctx, decl, 
+                paint = silentConvertURIPaint(element, node, ctx, decl,
                                               uctx, p, opacity, isStroke);
                 if(paint == null){
                     CSSValue vvv = decl.getPropertyCSSValue(CSS_COLOR_PROPERTY);
@@ -538,7 +577,7 @@ public class CSSUtilities implements SVGConstants {
                 return paint;
 
             case SVGPaint.SVG_PAINTTYPE_URI_RGBCOLOR:
-                paint = silentConvertURIPaint(element, node, ctx, decl, 
+                paint = silentConvertURIPaint(element, node, ctx, decl,
                                               uctx, p, opacity, isStroke);
                 if(paint == null){
                     // Could not convert paint, fall back to RGB color definition
@@ -562,8 +601,8 @@ public class CSSUtilities implements SVGConstants {
      * Converts the input Paint using it's URI. If the Paint cannot be converted, for
      * any reason, this returns null and does not throw any exception
      */
-    public static Paint silentConvertURIPaint(SVGElement e, GraphicsNode node, BridgeContext ctx, 
-                                              CSSStyleDeclaration decl, UnitProcessor.Context uctx, SVGPaint p, 
+    public static Paint silentConvertURIPaint(SVGElement e, GraphicsNode node, BridgeContext ctx,
+                                              CSSStyleDeclaration decl, UnitProcessor.Context uctx, SVGPaint p,
                                               float opacity, boolean isStroke){
         Paint paint = null;
         try{
@@ -580,7 +619,7 @@ public class CSSUtilities implements SVGConstants {
      * color value or null if the  related color profile could not be used or loaded for any
      * reason.
      */
-    public static Color convertRGBICCColor(Element e, SVGColor p, 
+    public static Color convertRGBICCColor(Element e, SVGColor p,
                                            float opacity,
                                            BridgeContext ctx){
         SVGICCColor iccColor = p.getICCColor();
@@ -601,10 +640,10 @@ public class CSSUtilities implements SVGConstants {
      * color value or null if the  related color profile could not be used or loaded for any
      * reason.
      */
-    public static Color convertICCColor(Element e, SVGICCColor c, 
+    public static Color convertICCColor(Element e, SVGICCColor c,
                                         float opacity,
                                         BridgeContext ctx){
-        // 
+        //
         // Get ICC Profile's name
         //
         String iccProfileName = c.getColorProfile();
@@ -636,9 +675,9 @@ public class CSSUtilities implements SVGConstants {
         //
         // Now, convert the colors to an array of floats
         //
-        float[] colorValue 
+        float[] colorValue
             = convertSVGNumberList(c.getColors());
-        
+
         if(colorValue == null){
             return null;
         }
@@ -663,7 +702,7 @@ public class CSSUtilities implements SVGConstants {
             e.printStackTrace();
             fl = null;
         }
-        
+
         return fl;
     }
 
@@ -749,7 +788,7 @@ public class CSSUtilities implements SVGConstants {
             }
 
             if(dashArraySum == 0){
-                // The spec. says that if the sum is zero, the effect is 
+                // The spec. says that if the sum is zero, the effect is
                 // as if there was no dashes, i.e., we have a solid stroke
                 dashArray = null;
             }
@@ -851,7 +890,7 @@ public class CSSUtilities implements SVGConstants {
                                                 node,
                                                 svgElement,
                                                 paintElement);
-        }            
+        }
         return paint;
     }
 
@@ -871,8 +910,8 @@ public class CSSUtilities implements SVGConstants {
             (CSSPrimitiveValue)decl.getPropertyCSSValue
             (CSS_FILL_OPACITY_PROPERTY);
         float opacity = convertOpacity(vv);
-        
-        return convertPaintDefinitionToPaint(element, node, ctx, decl, uctx, 
+
+        return convertPaintDefinitionToPaint(element, node, ctx, decl, uctx,
                                              val, opacity, false);
     }
 
@@ -957,9 +996,9 @@ public class CSSUtilities implements SVGConstants {
             return convertColor(v.getRGBColorValue(), opacity);
         } else { // SVGColor
             SVGColor c = (SVGColor)val;
-            return convertRGBICCColor(e, c, 
+            return convertRGBICCColor(e, c,
                                       opacity, ctx);
-                                      
+
         }
     }
 
@@ -977,9 +1016,9 @@ public class CSSUtilities implements SVGConstants {
             return convertColor(v.getRGBColorValue(), 1);
         } else { // SVGPaint
             SVGColor c = (SVGColor)val;
-            return convertRGBICCColor(e, c, 
+            return convertRGBICCColor(e, c,
                                       1, ctx);
-                                      
+
         }
     }
 
@@ -988,7 +1027,7 @@ public class CSSUtilities implements SVGConstants {
      * attributes.
      * @param decl the css style declaration
      */
-    public static Color convertStopColorToPaint(Element e, CSSStyleDeclaration decl, 
+    public static Color convertStopColorToPaint(Element e, CSSStyleDeclaration decl,
                                                 float extraOpacity, BridgeContext ctx) {
         CSSValue val = decl.getPropertyCSSValue(CSS_STOP_COLOR_PROPERTY);
         CSSPrimitiveValue vv =
@@ -1000,7 +1039,7 @@ public class CSSUtilities implements SVGConstants {
             return convertColor(v.getRGBColorValue(), opacity);
         } else { // SVGColor
             SVGColor c = (SVGColor)val;
-            return convertRGBICCColor(e, c, 
+            return convertRGBICCColor(e, c,
                                       opacity, ctx);
         }
     }

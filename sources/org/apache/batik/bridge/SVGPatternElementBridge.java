@@ -138,9 +138,9 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
     protected Paint createPaint(BridgeContext ctx,
                                 GraphicsNode paintedNode,
                                 Element paintedElement,
-                                Element paintElement, 
+                                Element paintElement,
                                 String paintOpacityProperty) {
-        
+
         GraphicsNodeRenderContext rc =
                          ctx.getGraphicsNodeRenderContext();
         DocumentLoader loader = ctx.getDocumentLoader();
@@ -289,7 +289,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             nodeTransform = patternContentTransform;
         }
 
-        // Account for the opacity of the paint operation by adding a 
+        // Account for the opacity of the paint operation by adding a
         // scale on the content.
         CSSStyleDeclaration paintedCssDecl
             = CSSUtilities.getComputedStyle(paintedElement);
@@ -304,12 +304,12 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             ColorMatrixRable filter = ColorMatrixRable8Bit.buildMatrix(matrix);
             CompositeGraphicsNode newPatternContentNode
                 = new CompositeGraphicsNode();
-            
+
             newPatternContentNode.getChildren().add(patternContentNode);
-            
+
             GraphicsNodeRableFactory gnrFactory
                 = ctx.getGraphicsNodeRableFactory();
-            
+
             Filter contentRable = gnrFactory.createGraphicsNodeRable(patternContentNode, rc);
             filter.setSource(contentRable);
             patternContentNode.setFilter(filter);
