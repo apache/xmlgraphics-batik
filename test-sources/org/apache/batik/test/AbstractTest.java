@@ -12,8 +12,62 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 
 /**
- * Provides a default implementation for the <tt>getName</tt>
- * method.
+ * Base class containing convenience methods for writing tests. <br />
+ * There are at least three approaches to write new tests derived from
+ * <tt>AbstractTest</tt>:<br /><ul>
+ * <li>You can simply override the <tt>runImplBase</tt> method and 
+ * return true or false depending on whether or not the test fails.</li>
+ * <li>You can choose to report more complex test failure conditions 
+ * by overriding the <tt>runImpl</tt> method which returns a <tt>TestReport</tt>.
+ * In that case, you can use the convenience methods such as <tt>reportFailure</tt>
+ * <tt>reportSuccess</tt> or <tt>reportException</tt> to help build a <tt>TestReport</tt>,
+ * and use the <tt>TestReport</tt>'s <tt>addDescriptionEntry</tt> to populate
+ * the report with relevant error description.</li>
+ * <li>You can choose to use the various assertion methods such as <tt>assertNull</tt>,
+ * <tt>assertEquals</tt> or <tt>assertTrue</tt>. These methods throw exceptions which
+ * will be turned in <tt>TestReports</tt> by the <tt>AbstractTest</tt>.</li>
+ * </ul>
+ * 
+ * Here are some examples:
+ * <code>
+ * public class MyTestA extends AbstractTest {
+ * public boolean runImplBase() {
+ *    if(someConditionFails){
+ *       return false;
+ *    }
+ *    return true;
+ * }
+ * }
+ * </code>
+ * 
+ * <code>
+ * public class MyTestB extends AbstractTest {
+ * public TestReport runImpl() {
+ *    if(someConditionFails){
+ *       TestReport report = reportError(MY_ERROR_CODE);
+ *       report.addDescriptionEntry(ENTRY_KEY_MY_ERROR_DESCRIPTION_KEY,
+ *                                  myErrorDescriptionValue);
+ *       return report;
+ *    }
+ * 
+ *    return reportSuccess;
+ * }
+ * </code>
+ *
+ * <code>
+ * public class MyTestC extends AbstractTest {
+ * public TestReport runImpl() throws Exception {
+ *      assertTrue(somCondition);
+ *      assertEquals(valueA, valueB);
+ *      assertNull(shouldBeNullRef);
+ *
+ *      if(someErrorCondition){
+ *         error(MY_ERROR_CODE);
+ *      }
+ *
+ *      return reportSuccess();
+ * }
+ * </code>
  *
  * @author <a href="mailto:vhardy@apache.lorg">Vincent Hardy</a>
  * @version $Id$
@@ -23,13 +77,18 @@ public abstract class AbstractTest implements Test {
      * This test's id.
      */
     protected String id = "";
-
+    
     /**
      * This test's parent, in case this test is part of 
      * a suite.
      */
     protected TestSuite parent;
 
+    /**
+     * This test's name. If null, the class' name is returned.
+     */
+    protected String name;
+    
     /**
      * TestReport
      */
@@ -40,12 +99,23 @@ public abstract class AbstractTest implements Test {
                     setPassed(false);
                 }
             };
-
+    
     /**
      * Returns this <tt>Test</tt>'s name. 
      */
     public String getName(){
-        return getClass().getName();
+        if(name == null){
+            return getClass().getName();
+        }
+
+        return name;
+    }
+
+    /**
+     * Sets this test's name
+     */
+    public void setName(String name){
+        this.name = name;
     }
 
     /**
@@ -83,10 +153,10 @@ public abstract class AbstractTest implements Test {
     public void setParent(TestSuite parent){
         this.parent = parent;
     }
-
+    
     /**
      * This default implementation of the run method
-     * catches any Exception or Error throw from the 
+     * catches any Exception thrown from the 
      * runImpl method and creates a <tt>TestReport</tt>
      * indicating an internal <tt>Test</tt> failure
      * when that happens. Otherwise, this method
@@ -96,7 +166,9 @@ public abstract class AbstractTest implements Test {
     public TestReport run(){
         try{
             return runImpl();
-        }catch(Exception e){
+        } catch(TestErrorConditionException e){
+            return e.getTestReport(this);
+        } catch(Exception e){
             try {
                 
                 StringWriter trace = new StringWriter();
@@ -141,7 +213,7 @@ public abstract class AbstractTest implements Test {
      */
     public TestReport runImpl() throws Exception {
         boolean passed = runImplBasic();
-
+        
         // No exception was thrown if we get to this 
         // portion of rumImpl. The test result is 
         // given by passed.
@@ -152,7 +224,7 @@ public abstract class AbstractTest implements Test {
         report.setPassed(passed);
         return report;
     }
-
+    
     /**
      * In the simplest test implementation, developers can 
      * simply implement the following method.
@@ -160,7 +232,7 @@ public abstract class AbstractTest implements Test {
     public boolean runImplBasic() throws Exception {
         return true;
     }
-
+    
     /**
      * Convenience method.
      */
@@ -169,7 +241,7 @@ public abstract class AbstractTest implements Test {
         report.setPassed(true);
         return report;
     }
-
+    
     /**
      * Convenience method to report a simple error code.
      */
@@ -178,6 +250,50 @@ public abstract class AbstractTest implements Test {
         report.setErrorCode(errorCode);
         report.setPassed(false);
         return report;
+    }
+    
+    /**
+     * Convenience method to report an error condition.
+     */
+    public void error(String errorCode) throws TestErrorConditionException {
+        throw new TestErrorConditionException(errorCode);
+    }
+
+    /**
+     * Convenience method to check that a reference is null
+     */
+    public void assertNull(Object ref) throws AssertNullException {
+        if(ref != null){
+            throw new AssertNullException();
+        }
+    }
+
+    /**
+     * Convenience method to check that a given boolean is true.
+     */
+    public void assertTrue(boolean b) throws AssertTrueException {
+        if (!b){
+            throw new AssertTrueException();
+        }
+    }
+        
+    /**
+     * Convenience method to check for a specific condition.
+     * Returns true if both objects are null or if ref is not
+     * null and ref.equals(cmp) is true.
+     */
+    public void assertEquals(Object ref, Object cmp) throws AssertEqualsException {
+        if(ref == null && cmp != null){
+            throw new AssertEqualsException(ref, cmp);
+        }
+
+        if(ref != null && !ref.equals(cmp)){
+            throw new AssertEqualsException(ref, cmp);
+        }
+    }
+
+    public void assertEquals(int ref, int cmp) throws AssertEqualsException {
+        assertEquals(new Integer(ref), new Integer(cmp));
     }
 
     /**

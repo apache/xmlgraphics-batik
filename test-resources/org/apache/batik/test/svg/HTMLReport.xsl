@@ -36,7 +36,7 @@
 
                 <!-- Report Date information -->
                 <table class="reportDate" width="600" border="0" cellpadding="0" cellspacing="0" hspace="0" vspace="0" bgcolor="white">
-                    <tr><td class="reportDate"><xsl:value-of select="@date" /></td></tr></table>
+                    <tr><td class="reportDate"><xsl:value-of select="/testSuiteReport[position()=1]/@date" /></td></tr></table>
 
                 <!-- Report Title containing the ratio of count(success) / count(tests) -->
                 <h1>Regard Test Report -- 

@@ -115,6 +115,11 @@ public class XMLTestReportProcessor
     protected XMLReportConsumer consumer;
 
     /**
+     * String encoding the date the report was generated.
+     */
+    protected String reportDate;
+
+    /**
      * Directory into which this processor puts all files and resources.
      */
     protected File reportDirectory;
@@ -179,6 +184,9 @@ public class XMLTestReportProcessor
 
             Element root = document.getDocumentElement();
             
+            root.setAttributeNS(null, XTR_DATE_ATTRIBUTE,
+                                reportDate);
+
             processReport(report, root, document);
             
             File xmlReport = serializeReport(root);
@@ -250,6 +258,7 @@ public class XMLTestReportProcessor
             + makeTwoDigits(c.get(c.MINUTE)) + "m"
             + makeTwoDigits(c.get(c.SECOND)) + "s";
         
+        reportDate = dirName;
         reportDirectory = new File(baseReportDir, dirName);
         checkDirectory(reportDirectory, ERROR_REPORT_DIRECTORY_UNUSABLE);
 

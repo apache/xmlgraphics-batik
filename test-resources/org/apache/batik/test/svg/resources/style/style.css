@@ -23,15 +23,17 @@ table tr td {
     font-family: sans-serif;
 }
 
-p,ol,ul,li { font-family: serif;}
+ol li { font-size: 10px; }
+
+p,ol,ul,li { font-family: sans-serif;}
 h1, h2, h3, h4, h5, h6 { text-align: left }
 h1, h2, h3 { color: #444; background: white; }
-h1 { font: 270% serif; }
-h2 { font: 240% serif }
-h3 { font: 220% serif }
-h4 { font: bold 100% serif }
-h5 { font: italic 100% serif }
-h6 { font: small-caps 100% serif }
+h1 { font: 27px serif; }
+h2 { font: 18px serif }
+h3 { font: 16px serif }
+h4 { font: bold 12px serif }
+h5 { font: italic 12px serif }
+h6 { font: small-caps 12px serif }
 h7 { font-family: serif; }
 
 .titlefailed { font-family: Arial; font-weight: bolder; font-size: 12;}
