@@ -562,7 +562,8 @@ public abstract class SVGStylableElement
             setModificationHandler(this);
 
             declaration = cssEngine.parseStyleDeclaration
-                (getAttributeNS(null, SVG_STYLE_ATTRIBUTE));
+                (SVGStylableElement.this,
+                 getAttributeNS(null, SVG_STYLE_ATTRIBUTE));
         }
 
         // ValueProvider ////////////////////////////////////////
@@ -621,7 +622,8 @@ public abstract class SVGStylableElement
          */
         public void attrAdded(Attr node, String newv) {
             if (!mutate) {
-                declaration = cssEngine.parseStyleDeclaration(newv);
+                declaration = cssEngine.parseStyleDeclaration
+                    (SVGStylableElement.this, newv);
             }
         }
 
@@ -630,7 +632,8 @@ public abstract class SVGStylableElement
          */
         public void attrModified(Attr node, String oldv, String newv) {
             if (!mutate) {
-                declaration = cssEngine.parseStyleDeclaration(newv);
+                declaration = cssEngine.parseStyleDeclaration
+                    (SVGStylableElement.this, newv);
             }
         }
 
@@ -650,7 +653,8 @@ public abstract class SVGStylableElement
          * Called when the value text has changed.
          */
         public void textChanged(String text) throws DOMException {
-            declaration = cssEngine.parseStyleDeclaration(text);
+            declaration = cssEngine.parseStyleDeclaration
+                (SVGStylableElement.this, text);
             mutate = true;
             setAttributeNS(null, SVG_STYLE_ATTRIBUTE, text);
             mutate = false;
@@ -678,22 +682,19 @@ public abstract class SVGStylableElement
          */
         public void propertyChanged(String name, String value, String prio)
             throws DOMException {
-            int idx = cssEngine.getPropertyIndex(name);
-            for (int i = 0; i < declaration.size(); i++) {
-                if (idx == declaration.getIndex(i)) {
-                    Value v = cssEngine.parsePropertyValue
-                        (SVGStylableElement.this, name, value);
-                    declaration.put(i, v, idx, prio.length() > 0);
-                    mutate = true;
-                    setAttributeNS(null, SVG_STYLE_ATTRIBUTE,
-                                   declaration.toString(cssEngine));
-                    mutate = false;
-                    return;
-                }
-            }
             Value v = cssEngine.parsePropertyValue
                 (SVGStylableElement.this, name, value);
-            declaration.append(v, idx, prio.length() > 0);
+
+            int i = 0;
+            int idx = cssEngine.getPropertyIndex(name);
+            for (; i < declaration.size(); i++) {
+                if (idx == declaration.getIndex(i))
+                    break;
+            }
+            if (i < declaration.size()) 
+                declaration.put(i, v, idx, prio.length() > 0);
+            else
+                declaration.append(v, idx, prio.length() > 0);
             mutate = true;
             setAttributeNS(null, SVG_STYLE_ATTRIBUTE,
                            declaration.toString(cssEngine));
