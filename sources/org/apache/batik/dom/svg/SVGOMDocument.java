@@ -799,7 +799,7 @@ public class SVGOMDocument
             return new SVGOMToBeImplementedElement(prefix,
                                                    SVGOMDocument.this,
                                                    TAG_FE_TURBULENCE);
-        }        
+        }
     }
 
     /**

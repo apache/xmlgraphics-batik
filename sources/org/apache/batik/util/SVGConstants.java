@@ -89,6 +89,8 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_CY = "cy";
     String ATTR_D = "d";
     String ATTR_DIFFUSE_CONSTANT = "diffuseConstant";
+    String ATTR_DX = "dx";
+    String ATTR_DY = "dy";
     String ATTR_EDGE_MODE = "edgemode";
     String ATTR_ELEVATION = "elevation";
     String ATTR_ENABLE_BACKGROUND = "enable-background";
@@ -198,7 +200,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_FONT_WEIGHT_400 = "400";
     String VALUE_FONT_WEIGHT_500 = "500";
     String VALUE_FONT_WEIGHT_600 = "600";
-    String VALUE_FONT_WEIGHT_700 = "700";  
+    String VALUE_FONT_WEIGHT_700 = "700";
     String VALUE_FONT_WEIGHT_800 = "800";
     String VALUE_FONT_WEIGHT_900 = "900";
     String VALUE_FONT_WEIGHT_NORMAL = "normal";
@@ -255,7 +257,7 @@ public interface SVGConstants extends CSSConstants {
     String TRANSFORM_SKEWX = "skewX";
     String TRANSFORM_SKEWY = "skewY";
     String TRANSFORM_MATRIX = "matrix";
-    
+
     /**
      * Path constants
      */
@@ -269,6 +271,8 @@ public interface SVGConstants extends CSSConstants {
      * Default values for attributes
      */
     float   DEFAULT_VALUE_BASE_FREQUENCY = 0.001f;
+    float   DEFAULT_VALUE_DX = 0f;
+    float   DEFAULT_VALUE_DY = 0f;
     boolean DEFAULT_VALUE_FE_TURBULENCE_TYPE = false;
     String  DEFAULT_VALUE_FILL_RULE = VALUE_NON_ZERO;
     int     DEFAULT_VALUE_NUM_OCTAVES = 1;

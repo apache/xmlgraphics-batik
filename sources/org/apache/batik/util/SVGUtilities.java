@@ -311,7 +311,7 @@ public class SVGUtilities implements SVGConstants {
         /**
          * Invoked when the PreserveAspectRatio parsing starts.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void startPreserveAspectRatio() throws ParseException {
         }
@@ -319,34 +319,34 @@ public class SVGUtilities implements SVGConstants {
         /**
          * Invoked when 'none' been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void none() throws ParseException {
             align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_NONE;
         }
-        
+
         /**
          * Invoked when 'xMaxYMax' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void xMaxYMax() throws ParseException {
             align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMAXYMAX;
         }
-        
+
         /**
          * Invoked when 'xMaxYMid' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void xMaxYMid() throws ParseException {
             align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMAXYMID;
         }
-        
+
         /**
          * Invoked when 'xMaxYMin' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void xMaxYMin() throws ParseException {
             align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMAXYMIN;
@@ -355,7 +355,7 @@ public class SVGUtilities implements SVGConstants {
         /**
          * Invoked when 'xMidYMax' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void xMidYMax() throws ParseException {
             align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMAX;
@@ -364,7 +364,7 @@ public class SVGUtilities implements SVGConstants {
         /**
          * Invoked when 'xMidYMid' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void xMidYMid() throws ParseException {
             align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMID;
@@ -373,7 +373,7 @@ public class SVGUtilities implements SVGConstants {
         /**
          * Invoked when 'xMidYMin' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void xMidYMin() throws ParseException {
             align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMIDYMIN;
@@ -382,7 +382,7 @@ public class SVGUtilities implements SVGConstants {
         /**
          * Invoked when 'xMinYMax' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void xMinYMax() throws ParseException {
             align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMAX;
@@ -391,7 +391,7 @@ public class SVGUtilities implements SVGConstants {
         /**
          * Invoked when 'xMinYMid' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void xMinYMid() throws ParseException {
             align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMID;
@@ -400,7 +400,7 @@ public class SVGUtilities implements SVGConstants {
         /**
          * Invoked when 'xMinYMin' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void xMinYMin() throws ParseException {
             align = SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMIN;
@@ -409,7 +409,7 @@ public class SVGUtilities implements SVGConstants {
         /**
          * Invoked when 'meet' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void meet() throws ParseException {
             meet = true;
@@ -418,12 +418,12 @@ public class SVGUtilities implements SVGConstants {
         /**
          * Invoked when 'slice' has been parsed.
          * @exception ParseException if an error occured while processing
-         * the transform 
+         * the transform
          */
         public void slice() throws ParseException {
             meet = false;
         }
-        
+
         /**
          * Invoked when the PreserveAspectRatio parsing ends.
          * @exception ParseException if an error occured while processing
@@ -469,6 +469,13 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
+     * Parses an SVG number
+     */
+    public static float convertSVGNumber(String numStr){
+        return Float.parseFloat(numStr);
+    }
+
+    /**
      * Creates a filter region from a filter element's x, y, width
      * and height attributes. Uses the input <tt>GraphicsNode</tt>
      * as a default for the region bounds
@@ -508,12 +515,12 @@ public class SVGUtilities implements SVGConstants {
                                                     UnitProcessor.VERTICAL_LENGTH,
                                                     uctx);
 
-        
+
         return new ConcreteFilterRegion(node,
-                                        new Float(x), new Float(y), 
+                                        new Float(x), new Float(y),
                                         new Float(width), new Float(height));
     }
-    
+
     /**
      * Parses a Float value pair. This assumes that the input attribute
      * value is of the form &lt;number&gt; [&lt;number&gt;]
@@ -528,7 +535,7 @@ public class SVGUtilities implements SVGConstants {
                 pair[0] = new Float(Float.parseFloat(firstValue));
             }catch(NumberFormatException e){
             }
-            
+
             if((pair[0] != null) && (st.hasMoreTokens())){
                 String secondValue = st.nextToken();
                 try{
