@@ -1,7 +1,3 @@
-grant codeBase "${app.jar.base}/classes/" {
-  permission java.security.AllPermission;
-};
-
 grant codeBase "${app.jar.base}/lib/crimson-parser.jar" {
   permission java.security.AllPermission;
 };
