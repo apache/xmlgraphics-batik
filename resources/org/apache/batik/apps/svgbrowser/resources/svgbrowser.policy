@@ -1,0 +1,17 @@
+/* AUTOMATICALLY GENERATED ON Wed Apr 17 13:44:15 CEST 2002*/
+/* DO NOT EDIT */
+
+grant codeBase "${squiggle.dev.base}/classes/" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${squiggle.dev.base}/lib/crimson-parser.jar" {
+  permission java.security.AllPermission;
+};
+
+grant codeBase "${squiggle.dev.base}/lib/js.jar" {
+  permission java.lang.RuntimePermission "createClassLoader";
+};
+
+
+

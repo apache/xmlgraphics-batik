@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.security.Policy;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,6 +32,7 @@ import java.util.ResourceBundle;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
@@ -46,6 +49,7 @@ import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 
 import org.apache.batik.util.PreferenceManager;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.batik.util.SVGConstants;
 
 import org.apache.batik.util.gui.resource.ResourceManager;
 
@@ -56,6 +60,13 @@ import org.apache.batik.util.gui.resource.ResourceManager;
  * @version $Id$
  */
 public class Main implements Application {
+    /**
+     * Extension used in addition to the scriptType value
+     * to read from the PreferenceManager whether or not the
+     * scriptType can be loaded.
+     */
+    public static final String UNKNOWN_SCRIPT_TYPE_LOAD_KEY_EXTENSION 
+        = ".load";
 
     /**
      * Creates a viewer frame and shows it..
@@ -70,6 +81,83 @@ public class Main implements Application {
      */
     public final static String RESOURCES =
         "org.apache.batik.apps.svgbrowser.resources.Main";
+
+    /**
+     * Message for the SecurityException thrown when there is already
+     * a SecurityManager installed at the time Squiggle tries
+     * to install its own security settings.
+     */
+    public static final String EXCEPTION_ALIEN_SECURITY_MANAGER
+        = Resources.getString("Main.message.security.exception.alien.security.manager");
+
+    /**
+     * Message for the NullPointerException thrown when no policy
+     * file can be found.
+     */
+    public static final String EXCEPTION_NO_SQUIGGLE_POLICY_FILE
+        = Resources.getString("Main.message.null.pointer.exception.no.squiggle.policy.file");
+
+    /**
+     * System property for specifying an additional policy file.
+     */
+    public static final String PROPERTY_JAVA_SECURITY_POLICY 
+        = "java.security.policy";
+
+    /**
+     * System property for Squiggle's development base directory
+     */
+    public static final String PROPERTY_SQUIGGLE_DEV_BASE
+        = "squiggle.dev.base";
+
+    /**
+     * System property for Squiggle's jars base directory
+     */
+    public static final String PROPERTY_SQUIGGLE_JAR_BASE
+        = "squiggle.jar.base";
+
+    /**
+     * URL for Squiggle's security policy file
+     */
+    public static final String SQUIGGLE_SECURITY_POLICY_URL
+        = "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy"; // "resources/org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy";
+
+    /**
+     * URL for Squiggle's main class.
+     */
+    public static final String SQUIGGLE_MAIN_CLASS_URL
+        = "org/apache/batik/apps/svgbrowser/Main.class"; 
+
+    /**
+     * Used in jar file urls to separate the jar file name 
+     * from the referenced file
+     */
+    public static final String JAR_URL_FILE_SEPARATOR
+        = "!/";
+
+    /**
+     * Files in a jar file have a URL with the jar protocol
+     */
+    public static final String JAR_PROTOCOL
+        = "jar:";
+
+    /**
+     * Directory where classes are expanded in the development
+     * version
+     */
+    public static final String SQUIGGLE_MAIN_CLASS_DIR
+        = "classes/";
+
+    /**
+     * Name of the batik browser jar file
+     */
+    public static final String SQUIGGLE_ENTRY_JAR_NAME
+        = "batik-svgbrowser.jar";
+
+    /**
+     * Resource directory for the security policy
+     */
+    public static final String SQUIGGLE_RESOURCE_DIR 
+        = "resources/";
 
     /**
      * The resource bundle
@@ -100,6 +188,12 @@ public class Main implements Application {
      * The arguments.
      */
     protected String[] arguments;
+
+    /**
+     * Controls whether the initial SecurityManager check
+     * has been done.
+     */
+    protected boolean initialSecurityCheckDone;
 
     /**
      * The option handlers.
@@ -150,6 +244,14 @@ public class Main implements Application {
                      "screen");
         defaults.put(PreferenceDialog.PREFERENCE_KEY_IS_XML_PARSER_VALIDATING,
                      Boolean.FALSE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING,
+                     Boolean.TRUE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_LOAD_JAVA,
+                     Boolean.TRUE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_LOAD_ECMASCRIPT,
+                     Boolean.TRUE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN,
+                     Boolean.TRUE);
 	
         try {
             preferenceManager = new XMLPreferenceManager("preferences.xml",
@@ -449,6 +551,151 @@ public class Main implements Application {
                            (PreferenceDialog.PREFERENCE_KEY_PROXY_HOST));
         System.setProperty("proxyPort", preferenceManager.getString
                            (PreferenceDialog.PREFERENCE_KEY_PROXY_PORT));
+
+        if (!initialSecurityCheckDone){
+            setInitialSecurityPreferences();
+        } else {
+            setSecurityPreferences();
+        }
+    }
+
+    private void setSecurityPreferences() {
+        boolean enforceSecureScripting 
+            = preferenceManager.getBoolean(PreferenceDialog.PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING);
+
+        if (enforceSecureScripting) {
+            //
+            // Check if there is an already installed SecurityManager
+            //
+            SecurityManager currentManager = System.getSecurityManager();
+            if (currentManager == null){
+                installSecurityManager();
+            }
+        } else {
+            System.setSecurityManager(null);
+        }
+    }
+
+    private void setInitialSecurityPreferences(){
+        boolean enforceSecureScripting 
+            = preferenceManager.getBoolean(PreferenceDialog.PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING);
+
+        if (enforceSecureScripting) {
+            //
+            // Check if there is an already installed SecurityManager
+            //
+            SecurityManager currentManager = System.getSecurityManager();
+            if (currentManager != null){
+                //
+                // It would be unsafe to continue if there is already a SecurityManager 
+                // in place. This means Squiggle is not running as it was expected to.
+                // Therefore, we throw a SecurityException
+                //
+                throw new SecurityException(EXCEPTION_ALIEN_SECURITY_MANAGER);
+            } else {
+                initialSecurityCheckDone = true;
+            }
+
+            installSecurityManager();
+        }
+    }
+
+    private void installSecurityManager(){
+        // Make sure the security policy is enforced.
+        Policy policy = Policy.getPolicy();
+
+        // Install a new SecurityManager        
+        SecurityManager securityManager = new SecurityManager();
+
+        // Specify squiggle's security policy in the
+        // system property. 
+
+        ClassLoader cl = this.getClass().getClassLoader();
+        URL url = cl.getResource(SQUIGGLE_SECURITY_POLICY_URL);
+
+        if (url == null) {
+            throw new NullPointerException(EXCEPTION_NO_SQUIGGLE_POLICY_FILE);
+        }
+
+        System.setProperty(PROPERTY_JAVA_SECURITY_POLICY,
+                           url.toString());
+
+        // 
+        // The following detects whether the browser is running in the
+        // development environment, in which case it will set the 
+        // squiggle.dev.base property or if it is running in the binary
+        // distribution, in which case it will set the squiggle.jar.base
+        // property. These properties are expanded in the security 
+        // policy files.
+        // Property expansion is used to provide portability of the 
+        // policy files between various code bases (e.g., file base,
+        // server base, etc..).
+        //
+        url = cl.getResource(SQUIGGLE_MAIN_CLASS_URL);
+        if (url == null){
+            // Something is really wrong: we would be running a class
+            // which can't be found....
+            throw new Error();
+        }
+        
+        String expandedMainClassName = url.toString();
+        if (expandedMainClassName.indexOf(SQUIGGLE_ENTRY_JAR_NAME) != -1) {
+            setSquiggleJarBase(expandedMainClassName);
+        } else {
+            setSquiggleDevBase(expandedMainClassName);
+        }
+            
+        // Install new security manager
+        System.setSecurityManager(securityManager);
+
+        System.out.flush();
+        policy.refresh();
+
+    }
+
+    private void setSquiggleJarBase(String expandedMainClassName){
+        if (!expandedMainClassName.startsWith(JAR_PROTOCOL)){
+            // Something is seriously wrong here
+            throw new Error();
+        }
+
+        expandedMainClassName = expandedMainClassName.substring(JAR_PROTOCOL.length());
+
+        int codeBaseEnd = 
+            expandedMainClassName.indexOf(SQUIGGLE_ENTRY_JAR_NAME +
+                                      JAR_URL_FILE_SEPARATOR +
+                                      SQUIGGLE_MAIN_CLASS_URL);
+
+        if (codeBaseEnd == -1){
+            // Something is seriously wrong. This should *never* happen
+            // as the SQUIGGLE_SECURITY_POLICY_URL is such that it will be
+            // a substring of its corresponding URL value
+            throw new Error();
+        }
+
+        String squiggleCodeBase = expandedMainClassName.substring(0, codeBaseEnd);
+        System.setProperty(PROPERTY_SQUIGGLE_JAR_BASE, squiggleCodeBase);
+    }
+
+    /**
+     * Position the squiggle.dev.base property for expansion in 
+     * the policy file used when Squiggle is running in its 
+     * development version
+     */
+    private void setSquiggleDevBase(String expandedMainClassName){
+        int codeBaseEnd = 
+            expandedMainClassName.indexOf(SQUIGGLE_MAIN_CLASS_DIR + 
+                                          SQUIGGLE_MAIN_CLASS_URL);
+
+        if (codeBaseEnd == -1){
+            // Something is seriously wrong. This should *never* happen
+            // as the SQUIGGLE_SECURITY_POLICY_URL is such that it will be
+            // a substring of its corresponding URL value
+            throw new Error();
+        }
+
+        String squiggleCodeBase = expandedMainClassName.substring(0, codeBaseEnd);
+        System.setProperty(PROPERTY_SQUIGGLE_DEV_BASE, squiggleCodeBase);
     }
 
     private void setPreferences(JSVGViewerFrame vf) {
@@ -506,5 +753,31 @@ public class Main implements Application {
     public boolean isSelectionOverlayXORMode() {
         return preferenceManager.getBoolean
             (PreferenceDialog.PREFERENCE_KEY_SELECTION_XOR_MODE);
+    }
+
+    /**
+     * Returns true if the input scriptType can be loaded in
+     * this application.
+     */
+    public boolean canLoadScriptType(String scriptType){
+        if (SVGConstants.SVG_SCRIPT_TYPE_ECMASCRIPT.equals(scriptType)){
+            return preferenceManager.getBoolean
+                (PreferenceDialog.PREFERENCE_KEY_LOAD_ECMASCRIPT);
+        } else if (SVGConstants.SVG_SCRIPT_TYPE_JAVA.equals(scriptType)){
+            return preferenceManager.getBoolean
+                (PreferenceDialog.PREFERENCE_KEY_LOAD_JAVA);
+        } else {
+            return preferenceManager.getBoolean
+                (scriptType + UNKNOWN_SCRIPT_TYPE_LOAD_KEY_EXTENSION);
+        }
+    }
+
+    /**
+     * Returns true if the script origin should be constrained
+     * to be the same as the corresponding document's origin.
+     */
+    public boolean constrainScriptOrigin(){
+            return preferenceManager.getBoolean
+                (PreferenceDialog.PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN);
     }
 }

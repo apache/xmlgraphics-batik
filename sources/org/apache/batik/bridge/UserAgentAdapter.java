@@ -14,6 +14,8 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 
+import java.net.URL;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -223,5 +225,26 @@ public class UserAgentAdapter implements UserAgent {
      */
     public void handleElement(Element elt, Object data){
     }
+
+    /**
+     * Returns the security settings for the given script
+     * type, script url and document url
+     * 
+     * @param scriptType type of script, as found in the 
+     *        type attribute of the &lt;script&gt; element.
+     * @param scriptURL url for the script, as defined in
+     *        the script's xlink:href attribute. If that
+     *        attribute was empty, then this parameter should
+     *        be null
+     * @param docURL url for the document into which the 
+     *        script was found.
+     */
+    public ScriptSecurity getScriptSecurity(String scriptType,
+                                            URL scriptURL,
+                                            URL docURL){
+        return new DefaultScriptSecurity(scriptType, scriptURL, docURL);
+    }
+    
+
 }
 

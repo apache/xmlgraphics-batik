@@ -33,7 +33,9 @@ import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeExtension;
+import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
 
@@ -527,6 +529,26 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
          */
         public void handleElement(Element elt, Object data){
         }
+
+        /**
+         * Returns the security settings for the given script
+         * type, script url and document url
+         * 
+         * @param scriptType type of script, as found in the 
+         *        type attribute of the &lt;script&gt; element.
+         * @param scriptURL url for the script, as defined in
+         *        the script's xlink:href attribute. If that
+         *        attribute was empty, then this parameter should
+         *        be null
+         * @param docURL url for the document into which the 
+         *        script was found.
+         */
+        public ScriptSecurity getScriptSecurity(String scriptType,
+                                                URL scriptURL,
+                                                URL docURL){
+            return new DefaultScriptSecurity(scriptType, scriptURL, docURL);
+        }
+
     }
 
     protected final static Set FEATURES = new HashSet();

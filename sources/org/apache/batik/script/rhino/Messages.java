@@ -6,17 +6,18 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.bridge;
+package org.apache.batik.script.rhino;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
+import org.apache.batik.util.gui.resource.ResourceManager;
 
 /**
- * This class manages the message for the bridge module.
+ * This class manages the message for the Rhino interpreter
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
 public class Messages {
@@ -30,7 +31,7 @@ public class Messages {
      * The error messages bundle class name.
      */
     protected final static String RESOURCES =
-        "org.apache.batik.bridge.resources.Messages";
+        "org.apache.batik.script.rhino.resources.messages";
 
     /**
      * The localizable support for the error messages.
@@ -39,10 +40,17 @@ public class Messages {
         new LocalizableSupport(RESOURCES);
 
     /**
+     * The resource manager to decode messages.
+     */
+    protected static ResourceManager resourceManager =
+        new ResourceManager(localizableSupport.getResourceBundle());
+
+    /**
      * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
      */
     public static void setLocale(Locale l) {
         localizableSupport.setLocale(l);
+        resourceManager = new ResourceManager(localizableSupport.getResourceBundle());
     }
 
     /**
@@ -61,8 +69,18 @@ public class Messages {
         return localizableSupport.formatMessage(key, args);
     }
 
-    public static String getMessage(String key)
+    public static String getString(String key)
         throws MissingResourceException {
-        return formatMessage(key, null);
+        return resourceManager.getString(key);
+    }
+
+    public static int getInteger(String key) 
+        throws MissingResourceException {
+        return resourceManager.getInteger(key);
+    }
+
+    public static int getCharacter(String key)
+        throws MissingResourceException {
+        return resourceManager.getCharacter(key);
     }
 }

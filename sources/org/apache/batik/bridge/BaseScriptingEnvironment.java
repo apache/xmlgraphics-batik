@@ -59,7 +59,6 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$
  */
 public class BaseScriptingEnvironment {
-
     /**
      * Tells whether the given SVG document is dynamic.
      */
@@ -234,20 +233,23 @@ public class BaseScriptingEnvironment {
                 (null, SVGConstants.SVG_TYPE_ATTRIBUTE);
 
             if (type.length() == 0) {
-                type = "text/ecmascript";
+                type = SVGConstants.SVG_SCRIPT_TYPE_DEFAULT_VALUE;
             }
 
             //
             // Java code invocation.
             //
-            if (type.equals("application/java-archive")) {
+            if (type.equals(SVGConstants.SVG_SCRIPT_TYPE_JAVA)) {
                 try {
                     String href = XLinkSupport.getXLinkHref(script);
                     URL url;
                     url = new URL(XMLBaseSupport.getCascadedXMLBase(script));
                     url = new URL(url, href);
-                    URLClassLoader cll = new URLClassLoader(new URL[] { url });
 
+                    checkCompatibleScriptURL(type, url);
+
+                    URLClassLoader cll = new URLClassLoader(new URL[] { url });
+                    
                     // Get the 'Script-Handler' entry in the manifest.
                     url = cll.findResource("META-INF/MANIFEST.MF");
                     if (url == null) {
@@ -259,17 +261,16 @@ public class BaseScriptingEnvironment {
                     if (sh == null) {
                         continue;
                     }
-
+                    
                     // Run the script handler.
                     ScriptHandler h;
                     h = (ScriptHandler)cll.loadClass(sh).newInstance();
-
+                    
                     if (window == null) {
                         window = createWindow();
                     }
-
-                    h.run(document, window);
                     
+                    h.run(document, window);
                 } catch (Exception e) {
                     if (userAgent != null) {
                         userAgent.displayError(e);
@@ -304,6 +305,7 @@ public class BaseScriptingEnvironment {
                     URL url;
                     url = new URL(XMLBaseSupport.getCascadedXMLBase(script));
                     url = new URL(url, href);
+                    checkCompatibleScriptURL(type, url);
                     reader = new InputStreamReader(url.openStream());
                 } else {
                     // Inline script.
@@ -330,8 +332,30 @@ public class BaseScriptingEnvironment {
             } catch (InterpreterException e) {
                 handleInterpreterException(e);
                 return;
+            } catch (SecurityException e) {
+                if (userAgent != null) {
+                    userAgent.displayError(e);
+                }
             }
         }
+    }
+
+    /**
+     * Checks that the script URLs and the document url are 
+     * compatible. A SecurityException is thrown if loading
+     * the script is not allowed.
+     */
+    private void checkCompatibleScriptURL(String scriptType, URL scriptURL){
+        URL docURL = ((SVGOMDocument)document).getURLObject();
+        ScriptSecurity security = userAgent.getScriptSecurity(scriptType,
+                                                              scriptURL,
+                                                              docURL);
+
+        if (security == null) {
+            security = new DefaultScriptSecurity(scriptType, scriptURL, docURL);
+        }
+
+        security.checkLoadScript();
     }
 
     /**
