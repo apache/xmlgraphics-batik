@@ -73,7 +73,7 @@ public class SVGPath extends SVGGraphicObjectConverter {
      * @param path the GeneralPath to convert
      * @return the value of the corresponding d attribute
      */
-    static String toSVGPathData(Shape path) {
+     public static String toSVGPathData(Shape path) {
         StringBuffer d = new StringBuffer("");
         PathIterator pi = path.getPathIterator(null);
         float seg[] = new float[6];
