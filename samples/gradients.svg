@@ -56,7 +56,7 @@
 			<stop offset="100%" style="stop-color:#442200" />
         </radialGradient>
 
-        <linearGradient id="backgroundGradient" x1="0" y1="0" x2="400" y2="300">
+        <linearGradient id="backgroundGradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="400" y2="300">
 			<stop offset="0%" style="stop-color:white" />
 			<stop offset="50%" style="stop-color:#666688" />
 			<stop offset="100%" style="stop-color:black" />            
