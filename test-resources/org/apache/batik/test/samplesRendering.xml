@@ -96,6 +96,7 @@
         <test id="samples/tests/spec/filters/feComposite.svg" />
         <test id="samples/tests/spec/filters/feConvolveMatrix.svg" />
         <test id="samples/tests/spec/filters/feDisplacementMap.svg" />
+        <test id="samples/tests/spec/filters/feGaussianDefault.svg" />
         <test id="samples/tests/spec/filters/feImage.svg" />
         <test id="samples/tests/spec/filters/feMerge.svg" />
         <test id="samples/tests/spec/filters/feMorphology.svg" />
@@ -161,6 +162,7 @@
         <test id="samples/tests/spec/painting/bboxOnText.svg" />
         <test id="samples/tests/spec/painting/display.svg" />
         <test id="samples/tests/spec/painting/image-rendering.svg" />
+        <test id="samples/tests/spec/painting/markersExt.svg" />
         <test id="samples/tests/spec/painting/markersMisc.svg" />
         <test id="samples/tests/spec/painting/markersOrientA.svg" />
         <test id="samples/tests/spec/painting/markersOrientB.svg" />
