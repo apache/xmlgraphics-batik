@@ -104,17 +104,22 @@ public class ConcreteTextNode
     }
 
     /**
-     * Primitive bounds are in user space. 
+     * Primitive bounds are in user space.
      */
     public Rectangle2D getPrimitiveBounds(){
         // HACK, until we change getBounds to take
         // GraphicsNodeRenderContext
-        java.awt.font.TextLayout layout
-            = new java.awt.font.TextLayout(aci,
+        Rectangle2D bounds;
+        if (aci != null) {
+            java.awt.font.TextLayout layout
+              = new java.awt.font.TextLayout(aci,
                   new java.awt.font.FontRenderContext(new AffineTransform(),
                                                       true,
                                                       true));
-        Rectangle2D bounds = layout.getBounds();
+            bounds = layout.getBounds();
+        } else {
+            bounds = new Rectangle2D.Float(0, 0, 0, 0);
+        }
         double tx = location.getX();
         double ty = location.getY();
         if (anchor == Anchor.MIDDLE) {
@@ -123,7 +128,7 @@ public class ConcreteTextNode
             tx -= bounds.getWidth();
         }
 
-        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty); 
+        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
 
         bounds = t.createTransformedShape(bounds).getBounds();
 
@@ -152,7 +157,7 @@ public class ConcreteTextNode
             tx -= bounds.getWidth();
         }
 
-        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty); 
+        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
         return layout.getOutline(t);
     }
 
@@ -191,7 +196,7 @@ public class ConcreteTextNode
         beginMark = endMark;
         return;
     }
- 
+
     /**
      * Get the current text selection.
      * @return an object containing the selected content.
@@ -200,7 +205,7 @@ public class ConcreteTextNode
         int[] ranges = rc.getTextPainter().getSelected(aci, beginMark, endMark);
         Object o = null;
         // later we can return more complex things like noncontiguous selections
-        if (endMark == beginMark) { 
+        if (endMark == beginMark) {
             // XXX HACK WARNING we should do this better;:
             // for now use this as the signal for select all
             o = aci;
