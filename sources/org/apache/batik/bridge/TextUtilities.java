@@ -49,6 +49,7 @@ public abstract class TextUtilities implements CSSConstants {
             values.add
                 (new Float(UnitProcessor.svgHorizontalCoordinateToUserSpace
                            (st.nextToken(), attrName, uctx)));
+            c++;
         }
         float[] floats = new float[c];
         for (int i=0; i<c; ++i) {
@@ -80,6 +81,7 @@ public abstract class TextUtilities implements CSSConstants {
             values.add
                 (new Float(UnitProcessor.svgVerticalCoordinateToUserSpace
                            (st.nextToken(), attrName, uctx)));
+            c++; 
         }
         float[] floats = new float[c];
         for (int i=0; i<c; ++i) {

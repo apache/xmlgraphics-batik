@@ -32,6 +32,8 @@ import java.awt.geom.NoninvertibleTransformException;
 
 import java.awt.image.BufferedImage;
 
+import java.awt.print.PrinterException;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,6 +63,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -87,6 +90,7 @@ import org.apache.batik.swing.svg.SVGDocumentLoaderListener;
 import org.apache.batik.swing.svg.SVGFileFilter;
 import org.apache.batik.swing.svg.SVGUserAgent;
 
+import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 
 import org.apache.batik.transcoder.image.ImageTranscoder;
@@ -615,7 +619,41 @@ public class JSVGViewerFrame
         public PrintAction() {}
         public void actionPerformed(ActionEvent e) {
             if (svgDocument != null) {
-
+                new Thread() {
+                        public void run(){
+                            //
+                            // Build a PrintTranscoder to handle printing 
+                            // of the svgDocument object
+                            //
+                            PrintTranscoder printTranscoder 
+                                = new PrintTranscoder();
+                            
+                            //
+                            // Set transcoding hints
+                            //
+                            printTranscoder.addTranscodingHint(PrintTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                                               application.getXMLParserClassName());
+                            printTranscoder.addTranscodingHint(PrintTranscoder.KEY_SHOW_PAGE_DIALOG,
+                                                               new Boolean(true));
+                            printTranscoder.addTranscodingHint(PrintTranscoder.KEY_SHOW_PRINTER_DIALOG,
+                            new Boolean(true));
+                            
+                            //
+                            // Do transcoding now
+                            //
+                            printTranscoder.transcode(new TranscoderInput(svgDocument), null);
+                            
+                            //
+                            // Print
+                            //
+                            try{
+                                printTranscoder.print();
+                            }catch(PrinterException ex){
+                                // <!> TEMPORARY: NEED BETTER ERROR HANDLING STRATEGY
+                                JOptionPane.showMessageDialog(JSVGViewerFrame.this, ex);
+                            }
+                        }
+                    }.start();
             }
         }
     }

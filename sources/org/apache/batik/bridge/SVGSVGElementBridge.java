@@ -113,27 +113,27 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge,
         Shape clip = null;
         if (!isOutermost) {
             gn.setTransform(at);
-            if (CSSUtilities.convertOverflow(e)) { // overflow:hidden
-                float [] offsets = CSSUtilities.convertClip(e);
-                if (offsets == null) { // clip:auto
-                    clip = new Rectangle2D.Float(x, y, w, h);
-                } else { // clip:rect(<x> <y> <w> <h>)
-                    // offsets[0] = top
-                    // offsets[1] = right
-                    // offsets[2] = bottom
-                    // offsets[3] = left
-                    clip = new Rectangle2D.Float(x+offsets[3],
-                                                 y+offsets[0],
-                                                 w-offsets[1],
-                                                 h-offsets[2]);
-                }
-            }
         } else {
             // <!> FIXME: hack to compute the original document's size
             if (ctx.getDocumentSize() == null) {
                 ctx.setDocumentSize(new Dimension((int)w, (int)h));
             }
-            clip = new Rectangle2D.Float(x, y, w, h);
+        }
+
+        if (CSSUtilities.convertOverflow(e)) { // overflow:hidden
+            float [] offsets = CSSUtilities.convertClip(e);
+            if (offsets == null) { // clip:auto
+                clip = new Rectangle2D.Float(x, y, w, h);
+            } else { // clip:rect(<x> <y> <w> <h>)
+                // offsets[0] = top
+                // offsets[1] = right
+                // offsets[2] = bottom
+                // offsets[3] = left
+                clip = new Rectangle2D.Float(x+offsets[3],
+                                             y+offsets[0],
+                                             w-offsets[1],
+                                             h-offsets[2]);
+            }
         }
 
         if (clip != null) {

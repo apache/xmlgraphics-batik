@@ -195,10 +195,26 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             result.setBackgroundEnable(r);
         }
 
+        Rectangle2D bounds = getImageBounds(ctx, element);
+        svgElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, 
+                                  String.valueOf(bounds.getWidth()));
+        svgElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, 
+                                  String.valueOf(bounds.getHeight())); 
+
+        AffineTransform at
+            = ViewBox.getPreserveAspectRatioTransform(svgElement, 
+                                                      (float)bounds.getWidth(), 
+                                                      (float)bounds.getHeight());
+        at.preConcatenate(AffineTransform.getTranslateInstance(bounds.getX(), 
+                                                               bounds.getY()));
+        result.setTransform(at);
+
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, svgElement);
         result.getChildren().add(node);
 
+        /*
         // resolve x, y, width, height and preserveAspectRatio on image
+        
         Rectangle2D bounds = getImageBounds(ctx, element);
         float x = (float)bounds.getX();
         float y = (float)bounds.getY();
@@ -216,7 +232,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                 (new Rectangle2D.Float(x, y, w, h));
             result.setClip(new ClipRable8Bit(filter, clip));
         } catch (java.awt.geom.NoninvertibleTransformException ex) {}
-
+        */
         return result;
     }
 

@@ -851,10 +851,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
         // Get the primitive bounds
         // Rectangle2D bounds = null;
         if(bounds == null){
-            // first, make sure we haven't been interrupted
-            if (Thread.currentThread().isInterrupted()) {
-                return null;
-            }
             // The painted region, before cliping, masking and
             // compositing is either the area painted by the primitive
             // paint or the area painted by the filter.
@@ -876,6 +872,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
                     if (maskR.intersects(bounds))
                         Rectangle2D.intersect(bounds, maskR, bounds);
                 }
+            }
+
+            // Make sure we haven't been interrupted
+            if (Thread.currentThread().isInterrupted()) {
+                // The Thread has been interrupted. Invalidate
+                // any cached values and proceed.
+                invalidateGeometryCache();
             }
         }
         return bounds;

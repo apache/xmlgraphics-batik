@@ -277,13 +277,15 @@ public class StaticRenderer implements ImageRenderer {
 
     public void clearOffScreen() {
         getOffScreen();
-        BufferedImage bi = new BufferedImage
-            (rootCR.getColorModel(), baseRaster,
-             rootCR.getColorModel().isAlphaPremultiplied(), null);
-        Graphics2D g2d = bi.createGraphics();
-        g2d.setComposite(AlphaComposite.Clear);
-        g2d.fillRect(0, 0, bi.getWidth(), bi.getHeight());
-        g2d.dispose();
+        if(baseRaster != null && rootCR != null){
+            BufferedImage bi = new BufferedImage
+                (rootCR.getColorModel(), baseRaster,
+                 rootCR.getColorModel().isAlphaPremultiplied(), null);
+            Graphics2D g2d = bi.createGraphics();
+            g2d.setComposite(AlphaComposite.Clear);
+            g2d.fillRect(0, 0, bi.getWidth(), bi.getHeight());
+            g2d.dispose();
+        }
     }
 
     /**
