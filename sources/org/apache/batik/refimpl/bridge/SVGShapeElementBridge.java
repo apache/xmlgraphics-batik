@@ -88,7 +88,26 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
     }
 
     public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+        BridgeContext ctx = evt.getBridgeContext();
+        SVGElement svgElement = (SVGElement) evt.getElement();
+        CSSStyleDeclaration cssDecl
+            = ctx.getViewCSS().getComputedStyle(svgElement, null);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx, cssDecl);
+        ShapeNode shapeNode = (ShapeNode) evt.getGraphicsNode();
+        switch(evt.getType()) {
+        case BridgeMutationEvent.PROPERTY_MUTATION_TYPE:
+            String attrName = evt.getAttrName();
+            if (attrName.equals(ATTR_TRANSFORM)) {
+                AffineTransform at = AWTTransformProducer.createAffineTransform
+                    (new StringReader(svgElement.getAttributeNS(null, ATTR_TRANSFORM)), ctx.getParserFactory());
+                shapeNode.setTransform(at);
+            }
+            break;
+        case BridgeMutationEvent.STYLE_MUTATION_TYPE:
+            throw new Error("Not yet implemented");
+        }
+
     }
 
     public boolean isContainer() {

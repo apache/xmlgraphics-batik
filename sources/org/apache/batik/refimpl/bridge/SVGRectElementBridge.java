@@ -11,11 +11,12 @@ package org.apache.batik.refimpl.bridge;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
-
+import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.util.UnitProcessor;
-import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.svg.SVGElement;
 
 /**
  * A factory for the &lt;rect> SVG element.
@@ -92,4 +93,29 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             return new Rectangle2D.Float(x, y, w, h);
         }
     }
+
+    public void update(BridgeMutationEvent evt) {
+        super.update(evt);
+        BridgeContext ctx = evt.getBridgeContext();
+        SVGElement svgElement = (SVGElement) evt.getElement();
+        CSSStyleDeclaration cssDecl
+            = ctx.getViewCSS().getComputedStyle(svgElement, null);
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx, cssDecl);
+        ShapeNode shapeNode = (ShapeNode) evt.getGraphicsNode();
+        switch(evt.getType()) {
+        case BridgeMutationEvent.PROPERTY_MUTATION_TYPE:
+            String attrName = evt.getAttrName();
+            if (attrName.equals(ATTR_X) ||
+                    attrName.equals(ATTR_Y) ||
+                    attrName.equals(ATTR_WIDTH) ||
+                    attrName.equals(ATTR_HEIGHT)) {
+                shapeNode.setShape(createShape(ctx, svgElement, cssDecl, uctx));
+            }
+            break;
+        case BridgeMutationEvent.STYLE_MUTATION_TYPE:
+            throw new Error("Not yet implemented");
+        }
+    }
+
 }
