@@ -22,7 +22,7 @@ public interface FilterResRable extends Filter {
      * Returns the source to be cropped.
      */
     public Filter getSource();
-    
+
     /**
      * Sets the source to be cropped
      * @param src image to offset.
@@ -40,7 +40,7 @@ public interface FilterResRable extends Filter {
      * The value should be greater than zero to have an effect.
      */
     public void setFilterResolutionX(int filterResolutionX);
-    
+
     /**
      * Returns the resolution along the Y axis.
      */

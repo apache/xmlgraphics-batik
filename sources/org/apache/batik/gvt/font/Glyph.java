@@ -289,3 +289,4 @@ public class Glyph {
         glyphNode.paint(graphics2D, context);
     }
 }
+

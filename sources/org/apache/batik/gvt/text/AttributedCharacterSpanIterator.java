@@ -200,7 +200,7 @@ public class AttributedCharacterSpanIterator implements
         if (getIndex() < end-1 ) {
             return aci.next();
         } else {
-	    return setIndex(end);
+            return setIndex(end);
         }
     }
 
@@ -227,10 +227,10 @@ public class AttributedCharacterSpanIterator implements
         int ndx = Math.max(position, begin);
         ndx = Math.min(ndx, end);
         char c = aci.setIndex(ndx);
-	if (ndx == end) {
+        if (ndx == end) {
             c = CharacterIterator.DONE;
-	}
-	return c;
+        }
+        return c;
     }
 }
 

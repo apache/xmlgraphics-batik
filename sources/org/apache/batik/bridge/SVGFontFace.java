@@ -108,5 +108,4 @@ public class SVGFontFace {
     public float getOverlineThickness() {
         return overlineThickness;
     }
-
 }

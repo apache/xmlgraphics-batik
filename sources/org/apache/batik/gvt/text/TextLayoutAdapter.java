@@ -382,3 +382,5 @@ public class TextLayoutAdapter implements TextSpanLayout {
     }
 
 }
+
+

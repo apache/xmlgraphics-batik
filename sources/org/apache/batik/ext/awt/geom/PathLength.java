@@ -41,7 +41,7 @@ public class PathLength {
      */
 
     public PathLength(Shape path) {
-	setPath(path);
+        setPath(path);
     }
 
 
@@ -53,7 +53,7 @@ public class PathLength {
      */
 
     public Shape getPath() {
-	return path;
+        return path;
     }
 
     /**
@@ -62,8 +62,8 @@ public class PathLength {
      */
 
     public void setPath(Shape v) {
-	this.path = v;
-	initialised = false;
+        this.path = v;
+        initialised = false;
     }
 
     /**
@@ -91,83 +91,83 @@ public class PathLength {
 
     public float lengthOfPath() {
 
-	if (!initialised) {
-	    initialise();
-	}
+        if (!initialised) {
+            initialise();
+        }
 
-	return pathLength;
+        return pathLength;
     }
 
 
     protected void initialise() {
 
-	pathLength = 0f;
+        pathLength = 0f;
 
-	FlatteningPathIterator fpi = new FlatteningPathIterator(path.getPathIterator(new AffineTransform()), 0.01f);
-	segments = new Vector(20);
-	float lastMoveX = 0f;
-	float lastMoveY = 0f;
-	float currentX = 0f;
-	float currentY = 0f;
-	float seg[] = new float[6];
-	int segType;
+        FlatteningPathIterator fpi = new FlatteningPathIterator(path.getPathIterator(new AffineTransform()), 0.01f);
+        segments = new Vector(20);
+        float lastMoveX = 0f;
+        float lastMoveY = 0f;
+        float currentX = 0f;
+        float currentY = 0f;
+        float seg[] = new float[6];
+        int segType;
 
-	segments.add(new PathSegment(PathIterator.SEG_MOVETO, 0f, 0f, 0f));
+        segments.add(new PathSegment(PathIterator.SEG_MOVETO, 0f, 0f, 0f));
 
-	while (!fpi.isDone()) {
+        while (!fpi.isDone()) {
 
-	    segType = fpi.currentSegment(seg);
+            segType = fpi.currentSegment(seg);
 
-	    switch (segType) {
+            switch (segType) {
 
-	    case PathIterator.SEG_MOVETO:
+            case PathIterator.SEG_MOVETO:
 
-		//System.out.println("== MOVE TO " + seg[0] + " " + seg[1]);
+                //System.out.println("== MOVE TO " + seg[0] + " " + seg[1]);
 
-		segments.add(new PathSegment(segType, seg[0], seg[1], pathLength));
-		currentX = seg[0];
-		currentY = seg[1];
-		lastMoveX = currentX;
-		lastMoveY = currentY;
+                segments.add(new PathSegment(segType, seg[0], seg[1], pathLength));
+                currentX = seg[0];
+                currentY = seg[1];
+                lastMoveX = currentX;
+                lastMoveY = currentY;
 
-		break;
+                break;
 
-	    case PathIterator.SEG_LINETO:
+            case PathIterator.SEG_LINETO:
 
-		//System.out.println("== LINE TO " + seg[0] + " " + seg[1]);
+                //System.out.println("== LINE TO " + seg[0] + " " + seg[1]);
 
-		pathLength += Point2D.distance(currentX, currentY, seg[0], seg[1]);
-		segments.add(new PathSegment(segType, seg[0], seg[1], pathLength));
+                pathLength += Point2D.distance(currentX, currentY, seg[0], seg[1]);
+                segments.add(new PathSegment(segType, seg[0], seg[1], pathLength));
 
-		currentX = seg[0];
-		currentY = seg[1];
+                currentX = seg[0];
+                currentY = seg[1];
 
-		break;
+                break;
 
-	    case PathIterator.SEG_CLOSE:
+            case PathIterator.SEG_CLOSE:
 
-		//System.out.println("== CLOSE TO " + lastMoveX + " " + lastMoveY);
+                //System.out.println("== CLOSE TO " + lastMoveX + " " + lastMoveY);
 
-		pathLength += Point2D.distance(currentX, currentY, lastMoveX, lastMoveY);
-		segments.add(new PathSegment(PathIterator.SEG_LINETO, lastMoveX, lastMoveY, pathLength));
+                pathLength += Point2D.distance(currentX, currentY, lastMoveX, lastMoveY);
+                segments.add(new PathSegment(PathIterator.SEG_LINETO, lastMoveX, lastMoveY, pathLength));
 
-		currentX = lastMoveX;
-		currentY = lastMoveY;
+                currentX = lastMoveX;
+                currentY = lastMoveY;
 
-		break;
+                break;
 
-	    default:
+            default:
 
-		// ouch, where have these come from
-		System.out.println("Bad path segment types");
+                // ouch, where have these come from
+                System.out.println("Bad path segment types");
 
-	    }
+            }
 
-	    fpi.next();
+            fpi.next();
 
-	}
+        }
 
-	initialised = true;
+        initialised = true;
 
     }
 
@@ -182,121 +182,121 @@ public class PathLength {
 
     public Point2D pointAtLength(float length) {
 
-	int upperIndex = findUpperIndex(length);
+        int upperIndex = findUpperIndex(length);
 
-	if (upperIndex == -1) {
-	    // length is off the end of the path
-	    return null;
-	}
+        if (upperIndex == -1) {
+            // length is off the end of the path
+            return null;
+        }
 
-	PathSegment upper = (PathSegment) segments.elementAt(upperIndex);
+        PathSegment upper = (PathSegment) segments.elementAt(upperIndex);
 
-	if (upperIndex == 0) {
-	    // length was probably zero
-	    // return the upper point
-	    return new Point2D.Float(upper.getX(), upper.getY());
-	}
+        if (upperIndex == 0) {
+            // length was probably zero
+            // return the upper point
+            return new Point2D.Float(upper.getX(), upper.getY());
+        }
 
-	PathSegment lower = (PathSegment) segments.elementAt(upperIndex - 1);
+        PathSegment lower = (PathSegment) segments.elementAt(upperIndex - 1);
 
-	// now work out where along the line would be the length
+        // now work out where along the line would be the length
 
-	float offset = length - lower.getLength();
+        float offset = length - lower.getLength();
 
-	// slope
-	double theta = Math.atan2(upper.getY() - lower.getY(), upper.getX() - lower.getX());
+        // slope
+        double theta = Math.atan2(upper.getY() - lower.getY(), upper.getX() - lower.getX());
 
-	float xPoint = (float) (lower.getX() + offset * Math.cos(theta));
-	float yPoint = (float) (lower.getY() + offset * Math.sin(theta));
+        float xPoint = (float) (lower.getX() + offset * Math.cos(theta));
+        float yPoint = (float) (lower.getY() + offset * Math.sin(theta));
 
-	return new Point2D.Float(xPoint, yPoint);
+        return new Point2D.Float(xPoint, yPoint);
 
     }
 
     public float angleAtLength(float length) {
 
-	int upperIndex = findUpperIndex(length);
+        int upperIndex = findUpperIndex(length);
 
-	if (upperIndex == -1) {
-	    // length is off the end of the path
-	    // return 0f
-	    return 0f;
-	}
+        if (upperIndex == -1) {
+            // length is off the end of the path
+            // return 0f
+            return 0f;
+        }
 
-	PathSegment upper = (PathSegment) segments.elementAt(upperIndex);
+        PathSegment upper = (PathSegment) segments.elementAt(upperIndex);
 
-	if (upperIndex == 0) {
-	    // length was probably zero
-	    // return the angle between the first and second segments
-	    //return new Point2D.Float(upper.getX(), upper.getY());
-	    upperIndex = 1;
-	}
+        if (upperIndex == 0) {
+            // length was probably zero
+            // return the angle between the first and second segments
+            //return new Point2D.Float(upper.getX(), upper.getY());
+            upperIndex = 1;
+        }
 
-	PathSegment lower = (PathSegment) segments.elementAt(upperIndex - 1);
+        PathSegment lower = (PathSegment) segments.elementAt(upperIndex - 1);
 
-	// slope
-	float theta = (float) Math.atan2(upper.getY() - lower.getY(), upper.getX() - lower.getX());
+        // slope
+        float theta = (float) Math.atan2(upper.getY() - lower.getY(), upper.getX() - lower.getX());
 
-	return theta;
+        return theta;
 
     }
 
     private int findUpperIndex(float length) {
-	if (!initialised) {
-	    initialise();
-	}
-	if (length < 0) {
+        if (!initialised) {
+            initialise();
+        }
+        if (length < 0) {
         // length is before the start of the path
         return -1;
     }
 
-	// find the two segments that are each side of the length
+        // find the two segments that are each side of the length
 
-	int upperIndex = -1;
+        int upperIndex = -1;
 
-	int numSegments = segments.size();
-	int currentIndex = 0;
+        int numSegments = segments.size();
+        int currentIndex = 0;
 
-	while (upperIndex <= 0 && currentIndex < numSegments) {
+        while (upperIndex <= 0 && currentIndex < numSegments) {
 
-	    PathSegment ps = (PathSegment) segments.elementAt(currentIndex);
+            PathSegment ps = (PathSegment) segments.elementAt(currentIndex);
 
-	    if (ps.getLength() >= length && ps.getSegType() != PathIterator.SEG_MOVETO) {
-		upperIndex = currentIndex;
-	    }
-	    currentIndex++;
-	}
+            if (ps.getLength() >= length && ps.getSegType() != PathIterator.SEG_MOVETO) {
+                upperIndex = currentIndex;
+            }
+            currentIndex++;
+        }
 
-	return upperIndex;
+        return upperIndex;
     }
 
 
     public static void main(String args[]) {
 
-	GeneralPath path = new GeneralPath();
-	path.moveTo(100f, 100f);
-	path.lineTo(200f, 150f);
-	path.lineTo(300f, 200f);
-	path.quadTo(450f, 525f, 400f, 250f);
-	path.closePath();
+        GeneralPath path = new GeneralPath();
+        path.moveTo(100f, 100f);
+        path.lineTo(200f, 150f);
+        path.lineTo(300f, 200f);
+        path.quadTo(450f, 525f, 400f, 250f);
+        path.closePath();
 
-	PathLength pl = new PathLength(path);
+        PathLength pl = new PathLength(path);
 
-	System.out.println("New Path Length created");
-	System.out.println("Path Length = " + pl.lengthOfPath());
-	System.out.println("Path Length = " + pl.lengthOfPath());
-	System.out.println("Point at 0 = " + pl.pointAtLength(0f));
-	System.out.println("Point at 10 = " + pl.pointAtLength(10f));
-	System.out.println("Point at 20 = " + pl.pointAtLength(20f));
-	System.out.println("Point at 300 = " + pl.pointAtLength(300f));
-	System.out.println("Point at 3000 = " + pl.pointAtLength(3000f));
-	System.out.println("Point at 0 = " + pl.pointAtLength(0f));
-	System.out.println("Point at 10 = " + pl.pointAtLength(10f));
-	System.out.println("Point at 20 = " + pl.pointAtLength(20f));
-	System.out.println("Point at 300 = " + pl.pointAtLength(300f));
-	System.out.println("Path Length = " + pl.lengthOfPath());
-	System.out.println("Point at 0 = " + pl.pointAtLength(0f));
-	System.out.println("Point at 10 = " + pl.pointAtLength(10f));
+        System.out.println("New Path Length created");
+        System.out.println("Path Length = " + pl.lengthOfPath());
+        System.out.println("Path Length = " + pl.lengthOfPath());
+        System.out.println("Point at 0 = " + pl.pointAtLength(0f));
+        System.out.println("Point at 10 = " + pl.pointAtLength(10f));
+        System.out.println("Point at 20 = " + pl.pointAtLength(20f));
+        System.out.println("Point at 300 = " + pl.pointAtLength(300f));
+        System.out.println("Point at 3000 = " + pl.pointAtLength(3000f));
+        System.out.println("Point at 0 = " + pl.pointAtLength(0f));
+        System.out.println("Point at 10 = " + pl.pointAtLength(10f));
+        System.out.println("Point at 20 = " + pl.pointAtLength(20f));
+        System.out.println("Point at 300 = " + pl.pointAtLength(300f));
+        System.out.println("Path Length = " + pl.lengthOfPath());
+        System.out.println("Point at 0 = " + pl.pointAtLength(0f));
+        System.out.println("Point at 10 = " + pl.pointAtLength(10f));
 
     }
 
@@ -304,96 +304,93 @@ public class PathLength {
     protected class PathSegment {
 
 
-	public PathSegment(int a, float b, float c, float d) {
-	    setSegType(a);
-	    setX(b);
-	    setY(c);
-	    setLength(d);
-	}
+        public PathSegment(int a, float b, float c, float d) {
+            setSegType(a);
+            setX(b);
+            setY(c);
+            setLength(d);
+        }
 
-	int segType;
+        int segType;
 
-	/**
-	 * Get the value of segType.
-	 * @return Value of segType.
-	 */
+        /**
+         * Get the value of segType.
+         * @return Value of segType.
+         */
 
-	public int getSegType() {
-	    return segType;
-	}
+        public int getSegType() {
+            return segType;
+        }
 
-	/**
-	 * Set the value of segType.
-	 * @param v  Value to assign to segType.
-	 */
+        /**
+         * Set the value of segType.
+         * @param v  Value to assign to segType.
+         */
 
-	public void setSegType(int v) {
-	    this.segType = v;
-	}
+        public void setSegType(int v) {
+            this.segType = v;
+        }
 
-	float X;
+        float X;
 
-	/**
-	 * Get the value of X.
-	 * @return Value of X.
-	 */
+        /**
+         * Get the value of X.
+         * @return Value of X.
+         */
 
-	public float getX() {
-	    return X;
-	}
+        public float getX() {
+            return X;
+        }
 
-	/**
-	 * Set the value of X.
-	 * @param v  Value to assign to X.
-	 */
+        /**
+         * Set the value of X.
+         * @param v  Value to assign to X.
+         */
 
-	public void setX(float v) {
-	    this.X = v;
-	}
+        public void setX(float v) {
+            this.X = v;
+        }
 
-	float Y;
+        float Y;
 
-	/**
-	 * Get the value of Y.
-	 * @return Value of Y.
-	 */
+        /**
+         * Get the value of Y.
+         * @return Value of Y.
+         */
 
-	public float getY() {
-	    return Y;
-	}
+        public float getY() {
+            return Y;
+        }
 
-	/**
-	 * Set the value of Y.
-	 * @param v  Value to assign to Y.
-	 */
+        /**
+         * Set the value of Y.
+         * @param v  Value to assign to Y.
+         */
 
-	public void setY(float v) {
-	    this.Y = v;
-	}
+        public void setY(float v) {
+            this.Y = v;
+        }
 
-	float length;
+        float length;
 
-	/**
-	 * Get the value of Length.
-	 * @return Value of Length.
-	 */
+        /**
+         * Get the value of Length.
+         * @return Value of Length.
+         */
 
-	public float getLength() {
-	    return length;
-	}
+        public float getLength() {
+            return length;
+        }
 
-	/**
-	 * Set the value of Length.
-	 * @param v  Value to assign to Length.
-	 */
+        /**
+         * Set the value of Length.
+         * @param v  Value to assign to Length.
+         */
 
-	public void setLength(float v) {
-	    this.length = v;
-	}
-
-
-
+        public void setLength(float v) {
+            this.length = v;
+        }
     }
-
-
 }
+
+

@@ -9,6 +9,7 @@
 package org.apache.batik.bridge;
 
 import java.awt.geom.Dimension2D;
+import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collections;
@@ -282,6 +283,8 @@ public class BridgeContext implements ErrorConstants {
         } catch (MalformedURLException ex) {
             throw new BridgeException(e, ERR_URI_MALFORMED,
                                       new Object[] {uri});
+        } catch (InterruptedIOException ex) {
+            throw new InterruptedBridgeException();
         } catch (IOException ex) {
             throw new BridgeException(e, ERR_URI_IO,
                                       new Object[] {uri});
@@ -894,3 +897,5 @@ public class BridgeContext implements ErrorConstants {
         }
     }
 }
+
+

@@ -103,12 +103,12 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
             }
         }
 
-	    // We really want to use the new GlyphLayout to layout
-	    // the text. At the moment, use the old code if there is
-	    // only one resolved font and it isn't an SVG Font.
-	    // Of course, we shouldn't explicitly test for SVG here
-	    // (don't want SVG mentioned in GVT :) but we'll try to
-	    // use GlyphLayout for everything soon!
+            // We really want to use the new GlyphLayout to layout
+            // the text. At the moment, use the old code if there is
+            // only one resolved font and it isn't an SVG Font.
+            // Of course, we shouldn't explicitly test for SVG here
+            // (don't want SVG mentioned in GVT :) but we'll try to
+            // use GlyphLayout for everything soon!
 
   /*      if (fontFamilies.size() <= 1 && !containsSVGFont) {
 
@@ -131,7 +131,7 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
             }
 */
 /*
-	if (!containsSVGFont) {
+        if (!containsSVGFont) {
 
             // the folowing code does what the old font code used to do
             // using this will prevent any font switching within the text
@@ -180,7 +180,7 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
                 } while (ch != CharacterIterator.DONE);
             }
         }
-	//  System.out.println("Using GlyphLayout"); */
+        //  System.out.println("Using GlyphLayout"); */
         return new GlyphLayout(aci, offset, frc);
     }
 
@@ -331,3 +331,5 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
 
     }
 }
+
+

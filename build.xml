@@ -108,7 +108,7 @@ To display the available targets type:
       <include name="stylebook*.jar"/>
       <include name="xalan*.jar"/>
       <include name="xerces*.jar"/>
-      <include name="*.jar"/>
+      <include name="mail*.jar"/>
     </fileset>
   </path>
 
