@@ -8,6 +8,7 @@
 
 package org.apache.batik.apps.rasterizer;
 
+import java.awt.Color;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,6 +18,7 @@ import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.net.URL;
 import java.net.MalformedURLException;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -62,6 +64,7 @@ public class Main {
         out.println("-m <mimetype>    Mime type for output files");
         out.println("-w <width>       Width of the output image");
         out.println("-h <height>      Height of the output image");
+        out.println("-bg <color>      Background color (a.r.g.b decimal notation) for the output image. White is the default");
     }
 
     public static void main(String [] args) {
@@ -71,6 +74,7 @@ public class Main {
         int i=0;
         float width = Float.NaN;
         float height = Float.NaN;
+        Color background = Color.white;
 
         while (i < args.length) {
             if (args[i].equals("-d")) {
@@ -102,6 +106,22 @@ public class Main {
                         usage(System.err);
                         System.exit(1);
                     }
+                    continue;
+                } else {
+                    error("option -w requires an argument");
+                    usage(System.err);
+                    System.exit(1);
+                }
+            } else if (args[i].equals("-bg")) {
+                if (i+1 < args.length) {
+                    i++;
+                    String argbVal = args[i++];
+                    Color c = parseARGB(argbVal);
+                    if(c == null){
+                        usage(System.err);
+                        System.exit(1);
+                    }
+                    background = c;
                     continue;
                 } else {
                     error("option -w requires an argument");
@@ -168,6 +188,9 @@ public class Main {
                                  new Float(height));
         }
 
+        t.addTranscodingHint(ImageTranscoder.KEY_BACKGROUND_COLOR,
+                             background);
+
         for (Iterator iter = svgFiles.iterator(); iter.hasNext();) {
             String s = (String) iter.next();
             URL url = getSVGURL(s);
@@ -210,33 +233,74 @@ public class Main {
         System.exit(0);
     }
 
-        public static URL getSVGURL(String s) {
-                URL url = null;
+    public static URL getSVGURL(String s) {
+        URL url = null;
 
-                try{
-                        File f = new File(s);
-                        if(f.exists()){
-                                url = f.toURL();
-                        }
-                        else{
-                                url = new URL(s);
-                        }
-                }catch(MalformedURLException e){
-                        error("Bad svg file: " + s);
-                }
-
-                return url;
+        try{
+            File f = new File(s);
+            if(f.exists()){
+                url = f.toURL();
+            }
+            else{
+                url = new URL(s);
+            }
+        }catch(MalformedURLException e){
+            error("Bad svg file: " + s);
         }
 
-        public static String getDirectory(String s){
-                File f = new File(s);
-                if(f.exists()){
-                        return f.getParent();
-                }
-                else{
-                        return null;
-                }
+        return url;
+    }
+
+    public static String getDirectory(String s){
+        File f = new File(s);
+        if(f.exists()){
+            return f.getParent();
         }
+        else{
+            return null;
+        }
+    }
+
+    /**
+     * Parse the input value, which should be in the following
+     * format: a.r.g.b where a, r, g and b are integer values,
+     * in decimal notation, between 0 and 255.
+     * @return the parsed color if successful. null otherwise.
+     */
+    public static Color parseARGB(String argbVal){
+        Color c = null;
+        if(argbVal != null){
+            StringTokenizer st = new StringTokenizer(argbVal, ".");
+            if(st.countTokens() == 4){
+                String aStr = st.nextToken();
+                String rStr = st.nextToken();
+                String gStr = st.nextToken();
+                String bStr = st.nextToken();
+                int a = -1, r = -1, g = -1, b = -1;
+                try {
+                    a = Integer.parseInt(aStr);
+                    r = Integer.parseInt(rStr);
+                    g = Integer.parseInt(gStr);
+                    b = Integer.parseInt(bStr);
+                }catch(NumberFormatException e){
+                    // If an error occured, the a, r, g, b
+                    // values will not be in the 0-255 range
+                    // and the next if test will fail
+                }
+
+                if( a>=0 && a<=255
+                    &&
+                    r>=0 && r<=255
+                    &&
+                    g>=0 && g<=255
+                    &&
+                    b>=0 && b<=255 ){
+                    c = new Color(r,g,b,a);
+                }
+            }
+        }
+        return c;
+    }
 
 }
 

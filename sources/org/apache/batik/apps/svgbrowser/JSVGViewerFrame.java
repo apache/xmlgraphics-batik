@@ -935,6 +935,8 @@ public class JSVGViewerFrame
                     final ImageTranscoder trans = new PNGTranscoder();
                     trans.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
                                              application.getXMLParserClassName());
+                    trans.addTranscodingHint(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE,
+                                             new Boolean(true));
                     final BufferedImage img = trans.createImage(w, h);
 
                     // paint the buffer to the image
