@@ -71,10 +71,12 @@ public class ImageTagRegistry {
 
         ret = cache.request(purl);
         if (ret != null) {
+            // System.out.println("Image came from cache" + purl);
             if (colorSpace != null)
                 ret = new ProfileRable(ret, colorSpace);
             return ret;
         }
+        // System.out.println("Image didn't come from cache: " + purl);
 
         InputStream is         = null;
         boolean     openFailed = false;

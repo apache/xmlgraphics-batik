@@ -97,19 +97,78 @@ public class ParsedURL {
             return new URL(protocol, host, port, file);
         }
 
-        public boolean equals(Object obj) {
-            if (! (obj instanceof ParsedURL)) 
-                return false;
-            ParsedURL purl = (ParsedURL)obj;
-            String s1 = toString();
-            String s2 = purl.toString();
-            return (s1.equals(s2));
+        public int hashCode() {
+            int hc = port;
+            if (protocol != null) 
+                hc ^= protocol.hashCode();
+            if (host != null)
+                hc ^= host.hashCode();
+
+            // For some URLS path and ref can get fairly long
+            // and the most unique part is towards the end
+            // so we grab that part for HC purposes
+            if (path != null) {
+                int len = path.length();
+                if (len > 20)
+                    hc ^= path.substring(len-20).hashCode();
+                else
+                    hc ^= path.hashCode();
+            }
+            if (ref != null) {
+                int len = ref.length();
+                if (len > 20)
+                    hc ^= ref.substring(len-20).hashCode();
+                else
+                    hc ^= ref.hashCode();
+            }
+
+            return hc;
         }
 
-        public int hashCode() {
-            return toString().hashCode();
+        public boolean equals(Object obj) {
+            if (obj == null) return false;
+            if (! (obj instanceof URLData)) 
+                return false;
+
+            URLData ud = (URLData)obj;
+            if (ud.port != port)
+                return false;
+            
+            if (ud.protocol==null) {
+                if (protocol != null)
+                    return false;
+            } else if (protocol == null)
+                return false;
+            else if (!ud.protocol.equals(protocol))
+                return false;
+
+            if (ud.host==null) {
+                if (host   !=null)
+                    return false;
+            } else if (host == null)
+                return false;
+            else if (!ud.host.equals(host))
+                return false;
+
+            if (ud.ref==null) {
+                if (ref   !=null)
+                    return false;
+            } else if (ref == null)
+                return false;
+            else if (!ud.ref.equals(ref))
+                return false;
+
+            if (ud.path==null) {
+                if (path   !=null)
+                    return false;
+            } else if (path == null)
+                return false;
+            else if (!ud.path.equals(path))
+                return false;
+
+            return true;
         }
-        
+
         public boolean complete() {
             try {
                 URL url = buildURL();
@@ -207,6 +266,22 @@ public class ParsedURL {
             data = parseURL(urlStr);
     }
 
+    public String toString() {
+        return data.toString();
+    }
+
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (! (obj instanceof ParsedURL)) 
+            return false;
+        ParsedURL purl = (ParsedURL)obj;
+        return data.equals(purl.data);
+    }
+
+    public int hashCode() {
+        return data.hashCode();
+    }
+        
     public boolean complete() {
         return data.complete();
     }
@@ -232,10 +307,6 @@ public class ParsedURL {
 
     public String getPortStr() {
         return data.getPortStr();
-    }
-
-    public String toString() {
-        return data.toString();
     }
 
     public InputStream openStream() throws IOException {
