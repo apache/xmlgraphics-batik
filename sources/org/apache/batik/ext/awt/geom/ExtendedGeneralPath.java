@@ -102,6 +102,11 @@ public class ExtendedGeneralPath implements Shape, Cloneable {
         Point2D p2d = path.getCurrentPoint();
         double x0 = p2d.getX();
         double y0 = p2d.getY();
+	if (x0 == x && y0 == y) {
+	    // If the endpoints (x, y) and (x0, y0) are identical, then this
+	    // is equivalent to omitting the elliptical arc segment entirely.
+	    return;
+	}
         // Compute the half distance between the current and the final point
         double dx2 = (x0 - x) / 2.0;
         double dy2 = (y0 - y) / 2.0;
