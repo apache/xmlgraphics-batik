@@ -55,6 +55,7 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Point2D;
 
 /**
  * A shape painter that can be used to draw the outline of a shape.
@@ -156,6 +157,16 @@ public class StrokeShapePainter implements ShapePainter {
     }
 
     /**
+     * Returns the bounds of the area covered by this shape painter
+     */
+    public boolean inPaintedArea(Point2D pt){
+        Shape painted = getPaintedArea();
+        if (painted == null)
+            return false;
+        return painted.contains(pt);
+    }
+        
+    /**
      * Returns the area covered by this shape painter (even if not painted).
      */
     public Shape getSensitiveArea(){
@@ -169,7 +180,7 @@ public class StrokeShapePainter implements ShapePainter {
     }
 
     /**
-     * Returns the bounds of the area covered by this shape painte
+     * Returns the bounds of the area covered by this shape painter
      * (even if not painted).
      */
     public Rectangle2D getSensitiveBounds2D() {
@@ -180,7 +191,17 @@ public class StrokeShapePainter implements ShapePainter {
         return sensitive.getBounds2D();
     }
 
-
+    /**
+     * Returns the bounds of the area covered by this shape painter
+     * (even if not painted).
+     */
+    public boolean inSensitiveArea(Point2D pt){
+        Shape sensitive = getSensitiveArea();
+        if (sensitive == null)
+            return false;
+        return sensitive.contains(pt);
+    }
+        
     /**
      * Sets the Shape this shape painter is associated with.
      *

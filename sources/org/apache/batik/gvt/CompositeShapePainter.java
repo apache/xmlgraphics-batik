@@ -53,6 +53,7 @@ package org.apache.batik.gvt;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Area;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -192,6 +193,18 @@ public class CompositeShapePainter implements ShapePainter {
         return bounds;
     }
 
+    /**
+     * Returns true if pt is in the area painted by this shape painter
+     */
+    public boolean inPaintedArea(Point2D pt){
+        if (painters == null) 
+            return false;
+        for (int i=0; i < count; ++i) {
+            if (painters[i].inPaintedArea(pt))
+                return true;
+        }
+        return false;
+    }
 
     /**
      * Returns the area covered by this shape painter (even if nothing
@@ -224,6 +237,19 @@ public class CompositeShapePainter implements ShapePainter {
             else                bounds.add(pb);
         }
         return bounds;
+    }
+
+    /**
+     * Returns true if pt is in the area painted by this shape painter
+     */
+    public boolean inSensitiveArea(Point2D pt){
+        if (painters == null) 
+            return false;
+        for (int i=0; i < count; ++i) {
+            if (painters[i].inSensitiveArea(pt))
+                return true;
+        }
+        return false;
     }
 
     /**
