@@ -101,7 +101,7 @@ public class PadRed extends AbstractRed {
 
         Graphics2D g2d = bi.createGraphics();
         // Make sure we draw with our hints.
-        g2d.setRenderingHints(hints);
+        if (hints != null) g2d.setRenderingHints(hints);
         // Fully transparent black.
         g2d.setColor(new Color(0,0,0,0));
         g2d.translate(-wr.getMinX(), -wr.getMinY());

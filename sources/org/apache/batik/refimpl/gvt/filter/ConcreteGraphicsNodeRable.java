@@ -361,17 +361,8 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
 
             g.dispose();
 
-            renderedImage = new ConcreteBufferedImageCachableRed(offScreen){
-                        public int getMinX(){
-                            return renderedArea.x;
-                        }
-
-                        public int getMinY(){
-                            return renderedArea.y;
-                        }
-            };
-
-
+            renderedImage = new ConcreteBufferedImageCachableRed
+                (offScreen, renderedArea.x, renderedArea.y);
         }
 
         System.out.println("ConcreteGraphicsNodeRable done");
