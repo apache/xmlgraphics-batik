@@ -8,7 +8,9 @@
 
 package org.apache.batik.dom;
 
+import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.stylesheets.LinkStyle;
@@ -21,7 +23,6 @@ import org.w3c.dom.stylesheets.StyleSheet;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-
 public class StyleSheetProcessingInstruction
     extends AbstractProcessingInstruction
     implements LinkStyle {
@@ -40,6 +41,11 @@ public class StyleSheetProcessingInstruction
      * The stylesheet factory.
      */
     protected StyleSheetFactory factory;
+
+    /**
+     * The pseudo attributes.
+     */
+    protected transient HashTable pseudoAttributes;
 
     /**
      * Creates a new ProcessingInstruction object.
@@ -92,9 +98,22 @@ public class StyleSheetProcessingInstruction
      */
     public StyleSheet getSheet() {
 	if (sheet == null) {
-	    sheet = factory.createStyleSheet(this, getData());
+	    sheet = factory.createStyleSheet(this, getPseudoAttributes());
 	}
 	return sheet;
+    }
+
+    /**
+     * Returns the pseudo attributes in a table.
+     */
+    public HashTable getPseudoAttributes() {
+        if (pseudoAttributes == null) {
+            pseudoAttributes = new HashTable();
+            pseudoAttributes.put("alternate", "no");
+            pseudoAttributes.put("media",     "all");
+            DOMUtilities.parseStyleSheetPIData(data, pseudoAttributes);
+        }
+        return pseudoAttributes;
     }
 
     /**
@@ -104,6 +123,7 @@ public class StyleSheetProcessingInstruction
     public void setData(String data) throws DOMException {
 	super.setData(data);
 	sheet = null;
+        pseudoAttributes = null;
     }
 
     /**

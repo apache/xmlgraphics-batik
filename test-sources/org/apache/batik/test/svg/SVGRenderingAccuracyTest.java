@@ -355,7 +355,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
      * the accuracy test. For example, this can be useful to 
      * test the alternate stylesheet support.
      */
-    private final Document manipulateSVGDocument(Document doc) {
+    protected Document manipulateSVGDocument(Document doc) {
         return doc;
     }
 

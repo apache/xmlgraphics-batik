@@ -203,12 +203,7 @@ public class SVGDOMImplementation
      * Creates a stylesheet from the data of an xml-stylesheet
      * processing instruction or return null.
      */
-    public StyleSheet createStyleSheet(Node n, String data) {
-        HashTable attrs = new HashTable();
-        attrs.put("alternate", "no");
-        attrs.put("media", "all");
-        DOMUtilities.parseStyleSheetPIData(data, attrs);
-
+    public StyleSheet createStyleSheet(Node n, HashTable attrs) {
         String type = (String)attrs.get("type");
 
         if ("text/css".equals(type)) {
@@ -232,11 +227,7 @@ public class SVGDOMImplementation
                      CSSDocumentHandler.createParser());
 
                 CSSDocumentHandler.parseStyleSheet(ss, url.toString());
-                if (title == null || alternate.equals("no")) {
-                   ss.setDisabled (false);
-                } else {
-                   ss.setDisabled (true);
-                }
+                ss.setDisabled(title != null && "yes".equals(alternate));
                 return ss;
             } catch (Exception e) {
             }

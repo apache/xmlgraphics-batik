@@ -558,7 +558,8 @@ public abstract class AbstractViewCSS implements ViewCSS {
 	}
 	for (int i = 0; i < ml.getLength(); i++) {
 	    for (int j = 0; j < media.getLength(); j++) {
-		if (ml.item(i).equalsIgnoreCase(media.item(j))) {
+		if (media.item(j).equalsIgnoreCase("all") ||
+                    ml.item(i).equalsIgnoreCase(media.item(j))) {
 		    return true;
 		}
 	    }

@@ -63,8 +63,9 @@ public class DOMMediaList implements MediaList {
      * org.w3c.dom.stylesheets.MediaList#setMediaText(String)}.
      */
     public void setMediaText(String mediaText) throws DOMException {
+        mediaText = mediaText.toLowerCase();
         list.clear();
-        if (!"all".equals(mediaText)) {
+        if (!"all".equalsIgnoreCase(mediaText)) {
             StringTokenizer st = new StringTokenizer(mediaText, " ,");
             while (st.hasMoreTokens()) {
                 list.add(st.nextToken());
@@ -96,6 +97,7 @@ public class DOMMediaList implements MediaList {
      * org.w3c.dom.stylesheets.MediaList#deleteMedium(String)}.
      */
     public void deleteMedium(String oldMedium) throws DOMException {
+        oldMedium = oldMedium.toLowerCase();
         if (!list.remove(oldMedium)) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
@@ -109,6 +111,7 @@ public class DOMMediaList implements MediaList {
      * org.w3c.dom.stylesheets.MediaList#appendMedium(String)}.
      */
     public void appendMedium(String newMedium) throws DOMException {
+        newMedium = newMedium.toLowerCase();
 	list.remove(newMedium);
         list.add(newMedium);
     }
