@@ -75,6 +75,11 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_FLOW_PARA_TAG = 
         "flowPara";
 
+    /** Tag name for Batik's flowText extension flow Region break 
+     *  element SVG 1.1). */
+    public static final String BATIK_EXT_FLOW_REGION_BREAK_TAG = 
+        "flowRegionBreak";
+
     /** Tag name for Batik's flowText extension line element SVG 1.1). */
     public static final String BATIK_EXT_FLOW_LINE_TAG = 
         "flowLine";

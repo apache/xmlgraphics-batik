@@ -169,6 +169,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             }
             String ln = child.getLocalName();
             if (ln.equals(BATIK_EXT_FLOW_PARA_TAG) ||
+                ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG) ||
                 ln.equals(BATIK_EXT_FLOW_LINE_TAG) ||
                 ln.equals(BATIK_EXT_FLOW_SPAN_TAG) ||
                 ln.equals(SVG_A_TAG) ||
@@ -230,6 +231,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             }
             String ln = child.getLocalName();
             if (ln.equals(BATIK_EXT_FLOW_PARA_TAG) ||
+                ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG) ||
                 ln.equals(BATIK_EXT_FLOW_LINE_TAG) ||
                 ln.equals(BATIK_EXT_FLOW_SPAN_TAG) ||
                 ln.equals(SVG_A_TAG) ||
@@ -276,6 +278,11 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
 
                 paraElems.add(e);
                 paraEnds.add(new Integer(asb.length()));
+            } else if (ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG)) {
+                fillAttributedStringBuffer(ctx, e, true, asb, lnLocs);
+
+                paraElems.add(e);
+                paraEnds.add(new Integer(asb.length()));
             }
         }
 
@@ -286,6 +293,10 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
         List emptyPara = null;
         int prevLN = -1;
         Iterator lnIter = lnLocs.iterator();
+
+        // The Working Group (in conjunction with XHTML working group
+        // has decided that multiple line elements collapse so I don't
+        // use the counting I do.
         int lnCount = 0;
         while (lnIter.hasNext()) {
             int nextLN = ((Integer)lnIter.next()).intValue();
@@ -293,21 +304,22 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
                 lnCount++;
             } else {
                 if (prevLN != -1)
-                    ret.addAttribute(FLOW_LINE_BREAK, new Integer(lnCount), 
+                    ret.addAttribute(FLOW_LINE_BREAK, 
+                                     new Integer(1), // new Integer(lnCount), 
                                      prevLN-1, prevLN);
                 prevLN  = nextLN;
                 lnCount = 1;
             }
         }
         if (prevLN != -1)
-            ret.addAttribute(FLOW_LINE_BREAK, new Integer(lnCount), 
+            ret.addAttribute(FLOW_LINE_BREAK,
+                             new Integer(1), // new Integer(lnCount), 
                              prevLN-1, prevLN);
 
         int end;
         for (int i=0; i<paraElems.size(); i++, start=end) {
             Element elem = (Element)paraElems.get(i);
             end  = ((Integer)paraEnds.get(i)).intValue();
-
             if (start == end) {
                 if (emptyPara == null)
                     emptyPara = new LinkedList();
@@ -550,7 +562,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
          * @param breakIdx   The character after which to break.
          * @param lineAdvAdj The line advance adjustment.
          * @param relative   If true lineAdvAdj must be multiplied by
-1         *                   the line height.
+         *                   the line height.
          */
         public LineBreakInfo(int breakIdx, float lineAdvAdj, boolean relative){
             this.breakIdx = breakIdx;
@@ -565,6 +577,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
     public MarginInfo makeMarginInfo(Element e) {
         String s;
         float top=0, right=0, bottom=0, left=0;
+
         s = e.getAttributeNS(null, BATIK_EXT_MARGIN_ATTRIBUTE);
         try {
             if (s.length() != 0) {
@@ -617,7 +630,10 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
                 }
             }
         } catch(NumberFormatException nfe) { /* nothing */ }
-        return new MarginInfo(top, right, bottom, left, justification);
+
+        String ln = e.getLocalName();
+        boolean rgnBr = ln.equals(BATIK_EXT_FLOW_REGION_BREAK_TAG);
+        return new MarginInfo(top, right, bottom, left, justification, rgnBr);
     }
 
 

@@ -117,6 +117,11 @@ public class BatikDomExtension
 
         di.registerCustomElementFactory
             (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_FLOW_REGION_BREAK_TAG,
+             new FlowRegionBreakElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_EXT_NAMESPACE_URI,
              BATIK_EXT_FLOW_LINE_TAG,
              new FlowLineElementFactory());
 
@@ -269,6 +274,21 @@ public class BatikDomExtension
          */
         public Element create(String prefix, Document doc) {
             return new FlowParaElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'flowRegionBreak' element.
+     */
+    protected static class FlowRegionBreakElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public FlowRegionBreakElementFactory() {
+        }
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new FlowRegionBreakElement(prefix, (AbstractDocument)doc);
         }
     }
 

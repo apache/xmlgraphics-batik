@@ -103,7 +103,8 @@ public class GlyphIterator {
 
         this.numGlyphs   = gv.getNumGlyphs();
         this.gp          = gv.getGlyphPositions(0, this.numGlyphs+1, null);
-        this.adv = this.adj = getCharAdvance();
+        this.adv = getCharWidth();
+        this.adj = getCharAdvance();
     }
 
     public GlyphIterator(GlyphIterator gi) {
@@ -239,7 +240,8 @@ public class GlyphIterator {
             // Special handling for soft hyphens and zero-width spaces
             gv.setGlyphVisible(idx, false);
             float chAdv = getCharAdvance();
-            adv -= chAdv;
+            float chW   = getCharWidth();
+            adv -= chW;
             adj -= chAdv;
             if (leftShiftIdx == null) {
                 leftShiftIdx = new int[1];
@@ -281,7 +283,8 @@ public class GlyphIterator {
         adj += chAdv;
         if (isPrinting()) {
             chIdx = idx;
-            adv = adj;
+            float chW   = getCharWidth();
+            adv = adj-(chAdv-chW);
         }
     }
 
@@ -303,15 +306,6 @@ public class GlyphIterator {
             gv.setGlyphVisible(idx, true);
         }
 
-        // Tweak line advance to account for visual bounds of last 
-        // printing glyph.
-        Rectangle2D lcBound = gv.getGlyphVisualBounds(chIdx).getBounds2D();
-        Point2D     lcLoc   = gv.getGlyphPosition(chIdx);
-        float       charW   = (float)(lcBound.getX()+lcBound.getWidth()-
-                                      lcLoc.getX());
-        float charAdv = getCharAdvance(chIdx);
-        adv -= charAdv-charW;
-
         int lsi = 0;
         int nextLSI;
         if (leftShiftIdx != null) nextLSI = leftShiftIdx[lsi];
@@ -329,7 +323,7 @@ public class GlyphIterator {
         leftShiftAmt = null;
 
         return new LineInfo(aci, gv, lineIdx, idx+1, loc, adv, adj,
-                            charW, lineWidth, partial);
+                            getCharWidth(chIdx), lineWidth, partial);
     }
 
     public void newLine() {
@@ -359,9 +353,29 @@ public class GlyphIterator {
     }
 
     /**
+     * Get the visual advance associated with the current glyph.
+     * This is the distance from the location of the glyph to
+     * the rightmost part of the glyph.
+     */
+    public float getCharWidth() {
+        return getCharWidth(idx);
+    }
+
+    /**
      * Get the advance associated with any glyph
      */
     protected float getCharAdvance(int gvIdx) {
         return gp[2*gvIdx+2] - gp[2*gvIdx];
+    }
+
+    /**
+     * Get the visual advance associated with the current glyph.
+     * This is the distance from the location of the glyph to
+     * the rightmost part of the glyph.
+     */
+    protected float getCharWidth(int gvIdx) {
+        Rectangle2D lcBound = gv.getGlyphVisualBounds(chIdx).getBounds2D();
+        Point2D     lcLoc   = gv.getGlyphPosition(chIdx);
+        return (float)(lcBound.getX()+lcBound.getWidth()- lcLoc.getX());
     }
 }

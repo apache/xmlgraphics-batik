@@ -243,18 +243,15 @@ public class StrokingTextPainter extends BasicTextPainter {
             List layouts = new ArrayList();
             chunkLayouts.add(layouts);
             layouts.add(tr.getLayout());
-            while (true) {
-                while (i.hasNext()) {
-                    tr = (TextRun)i.next();
-                    if (tr.isFirstRunInChunk()) break;
-                    layouts.add(tr.getLayout());
+            while (i.hasNext()) {
+                tr = (TextRun)i.next();
+                if (tr.isFirstRunInChunk()) {
+                    layouts = new ArrayList();
+                    chunkLayouts.add(layouts);
                 }
-
-                if (!i.hasNext()) break;
-                layouts = new ArrayList();
-                chunkLayouts.add(layouts);
                 layouts.add(tr.getLayout());
             }
+
             org.apache.batik.gvt.text.GlyphLayout.textWrapTextChunk
                 (chunkACIs, chunkLayouts, rgns);
         }
@@ -305,6 +302,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                 // This prevents BIDI reordering across paragraphs.
                 if (aci.getAttribute(FLOW_PARAGRAPH) != null) {
                     end = aci.getRunLimit(FLOW_PARAGRAPH);
+                    // System.out.println("End: " + end);
                     aci.setIndex(end);
                     break;
                 }

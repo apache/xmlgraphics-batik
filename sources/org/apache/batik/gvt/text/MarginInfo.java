@@ -14,19 +14,22 @@ public class MarginInfo {
     public final static int JUSTIFY_END    = 2;
     public final static int JUSTIFY_FULL   = 3;
 
-    protected float top;
-    protected float right;
-    protected float bottom;
-    protected float left;
-    protected int   justification;
+    protected float   top;
+    protected float   right;
+    protected float   bottom;
+    protected float   left;
+    protected int     justification;
+    protected boolean flowRegionBreak;
+
 
     public MarginInfo(float top, float right, float bottom, float left,
-                      int justification) {
+                      int justification, boolean flowRegionBreak) {
         this.top    = top;
         this.right  = right;
         this.bottom = bottom;
         this.left   = left;
         this.justification = justification;
+        this.flowRegionBreak = flowRegionBreak;
     }
 
     public MarginInfo(float margin, int justification) {
@@ -39,9 +42,10 @@ public class MarginInfo {
         this.bottom = margin;
         this.left   = margin;
     }
-    public float getTopMargin()     { return top; }
-    public float getRightMargin()   { return right; }
-    public float getBottomMargin()  { return bottom; }
-    public float getLeftMargin()    { return left; }
-    public int   getJustification() { return justification; }
+    public float   getTopMargin()      { return top; }
+    public float   getRightMargin()    { return right; }
+    public float   getBottomMargin()   { return bottom; }
+    public float   getLeftMargin()     { return left; }
+    public int     getJustification()  { return justification; }
+    public boolean isFlowRegionBreak() { return flowRegionBreak; }
 }
