@@ -190,7 +190,8 @@ public class Font {
 
             // Load each of the tables
             for (int i = 0; i < tableDirectory.getNumTables(); i++) {
-                tables[i] = TableFactory.create(tableDirectory.getEntry(i), raf);
+                tables[i] = TableFactory.create
+                    (tableDirectory.getEntry(i), raf);
             }
             raf.close();
 
@@ -212,7 +213,7 @@ public class Font {
             loca.init(maxp.getNumGlyphs(), head.getIndexToLocFormat() == 0);
             glyf.init(maxp.getNumGlyphs(), loca);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
     

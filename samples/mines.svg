@@ -351,70 +351,73 @@
       ]]>
     </script>
 
-   <defs>
-         <radialGradient id="bombGrad" gradientUnits="userSpaceOnUse" 
-	                 cx="5" cy="6.5" fx="4" fy="5" r="2.5">
-	    <stop offset="0%" stop-color="#FFF"/>
-	    <stop offset="20%" stop-color="#888"/>
-	    <stop offset="100%" stop-color="#000"/>
-	 </radialGradient>
-      <path id="empty" style="fill:#AAA; stroke:#DDD; stroke-width:0.5;" 
-	    d="M0.25,0.25 h9.5 v9.5 h-9.5 v-9.5"/>
-
-      <g id="blank"
-        ><rect style="fill:#AAA" width="10" height="10"
+  <defs>
+    <radialGradient id="bombGrad" gradientUnits="userSpaceOnUse" 
+      cx="5" cy="6.5" fx="4" fy="5" r="2.5">
+      <stop offset="0%" stop-color="#FFF"/>
+      <stop offset="20%" stop-color="#888"/>
+      <stop offset="100%" stop-color="#000"/>
+    </radialGradient>
+    <path id="empty" style="fill:#AAA; stroke:#DDD; stroke-width:0.5;" 
+      d="M0.25,0.25 h9.5 v9.5 h-9.5 v-9.5"/>
+    
+    <g id="blank"
+      ><rect style="fill:#AAA" width="10" height="10"
         /><path style="fill:#DDD"
- 	        d="M0,0 h10 l-1,1 h-8 v8 l-1,1 v-10"
+        d="M0,0 h10 l-1,1 h-8 v8 l-1,1 v-10"
         /><path style="fill:#888"
- 	        d="M10,10 h-10 l1,-1 h8 v-8 l1,-1 v10"
-      /></g>
-
-      <use id="square0" xlink:href="#empty"/>
-      <g id="square1" style="text-anchor:middle; font-size:8;"
-          ><use xlink:href="#empty"
-         /><text x="5" y="8" fill="#008">1</text></g>
-      <g id="square2" style="text-anchor:middle; font-size:8;"
-          ><use xlink:href="#empty"
-         /><text x="5" y="8" fill="#00C">2</text></g>
-      <g id="square3" style="text-anchor:middle; font-size:8;"
-          ><use xlink:href="#empty"
-         /><text x="5" y="8" fill="#40F">3</text></g>
-      <g id="square4" style="text-anchor:middle; font-size:8;"
-          ><use xlink:href="#empty"
-         /><text x="5" y="8" fill="#80C">4</text></g>
-      <g id="square5" style="text-anchor:middle; font-size:8;"
-          ><use xlink:href="#empty"
-         /><text x="5" y="8" fill="#C0C">5</text></g>
-      <g id="square6" style="text-anchor:middle; font-size:8;"
-          ><use xlink:href="#empty"
-         /><text x="5" y="8" fill="#F08">6</text></g>
-      <g id="square7" style="text-anchor:middle; font-size:8;"
-          ><use xlink:href="#empty"
-         /><text x="5" y="8" fill="#F04">7</text></g>
-      <g id="square8" style="text-anchor:middle; font-size:8;"
-          ><use xlink:href="#empty"
-         /><text x="5" y="8" fill="#F00">8</text></g>
-
-      <g id="bomb"
-         ><use    xlink:href="#empty"
+        d="M10,10 h-10 l1,-1 h8 v-8 l1,-1 v10"
+        /></g>
+    
+    <use id="square0" xlink:href="#empty"/>
+    <g id="square1" style="text-anchor:middle; font-size:8;"
+      ><use xlink:href="#empty"
+        /><text x="5" y="8" fill="#008" pointer-events="none">1</text></g>
+    <g id="square2" style="text-anchor:middle; font-size:8;"
+      ><use xlink:href="#empty"
+        /><text x="5" y="8" fill="#00C" pointer-events="none">2</text></g>
+    <g id="square3" style="text-anchor:middle; font-size:8;"
+      ><use xlink:href="#empty"
+        /><text x="5" y="8" fill="#40F" pointer-events="none">3</text></g>
+    <g id="square4" style="text-anchor:middle; font-size:8;"
+      ><use xlink:href="#empty"
+        /><text x="5" y="8" fill="#80C" pointer-events="none">4</text></g>
+    <g id="square5" style="text-anchor:middle; font-size:8;"
+      ><use xlink:href="#empty"
+        /><text x="5" y="8" fill="#C0C" pointer-events="none">5</text></g>
+    <g id="square6" style="text-anchor:middle; font-size:8;"
+      ><use xlink:href="#empty"
+        /><text x="5" y="8" fill="#F08" pointer-events="none">6</text></g>
+    <g id="square7" style="text-anchor:middle; font-size:8;"
+      ><use xlink:href="#empty"
+        /><text x="5" y="8" fill="#F04" pointer-events="none">7</text></g>
+    <g id="square8" style="text-anchor:middle; font-size:8;"
+      ><use xlink:href="#empty"
+        /><text x="5" y="8" fill="#F00" pointer-events="none">8</text></g>
+    
+    <g id="bomb"
+      ><use    xlink:href="#empty"
         /><rect   fill="#000" x="4" y="3" width="2" height="2"
         /><circle fill="url(#bombGrad)" cx="5" cy="6.5" r="2.5"
         /><path   fill="none" stroke="#000" stroke-width="0.3"
-	          d="M5,3 c0,-1.5 1.5,-1.5 1.5,0 c0,1.5 1.5,1.5  1.5,0"
-    /></g>
-
-      <g id="flag"
-         ><use xlink:href="#blank"
+        d="M5,3 c0,-1.5 1.5,-1.5 1.5,0 c0,1.5 1.5,1.5  1.5,0"
+        /></g>
+    
+    <g id="flag"
+      ><use xlink:href="#blank"
         /><path d="M3.5,2 h.5 v6.5 h-1 l.5,-6.5"
         /><path fill="crimson" d="M4,2 l4,1.5 l-4,1.5 z"
-    /></g>
-   </defs>   
+        /></g>
+  </defs>   
+  
+  <g id="body">
+    <text id="title" x="25" y="60" font-size="40"
+      pointer-events="none">SVG Mines</text>
+    <text id="mines" x="250" y="30" font-size="20"
+      pointer-events="none">Mines Left: </text>
 
-   <g id="body">
-      <text id="title" x="25" y="60" font-size="40">SVG Mines</text>
-      <text id="mines" x="250" y="30" font-size="20">Mines Left: </text>
-
-      <text id="boardsz" x="250" y="54" font-size="20">Board Size: </text>
+      <text id="boardsz" x="250" y="54" font-size="20"
+       pointer-events="none">Board Size: </text>
       <g transform="translate(242, 38)" fill="black">
       	 <path onclick="largerBoard(evt)" 
       	       d="M2.5,0 l-2.5,7 h5 z"/>
@@ -430,14 +433,16 @@ Right    or Shift: place flag
 Middle    or Control: show surround</desc>
             <circle cx="430" cy="18" r="12"
                     fill="grey" stroke="lightgrey" stroke-width="2" />
-            <text font-size="15" fill="blue" x="430" y="25" >?</text>
+            <text font-size="15" fill="blue" x="430" y="25" 
+           pointer-events="none">?</text>
          </g>
    
          <g onclick="newGame()">
             <desc xml:space="preserve">Start new game</desc>
             <circle cx="430" cy="48" r="12"
                     fill="grey" stroke="lightgrey" stroke-width="2" />
-            <text font-size="10" fill="blue" x="430" y="53" >NG</text>
+            <text font-size="10" fill="blue" x="430" y="53" 
+          pointer-events="none">NG</text>
          </g>
       </g>
 
@@ -450,7 +455,7 @@ Middle    or Control: show surround</desc>
    	 </g>
       </g>
       <text id="working" fill="green" x="25" y="60" font-size="40"
-      >Working</text>
+       pointer-events="none">Working</text>
    </g>
 
     <!-- ============================================================= -->

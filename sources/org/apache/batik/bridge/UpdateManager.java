@@ -350,9 +350,15 @@ public class UpdateManager  {
                         ((EventTarget)(document.getDocumentElement())).
                             dispatchEvent(evt);
                         running = false;
-                    
+
+                        // Now shut everything down and disconnect
+                        // everything before we send the 
+                        // UpdateMangerStopped event.
                         scriptingEnvironment.interrupt();
                         updateRunnableQueue.getThread().interrupt();
+                        bridgeContext.dispose();
+
+                        // Send the UpdateManagerStopped event.
                         fireEvent(stoppedDispatcher,
                                   new UpdateManagerEvent(this, null, null));
                     }
