@@ -888,7 +888,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             // p1 and p2 my pass each other which will cause no end of
             // trouble.
             sz -= intSz;
-            weight = (1-sz)/(intSz+sz);
+            weight = sz/(intSz+sz);
             if (weight < 0.1)
                 // The part of the color from the location will be swamped
                 // by the averaged part of the gradient so just use the

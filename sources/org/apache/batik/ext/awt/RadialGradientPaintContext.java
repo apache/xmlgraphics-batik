@@ -508,53 +508,195 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
         final double constC = 
             -(radiusSq) + (centerX * centerX) + (centerY * centerY);
         //coefficients of the quadratic equation (Ax^2 + Bx + C = 0)
-        double A, B, C; 
-        double slope; //slope of the focus-perimeter line
-        double yintcpt; //y-intercept of the focus-perimeter line
-        double solutionX;//intersection with circle X coordinate
-        double solutionY;//intersection with circle Y coordinate       
-       	final float constX = (a00*x) + (a01*y) + a02;//const part of X coord
-        final float constY = (a10*x) + (a11*y) + a12; //const part of Y coord
        	final float precalc2 = 2 * centerY;//const in inner loop quad. formula
         final float precalc3 =-2 * centerX;//const in inner loop quad. formula
-        float det; //determinant of quadratic formula (should always be >0)
 
+        //const part of X,Y coord (shifted to bottom left corner of pixel.
+       	final float constX = (a00*(x-.5f)) + (a01*(y+.5f)) + a02;
+        final float constY = (a10*(x-.5f)) + (a11*(y+.5f)) + a12;
         float X; // User space point X coordinate 
         float Y; // User space point Y coordinate
-        float g;//value specifying position in the gradient
-        float delta; // range around g to average for anti-aliasing
-
-        float currentToFocusSq;//sq distance from the current pt. to focus
-        float intersectToFocusSq;//sq distance from the intersect pt. to focus
-        float deltaXSq; //temp variable for a change in X squared.
-        float deltaYSq; //temp variable for a change in Y squared.
-
-        int j, end; //indexing variables for FOR loops
-        int indexer = off; //index variable for pixels array
+        int i, j; //indexing variables for FOR loops
+        int indexer = off-1; //index variable for pixels array
 
         // Size of a pixel in user space.
-        float pixSzSq = (float)(a00*a00+a01*a01+a10*a10+a11*a11);
-	
+        double pixSzSq = (float)(a00*a00+a01*a01+a10*a10+a11*a11);
+        double [] prevGs = new double[w+1];
+        double deltaXSq, deltaYSq;
+        double solutionX, solutionY;
+        double slope, yintcpt, A, B, C, det;
+        double intersectToFocusSq, currentToFocusSq;
+        double g00, g01, g10, g11;
+
+        // Set X,Y to top left corner of first pixel of first row.
+        X = constX - a01;
+        Y = constY - a11;
+
+        // Calc top row of g's.
+        for (i=0; i <= w; i++) {
+            // special case to avoid divide by zero or very near zero
+            if (((X-focusX)>-0.000001) &&
+                ((X-focusX)< 0.000001)) {		   
+                solutionX = focusX;
+                solutionY = centerY;
+                solutionY += (Y > focusY)?trivial:-trivial;
+            }
+            else { 
+                // Formula for Circle: (X-Xc)^2 + (Y-Yc)^2 - R^2 = 0
+                // Formula line:        Y = Slope*x + Y0;
+                // 
+                // So you substitue line into Circle and apply
+                // Quadradic formula.
+
+
+                //slope of the focus-current line
+                slope =   (Y - focusY) / (X - focusX);
+		    
+                yintcpt = Y - (slope * X); //y-intercept of that same line
+		    
+                //use the quadratic formula to calculate the intersection
+                //point		  
+                A = (slope * slope) + 1; 
+		    
+                B =  precalc3 + (-2 * slope * (centerY - yintcpt));
+		    
+                C =  constC + (yintcpt* (yintcpt - precalc2));
+		    
+                det = Math.sqrt((B * B) - ( 4 * A * C));
+		    
+                solutionX = -B;
+		    
+                //choose the positive or negative root depending
+                //on where the X coord lies with respect to the focus.
+                solutionX += (X < focusX)?-det:det;
+		    
+                solutionX = solutionX / (2 * A);//divisor
+		    
+                solutionY = (slope * solutionX) + yintcpt;
+            }	                    	
+
+            //calculate the square of the distance from the current point 
+            //to the focus and the square of the distance from the 
+            //intersection point to the focus. Want the squares so we can
+            //do 1 square root after division instead of 2 before.
+            deltaXSq = solutionX - focusX;
+            deltaXSq = deltaXSq * deltaXSq;
+        
+            deltaYSq = solutionY - focusY;
+            deltaYSq = deltaYSq * deltaYSq;
+        
+            intersectToFocusSq = deltaXSq + deltaYSq;
+        
+            deltaXSq = X - focusX;
+            deltaXSq = deltaXSq * deltaXSq;
+        
+            deltaYSq = Y - focusY;
+            deltaYSq = deltaYSq * deltaYSq;
+        
+            currentToFocusSq = deltaXSq + deltaYSq;
+        
+            //want the percentage (0-1) of the current point along the 
+            //focus-circumference line
+            prevGs[i] = Math.sqrt(currentToFocusSq / intersectToFocusSq);
+
+            X += a00; //incremental change in X, Y
+            Y += a10;	
+        }
+
         for (j = 0; j < h; j++) { //for every row
 	    
-            X = (a01*j) + constX; //constants from column to column
+            // Set X,Y to bottom edge of pixel row.
+            X = (a01*j) + constX; //constants from row to row
             Y = (a11*j) + constY;
-	    
+
+            g10 = prevGs[0];
+            // special case to avoid divide by zero or very near zero
+            if (((X-focusX)>-0.000001) &&
+                ((X-focusX)< 0.000001)) {		   
+                solutionX = focusX;
+                solutionY = centerY;
+                solutionY += (Y > focusY)?trivial:-trivial;
+            }
+            else { 
+                // Formula for Circle: (X-Xc)^2 + (Y-Yc)^2 - R^2 = 0
+                // Formula line:        Y = Slope*x + Y0;
+                // 
+                // So you substitue line into Circle and apply
+                // Quadradic formula.
+
+
+                //slope of the focus-current line
+                slope =   (Y - focusY) / (X - focusX);
+		    
+                yintcpt = Y - (slope * X); //y-intercept of that same line
+		    
+                //use the quadratic formula to calculate the intersection
+                //point		  
+                A = (slope * slope) + 1; 
+		    
+                B =  precalc3 + (-2 * slope * (centerY - yintcpt));
+		    
+                C =  constC + (yintcpt* (yintcpt - precalc2));
+		    
+                det = Math.sqrt((B * B) - ( 4 * A * C));
+		    
+                solutionX = -B;
+		    
+                //choose the positive or negative root depending
+                //on where the X coord lies with respect to the focus.
+                solutionX += (X < focusX)?-det:det;
+		    
+                solutionX = solutionX / (2 * A);//divisor
+		    
+                solutionY = (slope * solutionX) + yintcpt;
+            }	                    	
+
+            //calculate the square of the distance from the current point 
+            //to the focus and the square of the distance from the 
+            //intersection point to the focus. Want the squares so we can
+            //do 1 square root after division instead of 2 before.
+            deltaXSq = solutionX - focusX;
+            deltaXSq = deltaXSq * deltaXSq;
+        
+            deltaYSq = solutionY - focusY;
+            deltaYSq = deltaYSq * deltaYSq;
+        
+            intersectToFocusSq = deltaXSq + deltaYSq;
+        
+            deltaXSq = X - focusX;
+            deltaXSq = deltaXSq * deltaXSq;
+        
+            deltaYSq = Y - focusY;
+            deltaYSq = deltaYSq * deltaYSq;
+                
+            currentToFocusSq = deltaXSq + deltaYSq;
+            g11 = Math.sqrt(currentToFocusSq / intersectToFocusSq);
+            prevGs[0] = g11;
+            
+            X += a00; //incremental change in X, Y
+            Y += a10;	
+
             //for every column (inner loop begins here)
-            for (end = indexer + w; indexer < end; indexer++) {
-	
+            for (i=1; i <= w; i++) {
+                g00 = g10;
+                g01 = g11;
+                g10 = prevGs[i];
+
                 // special case to avoid divide by zero or very near zero
                 if (((X-focusX)>-0.000001) &&
                     ((X-focusX)< 0.000001)) {		   
                     solutionX = focusX;
-		    
                     solutionY = centerY;
-		    
                     solutionY += (Y > focusY)?trivial:-trivial;
                 }
-		
-                else {    
-		    
+                else { 
+                    // Formula for Circle: (X-Xc)^2 + (Y-Yc)^2 - R^2 = 0
+                    // Formula line:        Y = Slope*x + Y0;
+                    // 
+                    // So you substitue line into Circle and apply
+                    // Quadradic formula.
+
+
                     //slope of the focus-current line
                     slope =   (Y - focusY) / (X - focusX);
 		    
@@ -568,7 +710,7 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
 		    
                     C =  constC + (yintcpt* (yintcpt - precalc2));
 		    
-                    det = (float)Math.sqrt((B * B) - ( 4 * A * C));
+                    det = Math.sqrt((B * B) - ( 4 * A * C));
 		    
                     solutionX = -B;
 		    
@@ -585,36 +727,34 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
                 //to the focus and the square of the distance from the 
                 //intersection point to the focus. Want the squares so we can
                 //do 1 square root after division instead of 2 before.
-
-                deltaXSq = (float)solutionX - focusX;
+                deltaXSq = solutionX - focusX;
                 deltaXSq = deltaXSq * deltaXSq;
-
-                deltaYSq = (float)solutionY - focusY;
+        
+                deltaYSq = solutionY - focusY;
                 deltaYSq = deltaYSq * deltaYSq;
-
+        
                 intersectToFocusSq = deltaXSq + deltaYSq;
-
+        
                 deltaXSq = X - focusX;
                 deltaXSq = deltaXSq * deltaXSq;
-
+        
                 deltaYSq = Y - focusY;
                 deltaYSq = deltaYSq * deltaYSq;
-
+        
                 currentToFocusSq = deltaXSq + deltaYSq;
-
-                //want the percentage (0-1) of the current point along the 
-                //focus-circumference line
-                g = (float)Math.sqrt(currentToFocusSq / intersectToFocusSq);
+                g11 = Math.sqrt(currentToFocusSq / intersectToFocusSq);
+                prevGs[i] = g11;
 
                 //Get the color at this point
-                delta = (float)Math.sqrt(pixSzSq/intersectToFocusSq);
-                pixels[indexer] = indexGradientAntiAlias(g, delta);
-		
+                pixels[indexer+i] = indexGradientAntiAlias
+                    ((float)((g00+g01+g10+g11)/4), 
+                     (float)Math.max(Math.abs(g11-g00),
+                                     Math.abs(g10-g01)));
+
                 X += a00; //incremental change in X, Y
                 Y += a10;	
             } //end inner loop
-            indexer += adjust;
+            indexer += (w+adjust);
         } //end outer loop
     }
-    
 }
