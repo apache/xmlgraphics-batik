@@ -13,6 +13,8 @@ import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
+import java.awt.Rectangle;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
@@ -303,17 +305,17 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         return (val > maxValue) ? maxValue : val;
     }
 
-    private void encodePass(OutputStream os,
-                            Raster ras,
-                            int xOffset, int yOffset,
-                            int xSkip, int ySkip) throws IOException {
-        int minX = ras.getMinX();
-        int minY = ras.getMinY();
-        int width = ras.getWidth();
+    private void encodePass(OutputStream os, Raster ras,
+                            int xOffset,     int yOffset,
+                            int xSkip,       int ySkip) 
+        throws IOException {
+        int minX   = ras.getMinX();
+        int minY   = ras.getMinY();
+        int width  = ras.getWidth();
         int height = ras.getHeight();
 
         xOffset *= numBands;
-        xSkip *= numBands;
+        xSkip   *= numBands;
 
         int samplesPerByte = 8/bitDepth;
 
@@ -415,8 +417,27 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         DeflaterOutputStream dos =
             new DeflaterOutputStream(ios, new Deflater(9));
 
-        // Future work - don't convert entire image to a Raster
-        Raster ras = image.getData();
+        // Future work - don't convert entire image to a Raster It
+        // might seem that you could just call image.getData() but
+        // 'BufferedImage.subImage' doesn't appear to set the Width
+        // and height properly of the Child Raster, so the Raster
+        // you get back here appears larger than it should.
+        // This solves that problem by bounding the raster to the
+        // image's bounds...
+        Raster ras = image.getData(new Rectangle(image.getMinX(), 
+                                                 image.getMinY(),
+                                                 image.getWidth(),
+                                                 image.getHeight()));
+        // System.out.println("Image: [" + 
+        //                    image.getMinY()  + ", " + 
+        //                    image.getMinX()  + ", " + 
+        //                    image.getWidth()  + ", " + 
+        //                    image.getHeight() + "]");
+        // System.out.println("Ras: [" + 
+        //                    ras.getMinX()  + ", " + 
+        //                    ras.getMinY()  + ", " + 
+        //                    ras.getWidth()  + ", " + 
+        //                    ras.getHeight() + "]");
 
         if (skipAlpha) {
             int numBands = ras.getNumBands() - 1;
