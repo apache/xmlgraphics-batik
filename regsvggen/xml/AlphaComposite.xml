@@ -1,0 +1,84 @@
+<test title="AlphaComposite Testing">
+	<description>
+		This test validates convertion of AlphaComposite
+	</description>
+	<description>
+		The test draws two shapes on top of each other using different
+		compositing rules.
+	</description>
+	<javaCode>
+		<![CDATA[
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+											 RenderingHints.VALUE_ANTIALIAS_ON);	
+	
+		AlphaComposite alphaCompositesTransparency[] = {
+    	AlphaComposite.getInstance(AlphaComposite.CLEAR, .5f),
+    	AlphaComposite.getInstance(AlphaComposite.DST_IN, .5f),
+    	AlphaComposite.getInstance(AlphaComposite.DST_OUT, .5f),
+    	AlphaComposite.getInstance(AlphaComposite.DST_OVER, .5f),
+    	AlphaComposite.getInstance(AlphaComposite.SRC, .5f),
+    	AlphaComposite.getInstance(AlphaComposite.SRC_IN, .5f),
+    	AlphaComposite.getInstance(AlphaComposite.SRC_OUT, .5f),
+    	AlphaComposite.getInstance(AlphaComposite.SRC_OVER, .5f),
+  	};
+
+		String alphaCompositesDesc[] = {
+    	"Clear",
+    	"DstIn",
+    	"DstOut",
+    	"DstOver",
+    	"Src",
+    	"SrcIn",
+    	"SrcOut",
+    	"SrcOver"
+  	};
+
+		AlphaComposite alphaComposites[] = {
+    	AlphaComposite.Clear,
+    	AlphaComposite.DstIn,
+    	AlphaComposite.DstOut,
+    	AlphaComposite.DstOver,
+    	AlphaComposite.Src,
+    	AlphaComposite.SrcIn,
+    	AlphaComposite.SrcOut,
+    	AlphaComposite.SrcOver,
+		};
+
+		// Define the two shapes to compose
+		Ellipse2D circle = new Ellipse2D.Float(0, 0, 30, 30);
+		Paint circlePaint = Color.red; // new Color(0x00ffff);
+		Rectangle rect = new Rectangle(15, 15, 25, 25);
+		Paint rectPaint = Color.blue; // new Color(0xff00ff);
+	 
+		AffineTransform defaultTransform = g.getTransform();
+		g.translate(10, 20);
+
+		for(int i=0; i<alphaComposites.length; i++){
+			g.setComposite(AlphaComposite.SrcOver);
+			g.setPaint(Color.black);
+			g.drawString(alphaCompositesDesc[i], 50, 15);
+			g.setPaint(circlePaint);
+			g.fill(circle);
+			g.setPaint(rectPaint);
+			g.setComposite(alphaComposites[i]);
+			g.fill(rect);
+			g.translate(0, 45);
+	  }
+
+		g.setTransform(defaultTransform);
+		g.translate(160, 20);
+		for(int i=0; i<alphaCompositesTransparency.length; i++){
+			g.setComposite(AlphaComposite.SrcOver);
+			g.setPaint(Color.black);
+			g.drawString(alphaCompositesDesc[i], 50, 15);
+			g.setPaint(circlePaint);
+			g.fill(circle);
+			g.setPaint(rectPaint);
+			g.setComposite(alphaCompositesTransparency[i]);
+			g.fill(rect);
+			g.translate(0, 45);
+	  }
+
+		]]>
+	</javaCode>
+</test>
