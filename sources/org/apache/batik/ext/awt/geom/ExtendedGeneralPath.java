@@ -43,10 +43,12 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
     /** The enclosed general path. */
     protected GeneralPath path;
 
-    int       numVals = 0;
-    int       numSeg  = 0;
-    double [] values  = null;
-    int    [] types   = null;
+    int      numVals = 0;
+    int      numSeg  = 0;
+    float [] values  = null;
+    int   [] types   = null;
+
+    float    mx, my, cx, cy;
 
    /**
      * Constructs a new <code>ExtendedGeneralPath</code>.
@@ -104,11 +106,11 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
      * @param x,&nbsp;y the absolute coordinates of the final point of
      * the arc.
      */
-    public synchronized void arcTo(double rx, double ry,
-                                   double angle,
+    public synchronized void arcTo(float rx, float ry,
+                                   float angle,
                                    boolean largeArcFlag,
                                    boolean sweepFlag,
-                                   double x, double y) {
+                                   float x, float y) {
 
         // Ensure radii are valid
         if (rx == 0 || ry == 0) {
@@ -116,10 +118,11 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             return;
         }
 
+        checkMoveTo();  // check if prev command was moveto
+
         // Get the current (x, y) coordinates of the path
-        Point2D p2d = path.getCurrentPoint();
-        double x0 = p2d.getX();
-        double y0 = p2d.getY();
+        double x0 = cx;
+        double y0 = cy;
         if (x0 == x && y0 == y) {
             // If the endpoints (x, y) and (x0, y0) are identical, then this
             // is equivalent to omitting the elliptical arc segment entirely.
@@ -142,8 +145,8 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
         values[numVals++] = angle;
         values[numVals++] = largeArcFlag?1:0;
         values[numVals++] = sweepFlag?1:0;
-        values[numVals++] = x;
-        values[numVals++] = y;
+        cx = values[numVals++] = x;
+        cy = values[numVals++] = y;
     }
 
 
@@ -257,38 +260,40 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
      * Delegates to the enclosed <code>GeneralPath</code>.
      */
     public synchronized void moveTo(float x, float y) {
-        path.moveTo(x, y);
-
+        // Don't add moveto to general path unless there is a reason.
         makeRoom(2);
         types [numSeg++]  = PathIterator.SEG_MOVETO;
-        values[numVals++] = x;
-        values[numVals++] = y;
+        cx = mx = values[numVals++] = x;
+        cy = my = values[numVals++] = y;
+        
     }
 
     /**
      * Delegates to the enclosed <code>GeneralPath</code>.
      */
     public synchronized void lineTo(float x, float y) {
+        checkMoveTo();  // check if prev command was moveto
         path.lineTo(x, y);
 
         makeRoom(2);
         types [numSeg++]  = PathIterator.SEG_LINETO;
-        values[numVals++] = x;
-        values[numVals++] = y;
+        cx = values[numVals++] = x;
+        cy = values[numVals++] = y;
     }
 
     /**
      * Delegates to the enclosed <code>GeneralPath</code>.
      */
     public synchronized void quadTo(float x1, float y1, float x2, float y2) {
+        checkMoveTo();  // check if prev command was moveto
         path.quadTo(x1, y1, x2, y2);
 
         makeRoom(4);
         types [numSeg++]  = PathIterator.SEG_QUADTO;
         values[numVals++] = x1;
         values[numVals++] = y1;
-        values[numVals++] = x2;
-        values[numVals++] = y2;
+        cx = values[numVals++] = x2;
+        cy = values[numVals++] = y2;
     }
 
     /**
@@ -297,6 +302,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
     public synchronized void curveTo(float x1, float y1,
                                      float x2, float y2,
                                      float x3, float y3) {
+        checkMoveTo();   // check if prev command was moveto
         path.curveTo(x1, y1, x2, y2, x3, y3);
 
         makeRoom(6);
@@ -305,18 +311,50 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
         values[numVals++] = y1;
         values[numVals++] = x2;
         values[numVals++] = y2;
-        values[numVals++] = x3;
-        values[numVals++] = y3;
+        cx = values[numVals++] = x3;
+        cy = values[numVals++] = y3;
     }
 
     /**
      * Delegates to the enclosed <code>GeneralPath</code>.
      */
     public synchronized void closePath() {
-        path.closePath();
+        // Don't double close path.
+        if ((numSeg != 0) && (types[numSeg-1] == PathIterator.SEG_CLOSE))
+            return;
+
+        // Only close path if the previous command wasn't a moveto
+        if ((numSeg != 0) && (types[numSeg-1] != PathIterator.SEG_MOVETO))
+            path.closePath();
 
         makeRoom(0);
         types [numSeg++]  = PathIterator.SEG_CLOSE;
+        cx = mx;
+        cy = my;
+    }
+
+    /**
+     * Checks if previous command was a moveto command,
+     * skipping a close command (if present).
+     */
+    protected void checkMoveTo() {
+        if (numSeg == 0) return;
+
+        switch(types[numSeg-1]) {
+
+        case PathIterator.SEG_MOVETO:
+            path.moveTo(values[numVals-2], values[numVals-1]);
+            break;
+
+        case PathIterator.SEG_CLOSE:
+            if (numSeg == 1) return;
+            if (types[numSeg-2] == PathIterator.SEG_MOVETO)
+                path.moveTo(values[numVals-2], values[numVals-1]);
+            break;
+
+        default: 
+            break;
+        }
     }
 
     /**
@@ -339,8 +377,8 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
                 if (type == PathIterator.SEG_MOVETO) {
                     double x = vals[0];
                     double y = vals[1];
-                    if ((x != values[numVals-2]) ||
-                        (y != values[numVals-1])) {
+                    if ((x != cx) ||
+                        (y != cy)) {
                         // Change MOVETO to LINETO.
                         type = PathIterator.SEG_LINETO;
                     } else {
@@ -375,15 +413,15 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
      */
     public void append(ExtendedPathIterator epi, boolean connect) {
         while (!epi.isDone()) {
-            double [] vals = new double[7];
+            float [] vals = new float[7];
             int type = epi.currentSegment(vals);
             epi.next();
             if (connect && (numVals != 0)) {
                 if (type == PathIterator.SEG_MOVETO) {
-                    double x = vals[0];
-                    double y = vals[1];
-                    if ((x != values[numVals-2]) ||
-                        (y != values[numVals-1])) {
+                    float x = vals[0];
+                    float y = vals[1];
+                    if ((x != cx) ||
+                        (y != cy)) {
                         // Change MOVETO to LINETO.
                         type = PathIterator.SEG_LINETO;
                     } else {
@@ -435,7 +473,8 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
      * Delegates to the enclosed <code>GeneralPath</code>.
      */
     public synchronized Point2D getCurrentPoint() {
-        return path.getCurrentPoint();
+        if (numVals == 0) return null;
+        return new Point2D.Double(cx, cy);
     }
 
     /**
@@ -647,7 +686,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             ExtendedGeneralPath result = (ExtendedGeneralPath) super.clone();
             result.path = (GeneralPath) path.clone();
 
-            result.values = new double[values.length];
+            result.values = new float[values.length];
             System.arraycopy(result.values, 0, values, 0, values.length);
             result.numVals = numVals;
 
@@ -662,7 +701,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
 
     private void makeRoom(int numValues) {
         if (values == null) {
-            values = new double[2*numValues];
+            values = new float[2*numValues];
             types  = new int[2];
             numVals = 0;
             numSeg  = 0;
@@ -674,7 +713,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             if (nlen < (numVals + numValues))
                 nlen = numVals + numValues;
         
-            double [] nvals = new double[nlen];
+            float [] nvals = new float[nlen];
             System.arraycopy(values, 0, nvals, 0, numVals);
             values = nvals;
         }

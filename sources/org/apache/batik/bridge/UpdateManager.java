@@ -402,7 +402,11 @@ public class UpdateManager  {
         }
     }
 
-    long lastRepaint=0;
+    /**
+     * This tracks when the rendering first got 'out of date'
+     * with respect to the document.
+     */
+    long outOfDateTime=0;
 
     /**
      * Repaints the dirty areas, if needed.
@@ -411,7 +415,7 @@ public class UpdateManager  {
         if (!updateTracker.hasChanged()) 
             return;
         long ctime = System.currentTimeMillis();
-        if (ctime-lastRepaint < MIN_REPAINT_TIME) {
+        if (ctime-outOfDateTime < MIN_REPAINT_TIME) {
             // We very recently did a repaint check if other 
             // repaint runnables are pending.
             synchronized (updateRunnableQueue.getIteratorLock()) {
@@ -431,7 +435,7 @@ public class UpdateManager  {
         if (dirtyAreas != null) {
             updateRendering(dirtyAreas, false);
         }
-        lastRepaint = System.currentTimeMillis();
+        outOfDateTime = 0;
     }
 
 
@@ -546,7 +550,17 @@ public class UpdateManager  {
     }
 
     protected class UpdateManagerRunHander 
-        implements RunnableQueue.RunHandler {
+        extends RunnableQueue.RunHandlerAdapter {
+
+        public void runnableStart(RunnableQueue rq, Runnable r) { 
+            if (running && !(r instanceof NoRepaintRunnable)) {
+                // Mark the document as updated when the
+                // runnable starts.
+                if (outOfDateTime == 0)
+                    outOfDateTime = System.currentTimeMillis();
+            }
+        }
+        
 
         /**
          * Called when the given Runnable has just been invoked and
