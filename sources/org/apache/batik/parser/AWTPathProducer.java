@@ -12,7 +12,7 @@ import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.Reader;
-import org.apache.batik.util.awt.geom.ExtendedGeneralPath;
+import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
 
 /**
  * This class provides an implementation of the PathHandler that initializes

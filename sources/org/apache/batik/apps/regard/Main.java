@@ -30,11 +30,12 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.apache.batik.refimpl.transcoder.ImageTranscoder;
-import org.apache.batik.transcoder.Transcoder;
-import org.apache.batik.refimpl.transcoder.PngTranscoder;
-import org.apache.batik.transcoder.TranscoderException;
-import org.apache.batik.util.awt.image.ImageLoader;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.batik.transcoder.image.JPEGTranscoder;
+import org.apache.batik.ext.awt.image.ImageLoader;
 import org.xml.sax.InputSource;
 
 /**
@@ -189,7 +190,7 @@ public class Main {
     static void generateImages(String outputDirectory, String desc) {
         File destDir = new File(outputDirectory);
         File svgDir = new File(getSamplesDirectory());
-        Transcoder transcoder = getTranscoder();
+        ImageTranscoder transcoder = getTranscoder();
         File [] samples = svgDir.listFiles();
         if (samples == null) {
             error("No SVG files has been found in "+
@@ -321,16 +322,15 @@ public class Main {
             if ((bfRef.getWidth() != bfNew.getWidth()) ||
                  (bfRef.getHeight() != bfNew.getHeight())){
                 display("Fatal error, image size changed!");
-                String s = "<br>" + count + ".  " + refImg.getName() +  
+                String s = "<br>" + count + ".  " + refImg.getName() +
                     ": image size changed!";
                 content += s;
                 count++;
                 continue;
             }
 
-            ImageTranscoder transcoder
-                = (ImageTranscoder)getTranscoder();
-            BufferedImage bfDiff = transcoder.createImage(2*bfRef.getWidth(), 
+            ImageTranscoder transcoder = getTranscoder();
+            BufferedImage bfDiff = transcoder.createImage(2*bfRef.getWidth(),
                                                           2*bfRef.getHeight());
 
             Graphics2D g = bfDiff.createGraphics();
@@ -339,25 +339,25 @@ public class Main {
             g.dispose();
             display(String.valueOf(i+1) + ". " + "Creating the difference image file of " + refImg.getName());
 
-            boolean difference = 
-                diffBufferedImage(bfRef.getRaster(), 
-                                  bfNew.getRaster(), 
+            boolean difference =
+                diffBufferedImage(bfRef.getRaster(),
+                                  bfNew.getRaster(),
                                   bfDiff.getRaster());
             if (!difference) {
                 display("   No difference in image content");
             } else {
                 try{
-                    transcoder.writeImage(bfDiff, 
-                                          new FileOutputStream(diffImg));
+                    transcoder.writeImage(bfDiff,
+                                          new TranscoderOutput(new FileOutputStream(diffImg)));
                 }
                 catch(Exception e){
                 }
                 try{
                     String s = diffImg.toURL().toString();
-                    content += "<br>" + count + ". " + 
-                        "<a href=" + "\"" + s + "\"" +">" + 
-                        "<img border=\"0\" hspace=\"0\" vspace=\"0\" " + 
-                        "align=\"middle\" src=" + "\"" + s + "\"" + 
+                    content += "<br>" + count + ". " +
+                        "<a href=" + "\"" + s + "\"" +">" +
+                        "<img border=\"0\" hspace=\"0\" vspace=\"0\" " +
+                        "align=\"middle\" src=" + "\"" + s + "\"" +
                         " height=100 width=90" + " />" + "</a>";
                 }
                 catch(MalformedURLException e){
@@ -386,8 +386,8 @@ public class Main {
      * @param diff the difference image in BufferedImage
      */
 
-    public static boolean diffBufferedImage(Raster ref, 
-                                            Raster cmp, 
+    public static boolean diffBufferedImage(Raster ref,
+                                            Raster cmp,
                                             Raster diff){
         final int w = ref.getWidth();
         final int h = ref.getHeight();
@@ -483,19 +483,17 @@ public class Main {
      * @param inputURI the URI of the SVG file
      * @param outputURI the URI of the image to generate
      */
-    public static void writeImage(Transcoder transcoder,
+    public static void writeImage(ImageTranscoder transcoder,
                                   String inputURI,
                                   String output) {
         try {
-            InputSource isource = new InputSource(inputURI);
             OutputStream ostream =
                 new BufferedOutputStream(new FileOutputStream(output));
-            ((ImageTranscoder)transcoder).transcodeToStream(isource, ostream);
+            transcoder.transcode(new TranscoderInput(inputURI),
+                                 new TranscoderOutput(ostream));
             ostream.flush();
             ostream.close();
-        } catch(IOException ex) {
-            error("while writing "+inputURI+" to "+output+"\n"+ex.getMessage());
-        } catch(TranscoderException ex) {
+        } catch(Exception ex) {
             error("while writing "+inputURI+" to "+output+"\n"+ex.getMessage());
         }
     }
@@ -529,8 +527,11 @@ public class Main {
     /**
      * Returns the transcoder to use.
      */
-    public static Transcoder getTranscoder() {
-        return new PngTranscoder();
+    public static ImageTranscoder getTranscoder() {
+        ImageTranscoder t = new PNGTranscoder();
+        t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                             "org.apache.crimson.parser.XMLReaderImpl");
+        return t;
     }
 
     /**

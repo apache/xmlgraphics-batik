@@ -100,12 +100,13 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XSLTransformer;
 import org.apache.batik.gvt.event.EventDispatcher;
 
-import org.apache.batik.refimpl.bridge.SVGUtilities;
-import org.apache.batik.refimpl.transcoder.ImageTranscoder;
-import org.apache.batik.refimpl.transcoder.PngTranscoder;
-import org.apache.batik.refimpl.transcoder.JpegTranscoder;
-import org.apache.batik.refimpl.util.JSVGCanvas;
-import org.apache.batik.refimpl.gvt.event.ConcreteEventDispatcher;
+import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.batik.transcoder.image.JPEGTranscoder;
+import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.gvt.event.ConcreteEventDispatcher;
 
 import org.apache.batik.util.SVGFileFilter;
 import org.apache.batik.util.DocumentEvent;
@@ -843,7 +844,9 @@ public class ViewerFrame
                 // create a BufferedImage of the appropriate type
                 int w = buffer.getWidth();
                 int h = buffer.getHeight();
-                final ImageTranscoder trans = new PngTranscoder();
+                final ImageTranscoder trans = new PNGTranscoder();
+                trans.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                         "org.apache.crimson.parser.XMLReaderImpl");
                 final BufferedImage img = trans.createImage(w, h);
                 // paint the buffer to the image
                 Graphics2D g2d = img.createGraphics();
@@ -854,12 +857,12 @@ public class ViewerFrame
                             currentExportPath = f.getCanonicalPath();
                             OutputStream ostream =
                               new BufferedOutputStream(new FileOutputStream(f));
-                            trans.writeImage(img, ostream);
+                            trans.writeImage(img, new TranscoderOutput(ostream));
                             ostream.flush();
                             ostream.close();
                             statusBar.setMessage(
                                 resources.getString("Document.export"));
-                        } catch (IOException ex) { }
+                        } catch (Exception ex) { }
                     }
                 }.start();
             }
@@ -884,7 +887,9 @@ public class ViewerFrame
                 // create a BufferedImage of the appropriate type
                 int w = buffer.getWidth();
                 int h = buffer.getHeight();
-                final ImageTranscoder trans = new JpegTranscoder();
+                final ImageTranscoder trans = new JPEGTranscoder();
+                trans.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                         "org.apache.crimson.parser.XMLReaderImpl");
                 final BufferedImage img = trans.createImage(w, h);
                 // paint the buffer to the image
                 Graphics2D g2d = img.createGraphics();
@@ -895,12 +900,12 @@ public class ViewerFrame
                             currentExportPath = f.getCanonicalPath();
                             OutputStream ostream =
                               new BufferedOutputStream(new FileOutputStream(f));
-                            trans.writeImage(img, ostream);
+                            trans.writeImage(img, new TranscoderOutput(ostream));
                             ostream.flush();
                             ostream.close();
                             statusBar.setMessage(
                                 resources.getString("Document.export"));
-                        } catch (IOException ex) { }
+                        } catch (Exception ex) { }
                     }
                 }.start();
             }

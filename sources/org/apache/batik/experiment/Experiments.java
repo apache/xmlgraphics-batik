@@ -9,7 +9,7 @@
 package org.apache.batik.experiment;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.refimpl.bridge.SVGBridgeContext;
+import org.apache.batik.bridge.SVGBridgeContext;
 import org.apache.batik.util.SVGConstants;
 
 /**

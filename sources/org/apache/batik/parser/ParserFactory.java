@@ -14,49 +14,68 @@ package org.apache.batik.parser;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface ParserFactory {
+public class ParserFactory {
+
     /**
      * Creates and returns an angle parser.
      */
-    AngleParser createAngleParser();
+    public AngleParser createAngleParser() {
+        return new AngleParser();
+    }
 
     /**
      * Creates and returns a clock parser.
      */
-    ClockParser createClockParser();
+    public ClockParser createClockParser() {
+        throw new RuntimeException(" !!! TODO");
+    }
 
     /**
      * Creates and returns a fragment identifier parser.
      */
-    FragmentIdentifierParser createFragmentIdentifierParser();
+    public FragmentIdentifierParser createFragmentIdentifierParser() {
+        throw new RuntimeException(" !!! TODO");
+    }
 
     /**
      * Creates and returns a length parser.
      */
-    LengthParser createLengthParser();
-    
+    public LengthParser createLengthParser() {
+        return new LengthParser();
+    }
+
     /**
      * Creates and returns a length list parser.
      */
-    LengthParser createLengthListParser();
+    public LengthParser createLengthListParser() {
+        return new LengthListParser();
+    }
 
     /**
      * Creates and returns a path parser.
      */
-    PathParser createPathParser();
+    public PathParser createPathParser() {
+        return new PathParser();
+    }
 
     /**
      * Creates and returns a points parser.
      */
-    PointsParser createPointsParser();
+    public PointsParser createPointsParser() {
+        return new PointsParser();
+    }
 
     /**
      * Creates and returns a points parser.
      */
-    PreserveAspectRatioParser createPreserveAspectRatioParser();
+    public PreserveAspectRatioParser createPreserveAspectRatioParser() {
+        return new PreserveAspectRatioParser();
+    }
 
     /**
      * Creates and returns a transform list parser.
      */
-    TransformListParser createTransformListParser();
+    public TransformListParser createTransformListParser() {
+        return new TransformListParser();
+    }
 }

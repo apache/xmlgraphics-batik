@@ -19,10 +19,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.net.URL;
 import java.net.MalformedURLException;
-import org.apache.batik.refimpl.transcoder.ImageTranscoder;
-import org.apache.batik.refimpl.transcoder.PngTranscoder;
-import org.apache.batik.refimpl.transcoder.JpegTranscoder;
-import org.apache.batik.transcoder.Transcoder;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.xml.sax.InputSource;
 
 /**
@@ -37,10 +38,10 @@ public class Main {
                                   String uri, String output) {
         try {
             System.out.println("Converting "+uri+" to "+output);
-            InputSource isource = new InputSource(uri);
             OutputStream ostream =
                 new BufferedOutputStream(new FileOutputStream(output));
-            transcoder.transcodeToStream(isource, ostream);
+            transcoder.transcode(new TranscoderInput(uri),
+                                 new TranscoderOutput(ostream));
             ostream.flush();
             ostream.close();
         } catch(Exception ex) {
@@ -95,13 +96,17 @@ public class Main {
         /*TranscoderFactory factory =
             ConcreteTranscoderFactory.getTranscoderFactoryImplementation();
             */
-        Transcoder t = null;
+        ImageTranscoder t = null;
         if (mimeType.equals("image/jpg") ||
                 mimeType.equals("image/jpeg") ||
                 mimeType.equals("image/jpe")) {
-            t = new JpegTranscoder();
+            t = new JPEGTranscoder();
+            t.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                 "org.apache.crimson.parser.XMLReaderImpl");
         } else if (mimeType.equals("image/png")) {
-            t = new PngTranscoder();
+            t = new PNGTranscoder();
+            t.addTranscodingHint(PNGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                 "org.apache.crimson.parser.XMLReaderImpl");
         }
         if (t == null) {
             error("No transcoder found for mime type : "+mimeType);

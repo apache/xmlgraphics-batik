@@ -46,15 +46,15 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.parser.AWTPathProducer;
-import org.apache.batik.refimpl.bridge.CSSUtilities;
-import org.apache.batik.refimpl.bridge.DefaultUnitProcessorContext;
-import org.apache.batik.refimpl.bridge.SVGUtilities;
-import org.apache.batik.refimpl.bridge.URIResolver;
+import org.apache.batik.bridge.CSSUtilities;
+import org.apache.batik.bridge.DefaultUnitProcessorContext;
+import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.bridge.URIResolver;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.dom.util.XLinkSupport;
 
-import org.apache.batik.util.awt.font.TextPathLayout;
+import org.apache.batik.ext.awt.font.TextPathLayout;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -404,7 +404,7 @@ public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
         return node;
     }
 
-    public void buildGraphicsNode(GraphicsNode gn, 
+    public void buildGraphicsNode(GraphicsNode gn,
                                   BridgeContext ctx,
                                   Element element) {
         ShapeNode node = (ShapeNode)gn;
