@@ -175,7 +175,7 @@ public class Main implements Application {
         // Initialization
         //
         final AboutDialog initDialog = new AboutDialog();
-        final JProgressBar pb = new JProgressBar(0, 4);
+        final JProgressBar pb = new JProgressBar(0, 3);
         initDialog.getContentPane().add("South", pb);
 
         // Work around pack() bug on some platforms
@@ -205,7 +205,6 @@ public class Main implements Application {
         });
         c.addGVTTreeRendererListener(new GVTTreeRendererAdapter() {
             public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
-                pb.setValue(4);
                 initDialog.dispose();
                 v.dispose();
                 System.gc();
