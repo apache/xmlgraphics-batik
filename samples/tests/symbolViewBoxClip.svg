@@ -12,10 +12,12 @@
 
 <!-- ========================================================================= -->
 <!-- This example validates the handling of viewBox and preserveAspectRatio    -->
-<!-- for <symbol> elements.                                                    -->
+<!-- for <symbol> elements with overflow set to hidden and a clip specified.   -->
+<!-- <symbol> elements establish a new viewport and therefore, the overflow    -->
+<!-- property applies.                                                         -->
 <!--                                                                           -->
 <!-- @author vhardy@apache.org                                                 -->
-<!-- @version $Id$   -->
+<!-- @version $Id$    -->
 <!-- ========================================================================= -->
 <?xml-stylesheet type="text/css" href="test.css" ?>  
 
@@ -30,7 +32,12 @@
 
     <g id="content">
 
-        <text class="title" x="50%" y="40">viewBox &amp; preserveAspectRatio on &lt;symbol&gt;</text>
+        <text class="title" x="50%" y="40">viewBox &amp; preserveAspectRatio on &lt;symbol&gt;
+            <title>viewBox &amp; preserveAspectRatio on &lt;symbol&gt;</title>
+            <desc>This test validates the processing of viewBox and preserveAspectRatio
+                  on &lt;symbol&gt; elements in conjunction with the overflow property.
+                  In this test, there should be a clipping beyond the viewBox boundaries
+                  and the smilley&apos;s ears and feet should show partially.</desc></text>
 
         <g id="table" class="label" transform="translate(80, 60)">
             <rect         width="110" height="20" class="oddRow" />
@@ -132,13 +139,16 @@
 
         <g id="testCases" transform="translate(80, 80)">
             <defs>
-                <rect id="hViewBox" x="5" y="5" width="45" height="30" stroke="red" fill="none"/>     
-                <rect id="vViewBox" x="70" y="5" width="25" height="30" stroke="red" fill="none"/>     
+                <rect id="hViewBox" x="12.5" y="7.5" width="30" height="25" stroke="red" fill="none"/>     
+                <rect id="vViewBox" x="72.5" y="7.5" width="20" height="25" stroke="red" fill="none"/>     
+                <rect id="hClipBox" x="14.5" y="12.5" width="24" height="17" stroke="#0A0" fill="none"/>     
+                <rect id="vClipBox" x="74.5" y="12.5" width="14" height="17" stroke="#0A0" fill="none"/>     
                 <g id="smilley">
                     <g  transform="translate(-15,-15)" >
-                        <rect x="5" y="5" width="20" height="20" fill="black" />
-                        <!-- <circle cx="10" cy="25" r="4" fill="crimson" />
-                        <circle cx="20" cy="25" r="4" fill="crimson" /> -->
+                        <circle cx="10" cy="25" r="4" fill="crimson" />
+                        <circle cx="20" cy="25" r="4" fill="crimson" /> 
+                        <circle cx="7" cy="15" r="4" fill="crimson" />
+                        <circle cx="23" cy="15" r="4" fill="crimson" /> 
                         <circle cx="15" cy="15" r="10" fill="yellow"/>
                         <circle cx="12" cy="12" r="1.5" fill="black"/>
                         <circle cx="17" cy="12" r="1.5" fill="black"/>
@@ -152,108 +162,134 @@
                 <!-- ... YMin XXX -->
                 <g>
                     <g>
-                        <symbol id="xMinYMinMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMin meet">
+                        <symbol id="xMinYMinMeet" overflow="hidden"  viewBox="-10 -10 20 20" clip="rect(5,4,3,2)" preserveAspectRatio="xMinYMin meet">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMinYMinMeet" x="5" y="5" width="40" height="30" />
+                        <use xlink:href="#xMinYMinMeet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMinYMinMeet" x="70" y="5" width="25" height="30" />
+                        <use xlink:href="#xMinYMinMeet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMinYMinSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMin slice">
+                        <symbol id="xMinYMinSlice" overflow="hidden"  viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMin slice">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMinYMinSlice" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMinYMinSlice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMinYMinSlice" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMinYMinSlice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMinYMinUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMin">
+                        <symbol id="xMinYMinUnspecified" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMin">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMinYMinUnspecified" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMinYMinUnspecified" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMinYMinUnspecified" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMinYMinUnspecified" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
                 </g>
 
                 <!-- ... YMid XXX -->
                 <g transform="translate(0, 40)">
                     <g>
-                        <symbol id="xMinYMidMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMid meet">
+                        <symbol id="xMinYMidMeet" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMid meet">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMinYMidMeet" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMinYMidMeet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMinYMidMeet" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMinYMidMeet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMinYMidSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMid slice">
+                        <symbol id="xMinYMidSlice" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMid slice">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMinYMidSlice" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMinYMidSlice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMinYMidSlice" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMinYMidSlice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMinYMidUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMid">
+                        <symbol id="xMinYMidUnspecified" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMid">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMinYMidUnspecified" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMinYMidUnspecified" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMinYMidUnspecified" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMinYMidUnspecified" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
                 </g>
 
                 <!-- ... YMax XXX -->
                 <g transform="translate(0, 80)">
                     <g>
-                        <symbol id="xMinYMaxMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMax meet">
+                        <symbol id="xMinYMaxMeet" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMax meet">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMinYMaxMeet" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMinYMaxMeet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMinYMaxMeet" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMinYMaxMeet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMinYMaxSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMax slice">
+                        <symbol id="xMinYMaxSlice" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMax slice">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMinYMaxSlice" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMinYMaxSlice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMinYMaxSlice" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMinYMaxSlice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMinYMaxUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMax">
+                        <symbol id="xMinYMaxUnspecified" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMinYMax">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMinYMaxUnspecified" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMinYMaxUnspecified" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMinYMaxUnspecified" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMinYMaxUnspecified" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
                 </g>
             </g>
@@ -264,108 +300,135 @@
                 <!-- ... YMin XXX -->
                 <g>
                     <g>
-                        <symbol id="xMidYMinMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMin meet">
+                        <symbol id="xMidYMinMeet" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMin meet">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMidYMinMeet" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMidYMinMeet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMidYMinMeet" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMidYMinMeet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMidYMinSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMin slice">
+                        <symbol id="xMidYMinSlice" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMin slice">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMidYMinSlice" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMidYMinSlice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMidYMinSlice" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMidYMinSlice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMidYMinUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMin">
+                        <symbol id="xMidYMinUnspecified" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMin">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMidYMinUnspecified" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMidYMinUnspecified" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMidYMinUnspecified" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMidYMinUnspecified" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
                 </g>
 
                 <!-- ... YMid XXX -->
                 <g transform="translate(0, 40)">
                     <g>
-                        <symbol id="xMidYMidMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMid meet">
+                        <symbol id="xMidYMidMeet" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMid meet">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMidYMidMeet" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMidYMidMeet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMidYMidMeet" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMidYMidMeet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMidYMidSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMid slice">
+                        <symbol id="xMidYMidSlice" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMid slice">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMidYMidSlice" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMidYMidSlice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMidYMidSlice" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMidYMidSlice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMidYMidUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMid">
+                        <symbol id="xMidYMidUnspecified" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMid">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMidYMidUnspecified" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMidYMidUnspecified" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMidYMidUnspecified" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMidYMidUnspecified" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
                 </g>
 
                 <!-- ... YMax XXX -->
                 <g transform="translate(0, 80)">
                     <g>
-                        <symbol id="xMidYMaxMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMax meet">
+                        <symbol id="xMidYMaxMeet" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMax meet">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMidYMaxMeet" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMidYMaxMeet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMidYMaxMeet" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMidYMaxMeet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMidYMaxSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMax slice">
+                        <symbol id="xMidYMaxSlice" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMax slice">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMidYMaxSlice" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMidYMaxSlice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMidYMaxSlice" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMidYMaxSlice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMidYMaxUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMax">
+                        <symbol id="xMidYMaxUnspecified" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMidYMax">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMidYMaxUnspecified" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMidYMaxUnspecified" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMidYMaxUnspecified" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMidYMaxUnspecified" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
                 </g>
             </g>
@@ -375,108 +438,135 @@
                 <!-- ... YMin XXX -->
                 <g>
                     <g>
-                        <symbol id="xMaxYMinMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMin meet">
+                        <symbol id="xMaxYMinMeet" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMin meet">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMaxYMinMeet" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMaxYMinMeet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMaxYMinMeet" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMaxYMinMeet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMaxYMinSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMin slice">
+                        <symbol id="xMaxYMinSlice" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMin slice">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMaxYMinSlice" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMaxYMinSlice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMaxYMinSlice" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMaxYMinSlice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMaxYMinUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMin">
+                        <symbol id="xMaxYMinUnspecified" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMin">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMaxYMinUnspecified" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMaxYMinUnspecified" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMaxYMinUnspecified" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMaxYMinUnspecified" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
                 </g>
 
                 <!-- ... YMid XXX -->
                 <g transform="translate(0, 40)">
                     <g>
-                        <symbol id="xMaxYMidMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMid meet">
+                        <symbol id="xMaxYMidMeet" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMid meet">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMaxYMidMeet" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMaxYMidMeet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMaxYMidMeet" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMaxYMidMeet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMaxYMidSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMid slice">
+                        <symbol id="xMaxYMidSlice" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMid slice">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMaxYMidSlice" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMaxYMidSlice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMaxYMidSlice" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMaxYMidSlice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMaxYMidUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMid">
+                        <symbol id="xMaxYMidUnspecified" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMid">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMaxYMidUnspecified" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMaxYMidUnspecified" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMaxYMidUnspecified" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMaxYMidUnspecified" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
                 </g>
 
                 <!-- ... YMax XXX -->
                 <g transform="translate(0, 80)">
                     <g>
-                        <symbol id="xMaxYMaxMeet" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMax meet">
+                        <symbol id="xMaxYMaxMeet" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMax meet">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMaxYMaxMeet" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMaxYMaxMeet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMaxYMaxMeet" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMaxYMaxMeet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="xMaxYMaxSlice" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMax slice">
+                        <symbol id="xMaxYMaxSlice" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMax slice">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMaxYMaxSlice" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMaxYMaxSlice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMaxYMaxSlice" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMaxYMaxSlice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="xMaxYMaxUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMax">
+                        <symbol id="xMaxYMaxUnspecified" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="xMaxYMax">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#xMaxYMaxUnspecified" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#xMaxYMaxUnspecified" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#xMaxYMaxUnspecified" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#xMaxYMaxUnspecified" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
                 </g>
             </g>
@@ -486,36 +576,45 @@
             <g transform="translate(0,360)">
                 <g>
                     <g>
-                        <symbol id="noneMeet" viewBox="-10 -10 20 20" preserveAspectRatio="none meet">
+                        <symbol id="noneMeet" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="none meet">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#noneMeet" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#noneMeet" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#noneMeet" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#noneMeet" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(110, 0)">
-                        <symbol id="noneSlice" viewBox="-10 -10 20 20" preserveAspectRatio="none slice">
+                        <symbol id="noneSlice" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="none slice">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#noneSlice" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#noneSlice" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#noneSlice" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#noneSlice" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
 
                     <g transform="translate(220, 0)">
-                        <symbol id="noneUnspecified" viewBox="-10 -10 20 20" preserveAspectRatio="none">
+                        <symbol id="noneUnspecified" overflow="hidden" clip="rect(5,4,3,2)"  viewBox="-10 -10 20 20" preserveAspectRatio="none">
                             <use xlink:href="#smilley" />
                         </symbol>
-                        <use xlink:href="#noneUnspecified" x="5" y="5" width="45" height="30" />
+                        <use xlink:href="#noneUnspecified" x="12.5" y="7.5" width="30" height="25" />
                         <use xlink:href="#hViewBox" />
+                        <use xlink:href="#hClipBox" />
 
-                        <use xlink:href="#noneUnspecified" x="70" y="5" width="25" height="30" />
+
+                        <use xlink:href="#noneUnspecified" x="72.5" y="7.5" width="20" height="25" />
                         <use xlink:href="#vViewBox" />
+                        <use xlink:href="#vClipBox" />
                     </g>
                 </g>
 
