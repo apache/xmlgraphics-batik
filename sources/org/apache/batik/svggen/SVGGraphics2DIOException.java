@@ -16,7 +16,7 @@ import java.io.IOException;
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
-public class SVGGraphics2DIOException extends Exception {
+public class SVGGraphics2DIOException extends IOException {
     /** The enclosed exception. */
     private IOException embedded;
 
