@@ -23,6 +23,7 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.util.awt.RadialGradientPaint;
+import org.apache.batik.util.awt.geom.AffineTransformSource;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -91,22 +92,22 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         //
         String cx = paintElement.getAttributeNS(null, ATTR_CX);
         if(cx.length() == 0){
-            cx = "0";
+            cx = "50%";
         }
 
         String cy = paintElement.getAttributeNS(null, ATTR_CY);
         if(cy.length() == 0){
-            cy = "100%";
+            cy = "50%";
         }
 
         String fx = paintElement.getAttributeNS(null, ATTR_FX);
         if(fx.length() == 0){
-            fx = "100%";
+            fx = cx;
         }
 
         String fy = paintElement.getAttributeNS(null, ATTR_FY);
         if(fy.length() == 0){
-            fy = "100%";
+            fy = cy;
         }
 
         String r = paintElement.getAttributeNS(null, ATTR_R);
@@ -124,8 +125,9 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         Point2D f
             = SVGUtilities.convertPoint(svgPaintedElement, fx, fy,
                                         units, paintedNode, uctx);
-        Dimension2D radius = null;
-        // = SVGUtilities.convertRadius((SVGElement)paintedElement, r, units, paintedNode, uctx);
+        float radius
+            = SVGUtilities.convertLength((SVGElement)paintedElement, r, 
+                                         units, paintedNode, uctx);
 
         //
         // Extract the spread method
@@ -139,7 +141,13 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         // Extract gradient transform
         //
         AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)), ctx.getParserFactory());
+            (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)), 
+             ctx.getParserFactory());
+
+        AffineTransformSource ats 
+            = SVGUtilities.convertAffineTransformSource(at, 
+                                                        paintedNode, 
+                                                        units);
 
         //
         // Extract stop colors and intervals
@@ -190,7 +198,7 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             paint = new RadialGradientPaint(c, radius, f, offsets, colors,
                                             cycleMethod,
                                             RadialGradientPaint.SRGB,
-                                            at);
+                                            ats);
         }
         return paint;
     }

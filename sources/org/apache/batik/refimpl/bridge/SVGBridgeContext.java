@@ -78,6 +78,9 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, TAG_POLYGON,
                   new SVGPolygonElementBridge());
 
+        putBridge(SVG_NAMESPACE_URI, TAG_RADIAL_GRADIENT,
+                  new SVGRadialGradientBridge());
+
         putBridge(SVG_NAMESPACE_URI, TAG_RECT,
                   new SVGRectElementBridge());
 

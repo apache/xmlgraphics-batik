@@ -75,6 +75,9 @@ public class StaticRenderer implements Renderer {
         hints.put(RenderingHints.KEY_INTERPOLATION,
                   RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
+        hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
+                  RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+
         FontRenderContext fontRenderContext =
             new FontRenderContext(new AffineTransform(), true, true);
         TextPainter textPainter = new StrokingTextPainter();

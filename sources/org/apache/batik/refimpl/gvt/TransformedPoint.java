@@ -15,6 +15,9 @@ import java.awt.geom.Point2D;
  * value and a <tt>PointTransformer</tt> the initial x and y
  * values are transformed the first time the x or y value
  * is requested.
+ *
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @version $Id$
  */
 public class TransformedPoint extends Point2D{
     /**

@@ -9,6 +9,7 @@
 package org.apache.batik.apps.svgviewer;
 
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 
 import java.net.MalformedURLException;
@@ -80,7 +81,7 @@ public class Main implements ViewerFrame.Application {
             }
             args = t;
         }
-
+        
         CSSDocumentHandler.setParserClassName
             (bundle.getString(CSS_PARSER_CLASS_NAME_KEY));
         new Main(args);
