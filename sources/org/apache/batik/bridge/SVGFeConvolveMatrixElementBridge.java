@@ -23,14 +23,14 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.ConvolveMatrixRable;
-import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.ConvolveMatrixRable;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteConvolveMatrixRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
+import org.apache.batik.ext.awt.image.renderable.ConvolveMatrixRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -280,11 +280,11 @@ public class SVGFeConvolveMatrixElementBridge implements FilterPrimitiveBridge,
                                                         uctx);
 
         PadRable pad;
-        pad = new ConcretePadRable(in, convolveArea, PadMode.ZERO_PAD);
+        pad = new PadRable8Bit(in, convolveArea, PadMode.ZERO_PAD);
 
         // Build filter
         ConvolveMatrixRable convolve;
-        convolve = new ConcreteConvolveMatrixRable(pad);
+        convolve = new ConvolveMatrixRable8Bit(pad);
 
         /* SVG No longer does it's kernels funny!!!
          * And there was much rejoicing!

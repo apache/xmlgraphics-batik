@@ -20,14 +20,14 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.ColorMatrixRable;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.ext.awt.image.renderable.ColorMatrixRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteColorMatrixRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
+import org.apache.batik.ext.awt.image.renderable.ColorMatrixRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -129,14 +129,14 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
         switch(type){
         case ColorMatrixRable.TYPE_MATRIX:
             float matrix[][] = convertValuesToMatrix(valuesStr);
-            colorMatrix = ConcreteColorMatrixRable.buildMatrix(matrix);
+            colorMatrix = ColorMatrixRable8Bit.buildMatrix(matrix);
             break;
         case ColorMatrixRable.TYPE_SATURATE:
             float s = 1;
             if (valuesStr.length() > 0) {
                 s = CSSUtilities.convertRatio(valuesStr);
             }
-            colorMatrix = ConcreteColorMatrixRable.buildSaturate(s);
+            colorMatrix = ColorMatrixRable8Bit.buildSaturate(s);
             break;
         case ColorMatrixRable.TYPE_HUE_ROTATE:
             float a = 0; // default is 0
@@ -144,10 +144,10 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
                 a = (float)(SVGUtilities.convertSVGNumber
                             (SVG_VALUES_ATTRIBUTE, valuesStr) * Math.PI/180);
             }
-            colorMatrix = ConcreteColorMatrixRable.buildHueRotate(a);
+            colorMatrix = ColorMatrixRable8Bit.buildHueRotate(a);
             break;
         case ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA:
-            colorMatrix = ConcreteColorMatrixRable.buildLuminanceToAlpha();
+            colorMatrix = ColorMatrixRable8Bit.buildLuminanceToAlpha();
             break;
         default:
             /* Never happen: Bad type is catched previously */
@@ -156,7 +156,7 @@ public class SVGFeColorMatrixElementBridge implements FilterPrimitiveBridge,
 
         colorMatrix.setSource(in);
 
-        filter = new ConcretePadRable(colorMatrix,
+        filter = new PadRable8Bit(colorMatrix,
                                       primitiveRegion,
                                       PadMode.ZERO_PAD);
 

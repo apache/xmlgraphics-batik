@@ -23,9 +23,9 @@ import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
-import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.gvt.filter.ConcreteClipRable;
+import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
@@ -123,7 +123,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
             Shape clip = at.createTransformedShape
                 (new Rectangle2D.Float(x, y, w, h));
 
-            node.setClip(new ConcreteClipRable(filter, clip));
+            node.setClip(new ClipRable8Bit(filter, clip));
 
         } catch (java.awt.geom.NoninvertibleTransformException ex) {}
 

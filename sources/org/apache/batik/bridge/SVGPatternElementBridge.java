@@ -24,12 +24,12 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.gvt.ConcretePatternPaint;
-import org.apache.batik.gvt.filter.ConcreteClipRable;
+import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -238,7 +238,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                     (newPatternContentNode, rc);
 
                 newPatternContentNode.setClip
-                    (new ConcreteClipRable(filter, viewBox));
+                    (new ClipRable8Bit(filter, viewBox));
 
                 patternContentNode = newPatternContentNode;
             }

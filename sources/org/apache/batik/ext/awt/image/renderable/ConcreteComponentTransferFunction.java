@@ -1,0 +1,172 @@
+/*****************************************************************************
+ * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
+ *****************************************************************************/
+
+package org.apache.batik.ext.awt.image.renderable;
+
+
+
+/**
+ * This class implements the interface expected from a component 
+ * transfer function.
+ *
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @version $Id$
+ */
+public class ConcreteComponentTransferFunction implements ComponentTransferFunction {
+    private int type;
+    private float slope;
+    private float[] tableValues;
+    private float intercept;
+    private float amplitude;
+    private float exponent;
+    private float offset;
+
+    /**
+     * Instances should be created through the various
+     * factory methods.
+     */
+    private ConcreteComponentTransferFunction(){
+    }
+
+    /**
+     * Returns an instance initialized as an identity 
+     * transfer function
+     */
+    public static ComponentTransferFunction getIdentityTransfer(){
+        ConcreteComponentTransferFunction f = new ConcreteComponentTransferFunction();
+        f.type = IDENTITY;
+        return f;
+    }
+
+    /**
+     * Returns a table transfer function
+     */
+    public static ComponentTransferFunction 
+        getTableTransfer(float tableValues[]){
+        ConcreteComponentTransferFunction f = new ConcreteComponentTransferFunction();
+        f.type = TABLE;
+        
+        if(tableValues == null){
+            throw new IllegalArgumentException();
+        }
+
+        if(tableValues.length < 2){
+            throw new IllegalArgumentException();
+        }
+
+        f.tableValues = new float[tableValues.length];
+        System.arraycopy(tableValues, 0, 
+                         f.tableValues, 0, 
+                         tableValues.length);
+
+        return f;
+    }
+
+    /**
+     * Returns a discrete transfer function
+     */
+    public static ComponentTransferFunction
+        getDiscreteTransfer(float tableValues[]){
+        ConcreteComponentTransferFunction f = new ConcreteComponentTransferFunction();
+        f.type = DISCRETE;
+        
+        if(tableValues == null){
+            throw new IllegalArgumentException();
+        }
+
+        if(tableValues.length < 2){
+            throw new IllegalArgumentException();
+        }
+
+        f.tableValues = new float[tableValues.length];
+        System.arraycopy(tableValues, 0, 
+                         f.tableValues, 0, 
+                         tableValues.length);
+
+        return f;
+    }
+
+    /**
+     * Returns a linear transfer function
+     */
+    public static ComponentTransferFunction
+        getLinearTransfer(float slope, float intercept){
+        ConcreteComponentTransferFunction f = new ConcreteComponentTransferFunction();
+        f.type = LINEAR;
+        f.slope = slope;
+        f.intercept = intercept;
+
+        return f;
+    }
+
+    /**
+     * Returns a gamma function
+     */
+    public static ComponentTransferFunction
+        getGammaTransfer(float amplitude,
+                         float exponent,
+                         float offset){
+        ConcreteComponentTransferFunction f = new ConcreteComponentTransferFunction();
+        f.type = GAMMA;
+        f.amplitude = amplitude;
+        f.exponent = exponent;
+        f.offset = offset;
+
+        return f;
+    }
+        
+    /**
+     * Returns the type of this transfer function
+     */
+    public int getType(){
+        return type;
+    }
+
+    /**
+     * Returns the slope value for this transfer function
+     */
+    public float getSlope(){
+        return slope;
+    }
+
+    /**
+     * Returns the table values for this transfer function
+     */
+    public float[] getTableValues(){
+        return tableValues;
+    }
+
+    /**
+     * Returns the intercept value for this transfer function
+     */
+    public float getIntercept(){
+        return intercept;
+    }
+
+    /**
+     * Returns the amplitude value for this transfer function
+     */
+    public float getAmplitude(){
+        return amplitude;
+    }
+
+    /**
+     * Returns the exponent value for this transfer function
+     */
+    public float getExponent(){
+        return exponent;
+    }
+
+    /**
+     * Returns the offset value for this transfer function
+     */
+    public float getOffset(){
+        return offset;
+    }
+}
+

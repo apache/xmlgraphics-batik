@@ -21,16 +21,16 @@ import org.apache.batik.bridge.MissingAttributeException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.ComponentTransferFunction;
-import org.apache.batik.gvt.filter.ComponentTransferRable;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.ext.awt.image.renderable.ComponentTransferFunction;
+import org.apache.batik.ext.awt.image.renderable.ComponentTransferRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteComponentTransferFunction;
-import org.apache.batik.gvt.filter.ConcreteComponentTransferRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
+import org.apache.batik.ext.awt.image.renderable.ConcreteComponentTransferFunction;
+import org.apache.batik.ext.awt.image.renderable.ComponentTransferRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -174,13 +174,13 @@ public class SVGFeComponentTransferElementBridge
         }
 
 
-        filter = new ConcreteComponentTransferRable(in,
+        filter = new ComponentTransferRable8Bit(in,
                                                     alphaFunction,
                                                     redFunction,
                                                     greenFunction,
                                                     blueFunction);
 
-        filter = new ConcretePadRable(filter,
+        filter = new PadRable8Bit(filter,
                                       primitiveRegion,
                                       PadMode.ZERO_PAD);
 

@@ -18,7 +18,7 @@ import java.awt.image.RenderedImage;
 
 import org.apache.batik.gvt.RasterImageNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 
 /**
  * An implementation of the <tt>RasterImageNode</tt> interface.

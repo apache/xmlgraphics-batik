@@ -22,16 +22,16 @@ import org.apache.batik.bridge.MissingAttributeException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Light;
-import org.apache.batik.gvt.filter.DiffuseLightingRable;
-import org.apache.batik.gvt.filter.DistantLight;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.ext.awt.image.renderable.Light;
+import org.apache.batik.ext.awt.image.renderable.DiffuseLightingRable;
+import org.apache.batik.ext.awt.image.renderable.DistantLight;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteDiffuseLightingRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
+import org.apache.batik.ext.awt.image.renderable.DiffuseLightingRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -159,7 +159,7 @@ public class SVGFeDiffuseLightingElementBridge
             SVGUtilities.convertSVGNumber(SVG_SURFACE_SCALE_ATTRIBUTE, 
                                           surfaceScaleStr);
 
-        filter = new ConcreteDiffuseLightingRable(in,
+        filter = new DiffuseLightingRable8Bit(in,
                                                   primitiveRegion,
                                                   light,
                                                   kd,

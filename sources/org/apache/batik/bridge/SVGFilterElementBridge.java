@@ -23,13 +23,13 @@ import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterChainRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteFilterChainRable;
+import org.apache.batik.ext.awt.image.renderable.FilterChainRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -94,9 +94,9 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                                                              rc,
                                                              uctx);
 
-        // Build a ConcreteFilterChainRable
+        // Build a FilterChainRable8Bit
         FilterChainRable filterChain
-            = new ConcreteFilterChainRable(sourceGraphic, filterRegion);
+            = new FilterChainRable8Bit(sourceGraphic, filterRegion);
 
         // parse the filter resolution attribute
         String resStr = filterElement.getAttributeNS(null, SVG_FILTER_RES_ATTRIBUTE);

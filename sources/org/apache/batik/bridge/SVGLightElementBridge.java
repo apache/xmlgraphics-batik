@@ -12,10 +12,10 @@ import java.awt.Color;
 
 import org.apache.batik.bridge.IllegalAttributeValueException;
 
-import org.apache.batik.gvt.filter.Light;
-import org.apache.batik.gvt.filter.DistantLight;
-import org.apache.batik.gvt.filter.PointLight;
-import org.apache.batik.gvt.filter.SpotLight;
+import org.apache.batik.ext.awt.image.renderable.Light;
+import org.apache.batik.ext.awt.image.renderable.DistantLight;
+import org.apache.batik.ext.awt.image.renderable.PointLight;
+import org.apache.batik.ext.awt.image.renderable.SpotLight;
 
 import org.apache.batik.util.SVGConstants;
 

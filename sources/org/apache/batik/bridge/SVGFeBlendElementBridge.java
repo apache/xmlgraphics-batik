@@ -20,14 +20,14 @@ import org.apache.batik.bridge.MissingAttributeException;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.CompositeRable;
-import org.apache.batik.gvt.filter.CompositeRule;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.PadMode;
+import org.apache.batik.ext.awt.image.renderable.CompositeRable;
+import org.apache.batik.ext.awt.image.renderable.CompositeRule;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteCompositeRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
+import org.apache.batik.ext.awt.image.renderable.CompositeRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -140,9 +140,9 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
         Vector srcs = new Vector(2);
         srcs.add(in2);
         srcs.add(in1);
-        filter = new ConcreteCompositeRable(srcs, rule);
+        filter = new CompositeRable8Bit(srcs, rule);
 
-        filter = new ConcretePadRable(filter, blendArea, PadMode.ZERO_PAD);
+        filter = new PadRable8Bit(filter, blendArea, PadMode.ZERO_PAD);
 
         // Get result attribute and update map
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);

@@ -22,6 +22,8 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.PatternPaint;
 
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+
 /**
  * Concrete implementation of the <tt>PatternPaint</tt> interface
  *
@@ -128,10 +130,10 @@ public class ConcretePatternPaint implements PatternPaint {
             // Modify area of interest accordingly
             try{
                 AffineTransform patternTransformInv = patternTransform.createInverse();
-                Shape aoi = (Shape)hints.get(GraphicsNode.KEY_AREA_OF_INTEREST);
+                Shape aoi = (Shape)hints.get(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST);
                 if(aoi != null){
                     hints = new RenderingHints(hints);
-                    hints.put(GraphicsNode.KEY_AREA_OF_INTEREST,
+                    hints.put(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST,
                               patternTransformInv.createTransformedShape(aoi));
                 }
             }catch(NoninvertibleTransformException e){

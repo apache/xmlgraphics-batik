@@ -28,14 +28,14 @@ import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.gvt.filter.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
 
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteAffineRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
-import org.apache.batik.gvt.filter.RasterRable;
+import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.RasterRable;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -173,7 +173,7 @@ public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
                 AffineTransform at = new AffineTransform();
                 at.translate(primitiveRegion.getX(), primitiveRegion.getY());
 
-                filter = new ConcreteAffineRable(filter, at);
+                filter = new AffineRable8Bit(filter, at);
 
             } catch (Exception ex) {
                 //
@@ -190,11 +190,11 @@ public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
                             primitiveRegion.getHeight()/bounds.getHeight());
                 scale.translate(-bounds.getX(), -bounds.getY());
 
-                filter = new ConcreteAffineRable(filter, scale);
+                filter = new AffineRable8Bit(filter, scale);
             }
         }
 
-        filter = new ConcretePadRable(filter,
+        filter = new PadRable8Bit(filter,
                                       primitiveRegion,
                                       PadMode.ZERO_PAD);
 

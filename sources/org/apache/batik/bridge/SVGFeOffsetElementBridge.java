@@ -21,16 +21,14 @@ import org.apache.batik.bridge.FilterPrimitiveBridge;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.AffineRable;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterChainRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.ext.awt.image.renderable.AffineRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
 
-import org.apache.batik.gvt.filter.ConcreteAffineRable;
-import org.apache.batik.gvt.filter.ConcretePadRable;
+import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
@@ -142,12 +140,12 @@ public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
                                                         rc,
                                                         uctx);
 
-        PadRable pad = new ConcretePadRable(in,
+        PadRable pad = new PadRable8Bit(in,
                                             offsetArea,
                                             PadMode.ZERO_PAD);
 
         // Create the AffineRable that maps the input filter node
-        AffineRable offset = new ConcreteAffineRable(pad, offsetTransform);
+        AffineRable offset = new AffineRable8Bit(pad, offsetTransform);
 
         // Get result attribute if any
         String result = filterElement.getAttributeNS(null, ATTR_RESULT);

@@ -34,14 +34,14 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
-import org.apache.batik.gvt.filter.Clip;
-import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.gvt.filter.ConcreteBackgroundRable;
-import org.apache.batik.gvt.filter.ConcreteFloodRable;
-import org.apache.batik.gvt.filter.FilterAlphaRable;
+import org.apache.batik.gvt.filter.BackgroundRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.FloodRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.FilterAlphaRable;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -884,7 +884,7 @@ public class CSSUtilities implements SVGConstants {
                 // create a transparent flood
                 paint = new Color(0, 0, 0, 0);
             }
-            return new ConcreteFloodRable(infiniteFilterRegion, paint);
+            return new FloodRable8Bit(infiniteFilterRegion, paint);
         }
 
         case SVGUtilities.STROKE_PAINT: {
@@ -894,15 +894,15 @@ public class CSSUtilities implements SVGConstants {
                 = new DefaultUnitProcessorContext(ctx, cssDecl);
             Paint paint = convertStrokeToPaint((SVGElement)filteredElement,
                                                node, ctx, cssDecl, uctx);
-            return new ConcreteFloodRable(infiniteFilterRegion, paint);
+            return new FloodRable8Bit(infiniteFilterRegion, paint);
         }
 
         case SVGUtilities.BACKGROUND_IMAGE:
-            return new ConcreteBackgroundRable(node,
+            return new BackgroundRable8Bit(node,
                                  ctx.getGraphicsNodeRenderContext());
 
         case SVGUtilities.BACKGROUND_ALPHA:
-            in = new ConcreteBackgroundRable(node,
+            in = new BackgroundRable8Bit(node,
                                  ctx.getGraphicsNodeRenderContext());
             in = new FilterAlphaRable(in);
             return in;
