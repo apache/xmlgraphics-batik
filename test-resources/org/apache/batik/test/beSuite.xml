@@ -10,25 +10,25 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<testSuite name="SVG Basic Effectivity Test Suite">
+<testSuite id="beSuite" name="SVG Basic Effectivity Test Suite">
     <!-- =================================================================== -->
     <!-- Rendering                                                           -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="rendering-orderGr-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/rendering-orderGr-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/rendering-orderGr-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/rendering-orderGr-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/rendering-orderGr-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="rendering-text-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/rendering-text-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/rendering-text-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/rendering-text-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/rendering-text-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="rendering-shape-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/rendering-shape-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/rendering-shape-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/rendering-shape-BE-03.png" />
@@ -38,70 +38,70 @@
     <!-- =================================================================== -->
     <!-- Structure                                                           -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="structure-empty-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/structure-empty-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/structure-empty-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/structure-empty-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/structure-empty-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="structure-nested-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/structure-nested-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/structure-nested-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/structure-nested-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/structure-nested-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="structure-basicG-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/structure-basicG-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/structure-basicG-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/structure-basicG-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/structure-basicG-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="structure-defs-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/structure-defs-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/structure-defs-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/structure-defs-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/structure-defs-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="structure-symbol-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/structure-symbol-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/structure-symbol-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/structure-symbol-BE-05.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/structure-symbol-BE-05.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="structure-image-BE-06" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/structure-image-BE-06.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/structure-image-BE-06.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/structure-image-BE-06.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/structure-image-BE-06.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="structure-switch-BE-07" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/structure-switch-BE-07.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/structure-switch-BE-07.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/structure-switch-BE-07.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/structure-switch-BE-07.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="structure-lang-BE-08" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/structure-lang-BE-08.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/structure-lang-BE-08.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/structure-lang-BE-08.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/structure-lang-BE-08.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="structure-allElem-BE-09" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/structure-allElem-BE-09.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/structure-allElem-BE-09.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/structure-allElem-BE-09.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/structure-allElem-BE-09.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="structure-extRef-BE-10" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/structure-extRef-BE-10.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/structure-extRef-BE-10.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/structure-extRef-BE-10.png" />
@@ -111,21 +111,21 @@
     <!-- =================================================================== -->
     <!-- Style                                                               -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="style-selector-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/style-selector-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/style-selector-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/style-selector-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/style-selector-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="style-selector-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/style-selector-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/style-selector-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/style-selector-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/style-selector-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="style-selector-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/style-selector-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/style-selector-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/style-selector-BE-03.png" />
@@ -135,35 +135,35 @@
     <!-- =================================================================== -->
     <!-- Coordinates & Transforms                                            -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="coords-units-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/coords-units-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/coords-units-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/coords-units-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/coords-units-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="coords-transforms-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/coords-transforms-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/coords-transforms-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/coords-transforms-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/coords-transforms-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="coords-viewBox-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/coords-viewBox-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/coords-viewBox-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/coords-viewBox-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/coords-viewBox-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="coords-unitsProc-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/coords-unitsProc-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/coords-unitsProc-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/coords-unitsProc-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/coords-unitsProc-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="coords-unitsProc-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/coords-unitsProc-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/coords-unitsProc-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/coords-unitsProc-BE-05.png" />
@@ -173,70 +173,70 @@
     <!-- =================================================================== -->
     <!-- Path                                                                -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="path-lines-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/path-lines-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/path-lines-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/path-lines-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/path-lines-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="path-curves-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/path-curves-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/path-curves-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/path-curves-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/path-curves-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="path-curves-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/path-curves-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/path-curves-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/path-curves-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/path-curves-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="path-curves-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/path-curves-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/path-curves-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/path-curves-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/path-curves-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="shapes-rect-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/shapes-rect-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/shapes-rect-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/shapes-rect-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/shapes-rect-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="shapes-ellipse-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/shapes-ellipse-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/shapes-ellipse-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/shapes-ellipse-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/shapes-ellipse-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="shapes-circle-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/shapes-circle-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/shapes-circle-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/shapes-circle-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/shapes-circle-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="shapes-line-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/shapes-line-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/shapes-line-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/shapes-line-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/shapes-line-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="shapes-polygon-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/shapes-polygon-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/shapes-polygon-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/shapes-polygon-BE-05.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/shapes-polygon-BE-05.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="shapes-polyline-BE-06" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/shapes-polyline-BE-06.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/shapes-polyline-BE-06.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/shapes-polyline-BE-06.png" />
@@ -246,119 +246,119 @@
     <!-- =================================================================== -->
     <!-- Text                                                                -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-text-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-text-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-text-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-text-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-text-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-tspan-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-tspan-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-tspan-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-tspan-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-tspan-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-textOnPath-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-textOnPath-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-textOnPath-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-textOnPath-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-textOnPath-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-tref-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-tref-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-tref-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-tref-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-tref-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-textAnchor-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-textAnchor-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-textAnchor-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-textAnchor-BE-05.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-textAnchor-BE-05.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-whiteSpace-BE-06" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-whiteSpace-BE-06.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-whiteSpace-BE-06.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-whiteSpace-BE-06.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-whiteSpace-BE-06.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-altGlyph-BE-07" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-altGlyph-BE-07.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-altGlyph-BE-07.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-altGlyph-BE-07.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-altGlyph-BE-07.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-i18n-BE-09" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-i18n-BE-09.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-i18n-BE-09.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-i18n-BE-09.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-i18n-BE-09.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-alignment-BE-10" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-alignment-BE-10.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-alignment-BE-10.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-alignment-BE-10.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-alignment-BE-10.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-alignment-BE-11" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-alignment-BE-11.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-alignment-BE-11.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-alignment-BE-11.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-alignment-BE-11.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-decoration-BE-12" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-decoration-BE-12.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-decoration-BE-12.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-decoration-BE-12.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-decoration-BE-12.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-selection-BE-13" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-selection-BE-13.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-selection-BE-13.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-selection-BE-13.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-selection-BE-13.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-spacing-BE-14" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-spacing-BE-14.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-spacing-BE-14.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-spacing-BE-14.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-spacing-BE-14.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-font-BE-15" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-font-BE-15.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-font-BE-15.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-font-BE-15.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-font-BE-15.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-font-BE-16" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-font-BE-16.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-font-BE-16.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-font-BE-16.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-font-BE-16.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-textLength-BE-17" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-textLength-BE-17.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-textLength-BE-17.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-textLength-BE-17.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/text-textLength-BE-17.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="text-extTref-BE-18" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/text-extTref-BE-18.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/text-extTref-BE-18.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/text-extTref-BE-18.png" />
@@ -368,42 +368,42 @@
     <!-- =================================================================== -->
     <!-- Paint                                                               -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="paint-fill-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/paint-fill-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/paint-fill-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/paint-fill-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/paint-fill-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="paint-stroke-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/paint-stroke-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/paint-stroke-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/paint-stroke-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/paint-stroke-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="paint-markers-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/paint-markers-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/paint-markers-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/paint-markers-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/paint-markers-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="paint-markers-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/paint-markers-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/paint-markers-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/paint-markers-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/paint-markers-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="paint-colIntProp-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/paint-colIntProp-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/paint-colIntProp-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/paint-colIntProp-BE-05.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/paint-colIntProp-BE-05.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="paint-inherit-BE-06" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/paint-inherit-BE-06.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/paint-inherit-BE-06.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/paint-inherit-BE-06.png" />
@@ -413,21 +413,21 @@
     <!-- =================================================================== -->
     <!-- Color                                                               -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="color-datatypes-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/color-datatypes-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/color-datatypes-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/color-datatypes-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/color-datatypes-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="color-property-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/color-property-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/color-property-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/color-property-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/color-property-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="color-colorProf-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/color-colorProf-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/color-colorProf-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/color-colorProf-BE-03.png" />
@@ -437,70 +437,70 @@
     <!-- =================================================================== -->
     <!-- Gradient & Patterns                                                 -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="gradPatt-linearGr-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/gradPatt-linearGr-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/gradPatt-linearGr-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/gradPatt-linearGr-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/gradPatt-linearGr-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="gradPatt-linearGr-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/gradPatt-linearGr-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/gradPatt-linearGr-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/gradPatt-linearGr-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/gradPatt-linearGr-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="gradPatt-linearGr-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/gradPatt-linearGr-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/gradPatt-linearGr-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/gradPatt-linearGr-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/gradPatt-linearGr-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="gradPatt-radialGr-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/gradPatt-radialGr-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/gradPatt-radialGr-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/gradPatt-radialGr-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/gradPatt-radialGr-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="gradPatt-radialGr-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/gradPatt-radialGr-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/gradPatt-radialGr-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/gradPatt-radialGr-BE-05.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/gradPatt-radialGr-BE-05.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="gradPatt-stop-BE-06" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/gradPatt-stop-BE-06.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/gradPatt-stop-BE-06.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/gradPatt-stop-BE-06.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/gradPatt-stop-BE-06.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="gradPatt-pattern-BE-07" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/gradPatt-pattern-BE-07.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/gradPatt-pattern-BE-07.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/gradPatt-pattern-BE-07.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/gradPatt-pattern-BE-07.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="gradPatt-referenc-BE-08" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/gradPatt-referenc-BE-08.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/gradPatt-referenc-BE-08.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/gradPatt-referenc-BE-08.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/gradPatt-referenc-BE-08.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="gradPatt-transfrm-BE-09" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/gradPatt-transfrm-BE-09.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/gradPatt-transfrm-BE-09.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/gradPatt-transfrm-BE-09.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/gradPatt-transfrm-BE-09.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="gradPatt-stop-BE-10" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/gradPatt-stop-BE-10.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/gradPatt-stop-BE-10.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/gradPatt-stop-BE-10.png" />
@@ -510,63 +510,63 @@
     <!-- =================================================================== -->
     <!-- Cliping and masking                                                 -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="masking-clipPath-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/masking-clipPath-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/masking-clipPath-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/masking-clipPath-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/masking-clipPath-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="masking-clipPath-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/masking-clipPath-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/masking-clipPath-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/masking-clipPath-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/masking-clipPath-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="masking-clipRule-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/masking-clipRule-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/masking-clipRule-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/masking-clipRule-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/masking-clipRule-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="masking-groupOpac-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/masking-groupOpac-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/masking-groupOpac-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/masking-groupOpac-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/masking-groupOpac-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="masking-mask-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/masking-mask-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/masking-mask-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/masking-mask-BE-05.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/masking-mask-BE-05.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="masking-mask-BE-06" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/masking-mask-BE-06.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/masking-mask-BE-06.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/masking-mask-BE-06.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/masking-mask-BE-06.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="masking-property-BE-07" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/masking-property-BE-07.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/masking-property-BE-07.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/masking-property-BE-07.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/masking-property-BE-07.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="masking-clipPath-BE-08" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/masking-clipPath-BE-08.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/masking-clipPath-BE-08.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/masking-clipPath-BE-08.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/masking-clipPath-BE-08.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="masking-vportClip-BE-09" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/masking-vportClip-BE-09.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/masking-vportClip-BE-09.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/masking-vportClip-BE-09.png" />
@@ -576,112 +576,112 @@
     <!-- =================================================================== -->
     <!-- Filters                                                             -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-many-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-many-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-many-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-many-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-many-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-blend-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-blend-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-blend-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-blend-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-blend-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-colorMtrx-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-colorMtrx-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-colorMtrx-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-colorMtrx-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-colorMtrx-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-transfer-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-transfer-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-transfer-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-transfer-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-transfer-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-composite-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-composite-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-composite-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-composite-BE-05.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-composite-BE-05.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-convolve-BE-06" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-convolve-BE-06.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-convolve-BE-06.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-convolve-BE-06.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-convolve-BE-06.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-diffuseLt-BE-07" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-diffuseLt-BE-07.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-diffuseLt-BE-07.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-diffuseLt-BE-07.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-diffuseLt-BE-07.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-specularLt-BE-08" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-specularLt-BE-08.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-specularLt-BE-08.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-specularLt-BE-08.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-specularLt-BE-08.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-lights-BE-09" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-lights-BE-09.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-lights-BE-09.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-lights-BE-09.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-lights-BE-09.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-morph-BE-10" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-morph-BE-10.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-morph-BE-10.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-morph-BE-10.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-morph-BE-10.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-turb-BE-11" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-turb-BE-11.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-turb-BE-11.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-turb-BE-11.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-turb-BE-11.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-blur-BE-12" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-blur-BE-12.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-blur-BE-12.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-blur-BE-12.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-blur-BE-12.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-feImage-BE-13" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-feImage-BE-13.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-feImage-BE-13.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-feImage-BE-13.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-feImage-BE-13.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-feTile-BE-14" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-feTile-BE-14.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-feTile-BE-14.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-feTile-BE-14.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-feTile-BE-14.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-fldMrgOff-BE-15" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-fldMrgOff-BE-15.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-fldMrgOff-BE-15.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-fldMrgOff-BE-15.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/filters-fldMrgOff-BE-15.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="filters-dispMap-BE-16" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/filters-dispMap-BE-16.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/filters-dispMap-BE-16.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/filters-dispMap-BE-16.png" />
@@ -692,49 +692,49 @@
     <!-- Interactive SVG                                                     -->
     <!-- =================================================================== -->
     <!--
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="interact-zoomPan-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/interact-zoomPan-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/interact-zoomPan-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/interact-zoomPan-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/interact-zoomPan-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="interact-zoomPan-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/interact-zoomPan-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/interact-zoomPan-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/interact-zoomPan-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/interact-zoomPan-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="interact-bubble-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/interact-bubble-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/interact-bubble-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/interact-bubble-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/interact-bubble-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="interact-pEvents-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/interact-pEvents-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/interact-pEvents-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/interact-pEvents-BE-05.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/interact-pEvents-BE-05.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="interact-pEvents-BE-06" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/interact-pEvents-BE-06.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/interact-pEvents-BE-06.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/interact-pEvents-BE-06.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/interact-pEvents-BE-06.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="interact-onload-BE-07" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/interact-onload-BE-07.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/interact-onload-BE-07.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/interact-onload-BE-07.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/interact-onload-BE-07.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="interact-cursor-BE-08" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/interact-cursor-BE-08.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/interact-cursor-BE-08.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/interact-cursor-BE-08.png" />
@@ -745,35 +745,35 @@
     <!-- =================================================================== -->
     <!-- Linking                                                             -->
     <!-- =================================================================== -->
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="linking-outBound-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/linking-outBound-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/linking-outBound-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/linking-outBound-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/linking-outBound-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="linking-xlinkAttr-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/linking-xlinkAttr-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/linking-xlinkAttr-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/linking-xlinkAttr-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/linking-xlinkAttr-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="linking-inBound-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/linking-inBound-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/linking-inBound-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/linking-inBound-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/linking-inBound-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="linking-view-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/linking-view-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/linking-view-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/linking-view-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/linking-view-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="linking-view-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/linking-view-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/linking-view-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/linking-view-BE-05.png" />
@@ -784,14 +784,14 @@
     <!-- Scripting                                                           -->
     <!-- =================================================================== -->
     <!--
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="script-eventDom-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/script-eventDom-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/script-eventDom-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/script-eventDom-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/script-eventDom-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="script-uiEvents-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/script-uiEvents-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/script-uiEvents-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/script-uiEvents-BE-02.png" />
@@ -803,91 +803,91 @@
     <!-- Animation                                                           -->
     <!-- =================================================================== -->
     <!--
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-overall-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-overall-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-overall-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-overall-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-overall-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-href-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-href-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-href-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-href-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-href-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-targElt-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-targElt-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-targElt-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-targElt-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-targElt-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-targAtt-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-targAtt-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-targAtt-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-targAtt-BE-04.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-targAtt-BE-04.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-timing-BE-05" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-timing-BE-05.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-timing-BE-05.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-timing-BE-05.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-timing-BE-05.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-values-BE-06" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-values-BE-06.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-values-BE-06.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-values-BE-06.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-values-BE-06.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-values-BE-07" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-values-BE-07.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-values-BE-07.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-values-BE-07.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-values-BE-07.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-values-BE-08" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-values-BE-08.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-values-BE-08.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-values-BE-08.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-values-BE-08.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-add-BE-09" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-add-BE-09.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-add-BE-09.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-add-BE-09.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-add-BE-09.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-inherit-BE-10" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-inherit-BE-10.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-inherit-BE-10.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-inherit-BE-10.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-inherit-BE-10.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-motion-BE-11" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-motion-BE-11.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-motion-BE-11.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-motion-BE-11.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-motion-BE-11.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-motion-BE-12" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-motion-BE-12.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-motion-BE-12.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-motion-BE-12.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/animation-motion-BE-12.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="animation-extRef-BE-13" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/animation-extRef-BE-13.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/animation-extRef-BE-13.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/animation-extRef-BE-13.png" />
@@ -899,7 +899,7 @@
     <!-- Fonts                                                               -->
     <!-- =================================================================== -->    
     <!--
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="fonts-fontElement-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/fonts-fontElement-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/fonts-fontElement-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/fonts-fontElement-BE-01.png" />
@@ -910,7 +910,7 @@
     <!-- Metadata                                                            -->
     <!-- =================================================================== -->
     <!--
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="metadata-sample-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/metadata-sample-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/metadata-sample-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/metadata-sample-BE-01.png" />
@@ -922,7 +922,7 @@
     <!-- Multiple namespaces                                                 -->
     <!-- =================================================================== -->
     <!--
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="extend-multiNS-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/extend-multiNS-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/extend-multiNS-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/extend-multiNS-BE-01.png" />
@@ -934,28 +934,28 @@
     <!-- DOM                                                                 -->
     <!-- =================================================================== -->
     <!--
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="dom-core-BE-01" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/dom-core-BE-01.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/dom-core-BE-01.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/dom-core-BE-01.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/dom-core-BE-01.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="dom-svg-BE-02" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/dom-svg-BE-02.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/dom-svg-BE-02.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/dom-svg-BE-02.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/dom-svg-BE-02.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="dom-featureString-BE-03" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/dom-featureString-BE-03.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/dom-featureString-BE-03.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/dom-featureString-BE-03.png" />
         <property name="SaveVariation" class="java.io.File" value="test-references/svgbe/candidate-variation/dom-featureString-BE-03.png" />
     </test>
 
-    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+    <test id="dom-eventListener-BE-04" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="test-references/../../beSuite/dom-eventListener-BE-04.svg" />
         <arg class="java.lang.String" value="test-references/svgbe/dom-eventListener-BE-04.png" />
         <property name="VariationURL" class="java.lang.String" value="test-references/svgbe/accepted-variation/dom-eventListener-BE-04.png" />
