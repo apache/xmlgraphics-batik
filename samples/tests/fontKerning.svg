@@ -219,8 +219,8 @@
                 <text x="40" y="275" font-size="10">u1="x" g2="y" k="400"</text>
                 <text x="40" y="285" font-size="10">u1="y" g2="z" k="-1000"</text>
 
-                <text x="40" y="330" font-family="SVGComic" fill="green">abcxyz</text>
-                <text x="40" y="355" font-family="SVGComicK" fill="green">abcxyz</text>
+                <text x="40" y="330" font-family="SVGComic" fill="#33CC33">abcxyz</text>
+                <text x="40" y="355" font-family="SVGComicK" fill="#33CC33">abcxyz</text>
                 <text x="40" y="375" font-size="10">u1="U+006?" u2="U+007?" k="-1000"</text>
             </g>
 
@@ -237,8 +237,8 @@
                <text x="340" y="130" glyph-orientation-vertical="0" writing-mode="tb" font-family="SVGComic" fill="red">uvwxyz</text>
                <text x="360" y="130" glyph-orientation-vertical="0" writing-mode="tb" font-family="SVGComicK" fill="red">uvwxyz</text>
       
-               <text x="340" y="300" glyph-orientation-vertical="180" writing-mode="tb" font-family="SVGComic" fill="green">abcxyz</text>
-               <text x="360" y="300" glyph-orientation-vertical="180" writing-mode="tb" font-family="SVGComicK" fill="green">abcxyz</text>
+               <text x="340" y="300" glyph-orientation-vertical="180" writing-mode="tb" font-family="SVGComic" fill="#33CC33">abcxyz</text>
+               <text x="360" y="300" glyph-orientation-vertical="180" writing-mode="tb" font-family="SVGComicK" fill="#33CC33">abcxyz</text>
 
             </g>
        
