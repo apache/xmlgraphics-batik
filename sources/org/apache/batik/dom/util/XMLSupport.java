@@ -8,6 +8,8 @@
 
 package org.apache.batik.dom.util;
 
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -20,19 +22,7 @@ import org.w3c.dom.Node;
  * @version $Id$
  */
 
-public class XMLSupport {
-    /**
-     * The XML namespace URI.
-     */
-    public final static String XML_NAMESPACE_URI =
-	"http://www.w3.org/XML/1998/namespace";
-
-    /**
-     * The xmlns namespace URI.
-     */
-    public final static String XMLNS_NAMESPACE_URI =
-	"http://www.w3.org/2000/xmlns/";
-
+public class XMLSupport implements XMLConstants {
     /**
      * This class do not need to be instanciated.
      */
@@ -60,13 +50,6 @@ public class XMLSupport {
     }
 
     /**
-     * Sets the xml:lang attribute value of the given element.
-     */
-    public static void setXMLLang(Element elt, String lang) {
-	elt.setAttributeNS(XML_NAMESPACE_URI, "lang", lang);
-    }
-    
-    /**
      * Returns the xml:space attribute value of the given element.
      */
     public static String getXMLSpace(Element elt) {
@@ -84,18 +67,6 @@ public class XMLSupport {
 	    }
 	}
 	return "default";
-    }
-
-    /**
-     * Sets the xml:space attribute value of the given element.
-     */
-    public static void setXMLSpace(Element elt, String space)
-        throws DOMException {
-	if (!"default".equals(space) && !"preserve".equals(space)) {
-	    throw new DOMException(DOMException.SYNTAX_ERR,
-				   "Invalid attribute Value: " + space);
-	}
-	elt.setAttributeNS(XML_NAMESPACE_URI, "space", space);
     }
 
     /**

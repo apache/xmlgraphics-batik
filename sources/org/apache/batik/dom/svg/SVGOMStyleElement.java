@@ -109,8 +109,10 @@ public class SVGOMStyleElement
     /**
      * <b>DOM</b>: Implements {@link SVGStyleElement#setXMLspace(String)}.
      */
-    public void setXMLspace(String xmlspace) throws DOMException {
-        XMLSupport.setXMLSpace(this, xmlspace);
+    public void setXMLspace(String space) throws DOMException {
+        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
+                       XMLSupport.XML_SPACE_ATTRIBUTE,
+                       space);
     }
 
     /**
