@@ -26,7 +26,12 @@
 
     <body>
         <s1 title="Batik Overview">
+        <figure src="images/1_0beta2splash.png" alt="1.0 beta2" />
 
+        <p><strong>
+        This is a staging area for the next revision of the Batik web site that will
+        come on-line when Batik 1.0 becomes available around May 14th.
+        </strong></p>
         <p>
         <img src="images/logo.gif" alt="Batik Logo"/> Batik is a Java
         based toolkit for applications that want to use images in the
