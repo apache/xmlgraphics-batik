@@ -43,6 +43,7 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.ext.awt.image.ImageLoader;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.svggen.*;
 
 import org.apache.batik.css.CSSDocumentHandler;
@@ -444,7 +445,7 @@ public class Main {
 
         Dimension size = painter.getSize();
         BufferedImage buf = transcoder.createImage(size.width, size.height);
-        Graphics2D g = buf.createGraphics();
+        Graphics2D g = GraphicsUtil.createGraphics(buf);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -645,10 +646,6 @@ public class Main {
             }
             ImageTranscoder transcoder = getTranscoder();
             BufferedImage bfDiff = transcoder.createImage(3*bfRef.getWidth(), bfRef.getHeight());
-            Graphics2D g = bfDiff.createGraphics();
-            //g.setPaint(Color.white);
-            //g.fillRect(0, 0, bfDiff.getWidth(), bfDiff.getHeight());
-            g.dispose();
             diffBufferedImage(bfRef.getRaster(), bfNew.getRaster(), bfDiff.getRaster());
             try{
                 transcoder.writeImage(bfDiff,

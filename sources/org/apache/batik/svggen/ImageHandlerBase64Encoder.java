@@ -61,6 +61,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler{
                 
                 Graphics2D g = buf.createGraphics();
                 g.drawImage(image, 0, 0, null);
+                g.dispose();
                 handleHREF((RenderedImage)buf, imageElement);
             }
         }

@@ -161,28 +161,42 @@ public class DisplacementMapRable8Bit
         AffineTransform srcAt
             = AffineTransform.getScaleInstance(atScaleX, atScaleY);
 
+        Shape origAOI = rc.getAreaOfInterest();
+        if (origAOI == null)
+            origAOI = getBounds2D();
+
+        Rectangle2D aoiR = origAOI.getBounds2D();
+        //
+        // Get a rendering from the displacement map
+        //
+        Filter map = (Filter)getSources().elementAt(1);
+        PadRable mapPad = new PadRable8Bit(map, aoiR, PadMode.ZERO_PAD);
+
+        RenderContext srcRc = new RenderContext(srcAt, aoiR, rh);
+        RenderedImage mapRed = mapPad.createRendering(srcRc);
+
+        if(mapRed == null){
+            return null;
+        }
+
+        // Grow the area of interest in user space. to account for
+        // the max surround needs of displacement map.
+        aoiR = new Rectangle2D.Double(aoiR.getX()      - scale/2,
+                                      aoiR.getY()      - scale/2,
+                                      aoiR.getWidth()  + scale,
+                                      aoiR.getHeight() + scale);
+
+        //
+        // Now, get a rendering from the image source
+        //
         Filter displaced = (Filter)getSources().elementAt(0);
 
-        //
-        // First, get a rendering from the first source
-        //
-        /*Rectangle2D aoi = displaced.getBounds2D();
-        aoi.intersect(rc.getAreaOfInterest().getBounds2D(), aoi, aoi);
-        aoi.setRect(aoi.getX() - scale/2,
-                    aoi.getY() - scale/2,
-                    aoi.getWidth() + scale,
-                    aoi.getHeight() + scale);*/
-        Rectangle2D aoi = rc.getAreaOfInterest().getBounds2D();
-        aoi.setRect(aoi.getX() - scale/2,
-                    aoi.getY() - scale/2,
-                    aoi.getWidth() + scale,
-                    aoi.getHeight() + scale);
         Rectangle2D displacedRect = displaced.getBounds2D();
-        if (aoi.intersects(displacedRect) == false)
+        if (aoiR.intersects(displacedRect) == false)
             return null;
 
-        aoi = aoi.createIntersection(displacedRect);
-        RenderContext srcRc = new RenderContext(srcAt, aoi, rh);
+        aoiR = aoiR.createIntersection(displacedRect);
+        srcRc = new RenderContext(srcAt, aoiR, rh);
         RenderedImage displacedRed = displaced.createRendering(srcRc);
 
         if(displacedRed == null){
@@ -190,45 +204,14 @@ public class DisplacementMapRable8Bit
         }
 
         //
-        // Now, get a rendering from the displacement map
-        //
-        Filter map = (Filter)getSources().elementAt(1);
-        PadRable mapPad 
-            = new PadRable8Bit(map, aoi, PadMode.ZERO_PAD);
-
-        RenderedImage mapRed = mapPad.createRendering(srcRc);
-
-        if(mapRed == null){
-            return null;
-        }
-
-        //
         // Build a BufferedImages from the two sources
         //
 
-        // Build BufferedImage for displacedRed
-        ColorModel cm = displacedRed.getColorModel();
-        Raster rr = displacedRed.getData();
-        Point pt = new Point(0, 0);
-        WritableRaster wr 
-            = Raster.createWritableRaster(rr.getSampleModel(),
-                                          rr.getDataBuffer(),
-                                          pt);
-        BufferedImage displacedBI
-            = new BufferedImage(cm, wr, 
-                                cm.isAlphaPremultiplied(), null);
+        // Get Raster for displacedRed
+        Raster displacedRas = displacedRed.getData();
 
-        // Build a BufferedImage for mapRed
-        cm = mapRed.getColorModel();
-        rr = mapRed.getData();
-        wr = Raster.createWritableRaster(rr.getSampleModel(),
-                                         rr.getDataBuffer(),
-                                         pt);
-        
-        BufferedImage mapBI
-            = new BufferedImage(cm, wr, 
-                                cm.isAlphaPremultiplied(), null);
-        
+        // Get Raster for mapRed
+        Raster mapRas       = mapRed.getData();
         
         //
         // Now, apply the filter
@@ -240,10 +223,15 @@ public class DisplacementMapRable8Bit
             = new DisplacementMapOp(xChannelSelector,
                                     yChannelSelector,
                                     scaleX, scaleY,
-                                    mapBI);
+                                    mapRas);
 
-        BufferedImage destBI = op.filter(displacedBI, null);
-        
+        WritableRaster destRas = op.filter(displacedRas, null);
+        destRas = destRas.createWritableTranslatedChild(0,0);
+
+        ColorModel cm = displacedRed.getColorModel();
+        BufferedImage destBI = new BufferedImage(cm, destRas, 
+                                                 cm.isAlphaPremultiplied(),
+                                                 null);
         //
         // Apply the non scaling part of the transform now,
         // if different from identity.
@@ -253,8 +241,8 @@ public class DisplacementMapRable8Bit
                                   shx/atScaleY,  sy/atScaleY,
                                   tx, ty);
 
-        final int minX = displacedRed.getMinX();
-        final int minY = displacedRed.getMinY();
+        final int minX = mapRed.getMinX();
+        final int minY = mapRed.getMinY();
 
         CachableRed cr 
             = new BufferedImageCachableRed(destBI, minX, minY);

@@ -811,6 +811,7 @@ public class JSVGCanvas
         g.setClip(0, 0, w, h);
         g.setPaint(Color.white);
         g.fillRect(0, 0, w, h);
+        g.dispose();
     }
 
 
@@ -823,6 +824,7 @@ public class JSVGCanvas
         g.setClip(aoi.getBounds());
         g.setPaint(Color.white);
         g.fill(aoi);
+        g.dispose();
     }
 
     /**
@@ -834,6 +836,7 @@ public class JSVGCanvas
         g.setClip(0, 0, w, h);
         g.setPaint(Color.white);
         g.fillRect(0, 0, w, h);
+        g.dispose();
     }
 
    /**
@@ -1941,6 +1944,7 @@ public class JSVGCanvas
             g.setClip(0, 0, w, h);
             g.setPaint(Color.white);
             g.fillRect(0, 0, w, h);
+            g.dispose();
         }
 
         /**
@@ -1952,6 +1956,7 @@ public class JSVGCanvas
             g.setClip(aoi.getBounds());
             g.setPaint(Color.white);
             g.fill(aoi);
+            g.dispose();
         }
 
         /**

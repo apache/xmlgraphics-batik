@@ -602,7 +602,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
 
                 k = (k+1)%boxSz;
                 sp+=srcScanStride;
-                dp+=srcScanStride;
+                dp+=dstScanStride;
             }
         }
         return dest;

@@ -20,6 +20,9 @@ import org.apache.batik.gvt.renderer.Renderer;
 
 import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
 import org.apache.batik.gvt.text.ConcreteTextSelector;
+
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+
 import java.util.Iterator;
 import java.util.Stack;
 import java.awt.Graphics2D;
@@ -191,10 +194,9 @@ public class StaticRenderer implements Renderer {
         nodeRenderContext.setAreaOfInterest(area);
 
         // Now, paint into offscreen image
-        Graphics2D g = offScreen.createGraphics();
-
-        // Set default rendering hints
-        g.addRenderingHints(nodeRenderContext.getRenderingHints());
+        // and Set default rendering hints
+        Graphics2D g = GraphicsUtil.createGraphics
+            (offScreen, nodeRenderContext.getRenderingHints());
 
         // Set initial transform as required by the render context
         g.transform(nodeRenderContext.getTransform());

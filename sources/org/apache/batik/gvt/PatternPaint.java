@@ -17,7 +17,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
-import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
+import org.apache.batik.gvt.filter.GraphicsNodeRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.AffineRable;
 
 /**
  * Concrete implementation of the <tt>PatternPaint</tt> interface
@@ -37,7 +44,7 @@ public class PatternPaint implements Paint {
      * The <tt>GraphicsNodeRenderContext</tt> for rendering this
      * <tt>Paint</tt>'s node.
      */
-    private GraphicsNodeRenderContext rc;
+    private GraphicsNodeRenderContext gnrc;
 
     /**
      * The region to which this paint is constrained
@@ -57,11 +64,11 @@ public class PatternPaint implements Paint {
      */
     private boolean overflow;
 
-    /**
-     * Source for an addition transform to apply to the
-     * pattern content node
+    /*
+     * The basic tile to fill the region with.
+     * we replicate this out in the Context.
      */
-    private AffineTransform nodeTransform;
+    private Filter tile;
 
     /**
      * @param node Used to generate the paint pixel pattern
@@ -74,25 +81,57 @@ public class PatternPaint implements Paint {
      *        top of the user space to device space transform.
      */
     public PatternPaint(GraphicsNode node,
-                        GraphicsNodeRenderContext rc,
+                        GraphicsNodeRenderContext gnrc,
                         AffineTransform nodeTransform,
                         Rectangle2D patternRegion,
                         boolean overflow,
                         AffineTransform patternTransform){
-        if(node == null){
+        if (node == null) {
             throw new IllegalArgumentException();
         }
 
-        if(patternRegion == null){
+        if (patternRegion == null) {
             throw new IllegalArgumentException();
         }
 
-        this.node = node;
-        this.rc = rc;
-        this.nodeTransform = nodeTransform;
-        this.patternRegion = patternRegion;
-        this.overflow = overflow;
+        if (nodeTransform == null)
+            nodeTransform = new AffineTransform();
+
+        this.node             = node;
+        this.gnrc             = gnrc;
+        this.patternRegion    = patternRegion;
+        this.overflow         = overflow;
         this.patternTransform = patternTransform;
+
+        //
+        // adjustTxf applies the nodeTransform first, then
+        // the translation to move the node rendering into
+        // the pattern region space
+        //
+        AffineTransform adjustTxf = new AffineTransform();
+        adjustTxf.translate(patternRegion.getX(), patternRegion.getY());
+        adjustTxf.concatenate(nodeTransform);
+
+        GraphicsNodeRable gnr = new GraphicsNodeRable8Bit(node, gnrc);
+
+        AffineRable atr = new AffineRable8Bit(gnr, adjustTxf);
+
+
+        Rectangle2D padBounds = (Rectangle2D)patternRegion.clone();
+        if(overflow){
+            //
+            // When there is overflow, make sure we take the
+            // full node bounds into account.
+            //
+            Rectangle2D nodeBounds = node.getBounds(gnrc);
+            Rectangle2D adjustedNodeBounds
+                = adjustTxf.createTransformedShape(nodeBounds).getBounds2D();
+
+            //System.out.println("adjustedBounds : " + adjustedNodeBounds);
+            padBounds.add(adjustedNodeBounds);
+        }
+
+        tile = new PadRable8Bit(atr, padBounds, PadMode.ZERO_PAD);
     }
 
     public GraphicsNode getGraphicsNode(){
@@ -111,35 +150,31 @@ public class PatternPaint implements Paint {
         return patternTransform;
     }
 
-    public PaintContext createContext(ColorModel cm, Rectangle
-                                      deviceBounds,
-                                      Rectangle2D userBounds,
+    public PaintContext createContext(ColorModel      cm, 
+                                      Rectangle       deviceBounds,
+                                      Rectangle2D     userBounds,
                                       AffineTransform xform,
-                                      RenderingHints hints) {
+                                      RenderingHints  hints) {
         //
         // Concatenate the patternTransform to xform
         //
-        if(patternTransform != null){
+        if(patternTransform != null) {
             xform = new AffineTransform(xform);
             xform.concatenate(patternTransform);
 
-            // Modify area of interest accordingly
             try{
-                AffineTransform patternTransformInv = patternTransform.createInverse();
-                Shape aoi = (Shape)hints.get(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST);
-                if(aoi != null){
-                    hints = new RenderingHints(hints);
-                    hints.put(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST,
-                              patternTransformInv.createTransformedShape(aoi));
-                }
-            }catch(NoninvertibleTransformException e){
+                AffineTransform patternTransformInv 
+                    = patternTransform.createInverse();
+                userBounds = patternTransformInv.
+                    createTransformedShape(userBounds).getBounds2D();
             }
+            catch(NoninvertibleTransformException e){  }
         }
 
         return new PatternPaintContext(cm, xform,
-                                       hints, node, rc,
-                                       nodeTransform,
+                                       hints, tile,
                                        patternRegion,
+                                       userBounds,
                                        overflow);
     }
 

@@ -37,6 +37,8 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.XMLAbstractTranscoder;
 import org.apache.batik.transcoder.image.resources.Messages;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -174,8 +176,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         int w = (int)width;
         int h = (int)height;
         BufferedImage img = createImage(w, h);
-        Graphics2D g2d = img.createGraphics();
-        g2d.setClip(0, 0, w, h);
+        Graphics2D g2d = GraphicsUtil.createGraphics(img);
         if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
             Paint bgcolor = (Paint)hints.get(KEY_BACKGROUND_COLOR);
             g2d.setComposite(AlphaComposite.Src);

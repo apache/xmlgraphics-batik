@@ -190,7 +190,7 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                     
                     while (off < gradLimit) {
                         float delta = (g-fractions[gradIdx]);
-                        int [] grad = gradients[gradIdx];
+                        final int [] grad = gradients[gradIdx];
 
                         int steps = 
                             (int)Math.ceil((fractions[gradIdx+1]-g)/dgdX);
@@ -222,7 +222,7 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                     
                     while (off < gradLimit) {
                         float delta = (g-fractions[gradIdx]);
-                        int [] grad = gradients[gradIdx];
+                        final int [] grad = gradients[gradIdx];
 
                         int steps        = (int)Math.ceil(delta/-dgdX);
                         int subGradLimit = off + steps;
@@ -259,6 +259,8 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
         final float      step = dgdX*fastGradientArraySize;
         final int      fpStep = (int)(step*(1<<16));  // fix point step
 
+        final int [] grad = gradient;
+
         for(int i=0; i<h; i++){ //for every row
             //initialize current value to be start.
             float g = initConst + dgdY*(y+i); 
@@ -272,7 +274,7 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                     g = 0;
                 else if (g>fastGradientArraySize) 
                     g = fastGradientArraySize;
-                final int val = gradient[(int)g];
+                final int val = grad[(int)g];
                 while (off < rowLimit) {
                     pixels[off++] = val;
                 }
@@ -283,15 +285,15 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                 if (dgdX > 0) {
                     gradSteps = (int)((fastGradientArraySize-g)/step);
                     preGradSteps = (int)Math.ceil(0-g/step);
-                    preVal  = gradient[0];
-                    postVal = gradient[fastGradientArraySize];
+                    preVal  = grad[0];
+                    postVal = grad[fastGradientArraySize];
 
                 } else { // dgdX < 0
                     gradSteps    = (int)((0-g)/step);
                     preGradSteps = 
                         (int)Math.ceil((fastGradientArraySize-g)/step);
-                    preVal  = gradient[fastGradientArraySize];
-                    postVal = gradient[0];
+                    preVal  = grad[fastGradientArraySize];
+                    postVal = grad[0];
                 }
 
                 if (gradSteps > w) 
@@ -311,7 +313,7 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                         
                 int fpG = (int)(g*(1<<16));
                 while (off < gradLimit) {
-                    pixels[off++] = gradient[fpG>>16];
+                    pixels[off++] = grad[fpG>>16];
                     fpG += fpStep;
                 }
                         
@@ -340,6 +342,8 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
         if (step < 0) 
             step += fastGradientArraySize;
 
+        final int [] grad = gradient;
+
         for(int i=0; i<h; i++) { //for every row
             //initialize current value to be start.
             float g = initConst + dgdY*(y+i); 
@@ -360,7 +364,7 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                     g   -= fastGradientArraySize;
                     idx -= fastGradientArraySize; 
                 }
-                pixels[off++] = gradient[idx];
+                pixels[off++] = grad[idx];
                 g += step;
             }
 
@@ -372,6 +376,8 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
     protected void fillSimpleReflect(int[] pixels, int off, int adjust, 
                                 int x, int y, int w, int h) {
         final float initConst = (dgdX*x) + gc;
+
+        final int [] grad = gradient;
 
         for (int i=0; i<h; i++) { //for every row
             //initialize current value to be start.
@@ -412,9 +418,9 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
                 }
 
                 if (idx <= fastGradientArraySize)
-                    pixels[off++] = gradient[idx];
+                    pixels[off++] = grad[idx];
                 else
-                    pixels[off++] = gradient[reflectMax-idx];
+                    pixels[off++] = grad[reflectMax-idx];
                 g+= step;
             }
 

@@ -153,11 +153,11 @@ public class CompositeRable8Bit
             bi = new BufferedImage(r.width, r.height, 
                                    BufferedImage.TYPE_INT_ARGB);
 
-        Graphics2D g2d = bi.createGraphics();
-
         // Make sure we draw with what hints we have.
-        g2d.setRenderingHints(rh);
+        Graphics2D g2d = GraphicsUtil.createGraphics(bi, rh);
+
         g2d.translate(-r.x, -r.y);
+        g2d.clip(r);
         if (at != null)
             g2d.transform(at);
 
@@ -223,12 +223,11 @@ public class CompositeRable8Bit
 
         Composite comp = new SVGComposite(rule);
 
-        Graphics2D g2d = bi.createGraphics();
-
+        Graphics2D g2d = GraphicsUtil.createGraphics(bi, rh);
         // Make sure we draw with what hints we have.
-        g2d.setRenderingHints(rh);
         g2d.setComposite(comp);
         g2d.translate(-r.x, -r.y);
+        g2d.clip(r);
 
         rc = new RenderContext(at, aoi, rh);
         

@@ -13,10 +13,13 @@ import java.awt.color.ColorSpace;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.AlphaComposite;
+import java.awt.Composite;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -35,13 +38,16 @@ import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
+import java.awt.image.renderable.RenderableImage;
 
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Iterator;
 
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.renderable.AffineRable;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
+import org.apache.batik.ext.awt.image.rendered.TranslateRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.MultiplyAlphaRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
@@ -49,10 +55,14 @@ import org.apache.batik.ext.awt.image.renderable.CompositeRable;
 import org.apache.batik.ext.awt.image.renderable.CompositeRule;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.FilterChainRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.ext.awt.image.renderable.PadRable;
+import org.apache.batik.ext.awt.image.renderable.SVGComposite;
+
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.filter.GraphicsNodeRable;
 
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
@@ -68,6 +78,8 @@ import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
  * @version $Id$
  */
 public class GraphicsUtil {
+
+    public static AffineTransform IDENTITY = new AffineTransform();
 
     /**
      * Draws <tt>ri</tt> into <tt>g2d</tt>.  It does this be
@@ -92,12 +104,62 @@ public class GraphicsUtil {
      */
     public static void drawImage(Graphics2D g2d,
                                  CachableRed cr) {
+
+        // System.out.println("DrawImage G: " + g2d);
+
         ColorModel  srcCM = cr.getColorModel();
 
-        GraphicsConfiguration gc = g2d.getDeviceConfiguration();
-        ColorModel g2dCM = gc.getColorModel();
+        ColorModel g2dCM = getDestinationColorModel(g2d);
         ColorSpace g2dCS = g2dCM.getColorSpace();
 
+        AffineTransform at = null;
+        while (true) {
+            if (cr instanceof AffineRed) {
+                AffineRed ar = (AffineRed)cr;
+                if (at == null)
+                    at = ar.getTransform();
+                else
+                    at.concatenate(ar.getTransform());
+                cr = ar.getSource();
+                continue;
+            } else if (cr instanceof TranslateRed) {
+                TranslateRed tr = (TranslateRed)cr;
+                // System.out.println("testing Translate");
+                int dx = tr.getDeltaX();
+                int dy = tr.getDeltaY();
+                if (at == null) 
+                    at = AffineTransform.getTranslateInstance(dx, dy);
+                else 
+                    at.translate(dx, dy);
+                cr = tr.getSource();
+                continue;
+            }
+            break;
+        }
+
+        AffineTransform g2dAt   = g2d.getTransform();
+        if ((at == null) || (at.isIdentity()))
+            at = g2dAt;
+        else
+            at.preConcatenate(g2dAt);
+    
+        if (false) {
+            System.out.println("CR: " + cr);
+            System.out.println("CRR: " + cr.getBounds());
+        }
+
+        // Scaling down so do it before color conversion.
+        double determinant = at.getDeterminant();
+        if (!at.isIdentity() && (determinant <= 1.0)) {
+            if (at.getType() != AffineTransform.TYPE_TRANSLATION)
+                cr = new AffineRed(cr, at, g2d.getRenderingHints());
+            else {
+                int xloc = cr.getMinX() + (int)at.getTranslateX();
+                int yloc = cr.getMinY() + (int)at.getTranslateY();
+                cr = new TranslateRed(cr, xloc, yloc);
+            }
+        }
+    
         if (g2dCS != srcCM.getColorSpace()) {
             /*
             System.out.println("srcCS: " + srcCM.getColorSpace());
@@ -114,169 +176,186 @@ public class GraphicsUtil {
                 cr = convertToLsRGB(cr);
         }
 
-        AffineTransform at = g2d.getTransform();
-        Shape clip = g2d.getClip();
+        // Scaling up so do it after color conversion.
+        if (!at.isIdentity() && (determinant > 1.0))
+            cr = new AffineRed(cr, at, g2d.getRenderingHints());
 
-        if ( false) {
-            // There has been a problem where the render tries to
-            // request a zero pixel high region (due to a bug in the
-            // complex clip handling).  I have at least temporarily
-            // worked around this by changing the alpha state in
-            // CompositeRable which changes code paths enough that the
-            // renderer doesn't try to construct a zero height
-            // SampleModel (which dies).
-            //
-            // However I suspect that this fix is fragile (other code
-            // paths may trigger the bug), eventually we may need to
-            // reinstate this code, which handles the clipping for the
-            // Graphics2D.
-            if ((clip != null) &&
-                !(clip instanceof Rectangle2D)) {
+        // Now CR is in device space, so clear the g2d transform.
+        g2d.setTransform(IDENTITY);
 
-                // Let's work in device space...
-                cr = new AffineRed(cr, at, g2d.getRenderingHints());
+        Rectangle crR  = cr.getBounds();
+        Shape     clip = g2d.getClip();
 
-                g2d.setTransform(new AffineTransform());
-
-            // This is now the clip in device space...
-                clip = g2d.getClip();
-
-                Rectangle clipR = clip.getBounds();
-
-                if (clip instanceof Rectangle2D)
-                    // Simple clip rect...
-                    cr = new PadRed(cr, clipR, PadMode.ZERO_PAD, null);
-                else {
-                    // Complex clip...
-                    /*
-                 * System.out.println("Clip:" + clip);
-                 * System.out.println("ClipR: " + clipR);
-                 * System.out.println("crR: " + cr.getBounds());
-                 * System.out.println("at: " + at);
-                 */
-
-                    if (clipR.intersects(cr.getBounds()) == false)
-                        return; // Nothing to draw...
-                    clipR = clipR.intersection(cr.getBounds());
-
-                    BufferedImage bi = new BufferedImage
-                        (clipR.width, clipR.height,
-                         BufferedImage.TYPE_BYTE_GRAY);
-
-                    Graphics2D big2d = bi.createGraphics();
-                    big2d.setRenderingHints(g2d.getRenderingHints());
-
-                    big2d.translate(-clipR.x, -clipR.y);
-                    big2d.setPaint(Color.white);
-                    big2d.fill(clip);
-                    big2d.dispose();
-
-                    CachableRed cCr;
-                    cCr = new BufferedImageCachableRed(bi, clipR.x, clipR.y);
-                    cr     = new MultiplyAlphaRed     (cr, cCr);
-                }
-                g2d.setClip(null);
+        try { 
+            Rectangle clipR;
+            if (clip == null) {
+                clip  = crR;
+                clipR = crR;
+            } else {
+                clipR   = clip.getBounds();
+            
+                if (clipR.intersects(crR) == false)
+                    return; // Nothing to draw...
+                clipR = clipR.intersection(crR);
             }
-/*
+
+            Rectangle gcR = getDestinationBounds(g2d);
+            
+            if (clipR.intersects(gcR) == false)
+                return; // Nothing to draw...
+            clipR = clipR.intersection(gcR);
+
+            if ( false) {
+                // There has been a problem where the render tries to
+                // request a zero pixel high region (due to a bug in the
+                // complex clip handling).  I have at least temporarily
+                // worked around this by changing the alpha state in
+                // CompositeRable which changes code paths enough that the
+                // renderer doesn't try to construct a zero height
+                // SampleModel (which dies).
+                //
+                // However I suspect that this fix is fragile (other code
+                // paths may trigger the bug), eventually we may need to
+                // reinstate this code, which handles the clipping for the
+                // Graphics2D.
+                if ((clip != null) &&
+                    !(clip instanceof Rectangle2D)) {
+
+                    // This is now the clip in device space...
+                    clip = g2d.getClip();
+
+                    if (clip instanceof Rectangle2D)
+                        // Simple clip rect...
+                        cr = new PadRed(cr, clipR, PadMode.ZERO_PAD, null);
+                    else {
+                        // Complex clip...
+                        /*
+                         * System.out.println("Clip:" + clip);
+                         * System.out.println("ClipR: " + clipR);
+                         * System.out.println("crR: " + cr.getBounds());
+                         * System.out.println("at: " + at);
+                         */
+
+                        if (clipR.intersects(cr.getBounds()) == false)
+                            return; // Nothing to draw...
+                        clipR = clipR.intersection(cr.getBounds());
+
+                        BufferedImage bi = new BufferedImage
+                            (clipR.width, clipR.height,
+                             BufferedImage.TYPE_BYTE_GRAY);
+
+                        Graphics2D big2d = createGraphics
+                            (bi, g2d.getRenderingHints());
+
+                        big2d.translate(-clipR.x, -clipR.y);
+                        big2d.setPaint(Color.white);
+                        big2d.fill(clip);
+                        big2d.dispose();
+
+                        CachableRed cCr;
+                        cCr = new BufferedImageCachableRed(bi, clipR.x, 
+                                                           clipR.y);
+                        cr     = new MultiplyAlphaRed     (cr, cCr);
+                    }
+                    g2d.setClip(null);
+                }
+            }
+
+            srcCM = cr.getColorModel();
+            ColorModel drawCM = srcCM;
+            if ((drawCM.hasAlpha()) && (g2dCM.hasAlpha())) {
+                if (drawCM.isAlphaPremultiplied() !=
+                    g2dCM .isAlphaPremultiplied())
+                    drawCM = coerceColorModel(drawCM,
+                                              g2dCM.isAlphaPremultiplied());
+            }
+
+            SampleModel srcSM = cr.getSampleModel();
+            WritableRaster wr;
+            wr = Raster.createWritableRaster(srcSM, new Point(0,0));
+            BufferedImage bi = new BufferedImage
+                (drawCM, wr, drawCM.isAlphaPremultiplied(), null);
+
+            int xt0 = cr.getMinTileX();
+            int xt1 = xt0+cr.getNumXTiles();
+            int yt0 = cr.getMinTileY();
+            int yt1 = yt0+cr.getNumYTiles();
+            int tw  = srcSM.getWidth();
+            int th  = srcSM.getHeight();
+
+            Rectangle tR  = new Rectangle(0,0,tw,th);
+            Rectangle iR  = new Rectangle(0,0,0,0);
+
             if (false) {
-                Rectangle    clipR = clip.getBounds();
-                BufferedImage bi   = new BufferedImage
-                    (clipR.width, clipR.height,
-                     BufferedImage.TYPE_BYTE_GRAY);
-
-                Graphics2D big2d = bi.createGraphics();
-                big2d.setRenderingHints(g2d.getRenderingHints());
-
-                big2d.translate(-clipR.x, -clipR.y);
-                big2d.setPaint(Color.white);
-                big2d.fill(clip);
-                big2d.dispose();
-                // org.apache.batik.test.gvt.ImageDisplay.showImage
-                //     ("Big2d: ", bi);
+                System.out.println("CR: " + cr);
+                System.out.println("CRR: " + crR + " TG: [" +
+                                   xt0 +"," +
+                                   yt0 +"," +
+                                   xt1 +"," +
+                                   yt1 +"] Off: " +
+                                   cr.getTileGridXOffset() +"," +
+                                   cr.getTileGridYOffset());
             }
-*/
-        }
 
-        srcCM = cr.getColorModel();
-        ColorModel drawCM = srcCM;
-        if ((drawCM.hasAlpha()) && (g2dCM.hasAlpha())) {
-            if (drawCM.isAlphaPremultiplied() !=
-                g2dCM .isAlphaPremultiplied())
-                drawCM = coerceColorModel(drawCM,
-                                          g2dCM.isAlphaPremultiplied());
-        }
+            DataBuffer db = wr.getDataBuffer();
+            int yloc = yt0*th+cr.getTileGridYOffset();
+            int skip = (clipR.y-yloc)/th;
+            if (skip <0) skip = 0;
+            yt0+=skip;
 
-        SampleModel srcSM = cr.getSampleModel();
-        WritableRaster wr;
-        wr = Raster.createWritableRaster(srcSM, new Point(0,0));
-        BufferedImage bi = new BufferedImage
-            (drawCM, wr, drawCM.isAlphaPremultiplied(), null);
-
-        int xt0 = cr.getMinTileX();
-        int xt1 = xt0+cr.getNumXTiles();
-        int yt0 = cr.getMinTileY();
-        int yt1 = yt0+cr.getNumYTiles();
-        int tw  = srcSM.getWidth();
-        int th  = srcSM.getHeight();
-
-        Rectangle crR = cr.getBounds();
-        Rectangle tR  = new Rectangle(0,0,tw,th);
-        Rectangle iR  = new Rectangle(0,0,0,0);
-
-        if (false)
-            System.out.println("CRR: " + crR + " TG: [" +
-                               xt0 +"," +
-                               yt0 +"," +
-                               xt1 +"," +
-                               yt1 +"] Off: " +
-                               cr.getTileGridXOffset() +"," +
-                               cr.getTileGridXOffset());
-
-        DataBuffer db = wr.getDataBuffer();
-        int yloc = yt0*th+cr.getTileGridYOffset();
-        for (int y=yt0; y<yt1; y++, yloc += th) {
             int xloc = xt0*tw+cr.getTileGridXOffset();
-            for (int x=xt0; x<xt1; x++, xloc+=tw) {
-                tR.x = xloc;
-                tR.y = yloc;
-                Rectangle2D.intersect(crR, tR, iR);
+            skip = (clipR.x-xloc)/tw;
+            if (skip <0) skip = 0;
+            xt0+=skip;
 
-                wr = Raster.createWritableRaster(srcSM, db,
-                                                 new Point(xloc, yloc));
-                cr.copyData(wr);
-                coerceData(wr, srcCM, drawCM.isAlphaPremultiplied());
-
-                // Make sure we only draw the region that was written...
-                BufferedImage subBI;
-                subBI = bi.getSubimage(iR.x-xloc, iR.y-yloc,
-                                       iR.width,  iR.height);
-                if (false) {
-                    System.out.println("Drawing: " + tR);
-                    System.out.println("IR: "      + iR);
-                    subBI = new BufferedImage(subBI.getColorModel(),
-                                              subBI.getRaster(),
-                                              subBI.isAlphaPremultiplied(),
-                                              null) {
-                            public BufferedImage getSubimage(int x, int y,
-                                                             int w, int h) {
-                                Exception e = new Exception
-                                    ("Sub: [" + x + ", " + y + ", " +
-                                     w + ", " + h + "]");
-                                e.printStackTrace();
-                                if (w<=0) w= 1;
-                                if (h<=0) h= 1;
-                                return super.getSubimage(x,y,w,h);
-                            }
-                        };
-                }
-
-                g2d.drawImage(subBI, null, iR.x, iR.y);
-                // big2d.fillRect(0, 0, tw, th);
+            int endX = clipR.x+clipR.width-1;
+            int endY = clipR.y+clipR.height-1;
+            
+            if (false) {
+                System.out.println("clipR: " + clipR + " TG: [" +
+                                   xt0 +"," +
+                                   yt0 +"," +
+                                   xt1 +"," +
+                                   yt1 +"] Off: " +
+                                   cr.getTileGridXOffset() +"," +
+                                   cr.getTileGridYOffset());
             }
-        }
 
-        g2d.setClip(clip);
-        g2d.setTransform(at);
+            // System.out.println("Starting Draw: " + cr);
+            yloc = yt0*th+cr.getTileGridYOffset();
+            for (int y=yt0; y<yt1; y++, yloc += th) {
+                if (yloc > endY) break;
+                xloc = xt0*tw+cr.getTileGridXOffset();
+                for (int x=xt0; x<xt1; x++, xloc+=tw) {
+                    if (xloc > endX) break;
+                    tR.x = xloc;
+                    tR.y = yloc;
+                    Rectangle2D.intersect(crR, tR, iR);
+                    
+                    WritableRaster twr;
+                    twr = wr.createWritableChild(0, 0,
+                                                 iR.width, iR.height,
+                                                 iR.x, iR.y, null);
+                    
+                    cr.copyData(twr);
+                    coerceData(twr, srcCM, drawCM.isAlphaPremultiplied());
+
+                    // Make sure we only draw the region that was written...
+                    BufferedImage subBI;
+                    subBI = bi.getSubimage(0, 0, iR.width,  iR.height);
+                    if (false) {
+                        System.out.println("Drawing: " + tR);
+                        System.out.println("IR: "      + iR);
+                    }
+
+                    g2d.drawImage(subBI, null, iR.x, iR.y);
+                    // big2d.fillRect(0, 0, tw, th);
+                }
+            }
+        } finally {
+            g2d.setTransform(g2dAt);
+        }
+        // System.out.println("Finished Draw");
     }
 
     /**
@@ -294,9 +373,9 @@ public class GraphicsUtil {
      * @param filter The filter to draw
      * @param rc The render context that controls the drawing operation.
      */
-    public static void drawImage(Graphics2D    g2d,
-                                 Filter        filter,
-                                 RenderContext rc) {
+    public static void drawImage(Graphics2D      g2d,
+                                 RenderableImage filter,
+                                 RenderContext   rc) {
 
         AffineTransform origDev  = g2d.getTransform();
         Shape           origClip = g2d.getClip();
@@ -327,7 +406,7 @@ public class GraphicsUtil {
      * @param filter The filter to draw
      */
     public static void drawImage(Graphics2D g2d,
-                                 Filter     filter) {
+                                 RenderableImage filter) {
         if (filter instanceof AffineRable) {
             AffineRable ar = (AffineRable)filter;
 
@@ -342,7 +421,16 @@ public class GraphicsUtil {
 
         // These optimizations only apply if we are using
         // SrcOver.  Otherwise things break...
-        if (g2d.getComposite() == java.awt.AlphaComposite.SrcOver) {
+        Composite c = g2d.getComposite();
+        boolean okToOptimize = false;
+        if (c == AlphaComposite.SrcOver) {
+            okToOptimize = true;
+        } else if (c instanceof SVGComposite) {
+            SVGComposite sc = (SVGComposite)c;
+            okToOptimize = (sc.getRule() == CompositeRule.OVER);
+        }
+
+        if (okToOptimize) {
             if (filter instanceof PadRable) {
                 PadRable pr = (PadRable)filter;
                 if (pr.getPadMode() == PadMode.ZERO_PAD) {
@@ -361,10 +449,10 @@ public class GraphicsUtil {
                 // For the over mode we can just draw them in order...
                 if (cr.getCompositeRule() == CompositeRule.OVER) {
                     ColorSpace crCS = cr.getCompositeColorSpace();
-                    GraphicsConfiguration gc = g2d.getDeviceConfiguration();
-                    ColorModel g2dCM = gc.getColorModel();
-                    ColorSpace g2dCS = g2dCM.getColorSpace();
+                    ColorSpace g2dCS = getDestinationColorSpace(g2d);
                     if (g2dCS == crCS) {
+                        // System.out.println("drawImage : " + g2dCS +
+                        //                    crCS);
                         Vector srcs = cr.getSources();
                         Iterator i = srcs.iterator();
                         while (i.hasNext()) {
@@ -376,10 +464,10 @@ public class GraphicsUtil {
             }
             else if (filter instanceof GraphicsNodeRable) {
                 GraphicsNodeRable gnr = (GraphicsNodeRable)filter;
-                GraphicsConfiguration gc = g2d.getDeviceConfiguration();
-                ColorModel g2dCM = gc.getColorModel();
-                ColorSpace g2dCS = g2dCM.getColorSpace();
+                ColorSpace g2dCS = getDestinationColorSpace(g2d);
                 if (g2dCS == ColorSpace.getInstance(ColorSpace.CS_sRGB)) {
+                    // System.out.println("drawImage GNR: " + g2dCS);
+
                     if (gnr.getUsePrimitivePaint()) {
                         gnr.getGraphicsNode().primitivePaint
                             (g2d, GraphicsNodeRenderContext.
@@ -414,14 +502,84 @@ public class GraphicsUtil {
         if (ri == null)
             return;
 
-        g2d.setTransform(new AffineTransform());
+        g2d.setTransform(IDENTITY);
         drawImage(g2d, GraphicsUtil.wrap(ri));
         g2d.setTransform(at);
     }
 
     /**
-     * Standard prebuilt Linear_sRGB color model with no alpha
+     * This is a wrapper around the system's
+     * BufferedImage.createGraphics that arranges for bi to be stored
+     * in a Rendering hint in the returned Graphics2D.
+     * This allows for accurate determination of the 'devices' size,
+     * and colorspace.  
+
+     * @param bi The BufferedImage that the returned Graphics should
+     *           draw into.
+     * @return A Graphics2D that draws into BufferedImage with <tt>bi</tt>
+     *         stored in a rendering hint.
      */
+    public static Graphics2D createGraphics(BufferedImage bi, 
+                                            RenderingHints hints) {
+        Graphics2D g2d = bi.createGraphics();
+        if (hints != null)
+            g2d.addRenderingHints(hints);
+        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, bi);
+        g2d.clip(new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
+        return g2d;
+    }
+
+
+    public static Graphics2D createGraphics(BufferedImage bi) {
+        Graphics2D g2d = bi.createGraphics();
+        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, bi);
+        g2d.clip(new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
+        return g2d;
+    }
+
+
+    public static BufferedImage getDestination(Graphics2D g2d) {
+        Object o = g2d.getRenderingHint
+            (RenderingHintsKeyExt.KEY_BUFFERED_IMAGE);
+        if (o != null)
+            return (BufferedImage)o;
+
+        // Check if this is a BufferedImage G2d if so throw an error...
+        GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+        GraphicsDevice gd = gc.getDevice();
+        if (gd.getType() == GraphicsDevice.TYPE_IMAGE_BUFFER) {
+            throw new IllegalArgumentException
+                ("Graphics2D from BufferedImage lacks BUFFERED_IMAGE hint");
+        }
+
+        return null;
+    }
+
+    public static ColorModel getDestinationColorModel(Graphics2D g2d) {
+        BufferedImage bi = getDestination(g2d);
+        if (bi != null)
+            return bi.getColorModel();
+
+        GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+        return gc.getColorModel();
+    }
+
+    public static ColorSpace getDestinationColorSpace(Graphics2D g2d) {
+        ColorModel cm = getDestinationColorModel(g2d);
+        return cm.getColorSpace();
+    }
+
+    public static Rectangle getDestinationBounds(Graphics2D g2d) {
+        BufferedImage bi = getDestination(g2d);
+        if (bi != null)
+            return new Rectangle(0, 0, bi.getWidth(), bi.getHeight());
+
+        GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+        return gc.getBounds();
+    }
+
+    /**
+     * Standard prebuilt Linear_sRGB color model with no alpha */
     public final static ColorModel Linear_sRGB =
         new DirectColorModel(ColorSpace.getInstance
                              (ColorSpace.CS_LINEAR_RGB), 24,
@@ -569,10 +727,13 @@ public class GraphicsUtil {
      * Integer packed data with a SinglePixelPackedSampleModel.  Only
      * the region of overlap between src and dst is copied.
      *
+     * Calls to this should be preflighted with is_INT_PACK_Data
+     * on both src and dest (requireAlpha can be false).
+     *
      * @param src The source of the data
      * @param dst The destination for the data.
      */
-    protected static void copyData_INT_PACK(Raster src, WritableRaster dst) {
+    public static void copyData_INT_PACK(Raster src, WritableRaster dst) {
         // System.out.println("Fast copyData");
         int x0 = dst.getMinX();
         if (x0 < src.getMinX()) x0 = src.getMinX();
@@ -638,21 +799,8 @@ public class GraphicsUtil {
         }
     }
 
-    /**
-     * Copies data from one raster to another. Only the region of
-     * overlap between src and dst is copied.  <tt>Src</tt> and
-     * <tt>Dst</tt> must have compatible SampleModels.
-     *
-     * @param src The source of the data
-     * @param dst The destination for the data.
-     */
-    public static void copyData(Raster src, WritableRaster dst) {
-        if (is_INT_PACK_Data(src.getSampleModel(), false) &&
-            is_INT_PACK_Data(dst.getSampleModel(), false)) {
-            copyData_INT_PACK(src, dst);
-            return;
-        }
-        // System.out.println("Slow copyData");
+    public static void copyData_FALLBACK(Raster src, WritableRaster dst) {
+        // System.out.println("Fallback copyData");
 
         int x0 = dst.getMinX();
         if (x0 < src.getMinX()) x0 = src.getMinX();
@@ -677,6 +825,24 @@ public class GraphicsUtil {
             data = src.getDataElements(x0,y,width,1,data);
             dst.setDataElements(x0,y,width,1,data);
         }
+    }
+
+    /**
+     * Copies data from one raster to another. Only the region of
+     * overlap between src and dst is copied.  <tt>Src</tt> and
+     * <tt>Dst</tt> must have compatible SampleModels.
+     *
+     * @param src The source of the data
+     * @param dst The destination for the data.
+     */
+    public static void copyData(Raster src, WritableRaster dst) {
+        if (is_INT_PACK_Data(src.getSampleModel(), false) &&
+            is_INT_PACK_Data(dst.getSampleModel(), false)) {
+            copyData_INT_PACK(src, dst);
+            return;
+        }
+
+        copyData_FALLBACK(src, dst);
     }
 
     /**

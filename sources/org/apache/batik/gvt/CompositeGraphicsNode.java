@@ -285,28 +285,32 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
       */
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         if (primitiveBounds == null) {
+            // System.out.println("Prim: " + this);
             Rectangle2D bounds = null, nodeBounds = null;
             AffineTransform txf = null;
-            if(count > 0){
-                txf = children[0].getTransform();
-                nodeBounds = children[0].getBounds(rc);
-                bounds = (txf == null)
-                    ? nodeBounds
-                    : txf.createTransformedShape(nodeBounds).getBounds2D();
-            } else {
+            if(count == 0)
                 // With the following empty groups may have bad side effects.
                 return new Rectangle(0, 0, 0, 0);
-            }
+
+            txf = children[0].getTransform();
+            nodeBounds = children[0].getBounds(rc);
+            bounds = (txf == null)
+                ? nodeBounds
+                : txf.createTransformedShape(nodeBounds).getBounds2D();
+            // System.out.println("SubBounds: " + bounds);
             for (int i=1; i < count; ++i) {
                 GraphicsNode node = children[i];
                 nodeBounds = node.getBounds(rc);
-                txf = children[i].getTransform();
+                txf        = node.getTransform();
                 if (txf != null) {
                     nodeBounds =
                         txf.createTransformedShape(nodeBounds).getBounds2D();
                 }
+                // System.out.println("SubBounds: " + nodeBounds);
                 bounds.add(nodeBounds);
             }
+            // System.out.println("   Bounds: " + bounds );
+            // System.out.println("End Prim: " + this );
             primitiveBounds = bounds;
         }
         return primitiveBounds;

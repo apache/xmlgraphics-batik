@@ -110,6 +110,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected Filter filter;
 
     /**
+     * .The GraphicsNodeRable for this node.
+     */
+    protected Filter gnr;
+
+    /**
      * Internal Cache: node bounds
      */
     private Rectangle2D bounds;
@@ -377,8 +382,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 Filter filteredImage = null;
 
                 if(filter == null){
-                    filteredImage = rc.getGraphicsNodeRableFactory().
-                        createGraphicsNodeRable(this, rc);
+                    if (gnr == null)
+                        gnr = rc.getGraphicsNodeRableFactory().
+                            createGraphicsNodeRable(this, rc);
+                    filteredImage = gnr;
                 }
                 else {
                     // traceFilter(filter, "=====>> ");

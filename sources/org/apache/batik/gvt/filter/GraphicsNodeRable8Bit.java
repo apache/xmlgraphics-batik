@@ -9,7 +9,6 @@
 package org.apache.batik.gvt.filter;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -21,13 +20,13 @@ import java.awt.image.BufferedImage;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.renderable.RenderableImage;
 
-import java.util.Vector;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.renderable.AbstractRable;
-import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.TranslateRed;
 
 /**
  * This implementation of RenderableImage will render its input
@@ -40,6 +39,9 @@ import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 public class GraphicsNodeRable8Bit 
     extends    AbstractRable 
     implements GraphicsNodeRable {
+
+    private AffineTransform cachedUsr2dev = null;
+    private CachableRed     cachedRed = null;
 
     /**
      * Should GraphicsNodeRable call primitivePaint or Paint.
@@ -168,81 +170,49 @@ public class GraphicsNodeRable8Bit
     public RenderedImage createRendering(RenderContext renderContext){
         // Get user space to device space transform
         AffineTransform usr2dev = renderContext.getTransform();
+
         if (usr2dev == null) {
             usr2dev = new AffineTransform();
         }
 
-        // Find out the renderable area
-        Rectangle2D imageRect2D = getBounds2D();
-        Rectangle renderableArea
-            = usr2dev.createTransformedShape(imageRect2D).getBounds();
+        if ((cachedUsr2dev != null) && 
+            (usr2dev.getScaleX()  == cachedUsr2dev.getScaleX()) &&
+            (usr2dev.getScaleY()  == cachedUsr2dev.getScaleY()) &&
+            (usr2dev.getShearX()  == cachedUsr2dev.getShearX()) &&
+            (usr2dev.getShearY()  == cachedUsr2dev.getShearY()))
+        {
+            // Just some form of Translation
+            double deltaX = (usr2dev.getTranslateX() - 
+                             cachedUsr2dev.getTranslateX());
+            double deltaY = (usr2dev.getTranslateY() - 
+                             cachedUsr2dev.getTranslateY());
 
-        // Now, take area of interest into account. It is
-        // defined in user space.
-        Shape usrAOI = renderContext.getAreaOfInterest();
-        if(usrAOI == null)
-            usrAOI = imageRect2D;
+            // System.out.println("Using Cached Red!!! " + 
+            //                    deltaX + "x" + deltaY);
+            if ((deltaX ==0) && (deltaY == 0))
+                // Actually no translation
+                return cachedRed;
 
-        Rectangle devAOI
-            = usr2dev.createTransformedShape(usrAOI).getBounds();
-
-
-        // The rendered area is the interesection of the renderable
-        // area and the device AOI bounds. if this is empty return
-        // null.
-        if (renderableArea.intersects(devAOI) == false)
-            return null;
-
-        final Rectangle renderedArea = renderableArea.intersection(devAOI);
-
-        // System.out.println("RenderedArea: " + renderedArea);
-
-        if (   (renderedArea.width == 0)
-            || (renderedArea.height == 0))
-            return null;
-
-
-            // If there is no intersection, return a fully
-            // transparent image, 1x1
-        BufferedImage offScreen
-            = new BufferedImage(renderedArea.width,
-                                renderedArea.height,
-                                BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g = offScreen.createGraphics();
-
-        g.translate(-renderedArea.x, -renderedArea.y);
-
-        // Set hints. Use the one of the GraphicsNodeRenderContext, not
-        // those of this invocation.
-        // CHANGE : GET HINTS FROM renderContext.
-        RenderingHints hints = renderContext.getRenderingHints();
-        if(hints != null){
-            g.setRenderingHints(hints);
+            // Integer translation in device space..
+            if ((deltaX == (int)deltaX) &&
+                (deltaY == (int)deltaY)) {
+                return new TranslateRed
+                    (cachedRed, 
+                     (int)Math.round(cachedRed.getMinX()+deltaX),
+                     (int)Math.round(cachedRed.getMinY()+deltaY));
+            }
         }
 
-        // Set transform
-        g.transform(usr2dev);
-
-        // Clip
-        g.clip(renderContext.getAreaOfInterest());
-            
-        try {
-            // Invoke primitive paint.
-            if (usePrimitivePaint)
-                node.primitivePaint (g, getGraphicsNodeRenderContext());
-            else
-                node.paint (g, getGraphicsNodeRenderContext());
-        } catch (InterruptedException ie) {
-            g.dispose();
-            return null;
+        // Fell through let's do a new rendering...
+        if (false) {
+            System.out.println("Not using Cached Red: " + usr2dev);
+            System.out.println("Old:                  " + cachedUsr2dev);
         }
-            
-        g.dispose();
-
-        return new BufferedImageCachableRed
-            (offScreen, renderedArea.x, renderedArea.y);
-
+        cachedUsr2dev = (AffineTransform)usr2dev.clone();
+        cachedRed =  new GraphicsNodeRed8Bit
+            (node, usr2dev, getGraphicsNodeRenderContext(),
+             usePrimitivePaint, renderContext.getRenderingHints());
+        return cachedRed;
     }
 
     protected void setGraphicsNodeRenderContext(GraphicsNodeRenderContext rc) {

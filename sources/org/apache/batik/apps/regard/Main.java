@@ -134,21 +134,27 @@ public class Main {
     public static void reset() {
         File dir = new File(getRefDirectory());
         File [] images = dir.listFiles();
-        for (int i=0; i < images.length; ++i) {
-            display("Deleting reference image "+images[i].getName());
-            images[i].delete();
+        if (images != null) {
+            for (int i=0; i < images.length; ++i) {
+                display("Deleting reference image "+images[i].getName());
+                images[i].delete();
+            }
         }
         dir = new File(getNewDirectory());
         images = dir.listFiles();
-        for (int i=0; i < images.length; ++i) {
-            display("Deleting new image "+images[i].getName());
-            images[i].delete();
+        if (images != null) {
+            for (int i=0; i < images.length; ++i) {
+                display("Deleting new image "+images[i].getName());
+                images[i].delete();
+            }
         }
         dir = new File(getDiffDirectory());
         images = dir.listFiles();
-        for (int i=0; i < images.length; ++i) {
-            display("Deleting diff image "+images[i].getName());
-            images[i].delete();
+        if (images != null) {
+            for (int i=0; i < images.length; ++i) {
+                display("Deleting diff image "+images[i].getName());
+                images[i].delete();
+            }
         }
         exit(0);
     }
@@ -165,12 +171,14 @@ public class Main {
             error("regard is not initialized. use -init first");
         }
         File ff = new File(f, REGARD_REF_DIRECTORY_NAME);
-        if (ff.list().length != 0) {
+        String [] files = ff.list();
+        if ((files!=null) && (files.length != 0)) {
             error("The reference directory "+ff.getAbsolutePath()+
                   " is not empty. Use -reset first.");
             exit(3);
         }
         generateImages(getRefDirectory(), "reference image for");
+        exit(0);
     }
 
     /**
@@ -185,6 +193,7 @@ public class Main {
             error("regard is not initialized. use -init first");
         }
         generateImages(getNewDirectory(), "new image for");
+        exit(0);
     }
 
     static void generateImages(String outputDirectory, String desc) {
@@ -333,10 +342,6 @@ public class Main {
             BufferedImage bfDiff = transcoder.createImage(2*bfRef.getWidth(),
                                                           2*bfRef.getHeight());
 
-            Graphics2D g = bfDiff.createGraphics();
-            // g.setPaint(transcoder.getBackgroundPaint());
-            // g.fillRect(0, 0, bfDiff.getWidth(), bfDiff.getHeight());
-            g.dispose();
             display(String.valueOf(i+1) + ". " + "Creating the difference image file of " + refImg.getName());
 
             boolean difference =

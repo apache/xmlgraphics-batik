@@ -9,28 +9,26 @@
 package org.apache.batik.ext.awt;
 
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 /**
- * Contains additional RenderingHints Keys, such as 
- * KEY_AREA_OF_INTEREST
+ * This class is here to workaround a javadoc problem. It is only used by
+ * <code>GraphicsNode</code>.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
-public final class RenderingHintsKeyExt {
-    /**
-     * Key for the AOI hint. This hint is used to propagate the AOI to Paint
-     * and PaintContext instances.
-     */
-    public static final RenderingHints.Key KEY_AREA_OF_INTEREST =
-        new AreaOfInterestHintKey();
+final class BufferedImageHintKey extends RenderingHints.Key {
+    BufferedImageHintKey() {
+        super(1001);
+    }
+    public boolean isCompatibleValue(Object val) {
+        if (val == null)
+            return true;
+        if (val instanceof BufferedImage)
+            return true;
 
-    public static final RenderingHints.Key KEY_BUFFERED_IMAGE =
-        new BufferedImageHintKey();
-
-    /**
-     * Do not authorize creation of instances of that class
-     */
-    private RenderingHintsKeyExt(){
+        return false;
     }
 }
+

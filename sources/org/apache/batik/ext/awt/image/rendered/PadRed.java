@@ -465,6 +465,8 @@ public class PadRed extends AbstractRed {
         if (h < 256) h = 256;
         if (h > bounds.height) h = bounds.height;
 
+        // System.out.println("Pad SMSz: " + w + "x" + h);
+
         return sm.createCompatibleSampleModel(w, h);
     }
 }

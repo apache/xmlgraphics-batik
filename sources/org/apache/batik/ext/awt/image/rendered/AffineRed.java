@@ -9,7 +9,7 @@
 package org.apache.batik.ext.awt.image.rendered;
 
 import org.apache.batik.ext.awt.image.renderable.PadMode;
-
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -42,6 +42,16 @@ public class AffineRed extends AbstractRed {
     AffineTransform src2me;
     AffineTransform me2src;
 
+    TileGrid tiles;
+
+    public AffineTransform getTransform() {
+        return (AffineTransform)src2me.clone();
+    }
+
+    public CachableRed getSource() {
+        return (CachableRed)getSources().get(0);
+    }
+
     public AffineRed(CachableRed     src,
                      AffineTransform src2me,
                      RenderingHints  hints) {
@@ -64,37 +74,65 @@ public class AffineRed extends AbstractRed {
         // fix my sample model so it makes sense given my size.
         SampleModel sm = fixSampleModel(src, myBounds);
 
-        // Try to keep our tile grids aligned
-        Point pt = new Point(src.getTileGridXOffset(),
-                             src.getTileGridYOffset());
-        Point2D pt2d = src2me.transform(pt, null);
-
+        Point2D pt = new Point2D.Float(src.getTileGridXOffset(),
+                                       src.getTileGridYOffset());
+        pt = src2me.transform(pt, null);
+        
         // Finish initializing our base class...
         init(src, myBounds, src.getColorModel(), sm,
-             (int)pt2d.getX(), (int)pt2d.getY(), null);
+             (int)pt.getX(), (int)pt.getY(), null);
     }
 
     public WritableRaster copyData(WritableRaster wr) {
+
+        // System.out.println("Affine CopyData:" + wr);
+
+        // copyToRaster(wr);
+        PadRed.ZeroRecter zr = PadRed.ZeroRecter.getZeroRecter(wr);
+        zr.zeroRect(new Rectangle(wr.getMinX(), wr.getMinY(), 
+                                  wr.getWidth(), wr.getHeight()));
+        genRect(wr);
+        return wr;
+    }
+
+    public Raster getTile(int x, int y) {
         if (me2src == null)
-            return wr;
+            return null;
+
+        int tx = tileGridXOff+x*tileWidth;
+        int ty = tileGridYOff+y*tileHeight;
+        Point pt = new Point(tx, ty);
+        WritableRaster wr = Raster.createWritableRaster(sm, pt);
+        genRect(wr);
+        
+        return wr;
+    }
+
+    public void genRect(WritableRaster wr) {
+        if (me2src == null)
+            return;
 
         Rectangle srcR;
         srcR = me2src.createTransformedShape(wr.getBounds()).getBounds();
+
+        // System.out.println("Affine wrR: " + wr.getBounds());
+        // System.out.println("Affine srcR: " + srcR);
 
         // Outset by one pixel so we get context for interpolation...
         srcR.setBounds(srcR.x-1, srcR.y-1, srcR.width+2, srcR.height+2);
 
         // Don't try and get data from src that it doesn't have...
         CachableRed src = (CachableRed)getSources().get(0);
-        srcR = srcR.intersection(src.getBounds());
-        
-        if (srcR.isEmpty())
-            return null;
 
+        // if (srcR.intersects(src.getBounds()) == false)
+        //     return;
+        // 
+        // srcR = srcR.intersection(src.getBounds());
+        
         Raster srcRas = src.getData(srcR.getBounds());
 
         if (srcRas == null)
-            return null;
+            return;
 
         // This works around the problem that the buffered ops
         // completely ignore the coords of the Rasters passed in.
@@ -133,8 +171,6 @@ public class AffineRed extends AbstractRed {
                                  myCM.isAlphaPremultiplied(), null);
 
         op.filter(srcBI, myBI);
-
-        return wr;
     }
 
         /**
