@@ -105,6 +105,7 @@ To display the available targets type:
     <echo message=""/>
     <echo message="   compile    --> compiles the source code"/>
     <echo message="   svgviewer  --> runs the SVG viewer"/>
+    <echo message="   regard     --> runs the regard regression utility"/>
     <echo message="   javadoc    --> generates the API documentation"/>
     <echo message="   site       --> generates the site documentation"/>
     <echo message="   sitedoc    --> generates the site documentation without"/>
@@ -156,6 +157,35 @@ To display the available targets type:
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
         <pathelement location="resources" />
+      </classpath>
+      <arg value="${args}"/>
+    </java>
+  </target>
+
+  <target name="regard"
+          depends="compile"
+          description="Runs the regression utility">
+    <java fork="yes"
+          classname="${class-prefix}.apps.regard.Main">
+      <classpath>
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+        <pathelement location="${dest}" />
+      </classpath>
+      <arg value="${args}"/>
+    </java>
+  </target>
+
+  <target name="regsvggen"
+          depends="compile"
+          description="Runs the SVG generator regression utility">
+    <java fork="yes"
+          classname="${class-prefix}.apps.regsvggen.Main">
+      <classpath>
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+        <pathelement location="regsvggen/classes" />
+        <pathelement location="${dest}" />
       </classpath>
       <arg value="${args}"/>
     </java>
