@@ -10,7 +10,7 @@
 <!-- ========================================================================= -->
 
 <!-- ========================================================================= -->
-<!-- author Thierry.Kormann@sophia.inria.fr                                                 -->
+<!-- author Thierry.Kormann@sophia.inria.fr                                    -->
 <!-- author vincent.hardy@eng.sun.com                                          -->
 <!-- version $Id$ -->
 <!-- ========================================================================= -->
@@ -46,7 +46,7 @@
             static and dynamic SVG tests separately.
             </p>
            <p>
-            Static ratings : passed: 67, close: 8, not at all: 19 (Total: 75/94)
+            Static ratings : passed: 86, close: 4, not at all: 4 (Total: 90/94)
            </p>
            <p>
             Dynamic ratings : passed: 2, not at all: 30 (Total: 2/32)
@@ -63,6 +63,10 @@
 	    </tr>
 	    <tr>
 	      <td ><link href="http://xml.apache.org/batik/images/BE/color-property-BE-02.png">color-property-BE-02.svg</link></td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >color-colorProf-BE-03.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
 
@@ -85,6 +89,27 @@
 	    </tr>
 
             <!-- ############################################################## -->
+	    <tr>
+	      <td >filters-convolve-BE-06.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-diffuseLt-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-lights-BE-09.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-many-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-specularLt-BE-08.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+
 	    <tr>
 	      <td ><link href="http://xml.apache.org/batik/images/BE/filters-blend-BE-02.png">filters-blend-BE-02.svg</link></td>
 	      <td >&nbsp;</td>
@@ -122,6 +147,29 @@
 	      <td >&nbsp;</td>
 	    </tr>
 
+	    <tr>
+	      <td ><link href="http://xml.apache.org/batik/images/BE/filters-colorMtrx-BE-03.png">filters-colorMtrx-BE-03.svg</link></td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td ><link href="http://xml.apache.org/batik/images/BE/filters-composite-BE-05.png">filters-composite-BE-05.svg</link></td>
+	      <td >&nbsp;</td>
+	    </tr>
+
+	    <tr>
+	      <td >masking-mask-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >masking-mask-BE-06.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+
+	    <tr>
+	      <td >masking-property-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+
             <!-- ############################################################## -->
 	    <tr>
 	      <td ><link href="http://xml.apache.org/batik/images/BE/gradPatt-linearGr-BE-01.png">gradPatt-linearGr-BE-01.svg</link></td>
@@ -145,6 +193,10 @@
 	    </tr>
 	    <tr>
 	      <td ><link href="http://xml.apache.org/batik/images/BE/gradPatt-radialGr-BE-04.png">gradPatt-radialGr-BE-05.svg</link></td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td ><link href="http://xml.apache.org/batik/images/BE/gradPatt-referenc-BE-08.png">gradPatt-referenc-BE-08.svg</link></td>
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
@@ -197,6 +249,18 @@
 	    </tr>
 	    <tr>
 	      <td ><link href="http://xml.apache.org/batik/images/BE/paint-stroke-BE-02.png">paint-stroke-BE-02.svg</link></td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >paint-fill-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >paint-markers-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >paint-markers-BE-04.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
 
@@ -318,6 +382,14 @@
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
+	      <td >text-altGlyph-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-alignment-BE-10.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
 	      <td ><link href="http://xml.apache.org/batik/images/BE/text-font-BE-15.png">text-font-BE-15.svg</link></td>
 	      <td >&nbsp;</td>
 	    </tr>
@@ -349,6 +421,13 @@
 	      <td ><link href="http://xml.apache.org/batik/images/BE/text-whiteSpace-BE-06.png">text-whiteSpace-BE-06.svg</link></td>
 	      <td >&nbsp;</td>
 	    </tr>
+
+	    <tr>
+	      <td >fonts-fontElement-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+
+
         </table>
         </s2>
 
@@ -362,6 +441,19 @@
 	      <td >linking-xlinkAttr-BE-02.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
+	    <tr>
+	      <td >linking-inBound-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >linking-view-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >linking-view-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+
         </table>
     </s2>
     </s1>
@@ -372,22 +464,6 @@
         
         <table>
 
-	    <tr>
-	      <td ><link href="http://xml.apache.org/batik/images/BE/filters-colorMtrx-BE-03.png">filters-colorMtrx-BE-03.svg</link></td>
-	      <td >The rectangle with <em>type="hueRotate" values="90"</em> is wrong</td>
-	    </tr>
-	    <tr>
-	      <td ><link href="http://xml.apache.org/batik/images/BE/filters-composite-BE-05.png">filters-composite-BE-05.svg</link></td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >masking-mask-BE-05.svg</td>
-	      <td >The BE test seems wrong</td>
-	    </tr>
-	    <tr>
-	      <td >masking-mask-BE-06.svg</td>
-	      <td >The BE test seems wrong</td>
-	    </tr>
 	    <tr>
 	      <td >text-decoration-BE-12.svg</td>
 	      <td >Underline stroke not inherited independent of glyph stroke.</td>
@@ -409,78 +485,19 @@
         <p><em>Not at all</em></p>
         <table>
 	    <tr>
-	      <td >color-colorProf-BE-03.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
 	      <td >extend-multiNS-BE-01.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
 
-	    <tr>
-	      <td >filters-convolve-BE-06.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >filters-diffuseLt-BE-07.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >filters-lights-BE-09.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >filters-many-BE-01.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >filters-specularLt-BE-08.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
 
-	    <tr>
-	      <td >fonts-fontElement-BE-01.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td ><link href="http://xml.apache.org/batik/images/BE/gradPatt-referenc-BE-08.png">gradPatt-referenc-BE-08.svg</link></td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >masking-property-BE-07.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
 	    <tr>
 	      <td >metadata-sample-BE-01.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
-	    <tr>
-	      <td >paint-fill-BE-01.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >paint-markers-BE-03.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >paint-markers-BE-04.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >text-alignment-BE-10.svg</td>
-	      <td >Numeric and relative baseline shifts not implemented.</td>
-	    </tr>
+
 	    <tr>
 	      <td >text-alignment-BE-11.svg</td>
 	      <td >Numeric and relative baseline shifts not implemented.</td>
-	    </tr>
-	    <tr>
-	      <td >text-altGlyph-BE-07.svg</td>
-	      <td ><em>altGlyph</em> not yet implemented.</td>
-	    </tr>
-	    <tr>
-	      <td >text-glyphRun-BE-08.svg</td>
-	      <td ><em>glyphRun</em> not yet implemented.</td>
 	    </tr>
 	    <tr>
 	      <td >text-textOnPath-BE-03.svg</td>
@@ -589,18 +606,6 @@
 	    </tr>
 	    <tr>
 	      <td >interact-zoomPan-BE-03.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >linking-inBound-BE-03.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >linking-view-BE-04.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >linking-view-BE-05.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>

@@ -38,7 +38,7 @@
     <!-- ================================= -->
     <page id="toolsAndApps"       label="Tools and Apps"           source="demo.xml" />
     <page id="svgrasterizer"      label="Rasterizer"               source="svgrasterizer.xml" />
-    <page id="svgviewer"          label="Viewer"                   source="svgviewer.xml"/>
+    <page id="svgviewer"          label="Browser"                  source="svgviewer.xml"/>
     <page id="ttf2svg"            label="Font Converter"           source="ttf2svg.xml"/>
     <page id="svgpp"              label="Pretty-printer"           source="svgpp.xml" />
 
@@ -61,7 +61,7 @@
     <!-- ======================= -->
     <!-- Status / Admin          -->
     <!-- ======================= -->
-    <page id="whoAreWe"           label="Who we are"               source="whoAreWe.xml" />
+    <page id="whoAreWe"           label="Contributors"             source="whoAreWe.xml" />
     <page id="status"             label="Status"                   source="status.xml" />
     <external                     label="CVS Repository"           href="http://xml.apache.org/websrc/index.cgi/xml-batik/"/>
     <page id="mailList"           label="Mail Lists"               source="mail-lists.xml"/>
