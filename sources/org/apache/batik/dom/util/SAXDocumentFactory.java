@@ -108,7 +108,7 @@ public class SAXDocumentFactory
      */
     protected ErrorHandler errorHandler;
 
-    interface PreInfo {
+    protected interface PreInfo {
         public Node createNode(Document doc);
     }
 
