@@ -19,16 +19,19 @@
    limitations under the License.
 
 -->
-<!-- ========================================================================= -->
-<!-- Image element references an SVG file                                      -->
-<!--                                                                           -->
-<!-- @author Thierry.Kormann@sophia.inria.fr                                   -->
-<!-- @version $Id$     -->
-<!-- ========================================================================= -->
+<!-- ====================================================================== -->
+<!-- Image element references an SVG file                                   -->
+<!--                                                                        -->
+<!-- @author Thierry.Kormann@sophia.inria.fr                                -->
+<!-- @version $Id$         -->
+<!-- ====================================================================== -->
 
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
 
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="450" height="500" viewBox="0 0 450 500">
+<svg width="450" height="500" viewBox="0 0 450 500"
+     xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink" >
+
 <title>Image element references an SVG file</title>
     <!-- ============================================================= -->
     <!-- Test content                                                  -->

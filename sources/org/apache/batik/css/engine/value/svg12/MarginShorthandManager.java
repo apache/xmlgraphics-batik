@@ -58,6 +58,9 @@ public class MarginShorthandManager
         LexicalUnit []lus  = new LexicalUnit[4];
         int cnt=0;
         while (lu != null) {
+            if (cnt == 4)
+                throw createInvalidLexicalUnitDOMException
+                    (lu.getLexicalUnitType());
             lus[cnt++] = lu;
             lu = lu.getNextLexicalUnit();
         }
@@ -67,6 +70,7 @@ public class MarginShorthandManager
         case 3: lus[3] = lus[1]; break;
         default:
         }
+
         ph.property(SVG12CSSConstants.CSS_MARGIN_TOP_PROPERTY,    lus[0], imp);
         ph.property(SVG12CSSConstants.CSS_MARGIN_RIGHT_PROPERTY,  lus[1], imp);
         ph.property(SVG12CSSConstants.CSS_MARGIN_BOTTOM_PROPERTY, lus[2], imp);

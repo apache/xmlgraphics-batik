@@ -74,5 +74,5 @@ public abstract class IdentifierManager extends AbstractValueManager {
      * Returns the map that contains the name/value mappings for each
      * possible identifiers.
      */
-    protected abstract StringMap getIdentifiers();
+    public abstract StringMap getIdentifiers();
 }

@@ -67,6 +67,13 @@ public class FontSizeManager extends LengthManager {
     }
 
     /**
+     * Implements {@link IdentifierManager#getIdentifiers()}.
+     */
+    public StringMap getIdentifiers() {
+        return values;
+    }
+
+    /**
      * Implements {@link ValueManager#isInheritedProperty()}.
      */
     public boolean isInheritedProperty() {
@@ -103,6 +110,8 @@ public class FontSizeManager extends LengthManager {
                 throw createInvalidIdentifierDOMException(s);
             }
             return (Value)v;
+        default:
+            break;
         }
         return super.createValue(lu, engine);
     }

@@ -72,6 +72,9 @@
         <test id="samples/tests/spec12/text/flowRegionBreak.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
+        <test id="samples/tests/spec12/text/lineHeightFontShorthand.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
         <test id="samples/tests/spec12/structure/multi.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>
@@ -291,6 +294,7 @@
          <test id="samples/tests/spec/styling/cssMedia.svg" />
          <test id="samples/tests/spec/styling/cssMediaList.svg" />
          <test id="samples/tests/spec/styling/emptyStyle.svg" />
+         <test id="samples/tests/spec/styling/fontShorthand.svg" />
          <test id="samples/tests/spec/styling/smiley.svg" />
          <test id="samples/tests/spec/styling/styleElement.svg" />
 
