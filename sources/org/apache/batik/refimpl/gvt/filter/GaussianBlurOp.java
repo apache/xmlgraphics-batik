@@ -231,7 +231,8 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         return destPt;
     }
 
-    private void checkCompatible(ColorModel colorModel){
+    private void checkCompatible(ColorModel  colorModel,
+				 SampleModel sampleModel){
         ColorSpace cs = colorModel.getColorSpace();
 
         // Check that model is sRGB or linear RGB
@@ -245,7 +246,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
                 ("colorModel should be an instance of DirectColorModel");
 
         // Check transfer type
-        if(colorModel.getTransferType() != DataBuffer.TYPE_INT)
+        if(sampleModel.getDataType() != DataBuffer.TYPE_INT)
             throw new IllegalArgumentException
                 ("colorModel's transferType should be DataBuffer.TYPE_INT");
 
@@ -265,7 +266,8 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
                 ("alpha mask in source should be 0xff000000");
     }
 
-    private boolean isCompatible(ColorModel colorModel){
+    private boolean isCompatible(ColorModel  colorModel,
+				 SampleModel sampleModel){
         ColorSpace cs = colorModel.getColorSpace();
         // Check that model is sRGB or linear RGB
         if((cs != ColorSpace.getInstance(ColorSpace.CS_sRGB))
@@ -278,7 +280,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
             return false;
 
         // Check transfer type
-        if(colorModel.getTransferType() != DataBuffer.TYPE_INT)
+        if(sampleModel.getDataType() != DataBuffer.TYPE_INT)
             return false;
 
         // Check red, green, blue and alpha mask
@@ -331,16 +333,16 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
     }
 
     public BufferedImage createCompatibleDestImage(BufferedImage src,
-                                                   ColorModel destCM){
+                                                   ColorModel  destCM){
+        WritableRaster wr;
+        wr = destCM.createCompatibleWritableRaster(src.getWidth(),
+                                                   src.getHeight());
         BufferedImage dest = null;
         if (destCM==null)
             destCM = ColorModel.getRGBdefault();
         else
-            checkCompatible(destCM);
+            checkCompatible(destCM, wr.getSampleModel());
 
-        WritableRaster wr;
-        wr = destCM.createCompatibleWritableRaster(src.getWidth(),
-                                                   src.getHeight());
         dest = new BufferedImage(destCM, wr,
                                  destCM.isAlphaPremultiplied(), null);
         return dest;
@@ -1555,7 +1557,8 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
 
         // Now, check destination. If compatible, it is used
         // as is. Otherwise a temporary image is used.
-        if(!isCompatible(dest.getColorModel()))
+        if(!isCompatible(dest.getColorModel(),
+			 dest.getSampleModel()))
             dest = createCompatibleDestImage(src, null);
 
         dstCM = dest.getColorModel();
