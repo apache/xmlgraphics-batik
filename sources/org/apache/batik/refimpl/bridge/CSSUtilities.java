@@ -30,10 +30,12 @@ import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
-import java.awt.Stroke;
-import java.awt.Color;
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Paint;
+import java.awt.Stroke;
 
 /**
  * A collection of utility methods involving CSS.
@@ -47,6 +49,25 @@ public class CSSUtilities implements SVGConstants {
      * No instance of this class.
      */
     protected CSSUtilities() {}
+
+    /**
+     * Initializes the composite corresponding to the 
+     * opacity attribute in the input <tt>GraphicsNode</tt>
+     */
+    public static Composite convertOpacityToComposite(CSSPrimitiveValue val){
+        float opacity = convertOpacity(val);
+        Composite composite = null;
+        if(opacity > 0) {
+            if(opacity < 1){
+                composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                                                       opacity);
+            }
+            else{
+                composite = AlphaComposite.SrcOver;
+            }
+        }
+        return composite;
+    }                                                      
 
     /**
      * Returns the opacity value represented by the given CSSValue.
