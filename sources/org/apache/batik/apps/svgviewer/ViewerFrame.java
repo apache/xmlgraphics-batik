@@ -1070,9 +1070,6 @@ public class ViewerFrame
                 }
 
                 try {
-                    if (is.markSupported()) {
-                        is.mark(buffer.length);
-                    }
                     Reader in = new InputStreamReader(is, "Unicode");
                     int nch;
                     while ((nch = in.read(buffer, 0, buffer.length)) != -1) {
@@ -1082,9 +1079,17 @@ public class ViewerFrame
                 } catch (java.io.CharConversionException ioce) {
                     // try default encoding...
                     doc = new PlainDocument();
-                    if (is.markSupported()) {
-                        is.reset();
+                    // because of a problem with mark() and reset(),
+                    // we must re-open the stream :-(
+
+                    is = u.openStream();
+                    try {
+                        is = new GZIPInputStream(is);
+                    } catch (IOException ex) {
+                        is.close();
+                        is = u.openStream();
                     }
+
                     try {
                         Reader in = new InputStreamReader(is);
                         int nch;
