@@ -179,9 +179,12 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {"xlink:href"});
         }
-        SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
-        URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
-        ParsedURL purl = new ParsedURL(baseURL, uriStr);
+
+        String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
+        ParsedURL purl;
+        if (baseURI == null) purl = new ParsedURL(uriStr);
+        else                 purl = new ParsedURL(baseURI, uriStr);
+
         dims.add(d);
         uris.add(purl);
     }

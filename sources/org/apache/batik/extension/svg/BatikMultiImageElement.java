@@ -14,7 +14,7 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.extension.PrefixableStylableExtensionElement;
 
 /**
- *  This class implements a multiImage extension to SVG.
+ * This class implements a multiImage extension to SVG.
  *
  * The 'multiImage' element is similar to the 'image' element (supports
  * all the same attributes and properties) except.
