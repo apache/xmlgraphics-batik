@@ -115,18 +115,6 @@ public final class CompositeRule implements java.io.Serializable {
        */
     public static CompositeRule ARITHMETIC
         (float k1, float k2, float k3, float k4) {
-        if      (k1 < 0)   k1 = 0;
-        else if (k1 > 1.0) k1 = 1.0f;
-
-        if      (k2 < 0)   k2 = 0;
-        else if (k2 > 1.0) k2 = 1.0f;
-
-        if      (k3 < 0)   k3 = 0;
-        else if (k3 > 1.0) k3 = 1.0f;
-
-        if      (k4 < 0)   k4 = 0;
-        else if (k4 > 1.0) k4 = 1.0f;
-
         return new CompositeRule(k1, k2, k3, k4);
     }
 
@@ -193,7 +181,7 @@ public final class CompositeRule implements java.io.Serializable {
         this.rule = rule;
     }
 
-    public CompositeRule(float k1, float k2, float k3, float k4) {
+    private CompositeRule(float k1, float k2, float k3, float k4) {
         rule = RULE_ARITHMETIC;
         this.k1 = k1;
         this.k2 = k2;
