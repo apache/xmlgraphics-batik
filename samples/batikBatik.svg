@@ -59,6 +59,7 @@
                 <feFuncB type="table" tableValues=".1 .2   .6  .8  .7 .7" />
                 <feFuncA type="linear" slope="1" intercept="0" />
             </feComponentTransfer>
+            <feComposite operator="in" in2="SourceGraphic" />
         </filter>
         <filter id="tableGreenTint" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
@@ -74,8 +75,7 @@
             </feComponentTransfer>
         </filter>
 
-        <clipPath id="logoClip" transform="scale(0.9)">
-	    <path transform="scale(0.9)" id="logoText" d="M64.994,178.963V77.831c0-6.188-0.57-10.773-1.707-13.754c-1.137-2.977-3.066-5.461-5.793-7.449c-1.137-0.766-2.367-1.395-3.695-1.891s-3.012-0.938-5.055-1.32c-2.125-0.371-3.488-0.781-4.094-1.23s-0.906-1.121-0.906-2.02c0-1.195,0.32-2.035,0.969-2.52
+	<path transform="scale(0.9)" id="logoText" d="M64.994,178.963V77.831c0-6.188-0.57-10.773-1.707-13.754c-1.137-2.977-3.066-5.461-5.793-7.449c-1.137-0.766-2.367-1.395-3.695-1.891s-3.012-0.938-5.055-1.32c-2.125-0.371-3.488-0.781-4.094-1.23s-0.906-1.121-0.906-2.02c0-1.195,0.32-2.035,0.969-2.52
 c0.645-0.484,1.953-0.73,3.93-0.73c0.758,0,3.816,0.211,9.176,0.625c5.355,0.418,10.387,0.625,15.098,0.625c2.961,0,7.883-0.207,14.758-0.625c6.875-0.414,12.324-0.625,16.352-0.625c16.711,0,29.762,3.461,39.145,10.379s14.074,16.574,14.074,28.965
 c0,7.148-1.793,13.418-5.375,18.816c-3.586,5.398-9,9.996-16.242,13.797v2.18c11.574,2.051,20.445,6.547,26.613,13.492s9.254,15.879,9.254,26.805c0,15.406-5.184,27.645-15.551,36.715s-24.473,13.602-42.316,13.602c-6.078,0-13.367-0.293-21.871-0.875
 c-8.508-0.586-13.898-0.875-16.172-0.875c-6.762,0-13.863,0.348-21.301,1.043c-1.824,0.137-2.965,0.207-3.418,0.207c-0.609,0-1.199-0.344-1.77-1.027s-0.852-1.406-0.852-2.172c0-1.598,1.355-2.93,4.074-3.996l0.113-0.055c1.809-0.836,3.223-1.574,4.242-2.223
@@ -107,53 +107,54 @@ c0.641,0.414,1,1.113,1.078,2.094c0,1.133-0.512,1.922-1.535,2.375s-3.012,0.68-5.9
 c1.066,2.133,3.086,3.883,6.059,5.25c1.219,0.535,3.121,0.992,5.715,1.371c0.078,0.023,0.152,0.031,0.23,0.031c2.133,0.152,3.523,0.492,4.172,1.023s0.973,1.363,0.973,2.5c0,0.836-0.344,1.496-1.027,1.988s-1.594,0.738-2.734,0.738
 c-0.305,0-2.758-0.211-7.355-0.625c-4.602-0.414-8.992-0.625-13.172-0.625c-6.309,0-12.313,0.375-18.016,1.125c-0.914,0.082-1.445,0.125-1.594,0.125c-0.836,0-1.523-0.25-2.055-0.746s-0.797-1.09-0.797-1.777c0-0.766,0.262-1.473,0.789-2.121
 c0.523-0.648,1.613-1.434,3.27-2.355c0.375-0.227,0.789-0.492,1.242-0.797c1.273-0.758,2.215-1.445,2.816-2.055c1.277-1.367,2.16-3.074,2.648-5.129c0.488-2.051,0.734-5.926,0.734-11.629z"/>
-        </clipPath>
-        <clipPath id="clipLeaf1" fill="white">
-             <path id="leaf1" d="M210.,230. T 270.,290. 305.,355. 210.,230."/>
-        </clipPath>
-        <clipPath id="clipLeaf2" fill="white">
-             <path id="leaf2" d="M110.,320. T 220.,330. 255.,345. 110.,320."/>
-        </clipPath>
+
+        <path id="leaf1" d="M210.,230. T 270.,290. 305.,355. 210.,230."/>
+
+        <path id="leaf2" d="M110.,320. T 220.,330. 255.,345. 110.,320."/>
+
         <clipPath id="clipStalk1" fill="white">
              <path id="stalk1" 
              d="M80.,350. T 225.,355. 290.,340. 85.,350."/>
         </clipPath>
+
         <clipPath id="clipStalk2" fill="white">
              <path id="stalk2" 
              d="M268.,332. T 360.,435. 385.,438. 263.,328"/>
         </clipPath>
+
    </defs>
 
     <rect width="100%" height="100%" filter="url(#tableBlueAquaTint)" /> 
-    <g width="100%" height="100%">
-    </g>
 
-    <g x="50%" y="50%" style="fill:none; stroke:white; stroke-width:4; stroke-linecap:round; stroke-linejoin:round">
-        <use xlink:href="#logoText" stroke-width="7" opacity="0.7"/>
+    <g x="50%" y="50%" style="fill:none; stroke:white; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round">
         <g>
-        <rect width="100%" height="100%" filter="url(#tableBlueVioletTint)" style="clip-path:url(#clipLeaf2)"/>    
-        <use xlink:href="#leaf2" opacity="0.7"/>
+        <use xlink:href="#logoText" stroke="none" fill="black" filter="url(#tableRedOrangeTint)"/>
+        <use xlink:href="#logoText" stroke-width="5" opacity="0.75"/>
+        </g>
+        <g>   
+        <use xlink:href="#leaf2" stroke="none" fill="black" filter="url(#tableBlueVioletTint)"/>
+        <use xlink:href="#leaf2" opacity="0.75"/>
         </g>
         <g transform="rotate(25) translate(110, -165)">
         <use xlink:href="#leaf1" stroke="none" fill="black" filter="url(#tableRedOrangeTint)" />
-        <use xlink:href="#leaf1" opacity="0.7"/>
+        <use xlink:href="#leaf1" opacity="0.75"/>
         </g>
         <g>
         <use xlink:href="#leaf1" stroke="none" fill="black" filter="url(#tableRedOrangeTint)" />
-        <use xlink:href="#leaf1" opacity="0.7"/>
+        <use xlink:href="#leaf1" opacity="0.75"/>
         </g>
         <g transform="rotate(-25) translate(-180, 90)">
         <use xlink:href="#leaf1" stroke="none" fill="black" filter="url(#tableRedOrangeTint)" />
-        <use xlink:href="#leaf1" opacity="0.7"/>
+        <use xlink:href="#leaf1" opacity="0.75"/>
         </g>
-        <g transform="rotate(82) translate(120, -595)">
-        <rect width="100%" height="100%" filter="url(#tableBlueVioletTint)" style="clip-path:url(#clipLeaf2)"/>    
-        <use xlink:href="#leaf2" opacity="0.7"/>
+        <g transform="rotate(82) translate(120, -595)"> 
+        <use xlink:href="#leaf2" stroke="none" fill="black" filter="url(#tableBlueVioletTint)"/>
+        <use xlink:href="#leaf2" opacity="0.75"/>
         </g>
         <rect width="100%" height="100%" filter="url(#tableGreenTint)" style="clip-path:url(#clipStalk1)"/>    
-        <use xlink:href="#stalk1" opacity="0.7"/>
+        <use xlink:href="#stalk1" opacity="0.75"/>
         <rect width="100%" height="100%" filter="url(#tableGreenTint)" style="clip-path:url(#clipStalk2)"/>    
-        <use xlink:href="#stalk2" opacity="0.7"/>
+        <use xlink:href="#stalk2" opacity="0.75"/>
     </g>
 
 </svg>
