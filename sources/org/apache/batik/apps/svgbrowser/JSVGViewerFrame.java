@@ -528,22 +528,30 @@ public class JSVGViewerFrame
                     s = s.substring(0, i);
                 }
                 if (!s.equals("")) {
-                    File f = new File(s);
-                    if (f.exists()) {
-                        if (f.isDirectory()) {
-                            s = null;
-                        } else {
-                            try {
-                                s = f.getCanonicalPath();
-                                if (s.startsWith("/")) {
-                                    s = "file:" + s;
-                                } else {
-                                    s = "file:/" + s;
+                    try{
+                        File f = new File(s);
+                        if (f.exists()) {
+                            if (f.isDirectory()) {
+                                s = null;
+                            } else {
+                                try {
+                                    s = f.getCanonicalPath();
+                                    if (s.startsWith("/")) {
+                                        s = "file:" + s;
+                                    } else {
+                                        s = "file:/" + s;
+                                    }
+                                } catch (IOException ex) {
                                 }
-                            } catch (IOException ex) {
                             }
                         }
+                    }catch(SecurityException se){
+                        // Could not patch the file URI for security reasons (e.g., 
+                        // when run as an unsigned JavaWebStart jar): file access is 
+                        // not allowed. Loading will fail, but there is nothing
+                        // more to do at this point.
                     }
+
                     if (s != null) {
                         if (svgDocument != null) {
                             try {
