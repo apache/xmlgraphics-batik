@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import org.w3c.dom.Element;
 
+import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.util.CSSConstants;
 
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -96,11 +97,12 @@ public abstract class TextUtilities implements CSSConstants {
      */
     public static float convertFontSize(Element svgElement,
                                         BridgeContext ctx,
-                                        CSSStyleDeclaration decl,
+                                        CSSOMReadOnlyStyleDeclaration decl,
                                         UnitProcessor.Context uctx) {
 
         CSSPrimitiveValue v
-            = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FONT_SIZE_PROPERTY);
+            = (CSSPrimitiveValue)decl.getPropertyCSSValueInternal
+            (CSS_FONT_SIZE_PROPERTY);
 
         short t = v.getPrimitiveType();
         switch (t) {

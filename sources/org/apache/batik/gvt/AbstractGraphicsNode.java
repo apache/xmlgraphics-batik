@@ -775,28 +775,24 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
      */
     public Rectangle2D getTransformedBounds(AffineTransform txf,
                                             GraphicsNodeRenderContext rc){
-        // System.out.println("getTransformedBounds A:" + this.getClass().getName());
         AffineTransform t = txf;
         if(transform != null){
             t = new AffineTransform(txf);
             t.concatenate(transform);
         }
 
-        // The painted region, before cliping, masking
-        // and compositing is either the area painted
-        // by the primitive paint or the area painted
-        // by the filter.
+        // The painted region, before cliping, masking and compositing
+        // is either the area painted by the primitive paint or the
+        // area painted by the filter.
         Rectangle2D tBounds = null;
         if(filter == null){
-            // System.out.println("getTransformedBounds B:" + this.getClass().getName());
             tBounds = getTransformedPrimitiveBounds(txf, rc); /* Use txf, not t */
-            // System.out.println("getTransformedBounds C:" + this.getClass().getName());
         } else {
-            tBounds = t.createTransformedShape(filter.getBounds2D()).getBounds2D();
+            tBounds = t.createTransformedShape
+                (filter.getBounds2D()).getBounds2D();
         }
         // Factor in the clipping area, if any
         if(tBounds != null){
-            // System.out.println("getTransformedBounds D:" + this.getClass().getName());
             if(clip != null) {
                 tBounds.intersect(tBounds,
                                   t.createTransformedShape(clip.getClipPath()).getBounds2D(),
@@ -810,12 +806,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
                                   tBounds);
             }
         }
-        // System.out.println("getTransformedBounds E:" + this.getClass().getName());
         return tBounds;
     }
 
-    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf,
-                                                     GraphicsNodeRenderContext rc){
+    public Rectangle2D getTransformedPrimitiveBounds
+        (AffineTransform txf, GraphicsNodeRenderContext rc) {
+
         Rectangle2D tpBounds = getPrimitiveBounds(rc);
         if (tpBounds == null) {
             return null;
@@ -829,8 +825,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
         return t.createTransformedShape(tpBounds).getBounds2D();
     }
 
-    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf,
-                                                    GraphicsNodeRenderContext rc){
+    public Rectangle2D getTransformedGeometryBounds
+        (AffineTransform txf, GraphicsNodeRenderContext rc) {
+
         Rectangle2D tpBounds = getGeometryBounds(rc);
         if (tpBounds == null) {
             return null;
@@ -854,20 +851,14 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
         // Get the primitive bounds
         // Rectangle2D bounds = null;
         if(bounds == null){
-            if (Thread.currentThread().isInterrupted()) {
-                return null;
-            }
-
-            // The painted region, before cliping, masking
-            // and compositing is either the area painted
-            // by the primitive paint or the area painted
-            // by the filter.
+            // The painted region, before cliping, masking and
+            // compositing is either the area painted by the primitive
+            // paint or the area painted by the filter.
             if(filter == null){
                 bounds = getPrimitiveBounds(rc);
             } else {
                 bounds = filter.getBounds2D();
             }
-
             // Factor in the clipping area, if any
             if(bounds != null){
                 if (clip != null) {

@@ -14,7 +14,10 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
 
+import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
+
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
+
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GraphicsNode;
@@ -23,6 +26,7 @@ import org.apache.batik.gvt.MarkerShapePainter;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
+
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.SVGConstants;
 
@@ -72,20 +76,20 @@ public abstract class PaintServer
                                               ShapeNode node,
                                               BridgeContext ctx) {
 
-        CSSStyleDeclaration decl
+        CSSOMReadOnlyStyleDeclaration decl
             = CSSUtilities.getComputedStyle(paintedElement);
 
         CSSValue v;
 
-        v = decl.getPropertyCSSValue(CSS_MARKER_START_PROPERTY);
+        v = decl.getPropertyCSSValueInternal(CSS_MARKER_START_PROPERTY);
         Marker startMarker
             = convertMarker(paintedElement, (CSSPrimitiveValue)v, ctx);
 
-        v = decl.getPropertyCSSValue(CSS_MARKER_MID_PROPERTY);
+        v = decl.getPropertyCSSValueInternal(CSS_MARKER_MID_PROPERTY);
         Marker midMarker
             = convertMarker(paintedElement, (CSSPrimitiveValue)v, ctx);
 
-        v = decl.getPropertyCSSValue(CSS_MARKER_END_PROPERTY);
+        v = decl.getPropertyCSSValueInternal(CSS_MARKER_END_PROPERTY);
         Marker endMarker
             = convertMarker(paintedElement, (CSSPrimitiveValue)v, ctx);
 
@@ -194,13 +198,14 @@ public abstract class PaintServer
     public static Paint convertStrokePaint(Element strokedElement,
                                            GraphicsNode strokedNode,
                                            BridgeContext ctx) {
-        CSSStyleDeclaration decl =
+        CSSOMReadOnlyStyleDeclaration decl =
             CSSUtilities.getComputedStyle(strokedElement);
         // 'stroke-opacity'
         float opacity = convertOpacity
-            (decl.getPropertyCSSValue(CSS_STROKE_OPACITY_PROPERTY));
+            (decl.getPropertyCSSValueInternal(CSS_STROKE_OPACITY_PROPERTY));
         // 'stroke'
-        CSSValue paintDef = decl.getPropertyCSSValue(CSS_STROKE_PROPERTY);
+        CSSValue paintDef
+            = decl.getPropertyCSSValueInternal(CSS_STROKE_PROPERTY);
 
         return convertPaint(strokedElement,
                             strokedNode,
@@ -220,13 +225,13 @@ public abstract class PaintServer
     public static Paint convertFillPaint(Element filledElement,
                                          GraphicsNode filledNode,
                                          BridgeContext ctx) {
-        CSSStyleDeclaration decl =
+        CSSOMReadOnlyStyleDeclaration decl =
             CSSUtilities.getComputedStyle(filledElement);
         // 'fill-opacity'
         float opacity = convertOpacity
-            (decl.getPropertyCSSValue(CSS_FILL_OPACITY_PROPERTY));
+            (decl.getPropertyCSSValueInternal(CSS_FILL_OPACITY_PROPERTY));
         // 'fill'
-        CSSValue paintDef = decl.getPropertyCSSValue(CSS_FILL_PROPERTY);
+        CSSValue paintDef = decl.getPropertyCSSValueInternal(CSS_FILL_PROPERTY);
 
         return convertPaint(filledElement,
                             filledNode,
@@ -309,9 +314,10 @@ public abstract class PaintServer
                                               opacity,
                                               ctx);
                 if (paint == null) { // no paint found
-                    CSSStyleDeclaration decl =
+                    CSSOMReadOnlyStyleDeclaration decl =
                         CSSUtilities.getComputedStyle(paintedElement);
-                    CSSValue v = decl.getPropertyCSSValue(CSS_COLOR_PROPERTY);
+                    CSSValue v
+                        = decl.getPropertyCSSValueInternal(CSS_COLOR_PROPERTY);
                     paint =  convertColor
                         (((CSSPrimitiveValue)v).getRGBColorValue(), opacity);
                 }
@@ -495,29 +501,30 @@ public abstract class PaintServer
         // percentages and units are relative to the strokedElement's viewport
         UnitProcessor.Context uctx
             = UnitProcessor.createContext(ctx, strokedElement);
-        CSSStyleDeclaration decl
+        CSSOMReadOnlyStyleDeclaration decl
             = CSSUtilities.getComputedStyle(strokedElement);
         CSSValue v;
 
-        v = decl.getPropertyCSSValue(CSS_STROKE_WIDTH_PROPERTY);
+        v = decl.getPropertyCSSValueInternal(CSS_STROKE_WIDTH_PROPERTY);
         float width = UnitProcessor.cssOtherLengthToUserSpace
             (v, CSS_STROKE_WIDTH_PROPERTY, uctx);
 
-        v = decl.getPropertyCSSValue(CSS_STROKE_LINECAP_PROPERTY);
+        v = decl.getPropertyCSSValueInternal(CSS_STROKE_LINECAP_PROPERTY);
         int linecap = convertStrokeLinecap((CSSPrimitiveValue)v);
 
-        v = decl.getPropertyCSSValue(CSS_STROKE_LINEJOIN_PROPERTY);
+        v = decl.getPropertyCSSValueInternal(CSS_STROKE_LINEJOIN_PROPERTY);
         int linejoin = convertStrokeLinejoin((CSSPrimitiveValue)v);
 
-        v = decl.getPropertyCSSValue(CSS_STROKE_MITERLIMIT_PROPERTY);
+        v = decl.getPropertyCSSValueInternal(CSS_STROKE_MITERLIMIT_PROPERTY);
         float miterlimit = convertStrokeMiterlimit((CSSPrimitiveValue)v);
 
-        v = decl.getPropertyCSSValue(CSS_STROKE_DASHARRAY_PROPERTY);
+        v = decl.getPropertyCSSValueInternal(CSS_STROKE_DASHARRAY_PROPERTY);
         float [] dasharray = convertStrokeDasharray(v, uctx);
 
         float dashoffset = 0;
         if (dasharray != null) {
-            v = decl.getPropertyCSSValue(CSS_STROKE_DASHOFFSET_PROPERTY);
+            v = decl.getPropertyCSSValueInternal
+                (CSS_STROKE_DASHOFFSET_PROPERTY);
             dashoffset = UnitProcessor.cssOtherLengthToUserSpace
                 (v, CSS_STROKE_DASHOFFSET_PROPERTY, uctx);
         }

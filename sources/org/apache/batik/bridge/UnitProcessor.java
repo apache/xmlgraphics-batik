@@ -934,7 +934,7 @@ public abstract class UnitProcessor {
          * Returns the font-size value.
          */
         public CSSPrimitiveValue getFontSize() {
-            return (CSSPrimitiveValue)CSSUtilities.getComputedStyle(e).getPropertyCSSValue(CSSConstants.CSS_FONT_SIZE_PROPERTY);
+            return CSSUtilities.getComputedStyle(e).getPropertyCSSValueInternal(CSSConstants.CSS_FONT_SIZE_PROPERTY);
         }
 
         /**
