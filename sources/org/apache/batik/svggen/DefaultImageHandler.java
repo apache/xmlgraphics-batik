@@ -24,9 +24,10 @@ import org.w3c.dom.Element;
  * @see             org.apache.batik.svggen.SVGGraphics2D
  */
 public class DefaultImageHandler implements ImageHandler, ErrorConstants {
-    // reducing the dependency on dom package by doing this only once:
+    // duplicate the string here to remove dependencies on
+    // org.apache.batik.dom.util.XLinkSupport
     static final String XLINK_NAMESPACE_URI =
-        org.apache.batik.dom.util.XLinkSupport.XLINK_NAMESPACE_URI;
+        "http://www.w3.org/1999/xlink";
 
     /**
      * Build a <code>DefaultImageHandler</code>.
