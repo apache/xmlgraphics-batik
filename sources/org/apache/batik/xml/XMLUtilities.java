@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.util;
+package org.apache.batik.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

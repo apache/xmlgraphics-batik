@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.util;
+package org.apache.batik.xml;
 
 /**
  * This class contains the definitions of the arrays used to find

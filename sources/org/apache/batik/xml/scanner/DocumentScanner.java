@@ -11,7 +11,7 @@ package org.apache.batik.xml.scanner;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.batik.util.XMLUtilities;
+import org.apache.batik.xml.XMLUtilities;
 
 /**
  * This class represents a low-level lexical scanner for XML documents.
