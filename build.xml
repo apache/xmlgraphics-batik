@@ -65,7 +65,7 @@ To display the available targets type:
     <property name="year"     value="2002"/>
     <property name="version"  value="1.5"/>
     <property name="revisionType" value="beta"/>
-    <property name="revisionNumber" value="3" />
+    <property name="revisionNumber" value="4" />
 
     <property file="build.properties"/>
     <property name="debug"       value="off"/>

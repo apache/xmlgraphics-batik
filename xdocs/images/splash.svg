@@ -37,7 +37,7 @@
 </g>
 <g filter="url(#dropShadow)" transform="translate(170, 20) rotate(-30) scale(.7)" id="betaStamp">
 <rect fill="none" stroke-width="5" stroke="red" height="40" width="180" y="-32" x="-90"/>
-<text fill="red" font-size="45" text-anchor="middle" font-family="'20th Century Font'">beta 3</text>
+<text fill="red" font-size="45" text-anchor="middle" font-family="'20th Century Font'">beta 4</text>
 </g>
 </g>
 </g>
