@@ -116,8 +116,8 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             r = "50%";
         }
 
-        System.out.println("cx : " + cx + " fx : " + fx +
-                           " cy : " + cy + " fy : " + fy + " r: " + r);
+        // System.out.println("cx : " + cx + " fx : " + fx +
+        //                   " cy : " + cy + " fy : " + fy + " r: " + r);
 
         SVGElement svgPaintedElement = (SVGElement) paintedElement;
         Point2D c
@@ -145,8 +145,8 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)), 
              ctx.getParserFactory());
 
-        System.out.println("gradientTransform : " + at);
-        System.out.println("shearX            : " + at.getShearX());
+        // System.out.println("gradientTransform : " + at);
+        // System.out.println("shearX            : " + at.getShearX());
 
         AffineTransformSource ats 
             = SVGUtilities.convertAffineTransformSource(at, 
@@ -207,9 +207,9 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
                 GradientStop stop = (GradientStop)stopVector.elementAt(i);
                 colors[i] = stop.stopColor;
                 offsets[i] = stop.offset;
-                System.out.println("offset[" + i + "] = " + offsets[i]);
-                System.out.println("colors[" + i + "] = " +
-                                   Integer.toHexString(colors[i].getRGB()));
+                // System.out.println("offset[" + i + "] = " + offsets[i]);
+                // System.out.println("colors[" + i + "] = " +
+                //                   Integer.toHexString(colors[i].getRGB()));
             }
 
             paint = new RadialGradientPaint(c, radius, f, offsets, colors,

@@ -10,20 +10,25 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.Paint;
 import java.awt.geom.AffineTransform;
-
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Rectangle2D;
 import java.io.StringReader;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.PaintBridge;
+import org.apache.batik.util.awt.geom.AffineTransformSource;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 
+import org.apache.batik.refimpl.gvt.AffineTransformSourceBoundingBox;
 import org.apache.batik.refimpl.gvt.ConcretePatternPaint;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -75,47 +80,12 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                 Element paintedElement,
                                 Element paintElement) {
         //
-        // Get unit processor to compute gradient control points
-        //
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(paintElement, null);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, cssDecl);
-
-        //
-        // Get pattern patternUnits
-        //
-        FilterRegion patternRegion 
-            = SVGUtilities.convertPatternRegion(paintElement,
-                                         paintedElement,
-                                         paintedNode,
-                                         uctx);
-
-        if(patternRegion == null) {
-            throw new Error();
-        } else {
-            System.out.println("Pattern region : " + patternRegion);
-        }
-
-        // String patternUnits = paintElement.getAttributeNS(null, ATTR_PATTERN_UNITS);
-
-        //
         // Build pattern content
         //
         GVTBuilder builder = ctx.getGVTBuilder();
 
-        CompositeGraphicsNode patternNodeContent
+        CompositeGraphicsNode patternContentNode
             = ctx.getGVTFactory().createCompositeGraphicsNode();
-
-        // get the transform on the patternElement and put it to the graphicsNode
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(paintElement.getAttributeNS(null, ATTR_PATTERN_TRANSFORM)),
-             ctx.getParserFactory());
-        at.preConcatenate(paintedNode.getGlobalTransform());
-        patternNodeContent.setTransform(at);
-        System.out.println("patternTransform  : " + at);
-        System.out.println("shearX            : " + at.getShearX());
 
         // build the GVT tree that represents the pattern
         for(Node child=paintElement.getFirstChild();
@@ -126,24 +96,212 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                 GraphicsNode node
                     = builder.build(ctx, e) ;
                 if(node != null){
-                    patternNodeContent.getChildren().add(node);
+                    patternContentNode.getChildren().add(node);
                 }
             }
         }
         
-        if (patternNodeContent == null) {
-            System.out.println("Null pattern GN");
-            System.out.println("patternEl: " + paintElement);
+        if (patternContentNode == null) {
+            // System.out.println("Null pattern GN");
+            // System.out.println("patternEl: " + paintElement);
             return null;
+        }
+
+        //
+        // Get the patternTransfrom
+        //
+        AffineTransform patternTransform = AWTTransformProducer.createAffineTransform
+            (new StringReader(paintElement.getAttributeNS(null, ATTR_PATTERN_TRANSFORM)),
+             ctx.getParserFactory());
+
+        //
+        // Get unit processor to compute the pattern region
+        //
+        CSSStyleDeclaration cssDecl
+            = ctx.getViewCSS().getComputedStyle(paintedElement, null);
+
+        // <!> QUESTION : SHOULD THE UNIT PROCESSOR COME FROM THE paintedElement
+        //     OR FROM THE paintElement. Same question for the overflow property.
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(ctx, cssDecl);
+
+        //
+        // Get the overflow property on the pattern element
+        //
+        CSSPrimitiveValue vbOverflow 
+            = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(OVERFLOW_PROPERTY);
+        
+        String overFlowValue = vbOverflow.getStringValue();
+        if(overFlowValue.length() == 0){
+            overFlowValue = HIDDEN;
+        }
+
+        // System.out.println("Overflow value : " + overFlowValue);
+
+        boolean overflow = true;
+        if(HIDDEN.equals(overFlowValue)){
+            overflow = false;
+        }
+
+        //
+        // Get pattern region
+        //
+        FilterRegion patternRegion 
+            = SVGUtilities.convertPatternRegion(paintElement,
+                                                paintedElement,
+                                                paintedNode,
+                                                uctx);
+
+        if(patternRegion == null) {
+            throw new Error();
+        } else {
+            // System.out.println("Pattern region : " + patternRegion);
+        }
+
+        //
+        // Get the transform that will initialize the 
+        // viewport for the pattern's viewBox
+        //
+        boolean hasViewBox = false;
+
+        // viewBox -> patterRegion (viewport)
+        AffineTransformSource preserveAspectRatioTransformSource
+            = null;
+
+        String viewBoxAttr 
+            = paintElement.getAttributeNS(null,
+                                          ATTR_VIEW_BOX);
+
+        Rectangle2D viewBox = null;
+        if(viewBoxAttr.length() > 0){
+            preserveAspectRatioTransformSource
+                = new PreserveAspectRatioTransformSource(patternRegion,
+                                                         (SVGElement)paintElement,
+                                                         ctx.getParserFactory()
+                                                         );
+
+            float vb[] = SVGUtilities.parseViewBoxAttribute(viewBoxAttr);
+            viewBox = new Rectangle2D.Float(vb[0], vb[1],
+                                            vb[2], vb[3]);
+            hasViewBox = true;
+        }
+
+        //
+        // Compute transform on pattern content. This is only necessary if there
+        // is no viewBox
+        //
+        AffineTransformSource patternContentTransformSource = null;
+
+        if(!hasViewBox){
+            String patternContentUnits 
+                = paintElement.getAttributeNS(null, ATTR_PATTERN_CONTENT_UNITS);
+            if(VALUE_OBJECT_BOUNDING_BOX.equals(patternContentUnits)){
+                patternContentTransformSource = new AffineTransformSourceBoundingBox(paintedNode);
+            }
+        }
+
+        //
+        // When there is a viewbox, need two node:
+        //  + one for the viewBox and implements the clipping (sometimes not, depending
+        //    on overflow)
+        //  + one for the viewBox to patternRegion transform
+        //
+        GVTFactory gvtFactory = ctx.getGVTFactory();
+        AffineTransformSource nodeTransformSource = null;
+        if(hasViewBox){
+            nodeTransformSource = preserveAspectRatioTransformSource;
+            if(!overflow){
+                // Need to do clipping
+                CompositeGraphicsNode newPatternContentNode 
+                    = gvtFactory.createCompositeGraphicsNode(); // new CompositeGraphicsNode();
+
+                newPatternContentNode.getChildren().add(patternContentNode);
+                newPatternContentNode.setClippingArea(viewBox);
+                patternContentNode = newPatternContentNode;
+            }
+        } else{
+            //
+            // There may be an additional boundingBoxSpace to 
+            // user space transform needed.
+            //
+            nodeTransformSource = patternContentTransformSource;
         }
 
         //
         // Now, build a Paint from the pattern content
         //
-        Paint paint = new ConcretePatternPaint(patternNodeContent, patternRegion);
+
+        Paint paint = new ConcretePatternPaint(patternContentNode, 
+                                               nodeTransformSource,
+                                               patternRegion, 
+                                               overflow,
+                                               patternTransform);
 
         return paint;
 
+    }
+
+    //
+    // Lazily evaluates the preserveAspectRatio transform based on the
+    // input FilterRegion's size.
+    //
+    static class PreserveAspectRatioTransformSource implements AffineTransformSource {
+        /**
+         * Region to which the input region
+         * should be fitted
+         */
+        FilterRegion region;
+
+        /**
+         * Element for which the transform is computed
+         */
+        SVGElement element;
+
+        /**
+         * ParserFactor
+         */
+        ParserFactory parserFactory;
+
+        public PreserveAspectRatioTransformSource(FilterRegion region,
+                                                  SVGElement element,
+                                                  ParserFactory parserFactory){
+            if(region == null){
+                throw new IllegalArgumentException();
+            }
+
+            if(element == null){
+                throw new IllegalArgumentException();
+            }
+
+            if(parserFactory == null){
+                throw new IllegalArgumentException();
+            }
+
+            this.region = region;
+            this.element = element;
+            this.parserFactory = parserFactory;
+        }
+
+        public AffineTransform getTransform(){
+            Rectangle2D b = region.getRegion();
+            AffineTransform txf 
+                = SVGUtilities.getPreserveAspectRatioTransform
+                (element,
+                 (float)b.getWidth(),
+                 (float)b.getHeight(),
+                 parserFactory);
+
+            // System.out.println("PAR Txf Tx : " + txf.getTranslateX());
+            // System.out.println("PAR Txf Ty : " + txf.getTranslateY());
+            // System.out.println("PAR Txf Sx : " + txf.getScaleX());
+            // System.out.println("PAR Txf Sy : " + txf.getScaleY());
+
+            return txf;
+        }
+
+        public Object clone(){
+            return new PreserveAspectRatioTransformSource(region, element, parserFactory);
+        }
     }
 
 }
