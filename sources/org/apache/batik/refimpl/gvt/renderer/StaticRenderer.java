@@ -148,7 +148,7 @@ public class StaticRenderer implements Renderer {
      * @param area region to be repainted, in the current user space
      * coordinate system.
      */
-    public void repaint(Shape area){
+    public void repaint(Shape area) throws InterruptedException {
         if (area == null) {
             return;
         }
@@ -269,6 +269,7 @@ public class StaticRenderer implements Renderer {
                     } else {
                         currentIter = (Iterator) iterStack.pop();
                         current = (GraphicsNode) nodeStack.pop();
+                        break;
                     }
                 }
             } else {

@@ -17,6 +17,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
+import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.gvt.event.GraphicsNodePaintEvent;
 import org.apache.batik.gvt.event.GraphicsNodePaintListener;
 
@@ -95,7 +96,8 @@ public class DynamicRenderer extends StaticRenderer {
             Shape oldAoi = evt.getOldBounds();
             Shape newAoi =
                 Gx.createTransformedShape(node.getBounds()).getBounds();
-            repaintHandler.notifyRepaintedRegion(oldAoi, newAoi);
+            repaintHandler.notifyRepaintedRegion(oldAoi, newAoi,
+                                                 DynamicRenderer.this);
         }
     }
 
@@ -109,7 +111,8 @@ public class DynamicRenderer extends StaticRenderer {
          * Notifies that the specified area of interest need to be repainted.
          * @param aoi the area of interest to repaint
          */
-        void notifyRepaintedRegion(Shape oldAoi, Shape newAoi);
+        void notifyRepaintedRegion(Shape oldAoi, Shape newAoi,
+                                                 Renderer renderer);
 
     }
 }
