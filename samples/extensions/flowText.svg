@@ -22,9 +22,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body" width="450" height="500" viewBox="0 0 450 500">
 <title>Test of Text wrapping stuff.</title>
 
-   <g id="content" xmlns:batik="http://xml.apache.org/batik/ext">
+   <g id="content" >
 
-      <text class="title" x="50%" y="40">Long text on a path test for selection</text>
+      <text class="title" x="50%" y="40">Test of Text wrapping stuff</text>
          <!-- Space after size 40 'that' is aci 45 -->
       <rect x="17"  y="80" width="200" height="400" fill="rgb(220,220,255)"/>
       <rect x="233" y="80" width="200" height="400" fill="rgb(220,220,255)"/>
@@ -34,8 +34,8 @@
       <line x1="243" y1="70" x2="243" y2="490" stroke="grey" fill="none"/>
       <line x1="423" y1="70" x2="423" y2="490" stroke="grey" fill="none"/>
 
-      <batik:flowText font-size="20" style="text-anchor:start"
-	           xml:space="preserve">
+      <batik:flowText xmlns:batik="http://xml.apache.org/batik/ext"
+             font-size="20" xml:space="preserve">
          <batik:flowRegion>
 	    <batik:rect x="17"  y="80" width="200" height="400"/>
 	    <batik:rect x="233" y="80" width="200" height="400"/>
