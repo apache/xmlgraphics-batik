@@ -38,7 +38,6 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$
  */
 public abstract class ImageTranscoder extends AbstractTranscoder {
-    public abstract BufferedImage createImage(int w, int h);
 
     public void transcodeToStream(Document document, OutputStream ostream)
             throws TranscoderException {
@@ -62,7 +61,7 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
         GraphicsNode gvtRoot = getGVTBuilder().build(ctx, document);
 
         // create the renderer and paint the offscreen image
-        BufferedImage img = createImage(w, h); 
+        BufferedImage img = createImage(w, h);
         Graphics2D g2d = img.createGraphics();
         g2d.setClip(0, 0, w, h);
         g2d.setComposite(AlphaComposite.Src);
@@ -85,6 +84,13 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
             throw new TranscoderException(ex.getMessage(), ex);
         }
     }
+
+    /**
+     * Creates a new image of the specified dimension.
+     * @param w the width of the image
+     * @param h the height of the image
+     */
+    public abstract BufferedImage createImage(int w, int h);
 
     /**
      * Writes the specified image to the specified output stream.
