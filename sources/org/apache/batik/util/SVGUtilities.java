@@ -525,11 +525,11 @@ public class SVGUtilities implements SVGConstants {
 
     /**
      * Creates a <tt>FilterRegion</tt> for the input filter
-     * element, processing the element as the top one in 
+     * element, processing the element as the top one in
      * the filter chain (i.e., a &lt;filter&gt; element or
      * custom element equivalent).
      */
-    public static FilterRegion 
+    public static FilterRegion
         convertFilterChainRegion(Element filterElement,
                                  Element filteredElement,
                                  GraphicsNode node,
@@ -541,7 +541,7 @@ public class SVGUtilities implements SVGConstants {
      * Creates a <tt>FilterRegion</tt> for the input mask
      * element.
      */
-    public static FilterRegion 
+    public static FilterRegion
         convertMaskRegion(Element maskElement,
                           Element maskedElement,
                           GraphicsNode node,
@@ -551,11 +551,11 @@ public class SVGUtilities implements SVGConstants {
 
     /**
      * Creates a <tt>FilterRegion</tt> for the input filter
-     * element, processing the element as the top one in 
+     * element, processing the element as the top one in
      * the filter chain (i.e., a &lt;filter&gt; element or
      * custom element equivalent).
      */
-    protected static FilterRegion 
+    protected static FilterRegion
         convertRegion(Element filterElement,
                       Element filteredElement,
                       GraphicsNode node,
@@ -566,7 +566,7 @@ public class SVGUtilities implements SVGConstants {
         // x, y, width and height will hold the filter
         // region size
         float x, y, width, height;
-        
+
         // regionTransformer will hold the FilterRegion
         // space to user space transformer.
         FilterRegionTransformer txf = null;
@@ -575,7 +575,7 @@ public class SVGUtilities implements SVGConstants {
         String units = filterElement.getAttributeNS(null, unitsAttr);
 
         if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
-            // 
+            //
             // Values are in 'objectBoundingBox' units
             // These cannot be resolved at construction time,
             // so we keep value in 'FilterRegion space'. We also
@@ -588,7 +588,7 @@ public class SVGUtilities implements SVGConstants {
             // Build FilterRegionTransformer
             txf = new FilterRegionTransformerBoundingBox(node);
 
-            // Now, resolve each of x, y, widht and height values. 
+            // Now, resolve each of x, y, widht and height values.
             // For each value, we distinguish two cases: percentages
             // and other. If a percentage value is used, it is converted
             // to a 'FilterRegion' space coordinate by division by 100
@@ -603,16 +603,16 @@ public class SVGUtilities implements SVGConstants {
             p.parse(new StringReader(floatStr));
 
             if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                x = ur.value / 100; 
+                x = ur.value / 100;
             }
             else{
-                x = UnitProcessor.svgToUserSpace(ur.unit, 
-                                                 ur.value, 
-                                                 svgElement, 
+                x = UnitProcessor.svgToUserSpace(ur.unit,
+                                                 ur.value,
+                                                 svgElement,
                                                  UnitProcessor.HORIZONTAL_LENGTH,
                                                  uctx);
             }
-            
+
             // y value
             floatStr = filterElement.getAttributeNS(null, ATTR_Y);
             floatStr = (floatStr.length() == 0 ? VALUE_ZERO : floatStr);
@@ -621,11 +621,11 @@ public class SVGUtilities implements SVGConstants {
             p.parse(new StringReader(floatStr));
 
             if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                y = ur.value / 100; 
+                y = ur.value / 100;
             }
             else{
-                y = UnitProcessor.svgToUserSpace(ur.unit, ur.value, 
-                                                 svgElement, 
+                y = UnitProcessor.svgToUserSpace(ur.unit, ur.value,
+                                                 svgElement,
                                                  UnitProcessor.VERTICAL_LENGTH,
                                                  uctx);
             }
@@ -638,11 +638,11 @@ public class SVGUtilities implements SVGConstants {
             p.parse(new StringReader(floatStr));
 
             if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                width = ur.value / 100; 
+                width = ur.value / 100;
             }
             else{
-                width = UnitProcessor.svgToUserSpace(ur.unit, ur.value, 
-                                                     svgElement, 
+                width = UnitProcessor.svgToUserSpace(ur.unit, ur.value,
+                                                     svgElement,
                                                      UnitProcessor.HORIZONTAL_LENGTH,
                                                      uctx);
             }
@@ -655,11 +655,11 @@ public class SVGUtilities implements SVGConstants {
             p.parse(new StringReader(floatStr));
 
             if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                height = ur.value / 100; 
+                height = ur.value / 100;
             }
             else{
-                height= UnitProcessor.svgToUserSpace(ur.unit, ur.value, 
-                                                     svgElement, 
+                height= UnitProcessor.svgToUserSpace(ur.unit, ur.value,
+                                                     svgElement,
                                                      UnitProcessor.VERTICAL_LENGTH,
                                                      uctx);
             }
@@ -681,21 +681,21 @@ public class SVGUtilities implements SVGConstants {
                                              svgElement,
                                              UnitProcessor.HORIZONTAL_LENGTH,
                                              uctx);
-            
+
             floatStr = filterElement.getAttributeNS(null, ATTR_Y);
             floatStr = (floatStr.length() == 0 ? VALUE_ZERO : floatStr);
             y = UnitProcessor.svgToUserSpace(floatStr,
                                              svgElement,
                                              UnitProcessor.VERTICAL_LENGTH,
                                              uctx);
-            
+
             floatStr = filterElement.getAttributeNS(null, ATTR_WIDTH);
             floatStr = (floatStr.length() == 0 ? VALUE_HUNDRED_PERCENT : floatStr);
             width = UnitProcessor.svgToUserSpace(floatStr,
                                                  svgElement,
                                                  UnitProcessor.HORIZONTAL_LENGTH,
                                                  uctx);
-            
+
             floatStr = filterElement.getAttributeNS(null, ATTR_HEIGHT);
             floatStr = (floatStr.length() == 0 ? VALUE_HUNDRED_PERCENT : floatStr);
             height = UnitProcessor.svgToUserSpace(floatStr,
@@ -714,7 +714,7 @@ public class SVGUtilities implements SVGConstants {
      * primitive element, processing the element as a node in
      * a filter chain.
      */
-    public static FilterRegion 
+    public static FilterRegion
         convertFilterPrimitiveRegion(Element filterPrimitiveElement,
                                      Element filteredElement,
                                      FilterRegion defaultRegion,
@@ -726,13 +726,13 @@ public class SVGUtilities implements SVGConstants {
         // x, y, width and height will hold the filter
         // region size
         Float x=null, y=null, width=null, height=null;
-        
+
         // regionTransformer will hold the FilterRegion
         // space to user space transformer.
         FilterRegionTransformer txf = null;
 
         if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
-            // 
+            //
             // Values are in 'objectBoundingBox' units
             // These cannot be resolved at construction time,
             // so we keep value in 'FilterRegion space'. We also
@@ -745,7 +745,7 @@ public class SVGUtilities implements SVGConstants {
             // Build FilterRegionTransformer
             txf = new FilterRegionTransformerBoundingBox(node);
 
-            // Now, resolve each of x, y, widht and height values. 
+            // Now, resolve each of x, y, widht and height values.
             // For each value, we distinguish two cases: percentages
             // and other. If a percentage value is used, it is converted
             // to a 'FilterRegion' space coordinate by division by 100
@@ -758,32 +758,32 @@ public class SVGUtilities implements SVGConstants {
             String floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_X);
             if(floatStr.length() > 0){
                 p.parse(new StringReader(floatStr));
-                
+
                 if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
                     x = new Float(ur.value / 100f);
                 }
                 else{
-                    x = new Float(UnitProcessor.svgToUserSpace(ur.unit, 
-                                                               ur.value, 
-                                                               svgElement, 
+                    x = new Float(UnitProcessor.svgToUserSpace(ur.unit,
+                                                               ur.value,
+                                                               svgElement,
                                                                UnitProcessor.HORIZONTAL_LENGTH,
                                                                uctx));
                 }
             }
-            
+
             // y value
             floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_Y);
             if(floatStr.length() > 0){
                 ur = new UnitProcessor.UnitResolver();
                 p.setLengthHandler(ur);
                 p.parse(new StringReader(floatStr));
-                
+
                 if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
                     y = new Float(ur.value / 100f);
                 }
                 else{
-                    y = new Float(UnitProcessor.svgToUserSpace(ur.unit, ur.value, 
-                                                               svgElement, 
+                    y = new Float(UnitProcessor.svgToUserSpace(ur.unit, ur.value,
+                                                               svgElement,
                                                                UnitProcessor.VERTICAL_LENGTH,
                                                                uctx));
                 }
@@ -795,13 +795,13 @@ public class SVGUtilities implements SVGConstants {
                 ur = new UnitProcessor.UnitResolver();
                 p.setLengthHandler(ur);
                 p.parse(new StringReader(floatStr));
-                
+
                 if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
                     width = new Float(ur.value / 100f);
                 }
                 else{
-                    width = new Float(UnitProcessor.svgToUserSpace(ur.unit, ur.value, 
-                                                                   svgElement, 
+                    width = new Float(UnitProcessor.svgToUserSpace(ur.unit, ur.value,
+                                                                   svgElement,
                                                                    UnitProcessor.HORIZONTAL_LENGTH,
                                                                    uctx));
                 }
@@ -813,13 +813,13 @@ public class SVGUtilities implements SVGConstants {
                 ur = new UnitProcessor.UnitResolver();
                 p.setLengthHandler(ur);
                 p.parse(new StringReader(floatStr));
-                
+
                 if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
                     height = new Float(ur.value / 100f);
                 }
                 else{
-                    height= new Float(UnitProcessor.svgToUserSpace(ur.unit, ur.value, 
-                                                                   svgElement, 
+                    height= new Float(UnitProcessor.svgToUserSpace(ur.unit, ur.value,
+                                                                   svgElement,
                                                                    UnitProcessor.VERTICAL_LENGTH,
                                                                    uctx));
                 }
@@ -843,7 +843,7 @@ public class SVGUtilities implements SVGConstants {
                                                            UnitProcessor.HORIZONTAL_LENGTH,
                                                            uctx));
             }
-            
+
             floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_Y);
             if(floatStr.length() > 0){
                 y = new Float(UnitProcessor.svgToUserSpace(floatStr,
@@ -859,7 +859,7 @@ public class SVGUtilities implements SVGConstants {
                                                                UnitProcessor.HORIZONTAL_LENGTH,
                                                                uctx));
             }
-            
+
             floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_HEIGHT);
             if(floatStr.length() > 0){
                 height = new Float(UnitProcessor.svgToUserSpace(floatStr,
@@ -932,14 +932,16 @@ public class SVGUtilities implements SVGConstants {
             String firstValue = st.nextToken();
             try{
                 pair[0] = new Float(Float.parseFloat(firstValue));
-            }catch(NumberFormatException e){
+            } catch(NumberFormatException e) {
+                throw new Error(e.getMessage());
             }
-
             if((pair[0] != null) && (st.hasMoreTokens())){
                 String secondValue = st.nextToken();
                 try{
                     pair[1] = new Float(Float.parseFloat(secondValue));
-                }catch(NumberFormatException e){}
+                } catch(NumberFormatException e){
+                    throw new Error(e.getMessage());
+                }
             }
         }
         return pair;
