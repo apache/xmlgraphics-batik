@@ -11,7 +11,9 @@ package org.apache.batik.css.value;
 import org.apache.batik.css.CSSOMStyleDeclaration;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
+
 import org.w3c.css.sac.LexicalUnit;
+import org.w3c.css.sac.Parser;
 
 /**
  * This interface represents objects that create the value associated
@@ -21,6 +23,12 @@ import org.w3c.css.sac.LexicalUnit;
  * @version $Id$
  */
 public interface ValueFactory {
+
+    /**
+     * Sets the parser used by this factory.
+     */
+    void setParser(Parser p);
+
     /**
      * Creates a value from its text representation
      * @param text The text that represents the CSS value to create.

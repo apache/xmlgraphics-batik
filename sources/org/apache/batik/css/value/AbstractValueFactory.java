@@ -52,6 +52,13 @@ public abstract class AbstractValueFactory
     }
 
     /**
+     * Sets the parser used by this factory.
+     */
+    public void setParser(Parser p) {
+        parser = p;
+    }
+
+    /**
      * Creates a value from its text representation
      * @param text The text that represents the CSS value to create.
      */
