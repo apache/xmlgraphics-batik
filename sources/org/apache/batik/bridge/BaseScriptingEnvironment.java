@@ -233,6 +233,10 @@ public class BaseScriptingEnvironment {
             String type = script.getAttributeNS
                 (null, SVGConstants.SVG_TYPE_ATTRIBUTE);
 
+            if (type.length() == 0) {
+                type = "text/ecmascript";
+            }
+
             //
             // Java code invocation.
             //
