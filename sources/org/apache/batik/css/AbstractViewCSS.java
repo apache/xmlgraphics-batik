@@ -435,10 +435,19 @@ public abstract class AbstractViewCSS implements ViewCSS {
 	CSSOMValue         val   = (CSSOMValue)decl.getPropertyCSSValue(name);
 	String             prio  = decl.getPropertyPriority(name);
 	CSSOMReadOnlyValue value = val.createReadOnlyCopy();
-	dest.setPropertyCSSValue(name,
-				 value,
-				 prio,
-				 CSSOMReadOnlyStyleDeclaration.AUTHOR_ORIGIN);
+
+	CSSValue           dval   = dest.getLocalPropertyCSSValue(name);
+        int                dorg   = dest.getLocalPropertyOrigin(name);
+	String             dprio  = dest.getLocalPropertyPriority(name);
+
+        if (dval == null ||
+            dorg != CSSOMReadOnlyStyleDeclaration.USER_ORIGIN ||
+            dprio.length() == 0) {
+            dest.setPropertyCSSValue(name,
+                                     value,
+                                     prio,
+                                     CSSOMReadOnlyStyleDeclaration.AUTHOR_ORIGIN);
+        }
     }
     
     /**

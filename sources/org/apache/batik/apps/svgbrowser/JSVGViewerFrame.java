@@ -530,6 +530,7 @@ public class JSVGViewerFrame
                                 URL docURL = doc.getURLObject();
                                 URL url = new URL(docURL, s);
                                 String fi = svgCanvas.getFragmentIdentifier();
+                                fi = (fi == null) ? "" : fi;
                                 if (docURL.equals(url) && t.equals(fi)) {
                                     return;
                                 }
