@@ -25,18 +25,27 @@ public interface URLRegistryEntry extends RegistryEntry {
      * handled by this format handler.  Generally speaking
      * this should not open the URL.  The decision should
      * be based on the structure of the URL (such as
-     * the protocol in use).
+     * the protocol in use).<p>
      *
      * If you don't care about the structure of the URL and only about
      * the contents of the URL you should register as a
      * StreamRegistryEntry, so the URL "connection" will be made
-     * only once.  
+     * only once.
+     *
+     * @param url The URL to inspect.
      */
     public boolean isCompatibleURL(ParsedURL url);
 
     /**
      * Decode the URL into a RenderableImage, here you should feel
-     * free to open the URL yourself.
+     * free to open the URL yourself.<P>
+     *
+     * This should only return a broken link image if the image
+     * is clearly of this format, but is unreadable for some reason.
+     * otherwise return null.<p>
+     *
+     * If all entries refuse the url or return null then the registry
+     * will automatically return a broken link image for you.
      *
      * @param url The url that reference the image.
      * @param needRawData If true the image returned should not have

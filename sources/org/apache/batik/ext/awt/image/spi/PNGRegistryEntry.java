@@ -23,6 +23,7 @@ import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.renderable.DeferRable;
+import org.apache.batik.util.ParsedURL;
 
 public class PNGRegistryEntry 
     extends MagicNumberRegistryEntry {
@@ -38,15 +39,27 @@ public class PNGRegistryEntry
      * Decode the Stream into a RenderableImage
      *
      * @param is The input stream that contains the image.
+     * @param origURL The original URL, if any, for documentation
+     *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have
      *                    any default color correction the file may 
-     *                    specify applied.  
-     */
-    public Filter handleStream(InputStream inIS, boolean needRawData) {
+     *                    specify applied.  */
+    public Filter handleStream(InputStream inIS, 
+                               ParsedURL   origURL,
+                               boolean needRawData) {
 
         final DeferRable  dr  = new DeferRable();
         final InputStream is  = inIS;
         final boolean     raw = needRawData;
+        final String      errCode;
+        final Object []   errParam;
+        if (origURL != null) {
+            errCode  = ERR_URL_FORMAT_UNREADABLE;
+            errParam = new Object[] {"PNG", origURL};
+        } else {
+            errCode  = ERR_STREAM_FORMAT_UNREADABLE;
+            errParam = new Object[] {"PNG"};
+        }
 
         Thread t = new Thread() {
                 public void run() {
@@ -64,9 +77,9 @@ public class PNGRegistryEntry
                         CachableRed cr = new PNGRed(is, param);
                         cr = new Any2sRGBRed(cr);
                         filt = new RedRable(cr);
-
                     } catch (IOException ioe) {
-                        filt = ImageTagRegistry.getBrokenLinkImage();
+                        filt = ImageTagRegistry.getBrokenLinkImage
+                            (errCode, errParam);
                     }
 
                     dr.setSource(filt);

@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public abstract class AbstractRegistryEntry implements RegistryEntry{
+public abstract class AbstractRegistryEntry 
+    implements RegistryEntry, ErrorConstants {
 
     String name;
     float  priority;
