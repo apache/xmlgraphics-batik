@@ -1,34 +1,48 @@
-<!-- ========================================================================= -->
-<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
-<!--                                                                           -->
-<!-- This software is published under the terms of the Apache Software License -->
-<!-- version 1.1, a copy of which has been included with this distribution in  -->
-<!-- the LICENSE file.                                                         -->
-<!-- ========================================================================= -->
+<!-- ===================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.    -->
+<!--                                                                       -->
+<!-- This software is published under the terms of the Apache Software     -->
+<!-- License version 1.1, a copy of which has been included with this      -->
+<!-- distribution in the LICENSE file.                                     -->
+<!-- ===================================================================== -->
 
-<!-- ========================================================================= -->
-<!-- @author vincent.hardy@eng.sun.com                                         -->
+<!-- ===================================================================== -->
+<!-- @author vincent.hardy@eng.sun.com                                     -->
 <!-- @version $Id$ -->
-<!-- ========================================================================= -->
+<!-- ===================================================================== -->
 <testSuite id="test.unitTesting" name="Test Module - Unit Testing">
-    <!-- ========================================================================== -->
-    <!-- Validates that the XMLTestSuiteRunner class is operating as expected       -->
-    <!-- ========================================================================== -->
-    <test id="xmlTestSuiteRunnerValidator" class="org.apache.batik.test.xml.XMLTestSuiteRunnerValidator" />
+    <!-- ================================================================= -->
+    <!-- Validates that the XMLTestSuiteRunner class is operating          -->
+    <!-- as expected                                                       -->
+    <!-- ================================================================= -->
+    <test id="xmlTestSuiteRunnerValidator" 
+    class="org.apache.batik.test.xml.XMLTestSuiteRunnerValidator" />
 
-    <!-- ========================================================================== -->
-    <!-- Validates that the SVGRenderingAccuracyTest class is operating as expected -->
-    <!-- ========================================================================== -->
-    <test id="svgRenderingAccuracyTestValidator" class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" />
+    <!-- ================================================================= -->
+    <!-- Validates that the SVGRenderingAccuracyTest class is operating as --> 
+    <!-- expected                                                          -->
+    <!-- ================================================================= -->
+    <test id="svgRenderingAccuracyTestValidator" 
+    class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator"/>
 
-    <!-- ============================================================================ -->
-    <!-- Validates that the SelfContainedSVGOnLoadTest class is operating as expected -->
-    <!-- ============================================================================ -->
-    <test id="selfContainedSVGOnLoadTestValidator" class="org.apache.batik.test.svg.SelfContainedSVGOnLoadTestValidator" />
+    <!-- ================================================================== -->
+    <!-- Validates that the SelfContainedSVGOnLoadTest class is operating   -->
+    <!-- as expected                                                        -->
+    <!-- ================================================================== -->
+    <test id="selfContainedSVGOnLoadTestValidator" 
+    class="org.apache.batik.test.svg.SelfContainedSVGOnLoadTestValidator" />
 
-    <!-- ========================================================================== -->
-    <!-- Validates that the SVGAccuracyTest class is operating as expected          -->
-    <!-- ========================================================================== -->
-    <test id="svgAccuracyTestValidator" class="org.apache.batik.svggen.SVGAccuracyTestValidator" /> 
+    <!-- ================================================================== -->
+    <!-- Validates that the SVGAccuracyTest class is operating as expected  -->
+    <!-- ================================================================== -->
+    <test id="svgAccuracyTestValidator" 
+    class="org.apache.batik.svggen.SVGAccuracyTestValidator" /> 
+
+
+    <!-- ================================================================== -->
+    <!-- Validates that the Memory Leak Test is operating as expected       -->
+    <!-- ================================================================== -->
+    <test id="memoryLeakTestValidator" 
+    class="org.apache.batik.test.MemoryLeakTestValidator" />
 
 </testSuite>
