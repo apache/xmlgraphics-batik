@@ -349,6 +349,7 @@ public class SVGAccuracyTest extends AbstractTest
             = new GraphicContextDefaults();
         defaults.font = new Font("Arial", Font.PLAIN, 12);
         ctx.setGraphicContextDefaults(defaults);
+        ctx.setPrecision(12);
         return new SVGGraphics2D(ctx, false);
     }
 
