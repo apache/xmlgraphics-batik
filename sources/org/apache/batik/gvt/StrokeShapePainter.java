@@ -14,7 +14,7 @@ import java.awt.Stroke;
 import java.awt.Paint;
 
 /**
- * The default implementation of the <tt>StrokeShapePainter</tt>.
+ * A shape painter that can be used to draw the outline of a shape.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -39,6 +39,7 @@ public class StrokeShapePainter implements ShapePainter {
 
     /**
      * Sets the stroke used to draw the outline of a shape.
+     *
      * @param newStroke the stroke object used to draw the outline of the shape
      */
     public void setStroke(Stroke newStroke) {
@@ -47,7 +48,8 @@ public class StrokeShapePainter implements ShapePainter {
 
     /**
      * Sets the paint used to fill a shape.
-     * @param newPaint the paint object used to fill the shape
+     *
+     * @param newPaint the paint object used to draw the shape
      */
     public void setPaint(Paint newPaint) {
         this.paint = newPaint;
@@ -56,6 +58,7 @@ public class StrokeShapePainter implements ShapePainter {
     /**
      * Paints the outline of the specified shape using the specified
      * Graphics2D and context.
+     *
      * @param shape the shape to paint
      * @param g2d the Graphics2D to use
      * @param ctx the render context to use
@@ -72,6 +75,7 @@ public class StrokeShapePainter implements ShapePainter {
 
     /**
      * Returns the area painted by this painter for a given input shape
+     *
      * @param shape the shape to paint
      */
     public Shape getPaintedArea(Shape shape){

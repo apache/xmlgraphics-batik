@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * The default implementation of the <tt>CompositeShapePainter</tt>.
+ * A shape painter which consists of multiple shape painters.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -40,7 +40,7 @@ public class CompositeShapePainter implements ShapePainter {
      */
     public void addShapePainter(ShapePainter shapePainter) {
         if (shapePainter == null) {
-            throw new IllegalArgumentException("ShapePainter can't be null");
+            return;
         }
         if (painters == null) {
             painters = new ShapePainter[2];
