@@ -56,6 +56,7 @@ public class FilterAlphaRed extends AbstractRed {
     }
 
     public WritableRaster copyData(WritableRaster wr) {
+        // new Exception("FilterAlphaRed: ").printStackTrace();
         // Get my source.
         CachableRed srcRed = (CachableRed)getSources().get(0);
 
@@ -64,7 +65,7 @@ public class FilterAlphaRed extends AbstractRed {
             // Already one band of data so we just use it...
             return srcRed.copyData(wr);
 
-        
+        PadRed.ZeroRecter.zeroRect(wr);
         Raster srcRas = srcRed.getData(wr.getBounds());
         AbstractRed.copyBand(srcRas, srcRas.getNumBands()-1, wr, 
                              wr.getNumBands()-1);

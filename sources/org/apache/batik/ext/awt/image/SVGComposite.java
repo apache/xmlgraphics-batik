@@ -812,6 +812,7 @@ public class SVGComposite
 
             int x=dstOut.getMinX();
             int w=dstOut.getWidth();
+            int bands = dstOut.getNumBands();
 
             int y0=dstOut.getMinY();
             int y1=y0 + dstOut.getHeight();
@@ -819,18 +820,31 @@ public class SVGComposite
             float kk1 = k1/255.0f;
             float kk4 = k4*255.0f+0.5f;
 
-            int val;
-            for (int y = y0; y<y1; y++) {
+            int y, i, b, val, max;
+            for (y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
-                for (int i=0; i<srcPix.length; i++) {
+                for (i=0; i<srcPix.length; i++) {
+                    max=0;
+                    for (b=1; b<bands; b++, i++) {
+                        val =(int)((kk1*srcPix[i]*dstPix[i]) +
+                                   k2*srcPix[i] + k3*dstPix[i] + kk4);
+                        if ((val & 0xFFFFFF00) != 0)
+                            if ((val & 0x80000000) != 0) val = 0;
+                            else                         val = 255;
+                        if (val > max) max=val;
+                        dstPix[i] = val;
+                    }
+
                     val =(int)((kk1*srcPix[i]*dstPix[i]) +
                                k2*srcPix[i] + k3*dstPix[i] + kk4);
                     if ((val & 0xFFFFFF00) != 0)
                         if ((val & 0x80000000) != 0) val = 0;
                         else                         val = 255;
-
-                    dstPix[i] = val;
+                    if (val > max) 
+                        dstPix[i] = val;
+                    else
+                        dstPix[i] = max;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }
@@ -879,6 +893,7 @@ public class SVGComposite
                     if ((r & 0xFFFFFF00) != 0)
                         if ((r & 0x80000000) != 0) r = 0;
                         else                       r = 255;
+                    if (a < r) a = r;
 
                     g = (int)(((srcP>>  8)&0xFF)*((dstP>>  8)&0xFF)*k1 +
                               ((srcP>>  8)&0xFF)*k2 + 
@@ -886,12 +901,14 @@ public class SVGComposite
                     if ((g & 0xFFFFFF00) != 0)
                         if ((g & 0x80000000) != 0) g = 0;
                         else                       g = 255;
+                    if (a < g) a = g;
 
                     b = (int)((srcP&0xFF)*(dstP&0xFF)*k1 +
                               (srcP&0xFF)*k2 + (dstP&0xFF)*k3 + k4);
                     if ((b & 0xFFFFFF00) != 0)
                         if ((b & 0x80000000) != 0) b = 0;
                         else                       b = 255;
+                    if (a < b) a = b;
                     
                     dstOutPixels[dstOutSp++] 
                         = ((a<<24) | (r<<16) | (g<<8) | b);
@@ -937,22 +954,25 @@ public class SVGComposite
             final int pt5  = (1<<23);
 
             int srcP, dstP;
-
+            int a, r, g, b;
             for (int y = 0; y<height; y++) {
                 final int end = dstOutSp+width;
                 while (dstOutSp<end) {
-                    srcP = srcPixels   [srcSp++];
-                    dstP = dstInPixels   [dstInSp++];
-
-                    dstOutPixels[dstOutSp++] 
-                        = (((((int)lut[(((srcP>> 16)&0xFF00) | 
-                                        ((dstP>>>24)&0x00FF))])     )<< 24) |
-                           ((((int)lut[(((srcP>>  8)&0xFF00) | 
-                                        ((dstP>> 16)&0x00FF))])&0xFF)<< 16) |
-                           ((((int)lut[(((srcP     )&0xFF00) | 
-                                        ((dstP>>  8)&0x00FF))])&0xFF)<<  8) |
-                           ((((int)lut[(((srcP<<  8)&0xFF00) | 
-                                        ((dstP     )&0x00FF))])&0xFF)     ));
+                    srcP = srcPixels  [srcSp++];
+                    dstP = dstInPixels[dstInSp++];
+                    
+                    a = lut[(((srcP>> 16)&0xFF00)|((dstP>>>24)       ))];
+                    a &= 0xFF;
+                    r = lut[(((srcP>>  8)&0xFF00)|((dstP>> 16)&0x00FF))];
+                    r &= 0xFF;
+                    g = lut[(((srcP     )&0xFF00)|((dstP>>  8)&0x00FF))];
+                    g &= 0xFF;
+                    b = lut[(((srcP<<  8)&0xFF00)|((dstP     )&0x00FF))];
+                    b &= 0xFF;
+                    if (r>a) a = r;
+                    if (g>a) a = g;
+                    if (b>a) a = b;
+                    dstOutPixels[dstOutSp++] = (a<<24)|(r<<16)|(g<<8)|(b);
                 }
                 srcSp    += srcAdjust;
                 dstInSp  += dstInAdjust;

@@ -124,6 +124,11 @@ public class PadRed extends AbstractRed {
                 return new ZeroRecter(wr);
         }
 
+        public static void zeroRect(WritableRaster wr) {
+            ZeroRecter zr = getZeroRecter(wr);
+            zr.zeroRect(wr.getBounds());
+        }
+
     }
 
     protected static class ZeroRecter_INT_PACK extends ZeroRecter {

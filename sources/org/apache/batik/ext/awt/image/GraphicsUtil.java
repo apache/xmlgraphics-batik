@@ -376,6 +376,10 @@ public class GraphicsUtil {
                         trans = AffineTransform.getTranslateInstance(iR.x, 
                                                                      iR.y);
 
+                        // String label = "sub [" + x + ", " + y + "]: ";
+                        // org.ImageDisplay.showImage
+                        //     (label, subBI);
+
                         g2d.drawImage(subBI, trans, null);
                         // big2d.fillRect(0, 0, tw, th);
                     }
@@ -1386,20 +1390,20 @@ public class GraphicsUtil {
             = (db.getOffset() +
                sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
                                wr.getMinY()-wr.getSampleModelTranslateY()));
-        int n=0;
+        int pixel, a, aFP, n=0;
         // Access the pixel data array
         final int pixels[] = db.getBankData()[0];
         for (int y=0; y<wr.getHeight(); y++) {
             int sp = base + y*scanStride;
             final int end = sp + width;
             while (sp < end) {
-                int pixel = pixels[sp];
-                int a = pixel>>>24;
+                pixel = pixels[sp];
+                a = pixel>>>24;
                 if (a<=0) {
                     pixels[sp] = 0x00FFFFFF;
                 }
                 else if (a<255) {
-                    int aFP = (0x00FF0000/a);
+                    aFP = (0x00FF0000/a);
                     pixels[sp] =
                         ((a << 24) |
                          (((((pixel&0xFF0000)>>16)*aFP)&0xFF0000)    ) |

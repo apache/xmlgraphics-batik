@@ -30,6 +30,9 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.WritableRaster;
 
+import java.awt.image.DataBufferInt;
+import java.awt.image.SinglePixelPackedSampleModel;
+
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
 
@@ -55,6 +58,7 @@ public class ConvolveMatrixRable8Bit
     Kernel kernel;
     Point  target;
     float bias;
+    boolean kernelHasNegValues;
     PadMode edgeMode;
     float [] kernelUnitLength = new float[2];
 
@@ -87,6 +91,13 @@ public class ConvolveMatrixRable8Bit
     public void setKernel(Kernel k) {
         touch();
         this.kernel = k;
+        kernelHasNegValues = false;
+        float [] kv = k.getKernelData(null);
+        for (int i=0; i<kv.length; i++)
+            if (kv[i] < 0) {
+                kernelHasNegValues = true;
+                break;
+            }
     }
 
     public Point getTarget() {
@@ -174,6 +185,73 @@ public class ConvolveMatrixRable8Bit
     public void setPreserveAlpha(boolean preserveAlpha) {
         touch();
         this.preserveAlpha = preserveAlpha;
+    }
+
+
+    public void fixAlpha(BufferedImage bi) {
+        if ((!bi.getColorModel().hasAlpha()) ||
+            (!bi.isAlphaPremultiplied()))
+            // No need to fix alpha if it isn't premultiplied...
+            return;
+        if (GraphicsUtil.is_INT_PACK_Data(bi.getSampleModel(), true)) 
+            fixAlpha_INT_PACK(bi.getRaster());
+        else
+            fixAlpha_FALLBACK(bi.getRaster());
+    }
+
+    public void fixAlpha_INT_PACK(WritableRaster wr) {
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
+
+        final int width = wr.getWidth();
+
+        final int scanStride = sppsm.getScanlineStride();
+        DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
+        final int base
+            = (db.getOffset() +
+               sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(),
+                               wr.getMinY()-wr.getSampleModelTranslateY()));
+        int pixel, a, v;
+        // Access the pixel data array
+        final int pixels[] = db.getBankData()[0];
+        for (int y=0; y<wr.getHeight(); y++) {
+            int sp = base + y*scanStride;
+            final int end = sp + width;
+            while (sp < end) {
+                pixel = pixels[sp];
+                a = pixel>>>24;
+                v = (pixel>>16)&0xFF;
+                if (a < v) a = v;
+                v = (pixel>> 8)&0xFF;
+                if (a < v) a = v;
+                v = (pixel    )&0xFF;
+                if (a < v) a = v;
+                pixels[sp] = (pixel&0x00FFFFFF) | (a << 24);
+                sp++;
+            }
+        }
+    }
+
+    public void fixAlpha_FALLBACK(WritableRaster wr) {
+        int x0=wr.getMinX();
+        int w =wr.getWidth();
+        int y0=wr.getMinY();
+        int y1=y0 + wr.getHeight()-1;
+        int bands = wr.getNumBands();
+        int a, x, y, b, i;
+        int [] pixel = null;
+        for (y=y0; y<=y1; y++) {
+            pixel = wr.getPixels(x0, y, w, 1, pixel);
+            i=0;
+            for (x=0; x<w; x++) {
+                a=pixel[i];
+                for (b=1; b<bands; b++)
+                    if (pixel[i+b] > a) a = pixel[i+b];
+                pixel[i+bands-1] = a;
+                i+=bands;
+            }
+            wr.setPixels(x0, y, w, 1, pixel);
+        }
     }
 
     public RenderedImage createRendering(RenderContext rc) {
@@ -320,6 +398,15 @@ public class ConvolveMatrixRable8Bit
 
             // Easy case just apply the op...
             destBI = op.filter(srcBI, null);
+
+            if (kernelHasNegValues) {
+                // When the kernel has negative values it's possible
+                // for the resultant image to have alpha values less
+                // than the associated color values this will lead to
+                // problems later when we try to display the image so
+                // we fix this here.
+                fixAlpha(destBI);
+            }
 
         } else {
             BufferedImage srcBI;

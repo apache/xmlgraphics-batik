@@ -58,7 +58,7 @@ public class ParametrizedRenderingAccuracyTest
 
         String[] dirNfile = breakSVGFile(svgFile);
 
-        setConfig(buildSVGURL(dirNfile[0], dirNfile[1]),
+        setConfig(buildSVGURL(dirNfile[0], dirNfile[1], dirNfile[2]),
                   buildRefImgURL(dirNfile[0], dirNfile[1]));
 
         setVariationURL(buildVariationURL(dirNfile[0], dirNfile[1]));
