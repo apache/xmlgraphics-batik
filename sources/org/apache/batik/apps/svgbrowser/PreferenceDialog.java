@@ -316,8 +316,6 @@ public class PreferenceDialog extends JDialog
 
         model.setBoolean(PREFERENCE_KEY_SELECTION_XOR_MODE,
 			 selectionXorMode.isSelected());
-	System.out.println("--------------------- "+selectionXorMode.isSelected());
-	System.out.println(">>>>>>>>>>>>>>>>>>>>>>"+model.getBoolean(PREFERENCE_KEY_SELECTION_XOR_MODE));
 
         model.setString(PREFERENCE_KEY_PROXY_HOST,
                         host.getText());

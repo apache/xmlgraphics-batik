@@ -157,7 +157,6 @@ public class TextSelectionManager {
      * @param state true implies the selection overlay will be in XOR mode 
      */
     public void setSelectionOverlayXORMode(boolean state) {
-	System.out.println("setSelectionOverlayXORMode "+state);
 	this.xorMode = state;
     }
 
