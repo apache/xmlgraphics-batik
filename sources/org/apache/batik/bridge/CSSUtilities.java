@@ -315,6 +315,8 @@ public abstract class CSSUtilities
                       RenderingHints.VALUE_RENDER_QUALITY);
             hints.put(RenderingHints.KEY_ANTIALIASING,
                       RenderingHints.VALUE_ANTIALIAS_ON);
+            hints.put(RenderingHints.KEY_STROKE_CONTROL,
+                      RenderingHints.VALUE_STROKE_PURE);
             break;
         }
         return hints;
@@ -407,6 +409,8 @@ public abstract class CSSUtilities
                       RenderingHints.VALUE_ANTIALIAS_ON);
             hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
                       RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+            hints.put(RenderingHints.KEY_STROKE_CONTROL,
+                      RenderingHints.VALUE_STROKE_PURE);
             break;
         }
         return hints;
