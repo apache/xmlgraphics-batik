@@ -293,13 +293,13 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
         /**
          * Returns the pixel to millimeter conversion factor specified in the
-         * <tt>TranscodingHints</tt> or 0.33 if any.
+         * <tt>TranscodingHints</tt> or 0.3528 if any.
          */
         public float getPixelToMM() {
             if (hints.containsKey(KEY_PIXEL_TO_MM)) {
                 return ((Float)hints.get(KEY_PIXEL_TO_MM)).floatValue();
             } else {
-                return 0.33f;
+                return 0.3528f;
             }
         }
 
