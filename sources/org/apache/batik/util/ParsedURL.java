@@ -89,6 +89,7 @@ public class ParsedURL {
 
         handlersMap = new HashMap();
         registerHandler(new ParsedURLDataProtocolHandler());
+        registerHandler(new ParsedURLJarProtocolHandler());
 
         Iterator iter = Service.providers(ParsedURLProtocolHandler.class);
         while (iter.hasNext()) {
@@ -480,6 +481,9 @@ public class ParsedURL {
      */
     public static ParsedURLData parseURL(ParsedURL baseURL, String urlStr) {
         String protocol = getProtocol(urlStr);
+        
+        if (protocol == null)
+            protocol = baseURL.getProtocol();
         ParsedURLProtocolHandler handler = getHandler(protocol);
         return handler.parseURL(baseURL, urlStr);        
     }
