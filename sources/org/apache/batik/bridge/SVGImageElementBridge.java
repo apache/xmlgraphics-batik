@@ -14,6 +14,11 @@ import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -30,6 +35,8 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;
 import org.apache.batik.gvt.RasterImageNode;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.MimeTypeConstants;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.DocumentEvent;
@@ -129,19 +136,97 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                       new Object[] {"xlink:href", uriStr});
         }
 
-        GraphicsNode node = null;
         // try to load the image as an svg document
         SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
 
         // try to load an SVG document
+        String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
+        ParsedURL purl;
+        if (baseURI == null)
+            purl = new ParsedURL(uriStr);
+        else
+            purl = new ParsedURL(baseURI, uriStr);
+
+        String docURL = svgDoc.getURL();
+        ParsedURL pDocURL = null;
+        if (docURL != null)
+            pDocURL = new ParsedURL(docURL);
+
+        UserAgent userAgent = ctx.getUserAgent();
+        userAgent.checkLoadExternalResource(purl, pDocURL);
+
         DocumentLoader loader = ctx.getDocumentLoader();
-        URIResolver resolver = new URIResolver(svgDoc, loader);
-        try {
-            Node n = resolver.getNode(uriStr, e);
-            if (n.getNodeType() == n.DOCUMENT_NODE) {
-                imgDocument = (SVGDocument)n;
-                node = createSVGImageNode(ctx, e, imgDocument);
+        ImageTagRegistry reg = ImageTagRegistry.getRegistry();
+        ICCColorSpaceExt colorspace = extractColorSpace(e, ctx);
+        {
+            /**
+             *  Before we open the URL we see if we have the
+             *  URL already cached and parsed
+             */
+            try {
+                /* Check the document loader cache */
+                Document doc = loader.checkCache(purl.toString());
+                if (doc != null) {
+                    imgDocument = (SVGDocument)doc;
+                    return createSVGImageNode(ctx, e, imgDocument);
+                }
+            } catch (BridgeException ex) {
+                throw ex;
+            } catch (SecurityException ex) {
+                throw new BridgeException(e, ERR_URI_UNSECURE,
+                                          new Object[] {uriStr});
+            } catch (Exception ex) {
+                /* Nothing to do */
+            } 
+
+            /* Check the ImageTagRegistry Cache */
+            Filter img = reg.checkCache(purl, colorspace);
+            if (img != null) {
+                return createRasterImageNode(ctx, e, img);
             }
+        }
+
+        /* The Protected Stream ensures that the stream doesn't
+         * get closed unless we want it to. It is also based on
+         * a Buffered Reader so in general we can mark the start
+         * and reset rather than reopening the stream.  Finally
+         * it hides the mark/reset methods so only we get to
+         * use them.
+         */
+        ProtectedStream reference = openStream(purl);
+
+        {
+            /**
+             * First see if we can id the file as a Raster via magic
+             * number.  This is probably the fastest mechanism.
+             * We tell the registry what the source purl is but we
+             * tell it not to open that url.
+             */
+            Filter img = reg.readURL(reference, purl, colorspace, 
+                                     false, false);
+            if (img != null) {
+                // It's a bouncing baby Raster...
+                return createRasterImageNode(ctx, e, img);
+            }
+        }
+
+        try {
+            // Reset the stream for next try.
+            reference.retry();
+        } catch (IOException ioe) {
+            // Couldn't reset stream so reopen it.
+            System.err.println("Reopening");
+            ioe.printStackTrace();
+            reference = openStream(purl);
+        }
+
+        try {
+            /**
+             * Next see if it's an XML document.
+             */
+            Document doc = loader.loadDocument(purl.toString(), reference);
+            imgDocument = (SVGDocument)doc;
+            return createSVGImageNode(ctx, e, imgDocument);
         } catch (BridgeException ex) {
             throw ex;
         } catch (SecurityException ex) {
@@ -149,20 +234,83 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                       new Object[] {uriStr});
         } catch (Exception ex) {
             /* Nothing to do */
+        } 
+
+        try {
+            reference.retry();
+        } catch (IOException ioe) {
+            // Couldn't reset stream so reopen it.
+            System.err.println("Reopening");
+            ioe.printStackTrace();
+            reference = openStream(purl);
         }
 
-        if (node == null) {
-            String baseURI = XMLBaseSupport.getCascadedXMLBase(e);
-            ParsedURL purl;
-            if (baseURI == null)
-                purl = new ParsedURL(uriStr);
-            else 
-                purl = new ParsedURL(baseURI, uriStr);
-
-            // try to load the image as a raster image (JPG or PNG)
-            node = createRasterImageNode(ctx, e, purl);
+        try {
+            // Finally try to load the image as a raster image (JPG or
+            // PNG) allowing the registry to open the url (so the
+            // JDK readers can be checked).
+            Filter img = reg.readURL(reference, purl, colorspace, 
+                                     true, true);
+            if (img != null) {
+                // It's a bouncing baby Raster...
+                return createRasterImageNode(ctx, e, img);
+            }
+        } finally {
+            reference.release();
         }
-        return node;
+        return null;
+    }
+
+    static public class ProtectedStream extends BufferedInputStream {
+        final static int BUFFER_SIZE = 8192;
+        ProtectedStream(InputStream is) {
+            super(is, BUFFER_SIZE);
+            super.mark(BUFFER_SIZE); // Remember start
+        }
+        ProtectedStream(InputStream is, int size) {
+            super(is, size);
+            super.mark(size); // Remember start
+        }
+
+        public boolean markSupported() {
+            return false;
+        }
+        public void mark(int sz){
+        }
+        public void reset() throws IOException {
+            throw new IOException("Reset unsupported");
+        }
+
+        public void retry() throws IOException {
+            super.reset();
+        }
+
+        public void close() throws IOException {
+            /* do nothing */
+        }
+
+        public void release() {
+            try {
+                super.close();
+            } catch (IOException ioe) {
+                // Like Duh! what would you do close it again?
+            }
+        }
+    }
+
+    protected ProtectedStream openStream(ParsedURL purl) {
+        ProtectedStream ret = null;
+        try {
+            List mimeTypes = new ArrayList
+                (ImageTagRegistry.getRegistry().getRegisteredMimeTypes());
+            mimeTypes.add(MimeTypeConstants.MIME_TYPES_SVG);
+            InputStream reference = purl.openStream(mimeTypes.iterator());
+            ret = new ProtectedStream(reference);
+        } catch (IOException ioe) {
+            throw new BridgeException(e, ERR_URI_IO, 
+                                      new Object[] {purl.toString()});
+        }
+        return ret;
     }
 
     /**
@@ -323,13 +471,9 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * @param uriStr the uri of the image
      */
     protected static GraphicsNode createRasterImageNode(BridgeContext ctx,
-                                                        Element       e,
-                                                        ParsedURL     purl) {
-
+                                                       Element       e,
+                                                       Filter        img) {
         RasterImageNode node = new RasterImageNode();
-
-        ImageTagRegistry reg = ImageTagRegistry.getRegistry();
-        Filter           img = reg.readURL(purl, extractColorSpace(e, ctx));
         Object           obj = img.getProperty
             (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY);
         if ((obj != null) && (obj instanceof SVGDocument)) {

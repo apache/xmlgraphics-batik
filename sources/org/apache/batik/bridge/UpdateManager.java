@@ -21,6 +21,8 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.UpdateTracker;
 import org.apache.batik.gvt.renderer.ImageRenderer;
+import org.apache.batik.util.EventDispatcher;
+import org.apache.batik.util.EventDispatcher.Dispatcher;
 import org.apache.batik.util.RunnableQueue;
 import org.w3c.dom.Document;
 import org.w3c.dom.events.DocumentEvent;
@@ -185,7 +187,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                         repaintManager =
                             new RepaintManager(r);
 
-                        fireManagerStartedEvent();
+                        fireEvent(startedDispatcher,
+                                  new UpdateManagerEvent(this, null, null));
                         started = true;
                     }
                 }
@@ -308,7 +311,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                     
                         scriptingEnvironment.interrupt();
                         updateRunnableQueue.getThread().interrupt();
-                        fireManagerStoppedEvent();
+                        fireEvent(stoppedDispatcher,
+                                  new UpdateManagerEvent(this, null, null));
                     }
                 }
             });
@@ -339,13 +343,16 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      */
     public void updateRendering(List areas) {
         try {
-            fireStartedEvent(repaintManager.getOffScreen());
+            fireEvent(updateStartedDispatcher,new UpdateManagerEvent
+                      (this, repaintManager.getOffScreen(), null));
 
             List l = repaintManager.updateRendering(areas);
 
-            fireCompletedEvent(repaintManager.getOffScreen(), l);
-        } catch (Exception e) {
-            fireFailedEvent();
+            fireEvent(updateCompletedDispatcher,new UpdateManagerEvent
+                      (this, repaintManager.getOffScreen(), l));
+        } catch (Throwable t) {
+            fireEvent(updateFailedDispatcher,
+                      new UpdateManagerEvent(this, null, null));
         }
     }
 
@@ -393,103 +400,95 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         listeners.remove(l);
     }
 
-    /**
-     * Fires a UpdateManagerEvent to notify that the manager was started.
-     */
-    protected void fireManagerStartedEvent() {
-        Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            UpdateManagerEvent ev = new UpdateManagerEvent(this, null, null);
-            for (int i = 0; i < dll.length; i++) {
-                ((UpdateManagerListener)dll[i]).managerStarted(ev);
-            }
-        }
+    public void fireEvent(Dispatcher dispatcher, Object event) {
+        EventDispatcher.fireEvent(dispatcher, listeners, event, false);
     }
 
-    /**
-     * Fires a UpdateManagerEvent to notify that the manager was stopped.
-     */
-    protected void fireManagerStoppedEvent() {
-        Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            UpdateManagerEvent ev = new UpdateManagerEvent(this, null, null);
-            for (int i = 0; i < dll.length; i++) {
-                ((UpdateManagerListener)dll[i]).managerStopped(ev);
-            }
-        }
-    }
 
     /**
-     * Fires a UpdateManagerEvent to notify that the manager was suspended.
+     * Dispatches a UpdateManagerEvent to notify that the manager was
+     * started
      */
-    protected void fireManagerSuspendedEvent() {
-        Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            UpdateManagerEvent ev = new UpdateManagerEvent(this, null, null);
-            for (int i = 0; i < dll.length; i++) {
-                ((UpdateManagerListener)dll[i]).managerSuspended(ev);
+    static Dispatcher startedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((UpdateManagerListener)listener).managerStarted
+                    ((UpdateManagerEvent)event);
             }
-        }
-    }
+        };
 
     /**
-     * Fires a UpdateManagerEvent to notify that the manager was resumed.
+     * Dispatches a UpdateManagerEvent to notify that the manager was
+     * stopped.
      */
-    protected void fireManagerResumedEvent() {
-        Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            UpdateManagerEvent ev = new UpdateManagerEvent(this, null, null);
-            for (int i = 0; i < dll.length; i++) {
-                ((UpdateManagerListener)dll[i]).managerResumed(ev);
+    static Dispatcher stoppedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((UpdateManagerListener)listener).managerStopped
+                    ((UpdateManagerEvent)event);
             }
-        }
-    }
+        };
 
     /**
-     * Fires a UpdateManagerEvent in the starting phase of an update.
+     * Dispatches a UpdateManagerEvent to notify that the manager was
+     * suspended.
      */
-    protected void fireStartedEvent(BufferedImage bi) {
-        Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            UpdateManagerEvent ev = new UpdateManagerEvent(this, bi, null);
-            for (int i = 0; i < dll.length; i++) {
-                ((UpdateManagerListener)dll[i]).updateStarted(ev);
+    static Dispatcher suspendedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((UpdateManagerListener)listener).managerSuspended
+                    ((UpdateManagerEvent)event);
             }
-        }
-    }
+        };
 
     /**
-     * Fires a UpdateManagerEvent when an update completed.
+     * Dispatches a UpdateManagerEvent to notify that the manager was
+     * resumed.
      */
-    protected void fireCompletedEvent(BufferedImage bi, List rects) {
-        Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            UpdateManagerEvent ev = new UpdateManagerEvent(this, bi, rects);
-            for (int i = 0; i < dll.length; i++) {
-                ((UpdateManagerListener)dll[i]).updateCompleted(ev);
+    static Dispatcher resumedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((UpdateManagerListener)listener).managerResumed
+                    ((UpdateManagerEvent)event);
             }
-        }
-    }
+        };
 
     /**
-     * Fires a UpdateManagerEvent when an update failed.
+     * Dispatches a UpdateManagerEvent to notify that an update
+     * started
      */
-    protected void fireFailedEvent() {
-        Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            UpdateManagerEvent ev = new UpdateManagerEvent(this, null, null);
-            for (int i = 0; i < dll.length; i++) {
-                ((UpdateManagerListener)dll[i]).updateFailed(ev);
+    static Dispatcher updateStartedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((UpdateManagerListener)listener).updateStarted
+                    ((UpdateManagerEvent)event);
             }
-        }
-    }
+        };
+
+    /**
+     * Dispatches a UpdateManagerEvent to notify that an update
+     * completed
+     */
+    static Dispatcher updateCompletedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((UpdateManagerListener)listener).updateCompleted
+                    ((UpdateManagerEvent)event);
+            }
+        };
+
+    /**
+     * Dispatches a UpdateManagerEvent to notify that an update
+     * failed
+     */
+    static Dispatcher updateFailedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((UpdateManagerListener)listener).updateFailed
+                    ((UpdateManagerEvent)event);
+            }
+        };
+
 
     // RunnableQueue.RunHandler /////////////////////////////////////////
 
@@ -509,7 +508,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     public void executionSuspended(RunnableQueue rq) {
         if (suspendCalled) {
             running = false;
-            fireManagerSuspendedEvent();
+            fireEvent(suspendedDispatcher, 
+                      new UpdateManagerEvent(this, null, null));
         }
     }
 
@@ -521,7 +521,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
             running = true;
 
             suspendCalled = false;
-            fireManagerResumedEvent();
+            fireEvent(resumedDispatcher, 
+                      new UpdateManagerEvent(this, null, null));
         }
     }
 }

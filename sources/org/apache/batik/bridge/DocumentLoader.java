@@ -8,6 +8,7 @@
 
 package org.apache.batik.bridge;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -67,13 +68,7 @@ public class DocumentLoader {
 	documentFactory.setValidating(userAgent.isXMLParserValidating());
     }
 
-    /**
-     * Returns a document from the specified uri.
-     * @param uri the uri of the document
-     * @exception IOException if an I/O error occured while loading
-     * the document
-     */
-    public Document loadDocument(String uri) throws IOException {
+    public Document checkCache(String uri) {
         int n = uri.lastIndexOf('/');
         if (n == -1) 
             n = 0;
@@ -82,19 +77,55 @@ public class DocumentLoader {
             uri = uri.substring(0, n);
         }
         DocumentState state = (DocumentState)cacheMap.get(uri);
-        if (state == null) {
-            SVGDocument document = documentFactory.createSVGDocument(uri);
-            if (bridgeContext != null) {
-                bridgeContext.initializeDocument(document);
-            }
+        if (state != null)
+            return state.document;
+        return null;
+    }
 
-            DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
-            state = new DocumentState(uri, document, desc);
-            cacheMap.put(uri, state);
+    /**
+     * Returns a document from the specified uri.
+     * @param uri the uri of the document
+     * @exception IOException if an I/O error occured while loading
+     * the document
+     */
+    public Document loadDocument(String uri) throws IOException {
+        Document ret = checkCache(uri);
+        if (ret != null)
+            return ret;
+
+        SVGDocument document = documentFactory.createSVGDocument(uri);
+        if (bridgeContext != null) {
+            bridgeContext.initializeDocument(document);
         }
+
+        DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
+        DocumentState state = new DocumentState(uri, document, desc);
+        cacheMap.put(uri, state);
         return state.document;
     }
 
+    /**
+     * Returns a document from the specified uri.
+     * @param uri the uri of the document
+     * @exception IOException if an I/O error occured while loading
+     * the document
+     */
+    public Document loadDocument(String uri, InputStream is) 
+        throws IOException {
+        Document ret = checkCache(uri);
+        if (ret != null)
+            return ret;
+
+        SVGDocument document = documentFactory.createSVGDocument(uri, is);
+        if (bridgeContext != null) {
+            bridgeContext.initializeDocument(document);
+        }
+
+        DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
+        DocumentState state = new DocumentState(uri, document, desc);
+        cacheMap.put(uri, state);
+        return state.document;
+    }
     /**
      * Sets the bridge context.
      */

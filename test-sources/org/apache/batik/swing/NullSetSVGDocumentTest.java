@@ -55,6 +55,8 @@ public class NullSetSVGDocumentTest extends JSVGMemoryLeakTest {
     public static final String ERROR_ON_SET 
         = "NullSetSVGDocumentTest.message.error.on.set";
 
+    public String getName() { return getId(); }
+
     public JSVGCanvasHandler createHandler() {
         return new JSVGCanvasHandler(this, this) {
                 public JSVGCanvas createCanvas() { 

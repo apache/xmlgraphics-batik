@@ -8,17 +8,17 @@
 
 package org.apache.batik.swing.gvt;
 
-import java.awt.EventQueue;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.bridge.InterruptedBridgeException;
 import org.apache.batik.gvt.renderer.ImageRenderer;
+import org.apache.batik.util.EventDispatcher;
+import org.apache.batik.util.EventDispatcher.Dispatcher;
 
 /**
  * This class represents an object which renders asynchroneaously
@@ -65,6 +65,11 @@ public class GVTTreeRenderer extends Thread {
     protected List listeners = Collections.synchronizedList(new LinkedList());
 
     /**
+     * Boolean indicating if this thread has ever been interrupted.
+     */
+    protected boolean beenInterrupted;
+
+    /**
      * Creates a new GVTTreeRenderer.
      * @param r The renderer to use to paint.
      * @param usr2dev The user to device transform.
@@ -81,48 +86,70 @@ public class GVTTreeRenderer extends Thread {
         doubleBuffering = dbuffer;
         this.width = width;
         this.height = height;
+        beenInterrupted = false;
+    }
+
+    public boolean getBeenInterrupted() {
+        synchronized (this) { return beenInterrupted; }
     }
 
     /**
      * Runs this renderer.
      */
     public void run() {
+        GVTTreeRendererEvent ev = new GVTTreeRendererEvent(this, null);
         try {
-            firePrepareEvent();
+            fireEvent(prepareDispatcher, ev);
 
             renderer.setTransform(user2DeviceTransform);
             renderer.setDoubleBuffered(doubleBuffering);
             renderer.updateOffScreen(width, height);
             renderer.clearOffScreen();
 
-            if (checkInterrupted()) {
+            if (getBeenInterrupted()) {
+                fireEvent(cancelledDispatcher, ev);
                 return;
             }
 
-            fireStartedEvent(renderer.getOffScreen());
+            ev = new GVTTreeRendererEvent(this, renderer.getOffScreen());
+            fireEvent(startedDispatcher, ev);
+
+            if (getBeenInterrupted()) {
+                fireEvent(cancelledDispatcher, ev);
+                return;
+            }
 
             renderer.repaint(areaOfInterest);
 
-            if (checkInterrupted()) {
+            if (getBeenInterrupted()) {
+                fireEvent(cancelledDispatcher, ev);
                 return;
             }
 
-            fireCompletedEvent(renderer.getOffScreen());
+            ev = new GVTTreeRendererEvent(this, renderer.getOffScreen());
+            fireEvent(completedDispatcher, ev);
         } catch (NoClassDefFoundError e) {
             // This error was reported to happen when the rendering
             // is interrupted with JDK1.3.0rc1 Solaris.
         } catch (InterruptedBridgeException e) {
             // this sometimes happens with SVG Fonts since the glyphs are
             // not built till the rendering stage
-            fireFailedEvent();
-        } catch (InterruptedException e) {
-            // this sometimes happens with SVG Fonts since the glyphs are
-            // not built till the rendering stage
-            fireFailedEvent();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fireFailedEvent();
+            fireEvent(cancelledDispatcher, ev);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fireEvent(failedDispatcher, ev);
         }
+    }
+
+    public void interrupt() {
+        super.interrupt();
+        synchronized (this) {
+            beenInterrupted = true;
+        }
+    }
+
+    public void fireEvent(Dispatcher dispatcher, Object event) {
+        EventDispatcher.fireEvent(dispatcher, listeners, event, true);
     }
 
     /**
@@ -139,168 +166,45 @@ public class GVTTreeRenderer extends Thread {
         listeners.remove(l);
     }
 
-    /**
-     * Checks for this thread to be interrupted.
-     */
-    protected boolean checkInterrupted() {
-        // don't use isInterrupted() since that won't clear the
-        // interrupted state of this thread. If that isn't cleared
-        // then the next function that is declaired to throw
-        // InterruptedException will do so, this in particular
-        // effects class loading.
-        if (!Thread.interrupted())
-            return false;
-
-        fireCancelledEvent(renderer.getOffScreen());
-        return true;
-    }
-
-    /**
-     * Fires a GVTTreeRendererEvent in the preparing phase.
-     */
-    protected void firePrepareEvent() throws InterruptedException {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final GVTTreeRendererEvent ev =
-                new GVTTreeRendererEvent(this, null);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    ((GVTTreeRendererListener)dll[i]).gvtRenderingPrepare(ev);
-                }
-            } else {
-                try {
-                    EventQueue.invokeAndWait(new Runnable() {
-                            public void run() {
-                                for (int i = 0; i < dll.length; i++) {
-                                    ((GVTTreeRendererListener)dll[i]).
-                                        gvtRenderingPrepare(ev);
-                                }
-                            }
-                        });
-                } catch (InvocationTargetException e) {
-                }
+    static Dispatcher prepareDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((GVTTreeRendererListener)listener).gvtRenderingPrepare
+                    ((GVTTreeRendererEvent)event);
             }
-        }
-    }
-
-    /**
-     * Fires a GVTTreeRendererEvent in the starting phase.
-     */
-    protected void fireStartedEvent(BufferedImage bi)
-        throws InterruptedException {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final GVTTreeRendererEvent ev = new GVTTreeRendererEvent(this, bi);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    ((GVTTreeRendererListener)dll[i]).gvtRenderingStarted(ev);
-                }
-            } else {
-                try {
-                    EventQueue.invokeAndWait(new Runnable() {
-                            public void run() {
-                                for (int i = 0; i < dll.length; i++) {
-                                    ((GVTTreeRendererListener)dll[i]).
-                                        gvtRenderingStarted(ev);
-                                }
-                            }
-                        });
-                } catch (InvocationTargetException e) {
-                }
+        };
+            
+    static Dispatcher startedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((GVTTreeRendererListener)listener).gvtRenderingStarted
+                    ((GVTTreeRendererEvent)event);
             }
-        }
-    }
-
-    /**
-     * Fires a GVTTreeRendererEvent when cancelled.
-     */
-    protected void fireCancelledEvent(BufferedImage bi) {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final GVTTreeRendererEvent ev = new GVTTreeRendererEvent(this, bi);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    ((GVTTreeRendererListener)dll[i]).
-                        gvtRenderingCancelled(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            ((GVTTreeRendererListener)dll[i]).
-                                gvtRenderingCancelled(ev);
-                        }
-                    }
-                });
+        };
+            
+    static Dispatcher cancelledDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((GVTTreeRendererListener)listener).gvtRenderingCancelled
+                    ((GVTTreeRendererEvent)event);
             }
-        }
-    }
-
-    /**
-     * Fires a GVTTreeRendererEvent when completed.
-     */
-    protected void fireCompletedEvent(BufferedImage bi) {
-        final Object[] dll = listeners.toArray();
-
-        if (dll.length > 0) {
-            final GVTTreeRendererEvent ev = new GVTTreeRendererEvent(this, bi);
-
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    ((GVTTreeRendererListener)dll[i]).
-                        gvtRenderingCompleted(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < dll.length; i++) {
-                            ((GVTTreeRendererListener)dll[i]).
-                                gvtRenderingCompleted(ev);
-                        }
-                    }
-                });
+        };
+            
+    static Dispatcher completedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((GVTTreeRendererListener)listener).gvtRenderingCompleted
+                    ((GVTTreeRendererEvent)event);
             }
-        }
-    }
-
-    /**
-     * Fires a GVTTreeRendererEvent when failed.
-     */
-    protected void fireFailedEvent() {
-        int count=10;
-        while(--count != 0) {
-            try {
-                final Object[] dll = listeners.toArray();
-
-                if (dll.length > 0) {
-                    final GVTTreeRendererEvent ev =
-                        new GVTTreeRendererEvent(this, null);
-
-                    if (EventQueue.isDispatchThread()) {
-                        for (int i = 0; i < dll.length; i++) {
-                            ((GVTTreeRendererListener)dll[i]).gvtRenderingFailed(ev);
-                        }
-                    } else {
-                        EventQueue.invokeLater(new Runnable() {
-                                public void run() {
-                                    for (int i = 0; i < dll.length; i++) {
-                                        ((GVTTreeRendererListener)dll[i]).
-                                            gvtRenderingFailed(ev);
-                                    }
-                                }
-                            });
-                    }
-                }
-            } catch (Throwable t) {
-                continue;
+        };
+            
+    static Dispatcher failedDispatcher = new Dispatcher() {
+            public void dispatch(Object listener,
+                                 Object event) {
+                ((GVTTreeRendererListener)listener).gvtRenderingFailed
+                    ((GVTTreeRendererEvent)event);
             }
-            return;
-        }
-    }
+        };
+            
+
 }

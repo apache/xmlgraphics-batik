@@ -57,7 +57,9 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.renderer.ImageRenderer;
+import org.apache.batik.swing.gvt.GVTTreeRenderer;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
+import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.JGVTComponent;
 import org.apache.batik.swing.gvt.JGVTComponentListener;
 import org.apache.batik.util.ParsedURL;
@@ -364,7 +366,11 @@ public class JSVGComponent extends JGVTComponent {
     }
 
     /**
-     * Returns the current update manager.
+     * Returns the current update manager.  The update manager becomes
+     * available after the first rendering completes.  You can be
+     * notifed when the rendering completes by registering a
+     * GVTTreeRendererListener with the component and waiting for the
+     * <tt>gvtRenderingCompleted</tt> event.
      */
     public UpdateManager getUpdateManager() {
         if (svgLoadEventDispatcher != null) {
@@ -425,35 +431,29 @@ public class JSVGComponent extends JGVTComponent {
      * is to listen to the <tt>SVGDocumentLoaderEvent</tt>s.</em>
      */
     public void loadSVGDocument(String url) {
-        stopProcessing();
-
         String oldURI = null;
         if (svgDocument != null) {
             oldURI = svgDocument.getURL();
         }
-        ParsedURL newURI = null;
-        newURI = new ParsedURL(oldURI, url);
+        final ParsedURL newURI = new ParsedURL(oldURI, url);
 
-        url = newURI.toString();
-        fragmentIdentifier = newURI.getRef();
+        stopThenRun(new Runnable() {
+                public void run() {
+                    String url = newURI.toString();
+                    fragmentIdentifier = newURI.getRef();
 
-        loader = new DocumentLoader(userAgent);
-        nextDocumentLoader = new SVGDocumentLoader(url, loader);
-        nextDocumentLoader.setPriority(Thread.MIN_PRIORITY);
+                    loader = new DocumentLoader(userAgent);
+                    nextDocumentLoader = new SVGDocumentLoader(url, loader);
+                    nextDocumentLoader.setPriority(Thread.MIN_PRIORITY);
 
-        Iterator it = svgDocumentLoaderListeners.iterator();
-        while (it.hasNext()) {
-            nextDocumentLoader.addSVGDocumentLoaderListener
-                ((SVGDocumentLoaderListener)it.next());
-        }
-
-        if (documentLoader == null &&
-            gvtTreeBuilder == null &&
-            gvtTreeRenderer == null &&
-            svgLoadEventDispatcher == null &&
-            updateManager == null) {
-            startDocumentLoader();
-        }
+                    Iterator it = svgDocumentLoaderListeners.iterator();
+                    while (it.hasNext()) {
+                        nextDocumentLoader.addSVGDocumentLoaderListener
+                            ((SVGDocumentLoaderListener)it.next());
+                    }
+                    startDocumentLoader();
+                }
+            });
     }
 
     /**
@@ -470,6 +470,16 @@ public class JSVGComponent extends JGVTComponent {
      * Batik's SVG DOM Implemenation it will be cloned into that
      * implementation.  In this case you should use 'getSVGDocument()'
      * to get the actual DOM that is attached to the rendering interface.
+     *
+     * Note that the prepartation for rendering and the rendering it's
+     * self occur asynchronously so you need to register event handlers
+     * if you want to know when the document is truely displayed.
+     *
+     * Notes for documents that you want to change in Java:
+     * From this point on you may only modify the
+     * the document in the UpdateManager thread @see #getUpdateManager.
+     * In many cases you also need to tell Batik to treat the document
+     * as a dynamic document by calling setDocumentState(ALWAYS_DYNAMIC).
      */
     public void setDocument(Document doc) {
         if ((doc != null) && 
@@ -488,6 +498,16 @@ public class JSVGComponent extends JGVTComponent {
      * implementation.  In this case you should use 'getSVGDocument()'
      * to get the actual DOM that is attached to the rendering
      * interface.
+     *
+     * Note that the prepartation for rendering and the rendering it's
+     * self occur asynchronously so you need to register event handlers
+     * if you want to know when the document is truely displayed.
+     *
+     * Notes for documents that you want to change in Java.
+     * From this point on you may only modify the
+     * the document in the UpdateManager thread @see #getUpdateManager.
+     * In many cases you also need to tell Batik to treat the document
+     * as a dynamic document by calling setDocumentState(ALWAYS_DYNAMIC).
      */
     public void setSVGDocument(SVGDocument doc) {
         if ((doc != null) &&
@@ -498,16 +518,60 @@ public class JSVGComponent extends JGVTComponent {
             doc = (SVGDocument)d;
         }
 
-        if (updateManager == null) {
+        final SVGDocument svgdoc = doc;
+        stopThenRun(new Runnable() {
+                public void run() {
+                    installSVGDocument(svgdoc);
+                }
+            });
+    }
+
+    /**
+     * This method calls stop processing waits for all
+     * threads to die then runs the Runnable in the event
+     * queue thread.  It returns immediately.
+     */
+    protected void stopThenRun(final Runnable r) {
+        if (documentLoader != null) {
+            documentLoader.addSVGDocumentLoaderListener
+                (new SVGDocumentLoaderAdapter() {
+                        SVGDocumentLoader sdl = documentLoader;
+                        public void documentLoadingCompleted
+                            (SVGDocumentLoaderEvent e) { install(); }
+                        public void documentLoadingCancelled
+                            (SVGDocumentLoaderEvent e) { install(); }
+                        public void documentLoadingFailed
+                            (SVGDocumentLoaderEvent e) { install(); }
+                        public void install() {
+                            // Remove ourselves from the doc loader,
+                            // and install the new document.
+                            sdl.removeSVGDocumentLoaderListener(this);
+                            EventQueue.invokeLater(r);
+                        }
+                    });
             stopProcessing();
-        
-            // No update manager just install new document.
-            installSVGDocument(doc);
-        } else {
+        } else if (gvtTreeBuilder != null) {
+            gvtTreeBuilder.addGVTTreeBuilderListener
+                (new GVTTreeBuilderAdapter() {
+                        GVTTreeBuilder gtb = gvtTreeBuilder;
+                        public void gvtBuildCompleted
+                            (GVTTreeBuilderEvent e) { install(); }
+                        public void gvtBuildCancelled
+                            (GVTTreeBuilderEvent e) { install(); }
+                        public void gvtBuildFailed
+                            (GVTTreeBuilderEvent e) { install(); }
+                        public void install() {
+                            // Remove ourselves from the old tree builder,
+                            // and install the new document.
+                            gtb.removeGVTTreeBuilderListener(this);
+                            EventQueue.invokeLater(r);
+                        }
+                    });
+            stopProcessing();
+        } else if (updateManager != null) {
             // We have to wait for the update manager to stop
             // before we install the new document otherwise bad
             // things can happen with the update manager.
-            final SVGDocument svgdoc = doc;
             updateManager.addUpdateManagerListener
                 (new UpdateManagerListener () {
                         UpdateManager um = updateManager;
@@ -515,11 +579,7 @@ public class JSVGComponent extends JGVTComponent {
                             // Remove ourselves from the old update manger,
                             // and install the new document.
                             um.removeUpdateManagerListener(this);
-                            EventQueue.invokeLater(new Runnable() {
-                                    public void run() {
-                                        installSVGDocument(svgdoc);
-                                    }
-                                });
+                            EventQueue.invokeLater(r);
                         }
                         // There really should be an updateManagerAdapter.
                         public void managerStarted(UpdateManagerEvent e) { }
@@ -530,8 +590,52 @@ public class JSVGComponent extends JGVTComponent {
                         public void updateFailed(UpdateManagerEvent e) { }
                     });
             stopProcessing();
+        } else if (nextUpdateManager != null) {
+            // We have to wait for the rendering to stop
+            // before we install the new document.
+            gvtTreeRenderer.addGVTTreeRendererListener
+                (new GVTTreeRendererAdapter() {
+                        GVTTreeRenderer gtr = gvtTreeRenderer;
+                        public void gvtRenderingCompleted
+                            (GVTTreeRendererEvent e) { install(); }
+                        public void gvtRenderingCancelled
+                            (GVTTreeRendererEvent e) { install(); }
+                        public void gvtRenderingFailed
+                            (GVTTreeRendererEvent e) { install(); }
+
+                        public void install() {
+                            // Remove ourselves from the old update manger,
+                            // and install the new document.
+                            gtr.removeGVTTreeRendererListener(this);
+                            EventQueue.invokeLater(r);
+                        }
+                    });
+            stopProcessing();
+        } else if (svgLoadEventDispatcher != null) {
+            // We have to wait for the onload dispatch to stop
+            // before we install the new document.
+            svgLoadEventDispatcher.addSVGLoadEventDispatcherListener
+                (new SVGLoadEventDispatcherAdapter() {
+                        SVGLoadEventDispatcher sled = svgLoadEventDispatcher;
+                        public void svgLoadEventDispatchCompleted
+                            (SVGLoadEventDispatcherEvent e) { install(); }
+                        public void svgLoadEventDispatchCancelled
+                            (SVGLoadEventDispatcherEvent e) { install(); }
+                        public void svgLoadEventDispatchFailed
+                            (SVGLoadEventDispatcherEvent e) { install(); }
+
+                        public void install() {
+                            // Remove ourselves from the old onload dispacher
+                            // and install the new document.
+                            sled.removeSVGLoadEventDispatcherListener(this);
+                            EventQueue.invokeLater(r);
+                        }
+                    });
+            stopProcessing();
+        }  else {
+            stopProcessing();
+            r.run();
         }
-            
     }
 
     /**

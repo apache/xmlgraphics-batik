@@ -226,6 +226,7 @@ public class EventSupport {
 	    try {
 		listeners[i].handleEvent(evt);
 	    } catch (Throwable th) {
+                System.err.println("In Event");
                 th.printStackTrace(System.err);
 	    }
 	}

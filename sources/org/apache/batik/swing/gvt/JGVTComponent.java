@@ -631,7 +631,7 @@ public class JGVTComponent extends JComponent {
         // Disable the dispatch during the rendering
         // to avoid concurrent access to the GVT tree.
         if (eventDispatcher != null) {
-            eventDispatcher.setRootNode(null);
+            eventDispatcher.setEventDispatchEnabled(false);
         }
 
         gvtTreeRenderer.start();
@@ -758,7 +758,8 @@ public class JGVTComponent extends JComponent {
                                 });
                                 sleep(200);
                             }
-                        } catch (Exception ex) {
+                        } catch (Throwable t) {
+                            t.printStackTrace();
                         }
                     }
                 };
@@ -789,7 +790,7 @@ public class JGVTComponent extends JComponent {
                 immediateRepaint();
             }
             if (eventDispatcher != null) {
-                eventDispatcher.setRootNode(gvtRoot);
+                eventDispatcher.setEventDispatchEnabled(true);
             }
         }
 
@@ -827,7 +828,7 @@ public class JGVTComponent extends JComponent {
             }
 
             if (eventDispatcher != null) {
-                eventDispatcher.setRootNode(gvtRoot);
+                eventDispatcher.setEventDispatchEnabled(true);
             }
         }
 

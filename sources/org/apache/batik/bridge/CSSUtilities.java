@@ -70,9 +70,10 @@ public abstract class CSSUtilities
      * Returns the computed style of the given property.
      */
     public static Value getComputedStyle(Element e, int property) {
-        return getCSSEngine(e).getComputedStyle((CSSStylableElement)e,
-                                                null,
-                                                property);
+        CSSEngine engine = getCSSEngine(e);
+        if (engine == null) return null;
+        return engine.getComputedStyle((CSSStylableElement)e, 
+                                       null, property);
     }
 
     /////////////////////////////////////////////////////////////////////////
