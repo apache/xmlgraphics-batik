@@ -122,7 +122,7 @@ public class SVGFont extends AbstractSVGConverter{
      * @return description of attribute values that describe the font
      */
     public static SVGFontDescriptor toSVG(Font font){
-        String fontSize = "" + font.getSize();
+        String fontSize = "" + font.getSize() + "pt";
         String fontWeight = weightToSVG(font);
         String fontStyle = styleToSVG(font);
         String fontFamilyStr = font.getFamily();

@@ -44,11 +44,11 @@ public class SVGStylingAttributes implements SVGSyntax{
         attrSet.add(ATTR_STOP_OPACITY);
         attrSet.add(ATTR_STROKE);
         attrSet.add(ATTR_STROKE_OPACITY);
-        attrSet.add(ATTR_STROKE_DASH_ARRAY);
-        attrSet.add(ATTR_STROKE_DASH_OFFSET);
-        attrSet.add(ATTR_STROKE_LINE_CAP);
-        attrSet.add(ATTR_STROKE_LINE_JOIN);
-        attrSet.add(ATTR_STROKE_MITER_LIMIT);
+        attrSet.add(ATTR_STROKE_DASHARRAY);
+        attrSet.add(ATTR_STROKE_DASHOFFSET);
+        attrSet.add(ATTR_STROKE_LINECAP);
+        attrSet.add(ATTR_STROKE_LINEJOIN);
+        attrSet.add(ATTR_STROKE_MITERLIMIT);
         attrSet.add(ATTR_STROKE_WIDTH);
         attrSet.add(ATTR_TEXT_RENDERING);
     }
