@@ -28,7 +28,7 @@
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
-    <g id="testContent">
+    <g id="testContent" transform="translate(0, -20)">
 
         <!-- ============================================= -->
         <!-- First row                                     -->
@@ -252,7 +252,81 @@
                     style="fill-opacity:0;"/>
             </a>
         </g>
+        </g>
 
+        <!-- ============================================= -->
+        <!-- Fourth row                                    -->
+        <!-- ============================================= -->
+        <g id="row4" transform="translate(40, 400)">
+
+
+        <!-- ======================== -->
+        <!-- feImage                  -->
+        <!-- ======================== -->
+        <g transform="translate(0, 0) scale(1.5, 1.5)">
+            <!-- The <svg> element in a symbol to be able to resize it -->
+            <symbol id="feImage" viewBox="0 0 450 500">
+                <use xlink:href="feImage.svg#body"/>
+            </symbol>
+
+            <use xlink:href="#feImage" width="45" height="50"/>
+
+            <a xlink:href="feImage.svg" xlink:show="new">
+                <rect width="45" height="50"
+                    style="fill-opacity:0;"/>
+            </a>
+        </g>
+
+        <!-- ======================== -->
+        <!-- feComposite              -->
+        <!-- ======================== -->
+        <g transform="translate(100, 0) scale(1.5, 1.5)">
+            <!-- The <svg> element in a symbol to be able to resize it -->
+            <symbol id="feComposite" viewBox="0 0 450 500">
+                <use xlink:href="feComposite.svg#body"/>
+            </symbol>
+
+            <use xlink:href="#feComposite" width="45" height="50"/>
+
+            <a xlink:href="feComposite.svg" xlink:show="new">
+                <rect width="45" height="50"
+                    style="fill-opacity:0;"/>
+            </a>
+        </g>
+
+        <!-- ======================== -->
+        <!-- feMerge                  -->
+        <!-- ======================== -->
+        <g transform="translate(200, 0) scale(1.5, 1.5)">
+            <!-- The <svg> element in a symbol to be able to resize it -->
+            <symbol id="feMerge" viewBox="0 0 450 500">
+                <use xlink:href="feMerge.svg#body"/>
+            </symbol>
+
+            <use xlink:href="#feMerge" width="45" height="50"/>
+
+            <a xlink:href="feMerge.svg" xlink:show="new">
+                <rect width="45" height="50"
+                    style="fill-opacity:0;"/>
+            </a>
+        </g>
+
+        <!-- ======================== -->
+        <!-- feDisplacementMap        -->
+        <!-- ======================== -->
+        <g transform="translate(300, 0) scale(1.5, 1.5)">
+            <!-- The <svg> element in a symbol to be able to resize it -->
+            <symbol id="feDisplacementMap" viewBox="0 0 450 500">
+                <use xlink:href="feDisplacementMap.svg#body"/>
+            </symbol>
+
+            <use xlink:href="#feDisplacementMap" width="45" height="50"/>
+
+            <a xlink:href="feDisplacementMap.svg" xlink:show="new">
+                <rect width="45" height="50"
+                    style="fill-opacity:0;"/>
+            </a>
+        </g>
         </g>
     </g>
 
