@@ -54,6 +54,9 @@
     </testGroup>
 
     <testGroup id="svg1.2" name="SVG Version 1.2 functionality tests">
+        <test id="samples/tests/spec12/text/flowBidi.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+	</test>
         <test id="samples/tests/spec12/text/flowText.svg" >
             <property name="Validating" class="java.lang.Boolean" value="false" />
 	</test>

@@ -310,6 +310,10 @@ public class LineInfo {
                 newGGIS[newSize++] = wi.getGlyphGroup(i++);
             }
         }
+        // for (int i=0; i<newSize; i++) {
+        //     System.err.println("GGIS["+i+"]: " + newGGIS[i].start + " -> " +
+        //                        newGGIS[i].end);
+        // }
     }
 
 
