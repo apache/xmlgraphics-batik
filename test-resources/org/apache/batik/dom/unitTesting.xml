@@ -25,7 +25,7 @@
         <arg class="java.lang.String" value="targetValue" />
         <property name="ParserClassName"
                   class="java.lang.String"
-                  value="org.apache.crimson.parser.XMLReaderImpl" />
+                  value="org.apache.xerces.parsers.SAXParser" />
     </test>
 
     <!-- ========================================================================== -->
