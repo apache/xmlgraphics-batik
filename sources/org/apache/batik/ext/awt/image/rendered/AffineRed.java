@@ -175,6 +175,10 @@ public class AffineRed extends AbstractRed {
         ColorModel myCM = getColorModel();
 
         WritableRaster srcWR = (WritableRaster)srcRas;
+        // If the output buffer is not premultiplied in certain cases
+        // it fails to properly divide out the Alpha (it always does
+        // the affine on premultiplied data). We help it out by
+        // premultiplying for it.
         srcCM = GraphicsUtil.coerceData(srcWR, srcCM, true);
         srcBI = new BufferedImage(srcCM,
                                   srcWR.createWritableTranslatedChild(0,0),

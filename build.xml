@@ -275,6 +275,7 @@ To display the available targets type:
                                xml-jar,
                                root-jar,
                                svg-pp-jar,
+                               svg-slideshow-jar,
                                svggen-jar,
                                svg-browser-jar,
                                rasterizer-jar,
@@ -582,6 +583,19 @@ To display the available targets type:
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/apps/svgpp/**/resources/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <!-- SVG Slide-show (dependencies: ???) -->
+  <target name="svg-slideshow-jar" depends="compile, prepare-build">
+    <jar manifest="${src}/${project}-slideshow.mf"
+         jarfile="${build}/${project}-slideshow.jar">
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/apps/slideshow/**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+        <include name="${package-prefix}/apps/slideshow/**/resources/**"/>
       </fileset>
     </jar>
   </target>

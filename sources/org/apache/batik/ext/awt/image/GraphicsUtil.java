@@ -268,98 +268,105 @@ public class GraphicsUtil {
                 }
             }
 
-            srcCM = cr.getColorModel();
-            SampleModel srcSM = cr.getSampleModel();
-            WritableRaster wr;
-            wr = Raster.createWritableRaster(srcSM, new Point(0,0));
-            BufferedImage bi = new BufferedImage
-                (srcCM, wr, srcCM.isAlphaPremultiplied(), null);
-
-            int xt0 = cr.getMinTileX();
-            int xt1 = xt0+cr.getNumXTiles();
-            int yt0 = cr.getMinTileY();
-            int yt1 = yt0+cr.getNumYTiles();
-            int tw  = srcSM.getWidth();
-            int th  = srcSM.getHeight();
-
-            Rectangle tR  = new Rectangle(0,0,tw,th);
-            Rectangle iR  = new Rectangle(0,0,0,0);
-
-            if (false) {
-                System.out.println("CR: " + cr);
-                System.out.println("CRR: " + crR + " TG: [" +
-                                   xt0 +"," +
-                                   yt0 +"," +
-                                   xt1 +"," +
-                                   yt1 +"] Off: " +
-                                   cr.getTileGridXOffset() +"," +
-                                   cr.getTileGridYOffset());
-            }
-
-            DataBuffer db = wr.getDataBuffer();
-            int yloc = yt0*th+cr.getTileGridYOffset();
-            int skip = (clipR.y-yloc)/th;
-            if (skip <0) skip = 0;
-            yt0+=skip;
-
-            int xloc = xt0*tw+cr.getTileGridXOffset();
-            skip = (clipR.x-xloc)/tw;
-            if (skip <0) skip = 0;
-            xt0+=skip;
-
-            int endX = clipR.x+clipR.width-1;
-            int endY = clipR.y+clipR.height-1;
-
-            if (false) {
-                System.out.println("clipR: " + clipR + " TG: [" +
-                                   xt0 +"," +
-                                   yt0 +"," +
-                                   xt1 +"," +
-                                   yt1 +"] Off: " +
-                                   cr.getTileGridXOffset() +"," +
-                                   cr.getTileGridYOffset());
-            }
-
             // System.out.println("Starting Draw: " + cr);
             long startTime = System.currentTimeMillis();
 
-            yloc = yt0*th+cr.getTileGridYOffset();
-            int minX = xt0*tw+cr.getTileGridXOffset();
-            int xStep = tw;
-            xloc = minX;
-            for (int y=yt0; y<yt1; y++, yloc += th) {
-                if (yloc > endY) break;
-                for (int x=xt0; x<xt1; x++, xloc+=xStep) {
-                    if ((xloc<minX) || (xloc > endX)) break;
-                    tR.x = xloc;
-                    tR.y = yloc;
-                    Rectangle2D.intersect(crR, tR, iR);
+            if (false) {
+                // This can be significantly faster but can also
+                // require much more memory.
+                g2d.drawRenderedImage(cr, IDENTITY);
+            } else {
+                // Use tiles to draw image...
+                srcCM = cr.getColorModel();
+                SampleModel srcSM = cr.getSampleModel();
+                WritableRaster wr;
+                wr = Raster.createWritableRaster(srcSM, new Point(0,0));
+                BufferedImage bi = new BufferedImage
+                    (srcCM, wr, srcCM.isAlphaPremultiplied(), null);
 
-                    WritableRaster twr;
-                    twr = wr.createWritableChild(0, 0,
-                                                 iR.width, iR.height,
-                                                 iR.x, iR.y, null);
+                int xt0 = cr.getMinTileX();
+                int xt1 = xt0+cr.getNumXTiles();
+                int yt0 = cr.getMinTileY();
+                int yt1 = yt0+cr.getNumYTiles();
+                int tw  = srcSM.getWidth();
+                int th  = srcSM.getHeight();
 
-                    // System.out.println("Generating tile: " + twr);
-                    cr.copyData(twr);
+                Rectangle tR  = new Rectangle(0,0,tw,th);
+                Rectangle iR  = new Rectangle(0,0,0,0);
 
-                    // Make sure we only draw the region that was written...
-                    BufferedImage subBI;
-                    subBI = bi.getSubimage(0, 0, iR.width,  iR.height);
-                    if (false) {
-                        System.out.println("Drawing: " + tR);
-                        System.out.println("IR: "      + iR);
-                    }
-
-                    AffineTransform trans;
-                    trans = AffineTransform.getTranslateInstance(iR.x, iR.y);
-                    g2d.drawImage(subBI, trans, null);
-                    // big2d.fillRect(0, 0, tw, th);
+                if (false) {
+                    System.out.println("CR: " + cr);
+                    System.out.println("CRR: " + crR + " TG: [" +
+                                       xt0 +"," +
+                                       yt0 +"," +
+                                       xt1 +"," +
+                                       yt1 +"] Off: " +
+                                       cr.getTileGridXOffset() +"," +
+                                       cr.getTileGridYOffset());
                 }
-                xStep = -xStep; // Reverse directions.
-                xloc += xStep;   // Get back in bounds.
-            }
 
+                DataBuffer db = wr.getDataBuffer();
+                int yloc = yt0*th+cr.getTileGridYOffset();
+                int skip = (clipR.y-yloc)/th;
+                if (skip <0) skip = 0;
+                yt0+=skip;
+
+                int xloc = xt0*tw+cr.getTileGridXOffset();
+                skip = (clipR.x-xloc)/tw;
+                if (skip <0) skip = 0;
+                xt0+=skip;
+
+                int endX = clipR.x+clipR.width-1;
+                int endY = clipR.y+clipR.height-1;
+
+                if (false) {
+                    System.out.println("clipR: " + clipR + " TG: [" +
+                                       xt0 +"," +
+                                       yt0 +"," +
+                                       xt1 +"," +
+                                       yt1 +"] Off: " +
+                                       cr.getTileGridXOffset() +"," +
+                                       cr.getTileGridYOffset());
+                }
+
+
+                yloc = yt0*th+cr.getTileGridYOffset();
+                int minX = xt0*tw+cr.getTileGridXOffset();
+                int xStep = tw;
+                xloc = minX;
+                for (int y=yt0; y<yt1; y++, yloc += th) {
+                    if (yloc > endY) break;
+                    for (int x=xt0; x<xt1; x++, xloc+=xStep) {
+                        if ((xloc<minX) || (xloc > endX)) break;
+                        tR.x = xloc;
+                        tR.y = yloc;
+                        Rectangle2D.intersect(crR, tR, iR);
+
+                        WritableRaster twr;
+                        twr = wr.createWritableChild(0, 0,
+                                                     iR.width, iR.height,
+                                                     iR.x, iR.y, null);
+
+                        // System.out.println("Generating tile: " + twr);
+                        cr.copyData(twr);
+
+                        // Make sure we only draw the region that was written...
+                        BufferedImage subBI;
+                        subBI = bi.getSubimage(0, 0, iR.width,  iR.height);
+                        if (false) {
+                            System.out.println("Drawing: " + tR);
+                            System.out.println("IR: "      + iR);
+                        }
+
+                        AffineTransform trans;
+                        trans = AffineTransform.getTranslateInstance(iR.x, iR.y);
+                        g2d.drawImage(subBI, trans, null);
+                        // big2d.fillRect(0, 0, tw, th);
+                    }
+                    xStep = -xStep; // Reverse directions.
+                    xloc += xStep;   // Get back in bounds.
+                }
+            }
             long endTime = System.currentTimeMillis();
             // System.out.println("Time: " + (endTime-startTime));
         } finally {
@@ -737,7 +744,7 @@ public class GraphicsUtil {
 
             System.arraycopy(srcPixels, srcBase, dstPixels, dstBase,
                              width*height);
-        } else if (width > 20) {
+        } else if (width > 128) {
             int srcSP = srcBase;
             int dstSP = dstBase;
             for (int y=0; y<height; y++) {
