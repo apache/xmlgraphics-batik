@@ -30,7 +30,7 @@
             <ul>
                 <li>Make it easy to detect regressions</li>
                 <li>Make it easy to run test suites</li>
-                <li>Make it easy to write new test and add them
+                <li>Make it easy to write new tests and add them
                     to an existing test suite</li>
             </ul>
 
@@ -79,7 +79,7 @@
 
                 <li>A <code>TestReportProcessor</code> is used to 
                 analyze a <code>TestReport</code>. A specific implementation
-                can chose to create graphs, send an email or write
+                can choose to create graphs, send an email or write
                 an HTML file</li>
 
             </ul>
@@ -242,7 +242,7 @@
 
             <p>There is now a rule in our <code>build.xml</code> to run a test suite defined in 
             an XML file as the one above. At the command line, type the following:</p>
-            <p><code>build runtestsuite -Dargs="path/to/my/newly/created/testSuite.xml"</code>.
+            <p><code>build runtestsuite path/to/my/newly/created/testSuite.xml</code>.
             In addition, the <em>regard</em> rule runs a specific set of tests by default,
             so that you do not need to pass any testRun file argument.</p>
             </s2>
@@ -251,7 +251,7 @@
         <anchor id="regardReplacement" />
         <s1 title="The 'regard' replacement">
         
-        <p>'regard' is the tool we have used so far to deted regressions in how we render SVG images</p>
+        <p>'regard' is the tool we have used so far to detect regressions in how we render SVG images</p>
         <p>There is a <code>Test</code> implementation, <code>SVGRenderingAccuracyTest</code> which takes over
         the responsibility that regard has and then goes beyond.</p>
 
@@ -366,7 +366,7 @@
             reference images are typically generated, you can check-in the reference image in 
             test-references/samples/tests. Otherwise (and this is ok), you can let the test fail the 
             first time it is run on the build/test machine and that will be a reminder for whoever
-            is responsible for that machine that a valid reference image shoudl be checked in.</p>
+            is responsible for that machine that a valid reference image should be checked in.</p>
             
         </s2>
 
@@ -375,7 +375,7 @@
             <p>Imagine you want to validate some aspect of your code, and let's take the bridge error
             handling as an example. You could create a new class in the <code>test-sources</code>
             area, in the org/apache/batik/bridge in our example, and let's call it <code>ErrorHandlingTest</code>.
-            To simplify the implementation of the <code>Test</code> interface, you can chose
+            To simplify the implementation of the <code>Test</code> interface, you can choose
             to derive from the <code>AbstractTest</code> class and generate a <code>DefaultTestReport</code>.</p>
             
             <p>While writing the <code>Test</code> you may want to use your own XML file with just

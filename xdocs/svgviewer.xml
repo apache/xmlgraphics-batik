@@ -58,13 +58,13 @@
             <s2 title="Starting the browser for the binary distribution">
 
                 <p>If you downloaded the binary distribution of Batik, you should have
-                gotten a file called <em>batik-1.0beta.zip</em>, which, when expanded, 
+                gotten a file called <em>batik-1.0.zip</em>, which, when expanded, 
                 created a <em>batik-svgbrowser.jar</em> file. To start the browser, 
                 type the following on the command line:</p>
                 <p><em>cd &lt;installationDirectory&gt;</em></p>
                 <p><em>java -jar batik-svgbrowser.jar</em></p>
                 <p>You can pass options to the command line:</p>
-                <p><em>java -jar batik-svgbrowser.jar [-font-size &lt;fontSize&gt;] [svgURL]</em></p>
+                <p><em>java -jar batik-svgbrowser.jar [-font-size &lt;fontSize&gt;] [svgURL]*</em></p>
                 <p>Where:</p>
                     <ul>
                         <li><em>-font-size &lt;fontSize&gt;</em> will make the browser use small fonts in the GUI.</li>
@@ -102,8 +102,8 @@
                         This will start the browser</li>
                 </ul>
                 <p>You can pass options to the browser as follows:</p>
-                <p><strong>Windows: </strong><em>build svgbrowser [-font-size &lt;fontSize&gt;] [svgURL]"</em></p>
-                <p><strong>UNIX: </strong><em>build.sh svgbrowser [-font-size &lt;fontSize&gt;] [svgURL]"</em></p>
+                <p><strong>Windows: </strong><em>build svgbrowser [-font-size &lt;fontSize&gt;] [svgURL]</em></p>
+                <p><strong>UNIX: </strong><em>build.sh svgbrowser [-font-size &lt;fontSize&gt;] [svgURL]</em></p>
                 <p>Refer to "Starting the browser for the binary distribution" for an explanation of these
                 options</p>
             </s2>
