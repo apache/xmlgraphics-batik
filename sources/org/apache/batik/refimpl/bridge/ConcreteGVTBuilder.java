@@ -14,6 +14,10 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.GVTBuilder;
 
+import org.apache.batik.css.AbstractViewCSS;
+import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
+import org.apache.batik.css.HiddenChildElement;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
@@ -22,12 +26,18 @@ import org.apache.batik.bridge.Bridge;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.EventListener;
+import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGSVGElement;
+import org.w3c.dom.svg.SVGSymbolElement;
 import org.w3c.dom.svg.SVGTests;
 
 /**
@@ -126,6 +136,55 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                 buildComposite(ctx,
                                (CompositeGraphicsNode)childGVTNode,
                                e.getFirstChild());
+            } else if (e.getLocalName().equals(TAG_USE)) {
+                String href = XLinkSupport.getXLinkHref(e);
+                if (href.startsWith("#")) {
+                    Document doc = e.getOwnerDocument();
+                    Element elt = doc.getElementById(href.substring(1));
+                    Element inst = (Element)elt.cloneNode(true);
+                    if (inst instanceof SVGSymbolElement) {
+                        Element tmp = e.getOwnerDocument().createElementNS
+                            (SVG_NAMESPACE_URI, TAG_SVG);
+                        for (Node n = inst.getFirstChild();
+                             n != null;
+                             n = inst.getFirstChild()) {
+                            tmp.appendChild(n);
+                        }
+                        NamedNodeMap attrs = inst.getAttributes();
+                        int len = attrs.getLength();
+                        for (int i = 0; i < len; i++) {
+                            Attr attr = (Attr)attrs.item(i);
+                            String ns = attr.getNamespaceURI();
+                            tmp.setAttributeNS(attr.getNamespaceURI(),
+                                               attr.getName(),
+                                               attr.getValue());
+                        }
+                        tmp.setAttributeNS(null, ATTR_WIDTH, "100%");
+                        tmp.setAttributeNS(null, ATTR_HEIGHT, "100%");
+                        inst = tmp;
+                    }
+                    ((HiddenChildElement)inst).setParentElement(e);
+                    if (inst instanceof SVGSVGElement) {
+                        if (e.hasAttributeNS(null, ATTR_WIDTH)) {
+                            inst.setAttributeNS(null, ATTR_WIDTH,
+                                                e.getAttributeNS(null,
+                                                                 ATTR_WIDTH));
+                        }
+                        if (e.hasAttributeNS(null, ATTR_HEIGHT)) {
+                            inst.setAttributeNS(null, ATTR_HEIGHT,
+                                                e.getAttributeNS(null,
+                                                                 ATTR_HEIGHT));
+                        }
+                    }
+                    /*
+                    SVGDocument svgdoc = (SVGDocument)doc;
+                    computeStyle(elt,  (ViewCSS)svgdoc.getRootElement(),
+                                 inst, ctx.getViewCSS());
+                    */
+                    buildGraphicsNode(ctx,
+                                      (CompositeGraphicsNode)childGVTNode,
+                                      inst);
+                }
             } else if (e.getLocalName().equals(TAG_SWITCH)) {
                 for (Node n = e.getFirstChild();
                      n != null;
@@ -144,6 +203,24 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    protected void computeStyle(Element use, ViewCSS uv,
+                                Element def, ViewCSS dv) {
+        CSSOMReadOnlyStyleDeclaration usd;
+        AbstractViewCSS uview = (AbstractViewCSS)uv;
+        usd = (CSSOMReadOnlyStyleDeclaration)uview.computeStyle(use, null);
+        ((AbstractViewCSS)dv).setComputedStyle(def, null, usd);
+        for (Node un = use.getFirstChild(), dn = def.getFirstChild();
+             un != null;
+             un = un.getNextSibling(), dn = dn.getNextSibling()) {
+            if (un.getNodeType() == Node.ELEMENT_NODE) {
+                computeStyle((Element)un, uv, (Element)dn, dv);
             }
         }
     }

@@ -37,8 +37,25 @@ public class EventSupport {
      */
     public static final String UI_EVENT_TYPE = "UIEvents";
 
-    private HashTable capturingListeners;
-    private HashTable bubblingListeners;
+    /**
+     * The event factories table.
+     */
+    protected static HashTable eventFactories = new HashTable();
+    {
+        eventFactories.put(MUTATION_EVENT_TYPE, new MutationEventFactory());
+        eventFactories.put(MOUSE_EVENT_TYPE, new MouseEventFactory());
+        eventFactories.put(UI_EVENT_TYPE, new UIEventFactory());
+    }
+
+    /**
+     * The capturing listeners table.
+     */
+    protected HashTable capturingListeners;
+
+    /**
+     * The bubbling listeners table.
+     */
+    protected HashTable bubblingListeners;
 
     /**
      * Creates a new Event depending on the specified parameter.
@@ -71,17 +88,20 @@ public class EventSupport {
      */
     public static Event createEvent(String eventType)
 	    throws DOMException {
-	if(MOUSE_EVENT_TYPE.equals(eventType)) {
-	    return new DOMMouseEvent();
-	}
-	if(MUTATION_EVENT_TYPE.equals(eventType)) {
-	    return new DOMMutationEvent();
-	}
-	if(UI_EVENT_TYPE.equals(eventType)) {
-	    return new DOMUIEvent();
-	}
-	throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
-			       "Bad event type: " + eventType);
+        EventFactory ef = (EventFactory)eventFactories.get(eventType);
+        if (ef == null) {
+            throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
+                                   "Bad event type: " + eventType);
+        }
+        return ef.createEvent();
+    }
+
+    /**
+     * Registers a new EventFactory object.
+     */
+    public static void registerEventFactory(String eventType,
+                                            EventFactory factory) {
+        eventFactories.put(eventType, factory);
     }
 
     /**
@@ -322,5 +342,51 @@ public class EventSupport {
     private static EventException createUnspecifiedEventTypeErr(String s) {
 	return createEventException(EventException.UNSPECIFIED_EVENT_TYPE_ERR,
 				    s);
+    }
+
+    /**
+     * This interface represents an event factory.
+     */
+    public interface EventFactory {
+        /**
+         * Creates a new Event object.
+         */
+        Event createEvent();
+    }
+
+    /**
+     * To create a mutation event.
+     */
+    protected static class MutationEventFactory implements EventFactory {
+        /**
+         * Creates a new Event object.
+         */
+        public Event createEvent() {
+            return new DOMMutationEvent();
+        }
+    }
+
+    /**
+     * To create a mouse event.
+     */
+    protected static class MouseEventFactory implements EventFactory {
+        /**
+         * Creates a new Event object.
+         */
+        public Event createEvent() {
+            return new DOMMouseEvent();
+        }
+    }
+
+    /**
+     * To create a UI event.
+     */
+    protected static class UIEventFactory implements EventFactory {
+        /**
+         * Creates a new Event object.
+         */
+        public Event createEvent() {
+            return new DOMUIEvent();
+        }
     }
 }

@@ -10,10 +10,12 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.css.ElementNonCSSPresentationalHints;
 import org.apache.batik.css.ExtendedElementCSSInlineStyle;
+import org.apache.batik.css.HiddenChildElement;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
@@ -37,7 +39,13 @@ public abstract class SVGGraphicsElement
     extends    SVGOMElement
     implements OverrideStyleElement,
 	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints {
+	       ElementNonCSSPresentationalHints,
+               HiddenChildElement {
+    /**
+     * The parent element.
+     */
+    protected Element parentElement;
+
     /**
      * Creates a new SVGGraphicsElement.
      */
@@ -52,6 +60,20 @@ public abstract class SVGGraphicsElement
     protected SVGGraphicsElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
 
+    }
+
+    /**
+     * The parent element of this element.
+     */
+    public Element getParentElement() {
+        return parentElement;
+    }
+
+    /**
+     * Sets the parent element.
+     */
+    public void setParentElement(Element elt) {
+        parentElement = elt;
     }
 
     // ElementNonCSSPresentationalHints ////////////////////////////////////

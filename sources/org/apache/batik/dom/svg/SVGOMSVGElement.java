@@ -11,6 +11,7 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 import org.apache.batik.css.ElementNonCSSPresentationalHints;
 import org.apache.batik.css.ExtendedElementCSSInlineStyle;
+import org.apache.batik.css.HiddenChildElement;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
@@ -46,7 +47,8 @@ public class SVGOMSVGElement
     implements SVGSVGElement,
 	       OverrideStyleElement,
 	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints {
+	       ElementNonCSSPresentationalHints,
+               HiddenChildElement {
     /**
      * The contentScriptType attribute name.
      */
@@ -102,6 +104,11 @@ public class SVGOMSVGElement
     protected WeakReference heightReference;
 
     /**
+     * The parent element.
+     */
+    protected Element parentElement;
+
+    /**
      * Creates a new SVGOMSVGElement object.
      */
     public SVGOMSVGElement() {
@@ -114,6 +121,20 @@ public class SVGOMSVGElement
      */
     public SVGOMSVGElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
+    }
+
+    /**
+     * The parent element of this element.
+     */
+    public Element getParentElement() {
+        return parentElement;
+    }
+
+    /**
+     * Sets the parent element.
+     */
+    public void setParentElement(Element elt) {
+        parentElement = elt;
     }
 
     /**

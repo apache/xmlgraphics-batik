@@ -18,6 +18,7 @@ import org.apache.batik.css.value.ValueFactoryMap;
 import org.apache.batik.dom.AbstractDOMImplementation;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.StyleSheetFactory;
+import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
@@ -26,6 +27,7 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Node;
+import org.w3c.dom.events.Event;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSStyleSheet;
 import org.w3c.dom.css.DOMImplementationCSS;
@@ -56,9 +58,18 @@ public class SVGDOMImplementation
         new SVGDOMImplementation();
 
     static {
+        EventSupport.registerEventFactory("SVGEvent",
+            new EventSupport.EventFactory() {
+                    public Event createEvent() {
+                        return new SVGOMEvent();
+                    }
+                });
+    }
+
+    {
         features.put("CSS",            "2.0");
         features.put("StyleSheets",    "2.0");
-        features.put("SVG",            "1");
+        features.put("SVG",            "1.0");
     }
 
     /**

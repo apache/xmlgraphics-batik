@@ -11,6 +11,7 @@ package org.apache.batik.css;
 import org.apache.batik.css.event.CSSStyleDeclarationChangeListener;
 import org.apache.batik.css.event.CSSStyleDeclarationChangeSupport;
 import org.apache.batik.css.event.CSSValueChangeListener;
+import org.apache.batik.css.value.ImmutableInherit;
 import org.apache.batik.css.value.ValueFactory;
 import org.apache.batik.css.value.ValueFactoryMap;
 import org.w3c.css.sac.CSSException;
@@ -19,9 +20,12 @@ import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.css.sac.Parser;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSRule;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
+import org.w3c.dom.css.ViewCSS;
 
 /**
  * This class implements the {@link org.w3c.dom.css.CSSStyleDeclaration}
@@ -57,10 +61,52 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     protected CSSStyleDeclarationChangeSupport declarationChangeSupport;
 
     /**
+     * The ViewCSS.
+     */
+    protected ViewCSS viewCSS;
+
+    /**
+     * The associated element.
+     */
+    protected Element element;
+
+    /**
+     * Creates a new CSSOMReadOnlyStyleDeclaration object.
+     */
+    public CSSOMReadOnlyStyleDeclaration(ViewCSS v, Element elt) {
+        setContext(v, elt);
+    }
+
+    /**
+     * Sets the declaration context.
+     */
+    public void setContext(ViewCSS v, Element elt) {
+        viewCSS = v;
+        element = getParentElement(elt);
+    }
+
+    /**
+     * Returns the parent element of the given one, or null.
+     */
+    protected Element getParentElement(Element e) {
+	for (Node n = e.getParentNode(); n != null; n = n.getParentNode()) {
+	    if (n.getNodeType() == Node.ELEMENT_NODE) {
+		return (Element)n;
+	    }
+	}
+        if (e instanceof HiddenChildElement) {
+            return ((HiddenChildElement)e).getParentElement();
+        }
+        // Should never append
+	return null;
+    }
+
+    /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.css.CSSStyleDeclaration#getCssText()}.
      */
     public String getCssText() {
+        // !!! Fix to display all the values
 	String result = "";
 	for (int i = properties.size() - 1; i >= 0; i--) {
 	    result += "    " + properties.key(i) + ": ";
@@ -161,7 +207,14 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     public String getPropertyValue(String propertyName) {
         String s = propertyName.toLowerCase().intern();
 	ValueEntry ve = (ValueEntry)properties.get(s);
-	return (ve == null) ? "" : ve.value.getCssText();
+
+        if (ve == null || ve.value == ImmutableInherit.INSTANCE) {
+            CSSStyleDeclaration sd;
+            sd = viewCSS.getComputedStyle(element, null);
+            return sd.getPropertyCSSValue(s).getCssText();
+        } else {
+            return ve.value.getCssText();
+        }
     }
 
     /**
@@ -171,7 +224,24 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     public CSSValue getPropertyCSSValue(String propertyName) {
         String s = propertyName.toLowerCase().intern();
 	ValueEntry ve = (ValueEntry)properties.get(s);
-	return (ve == null) ? null : ve.value;
+
+        if (ve == null || ve.value == ImmutableInherit.INSTANCE) {
+            CSSStyleDeclaration sd;
+            sd = viewCSS.getComputedStyle(element, null);
+            CSSValue res = sd.getPropertyCSSValue(s);
+            return res;
+        } else {
+            return ve.value;
+        }
+    }
+
+    /**
+     * Returns the local CSSValue.
+     */
+    public CSSValue getLocalPropertyCSSValue(String propertyName) {
+        String s = propertyName.toLowerCase().intern();
+	ValueEntry ve = (ValueEntry)properties.get(s);
+        return (ve == null) ? null : ve.value;
     }
 
     /**
@@ -191,10 +261,26 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
      * Returns a property origin.
      */
     public int getPropertyOrigin(String propertyName) {
-	ValueEntry ve = (ValueEntry)properties.get(propertyName);
-	return (ve == null)
-	    ? CSSOMReadOnlyStyleDeclaration.USER_AGENT_ORIGIN
-	    : ve.origin;
+        String s = propertyName.toLowerCase().intern();
+	ValueEntry ve = (ValueEntry)properties.get(s);
+
+        if (ve == null || ve.value == ImmutableInherit.INSTANCE) {
+            CSSStyleDeclaration sd;
+            sd = viewCSS.getComputedStyle(element, null);
+            return ((CSSOMReadOnlyStyleDeclaration)
+                    sd).getPropertyOrigin(s);
+        } else {
+            return ve.origin;
+        }
+    }
+
+    /**
+     * Returns the local property origin.
+     */
+    public int getLocalPropertyOrigin(String propertyName) {
+        String s = propertyName.toLowerCase().intern();
+	ValueEntry ve = (ValueEntry)properties.get(s);
+        return (ve == null) ? AUTHOR_ORIGIN : ve.origin;
     }
 
     /**
@@ -215,15 +301,24 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     public String getPropertyPriority(String propertyName) {
         String s = propertyName.toLowerCase().intern();
 	ValueEntry ve = (ValueEntry)properties.get(s);
-	return (ve == null) ? "" : ve.priority;
+
+        if (ve == null || ve.value == ImmutableInherit.INSTANCE) {
+            CSSStyleDeclaration sd;
+            sd = viewCSS.getComputedStyle(element, null);
+            return ((CSSOMReadOnlyStyleDeclaration)
+                    sd).getPropertyPriority(s);
+        } else {
+            return ve.priority;
+        }
     }
 
     /**
-     * The same as getPropertyPriority() but the given string is not interned.
+     * Returns the local priority.
      */
-    public String getPropertyPriorityUnsafe(String propertyName) {
-	ValueEntry ve = (ValueEntry)properties.get(propertyName);
-	return (ve == null) ? "" : ve.priority;
+    public String getLocalPropertyPriority(String propertyName) {
+        String s = propertyName.toLowerCase().intern();
+	ValueEntry ve = (ValueEntry)properties.get(s);
+        return (ve == null) ? "" : ve.priority;
     }
 
     /**

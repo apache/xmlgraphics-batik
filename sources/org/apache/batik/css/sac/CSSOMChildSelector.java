@@ -41,7 +41,7 @@ public class CSSOMChildSelector extends AbstractCombinatorSelector {
      */
     public boolean match(Element e, String pseudoE) {
 	Node n = e.getParentNode();
-	if (n.getNodeType() == Node.ELEMENT_NODE) {
+	if (n != null && n.getNodeType() == Node.ELEMENT_NODE) {
 	    return ((ExtendedSelector)getParentSelector()).match((Element)n,
                                                                  null) &&
 		   ((ExtendedSelector)getSimpleSelector()).match(e, pseudoE);

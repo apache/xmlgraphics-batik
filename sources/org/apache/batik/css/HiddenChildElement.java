@@ -22,4 +22,9 @@ public interface HiddenChildElement {
      * The parent element of this element.
      */
     Element getParentElement();
+
+    /**
+     * Sets the parent element of this element.
+     */
+    void setParentElement(Element elt);
 }

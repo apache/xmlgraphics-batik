@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Rectangle;
 
@@ -78,8 +79,10 @@ import org.apache.batik.util.gui.LanguageDialog;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;
 import org.apache.batik.util.gui.URIChooser;
+import org.apache.batik.util.gui.UserStyleDialog;
 
 import org.apache.batik.util.gui.resource.ActionMap;
+import org.apache.batik.util.gui.resource.ButtonFactory;
 import org.apache.batik.util.gui.resource.JComponentModifier;
 import org.apache.batik.util.gui.resource.MenuFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
@@ -101,7 +104,8 @@ public class ViewerFrame
     extends    JFrame
     implements ActionMap,
                UserAgent,
-               LanguageChangeHandler {
+               LanguageChangeHandler,
+               UserStyleDialog.ChangeHandler {
     // The actions names.
     public final static String OPEN_ACTION        = "OpenAction";
     public final static String OPEN_PAGE_ACTION   = "OpenPageAction";
@@ -112,9 +116,11 @@ public class ViewerFrame
     public final static String SOURCE_ACTION      = "SourceAction";
     public final static String DESCRIPTION_ACTION = "DescriptionAction";
     public final static String TREE_ACTION        = "TreeAction";
+    public final static String THUMBNAIL_ACTION   = "ThumbnailAction";
     public final static String STOP_ACTION        = "StopAction";
     public final static String FIXED_SIZE_ACTION  = "FixedSizeAction";
     public final static String LANGUAGE_ACTION    = "LanguageAction";
+    public final static String USER_STYLE_ACTION  = "UserStyleAction";
     public final static String MONITOR_ACTION     = "MonitorAction";
 
     /**
@@ -215,6 +221,16 @@ public class ViewerFrame
     protected LanguageDialog languageDialog;
 
     /**
+     * The user style dialog.
+     */
+    protected UserStyleDialog userStyleDialog;
+
+    /**
+     * The thumbnail frame.
+     */
+    protected JFrame thumbnailFrame;
+
+    /**
      * The reload action
      */
     protected ReloadAction reloadAction = new ReloadAction();
@@ -283,9 +299,11 @@ public class ViewerFrame
         listeners.put(SOURCE_ACTION,      new SourceAction());
         listeners.put(DESCRIPTION_ACTION, new DescriptionAction());
         listeners.put(TREE_ACTION,        new TreeAction());
+        listeners.put(THUMBNAIL_ACTION,   new ThumbnailAction());
         listeners.put(STOP_ACTION,        stopAction);
         listeners.put(FIXED_SIZE_ACTION,  new FixedSizeAction());
         listeners.put(LANGUAGE_ACTION,    new LanguageAction());
+        listeners.put(USER_STYLE_ACTION,  new UserStyleAction());
         listeners.put(MONITOR_ACTION,     new MonitorAction());
  
         JPanel p = null;
@@ -328,6 +346,10 @@ public class ViewerFrame
         // Create the language dialog
         languageDialog = new LanguageDialog(this);
         languageDialog.setLanguageChangeHandler(this);
+
+        // Create the user style dialog
+        userStyleDialog = new UserStyleDialog(this);
+        userStyleDialog.setChangeHandler(this);
 
         panel.add("Center", canvas);
         panel.revalidate();
@@ -384,6 +406,13 @@ public class ViewerFrame
         userLanguages = lang;
     }
 
+    /**
+     * Called when the user stylesheet has changed.
+     */
+    public void userStyleSheetURIChanged(String s) {
+        userStyleSheetURI = s;
+    }
+
     // UserAgent ///////////////////////////////////////////////////
 
     /**
@@ -405,7 +434,7 @@ public class ViewerFrame
      * Returns the pixel to mm factor.
      */
     public float getPixelToMM() {
-        return 0.33f;
+        return 0.3f;
     }
 
     /**
@@ -687,6 +716,61 @@ public class ViewerFrame
     }
 
     /**
+     * To display the thumbnail view of the document
+     */
+    public class ThumbnailAction extends AbstractAction {
+        public ThumbnailAction() {}
+        public void actionPerformed(ActionEvent e) {
+            if (thumbnailFrame == null) {
+                thumbnailFrame =
+                    new JFrame(resources.getString("Thumbnail.title"));
+                thumbnailFrame.setSize
+                    (resources.getInteger("Thumbnail.width"),
+                     resources.getInteger("Thumbnail.height"));
+
+                listeners.put("ThumbnailCloseButtonAction",
+                              new CloseButtonAction());
+                JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                ButtonFactory bf = new ButtonFactory(bundle, ViewerFrame.this);
+                p.add(bf.createJButton("ThumbnailCloseButton"));
+                thumbnailFrame.getContentPane().add("South", p);
+
+
+                p = new JPanel(new BorderLayout());
+                thumbnailFrame.getContentPane().add(p);
+                p.setBorder(BorderFactory.createCompoundBorder
+                            (BorderFactory.createCompoundBorder
+                             (BorderFactory.createTitledBorder
+                              (BorderFactory.createEtchedBorder(),
+                               resources.getString("Thumbnail.border_title")),
+                              BorderFactory.createEmptyBorder(5, 5, 5, 5)),
+                             BorderFactory.createLoweredBevelBorder()));
+
+                
+                p.add("Center", canvas.getThumbnail());
+
+                URL url =
+                    getClass().getResource(resources.getString("Frame.icon"));
+                thumbnailFrame.setIconImage(new ImageIcon(url).getImage());
+            }
+            Rectangle fr = getBounds();
+            Dimension td = thumbnailFrame.getSize();
+            thumbnailFrame.setLocation(fr.x + (fr.width  - td.width) / 2,
+                                       fr.y + (fr.height - td.height) / 2);
+            thumbnailFrame.show();
+        }
+
+        /**
+         * The action associated with the 'Close' button of the memory monitor.
+         */
+        protected class CloseButtonAction extends AbstractAction {
+            public void actionPerformed(ActionEvent e) {
+                thumbnailFrame.dispose();
+            }
+        }
+    }
+
+    /**
      * To stop the current processing
      */
     public class StopAction extends    AbstractAction
@@ -735,6 +819,19 @@ public class ViewerFrame
                                        fr.y + (fr.height - ld.height) / 2);
             languageDialog.setLanguages(userLanguages);
             languageDialog.show();
+        }
+    }
+
+    /**
+     * To display the user style options dialog.
+     */
+    public class UserStyleAction extends AbstractAction {
+        public void actionPerformed(ActionEvent e) {
+            Rectangle fr = getBounds();
+            Dimension sd = userStyleDialog.getSize();
+            userStyleDialog.setLocation(fr.x + (fr.width  - sd.width) / 2,
+                                        fr.y + (fr.height - sd.height) / 2);
+            userStyleDialog.show();
         }
     }
 
@@ -827,9 +924,10 @@ public class ViewerFrame
                 Reader r = new InputStreamReader(is);
 
                 doc = df.createDocument(documentURI, new InputSource(r));
-                // !!! ???
+
                 DefaultSVGContext dc = new DefaultSVGContext();
                 dc.setUserAgent(ViewerFrame.this);
+                dc.setUserStyleSheetURI(userStyleSheetURI);
                 doc.setSVGContext(dc);
 
                 long t2 = System.currentTimeMillis();

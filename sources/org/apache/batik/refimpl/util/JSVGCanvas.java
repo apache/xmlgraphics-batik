@@ -202,7 +202,12 @@ public class JSVGCanvas
      */
     protected Thread repaintThread;
 
-   /**
+    /**
+     * The thumbnail canvas.
+     */
+    protected ThumbnailCanvas thumbnailCanvas;
+
+    /**
      * Used to draw marker
      */
     protected BasicStroke markerStroke 
@@ -275,6 +280,20 @@ public class JSVGCanvas
 
         repaint = true;
         repaint();
+
+        if (thumbnailCanvas != null) {
+            thumbnailCanvas.fullRepaint();
+        }
+    }
+
+    /**
+     * Returns the thumbnail.
+     */
+    public JComponent getThumbnail() {
+        if (thumbnailCanvas == null) {
+            thumbnailCanvas = new ThumbnailCanvas();
+        }
+        return thumbnailCanvas;
     }
 
     // ActionMap /////////////////////////////////////////////////////
@@ -308,7 +327,7 @@ public class JSVGCanvas
    /**
     * @return the area of interest displayed in the viewer, in usr space.
     */
-    private Shape getAreaOfInterest(Rectangle devAOI){
+    protected Shape getAreaOfInterest(Rectangle devAOI){
         AffineTransform dev2usr = null;
         try {
             dev2usr = transform.createInverse();
@@ -496,6 +515,9 @@ public class JSVGCanvas
                 return;
             }
             computeTransform();
+            if (thumbnailCanvas != null) {
+                thumbnailCanvas.repaint();
+            }
         }
     }
 
@@ -508,6 +530,9 @@ public class JSVGCanvas
             computeTransform();
             repaint = true;
             repaint();
+            if (thumbnailCanvas != null) {
+                thumbnailCanvas.repaint();
+            }
         }
     }
     
@@ -521,6 +546,9 @@ public class JSVGCanvas
                 (AffineTransform.getScaleInstance(2, 2));
             repaint = true;
             repaint();
+            if (thumbnailCanvas != null) {
+                thumbnailCanvas.repaint();
+            }
         }
     }
     
@@ -534,6 +562,9 @@ public class JSVGCanvas
                 (AffineTransform.getScaleInstance(0.5, 0.5));
             repaint = true;
             repaint();
+            if (thumbnailCanvas != null) {
+                thumbnailCanvas.repaint();
+            }
         }
     }
     
@@ -647,6 +678,9 @@ public class JSVGCanvas
                 transform.preConcatenate(panTransform);
                 repaint = true;
                 repaint();
+                if (thumbnailCanvas != null) {
+                    thumbnailCanvas.repaint();
+                }
             } else if (markerTop != null) {
                 clearZoomMarker();
                 Dimension size = getSize();
@@ -676,11 +710,17 @@ public class JSVGCanvas
                 transform.preConcatenate(at);
                 repaint = true;
                 repaint();
+                if (thumbnailCanvas != null) {
+                    thumbnailCanvas.repaint();
+                }
             } else if (rotateMarker != null) {
                 clearRotateMarker();
                 transform.preConcatenate(rotateTransform);
                 repaint = true;
                 repaint();
+                if (thumbnailCanvas != null) {
+                    thumbnailCanvas.repaint();
+                }
             }
         }
         protected void paintRotateMarker(int x, int y) {
@@ -689,17 +729,6 @@ public class JSVGCanvas
             if (mouseExited) {
                 rotateMarker = null;
             } else {
-                /*
-                int dx = x - sx;
-                Dimension dim = getSize();
-                rotateTransform =
-                    AffineTransform.getRotateInstance(dx / 30.0,
-                                                      dim.width / 2,
-                                                      dim.height / 2);
-                int w = dim.width / 5;
-                int h = dim.height / 5;
-                */
-
                 Dimension dim = getSize();
                 int w = dim.width / 5;
                 int h = dim.height / 5;
@@ -789,4 +818,220 @@ public class JSVGCanvas
             }
         }
     }
+
+    /**
+     * This class represents the thumbnail canvas.
+     */
+    protected class ThumbnailCanvas extends JComponent {
+        /**
+         * The current offscreen buffer.
+         */
+        protected BufferedImage offscreenBuffer;
+
+        /**
+         * The tranform to apply to the graphics object.
+         */
+        protected AffineTransform transform = new AffineTransform();
+
+        /**
+         * The current renderer.
+         */
+        protected Renderer renderer;
+
+        /**
+         * The repaint thread.
+         */
+        protected Thread repaintThread;
+
+        /**
+         * Must the buffer be updated?
+         */
+        protected boolean repaint;
+
+        /**
+         * Used to draw marker
+         */
+        protected BasicStroke markerStroke 
+            = new BasicStroke(1, BasicStroke.CAP_SQUARE, 
+                              BasicStroke.JOIN_MITER,
+                              10,
+                              new float[]{2, 2}, 0);
+        /**
+         * Creates a new ThumbnailCanvas object.
+         */
+        public ThumbnailCanvas() {
+            addComponentListener(new ThumbnailCanvasListener());
+        }
+
+        /**
+         * Recomputes the offscreen buffer and repaint.
+         */
+        public void fullRepaint() {
+            repaint = true;
+            computeTransform();
+            repaint();
+        }
+
+        /**
+         * Paints this component.
+         */
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            
+            Dimension size = getSize();
+            int w = size.width;
+            int h = size.height;
+
+            if (w < 1 || h < 1) {
+                return;
+            }
+        
+            if (repaintThread != null) {
+                Graphics2D g2d = (Graphics2D)g;
+                g2d.drawImage(offscreenBuffer, null, 0, 0);
+                return;
+            }
+
+            updateBuffer(w, h);
+            if (repaint) {
+                renderer = rendererFactory.createRenderer(offscreenBuffer);
+                renderer.setTransform(transform);
+            }
+            if (renderer != null && gvtRoot != null &&
+                renderer.getTree() != gvtRoot) {
+                renderer.setTree(gvtRoot);
+                repaint = true;
+            }
+            if (repaint) {
+                clearBuffer(w, h);
+                renderer.setTransform(transform);
+       
+                repaintThread = new ThumbnailRepaintThread();
+                repaintThread.start();
+                repaint = false;
+                return;
+            }
+            Graphics2D g2d = (Graphics2D)g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                 RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.drawImage(offscreenBuffer, null, 0, 0);
+            
+            // Paint the marker
+            Dimension csize = JSVGCanvas.this.getSize();
+            Rectangle rect = new Rectangle(0, 0, csize.width, csize.height);
+
+            Shape s = JSVGCanvas.this.getAreaOfInterest(rect);
+            s = transform.createTransformedShape(s);
+            g2d.setColor(Color.black);
+            g2d.setStroke(markerStroke);
+            g2d.setXORMode(Color.white);
+            g2d.draw(s);
+        }
+
+        /**
+         * Clears the offscreen buffer.
+         */
+        protected void clearBuffer(int w, int h) {
+            Graphics2D g = offscreenBuffer.createGraphics();
+            g.setComposite(AlphaComposite.SrcOver);
+            g.setClip(0, 0, w, h);
+            g.setPaint(Color.white);
+            g.fillRect(0, 0, w, h);
+        }
+
+        /**
+         * Updates the offscreen buffer.
+         * @param w&nbsp;h The size of the component.
+         */
+        protected void updateBuffer(int w, int h) {
+            // Create a new buffer if needed.
+            if (offscreenBuffer == null ||
+                offscreenBuffer.getWidth() < w ||
+                offscreenBuffer.getHeight() < h) {
+                offscreenBuffer =
+                    new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+                repaint = true;
+            } else if (offscreenBuffer.getWidth() != w ||
+                       offscreenBuffer.getHeight() != h) {
+                offscreenBuffer = offscreenBuffer.getSubimage(0, 0, w, h);
+                repaint = true;
+            }
+        }
+
+        /**
+         * Computes the value of the transform attribute.
+         */
+        protected void computeTransform() {
+            if (document == null) {
+                transform = new AffineTransform();
+                return;
+            }
+            SVGSVGElement elt = document.getRootElement();
+            Dimension size = getSize();
+            int w = size.width;
+            int h = size.height;
+            
+            transform = SVGUtilities.getPreserveAspectRatioTransform
+                (elt, w, h, bridgeContext.getParserFactory());
+            if (transform.isIdentity()) {
+                float dw = elt.getWidth().getBaseVal().getValue();
+                float dh = elt.getHeight().getBaseVal().getValue();
+
+                transform = AffineTransform.getScaleInstance(w / (float)dw,
+                                                             h / (float)dh);
+            }
+        }
+
+        /**
+         * @return the area of interest displayed in the viewer, in usr space.
+         */
+        protected Shape getAreaOfInterest(Rectangle devAOI){
+            AffineTransform dev2usr = null;
+            try {
+                dev2usr = transform.createInverse();
+            } catch(NoninvertibleTransformException e){
+                // This should not happen. See setTransform
+                throw new Error();
+            }
+            return dev2usr.createTransformedShape(devAOI);
+        }
+
+        /**
+         * To repaint the buffer.
+         */
+        protected class ThumbnailRepaintThread extends Thread {
+            /**
+             * Creates a new thread.
+             */
+            public ThumbnailRepaintThread() {
+                setPriority(Thread.MIN_PRIORITY);
+            }
+        
+            /**
+             * The thread main method.
+             */
+            public void run() {
+                Dimension size = getSize();
+                renderer.repaint(getAreaOfInterest
+                               (new Rectangle(0, 0, size.width, size.height)));
+                repaintThread = null;
+                repaint();
+            }
+        }
+
+        /**
+         * To correctly resize the view.
+         */
+        protected class ThumbnailCanvasListener extends ComponentAdapter {
+            public ThumbnailCanvasListener() {}
+            public void componentResized(ComponentEvent e) {
+                if (gvtRoot == null) {
+                    return;
+                }
+                computeTransform();
+            }
+        }
+
+    }
+
 }

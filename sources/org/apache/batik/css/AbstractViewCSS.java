@@ -100,19 +100,30 @@ public abstract class AbstractViewCSS implements ViewCSS {
 	    styles.put(elt, m = new HashMap(11));
 	}
         pseudoElt = (pseudoElt == null) ? "" : pseudoElt;
-        CSSStyleDeclaration result = null;
+        CSSStyleDeclaration result = (CSSStyleDeclaration)m.get(pseudoElt);
 	
-        WeakReference ref = (WeakReference)m.get(pseudoElt);
-        if (ref != null) {
-            result = (CSSStyleDeclaration)ref.get();
-        }
         if (result == null) {
-            result = computeFullStyle(elt, pseudoElt);
-            m.put(pseudoElt, new WeakReference(result));
+            result = computeStyle(elt, pseudoElt);
+            m.put(pseudoElt, result);
         }
 	return result;
     }
  
+    /**
+     * Sets the computed style.
+     */
+    public void setComputedStyle(Element elt,
+                                 String pseudoElt,
+                                 CSSStyleDeclaration sd) {
+	Map m = (Map)styles.get(elt);
+	if (m == null) {
+	    styles.put(elt, m = new HashMap(11));
+	}
+        pseudoElt = (pseudoElt == null) ? "" : pseudoElt;
+        ((CSSOMReadOnlyStyleDeclaration)sd).setContext(this, elt);
+        m.put(pseudoElt, sd);
+    }
+
     /**
      * Sets the media to use to compute the styles.
      * @param mediaText The text representation of the media.
@@ -145,10 +156,10 @@ public abstract class AbstractViewCSS implements ViewCSS {
     /**
      * Computes the cascaded style for the given element and pseudo element.
      */
-    protected CSSStyleDeclaration computeFullStyle(Element elt,
-                                                   String pseudoElt) {
+    public CSSStyleDeclaration computeStyle(Element elt,
+                                            String pseudoElt) {
         CSSOMReadOnlyStyleDeclaration result;
-        result = new CSSOMReadOnlyStyleDeclaration();
+        result = new CSSOMReadOnlyStyleDeclaration(this, elt);
 
 	addUserAgentProperties(elt, pseudoElt, result);
 	addUserProperties(elt, pseudoElt, result);
@@ -181,32 +192,20 @@ public abstract class AbstractViewCSS implements ViewCSS {
 	while (it.hasNext()) {
 	    RelativeValueResolver rvr = (RelativeValueResolver)it.next();
 	    prop = rvr.getPropertyName();
-	    val = (CSSOMReadOnlyValue)rd.getPropertyCSSValue(prop);
-	    prio = rd.getPropertyPriority(prop);
-	    orig = rd.getPropertyOrigin(prop);
-	    if ((rvr.isInheritedProperty() &&
-		 (val == null || val.getCssValueType() == CSSValue.CSS_INHERIT))
-		||
-		(!rvr.isInheritedProperty() &&
-		 (val != null && val.getCssValueType() ==
-                  CSSValue.CSS_INHERIT))) {
-		CSSValue result;
-		Element elt = getParentElement(e);
-		if (elt != null) {
-		    sd = (CSSOMReadOnlyStyleDeclaration)getComputedStyle(elt,
-                                                                         null);
-		    rd.setPropertyCSSValue(prop,
-					   sd.getPropertyCSSValue(prop),
-					   sd.getPropertyPriority(prop),
-					   sd.getPropertyOrigin(prop));
-		    continue;
-		}
-	    }
-	    if (val == null) {
-		val = rvr.getDefaultValue();
-		rd.setPropertyCSSValue(prop, val, prio, orig);
-	    }
-	    rvr.resolveValue(e, pe, this, rd, val, prio, orig);
+	    val = (CSSOMReadOnlyValue)rd.getLocalPropertyCSSValue(prop);
+            prio = rd.getLocalPropertyPriority(prop);
+            orig = rd.getLocalPropertyOrigin(prop);
+
+            if (val == null &&
+                (!rvr.isInheritedProperty() ||
+                 getParentElement(e) == null)) {
+                val = rvr.getDefaultValue();
+                rd.setPropertyCSSValue(prop, val, "",
+                              CSSOMReadOnlyStyleDeclaration.USER_AGENT_ORIGIN);
+            }
+            if (val != null) {
+                rvr.resolveValue(e, pe, this, rd, val, prio, orig);
+            }
 	}
     }
 
