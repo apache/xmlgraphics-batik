@@ -47,7 +47,7 @@
           <use xlink:href="#Batik_Logo_Underline"/>
        </g> <!-- End Batik_Logo_Shadow -->
 
-       <g xml:base="../../../tests/">
+       <g xml:base="tests/">
            <use x="250" y="350" transform="scale(.5)" 
                 xlink:href="../batikLogo.svg#Batik_Logo_Shadow" />
        </g>
