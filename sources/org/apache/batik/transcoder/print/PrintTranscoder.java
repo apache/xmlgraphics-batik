@@ -247,9 +247,34 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         pageFormat.setPaper(paper);
         pageFormat = printerJob.validatePage(pageFormat);
 
-        // Print on the default printer: there is no way in
-        // the Java API to set the printer by program (without
-        // a GUI).
+        //
+        // If required, pop up a dialog to adjust the page format
+        //
+        Boolean showPageFormat = (Boolean)hints.get(KEY_SHOW_PAGE_DIALOG);
+        if(showPageFormat != null && showPageFormat.booleanValue()){
+            PageFormat tmpPageFormat = printerJob.pageDialog(pageFormat);
+            if(tmpPageFormat == pageFormat){
+                // Dialog was cancelled, meaning that the print process should
+                // be stopped.
+                return;
+            }
+
+            pageFormat = tmpPageFormat;
+        }
+
+        //
+        // If required, pop up a dialog to select the printer
+        //
+        Boolean showPrinterDialog = (Boolean)hints.get(KEY_SHOW_PRINTER_DIALOG);
+        if(showPrinterDialog != null && showPrinterDialog.booleanValue()){
+            if(!printerJob.printDialog()){
+                // Dialog was cancelled, meaning that the print process
+                // should be stopped.
+                return;
+            }
+        }
+
+        // Print now
         printerJob.setPrintable(this, pageFormat);
         printerJob.print();
 
@@ -501,6 +526,59 @@ public class PrintTranscoder extends XMLAbstractTranscoder
 
         return nodeRenderContext;
     }
+
+    /**
+     * The showPageDialog key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_SHOW_PAGE_DIALOG</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Boolean</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">false</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specifies whether or not the transcoder
+     *                  should pop up a dialog box for selecting
+     *                  the page format.</TD></TR>
+     * </TABLE> */
+    public static final TranscodingHints.Key KEY_SHOW_PAGE_DIALOG
+        = new BooleanKey(1);
+    public static final String KEY_SHOW_PAGE_DIALOG_STR = "showPageDialog";
+
+    /**
+     * The showPrinterDialog key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_SHOW_PAGE_DIALOG</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Boolean</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">false</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specifies whether or not the transcoder
+     *                  should pop up a dialog box for selecting
+     *                  the printer. If the dialog box is not
+     *                  shown, the transcoder will use the default
+     *                  printer.</TD></TR>
+     * </TABLE> */
+    public static final TranscodingHints.Key KEY_SHOW_PRINTER_DIALOG
+        = new BooleanKey(2);
+    public static final String KEY_SHOW_PRINTER_DIALOG_STR = "showPrinterDialog";
+
 
     /**
      * A user agent implementation for <tt>PrintTranscoder</tt>.
@@ -896,6 +974,14 @@ public class PrintTranscoder extends XMLAbstractTranscoder
                                KEY_MARGIN_LEFT_STR,
                                KEY_MARGIN_LEFT);
 
+        // Dialog options
+        setTranscoderBooleanHint(transcoder,
+                                 KEY_SHOW_PAGE_DIALOG_STR,
+                                 KEY_SHOW_PAGE_DIALOG);
+
+        setTranscoderBooleanHint(transcoder,
+                                 KEY_SHOW_PRINTER_DIALOG_STR,
+                                 KEY_SHOW_PRINTER_DIALOG);
 
         //
         // First, request the transcoder to transcode

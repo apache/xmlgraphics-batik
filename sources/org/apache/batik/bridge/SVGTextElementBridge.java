@@ -484,6 +484,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         }
         // parse the y attribute, (default is 0)
         s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+
         if (s.length() != 0) {
             float y[] = TextUtilities.svgVerticalCoordinateArrayToUserSpace
                 (element, SVG_Y_ATTRIBUTE, s, ctx);
@@ -843,7 +844,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
             (CSS_WORD_SPACING_PROPERTY);
         t = v.getPrimitiveType();
         if (t != CSSPrimitiveValue.CSS_IDENT) {
-            f = UnitProcessor.cssOtherLengthToUserSpace
+            f = UnitProcessor.cssHorizontalCoordinateToUserSpace
                 (v, CSS_WORD_SPACING_PROPERTY, uctx);
 
             // XXX: HACK: Assuming horizontal length units is wrong,

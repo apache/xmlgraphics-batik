@@ -203,6 +203,13 @@ public class ShapeNode extends AbstractGraphicsNode {
             }
             paintedArea = shapePainter.getPaintedArea(rc);
             primitiveBounds = paintedArea.getBounds2D();
+
+            // Make sure we haven't been interrupted
+            if (Thread.currentThread().isInterrupted()) {
+                // The Thread has been interrupted. Invalidate
+                // any cached values and proceed.
+                invalidateGeometryCache();
+            }
         }
         return primitiveBounds;
     }

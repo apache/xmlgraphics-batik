@@ -282,6 +282,13 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
                     primitiveBounds.add(ctb);
                 }
             }
+
+            // Make sure we haven't been interrupted
+            if (Thread.currentThread().isInterrupted()) {
+                // The Thread has been interrupted. Invalidate
+                // any cached values and proceed.
+                invalidateGeometryCache();
+            }
         }
         return primitiveBounds;
     }
