@@ -83,6 +83,10 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      */
     float y;
 
+    int clientX;
+
+    int clientY;
+
     int screenX;
 
     int screenY;
@@ -114,12 +118,15 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
     public GraphicsNodeMouseEvent(GraphicsNode source, int id,
                                   long when, int modifiers,
                                   float x, float y, 
+                                  int clientX, int clientY,
                                   int screenX, int screenY, 
                                   int clickCount,
                                   GraphicsNode relatedNode) {
         super(source, id, when, modifiers);
         this.x = x;
         this.y = y;
+        this.clientX = clientX;
+        this.clientY = clientY;
         this.screenX = screenX;
         this.screenY = screenY;
         this.clickCount = clickCount;
@@ -158,6 +165,23 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
 
     /**
      * Returns the horizontal x position of the event relative to the
+     * source graphics node.
+     * @return x a float indicating horizontal position relative to the node
+     */
+    public float getClientX() {
+        return clientX;
+    }
+
+    /**
+     * Returns the vertical y position of the event relative to the source node.
+     * @return y a float indicating vertical position relative to the node
+     */
+    public float getClientY() {
+        return clientY;
+    }
+
+    /**
+     * Returns the horizontal x position of the event relative to the
      * screen.
      * @return x a float indicating horizontal position relative to the screen
      */
@@ -179,6 +203,14 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      */
     public Point getScreenPoint() {
         return new Point(screenX, screenY);
+    }
+
+    /**
+     * Returns the (x, y) position of the event relative to the screen.
+     * @return a Point object containing the x and y coordinates
+     */
+    public Point getClientPoint() {
+        return new Point(clientX, clientY);
     }
 
     /**
