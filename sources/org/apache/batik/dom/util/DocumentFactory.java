@@ -23,6 +23,19 @@ import org.w3c.dom.Document;
 public interface DocumentFactory {
 
     /**
+     * Sets whether or not the XML stream has to be validate, depending on the
+     * specified parameter.
+     *
+     * @param isValidating true implies the XML stream will be validated
+     */
+    void setValidating(boolean isValidating);
+
+    /**
+     * Returns true if the XML stream has to be validated, false otherwise.
+     */
+    boolean isValidating();
+
+    /**
      * Creates a Document instance.
      * @param ns The namespace URI of the root element of the document.
      * @param root The name of the root element of the document.

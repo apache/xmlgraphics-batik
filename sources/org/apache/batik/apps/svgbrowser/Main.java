@@ -145,7 +145,9 @@ public class Main implements Application {
                      "");
         defaults.put(PreferenceDialog.PREFERENCE_KEY_CSS_MEDIA,
                      "screen");
-
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_IS_XML_PARSER_VALIDATING,
+                     Boolean.FALSE);
+	
         try {
             preferenceManager = new XMLPreferenceManager("preferences.xml",
                                                          defaults);
@@ -364,6 +366,15 @@ public class Main implements Application {
      */
     public String getXMLParserClassName() {
         return XMLResourceDescriptor.getXMLParserClassName();
+    }
+
+    /**
+     * Returns true if the XML parser must be in validation mode, false
+     * otherwise.
+     */
+    public boolean isXMLParserValidating() {
+        return preferenceManager.getBoolean
+            (PreferenceDialog.PREFERENCE_KEY_IS_XML_PARSER_VALIDATING);
     }
 
     /**

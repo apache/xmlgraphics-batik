@@ -27,6 +27,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
@@ -90,6 +91,11 @@ public class SAXDocumentFactory
     protected boolean inDTD;
 
     /**
+     * Whether the parser is in validating mode.
+     */
+    protected boolean isValidating;
+
+    /**
      * Whether the document element has been parsed.
      */
     protected boolean documentElementParsed;
@@ -145,8 +151,8 @@ public class SAXDocumentFactory
      * @param is The document input stream.
      * @exception IOException if an error occured while reading the document.
      */
-    public Document createDocument(String ns, String root, String uri, InputStream is)
-        throws IOException {
+    public Document createDocument(String ns, String root, String uri, 
+				   InputStream is) throws IOException {
         InputSource inp = new InputSource(is);
         inp.setSystemId(uri);
         return createDocument(ns, root, uri, inp);
@@ -188,13 +194,14 @@ public class SAXDocumentFactory
             parser.setEntityResolver(this);
             parser.setErrorHandler(this);
 
-            parser.setFeature("http://xml.org/sax/features/namespaces", false);
+            parser.setFeature("http://xml.org/sax/features/namespaces", 
+			      false);
             parser.setFeature("http://xml.org/sax/features/namespace-prefixes",
                               true);
-
+	    parser.setFeature("http://xml.org/sax/features/validation",
+			      isValidating);
 	    parser.setProperty("http://xml.org/sax/properties/lexical-handler",
 			       this);
-
             parser.parse(is);
 	} catch (SAXException e) {
             Exception ex = e.getException();
@@ -222,6 +229,24 @@ public class SAXDocumentFactory
      */
     public void setDocumentLocator(Locator l) {
         locator = l;
+    }
+
+    /**
+     * Sets whether or not the XML parser will validate the XML document
+     * depending on the specified parameter.
+     *
+     * @param isValidating indicates that the XML parser will validate the XML
+     * document 
+     */
+    public void setValidating(boolean isValidating) {
+	this.isValidating = isValidating;
+    }
+
+    /**
+     * Returns true if the XML parser validates the XML stream, false otherwise.
+     */
+    public boolean isValidating() {
+	return isValidating;
     }
 
     /**
@@ -338,6 +363,22 @@ public class SAXDocumentFactory
 		}
 	    }
 	}
+    }
+
+    /**
+     * <b>SAX</b>: Implements {@link
+     * org.xml.sax.ErrorHandler#error(SAXParseException)}.
+     */
+    public void error(SAXParseException ex) throws SAXException {
+	throw ex;
+    }
+
+    /**
+     * <b>SAX</b>: Implements {@link
+     * org.xml.sax.ErrorHandler#warning(SAXParseException)}.
+     */
+    public void warning(SAXParseException ex) throws SAXException {
+	throw ex;
     }
 
     /**

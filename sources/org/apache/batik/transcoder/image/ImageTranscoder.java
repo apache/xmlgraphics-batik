@@ -397,6 +397,15 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             }
         }
 
+	/**
+	 * Returns true if the XML parser must be in validation mode, false
+	 * otherwise.
+	 */
+	public boolean isXMLParserValidating() {
+	    return ((Boolean)ImageTranscoder.this.hints.get
+		    (KEY_XML_PARSER_VALIDATING)).booleanValue();
+	}
+	
         /**
          * Returns this user agent's CSS media.
          */

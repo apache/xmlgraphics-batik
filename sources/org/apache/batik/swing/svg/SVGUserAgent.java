@@ -57,6 +57,12 @@ public interface SVGUserAgent {
     String getXMLParserClassName();
 
     /**
+     * Returns true if the XML parser must be in validation mode, false
+     * otherwise.
+     */
+    boolean isXMLParserValidating();
+
+    /**
      * Returns this user agent's CSS media.
      */
     String getMedia();

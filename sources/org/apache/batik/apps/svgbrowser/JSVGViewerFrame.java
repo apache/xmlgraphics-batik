@@ -1740,6 +1740,14 @@ public class JSVGViewerFrame
             return application.getXMLParserClassName();
         }
 
+	/**
+	 * Returns true if the XML parser must be in validation mode, false
+	 * otherwise.
+	 */
+	public boolean isXMLParserValidating() {
+	    return application.isXMLParserValidating();
+	}
+
         /**
          * Returns this user agent's CSS media.
          */

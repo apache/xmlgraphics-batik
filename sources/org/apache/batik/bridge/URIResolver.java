@@ -66,6 +66,7 @@ public class URIResolver {
      */
     public Element getElement(String uri, Element ref)
         throws MalformedURLException, IOException {
+
         Node n = getNode(uri, ref);
         if (n == null) {
             return null;
