@@ -27,11 +27,14 @@ import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.PixelInterleavedSampleModel;
+import java.awt.image.SinglePixelPackedSampleModel;
+import java.awt.image.ComponentSampleModel;
 import java.awt.image.WritableRaster;
 
 
@@ -63,17 +66,126 @@ public class MultiplyAlphaRed extends AbstractRed {
               null);
     }
 
+    public boolean is_INT_PACK_BYTE_COMP(SampleModel srcSM,
+                                         SampleModel alpSM) {
+          // Check SampleModel types DirectColorModel
+        if(!(srcSM instanceof SinglePixelPackedSampleModel)) return false;
+        if(!(alpSM instanceof ComponentSampleModel))         return false;
+
+        // Check transfer types
+        if(srcSM.getDataType() != DataBuffer.TYPE_INT)       return false;
+        if(alpSM.getDataType() != DataBuffer.TYPE_BYTE)      return false;
+
+
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)srcSM;
+
+        int [] masks = sppsm.getBitMasks();
+        if(masks.length != 4) return false;
+        if(masks[0] != 0x00ff0000) return false;
+        if(masks[1] != 0x0000ff00) return false;
+        if(masks[2] != 0x000000ff) return false;
+        if(masks[3] != 0xff000000) return false;
+ 
+        ComponentSampleModel csm;
+        csm = (ComponentSampleModel)alpSM;
+        if (csm.getNumBands()    != 1) return false;
+        if (csm.getPixelStride() != 1) return false;
+
+        return true;
+   }
+
+    public WritableRaster INT_PACK_BYTE_COMP_Impl (WritableRaster wr) {
+          // Get my source.
+        CachableRed srcRed   = (CachableRed)getSources().get(0);
+        CachableRed alphaRed = (CachableRed)getSources().get(1);
+
+        // Already has alpha channel so we use it.
+        srcRed.copyData(wr);
+
+        Rectangle rgn = wr.getBounds();
+        rgn = rgn.intersection(alphaRed.getBounds());
+            
+        Raster r = alphaRed.getData(rgn);
+
+        ComponentSampleModel csm;
+        csm = (ComponentSampleModel)r.getSampleModel();
+        final int alpScanStride = csm.getScanlineStride();
+
+        DataBufferByte alpDB   = (DataBufferByte)r.getDataBuffer();
+        final int      alpBase 
+            = (alpDB.getOffset() + 
+               csm.getOffset(rgn.x-r.getSampleModelTranslateX(), 
+                             rgn.y-r.getSampleModelTranslateY()));
+
+            
+          // Access the pixel data array
+        final byte alpPixels[] = alpDB.getBankData()[0];
+
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
+        final int srcScanStride = sppsm.getScanlineStride();
+
+        DataBufferInt srcDB   = (DataBufferInt)wr.getDataBuffer();
+        final int     srcBase 
+            = (srcDB.getOffset() + 
+               sppsm.getOffset(rgn.x-wr.getSampleModelTranslateX(), 
+                               rgn.y-wr.getSampleModelTranslateY()));
+
+          // Access the pixel data array
+        final int srcPixels[] = srcDB.getBankData()[0];
+
+        ColorModel cm = srcRed.getColorModel();
+        if (cm.isAlphaPremultiplied()) {
+            // For alpha premult we need to multiply all comps.
+            for (int y=0; y<rgn.height; y++) {
+                int sp = srcBase + y*srcScanStride;
+                int ap = alpBase + y*alpScanStride;
+                int end = sp + rgn.width;
+
+                while (sp<end) {
+                    int a = ((int)alpPixels[ap++])&0xFF;
+                    srcPixels[sp] = 
+                        ((((((srcPixels[sp]>>>24)     ) *a)<<16)&0xFF000000) |
+                         (((((srcPixels[sp]>>>16)&0xFF) *a)<<8 )&0x00FF0000) |
+                         (((((srcPixels[sp]>>> 8)&0xFF) *a)    )&0x0000FF00) |
+                         (((((srcPixels[sp]     )&0xFF) *a)>>8 )&0x000000FF));
+                    sp++;
+                }
+            }
+                
+        } else {
+              // For non-alpha premult we only need to multiply alpha.
+            for (int y=0; y<rgn.height; y++) {
+                int sp = srcBase + y*srcScanStride;
+                int ap = alpBase + y*alpScanStride;
+                int end = sp + rgn.width;
+                while (sp<end) {
+                    int a = ((int)alpPixels[ap++])&0xFF;
+                    int sa = srcPixels[sp]>>>24;
+                    srcPixels[sp] = ((((sa*a) & 0xFF00)<<16)|
+                                     srcPixels[sp]&0x00FFFFFF);
+                    sp++;
+                }
+            }
+        }
+
+        return wr;
+    }
+
     public WritableRaster copyData(WritableRaster wr) {
         // Get my source.
         CachableRed srcRed   = (CachableRed)getSources().get(0);
         CachableRed alphaRed = (CachableRed)getSources().get(1);
 
+        if (is_INT_PACK_BYTE_COMP(srcRed.getSampleModel(),
+                                  alphaRed.getSampleModel()))
+            return INT_PACK_BYTE_COMP_Impl(wr);
+
         ColorModel cm = srcRed.getColorModel();
         if (cm.hasAlpha()) {
             // Already has alpha channel so we use it.
             srcRed.copyData(wr);
-
-            cm.coerceData(wr, false);
 
             Rectangle rgn = wr.getBounds();
             rgn = rgn.intersection(alphaRed.getBounds());
@@ -82,16 +194,53 @@ public class MultiplyAlphaRed extends AbstractRed {
             int [] alphaData = null;
 
             Raster r = alphaRed.getData(rgn);
-            int    b = srcRed.getSampleModel().getNumBands()-1;
-            int    x = rgn.x;
             int    w = rgn.width;
-            for (int y=rgn.y; y<rgn.y+rgn.height; y++) {
-                wrData    = wr.getSamples(x, y, w, 1, b, wrData);
-                alphaData = r .getSamples(x, y, w, 1, 0, alphaData);
-                for (int i=0; i<wrData.length; i++) {
-                    wrData[i] = ((wrData[i]&0xFF)*(alphaData[i]&0xFF))>>8;
+
+            final int bands = srcRed.getSampleModel().getNumBands();
+
+            if (cm.isAlphaPremultiplied()) {
+                for (int y=rgn.y; y<rgn.y+rgn.height; y++) {
+                    wrData    = wr.getPixels (rgn.x, y, w, 1, wrData);
+                    alphaData = r .getSamples(rgn.x, y, w, 1, 0, alphaData);
+                    int i=0;
+                          // 4 is the most common case.  
+                          // 2 is probably next most common...
+                    switch (bands) {
+                    case 2: 
+                        for (int x=0; x<alphaData.length; x++) {
+                            final int a = alphaData[x]&0xFF;
+                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
+                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
+                        }
+                    case 4: 
+                        for (int x=0; x<alphaData.length; x++) {
+                            final int a = alphaData[x]&0xFF;
+                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
+                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
+                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
+                            wrData[i] = ((wrData[i]&0xFF)*a)>>8; ++i;
+                        }
+                    default:
+                        for (int x=0; x<alphaData.length; x++) {
+                            final int a = alphaData[x]&0xFF;
+                            for (int b=0; b<bands; b++) {
+                                wrData[i] = ((wrData[i]&0xFF)*a)>>8; 
+                                ++i;
+                            }
+                        }
+                    }
+                    wr.setPixels(rgn.x, y, w, 1, wrData);
                 }
-                wr.setSamples(x, y, w, 1, b, wrData);
+            } else {
+                int b = srcRed.getSampleModel().getNumBands()-1;
+                for (int y=rgn.y; y<rgn.y+rgn.height; y++) {
+                    wrData    = wr.getSamples(rgn.x, y, w, 1, b, wrData);
+                    alphaData = r .getSamples(rgn.x, y, w, 1, 0, alphaData);
+                    for (int i=0; i<wrData.length; i++) {
+                        wrData[i] = ((wrData[i]&0xFF)*(alphaData[i]&0xFF))>>8;
+                    }
+                    wr.setSamples(rgn.x, y, w, 1, b, wrData);
+                }
             }
 
             return wr;
@@ -160,13 +309,9 @@ public class MultiplyAlphaRed extends AbstractRed {
 
     public static ColorModel fixColorModel(CachableRed src) {
         ColorModel  cm = src.getColorModel();
-        if (cm.hasAlpha()) {
-            WritableRaster wr = cm.createCompatibleWritableRaster(1,1);
-            // We don't want our alpha pre-mult otherwise we would
-            // need to update all the image pixels as well.
-            // This way we only mess with the alpha channel.
-            return cm.coerceData(wr, false);
-        }
+
+        if (cm.hasAlpha())
+            return cm;
 
         int b = src.getSampleModel().getNumBands()+1;
         int [] bits = new int[b];

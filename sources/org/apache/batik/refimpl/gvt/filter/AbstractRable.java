@@ -173,7 +173,9 @@ public abstract class AbstractRable implements Filter {
      */
     protected void init(List srcs, Map props) {
         init (srcs);
-        this.props  = new HashMap(props);
+        this.props = new HashMap();
+        if(props != null)
+            this.props.putAll(props);
     }
 
     public Rectangle2D getBounds2D() {
@@ -181,7 +183,7 @@ public abstract class AbstractRable implements Filter {
         if (this.srcs.size() != 0) {
             Iterator i = srcs.iterator();
             Filter src = (Filter)i.next();
-            bounds = src.getBounds2D();
+            bounds = (Rectangle2D)src.getBounds2D().clone();
             Rectangle2D r;
             while (i.hasNext()) {
                 src = (Filter)i.next();

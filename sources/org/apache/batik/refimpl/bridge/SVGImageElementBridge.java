@@ -56,9 +56,10 @@ import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGSVGElement;
 
 /**
- * A factory for the &lt;image> SVG element.
+ * A factory for the &lt;Image&gt; SVG element.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public class SVGImageElementBridge implements GraphicsNodeBridge,

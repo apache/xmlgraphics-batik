@@ -886,9 +886,7 @@ public class CSSUtilities implements SVGConstants {
 
         case SVGUtilities.SOURCE_ALPHA:
             in = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-            System.out.println("In: " + in);
             in =  new org.apache.batik.refimpl.gvt.filter.FilterAlphaRable(in);
-            System.out.println("In: " + in);
             return in;
 
         case SVGUtilities.FILL_PAINT: {

@@ -11,6 +11,7 @@ package org.apache.batik.refimpl.gvt.filter;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CompositeRable;
 import org.apache.batik.gvt.filter.CompositeRule;
+import org.apache.batik.gvt.filter.PadMode;
 
 import java.util.List;
 import java.util.Iterator;
@@ -25,7 +26,9 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
 
 import java.awt.image.renderable.RenderContext;
 
@@ -86,6 +89,7 @@ public class ConcreteCompositeRable
         AffineTransform at = rc.getTransform();
 
         Shape aoi = rc.getAreaOfInterest();
+        if (aoi == null) aoi = getBounds2D();
 
         // AOI bounds in device space...
         Rectangle r = at.createTransformedShape(aoi).getBounds();
@@ -98,66 +102,49 @@ public class ConcreteCompositeRable
         // Make sure we draw with what hints we have.
         g2d.setRenderingHints(rh);
 
-        // Setup the composite rule...
-        switch (rule.getRule()) {
-        case CompositeRule.RULE_OVER:
-            g2d.setComposite(AlphaComposite.SrcOver);
-            break;
-        case CompositeRule.RULE_IN:
-            g2d.setComposite(AlphaComposite.SrcIn);
-            break;
-        case CompositeRule.RULE_OUT:
-            g2d.setComposite(AlphaComposite.SrcOut);
-            break;
-
-        case CompositeRule.RULE_ATOP:
-            throw new UnsupportedOperationException
-                ("This SVG viewer currently does not support Atop Composite");
-        case CompositeRule.RULE_XOR:
-            throw new UnsupportedOperationException
-                ("This SVG viewer currently does not support XOR Composite");
-        case CompositeRule.RULE_ARITHMATIC:
-            throw new UnsupportedOperationException
-                ("This SVG viewer currently does " +
-                 "not support Arithmatic Composite");
-        default:
-            throw new UnsupportedOperationException
-                ("Unknown composite rule requested.");
-        }
-
-        // Remember the default transform
-        AffineTransform g2dAT = g2d.getTransform();
-
         Iterator i = srcs.iterator();
+        boolean first = true;
         while (i.hasNext()) {
             // Get the source to work with...
             Filter cr = (Filter)i.next();
 
-            // Build the Render context for our source..
-            Rectangle2D srcR = cr.getBounds2D();
-            srcR = srcR.createIntersection(aoi.getBounds2D());
-
-            // Doesn't intersect don't bug it..
-            if (srcR.isEmpty())
-                continue;
-            RenderContext srcRC = new RenderContext(at, srcR, rh);
-
             // Get our sources image...
-            RenderedImage ri = cr.createRendering(srcRC);
-
+            RenderedImage ri = cr.createRendering(rc);
             // No output image keep going...
             if (ri == null)
                 continue;
 
-            // g2D always draws images at 0,0, so make 0,0 the
-            // localtion of ri's upper left pixel
-            // g2d.translate(ri.getMinX(), ri.getMinY());
+            if ((ri.getMinX()   != r.x)     || (ri.getMinY()   != r.y) ||
+                (ri.getWidth()  != r.width) || (ri.getHeight() != r.height)) {
+                ri = new PadRed(ConcreteRenderedImageCachableRed.wrap(ri), 
+                                r, PadMode.ZERO_PAD, rh);
+            }
+              // Draw RenderedImage has problems....
+              // This works around them...
+            BufferedImage bri;
+            WritableRaster wr = (WritableRaster)ri.getData();
+            ColorModel cm = ri.getColorModel();
+            bri = new BufferedImage(cm, wr.createWritableTranslatedChild(0,0),
+                                    cm.isAlphaPremultiplied(), null);
 
-            g2d.drawRenderedImage(ri,null);  // Draw the image
+            if (false) {
+                System.out.println("Ri: " + ri + " Loc: (" +
+                                   ri.getMinX() + ", " +
+                                   ri.getMinY() + ", " +
+                                   ri.getWidth() + ", " +
+                                   ri.getHeight() + ")");
+            }
 
-            g2d.setTransform(g2dAT); // Restore transform
+            g2d.drawImage(bri, null, ri.getMinX()-r.x, ri.getMinY()-r.y);
+            if (first) {
+                  // After the first image we set the composite rule.
+                g2d.setComposite(new SVGComposite(rule));
+                first = false;
+            }
+                        
+
         }
 
-        return bi;
+        return new ConcreteBufferedImageCachableRed(bi, r.x, r.y);
     }
 }
