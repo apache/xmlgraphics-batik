@@ -10,7 +10,6 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.Color;
 import java.awt.Paint;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
@@ -19,16 +18,15 @@ import java.io.StringReader;
 import java.util.Vector;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.PaintBridge;
-
 import org.apache.batik.gvt.GraphicsNode;
-
+import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
-
 import org.apache.batik.util.awt.LinearGradientPaint;
-import org.apache.batik.parser.AWTTransformProducer;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,10 +44,12 @@ public abstract class SVGGradientBridge implements SVGConstants {
     /**
      * Used to store a gradient stop's color and interval
      */
-    static class GradientStop {
+    public static class GradientStop {
 
-        Color stopColor;
-        float offset;
+        /** The color of this stop Element. */
+        public Color stopColor;
+        /** The offset of this stop Element. */
+        public float offset;
 
         public GradientStop(Color stopColor,
                             float offset){
@@ -77,33 +77,34 @@ public abstract class SVGGradientBridge implements SVGConstants {
 
     public static GradientStop convertGradientStop(Element stop,
                                                    BridgeContext ctx) {
-        //
-        // First, extract offset value
-        //
+        // parse the offset attribute, (required and must between [0-1])
         String offsetStr = stop.getAttributeNS(null, ATTR_OFFSET);
+        if (offsetStr.length() == 0) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("stop.offset.required", null));
+        }
         float ratio = CSSUtilities.convertRatio(offsetStr);
-
-        //
-        // Now, extract the stop color
-        //
+        // parse the stop-color CSS properties
         CSSStyleDeclaration decl =
             ctx.getViewCSS().getComputedStyle(stop, null);
         Color stopColor = CSSUtilities.convertStopColorToPaint(decl);
+
         return new GradientStop(stopColor, ratio);
     }
 
     protected static LinearGradientPaint.CycleMethodEnum
             convertSpreadMethod(String spreadMethod){
-        LinearGradientPaint.CycleMethodEnum cycleMethod =
-            LinearGradientPaint.NO_CYCLE;
-        if (spreadMethod != null) {
-            if (VALUE_REFLECT.equals(spreadMethod)) {
-                cycleMethod = LinearGradientPaint.REFLECT;
-            } else if (VALUE_REPEAT.equals(spreadMethod)) {
-                cycleMethod = LinearGradientPaint.REPEAT;
-            }
+
+        if (VALUE_REFLECT.equals(spreadMethod)) {
+            return LinearGradientPaint.REFLECT;
+        } else if (VALUE_REPEAT.equals(spreadMethod)) {
+            return LinearGradientPaint.REPEAT;
+        } else if (VALUE_PAD.equals(spreadMethod)) {
+            return LinearGradientPaint.NO_CYCLE;
         }
-        return cycleMethod;
+        throw new IllegalAttributeValueException(
+            Messages.formatMessage("gradient.spreadMethod.invalid",
+                                   new Object[] {spreadMethod}));
     }
 }
 

@@ -167,7 +167,7 @@ public class CSSUtilities implements SVGConstants {
          URIResolver ur;
          ur = new URIResolver((SVGDocument)clipedElement.getOwnerDocument(),
                               ctx.getDocumentLoader());
-            
+
          Element clipPathElement = null;
          try {
              clipPathElement = ur.getElement(uriString);
@@ -236,7 +236,7 @@ public class CSSUtilities implements SVGConstants {
          URIResolver ur;
          ur = new URIResolver((SVGDocument)maskedElement.getOwnerDocument(),
                               ctx.getDocumentLoader());
-            
+
          Element maskElement = null;
          try {
              maskElement = ur.getElement(uriString);
@@ -503,7 +503,7 @@ public class CSSUtilities implements SVGConstants {
         URIResolver ur;
         ur = new URIResolver((SVGDocument)svgElement.getOwnerDocument(),
                              ctx.getDocumentLoader());
-            
+
         Element paintElement = null;
         try {
             paintElement = ur.getElement(fillUri);
@@ -550,7 +550,7 @@ public class CSSUtilities implements SVGConstants {
         URIResolver ur;
         ur = new URIResolver((SVGDocument)svgElement.getOwnerDocument(),
                              ctx.getDocumentLoader());
-            
+
         Element paintElement = null;
         try {
             paintElement = ur.getElement(strokeUri);
@@ -830,7 +830,7 @@ public class CSSUtilities implements SVGConstants {
             URIResolver ur;
             ur = new URIResolver((SVGDocument)element.getOwnerDocument(),
                                  ctx.getDocumentLoader());
-            
+
             Element filterElement = null;
             try {
                 filterElement = ur.getElement(uriString);
@@ -840,7 +840,7 @@ public class CSSUtilities implements SVGConstants {
             if (filterElement != null) {
                 FilterBridge filterBridge
                     = (FilterBridge)ctx.getBridge(filterElement);
-                
+
                 if(filterBridge != null){
                     SVGOMDocument doc =
                         (SVGOMDocument)filterElement.getOwnerDocument();
@@ -928,7 +928,7 @@ public class CSSUtilities implements SVGConstants {
 
     // This is a bit of a hack but we set the flood bounds to
     // -floatmax/2 -> floatmax/2 (should cover the area ok).
-    static Rectangle2D infiniteFilterRegion 
+    static Rectangle2D infiniteFilterRegion
         = new Rectangle2D.Float(-Float.MAX_VALUE/2,
                                 -Float.MAX_VALUE/2,
                                 Float.MAX_VALUE,
@@ -939,16 +939,17 @@ public class CSSUtilities implements SVGConstants {
      * it is considered a plain floating point value
      */
     public static float convertRatio(String v){
-        if(v == null){
-            throw new IllegalArgumentException();
-        }
-
         float d = 1;
-        if(v.endsWith("%")){
+        if (v.endsWith("%")) {
             v = v.substring(0, v.length() - 1);
             d = 100;
         }
-
-        return Float.parseFloat(v)/d;
+        float r = Float.parseFloat(v)/d;
+        if (r < 0) {
+            r = 0;
+        } else if (r > 1) {
+            r = 1;
+        }
+        return r;
     }
 }

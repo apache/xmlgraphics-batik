@@ -81,39 +81,35 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
-        //
-        // Get gradient units
-        //
+        // parse the gradientUnits attribute, (default is 'objectBoundingBox')
         String units = paintElement.getAttributeNS(null, ATTR_GRADIENT_UNITS);
         if(units.length() == 0){
             units = VALUE_OBJECT_BOUNDING_BOX;
         }
 
-        //
-        // Extract end points
-        //
+        // parse the x1 attribute, (default is 0%)
         String x1 = paintElement.getAttributeNS(null, ATTR_X1);
         if (x1.length() == 0){
-            x1 = "0";
+            x1 = "0%";
         }
 
+        // parse the y1 attribute, (default is 0%)
+        String y1 = paintElement.getAttributeNS(null, ATTR_Y1);
+        if (y1.length() == 0){
+            y1 = "0%";
+        }
+
+        // parse the x2 attribute, (default is 100%)
         String x2 = paintElement.getAttributeNS(null, ATTR_X2);
         if (x2.length() == 0){
             x2 = "100%";
         }
 
-        String y1 = paintElement.getAttributeNS(null, ATTR_Y1);
-        if (y1.length() == 0){
-            y1 = "100%";
-        }
-
+        // parse the y2 attribute, (default is 0%)
         String y2 = paintElement.getAttributeNS(null, ATTR_Y2);
         if (y2.length() == 0){
-            y2 = "100%";
+            y2 = "0%";
         }
-
-        // System.out.println("x1 : " + x1 + " y1 : " + y1 +
-        //                   " x2 : " + x2 + " y2 : " + y2);
 
         SVGElement svgPaintedElement = (SVGElement) paintedElement;
         Point2D p1
@@ -123,12 +119,12 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
             = SVGUtilities.convertPoint(svgPaintedElement,
                                         x2, y2, units, paintedNode, uctx);
 
-        //
-        // Extract the spread method
-        //
+        // parse the 'spreadMethod' attribute, (default is PAD)
         String spreadMethod =
             paintElement.getAttributeNS(null, ATTR_SPREAD_METHOD);
-
+        if (spreadMethod.length() == 0) {
+            spreadMethod = VALUE_PAD;
+        }
         LinearGradientPaint.CycleMethodEnum cycleMethod =
             convertSpreadMethod(spreadMethod);
 
@@ -138,8 +134,8 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         AffineTransform at = AWTTransformProducer.createAffineTransform
             (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)), ctx.getParserFactory());
 
-        at  = SVGUtilities.convertAffineTransform(at, 
-                                                  paintedNode, 
+        at  = SVGUtilities.convertAffineTransform(at,
+                                                  paintedNode,
                                                   units);
 
         //
@@ -176,8 +172,8 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         //
         CSSPrimitiveValue colorInterpolation
             = (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
-        
-        LinearGradientPaint.ColorSpaceEnum colorSpace 
+
+        LinearGradientPaint.ColorSpaceEnum colorSpace
             = LinearGradientPaint.SRGB;
         if(LINEAR_RGB.equals(colorInterpolation.getStringValue())){
             colorSpace = LinearGradientPaint.LINEAR_RGB;

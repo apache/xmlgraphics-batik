@@ -82,46 +82,44 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
-        //
-        // Get gradient units
-        //
+        // parse the gradientUnits attribute, (default is 'objectBoundingBox')
         String units = paintElement.getAttributeNS(null, ATTR_GRADIENT_UNITS);
         if(units.length() == 0){
             units = VALUE_OBJECT_BOUNDING_BOX;
         }
 
-        //
-        // Extract cx, cy, fx, fy and r
-        //
+        // parse the cx attribute, (default is 50%)
         String cx = paintElement.getAttributeNS(null, ATTR_CX);
         if(cx.length() == 0){
             cx = "50%";
         }
 
+        // parse the cy attribute, (default is 50%)
         String cy = paintElement.getAttributeNS(null, ATTR_CY);
         if(cy.length() == 0){
             cy = "50%";
         }
 
-        String fx = paintElement.getAttributeNS(null, ATTR_FX);
-        if(fx.length() == 0){
-            fx = cx;
-        }
-
-        String fy = paintElement.getAttributeNS(null, ATTR_FY);
-        if(fy.length() == 0){
-            fy = cy;
-        }
-
+        // parse the r attribute, (default is 50%)
         String r = paintElement.getAttributeNS(null, ATTR_R);
         if(r.length() == 0){
             r = "50%";
         }
 
-        // System.out.println("cx : " + cx + " fx : " + fx +
-        //                   " cy : " + cy + " fy : " + fy + " r: " + r);
+        // parse the fx attribute, (default is same as cx)
+        String fx = paintElement.getAttributeNS(null, ATTR_FX);
+        if(fx.length() == 0){
+            fx = cx;
+        }
+
+        // parse the fy attribute, (default is same as cy)
+        String fy = paintElement.getAttributeNS(null, ATTR_FY);
+        if(fy.length() == 0){
+            fy = cy;
+        }
 
         SVGElement svgPaintedElement = (SVGElement) paintedElement;
+
         Point2D c
             = SVGUtilities.convertPoint(svgPaintedElement, cx, cy,
                                         units, paintedNode, uctx);
@@ -129,14 +127,15 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             = SVGUtilities.convertPoint(svgPaintedElement, fx, fy,
                                         units, paintedNode, uctx);
         float radius
-            = SVGUtilities.convertLength((SVGElement)paintedElement, r, 
+            = SVGUtilities.convertLength((SVGElement)paintedElement, r,
                                          units, paintedNode, uctx);
 
-        //
-        // Extract the spread method
-        //
-        String spreadMethod = paintElement.getAttributeNS(null,
-                                                          ATTR_SPREAD_METHOD);
+        // parse the 'spreadMethod' attribute, (default is PAD)
+        String spreadMethod =
+            paintElement.getAttributeNS(null, ATTR_SPREAD_METHOD);
+        if (spreadMethod.length() == 0) {
+            spreadMethod = VALUE_PAD;
+        }
         RadialGradientPaint.CycleMethodEnum cycleMethod =
             convertSpreadMethod(spreadMethod);
 
@@ -144,14 +143,11 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         // Extract gradient transform
         //
         AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)), 
+            (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)),
              ctx.getParserFactory());
 
-        // System.out.println("gradientTransform : " + at);
-        // System.out.println("shearX            : " + at.getShearX());
-
-        at = SVGUtilities.convertAffineTransform(at, 
-                                                 paintedNode, 
+        at = SVGUtilities.convertAffineTransform(at,
+                                                 paintedNode,
                                                  units);
 
         //
@@ -189,8 +185,8 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         //
         CSSPrimitiveValue colorInterpolation
             = (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
-        
-        RadialGradientPaint.ColorSpaceEnum colorSpace 
+
+        RadialGradientPaint.ColorSpaceEnum colorSpace
             = RadialGradientPaint.SRGB;
         if(LINEAR_RGB.equals(colorInterpolation.getStringValue())){
             colorSpace = RadialGradientPaint.LINEAR_RGB;
