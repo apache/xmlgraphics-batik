@@ -22,8 +22,6 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.batik.css.HiddenChildElementSupport;
-import org.apache.batik.dom.svg.DefaultSVGContext;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.script.Interpreter;
@@ -33,8 +31,6 @@ import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.events.EventListener;
 import org.w3c.dom.svg.SVGDocument;
 
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;

@@ -382,9 +382,9 @@ public abstract class AbstractNode
     public void addEventListener(String type,
                                  EventListener listener,
                                  boolean useCapture) {
-        AbstractDocument doc = getCurrentDocument();
         if (eventSupport == null) {
             eventSupport = new EventSupport();
+            AbstractDocument doc = getCurrentDocument();
             doc.setEventsEnabled(true);
         }
         eventSupport.addEventListener(type, listener, useCapture);

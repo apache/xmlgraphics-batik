@@ -39,7 +39,6 @@ import org.w3c.dom.NodeList;
 
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
 
 import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;

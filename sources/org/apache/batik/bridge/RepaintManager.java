@@ -46,15 +46,6 @@ public class RepaintManager {
     protected boolean enabled;
 
     /**
-     * The repaint runnable.
-     */
-    protected Runnable repaintRunnable = new Runnable() {
-            public void run() {
-                repaint();
-            }
-        };
-
-    /**
      * Creates a new repaint manager.
      */
     public RepaintManager(UpdateManager um, ImageRenderer r) {
