@@ -176,9 +176,17 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         }
 
         // Get the patternTransfrom
-        AffineTransform patternTransform =
-            SVGUtilities.convertAffineTransform(paintElement,
-                                                ATTR_PATTERN_TRANSFORM);
+        AffineTransform patternTransform;
+        String transformStr =
+            SVGUtilities.getChainableAttributeNS(paintElement,
+                                                 null,
+                                                 ATTR_PATTERN_TRANSFORM,
+                                                 loader);
+        if (transformStr.length() > 0) {
+            patternTransform = SVGUtilities.convertAffineTransform(transformStr);
+        } else {
+            patternTransform = new AffineTransform();
+        }
 
         // Get the overflow property on the pattern element
         CSSStyleDeclaration cssDecl
@@ -209,7 +217,8 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                                 paintedElement,
                                                 paintedNode,
                                                 rc,
-                                                uctx);
+                                                uctx,
+                                                loader);
         // Get the transform that will initialize the viewport for the
         // pattern's viewBox
         boolean hasViewBox = false;

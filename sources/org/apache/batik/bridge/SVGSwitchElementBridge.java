@@ -14,28 +14,21 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-
 import java.io.StringReader;
-
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.Clip;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import org.w3c.dom.views.DocumentView;
-import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.views.DocumentView;
 
 /**
  * A factory for the &lt;switch&gt; SVG element.
@@ -49,12 +42,13 @@ public class SVGSwitchElementBridge
 
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
-        CompositeGraphicsNode gn;
-        gn = new CompositeGraphicsNode();
-        AffineTransform at =
-            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
+        CompositeGraphicsNode gn = new CompositeGraphicsNode();
 
-        gn.setTransform(at);
+        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
+        if (transformStr.length() > 0) {
+            AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
+            gn.setTransform(at);
+        }
 
         CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx

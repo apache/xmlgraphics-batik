@@ -118,9 +118,11 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
         // Transform
-        AffineTransform at =
-            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
-        result.setTransform(at);
+        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
+        if (transformStr.length() > 0) {
+            AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
+            result.setTransform(at);
+        }
 
         // parse the x attribute, (default is 0)
         String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);

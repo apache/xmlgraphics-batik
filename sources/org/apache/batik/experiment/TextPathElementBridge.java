@@ -103,9 +103,11 @@ public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
         ShapeNode node = new ShapeNode();
 
         // Transform
-        AffineTransform at =
-            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
-        node.setTransform(at);
+        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
+        if (transformStr.length() > 0) {
+            AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
+            node.setTransform(at);
+        }
 
         // <!> TODO only when binding is enabled
         //BridgeEventSupport.addDOMListener(ctx, element);

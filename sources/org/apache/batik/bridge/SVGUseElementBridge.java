@@ -80,8 +80,10 @@ public class SVGUseElementBridge
         }
 
         AffineTransform at = AffineTransform.getTranslateInstance(x, y);
-        at.preConcatenate(
-                 SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM));
+        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
+        if (transformStr.length() > 0) {
+            at.preConcatenate(SVGUtilities.convertAffineTransform(transformStr));
+        }
 
         gn.setTransform(at);
 

@@ -127,8 +127,13 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
         }
 
         // Get the mask transform
-        AffineTransform at =
-            SVGUtilities.convertAffineTransform(maskElement, ATTR_TRANSFORM);
+        String transformStr = maskElement.getAttributeNS(null, ATTR_TRANSFORM);
+        AffineTransform at;
+        if (transformStr.length() > 0) {
+            at = SVGUtilities.convertAffineTransform(transformStr);
+        } else {
+            at = new AffineTransform();
+        }
 
         at = SVGUtilities.convertAffineTransform(at,
                                                  maskedNode,

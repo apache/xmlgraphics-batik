@@ -664,18 +664,42 @@ public class SVGUtilities implements SVGConstants {
                                              Element filteredElement,
                                              GraphicsNode node,
                                              GraphicsNodeRenderContext rc,
-                                             UnitProcessor.Context uctx) {
-
+                                             UnitProcessor.Context uctx,
+                                             DocumentLoader loader) {
+        String xStr = getChainableAttributeNS(filterElement,
+                                              null,
+                                              SVG_X_ATTRIBUTE,
+                                              loader);
+        String yStr = getChainableAttributeNS(filterElement,
+                                              null,
+                                              SVG_Y_ATTRIBUTE,
+                                              loader);
+        String wStr = getChainableAttributeNS(filterElement,
+                                              null,
+                                              SVG_WIDTH_ATTRIBUTE,
+                                              loader);
+        String hStr = getChainableAttributeNS(filterElement,
+                                              null,
+                                              SVG_HEIGHT_ATTRIBUTE,
+                                              loader);
+        String unitsStr = getChainableAttributeNS(filterElement,
+                                                  null,
+                                                  SVG_FILTER_UNITS_ATTRIBUTE,
+                                                  loader);
         return convertRegion(filterElement,
                              filteredElement,
                              node,
                              rc,
                              uctx,
-                             SVG_FILTER_UNITS_ATTRIBUTE,
+                             unitsStr,
                              SVG_OBJECT_BOUNDING_BOX_VALUE,
+                             xStr,
                              DEFAULT_VALUE_FILTER_X,
+                             yStr,
                              DEFAULT_VALUE_FILTER_Y,
+                             wStr,
                              DEFAULT_VALUE_FILTER_WIDTH,
+                             hStr,
                              DEFAULT_VALUE_FILTER_HEIGHT);
     }
 
@@ -694,17 +718,26 @@ public class SVGUtilities implements SVGConstants {
                                       GraphicsNodeRenderContext rc,
                                       UnitProcessor.Context uctx) {
 
+        String xStr = maskElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        String yStr = maskElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        String wStr = maskElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+        String hStr = maskElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
+        String unitsStr = maskElement.getAttributeNS(null, SVG_MASK_UNITS_ATTRIBUTE);
         return convertRegion(maskElement,
                              maskedElement,
                              node,
                              rc,
                              uctx,
-                             SVG_MASK_UNITS_ATTRIBUTE,
+                             unitsStr,
                              SVG_OBJECT_BOUNDING_BOX_VALUE,
-                             DEFAULT_VALUE_MASK_X,
-                             DEFAULT_VALUE_MASK_Y,
-                             DEFAULT_VALUE_MASK_WIDTH,
-                             DEFAULT_VALUE_MASK_HEIGHT);
+                             xStr,
+                             DEFAULT_VALUE_FILTER_X,
+                             yStr,
+                             DEFAULT_VALUE_FILTER_Y,
+                             wStr,
+                             DEFAULT_VALUE_FILTER_WIDTH,
+                             hStr,
+                             DEFAULT_VALUE_FILTER_HEIGHT);
     }
 
     /**
@@ -720,19 +753,44 @@ public class SVGUtilities implements SVGConstants {
                                          Element paintedElement,
                                          GraphicsNode node,
                                          GraphicsNodeRenderContext rc,
-                                         UnitProcessor.Context uctx) {
+                                         UnitProcessor.Context uctx,
+                                         DocumentLoader loader) {
 
+        String xStr = getChainableAttributeNS(patternElement,
+                                              null,
+                                              SVG_X_ATTRIBUTE,
+                                              loader);
+        String yStr = getChainableAttributeNS(patternElement,
+                                              null,
+                                              SVG_Y_ATTRIBUTE,
+                                              loader);
+        String wStr = getChainableAttributeNS(patternElement,
+                                              null,
+                                              SVG_WIDTH_ATTRIBUTE,
+                                              loader);
+        String hStr = getChainableAttributeNS(patternElement,
+                                              null,
+                                              SVG_HEIGHT_ATTRIBUTE,
+                                              loader);
+        String unitsStr = getChainableAttributeNS(patternElement,
+                                                  null,
+                                                  ATTR_PATTERN_UNITS,
+                                                  loader);
         return convertRegion(patternElement,
                              paintedElement,
                              node,
                              rc,
                              uctx,
-                             ATTR_PATTERN_UNITS,
+                             unitsStr,
                              SVG_OBJECT_BOUNDING_BOX_VALUE,
-                             DEFAULT_VALUE_PATTERN_X,
-                             DEFAULT_VALUE_PATTERN_Y,
-                             DEFAULT_VALUE_PATTERN_WIDTH,
-                             DEFAULT_VALUE_PATTERN_HEIGHT);
+                             xStr,
+                             DEFAULT_VALUE_FILTER_X,
+                             yStr,
+                             DEFAULT_VALUE_FILTER_Y,
+                             wStr,
+                             DEFAULT_VALUE_FILTER_WIDTH,
+                             hStr,
+                             DEFAULT_VALUE_FILTER_HEIGHT);
     }
 
     /**
@@ -757,20 +815,21 @@ public class SVGUtilities implements SVGConstants {
                                                GraphicsNode node,
                                                GraphicsNodeRenderContext rc,
                                                UnitProcessor.Context uctx,
-                                               String unitsAttr,
+                                               String units,
                                                String unitsDefault,
+                                               String xStr,
                                                String xDefault,
+                                               String yStr,
                                                String yDefault,
+                                               String wStr,
                                                String wDefault,
+                                               String hStr,
                                                String hDefault) {
-
-        String units = filterElement.getAttributeNS(null, unitsAttr);
+        // handle default or required filter region attributes
         if (units.length() == 0) {
             units = unitsDefault;
         }
-
-        // parse the x attribute
-        String xStr = filterElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        // the x attribute
         if (xStr.length() == 0) {
             if (xDefault == null) {
                 throw new MissingAttributeException(
@@ -780,8 +839,7 @@ public class SVGUtilities implements SVGConstants {
                 xStr = xDefault;
             }
         }
-        // parse the y attribute
-        String yStr = filterElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        // the y attribute
         if (yStr.length() == 0) {
             if (yDefault == null) {
                 throw new MissingAttributeException(
@@ -791,8 +849,7 @@ public class SVGUtilities implements SVGConstants {
                 yStr = yDefault;
             }
         }
-        // parse the width attribute
-        String wStr = filterElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+        // the width attribute
         if (wStr.length() == 0) {
             if (wDefault == null) {
                 throw new MissingAttributeException(
@@ -802,8 +859,7 @@ public class SVGUtilities implements SVGConstants {
                 wStr = wDefault;
             }
         }
-        // parse the height attribute
-        String hStr = filterElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
+        // the height attribute
         if (hStr.length() == 0) {
             if (hDefault == null) {
                 throw new MissingAttributeException(
@@ -822,7 +878,6 @@ public class SVGUtilities implements SVGConstants {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("region.units.invalid",
                                   new Object[] {units,
-                                                unitsAttr,
                                                 filterElement.getLocalName()}));
         }
         double x, y, w, h;
@@ -1118,15 +1173,14 @@ public class SVGUtilities implements SVGConstants {
      * @param the attribute that defines the transform
      * @param pf the parser factory to use
      */
-    public static AffineTransform convertAffineTransform(Element e,
-                                                         String attrName) {
+    public static AffineTransform convertAffineTransform(String transformStr) {
         try {
-            StringReader r = new StringReader(e.getAttributeNS(null, attrName));
+            StringReader r = new StringReader(transformStr);
             return AWTTransformProducer.createAffineTransform(r);
         } catch (ParseException ex) {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("transform.invalid",
-                                       new Object[] {e.getLocalName(),
+                                       new Object[] {transformStr,
                                                      ex.getMessage()}));
         }
     }

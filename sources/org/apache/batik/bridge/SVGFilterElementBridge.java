@@ -73,6 +73,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
 
          GraphicsNodeRenderContext rc =
                      bridgeContext.getGraphicsNodeRenderContext();
+        DocumentLoader loader = bridgeContext.getDocumentLoader();
 
         // Make the initial source as a RenderableImage
         GraphicsNodeRableFactory gnrFactory
@@ -92,14 +93,18 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                                                              filteredElement,
                                                              filteredNode,
                                                              rc,
-                                                             uctx);
+                                                             uctx,
+                                                             loader);
 
         // Build a FilterChainRable8Bit
         FilterChainRable filterChain
             = new FilterChainRable8Bit(sourceGraphic, filterRegion);
 
         // parse the filter resolution attribute
-        String resStr = filterElement.getAttributeNS(null, SVG_FILTER_RES_ATTRIBUTE);
+        String resStr = SVGUtilities.getChainableAttributeNS(filterElement,
+                                                             null,
+                                                             SVG_FILTER_RES_ATTRIBUTE,
+                                                             loader);
         Float [] filterResolution = SVGUtilities.buildFloatPair(resStr);
         float filterResolutionX = -1; // -1 means undefined
         if (filterResolution[0] != null) {

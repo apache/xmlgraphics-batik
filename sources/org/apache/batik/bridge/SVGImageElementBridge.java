@@ -120,9 +120,11 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         ImageNode imgNode = new ImageNode();
         imgNode.setImage(node);
         // initialize the transform
-        AffineTransform at =
-            SVGUtilities.convertAffineTransform(element, ATTR_TRANSFORM);
-        imgNode.setTransform(at);
+        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
+        if (transformStr.length() > 0) {
+            AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
+            imgNode.setTransform(at);
+        }
         // bind it as soon as it's available...
         ctx.bind(element, imgNode);
 
