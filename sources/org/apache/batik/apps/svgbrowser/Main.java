@@ -306,8 +306,6 @@ public class Main implements Application {
                                               SQUIGGLE_SECURITY_POLICY);
 
         try {
-            Authenticator.setDefault(new JAuthenticator());
-
             preferenceManager = new XMLPreferenceManager(SQUIGGLE_CONFIGURATION_FILE,
                                                          defaults);
             String dir = System.getProperty(PROPERTY_USER_HOME);
@@ -317,6 +315,7 @@ public class Main implements Application {
             preferenceManager.load();
             setPreferences();
             initializeLastVisited();
+            Authenticator.setDefault(new JAuthenticator());
         } catch (Exception e) {
             e.printStackTrace();
         }
