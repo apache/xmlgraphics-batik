@@ -1,12 +1,15 @@
 <testSuite name="SVG Basic Effectivity Test Suite">
-    <!-- ======================================= -->
-    <!-- Enter the email address and mail server -->
-    <!-- to use.                                 -->
-    <!-- ======================================= -->
-    <testReportProcessor class="org.apache.batik.test.TestReportMailer">
-        <arg class="java.lang.String" value="vhardy@eng.sun.com" />
-        <arg class="java.lang.String" value="vhardy@eng.sun.com,vincent.hardy@eng.sun.com" />
-        <arg class="java.lang.String" value="jurassic.eng.sun.com" />
+    <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" > 
+        <arg class="org.apache.batik.test.xml.XSLXMLReportConsumer">
+            <!-- Stylesheet -->
+            <arg class="java.lang.String" value="file:test-resources/org/apache/batik/test/svg/HTMLReport.xsl" />
+            <!-- Ouput Directory -->
+            <arg class="java.lang.String" value="test-reports/html" />
+            <!-- Output file prefix -->
+            <arg class="java.lang.String" value="SVGRenderingAccuracyTestReport" />
+            <!-- Output file suffix -->
+            <arg class="java.lang.String" value=".html" />
+        </arg>
     </testReportProcessor>
 
     <!-- =================================================================== -->
