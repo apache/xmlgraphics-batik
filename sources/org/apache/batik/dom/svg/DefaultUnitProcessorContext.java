@@ -73,7 +73,7 @@ public class DefaultUnitProcessorContext
     public float getViewportWidth() {
         SVGSVGElement svg = element.getOwnerSVGElement();
         if (svg == null) {
-            return (float)context.getViewportWidth();
+            return (float)context.getViewportWidth(element);
         }
         String s = svg.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         LengthParser p = new LengthParser();
@@ -93,7 +93,7 @@ public class DefaultUnitProcessorContext
     public float getViewportHeight() {
         SVGSVGElement svg = element.getOwnerSVGElement();
         if (svg == null) {
-            return (float)context.getViewportHeight();
+            return (float)context.getViewportHeight(element);
         }
         String s = svg.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         LengthParser p = new LengthParser();

@@ -50,9 +50,14 @@ public abstract class AbstractViewCSS implements ViewCSS {
     protected DocumentView document;
 
     /**
-     * The computed styles.
+     * The cached computed styles.
      */
     protected Map styles = new HashMap(11);
+
+    /**
+     * The cached stylesheets.
+     */
+    protected StyleSheetList styleSheets;
 
     /**
      * The media to use for cascading.

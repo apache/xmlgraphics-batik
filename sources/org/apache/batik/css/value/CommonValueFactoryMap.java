@@ -28,8 +28,15 @@ public class CommonValueFactoryMap implements ValueFactoryMap, ValueConstants {
      * Creates a new ValueFactoryMap object.
      */
     public CommonValueFactoryMap(Parser p) {
+        this(p, new DefaultSystemColorResolver());
+    }
+
+    /**
+     * Creates a new ValueFactoryMap object.
+     */
+    public CommonValueFactoryMap(Parser p, SystemColorResolver scr) {
 	put(CSS_CLIP_PROPERTY,               new ClipFactory(p));
-	put(CSS_COLOR_PROPERTY,              new ColorFactory(p, CSS_COLOR_PROPERTY));
+	put(CSS_COLOR_PROPERTY,              new ColorFactory(p, CSS_COLOR_PROPERTY, scr));
 	put(CSS_CURSOR_PROPERTY,             new CursorFactory(p));
 	put(CSS_DIRECTION_PROPERTY,          new DirectionFactory(p));
 	put(CSS_DISPLAY_PROPERTY,            new DisplayFactory(p));

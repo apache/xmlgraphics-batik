@@ -79,27 +79,6 @@ public interface ValueConstants extends CSSConstants {
 	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 900);
 
     /**
-     * The 'activeborder' identifier value.
-     */
-    ImmutableValue ACTIVEBORDER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_ACTIVEBORDER_VALUE);
-
-    /**
-     * The 'activecaption' identifier value.
-     */
-    ImmutableValue ACTIVECAPTION_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_ACTIVECAPTION_VALUE);
-
-    /**
-     * The 'appworkspace' identifier value.
-     */
-    ImmutableValue APPWORKSPACE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_APPWORKSPACE_VALUE);
-
-    /**
      * The 'auto' identifier.
      */
     ImmutableValue AUTO_VALUE =
@@ -147,41 +126,6 @@ public interface ValueConstants extends CSSConstants {
     ImmutableValue BOLDER_VALUE =
 	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
                             CSS_BOLDER_VALUE);
-
-    /**
-     * The 'buttonface' identifier value.
-     */
-    ImmutableValue BUTTONFACE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_BUTTONFACE_VALUE);
-
-    /**
-     * The 'buttonhighlight' identifier value.
-     */
-    ImmutableValue BUTTONHIGHLIGHT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_BUTTONHIGHLIGHT_VALUE);
-
-    /**
-     * The 'buttonshadow' identifier value.
-     */
-    ImmutableValue BUTTONSHADOW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_BUTTONSHADOW_VALUE);
-
-    /**
-     * The 'buttontext' identifier value.
-     */
-    ImmutableValue BUTTONTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_BUTTONTEXT_VALUE);
-
-    /**
-     * The 'captiontext' identifier value.
-     */
-    ImmutableValue CAPTIONTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_CAPTIONTEXT_VALUE);
 
     /**
      * The 'collapse' identifier value.
@@ -289,55 +233,6 @@ public interface ValueConstants extends CSSConstants {
                             CSS_HIDDEN_VALUE);
 
     /**
-     * The 'highlight' identifier value.
-     */
-    ImmutableValue HIGHLIGHT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_HIGHLIGHT_VALUE);
-
-    /**
-     * The 'highlighttext' identifier value.
-     */
-    ImmutableValue HIGHLIGHTTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_HIGHLIGHTTEXT_VALUE);
-
-    /**
-     * The 'inactiveborder' identifier value.
-     */
-    ImmutableValue INACTIVEBORDER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_INACTIVEBORDER_VALUE);
-
-    /**
-     * The 'inactivecaption' identifier value.
-     */
-    ImmutableValue INACTIVECAPTION_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_INACTIVECAPTION_VALUE);
-
-    /**
-     * The 'inactivecaptiontext' identifier value.
-     */
-    ImmutableValue INACTIVECAPTIONTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_INACTIVECAPTIONTEXT_VALUE);
-
-    /**
-     * The 'infobackground' identifier value.
-     */
-    ImmutableValue INFOBACKGROUND_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_INFOBACKGROUND_VALUE);
-
-    /**
-     * The 'infotext' identifier value.
-     */
-    ImmutableValue INFOTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_INFOTEXT_VALUE);
-
-    /**
      * The 'inline' identifier value.
      */
     ImmutableValue INLINE_VALUE =
@@ -413,20 +308,6 @@ public interface ValueConstants extends CSSConstants {
     ImmutableValue MEDIUM_VALUE =
 	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
                             CSS_MEDIUM_VALUE);
-
-    /**
-     * The 'menu' identifier value.
-     */
-    ImmutableValue MENU_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_MENU_VALUE);
-
-    /**
-     * The 'menutext' identifier value.
-     */
-    ImmutableValue MENUTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_MENUTEXT_VALUE);
 
     /**
      * The 'monospaced' keyword.
@@ -537,13 +418,6 @@ public interface ValueConstants extends CSSConstants {
      * The 'scroll' identifier value.
      */
     ImmutableValue SCROLL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_SCROLLBAR_VALUE);
-
-    /**
-     * The 'scrollbar' identifier value.
-     */
-    ImmutableValue SCROLLBAR_VALUE =
 	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
                             CSS_SCROLLBAR_VALUE);
 
@@ -672,42 +546,6 @@ public interface ValueConstants extends CSSConstants {
     ImmutableValue TEXT_VALUE =
 	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
                             CSS_TEXT_VALUE);
-
-    /**
-     * The 'threeddarkshadow' identifier value.
-     */
-    ImmutableValue THREEDDARKSHADOW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_THREEDDARKSHADOW_VALUE);
-
-    /**
-     * The 'threedface' identifier value.
-     */
-    ImmutableValue THREEDFACE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_THREEDFACE_VALUE);
-
-    
-    /**
-     * The 'threedhighlight' identifier value.
-     */
-    ImmutableValue THREEDHIGHLIGHT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_THREEDHIGHLIGHT_VALUE);
-
-    /**
-     * The 'threedlightshadow' identifier value.
-     */
-    ImmutableValue THREEDLIGHTSHADOW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_THREEDLIGHTSHADOW_VALUE);
-
-    /**
-     * The 'threedshadow' identifier value.
-     */
-    ImmutableValue THREEDSHADOW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT,
-                            CSS_THREEDSHADOW_VALUE);
 
     /**
      * The 'ultra-condensed' identifier value.

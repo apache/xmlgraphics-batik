@@ -27,21 +27,6 @@ import org.w3c.dom.css.CSSPrimitiveValue;
 public abstract class AbstractValueFactory
     implements ValueFactory,
                ValueConstants {
-    /**
-     * The immutable factory.
-     */
-    protected final static ValueFactory IMMUTABLE_FACTORY =
-	new AbstractValueFactory(null) {
-	public String getPropertyName() {
-	    return "";
-	}
-	public ImmutableValue createValue(LexicalUnit lu) throws DOMException {
-	    throw CSSDOMExceptionFactory.createDOMException
-		(DOMException.NO_MODIFICATION_ALLOWED_ERR,
-		 "immutable.value",
-		 new Object[] {});
-	}
-    };
 
     /**
      * The CSS parser.

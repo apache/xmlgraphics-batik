@@ -8,9 +8,14 @@
 
 package org.apache.batik.css.value;
 
+import java.util.Iterator;
+
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
+
 import org.w3c.dom.Element;
+
+import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.ViewCSS;
 
 /**
@@ -53,7 +58,13 @@ public class FontFamilyResolver implements RelativeValueResolver {
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return context.getDefaultFontFamilyValue();
+        ImmutableValueList l = new ImmutableValueList();
+        Iterator it = context.getDefaultFontFamilyValue().iterator();
+        while (it.hasNext()) {
+            String s = (String)it.next();
+            l.append(new CSSOMReadOnlyValue(createFontFamilyValue(s)));
+        }
+        return new CSSOMReadOnlyValue(l);
     }
     
     /**
@@ -74,5 +85,17 @@ public class FontFamilyResolver implements RelativeValueResolver {
 			     String priority,
 			     int origin) {
 	// Nothing to do
+    }
+
+    /**
+     * Creates a font-family value.
+     */
+    protected ImmutableValue createFontFamilyValue(String s) {
+        ImmutableValue res =
+            (ImmutableValue)FontFamilyFactory.values.get(s.toLowerCase().intern());
+        if (res != null) {
+            return res;
+        }
+        return new ImmutableString(CSSPrimitiveValue.CSS_STRING, s);
     }
 }

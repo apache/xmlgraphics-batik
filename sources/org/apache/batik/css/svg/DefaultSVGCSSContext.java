@@ -10,6 +10,8 @@ package org.apache.batik.css.svg;
 
 import org.apache.batik.css.value.DefaultCommonCSSContext;
 
+import org.w3c.dom.Element;
+
 /**
  * This class is the default implementation of the SVGCSSContext.
  *
@@ -21,40 +23,23 @@ public class DefaultSVGCSSContext
     implements SVGCSSContext {
 
     /**
-     * The viewport width.
-     */
-    protected float viewportWidth;
-
-    /**
-     * The viewport height.
-     */
-    protected float viewportHeight;
-
-    /**
      * Returns the width of the viewport.
+     * @throws IllegalStateException if the context was not able to compute
+     *         the value.
      */
-    public float getViewportWidth() {
-        return viewportWidth;
-    }
-
-    /**
-     * Sets the width of the viewport.
-     */
-    public void setViewportWidth(float f) {
-        viewportWidth = f;
+    public float getViewportWidth(Element e) throws IllegalStateException {
+        // !!! TODO
+        throw new IllegalStateException();
     }
 
     /**
      * Returns the height of the viewport.
+     * @throws IllegalStateException if the context was not able to compute
+     *         the value.
      */
-    public float getViewportHeight() {
-        return viewportHeight;
+    public float getViewportHeight(Element e) throws IllegalStateException {
+        // !!! TODO
+        throw new IllegalStateException();
     }
 
-    /**
-     * Sets the height of the viewport.
-     */
-    public void setViewportHeight(float f) {
-        viewportHeight = f;
-    }
 }

@@ -15,6 +15,7 @@ import org.apache.batik.css.value.ImmutableFloat;
 import org.apache.batik.css.value.ImmutableRGBColor;
 import org.apache.batik.css.value.ImmutableString;
 import org.apache.batik.css.value.ImmutableValue;
+import org.apache.batik.css.value.SystemColorResolver;
 import org.apache.batik.css.value.ValueFactory;
 
 import org.w3c.css.sac.LexicalUnit;
@@ -36,16 +37,11 @@ public class PaintFactory
     extends    SVGColorFactory
     implements SVGValueConstants {
 
-    static {
-	values.put(CSS_CURRENTCOLOR_VALUE, CURRENTCOLOR_VALUE);
-	values.put(CSS_NONE_VALUE,         NONE_VALUE);
-    }
-
     /**
      * Creates a new PaintFactory object.
      */
-    public PaintFactory(Parser p, String prop) {
-	super(p, prop);
+    public PaintFactory(Parser p, String prop, SystemColorResolver scr) {
+	super(p, prop, scr);
     }
 
     /**
@@ -56,6 +52,12 @@ public class PaintFactory
 	case LexicalUnit.SAC_INHERIT:
 	    return INHERIT;
 	case LexicalUnit.SAC_IDENT:
+            String s = lu.getStringValue().toLowerCase().intern();
+            if (s == CSS_CURRENTCOLOR_VALUE) {
+                return CURRENTCOLOR_VALUE;
+            } else if (s == CSS_NONE_VALUE) {
+                return NONE_VALUE;
+            }
             return super.createValue(lu);
         case LexicalUnit.SAC_RGBCOLOR:
             LexicalUnit l = lu.getParameters();

@@ -41,7 +41,7 @@ public abstract class CommonViewCSS extends AbstractViewCSS {
 	addRelativeValueResolver(new FontStretchResolver());
 	addRelativeValueResolver(new FontStyleResolver());
 	addRelativeValueResolver(new FontVariantResolver());
-	addRelativeValueResolver(new FontWeightResolver());
+	addRelativeValueResolver(new FontWeightResolver(ctx));
 	addRelativeValueResolver(new SpacingResolver
                                  (ValueConstants.CSS_LETTER_SPACING_PROPERTY));
 	addRelativeValueResolver(new OverflowResolver());
