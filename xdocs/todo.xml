@@ -79,6 +79,10 @@
     </actions>
 
     <actions priority="medium">
+        <action context="code" assigned-to="VH">
+            Fix filter region processing so that filter primitive regions are intersected
+            with the filter region
+        </action>
         <action context="code"
                 assigned-to="TK">
             Modify thumbnail area of interest marker so that
@@ -205,5 +209,25 @@
             Use new version of StyleBook
         </action>
 
+        <action context="code" assigned-to="TK">
+            Fix error handling on gradients when 2 stops have the same offset.
+        </action>
+
+        <action context="code" assigned-to="BH">
+            Add printing support to the SVG viewer
+        </action>
+
+        <action context="code" assigned-to="VH">
+            Add Base64ImageHandler to SVGGraphics2D set of ImageHandler implementations
+        </action>
+
+        <action context="code" assigned-to="VH">
+            Add proper use of the DOM2 API in SVGGraphics2D (need to add namespace).
+        </action>
+
+        <action context="code" assigned-to="VH">
+            Add proper parser use in test applications to remove hard dependancies 
+            on Crimson
+        </action>
     </actions>
 </todo>
