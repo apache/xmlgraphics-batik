@@ -63,7 +63,8 @@ public abstract class SVGGradientBridge implements SVGConstants {
     }
 
     protected static Vector extractGradientStops(Element paintElement,
-                                                 BridgeContext ctx){
+                                                 BridgeContext ctx,
+                                                 float paintOpacity){
         Element e = paintElement;
         List refs = new LinkedList();
         Vector stops = new Vector();
@@ -74,7 +75,7 @@ public abstract class SVGGradientBridge implements SVGConstants {
                 stop = stop.getNextSibling()){
                 if(stop.getNodeType() == stop.ELEMENT_NODE &&
                    stop.getNodeName().equals(SVG_STOP_TAG)){
-                    GradientStop gs = convertGradientStop((Element)stop, ctx);
+                    GradientStop gs = convertGradientStop((Element)stop, ctx, paintOpacity);
                     if(gs != null){
                         stops.addElement(gs);
                     }
@@ -112,7 +113,8 @@ public abstract class SVGGradientBridge implements SVGConstants {
     }
 
     public static GradientStop convertGradientStop(Element stop,
-                                                   BridgeContext ctx) {
+                                                   BridgeContext ctx,
+                                                   float extraOpacity) {
         // parse the offset attribute, (required and must between [0-1])
         String offsetStr = stop.getAttributeNS(null, SVG_OFFSET_ATTRIBUTE);
         if (offsetStr.length() == 0) {
@@ -122,7 +124,8 @@ public abstract class SVGGradientBridge implements SVGConstants {
         float ratio = CSSUtilities.convertRatio(offsetStr);
         // parse the stop-color CSS properties
         CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(stop);
-        Color stopColor = CSSUtilities.convertStopColorToPaint(decl);
+        Color stopColor = CSSUtilities.convertStopColorToPaint(stop, decl, 
+                                                               extraOpacity, ctx);
 
         return new GradientStop(stopColor, ratio);
     }

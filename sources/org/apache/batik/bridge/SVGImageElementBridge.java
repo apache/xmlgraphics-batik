@@ -11,6 +11,10 @@ package org.apache.batik.bridge;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Shape;
+
+import java.awt.color.ColorSpace;
+import java.awt.color.ICC_Profile;
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.StringReader;
@@ -33,6 +37,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ImageNode;
 import org.apache.batik.gvt.RasterImageNode;
+import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.Clip;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -166,7 +171,9 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         RasterImageNode node = new RasterImageNode();
         // create the image
         Rectangle2D bounds = getImageBounds(ctx, svgElement);
-        node.setImage(RasterRable.create(uriStr, bounds));
+        node.setImage(RasterRable.create(uriStr, 
+                                         bounds,
+                                         extractColorSpace(svgElement, ctx)));
         node.setImageBounds(bounds);
         return node;
     }
@@ -177,9 +184,56 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         RasterImageNode node = new RasterImageNode();
         // create the image
         Rectangle2D bounds = getImageBounds(ctx, svgElement);
-        node.setImage(RasterRable.create(url, bounds));
+        node.setImage(RasterRable.create(url, 
+                                         bounds, 
+                                         extractColorSpace(svgElement, ctx)));
         node.setImageBounds(bounds);
         return node;
+    }
+
+    /**
+     * Analyzes the color-profile property and builds an ICCColorSpaceExt
+     * object from it.
+     */
+    protected ICCColorSpaceExt extractColorSpace(SVGElement svgElement,
+                                                 BridgeContext ctx){
+        String colorProfileProperty 
+            = svgElement.getAttributeNS(null, CSS_COLOR_PROFILE_PROPERTY);
+
+        System.out.println(CSS_COLOR_PROFILE_PROPERTY + " : " + colorProfileProperty);
+
+        /**
+         * The only cases that need special handling are
+         * 'sRGB' and 'name'
+         */
+        ICCColorSpaceExt colorSpace = null;
+        if(CSS_SRGB_VALUE.equals(colorProfileProperty)){
+            colorSpace 
+                = new ICCColorSpaceExt(ICC_Profile.getInstance(ColorSpace.CS_sRGB),
+                                       ICCColorSpaceExt.AUTO);
+        }
+        else if(!CSS_AUTO_VALUE.equals(colorProfileProperty)
+                &&
+                !"".equals(colorProfileProperty)){
+            /*
+             * The value is neither 'sRGB' nor 'auto': it is 
+             * a profile name.
+             */
+            SVGColorProfileElementBridge profileBridge =
+                (SVGColorProfileElementBridge)
+                ctx.getBridge(SVG_NAMESPACE_URI,
+                              SVG_COLOR_PROFILE_TAG);
+            
+            if(profileBridge != null){
+                colorSpace
+                    = profileBridge.build(colorProfileProperty,
+                                          ctx, svgElement);
+
+                System.out.println("colorSpace : " + colorSpace);
+            }
+        }
+              
+        return colorSpace;
     }
 
     protected GraphicsNode createSVGImageNode(BridgeContext ctx,

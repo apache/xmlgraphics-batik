@@ -81,7 +81,10 @@ public class SVGFeFloodElementBridge implements FilterPrimitiveBridge,
         CSSStyleDeclaration decl
             = CSSUtilities.getComputedStyle(filterElement);
 
-        Color floodColor = CSSUtilities.convertFloodColorToPaint(decl);
+        Color floodColor 
+            = CSSUtilities.convertFloodColorToPaint(filterElement, 
+                                                    decl, 
+                                                    bridgeContext);
 
         CSSStyleDeclaration cssDecl
             = CSSUtilities.getComputedStyle(filterElement);

@@ -119,7 +119,7 @@ public class SVGFeSpecularLightingElementBridge
 
 
         // Extract the light color
-        Color color = CSSUtilities.convertLightingColor(cssDecl);
+        Color color = CSSUtilities.convertLightingColor(filterElement, cssDecl, bridgeContext);
 
         // Extract the Light from the child node.
         NodeList children = filterElement.getChildNodes();

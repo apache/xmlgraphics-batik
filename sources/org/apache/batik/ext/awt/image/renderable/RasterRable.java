@@ -28,12 +28,22 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.Transparency;
+
+import java.awt.color.ColorSpace;
+import java.awt.color.ICC_ColorSpace;
+import java.awt.color.ICC_Profile;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.BandedSampleModel;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
 import java.awt.image.RenderedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
@@ -43,8 +53,10 @@ import java.awt.image.renderable.RenderContext;
 import java.io.EOFException;
 import java.io.IOException;
 
+import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
+import org.apache.batik.ext.awt.image.rendered.ProfileRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 
 /**
@@ -67,25 +79,29 @@ public class RasterRable
 
     Thread thread = null;
 
-    public RasterRable(final URL url) {
+    public RasterRable(final URL url,
+                       final ICCColorSpaceExt colorSpace) {
         super((Filter)null);
 
-        thread = new URLImageLoader(url);
+        thread = new URLImageLoader(url, colorSpace);
         thread.start();
     }
 
-    public RasterRable(final String base64Data) {
-        this(base64Data, 0, base64Data.length());
+    public RasterRable(final String base64Data,
+                       final ICCColorSpaceExt colorSpace) {
+        this(base64Data, 0, base64Data.length(), colorSpace);
     }
 
-    public RasterRable(final String base64Data, int start) {
-        this(base64Data, start, base64Data.length()-start);
+    public RasterRable(final String base64Data, int start,
+                       final ICCColorSpaceExt colorSpace) {
+        this(base64Data, start, base64Data.length()-start, colorSpace);
     }
 
-    public RasterRable(final String base64Data, int start, int length) {
+    public RasterRable(final String base64Data, int start, int length,
+                       final ICCColorSpaceExt colorSpace) {
         super((Filter)null);
 
-        thread = new Base64ImageLoader(base64Data, start, length);
+        thread = new Base64ImageLoader(base64Data, start, length, colorSpace);
         thread.start();
     }
 
@@ -135,9 +151,13 @@ public class RasterRable
      * as a java.awt.Image, via Toolkit.createImage(...);
      * @param url the url to load
      * @param bounds The bounds of the image
+     * @param colorSpace colorSpace that should be used to interpret the
+     *        raster image data. May be null
      */
-    public static Filter create(URL url, Rectangle2D bounds) {
-        return new RasterRable(url);
+    public static Filter create(URL url, 
+                                Rectangle2D bounds,
+                                ICCColorSpaceExt colorSpace) {
+        return new RasterRable(url, colorSpace);
     }
 
     /**
@@ -148,8 +168,12 @@ public class RasterRable
      * @param dataUrl the data url containing the complete base64
      *                encoded image data.
      * @param bounds The bounds of the image
+     * @param colorSpace colorSpace that should be used to interpret the
+     *        raster image data. May be null
      */
-    public static Filter create(String dataUrl, Rectangle2D bounds){
+    public static Filter create(String dataUrl, 
+                                Rectangle2D bounds,
+                                ICCColorSpaceExt colorSpace){
         //
         // Using the data protocol
         //
@@ -160,7 +184,7 @@ public class RasterRable
 
         start += BASE64.length();
 
-        return new RasterRable(dataUrl, start);
+        return new RasterRable(dataUrl, start, colorSpace);
     }
 
     // Logically these belong to the ImageLoader but it can't
@@ -174,11 +198,15 @@ public class RasterRable
      * It handles most/all of the threading issues for the subclasses.
      */
     protected abstract class ImageLoader extends Thread {
+        protected ICCColorSpaceExt colorSpace;
 
         /**
          * Constructor, does nothing.
          */
-        public ImageLoader() { }
+        public ImageLoader(ICCColorSpaceExt colorSpace) { 
+            this.colorSpace = colorSpace;
+            System.out.println("colorSpace : " + colorSpace);
+        }
 
         /**
          * Subclass should implement this to return a java.awt.Image
@@ -191,7 +219,7 @@ public class RasterRable
          * Default load method, handles decoding the Image instance
          * into a BufferedImage.
          */
-        public BufferedImage load() {
+        public RenderedImage load() {
 
             try {
                 Image img = createImage();
@@ -205,6 +233,7 @@ public class RasterRable
                 // it to ours.
                 if (img instanceof BufferedImage)
                     return (BufferedImage)img;
+                    // return (BufferedImage)img;
 
                 // Setup for using the mediaTracker.
                 int myID;
@@ -251,15 +280,24 @@ public class RasterRable
             return null;
         }
 
+        public RenderedImage applyColorProfile(RenderedImage img){
+            if(colorSpace == null){
+                return img;
+            }
+
+            return new ProfileRed(RenderedImageCachableRed.wrap(img), 
+                                  colorSpace);
+        }
+
         public void run() {
             // Load the BufferedImage
-            BufferedImage bi = load();
+            RenderedImage bi = load();
 
             if (bi == null) {
                 // Something wrong, We Couldn't load the image,
                 // display a 'broken' image, place-holder...
                 bi = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-                Graphics2D g2d = bi.createGraphics();
+                Graphics2D g2d = ((BufferedImage)bi).createGraphics();
 
                 g2d.setColor(new Color(255,255,255,190));
                 g2d.fillRect(0, 0, 100, 100);
@@ -298,8 +336,8 @@ public class RasterRable
          * @param url The url of the image to load (must be readable
          *            with Toolkit.createImage(url).
          */
-        public URLImageLoader(URL url) {
-            this(url, URLImageCache.getDefaultCache());
+        public URLImageLoader(URL url, ICCColorSpaceExt colorSpace) {
+            this(url, URLImageCache.getDefaultCache(), colorSpace);
         }
 
         /**
@@ -309,7 +347,9 @@ public class RasterRable
          * @param cache The Url cache to store the result in.
          */
         public URLImageLoader(URL url,
-                              URLImageCache cache) {
+                              URLImageCache cache,
+                              ICCColorSpaceExt colorSpace) {
+            super(colorSpace);
             this.cache = cache;
             this.url   = url;
         }
@@ -327,21 +367,26 @@ public class RasterRable
          * load (to do most of the work) and puts the result in
          * the URL cache if it succeeds.
          */
-        public BufferedImage load() {
-            BufferedImage bi = cache.request(url);
+        public RenderedImage load() {
+            RenderedImage bi = cache.request(url);
 
-            if (bi != null)
-                return bi;
+            if (bi == null){
+                System.out.println("Loading " + url);
+                // Image is not loaded yet
+                bi = super.load();
+                
+                if (bi != null)
+                    cache.put(url, bi); // Let other people use our work..
+                else
+                    // Something wrong, We Couldn't load the image.
+                    // This is debateable but I'm going to clear my entry
+                    // rather than put the 'broken link' image here...
+                    cache.clear(url);
+            }
 
-            bi = super.load();
-
-            if (bi != null)
-                cache.put(url, bi); // Let other people use our work..
-            else
-                // Something wrong, We Couldn't load the image.
-                // This is debateable but I'm going to clear my entry
-                // rather than put the 'broken link' image here...
-                cache.clear(url);
+            if (bi != null && colorSpace != null){
+                bi = applyColorProfile(bi);
+            }
 
             return bi;
         }
@@ -360,8 +405,11 @@ public class RasterRable
          * Decode an image from a base64 encoded string.
          * The complete contents of the string will be used.
          * @param base64Data the image data encoded with base64 in a string.
+         * @param colorSpace if not null, should take precedence over any
+         *        embeded color space.
          */
-        public Base64ImageLoader(String base64Data) {
+        public Base64ImageLoader(String base64Data, ICCColorSpaceExt colorSpace) {
+            super(colorSpace);
             this.base64Data = base64Data;
             this.start      = 0;
             this.length     = base64Data.length();;
@@ -373,8 +421,11 @@ public class RasterRable
          * @param base64Data The image data encoded with base64 in a string.
          * @param start      The starting offset for decoding.
          * @param length     The extent of the data to decode.
+         * @param colorSpace if not null, should take precedence over any
+         *        embeded color space.
          */
-        public Base64ImageLoader(String base64Data, int start, int length) {
+        public Base64ImageLoader(String base64Data, int start, int length, ICCColorSpaceExt colorSpace) {
+            super(colorSpace);
             this.base64Data = base64Data;
             this.start      = start;
             this.length     = length;

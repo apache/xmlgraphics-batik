@@ -30,6 +30,8 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.PatternPaint;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.ext.awt.image.renderable.ColorMatrixRable;
+import org.apache.batik.ext.awt.image.renderable.ColorMatrixRable8Bit;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 import org.w3c.dom.Element;
@@ -61,7 +63,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                    GraphicsNode paintedNode,
                                    Element paintedElement,
                                    Element paintElement){
-        return createPaint(ctx, paintedNode, paintedElement, paintElement);
+        return createPaint(ctx, paintedNode, paintedElement, paintElement, CSS_STROKE_OPACITY_PROPERTY);
     }
 
     /**
@@ -76,7 +78,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                  GraphicsNode paintedNode,
                                  Element paintedElement,
                                  Element paintElement){
-        return createPaint(ctx, paintedNode, paintedElement, paintElement);
+        return createPaint(ctx, paintedNode, paintedElement, paintElement, CSS_FILL_OPACITY_PROPERTY);
     }
 
     protected static List extractPatternChildren(Element patternElement,
@@ -136,8 +138,9 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
     protected Paint createPaint(BridgeContext ctx,
                                 GraphicsNode paintedNode,
                                 Element paintedElement,
-                                Element paintElement) {
-
+                                Element paintElement, 
+                                String paintOpacityProperty) {
+        
         GraphicsNodeRenderContext rc =
                          ctx.getGraphicsNodeRenderContext();
         DocumentLoader loader = ctx.getDocumentLoader();
@@ -284,6 +287,34 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             // May be an additional boundingBoxSpace to user space
             // transform is needed.
             nodeTransform = patternContentTransform;
+        }
+
+        // Account for the opacity of the paint operation by adding a 
+        // scale on the content.
+        CSSStyleDeclaration paintedCssDecl
+            = CSSUtilities.getComputedStyle(paintedElement);
+        CSSPrimitiveValue v =
+            (CSSPrimitiveValue)paintedCssDecl.getPropertyCSSValue(paintOpacityProperty);
+        float opacity = CSSUtilities.convertOpacity(v);
+        System.out.println("Pattern on " + paintOpacityProperty + " = " + opacity);
+        if(opacity != 1){
+            float[][] matrix = {{1, 0, 0, 0, 0},
+                                {0, 1, 0, 0, 0},
+                                {0, 0, 1, 0, 0},
+                                {0, 0, 0, opacity, 0} };
+            ColorMatrixRable filter = ColorMatrixRable8Bit.buildMatrix(matrix);
+            CompositeGraphicsNode newPatternContentNode
+                = new CompositeGraphicsNode();
+            
+            newPatternContentNode.getChildren().add(patternContentNode);
+            
+            GraphicsNodeRableFactory gnrFactory
+                = ctx.getGraphicsNodeRableFactory();
+            
+            Filter contentRable = gnrFactory.createGraphicsNodeRable(patternContentNode, rc);
+            filter.setSource(contentRable);
+            patternContentNode.setFilter(filter);
+            patternContentNode = newPatternContentNode;
         }
 
         // Now, build a Paint from the pattern content
