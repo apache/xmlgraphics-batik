@@ -197,11 +197,11 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      * Constructs a new transcoder that prints images.
      */
     public PrintTranscoder() {
-        getHints().put(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
+        hints.put(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
                   SVGConstants.SVG_NAMESPACE_URI);
-        getHints().put(KEY_DOCUMENT_ELEMENT,
+        hints.put(KEY_DOCUMENT_ELEMENT,
                   SVGConstants.SVG_SVG_TAG);
-        getHints().put(KEY_DOM_IMPLEMENTATION,
+        hints.put(KEY_DOM_IMPLEMENTATION,
                   SVGDOMImplementation.getDOMImplementation());
     }
 
@@ -231,8 +231,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         //
         Paper paper = pageFormat.getPaper();
 
-        Float pageWidth = (Float)getHints().get(KEY_PAGE_WIDTH);
-        Float pageHeight = (Float)getHints().get(KEY_PAGE_HEIGHT);
+        Float pageWidth = (Float)hints.get(KEY_PAGE_WIDTH);
+        Float pageHeight = (Float)hints.get(KEY_PAGE_HEIGHT);
         if(pageWidth != null){
             paper.setSize(pageWidth.floatValue(),
                           paper.getHeight());
@@ -244,10 +244,10 @@ public class PrintTranscoder extends XMLAbstractTranscoder
 
         float x=0, y=0, width=(float)paper.getWidth(), height=(float)paper.getHeight();
 
-        Float leftMargin = (Float)getHints().get(KEY_MARGIN_LEFT);
-        Float topMargin = (Float)getHints().get(KEY_MARGIN_TOP);
-        Float rightMargin = (Float)getHints().get(KEY_MARGIN_RIGHT);
-        Float bottomMargin = (Float)getHints().get(KEY_MARGIN_BOTTOM);
+        Float leftMargin = (Float)hints.get(KEY_MARGIN_LEFT);
+        Float topMargin = (Float)hints.get(KEY_MARGIN_TOP);
+        Float rightMargin = (Float)hints.get(KEY_MARGIN_RIGHT);
+        Float bottomMargin = (Float)hints.get(KEY_MARGIN_BOTTOM);
 
         if(leftMargin != null){
             x = leftMargin.floatValue();
@@ -266,7 +266,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
 
         paper.setImageableArea(x, y, width, height);
 
-        String pageOrientation = (String)getHints().get(KEY_PAGE_ORIENTATION);
+        String pageOrientation = (String)hints.get(KEY_PAGE_ORIENTATION);
         if(VALUE_PAGE_ORIENTATION_PORTRAIT.equalsIgnoreCase(pageOrientation)){
             pageFormat.setOrientation(pageFormat.PORTRAIT);
         }
@@ -283,7 +283,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         //
         // If required, pop up a dialog to adjust the page format
         //
-        Boolean showPageFormat = (Boolean)getHints().get(KEY_SHOW_PAGE_DIALOG);
+        Boolean showPageFormat = (Boolean)hints.get(KEY_SHOW_PAGE_DIALOG);
         if(showPageFormat != null && showPageFormat.booleanValue()){
             PageFormat tmpPageFormat = printerJob.pageDialog(pageFormat);
             if(tmpPageFormat == pageFormat){
@@ -298,7 +298,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         //
         // If required, pop up a dialog to select the printer
         //
-        Boolean showPrinterDialog = (Boolean)getHints().get(KEY_SHOW_PRINTER_DIALOG);
+        Boolean showPrinterDialog = (Boolean)hints.get(KEY_SHOW_PRINTER_DIALOG);
         if(showPrinterDialog != null && showPrinterDialog.booleanValue()){
             if(!printerJob.printDialog()){
                 // Dialog was cancelled, meaning that the print process
@@ -369,7 +369,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         double scale = scaleX < scaleY ? scaleX : scaleY;
 
         // Check hint to know if scaling is really needed
-        Boolean scaleToPage = (Boolean)getHints().get(KEY_SCALE_TO_PAGE);
+        Boolean scaleToPage = (Boolean)hints.get(KEY_SCALE_TO_PAGE);
         if(scaleToPage != null && !scaleToPage.booleanValue()){
             scale = 1;
         }
@@ -447,7 +447,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         //
         // Initialize the SVG document with the appropriate context
         //
-        String parserClassname = (String)getHints().get(KEY_XML_PARSER_CLASSNAME);
+        String parserClassname = (String)hints.get(KEY_XML_PARSER_CLASSNAME);
         DefaultSVGContext svgCtx = new DefaultSVGContext();
         svgCtx.setPixelToMM(userAgent.getPixelToMM());
         ((SVGOMDocument)document).setSVGContext(svgCtx);
@@ -462,12 +462,12 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         // Compute the image's width and height according the hints
         //
         float imgWidth = -1;
-        if (getHints().containsKey(KEY_WIDTH)) {
-            imgWidth = ((Float)getHints().get(KEY_WIDTH)).floatValue();
+        if (hints.containsKey(KEY_WIDTH)) {
+            imgWidth = ((Float)hints.get(KEY_WIDTH)).floatValue();
         }
         float imgHeight = -1;
-        if (getHints().containsKey(KEY_HEIGHT)) {
-            imgHeight = ((Float)getHints().get(KEY_HEIGHT)).floatValue();
+        if (hints.containsKey(KEY_HEIGHT)) {
+            imgHeight = ((Float)hints.get(KEY_HEIGHT)).floatValue();
         }
         float width, height;
         if (imgWidth > 0 && imgHeight > 0) {
@@ -501,8 +501,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         //
         // Take the AOI into account if any
         //
-        if (getHints().containsKey(KEY_AOI)) {
-            Rectangle2D aoi = (Rectangle2D)getHints().get(KEY_AOI);
+        if (hints.containsKey(KEY_AOI)) {
+            Rectangle2D aoi = (Rectangle2D)hints.get(KEY_AOI);
             // transform the AOI into the image's coordinate system
             aoi = Px.createTransformedShape(aoi).getBounds2D();
             AffineTransform Mx = new AffineTransform();
@@ -539,10 +539,10 @@ public class PrintTranscoder extends XMLAbstractTranscoder
     public GraphicsNodeRenderContext getRenderContext() {
         if (nodeRenderContext == null) {
             RenderingHints hints = new RenderingHints(null);
-            getHints().put(RenderingHints.KEY_ANTIALIASING,
+            hints.put(RenderingHints.KEY_ANTIALIASING,
                   RenderingHints.VALUE_ANTIALIAS_ON);
 
-            getHints().put(RenderingHints.KEY_INTERPOLATION,
+            hints.put(RenderingHints.KEY_INTERPOLATION,
                   RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
             FontRenderContext fontRenderContext =
@@ -777,7 +777,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          */
         public void displayError(String message) {
             try {
-                getHandler().error(new TranscoderException(message));
+                PrintTranscoder.this.handler.error
+                    (new TranscoderException(message));
             } catch (TranscoderException ex) {
                 throw new RuntimeException();
             }
@@ -788,7 +789,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          */
         public void displayError(Exception e) {
             try {
-                getHandler().error(new TranscoderException(e));
+                PrintTranscoder.this.handler.error(new TranscoderException(e));
             } catch (TranscoderException ex) {
                 throw new RuntimeException();
             }
@@ -799,7 +800,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          */
         public void displayMessage(String message) {
             try {
-                getHandler().warning(new TranscoderException(message));
+                PrintTranscoder.this.handler.warning
+                    (new TranscoderException(message));
             } catch (TranscoderException ex) {
                 throw new RuntimeException();
             }
@@ -810,8 +812,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          * <tt>TranscodingHints</tt> or 0.3528 if any.
          */
         public float getPixelToMM() {
-            if (getHints().containsKey(KEY_PIXEL_TO_MM)) {
-                return ((Float)getHints().get(KEY_PIXEL_TO_MM)).floatValue();
+            if (PrintTranscoder.this.hints.containsKey(KEY_PIXEL_TO_MM)) {
+                return ((Float)PrintTranscoder.this.hints.get(KEY_PIXEL_TO_MM)).floatValue();
             } else {
                 // return 0.3528f; // 72 dpi
                 return 0.26458333333333333333333333333333f; // 96dpi
@@ -823,8 +825,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          * <tt>TranscodingHints</tt> or "en" (english) if any.
          */
         public String getLanguages() {
-            if (getHints().containsKey(KEY_LANGUAGE)) {
-                return (String)getHints().get(KEY_LANGUAGE);
+            if (PrintTranscoder.this.hints.containsKey(KEY_LANGUAGE)) {
+                return (String)PrintTranscoder.this.hints.get(KEY_LANGUAGE);
             } else {
                 return "en";
             }
@@ -835,8 +837,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          * <tt>TranscodingHints</tt> or null if any.
          */
         public String getUserStyleSheetURI() {
-            if (getHints().containsKey(KEY_XML_PARSER_CLASSNAME)) {
-                return (String)getHints().get(KEY_XML_PARSER_CLASSNAME);
+            if (PrintTranscoder.this.hints.containsKey(KEY_XML_PARSER_CLASSNAME)) {
+                return (String)PrintTranscoder.this.hints.get(KEY_XML_PARSER_CLASSNAME);
             } else {
                 return XMLResourceDescriptor.getXMLParserClassName();
             }
@@ -846,7 +848,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          * Returns the XML parser to use from the TranscodingHints.
          */
         public String getXMLParserClassName() {
-            return (String)getHints().get(KEY_XML_PARSER_CLASSNAME);
+            return (String)PrintTranscoder.this.hints.get(KEY_XML_PARSER_CLASSNAME);
         }
 
         /**

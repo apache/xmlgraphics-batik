@@ -113,11 +113,11 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * Constructs a new <tt>ImageTranscoder</tt>.
      */
     protected ImageTranscoder() {
-        getHints().put(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
+        hints.put(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
                   SVGConstants.SVG_NAMESPACE_URI);
-        getHints().put(KEY_DOCUMENT_ELEMENT,
+        hints.put(KEY_DOCUMENT_ELEMENT,
                   SVGConstants.SVG_SVG_TAG);
-        getHints().put(KEY_DOM_IMPLEMENTATION,
+        hints.put(KEY_DOM_IMPLEMENTATION,
                   SVGDOMImplementation.getDOMImplementation());
     }
 
@@ -164,12 +164,12 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
         // compute the image's width and height according the hints
         float imgWidth = -1;
-        if (getHints().containsKey(KEY_WIDTH)) {
-            imgWidth = ((Float)getHints().get(KEY_WIDTH)).floatValue();
+        if (hints.containsKey(KEY_WIDTH)) {
+            imgWidth = ((Float)hints.get(KEY_WIDTH)).floatValue();
         }
         float imgHeight = -1;
-        if (getHints().containsKey(KEY_HEIGHT)) {
-            imgHeight = ((Float)getHints().get(KEY_HEIGHT)).floatValue();
+        if (hints.containsKey(KEY_HEIGHT)) {
+            imgHeight = ((Float)hints.get(KEY_HEIGHT)).floatValue();
         }
         float width, height;
         if (imgWidth > 0 && imgHeight > 0) {
@@ -209,8 +209,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             Px = AffineTransform.getScaleInstance(scale, scale);
         }
         // take the AOI into account if any
-        if (getHints().containsKey(KEY_AOI)) {
-            Rectangle2D aoi = (Rectangle2D)getHints().get(KEY_AOI);
+        if (hints.containsKey(KEY_AOI)) {
+            Rectangle2D aoi = (Rectangle2D)hints.get(KEY_AOI);
             // transform the AOI into the image's coordinate system
             aoi = Px.createTransformedShape(aoi).getBounds2D();
             AffineTransform Mx = new AffineTransform();
@@ -247,8 +247,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             BufferedImage dest = createImage(w, h);
 
             Graphics2D g2d = GraphicsUtil.createGraphics(dest);
-            if (getHints().containsKey(KEY_BACKGROUND_COLOR)) {
-                Paint bgcolor = (Paint)getHints().get(KEY_BACKGROUND_COLOR);
+            if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
+                Paint bgcolor = (Paint)hints.get(KEY_BACKGROUND_COLOR);
                 g2d.setComposite(AlphaComposite.SrcOver);
                 g2d.setPaint(bgcolor);
                 g2d.fillRect(0, 0, w, h);
@@ -313,7 +313,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
          */
         public void displayError(String message) {
             try {
-                getHandler().error(new TranscoderException(message));
+                ImageTranscoder.this.handler.error
+                    (new TranscoderException(message));
             } catch (TranscoderException ex) {
                 throw new RuntimeException();
             }
@@ -324,7 +325,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
          */
         public void displayError(Exception e) {
             try {
-                getHandler().error(new TranscoderException(e));
+                ImageTranscoder.this.handler.error
+                    (new TranscoderException(e));
             } catch (TranscoderException ex) {
                 throw new RuntimeException();
             }
@@ -335,7 +337,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
          */
         public void displayMessage(String message) {
             try {
-                getHandler().warning(new TranscoderException(message));
+                ImageTranscoder.this.handler.warning
+                    (new TranscoderException(message));
             } catch (TranscoderException ex) {
                 throw new RuntimeException();
             }
@@ -346,8 +349,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
          * <tt>TranscodingHints</tt> or 0.3528 if any.
          */
         public float getPixelToMM() {
-            if (getHints().containsKey(KEY_PIXEL_TO_MM)) {
-                return ((Float)getHints().get(KEY_PIXEL_TO_MM)).floatValue();
+            if (ImageTranscoder.this.hints.containsKey(KEY_PIXEL_TO_MM)) {
+                return ((Float)ImageTranscoder.this.hints.get(KEY_PIXEL_TO_MM)).floatValue();
             } else {
                 // return 0.3528f; // 72 dpi
                 return 0.26458333333333333333333333333333f; // 96dpi
@@ -359,8 +362,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
          * <tt>TranscodingHints</tt> or "en" (english) if any.
          */
         public String getLanguages() {
-            if (getHints().containsKey(KEY_LANGUAGE)) {
-                return (String)getHints().get(KEY_LANGUAGE);
+            if (ImageTranscoder.this.hints.containsKey(KEY_LANGUAGE)) {
+                return (String)ImageTranscoder.this.hints.get(KEY_LANGUAGE);
             } else {
                 return "en";
             }
@@ -371,15 +374,15 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
          * <tt>TranscodingHints</tt> or null if any.
          */
         public String getUserStyleSheetURI() {
-            return (String)getHints().get(KEY_USER_STYLESHEET_URI);
+            return (String)ImageTranscoder.this.hints.get(KEY_USER_STYLESHEET_URI);
         }
 
         /**
          * Returns the XML parser to use from the TranscodingGetHints().
          */
         public String getXMLParserClassName() {
-            if (getHints().containsKey(KEY_XML_PARSER_CLASSNAME)) {
-                return (String)getHints().get(KEY_XML_PARSER_CLASSNAME);
+            if (ImageTranscoder.this.hints.containsKey(KEY_XML_PARSER_CLASSNAME)) {
+                return (String)ImageTranscoder.this.hints.get(KEY_XML_PARSER_CLASSNAME);
             } else {
                 return XMLResourceDescriptor.getXMLParserClassName();
             }

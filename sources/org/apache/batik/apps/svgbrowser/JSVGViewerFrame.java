@@ -173,6 +173,7 @@ public class JSVGViewerFrame
     public final static String DOM_VIEWER_ACTION = "DOMViewerAction";
     public final static String SET_TRANSFORM_ACTION = "SetTransformAction";
     public final static String FIND_DIALOG_ACTION = "FindDialogAction";
+    public final static String THUMBNAIL_DIALOG_ACTION = "ThumbnailDialogAction";
 
     /**
      * The cursor indicating that an operation is pending.
@@ -288,6 +289,11 @@ public class JSVGViewerFrame
     protected FindDialog findDialog;
 
     /**
+     * The Find dialog.
+     */
+    protected ThumbnailDialog thumbnailDialog;
+
+    /**
      * The transform dialog
      */
     protected JAffineTransformChooser.Dialog transformDialog;
@@ -353,6 +359,7 @@ public class JSVGViewerFrame
         listeners.put(DOM_VIEWER_ACTION, new DOMViewerAction());
         listeners.put(SET_TRANSFORM_ACTION, new SetTransformAction());
         listeners.put(FIND_DIALOG_ACTION, new FindDialogAction());
+        listeners.put(THUMBNAIL_DIALOG_ACTION, new ThumbnailDialogAction());
 
         svgCanvas = new JSVGCanvas(userAgent, true, true);
 
@@ -509,8 +516,8 @@ public class JSVGViewerFrame
                             }
                         }
                     }catch(SecurityException se){
-                        // Could not patch the file URI for security reasons (e.g., 
-                        // when run as an unsigned JavaWebStart jar): file access is 
+                        // Could not patch the file URI for security reasons (e.g.,
+                        // when run as an unsigned JavaWebStart jar): file access is
                         // not allowed. Loading will fail, but there is nothing
                         // more to do at this point.
                     }
@@ -1193,6 +1200,25 @@ public class JSVGViewerFrame
     }
 
     /**
+     * To display the Thumbnail dialog
+     */
+    public class ThumbnailDialogAction extends AbstractAction {
+        public ThumbnailDialogAction() {}
+        public void actionPerformed(ActionEvent e) {
+            if (thumbnailDialog == null) {
+                thumbnailDialog = new ThumbnailDialog(JSVGViewerFrame.this, svgCanvas);
+                thumbnailDialog.pack();
+                Rectangle fr = getBounds();
+                Dimension td = thumbnailDialog.getSize();
+                thumbnailDialog.setLocation(fr.x + (fr.width  - td.width) / 2,
+                                            fr.y + (fr.height - td.height) / 2);
+            }
+            thumbnailDialog.pack();
+            thumbnailDialog.show();
+        }
+    }
+
+    /**
      * To display the DOM viewer of the document
      */
     public class DOMViewerAction extends AbstractAction {
@@ -1491,7 +1517,7 @@ public class JSVGViewerFrame
                 localHistory.update(e.getReferencedURI());
                 backAction.update();
                 forwardAction.update();
-                
+
                 transformHistory = new TransformHistory();
                 previousTransformAction.update();
                 nextTransformAction.update();

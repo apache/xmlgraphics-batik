@@ -27,20 +27,6 @@ public class TranscoderSupport {
     protected ErrorHandler handler = defaultErrorHandler;
 
     /**
-     * Access to ErrorHandler
-     */
-    public ErrorHandler getHandler(){
-        return handler;
-    }
-
-    /**
-     * Access to hints
-     */
-    public TranscodingHints getHints(){
-        return hints;
-    }
-
-    /**
      * Constructs a new <tt>TranscoderSupport</tt>.
      */
     public TranscoderSupport() { }
