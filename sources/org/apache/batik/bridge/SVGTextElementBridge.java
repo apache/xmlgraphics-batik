@@ -613,11 +613,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
              n = n.getNextSibling()) {
             
             last = n.getNextSibling() == null;
-
+            
             int lastChar = asb.getLastChar();
             stripFirst = !preserve && first &&
                 (top || lastChar == ' ' || lastChar == -1);
-
+            
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
                 if (n.getNamespaceURI() != SVG_NAMESPACE_URI) {
@@ -626,7 +626,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                 
                 nodeElement = (Element)n;
                 String ln = n.getLocalName();
-
+                
                 if (ln.equals(SVG_TSPAN_TAG) ||
                     ln.equals(SVG_ALT_GLYPH_TAG)) {
                     fillAttributedStringBuffer(ctx,

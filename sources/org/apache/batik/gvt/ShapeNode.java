@@ -160,6 +160,8 @@ public class ShapeNode extends AbstractGraphicsNode {
      * @param p the specified Point2D in the user space
      */
     public boolean contains(Point2D p) {
+        // <!> FIXME: should put this code in TextPaint somewhere,
+        // as pointer-events support
         Rectangle2D b = getBounds();
         if (b == null || !b.contains(p)) {
             return false;

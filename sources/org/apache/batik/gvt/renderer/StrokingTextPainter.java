@@ -1536,7 +1536,6 @@ public class StrokingTextPainter extends BasicTextPainter {
         return highlightedShape;
     }
 
-
 // inner classes
 
     class TextChunk {

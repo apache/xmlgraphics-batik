@@ -30,6 +30,8 @@ import org.apache.batik.gvt.renderer.StrokingTextPainter;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.Mark;
+import org.apache.batik.gvt.text.TextHit;
+import org.apache.batik.gvt.text.TextSpanLayout;
 
 /**
  * A graphics node that represents text.
@@ -378,6 +380,62 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         }
         // Paint the text
         textPainter.paint(this, g2d);
+    }
+
+    //
+    // Geometric methods
+    //
+
+    /**
+     * Returns true if the specified Point2D is inside the boundary of this
+     * node, false otherwise.
+     *
+     * @param p the specified Point2D in the user space
+     */
+    public boolean contains(Point2D p) {
+        // <!> FIXME: should put this code in TextPaint somewhere,
+        // as pointer-events support - same problem with pointer-events
+        // and ShapeNode
+        if (!super.contains(p)) {
+            return false;
+        }
+        List list = getTextRuns();
+        // place coords in text node coordinate system
+        for (int i = 0 ; i < list.size(); i++) {
+            StrokingTextPainter.TextRun run =
+                (StrokingTextPainter.TextRun)list.get(i);
+            AttributedCharacterIterator aci = run.getACI();
+            TextSpanLayout layout = run.getLayout();
+            float x = (float)p.getX();
+            float y = (float)p.getY();
+            TextHit textHit = layout.hitTestChar(x, y);
+            if (textHit != null && contains(p, layout.getBounds())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean contains(Point2D p, Rectangle2D b) {
+        if (b == null || !b.contains(p)) {
+            return false;
+        }
+        switch(pointerEventType) {
+        case VISIBLE_PAINTED:
+        case VISIBLE_FILL:
+        case VISIBLE_STROKE:
+        case VISIBLE:
+            return isVisible;
+        case PAINTED:
+        case FILL:
+        case STROKE:
+        case ALL:
+            return true;
+        case NONE:
+            return false;
+        default:
+            return false;
+        }
     }
 
     /**

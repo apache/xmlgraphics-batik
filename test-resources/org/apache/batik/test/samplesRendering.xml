@@ -108,6 +108,7 @@
     </testGroup>
 
     <testGroup id="tests.spec.linking">
+        <test id="samples/tests/spec/linking/anchorInsideText.svg" />
         <test id="samples/tests/spec/linking/anchor.svg" />
         <test id="samples/tests/spec/linking/linkingTransform.svg" />
         <test id="samples/tests/spec/linking/linkingViewBox.svg" />   

@@ -11,7 +11,9 @@ package org.apache.batik.bridge;
 import java.awt.Point;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import java.text.AttributedCharacterIterator;
 
@@ -314,9 +316,15 @@ public class BridgeEventSupport implements SVGConstants {
             Element target = context.getElement(node);
             // Lookup inside the text element children to see if the target
             // is a tspan or textPath
+
             if (target != null && node instanceof TextNode) {
 		TextNode textNode = (TextNode)node;
 		List list = textNode.getTextRuns();
+                // place coords in text node coordinate system
+                try {
+                    node.getGlobalTransform().createInverse().transform(coords, coords);
+                } catch (NoninvertibleTransformException ex) {
+                }
 		for (int i = 0 ; i < list.size(); i++) {
                     StrokingTextPainter.TextRun run =
                         (StrokingTextPainter.TextRun)list.get(i);
