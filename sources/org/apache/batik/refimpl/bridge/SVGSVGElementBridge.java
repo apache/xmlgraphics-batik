@@ -44,8 +44,8 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
                                               cssDecl);
         CanvasGraphicsNode node
             = ctx.getGVTFactory().createCanvasGraphicsNode();
-        node.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                              RenderingHints.VALUE_ANTIALIAS_ON);
+        //        node.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        //                              RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (svgElement.getOwnerSVGElement() != null) {
             String s = svgElement.getAttributeNS(null, ATTR_X);
@@ -74,9 +74,23 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
             at.translate(x, y);
             node.setTransform(at);
 
-            node.setClippingArea(new Rectangle2D.Float(x, y, w, h));
+            try {
+                at = at.createInverse(); // clip in user space
+                node.setClippingArea(at.createTransformedShape(new Rectangle2D.Float(x, y, w, h)));
+            } catch (java.awt.geom.NoninvertibleTransformException ex) {}
+        } else {
+            String s = svgElement.getAttributeNS(null, ATTR_WIDTH);
+            float w = UnitProcessor.svgToUserSpace(s,
+                                                   svgElement,
+                                               UnitProcessor.HORIZONTAL_LENGTH,
+                                                   uctx);
+            s = svgElement.getAttributeNS(null, ATTR_HEIGHT);
+            float h = UnitProcessor.svgToUserSpace(s,
+                                                   svgElement,
+                                               UnitProcessor.VERTICAL_LENGTH,
+                                                   uctx);
+            node.setClippingArea(new Rectangle2D.Float(0, 0, w, h));
         }
-
         return node;
     }
 
