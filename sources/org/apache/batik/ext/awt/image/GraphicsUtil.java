@@ -134,15 +134,11 @@ public class GraphicsUtil {
             // Assume device is sRGB
             g2dCS = ColorSpace.getInstance(ColorSpace.CS_sRGB);
         ColorModel drawCM = g2dCM;
-        if (g2dCM == null) {
-            // If we can't find out about our device assume
-            // it's SRGB unpremultiplied (Just because this
-            // seems to work for us).
+        if ((g2dCM == null) || !g2dCM.hasAlpha()) {
+            // If we can't find out about our device or the device
+            // does not support alpha just use SRGB unpremultiplied
+            // (Just because this seems to work for us).
             drawCM = sRGB_Unpre;
-        } else if (drawCM.hasAlpha() && g2dCM.hasAlpha() &&
-                   (drawCM.isAlphaPremultiplied() !=
-                    g2dCM .isAlphaPremultiplied())) {
-            drawCM = coerceColorModel(drawCM, g2dCM.isAlphaPremultiplied());
         }
 
         if (cr instanceof BufferedImageCachableRed) {
@@ -281,8 +277,9 @@ public class GraphicsUtil {
                 Rectangle iR  = new Rectangle(0,0,0,0);
 
                 if (false) {
-                    System.out.println("CR: " + cr);
-                    System.out.println("CRR: " + crR + " TG: [" +
+                    System.err.println("SrcCM: " + srcCM);
+                    System.err.println("CR: " + cr);
+                    System.err.println("CRR: " + crR + " TG: [" +
                                        xt0 +"," +
                                        yt0 +"," +
                                        xt1 +"," +

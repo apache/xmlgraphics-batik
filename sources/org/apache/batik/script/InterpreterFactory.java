@@ -27,6 +27,12 @@ import java.net.URL;
  * @version $Id$
  */
 public interface InterpreterFactory {
+
+    /**
+     * Returns the mime-type to register this interpereter with.
+     */
+    public String getMimeType();
+
     /**
      * This method should create an instance of <code>Interpreter</code>
      * interface implementation.

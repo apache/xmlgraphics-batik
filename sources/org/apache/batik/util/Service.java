@@ -23,10 +23,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * This class handles looking up service providers on the class path.
@@ -56,6 +57,17 @@ public class Service {
      * @param cls The class/interface to search for providers of.
      */
     public static synchronized Iterator providers(Class cls) {
+        String serviceFile = "META-INF/services/"+cls.getName();
+
+        // System.out.println("File: " + serviceFile);
+
+        List l = (List)providerMap.get(serviceFile);
+        if (l != null)
+            return l.iterator();
+
+        l = new ArrayList();
+        providerMap.put(serviceFile, l);
+
         ClassLoader cl = null;
         try {
             cl = cls.getClassLoader();
@@ -65,24 +77,14 @@ public class Service {
         // Can always request your own class loader. But it might be 'null'.
         if (cl == null) cl = Service.class.getClassLoader();
 
-        String serviceFile = "META-INF/services/"+cls.getName();
-
-        // System.out.println("File: " + serviceFile);
-
-        Vector v = (Vector)providerMap.get(serviceFile);
-        if (v != null)
-            return v.iterator();
-
-        v = new Vector();
-        providerMap.put(serviceFile, v);
         // No class loader so we can't find 'serviceFile'.
-        if (cl == null) return v.iterator();
+        if (cl == null) return l.iterator();
 
         Enumeration e;
         try {
             e = cl.getResources(serviceFile);
         } catch (IOException ioe) {
-            return v.iterator();
+            return l.iterator();
         }
 
         while (e.hasMoreElements()) {
@@ -115,7 +117,7 @@ public class Service {
                         // Try and load the class 
                         Object obj = cl.loadClass(line).newInstance();
                         // stick it into our vector...
-                        v.add(obj);
+                        l.add(obj);
                     } catch (Exception ex) {
                         // Just try the next line
                     }
@@ -125,6 +127,6 @@ public class Service {
                 // Just try the next file...
             }
         }
-        return v.iterator();
+        return l.iterator();
     }
 }

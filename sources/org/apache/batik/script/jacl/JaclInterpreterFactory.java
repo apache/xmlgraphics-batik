@@ -29,11 +29,18 @@ import org.apache.batik.script.InterpreterFactory;
  */
 public class JaclInterpreterFactory implements InterpreterFactory {
 
+    final static String TEXT_TCL = "text/tcl";
+
     /**
      * Builds a <code>JaclInterpreterFactory</code>.
      */
     public JaclInterpreterFactory() {
     }
+
+    /**
+     * Returns the mime-type to register this interpereter with.
+     */
+    public String getMimeType() { return TEXT_TCL; }
 
     /**
      * Creates an instance of <code>JaclInterpreter</code> class.

@@ -30,11 +30,19 @@ import org.apache.batik.script.InterpreterFactory;
  * @version $Id$
  */
 public class RhinoInterpreterFactory implements InterpreterFactory {
+
+    final static String TEXT_ECMASCRIPT = "text/ecmascript";
+
     /**
      * Builds a <code>RhinoInterpreterFactory</code>.
      */
     public RhinoInterpreterFactory() {
     }
+
+    /**
+     * Returns the mime-type to register this interpereter with.
+     */
+    public String getMimeType() { return TEXT_ECMASCRIPT; }
 
     /**
      * Creates an instance of <code>RhinoInterpreter</code> class.
