@@ -66,7 +66,7 @@
             <s2 title="Using the binary distribution" >
 
                 <p>If you downloaded the binary distribution of Batik, you should have
-                gotten a file called <em>batik-1.0beta.zip</em>, and, after expanding that
+                gotten a file called <em>batik-1.1.zip</em>, and, after expanding that
                 file, a JAR (Java ARchive) file called <em>batik-rasterizer.jar</em>. 
                 To start the rasterizer, open a console, go to the directory where you 
                 expanded the distribution (and where batik-rasterizer.jar is located) and
