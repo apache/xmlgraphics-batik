@@ -111,9 +111,9 @@
 	    </p>
 	    <ul>
 	        <li>
-		For Python, you need to download JPython distribution at the following
-		URL <link href="http://www.jpython.org">http://www.jpython.org</link>. 
-		Then you put the <code>jpython.jar</code> file in the Batik <code>
+		For Python, you need to download Jython distribution at the following
+		URL <link href="http://www.jython.org">http://www.jython.org</link>. 
+		Then you put the <code>jython.jar</code> file in the Batik <code>
 		lib</code> directory.
 		</li>
 	        <li>
