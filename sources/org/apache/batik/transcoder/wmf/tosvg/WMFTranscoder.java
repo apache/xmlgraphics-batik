@@ -39,21 +39,21 @@ import org.apache.batik.transcoder.TranscoderException;
 
 
 /**
- * This class implements the <tt>Transcoder</tt> interface and 
+ * This class implements the <tt>Transcoder</tt> interface and
  * can convert a WMF input document into an SVG document.
  *
  * It can use <tt>TranscoderInput</tt> that are either a URI
- * or a <tt>InputStream</tt> or a <tt>Reader</tt>. The 
+ * or a <tt>InputStream</tt> or a <tt>Reader</tt>. The
  * <tt>XMLReader</tt> and <tt>Document</tt> <tt>TranscoderInput</tt>
  * types are not supported.
  *
  * This transcoder can use <tt>TranscoderOutputs</tt> that are
  * of any type except the <tt>XMLFilter</tt> type.
- * 
+ *
  * @version $Id$
  * @author <a href="mailto:luano@asd.ie">Luan O'Carroll</a>
  */
-public class WMFTranscoder extends AbstractTranscoder 
+public class WMFTranscoder extends AbstractTranscoder
     implements SVGConstants{
 
     /**
@@ -69,7 +69,7 @@ public class WMFTranscoder extends AbstractTranscoder
      */
     public WMFTranscoder(){
     }
-    
+
     /**
      * Transcodes the specified input in the specified output.
      * @param input the input to transcode
@@ -86,7 +86,7 @@ public class WMFTranscoder extends AbstractTranscoder
         //
         // Build a RecordStore from the input
         //
-        RecordStore currentStore = new WMFRecordStore();
+        WMFRecordStore currentStore = new WMFRecordStore();
         try{
             currentStore.read(is);
         }catch(IOException e){
@@ -102,10 +102,10 @@ public class WMFTranscoder extends AbstractTranscoder
         //
         // Use SVGGraphics2D to generate SVG content
         //
-        DOMImplementation domImpl 
+        DOMImplementation domImpl
             = ExtensibleSVGDOMImplementation.getDOMImplementation();
 
-        Document doc = domImpl.createDocument(SVG_NAMESPACE_URI, 
+        Document doc = domImpl.createDocument(SVG_NAMESPACE_URI,
                                               SVG_SVG_TAG, null);
 
         SVGGraphics2D svgGenerator = new SVGGraphics2D(doc);
@@ -133,12 +133,12 @@ public class WMFTranscoder extends AbstractTranscoder
     }
 
     /**
-     * Writes the SVG content held by the svgGenerator to the 
+     * Writes the SVG content held by the svgGenerator to the
      * <tt>TranscoderOutput</tt>.
      */
     private void writeSVGToOutput(SVGGraphics2D svgGenerator,
                                   Element svgRoot,
-                                  TranscoderOutput output) 
+                                  TranscoderOutput output)
         throws TranscoderException {
         // XMLFilter
         XMLFilter xmlFilter = output.getXMLFilter();
@@ -159,14 +159,14 @@ public class WMFTranscoder extends AbstractTranscoder
                 svgGenerator.stream(svgRoot, new OutputStreamWriter(os));
                 return;
             }
-            
+
             // Writer
             Writer wr = output.getWriter();
             if( wr != null ){
                 svgGenerator.stream(svgRoot, wr);
                 return;
             }
-            
+
             // URI
             String uri = output.getURI();
             if( uri != null ){
@@ -186,8 +186,8 @@ public class WMFTranscoder extends AbstractTranscoder
             throw new TranscoderException(e);
         }
 
-        throw new TranscoderException("" + ERROR_INCOMPATIBLE_OUTPUT_TYPE);        
-        
+        throw new TranscoderException("" + ERROR_INCOMPATIBLE_OUTPUT_TYPE);
+
     }
 
     /**
@@ -244,7 +244,7 @@ public class WMFTranscoder extends AbstractTranscoder
 
         WMFTranscoder transcoder = new WMFTranscoder();
         int nFiles = args.length;
-        
+
         for(int i=0; i<nFiles; i++){
             String fileName = args[i];
             if(!fileName.toLowerCase().endsWith(WMF_EXTENSION)){

@@ -40,8 +40,7 @@ import org.apache.batik.transcoder.wmf.WMFConstants;
   * @version $Id$
   * @author <a href="mailto:luano@asd.ie">Luan O'Carroll</a>
   */
-public class WMFPainter
-{
+public class WMFPainter {
     private static final String WMF_FILE_EXTENSION = ".wmf";
 
     /**
@@ -57,7 +56,7 @@ public class WMFPainter
     /**
      * Basic constructor, initializes the storage.
      */
-    public WMFPainter(RecordStore currentStore) {
+    public WMFPainter(WMFRecordStore currentStore) {
         setRecordStore(currentStore);
     }
 
@@ -377,20 +376,18 @@ public class WMFPainter
 
                 case WMFConstants.META_RECTANGLE:
                     {
-                      int x1, y1, x2, y2;
-                      x1 = (int)( scaleX * ( vpX + mr.ElementAt( 0 ).intValue()));
-                      x2 = (int)( scaleX * ( vpX + mr.ElementAt( 2 ).intValue()));
-                      y1 = (int)( scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
-                      y2 = (int)( scaleY * ( vpY + mr.ElementAt( 3 ).intValue()));
+                        int x1, y1, x2, y2;
+                        x1 = (int)( scaleX * ( vpX + mr.ElementAt( 0 ).intValue()));
+                        x2 = (int)( scaleX * ( vpX + mr.ElementAt( 2 ).intValue()));
+                        y1 = (int)( scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
+                        y2 = (int)( scaleY * ( vpY + mr.ElementAt( 3 ).intValue()));
 
-                      if ( brushObject >= 0 ) {
-                        setBrushColor( currentStore, g, brushObject );
-                        g.fillRect( x1, y1, x2-x1, y2-y1 );
-                      }
-                      setPenColor( currentStore, g, penObject );
-
-                      if ( penObject >= 0 )
-                        g.drawRect( x1, y1, x2-x1, y2-y1 );
+                        if ( brushObject >= 0 ) {
+                            setBrushColor( currentStore, g, brushObject );
+                            g.fillRect( x1, y1, x2-x1-1, y2-y1-1 );
+                        }
+                        setPenColor( currentStore, g, penObject );
+                        g.drawRect( x1, y1, x2-x1-1, y2-y1-1 );
                     }
                     break;
 
@@ -415,18 +412,17 @@ public class WMFPainter
 
                 case WMFConstants.META_ELLIPSE:
                     {
-                      int x1, y1, x2, y2;
-                      x1 = (int)( scaleX * ( vpX + mr.ElementAt( 0 ).intValue()));
-                      x2 = (int)( scaleX * ( vpX + mr.ElementAt( 2 ).intValue()));
-                      y1 = (int)( scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
-                      y2 = (int)( scaleY * ( vpY + mr.ElementAt( 3 ).intValue()));
+                        int x1, y1, x2, y2;
+                        x1 = (int)( scaleX * ( vpX + mr.ElementAt( 0 ).intValue()));
+                        x2 = (int)( scaleX * ( vpX + mr.ElementAt( 2 ).intValue()));
+                        y1 = (int)( scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
+                        y2 = (int)( scaleY * ( vpY + mr.ElementAt( 3 ).intValue()));
 
-                      setBrushColor( currentStore, g, brushObject );
-                      if ( brushObject >= 0 )
-                        g.fillOval( x1, y1, x2-x1, y2-y1 );
-
-                      setPenColor( currentStore, g, penObject );
-                      if ( penObject >= 0 )
+                        if ( brushObject >= 0 ) {
+                            setBrushColor( currentStore, g, brushObject );
+                            g.fillOval( x1, y1, x2-x1, y2-y1 );
+                        }
+                        setPenColor( currentStore, g, penObject );
                         g.drawOval( x1, y1, x2-x1-1, y2-y1-1 );
                     }
                     break;
@@ -451,8 +447,7 @@ public class WMFPainter
                             Graphics2D g2 = (Graphics2D)g;
                             int x, y;
                             x = (int)( scaleX * ( vpX + mr.ElementAt( 0 ).intValue()));
-                            //y = (int)( fontHeight + scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
-                            y = (int)( scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
+                            y = (int)( fontHeight + scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
                             if ( frgdColor != null )
                                 g.setColor( frgdColor );
                             else
@@ -466,7 +461,7 @@ public class WMFPainter
                             TextLayout layout = new TextLayout( sr.text, font, frc );
                             pen.y += layout.getAscent();
 
-                            if ( fontAngle != 0 ) {
+                            if (( fontAngle != 0 ) || sr.text.startsWith("Sono una scala verticale di prevalenza") ) {
                                 AffineTransform at = new AffineTransform();
                                 float width = (float)layout.getBounds().getWidth();
                                 float height = (float)layout.getBounds().getHeight();
@@ -490,34 +485,26 @@ public class WMFPainter
                 case WMFConstants.META_ARC:
                 case WMFConstants.META_PIE:
                     {
-                      int x1, y1, x2, y2, x3, y3, x4, y4;
-                      x1 = (int)( scaleX * ( vpX + mr.ElementAt( 0 ).intValue()));
-                      x2 = (int)( scaleX * ( vpX + mr.ElementAt( 2 ).intValue()));
-                      x3 = (int)( scaleX * ( mr.ElementAt( 4 ).intValue()));
-                      x4 = (int)( scaleX * ( mr.ElementAt( 6 ).intValue()));
-                      y1 = (int)( scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
-                      y2 = (int)( scaleY * ( vpY + mr.ElementAt( 3 ).intValue()));
-                      y3 = (int)( scaleY * ( mr.ElementAt( 5 ).intValue()));
-                      y4 = (int)( scaleY * ( mr.ElementAt( 7 ).intValue()));
-
-                      int mx = x1+(x2-x1)/2;
-                      int my = y1+(y2-y1)/2;
-                      int startAngle = (int)Math.toDegrees( Math.atan2( -1.0*(y3-my), 1.0*(x3-mx)));
-                      int endAngle = (int)Math.toDegrees( Math.atan2( -1.0*(y4-my), 1.0*(x4-mx)));
-                      if ( mr.functionId == 0x081A ) {
+                        int x1, y1, x2, y2, x3, y3, x4, y4;
+                        x1 = (int)( scaleX * ( vpX + mr.ElementAt( 0 ).intValue()));
+                        x2 = (int)( scaleX * ( vpX + mr.ElementAt( 2 ).intValue()));
+                        x3 = (int)( scaleX * ( mr.ElementAt( 4 ).intValue()));
+                        x4 = (int)( scaleX * ( mr.ElementAt( 6 ).intValue()));
+                        y1 = (int)( scaleY * ( vpY + mr.ElementAt( 1 ).intValue()));
+                        y2 = (int)( scaleY * ( vpY + mr.ElementAt( 3 ).intValue()));
+                        y3 = (int)( scaleY * ( mr.ElementAt( 5 ).intValue()));
+                        y4 = (int)( scaleY * ( mr.ElementAt( 7 ).intValue()));
                         setBrushColor( currentStore, g, brushObject );
-                        if ( brushObject >= 0 )
-                          g.fillArc( x1, y1, x2-x1, y2-y1, startAngle, endAngle );
-                      }
 
-                      setPenColor( currentStore, g, penObject );
-                      if ( startAngle < 0 ) startAngle = 360+startAngle;
-                      if ( endAngle < 0 ) endAngle = 360+endAngle;
-                      int len = Math.abs( endAngle - startAngle );
-                      if ( endAngle < startAngle )
-                        len = 360 - startAngle + endAngle;
-                      if ( penObject >= 0 )
-                        g.drawArc( x1, y1, x2-x1, y2-y1, startAngle, len );
+                        int mx = x1+(x2-x1)/2;
+                        int my = y1+(y2-y1)/2;
+                        int startAngle = (int)Math.atan( (y3-my)/(x3-mx));
+                        int endAngle = (int)Math.atan( (y4-my)/(x4-mx));
+                        if ( mr.functionId == 0x0817 )
+                            g.drawArc( x1, y1, x2-x1, y2-y1, startAngle, endAngle );
+                        else
+                            g.fillArc( x1, y1, x2-x1, y2-y1, startAngle, endAngle );
+
                     }
                     break;
 
@@ -635,30 +622,26 @@ public class WMFPainter
         }
     }
 
-    private void setPenColor( RecordStore currentStore, Graphics g, int penObject)
-    {
-      if ( penObject >= 0 ) {
-        GdiObject gdiObj = currentStore.getObject( penObject );
-        g.setColor( (Color)gdiObj.obj );
-        //penObject = -1;
-      }
+    private void setPenColor( WMFRecordStore currentStore, Graphics g, int penObject) {
+        if ( penObject >= 0 ) {
+            GdiObject gdiObj = currentStore.getObject( penObject );
+            g.setColor( (Color)gdiObj.obj );
+            penObject = -1;
+        }
     }
 
-
-    private void setBrushColor( RecordStore currentStore, Graphics g, int brushObject)
-    {
-      if ( brushObject >= 0 ) {
-        GdiObject gdiObj = currentStore.getObject( brushObject );
-        g.setColor( (Color)gdiObj.obj );
-        //brushObject = -1;
-      }
+    private void setBrushColor( WMFRecordStore currentStore, Graphics g, int brushObject) {
+        if ( brushObject >= 0 ) {
+            GdiObject gdiObj = currentStore.getObject( brushObject );
+            g.setColor( (Color)gdiObj.obj );
+            brushObject = -1;
+        }
     }
 
     /**
-     * Sets the RecordStore this WMFPainter should use to render
+     * Sets the WMFRecordStore this WMFPainter should use to render
      */
-    public void setRecordStore(RecordStore currentStore)
-    {
+    public void setRecordStore(WMFRecordStore currentStore){
         if(currentStore == null){
             throw new IllegalArgumentException();
         }
@@ -667,17 +650,17 @@ public class WMFPainter
     }
 
     /**
-     * Returns the RecordStore this WMFPainter renders
+     * Returns the WMFRecordStore this WMFPainter renders
      */
-    public RecordStore getRecordStore(){
+    public WMFRecordStore getRecordStore(){
         return currentStore;
     }
 
-    private void addObject( RecordStore currentStore, int type, Object obj ) {
+    private void addObject( WMFRecordStore currentStore, int type, Object obj ) {
         currentStore.addObject( type, obj );
     }
 
-    private void addObjectAt( RecordStore currentStore, int type, Object obj, int idx ) {
+    private void addObjectAt( WMFRecordStore currentStore, int type, Object obj, int idx ) {
         currentStore.addObjectAt( type, obj, idx );
     }
 
@@ -688,7 +671,7 @@ public class WMFPainter
     public static final int NULL_BRUSH = 5;
     public static final int PALETTE = 6;
 
-    private RecordStore currentStore;
+    private WMFRecordStore currentStore;
     transient private boolean bReadingWMF = true;
     transient private BufferedInputStream bufStream = null;
 
@@ -735,30 +718,30 @@ class StringRecord extends MetaRecord /*implements Serializable*/
 
 class GdiObject /*implements Serializable*/
 {
-  GdiObject( int _id, boolean _used )
-  {
-    id = _id;
-    used = _used;
-    type = 0;
-  }
+        GdiObject( int _id, boolean _used )
+        {
+        id = _id;
+        used = _used;
+        type = 0;
+        }
 
-  public void Clear()
-  {
-    used = false;
-    type = 0;
-  }
+        public void Clear()
+        {
+        used = false;
+        type = 0;
+        }
 
-  public void Setup( int _type, Object _obj )
-  {
-    obj = _obj;
-    type = _type;
-    used = true;
-  }
+        public void Setup( int _type, Object _obj )
+        {
+        obj = _obj;
+        type = _type;
+        used = true;
+        }
 
-  int id;
-  boolean used;
-  Object obj;
-  int type = 0;
+        int id;
+        boolean used;
+        Object obj;
+        int type = 0;
 }
 
 
