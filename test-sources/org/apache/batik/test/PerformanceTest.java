@@ -94,8 +94,8 @@ public abstract class PerformanceTest extends AbstractTest {
         double refUnit = 0;
         long refStart = 0;
         long refEnd = 0;
-        long opStart = 0;
         long opEnd = 0;
+        long opStart = 0;
         double opLength = 0;
 
         // Run once to remove class load time from timing.
@@ -106,19 +106,31 @@ public abstract class PerformanceTest extends AbstractTest {
         double[] scores = new double[iter];
 
         for (int i=0; i<iter; i++) {
-            refStart = System.currentTimeMillis();
-            runRef();
-            refEnd = System.currentTimeMillis();
-            refUnit = refEnd - refStart;
-
-            opStart = System.currentTimeMillis();
-            runOp();
-            opEnd = System.currentTimeMillis();
-            opLength = opEnd - opStart;
+            if ( i%2 == 0) {
+                refStart = System.currentTimeMillis();
+                runRef();
+                refEnd = System.currentTimeMillis();
+                runOp();
+                opEnd = System.currentTimeMillis();
+                refUnit = refEnd - refStart;
+                opLength = opEnd - refEnd;
+            } else {
+                opStart = System.currentTimeMillis();
+                runOp();
+                opEnd = System.currentTimeMillis();
+                runRef();
+                refEnd = System.currentTimeMillis();
+                refUnit = refEnd - opEnd;
+                opLength = opEnd - opStart;
+            }
 
             scores[i] = opLength / refUnit;
+            System.err.println(".");
+            // System.err.println(">>>>>>>> scores[" + i + "] = " + scores[i] + " (" + refUnit + " / " + opLength + ")");
             System.gc();
         }
+
+        System.err.println();
 
         // Now, sort the scores
         sort(scores);
@@ -135,10 +147,6 @@ public abstract class PerformanceTest extends AbstractTest {
 
         // Compute the score
         this.lastScore = score;
-
-        if (referenceScore != -1) {
-            System.err.println(">>>>>>>>>>>>>>> score/lastScore : " + score/referenceScore);
-        }
 
         // Compare to the reference score
         if (referenceScore == -1) {
