@@ -40,6 +40,16 @@ public interface SVGContext {
     Rectangle2D getBBox();
 
     /**
+     * Returns the transform from the global transform space to pixels.
+     */
+    AffineTransform getScreenTransform();
+
+    /**
+     * Sets the transform to be used from the global transform space to pixels.
+     */
+    void setScreenTransform(AffineTransform at);
+
+    /**
      * Returns the transformation matrix from current user units
      * (i.e., after application of the transform attribute, if any) to
      * the viewport coordinate system for the nearestViewportElement.

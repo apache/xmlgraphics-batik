@@ -223,6 +223,13 @@ public class UserAgentAdapter implements UserAgent {
     /**
      * Unsupported operation.
      */
+    public void setTransform(AffineTransform at) {
+        // Do nothing.
+    }
+
+    /**
+     * Unsupported operation.
+     */
     public Point getClientAreaLocationOnScreen() {
         return new Point();
     }

@@ -118,7 +118,17 @@ public class SVGLocatableSupport {
      * org.w3c.dom.svg.SVGLocatable#getScreenCTM()}.
      */
     public static SVGMatrix getScreenCTM(Element elt) {
-	throw new RuntimeException(" !!! TODO: getScreenCTM()");
+        final SVGOMElement svgelt  = (SVGOMElement)elt;
+        return new AbstractSVGMatrix() {
+                protected AffineTransform getAffineTransform() {
+                    SVGContext context = svgelt.getSVGContext();
+                    AffineTransform ret = context.getGlobalTransform();
+                    AffineTransform scrnTrans = context.getScreenTransform();
+                    if (scrnTrans != null)
+                        ret.preConcatenate(scrnTrans);
+                    return ret;
+                }
+            };
     }
 
     /**

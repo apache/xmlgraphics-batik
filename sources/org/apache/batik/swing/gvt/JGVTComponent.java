@@ -113,12 +113,12 @@ public class JGVTComponent extends JComponent {
     /**
      * The initial rendering transform.
      */
-    protected AffineTransform initialTransform;
+    protected AffineTransform initialTransform = new AffineTransform();
 
     /**
      * The transform used for rendering.
      */
-    protected AffineTransform renderingTransform;
+    protected AffineTransform renderingTransform = new AffineTransform();
 
     /**
      * The transform used for painting.
@@ -206,8 +206,8 @@ public class JGVTComponent extends JComponent {
 
         addComponentListener(new ComponentAdapter() {
                 public void componentResized(ComponentEvent e) {
-                    updateRenderingTransform();
-                    scheduleGVTRendering();
+                    if (updateRenderingTransform())
+                        scheduleGVTRendering();
                 }
             });
 
@@ -264,6 +264,9 @@ public class JGVTComponent extends JComponent {
      */
     public void setGraphicsNode(GraphicsNode gn) {
         setGraphicsNode(gn, true);
+        initialTransform = new AffineTransform();
+        updateRenderingTransform();
+        setRenderingTransform(initialTransform, true);
     }
 
     /**
@@ -277,7 +280,6 @@ public class JGVTComponent extends JComponent {
         if (eventDispatcher != null) {
             eventDispatcher.setRootNode(gn);
         }
-        computeRenderingTransform();
     }
 
     /**
@@ -483,6 +485,11 @@ public class JGVTComponent extends JComponent {
      * Calling this method causes a rendering to be performed.
      */
     public void setRenderingTransform(AffineTransform at) {
+        setRenderingTransform(at, true);
+    }
+
+    public void setRenderingTransform(AffineTransform at, 
+                                      boolean performRedraw) {
         renderingTransform = at;
         suspendInteractions = true;
         if (eventDispatcher != null) {
@@ -493,7 +500,8 @@ public class JGVTComponent extends JComponent {
                 handleException(e);
             }
         }
-        scheduleGVTRendering();
+        if (performRedraw)
+            scheduleGVTRendering();
     }
 
     /**
@@ -611,17 +619,24 @@ public class JGVTComponent extends JComponent {
 
     /**
      * Computes the initial value of the transform used for rendering.
+     * Return true if a repaint is required, otherwise false.
      */
-    protected void computeRenderingTransform() {
+    protected boolean computeRenderingTransform() {
         initialTransform = new AffineTransform();
-        setRenderingTransform(initialTransform);
+        if (initialTransform != renderingTransform) {
+            setRenderingTransform(initialTransform, false);
+            return true;
+        }
+        return false;
     }
 
     /**
      * Updates the value of the transform used for rendering.
+     * Return true if a repaint is required, otherwise false.
      */
-    protected void updateRenderingTransform() {
+    protected boolean updateRenderingTransform() {
         // Do nothing.
+        return false;
     }
 
     /**

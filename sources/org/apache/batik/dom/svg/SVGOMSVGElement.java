@@ -8,6 +8,8 @@
 
 package org.apache.batik.dom.svg;
 
+import java.awt.geom.AffineTransform;
+
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
@@ -178,8 +180,10 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link SVGSVGElement#getViewport()}.
      */
     public SVGRect getViewport() {
-        throw new RuntimeException(" !!! TODO: getViewport()");
-    }
+        SVGContext ctx = getSVGContext();
+        return new SVGOMRect(0, 0, ctx.getViewportWidth(), 
+                             ctx.getViewportHeight());
+    } 
 
     public float getPixelUnitToMillimeterX( ) {
         throw new Error();
@@ -204,15 +208,72 @@ public class SVGOMSVGElement
         throw new Error();
     }
     public float getCurrentScale( ) {
-        throw new Error();
+        AffineTransform scrnTrans = getSVGContext().getScreenTransform();
+        if (scrnTrans != null)
+            return (float)Math.sqrt(scrnTrans.getDeterminant());
+        return 1;
     }
-    public void      setCurrentScale( float currentScale )
-        throws DOMException {
-        throw new Error();
+    public void setCurrentScale( float currentScale ) throws DOMException {
+        SVGContext context = getSVGContext();
+        AffineTransform scrnTrans = context.getScreenTransform();
+        float scale = 1;
+        if (scrnTrans != null)
+            scale = (float)Math.sqrt(scrnTrans.getDeterminant());
+        float delta = currentScale/scale;
+        // The way currentScale, currentTranslate are defined
+        // changing scale has no effect on translate.
+        scrnTrans = new AffineTransform
+            (scrnTrans.getScaleX()*delta, scrnTrans.getShearY()*delta,
+             scrnTrans.getShearX()*delta, scrnTrans.getScaleY()*delta,
+             scrnTrans.getTranslateX(), scrnTrans.getTranslateY());
+        context.setScreenTransform(scrnTrans);
     }
+
     public SVGPoint getCurrentTranslate( ) {
-        throw new Error();
+        final SVGOMElement svgelt  = this;
+        return new SVGPoint() {
+                AffineTransform getScreenTransform() {
+                    SVGContext context = svgelt.getSVGContext();
+                    return context.getScreenTransform();
+                }
+                    
+                public float getX() {
+                    AffineTransform scrnTrans = getScreenTransform();
+                    return (float)scrnTrans.getTranslateX();
+                }
+                public float getY() {
+                    AffineTransform scrnTrans = getScreenTransform();
+                    return (float)scrnTrans.getTranslateY();
+                }
+                public void setX(float newX) {
+                    SVGContext context = svgelt.getSVGContext();
+                    AffineTransform scrnTrans = context.getScreenTransform();
+                    scrnTrans = new AffineTransform
+                        (scrnTrans.getScaleX(), scrnTrans.getShearY(),
+                         scrnTrans.getShearX(), scrnTrans.getScaleY(),
+                         newX, scrnTrans.getTranslateY());
+                    context.setScreenTransform(scrnTrans);
+                }
+                public void setY(float newY) {
+                    SVGContext context = svgelt.getSVGContext();
+                    AffineTransform scrnTrans = context.getScreenTransform();
+                    scrnTrans = new AffineTransform
+                        (scrnTrans.getScaleX(), scrnTrans.getShearY(),
+                         scrnTrans.getShearX(), scrnTrans.getScaleY(),
+                         scrnTrans.getTranslateX(), newY);
+                    context.setScreenTransform(scrnTrans);
+                }
+                public SVGPoint matrixTransform ( SVGMatrix mat ) {
+                    AffineTransform scrnTrans = getScreenTransform();
+                    float x = (float)scrnTrans.getTranslateX();
+                    float y = (float)scrnTrans.getTranslateY();
+                    float newX = mat.getA()*x + mat.getC()*y + mat.getE();
+                    float newY = mat.getB()*x + mat.getD()*y + mat.getF();
+                    return new SVGOMPoint(newX, newY);
+                }
+            };
     }
+
     public int          suspendRedraw ( int max_wait_milliseconds ) {
         throw new Error();
     }
@@ -290,32 +351,17 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGPoint()}.
      */
     public SVGPoint createSVGPoint() {
-        return new SVGPoint() {
-                float x;
-                float y;
-                public float getX() {
-                    return x;
-                }
-                public void setX(float x) throws DOMException {
-                    this.x = x;
-                }
-                public float getY() {
-                    return y;
-                }
-                public void setY(float y) throws DOMException {
-                    this.y = y;
-                }
-                public SVGPoint matrixTransform(SVGMatrix matrix) {
-                    throw new RuntimeException("!!! TODO: matrixTransform()");
-                }
-            };
+        return new SVGOMPoint(0, 0);
     }
 
     public SVGMatrix              createSVGMatrix (  ) {
-        throw new Error();
+        return new AbstractSVGMatrix() {
+                AffineTransform at = new AffineTransform();
+                protected AffineTransform getAffineTransform() { return at; }
+            };
     }
     public SVGRect                createSVGRect (  ) {
-        throw new Error();
+        return new SVGOMRect(0,0,0,0);
     }
     public SVGTransform           createSVGTransform (  ) {
         throw new Error();
@@ -323,11 +369,8 @@ public class SVGOMSVGElement
     public SVGTransform     createSVGTransformFromMatrix ( SVGMatrix matrix ) {
         throw new Error();
     }
-    public String              createSVGString (  ) {
-        throw new Error();
-    }
     public Element         getElementById ( String elementId ) {
-        throw new Error();
+        return ((SVGOMDocument)getDocument()).getElementById(elementId);
     }
 
     // SVGLocatable ///////////////////////////////////////////////////////

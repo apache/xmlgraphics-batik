@@ -143,6 +143,12 @@ public interface UserAgent {
     AffineTransform getTransform();
 
     /**
+     * Sets the <code>AffineTransform</code> currently
+     * applied to the drawing by the UserAgent.
+     */
+    void setTransform(AffineTransform at);
+
+    /**
      * Returns this user agent's CSS media.
      */
     String getMedia();

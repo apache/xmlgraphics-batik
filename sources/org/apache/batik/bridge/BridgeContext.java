@@ -519,6 +519,10 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         viewportStack.add(0, viewport);
     }
 
+    public void removeViewport(Element e) {
+        viewportMap.remove(e);
+    }
+
     /**
      * Closes the viewport associated to the specified element.
      * @param e the element that closes its viewport
