@@ -30,12 +30,11 @@
 
         <p><strong>
         This is a staging area for the next revision of the Batik web site that will
-        come on-line when Batik 1.0 becomes available around May 14th.
+        come on-line when Batik 1.0 becomes available mid-May 2001.
         </strong></p>
         <p>
-        <img src="images/logo.gif" alt="Batik Logo"/> Batik is a Java
-        based toolkit for applications that want to use images in the
-        <link href="http://www.w3.org/TR/SVG/">Scalable Vector
+        Batik is a Java(tm) technology based toolkit for applications that want 
+        to use images in the <link href="http://www.w3.org/TR/SVG/">Scalable Vector
         Graphics (SVG)</link> format for various purposes, such as
         viewing, generation or manipulation.
         </p>
@@ -49,7 +48,7 @@
         example, Batik allows the developer to handle custom SVG 
         tags). Even though the goal of the project is to provide a 
         set of core modules, one of the deliverables is a full fledged 
-        SVG Viewer implementation which validates the various modules 
+        SVG browser implementation which validates the various modules 
         and their inter-operability. 
         </p>
 

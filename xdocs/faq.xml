@@ -21,7 +21,7 @@
     <question>What is Batik?</question>
     <answer>
         <p>        <img src="images/batikUses.jpg" alt="Batik use cases" />
-        Batik is a Java
+        Batik is a Java(tm) technology
         based toolkit for applications that want to use images in the
         <link href="http://www.w3.org/TR/SVG/">Scalable Vector
         Graphics (SVG)</link> format for various purposes, such as
@@ -36,7 +36,7 @@
         implementations. Another ambition of the Batik project is to make 
         it highly extensible (for example, Batik allows the developer to handle custom SVG tags).
         Even though the goal of the project is to provide a set 
-        of core modules, one of the deliveries is a full fledged SVG Viewer implementation which 
+        of core modules, one of the deliveries is a full fledged SVG Browser implementation which 
         validates the various modules and their inter-operability. 
         </p>
         <p>
@@ -90,28 +90,42 @@
     <question>What can I do with Batik?</question>
     <answer>
         <p>
-        Batik contains several modules that can be used independently such as an SVG parser,
-        a object oriented vector toolkit (<link href="glossary.html#GVT">GVT</link>) and
-        a set of extensions to the Java 2D API (such as sophisticated fill types and 
-        filter effects).</p>
-        <p>
-        However, Batik comes with three packaged applications: an 
-        <link href="svgviewer.html">SVG viewer</link> (in the 
-        org.apache.batik.apps.svgviewer package) an 
-        <link href="svgrasterizer.html">SVG rasterizer</link> (in the 
-        org.apache.batik.apps.rasterizer package) and an SVG Generator 
-        (in the org.apache.batik.util.awt.svg package) that allows
-        all Java applications to export their graphics to the SVG format. 
+        Batik contains several core modules that can be used independently or jointly to 
+        <strong>generate SVG content</strong> (see the <link href="svggen.html">SVG Generator</link>, an 
+        <link href="domapi.html">SVG DOM</link> implementation documentation)
+        <strong>view SVG content</strong> (see the <link href="jsvgcanvas.html">JSVGCanvas</link>)
+        or <strong>convert to and from the SVG format</strong> (see the 
+        <link href="rasterizerTutorial.html">SVG Transcoders</link> tutorial).
         </p>
+        
         <p>
-        The SVG viewer can display SVG documents and lets the user zoom, pan 
+        In addition, Batik contains low level modules such as
+        an object oriented Graphic Vector Toolkit (<link href="glossary.html#GVT">GVT</link>),
+        a set of low level parsers specific to the SVG syntax and
+        a set of extensions to the Java 2D API (such as sophisticated fill types and 
+        filter effects).
+        </p>
+
+        <p>
+        Finally, Batik comes with packaged applications to help developers get
+        familiar with the code and be quickly able to use the various modules: an 
+        <link href="svgviewer.html">SVG browser</link> (in the 
+        org.apache.batik.apps.svgbrowser package) an 
+        <link href="svgrasterizer.html">SVG rasterizer</link> (in the 
+        org.apache.batik.apps.rasterizer package), a
+        <link href="ttf2svg.html">Font converter</link> (in the
+        org.apache.batik.apps.ttf2svg package) and an 
+        <link href="svgpp.html">SVG pretty printer</link> (in the 
+        org.apache.batik.apps.svgpp package).</p>
+        <p>
+        The <strong>SVG browser</strong> can display SVG documents and lets the user zoom, pan 
         and rotate any SVG document, view the SVG source, link between SVG 
         documents, view a tree representation of the SVG DOM and more. One
-        important component of the SVG viewer is the <code>org.apache.batik.refimpl.util.JSVGCanvas</code>  
+        important component of the SVG viewer is the <code>org.apache.batik.swing.JSVGCanvas</code>  
         component that can be plugged in any Java application to provide SVG viewing capability.
         </p>
         <p>
-        The SVG rasterizer lets the user convert SVG files to raster formats such
+        The <strong>SVG rasterizer</strong> lets the user convert SVG files to raster formats such
         as JPEG and PNG. It contains an extensible mechanism so that arbitrary
         raster formats can be added. For example, the rasterizer lets you create 
         one SVG file with a special effect (e.g., shadows, gradients, etc...), 
@@ -120,22 +134,38 @@
         way, you can easily generate a series of images sharing a common
         theme or look and feel to post on a web site (note that the rasterizer
         can also be used on a web server to do this conversion automatically).
-        
         </p>
         <p>
+        The <strong>SVG Font Converter</strong> lets the user easily create
+        an SVG Font for a set of characters from a True Type Font file. That
+        SVG Font definition can be embeded in a document using the
+        characters. This allows users to create SVG documents that are self contained and 
+        do not rely on system fonts, and guarantees that the SVG file will
+        be displayed exactly as it was authored on all platforms.
+        </p>
 
+        <p>
+        The <strong>SVG Pretty Printer</strong> is a convenience tool to 
+        pretty print an SVG document, which means that you can reformat any
+        existing SVG document to produce a properly formatted and higly legible 
+        version.</p>
+
+        <!-- <p>The SVG Generator 
+        (in the org.apache.batik.util.awt.svg package) that allows
+        all Java applications to export their graphics to the SVG format. 
+        
         The SVG generator lets all Java application export their graphics
         as SVG, using the same code used for drawing to the screen or for
         printing. For example, an application that displays a pie chart in
         a window, can use the SVG generator to easily export the sequence
         of Java2D drawing calls for the pie chart to a SVG format.
         </p>
+        -->
+
         <p>
-        These three applications show that Batik can be used client side (the viewer
-        can be used on any client machine, and the SVG generator can be used in client
-        desktop applications to export SVG) and server side (the rasterizer can be
-        used to serve SVG images to client machines that do not have SVG support; the
-        SVG generator can be used to dynamically generate SVG content on a server).
+        These applications show that Batik can be used client side (the browser
+        can be used on any client machine) and server side (the rasterizer can be
+        used to serve SVG images to client machines that do not have SVG support).
         </p>
         <p>
         The SVG viewer and the rasterizer are only examples of the type of 
@@ -429,7 +459,7 @@
         <p>
         You can submit bug fixes and patches to the 
         <link href="mailto:batik-dev@xml.apache.org">Batik developers</link>
-        mailing list.
+        mailing list and you can enter bugs in <link href="http://nagoya.apache.org/bugzilla/">Bugzilla</link>.
         </p>
     </answer>
 
