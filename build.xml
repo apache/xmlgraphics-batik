@@ -702,6 +702,9 @@ To display the available targets type:
     <mkdir dir="${test-references}/svgbe/accepted-variation"/>
     <mkdir dir="${test-references}/svgbe/candidate-variation"/>
     <mkdir dir="${test-references}/org/apache/batik/svggen/candidate-ref" />
+    <mkdir dir="${test-references}/org/apache/batik/svggen/candidate-ref" />
+    <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/candidate-ref" />
+    <mkdir dir="${test-references}/org/apache/batik/svggen/rendering/accepted-variation" />
   </target>
 
   <target name="ttf2svg"
