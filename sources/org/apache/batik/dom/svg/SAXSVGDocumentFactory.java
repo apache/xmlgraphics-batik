@@ -72,7 +72,8 @@ public class SAXSVGDocumentFactory
      * @param dd Whether a document descriptor must be generated.
      */
     public SAXSVGDocumentFactory(String parser, boolean dd) {
-        super(ExtensibleSVGDOMImplementation.getDOMImplementation(), parser, dd);
+        super(ExtensibleSVGDOMImplementation.getDOMImplementation(),
+              parser, dd);
     }
 
     /**
@@ -143,7 +144,8 @@ public class SAXSVGDocumentFactory
      * @param is The document input stream.
      * @exception IOException if an error occured while reading the document.
      */
-    public SVGOMDocument createDocument(String uri, InputStream inp) throws IOException {
+    public SVGOMDocument createDocument(String uri, InputStream inp)
+        throws IOException {
         SVGOMDocument doc;
         InputSource is = new InputSource(inp);
         is.setSystemId(uri);
@@ -166,7 +168,8 @@ public class SAXSVGDocumentFactory
      * @param r The document reader.
      * @exception IOException if an error occured while reading the document.
      */
-    public SVGOMDocument createDocument(String uri, Reader r) throws IOException {
+    public SVGOMDocument createDocument(String uri, Reader r)
+        throws IOException {
         SVGOMDocument doc;
         InputSource is = new InputSource(r);
         is.setSystemId(uri);
@@ -207,8 +210,8 @@ public class SAXSVGDocumentFactory
      * @param is The document input stream.
      * @exception IOException if an error occured while reading the document.
      */
-    public Document createDocument(String ns, String root, String uri, InputStream is)
-        throws IOException {
+    public Document createDocument(String ns, String root, String uri,
+                                   InputStream is) throws IOException {
         if (!SVGDOMImplementation.SVG_NAMESPACE_URI.equals(ns) ||
             !"svg".equals(root)) {
             throw new RuntimeException("Bad root element");
@@ -224,8 +227,8 @@ public class SAXSVGDocumentFactory
      * @param r The document reader.
      * @exception IOException if an error occured while reading the document.
      */
-    public Document createDocument(String ns, String root, String uri, Reader r)
-        throws IOException {
+    public Document createDocument(String ns, String root, String uri,
+                                   Reader r) throws IOException {
         if (!SVGDOMImplementation.SVG_NAMESPACE_URI.equals(ns) ||
             !"svg".equals(root)) {
             throw new RuntimeException("Bad root element");

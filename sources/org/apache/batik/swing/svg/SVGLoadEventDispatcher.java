@@ -16,22 +16,19 @@ import java.util.List;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
-import org.apache.batik.bridge.DynamicGVTBuilder;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.InterruptedBridgeException;
+import org.apache.batik.bridge.UpdateManager;
 
 import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.svg.SVGDocument;
 
 /**
- * This class represents an object which builds asynchroneaously
- * a GVT tree.
+ * This class dispatches the SVGLoadEvent event on a SVG document.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class GVTTreeBuilder extends Thread {
+public class SVGLoadEventDispatcher extends Thread {
 
     /**
      * The SVG document to give to the bridge.
@@ -39,9 +36,19 @@ public class GVTTreeBuilder extends Thread {
     protected SVGDocument svgDocument;
 
     /**
+     * The root graphics node.
+     */
+    protected GraphicsNode root;
+
+    /**
      * The bridge context to use.
      */
     protected BridgeContext bridgeContext;
+
+    /**
+     * The update manager.
+     */
+    protected UpdateManager updateManager;
 
     /**
      * The listeners.
@@ -54,41 +61,34 @@ public class GVTTreeBuilder extends Thread {
     protected Exception exception;
 
     /**
-     * Creates a new GVTTreeBuilder.
+     * Creates a new SVGLoadEventDispatcher.
      */
-    public GVTTreeBuilder(SVGDocument   doc,
-                          BridgeContext bc) {
+    public SVGLoadEventDispatcher(GraphicsNode gn,
+                               SVGDocument doc,
+                               BridgeContext bc,
+                               UpdateManager um) {
         svgDocument = doc;
+        root = gn;
         bridgeContext = bc;
+        updateManager = um;
     }
 
     /**
-     * Runs this builder.
+     * Runs the dispatcher.
      */
     public void run() {
         try {
             fireStartedEvent();
 
-            GVTBuilder builder = null;
+            updateManager.dispatchSVGLoadEvent();
 
-            if (bridgeContext.isDynamic()) {
-                builder = new DynamicGVTBuilder();
-            } else {
-                builder = new GVTBuilder();
-            }
-            GraphicsNode gvtRoot = builder.build(bridgeContext, svgDocument);
-
-            fireCompletedEvent(gvtRoot);
-        } catch (InterruptedBridgeException e) {
+            fireCompletedEvent();
+        } catch (InterruptedException e) {
             fireCancelledEvent();
-        } catch (BridgeException e) {
-            exception = e;
-            fireFailedEvent(e.getGraphicsNode());
         } catch (Exception e) {
             exception = e;
-            fireFailedEvent(null);
+            fireFailedEvent();
         }
-        bridgeContext.getDocumentLoader().dispose();
     }
 
     /**
@@ -99,40 +99,43 @@ public class GVTTreeBuilder extends Thread {
     }
 
     /**
-     * Adds a GVTTreeBuilderListener to this GVTTreeBuilder.
+     * Adds a SVGLoadEventDispatcherListener to this SVGLoadEventDispatcher.
      */
-    public void addGVTTreeBuilderListener(GVTTreeBuilderListener l) {
+    public void addSVGLoadEventDispatcherListener(SVGLoadEventDispatcherListener l) {
         listeners.add(l);
     }
 
     /**
-     * Removes a GVTTreeBuilderListener from this GVTTreeBuilder.
+     * Removes a SVGLoadEventDispatcherListener from this SVGLoadEventDispatcher.
      */
-    public void removeGVTTreeBuilderListener(GVTTreeBuilderListener l) {
+    public void removeSVGLoadEventDispatcherListener
+        (SVGLoadEventDispatcherListener l) {
         listeners.remove(l);
     }
 
     /**
-     * Fires a GVTTreeBuilderEvent.
+     * Fires a SVGLoadEventDispatcherEvent.
      */
     protected void fireStartedEvent() {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final GVTTreeBuilderEvent ev = new GVTTreeBuilderEvent(this, null);
+            final SVGLoadEventDispatcherEvent ev =
+                new SVGLoadEventDispatcherEvent(this, root);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
-                    GVTTreeBuilderListener dl = (GVTTreeBuilderListener)dll[i];
-                    dl.gvtBuildStarted(ev);
+                    SVGLoadEventDispatcherListener dl =
+                        (SVGLoadEventDispatcherListener)dll[i];
+                    dl.svgLoadEventDispatchStarted(ev);
                 }
             } else {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         for (int i = 0; i < dll.length; i++) {
-                            GVTTreeBuilderListener dl =
-                                (GVTTreeBuilderListener)dll[i];
-                            dl.gvtBuildStarted(ev);
+                            SVGLoadEventDispatcherListener dl =
+                                (SVGLoadEventDispatcherListener)dll[i];
+                            dl.svgLoadEventDispatchStarted(ev);
                         }
                     }
                 });
@@ -141,26 +144,28 @@ public class GVTTreeBuilder extends Thread {
     }
 
     /**
-     * Fires a GVTTreeBuilderEvent.
+     * Fires a SVGLoadEventDispatcherEvent.
      */
-    protected void fireCompletedEvent(GraphicsNode root) {
+    protected void fireCompletedEvent() {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final GVTTreeBuilderEvent ev = new GVTTreeBuilderEvent(this, root);
+            final SVGLoadEventDispatcherEvent ev =
+                new SVGLoadEventDispatcherEvent(this, root);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
-                    GVTTreeBuilderListener dl = (GVTTreeBuilderListener)dll[i];
-                    dl.gvtBuildCompleted(ev);
+                    SVGLoadEventDispatcherListener dl =
+                        (SVGLoadEventDispatcherListener)dll[i];
+                    dl.svgLoadEventDispatchCompleted(ev);
                 }
             } else {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         for (int i = 0; i < dll.length; i++) {
-                            GVTTreeBuilderListener dl =
-                                (GVTTreeBuilderListener)dll[i];
-                            dl.gvtBuildCompleted(ev);
+                            SVGLoadEventDispatcherListener dl =
+                                (SVGLoadEventDispatcherListener)dll[i];
+                            dl.svgLoadEventDispatchCompleted(ev);
                         }
                     }
                 });
@@ -169,26 +174,28 @@ public class GVTTreeBuilder extends Thread {
     }
 
     /**
-     * Fires a GVTTreeBuilderEvent.
+     * Fires a SVGLoadEventDispatcherEvent.
      */
-    protected void fireFailedEvent(GraphicsNode root) {
+    protected void fireFailedEvent() {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final GVTTreeBuilderEvent ev = new GVTTreeBuilderEvent(this, root);
+            final SVGLoadEventDispatcherEvent ev =
+                new SVGLoadEventDispatcherEvent(this, root);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
-                    GVTTreeBuilderListener dl = (GVTTreeBuilderListener)dll[i];
-                    dl.gvtBuildFailed(ev);
+                    SVGLoadEventDispatcherListener dl =
+                        (SVGLoadEventDispatcherListener)dll[i];
+                    dl.svgLoadEventDispatchFailed(ev);
                 }
             } else {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         for (int i = 0; i < dll.length; i++) {
-                            GVTTreeBuilderListener dl =
-                                (GVTTreeBuilderListener)dll[i];
-                            dl.gvtBuildFailed(ev);
+                            SVGLoadEventDispatcherListener dl =
+                                (SVGLoadEventDispatcherListener)dll[i];
+                            dl.svgLoadEventDispatchFailed(ev);
                         }
                     }
                 });
@@ -197,30 +204,33 @@ public class GVTTreeBuilder extends Thread {
     }
 
     /**
-     * Fires a GVTTreeBuilderEvent.
+     * Fires a SVGLoadEventDispatcherEvent.
      */
     protected void fireCancelledEvent() {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final GVTTreeBuilderEvent ev = new GVTTreeBuilderEvent(this, null);
+            final SVGLoadEventDispatcherEvent ev =
+                new SVGLoadEventDispatcherEvent(this, root);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
-                    GVTTreeBuilderListener dl = (GVTTreeBuilderListener)dll[i];
-                    dl.gvtBuildCancelled(ev);
+                    SVGLoadEventDispatcherListener dl =
+                        (SVGLoadEventDispatcherListener)dll[i];
+                    dl.svgLoadEventDispatchCancelled(ev);
                 }
             } else {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         for (int i = 0; i < dll.length; i++) {
-                            GVTTreeBuilderListener dl =
-                                (GVTTreeBuilderListener)dll[i];
-                            dl.gvtBuildCancelled(ev);
+                            SVGLoadEventDispatcherListener dl =
+                                (SVGLoadEventDispatcherListener)dll[i];
+                            dl.svgLoadEventDispatchCancelled(ev);
                         }
                     }
                 });
             }
         }
     }
+
 }

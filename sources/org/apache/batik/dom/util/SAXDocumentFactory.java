@@ -166,8 +166,8 @@ public class SAXDocumentFactory
      * @param r The document reader.
      * @exception IOException if an error occured while reading the document.
      */
-    public Document createDocument(String ns, String root, String uri, Reader r)
-        throws IOException {
+    public Document createDocument(String ns, String root, String uri,
+                                   Reader r) throws IOException {
         InputSource inp = new InputSource(r);
         inp.setSystemId(uri);
         return createDocument(ns, root, uri, inp);
@@ -187,7 +187,8 @@ public class SAXDocumentFactory
 	document = implementation.createDocument(ns, root, null);
 
 	try {
-            XMLReader parser = XMLReaderFactory.createXMLReader(parserClassName);
+            XMLReader parser =
+                XMLReaderFactory.createXMLReader(parserClassName);
 
             parser.setContentHandler(this);
             parser.setDTDHandler(this);
@@ -243,7 +244,8 @@ public class SAXDocumentFactory
     }
 
     /**
-     * Returns true if the XML parser validates the XML stream, false otherwise.
+     * Returns true if the XML parser validates the XML stream, false
+     * otherwise.
      */
     public boolean isValidating() {
 	return isValidating;

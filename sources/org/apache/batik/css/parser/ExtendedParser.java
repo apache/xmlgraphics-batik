@@ -13,6 +13,7 @@ import java.io.IOException;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.css.sac.SelectorList;
+import org.w3c.css.sac.SACMediaList;
 
 /**
  * This class implements the {@link org.w3c.css.sac.Parser} interface plus a
@@ -76,6 +77,19 @@ public interface ExtendedParser extends org.w3c.css.sac.Parser {
         throws CSSException, IOException;
 
     
+    /**
+     * Parse a CSS media value.
+     * 
+     * 
+     * @exception CSSException Any CSS exception, possibly
+     *            wrapping another exception.
+     * @exception java.io.IOException An IO exception from the parser,
+     *            possibly from a byte stream or character stream
+     *            supplied by the application.
+     */    
+    SACMediaList parseMedia(String mediaText)
+        throws CSSException, IOException;
+
     /**
      * Parse a CSS priority value (e.g. "!important").
      * 

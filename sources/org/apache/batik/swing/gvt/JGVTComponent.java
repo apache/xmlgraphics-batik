@@ -12,6 +12,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -75,7 +76,8 @@ public class JGVTComponent extends JComponent {
     /**
      * The renderer factory.
      */
-    protected ImageRendererFactory rendererFactory = new DynamicRendererFactory();
+    protected ImageRendererFactory rendererFactory =
+        new DynamicRendererFactory();
 
     /**
      * The current renderer.
@@ -410,12 +412,12 @@ public class JGVTComponent extends JComponent {
      * Repaints immediately the component.
      */
     public void immediateRepaint() {
-        if (java.awt.EventQueue.isDispatchThread()) {
+        if (EventQueue.isDispatchThread()) {
             Dimension dim = getSize();
             paintImmediately(0, 0, dim.width, dim.height);
         } else {
             try {
-                java.awt.EventQueue.invokeAndWait(new Runnable() {
+                EventQueue.invokeAndWait(new Runnable() {
                     public void run() {
                         Dimension dim = getSize();
                         paintImmediately(0, 0, dim.width, dim.height);
@@ -670,7 +672,7 @@ public class JGVTComponent extends JComponent {
         protected Listener() {
         }
 
-        // GVTTreeRendererListener /////////////////////////////////////////////
+        // GVTTreeRendererListener ///////////////////////////////////////////
 
         /**
          * Called when a rendering is in its preparing phase.
@@ -695,12 +697,14 @@ public class JGVTComponent extends JComponent {
                         final Thread thisThread = this;
                         try {
                             while (!isInterrupted()) {
-                                java.awt.EventQueue.invokeAndWait(new Runnable() {
+                                EventQueue.invokeAndWait(new Runnable() {
                                     public void run() {
-                                        if (progressivePaintThread == thisThread) {
+                                        if (progressivePaintThread ==
+                                            thisThread) {
                                             Dimension dim = getSize();
                                             paintImmediately(0, 0,
-                                                             dim.width, dim.height);
+                                                             dim.width,
+                                                             dim.height);
                                         }
                                     }
                                 });
@@ -775,7 +779,7 @@ public class JGVTComponent extends JComponent {
             }
         }
 
-        // KeyListener //////////////////////////////////////////////////////////
+        // KeyListener //////////////////////////////////////////////////////
 
         /**
          * Invoked when a key has been typed.
@@ -838,7 +842,7 @@ public class JGVTComponent extends JComponent {
             eventDispatcher.keyReleased(e);
         }
 
-        // MouseListener ///////////////////////////////////////////////////////
+        // MouseListener ////////////////////////////////////////////////////
 
         /**
          * Invoked when the mouse has been clicked on a component.
@@ -940,7 +944,7 @@ public class JGVTComponent extends JComponent {
             eventDispatcher.mouseExited(e);
         }
 
-        // MouseMotionListener /////////////////////////////////////////////////
+        // MouseMotionListener //////////////////////////////////////////////
 
         /**
          * Invoked when a mouse button is pressed on a component and then

@@ -8,9 +8,18 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.Rectangle;
+import java.awt.Shape;
+
+import java.awt.geom.AffineTransform;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.batik.gvt.UpdateTracker;
+
+import org.apache.batik.gvt.renderer.ImageRenderer;
 
 /**
  * This class manages the rendering of a GVT tree.
@@ -26,6 +35,11 @@ public class RepaintManager {
     protected UpdateManager updateManager;
 
     /**
+     * The renderer used to repaint the buffer.
+     */
+    protected ImageRenderer renderer;
+
+    /**
      * Whether or not the manager is active.
      */
     protected boolean enabled;
@@ -33,8 +47,9 @@ public class RepaintManager {
     /**
      * Creates a new repaint manager.
      */
-    public RepaintManager(UpdateManager um) {
+    public RepaintManager(UpdateManager um, ImageRenderer r) {
         updateManager = um;
+        renderer = r;
     }
     
     /**
@@ -51,6 +66,8 @@ public class RepaintManager {
                     if (ut.hasChanged()) {
                         List dirtyAreas = ut.getDirtyAreas();
                         if (dirtyAreas != null) {
+                            // Calls the UpdateManager methods
+                            // to allow events to be fired.
                             updateManager.modifiedAreas(dirtyAreas);
                             updateManager.updateRendering(dirtyAreas);
                         }
@@ -85,4 +102,59 @@ public class RepaintManager {
         enabled = true;
     }
     
+    /**
+     * Call this to let the Repaint Manager know that certain areas
+     * in the image have been modified and need to be rerendered..
+     */
+    public void modifiedAreas(List areas) {
+        AffineTransform at = renderer.getTransform();
+        Iterator i = areas.iterator();
+        while (i.hasNext()) {
+            Shape s = (Shape)i.next();
+            Rectangle r = at.createTransformedShape(s).getBounds();
+            renderer.flush(r);
+        }
+    }
+
+    /**
+     * Updates the rendering buffer.
+     * @param u2d The user to device transform.
+     * @param dbr Whether the double buffering should be used.
+     * @param aoi The area of interest in the renderer space units.
+     * @param width&nbsp;height The offscreen buffer size.
+     * @return the list of the rectangles to repaint.
+     */
+    public List updateRendering(AffineTransform u2d,
+                                boolean dbr,
+                                Shape aoi,
+                                int width,
+                                int height) throws InterruptedException {
+        renderer.setTransform(u2d);
+        renderer.setDoubleBuffered(dbr);
+        renderer.updateOffScreen(width, height);
+        renderer.clearOffScreen();
+        List l = new ArrayList(1);
+        l.add(aoi);
+        return updateRendering(l);
+    }
+
+    /**
+     * Updates the rendering buffer.
+     * @param aoi The area of interest in the renderer space units.
+     * @return the list of the rectangles to repaint.
+     */
+    public List updateRendering(List areas) throws InterruptedException {
+        List rects = new ArrayList(areas.size());
+        AffineTransform at = renderer.getTransform();
+
+        Iterator i = areas.iterator();
+        while (i.hasNext()) {
+            Shape s = (Shape)i.next();
+            Rectangle r = at.createTransformedShape(s).getBounds();
+            rects.add(r);
+        }
+
+        renderer.repaint(areas);
+        return rects;
+    }
 }

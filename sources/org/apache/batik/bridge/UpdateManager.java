@@ -8,7 +8,6 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.Rectangle;
 import java.awt.Shape;
 
 import java.awt.geom.AffineTransform;
@@ -35,8 +34,6 @@ import org.apache.batik.util.RunnableQueue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import org.w3c.dom.svg.SVGSVGElement;
-
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
@@ -50,6 +47,13 @@ import org.w3c.dom.events.MutationEvent;
  * @version $Id$
  */
 public class UpdateManager implements RunnableQueue.RunHandler {
+
+    /**
+     * Tells whether the given SVG document is dynamic.
+     */
+    public static boolean isDynamicDocument(Document doc) {
+        return ScriptingEnvironment.isDynamicDocument(doc);
+    }
     
     /**
      * The bridge context.
@@ -92,6 +96,11 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     protected volatile boolean running;
 
     /**
+     * Whether the suspend() method was called.
+     */
+    protected boolean suspendCalled;
+
+    /**
      * The listeners.
      */
     protected List listeners = Collections.synchronizedList(new LinkedList());
@@ -131,34 +140,45 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * @param ctx The bridge context.
      * @param gn GraphicsNode whose updates are to be tracked.
      * @param doc The document to manage.
-     * @param r The renderer.
      */
     public UpdateManager(BridgeContext ctx,
                          GraphicsNode gn,
-                         Document doc,
-                         ImageRenderer r) {
+                         Document doc) {
         bridgeContext = ctx;
         bridgeContext.setUpdateManager(this);
 
         document = doc;
-        renderer = r;
 
         updateRunnableQueue = RunnableQueue.createRunnableQueue();
         updateRunnableQueue.setRunHandler(this);
 
-        updateTracker = new UpdateTracker();
         graphicsNode = gn;
 
-        RootGraphicsNode root = gn.getRoot();
-        if (root != null){
-            root.addTreeGraphicsNodeChangeListener(getUpdateTracker());
-        }
-
-        repaintManager = new RepaintManager(this);
-        repaintRateManager = new RepaintRateManager(this);
-        repaintRateManager.start();
         scriptingEnvironment = new ScriptingEnvironment(this);
     }
+
+    /**
+     * Finishes the UpdateManager initialization.
+     */
+    public void manageUpdates(ImageRenderer r) {
+        running = true;
+        renderer = r;
+        
+        updateTracker = new UpdateTracker();
+        RootGraphicsNode root = graphicsNode.getRoot();
+        if (root != null){
+            root.addTreeGraphicsNodeChangeListener(updateTracker);
+        }
+
+        repaintManager = new RepaintManager(this, renderer);
+        repaintRateManager = new RepaintRateManager(this);
+        repaintRateManager.start();
+
+        scriptingEnvironment.getScriptingLock().unlock();
+
+        fireManagerStartedEvent();
+    }
+
 
     /**
      * Returns the bridge context.
@@ -225,7 +245,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      */
     public void suspend() {
         if (running) {
-            running = false;
+            suspendCalled = true;
             updateRunnableQueue.suspendExecution(false);
         }
     }
@@ -235,37 +255,29 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      */
     public void resume() {
         if (!running) {
-            running = true;
             updateRunnableQueue.resumeExecution();
         }
     }
 
     /**
      * Dispatches an 'SVGLoad' event to the document.
-     * NOTE: This method starts the update manager threads so one can't use
-     * the update runnable queue to invoke this method.
+     * NOTES:
+     * - This method starts the update manager threads so one can't use
+     *   the update runnable queue to invoke this method.
+     * - The scripting lock is taken. Is is released by a call to
+     *   manageUpdates().
      */
-    public void dispatchSVGLoad() {
+    public void dispatchSVGLoadEvent() throws InterruptedException {
+        // Locking avoid execution of scripts scheduled by calls
+        // to the setTimeout() function.
+        // The lock is be released by a call to manageUpdates().
+        scriptingEnvironment.getScriptingLock().lock();
+
+        scriptingEnvironment.loadScripts();
+        scriptingEnvironment.dispatchSVGLoadEvent();
+        
         updateRunnableQueue.resumeExecution();
-
-        updateRunnableQueue.invokeLater(new Runnable() {
-                public void run() {
-                    running = true;
-                    startingTime = System.currentTimeMillis();
-
-                    fireManagerStartedEvent();
-
-                    SVGSVGElement svgElement =
-                        (SVGSVGElement)document.getDocumentElement();
-                    String language = svgElement.getContentScriptType();
-
-                    BridgeEventSupport.loadScripts(bridgeContext, svgElement);
-
-                    BridgeEventSupport.dispatchOnLoad(bridgeContext,
-                                                      svgElement,
-                                                      language);
-                }
-            });
+        startingTime = System.currentTimeMillis();
     }
 
     /**
@@ -273,11 +285,12 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * This method interrupts the update manager threads.
      * NOTE: this method must be called outside the update thread.
      */
-    public void dispatchSVGUnLoad() {
+    public void dispatchSVGUnLoadEvent() {
         resume();
         updateRunnableQueue.invokeLater(new Runnable() {
                 public void run() {
-                    Event evt = ((DocumentEvent)document).createEvent("SVGEvents");
+                    Event evt =
+                        ((DocumentEvent)document).createEvent("SVGEvents");
                     evt.initEvent("SVGUnload", false, false);
                     ((EventTarget)(document.getDocumentElement())).
                         dispatchEvent(evt);
@@ -295,13 +308,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * in the image have been modified and need to be rerendered..
      */
     public void modifiedAreas(List areas) {
-        AffineTransform at = renderer.getTransform();
-        Iterator i = areas.iterator();
-        while (i.hasNext()) {
-            Shape s = (Shape)i.next();
-            Rectangle r = at.createTransformedShape(s).getBounds();
-            renderer.flush(r);
-        }
+        repaintManager.modifiedAreas(areas);
     }
 
     /**
@@ -316,13 +323,16 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                                 Shape aoi,
                                 int width,
                                 int height) {
-        renderer.setTransform(u2d);
-        renderer.setDoubleBuffered(dbr);
-        renderer.updateOffScreen(width, height);
-        renderer.clearOffScreen();
-        List l = new ArrayList(1);
-        l.add(aoi);
-        updateRendering(l);
+        try {
+            fireStartedEvent(renderer.getOffScreen());
+            
+            List l = repaintManager.updateRendering(u2d, dbr, aoi,
+                                                    width, height);
+            
+            fireCompletedEvent(renderer.getOffScreen(), l);
+        } catch (Exception e) {
+            fireFailedEvent();
+        }
     }
 
     /**
@@ -332,19 +342,10 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     public void updateRendering(List areas) {
         try {
             fireStartedEvent(renderer.getOffScreen());
-            List rects = new ArrayList(areas.size());
-            AffineTransform at = renderer.getTransform();
 
-            Iterator i = areas.iterator();
-            while (i.hasNext()) {
-                Shape s = (Shape)i.next();
-                Rectangle r = at.createTransformedShape(s).getBounds();
-                rects.add(r);
-            }
+            List l = repaintManager.updateRendering(areas);
 
-            renderer.repaint(areas);
-
-            fireCompletedEvent(renderer.getOffScreen(), rects);
+            fireCompletedEvent(renderer.getOffScreen(), l);
         } catch (Exception e) {
             fireFailedEvent();
         }
@@ -410,7 +411,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * Fires a UpdateManagerEvent to notify that the manager was resumed.
      */
     protected void fireManagerResumedEvent() {
-        suspendedTime = System.currentTimeMillis() - suspendStartTime;
         Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
@@ -476,7 +476,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * Called when the execution of the queue has been suspended.
      */
     public void executionSuspended(RunnableQueue rq) {
-        if (!running) {
+        if (suspendCalled) {
+            running = false;
             suspendStartTime = System.currentTimeMillis();
             if (scriptingEnvironment != null) {
                 scriptingEnvironment.suspendScripts();
@@ -489,7 +490,9 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * Called when the execution of the queue has been resumed.
      */
     public void executionResumed(RunnableQueue rq) {
-        if (running) {
+        if (suspendCalled && !running) {
+            running = true;
+            suspendCalled = false;
             suspendedTime = System.currentTimeMillis() - suspendStartTime;
             fireManagerResumedEvent();
             if (scriptingEnvironment != null) {
