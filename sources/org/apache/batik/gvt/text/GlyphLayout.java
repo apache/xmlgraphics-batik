@@ -1456,14 +1456,14 @@ public class GlyphLayout implements TextSpanLayout {
         if ((xScale == 1) && (yScale==1)) 
             return;
 
-        Rectangle2D bounds = gv.getGeometricBounds();
         AffineTransform scaleAT = 
             AffineTransform.getScaleInstance(xScale, yScale);
 
-        float initX   = (float) bounds.getX();
-        float initY   = (float) bounds.getY();
         int numGlyphs = gv.getNumGlyphs();
         float [] gp   = gv.getGlyphPositions(0, numGlyphs+1, null);
+
+        float initX   = (float) gp[0];
+        float initY   = (float) gp[1];
         float dx = 0f;
         float dy = 0f;
         for (int i = 0; i <= numGlyphs; i++) {

@@ -680,7 +680,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         GVTGlyphMetrics lastMetrics = 
             layout.getGlyphMetrics(layout.getGlyphCount()-1);
         Rectangle2D     lastBounds  = lastMetrics.getBounds2D();
-        
+        float lastW = (float)(lastBounds.getWidth()+lastBounds.getX());
+        float lastH = (float)(lastBounds.getHeight()+lastBounds.getY());
         Point2D visualAdvance;
         
         if (!doAdjust) {
@@ -688,9 +689,9 @@ public class StrokingTextPainter extends BasicTextPainter {
             // System.out.println("LastBounds: " + lastBounds);
             // System.out.println("LastMetrics.hadv: " + lastMetrics.getHorizontalAdvance());
             visualAdvance = new Point2D.Float
-            ((float)(chunk.advance.getX() + lastBounds.getWidth() -
+            ((float)(chunk.advance.getX() + lastW -
                      lastMetrics.getHorizontalAdvance()),
-             (float)(chunk.advance.getY() + lastBounds.getHeight() -
+             (float)(chunk.advance.getY() + lastH -
                      lastMetrics.getVerticalAdvance()));
         } else {
             Point2D advance    = chunk.advance;
@@ -702,22 +703,21 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (layout.isVertical()) {
                 if (lengthAdj == ADJUST_SPACING) {
                     yScale = (float)
-                        ((length.floatValue()-lastBounds.getHeight())/
+                        ((length.floatValue()-lastH)/
                          (advance.getY()-lastMetrics.getVerticalAdvance()));
                 } else {
                     double adv = (advance.getY()-
-                                  lastMetrics.getVerticalAdvance() +
-                                  lastBounds.getHeight());
+                                  lastMetrics.getVerticalAdvance() + lastH);
                     yScale = (float)(length.floatValue()/adv);
                 }
                 visualAdvance = new Point2D.Float(0, length.floatValue());
             } else {
                 if (lengthAdj == ADJUST_SPACING) {
                     xScale = (float)
-                        ((length.floatValue()-lastBounds.getWidth())/
+                        ((length.floatValue()-lastW)/
                          (advance.getX()-lastMetrics.getHorizontalAdvance()));
                 } else {
-                    double adv = (advance.getX() + lastBounds.getWidth() -
+                    double adv = (advance.getX() + lastW -
                                   lastMetrics.getHorizontalAdvance());
                     xScale = (float)(length.floatValue()/adv);
                 }
