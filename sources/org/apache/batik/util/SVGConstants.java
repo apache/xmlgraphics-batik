@@ -46,9 +46,11 @@ public interface SVGConstants extends CSSConstants {
     String TAG_FE_IMAGE = "feImage";
     String TAG_FE_MERGE = "feMerge";
     String TAG_FE_MERGE_NODE = "feMergeNode";
+    String TAG_FE_OFFSET = "feOffset";
     String TAG_FE_SPECULAR_LIGHTING = "feSpecularLighting";
     String TAG_FE_SPOT_LIGHT = "feSpotLight";
     String TAG_FE_TILE = "feTile";
+    String TAG_FE_TURBULENCE = "feTurbulence";
     String TAG_FILTER = "filter";
     String TAG_G = "g";
     String TAG_IMAGE = "image";
@@ -70,6 +72,7 @@ public interface SVGConstants extends CSSConstants {
      * Attribute names
      */
     String ATTR_AZIMUTH = "azimuth";
+    String ATTR_BASE_FREQUENCY = "baseFrequency";
     String ATTR_CLIP_PATH = "clip-path";
     String ATTR_CLIP_PATH_UNITS = "clipPathUnits";
     String ATTR_COLOR_INTERPOLATION =
@@ -111,6 +114,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_K4 = "k4";
     String ATTR_KERNEL_MATRIX = "kernelMatrix";
     String ATTR_LIGHT_COLOR = "lightColor";
+    String ATTR_NUM_OCTAVES = "numOctaves";
     String ATTR_MASK = "mask";
     String ATTR_OFFSET = "offset";
     String ATTR_OPACITY = "opacity";
@@ -127,6 +131,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_RESULT_SCALE = "resultScale";
     String ATTR_RX = "rx";
     String ATTR_RY = "ry";
+    String ATTR_SEED = "seed";
     String ATTR_SHAPE_RENDERING = "shape-rendering";
     String ATTR_SLOPE = "slope";
     String ATTR_SPECULAR_CONSTANT = "specularConstant";
@@ -134,6 +139,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_SPREAD_METHOD = "spreadMethod";
     String ATTR_STD_DEVIATION = "stdDeviation";
     String ATTR_STOP_COLOR = "stop-color";
+    String ATTR_STITCH_TILES = "stitchTiles";
     String ATTR_STOP_OPACITY = "stop-opacity";
     String ATTR_STROKE = "stroke";
     String ATTR_STROKE_OPACITY = "stroke-opacity";
@@ -192,6 +198,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_FONT_STYLE_NORMAL = "normal";
     String VALUE_FONT_STYLE_ITALIC = "italic";
     String VALUE_FONT_STYLE_OBLIQUE = "oblique";
+    String VALUE_FRACTAL_NOISE = "fractalNoise";
     String VALUE_GEOMETRIC_PRECISION = "geometricPrecision";
     String VALUE_HUNDRED_PERCENT = "100%";
     String VALUE_IN = "in";
@@ -207,6 +214,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_MIDDLE = "middle";
     String VALUE_NEW = "new";
     String VALUE_NINETY = "90";
+    String VALUE_NO_STITCH = "noStitch";
     String VALUE_NON_ZERO = "nonzero";
     String VALUE_NONE = "none";
     String VALUE_OBJECT_BOUNDING_BOX = "objectBoundingBox";
@@ -222,6 +230,8 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_SOURCE_GRAPHIC = "SourceGraphic";
     String VALUE_SRGB = "sRGB";
     String VALUE_START = "start";
+    String VALUE_STITCH = "stitch";
+    String VALUE_TURBULENCE = "turbulence";
     String VALUE_TYPE_LINEAR = "linear";
     String VALUE_TYPE_TABLE = "table";
     String VALUE_USER_SPACE_ON_USE = "userSpaceOnUse";
@@ -251,7 +261,12 @@ public interface SVGConstants extends CSSConstants {
     /**
      * Default values for attributes
      */
-    String DEFAULT_VALUE_FILL_RULE = VALUE_NON_ZERO;
-    String DEFAULT_VALUE_TEXT_ANCHOR = VALUE_START;
+    float   DEFAULT_VALUE_BASE_FREQUENCY = 0.001f;
+    boolean DEFAULT_VALUE_FE_TURBULENCE_TYPE = false;
+    String  DEFAULT_VALUE_FILL_RULE = VALUE_NON_ZERO;
+    int     DEFAULT_VALUE_NUM_OCTAVES = 1;
+    int     DEFAULT_VALUE_SEED = 0;
+    boolean DEFAULT_VALUE_STITCH_TILES = false;
+    String  DEFAULT_VALUE_TEXT_ANCHOR = VALUE_START;
 
 }

@@ -29,6 +29,8 @@ public class SVGBridgeContext extends ConcreteBridgeContext
                   new SVGFeFloodElementBridge());
         putBridge(SVG_NAMESPACE_URI, TAG_FE_GAUSSIAN_BLUR,
                   new SVGFeGaussianBlurElementBridge());
+        putBridge(SVG_NAMESPACE_URI, TAG_FE_TURBULENCE,
+                  new SVGFeTurbulenceElementBridge());
         putBridge(SVG_NAMESPACE_URI, TAG_G, new SVGGElementBridge());
         putBridge(SVG_NAMESPACE_URI, TAG_LINE, new SVGLineElementBridge());
         putBridge(SVG_NAMESPACE_URI, TAG_PATH, new SVGPathElementBridge());

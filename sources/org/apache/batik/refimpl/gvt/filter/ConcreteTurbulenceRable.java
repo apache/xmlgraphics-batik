@@ -9,15 +9,30 @@
 package org.apache.batik.refimpl.gvt.filter;
 
 import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.TurbulenceRable;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 
+import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 
 /**
@@ -29,50 +44,55 @@ import java.awt.image.renderable.RenderContext;
 public class ConcreteTurbulenceRable
     extends    AbstractRable
     implements TurbulenceRable {
+    
+    /**
+     * Paint used to clear the area outside the area of interest
+     */
+    private static final Paint CLEAR_PAINT = new Color(0, 0, 0, 0);
 
     int     seed          = 0;     // Seed value to pseudo rand num gen.
     int     numOctaves    = 1;     // number of octaves in turbulence function
     double  baseFreqX     = 0;     // Frequency in X/Y directions
     double  baseFreqY     = 0;
     boolean stitched       = false; // True if tiles are stitched
-    boolean fractileNoise = false; // True if fractile noise should be used.
+    boolean fractalNoise = false; // True if fractal noise should be used.
 
-    Rectangle2D bounds;
+    FilterRegion region;
 
-    public ConcreteTurbulenceRable(Rectangle2D bounds) {
+    public ConcreteTurbulenceRable(FilterRegion region) {
         super();
-        this.bounds = bounds;
+        this.region = region;
     }
 
-    public ConcreteTurbulenceRable(Rectangle2D bounds,
+    public ConcreteTurbulenceRable(FilterRegion region,
                                    int         seed,
                                    int         numOctaves,
                                    double      baseFreqX,
                                    double      baseFreqY,
                                    boolean     stitched,
-                                   boolean     fractileNoise) {
+                                   boolean     fractalNoise) {
         super();
         this.seed          = seed;
         this.numOctaves    = numOctaves;
         this.baseFreqX     = baseFreqX;
         this.baseFreqY     = baseFreqY;
         this.stitched      = stitched;
-        this.fractileNoise = fractileNoise;
-        this.bounds = bounds;
+        this.fractalNoise  = fractalNoise;
+        this.region        = region;
     }
 
     /**
      * Get the turbulence region
      */
-    public Rectangle2D getTurbulenceRegion() {
-        return (Rectangle2D)bounds.clone();
+    public FilterRegion getTurbulenceRegion() {
+        return region;
     }
 
     /**
      * Get the turbulence region
      */
     public Rectangle2D getBounds2D() {
-        return (Rectangle2D)bounds.clone();
+        return region.getRegion();
     }
 
     /**
@@ -116,22 +136,22 @@ public class ConcreteTurbulenceRable
     }
 
     /**
-     * Returns true if the turbulence function is using fractile noise,
+     * Returns true if the turbulence function is using fractal noise,
      * instead of turbulence noise.
-     * @return true if the turbulence function is using fractile noise,
+     * @return true if the turbulence function is using fractal noise,
      * instead of turbulence noise.
      */
-    public boolean isFractileNoise() {
-        return fractileNoise;
+    public boolean isFractalNoise() {
+        return fractalNoise;
     }
 
     /**
      * Sets the turbulence region
-     * @param TurbulenceRable region to fill with turbulence function.
+     * @param TurbulenceRegion region to fill with turbulence function.
      */
-    public void setTurbulenceRegion(Rectangle2D turbulenceRegion) {
+    public void setTurbulenceRegion(FilterRegion turbulenceRegion) {
         touch();
-        this.bounds = (Rectangle2D)turbulenceRegion.clone();
+        this.region = region;
     }
 
     /**
@@ -180,15 +200,83 @@ public class ConcreteTurbulenceRable
     }
 
     /**
-     * Turns on/off fractile noise.
-     * @param fractileNoise true if fractile noise should be used.
+     * Turns on/off fractal noise.
+     * @param fractalNoise true if fractal noise should be used.
      */
-    public void setFractileNoise(boolean fractileNoise) {
+    public void setFractalNoise(boolean fractalNoise) {
         touch();
-        this.fractileNoise = fractileNoise;
+        this.fractalNoise = fractalNoise;
     }
 
-    public RenderedImage createRendering(RenderContext rc) {
+    public RenderedImage createRendering(RenderContext rc){
+        Shape aoi = rc.getAreaOfInterest();
+        if(aoi == null){
+            aoi = getBounds2D();
+        }
+
+        // Compute size of raster image in device space.
+        final Rectangle rasterRect 
+            = rc.getTransform().createTransformedShape(aoi).getBounds();
+
+        ColorModel cm = ColorModel.getRGBdefault();
+
+        // Create a raster for the turbulence pattern
+        WritableRaster wr = cm.createCompatibleWritableRaster(rasterRect.width, rasterRect.height);
+        WritableRaster twr = wr.createWritableTranslatedChild(rasterRect.x, rasterRect.y);
+
+        // Create a TurbulencePatternGenerator that will do the job
+        // <!> FIX ME. The tile is not propagated properly to the turbulence op
+        // <!> FIX ME. SHOULD OPTIMIZE THE CHANNELS REQUIRED FROM THE FILTER. THIS COULD
+        //     BE ADDED TO THE RENDER CONTEXT.
+        TurbulencePatternGenerator turbGenerator 
+            = new TurbulencePatternGenerator(baseFreqX, baseFreqY, numOctaves,
+                                             seed, stitched, fractalNoise, true,
+                                             aoi.getBounds2D(), new boolean[]{true, true, true, true});
+
+        AffineTransform patternTxf = new AffineTransform();
+        try{
+            patternTxf = rc.getTransform().createInverse();
+        }catch(NoninvertibleTransformException e){
+        }
+
+        turbGenerator.generatePattern(twr, patternTxf);
+
+        // Wrap raster in buffered image
+        BufferedImage bi = new BufferedImage(cm, wr, 
+                                             cm.isAlphaPremultiplied(),
+                                             null);
+
+        // Clear area outside area of interest
+        Graphics2D g = bi.createGraphics();
+        RenderingHints hints = rc.getRenderingHints();
+        if(hints == null){
+            hints = new RenderingHints(null);
+        }
+        g.setRenderingHints(hints);
+        g.setComposite(AlphaComposite.Src);
+        
+        Area nonAoi = new Area(rasterRect);
+        nonAoi.subtract(new Area(rc.getTransform().createTransformedShape(aoi)));
+        g.setPaint(CLEAR_PAINT);
+        g.translate(-rasterRect.x, -rasterRect.y);
+        g.fill(nonAoi);
+        g.dispose();
+
+        RenderedImage result = new ConcreteBufferedImageCachableRed(bi){
+                public int getMinX(){
+                    return rasterRect.x;
+                }
+
+                public int getMinY(){
+                    return rasterRect.y;
+                }
+            };
+
+        return result;
+                                             
+    }
+
+    public RenderedImage createRenderingThomas(RenderContext rc) {
         // Just copy over the rendering hints.
         RenderingHints rh = rc.getRenderingHints();
         if (rh == null) rh = new RenderingHints(null);

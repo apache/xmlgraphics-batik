@@ -37,6 +37,8 @@ import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 
+import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -70,7 +72,9 @@ public class SVGOMDocument
     extends    AbstractDocument
     implements SVGDocument,
                DocumentCSS,
-               DocumentView {
+               DocumentView,
+               SVGConstants
+{
     /**
      * The error messages bundle class name.
      */
@@ -116,6 +120,7 @@ public class SVGOMDocument
         factories.put("feFlood",          new FEFloodElementFactory());
         factories.put("feGaussianBlur",   new FEGaussianBlurElementFactory());
         factories.put("feOffset",         new FEOffsetElementFactory());
+        factories.put("feTurbulence",     new FETurbulenceElementFactory());
         factories.put("filter",           new FilterElementFactory());
         factories.put("g",                new GElementFactory());
         factories.put("image",            new ImageElementFactory());
@@ -627,8 +632,22 @@ public class SVGOMDocument
         public Element create(String prefix) {
             return new SVGOMToBeImplementedElement(prefix,
                                                    SVGOMDocument.this,
-                                                   "feOffset");
+                                                   TAG_FE_OFFSET);
         }
+    }
+
+    /**
+     * To create a 'feTurbulence' element
+     */
+    protected class FETurbulenceElementFactory implements ElementFactory{
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   TAG_FE_TURBULENCE);
+        }        
     }
 
     /**
