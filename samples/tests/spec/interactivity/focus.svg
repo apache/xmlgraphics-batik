@@ -1,0 +1,56 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Tests support for the DOMFocusIn, DOMFocusOut, DOMActivate                -->
+<!--                                                                           -->
+<!-- @author tkormann@ilog.fr                                                  -->
+<!-- @version $Id$ -->
+<!-- ========================================================================= -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     id="body" width="450" height="500" viewBox="0 0 450 500">
+
+    <text class="title" x="50%" y="50">DOMFocusIn, DOMFocusOut, and DOMActivate test</text>
+
+  <script type="text/ecmascript"><![CDATA[
+
+        var elementWithFocus;
+
+        function show(msg) {
+                alert(msg);
+        }
+  ]]></script>
+
+<g id="body-content">
+
+<rect onactivate="show('activate orange')" onfocusin="show('focusin orange')" onfocusout="show('focusout orange')" 
+      x="100" y="100" width="100" height="100" style="fill:orange" />
+
+<rect onactivate="show('activate crimson')" onfocusin="show('focusin crimson')" onfocusout="show('focusout crimson')" 
+      x="250" y="100" width="100" height="100" style="fill:crimson" />
+
+<rect onactivate="show('activate gold')" onfocusin="show('focusin gold')" onfocusout="show('focusout gold')" 
+      x="100" y="250" width="100" height="100" style="fill:gold" />
+
+<rect onactivate="show('activate #aaa')" onfocusin="show('focusin #aaa')" onfocusout="show('focusout #aaa')" 
+      x="250" y="250" width="100" height="100" style="fill:#aaa" />
+
+<circle onactivate="show('activate #eee')" onfocusin="show('focusin #eee')" onfocusout="show('focusout #eee')" 
+        cx="225" cy="225" r="75" style="fill:#eee" />
+
+</g>
+
+</svg>
