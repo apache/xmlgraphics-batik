@@ -44,6 +44,9 @@ public class SVGGeneratorTests extends DefaultTestSuite {
     public static final String CANDIDATE_REF_DIR
         = "candidate-ref";
 
+    public static final String RENDERING_CANDIDATE_REF_DIR
+        = "candidate-reference";
+
     public static final String PNG_EXTENSION
         = ".png";
 
@@ -130,10 +133,13 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         String testReference = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + cl + PNG_EXTENSION;
         String variationURL = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + ACCEPTED_VARIATION_DIR + "/" + cl + PNG_EXTENSION;
         String saveVariation = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + CANDIDATE_VARIATION_DIR + "/" + cl + PNG_EXTENSION;
+        String candidateReference = GENERATOR_REFERENCE_BASE + RENDERING_DIR + "/" + RENDERING_CANDIDATE_REF_DIR + "/" + cl + PNG_EXTENSION;
 
         SVGRenderingAccuracyTest test = new SVGRenderingAccuracyTest(testSource, testReference);
         test.setVariationURL(variationURL);
         test.setSaveVariation(new File(saveVariation));
+        test.setCandidateReference(new File(candidateReference));
+
         test.setName(id + "-" + prefix + "RenderingCheck");
         test.setId(id + "." + prefix + "renderingCheck");
         return test;
