@@ -318,6 +318,7 @@ public class AWTEventDispatcher implements EventDispatcher,
      * @param evt the key event to dispatch
      */
     protected void dispatchKeyEvent(KeyEvent evt) {
+        currentKeyEventTarget = lastHit;
         if (currentKeyEventTarget != null) {
             processKeyEvent
                 (new GraphicsNodeKeyEvent(currentKeyEventTarget,
@@ -442,44 +443,37 @@ public class AWTEventDispatcher implements EventDispatcher,
             switch (evt.getID()) {
             case GraphicsNodeMouseEvent.MOUSE_MOVED:
                 for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].
-                        mouseMoved(evt);
+                    listeners[i].mouseMoved(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_DRAGGED:
                 for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].
-                        mouseDragged(evt);
+                    listeners[i].mouseDragged(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_ENTERED:
                 for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].
-                        mouseEntered(evt);
+                    listeners[i].mouseEntered(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_EXITED:
                 for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].
-                        mouseExited(evt);
+                    listeners[i].mouseExited(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_CLICKED:
                 for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].
-                        mouseClicked(evt);
+                    listeners[i].mouseClicked(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_PRESSED:
                 for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].
-                        mousePressed(evt);
+                    listeners[i].mousePressed(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_RELEASED:
                 for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].
-                        mouseReleased(evt);
+                    listeners[i].mouseReleased(evt);
                 }
                 break;
             default:

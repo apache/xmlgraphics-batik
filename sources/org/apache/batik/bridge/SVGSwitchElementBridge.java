@@ -82,6 +82,14 @@ public class SVGSwitchElementBridge extends AbstractSVGBridge
     }
 
     /**
+     * Returns true if the graphics node has to be displayed, false
+     * otherwise.
+     */
+    public boolean getDisplay(Element e) {
+        return CSSUtilities.convertDisplay(e);
+    }
+
+    /**
      * Returns false as the &lt;switch> element is not a container.
      */
     public boolean isComposite() {

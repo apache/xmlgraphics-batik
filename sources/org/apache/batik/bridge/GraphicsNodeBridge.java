@@ -51,6 +51,12 @@ public interface GraphicsNodeBridge extends Bridge {
     boolean isComposite();
 
     /**
+     * Returns true if the graphics node has to be displayed, false
+     * otherwise.
+     */
+    boolean getDisplay(Element e);
+
+    /**
      * <!> FIX ME: Move to Bridge 
      * 
      * Returns the Bridge instance to be used for a single DOM 
