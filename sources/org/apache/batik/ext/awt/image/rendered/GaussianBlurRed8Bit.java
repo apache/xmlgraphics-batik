@@ -238,6 +238,7 @@ public class GaussianBlurRed8Bit extends AbstractRed {
         // this lets the Vertical conv know how much is junk, so it
         // doesn't bother to convolve the top and bottom edges
         int skipX;
+	// long t1 = System.currentTimeMillis();
 
         if (convOp[0] != null) {
             tmpR2 = getColorModel().createCompatibleWritableRaster
@@ -282,6 +283,10 @@ public class GaussianBlurRed8Bit extends AbstractRed {
             }
             tmpR2 = tmpR1;
         }
+	// long t2 = System.currentTimeMillis();
+	// System.out.println("Time: " + (t2-t1) +
+	// 		      (((convOp[0] != null) || (convOp[1] != null))?
+	// 		       " ConvOp":""));
         // System.out.println("Rasters  WR :" + wr.getBounds());
         // System.out.println("         tmp:" + tmpR2.getBounds());
         // System.out.println("      bounds:" + getBounds());
@@ -335,10 +340,8 @@ public class GaussianBlurRed8Bit extends AbstractRed {
         final int srcPixels [] = srcDB.getBankData()[0];
         final int destPixels[] = dstDB.getBankData()[0];
 
-        final int [] bufferA = new int [boxSz];
-        final int [] bufferR = new int [boxSz];
-        final int [] bufferG = new int [boxSz];
-        final int [] bufferB = new int [boxSz];
+        final int [] buffer = new int [boxSz];
+	int curr, prev;
 
           // Fixed point normalization factor (8.24)
         int scale = (1<<24)/boxSz;
@@ -354,11 +357,11 @@ public class GaussianBlurRed8Bit extends AbstractRed {
          */
 
         for (int y=skipY; y<(h-skipY); y++) {
-            int sp = srcOff + y*srcScanStride;
-            int dp = dstOff + y*dstScanStride;
+            int sp     = srcOff + y*srcScanStride;
+            int dp     = dstOff + y*dstScanStride;
             int rowEnd = sp + (w-skipX);
 
-            int k=0;
+            int k    = 0;
             int sumA = 0;
             int sumR = 0;
             int sumG = 0;
@@ -368,41 +371,43 @@ public class GaussianBlurRed8Bit extends AbstractRed {
             int end  = sp+boxSz;
 
             while (sp < end) {
-                final int currentPixel = srcPixels[sp];
-                sumA += bufferA[k] =  currentPixel>>>24;
-                sumR += bufferR[k] = (currentPixel>>16)&0xff;
-                sumG += bufferG[k] = (currentPixel>>8)&0xff;
-                sumB += bufferB[k] =  currentPixel&0xff;
+                curr = buffer[k] = srcPixels[sp];
+                sumA += (curr>>> 24);
+                sumR += (curr >> 16)&0xFF;
+                sumG += (curr >>  8)&0xFF;
+                sumB += (curr	   )&0xFF;
                 k++;
                 sp++;
             }
 
             dp += skipX + loc;
-            destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
-                              (((sumR*scale)&0xFF000000)>>>8)  |
-                              (((sumG*scale)&0xFF000000)>>>16) |
-                              (((sumB*scale)&0xFF000000)>>>24));
+            prev = destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
+				     (((sumR*scale)&0xFF000000)>>>8)  |
+				     (((sumG*scale)&0xFF000000)>>>16) |
+				     (((sumB*scale)&0xFF000000)>>>24));
             dp++;
-
             k=0;
             while (sp < rowEnd) {
-                final int currentPixel = srcPixels[sp];
-                sumA -= bufferA[k];
-                sumA += bufferA[k] =  currentPixel>>>24;
+		curr = buffer[k];
+		if (curr == srcPixels[sp]) {
+		    destPixels[dp] = prev;
+		} else {
+		    sumA -= (curr>>> 24);
+		    sumR -= (curr >> 16)&0xFF;
+		    sumG -= (curr >>  8)&0xFF;
+		    sumB -= (curr      )&0xFF;
 
-                sumR -= bufferR[k];
-                sumR += bufferR[k] = (currentPixel>> 16)&0xff;
+		    curr = buffer[k] = srcPixels[sp];
 
-                sumG -= bufferG[k];
-                sumG += bufferG[k] = (currentPixel>>  8)&0xff;
-
-                sumB -= bufferB[k];
-                sumB += bufferB[k] =  currentPixel     &0xff;
-
-                destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
-                                  (((sumR*scale)&0xFF000000)>>>8)  |
-                                  (((sumG*scale)&0xFF000000)>>>16) |
-                                  (((sumB*scale)&0xFF000000)>>>24));
+		    sumA += (curr>>> 24);
+		    sumR += (curr >> 16)&0xFF;
+		    sumG += (curr >>  8)&0xFF;
+		    sumB += (curr      )&0xFF;
+		    prev = destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
+					     (((sumR*scale)&0xFF000000)>>>8)  |
+					     (((sumG*scale)&0xFF000000)>>>16) |
+					     (((sumB*scale)&0xFF000000)>>>24));
+		}
                 k = (k+1)%boxSz;
                 sp++;
                 dp++;
@@ -454,10 +459,8 @@ public class GaussianBlurRed8Bit extends AbstractRed {
         final int srcPixels [] = srcDB.getBankData()[0];
         final int destPixels[] = dstDB.getBankData()[0];
 
-        final int [] bufferA = new int [boxSz];
-        final int [] bufferR = new int [boxSz];
-        final int [] bufferG = new int [boxSz];
-        final int [] bufferB = new int [boxSz];
+        final int [] buffer = new int [boxSz];
+	int curr, prev;
 
           // Fixed point normalization factor (8.24)
         final int scale = (1<<24)/boxSz;
@@ -487,42 +490,44 @@ public class GaussianBlurRed8Bit extends AbstractRed {
             int end  = sp+(boxSz*srcScanStride);
 
             while (sp < end) {
-                final int currentPixel = srcPixels[sp];
-                sumA += bufferA[k] =  currentPixel>>>24;
-                sumR += bufferR[k] = (currentPixel>> 16)&0xff;
-                sumG += bufferG[k] = (currentPixel>>  8)&0xff;
-                sumB += bufferB[k] =  currentPixel      &0xff;
+                curr = buffer[k] = srcPixels[sp];
+                sumA += (curr>>> 24);
+                sumR += (curr >> 16)&0xFF;
+                sumG += (curr >>  8)&0xFF;
+                sumB += (curr 	   )&0xFF;
                 k++;
                 sp+=srcScanStride;
             }
 
 
             dp += (skipY + loc)*dstScanStride;
-            destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
-                              (((sumR*scale)&0xFF000000)>>>8)  |
-                              (((sumG*scale)&0xFF000000)>>>16) |
-                              (((sumB*scale)&0xFF000000)>>>24));
+            prev = destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
+				     (((sumR*scale)&0xFF000000)>>>8)  |
+				     (((sumG*scale)&0xFF000000)>>>16) |
+				     (((sumB*scale)&0xFF000000)>>>24));
             dp+=dstScanStride;
             k=0;
             while (sp < colEnd) {
-                final int currentPixel = srcPixels[sp];
-                sumA -= bufferA[k];
-                sumA += bufferA[k] =  currentPixel>>>24;
+		curr = buffer[k];
+		if (curr == srcPixels[sp]) {
+		    destPixels[dp] = prev;
+		} else {
+		    sumA -= (curr>>> 24);
+		    sumR -= (curr >> 16)&0xFF;
+		    sumG -= (curr >>  8)&0xFF;
+		    sumB -= (curr      )&0xFF;
 
-                sumR -= bufferR[k];
-                sumR += bufferR[k] = (currentPixel>>16)&0xff;
+		    curr = buffer[k] = srcPixels[sp];
 
-                sumG -= bufferG[k];
-                sumG += bufferG[k] = (currentPixel>>8)&0xff;
-
-                sumB -= bufferB[k];
-                sumB += bufferB[k] =  currentPixel&0xff;
-
-                destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
-                                  (((sumR*scale)&0xFF000000)>>>8)  |
-                                  (((sumG*scale)&0xFF000000)>>>16) |
-                                  (((sumB*scale)&0xFF000000)>>>24));
-
+		    sumA += (curr>>> 24);
+		    sumR += (curr >> 16)&0xFF;
+		    sumG += (curr >>  8)&0xFF;
+		    sumB += (curr      )&0xFF;
+		    prev = destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
+					     (((sumR*scale)&0xFF000000)>>>8)  |
+					     (((sumG*scale)&0xFF000000)>>>16) |
+					     (((sumB*scale)&0xFF000000)>>>24));
+		}
                 k = (k+1)%boxSz;
                 sp+=srcScanStride;
                 dp+=dstScanStride;
