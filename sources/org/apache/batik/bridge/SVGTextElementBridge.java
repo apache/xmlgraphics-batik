@@ -184,21 +184,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                   Element e,
                                   GraphicsNode node) {
         e.normalize();
-        AttributedString as = buildAttributedString(ctx, e);
-        addGlyphPositionAttributes(as, e, ctx);
-        if (ctx.isDynamic()) {
-            layoutedText = new AttributedString(as.getIterator());
-        }
-        TextNode tn = (TextNode)node;
-        tn.setAttributedCharacterIterator(as.getIterator());
-
-        // now add the painting attributes, cannot do it before this because
-        // some of the Paint objects need to know the bounds of the text
-        // and this isn't know until the text node aci is set
-        TextDecoration textDecoration = 
-            getTextDecoration(e, tn, new TextDecoration(), ctx);
-        addPaintAttributes(as, e, tn, textDecoration, ctx);
-        tn.setAttributedCharacterIterator(as.getIterator());
+        computeLayoutedText(ctx, e, node);
 
         //
         // DO NOT CALL super, 'opacity' is handle during addPaintAttributes()
@@ -371,7 +357,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             default:
         }
         if (layoutedText == null) {
-            computeLayoutedText();
+            computeLayoutedText(ctx, e, node);
         }
     }
 
@@ -432,7 +418,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         //an operation occured onto the children of the
         //text element, check if the layout was discarded
         if (layoutedText == null) {
-            computeLayoutedText();
+            computeLayoutedText(ctx, e, node);
         }
     }
 
@@ -485,10 +471,14 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * update <code>layoutedText</code> with the new
      * value.
      */
-    protected void computeLayoutedText() {
+    protected void computeLayoutedText(BridgeContext ctx, 
+                                       Element e,
+                                       GraphicsNode node) {
         AttributedString as = buildAttributedString(ctx, e);
         addGlyphPositionAttributes(as, e, ctx);
-        layoutedText = new AttributedString(as.getIterator());
+        if (ctx.isDynamic()) {
+            layoutedText = new AttributedString(as.getIterator());
+        }
         TextNode tn = (TextNode)node;
         tn.setAttributedCharacterIterator(as.getIterator());
         TextDecoration textDecoration = 
@@ -525,7 +515,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 ((TextNode)node).setLocation(getLocation(ctx, e));
             }
 
-            computeLayoutedText();
+            computeLayoutedText(ctx, e, node);
         }
         else{
             super.handleDOMAttrModifiedEvent(evt);
@@ -560,15 +550,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             case SVGCSSEngine.KERNING_INDEX: {
                 if (!hasNewACI) {
                     hasNewACI = true;
-                    AttributedString as = buildAttributedString(ctx, e);
-                    addGlyphPositionAttributes(as, e, ctx);
-                    layoutedText = new AttributedString(as.getIterator());
-                    TextNode tn = (TextNode)node;
-                    tn.setAttributedCharacterIterator(as.getIterator());
-                    TextDecoration textDecoration = 
-                        getTextDecoration(e, tn, new TextDecoration(), ctx);
-                    addPaintAttributes(as, e, tn, textDecoration, ctx);
-                    tn.setAttributedCharacterIterator(as.getIterator());
+                    computeLayoutedText(ctx, e, node);
                 }
                 break;
             }
@@ -2089,7 +2071,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 attrName.equals(SVG_DY_ATTRIBUTE) ||
                 attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
                 //recompute the layout of the text node
-                textBridge.computeLayoutedText();
+                textBridge.computeLayoutedText(ctx, e, node);
             }
         }        
     }
@@ -2131,7 +2113,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 attrName.equals(SVG_DY_ATTRIBUTE) ||
                 attrName.equals(SVG_ROTATE_ATTRIBUTE)) {
                 //recompute the layout of the text node
-                textBridge.computeLayoutedText();
+                textBridge.computeLayoutedText(ctx, e, node);
             }
         }        
     }

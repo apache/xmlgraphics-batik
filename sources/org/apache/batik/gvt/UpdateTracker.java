@@ -69,6 +69,9 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
 
             AffineTransform oat;
             oat = (AffineTransform)dirtyNodes.get(gnWRef);
+            if (oat != null){
+                oat = new AffineTransform(oat);
+            }
             
             Rectangle2D srcORgn = (Rectangle2D)fromBounds.remove(gnWRef);
 
@@ -77,14 +80,14 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             AffineTransform nat = gn.getTransform();
 
             if (nat != null){
-                nat = (nat == null) ? null : new AffineTransform(nat);
+                nat = new AffineTransform(nat);
             }
 
             // System.out.println("Rgns: " + srcORgn + " - " + srcNRgn);
             // System.out.println("ATs: " + oat + " - " + nat);
             Shape oRgn = srcORgn;
             Shape nRgn = srcNRgn;
-
+            
             do {
                 // Filter f;
                 // f = gn.getGraphicsNodeRable(false);
@@ -100,25 +103,24 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
                 if (gn == null)
                     break; // We reached the top of the tree
 
-                gnWRef = gn.getWeakReference();
-
+                // Get the parent's current Affine
                 AffineTransform at = gn.getTransform();
-
-                if (oat != null){
-                    // oRgn = oat.createTransformedShape(srcORgn);
-                    if (at != null){
-                        oat.preConcatenate(at);
-                    }
-                } else {
-                    oat = (at == null) ? null : new AffineTransform(at);
+                // Get the parent's Affine last time we rendered.
+                gnWRef = gn.getWeakReference();
+                AffineTransform poat = (AffineTransform)dirtyNodes.get(gnWRef);
+                if (poat == null) poat = at;
+                if (poat != null) {
+                    if (oat != null)
+                        oat.preConcatenate(poat);
+                    else 
+                        oat = new AffineTransform(poat);
                 }
-                if (nat != null){
-                    //  nRgn = nat.createTransformedShape(srcNRgn);
-                    if (at != null){
+
+                if (at != null){
+                    if (nat != null)
                         nat.preConcatenate(at);
-                    }
-                } else {
-                    nat = (at == null) ? null : new AffineTransform(at);
+                    else
+                        nat = new AffineTransform(at);
                 }
 
             } while (true);
@@ -168,34 +170,29 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
         if (doPut) {
             AffineTransform at = gn.getTransform();
             if (at != null) at = (AffineTransform)at.clone();
+            else            at = new AffineTransform();
             dirtyNodes.put(gnWRef, at);
         }
 
-        Rectangle2D r2d = null;
-        if ( gnce.getFrom() != null ){
-            r2d = (Rectangle2D)gnce.getFrom().clone();
-        }
-
+        Rectangle2D r2d = gnce.getFrom();
         if (r2d == null) 
             r2d = gn.getBounds();
         if (r2d != null) {
             Rectangle2D rgn = (Rectangle2D)fromBounds.remove(gnWRef);
             if (rgn != null)
-                r2d.add(rgn);
+                r2d = r2d.createUnion(rgn);
+            else
+                r2d = (Rectangle2D)r2d.clone();
             fromBounds.put(gnWRef, r2d);
         }
 
-        if ( gnce.getTo() != null ){
-            r2d = (Rectangle2D)gnce.getTo().clone();
-        }
-        else{
-            r2d = null;
-        }
-
+        r2d = gnce.getTo();
         if (r2d != null) {
             Rectangle2D rgn = (Rectangle2D)toBounds.remove(gnWRef);
             if (rgn != null)
-                r2d.add(rgn);
+                r2d = r2d.createUnion(rgn);
+            else
+                r2d = (Rectangle2D)r2d.clone();
             toBounds.put(gnWRef, r2d);
         }
     }
