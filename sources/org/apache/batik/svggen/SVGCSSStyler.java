@@ -76,22 +76,4 @@ public class SVGCSSStyler implements SVGSyntax{
         }
 
     }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception{
-        SVGGraphics2D g = new SVGGraphics2D(TestUtil.getDocumentPrototype());
-        g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
-                           java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // Text
-        g.setPaint(new java.awt.Color(103, 103, 152));
-        g.fillRect(10, 10, 200, 50);
-        g.setPaint(java.awt.Color.white);
-        g.setFont(new java.awt.Font("SunSansCondensed-Heavy", java.awt.Font.PLAIN, 20));
-        g.drawString("Hello Java 2D to SVG", 40f, 40f);
-
-        g.stream(new java.io.OutputStreamWriter(System.out));
-    }
 }

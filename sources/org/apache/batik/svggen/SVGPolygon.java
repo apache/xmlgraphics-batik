@@ -75,28 +75,4 @@ public class SVGPolygon extends SVGGraphicObjectConverter{
         points.append(doubleString(y));
         points.append(SPACE);
     }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception {
-        Document domFactory = TestUtil.getDocumentPrototype();
-
-        Polygon polygon = new Polygon();
-        polygon.addPoint(350, 75);
-        polygon.addPoint(379, 161);
-        polygon.addPoint(469, 161);
-        polygon.addPoint(397, 215);
-        polygon.addPoint(423, 301);
-        polygon.addPoint(350, 250);
-        polygon.addPoint(277, 301);
-        polygon.addPoint(303, 215);
-        polygon.addPoint(231, 161);
-        polygon.addPoint(321, 161);
-
-        SVGPolygon converter = new SVGPolygon(domFactory);
-        Element svgPolygon = converter.toSVG(polygon);
-        TestUtil.trace(svgPolygon, System.out);
-        System.out.println();
-    }
 }

@@ -156,34 +156,4 @@ public class SVGTexturePaint extends AbstractSVGConverter{
 
         return patternDesc;
     }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception{
-        Document domFactory = TestUtil.getDocumentPrototype();
-
-        BufferedImage buf = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
-        TexturePaint paint = new TexturePaint(buf, new Rectangle(0, 0, 200, 200));
-
-        SVGTexturePaint converter = new SVGTexturePaint(domFactory, new DefaultImageHandler());
-        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
-
-        SVGPaintDescriptor patternDesc = converter.toSVG(paint);
-        Iterator iter = converter.getDefinitionSet().iterator();
-        while(iter.hasNext()){
-            Element patternDef = (Element)iter.next();
-            defs.appendChild(patternDef);
-        }
-
-        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
-        rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, patternDesc.getPaintValue());
-        rect.setAttributeNS(null, SVG_FILL_OPACITY_ATTRIBUTE, patternDesc.getOpacityValue());
-
-        group.appendChild(defs);
-        group.appendChild(rect);
-
-        TestUtil.trace(group, System.out);
-    }
 }

@@ -104,7 +104,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
      *         lookupOp. The definition of the feComponentTransfer
      *         filter in put in feComponentTransferDefSet
      */
-    public SVGFilterDescriptor toSVG(LookupOp lookupOp){
+    public SVGFilterDescriptor toSVG(LookupOp lookupOp) {
         // Reuse definition if lookupOp has already been converted
         SVGFilterDescriptor filterDesc = (SVGFilterDescriptor)descMap.get(lookupOp);
 
@@ -279,79 +279,5 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
             }*/
 
         return lookupTables;
-    }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception{
-        Document domFactory = TestUtil.getDocumentPrototype();
-
-        byte bs[] = new byte[256];
-        short s[] = new short[256];
-        byte bi[] = new byte[256];
-        short si[] = new short[256];
-
-        for(int i=0; i<=255; i++){
-            bi[i] = (byte)(0xff & (255-i));
-            bs[i] = (byte)(0xff & i);
-            si[i] = (short)(0xffff & (255-i));
-            s[i] = (short)(0xffff & i);
-        }
-
-        byte incompleteByteArray[] = new byte[128];
-        short incompleteShortArray[] = new short[128];
-
-        for(int i=0; i<128; i++){
-            incompleteByteArray[i] = (byte)(255-i);
-            incompleteShortArray[i] = (short)(255-i);
-        }
-
-        LookupTable tables[] = { new ByteLookupTable(0, bs),
-                                 new ByteLookupTable(0, new byte[][]{bi, bs, bi}),
-                                 new ByteLookupTable(0, new byte[][]{bs, bi, bs, bi}),
-                                 new ByteLookupTable(128, incompleteByteArray),
-                                 new ShortLookupTable(0, s),
-                                 new ShortLookupTable(0, new short[][]{si, s, si}),
-                                 new ShortLookupTable(0, new short[][]{s, si, s, si}),
-                                 new ShortLookupTable(128, incompleteShortArray),
-        };
-
-        LookupOp lookupOps[] = new LookupOp[tables.length];
-        for(int i=0; i<tables.length; i++)
-            lookupOps[i] = new LookupOp(tables[i], null);
-
-        SVGLookupOp converter = new SVGLookupOp(domFactory);
-
-        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
-        Element rectGroupOne = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        Element rectGroupTwo = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-
-        for(int i=0; i<lookupOps.length; i++){
-            SVGFilterDescriptor filterDesc = converter.toSVG(lookupOps[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
-            rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
-            rectGroupOne.appendChild(rect);
-        }
-
-        for(int i=0; i<lookupOps.length; i++){
-            SVGFilterDescriptor filterDesc = converter.toSVG(lookupOps[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
-            rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
-            rectGroupTwo.appendChild(rect);
-        }
-
-        Iterator iter = converter.getDefinitionSet().iterator();
-        while(iter.hasNext()){
-            Element feComponentTransferDef = (Element)iter.next();
-            defs.appendChild(feComponentTransferDef);
-        }
-
-        group.appendChild(defs);
-        group.appendChild(rectGroupOne);
-        group.appendChild(rectGroupTwo);
-
-        TestUtil.trace(group, System.out);
     }
 }

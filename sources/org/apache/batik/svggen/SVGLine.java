@@ -41,21 +41,4 @@ public class SVGLine extends SVGGraphicObjectConverter{
         svgLine.setAttributeNS(null, ATTR_Y2, doubleString(line.getY2()));
         return svgLine;
     }
-
-    /**
-     * Unit testing
-     */
-    public static final void main(String args[]) throws Exception{
-        Line2D lines [] = { new Line2D.Double(1, 2, 3, 4),
-                            new Line2D.Double(10, 20, 30, 40) };
-
-        Document domFactory = TestUtil.getDocumentPrototype();
-        SVGLine converter = new SVGLine(domFactory);
-        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI,
-                                                   SVG_G_TAG);
-        for(int i=0; i<lines.length; i++)
-            group.appendChild(converter.toSVG(lines[i]));
-
-        TestUtil.trace(group, System.out);
-    }
 }

@@ -61,26 +61,4 @@ public class SVGRectangle extends SVGGraphicObjectConverter{
 
         return svgRect;
     }
-
-    /**
-     * Unit testing
-     */
-    public static void main(String args[]) throws Exception{
-        Document domFactory = TestUtil.getDocumentPrototype();
-        SVGRectangle converter = new SVGRectangle(domFactory);
-
-        Element rects[] = {
-            converter.toSVG(new Rectangle(10, 20, 30, 40)),
-            converter.toSVG(new Rectangle2D.Double(100., 200., 300., 400.)),
-            converter.toSVG(new Rectangle2D.Float(1000f, 2000f, 3000f, 4000f)),
-            converter.toSVG(new RoundRectangle2D.Double(15., 16., 17., 18., 30., 20.)),
-            converter.toSVG(new RoundRectangle2D.Float(35f, 45f, 55f, 65f, 25f, 45f))
-        };
-
-        Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        for(int i=0; i<rects.length; i++)
-            group.appendChild(rects[i]);
-
-        TestUtil.trace(group, System.out);
-    }
 }
