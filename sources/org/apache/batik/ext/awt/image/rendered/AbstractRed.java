@@ -35,6 +35,12 @@ import java.awt.image.ComponentColorModel;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
+
+// import org.apache.batik.ext.awt.image.DataBufferReclaimer;
+// import java.awt.image.DataBufferInt;
+// import java.awt.image.SinglePixelPackedSampleModel;
+
+
 /**
  * This is an abstract base class that takes care of most of the
  * normal issues surrounding the implementation of the CachableRed
@@ -517,6 +523,7 @@ public abstract class AbstractRed implements CachableRed {
                                                            rect.height);
         Point pt = new Point(rect.x, rect.y);
         WritableRaster wr = Raster.createWritableRaster(smRet, pt);
+        // System.out.println("GD DB: " + wr.getDataBuffer().getSize());
 
         return copyData(wr);
     }
@@ -581,6 +588,8 @@ public abstract class AbstractRed implements CachableRed {
     }
 
 
+    // static DataBufferReclaimer reclaim = new DataBufferReclaimer();
+
     /**
      * This is a helper function that will create the tile requested
      * Including properly subsetting the bounds of the tile to the
@@ -600,7 +609,26 @@ public abstract class AbstractRed implements CachableRed {
 
         Point pt = new Point(tileGridXOff+tileX*tileWidth,
                              tileGridYOff+tileY*tileHeight);
-        WritableRaster wr = Raster.createWritableRaster(sm, pt);
+
+        WritableRaster wr;
+        wr = Raster.createWritableRaster(sm, pt);
+        // if (!(sm instanceof SinglePixelPackedSampleModel)) 
+        //     wr = Raster.createWritableRaster(sm, pt);
+        // else {
+        //     SinglePixelPackedSampleModel sppsm;
+        //     sppsm = (SinglePixelPackedSampleModel)sm;
+        //     int stride = sppsm.getScanlineStride();
+        //     int sz = stride*sppsm.getHeight();
+        // 
+        //     int [] data = reclaim.request(sz);
+        //     DataBuffer db = new DataBufferInt(data, sz);
+        // 
+        //     reclaim.register(db);
+        // 
+        //     wr = Raster.createWritableRaster(sm, db, pt);
+        // }
+
+        // System.out.println("MT DB: " + wr.getDataBuffer().getSize());
 
         int x0 = wr.getMinX();
         int y0 = wr.getMinY();

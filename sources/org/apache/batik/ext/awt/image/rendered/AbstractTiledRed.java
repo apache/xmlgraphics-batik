@@ -240,6 +240,9 @@ public abstract class AbstractTiledRed
         tiles = createTileStore();
     }
 
+    public TileStore getTileStore() {
+        return tiles;
+    }
 
     protected TileStore createTileStore() {
         return TileCache.getTileGrid(this, this);
@@ -402,34 +405,6 @@ public abstract class AbstractTiledRed
                 return new TileBlock [] { this };
 
             return splitOneGo();
-
-            /*
-            TileBlock [] bestSplit = new TileBlock [] { this };
-            int bestWork = getWork();
-
-            // Otherwise go through each occupied block try splitting
-            // at each and see what the best split for each is.
-            for (int y=0; y<h; y++) {
-                for (int x=0; x<w; x++) {
-                    if (Thread.currentThread().isInterrupted())
-                        return null;
-
-                    if (!occupied[x+xOff+occW*(y+yOff)]) 
-                        continue;
-
-                    TileBlock [] split = getBestSplitAt(x+xOff, y+yOff);
-                    if (split == null) continue;
-
-                    int cWork = getWork(split);
-                    if (cWork < bestWork) {
-                        bestSplit = split;
-                        bestWork  = cWork;
-                        if (bestWork <= (benefit+2)*1.1)
-                            return bestSplit;
-                    }
-                }
-            }
-            */
         }
 
         public TileBlock [] splitOneGo() {

@@ -64,15 +64,14 @@ public class StaticRenderer implements ImageRenderer {
     /**
      * Tree this Renderer paints.
      */
-    protected GraphicsNode treeRoot;
-
+    protected GraphicsNode      rootGN;
     protected GraphicsNodeRable rootGNR;
     protected CachableRed       rootCR;
 
     /**
-     * Flag for progressive rendering. Not used in this implementation
+     * Flag for double buffering.
      */
-    private boolean progressivePaintAllowed;
+    private boolean isDoubleBuffered = false;
 
     /**
      * The Selector instance which listens to TextSelection gestures.
@@ -82,9 +81,13 @@ public class StaticRenderer implements ImageRenderer {
     /**
      * Offscreen image where the Renderer does its rendering
      */
-    protected WritableRaster baseRaster;
-    protected WritableRaster raster;
-    protected BufferedImage offScreen;
+    protected WritableRaster currentBaseRaster;
+    protected WritableRaster currentRaster;
+    protected BufferedImage  currentOffScreen;
+
+    protected WritableRaster workingBaseRaster;
+    protected WritableRaster workingRaster;
+    protected BufferedImage  workingOffScreen;
 
     protected int offScreenWidth;
     protected int offScreenHeight;
@@ -93,11 +96,6 @@ public class StaticRenderer implements ImageRenderer {
      * Passed to the GVT tree to describe the rendering environment
      */
     protected GraphicsNodeRenderContext nodeRenderContext;
-
-    /**
-     * The transform to go to device space.
-     */
-    protected AffineTransform usr2dev;
 
     /**
      * @param offScreen image where the Renderer should do its rendering
@@ -138,6 +136,51 @@ public class StaticRenderer implements ImageRenderer {
 
 
     /**
+     * Disposes all resources of this renderer.
+     */
+    public void dispose() {
+        rootGN  = null;
+        rootGNR = null;
+        rootCR  = null;
+
+        workingOffScreen = null;
+        workingBaseRaster = null;
+        workingRaster = null;
+
+        currentOffScreen = null;
+        currentBaseRaster = null;
+        currentRaster = null;
+
+        nodeRenderContext = null;
+    }
+
+    /**
+     * This associates the given GVT Tree with this renderer.
+     * Any previous tree association is forgotten.
+     * Not certain if this should be just GraphicsNode, or CanvasGraphicsNode.
+     */
+    public void setTree(GraphicsNode rootGN){
+        this.rootGN = rootGN;
+        rootGNR = null;
+        rootCR  = null;
+
+        workingOffScreen = null;
+        workingBaseRaster = null;
+        workingRaster = null;
+
+        currentOffScreen = null;
+        currentBaseRaster = null;
+        currentRaster = null;
+    }
+
+    /**
+     * @return the GVT tree associated with this renderer
+     */
+    public GraphicsNode getTree(){
+        return rootGN;
+    }
+
+    /**
      * @param rc a GraphicsNodeRenderContext which the Renderer should use
      *           for its rendering
      */
@@ -145,9 +188,14 @@ public class StaticRenderer implements ImageRenderer {
         this.nodeRenderContext = rc;
         rootGNR    = null;
         rootCR     = null;
-        offScreen  = null;
-        baseRaster = null;
-        raster     = null;
+
+        workingOffScreen = null;
+        workingBaseRaster = null;
+        workingRaster = null;
+
+        currentOffScreen = null;
+        currentBaseRaster = null;
+        currentRaster = null;
     }
 
     /**
@@ -158,176 +206,6 @@ public class StaticRenderer implements ImageRenderer {
         return nodeRenderContext;
     }
 
-    public void updateOffScreen(int width, int height) {
-        offScreenWidth  = width;
-        offScreenHeight = height;
-    }
-
-    public synchronized BufferedImage getOffScreen() {
-        if (treeRoot == null)
-            return null;
-
-        if (rootGNR == null) {
-            rootGNR = new GraphicsNodeRable8Bit(treeRoot, 
-                                                nodeRenderContext);
-            rootCR = null;
-        }
-
-        if (rootCR == null) {
-            RenderContext rc = new RenderContext
-                (nodeRenderContext.getTransform(),
-                 null,
-                 nodeRenderContext.getRenderingHints());
-            
-            RenderedImage ri = rootGNR.createRendering(rc);
-            if (ri == null) {
-                // UGG no rendering so make up a blank one to fullfill
-                // our contract.
-                offScreen = new BufferedImage(offScreenWidth, 
-                                              offScreenHeight,
-                                              BufferedImage.TYPE_INT_ARGB);
-                raster = offScreen.getRaster();
-                rootCR = GraphicsUtil.wrap(offScreen);
-                return offScreen;
-            }
-
-            rootCR = GraphicsUtil.wrap(ri);
-            rootCR = GraphicsUtil.convertTosRGB(rootCR);
-        }
-
-        updateRaster(rootCR, offScreenWidth, offScreenHeight);
-
-        offScreen =  new BufferedImage
-            (rootCR.getColorModel(), 
-             raster.createWritableChild (0, 0, offScreenWidth,
-                                         offScreenHeight, 0, 0, null),
-             rootCR.getColorModel().isAlphaPremultiplied(), null);
-
-        return offScreen;
-    }
-
-    protected void updateRaster(CachableRed cr, int w, int h) {
-        SampleModel sm = cr.getSampleModel();
-        int tw = sm.getWidth();
-        int th = sm.getHeight();
-        w = (((w+tw-1)/tw)+1)*tw;
-        h = (((h+th-1)/th)+1)*th;
-
-        if ((baseRaster == null) ||
-            (baseRaster.getWidth()  < w) ||
-            (baseRaster.getHeight() < h)) {
-            sm = sm.createCompatibleSampleModel(w, h);
-            baseRaster = Raster.createWritableRaster(sm, new Point(0,0));
-        }
-
-        int tgx = -cr.getTileGridXOffset();
-        int tgy = -cr.getTileGridYOffset();
-        int xt, yt;
-        if (tgx>=0) xt = tgx/tw;
-        else        xt = (tgx-tw+1)/tw;
-        if (tgy>=0) yt = tgy/th;
-        else        yt = (tgy-th+1)/th;
-
-        int xloc = xt*tw - tgx;
-        int yloc = yt*th - tgy;
-        
-        // System.out.println("Info: [" + 
-        //                    xloc + "," + yloc + "] [" + 
-        //                    tgx  + "," + tgy  + "] [" +
-        //                    xt   + "," + yt   + "] [" +
-        //                    tw   + "," + th   + "]");
-        // This raster should be aligned with cr's tile grid.
-        raster = baseRaster.createWritableChild(0, 0, w, h, xloc, yloc, null);
-    }
-
-    /**
-     * Disposes all resources of this renderer.
-     */
-    public void dispose() {
-        baseRaster = null;
-        raster = null;
-        offScreen = null;
-        treeRoot = null;
-        rootGNR  = null;
-        rootCR    = null;
-        nodeRenderContext = null;
-    }
-
-    /**
-     * This associates the given GVT Tree with this renderer.
-     * Any previous tree association is forgotten.
-     * Not certain if this should be just GraphicsNode, or CanvasGraphicsNode.
-     */
-    public void setTree(GraphicsNode treeRoot){
-        this.treeRoot = treeRoot;
-        rootGNR = null;
-        rootCR    = null;
-        offScreen = null;
-        baseRaster = null;
-        raster = null;
-    }
-
-    /**
-     * @return the GVT tree associated with this renderer
-     */
-    public GraphicsNode getTree(){
-        return treeRoot;
-    }
-
-
-    public void clearOffScreen() {
-        getOffScreen();
-        if(baseRaster != null && rootCR != null){
-            BufferedImage bi = new BufferedImage
-                (rootCR.getColorModel(), baseRaster,
-                 rootCR.getColorModel().isAlphaPremultiplied(), null);
-            Graphics2D g2d = bi.createGraphics();
-            g2d.setComposite(AlphaComposite.Clear);
-            g2d.fillRect(0, 0, bi.getWidth(), bi.getHeight());
-            g2d.dispose();
-        }
-    }
-
-    /**
-     * Forces repaint of provided node. 'node' must be a node in the
-     * currently associated GVT tree. Normally there is no need to
-     * call this method explicitly as the Renderer listens for changes
-     * on all nodes in the tree it is associated with.
-     *
-     * @param area region to be repainted, in the current user space
-     * coordinate system.
-     */
-    public void repaint(Shape area) throws InterruptedException {
-        if (area == null)
-            return;
-
-        // First, set the Area Of Interest in the renderContext
-        nodeRenderContext.setTransform(usr2dev);
-        nodeRenderContext.setAreaOfInterest(area);
-
-        // Render tree
-/*        long t0 = System.currentTimeMillis();*/
-        if (treeRoot != null) {
-            getOffScreen();
-            Rectangle srcR = rootCR.getBounds();
-            Rectangle dstR = raster.getBounds();
-            CachableRed cr = rootCR;
-            if ((dstR.x < srcR.x) ||
-                (dstR.y < srcR.y) ||
-                (dstR.x+dstR.width  > srcR.x+srcR.width) ||
-                (dstR.y+dstR.height > srcR.y+srcR.height))
-                cr = new PadRed(cr, dstR, PadMode.ZERO_PAD, null);
-
-            cr.copyData(raster);
-
-/*            long t1 = System.currentTimeMillis();
-            GraphicsNode copy = treeRoot.renderingClone();
-            long t2 = System.currentTimeMillis();
-            System.out.println("Rendering time: "+(t1-t0));
-            System.out.println("Cloning time: "+(t2-t1));*/
-        }
-    }
-
     /**
      * Sets the transform from the current user space (as defined by
      * the top node of the GVT tree, to the associated device space.
@@ -336,10 +214,9 @@ public class StaticRenderer implements ImageRenderer {
      *        the identity transform will be set.
      */
     public void setTransform(AffineTransform usr2dev){
-        if(usr2dev == null) {
+        if(usr2dev == null)
             usr2dev = new AffineTransform();
-        }
-        this.usr2dev = usr2dev;
+
         // Update the RenderContext in the nodeRenderContext
         nodeRenderContext.setTransform(usr2dev);
         rootCR = null;
@@ -355,20 +232,241 @@ public class StaticRenderer implements ImageRenderer {
     }
 
     /**
-     * Returns true if the Renderer is currently allowed to do
-     * progressive painting.
+     * Returns true if the Renderer is currently doubleBuffering is
+     * rendering requests.  If it is then getOffscreen will only
+     * return completed renderings (or null if nothing is available).  
      */
-    public boolean isProgressivePaintAllowed(){
-        return progressivePaintAllowed;
+    public boolean isDoubleBuffered(){
+        return isDoubleBuffered;
     }
 
     /**
-     * Turns on/off progressive painting. Turning off progressive
-     * painting will cause a repaint if any progressive painting has
-     * been made.
+     * Turns on/off double buffering in renderer.  Turning off
+     * double buffering makes it possible to see the ongoing results
+     * of a render operation.
+     *
+     * @param isDoubleBuffered the new value for double buffering
      */
-    public void setProgressivePaintAllowed(boolean progressivePaintAllowed){
-        this.progressivePaintAllowed = progressivePaintAllowed;
+    public void setDoubleBuffered(boolean isDoubleBuffered){
+        this.isDoubleBuffered = isDoubleBuffered;
+        if (isDoubleBuffered) {
+            // Now double buffering, so make sure they can't see work buffers.
+            currentOffScreen  = null;
+            currentBaseRaster = null;
+            currentRaster     = null;
+        } else {
+            // No longer double buffering so join work and current buffers.
+            currentOffScreen  = workingOffScreen;
+            currentBaseRaster = workingBaseRaster;
+            currentRaster     = workingRaster;
+        }
     }
 
+
+    /**
+     * Update the size of the image to be returned by getOffScreen.
+     * Note that this change will not be reflected by calls to
+     * getOffscreen until either clearOffscreen has completed (when
+     * isDoubleBuffered is false) or reapint has completed (when
+     * isDoubleBuffered is true).  
+     *
+     */
+    public void updateOffScreen(int width, int height) {
+        offScreenWidth  = width;
+        offScreenHeight = height;
+    }
+
+    /**
+     * Returns the current offscreen image.
+     * 
+     * The exact symantics of this vary base on the value of
+     * isDoubleBuffered.  If isDoubleBuffered is false this will
+     * return the image currently being worked on as soon as it is
+     * available.
+     *
+     * if isDoubleBuffered is false this will return the most recently
+     * completed result of repaint.
+     */
+    public BufferedImage getOffScreen() {
+        if (rootGN == null)
+            return null;
+
+        return currentOffScreen;
+    }
+
+    /**
+     * Sets up and clears the current offscreen buffer.
+     *
+     * When not double buffering one should call this method before
+     * calling getOffscreen to get the offscreen being drawn into.
+     * This ensures the buffer is up to date and doesn't contain junk.
+     *
+     * When double buffering this call can effectively be skipped,
+     * since getOffscreen will only refect the new rendering after
+     * repaint completes.  
+     */
+    public void clearOffScreen() {
+
+        WritableRaster syncRaster;
+        ColorModel     cm;
+
+        updateWorkingBuffers();
+        if ((rootCR == null)           ||
+            (workingBaseRaster == null))
+            return;
+        
+        cm         = rootCR.getColorModel();
+        syncRaster = workingBaseRaster;
+
+        // Ensure only one thread works on baseRaster at a time...
+        synchronized (syncRaster) {
+            BufferedImage bi = new BufferedImage
+                (cm, workingBaseRaster, cm.isAlphaPremultiplied(), null);
+            Graphics2D g2d = bi.createGraphics();
+            g2d.setComposite(AlphaComposite.Clear);
+            g2d.fillRect(0, 0, bi.getWidth(), bi.getHeight());
+            g2d.dispose();
+        }
+    }
+
+    /**
+     * Repaints the associated GVT tree under 'area'.
+     * 
+     * If double buffered is true if this method completes cleanly it
+     * will set the result of the repaint as the image returned by
+     * getOffscreen
+     *
+     * @param area region to be repainted, in the current user space
+     * coordinate system.  
+     */
+    public void repaint(Shape area) throws InterruptedException {
+        if (area == null)
+            return;
+
+        // long t0 = System.currentTimeMillis();
+
+        CachableRed cr;
+        WritableRaster syncRaster;
+        WritableRaster copyRaster;
+
+        // While we are synchronized pull all the relavent info out
+        // of member variables into local variables.
+        updateWorkingBuffers();
+        if ((rootCR == null)           ||
+            (workingBaseRaster == null))
+            return;
+
+        cr = rootCR;
+        syncRaster = workingBaseRaster;
+        copyRaster = workingRaster;
+
+        Rectangle srcR = rootCR.getBounds();
+        Rectangle dstR = workingRaster.getBounds();
+        if ((dstR.x < srcR.x) ||
+            (dstR.y < srcR.y) ||
+            (dstR.x+dstR.width  > srcR.x+srcR.width) ||
+            (dstR.y+dstR.height > srcR.y+srcR.height))
+            cr = new PadRed(cr, dstR, PadMode.ZERO_PAD, null);
+
+        // Ensure only one thread works on baseRaster at a time...
+        synchronized (syncRaster) {
+            cr.copyData(copyRaster);
+        }
+
+        if (!Thread.currentThread().isInterrupted()) {
+            // Swap the buffers if the rendering completed cleanly.
+            BufferedImage tmpBI = workingOffScreen;
+
+            workingBaseRaster = currentBaseRaster;
+            workingRaster     = currentRaster;
+            workingOffScreen  = currentOffScreen;
+
+            currentRaster     = copyRaster;
+            currentBaseRaster = syncRaster;
+            currentOffScreen  = tmpBI;
+        }
+    }
+
+    /**
+     * Internal method used to synchronize local state in response to
+     * various set methods.  
+     */
+    protected void updateWorkingBuffers() {
+        if (rootGNR == null) {
+            rootGNR = new GraphicsNodeRable8Bit(rootGN, 
+                                                nodeRenderContext);
+            rootCR = null;
+        }
+
+        if (rootCR == null) {
+            workingBaseRaster = null;
+            workingRaster     = null;
+            workingOffScreen  = null;
+
+            RenderContext rc = new RenderContext
+                (nodeRenderContext.getTransform(),
+                 null,
+                 nodeRenderContext.getRenderingHints());
+            
+            RenderedImage ri = rootGNR.createRendering(rc);
+            if (ri == null)
+                return;
+
+            rootCR = GraphicsUtil.wrap(ri);
+            rootCR = GraphicsUtil.convertTosRGB(rootCR);
+
+        }
+
+        SampleModel sm = rootCR.getSampleModel();
+        int         w  = offScreenWidth;
+        int         h  = offScreenHeight;
+
+        int tw = sm.getWidth();
+        int th = sm.getHeight();
+        w = (((w+tw-1)/tw)+1)*tw;
+        h = (((h+th-1)/th)+1)*th;
+
+        if ((workingBaseRaster == null) ||
+            (workingBaseRaster.getWidth()  < w) ||
+            (workingBaseRaster.getHeight() < h)) {
+
+            sm = sm.createCompatibleSampleModel(w, h);
+            
+            workingBaseRaster 
+                = Raster.createWritableRaster(sm, new Point(0,0));
+        }
+
+        int tgx = -rootCR.getTileGridXOffset();
+        int tgy = -rootCR.getTileGridYOffset();
+        int xt, yt;
+        if (tgx>=0) xt = tgx/tw;
+        else        xt = (tgx-tw+1)/tw;
+        if (tgy>=0) yt = tgy/th;
+        else        yt = (tgy-th+1)/th;
+
+        int xloc = xt*tw - tgx;
+        int yloc = yt*th - tgy;
+        
+        // System.out.println("Info: [" + 
+        //                    xloc + "," + yloc + "] [" + 
+        //                    tgx  + "," + tgy  + "] [" +
+        //                    xt   + "," + yt   + "] [" +
+        //                    tw   + "," + th   + "]");
+        // This raster should be aligned with cr's tile grid.
+        workingRaster = workingBaseRaster.createWritableChild
+          (0, 0, w, h, xloc, yloc, null);
+
+        workingOffScreen =  new BufferedImage
+          (rootCR.getColorModel(), 
+           workingRaster.createWritableChild (0, 0, offScreenWidth,
+                                           offScreenHeight, 0, 0, null),
+           rootCR.getColorModel().isAlphaPremultiplied(), null);
+
+
+        if (!isDoubleBuffered) {
+            currentOffScreen  = workingOffScreen;
+            currentBaseRaster = workingBaseRaster;
+            currentRaster     = workingRaster;
+        }
+    }
 }
