@@ -28,6 +28,7 @@
         <s1 title="Batik Overview">
 
         <p>
+        <img src="images/logo.gif" alt="Batik Logo"/>
         Batik is a Java based toolkit for applications which
         images in the <link href="http://www.w3.org/TR/SVG/">Scalable Vector Graphics (SVG)</link> format for
         various purposes, such as viewing, generation or manipulation.
