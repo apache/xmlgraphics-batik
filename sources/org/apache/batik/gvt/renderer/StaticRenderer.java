@@ -16,7 +16,6 @@ import org.apache.batik.gvt.Selector;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.gvt.renderer.Renderer;
 
 import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
@@ -53,7 +52,7 @@ import java.awt.image.renderable.RenderContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
  * @version $Id$
  */
-public class StaticRenderer implements Renderer {
+public class StaticRenderer implements ImageRenderer {
     /**
      * Error messages
      */
