@@ -107,7 +107,8 @@
                 <p><strong>Windows: </strong><em>build svgbrowser [-font-size &lt;fontSize&gt;] [svgURL]*</em></p>
                 <p><strong>UNIX: </strong><em>build.sh svgbrowser [-font-size &lt;fontSize&gt;] [svgURL]*</em></p>
                 <p>Refer to "Starting the browser for the binary distribution" for an explanation of these
-                options</p>
+                options. Note that the number of files which can be opened on Windows, from the command line is 
+                limited because batch files take at most 9 parameters.</p>
             </s2>
 
             <s2 title="SVG browser screen shot">
@@ -119,8 +120,8 @@
         </s1>
 
         <anchor id="viewing"/>
-        <s1 title="Viewing SVG Files">
-            <p>The browser has several features to view and browse SVG files:</p>
+        <s1 title="Viewing SVG Documents">
+            <p>The browser has several features to view and browse SVG documents:</p>
             <ul>
                 <li><link href="#localFile">Opening a local SVG file</link></li>
                 <li><link href="#urlFile">Opening an SVG file from the web</link></li>
