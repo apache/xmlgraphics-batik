@@ -15,6 +15,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 
 import org.apache.batik.gvt.font.GVTGlyphMetrics;
+import org.apache.batik.gvt.font.GVTGlyphVector;
 
 /**
  * Class that performs layout of attributed text strings into
@@ -81,6 +82,11 @@ public interface TextSpanLayout {
      * adjacent layouts.)
      */
     public Point2D getAdvance2D();
+
+    /**
+     * Returns the advance between each glyph in text progression direction.
+     */
+    public float [] getGlyphAdvances();
 
     /**
      * Returns the Metrics for a particular glyph.
@@ -172,4 +178,35 @@ public interface TextSpanLayout {
      */
     public boolean isLeftToRight();
 
+    /**
+     * Return true is the character index is represented by glyphs 
+     * in this layout.
+     *
+     * @param index index of the character in the ACI.
+     * @return true if the layout represents that character.
+     */
+    public boolean hasCharacterIndex(int index);
+
+
+    /**
+     * Return the glyph vector asociated to this layout.
+     *
+     * @return glyph vector
+     */
+    public GVTGlyphVector getGlyphVector();
+
+    /**
+     * Return the rotation angle applied to the
+     * character.
+     *
+     * @param index index of the character in the ACI
+     * @return rotation angle
+     */
+    public double getComputedOrientationAngle(int index);
+
+    /**
+     * Return true if this text run represents
+     * an alt glyph.
+     */
+    public boolean isAltGlyph();
 }

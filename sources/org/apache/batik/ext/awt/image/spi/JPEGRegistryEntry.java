@@ -8,8 +8,8 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
-import com.sun.image.codec.jpeg.JPEGImageDecoder;
 import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGImageDecoder;
 import com.sun.image.codec.jpeg.TruncatedFileException;
 
 import java.io.InputStream;
