@@ -12,16 +12,17 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.Viewport;
+import org.apache.batik.bridge.resources.Messages;
+import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
+import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.css.HiddenChildElement;
+import org.apache.batik.css.value.ValueConstants;
+import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.Marker;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -32,7 +33,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.svg.SVGElement;
+
 /**
  * Turns a marker element into a <tt>Marker</tt> object
  *
@@ -48,8 +51,58 @@ public class SVGMarkerElementBridge implements MarkerBridge {
     public Marker buildMarker(BridgeContext ctx,
                               Element markerElement,
                               Element paintedElement){
-        CSSStyleDeclaration cssDecl
-            = ctx.getViewCSS().getComputedStyle(markerElement, null);
+        // CSS setup.
+        SVGOMDocument md = (SVGOMDocument)markerElement.getOwnerDocument();
+        SVGOMDocument pd = (SVGOMDocument)paintedElement.getOwnerDocument();
+
+        ViewCSS viewCSS = (ViewCSS)pd.getDefaultView();
+
+        Element inst;
+        if (md == pd) {
+            inst = (Element)markerElement.cloneNode(true);
+        } else {
+            inst = (Element)paintedElement.getOwnerDocument().importNode
+                (markerElement, true);
+        }
+        Element g = pd.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
+        ((HiddenChildElement)g).setParentElement(paintedElement);
+
+        CSSOMReadOnlyStyleDeclaration gsd =
+            (CSSOMReadOnlyStyleDeclaration)viewCSS.getComputedStyle(g, null);
+
+        gsd.setPropertyCSSValue
+            (CSS_MARKER_PROPERTY, 
+             new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
+             gsd.getLocalPropertyPriority(CSS_MARKER_PROPERTY),
+             gsd.getLocalPropertyOrigin(CSS_MARKER_PROPERTY));
+        gsd.setPropertyCSSValue
+            (CSS_MARKER_START_PROPERTY, 
+             new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
+             gsd.getLocalPropertyPriority(CSS_MARKER_START_PROPERTY),
+             gsd.getLocalPropertyOrigin(CSS_MARKER_START_PROPERTY));
+        gsd.setPropertyCSSValue
+            (CSS_MARKER_MID_PROPERTY, 
+             new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
+             gsd.getLocalPropertyPriority(CSS_MARKER_START_PROPERTY),
+             gsd.getLocalPropertyOrigin(CSS_MARKER_START_PROPERTY));
+        gsd.setPropertyCSSValue
+            (CSS_MARKER_END_PROPERTY, 
+             new CSSOMReadOnlyValue(ValueConstants.NONE_VALUE),
+             gsd.getLocalPropertyPriority(CSS_MARKER_START_PROPERTY),
+             gsd.getLocalPropertyOrigin(CSS_MARKER_START_PROPERTY));
+        
+
+        g.appendChild(inst);
+
+        if (md != pd) {
+            CSSUtilities.computeStyleAndURIs
+                (markerElement, (ViewCSS)md.getDefaultView(),
+                 inst, viewCSS, ((SVGOMDocument)md).getURLObject());
+        }
+
+        CSSOMReadOnlyStyleDeclaration cssDecl
+            = (CSSOMReadOnlyStyleDeclaration)viewCSS.getComputedStyle(inst, null);
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx,
                                               cssDecl);
@@ -60,7 +113,7 @@ public class SVGMarkerElementBridge implements MarkerBridge {
 
         // build the GVT tree that represents the marker
         boolean hasChildren = false;
-        for(Node node=markerElement.getFirstChild();
+        for(Node node=inst.getFirstChild();
                  node != null;
                  node = node.getNextSibling()) {
 
@@ -84,37 +137,37 @@ public class SVGMarkerElementBridge implements MarkerBridge {
         }
 
         // Extract the Marker's reference point coordinates
-        String s = markerElement.getAttributeNS(null, SVG_REFX_ATTRIBUTE);
+        String s = inst.getAttributeNS(null, SVG_REFX_ATTRIBUTE);
         float refX = 0;
         if (s.length() == 0) {
             s = SVG_DEFAULT_VALUE_MARKER_REFX;
         }
 
-        refX = SVGUtilities.svgToUserSpace(markerElement,
+        refX = SVGUtilities.svgToUserSpace(inst,
                                            SVG_REFX_ATTRIBUTE, s,
                                            uctx,
                                            UnitProcessor.HORIZONTAL_LENGTH);
 
         // parse the refY attribute, (default is 0)
-        s = markerElement.getAttributeNS(null, SVG_REFY_ATTRIBUTE);
+        s = inst.getAttributeNS(null, SVG_REFY_ATTRIBUTE);
         float refY = 0;
         if (s.length() == 0) {
             s = SVG_DEFAULT_VALUE_MARKER_REFY;
         }
 
-        refY = SVGUtilities.svgToUserSpace(markerElement,
+        refY = SVGUtilities.svgToUserSpace(inst,
                                            SVG_REFY_ATTRIBUTE, s,
                                            uctx,
                                            UnitProcessor.VERTICAL_LENGTH);
         
         // Extract the Marker's width/height
-        s = markerElement.getAttributeNS(null, SVG_MARKER_WIDTH_ATTRIBUTE);
+        s = inst.getAttributeNS(null, SVG_MARKER_WIDTH_ATTRIBUTE);
         float markerWidth = 0;
         if (s.length() == 0) {
             s = SVG_DEFAULT_VALUE_MARKER_MARKER_WIDTH;
         }
 
-        markerWidth= SVGUtilities.svgToUserSpace(markerElement,
+        markerWidth= SVGUtilities.svgToUserSpace(inst,
                                                  SVG_MARKER_WIDTH_ATTRIBUTE, s,
                                                  uctx,
                                                  UnitProcessor.HORIZONTAL_LENGTH);
@@ -132,13 +185,13 @@ public class SVGMarkerElementBridge implements MarkerBridge {
                                          new Object[] {s}));
         }
 
-        s = markerElement.getAttributeNS(null, SVG_MARKER_HEIGHT_ATTRIBUTE);
+        s = inst.getAttributeNS(null, SVG_MARKER_HEIGHT_ATTRIBUTE);
         float markerHeight = 0;
         if (s.length() == 0) {
             s = SVG_DEFAULT_VALUE_MARKER_MARKER_HEIGHT;
         }
 
-        markerHeight = SVGUtilities.svgToUserSpace(markerElement,
+        markerHeight = SVGUtilities.svgToUserSpace(inst,
                                                    SVG_MARKER_HEIGHT_ATTRIBUTE, s,
                                                    uctx,
                                                    UnitProcessor.HORIZONTAL_LENGTH);
@@ -157,7 +210,7 @@ public class SVGMarkerElementBridge implements MarkerBridge {
         }
 
         // Extract the Marker's orient
-        s = markerElement.getAttributeNS(null, SVG_ORIENT_ATTRIBUTE);
+        s = inst.getAttributeNS(null, SVG_ORIENT_ATTRIBUTE);
         double orient = 0;
         boolean autoOrient = false;
         if (s.length() == 0) {
@@ -187,7 +240,7 @@ public class SVGMarkerElementBridge implements MarkerBridge {
         }
 
         // Extract the marker units
-        s = markerElement.getAttributeNS(null,
+        s = inst.getAttributeNS(null,
                                       SVG_MARKER_UNITS_ATTRIBUTE);
 
         if (s.length() == 0) {
@@ -197,16 +250,16 @@ public class SVGMarkerElementBridge implements MarkerBridge {
         String markerUnits = s;
 
         // Extract the viewBox and preserveAspectRatio
-        s = markerElement.getAttributeNS(null, ATTR_VIEW_BOX);
+        s = inst.getAttributeNS(null, ATTR_VIEW_BOX);
         boolean hasViewBox = false;
         // viewBox -> viewPort (0, 0, markerWidth, markerHeight)
         AffineTransform preserveAspectRatioTransform = null;
 
-        s = markerElement.getAttributeNS(null, ATTR_VIEW_BOX);
+        s = inst.getAttributeNS(null, ATTR_VIEW_BOX);
         if (s.length() > 0){
             preserveAspectRatioTransform
                 = SVGUtilities.getPreserveAspectRatioTransform
-                ((SVGElement)markerElement,
+                ((SVGElement)inst,
                  markerWidth,
                  markerHeight);
         }

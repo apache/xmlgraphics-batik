@@ -8,23 +8,11 @@
 
 package org.apache.batik.bridge;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeException;
-import org.apache.batik.bridge.BuilderException;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.GraphicsNodeBridge;
-
-import org.apache.batik.css.AbstractViewCSS;
 import org.apache.batik.css.HiddenChildElement;
 import org.apache.batik.css.AbstractViewCSS;
-import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
-import org.apache.batik.css.CSSOMReadOnlyValue;
 import org.apache.batik.css.HiddenChildElement;
-import org.apache.batik.css.value.ImmutableString;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
@@ -243,9 +231,10 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                         doc = (SVGOMDocument)elt.getOwnerDocument();
                         SVGOMDocument d;
                         d = (SVGOMDocument)e.getOwnerDocument();
-                        computeStyleAndURIs(elt,  (ViewCSS)doc.getDefaultView(),
-                                            inst, (ViewCSS)d.getDefaultView(),
-                                           ((SVGOMDocument)doc).getURLObject());
+                        CSSUtilities.computeStyleAndURIs
+                            (elt, (ViewCSS)doc.getDefaultView(),
+                             inst, (ViewCSS)d.getDefaultView(),
+                             ((SVGOMDocument)doc).getURLObject());
                     }
 
                     buildGraphicsNode(ctx,
@@ -292,60 +281,5 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
             throw new BuilderException(e, ex.getMessage());
         }
     }
-
-/**
- * Partially computes the style in the use tree and set it in
- * the target tree.
- */
-public void computeStyleAndURIs(Element use, ViewCSS uv,
-                                Element def, ViewCSS dv, URL url)
-    throws MalformedURLException {
-    String href = XLinkSupport.getXLinkHref(def);
-
-    if (!href.equals("")) {
-        XLinkSupport.setXLinkHref(def, new URL(url, href).toString());
-    }
-
-    CSSOMReadOnlyStyleDeclaration usd;
-    AbstractViewCSS uview = (AbstractViewCSS)uv;
-
-    usd = (CSSOMReadOnlyStyleDeclaration)uview.computeStyle(use, null);
-    updateURIs(usd, url);
-    ((AbstractViewCSS)dv).setComputedStyle(def, null, usd);
-
-    for (Node un = use.getFirstChild(), dn = def.getFirstChild();
-         un != null;
-         un = un.getNextSibling(), dn = dn.getNextSibling()) {
-        if (un.getNodeType() == Node.ELEMENT_NODE) {
-            computeStyleAndURIs((Element)un, uv, (Element)dn, dv, url);
-        }
-    }
-}
-
-/**
- * Updates the URIs in the given style declaration.
- */
-protected void updateURIs(CSSOMReadOnlyStyleDeclaration sd, URL url)
-    throws MalformedURLException {
-    int len = sd.getLength();
-    for (int i = 0; i < len; i++) {
-        String name = sd.item(i);
-        CSSValue val = sd.getLocalPropertyCSSValue(name);
-        if (val != null &&
-            val.getCssValueType() ==
-            CSSPrimitiveValue.CSS_PRIMITIVE_VALUE) {
-            CSSPrimitiveValue pv = (CSSPrimitiveValue)val;
-            if (pv.getPrimitiveType() == CSSPrimitiveValue.CSS_URI) {
-                CSSOMReadOnlyValue v =
-                    new CSSOMReadOnlyValue
-                    (new ImmutableString(CSSPrimitiveValue.CSS_URI,
-                                         new URL(url, pv.getStringValue()).toString()));
-                sd.setPropertyCSSValue(name, v,
-                                       sd.getLocalPropertyPriority(name),
-                                       sd.getLocalPropertyOrigin(name));
-            }
-        }
-    }
-}
 
 }

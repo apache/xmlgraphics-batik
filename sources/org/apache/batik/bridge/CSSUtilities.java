@@ -16,17 +16,18 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import java.util.Map;
 
-import org.apache.batik.bridge.Bridge;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.ClipBridge;
-import org.apache.batik.bridge.FilterBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MarkerBridge;
-import org.apache.batik.bridge.MaskBridge;
-import org.apache.batik.bridge.PaintBridge;
+import org.apache.batik.css.AbstractViewCSS;
+import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
+import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.css.value.ImmutableString;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
@@ -48,6 +49,7 @@ import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
@@ -69,6 +71,69 @@ public class CSSUtilities implements SVGConstants {
      * No instance of this class.
      */
     protected CSSUtilities() {}
+
+    /**
+     * Partially computes the style in the use tree and set it in
+     * the target tree.
+     * Note: This method must be called only when 'def' has been added
+     * to the tree.
+     */
+    public static void computeStyleAndURIs(Element use, ViewCSS uv,
+                                    Element def, ViewCSS dv, URL url) {
+        String href = XLinkSupport.getXLinkHref(def);
+        
+        if (!href.equals("")) {
+            try {
+                XLinkSupport.setXLinkHref(def, new URL(url, href).toString());
+            } catch (MalformedURLException e) {
+            }
+        }
+        
+        CSSOMReadOnlyStyleDeclaration usd;
+        AbstractViewCSS uview = (AbstractViewCSS)uv;
+        
+        usd = (CSSOMReadOnlyStyleDeclaration)uview.computeStyle(use, null);
+        try {
+            updateURIs(usd, url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        ((AbstractViewCSS)dv).setComputedStyle(def, null, usd);
+        
+        for (Node un = use.getFirstChild(), dn = def.getFirstChild();
+             un != null;
+             un = un.getNextSibling(), dn = dn.getNextSibling()) {
+            if (un.getNodeType() == Node.ELEMENT_NODE) {
+                computeStyleAndURIs((Element)un, uv, (Element)dn, dv, url);
+            }
+        }
+    }
+    
+    /**
+     * Updates the URIs in the given style declaration.
+     */
+    protected static void updateURIs(CSSOMReadOnlyStyleDeclaration sd, URL url)
+        throws MalformedURLException {
+        int len = sd.getLength();
+        for (int i = 0; i < len; i++) {
+            String name = sd.item(i);
+            CSSValue val = sd.getLocalPropertyCSSValue(name);
+            if (val != null &&
+                val.getCssValueType() ==
+                CSSPrimitiveValue.CSS_PRIMITIVE_VALUE) {
+                CSSPrimitiveValue pv = (CSSPrimitiveValue)val;
+                if (pv.getPrimitiveType() == CSSPrimitiveValue.CSS_URI) {
+                    CSSOMReadOnlyValue v =
+                        new CSSOMReadOnlyValue
+                    (new ImmutableString(CSSPrimitiveValue.CSS_URI,
+                                         new URL(url, pv.getStringValue()).toString()));
+                    sd.setPropertyCSSValue(name, v,
+                                           sd.getLocalPropertyPriority(name),
+                                       sd.getLocalPropertyOrigin(name));
+                }
+            }
+        }
+    }
 
     /**
      * Returns the viewport
@@ -657,7 +722,7 @@ public class CSSUtilities implements SVGConstants {
         }
 
         MarkerBridge markerBridge = (MarkerBridge)bridge;
-        SVGOMDocument doc = (SVGOMDocument)markerElement.getOwnerDocument();
+        //SVGOMDocument doc = (SVGOMDocument)markerElement.getOwnerDocument();
         ViewCSS v = ctx.getViewCSS();
         // ctx.setViewCSS((ViewCSS)doc.getDefaultView());
         Marker marker = markerBridge.buildMarker(ctx, 

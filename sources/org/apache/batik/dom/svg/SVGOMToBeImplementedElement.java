@@ -58,4 +58,47 @@ public class SVGOMToBeImplementedElement
     protected Node newNode() {
         return new SVGOMToBeImplementedElement();
     }
+
+    /**
+     * Exports this node to the given document.
+     */
+    protected Node export(Node n, AbstractDocument d) {
+	super.export(n, d);
+	SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
+	ae.localName = localName;
+	return n;
+    }
+
+    /**
+     * Deeply exports this node to the given document.
+     */
+    protected Node deepExport(Node n, AbstractDocument d) {
+	super.deepExport(n, d);
+	SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
+	ae.localName = localName;
+	return n;
+    }
+
+    /**
+     * Copy the fields of the current node into the given node.
+     * @param n a node of the type of this.
+     */
+    protected Node copyInto(Node n) {
+	super.copyInto(n);
+	SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
+	ae.localName = localName;
+	return n;
+    }
+
+    /**
+     * Deeply copy the fields of the current node into the given node.
+     * @param n a node of the type of this.
+     */
+    protected Node deepCopyInto(Node n) {
+	super.deepCopyInto(n);
+	SVGOMToBeImplementedElement ae = (SVGOMToBeImplementedElement)n;
+	ae.localName = localName;
+        return n;
+    }
+
 }
