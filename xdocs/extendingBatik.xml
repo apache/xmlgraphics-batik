@@ -76,25 +76,21 @@
             </p>
             <dl>
                 <dt> Having your tags appear in the DOM tree. </dt>
-                <dd><br/>
-                As long as your custom tags are well formed (and
-                preferably valid) XML they will appear in the SVG DOM
-                tree.  When rendering Batik will skip branches of the
-                tree that use a tag it doesn't know about (so even if
-                standard SVG tags are child nodes they will not be
-                displayed).
-                <br/>
-                It is strongly suggested that you make use of XML
-                namespaces for your personal tags even if you are not
-                planning on validating the XML.
-                <br/>
+                <dd><br/> As long as your custom tags are well formed
+                (and preferably valid) XML they will appear in the SVG
+                DOM tree.  When rendering Batik will skip branches of
+                the tree that use a tag it doesn't know about (so even
+                if standard SVG tags are child nodes they will not be
+                displayed).  <br/> It is strongly suggested that you
+                make use of XML namespaces for your personal tags even
+                if you are not planning on validating the XML.  <br/>
                 This can be useful if you want to add extra pieces of
                 data into the standard SVG drawing.  These might be
                 annotations, or other application specific data.  In
-                general this wouldn't be particularly useful with the
-                svgbrowser or rasterizer, but might be very useful if
-                you were writing a custom browser, rasterizer, or
-                pre/post processing tools.
+                general this wouldn't be particularly useful with
+                squiggle (the SVG browser) or the rasterizer, but
+                might be very useful if you were writing a custom
+                browser, rasterizer, or pre/post processing tools.
                 </dd>
     
                 <dt> Tags use a custom element in  the DOM tree</dt>

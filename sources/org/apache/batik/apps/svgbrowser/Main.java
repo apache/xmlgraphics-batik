@@ -162,7 +162,7 @@ public class Main implements Application {
      * Name of the batik browser jar file
      */
     public static final String SQUIGGLE_JAR_NAME
-        = "batik-svgbrowser.jar";
+        = "batik-squiggle.jar";
 
     /**
      * URL for Squiggle's security policy file

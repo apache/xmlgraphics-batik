@@ -19,7 +19,7 @@ import org.apache.batik.test.*;
 public class ApplicationSecurityEnforcerTest extends DefaultTestSuite {
     final static Class APP_MAIN_CLASS = org.apache.batik.apps.svgbrowser.Main.class;
     final static String APP_SECURITY_POLICY = "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy";
-    final static String APP_JAR = "batik-svgbrowser.jar";
+    final static String APP_JAR = "batik-squiggle.jar";
 
     /**
      * In the constructor, append atomic tests
