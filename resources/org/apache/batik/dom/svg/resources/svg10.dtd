@@ -302,6 +302,7 @@
                    %ceExt;%svgExt;)* >
 <!ATTLIST svg
 	xmlns CDATA #FIXED "http://www.w3.org/2000/svg"
+    xmlns:xlink CDATA #FIXED "http://www.w3.org/1999/xlink"
 	%stdAttrs; 
 	%testAttrs; 
 	%langSpaceAttrs; 
