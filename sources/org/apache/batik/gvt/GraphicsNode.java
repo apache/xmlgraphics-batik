@@ -9,7 +9,6 @@
 package org.apache.batik.gvt;
 
 import java.awt.Composite;
-import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -21,7 +20,6 @@ import java.util.Map;
 import org.apache.batik.ext.awt.image.renderable.Clip;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
-import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
 import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
@@ -42,17 +40,6 @@ public interface GraphicsNode {
     //
     // Properties methods
     //
-
-    /**
-     * Sets the cursor of this node.
-     * @param newCursor the new cursor of this node
-     */
-    void setCursor(Cursor newCursor);
-
-    /**
-     * Returns the cursor of this node.
-     */
-    Cursor getCursor();
 
     /**
      * Sets the transform of this node.
@@ -216,17 +203,6 @@ public interface GraphicsNode {
     void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
 
     /**
-     * Sets the graphics node event filter of this node.
-     * @param evtFilter the new graphics node event filter
-     */
-    void setGraphicsNodeEventFilter(GraphicsNodeEventFilter evtFilter);
-
-    /**
-     * Returns the graphics node event filter of this node.
-     */
-    GraphicsNodeEventFilter getGraphicsNodeEventFilter();
-
-    /**
      * Sets the hit detector for this node.
      * @param hitDetector the new hit detector
      */
@@ -294,7 +270,7 @@ public interface GraphicsNode {
      * GraphicsNodeRenderContext.
      *
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
-      */
+     */
     Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc);
 
     /**
@@ -306,7 +282,7 @@ public interface GraphicsNode {
      * GraphicsNodeRenderContext.
      *
      * @param rc the GraphicsNodeRenderContext for which this dimension applies
-      */
+     */
     Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc);
 
     /**

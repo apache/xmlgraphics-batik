@@ -257,6 +257,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         return null;
     }
 
+    /**
+     * Returns the bounds of this node in the GVT tree's space.
+     */
     protected Rectangle2D getGlobalBounds(GraphicsNodeRenderContext rc) {
         if (count == 0) {
             return null;
@@ -269,6 +272,15 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         }
     }
 
+    /**
+     * Returns the bounds of the area covered by this node's
+     * primitive paint.
+     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their
+     * GraphicsNodeRenderContext.
+     *
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+      */
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         if (primitiveBounds == null) {
             Rectangle2D bounds = null, nodeBounds = null;
@@ -298,6 +310,16 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         return primitiveBounds;
     }
 
+    /**
+     * Returns the bounds of the area covered by this node, without
+     * taking any of its rendering attribute into account, i.e., exclusive
+     * of any clipping, masking, filtering or stroking, for example.
+     * <b>Note</b>: The boundaries of some nodes (notably, text element nodes)
+     * cannot be precisely determined independent of their
+     * GraphicsNodeRenderContext.
+     *
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+      */
     public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
         Rectangle2D b = null;
         if(geometryBounds == null){
@@ -337,6 +359,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         return b;
     }
 
+    /**
+     * Not supported operation.
+     */
     public Shape getOutline(GraphicsNodeRenderContext rc) {
         // <!> FIXME : TODO
         throw new Error("Not yet implemented");
@@ -774,8 +799,6 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * An implementation of the java.util.Iterator interface.
-     *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
      */
     private class Itr implements Iterator {
 
@@ -842,8 +865,6 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * An implementation of the java.util.ListIterator interface.
-     *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
      */
     private class ListItr extends Itr implements ListIterator {
 
