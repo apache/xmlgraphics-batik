@@ -144,7 +144,19 @@ public class ConcreteTextNode
                                             new AffineTransform(),
                                                 true, true));
 
-                primitiveBounds = layout.getBounds();
+                float tx = (float) location.getX();
+                float ty = (float) location.getY();
+                if (anchor == Anchor.MIDDLE) {
+                    tx -= layout.getAdvance()/2;
+                } else if (anchor == Anchor.END) {
+                    tx -= layout.getAdvance();
+                }
+
+                Rectangle2D layoutBounds = layout.getBounds();
+                primitiveBounds = new Rectangle2D.Float((float) (tx+layoutBounds.getX()),
+                                  (float) (ty+layoutBounds.getY()),
+                                  (float) layout.getAdvance(),
+                                  (float) layoutBounds.getHeight());
 
                 if (aci.getAttribute(GVTAttributedCharacterIterator.
                                         TextAttribute.UNDERLINE) != null) {
@@ -179,18 +191,6 @@ public class ConcreteTextNode
                            primitiveBounds.getHeight()+strokeHalfThickness);
                 }
 
-                double tx = location.getX();
-                double ty = location.getY();
-                if (anchor == Anchor.MIDDLE) {
-                    tx -= layout.getAdvance()/2;
-                } else if (anchor == Anchor.END) {
-                    tx -= layout.getAdvance();
-                }
-
-                AffineTransform t =
-                    AffineTransform.getTranslateInstance(tx, ty);
-                primitiveBounds =
-                    t.createTransformedShape(primitiveBounds).getBounds();
             } else {
                 // Don't cache if ACI is null
                 return new Rectangle2D.Float(0, 0, 0, 0);
@@ -204,27 +204,29 @@ public class ConcreteTextNode
      * Geometric bounds are in user space.
      */
     public Rectangle2D getGeometryBounds(){
+
         if (geometryBounds == null){
             if (aci != null) {
                 java.awt.font.TextLayout layout
                     = new java.awt.font.TextLayout(aci,
-                      new java.awt.font.FontRenderContext(new AffineTransform(),
-                                                          true,
-                                                          true));
-                geometryBounds = layout.getBounds();
+                      new java.awt.font.FontRenderContext(
+                                            new AffineTransform(),
+                                                true, true));
 
-                double tx = location.getX();
-                double ty = location.getY();
+                float tx = (float) location.getX();
+                float ty = (float) location.getY();
                 if (anchor == Anchor.MIDDLE) {
                     tx -= layout.getAdvance()/2;
                 } else if (anchor == Anchor.END) {
                     tx -= layout.getAdvance();
                 }
 
-                AffineTransform t =
-                    AffineTransform.getTranslateInstance(tx, ty);
-                geometryBounds =
-                    t.createTransformedShape(geometryBounds).getBounds();
+                Rectangle2D layoutBounds = layout.getBounds();
+                geometryBounds = new Rectangle2D.Float((float) (tx+layoutBounds.getX()),
+                                  (float) (ty+layoutBounds.getY()),
+                                  (float) layout.getAdvance(),
+                                  (float) layoutBounds.getHeight());
+
             } else {
                 // Don't cache if ACI is null
                 return new Rectangle2D.Float(0, 0, 0, 0);
@@ -256,13 +258,12 @@ public class ConcreteTextNode
                                             new AffineTransform(),
                                                           true,
                                                           true));
-            Rectangle2D bounds = layout.getBounds();
             double tx = location.getX();
             double ty = location.getY();
             if (anchor == Anchor.MIDDLE) {
-                tx -= bounds.getWidth()/2;
+                tx -= layout.getAdvance()/2;
             } else if (anchor == Anchor.END) {
-                tx -= bounds.getWidth();
+                tx -= layout.getAdvance();
             }
             AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
             outline = layout.getOutline(t);
@@ -357,33 +358,13 @@ public class ConcreteTextNode
     public Shape getHighlightShape(GraphicsNodeRenderContext rc) {
         Shape shape;
         shape =
-            rc.getTextPainter().getHighlightShape(beginMark, endMark);
-        if (shape != null) {
-            if (aci != null) {
-                java.awt.font.TextLayout layout
-                        = new java.awt.font.TextLayout(aci,
-                             new java.awt.font.FontRenderContext(
-                                            new AffineTransform(),
-                                                          true,
-                                                          true));
-                Rectangle2D bounds = layout.getBounds();
-                double tx = location.getX();
-                double ty = location.getY();
-                if (anchor == Anchor.MIDDLE) {
-                    tx -= layout.getAdvance()/2;
-                } else if (anchor == Anchor.END) {
-                    tx -= layout.getAdvance();
-                }
-                AffineTransform t = getGlobalTransform();
-                if (t == null) {
-                    t = new AffineTransform();
-                } else {
-                    t = (AffineTransform) t.clone();
-                }
-                t.translate(tx, ty);
-                shape = t.createTransformedShape(shape);
-            }
-        }
+            rc.getTextPainter().getHighlightShape(beginMark,
+                                                  endMark,
+                                                  location,
+                                                  anchor);
+
+        AffineTransform t = getGlobalTransform();
+        shape = t.createTransformedShape(shape);
         return shape;
     }
 
