@@ -117,7 +117,7 @@ public class SVGPath extends SVGGraphicObjectConverter {
         } // while !isDone
 
         if (d.length() > 0)
-            return d.substring(0, d.length() - 1);
+            return d.toString().trim();
         else
             return "";
     }
