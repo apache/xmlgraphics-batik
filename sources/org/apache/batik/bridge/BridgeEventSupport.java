@@ -172,6 +172,8 @@ class BridgeEventSupport implements SVGConstants {
                             break;
                         }
                     }
+                    // <!> TODO this will stop working if someone change
+                    // the content of the event attribute
                     addScriptCaller(target, EVENT_NAMES[i+FIRST_SVG_EVENT],
                                      new ScriptCaller(ctx.getUserAgent(),
                                                       script, interpret));
@@ -200,10 +202,12 @@ class BridgeEventSupport implements SVGConstants {
                                 break;
                             }
                         }
+                        // <!> TODO this will stop working if someone change
+                        // the content of the event attribute
                         addScriptCaller(target, EVENT_NAMES[i+
-                                                            FIRST_ANIMATION_EVENT],
-                                         new ScriptCaller(ctx.getUserAgent(),
-                                                          script, interpret));
+                                                           FIRST_ANIMATION_EVENT],
+                                        new ScriptCaller(ctx.getUserAgent(),
+                                                         script, interpret));
                     }
                 }
                 // not other stuff to do on this kind of events
@@ -221,10 +225,13 @@ class BridgeEventSupport implements SVGConstants {
                     if (interpret == null) {
                         UserAgent ua = ctx.getUserAgent();
                         if (ua != null)
-                            ua.displayError(new Exception("unknow language: "+language));
+                            ua.displayError(new Exception("unknow language: "+
+                                                          language));
                         break;
                     }
                 }
+                // <!> TODO this will stop working if someone change
+                // the content of the event attribute
                 addScriptCaller(target, EVENT_NAMES[i],
                                  new ScriptCaller(ctx.getUserAgent(),
                                                   script, interpret));
@@ -279,7 +286,8 @@ class BridgeEventSupport implements SVGConstants {
         public static SVGUnloadListener getInstance(Element svgRoot) {
             return (SVGUnloadListener)map.get(svgRoot);
         }
-        public void addListener(EventTarget element, String type, EventListener listener) {
+        public void addListener(EventTarget element, String type,
+                                EventListener listener) {
             list.add(new Entry(type, listener, element));
         }
         public void handleEvent(Event evt) {
@@ -320,7 +328,7 @@ class BridgeEventSupport implements SVGConstants {
 
     public static void loadScripts(BridgeContext ctx, Document doc) {
         NodeList list = doc.getElementsByTagNameNS(SVG_NAMESPACE_URI,
-						   SVG_SCRIPT_TAG);
+                                                   SVG_SCRIPT_TAG);
         final UserAgent ua = ctx.getUserAgent();
         String language = null;
         Element selement = null;
@@ -336,13 +344,16 @@ class BridgeEventSupport implements SVGConstants {
                     script.append(n.getNodeValue());
                 }
                 try {
-                    interpret.evaluate
-                        (new StringReader(script.toString()));
+                    // use Reader mechanism => no caching
+                    // (will not be revaluated + <script> content is
+                    // generally bigger than the one in event attributes
+                    interpret.evaluate(new StringReader(script.toString()));
                 } catch (IOException io) {
                     // will never appeared we don't use a file
                 } catch (InterpreterException e) {
                     if (ua != null)
-                        ua.displayError(new Exception("scripting error: " +e.getMessage()));
+                        ua.displayError(new Exception("scripting error: "+
+                                                      e.getMessage()));
                 }
             } else
                 if (ua != null)
@@ -506,12 +517,12 @@ class BridgeEventSupport implements SVGConstants {
         public void handleEvent(Event evt) {
             interpreter.bindObject(EVENT_NAME, evt);
             try {
-                interpreter.evaluate(new StringReader(script));
-            } catch (IOException io) {
-                // will never appeared we don't use a file
+                // use the String version to enable caching mechanism
+                interpreter.evaluate(script);
             } catch (InterpreterException e) {
                 if (ua != null)
-                    ua.displayError(new Exception("scripting error: " +e.getMessage()));
+                    ua.displayError(new Exception("scripting error: "+
+                                                  e.getMessage()));
             }
         }
     }
