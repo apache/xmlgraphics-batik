@@ -57,7 +57,10 @@ public class SVGValueFactoryMap
             new SVGColorFactory(p, CSS_COLOR_PROPERTY, scr));
 
 	put(CSS_COLOR_INTERPOLATION_PROPERTY,
-            new ColorInterpolationFactory(p));
+            new ColorInterpolationFactory(p, CSS_COLOR_INTERPOLATION_PROPERTY));
+
+	put(CSS_COLOR_INTERPOLATION_FILTERS_PROPERTY,
+            new ColorInterpolationFactory(p, CSS_COLOR_INTERPOLATION_FILTERS_PROPERTY));
 
 	put(CSS_COLOR_RENDERING_PROPERTY,
             new ColorRenderingFactory(p));

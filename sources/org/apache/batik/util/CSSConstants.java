@@ -27,6 +27,7 @@ public interface CSSConstants {
     String CSS_COLOR_PROFILE_PROPERTY = "color-profile";
     String CSS_COLOR_PROPERTY = "color";
     String CSS_COLOR_INTERPOLATION_PROPERTY = "color-interpolation";
+    String CSS_COLOR_INTERPOLATION_FILTERS_PROPERTY = "color-interpolation-filters";
     String CSS_COLOR_RENDERING_PROPERTY = "color-rendering";
     String CSS_CURSOR_PROPERTY = "cursor";
     String CSS_DIRECTION_PROPERTY = "direction";

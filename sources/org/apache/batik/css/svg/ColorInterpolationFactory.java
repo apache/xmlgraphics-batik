@@ -16,7 +16,7 @@ import org.w3c.css.sac.Parser;
 import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
- * This class provides a factory for the 'color-interpolation' property values.
+ * This class provides a factory for the 'color-interpolation*' properties values.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -36,10 +36,16 @@ public class ColorInterpolationFactory
     }
 
     /**
+     * The property name.
+     */
+    protected String property;
+
+    /**
      * Creates a new ColorInterpolationFactory object.
      */
-    public ColorInterpolationFactory(Parser p) {
+    public ColorInterpolationFactory(Parser p, String prop) {
 	super(p);
+        property = prop;
     }
 
      /**
