@@ -86,6 +86,10 @@ public class ParsedURLData {
     public String ref             = null;
     public String contentType     = null;
     public String contentEncoding = null;
+
+    public InputStream stream     = null;
+    public boolean     hasBeenOpened  = false;
+
     /**
      * Void constructor
      */
@@ -216,7 +220,16 @@ public class ParsedURLData {
      * Returns the content type if available.  This is only available
      * for some protocols.
      */
-    public String getContentType() {
+    public String getContentType(String userAgent) {
+        if (contentType != null)
+            return contentType;
+
+        if (!hasBeenOpened) {
+            try {
+                openStreamInternal(userAgent, null,  null);
+            } catch (IOException ioe) { /* nothing */ }
+        }
+
         return contentType;
     }
 
@@ -224,7 +237,16 @@ public class ParsedURLData {
      * Returns the content encoding if available.  This is only available
      * for some protocols.
      */
-    public String getContentEncoding() {
+    public String getContentEncoding(String userAgent) {
+        if (contentEncoding != null)
+            return contentEncoding;
+
+        if (!hasBeenOpened) {
+            try {
+                openStreamInternal(userAgent, null,  null);
+            } catch (IOException ioe) { /* nothing */ }
+        }
+
         return contentEncoding;
     }
 
@@ -258,6 +280,7 @@ public class ParsedURLData {
                                              acceptedEncodings.iterator());
         if (raw == null)
             return null;
+        stream = null;
                 
         return checkGZIP(raw);
     }
@@ -273,13 +296,21 @@ public class ParsedURLData {
      */
     public InputStream openStreamRaw(String userAgent, Iterator mimeTypes) 
         throws IOException {
-        return openStreamInternal(userAgent, mimeTypes, null);
+        
+        InputStream ret = openStreamInternal(userAgent, mimeTypes, null);
+        stream = null;
+        return ret;
     }
 
     protected InputStream openStreamInternal(String userAgent,
                                              Iterator mimeTypes,
                                              Iterator encodingTypes) 
         throws IOException {
+        if (stream != null)
+            return stream;
+        
+        hasBeenOpened = true;
+
         URL url = null;
         try {
             url = buildURL();
@@ -321,7 +352,7 @@ public class ParsedURLData {
             contentEncoding = urlC.getContentEncoding();
         }
 
-        return urlC.getInputStream();
+        return (stream = urlC.getInputStream());
     }
 
     /**
