@@ -30,8 +30,9 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
 
 /**
  * Utility class that converts a Paint object into an
- * SVG pattern element
+ * SVG element.
  *
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  * @see              org.apache.batik.svggen.SVGLinearGradient
@@ -121,16 +122,18 @@ public class SVGPaint implements SVGConverter {
      * @return a descriptor of the corresponding SVG paint
      */
     public SVGPaintDescriptor toSVG(Paint paint){
-        SVGPaintDescriptor paintDesc = null;
+        // we first try the extension handler because we may
+        // want to override the way a Paint is managed!
+        SVGPaintDescriptor paintDesc = svgCustomPaint.toSVG(paint);
 
-        if(paint instanceof Color)
-            paintDesc = svgColor.toSVG((Color)paint);
-        else if(paint instanceof GradientPaint)
-            paintDesc = svgLinearGradient.toSVG((GradientPaint)paint);
-        else if(paint instanceof TexturePaint)
-            paintDesc = svgTexturePaint.toSVG((TexturePaint)paint);
-        else
-            paintDesc = svgCustomPaint.toSVG(paint);
+        if (paint == null) {
+            if (paint instanceof Color)
+                paintDesc = svgColor.toSVG((Color)paint);
+            else if (paint instanceof GradientPaint)
+                paintDesc = svgLinearGradient.toSVG((GradientPaint)paint);
+            else if (paint instanceof TexturePaint)
+                paintDesc = svgTexturePaint.toSVG((TexturePaint)paint);
+        }
 
         return paintDesc;
     }

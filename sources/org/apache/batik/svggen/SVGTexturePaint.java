@@ -71,7 +71,7 @@ public class SVGTexturePaint extends AbstractSVGConverter {
             Element patternDef = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                             SVG_PATTERN_TAG);
             patternDef.setAttributeNS(null, SVG_PATTERN_UNITS_ATTRIBUTE,
-                                    SVG_USER_SPACE_ON_USE_VALUE);
+                                      SVG_USER_SPACE_ON_USE_VALUE);
 
             //
             // First, set the pattern anchor
@@ -96,7 +96,7 @@ public class SVGTexturePaint extends AbstractSVGConverter {
             // Rescale the image to fit the anchor rectangle
             //
             if (textureImage.getWidth() > 0 &&
-               textureImage.getHeight() > 0){
+                textureImage.getHeight() > 0){
 
                 // Rescale only if necessary
                 if(textureImage.getWidth() != anchorRect.getWidth() ||
