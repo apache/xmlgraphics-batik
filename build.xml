@@ -168,6 +168,7 @@ To display the available targets type:
          includes="docs/javadoc/**"/>
     <gzip zipfile="${project}-docs-${version}.tar.gz"
           src="${project}-docs-${version}.tar"/>
+    <delete file="${project}-${version}.tar"/>
     <delete dir="${build}/docs/javadoc"/>
 
     <copy file="README" todir="${build}"/>
@@ -180,12 +181,15 @@ To display the available targets type:
     <gzip zipfile="${build}/samples.tar.gz" src="${build}/samples.tar"/>
     <tar tarfile="${project}-${version}.tar" basedir="." includes="${build}/**"/>
     <gzip zipfile="${project}-${version}.tar.gz" src="${project}-${version}.tar"/>
+    <delete file="${project}-docs-${version}.tar"/>
 
     <cvs cvsRoot=":pserver:anoncvs@xml.apache.org:/home/cvspublic"
          package="xml-batik"
          dest="xml-${project}"/>
     <tar tarfile="${project}-src-${version}.tar" basedir="." includes="xml-${project}"/>
-    <zip zipfile="${project}-src-${version}.tar.gz" src="${project}-src-${version}.tar"/>
+    <gzip zipfile="${project}-src-${version}.tar.gz"
+          src="${project}-src-${version}.tar"/>
+    <delete file="${project}-src-${version}.tar"/>
   </target>
 
 
@@ -607,6 +611,9 @@ To display the available targets type:
     <delete file="${project}-${version}.zip"/>
     <delete file="${project}-docs-${version}.zip"/>
     <delete file="${project}-src-${version}.zip"/>
+    <delete file="${project}-${version}.tar.gz"/>
+    <delete file="${project}-docs-${version}.tar.gz"/>
+    <delete file="${project}-src-${version}.tar.gz"/>
   </target>
 
 </project>
