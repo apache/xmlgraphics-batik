@@ -311,10 +311,6 @@ public class JAffineTransformChooser extends JGridBagPanel{
             double[] m = new double[6];
             txf.getMatrix(m);
 
-            for(int i=0; i<m.length; i++){
-                System.out.println("m[" + i + "] = " + m[i]);
-            }
-
             // Translation
             txModel.setValue(m[4]);
             tyModel.setValue(m[5]);
