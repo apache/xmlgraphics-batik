@@ -33,11 +33,9 @@ import org.apache.batik.util.UnitProcessor;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteMaskRable;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import org.w3c.dom.views.DocumentView;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -113,7 +111,6 @@ public class SVGMaskElementBridge
 
         // OTHER PROBLEM: SHOULD TAKE MASK REGION INTO ACCOUNT
         GraphicsNode maskNode = maskNodeContent;
-        maskNodeContent.setClippingArea(maskRegion.getRegion()); // ???
 
         // <!> END FIX ME
 

@@ -8,37 +8,36 @@
 
 package org.apache.batik.refimpl.bridge;
 
-import org.w3c.dom.css.CSSValueList;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSValue;
-import org.w3c.dom.css.RGBColor;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGElement;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.FilterBridge;
-import org.apache.batik.bridge.MaskBridge;
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GVTFactory;
-import org.apache.batik.gvt.CompositeShapePainter;
-import org.apache.batik.gvt.FillShapePainter;
-import org.apache.batik.gvt.ShapePainter;
-import org.apache.batik.gvt.StrokeShapePainter;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.refimpl.bridge.resources.Messages;
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
-
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.Stroke;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.ClipBridge;
+import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.MaskBridge;
+import org.apache.batik.gvt.CompositeShapePainter;
+import org.apache.batik.gvt.FillShapePainter;
+import org.apache.batik.gvt.GVTFactory;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.ShapePainter;
+import org.apache.batik.gvt.StrokeShapePainter;
+import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.gvt.filter.Mask;
+import org.apache.batik.refimpl.bridge.resources.Messages;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.UnitProcessor;
+import org.w3c.dom.Element;
+import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.css.CSSValue;
+import org.w3c.dom.css.CSSValueList;
+import org.w3c.dom.css.RGBColor;
+import org.w3c.dom.svg.SVGElement;
 
 /**
  * A collection of utility methods involving CSS.
@@ -54,7 +53,7 @@ public class CSSUtilities implements SVGConstants {
     protected CSSUtilities() {}
 
     /**
-     * Initializes the composite corresponding to the 
+     * Initializes the composite corresponding to the
      * opacity attribute in the input <tt>GraphicsNode</tt>
      */
     public static Composite convertOpacityToComposite(CSSPrimitiveValue val){
@@ -70,7 +69,7 @@ public class CSSUtilities implements SVGConstants {
             }
         }
         return composite;
-    }                                                      
+    }
 
     /**
      * Returns the opacity value represented by the given CSSValue.
@@ -115,20 +114,20 @@ public class CSSUtilities implements SVGConstants {
     }
 
      /**
-      * Returns the <tt>Mask</tt> referenced by the input
-      * element's <tt>mask</tt> attribute.
+      * Returns the <tt>Shape</tt> referenced by the input
+      * element's <tt>clip</tt> attribute.
       */
-     public static Mask convertMask(Element       maskedElement,
-                                    GraphicsNode  gn,
-                                    BridgeContext ctx) {
+    public static Shape convertClipPath(Element clipedElement,
+                                        GraphicsNode gn,
+                                        BridgeContext ctx) {
          CSSStyleDeclaration decl
-             = ctx.getViewCSS().getComputedStyle(maskedElement, null);
-         
+             = ctx.getViewCSS().getComputedStyle(clipedElement, null);
+
          //
-         // Build Mask based on 'mask' attr.
+         // Build Shape based on 'clip' attr.
          //
          CSSPrimitiveValue maskValue
-             = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_MASK);
+             = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_CLIP_PATH);
          String uriString = null;
          switch(maskValue.getPrimitiveType()){
          case CSSPrimitiveValue.CSS_IDENT:
@@ -142,6 +141,7 @@ public class CSSUtilities implements SVGConstants {
                              maskValue.getPrimitiveType());
          }
 
+         // <!> FIXME : Bad way to compute URI
          // nothing referenced.
          if(uriString == null){
              return null;
@@ -153,6 +153,70 @@ public class CSSUtilities implements SVGConstants {
          }
 
          uriString = uriString.substring(1); // Drop the hash.
+         // end of FIXME
+
+         Element clipPathElement;
+         clipPathElement = clipedElement.getOwnerDocument().getElementById(uriString);
+
+         // Cannot access referenced mask
+         if(clipPathElement == null){
+             return null;
+         }
+
+         ClipBridge clipBridge = (ClipBridge)ctx.getBridge(clipPathElement);
+
+         // No bridge understands the mask element...
+         if(clipBridge == null){
+             return null;
+         }
+
+         return clipBridge.createClip(gn, ctx,
+                                      clipPathElement,
+                                      clipedElement);
+    }
+
+     /**
+      * Returns the <tt>Mask</tt> referenced by the input
+      * element's <tt>mask</tt> attribute.
+      */
+     public static Mask convertMask(Element       maskedElement,
+                                    GraphicsNode  gn,
+                                    BridgeContext ctx) {
+         CSSStyleDeclaration decl
+             = ctx.getViewCSS().getComputedStyle(maskedElement, null);
+
+         //
+         // Build Mask based on 'mask' attr.
+         //
+         CSSPrimitiveValue maskValue
+             = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_MASK);
+         String uriString = null;
+
+         switch(maskValue.getPrimitiveType()){
+         case CSSPrimitiveValue.CSS_IDENT:
+             // NONE
+             break;
+         case CSSPrimitiveValue.CSS_URI:
+             uriString = maskValue.getStringValue();
+             break;
+         default:
+             throw new Error("maskValue's primitive type is: " +
+                             maskValue.getPrimitiveType());
+         }
+
+         // <!> FIXME : Bad way to compute URI
+         // nothing referenced.
+         if(uriString == null){
+             return null;
+         }
+
+         // Can't make sense of reference
+         if(!uriString.startsWith("#")){
+             return null;
+         }
+
+         uriString = uriString.substring(1); // Drop the hash.
+         // end of FIXME
 
          Element maskElement;
          maskElement = maskedElement.getOwnerDocument().getElementById(uriString);
@@ -170,7 +234,7 @@ public class CSSUtilities implements SVGConstants {
          }
 
          return maskBridge.createMask(gn, ctx,
-                                      maskElement, 
+                                      maskElement,
                                       maskedElement);
      }
 
@@ -592,7 +656,7 @@ public class CSSUtilities implements SVGConstants {
             = ctx.getViewCSS().getComputedStyle(element, null);
 
         //
-        // Build filter based on filter 
+        // Build filter based on filter
         //
         CSSPrimitiveValue filterValue
             = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_FILTER);
@@ -608,18 +672,18 @@ public class CSSUtilities implements SVGConstants {
             throw new Error("filterValue's primitive type is: " +
                             filterValue.getPrimitiveType());
         }
-        
+
         Filter filter = null;
 
         if(uriString != null){
             if(uriString.startsWith("#")){
                 uriString = uriString.substring(1);
-                Element filterElement 
+                Element filterElement
                     = element.getOwnerDocument().getElementById(uriString);
                 if(filterElement != null){
                     FilterBridge filterBridge
                         = (FilterBridge)ctx.getBridge(filterElement);
-                    
+
                     if(filterBridge != null){
                         filter = filterBridge.create(node,
                                                      ctx,
@@ -638,5 +702,5 @@ public class CSSUtilities implements SVGConstants {
 
         return filter;
     }
-    
+
 }
