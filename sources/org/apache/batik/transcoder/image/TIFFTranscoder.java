@@ -195,7 +195,6 @@ public class TIFFTranscoder extends ImageTranscoder {
             RenderedImage rimg = new FormatRed(GraphicsUtil.wrap(img), sm);
             tiffEncoder.encode(rimg);
         } catch (IOException ex) {
-            ex.printStackTrace();
             throw new TranscoderException(ex);
         }
     }

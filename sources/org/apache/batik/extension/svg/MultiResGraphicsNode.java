@@ -116,11 +116,13 @@ public class MultiResGraphicsNode
         if (idx == -1)
             idx = minIdx;
         gn = getGraphicsNode(idx);
-
         if (gn == null) return;
+
         // This makes sure that the image 'pushes out' to it's pixel
         // bounderies.
         Rectangle2D gnBounds = gn.getBounds();
+        if (gnBounds == null) return;
+
         double gnDevW = gnBounds.getWidth()*scx;
         double gnDevH = gnBounds.getHeight()*scy;
         double gnDevX = gnBounds.getX()*scx;
@@ -212,7 +214,6 @@ public class MultiResGraphicsNode
     }
 
     public GraphicsNode getGraphicsNode(int idx) {
-        // System.err.println("Getting: " + idx);
         if (srcs[idx] != null) {
             Object o = srcs[idx].get();
             if (o != null) 
