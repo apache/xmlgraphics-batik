@@ -1,4 +1,4 @@
-This distribution includes the Mozilla Rhino 1.5 release 3 binary
+This distribution includes the Mozilla Rhino 1.5 release 4.1 binary
 distribution without code modifications.
 You can also get that distribution from the following URL:
 ftp://ftp.mozilla.org/pub/js/
