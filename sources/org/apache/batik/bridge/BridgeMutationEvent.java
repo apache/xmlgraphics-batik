@@ -24,13 +24,13 @@ import org.w3c.dom.Element;
 public class BridgeMutationEvent extends EventObject {
 
     /** The mutation is a simple mutation on an attribute.*/
-    public static final int PROPERTY_MUTATION_TYPE=0;
+    public static final int PROPERTY_MUTATION_TYPE = 0;
     /** The mutation is a mutation on a referenced style.*/
-    public static final int STYLE_MUTATION_TYPE=1;
-    
+    public static final int STYLE_MUTATION_TYPE = 1;
+
     /** The bridge context.*/
     private BridgeContext context;
-    
+
     /** Type of the event.*/
     private int type;
 
@@ -39,7 +39,7 @@ public class BridgeMutationEvent extends EventObject {
 
     /** The new value of the modified attribute.*/
     private String attrNewValue;
-    
+
     /** Graphic node impacted by the mutation*/
     private GraphicsNode graphicsNode;
 
@@ -50,6 +50,13 @@ public class BridgeMutationEvent extends EventObject {
         super(source);
         this.context = context;
         this.type = type;
+    }
+
+    /**
+     * Returns the bridge context of this event.
+     */
+    public BridgeContext getBridgeContext() {
+        return context;
     }
 
     /**
@@ -68,7 +75,7 @@ public class BridgeMutationEvent extends EventObject {
         return (Element)source;
     }
 
-  
+
     /**
      * Returns the name of the attribute that was modified.
      */
@@ -82,7 +89,7 @@ public class BridgeMutationEvent extends EventObject {
     public void setAttrName(String attrName){
         this.attrName = attrName;
     }
-    
+
     /**
      * Returns the new value of the attribute that was modified.
      */
@@ -131,5 +138,5 @@ public class BridgeMutationEvent extends EventObject {
     }
 
 
-   
+
 }

@@ -43,22 +43,22 @@ public class StaticRenderer implements Renderer {
     /**
      * Tree this Renderer paints.
      */
-    private GraphicsNode treeRoot;
+    protected GraphicsNode treeRoot;
 
     /**
      * Flag for progressive rendering. Not used in this implementation
      */
-    private boolean progressivePaintAllowed;
+    protected boolean progressivePaintAllowed;
 
     /**
      * Offscreen image where the Renderer does its rendering
      */
-    private BufferedImage offScreen;
+    protected BufferedImage offScreen;
 
     /**
      * Passed to the GVT tree to describe the rendering environment
      */
-    private GraphicsNodeRenderContext nodeRenderContext;
+    protected GraphicsNodeRenderContext nodeRenderContext;
 
     /**
      * @param offScreen image where the Renderer should do its rendering
@@ -120,15 +120,17 @@ public class StaticRenderer implements Renderer {
     }
 
     /**
-     * Forces repaint of provided node. 'node' must be a node in the
-     * currently associated GVT tree. Normally there is no need to
-     * call this method explicitly as the Renderer listens for changes
-     * on all nodes in the tree it is associated with.
+     * Forces repaint of the specified area of interest in the current
+     * user space coordinate system.
      *
      * @param area region to be repainted, in the current user space
      * coordinate system.
      */
     public void repaint(Shape area){
+        if (area == null) {
+            System.err.println("**** WARNING *** : aoi is null in renderer");
+            return;
+        }
         // First, set the Area Of Interest in the renderContext
         nodeRenderContext.setAreaOfInterest(area);
 
