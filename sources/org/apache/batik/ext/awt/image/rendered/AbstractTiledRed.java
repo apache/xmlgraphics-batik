@@ -718,6 +718,8 @@ public abstract class AbstractTiledRed
         if (tx1 >= minTileX+numXTiles) tx1 = minTileX+numXTiles-1;
         if (ty1 >= minTileY+numYTiles) ty1 = minTileY+numYTiles-1;
 
+        if ((tx1 < tx0) || (ty1 < ty0))
+            return;
 
         int insideTx0 = tx0;
         int insideTx1 = tx1;
