@@ -283,6 +283,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_OBJECT_BOUNDING_BOX = "objectBoundingBox";
     String VALUE_ONE = "1";
     String VALUE_OPAQUE = "1";
+    String VALUE_OPTIMIZE_LEGIBILITY = "optimizeLegibility";
     String VALUE_OPTIMIZE_QUALITY = "optimizeQuality";
     String VALUE_OPTIMIZE_SPEED = "optimizeSpeed";
     String VALUE_OUT = "out";

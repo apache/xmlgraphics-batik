@@ -884,6 +884,9 @@ public class Main {
                 diffPixel = cmpPixel - refPixel;
                 diffPixels[dp0] = refPixel;
                 diffPixels[dp1] = cmpPixel;
+                if(diffPixel != 0){
+                    diffPixel = 0xff000000;
+                }
                 diffPixels[dp2] = diffPixel;
                 rp++;
                 np++;
