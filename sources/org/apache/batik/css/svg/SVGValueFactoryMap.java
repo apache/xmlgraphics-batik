@@ -77,5 +77,6 @@ public class SVGValueFactoryMap extends CommonValueFactoryMap {
 	put("stroke-width",                 new StrokeWidthFactory(p));
 	put("text-anchor",                  new TextAnchorFactory(p));
 	put("text-rendering",               new TextRenderingFactory(p));
+	put("writing-mode",                 new WritingModeFactory(p));
     }
 }
