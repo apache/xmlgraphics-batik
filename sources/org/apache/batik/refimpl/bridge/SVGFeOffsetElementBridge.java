@@ -8,47 +8,40 @@
 
 package org.apache.batik.refimpl.bridge;
 
-
 import java.awt.Color;
-
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
-
-import java.util.Map;
+import java.awt.geom.Rectangle2D;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.StringTokenizer;
-
-import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeMutationEvent;
+import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.gvt.filter.AffineRable;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterChainRable;
 import org.apache.batik.gvt.filter.FilterRegion;
-import org.apache.batik.gvt.filter.AffineRable;
-import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.gvt.filter.GraphicsNodeRable;
+import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.PadMode;
-
+import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteAffineRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
 import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
-
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.w3c.dom.views.DocumentView;
-import org.w3c.dom.css.ViewCSS;
+import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
-import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.RGBColor;
+import org.w3c.dom.css.ViewCSS;
+import org.w3c.dom.views.DocumentView;
 
 /**
  * This class bridges an SVG <tt>filter</tt> element with a concrete
@@ -107,7 +100,6 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
         AffineTransform offsetTransform =
             AffineTransform.getTranslateInstance(dx, dy);
 
-
         // Get source
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
         int inValue = SVGUtilities.parseInAttribute(inAttr);
@@ -155,12 +147,12 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
         // Get unit. Comes from parent node.
         Node parentNode = filterElement.getParentNode();
         String units = VALUE_USER_SPACE_ON_USE;
-        if((parentNode != null) 
+        if((parentNode != null)
            &&
            (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
             units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
         }
-        
+
         final FilterRegion offsetArea
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
@@ -199,17 +191,8 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
     /**
      * Update the <tt>Filter</tt> object to reflect the current
      * configuration in the <tt>Element</tt> that models the filter.
-     *
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents the filter abstraction
-     * @param filterNode image that implements the filter abstraction and whose
-     *        state should be updated to reflect the filterElement's current
-     *        state.
      */
-    public void update(BridgeContext bridgeContext,
-                       Element filterElement,
-                       Filter filter,
-                       Map filterMap){
-        System.err.println("Not implemented yet");
+    public void update(BridgeMutationEvent evt) {
+        // <!> FIXME : TODO
     }
 }

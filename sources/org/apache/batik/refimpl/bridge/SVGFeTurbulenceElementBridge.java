@@ -9,26 +9,22 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.util.Map;
-
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeMutationEvent;
+import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.TurbulenceRable;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.FilterBridge;
-
+import org.apache.batik.refimpl.gvt.filter.ConcreteTurbulenceRable;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
-
-import org.apache.batik.refimpl.gvt.filter.ConcreteTurbulenceRable;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * This class bridges an SVG <tt>feTurbulence</tt> filter element 
+ * This class bridges an SVG <tt>feTurbulence</tt> filter element
  * with <tt>ConcreteTurbulenceRable</tt>.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
@@ -36,7 +32,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  */
 public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants {
     /**
-     * Returns the <tt>Filter</tt> that implements the filter 
+     * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
      *
      * @param filteredNode the node to which the filter will be attached.
@@ -44,9 +40,9 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants 
      * @param filterElement DOM element that represents a filter abstraction
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained 
+     * @param filterRegion the filter area defined for the filter chained
      *        the new node will be part of.
-     * @param filterMap a map where the mediator can map a name to the 
+     * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
@@ -63,7 +59,7 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants 
         //
         // Get baseFrequency along each of the user space axis
         //
-        String baseFrequencyAttr = filterElement.getAttributeNS(null, 
+        String baseFrequencyAttr = filterElement.getAttributeNS(null,
                                                                 ATTR_BASE_FREQUENCY);
         Float baseFrequencies[] = SVGUtilities.buildFloatPair(baseFrequencyAttr);
         float baseFrequencyX = DEFAULT_VALUE_BASE_FREQUENCY;
@@ -110,12 +106,12 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants 
             stitchTiles = true;
         }
         else if(VALUE_NO_STITCH.equals(stitchTilesAttr)){
-            // This second if is required to make sure value is 
+            // This second if is required to make sure value is
             // properly set to noStitch value. Otherwise, default
             // has to be used.
             stitchTiles = false;
         }
-        
+
         //
         // Get Type
         //
@@ -131,26 +127,26 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants 
             // value has to be used.
             feTurbulenceType = false;
         }
-        
+
         //
         // Now, build a ConcreteTurbulenceRable from the parameters
         //
 
         // Turbulence region is defined by the filter region
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, 
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                           null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
-        
-        final FilterRegion turbulenceRegion 
+
+        final FilterRegion turbulenceRegion
             = SVGUtilities.convertFilterRegion(filteredElement,
                                                filteredNode,
                                                uctx);
 
-        TurbulenceRable turbulenceRable 
+        TurbulenceRable turbulenceRable
             = new ConcreteTurbulenceRable(turbulenceRegion);
 
         turbulenceRable.setBaseFrequencyX(baseFrequencyX);
@@ -166,18 +162,8 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants 
     /**
      * Update the <tt>Filter</tt> object to reflect the current
      * configuration in the <tt>Element</tt> that models the filter.
-     *
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents the filter abstraction
-     * @param filterNode image that implements the filter abstraction and whose
-     *        state should be updated to reflect the filterElement's current
-     *        state.
      */
-    public void update(BridgeContext bridgeContext,
-                       Element filterElement,
-                       Filter filter,
-                       Map filterMap){
-        System.err.println("Not implemented yet");
+    public void update(BridgeMutationEvent evt) {
+        // <!> FIXME : TODO
     }
-
 }

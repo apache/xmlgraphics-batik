@@ -9,21 +9,19 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.Rectangle2D;
-import java.util.Map;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.StringTokenizer;
-
-import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeMutationEvent;
+import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.FilterChainRable;
+import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
-import org.apache.batik.gvt.filter.FilterChainRable;
-
 import org.apache.batik.refimpl.gvt.filter.ConcreteFilterChainRable;
-
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
@@ -41,7 +39,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  */
 public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
     /**
-     * Returns the <tt>Filter</tt> that implements the filter 
+     * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
      *
      * @param filteredNode the node to which the filter will be attached.
@@ -50,7 +48,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
      * @param filteredElement DOM element that is filtered.
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterMap a map where the mediator can map a name to the 
+     * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
@@ -63,27 +61,27 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                          FilterRegion filterRegion,
                          Map filterMap){
         // Make the initial source as a RenderableImage
-        GraphicsNodeRableFactory gnrFactory 
+        GraphicsNodeRableFactory gnrFactory
             = bridgeContext.getGraphicsNodeRableFactory();
         GraphicsNodeRable sourceGraphic
             = gnrFactory.createGraphicsNodeRable(filteredNode);
 
         // Get the filter region and resolution
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, 
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                           null);
-        
+
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
-        
+
         filterRegion = SVGUtilities.convertFilterChainRegion(filterElement,
                                                              filteredElement,
                                                              filteredNode,
                                                              uctx);
 
         // Build a ConcreteFilterChainRable
-        FilterChainRable filterChain 
+        FilterChainRable filterChain
             = new ConcreteFilterChainRable(sourceGraphic, filterRegion);
 
 
@@ -97,7 +95,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             try{
                 filterResolutionX = Float.parseFloat(filterResolutionXStr);
             }catch(NumberFormatException e){}
-            
+
             if(st.hasMoreTokens()){
                 try{
                     filterResolutionY = Float.parseFloat((String)st.nextElement());
@@ -113,7 +111,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
         //
         // Now, build filter chain
         //
-        
+
         // Create a map for filter nodes to advertise themselves as named
         // sources.
         Map filterNodeMap = new Hashtable();
@@ -135,7 +133,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                     if(bridge != null){
                         // If we have a bridge, ask it to create a
                         // filter node.
-                        Filter filterNode 
+                        Filter filterNode
                             = bridge.create(filteredNode,
                                             bridgeContext,
                                             (Element)child,
@@ -143,8 +141,8 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                                             in,
                                             filterRegion,
                                             filterNodeMap);
-                        
-                        // Update in if we were able to create a 
+
+                        // Update in if we were able to create a
                         // child node.
                         if(filterNode != null){
                             in = filterNode;
@@ -163,11 +161,11 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             filterChain.setSource(null);
         }
         return filterChain;
-        
+
     }
 
     /**
-     * Implementation. Extracts the filter region from the x, y, width and 
+     * Implementation. Extracts the filter region from the x, y, width and
      * height attributes
      */
     /*private Rectangle2D getFilterRegion(Element filterElement){
@@ -177,7 +175,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             float y = getFloatValue(filterElement, ATTR_Y);
             float width = getFloatValue(filterElement, ATTR_WIDTH);
             float height = getFloatValue(filterElement, ATTR_HEIGHT);
-            
+
             filterRegion = new Rectangle2D.Float(x, y, width, height);
         }catch(NumberFormatException e){
             // Could not process filter region. Default to no region
@@ -187,29 +185,20 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
         }*/
 
     /**
-     * Implementation. Extracts a value from the element, assuming it 
+     * Implementation. Extracts a value from the element, assuming it
      * is a floating point value
      */
-    private static float getFloatValue(Element filterElement, String attrName)
+/*    private static float getFloatValue(Element filterElement, String attrName)
         throws NumberFormatException{
         return Float.parseFloat(filterElement.getAttributeNS(null, attrName));
-    }
+    }*/
 
 
     /**
      * Update the <tt>Filter</tt> object to reflect the current
      * configuration in the <tt>Element</tt> that models the filter.
-     *
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents the filter abstraction
-     * @param filterNode image that implements the filter abstraction and whose
-     *        state should be updated to reflect the filterElement's current
-     *        state.
      */
-    public void update(BridgeContext bridgeContext,
-                       Element filterElement,
-                       Filter filter,
-                       Map filterMap){
-        System.err.println("Not implemented yet");
+    public void update(BridgeMutationEvent evt) {
+        // <!> FIXME : TODO
     }
 }

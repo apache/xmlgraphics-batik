@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  */
 public interface FilterBridge extends Bridge {
     /**
-     * Returns the <tt>Filter</tt> that implements the filter 
+     * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
      *
      * @param filteredNode the GVT node to which the filter will be attached.
@@ -34,9 +34,9 @@ public interface FilterBridge extends Bridge {
      * @param filteredElement DOM element that references the input filter element.
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained 
+     * @param filterRegion the filter area defined for the filter chained
      *        the new node will be part of.
-     * @param filterMap a map where the mediator can map a name to the 
+     * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
@@ -52,15 +52,6 @@ public interface FilterBridge extends Bridge {
     /**
      * Update the <tt>Filter</tt> object to reflect the current
      * configuration in the <tt>Element</tt> that models the filter.
-     *
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents the filter abstraction
-     * @param filterNode image that implements the filter abstraction and whose
-     *        state should be updated to reflect the filterElement's current
-     *        state.
      */
-    public void update(BridgeContext bridgeContext,
-                       Element filterElement,
-                       Filter filter,
-                       Map filterMap);
+    public void update(BridgeMutationEvent evt);
 }
