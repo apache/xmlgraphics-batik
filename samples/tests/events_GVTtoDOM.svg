@@ -12,6 +12,21 @@
 -->
 <!-- ===================================================================== -->
 
-<svg width="800" height="600">
- <rect x="0" y="0" width="400" height="300" style="fill:blue;stroke:red" onmousedown="System.err.println(&#34;event is &#34;+evt)" />
+<svg width="300" height="150">
+    <rect x="10" y="10" width="40" height="40" style="fill:blue;stroke:none" 
+        onmousedown="System.err.println('You clicked on the blue rectangle')" />
+
+    <rect x="70" y="10" width="40" height="40" style="fill:red;stroke:none" 
+        onmousedown="System.err.println('You clicked on the red rectangle')" />
+
+    <rect x="10" y="70" width="40" height="40" style="fill:yellow;stroke:none" 
+        onmousedown="System.err.println('You clicked on the yellow rectangle')" />
+
+    <rect x="70" y="70" width="40" height="40" style="fill:green;stroke:none" 
+        onmousedown="System.err.println('You clicked on the green rectangle')" />
+
+    <g transform="translate(130, -65)">
+    <text x="60" y="125" style="font-size:12; text-anchor:middle">Click on a rectangle </text>
+    <text x="60" y="140" style="font-size:12; text-anchor:middle">and look in the console</text>
+    </g>
 </svg>
