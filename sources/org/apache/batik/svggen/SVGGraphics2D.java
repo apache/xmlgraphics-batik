@@ -83,7 +83,7 @@ public class SVGGraphics2D extends Graphics2D implements Cloneable, SVGSyntax{
      * generated SVG fragment. This allows different strategies
      * to be used to handle images.
      * @see org.apache.batik.svggen.ImageHandler
-     * @see org.apache.batik.svggen.DefaultImageHandler
+     * @see org.apache.batik.svggen.ImageHandlerBase64Encoder
      * @see org.apache.batik.svggen.ImageHandlerPNGEncoder
      * @see org.apache.batik.svggen.ImageHandlerJPEGEncoder
      */
@@ -206,7 +206,7 @@ public class SVGGraphics2D extends Graphics2D implements Cloneable, SVGSyntax{
      * @exception IllegalArgumentException if domFactory is null.
      */
     public SVGGraphics2D(Document domFactory){
-        this(domFactory, new DefaultImageHandler(), new DefaultExtensionHandler(), false);
+        this(domFactory, new ImageHandlerBase64Encoder(), new DefaultExtensionHandler(), false);
     }
 
     /**
