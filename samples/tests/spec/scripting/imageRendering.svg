@@ -1,0 +1,56 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- append child test                                                      -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     id="body" width="450" height="500" viewBox="0 0 450 500">
+
+    <title>'image-rendering' property test</title>
+
+    <text x="50%" y="45" class="title">'image-rendering' property test</text>
+
+    <script type="text/ecmascript">
+
+    var speed = true;
+
+    function changeImageRendering(evt) {
+       var imageRendering;
+       if (speed) {
+           speed = false;
+           imageRendering = "optimizeQuality";
+       } else {
+           speed = true;
+           imageRendering = "optimizeSpeed";
+       }
+       evt.target.setAttribute("style", "image-rendering:"+imageRendering);
+    }
+
+    </script>
+
+    <g id="test-content">
+<image onclick="changeImageRendering(evt)" 
+       x="120" y="150" 
+       width="200" height="100" 
+       preserveAspectRatio="none"
+       xlink:href="../../resources/images/tde.jpg" 
+       style="image-rendering:optimizeSpeed" />
+    </g>
+</svg>
