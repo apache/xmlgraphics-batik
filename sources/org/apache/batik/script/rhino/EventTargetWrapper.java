@@ -28,7 +28,7 @@ import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 
 /**
- * A class that wrap an <code>EventTarget</code> instance to expose
+ * A class that wraps an <code>EventTarget</code> instance to expose
  * it in the Rhino engine. Then calling <code>addEventListener</code>
  * with a Rhino function as parameter should redirect the call to
  * <code>addEventListener</code> with a Java function object calling

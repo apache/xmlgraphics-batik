@@ -11,6 +11,9 @@ package org.apache.batik.script.rhino;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.io.StringReader;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import org.w3c.dom.events.EventTarget;
@@ -19,10 +22,11 @@ import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.JavaScriptException;
-import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeJavaPackage;
+import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.WrappedException;
@@ -45,8 +49,21 @@ public class RhinoInterpreter implements Interpreter {
         "org.w3c.dom.views"
     };
 
+    private static class Entry {
+        String str;
+        Script script;
+        Entry(String str, Script script) {
+            this.str = str;
+            this.script = script;
+        }
+    };
+
+    // store last 32 precompiled objects.
+    private static final int MAX_CACHED_SCRIPTS = 32;
+
     private Context context = null;
     private ScriptableObject globalObject = null;
+    private LinkedList compiledScripts = new LinkedList();
 
     /**
      * Build a <code>Interpreter</code> for ECMAScript using Rhino.
@@ -86,16 +103,18 @@ public class RhinoInterpreter implements Interpreter {
         return context;
     }
 
+
     // org.apache.batik.script.Intepreter implementation
 
     /**
-     * This method evaluates a piece of ECMA script.
+     * This method evaluates a piece of ECMAScript.
      * @param scriptreader a <code>java.io.Reader</code> on the piece of script
      * @return if no exception is thrown during the call, should return the
-     * value of the last expression evaluated in the script
+     * value of the last expression evaluated in the script.
      */
     public Object evaluate(Reader scriptreader)
-        throws InterpreterException, IOException {
+        throws InterpreterException, IOException
+    {
         Object rv = null;
         Context ctx = Context.enter(context);
         try {
@@ -103,6 +122,83 @@ public class RhinoInterpreter implements Interpreter {
                                     scriptreader,
                                     "<SVG>",
                                     1, null);
+        } catch (JavaScriptException e) {
+            // exception from JavaScript (possibly wrapping a Java Ex)
+            if (e.getValue() instanceof Exception) {
+                Exception ex = (Exception)e.getValue();
+                throw new InterpreterException(ex, ex.getMessage(), -1, -1);
+            } else
+                throw new InterpreterException(e, e.getMessage(), -1, -1);
+        } catch (WrappedException we) {
+            // main Rhino RuntimeException
+            throw
+                new InterpreterException((Exception)we.getWrappedException(),
+                                         we.getWrappedException().getMessage(),
+                                         -1, -1);
+        } catch (RuntimeException re) {
+            // other RuntimeExceptions
+            throw new InterpreterException(re, re.getMessage(), -1, -1);
+        } finally {
+            Context.exit();
+        }
+        return rv;
+    }
+
+    /**
+     * This method evaluates a piece of ECMA script.
+     * The first time a String is passed, it is compiled and evaluated.
+     * At next call, the piece of script will only be evaluated to
+     * prevent from recompiling it.
+     * @param scriptstr the piece of script
+     * @return if no exception is thrown during the call, should return the
+     * value of the last expression evaluated in the script.
+     */
+    public Object evaluate(String scriptstr)
+        throws InterpreterException
+    {
+        Context ctx = Context.enter(context);
+        Script script = null;
+        Entry et = null;
+        Iterator it = compiledScripts.iterator();
+        // between nlog(n) and log(n) because it is
+        // an AbstractSequentialList
+        while (it.hasNext()) {
+            if ((et = (Entry)(it.next())).str == scriptstr) {
+                // if it is not at the end, remove it because
+                // it will change from place (it is faster
+                // to remove it now)
+                script = et.script;
+                it.remove();
+                break;
+            }
+        }
+        if (script == null) {
+            // this script has not been compiled yet or has been fogotten
+            // since the compilation:
+            // compile it and store it for future use.
+            try {
+                script = ctx.compileReader(globalObject,
+                                           new StringReader(scriptstr),
+                                           "<SVG>",
+                                           1, null);
+            } catch (IOException io) {
+                // can't happen because we use a String...
+            }
+            if (compiledScripts.size()+1 > MAX_CACHED_SCRIPTS) {
+                // too many cached items - we should delete the oldest entry.
+                // all of this is very fast on linkedlist
+                compiledScripts.removeFirst();
+            }
+            // stroring is done here:
+            compiledScripts.addLast(new Entry(scriptstr, script));
+        } else {
+            // this script has been compiled before,
+            // just update it's index so it won't get deleted soon.
+            compiledScripts.addLast(et);
+        }
+        Object rv = null;
+        try {
+            rv = script.exec(ctx, globalObject);
         } catch (JavaScriptException e) {
             // exception from JavaScript (possibly wrapping a Java Ex)
             if (e.getValue() instanceof Exception) {
