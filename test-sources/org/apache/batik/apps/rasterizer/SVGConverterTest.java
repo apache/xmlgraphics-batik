@@ -239,7 +239,7 @@ public class SVGConverterTest extends DefaultTestSuite {
 
         t = new ConfigErrorTest(SVGConverter.ERROR_CANNOT_OPEN_SOURCE){
                 protected void configure(SVGConverter c){
-                    c.setSourcesStrings(new String[]{ "test-resources/org/apache/batik/apps/rasterizer/notreadable.svg" });
+                    c.setSourcesStrings(new String[]{ "test-resources/org/apache/batik/apps/rasterizer/notReadable.svg" });
                 }
 
                 public boolean proceedWithComputedTask(Transcoder transcoder,
