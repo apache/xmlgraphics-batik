@@ -19,6 +19,7 @@
     <testGroup id="ecmaDOM" name="Basic DOM Tests from ECMA Scripts"
                class="org.apache.batik.dom.EcmaScriptDOMTest">
         <test id="bug18143" />
+        <test id="bug20331" />
     </testGroup>
 
     <!-- ========================================================================== -->

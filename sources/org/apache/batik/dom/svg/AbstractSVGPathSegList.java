@@ -533,7 +533,7 @@ public abstract class AbstractSVGPathSegList
                    SVGPathSegArcRel {
 
         public SVGPathSegArcItem(short type,String letter,
-                             float rx,float ry,float angle,
+                             float r1,float r2,float angle,
                              boolean largeArcFlag, boolean sweepFlag,
                              float x, float y ){
             super(type,letter);
