@@ -214,16 +214,14 @@ public class WindowWrapper extends ScriptableObject {
         case 1:
             String message =
                 (String)NativeJavaObject.coerceType(String.class, args[0]);
-            String result = window.prompt(message);
-            return (result == null) ? "" : result;
+            return window.prompt(message);
 
         default:
             message =
                 (String)NativeJavaObject.coerceType(String.class, args[0]);
             String defVal =
                 (String)NativeJavaObject.coerceType(String.class, args[1]);
-            result = window.prompt(message, defVal);
-            return (result == null) ? "" : result;
+            return window.prompt(message, defVal);
         }
     }
 

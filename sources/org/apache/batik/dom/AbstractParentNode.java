@@ -540,7 +540,9 @@ public abstract class AbstractParentNode extends AbstractNode {
         private void initialize(Node node) {
             if (node.getNodeType() == ELEMENT_NODE) {
                 String ns = node.getNamespaceURI();
-                String nm = (ns == null) ? node.getNodeName() : node.getLocalName();
+                String nm = (ns == null)
+                    ? node.getNodeName()
+                    : node.getLocalName();
                 if (nsMatch(namespaceURI, node.getNamespaceURI()) &&
                     (localName.equals("*") || localName.equals(nm))) {
                     append(node);

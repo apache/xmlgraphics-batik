@@ -50,6 +50,26 @@ public interface UserAgent {
     void displayMessage(String message);
 
     /**
+     * Shows an alert dialog box.
+     */
+    void showAlert(String message);
+
+    /**
+     * Shows a prompt dialog box.
+     */
+    String showPrompt(String message);
+
+    /**
+     * Shows a prompt dialog box.
+     */
+    String showPrompt(String message, String defaultValue);
+
+    /**
+     * Shows a confirm dialog box.
+     */
+    boolean showConfirm(String message);
+
+    /**
      * Returns the pixel to mm factor.
      */
     float getPixelToMM();

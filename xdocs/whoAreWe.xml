@@ -30,9 +30,12 @@
       </p>
       </s1>
 
-      <s1 title="Batik Commiters">
+      <s1 title="Batik Committers">
       <p>
-      The following people are active Batik developers and are the project's committers:
+      This section lists all the Batik committers.
+      </p>
+      <p>
+      The following people are active Batik developers:
       </p>
         <dl>
           <dt>Thomas DeWeese (TD)</dt><dd><br />
@@ -50,22 +53,6 @@
           <br /><br />
           </dd>
 
-          <dt>Bill Haneman (BH)</dt><dd><br />
-          <link href="mailto:bill.haneman@ireland.sun.com">bill.haneman@ireland.sun.com</link><br />
-          <em>
-          Bill Haneman works for Sun Microsystems' Desktop Enabling Middleware
-          group in Dublin, Ireland, and implemented much of the Batik's text
-          support (though not SVG Fonts, thanks Bella, Dean, and David!).  He is
-          also technical lead for the Gnome Accessibility Project
-          (http://developer.gnome.org/projects/gap), an open project to provide
-          an accessibility framework for linux and Solaris(TM) desktops.  A
-          twenty-year veteran of scientific programming and application
-          development, he is a US expatriate who plays traditional Irish music
-          on the uilleann pipes. 
-          </em> 
-          <br /><br />
-          </dd>
-
           <dt>Vincent Hardy (VH)</dt><dd><br />
           <link href="mailto:vincent.hardy@eng.sun.com">vincent.hardy@eng.sun.com</link><br />
           <em>Vincent is one of the founders of the SVG Batik project at Apache and the Batik 
@@ -80,21 +67,10 @@
           <dt>Stephane Hillion (SH)</dt><dd><br />
           <link href="mailto:shillion@ilog.fr">shillion@ilog.fr</link><br />
           <em>
-          Stephane is a research engineer at ILOG. His main interests are in
-          programming languages and web standards. He wrote DynamicJava, a Java
-          source interpreter, and the Apache Batik's DOM and CSS modules.
-          </em>
-          <br /><br />
-          </dd>
-
-          <dt>Dean Jackson (DJ)</dt><dd><br />
-          <link href="mailto:dean.jackson@cmis.csiro.au">dean.jackson@cmis.csiro.au</link><br />
-          <em>
-          Dean is employed by CSIRO Australia and is currently working at
-          the World Wide Web Consortium (W3C) full time on SVG. He is a member
-          of the W3C's SVG working group, and was a developer
-          of the CSIRO SVG Toolkit, one of the first and most complete open source
-          SVG libraries. 
+          Stephane is a software engineer at the Koala project, part of
+          the ILOG's visualisation R&amp;D team, located in Sophia-Antipolis,
+          France. His main interests are in programming languages and web
+          standards. He wrote the Apache Batik's DOM, CSS and Swing modules.
           </em>
           <br /><br />
           </dd>
@@ -103,7 +79,7 @@
           <link href="mailto:cjolif@ilog.fr">cjolif@ilog.fr</link><br />
           <em>
           Christophe Jolif is a Staff Software Engineer mainly working on the ILOG
-          JViews Component Suite, the ILOG Java vizualisation framework. He has
+          JViews Component Suite, the ILOG Java visualisation framework. He has
           been working for ILOG since 1997, and is representing the company at the
           Scalable Vector Graphics (SVG) W3C Working Group since 1999. He has 
           implemented the SVG import and export features in ILOG JViews and is now
@@ -116,8 +92,8 @@
           <link href="mailto:tkormann@ilog.fr">tkormann@ilog.fr</link> <br />
           <em>
 
-Thierry is a software engineer, at the Koala project of ILOG located at INRIA
-Sophia Antipolis, France and a member of the SVG working group. Thierry has
+Thierry is a software engineer, at the Koala project of ILOG located at
+Sophia-Antipolis, France and a member of the SVG working group. Thierry has
 contributed to most of the Koala's projects involving Java and XML. Since
 then, he co-founded the Apache Batik project. His daytime job is focused on
 Graphics and XML related technologies. Prior to joining ILOG, Thierry worked
@@ -125,17 +101,20 @@ as a software engineer for Bull.</em>
           <br /><br />
           </dd>
 
-          <dt>Bella Robinson (BR)</dt><dd><br />
-          <link href="mailto:bella.robinson@cmis.csiro.au">bella.robinson@cmis.csiro.au</link> <br />
-          <em>
-          Bella is a Software Engineer working for CSIRO Australia. She was one
-          of the main developers of the CSIRO SVG Toolkit and has also been working
-          on a Pocket SVG Viewer for handheld devices. Her interests include 
-          graphics and XML programming.</em>
-          <br /><br />
-          </dd>
-
         </dl>
+
+        <p>
+        <link href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</link>,
+        <link href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</link>,
+        <link href="mailto:tissandi@ilog.fr">Emmanuel Tissandier</link>
+        are some of the Batik project founders and helped define and
+        implement the initial Batik architecture.
+        </p>
+
+        <p>
+        <link href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</link>
+        implemented the SVG fonts support in Batik. 
+        </p>
 
         <p>
         In addition, <link href="mailto:James.Davidson@eng.sun.com">James Davidson</link>
@@ -151,13 +130,13 @@ as a software engineer for Bull.</em>
         <ul>
           <li><link href="mailto:carnold@houston.rr.com">Curt Arnold</link> - Contributed many bug reports and fixes</li>
           <li><link href="mailto:r_diblasi@hotmail.com">Robert DiBlasi</link> - Contributed a lot of feedback on the 
-            Batik documentation and suggestions on how to improve the it</li>
+            Batik documentation and suggestions on how to improve it</li>
           <li><link href="mailto:Paul_Evenblij@nl.compuware.com">Paul Evenblij</link> - Contributed an improvement to 
             the way images are handled by the SVGGraphics2D component. Also contributed bug fixes on the SVGGraphics2D
             component. </li>
           <li><link href="mailto:pier.fumagalli@eng.sun.com">Pier Fumagalli</link>- is helping us with the Batik web site and
               mailing lists.</li>
-          <li><link href="mailto:Christophe.Held@sophia.inria.fr">Christophe Held</link>- Contributed a math formula in SVG 
+          <li><link href="mailto:Christophe.Held@sophia.inria.fr">Christophe Held</link> - Contributed a math formula in SVG 
               generated from MathML. </li>
           <li><link href="mailto:keiron@aftexsw.com">Keiron Liddle</link> - A <link href="http://xml.apache.org/fop">FOP</link>
               member who is working on an SVG to PDF transcoder that will be part of FOP but that will work in 
@@ -175,85 +154,87 @@ as a software engineer for Bull.</em>
           <li><link href="mailto:david@steadystate.co.uk">David Schweinsberg</link> - Contributed the True Type Font to 
               SVG Font converter</li>
           <li><link href="mailto:natalian@cs.brown.edu">Nicholas Talian</link> - Contributed on gradients.</li>
-          <li><link href="mailto:tissandi@ilog.fr">Emmanuel Tissandier</link> was one of the Batik project
-              founders and helped define and implement the initial Batik architecture</li>
         </ul>
       </s1>
 
       <s1 title="Areas of Expertise">
         <p>
-        The following table summarizes the areas of expertise of each committer. It allows better
-        coordination of both internal and external development efforts.
+        The following table summarizes the areas of expertise of each active
+        committer. It allows better coordination of both internal and
+        external development efforts.
         </p>
 
         <table>
           <tr>
-            <th/><th>TD</th><th>BH</th><th>VH</th><th>SH</th>
-                 <th>DJ</th><th>CJ</th><th>TK</th><th>ET</th>
+            <th/><th>TD</th><th>VH</th><th>SH</th><th>CJ</th><th>TK</th>
           </tr>
           <tr>
-            <td>Team Contact</td><td/><td/><td>X</td><td/>
-                               <td/><td/><td/><td/>
+            <td>Team Contact</td>
+            <td/><td>X</td><td/><td/><td/>
           </tr>
           <tr>
-            <td>Animation</td><td/><td/><td/><td/>
-                              <td/><td/><td/><td/>
+            <td>SMIL Animation</td>
+            <td/><td/><td/><td/><td/>
           </tr>
           <tr>
-            <td>Bridge</td><td/><td/><td>X</td><td/>
-                           <td/><td>X</td><td>X</td><td>X</td>
+            <td>Bridge</td>
+            <td/><td>X</td><td>X</td><td>X</td><td>X</td>
           </tr>
           <tr>
-            <td>CSS</td><td/><td/><td/><td>X</td>
-                               <td/><td/><td/><td/>
+            <td>CSS</td>
+            <td/><td/><td>X</td><td/><td/>
           </tr>
           <tr>
-            <td>Documentation</td><td/><td/><td>X</td><td/>
-                                  <td/><td/><td>X</td><td/>
+            <td>Documentation</td>
+            <td>X</td><td>X</td><td>X</td><td>X</td><td>X</td>
           </tr>
           <tr>
-            <td>SVG DOM</td><td/><td/><td/><td>X</td>
-                            <td/><td/><td/><td/>
+            <td>SVG DOM</td>
+            <td/><td/><td>X</td><td/><td/>
           </tr>
           <tr>
-            <td>GVT Core</td><td/><td/><td>X</td><td/>
-                             <td/><td/><td>X</td><td>X</td>
+            <td>GVT Core</td>
+            <td>X</td><td>X</td><td/><td/><td>X</td>
           </tr>
           <tr>
-            <td>GVT Filters</td><td>X</td><td/><td>X</td><td/>
-                               <td></td><td/><td/><td/>
+            <td>GVT Filters</td>
+            <td>X</td><td>X</td><td/><td/><td/>
           </tr>
           <tr>
-            <td>GVT Renderer</td><td>X</td><td/><td>X</td><td/>
-                                 <td/><td/><td>X</td><td/>
+            <td>GVT Renderer</td>
+            <td>X</td><td>X</td><td/><td/><td/>
           </tr>
           <tr>
-            <td>GVT Text</td><td/><td>X</td><td/><td/>
-                             <td>X</td><td/><td/><td/>
+            <td>GVT Text</td>
+            <td>X</td><td/><td/><td/><td/>
           </tr>
           <tr>
-            <td>SVGGraphics2D</td><td/><td/><td>X</td><td/>
-                               <td/><td>X</td><td/><td/>
+            <td>SVGGraphics2D</td>
+            <td/><td>X</td><td/><td>X</td><td/>
           </tr>
           <tr>
-            <td>Micro Parsers</td><td/><td/><td/><td>X</td>
-                                  <td/><td/><td/><td/>
+            <td>Micro Parsers</td>
+            <td/><td/><td>X</td><td/><td/>
           </tr>
           <tr>
-            <td>Scripting</td><td/><td/><td/><td/>
-                              <td/><td>X</td><td/><td/>
+            <td>Scripting</td>
+            <td/><td/><td>X</td><td>X</td><td/>
           </tr>
           <tr>
-            <td>Swing Components</td><td/><td/><td/><td>X</td>
-                                <td/><td/><td>X</td><td/>
+            <td>Swing Components</td>
+            <td/><td/><td>X</td><td/><td>X</td>
           </tr>
           <tr>
-            <td>Rasterizer</td><td/><td/><td/><td/>
-                            <td/><td/><td>X</td><td/>
+            <td>Rasterizer</td>
+            <td/><td/><td/><td/><td>X</td>
           </tr>
           <tr>
-            <td>Browser</td><td/><td/><td/><td>X</td>
-                            <td/><td/><td>X</td><td/>
+            <td>Browser</td>
+            <td/><td/><td>X</td><td/><td>X</td>
+          </tr>
+          <tr>
+            <td>Test</td>
+            <td/><td>X</td><td/><td/><td/>
           </tr>
         </table>
       </s1>

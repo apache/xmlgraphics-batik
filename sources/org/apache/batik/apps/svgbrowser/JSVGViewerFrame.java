@@ -1909,7 +1909,7 @@ public class JSVGViewerFrame
                 new JOptionPane(message, JOptionPane.ERROR_MESSAGE);
             JDialog dialog = pane.createDialog(JSVGViewerFrame.this, "ERROR");
             dialog.setModal(false);
-            dialog.show(); // Safe to be called from any thread
+            dialog.show();
         }
 
         /**
@@ -1923,7 +1923,7 @@ public class JSVGViewerFrame
                 new JErrorPane(ex, JOptionPane.ERROR_MESSAGE);
             JDialog dialog = pane.createDialog(JSVGViewerFrame.this, "ERROR");
             dialog.setModal(false);
-            dialog.show(); // Safe to be called from any thread
+            dialog.show();
         }
 
         /**
@@ -1932,6 +1932,34 @@ public class JSVGViewerFrame
          */
         public void displayMessage(String message) {
             statusBar.setMessage(message);
+        }
+
+        /**
+         * Shows an alert dialog box.
+         */
+        public void showAlert(String message) {
+            svgCanvas.showAlert(message);
+        }
+
+        /**
+         * Shows a prompt dialog box.
+         */
+        public String showPrompt(String message) {
+            return svgCanvas.showPrompt(message);
+        }
+
+        /**
+         * Shows a prompt dialog box.
+         */
+        public String showPrompt(String message, String defaultValue) {
+            return svgCanvas.showPrompt(message, defaultValue);
+        }
+
+        /**
+         * Shows a confirm dialog box.
+         */
+        public boolean showConfirm(String message) {
+            return svgCanvas.showConfirm(message);
         }
 
         /**

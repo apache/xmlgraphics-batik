@@ -83,6 +83,13 @@ public class EventListenerList {
 	return false;
     }
 
+    /**
+     * Returns the number of listeners in the list.
+     */
+    public int size() {
+        return n;
+    }
+
     // simple entry for the list
     private static class Entry {
 	EventListener listener;

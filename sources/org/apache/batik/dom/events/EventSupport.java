@@ -122,9 +122,12 @@ public class EventSupport {
 	if (listeners == null) {
 	    return;
 	}
-	EventListenerList list = (EventListenerList) listeners.get(type);
+	EventListenerList list = (EventListenerList)listeners.get(type);
 	if (list != null) {
 	    list.remove(listener);
+            if (list.size() == 0) {
+                listeners.remove(type);
+            }
 	}
     }
 

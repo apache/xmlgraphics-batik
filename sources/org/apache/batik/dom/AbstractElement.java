@@ -656,7 +656,8 @@ public abstract class AbstractElement
 	/**
 	 * Adds a node to the map.
  	 */
-	public Node setNamedItem(String ns, String name, Node arg)  throws DOMException {
+	public Node setNamedItem(String ns, String name, Node arg)
+            throws DOMException {
 	    ((AbstractAttr)arg).setOwnerElement(AbstractElement.this);
 	    AbstractAttr result = (AbstractAttr)put(ns, name, arg);
 
