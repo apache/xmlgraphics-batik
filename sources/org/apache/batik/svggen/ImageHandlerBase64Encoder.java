@@ -33,9 +33,6 @@ import org.w3c.dom.*;
  * @see             org.apache.batik.svggen.ImageHandler
  */
 public class ImageHandlerBase64Encoder extends DefaultImageHandler {
-    private static final String DATA_PROTOCOL_PNG_PREFIX =
-        "data:image/png;base64,";
-
     /**
      * Build an <code>ImageHandlerBase64Encoder</code> instance.
      */

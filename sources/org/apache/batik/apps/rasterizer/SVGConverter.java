@@ -73,6 +73,11 @@ import java.net.MalformedURLException;
  * <li>mediaType: controls the CSS media, or list of media, for which the 
  * image should be rendered.</li>
  * <li>alternate: controls the alternate CSS stylesheet to activate, if any.</li>
+ * <li>language: controls the user language with which the SVG document should
+ * be converted.</li>
+ * <li>userStylesheet: defines the user stylesheet to apply to SVG documents 
+ * in addition to other stylesheets referenced by or embedded in the SVG documents.</li>
+ * <li>pixelToMillimeter: defines the size of a pixel when processing the SVG documents.</li>
  * </ul>
  *
  * @version $Id$
@@ -208,6 +213,15 @@ public class SVGConverter {
     /** Output AOI area. */
     protected Rectangle2D area = null;
 
+    /** Language */
+    protected String language = null;
+
+    /** User stylesheet */
+    protected String userStylesheet = null;
+
+    /** Pixel to Millimeter */
+    protected float pixelToMillimeter = -1f;
+
     /** Validation flag */
     protected boolean validate = false;
 
@@ -317,6 +331,44 @@ public class SVGConverter {
 
     public float getQuality(){
         return quality;
+    }
+
+    /**
+     * Sets the user language. If the value is null, then the default
+     * (see {@link org.apache.batik.transcoder.image.ImageTranscoder#getLanguage})
+     * is used.
+     */
+    public void setLanguage(String language){
+        this.language = language;
+    }
+
+    public String getLanguage(){
+        return language;
+    }
+
+    /**
+     * Sets the user stylesheet. May be null.
+     */
+    public void setUserStylesheet(String userStylesheet){
+        this.userStylesheet = userStylesheet;
+    }
+
+    public String getUserStylesheet(){
+        return userStylesheet;
+    }
+
+    /**
+     * Sets the pixel to millimeter conversion constant. A negative
+     * value will cause the default value 
+     * (see {@link org.apache.batik.transcoder.image.ImageTranscoder#getPixelToMM})
+     * to be used.
+     */
+    public void setPixelToMillimeter(float pixelToMillimeter){
+        this.pixelToMillimeter = pixelToMillimeter;
+    }
+
+    public float getPixelToMillimeter(){
+        return pixelToMillimeter;
     }
 
     /**
@@ -643,11 +695,28 @@ public class SVGConverter {
             map.put(ImageTranscoder.KEY_ALTERNATE_STYLESHEET, alternateStylesheet);
         }
 
+        // Set user stylesheet
+        if (userStylesheet != null){
+            map.put(ImageTranscoder.KEY_USER_STYLESHEET_URI, userStylesheet);
+        }
+
+        // Set the user language
+        if (language != null){
+            map.put(ImageTranscoder.KEY_LANGUAGE, language);
+        }
+
+        // Sets the pixel to millimeter ratio
+        if (pixelToMillimeter > 0){
+            map.put(ImageTranscoder.KEY_PIXEL_TO_MM, new Float(pixelToMillimeter));
+        }
+
         // Set validation
         if (validate){
             map.put(ImageTranscoder.KEY_XML_PARSER_VALIDATING,
                     new Boolean(validate));
         }
+
+        
         return map;
     }
 

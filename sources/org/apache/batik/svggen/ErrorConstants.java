@@ -28,6 +28,10 @@ public interface ErrorConstants {
         "image should not be null";
     public static final String ERR_WRITE =
         "could not write image File ";
+    public static final String ERR_READ =
+        "could not read image File ";
+    public static final String ERR_IMAGE_HANDLER_NOT_SUPPORTED = 
+        "imageHandler does not implement CachedImageHandler: ";
 
     // SVGGraphics2D errors
 

@@ -105,7 +105,11 @@ public abstract class AbstractTest implements Test {
      */
     public String getName(){
         if(name == null){
-            return getClass().getName();
+            if (id != null && !"".equals(id)){
+                return id;
+            } else {
+                return getClass().getName();
+            }
         }
 
         return name;

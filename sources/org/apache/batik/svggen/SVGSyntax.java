@@ -49,6 +49,8 @@ public interface SVGSyntax extends SVGConstants{
     public static final String ID_PREFIX_FE_SPECULAR_LIGHTING = "feSpecularLighting";
     public static final String ID_PREFIX_FONT = "font";
     public static final String ID_PREFIX_GENERIC_DEFS = "genericDefs";
+    public static final String ID_PREFIX_IMAGE = "image";
+    public static final String ID_PREFIX_IMAGE_DEFS = "imageDefs";
     public static final String ID_PREFIX_LINEAR_GRADIENT = "linearGradient";
     public static final String ID_PREFIX_MASK = "mask";
     public static final String ID_PREFIX_PATTERN = "pattern";
@@ -69,5 +71,8 @@ public interface SVGSyntax extends SVGConstants{
     public static final String SPACE = " ";
     public static final String URL_PREFIX = "url(";
     public static final String URL_SUFFIX = ")";
+
+    public static final String DATA_PROTOCOL_PNG_PREFIX = "data:image/png;base64,";
+
 
 }

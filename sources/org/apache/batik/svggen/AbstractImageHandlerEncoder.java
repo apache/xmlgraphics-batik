@@ -17,6 +17,10 @@ import java.awt.image.renderable.RenderableImage;
 import java.awt.geom.AffineTransform;
 import java.lang.reflect.Method;
 import java.io.File;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import org.w3c.dom.Element;
 
@@ -66,7 +70,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
                 createGraphics = clazz.getMethod("createGraphics", paramc);
                 paramo = new Object[1];
             } catch (Throwable t) {
-                // happen only if Batik extensions are not their
+                // happen only if Batik extensions are not there
             } finally {
                 initDone = true;
             }
@@ -79,7 +83,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
             try {
                 g2d = (Graphics2D)createGraphics.invoke(null, paramo);
             } catch (Exception e) {
-                // should not happened
+                // should not happen
             }
             return g2d;
         }
@@ -178,9 +182,42 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
         saveBufferedImageToFile(imageElement, buf, generatorContext);
     }
 
-    private void saveBufferedImageToFile(Element imageElement,
-                                         BufferedImage buf,
-                                         SVGGeneratorContext generatorContext)
+    void cacheBufferedImage(Element imageElement,
+                            BufferedImage buf,
+                            SVGGeneratorContext generatorContext)
+        throws SVGGraphics2DIOException {
+
+        ByteArrayOutputStream os;
+
+        if (generatorContext == null)
+            throw new SVGGraphics2DRuntimeException(ERR_CONTEXT_NULL);
+
+        try {
+            os = new ByteArrayOutputStream();
+            // encode the image in memory
+            encodeImage(buf, os);
+            os.close();
+        } catch (IOException e) {
+            // should not happen since we do in-memory processing
+            throw new SVGGraphics2DIOException(ERR_UNEXPECTED, e);
+        }
+    
+        // ask the cacher for a reference
+        String imageFileName = imageCacher.lookup(os,
+                                                  buf.getWidth(),
+                                                  buf.getHeight(),
+                                                  generatorContext);
+        
+        // set the URL
+        imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
+                                    ATTR_XLINK_HREF,
+                                    urlRoot + "/" + imageFileName);
+    }                
+
+
+    protected void saveBufferedImageToFile(Element imageElement,
+                                           BufferedImage buf,
+                                           SVGGeneratorContext generatorContext)
         throws SVGGraphics2DIOException {
         if (generatorContext == null)
             throw new SVGGraphics2DRuntimeException(ERR_CONTEXT_NULL);
@@ -222,8 +259,27 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
      * Derived classes should implement this method and encode the input
      * BufferedImage as needed
      */
-    public abstract void encodeImage(BufferedImage buf, File imageFile)
-        throws SVGGraphics2DIOException;
+    public abstract void encodeImage(BufferedImage buf, OutputStream os)
+        throws IOException;
+    // NOTE: This breaks super <- sub interface!
+    // The (BufferedImage, File) signature used to be abstract.
+    // Instead, it is now the (BufferedImage, OutputStream) signature.
+    // How serious is this?
+
+    /**
+     * This method encodes the BufferedImage to a file
+     */
+    public void encodeImage(BufferedImage buf, File imageFile)
+        throws SVGGraphics2DIOException {
+        try {
+            OutputStream os = new FileOutputStream(imageFile);
+            encodeImage(buf, os);
+            os.flush();
+            os.close();
+        } catch (IOException e) {
+            throw new SVGGraphics2DIOException(ERR_WRITE+imageFile.getName());
+        }
+    }
 
     /**
      * This method creates a BufferedImage of the right size and type
