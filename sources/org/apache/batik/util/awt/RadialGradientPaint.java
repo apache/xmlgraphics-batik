@@ -12,9 +12,6 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.geom.*;
 
-import org.apache.batik.util.awt.geom.AffineTransformSource;
-import org.apache.batik.util.awt.geom.DefaultAffineTransformSource;
-
 /**
  * <p>
  * This class provides a way to fill a shape with a circular radial color 
@@ -354,53 +351,6 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
                                CycleMethodEnum cycleMethod, 
                                ColorSpaceEnum colorSpace,
                                AffineTransform gradientTransform){
-        this(center, radius, focus, fractions, colors, cycleMethod, colorSpace, 
-             new DefaultAffineTransformSource(gradientTransform));
-    }
-
-    /**
-     * <p>
-     *
-     * Constructs a <code>RadialGradientPaint</code>.
-     *
-     * @param center the center point in user space of the circle defining the
-     * gradient.  The last color of the gradient is mapped to the perimeter of
-     * this circle
-     *
-     * @param radius the radius of the circle defining the extents of the color
-     * gradient. 
-     *
-     * @param focus the point in user space to which the first color is mapped
-     *
-     * @param fractions numbers ranging from 0.0 to 1.0 specifying the 
-     * distribution of colors along the gradient
-     *
-     * @param colors array of colors to use in the gradient. The first color is
-     * used at the focus point, the last color around the perimeter of the 
-     * circle.
-     *
-     * @param cycleMethod either NO_CYCLE, REFLECT, or REPEAT
-     *
-     * @param colorSpace which colorspace to use for interpolation, 
-     * either SRGB or LINEAR_RGB          
-     *
-     * @param gradientTransform transform to apply to the gradient
-     *
-     * @throws NullPointerException if one of the points is null, 
-     * or gradientTransform is null
-     *
-     * @throws IllegalArgumentException 
-     *         if fractions.length != colors.length, or if colors is less 
-     *         than 2 in size, or if radius < 0
-     *
-     */
-    public RadialGradientPaint(Point2D center,
-                               float radius,
-                               Point2D focus,
-                               float[] fractions,  Color[] colors,
-                               CycleMethodEnum cycleMethod, 
-                               ColorSpaceEnum colorSpace,
-                               AffineTransformSource gradientTransform){        
         super(fractions, colors, cycleMethod, colorSpace, gradientTransform);
 
         // Check input arguments
@@ -490,19 +440,8 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
                                       Rectangle2D userBounds,
                                       AffineTransform transform,
                                       RenderingHints hints) {
-        // incorporate the radius transform
-        /*float radiusMax = (float)(radius.getWidth() > radius.getHeight()? 
-                                  radius.getWidth() : radius.getHeight());
-
-        transform.translate((float)center.getX(), (float)center.getY());
-
-        transform.scale(radius.getWidth()/radiusMax,
-                        radius.getHeight()/radiusMax);
-
-                        transform.translate(-(float)center.getX(), -(float)center.getY());*/
-
         // incorporate the gradient transform
-        transform.concatenate(gradientTransform.getTransform());
+        transform.concatenate(gradientTransform);
 
         try{
             return 

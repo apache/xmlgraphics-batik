@@ -19,7 +19,6 @@ import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterChainRable;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.FloodRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
@@ -68,39 +67,30 @@ public class SVGFeFloodElementBridge implements FilterBridge, SVGConstants {
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap){
         // Extract flood color
         CSSStyleDeclaration decl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
+            = bridgeContext.getViewCSS().getComputedStyle
+            (filterElement, null);
         Color floodColor
             = CSSUtilities.convertFloodColorToPaint(decl);
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
+            = bridgeContext.getViewCSS().getComputedStyle
+            (filterElement, null);
 
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
 
-        // Get unit. Comes from parent node.
-        Node parentNode = filterElement.getParentNode();
-        String units = VALUE_USER_SPACE_ON_USE;
-        if((parentNode != null)
-           &&
-           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
-            units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
-        }
-
-
         Rectangle2D floodRegion
-            = SVGUtilities.convertFilterPrimitiveRegion2(filterElement,
-                                                         filteredElement,
-                                                         filterRegion.getRegion(),
-                                                         units,
-                                                         filteredNode,
-                                                         uctx);
+            = SVGUtilities.convertFilterPrimitiveRegion2
+            (filterElement,
+             filteredElement,
+             filterRegion,
+             filteredNode,
+             uctx);
 
         // First, create the FloodRable that maps the input filter node
         FloodRable flood = new ConcreteFloodRable(floodRegion, floodColor);

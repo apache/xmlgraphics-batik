@@ -19,7 +19,6 @@ import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterChainRable;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.refimpl.gvt.filter.ConcreteFilterChainRable;
@@ -59,7 +58,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap){
         // Make the initial source as a RenderableImage
         GraphicsNodeRableFactory gnrFactory
@@ -76,18 +75,16 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
 
-        Rectangle2D filterRegionRect =
+        filterRegion =
             SVGUtilities.convertFilterChainRegion
             (filterElement,
              filteredElement,
              filteredNode,
              uctx);
 
-        filterRegion = new DummyFilterRegion(filterRegionRect);
-
         // Build a ConcreteFilterChainRable
         FilterChainRable filterChain
-            = new ConcreteFilterChainRable(sourceGraphic, filterRegionRect);
+            = new ConcreteFilterChainRable(sourceGraphic, filterRegion);
 
 
         // Get filter resolution. -1 means undefined.
@@ -183,14 +180,3 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
     }
 }
 
-class DummyFilterRegion implements FilterRegion{
-    Rectangle2D r;
-
-    public Rectangle2D getRegion(){
-        return (Rectangle2D)r.clone();
-    }
-
-    public DummyFilterRegion(Rectangle2D r){
-        this.r = r;
-    }
-}

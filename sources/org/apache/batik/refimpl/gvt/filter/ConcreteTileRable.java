@@ -22,7 +22,6 @@ import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.CachableRed;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.TileRable;
 
@@ -30,12 +29,12 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
     /**
      * Tile region
      */
-    private FilterRegion tileRegion;
+    private Rectangle2D tileRegion;
 
     /**
      * Tiled region
      */
-    private FilterRegion tiledRegion;
+    private Rectangle2D tiledRegion;
 
     /**
      * Controls whether the tileRegion clips the source
@@ -46,14 +45,14 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
     /**
      * Returns the tile region
      */
-    public FilterRegion getTileRegion(){
+    public Rectangle2D getTileRegion(){
         return tileRegion;
     }
 
     /**
      * Sets the tile region
      */
-    public void setTileRegion(FilterRegion tileRegion){
+    public void setTileRegion(Rectangle2D tileRegion){
         if(tileRegion == null){
             throw new IllegalArgumentException();
         }
@@ -63,14 +62,14 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
     /**
      * Returns the tiled region
      */
-    public FilterRegion getTiledRegion(){
+    public Rectangle2D getTiledRegion(){
         return tiledRegion;
     }
 
     /**
      * Sets the tiled region
      */
-    public void setTiledRegion(FilterRegion tiledRegion){
+    public void setTiledRegion(Rectangle2D tiledRegion){
         if(tiledRegion == null){
             throw new IllegalArgumentException();
         }
@@ -95,8 +94,8 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
      * Default constructor
      */
     public ConcreteTileRable(Filter source, 
-                             FilterRegion tiledRegion,
-                             FilterRegion tileRegion,
+                             Rectangle2D tiledRegion,
+                             Rectangle2D tileRegion,
                              boolean overflow){
         super(source);
 
@@ -123,7 +122,7 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
      * Returns this filter's bounds
      */
     public Rectangle2D getBounds2D(){
-        return tiledRegion.getRegion();
+        return (Rectangle2D)tiledRegion.clone();
     }
 
     /**
@@ -166,7 +165,7 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
         Rectangle2D.intersect(tiledRect, aoiRect, tiledRect);
 
         // Get the tile rectangle in user space
-        Rectangle2D tileRect = tileRegion.getRegion();
+        Rectangle2D tileRect = (Rectangle2D)tileRegion.clone();
 
         // System.out.println("tileRect : " + tileRect);
         // System.out.println("tiledRect: " + tiledRect);

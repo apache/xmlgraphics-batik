@@ -18,7 +18,6 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.ComponentTransferFunction;
 import org.apache.batik.gvt.filter.ComponentTransferRable;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteComponentTransferFunction;
@@ -64,7 +63,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap){
         Filter filter = null;
 
@@ -77,20 +76,22 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                                           in, filterMap);
 
         if(in != null){
-            FilterRegion defaultRegion = new FilterSourceRegion(in);
+            //
+            // The default region is the input source's region
+            // unless the source is SourceGraphics, in which
+            // case the default region is the filter chain's 
+            // region
+            //
+            Filter sourceGraphics 
+                = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-            // Get unit. Comes from parent node.
-            Node parentNode = filterElement.getParentNode();
-            String units = VALUE_USER_SPACE_ON_USE;
-            if((parentNode != null)
-               &&
-               (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
-                units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+            Rectangle2D defaultRegion 
+                = in.getBounds2D();
+
+            if(in == sourceGraphics){
+                defaultRegion = filterRegion;
             }
 
-            //
-            // Now, extraact filter region
-            //
             CSSStyleDeclaration cssDecl
                 = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                               null);
@@ -99,13 +100,13 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                 = new DefaultUnitProcessorContext(bridgeContext,
                                                   cssDecl);
 
-            final FilterRegion blurArea
-                = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                            filteredElement,
-                                                            defaultRegion,
-                                                            units,
-                                                            filteredNode,
-                                                            uctx);
+            Rectangle2D primitiveRegion 
+                = SVGUtilities.convertFilterPrimitiveRegion2
+                (filterElement,
+                 filteredElement,
+                 defaultRegion,
+                 filteredNode,
+                 uctx);
 
             //
             // Now, extract the various transfer functions. They
@@ -160,27 +161,16 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
             }
 
 
-            filter = new ConcreteComponentTransferRable(in,
-                                                        alphaFunction,
-                                                        redFunction,
-                                                        greenFunction,
-                                                        blueFunction);
+            filter = new ConcreteComponentTransferRable
+                (in,
+                 alphaFunction,
+                 redFunction,
+                 greenFunction,
+                 blueFunction);
 
-            Filter mapFilter = filter;
-
-            mapFilter = new ConcretePadRable(filter,
-                                             blurArea.getRegion(),
-                                             PadMode.ZERO_PAD){
-                    public Rectangle2D getBounds2D(){
-                        setPadRect(blurArea.getRegion());
-                        return super.getBounds2D();
-                    }
-
-                    public java.awt.image.RenderedImage createRendering(java.awt.image.renderable.RenderContext rc){
-                        setPadRect(blurArea.getRegion());
-                        return super.createRendering(rc);
-                    }
-                };
+            filter = new ConcretePadRable(filter,
+                                          primitiveRegion,
+                                          PadMode.ZERO_PAD);
 
 
             // Get result attribute and update map
@@ -188,9 +178,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                 = filterElement.getAttributeNS(null,
                                                ATTR_RESULT);
             if((result != null) && (result.trim().length() > 0)){
-                // The filter will be added to the filter map. Before
-                // we do that, append the filter region crop
-                filterMap.put(result, mapFilter);
+                filterMap.put(result, filter);
             }
         }
 

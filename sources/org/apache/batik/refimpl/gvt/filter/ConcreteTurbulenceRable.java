@@ -9,7 +9,6 @@
 package org.apache.batik.refimpl.gvt.filter;
 
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.TurbulenceRable;
 
 import java.awt.AlphaComposite;
@@ -57,14 +56,14 @@ public class ConcreteTurbulenceRable
     boolean stitched       = false; // True if tiles are stitched
     boolean fractalNoise = false; // True if fractal noise should be used.
 
-    FilterRegion region;
+    Rectangle2D region;
 
-    public ConcreteTurbulenceRable(FilterRegion region) {
+    public ConcreteTurbulenceRable(Rectangle2D region) {
         super();
         this.region = region;
     }
 
-    public ConcreteTurbulenceRable(FilterRegion region,
+    public ConcreteTurbulenceRable(Rectangle2D region,
                                    int         seed,
                                    int         numOctaves,
                                    double      baseFreqX,
@@ -84,15 +83,15 @@ public class ConcreteTurbulenceRable
     /**
      * Get the turbulence region
      */
-    public FilterRegion getTurbulenceRegion() {
-        return region;
+    public Rectangle2D getTurbulenceRegion() {
+        return (Rectangle2D)region.clone();
     }
 
     /**
      * Get the turbulence region
      */
     public Rectangle2D getBounds2D() {
-        return region.getRegion();
+        return (Rectangle2D)region.clone();
     }
 
     /**
@@ -149,7 +148,7 @@ public class ConcreteTurbulenceRable
      * Sets the turbulence region
      * @param TurbulenceRegion region to fill with turbulence function.
      */
-    public void setTurbulenceRegion(FilterRegion turbulenceRegion) {
+    public void setTurbulenceRegion(Rectangle2D turbulenceRegion) {
         touch();
         this.region = region;
     }
@@ -236,7 +235,7 @@ public class ConcreteTurbulenceRable
         TurbulencePatternGenerator turbGenerator 
             = new TurbulencePatternGenerator(baseFreqX, baseFreqY, numOctaves,
                                              seed, stitched, fractalNoise, true,
-                                             region.getRegion(), new boolean[]{true, true, true, true});
+                                             (Rectangle2D)region.clone(), new boolean[]{true, true, true, true});
 
         AffineTransform patternTxf = new AffineTransform();
         try{

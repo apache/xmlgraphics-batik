@@ -17,7 +17,6 @@ import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.ColorMatrixRable;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteColorMatrixRable;
@@ -62,56 +61,37 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap){
-        ColorMatrixRable filter = null;
+        Filter filter = null;
 
         //
         // First, extract source
         //
         String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        int inValue = SVGUtilities.parseInAttribute(inAttr);
-        switch(inValue){
-        case SVGUtilities.EMPTY:
-            // Do not change in's value. It is correctly
-            // set to the current chain result.
-            break;
-        case SVGUtilities.BACKGROUND_ALPHA:
-            throw new Error("BackgroundAlpha not implemented yet");
-        case SVGUtilities.BACKGROUND_IMAGE:
-            throw new Error("BackgroundImage not implemented yet");
-        case SVGUtilities.FILL_PAINT:
-            throw new Error("Not implemented yet");
-        case SVGUtilities.SOURCE_ALPHA:
-            throw new Error("SourceAlpha not implemented yet");
-        case SVGUtilities.SOURCE_GRAPHIC:
-            in = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-            break;
-        case SVGUtilities.STROKE_PAINT:
-            throw new Error("Not implemented yet");
-        case SVGUtilities.IDENTIFIER:
-            in = (Filter)filterMap.get(inAttr);
-            break;
-        default:
-            // Should never, ever, ever happen
-            throw new Error();
-        }
 
+        in = CSSUtilities.getFilterSource
+            (filteredNode, inAttr, 
+             bridgeContext, filteredElement,
+             in, filterMap);
+    
         if(in != null){
-            FilterRegion defaultRegion = new FilterSourceRegion(in);
+            //
+            // The default region is the input source's region
+            // unless the source is SourceGraphics, in which
+            // case the default region is the filter chain's 
+            // region
+            //
+            Filter sourceGraphics 
+                = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-            // Get unit. Comes from parent node.
-            Node parentNode = filterElement.getParentNode();
-            String units = VALUE_USER_SPACE_ON_USE;
-            if((parentNode != null)
-               &&
-               (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
-                units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+            Rectangle2D defaultRegion 
+                = in.getBounds2D();
+
+            if(in == sourceGraphics){
+                defaultRegion = filterRegion;
             }
 
-            //
-            // Now, extraact filter region
-            //
             CSSStyleDeclaration cssDecl
                 = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                               null);
@@ -120,13 +100,13 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
                 = new DefaultUnitProcessorContext(bridgeContext,
                                                   cssDecl);
 
-            final FilterRegion blurArea
-                = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                            filteredElement,
-                                                            defaultRegion,
-                                                            units,
-                                                            filteredNode,
-                                                            uctx);
+            Rectangle2D primitiveRegion 
+                = SVGUtilities.convertFilterPrimitiveRegion2
+                (filterElement,
+                 filteredElement,
+                 defaultRegion,
+                 filteredNode,
+                 uctx);
 
             //
             // Extract the matrix type. Interpret the values
@@ -135,51 +115,40 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
             String typeStr = filterElement.getAttributeNS(null, ATTR_TYPE);
             int type = convertType(typeStr);
             String valuesStr = filterElement.getAttributeNS(null, ATTR_VALUES);
+            ColorMatrixRable colorMatrix = null;
 
             switch(type){
             case ColorMatrixRable.TYPE_MATRIX:
                 float matrix[][] = convertValuesToMatrix(valuesStr);
-                filter = ConcreteColorMatrixRable.buildMatrix(matrix);
+                colorMatrix = ConcreteColorMatrixRable.buildMatrix(matrix);
                 break;
             case ColorMatrixRable.TYPE_SATURATE:
                 float s = convertRatio(valuesStr);
-                filter = ConcreteColorMatrixRable.buildSaturate(s);
+                colorMatrix = ConcreteColorMatrixRable.buildSaturate(s);
                 break;
             case ColorMatrixRable.TYPE_HUE_ROTATE:
                 float a = convertFloatValue(valuesStr);
-                filter = ConcreteColorMatrixRable.buildHueRotate((float)(a*Math.PI/180));
+                colorMatrix = ConcreteColorMatrixRable.buildHueRotate((float)(a*Math.PI/180));
                 break;
             case ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA:
-                filter = ConcreteColorMatrixRable.buildLuminanceToAlpha();
+                colorMatrix = ConcreteColorMatrixRable.buildLuminanceToAlpha();
                 break;
             }
 
-            filter.setSource(in);
+            colorMatrix.setSource(in);
 
-            Filter mapFilter = filter;
-            mapFilter = new ConcretePadRable(filter,
-                                          blurArea.getRegion(),
-                                          PadMode.ZERO_PAD){
-                    public Rectangle2D getBounds2D(){
-                        setPadRect(blurArea.getRegion());
-                        return super.getBounds2D();
-                    }
-
-                    public java.awt.image.RenderedImage createRendering(java.awt.image.renderable.RenderContext rc){
-                        setPadRect(blurArea.getRegion());
-                        return super.createRendering(rc);
-                    }
-                };
+            filter = new ConcretePadRable(colorMatrix,
+                                          primitiveRegion,
+                                          PadMode.ZERO_PAD);
 
 
             // Get result attribute and update map
             String result
                 = filterElement.getAttributeNS(null,
                                                ATTR_RESULT);
+            
             if((result != null) && (result.trim().length() > 0)){
-                // The filter will be added to the filter map. Before
-                // we do that, append the filter region crop
-                filterMap.put(result, mapFilter);
+                filterMap.put(result, filter);
             }
         }
 

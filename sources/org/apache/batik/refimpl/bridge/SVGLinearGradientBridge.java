@@ -22,7 +22,6 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.util.awt.LinearGradientPaint;
-import org.apache.batik.util.awt.geom.AffineTransformSource;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -86,6 +85,9 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         // Get gradient units
         //
         String units = paintElement.getAttributeNS(null, ATTR_GRADIENT_UNITS);
+        if(units.length() == 0){
+            units = VALUE_OBJECT_BOUNDING_BOX;
+        }
 
         //
         // Extract end points
@@ -136,10 +138,9 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         AffineTransform at = AWTTransformProducer.createAffineTransform
             (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)), ctx.getParserFactory());
 
-        AffineTransformSource ats 
-            = SVGUtilities.convertAffineTransformSource(at, 
-                                                        paintedNode, 
-                                                        units);
+        at  = SVGUtilities.convertAffineTransform(at, 
+                                                  paintedNode, 
+                                                  units);
 
         //
         // Extract stop colors and intervals
@@ -173,7 +174,6 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         //
         // Extract the color interpolation property
         //
-        cssDecl = ctx.getViewCSS().getComputedStyle(paintedElement, null);
         CSSPrimitiveValue colorInterpolation
             = (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
         
@@ -198,7 +198,7 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
             paint = new LinearGradientPaint(p1, p2, offsets, colors,
                                             cycleMethod,
                                             colorSpace,
-                                            ats);
+                                            at);
         }
         return paint;
     }

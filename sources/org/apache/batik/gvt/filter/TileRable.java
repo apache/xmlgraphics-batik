@@ -8,6 +8,8 @@
 
 package org.apache.batik.gvt.filter;
 
+import java.awt.geom.Rectangle2D;
+
 /**
  * A renderable that can tile its source into the tile region.
  * 
@@ -18,22 +20,22 @@ public interface TileRable extends Filter {
     /**
      * Returns the tile region
      */
-    public FilterRegion getTileRegion();
+    public Rectangle2D getTileRegion();
 
     /**
      * Sets the tile region
      */
-    public void setTileRegion(FilterRegion tileRegion);
+    public void setTileRegion(Rectangle2D tileRegion);
 
     /**
      * Returns the tiled region
      */
-    public FilterRegion getTiledRegion();
+    public Rectangle2D getTiledRegion();
 
     /**
      * Sets the tile region
      */
-    public void setTiledRegion(FilterRegion tiledRegion);
+    public void setTiledRegion(Rectangle2D tiledRegion);
 
     /**
      * Returns whether or not the source can overflow

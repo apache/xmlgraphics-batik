@@ -8,11 +8,11 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 
 import org.w3c.dom.Element;
 
@@ -34,7 +34,7 @@ public interface FilterBridge extends Bridge {
      * @param filteredElement DOM element that references the input filter element.
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
@@ -46,7 +46,7 @@ public interface FilterBridge extends Bridge {
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap);
 
     /**

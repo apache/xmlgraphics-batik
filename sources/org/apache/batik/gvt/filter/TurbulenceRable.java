@@ -22,12 +22,12 @@ public interface TurbulenceRable extends Filter {
      * Sets the turbulence region
      * @param TurbulenceRable region to fill with turbulence function.
      */
-    public void setTurbulenceRegion(FilterRegion turbulenceRegion);
+    public void setTurbulenceRegion(Rectangle2D turbulenceRegion);
 
     /**
      * Get the turbulence region
      */
-     public FilterRegion getTurbulenceRegion();
+     public Rectangle2D getTurbulenceRegion();
 
     /**
      * Get the current seed value for the pseudo random number generator.

@@ -17,30 +17,12 @@ import java.util.StringTokenizer;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.parser.LengthHandler;
 import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.parser.PreserveAspectRatioHandler;
 import org.apache.batik.parser.PreserveAspectRatioParser;
-import org.apache.batik.refimpl.gvt.AffineTransformSourceBoundingBox;
-import org.apache.batik.refimpl.gvt.DimensionTransformer;
-import org.apache.batik.refimpl.gvt.DimensionTransformerBoundingBox;
-import org.apache.batik.refimpl.gvt.PointTransformer;
-import org.apache.batik.refimpl.gvt.PointTransformerBoundingBox;
-import org.apache.batik.refimpl.gvt.PointTransformerIdentity;
-import org.apache.batik.refimpl.gvt.TransformedDimension;
-import org.apache.batik.refimpl.gvt.TransformedPoint;
-import org.apache.batik.refimpl.gvt.filter.FilterChainRegion;
-import org.apache.batik.refimpl.gvt.filter.FilterPrimitiveRegion;
-import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformer;
-import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformerBoundingBox;
-import org.apache.batik.refimpl.gvt.filter.FilterRegionTransformerIdentity;
-import org.apache.batik.util.awt.geom.CompositeAffineTransformSource;
-
-import org.apache.batik.util.awt.geom.AffineTransformSource;
-import org.apache.batik.util.awt.geom.DefaultAffineTransformSource;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -600,7 +582,7 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
-     * Creates a <tt>FilterRegion</tt> for the input filter
+     * Creates a <tt>Rectangle2D</tt> for the input filter
      * element, processing the element as the top one in
      * the filter chain (i.e., a &lt;filter&gt; element or
      * custom element equivalent).
@@ -620,15 +602,15 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
-     * Creates a <tt>FilterRegion</tt> for the input mask
+     * Creates a <tt>Rectangle2D</tt> for the input mask
      * element.
      */
-    public static FilterRegion
+    public static Rectangle2D
         convertMaskRegion(Element maskElement,
                           Element maskedElement,
                           GraphicsNode node,
                           UnitProcessor.Context uctx){
-        return convertRegion(maskElement, maskedElement,
+        return convertRegion2(maskElement, maskedElement,
                              node, uctx, ATTR_MASK_UNITS,
                              VALUE_OBJECT_BOUNDING_BOX,
                              VALUE_MASK_X_DEFAULT,
@@ -638,188 +620,22 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
-     * Creates a <tt>FilterRegion</tt> for the input mask
+     * Creates a <tt>Rectangle2D</tt> for the input mask
      * element.
      */
-    public static FilterRegion
-        convertPatternRegion(Element maskElement,
-                             Element maskedElement,
+    public static Rectangle2D
+        convertPatternRegion(Element patternElement,
+                             Element paintedElement,
                              GraphicsNode node,
                              UnitProcessor.Context uctx){
-        return convertRegion(maskElement, maskedElement,
+        System.out.println("Converting pattern region for : " + node + " / " + node.getBounds());
+        return convertRegion2(patternElement, paintedElement,
                              node, uctx, ATTR_PATTERN_UNITS,
                              VALUE_OBJECT_BOUNDING_BOX,
                              VALUE_PATTERN_X_DEFAULT,
                              VALUE_PATTERN_Y_DEFAULT,
                              VALUE_PATTERN_WIDTH_DEFAULT,
                              VALUE_PATTERN_HEIGHT_DEFAULT);
-    }
-
-    /**
-     * Creates a <tt>FilterRegion</tt> for the input filter
-     * element, processing the element as the top one in
-     * the filter chain (i.e., a &lt;filter&gt; element or
-     * custom element equivalent).
-     */
-    protected static FilterRegion
-        convertRegion(Element filterElement,
-                      Element filteredElement,
-                      GraphicsNode node,
-                      UnitProcessor.Context uctx,
-                      String unitsAttr,
-                      String unitsDefault,
-                      String xDefault, String yDefault,
-                      String widthDefault, String heightDefault){
-        SVGElement svgElement = (SVGElement)filteredElement;
-
-        // x, y, width and height will hold the filter
-        // region size
-        float x, y, width, height;
-
-        // regionTransformer will hold the FilterRegion
-        // space to user space transformer.
-        FilterRegionTransformer txf = null;
-
-        // Extract filterUnits value
-        String units = filterElement.getAttributeNS(null, unitsAttr);
-
-        if(units.length() == 0){
-            units = unitsDefault;
-        }
-
-        //System.out.println("units : " + units);
-        if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
-            //
-            // Values are in 'objectBoundingBox' units
-            // These cannot be resolved at construction time,
-            // so we keep value in 'FilterRegion space'. We also
-            // build a FilterRegionTransformerBoundingBox that
-            // will resolve bounding box coordinates to user
-            // space coordinates upon rendering (i.e., when the
-            // FilterRegion's getBounds is invoked.
-            //
-
-            // Build FilterRegionTransformer
-            txf = new FilterRegionTransformerBoundingBox(node);
-
-            // Now, resolve each of x, y, widht and height values.
-            // For each value, we distinguish two cases: percentages
-            // and other. If a percentage value is used, it is converted
-            // to a 'FilterRegion' space coordinate by division by 100
-            // Otherwise, standard unit conversion is used.
-            LengthParser p = uctx.getParserFactory().createLengthParser();
-            UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
-            p.setLengthHandler(ur);
-
-            // x  value
-            String floatStr = filterElement.getAttributeNS(null, ATTR_X);
-            floatStr = (floatStr.length() == 0 ? xDefault : floatStr);
-            p.parse(new StringReader(floatStr));
-
-            if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                x = ur.value / 100;
-            }
-            else{
-                x = UnitProcessor.svgToUserSpace(ur.unit,
-                                                 ur.value,
-                                                 svgElement,
-                                                 UnitProcessor.HORIZONTAL_LENGTH,
-                                                 uctx);
-            }
-
-            // y value
-            floatStr = filterElement.getAttributeNS(null, ATTR_Y);
-            floatStr = (floatStr.length() == 0 ? yDefault : floatStr);
-            ur = new UnitProcessor.UnitResolver();
-            p.setLengthHandler(ur);
-            p.parse(new StringReader(floatStr));
-
-            if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                y = ur.value / 100;
-            }
-            else{
-                y = UnitProcessor.svgToUserSpace(ur.unit, ur.value,
-                                                 svgElement,
-                                                 UnitProcessor.VERTICAL_LENGTH,
-                                                 uctx);
-            }
-
-            // width  value
-            floatStr = filterElement.getAttributeNS(null, ATTR_WIDTH);
-            floatStr = (floatStr.length() == 0 ? widthDefault : floatStr);
-            ur = new UnitProcessor.UnitResolver();
-            p.setLengthHandler(ur);
-            p.parse(new StringReader(floatStr));
-
-            if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                width = ur.value / 100;
-            }
-            else{
-                width = UnitProcessor.svgToUserSpace(ur.unit, ur.value,
-                                                     svgElement,
-                                                     UnitProcessor.HORIZONTAL_LENGTH,
-                                                     uctx);
-            }
-
-            // height value
-            floatStr = filterElement.getAttributeNS(null, ATTR_HEIGHT);
-            floatStr = (floatStr.length() == 0 ? heightDefault : floatStr);
-            ur = new UnitProcessor.UnitResolver();
-            p.setLengthHandler(ur);
-            p.parse(new StringReader(floatStr));
-
-            if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                height = ur.value / 100;
-            }
-            else{
-                height= UnitProcessor.svgToUserSpace(ur.unit, ur.value,
-                                                     svgElement,
-                                                     UnitProcessor.VERTICAL_LENGTH,
-                                                     uctx);
-            }
-        }
-
-        else{
-            //
-            // Values are in 'userSpaceOnUse'. Everything, including percentages,
-            // can be resolved now (percentages refer to the viewPort
-            //
-
-            // Build FilterRegionTransformer that does not do anything
-            txf = new FilterRegionTransformerIdentity();
-
-            // Now, resolve each of the x, y, width and height values
-            String floatStr = filterElement.getAttributeNS(null, ATTR_X);
-            floatStr = (floatStr.length() == 0 ? VALUE_ZERO : floatStr);
-            x = UnitProcessor.svgToUserSpace(floatStr,
-                                             svgElement,
-                                             UnitProcessor.HORIZONTAL_LENGTH,
-                                             uctx);
-
-            floatStr = filterElement.getAttributeNS(null, ATTR_Y);
-            floatStr = (floatStr.length() == 0 ? VALUE_ZERO : floatStr);
-            y = UnitProcessor.svgToUserSpace(floatStr,
-                                             svgElement,
-                                             UnitProcessor.VERTICAL_LENGTH,
-                                             uctx);
-
-            floatStr = filterElement.getAttributeNS(null, ATTR_WIDTH);
-            floatStr = (floatStr.length() == 0 ? VALUE_HUNDRED_PERCENT : floatStr);
-            width = UnitProcessor.svgToUserSpace(floatStr,
-                                                 svgElement,
-                                                 UnitProcessor.HORIZONTAL_LENGTH,
-                                                 uctx);
-
-            floatStr = filterElement.getAttributeNS(null, ATTR_HEIGHT);
-            floatStr = (floatStr.length() == 0 ? VALUE_HUNDRED_PERCENT : floatStr);
-            height = UnitProcessor.svgToUserSpace(floatStr,
-                                                  svgElement,
-                                                  UnitProcessor.VERTICAL_LENGTH,
-                                                  uctx);
-        }
-
-        return new FilterChainRegion(x, y, width, height,
-                                     txf);
     }
 
     /**
@@ -929,7 +745,7 @@ public class SVGUtilities implements SVGConstants {
             }
 
             // Now, take the bounds into account
-            Rectangle2D gnBounds = node.getBounds();
+            Rectangle2D gnBounds = node.getGeometryBounds();
 
             height *= gnBounds.getHeight();
             width  *= gnBounds.getWidth();
@@ -1115,29 +931,6 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
-     * Creates an <tt>AffineTransformSource</tt>
-     */
-    public static AffineTransformSource
-        convertAffineTransformSource(AffineTransform at,
-                                     GraphicsNode node,
-                                     String units){
-
-        AffineTransformSource ats = null;
-        if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
-            AffineTransformSource ts =
-                new DefaultAffineTransformSource(at);
-            AffineTransformSource bbts =
-                new AffineTransformSourceBoundingBox(node);
-
-            ats = new CompositeAffineTransformSource(bbts, ts);
-        } else {
-            ats = new DefaultAffineTransformSource(at);
-        }
-
-        return ats;
-    }
-
-    /**
      * Creates an <tt>AffineTransform</tt>.
      */
     public static AffineTransform convertAffineTransform(AffineTransform at,
@@ -1160,171 +953,6 @@ public class SVGUtilities implements SVGConstants {
         return Mx;
     }
 
-
-    /**
-     * Creates a <tt>FilterRegion</tt> for the input filter
-     * primitive element, processing the element as a node in
-     * a filter chain.
-     */
-    public static FilterRegion
-        convertFilterPrimitiveRegion(Element filterPrimitiveElement,
-                                     Element filteredElement,
-                                     FilterRegion defaultRegion,
-                                     String units,
-                                     GraphicsNode node,
-                                     UnitProcessor.Context uctx){
-        SVGElement svgElement = (SVGElement)filteredElement;
-
-        // x, y, width and height will hold the filter
-        // region size
-        Float x=null, y=null, width=null, height=null;
-
-        // regionTransformer will hold the FilterRegion
-        // space to user space transformer.
-        FilterRegionTransformer txf = null;
-
-        if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
-            //
-            // Values are in 'objectBoundingBox' units
-            // These cannot be resolved at construction time,
-            // so we keep value in 'FilterRegion space'. We also
-            // build a FilterRegionTransformerBoundingBox that
-            // will resolve bounding box coordinates to user
-            // space coordinates upon rendering (i.e., when the
-            // FilterRegion's getBounds is invoked.
-            //
-
-            // Build FilterRegionTransformer
-            txf = new FilterRegionTransformerBoundingBox(node);
-
-            // Now, resolve each of x, y, widht and height values.
-            // For each value, we distinguish two cases: percentages
-            // and other. If a percentage value is used, it is converted
-            // to a 'FilterRegion' space coordinate by division by 100
-            // Otherwise, standard unit conversion is used.
-            LengthParser p = uctx.getParserFactory().createLengthParser();
-            UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
-            p.setLengthHandler(ur);
-
-            // x  value
-            String floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_X);
-            if(floatStr.length() > 0){
-                p.parse(new StringReader(floatStr));
-
-                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                    x = new Float(ur.value / 100f);
-                }
-                else{
-                    x = new Float(UnitProcessor.svgToUserSpace(ur.unit,
-                                                               ur.value,
-                                                               svgElement,
-                                                               UnitProcessor.HORIZONTAL_LENGTH,
-                                                               uctx));
-                }
-            }
-
-            // y value
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_Y);
-            if(floatStr.length() > 0){
-                ur = new UnitProcessor.UnitResolver();
-                p.setLengthHandler(ur);
-                p.parse(new StringReader(floatStr));
-
-                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                    y = new Float(ur.value / 100f);
-                }
-                else{
-                    y = new Float(UnitProcessor.svgToUserSpace(ur.unit, ur.value,
-                                                               svgElement,
-                                                               UnitProcessor.VERTICAL_LENGTH,
-                                                               uctx));
-                }
-            }
-
-            // width  value
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_WIDTH);
-            if(floatStr.length() > 0){
-                ur = new UnitProcessor.UnitResolver();
-                p.setLengthHandler(ur);
-                p.parse(new StringReader(floatStr));
-
-                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                    width = new Float(ur.value / 100f);
-                }
-                else{
-                    width = new Float(UnitProcessor.svgToUserSpace(ur.unit, ur.value,
-                                                                   svgElement,
-                                                                   UnitProcessor.HORIZONTAL_LENGTH,
-                                                                   uctx));
-                }
-            }
-
-            // height value
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_HEIGHT);
-            if(floatStr.length() > 0){
-                ur = new UnitProcessor.UnitResolver();
-                p.setLengthHandler(ur);
-                p.parse(new StringReader(floatStr));
-
-                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
-                    height = new Float(ur.value / 100f);
-                }
-                else{
-                    height= new Float(UnitProcessor.svgToUserSpace(ur.unit, ur.value,
-                                                                   svgElement,
-                                                                   UnitProcessor.VERTICAL_LENGTH,
-                                                                   uctx));
-                }
-            }
-        }
-
-        else{
-            //
-            // Values are in 'userSpaceOnUse'. Everything, including percentages,
-            // can be resolved now (percentages refer to the viewPort
-            //
-
-            // Build FilterRegionTransformer that does not do anything
-            txf = new FilterRegionTransformerIdentity();
-
-            // Now, resolve each of the x, y, width and height values
-            String floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_X);
-            if(floatStr.length() > 0){
-                x = new Float(UnitProcessor.svgToUserSpace(floatStr,
-                                                           svgElement,
-                                                           UnitProcessor.HORIZONTAL_LENGTH,
-                                                           uctx));
-            }
-
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_Y);
-            if(floatStr.length() > 0){
-                y = new Float(UnitProcessor.svgToUserSpace(floatStr,
-                                                           svgElement,
-                                                           UnitProcessor.VERTICAL_LENGTH,
-                                                           uctx));
-            }
-
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_WIDTH);
-            if(floatStr.length() > 0){
-                width = new Float(UnitProcessor.svgToUserSpace(floatStr,
-                                                               svgElement,
-                                                               UnitProcessor.HORIZONTAL_LENGTH,
-                                                               uctx));
-            }
-
-            floatStr = filterPrimitiveElement.getAttributeNS(null, ATTR_HEIGHT);
-            if(floatStr.length() > 0){
-                height = new Float(UnitProcessor.svgToUserSpace(floatStr,
-                                                                svgElement,
-                                                                UnitProcessor.VERTICAL_LENGTH,
-                                                                uctx));
-            }
-        }
-
-        return new FilterPrimitiveRegion(x, y, width, height,
-                                         txf, defaultRegion);
-    }
-
     /**
      * Creates a <tt>Rectangle2D</tt> for the input filter
      * primitive element, processing the element as a node in
@@ -1334,9 +962,20 @@ public class SVGUtilities implements SVGConstants {
         convertFilterPrimitiveRegion2(Element filterPrimitiveElement,
                                       Element filteredElement,
                                       Rectangle2D defaultRegion,
-                                      String units,
                                       GraphicsNode node,
                                       UnitProcessor.Context uctx){
+        // Get unit. Comes from parent node.
+        Node parentNode = filterPrimitiveElement.getParentNode();
+        String units = "";
+        if((parentNode != null)
+           &&
+           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
+            units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+        }
+        if(units.length() == 0){
+            units = VALUE_USER_SPACE_ON_USE;
+        }
+
         SVGElement svgElement = (SVGElement)filteredElement;
 
         // x, y, width and height will hold the filter

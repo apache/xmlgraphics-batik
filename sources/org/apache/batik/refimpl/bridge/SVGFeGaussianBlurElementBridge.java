@@ -15,7 +15,6 @@ import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.GaussianBlurRable;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
@@ -59,7 +58,7 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
                          Element filterElement,
                          Element filteredElement,
                          Filter in,
-                         FilterRegion filterRegion,
+                         Rectangle2D filterRegion,
                          Map filterMap){
         //
         // Extract standard deviation
@@ -93,70 +92,53 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
                                           filteredElement,
                                           in, filterMap);
 
-
-          // feGaussianBlur is a point operation. Therefore, to take the
-          // filter primitive region into account, only a pad operation
-          // on the input is required.
-
-                // The primitive region defaults to the source's region.
-        FilterRegion defaultRegion = new FilterSourceRegion(in);
-
-          // Get unit. Comes from parent node.
-        Node parentNode = filterElement.getParentNode();
-        String units = VALUE_USER_SPACE_ON_USE;
-        if((parentNode != null)
-           && (parentNode.getNodeType() == parentNode.ELEMENT_NODE)) {
-            units = ((Element)parentNode).getAttributeNS
-                (null, ATTR_PRIMITIVE_UNITS);
+        if (in == null){
+            return null;
         }
 
-          // Compute primitive region
+        //
+        // The default region is the input source's region
+        // unless the source is SourceGraphics, in which
+        // case the default region is the filter chain's 
+        // region
+        //
+        Filter sourceGraphics 
+            = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        
+        Rectangle2D defaultRegion 
+            = in.getBounds2D();
+        
+        if(in == sourceGraphics){
+            defaultRegion = filterRegion;
+        }
+        
         CSSStyleDeclaration cssDecl
             = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                           null);
-
+        
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext,
                                               cssDecl);
+        
+        Rectangle2D blurArea 
+            = SVGUtilities.convertFilterPrimitiveRegion2
+            (filterElement,
+             filteredElement,
+             defaultRegion,
+             filteredNode,
+             uctx);
 
-        final FilterRegion blurArea
-            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                        filteredElement,
-                                                        defaultRegion,
-                                                        units,
-                                                        filteredNode,
-                                                        uctx);
-
-          // Let this be lazily computed on request
         PadRable pad = new ConcretePadRable
-            (in, new Rectangle2D.Float(0, 0, 0, 0), PadMode.ZERO_PAD) {
-                public Rectangle2D getBounds2D(){
-                    setPadRect(blurArea.getRegion());
-                    return super.getBounds2D();
-                }
-
-                public Rectangle2D getPadRect() {
-                    setPadRect(blurArea.getRegion());
-                    return super.getPadRect();
-                }
-                
-                public java.awt.image.RenderedImage createRendering
-                    (java.awt.image.renderable.RenderContext rc){
-                    setPadRect(blurArea.getRegion());
-                    return super.createRendering(rc);
-                }
-            };
-
-          // Build filter
+            (in, blurArea, PadMode.ZERO_PAD);
+        
+        // Build filter
         Filter filter = null;
         filter = new ConcreteGaussianBlurRable(pad, stdDeviationX, 
                                                stdDeviationY);
-
-          // Get result attribute if any
+        
+        // Get result attribute if any
         String result = filterElement.getAttributeNS(null,ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
-              // The filter will be added to the filter map. Before
-              // we do that, append the filter region crop
             filterMap.put(result, filter);
         }
         return filter;

@@ -11,7 +11,6 @@ package org.apache.batik.refimpl.gvt.filter;
 import org.apache.batik.gvt.GraphicsNode;
 
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.filter.PadMode;
@@ -48,9 +47,10 @@ public class ConcreteMaskRable
     /**
      * Region to which the mask applies
      */
-    protected FilterRegion filterRegion;
+    protected Rectangle2D filterRegion;
 
-    public ConcreteMaskRable(Filter src, GraphicsNode mask, FilterRegion filterRegion) {
+    public ConcreteMaskRable(Filter src, GraphicsNode mask, 
+                             Rectangle2D filterRegion) {
         super(src, null);
         setMaskNode(mask);
         setFilterRegion(filterRegion);
@@ -75,14 +75,14 @@ public class ConcreteMaskRable
     /**
      * The region to which this mask applies
      */
-    public FilterRegion getFilterRegion(){
-        return filterRegion;
+    public Rectangle2D getFilterRegion(){
+        return (Rectangle2D)filterRegion.clone();
     }
 
     /**
      * Returns the filter region to which this mask applies
      */
-    public void setFilterRegion(FilterRegion filterRegion){
+    public void setFilterRegion(Rectangle2D filterRegion){
         if(filterRegion == null){
             throw new IllegalArgumentException();
         }
@@ -117,7 +117,7 @@ public class ConcreteMaskRable
      * Pass-through: returns the source's bounds
      */
     public Rectangle2D getBounds2D(){
-        return filterRegion.getRegion();
+        return (Rectangle2D)filterRegion.clone();
         // return getSource().getBounds2D();
     }
 

@@ -28,7 +28,6 @@ import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.AffineRable;
-import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
@@ -36,8 +35,6 @@ import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteAffineRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
-
-import org.apache.batik.util.awt.geom.AffineTransformSource;
 
 /**
  * <tt>PaintContext</tt> for the <tt>ConcretePatterPaint</tt>
@@ -76,7 +73,7 @@ public class ConcretePatternPaintContext implements PaintContext {
      * @param usr2dev user space to device space transform
      * @param hints 
      * @param node GraphicsNode generating the pixel pattern
-     * @param nodeTransformSource additional transform to apply to the 
+     * @param nodeTransform additional transform to apply to the 
      *        pattern content node.
      * @param patternTile region to which the pattern is constrained
      * @param overflow controls whether the pattern region clips the 
@@ -86,8 +83,8 @@ public class ConcretePatternPaintContext implements PaintContext {
                                        AffineTransform usr2dev,
                                        RenderingHints hints,
                                        GraphicsNode node,
-                                       AffineTransformSource nodeTransformSource,
-                                       FilterRegion patternTile,
+                                       AffineTransform nodeTxf,
+                                       Rectangle2D patternTile,
                                        boolean overflow){
         if(usr2dev == null){
             throw new IllegalArgumentException();
@@ -105,16 +102,12 @@ public class ConcretePatternPaintContext implements PaintContext {
             throw new IllegalArgumentException();
         }
 
-        AffineTransform nodeTxf = null;
-        if(nodeTransformSource != null){
-            nodeTxf = nodeTransformSource.getTransform();
-        }
-        else{
+        if(nodeTxf == null){
             nodeTxf = new AffineTransform();
         }
 
         Rectangle2D nodeBounds = node.getBounds();
-        Rectangle2D patternBounds = patternTile.getRegion();
+        Rectangle2D patternBounds = patternTile;
         tileX = patternBounds.getX();
         tileY = patternBounds.getY();
         tileWidth = patternBounds.getWidth();
