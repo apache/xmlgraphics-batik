@@ -71,6 +71,13 @@ public class AffineRed extends AbstractRed {
         Rectangle myBounds;
         myBounds = src2me.createTransformedShape(src.getBounds()).getBounds();
 
+        // If the output buffer is not premultiplied in certain cases it
+        // fails to properly divide out the Alpha (it always does
+        // the affine on premultiplied data), hence you get ugly
+        // back aliasing effects...
+        ColorModel cm = src.getColorModel();
+        cm = GraphicsUtil.coerceColorModel(cm, true);
+
         // fix my sample model so it makes sense given my size.
         SampleModel sm = fixSampleModel(src, myBounds);
 
@@ -79,7 +86,7 @@ public class AffineRed extends AbstractRed {
         pt = src2me.transform(pt, null);
         
         // Finish initializing our base class...
-        init(src, myBounds, src.getColorModel(), sm,
+        init(src, myBounds, cm, sm,
              (int)pt.getX(), (int)pt.getY(), null);
     }
 
@@ -161,17 +168,27 @@ public class AffineRed extends AbstractRed {
 
         BufferedImage srcBI, myBI;
         ColorModel srcCM = src.getColorModel();
-        WritableRaster srcWR = (WritableRaster)srcRas;
-        srcBI = new BufferedImage(srcCM,
-                                  srcWR.createWritableTranslatedChild(0,0),
-                                  srcCM.isAlphaPremultiplied(), null);
-
         ColorModel myCM = getColorModel();
+
+        WritableRaster srcWR = (WritableRaster)srcRas;
+        GraphicsUtil.coerceData(srcWR, srcCM, true);
+        srcBI = new BufferedImage(myCM,
+                                  srcWR.createWritableTranslatedChild(0,0),
+                                  myCM.isAlphaPremultiplied(), null);
+
         myBI = new BufferedImage(myCM,wr.createWritableTranslatedChild(0,0),
                                  myCM.isAlphaPremultiplied(), null);
 
         op.filter(srcBI, myBI);
+
+        // if ((count % 40) == 0) {
+        //     org.apache.batik.ImageDisplay.showImage("Src: " , srcBI);
+        //     org.apache.batik.ImageDisplay.showImage("Dst: " , myBI);
+        // }
+        // count++;
     }
+
+    // int count=0;
 
         /**
          * This function 'fixes' the source's sample model.

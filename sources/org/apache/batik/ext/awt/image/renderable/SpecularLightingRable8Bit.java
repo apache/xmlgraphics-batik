@@ -8,14 +8,11 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
@@ -174,12 +171,9 @@ public class SpecularLightingRable8Bit
         Rectangle2D aoiR = aoi.getBounds2D();
         aoiR.intersect(aoiR, getBounds2D(), aoiR);
 
-        aoiR.setRect(aoiR.getX()-1, aoiR.getY()-1,
-                     aoiR.getWidth()+2, aoiR.getHeight()+2);
-
         AffineTransform at = rc.getTransform();
         Rectangle devRect = at.createTransformedShape(aoiR).getBounds();
-
+        
         if(devRect.width == 0 || devRect.height == 0){
             return null;
         }
@@ -218,6 +212,15 @@ public class SpecularLightingRable8Bit
         AffineTransform scale =
             AffineTransform.getScaleInstance(scaleX, scaleY);
 
+        devRect = scale.createTransformedShape(aoiR).getBounds();
+
+        // Grow for surround needs.
+        aoiR.setRect(aoiR.getX()     -(2/scaleX), 
+                     aoiR.getY()     -(2/scaleY),
+                     aoiR.getWidth() +(4/scaleX), 
+                     aoiR.getHeight()+(4/scaleY));
+
+
         // Build texture from the source
         rc = (RenderContext)rc.clone();
         rc.setAreaOfInterest(aoiR);
@@ -225,22 +228,13 @@ public class SpecularLightingRable8Bit
 
         // System.out.println("scaleX / scaleY : " + scaleX + "/" + scaleY);
 
-        RenderingHints rh = rc.getRenderingHints();
-        devRect = scale.createTransformedShape(aoiR).getBounds();
+        CachableRed cr;
+        cr = GraphicsUtil.wrap(getSource().createRendering(rc));
 
-        CachableRed texture;
-        texture = GraphicsUtil.wrap(getSource().createRendering(rc));
-        texture = new PadRed(texture, devRect, PadMode.ZERO_PAD, rh);
+        BumpMap bumpMap = new BumpMap(cr, surfaceScale, scaleX, scaleY);
 
-        BumpMap bumpMap = new BumpMap(texture, surfaceScale, scaleX, scaleY);
-
-        SpecularLightingRed specularRed =
-            new SpecularLightingRed(ks,
-                                    specularExponent,
-                                    light,
-                                    bumpMap,
-                                    devRect,
-                                    1/scaleX, 1/scaleY);
+        cr = new SpecularLightingRed(ks, specularExponent, light, bumpMap,
+                                    devRect, 1/scaleX, 1/scaleY);
 
         // Return sheared/rotated tiled image
         AffineTransform shearAt =
@@ -248,13 +242,17 @@ public class SpecularLightingRable8Bit
                                 shx/scaleY, sy/scaleY,
                                 tx, ty);
 
-        if(shearAt.isIdentity()){
-            // System.out.println("Scale only transform");
-            return specularRed;
+        if(!shearAt.isIdentity()) {
+            RenderingHints rh = rc.getRenderingHints();
+            Rectangle padRect = new Rectangle(devRect.x-1, devRect.y-1,
+                                              devRect.width+2, 
+                                              devRect.height+2);
+            cr = new PadRed(cr, padRect, PadMode.REPLICATE, rh);
+
+            cr = new AffineRed(cr, shearAt, rh);
         }
        
-        // System.out.println("Transform has translate and/or shear and rotate");
-        return new AffineRed(specularRed, shearAt, rh);
+        return cr;
     }
 }
 

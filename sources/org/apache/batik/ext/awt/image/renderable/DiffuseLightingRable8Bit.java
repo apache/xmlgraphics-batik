@@ -8,21 +8,19 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.image.rendered.PadRed;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
-import org.apache.batik.ext.awt.image.rendered.DiffuseLightingRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.DiffuseLightingRed;
+import org.apache.batik.ext.awt.image.rendered.PadRed;
 
 /**
  * Implementation of the DiffuseLightRable interface.
@@ -145,17 +143,17 @@ public class DiffuseLightingRable8Bit
     static final boolean SCALE_RESULT=true;
 
     public RenderedImage createRendering(RenderContext rc){
-        Rectangle2D aoi = rc.getAreaOfInterest().getBounds2D();
-        if(aoi == null){
+        Shape aoi = rc.getAreaOfInterest();
+        if (aoi == null)
             aoi = getBounds2D();
-        }
 
-        aoi.intersect(aoi, getBounds2D(), aoi);
+        Rectangle2D aoiR = aoi.getBounds2D();
+        aoiR.intersect(aoiR, getBounds2D(), aoiR);
 
         AffineTransform at = rc.getTransform();
-        Rectangle bounds = at.createTransformedShape(aoi).getBounds();
-
-        if(bounds.width == 0 || bounds.height == 0){
+        Rectangle devRect = at.createTransformedShape(aoiR).getBounds();
+        
+        if(devRect.width == 0 || devRect.height == 0){
             return null;
         }
 
@@ -185,7 +183,7 @@ public class DiffuseLightingRable8Bit
             // Non invertible transform
             return null;
         }
-        
+
         if (SCALE_RESULT) {
             scaleX = 1;
             scaleY = 1;
@@ -193,30 +191,29 @@ public class DiffuseLightingRable8Bit
         AffineTransform scale =
             AffineTransform.getScaleInstance(scaleX, scaleY);
 
+        devRect = scale.createTransformedShape(aoiR).getBounds();
+
+        // Grow for surround needs of bump map.
+        aoiR.setRect(aoiR.getX()     -(2/scaleX), 
+                     aoiR.getY()     -(2/scaleY),
+                     aoiR.getWidth() +(4/scaleX), 
+                     aoiR.getHeight()+(4/scaleY));
+
+
         // Build texture from the source
         rc = (RenderContext)rc.clone();
-        rc.setAreaOfInterest(aoi);
+        rc.setAreaOfInterest(aoiR);
         rc.setTransform(scale);
 
         // System.out.println("scaleX / scaleY : " + scaleX + "/" + scaleY);
 
-        RenderingHints rh = rc.getRenderingHints();
-        bounds = scale.createTransformedShape(aoi).getBounds();
+        CachableRed cr;
+        cr = GraphicsUtil.wrap(getSource().createRendering(rc));
 
-        PadRed texture 
-            = new PadRed(RenderedImageCachableRed.wrap(getSource().createRendering(rc)),
-                         bounds,
-                         PadMode.ZERO_PAD,
-                         rh);
+        BumpMap bumpMap = new BumpMap(cr, surfaceScale, scaleX, scaleY);
 
-        BumpMap bumpMap = new BumpMap(texture, surfaceScale, scaleX, scaleY);
-
-        DiffuseLightingRed diffuseRed =
-            new DiffuseLightingRed(kd,
-                                   light,
-                                   bumpMap,
-                                   bounds,
-                                   1/scaleX, 1/scaleY);
+        cr = new DiffuseLightingRed(kd, light, bumpMap,
+                                    devRect, 1/scaleX, 1/scaleY);
 
         // Return sheared/rotated tiled image
         AffineTransform shearAt =
@@ -224,19 +221,17 @@ public class DiffuseLightingRable8Bit
                                 shx/scaleY, sy/scaleY,
                                 tx, ty);
         
-        if(shearAt.isIdentity()){
-            // System.out.println("Scale only transform");
-            return diffuseRed;
+        if(!shearAt.isIdentity()) {
+            RenderingHints rh = rc.getRenderingHints();
+            Rectangle padRect = new Rectangle(devRect.x-1, devRect.y-1,
+                                              devRect.width+2, 
+                                              devRect.height+2);
+            cr = new PadRed(cr, padRect, PadMode.REPLICATE, rh);
+
+            cr = new AffineRed(cr, shearAt, rh);
         }
        
-        // System.out.println("Transform has translate and/or shear and rotate");
-        CachableRed cr 
-            = new RenderedImageCachableRed(diffuseRed);
-
-        cr = new AffineRed(cr, shearAt, rh);
-
         return cr;
-        
     }
 }
 

@@ -118,8 +118,9 @@ public class TileRed extends AbstractRed implements TileGenerator {
         init((CachableRed)null, tiledRegion, cm, sm, 
              tile.getMinX(), tile.getMinY(), null);
 
-        if (raster != null) 
+        if (raster != null) {
             fillRasterFrom(raster, tile);
+        }
         else
             tiles = TileCache.getTileMap(this);
     }
