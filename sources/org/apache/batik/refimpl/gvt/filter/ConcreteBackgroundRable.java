@@ -243,7 +243,7 @@ public class ConcreteBackgroundRable
             srcs.add(f);
         }
 
-        if (gn instanceof CompositeGraphicsNode) {
+        if (child != null) {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
             List children = cgn.getChildren();
             Iterator i = children.iterator();
@@ -320,6 +320,10 @@ public class ConcreteBackgroundRable
         Filter f = getBackground(node, null, gnrc);
         if ( f == null)
             return null;
+        
+        // org.apache.batik.test.gvt.ImageDisplay.showImage
+        //     ("PrePad", f.createRendering(renderContext));
+
         Rectangle2D r2d = getBounds2D();
         f = new ConcretePadRable(f, r2d, PadMode.ZERO_PAD);
         // System.out.println("Bounds: " + r2d);

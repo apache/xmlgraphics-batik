@@ -19,13 +19,13 @@ import org.apache.batik.gvt.GraphicsNode;
  */
 public interface GaussianBlurRable extends Filter {
     /**
-     * Returns the source to be offset.
+     * Returns the source to be Blurred
      */
     public Filter getSource();
     
     /**
-     * Sets the source to be offset.
-     * @param src image to offset.
+     * Sets the source to be blurred.
+     * @param src image to blurred.
      */
     public void setSource(Filter src);
 
