@@ -72,7 +72,7 @@
         <filter id="innerShadow" filterRes="500" x="0" y="0">
             <feGaussianBlur stdDeviation="3 4"/>
             <feOffset dx="10" dy="15" result="offsetShadow"/>
-            <feComposite in="SourceGraphic" in2="offsetShadow" operator="out" />
+            <feComposite in2="SourceGraphic" in="offsetShadow" operator="out" />
         </filter>
 
 
