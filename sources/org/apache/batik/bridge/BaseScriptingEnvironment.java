@@ -14,14 +14,19 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import java.net.URL;
+import java.net.URLClassLoader;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 
+import org.apache.batik.dom.util.DOMUtilities;
+import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.script.Interpreter;
@@ -33,6 +38,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.ProcessingInstruction;
 
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
@@ -49,10 +55,24 @@ import org.w3c.dom.svg.SVGSVGElement;
  */
 public class BaseScriptingEnvironment {
 
+    protected final static String BATIK_PLUGIN_PI = "batik-plugin";
+
     /**
      * Tells whether the given SVG document is dynamic.
      */
     public static boolean isDynamicDocument(Document doc) {
+        for (Node n = doc.getFirstChild();
+             n != null && n.getNodeType() != n.ELEMENT_NODE;
+             n = n.getNextSibling()) {
+            if (n.getNodeType() != n.PROCESSING_INSTRUCTION_NODE) {
+                continue;
+            }
+            ProcessingInstruction pi = (ProcessingInstruction)n;
+            if (!BATIK_PLUGIN_PI.equals(pi.getTarget())) {
+                continue;
+            }
+            return true;
+        }
         Element elt = doc.getDocumentElement();
         if (elt.getNamespaceURI().equals(SVGConstants.SVG_NAMESPACE_URI)) {
             if (elt.getAttributeNS
@@ -205,6 +225,63 @@ public class BaseScriptingEnvironment {
      * Loads the scripts contained in the <script> elements.
      */
     public void loadScripts() {
+        org.apache.batik.script.Window window = null;
+        for (Node n = document.getFirstChild();
+             n != null && n.getNodeType() != n.ELEMENT_NODE;
+             n = n.getNextSibling()) {
+            if (n.getNodeType() != n.PROCESSING_INSTRUCTION_NODE) {
+                continue;
+            }
+            ProcessingInstruction pi = (ProcessingInstruction)n;
+            if (!BATIK_PLUGIN_PI.equals(pi.getTarget())) {
+                continue;
+            }
+
+            if (window == null) {
+                window = createWindow();
+            }
+
+            try {
+                HashTable pattrs = new HashTable();
+                DOMUtilities.parseStyleSheetPIData(pi.getData(), pattrs);
+                
+                URL url = ((SVGOMDocument)document).getURLObject();
+                String base = (String)pattrs.get("codebase");
+                if (base == null) {
+                    url = new URL(url, ".");
+                } else {
+                    url = new URL(url, base);
+                }
+
+                URL[] urls;
+
+                String archive = (String)pattrs.get("archive");
+                if (archive != null) {
+                    List lst = new ArrayList();
+                    lst.add(url);
+                    StringTokenizer st = new StringTokenizer(archive, ", ");
+                    while (st.hasMoreTokens()) {
+                        String ar = st.nextToken();
+                        lst.add(new URL(url, ar));
+                    }
+                    urls = (URL[])lst.toArray(new URL[] {});
+                } else {
+                    urls = new URL[] { url };
+                }
+
+                URLClassLoader cl = new URLClassLoader(urls);
+                String cname = (String)pattrs.get("code");
+                Class c = cl.loadClass(cname);
+                Plugin p = (Plugin)c.newInstance();
+                p.run(document, window);
+            } catch (Exception ex) {
+                UserAgent ua = bridgeContext.getUserAgent();
+                if (ua != null) {
+                    ua.displayError(ex);
+                }
+            }
+        }
+
         NodeList scripts = document.getElementsByTagNameNS
             (SVGConstants.SVG_NAMESPACE_URI, SVGConstants.SVG_SCRIPT_TAG);
         int len = scripts.getLength();
