@@ -95,8 +95,8 @@ public class BridgeEventSupport implements SVGConstants {
 
     protected static class GVTUnloadListener implements EventListener {
 
-        private EventDispatcher dispatcher;
-        private Listener listener;
+        protected EventDispatcher dispatcher;
+        protected Listener listener;
 
         public GVTUnloadListener(EventDispatcher dispatcher, 
                                  Listener listener) {
@@ -115,9 +115,9 @@ public class BridgeEventSupport implements SVGConstants {
      */
     protected static class Listener implements GraphicsNodeMouseListener {
         
-        private BridgeContext context;
-        private UserAgent ua;
-        private Element lastTargetElement;
+        protected BridgeContext context;
+        protected UserAgent ua;
+        protected Element lastTargetElement;
 
         public Listener(BridgeContext ctx, UserAgent u) {
             context = ctx;
@@ -262,20 +262,6 @@ public class BridgeEventSupport implements SVGConstants {
             } finally {
                 lastTargetElement = targetElement;
             }
-        }
-
-        /**
-         * Dispatches a DOM UIEvent according to the specified
-         * parameters.
-         *
-         * @param eventType the event type
-         * @param evt the GVT GraphicsNodeMouseEvent
-         * @param cancelable true means the event is cancelable
-         */
-        protected void dispatchUIEvent(String eventType,
-                                       GraphicsNodeMouseEvent evt,
-                                       boolean cancelable) {
-
         }
 
         /**
