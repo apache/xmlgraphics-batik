@@ -101,6 +101,10 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
     }
 
 
+    public Shape getFilterExtent() {
+        return getBounds2D();
+    }
+
     /**
      * @param GraphicsNode this image should represent
      */

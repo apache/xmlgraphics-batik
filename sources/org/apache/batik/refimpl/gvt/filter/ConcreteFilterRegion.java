@@ -78,7 +78,7 @@ public class ConcreteFilterRegion implements FilterRegion{
      */
     public Rectangle2D getRegion(){
         // Initialize a rectangle with the GraphicsNode primitive bounds
-        Rectangle2D nodeBounds = node.getPrimitiveBounds();
+        Rectangle2D nodeBounds = node.getBounds();
         Rectangle2D.Float bounds 
             = new Rectangle2D.Float((float)nodeBounds.getX(),
                                     (float)nodeBounds.getY(),

@@ -53,7 +53,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
     /**
      * Constant: precision used in computation of the Kernel radius
      */
-    static final float precision = 0.499999999999999999f;
+    static final float precision = 0.499f;
 
     /*
      * sRGB ColorSpace instance used for compatibility checking
@@ -80,7 +80,8 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
     /**
      * The diameter of the approximation blur-box
      */
-    final private int d;
+    final private int dX, dY;
+
     /**
      * The X-axis radius of the Kernel
      */
@@ -139,16 +140,14 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         return kernelData;
     }
 
-    private Kernel [] makeQualityKernels(){
-        Kernel result [];
-        Kernel kernelX = new Kernel(2*radiusX+1, 1,
-                                    computeQualityKernelData(radiusX,
-                                                             stdDeviationX));
-        Kernel kernelY = new Kernel(1, 2*radiusY+1,
-                                    computeQualityKernelData(radiusY,
-                                                             stdDeviationY));
-        result = new Kernel []{kernelX, kernelY};
-        return result;
+    private Kernel makeQualityKernelX(){
+        return new Kernel(2*radiusX+1, 1,
+                          computeQualityKernelData(radiusX, stdDeviationX));
+    }
+
+    private Kernel makeQualityKernelY(){
+        return new Kernel(1, 2*radiusY+1,
+                          computeQualityKernelData(radiusY, stdDeviationY));
     }
 
     /**
@@ -160,21 +159,24 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
     public GaussianBlurOp(double stdDeviationX,
                           double stdDeviationY,
                           RenderingHints hints) {
+
         this.stdDeviationX = (float)stdDeviationX;
         this.stdDeviationY = (float)stdDeviationY;
         this.hints = hints;
-        if ( (stdDeviationX != stdDeviationY)
-             ||
-             hints.VALUE_RENDER_QUALITY.equals(hints.get(hints.KEY_RENDERING))
-             ||
-             (stdDeviationX < 2)
-             ) {
 
-            // compute the radiusX here
-            float areaSum = 0f;
-            float item;
-            int i=0, j=0;
-            while (areaSum < precision){
+        conv = new ConvolveOp [2];
+
+        // compute the radiusX here
+        float areaSum = 0f;
+        float item;
+        // stdDeviationX and stdDeviationY are greater than or
+        // equal to 2. The use fast rendering.
+        if ((stdDeviationX < 2) ||
+            hints.VALUE_RENDER_QUALITY.equals(hints.get(hints.KEY_RENDERING))){
+              // Start with 1/2 the zero box enery.   
+            areaSum = (float)(0.5/(stdDeviationX*SQRT2PI));
+            int i=1;
+            while (areaSum < precision) {
                 item =  (float)(Math.pow(Math.E, -i*i/
                                          (2*stdDeviationX*stdDeviationX)) /
                                 (stdDeviationX*SQRT2PI));
@@ -182,8 +184,24 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
                 i++;
             }
             radiusX = i;
-            // compute the radiusY here
-            areaSum = 0f;
+            dX = 0;
+            conv[0] = new ConvolveOp(makeQualityKernelX());
+        } else {
+              //compute d
+            dX = (int)Math.floor(DSQRT2PI*stdDeviationX+0.5f);
+            int r = dX/2;
+            if (dX%2 == 0) 
+                radiusX = 3*r-1; // even case
+            else
+                radiusX = 3*r;   // Odd case
+        }
+        
+        if ((stdDeviationY < 2) ||
+            hints.VALUE_RENDER_QUALITY.equals(hints.get(hints.KEY_RENDERING))){
+              // compute the radiusY here
+              // Start with 1/2 the zero box enery.
+            areaSum = (float)(0.5/(stdDeviationY*SQRT2PI));
+            int j=1;
             while (areaSum < precision){
                 item =  (float)(Math.pow(Math.E, -j*j/
                                          (2*stdDeviationY*stdDeviationY)) /
@@ -192,21 +210,16 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
                 j++;
             }
             radiusY = j;
-            d = 0;
-            Kernel k[] = makeQualityKernels();
-            useConvolveOp = true;
-            conv = new ConvolveOp [] { new ConvolveOp(k[0]),
-                                           new ConvolveOp(k[1])};
-        }
-        else {
-            // stdDeviationX and stdDeviationY are equal and greater than or
-            // equal to 2. The user asked for fast rendering.
-
-            //compute d
-            d = (int)Math.floor(DSQRT2PI*stdDeviationX+0.5f);
-            radiusX = d/2;
-            radiusY = d/2;
-            useConvolveOp = false;
+            dY = 0;
+            conv[1] = new ConvolveOp(makeQualityKernelY());
+        } else {
+              //compute d
+            dY = (int)Math.floor(DSQRT2PI*stdDeviationY+0.5f);
+            int r = dY/2;
+            if (dY%2 == 0) 
+                radiusY = 3*r-1; // even case
+            else
+                radiusY = 3*r;   // Odd case
         }
     }
 
@@ -354,9 +367,17 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         System.out.println("Error!");
     }
 
-    private WritableRaster oddApproximation(Raster src, WritableRaster dest){
+
+    private WritableRaster boxFilterH(Raster src, WritableRaster dest,
+                                      int skipX, int skipY, 
+                                      int boxSz, int loc) {
+
         final int w = src.getWidth();
         final int h = src.getHeight();
+
+          // Check if the raster is wide enough to do _any_ work
+        if (w < (2*skipX)+boxSz) return dest;
+        if (h < (2*skipY))       return dest;
 
         // Access the integer buffer for each image.
         DataBufferInt srcDB = (DataBufferInt)src.getDataBuffer();
@@ -377,283 +398,81 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         final int srcPixels[] = srcDB.getBankData()[0];
         final int destPixels[] = dstDB.getBankData()[0];
 
-        // The pointer of src and dest indicating where the pixel values are
-        int sp, dp, cp;
+        final int [] bufferA = new int [boxSz];
+        final int [] bufferR = new int [boxSz];
+        final int [] bufferG = new int [boxSz];
+        final int [] bufferB = new int [boxSz];
 
-        // Declaration for the circular buffer's implementation
-        // bufferHead points to the leftmost element in the circular buffer
-        int bufferHead;
+        int scale = (1<<24)/boxSz;
 
-        // Temp variables to store Pixel values
-        int pel, currentPixel, lastPixel;
+        for (int y=skipY; y<(h-skipY); y++) {
+            int sp = srcOff + y*srcScanStride;
+            int dp = dstOff + y*dstScanStride;
+            int rowEnd = sp + (w-skipX);
 
-        // Current length of the buffer
-        int l;
+            int k=0;
+            int sumA = 0;
+            int sumR = 0;
+            int sumG = 0;
+            int sumB = 0;
 
-        //
-        // The first round: process by row
-        //
+            sp += skipX;
+            int end  = sp+boxSz;
 
-        if (w<d/2){
-            specialProcessRow(src, dest);
-        }
+            while (sp < end) {
+                final int currentPixel = srcPixels[sp];
+                sumA += bufferA[k] =  currentPixel>>>24;
+                sumR += bufferR[k] = (currentPixel>>16)&0xff;
+                sumG += bufferG[k] = (currentPixel>>8)&0xff;
+                sumB += bufferB[k] =  currentPixel&0xff;
+                k++;
+                sp++;
+            }
 
-        // when the size is large enough, we can
-        // use standard optimization method
-        else {
-            final int [] bufferA = new int [d];
-            final int [] bufferR = new int [d];
-            final int [] bufferG = new int [d];
-            final int [] bufferB = new int [d];
-            int sumA, sumR, sumG, sumB;
-            for (int i=0; i<h; i++){
-                // initialization of pointers, indice
-                // at the head of each row
-                sp = srcOff + i*srcScanStride;
-                dp = dstOff + i*dstScanStride;
-                bufferHead = 0;
+            dp += skipX + loc;
+            destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
+                              (((sumR*scale)&0xFF000000)>>>8)  |
+                              (((sumG*scale)&0xFF000000)>>>16) |
+                              (((sumB*scale)&0xFF000000)>>>24));
+            dp++;
 
-                //
-                // j=0 : Compute the first max/min value and store
-                //       pixel values in the circular buffer for later use
-                //
-                pel = srcPixels[sp++];
-                bufferA[0] = (pel>>24)&0xff;
-                bufferR[0] = (pel>>16)&0xff;
-                bufferG[0] = (pel>>8)&0xff;
-                bufferB[0] = pel&0xff;
+            k=0;
+            while (sp < rowEnd) {
+                final int currentPixel = srcPixels[sp];
+                sumA -= bufferA[k];
+                sumA += bufferA[k] =  currentPixel>>>24;
 
-                sumA = bufferA[0];
-                sumR = bufferR[0];
-                sumG = bufferG[0];
-                sumB = bufferB[0];
-                for (int k=1; k<=radiusX; k++){
-                    currentPixel = srcPixels[sp++];
-                    bufferA[k] = (currentPixel>>24)&0xff;
-                    bufferR[k] = (currentPixel>>16)&0xff;
-                    bufferG[k] = (currentPixel>>8)&0xff;
-                    bufferB[k] = currentPixel&0xff;
-                    sumA += bufferA[k];
-                    sumR += bufferR[k];
-                    sumG += bufferG[k];
-                    sumB += bufferB[k];
-                }
-                l = radiusX+1;
-                destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                    (((sumR/l)<<16) & 0x00ff0000) |
-                                    (((sumG/l)<<8)  & 0x0000ff00) |
-                                    (  sumB/l       & 0x000000ff));
+                sumR -= bufferR[k];
+                sumR += bufferR[k] = (currentPixel>> 16)&0xff;
 
-                //
-                // 1 <= j <= radiusX : The left margin of each row.
-                //
-                for (int j=1; j<=radiusX; j++){
-                    final int lastJ = j + radiusX;
-                    lastPixel = srcPixels[sp++];
-                    bufferA[lastJ] = (lastPixel>>24)&0xff;
-                    bufferR[lastJ] = (lastPixel>>16)&0xff;
-                    bufferG[lastJ] = (lastPixel>>8)&0xff;
-                    bufferB[lastJ] = lastPixel&0xff;
-                    sumA += bufferA[lastJ];
-                    sumR += bufferR[lastJ];
-                    sumG += bufferG[lastJ];
-                    sumB += bufferB[lastJ];
-                    l++;
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l &       0x000000ff));
-                }
+                sumG -= bufferG[k];
+                sumG += bufferG[k] = (currentPixel>>  8)&0xff;
 
-                //
-                // radiusX +1 <= j <= w-1-radiusX :
-                //     Inner body of the row, between left and right margins
-                //
-                for (int j=radiusX+1; j<=w-1-radiusX; j++){
-                    lastPixel = srcPixels[sp++];
+                sumB -= bufferB[k];
+                sumB += bufferB[k] =  currentPixel     &0xff;
 
-                    sumA -= bufferA[bufferHead];
-                    bufferA[bufferHead] = (lastPixel>>24)&0xff;
-                    sumA += bufferA[bufferHead];
-
-                    sumR -= bufferR[bufferHead];
-                    bufferR[bufferHead] = (lastPixel>>16)&0xff;
-                    sumR += bufferR[bufferHead];
-
-                    sumG -= bufferG[bufferHead];
-                    bufferG[bufferHead] = (lastPixel>>8)&0xff;
-                    sumG += bufferG[bufferHead];
-
-                    sumB -= bufferB[bufferHead];
-                    bufferB[bufferHead] = lastPixel&0xff;
-                    sumB += bufferB[bufferHead];
-
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l       & 0x000000ff));
-                    bufferHead = (bufferHead+1)%d;
-                }
-
-                //
-                // w-radiusX <= j < w : The right margin of the row
-                //
-
-                for (int j=w-radiusX; j<w; j++){
-                    sumA -= bufferA[bufferHead];
-                    sumR -= bufferR[bufferHead];
-                    sumG -= bufferG[bufferHead];
-                    sumB -= bufferB[bufferHead];
-                    l--;
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l       & 0x000000ff));
-                    bufferHead = (bufferHead+1)%d;
-                }
+                destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
+                                  (((sumR*scale)&0xFF000000)>>>8)  |
+                                  (((sumG*scale)&0xFF000000)>>>16) |
+                                  (((sumB*scale)&0xFF000000)>>>24));
+                k = (k+1)%boxSz;
+                sp++;
+                dp++;
             }
         }
-
-        //
-        // The second round: process by column
-        //
-
-        // When the image size is smaller than the
-        // Kernel size
-        if (h<2*radiusY){
-            specialProcessColumn(src, dest);
-        }
-
-        // when the size is large enough, we can
-        // use standard optimization method
-        else {
-            final int [] bufferA = new int [d];
-            final int [] bufferR = new int [d];
-            final int [] bufferG = new int [d];
-            final int [] bufferB = new int [d];
-            int sumA, sumR, sumG, sumB;
-            for (int j=0; j<w; j++){
-                // initialization of pointers, indice
-                // at the head of each column
-                dp = dstOff + j;
-                cp = dstOff + j;
-                bufferHead = 0;
-
-                // i=0 : The first pixel
-                pel = destPixels[cp];
-                cp += dstScanStride;
-
-                bufferA[0] = (pel>>24)&0xff;
-                bufferR[0] = (pel>>16)&0xff;
-                bufferG[0] = (pel>>8) &0xff;
-                bufferB[0] =  pel     &0xff;
-
-                sumA = bufferA[0];
-                sumR = bufferR[0];
-                sumG = bufferG[0];
-                sumB = bufferB[0];
-
-                for (int k=1; k<=radiusY; k++){
-                    currentPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    bufferA[k] = (currentPixel>>24)&0xff;
-                    bufferR[k] = (currentPixel>>16)&0xff;
-                    bufferG[k] = (currentPixel>>8) &0xff;
-                    bufferB[k] =  currentPixel     &0xff;
-                    sumA += bufferA[k];
-                    sumR += bufferR[k];
-                    sumG += bufferG[k];
-                    sumB += bufferB[k];
-                }
-                l = radiusY+1;
-                destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                  (((sumR/l)<<16) & 0x00ff0000) |
-                                  (((sumG/l)<<8)  & 0x0000ff00) |
-                                  (  sumB/l       & 0x000000ff));
-                dp += dstScanStride;
-
-                // 1 <= i <= radiusY : The upper margin of each row
-                for (int i=1; i<=radiusY; i++){
-                    final int lastI = i+radiusY;
-                    lastPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    bufferA[lastI] = (lastPixel>>24)&0xff;
-                    bufferR[lastI] = (lastPixel>>16)&0xff;
-                    bufferG[lastI] = (lastPixel>>8)&0xff;
-                    bufferB[lastI] = lastPixel&0xff;
-                    sumA += bufferA[lastI];
-                    sumR += bufferR[lastI];
-                    sumG += bufferG[lastI];
-                    sumB += bufferB[lastI];
-                    l++;
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                }
-
-                //
-                // radiusY +1 <= i <= h-1-radiusY:
-                //    inner body of the column between upper and lower margins
-                //
-
-                for (int i=radiusY+1; i<=h-1-radiusY; i++){
-                    lastPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    sumA -= bufferA[bufferHead];
-                    bufferA[bufferHead] = (lastPixel>>24)&0xff;
-                    sumA += bufferA[bufferHead];
-
-                    sumR -= bufferR[bufferHead];
-                    bufferR[bufferHead] = (lastPixel>>16)&0xff;
-                    sumR += bufferR[bufferHead];
-
-                    sumG -= bufferG[bufferHead];
-                    bufferG[bufferHead] = (lastPixel>>8)&0xff;
-                    sumG += bufferG[bufferHead];
-
-                    sumB -= bufferB[bufferHead];
-                    bufferB[bufferHead] = lastPixel&0xff;
-                    sumB += bufferB[bufferHead];
-
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                    bufferHead = (bufferHead+1)%d;
-                }
-
-                //
-                // h-radiusY <= i <= h-1 : The lower margin of the column
-                //
-
-                for (int i= h-radiusY; i<h; i++){
-                    sumA -= bufferA[bufferHead];
-                    sumR -= bufferR[bufferHead];
-                    sumG -= bufferG[bufferHead];
-                    sumB -= bufferB[bufferHead];
-                    l--;
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                    bufferHead = (bufferHead+1)%d;
-                }
-                // return to the beginning of the next column
-            }
-        }// end of the second round!
         return dest;
     }
 
-    private WritableRaster evenApproximation(Raster src, WritableRaster dest) {
+    private WritableRaster boxFilterV(Raster src, WritableRaster dest,
+                                      int skipX, int skipY, 
+                                      int boxSz, int loc) {
+
         final int w = src.getWidth();
         final int h = src.getHeight();
+
+          // Check if the raster is wide enough to do _any_ work
+        if (w < (2*skipX))       return dest;
+        if (h < (2*skipY)+boxSz) return dest;
 
         // Access the integer buffer for each image.
         DataBufferInt srcDB = (DataBufferInt)src.getDataBuffer();
@@ -674,829 +493,73 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         final int srcPixels[] = srcDB.getBankData()[0];
         final int destPixels[] = dstDB.getBankData()[0];
 
-        // The pointer of src and dest indicating where the pixel values are
-        int sp, dp, cp;
+        final int [] bufferA = new int [boxSz];
+        final int [] bufferR = new int [boxSz];
+        final int [] bufferG = new int [boxSz];
+        final int [] bufferB = new int [boxSz];
 
-        // Declaration for the circular buffer's implementation
-        // These are the circular buffers' head pointer and
-        // the index pointers
+        final int scale = (1<<24)/boxSz;
 
-        // bufferHead points to the leftmost element in the circular buffer
-        int bufferHead;
+        for (int x=skipX; x<(w-skipX); x++) {
+            int sp = srcOff + x;
+            int dp = dstOff + x;
+            int colEnd = sp + (h-skipY)*srcScanStride;
 
-        // Temp variables
-        int pel, currentPixel, lastPixel;
+            int k=0;
+            int sumA = 0;
+            int sumR = 0;
+            int sumG = 0;
+            int sumB = 0;
 
-        // Current length of the circular buffer, for use of averaging
-        int l;
+            sp += skipY*srcScanStride;
+            int end  = sp+(boxSz*srcScanStride);
 
-        //
-        // This is the first blur box:
-        // one pixel left to the center
-        //
+            while (sp < end) {
+                final int currentPixel = srcPixels[sp];
+                sumA += bufferA[k] =  currentPixel>>>24;
+                sumR += bufferR[k] = (currentPixel>> 16)&0xff;
+                sumG += bufferG[k] = (currentPixel>>  8)&0xff;
+                sumB += bufferB[k] =  currentPixel      &0xff;
+                k++;
+                sp+=srcScanStride;
+            }
 
-        //
-        // The first round: process by row
-        //
 
-        if (w<d/2){
-            specialProcessRow(src, dest);
-        }
+            dp += (skipY + loc)*dstScanStride;
+            destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
+                              (((sumR*scale)&0xFF000000)>>>8)  |
+                              (((sumG*scale)&0xFF000000)>>>16) |
+                              (((sumB*scale)&0xFF000000)>>>24));
+            dp+=dstScanStride;
+            k=0;
+            while (sp < colEnd) {
+                final int currentPixel = srcPixels[sp];
+                sumA -= bufferA[k];
+                sumA += bufferA[k] =  currentPixel>>>24;
 
-        // when the size is large enough, we can
-        // use standard optimization method
-        else {
-            final int [] bufferA = new int [d];
-            final int [] bufferR = new int [d];
-            final int [] bufferG = new int [d];
-            final int [] bufferB = new int [d];
-            int sumA, sumR, sumG, sumB;
-            for (int i=0; i<h; i++){
-                // initialization of pointers, indice
-                // at the head of each row
-                sp = srcOff + i*srcScanStride;
-                dp = dstOff + i*dstScanStride;
-                bufferHead = 0;
+                sumR -= bufferR[k];
+                sumR += bufferR[k] = (currentPixel>>16)&0xff;
 
-                //
-                // j=0 : Initialization, compute the max/min and
-                //       index array for the use of other pixels.
-                //
-                pel = srcPixels[sp++];
+                sumG -= bufferG[k];
+                sumG += bufferG[k] = (currentPixel>>8)&0xff;
 
-                bufferA[0] = (pel>>24)&0xff;
-                bufferR[0] = (pel>>16)&0xff;
-                bufferG[0] = (pel>>8)&0xff;
-                bufferB[0] = pel&0xff;
+                sumB -= bufferB[k];
+                sumB += bufferB[k] =  currentPixel&0xff;
 
-                sumA = bufferA[0];
-                sumR = bufferR[0];
-                sumG = bufferG[0];
-                sumB = bufferB[0];
-                for (int k=1; k<=radiusX; k++){
-                    currentPixel = srcPixels[sp++];
+                destPixels[dp] = (( (sumA*scale)&0xFF000000)       |
+                                  (((sumR*scale)&0xFF000000)>>>8)  |
+                                  (((sumG*scale)&0xFF000000)>>>16) |
+                                  (((sumB*scale)&0xFF000000)>>>24));
 
-                    bufferA[k] = (currentPixel>>24)&0xff;
-                    bufferR[k] = (currentPixel>>16)&0xff;
-                    bufferG[k] = (currentPixel>>8)&0xff;
-                    bufferB[k] = currentPixel&0xff;
-                    sumA += bufferA[k];
-                    sumR += bufferR[k];
-                    sumG += bufferG[k];
-                    sumB += bufferB[k];
-                }
-                l = radiusX+1;
-                destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                    (((sumR/l)<<16) & 0x00ff0000) |
-                                    (((sumG/l)<<8)  & 0x0000ff00) |
-                                    (  sumB/l       & 0x000000ff));
-
-                //
-                // 1 <= j <= radiusX-1 : The left margin of each row.
-                //
-                for (int j=1; j<=radiusX-1; j++){
-                    final int lastJ = j + radiusX;
-                    lastPixel = srcPixels[sp++];
-                    bufferA[lastJ] = (lastPixel>>24)&0xff;
-                    bufferR[lastJ] = (lastPixel>>16)&0xff;
-                    bufferG[lastJ] = (lastPixel>>8)&0xff;
-                    bufferB[lastJ] = lastPixel&0xff;
-                    sumA += bufferA[lastJ];
-                    sumR += bufferR[lastJ];
-                    sumG += bufferG[lastJ];
-                    sumB += bufferB[lastJ];
-                    l++;
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l       & 0x000000ff));
-                }
-
-                //
-                // radiusX <= j <= w-1-radiusX : Inner body of the row, between
-                //                               left and right margins
-                //
-                for (int j=radiusX; j<=w-1-radiusX; j++){
-                    lastPixel = srcPixels[sp++];
-
-                    sumA -= bufferA[bufferHead];
-                    bufferA[bufferHead] = (lastPixel>>24)&0xff;
-                    sumA += bufferA[bufferHead];
-
-                    sumR -= bufferR[bufferHead];
-                    bufferR[bufferHead] = (lastPixel>>16)&0xff;
-                    sumR += bufferR[bufferHead];
-
-                    sumG -= bufferG[bufferHead];
-                    bufferG[bufferHead] = (lastPixel>>8)&0xff;
-                    sumG += bufferG[bufferHead];
-
-                    sumB -= bufferB[bufferHead];
-                    bufferB[bufferHead] = lastPixel&0xff;
-                    sumB += bufferB[bufferHead];
-
-                    destPixels[dp++] = (((sumA/l)<<24) & 0xff000000) | (((sumR/l)<<16) & 0xff0000) | (((sumG/l)<<8) & 0xff00) | (sumB/l & 0xff);
-                    bufferHead = (bufferHead+1)%d;
-                }
-
-                //
-                // w-radiusX <= j < w : The right margin of the row
-                //
-
-                for (int j=w-radiusX; j<w; j++){
-                    sumA -= bufferA[bufferHead];
-                    sumR -= bufferR[bufferHead];
-                    sumG -= bufferG[bufferHead];
-                    sumB -= bufferB[bufferHead];
-                    l--;
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l       & 0x000000ff));
-                    bufferHead = (bufferHead+1)%d;
-                }
+                k = (k+1)%boxSz;
+                sp+=srcScanStride;
+                dp+=srcScanStride;
             }
         }
-
-        //
-        // The second round: process by column
-        //
-
-        // When the image size is smaller than the
-        // Kernel size
-        if (h<2*radiusY){
-            specialProcessColumn(src, dest);
-        }
-
-        // when the size is large enough, we can
-        // use standard optimization method
-        else {
-            final int [] bufferA = new int [d];
-            final int [] bufferR = new int [d];
-            final int [] bufferG = new int [d];
-            final int [] bufferB = new int [d];
-            int sumA, sumR, sumG, sumB;
-            for (int j=0; j<w; j++){
-                // initialization of pointers, indice
-                // at the head of each column
-                dp = dstOff + j;
-                cp = dstOff + j;
-                bufferHead = 0;
-
-                // i=0 : The first pixel
-                pel = destPixels[cp];
-                cp += dstScanStride;
-
-                bufferA[0] = (pel>>24)&0xff;
-                bufferR[0] = (pel>>16)&0xff;
-                bufferG[0] = (pel>>8)&0xff;
-                bufferB[0] = pel&0xff;
-
-                sumA = bufferA[0];
-                sumR = bufferR[0];
-                sumG = bufferG[0];
-                sumB = bufferB[0];
-                for (int k=1; k<=radiusY; k++){
-                    currentPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    bufferA[k] = (currentPixel>>24)&0xff;
-                    bufferR[k] = (currentPixel>>16)&0xff;
-                    bufferG[k] = (currentPixel>>8)&0xff;
-                    bufferB[k] = currentPixel&0xff;
-                    sumA += bufferA[k];
-                    sumR += bufferR[k];
-                    sumG += bufferG[k];
-                    sumB += bufferB[k];
-
-                }
-                l= radiusY +1;
-                destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                  (((sumR/l)<<16) & 0x00ff0000) |
-                                  (((sumG/l)<<8)  & 0x0000ff00) |
-                                  (  sumB/l       & 0x000000ff));
-                dp += dstScanStride;
-
-                // 1 <= i <= radiusY-1 : The upper margin of each row
-                for (int i=1; i<=radiusY-1; i++){
-                    final int lastI = i+radiusY;
-                    lastPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    bufferA[lastI] = (lastPixel>>24)&0xff;
-                    bufferR[lastI] = (lastPixel>>16)&0xff;
-                    bufferG[lastI] = (lastPixel>>8)&0xff;
-                    bufferB[lastI] = lastPixel&0xff;
-                    sumA += bufferA[lastI];
-                    sumR += bufferR[lastI];
-                    sumG += bufferG[lastI];
-                    sumB += bufferB[lastI];
-                    l++;
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                }
-
-                //
-                // radiusY +1 <= i <= h-1-radiusY:
-                //    inner body of the column between upper and lower margins
-                //
-
-                for (int i=radiusY; i<=h-1-radiusY; i++){
-                    lastPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    sumA -= bufferA[bufferHead];
-                    bufferA[bufferHead] = (lastPixel>>24)&0xff;
-                    sumA += bufferA[bufferHead];
-
-                    sumR -= bufferR[bufferHead];
-                    bufferR[bufferHead] = (lastPixel>>16)&0xff;
-                    sumR += bufferR[bufferHead];
-
-                    sumG -= bufferG[bufferHead];
-                    bufferG[bufferHead] = (lastPixel>>8)&0xff;
-                    sumG += bufferG[bufferHead];
-
-                    sumB -= bufferB[bufferHead];
-                    bufferB[bufferHead] = lastPixel&0xff;
-                    sumB += bufferB[bufferHead];
-
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                    bufferHead = (bufferHead+1)%d;
-                }
-
-                //
-                // h-radiusY <= i <= h-1 : The lower margin of the column
-                //
-
-                for (int i= h-radiusY; i<h; i++){
-                    sumA -= bufferA[bufferHead];
-                    sumR -= bufferR[bufferHead];
-                    sumG -= bufferG[bufferHead];
-                    sumB -= bufferB[bufferHead];
-                    l--;
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                    bufferHead = (bufferHead+1)%d;
-                }
-                // return to the beginning of the next column
-            }
-        }//
-
-        // End of the first blur box!
-
-        //
-        // This is the second blur box:
-        // one pixel right to the center
-        //
-
-        //
-        // The first round: process by row
-        //
-
-        if (w<d/2){
-            specialProcessRow(src, dest);
-        }
-
-        // when the size is large enough, we can
-        // use standard optimization method
-        else {
-            final int [] bufferA = new int [d];
-            final int [] bufferR = new int [d];
-            final int [] bufferG = new int [d];
-            final int [] bufferB = new int [d];
-            int sumA, sumR, sumG, sumB;
-            for (int i=0; i<h; i++){
-                // initialization of pointers, indice
-                // at the head of each row
-                sp = srcOff + i*srcScanStride;
-                dp = dstOff + i*dstScanStride;
-                bufferHead = 0;
-
-                //
-                // j=0 : Initialization, compute the max/min and
-                //       index array for the use of other pixels.
-                //
-                pel = srcPixels[sp++];
-
-                bufferA[0] = (pel>>24)&0xff;
-                bufferR[0] = (pel>>16)&0xff;
-                bufferG[0] = (pel>>8)&0xff;
-                bufferB[0] = pel&0xff;
-
-                sumA = bufferA[0];
-                sumR = bufferR[0];
-                sumG = bufferG[0];
-                sumB = bufferB[0];
-                for (int k=1; k<=radiusX-1; k++){
-                    currentPixel = srcPixels[sp++];
-
-                    bufferA[k] = (currentPixel>>24)&0xff;
-                    bufferR[k] = (currentPixel>>16)&0xff;
-                    bufferG[k] = (currentPixel>>8)&0xff;
-                    bufferB[k] = currentPixel&0xff;
-                    sumA += bufferA[k];
-                    sumR += bufferR[k];
-                    sumG += bufferG[k];
-                    sumB += bufferB[k];
-                }
-                l= radiusX +1;
-                destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                    (((sumR/l)<<16) & 0x00ff0000) |
-                                    (((sumG/l)<<8)  & 0x0000ff00) |
-                                    (  sumB/l       & 0x000000ff));
-
-                //
-                // 1 <= j <= radiusX : The left margin of each row.
-                //
-                for (int j=1; j<=radiusX; j++){
-                    final int lastJ = j+radiusX-1;
-                    lastPixel = srcPixels[sp++];
-                    bufferA[lastJ] = (lastPixel>>24)&0xff;
-                    bufferR[lastJ] = (lastPixel>>16)&0xff;
-                    bufferG[lastJ] = (lastPixel>>8)&0xff;
-                    bufferB[lastJ] = lastPixel&0xff;
-                    sumA += bufferA[lastJ];
-                    sumR += bufferR[lastJ];
-                    sumG += bufferG[lastJ];
-                    sumB += bufferB[lastJ];
-                    l++;
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l       & 0x000000ff));
-                }
-
-                //
-                // radiusX+1 <= j <= w-radiusX : Inner body of the row, between
-                //                               left and right margins
-                //
-                for (int j=radiusX+1; j<=w-radiusX; j++){
-                    lastPixel = srcPixels[sp++];
-
-                    sumA -= bufferA[bufferHead];
-                    bufferA[bufferHead] = (lastPixel>>24)&0xff;
-                    sumA += bufferA[bufferHead];
-
-                    sumR -= bufferR[bufferHead];
-                    bufferR[bufferHead] = (lastPixel>>16)&0xff;
-                    sumR += bufferR[bufferHead];
-
-                    sumG -= bufferG[bufferHead];
-                    bufferG[bufferHead] = (lastPixel>>8)&0xff;
-                    sumG += bufferG[bufferHead];
-
-                    sumB -= bufferB[bufferHead];
-                    bufferB[bufferHead] = lastPixel&0xff;
-                    sumB += bufferB[bufferHead];
-
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l       & 0x000000ff));
-                    bufferHead = (bufferHead+1)%d;
-                }
-
-                //
-                // w-radiusX+1 <= j < w : The right margin of the row
-                //
-
-                for (int j=w-radiusX+1; j<w; j++){
-                    sumA -= bufferA[bufferHead];
-                    sumR -= bufferR[bufferHead];
-                    sumG -= bufferG[bufferHead];
-                    sumB -= bufferB[bufferHead];
-                    l--;
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l       & 0x000000ff));
-                    bufferHead = (bufferHead+1)%d;
-                }
-            }
-        }
-
-        //
-        // The second round: process by column
-        //
-
-        // When the image size is smaller than the
-        // Kernel size
-        if (h<2*radiusY){
-            specialProcessColumn(src, dest);
-        }
-
-        // when the size is large enough, we can
-        // use standard optimization method
-        else {
-            final int [] bufferA = new int [d];
-            final int [] bufferR = new int [d];
-            final int [] bufferG = new int [d];
-            final int [] bufferB = new int [d];
-            int sumA, sumR, sumG, sumB;
-            for (int j=0; j<w; j++){
-                // initialization of pointers, indice
-                // at the head of each column
-                dp = dstOff + j;
-                cp = dstOff + j;
-                bufferHead = 0;
-
-                // i=0 : The first pixel
-                pel = destPixels[cp];
-                cp += dstScanStride;
-
-                bufferA[0] = (pel>>24)&0xff;
-                bufferR[0] = (pel>>16)&0xff;
-                bufferG[0] = (pel>>8)&0xff;
-                bufferB[0] = pel&0xff;
-
-                sumA = bufferA[0];
-                sumR = bufferR[0];
-                sumG = bufferG[0];
-                sumB = bufferB[0];
-                for (int k=1; k<=radiusY-1; k++){
-                    currentPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    bufferA[k] = (currentPixel>>24)&0xff;
-                    bufferR[k] = (currentPixel>>16)&0xff;
-                    bufferG[k] = (currentPixel>>8)&0xff;
-                    bufferB[k] = currentPixel&0xff;
-                    sumA += bufferA[k];
-                    sumR += bufferR[k];
-                    sumG += bufferG[k];
-                    sumB += bufferB[k];
-
-                }
-                l = radiusY+1;
-                destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                  (((sumR/l)<<16) & 0x00ff0000) |
-                                  (((sumG/l)<<8)  & 0x0000ff00) |
-                                  (  sumB/l       & 0x000000ff));
-                dp += dstScanStride;
-
-                // 1 <= i <= radiusY : The upper margin of each row
-                for (int i=1; i<=radiusY; i++){
-                    final int lastI = i+radiusY-1;
-                    lastPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    bufferA[lastI] = (lastPixel>>24)&0xff;
-                    bufferR[lastI] = (lastPixel>>16)&0xff;
-                    bufferG[lastI] = (lastPixel>>8)&0xff;
-                    bufferB[lastI] = lastPixel&0xff;
-                    sumA += bufferA[lastI];
-                    sumR += bufferR[lastI];
-                    sumG += bufferG[lastI];
-                    sumB += bufferB[lastI];
-                    l++;
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                }
-
-                //
-                // radiusY +1 <= i <= h-radiusY:
-                //    inner body of the column between upper and lower margins
-                //
-
-                for (int i=radiusY+1; i<=h-radiusY; i++){
-                    lastPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    sumA -= bufferA[bufferHead];
-                    bufferA[bufferHead] = (lastPixel>>24)&0xff;
-                    sumA += bufferA[bufferHead];
-
-                    sumR -= bufferR[bufferHead];
-                    bufferR[bufferHead] = (lastPixel>>16)&0xff;
-                    sumR += bufferR[bufferHead];
-
-                    sumG -= bufferG[bufferHead];
-                    bufferG[bufferHead] = (lastPixel>>8)&0xff;
-                    sumG += bufferG[bufferHead];
-
-                    sumB -= bufferB[bufferHead];
-                    bufferB[bufferHead] = lastPixel&0xff;
-                    sumB += bufferB[bufferHead];
-
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                    bufferHead = (bufferHead+1)%d;
-                }
-
-                //
-                // h-radiusY+1 <= i <= h-1 : The lower margin of the column
-                //
-
-                for (int i= h-radiusY+1; i<h; i++){
-                    sumA -= bufferA[bufferHead];
-                    sumR -= bufferR[bufferHead];
-                    sumG -= bufferG[bufferHead];
-                    sumB -= bufferB[bufferHead];
-                    l--;
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                    bufferHead = (bufferHead+1)%d;
-                }
-                // return to the beginning of the next column
-            }
-        }//
-
-        // End of the second blur box!
-
-        //
-        // The third box blur: of width d+1
-        //
-
-        //
-        // The first round: process by row
-        //
-
-        if (w<d/2){
-            specialProcessRow(src, dest);
-        }
-
-        // when the size is large enough, we can
-        // use standard optimization method
-        else {
-            final int [] bufferA = new int [d+1];
-            final int [] bufferR = new int [d+1];
-            final int [] bufferG = new int [d+1];
-            final int [] bufferB = new int [d+1];
-            int sumA, sumR, sumG, sumB;
-            for (int i=0; i<h; i++){
-                // initialization of pointers, indice
-                // at the head of each row
-                sp = srcOff + i*srcScanStride;
-                dp = dstOff + i*dstScanStride;
-                bufferHead = 0;
-
-                //
-                // j=0 : Compute the first max/min value and store
-                //       pixel values in the circular buffer for later use
-                //
-                pel = srcPixels[sp++];
-                bufferA[0] = (pel>>24)&0xff;
-                bufferR[0] = (pel>>16)&0xff;
-                bufferG[0] = (pel>>8)&0xff;
-                bufferB[0] = pel&0xff;
-
-                sumA = bufferA[0];
-                sumR = bufferR[0];
-                sumG = bufferG[0];
-                sumB = bufferB[0];
-                for (int k=1; k<=radiusX; k++){
-                    currentPixel = srcPixels[sp++];
-                    bufferA[k] = (currentPixel>>24)&0xff;
-                    bufferR[k] = (currentPixel>>16)&0xff;
-                    bufferG[k] = (currentPixel>>8)&0xff;
-                    bufferB[k] = currentPixel&0xff;
-                    sumA += bufferA[k];
-                    sumR += bufferR[k];
-                    sumG += bufferG[k];
-                    sumB += bufferB[k];
-                }
-                l = radiusX+1;
-                destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                    (((sumR/l)<<16) & 0x00ff0000) |
-                                    (((sumG/l)<<8)  & 0x0000ff00) |
-                                    (  sumB/l       & 0x000000ff));
-
-                //
-                // 1 <= j <= radiusX : The left margin of each row.
-                //
-                for (int j=1; j<=radiusX; j++){
-                    final int lastJ = j + radiusX;
-                    lastPixel = srcPixels[sp++];
-                    bufferA[lastJ] = (lastPixel>>24)&0xff;
-                    bufferR[lastJ] = (lastPixel>>16)&0xff;
-                    bufferG[lastJ] = (lastPixel>>8)&0xff;
-                    bufferB[lastJ] = lastPixel&0xff;
-                    sumA += bufferA[lastJ];
-                    sumR += bufferR[lastJ];
-                    sumG += bufferG[lastJ];
-                    sumB += bufferB[lastJ];
-                    l++;
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l       & 0x000000ff));
-                }
-
-                //
-                // radiusX +1 <= j <= w-1-radiusX : Inner body of the row, between
-                //                               left and right margins
-                //
-                for (int j=radiusX+1; j<=w-1-radiusX; j++){
-                    lastPixel = srcPixels[sp++];
-
-                    sumA -= bufferA[bufferHead];
-                    bufferA[bufferHead] = (lastPixel>>24)&0xff;
-                    sumA += bufferA[bufferHead];
-
-                    sumR -= bufferR[bufferHead];
-                    bufferR[bufferHead] = (lastPixel>>16)&0xff;
-                    sumR += bufferR[bufferHead];
-
-                    sumG -= bufferG[bufferHead];
-                    bufferG[bufferHead] = (lastPixel>>8)&0xff;
-                    sumG += bufferG[bufferHead];
-
-                    sumB -= bufferB[bufferHead];
-                    bufferB[bufferHead] = lastPixel&0xff;
-                    sumB += bufferB[bufferHead];
-
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l       & 0x000000ff));
-
-                    bufferHead = (bufferHead+1)%d;
-                }
-
-                //
-                // w-radiusX <= j < w : The right margin of the row
-                //
-
-                for (int j=w-radiusX; j<w; j++){
-                    sumA -= bufferA[bufferHead];
-                    sumR -= bufferR[bufferHead];
-                    sumG -= bufferG[bufferHead];
-                    sumB -= bufferB[bufferHead];
-                    l--;
-                    destPixels[dp++] = ((((sumA/l)<<24) & 0xff000000) |
-                                        (((sumR/l)<<16) & 0x00ff0000) |
-                                        (((sumG/l)<<8)  & 0x0000ff00) |
-                                        (  sumB/l       & 0x000000ff));
-                    bufferHead = (bufferHead+1)%d;
-                }
-            }
-        }
-
-        //
-        // The second round: process by column
-        //
-
-        // When the image size is smaller than the
-        // Kernel size
-        if (h<2*radiusY){
-            specialProcessColumn(src, dest);
-        }
-
-        // when the size is large enough, we can
-        // use standard optimization method
-        else {
-            final int [] bufferA = new int [d+1];
-            final int [] bufferR = new int [d+1];
-            final int [] bufferG = new int [d+1];
-            final int [] bufferB = new int [d+1];
-            int sumA, sumR, sumG, sumB;
-            for (int j=0; j<w; j++){
-                // initialization of pointers, indice
-                // at the head of each column
-                dp = dstOff + j;
-                cp = dstOff + j;
-                bufferHead = 0;
-
-                // i=0 : The first pixel
-                pel = destPixels[cp];
-                cp += dstScanStride;
-
-                bufferA[0] = (pel>>24)&0xff;
-                bufferR[0] = (pel>>16)&0xff;
-                bufferG[0] = (pel>>8)&0xff;
-                bufferB[0] = pel&0xff;
-
-                sumA = bufferA[0];
-                sumR = bufferR[0];
-                sumG = bufferG[0];
-                sumB = bufferB[0];
-
-                for (int k=1; k<=radiusY; k++){
-                    currentPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    bufferA[k] = (currentPixel>>24)&0xff;
-                    bufferR[k] = (currentPixel>>16)&0xff;
-                    bufferG[k] = (currentPixel>>8)&0xff;
-                    bufferB[k] = currentPixel&0xff;
-                    sumA += bufferA[k];
-                    sumR += bufferR[k];
-                    sumG += bufferG[k];
-                    sumB += bufferB[k];
-                }
-                l= radiusY+1;
-                destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                  (((sumR/l)<<16) & 0x00ff0000) |
-                                  (((sumG/l)<<8)  & 0x0000ff00) |
-                                  (  sumB/l       & 0x000000ff));
-                dp += dstScanStride;
-
-                // 1 <= i <= radiusY : The upper margin of each row
-                for (int i=1; i<=radiusY; i++){
-                    final int lastI = i+radiusY;
-                    lastPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    bufferA[lastI] = (lastPixel>>24)&0xff;
-                    bufferR[lastI] = (lastPixel>>16)&0xff;
-                    bufferG[lastI] = (lastPixel>>8)&0xff;
-                    bufferB[lastI] = lastPixel&0xff;
-                    sumA += bufferA[lastI];
-                    sumR += bufferR[lastI];
-                    sumG += bufferG[lastI];
-                    sumB += bufferB[lastI];
-                    l++;
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                }
-
-                //
-                // radiusY +1 <= i <= h-1-radiusY:
-                //    inner body of the column between upper and lower margins
-                //
-
-                for (int i=radiusY+1; i<=h-1-radiusY; i++){
-                    lastPixel = destPixels[cp];
-                    cp += dstScanStride;
-
-                    sumA -= bufferA[bufferHead];
-                    bufferA[bufferHead] = (lastPixel>>24)&0xff;
-                    sumA += bufferA[bufferHead];
-
-                    sumR -= bufferR[bufferHead];
-                    bufferR[bufferHead] = (lastPixel>>16)&0xff;
-                    sumR += bufferR[bufferHead];
-
-                    sumG -= bufferG[bufferHead];
-                    bufferG[bufferHead] = (lastPixel>>8)&0xff;
-                    sumG += bufferG[bufferHead];
-
-                    sumB -= bufferB[bufferHead];
-                    bufferB[bufferHead] = lastPixel&0xff;
-                    sumB += bufferB[bufferHead];
-
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                    bufferHead = (bufferHead+1)%d;
-                }
-
-                //
-                // h-radiusY <= i <= h-1 : The lower margin of the column
-                //
-
-                for (int i= h-radiusY; i<h; i++){
-                    sumA -= bufferA[bufferHead];
-                    sumR -= bufferR[bufferHead];
-                    sumG -= bufferG[bufferHead];
-                    sumB -= bufferB[bufferHead];
-                    l--;
-                    destPixels[dp] = ((((sumA/l)<<24) & 0xff000000) |
-                                      (((sumR/l)<<16) & 0x00ff0000) |
-                                      (((sumG/l)<<8)  & 0x0000ff00) |
-                                      (  sumB/l       & 0x000000ff));
-                    dp += dstScanStride;
-                    bufferHead = (bufferHead+1)%d;
-                }
-                // return to the beginning of the next column
-            }
-        }// end of the second round!
-
-        // End of the third blur box!
         return dest;
     }
 
     public WritableRaster filter(Raster src, WritableRaster dest){
-        WritableRaster d0, d1, finalDest;
-        if (useConvolveOp){
-            d0 = conv[0].filter(src, null);
-            return conv[1].filter(d0, dest);
-        }
 
         if(src==null)
             throw new IllegalArgumentException
@@ -1508,16 +571,45 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         else
             dest = createCompatibleDestRaster(src);
 
-        // when the diameter is even
-        if (d%2 == 0){
-            finalDest = evenApproximation(src, dest);
+          // For the blur box approx we can use dest as our intermediate
+          // otherwise we let it default to null which means we create a new
+          // one...
+        WritableRaster tmpR = null;
+        if (conv[1] == null) 
+            tmpR = dest;
+
+        if (conv[0] != null) {
+            tmpR = conv[0].filter(src, tmpR);
+        } else {
+            if (tmpR == null)
+                tmpR = createCompatibleDestRaster(src);
+
+            if (dX%2 == 0){
+                tmpR = boxFilterH(src,  tmpR, 0,    0,   dX,   dX/2);
+                tmpR = boxFilterH(tmpR, tmpR, dX/2, 0,   dX,   dX/2-1);
+                tmpR = boxFilterH(tmpR, tmpR, dX-1, 0,   dX+1, dX/2);
+            } else {
+                tmpR = boxFilterH(src,  tmpR, 0,    0,   dX, dX/2);
+                tmpR = boxFilterH(tmpR, tmpR, dX/2, 0,   dX, dX/2);
+                tmpR = boxFilterH(tmpR, tmpR, dX-1, 0,   dX, dX/2);
+            }
         }
-        else {
-            d0 = oddApproximation(src, dest);
-            d1 = oddApproximation(d0, dest);
-            finalDest = oddApproximation(d1, dest);
+
+        if (conv[1] != null) {
+            dest = conv[1].filter(tmpR, dest);
+        } else {
+            if (dY%2 == 0){
+                dest = boxFilterV(tmpR, dest, 3*(dX/2)-1, 0,    dY,   dY/2);
+                dest = boxFilterV(dest, dest, 3*(dX/2)-1, dY/2, dY,   dY/2-1);
+                dest = boxFilterV(dest, dest, 3*(dX/2)-1, dY-1, dY+1, dY/2);
+            }
+            else {
+                dest = boxFilterV(tmpR, dest, 3*(dX/2)-1, 0,    dY, dY/2);
+                dest = boxFilterV(dest, dest, 3*(dX/2)-1, dY/2, dY, dY/2);
+                dest = boxFilterV(dest, dest, 3*(dX/2)-1, dY-1, dY, dY/2);
+            }
         }
-        return finalDest;
+        return dest;
     }
 
     public BufferedImage filter(BufferedImage src, BufferedImage dest){
@@ -1569,7 +661,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
             dest = new BufferedImage(dstCMPre, finalDest.getRaster(),
                                      true, null);
         }
-        
+
         filter(src.getRaster(), dest.getRaster());
 
         // Check to see if we need to 'fix' our source (divide out alpha).

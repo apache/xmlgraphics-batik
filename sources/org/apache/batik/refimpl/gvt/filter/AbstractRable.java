@@ -282,18 +282,18 @@ public abstract class AbstractRable implements Filter {
     }
 
     public Shape getDirtyRegion(int srcIndex, Rectangle2D inputRgn) {
-        if (srcIndex != 0)
+        if ((srcIndex < 0) || (srcIndex > srcs.size()))
             throw new IndexOutOfBoundsException
                 ("Nonexistant source requested.");
 
-        // Changes in the input region don't propogate outside our
-        // bounds.
+          // Changes in the input region don't propogate outside our
+          // bounds.
         Rectangle2D drect = (Rectangle2D)inputRgn.clone();
         Rectangle2D.intersect(drect, getBounds2D(), drect);
         return drect;
     }
-
-
+    
+    
     /* left for subclass:
        public boolean isDynamic();
        public RenderedImage createRendering(RenderContext rc);
