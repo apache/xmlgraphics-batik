@@ -26,7 +26,6 @@ import org.apache.batik.script.ScriptHandler;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -594,10 +593,11 @@ public class BaseScriptingEnvironment {
 
         /**
          * Parses the given XML string into a DocumentFragment of the
-         * given document.
-         * @return The document fragment or null on error.
+         * given document or a new document if 'doc' is null.
+         * The implementation in this class always returns 'null'
+         * @return The document/document fragment or null on error.
          */
-        public DocumentFragment parseXML(String text, Document doc) {
+        public Node parseXML(String text, Document doc) {
             return null;
         }
 

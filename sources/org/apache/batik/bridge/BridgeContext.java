@@ -16,11 +16,13 @@ import java.lang.ref.SoftReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
@@ -769,7 +771,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * The list of all EventListener attached by bridges that need to
      * be removed on a dispose() call.
      */
-    protected List eventListenerList = new LinkedList();
+    protected Set eventListenerSet = new HashSet();
 
     /**
      * The DOM EventListener to receive 'DOMCharacterDataModified' event.
@@ -878,30 +880,34 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Adds to the eventListenerList the specified event listener
+     * Adds to the eventListenerSet the specified event listener
      * registration.
      */
     protected void storeEventListener(EventTarget t,
                                       String s,
                                       EventListener l,
                                       boolean b) {
-        eventListenerList.add(new EventListenerMememto(t, s, l, b, this));
+        synchronized (eventListenerSet) {
+            eventListenerSet.add(new EventListenerMememto(t, s, l, b, this));
+        }
     }
 
     public static class SoftReferenceMememto 
         extends CleanerThread.SoftReferenceCleared {
         Object mememto;
-        List   list;
-        SoftReferenceMememto(Object ref, Object mememto, List list) {
+        Set    set;
+        SoftReferenceMememto(Object ref, Object mememto, Set set) {
             super(ref);
             this.mememto = mememto;
-            this.list    = list;
+            this.set     = set;
         }
 
         public void cleared() {
-            list.remove(mememto);
-            mememto = null;
-            list    = null;
+            synchronized (set) {
+                set.remove(mememto);
+                mememto = null;
+                set     = null;
+            }
         }
     }
 
@@ -920,9 +926,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                                     EventListener l, 
                                     boolean b,
                                     BridgeContext ctx) {
-            List list = ctx.eventListenerList;
-            target = new SoftReferenceMememto(t, this, list);
-            listener = new SoftReferenceMememto(l, this, list);
+            Set set = ctx.eventListenerSet;
+            target = new SoftReferenceMememto(t, this, set);
+            listener = new SoftReferenceMememto(l, this, set);
             eventType = s;
             useCapture = b;
         }
@@ -947,8 +953,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     public void dispose() {
 
+        synchronized (eventListenerSet) {
         // remove all listeners added by Bridges
-        Iterator iter = eventListenerList.iterator();
+            Iterator iter = eventListenerSet.iterator();
         while (iter.hasNext()) {
             EventListenerMememto m = (EventListenerMememto)iter.next();
             EventTarget   et = m.getTarget();
@@ -958,6 +965,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             if ((et == null) || (el == null) || (t == null))
                 continue;
             et.removeEventListener(t, el, uc);
+            }
         }
 
         EventTarget evtTarget = (EventTarget)document;

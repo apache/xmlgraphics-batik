@@ -47,7 +47,15 @@ public class Service {
      * @param cls The class/interface to search for providers of.
      */
     public static synchronized Iterator providers(Class cls) {
-        ClassLoader cl = cls.getClassLoader();
+        ClassLoader cl = null;
+        try {
+            cl = cls.getClassLoader();
+        } catch (SecurityException se) {
+            // Ooops! can't get his class loader.
+        }
+        // Can always request your own class loader. But it might be 'null'.
+        if (cl == null) cl = Service.class.getClassLoader();
+
         String serviceFile = "META-INF/services/"+cls.getName();
 
         // System.out.println("File: " + serviceFile);
@@ -58,6 +66,8 @@ public class Service {
 
         v = new Vector();
         providerMap.put(serviceFile, v);
+        // No class loader so we can't find 'serviceFile'.
+        if (cl == null) return v.iterator();
 
         Enumeration e;
         try {

@@ -41,6 +41,8 @@ public class CSSClassCondition extends CSSAttributeCondition {
      * Tests whether this condition matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
+        if (!(e instanceof CSSStylableElement))
+            return false;  // Can't match an unstylable element.
 	String attr = ((CSSStylableElement)e).getCSSClass();
 	String val = getValue();
 	int i = attr.indexOf(val);

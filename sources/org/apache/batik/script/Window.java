@@ -10,7 +10,7 @@ package org.apache.batik.script;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Node;
 
 /**
  * This interface represents the 'window' object defined in the global
@@ -65,10 +65,10 @@ public interface Window {
 
     /**
      * Parses the given XML string into a DocumentFragment of the
-     * given document.
+     * given document or a new document if 'doc' is null.
      * @return The document fragment or null on error.
      */
-    DocumentFragment parseXML(String text, Document doc);
+    Node parseXML(String text, Document doc);
 
     /**
      * Gets data from the given URI.

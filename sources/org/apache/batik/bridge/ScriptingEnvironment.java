@@ -54,6 +54,9 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         XLinkSupport.XLINK_NAMESPACE_URI +
         "'>";
 
+    protected final static String FRAGMENT_SUFFIX =
+        "</svg>";
+
     /**
      * The timer for periodic or delayed tasks.
      */
@@ -670,55 +673,86 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * Implements {@link
          * org.apache.batik.script.Window#parseXML(String,Document)}.
          */
-        public DocumentFragment parseXML(String text, Document doc) {
+        public Node parseXML(String text, Document doc) {
             // System.out.println("Text: " + text);
+            // Try and parse it as an SVGDocument
             SAXSVGDocumentFactory df = new SAXSVGDocumentFactory
                 (XMLResourceDescriptor.getXMLParserClassName());
-            String uri = ((SVGOMDocument)bridgeContext.getDocument()).
-                getURLObject().toString();
-            DocumentFragment result = null;
+            URL urlObj = null;
+            if ((doc != null) && (doc instanceof SVGOMDocument)) 
+                urlObj = ((SVGOMDocument)doc).getURLObject();
+            if (urlObj == null) {
+                urlObj = ((SVGOMDocument)bridgeContext.getDocument()).
+                    getURLObject();
+            }
+            String uri = (urlObj==null)?"":urlObj.toString();
             try {
                 Document d = df.createDocument(uri, new StringReader(text));
-                result = doc.createDocumentFragment();
+                if (doc == null)
+                    return d;
+
+                Node result = doc.createDocumentFragment();
                 result.appendChild(doc.importNode(d.getDocumentElement(),
                                                   true));
+                return result;
             } catch (Exception ex) {
-                StringBuffer sb = new StringBuffer(text.length() +
-                                                   FRAGMENT_PREFIX.length() +
-                                                   "</svg>".length());
+                /* nothing  */
+            }
+            
+            if ((doc != null) && (doc instanceof SVGOMDocument)) {
+                // Try and parse with an 'svg' element wrapper - for
+                // things like '<rect ../>' - ensure that rect ends up
+                // in SVG namespace - xlink namespace is declared etc...
+
+                // Only do this when generating a doc fragment, since
+                // a 'rect' element can not be root of SVG Document
+                // (only an svg element can be).
+                StringBuffer sb = new StringBuffer(FRAGMENT_PREFIX.length() +
+                                                   text.length() +
+                                                   FRAGMENT_SUFFIX.length());
                 sb.append(FRAGMENT_PREFIX);
                 sb.append(text);
-                sb.append("</svg>");
+                sb.append(FRAGMENT_SUFFIX);
                 String newText = sb.toString();
                 try {
                     Document d = df.createDocument
                         (uri, new StringReader(newText));
+                    // No document given so make doc fragment from our
+                    // new Document.
+                    if (doc == null) doc = d;
                     for (Node n = d.getDocumentElement().getFirstChild();
                          n != null;
                          n = n.getNextSibling()) {
                         if (n.getNodeType() == n.ELEMENT_NODE) {
                             n = doc.importNode(n, true);
-                            result = doc.createDocumentFragment();
+                            Node result = doc.createDocumentFragment();
                             result.appendChild(n);
-                            break;
+                            return result;
                         }
                     }
                 } catch (Exception exc) {
+                    /* nothing */
+                }
+            }
+
+            // Parse as a generic XML document.
                     SAXDocumentFactory sdf = new SAXDocumentFactory
                         (doc.getImplementation(),
                          XMLResourceDescriptor.getXMLParserClassName());
                     try {
-                        Document d = sdf.createDocument
-                            (uri, new StringReader(text));
-                        result = doc.createDocumentFragment();
+                Document d = sdf.createDocument(uri, new StringReader(text));
+                if (doc == null) 
+                    return d;
+
+                Node result = doc.createDocumentFragment();
                         result.appendChild(doc.importNode(d.getDocumentElement(), true));
+                return result;
                     } catch (Exception ext) {
                         if (userAgent != null)
                             userAgent.displayError(ext);
                     }
-                }
-            }
-            return result;
+            
+            return null;
         }
 
         /**
