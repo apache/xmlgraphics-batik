@@ -660,7 +660,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
                              ImageObserver obs){
         boolean retVal = true;
 
-        if(xform.getDeterminant() != 0){
+        if (xform == null) {
+            retVal = drawImage(img, 0, 0, null);
+        } else if(xform.getDeterminant() != 0){            
             AffineTransform inverseTransform = null;
             try{
                 inverseTransform = xform.createInverse();
@@ -838,9 +840,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
                              Integer.toString(img.getWidth()));
         image.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
                              Integer.toString(img.getHeight()));
-
-        AffineTransform finalTransform = null;
-        if(xform.getDeterminant() != 0){
+        
+        if (xform == null) {
+            domGroupManager.addElement(image);
+        } else if(xform.getDeterminant() != 0){
             AffineTransform inverseTransform = null;
             try{
                 inverseTransform = xform.createInverse();
@@ -905,7 +908,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
         image.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
                            AbstractSVGConverter.doubleString(img.getHeight()));
 
-        if(xform.getDeterminant() != 0){
+        if (xform == null) {
+            domGroupManager.addElement(image);
+        } else if(xform.getDeterminant() != 0){
             AffineTransform inverseTransform = null;
             try{
                 inverseTransform = xform.createInverse();
