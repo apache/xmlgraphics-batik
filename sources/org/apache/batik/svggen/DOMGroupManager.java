@@ -114,8 +114,8 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
      */
     public void addElement(Element element) {
         addElement(element, (short)(DRAW|FILL));
+    }
 
-}
     /**
      * Adds a node to the current group, if possible
      * @param element child Element to add to the group

@@ -232,8 +232,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
         this.domTreeManager = new DOMTreeManager(gc,
                                                  generatorCtx,
                                                  DEFAULT_MAX_GC_OVERRIDES);
-        this.domGroupManager = new DOMGroupManager(this.gc, this.domTreeManager);
-        this.domTreeManager.addGroupManager(this.domGroupManager);
+        this.domGroupManager = new DOMGroupManager(gc, domTreeManager);
+        this.domTreeManager.addGroupManager(domGroupManager);
 
     }
 

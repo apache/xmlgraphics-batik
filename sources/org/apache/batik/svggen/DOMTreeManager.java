@@ -226,9 +226,11 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
             svg.setAttributeNS
                 (null, SVG_ENABLE_BACKGROUND_ATTRIBUTE, SVG_NEW_VALUE);
 
-        Comment generatorComment = generatorContext.domFactory.
-            createComment(generatorContext.generatorComment);
-        svg.appendChild(generatorComment);
+        if (generatorContext.generatorComment != null) {
+            Comment generatorComment = generatorContext.domFactory.
+                createComment(generatorContext.generatorComment);
+            svg.appendChild(generatorComment);
+        }
 
         // Set default rendering context attributes in node
         Map groupDefaults = defaultGC.getGroupContext();
@@ -249,7 +251,9 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
      * @return a defs element that contains all the generic
      *         definitions
      */
-    public Element getGenericDefinitions(){
+    public Element getGenericDefinitions() {
+        // when called several times, this will create several generic definition
+        // elements... not sure it is desired behavior...
         Element genericDefs =
             generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_DEFS_TAG);
