@@ -23,6 +23,8 @@ public class RepaintManager extends Thread {
      */
     protected UpdateManager updateManager;
 
+    long targetFrameTime = 50;
+
     /**
      * Creates a new repaint manager.
      */
@@ -39,8 +41,10 @@ public class RepaintManager extends Thread {
      * framerate because it's made the last few frames with the
      * current frame-rate easily) */
     public void run() {
+        long lastFrameTime, currentTime, tm, sleepTime;
         try {
             while (!Thread.currentThread().isInterrupted()) {
+                lastFrameTime = System.currentTimeMillis();
                 final UpdateTracker ut = updateManager.getUpdateTracker();
                 if (ut.hasChanged()) {
                     updateManager.getUpdateRunnableQueue().invokeAndWait
@@ -52,7 +56,11 @@ public class RepaintManager extends Thread {
                             }
                         });
                 }
-                sleep(40);
+                currentTime = System.currentTimeMillis();
+                tm = currentTime - lastFrameTime;
+                sleepTime = targetFrameTime-tm;
+                if (sleepTime > 0)
+                    sleep(sleepTime);
             }
         } catch (InterruptedException e) {
         }
