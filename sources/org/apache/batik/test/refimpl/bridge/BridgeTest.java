@@ -9,6 +9,7 @@
 package org.apache.batik.test.refimpl.bridge;
 
 import java.awt.*;
+import java.io.*;
 import javax.swing.*;
 import org.w3c.dom.*;
 import org.apache.batik.gvt.*;
@@ -54,7 +55,7 @@ public class BridgeTest extends JFrame {
         } catch(SAXException e){
             e.printStackTrace();
             return;
-        } catch(InterruptedException e) {
+        } catch(IOException e) {
 	    return;
 	}
 
