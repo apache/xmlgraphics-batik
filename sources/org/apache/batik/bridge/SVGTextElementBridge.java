@@ -423,7 +423,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                     }
                 } else if (ln.equals(SVG_A_TAG)) {
                     EventTarget target = (EventTarget)nodeElement;
-                    System.out.println(ln);
                     UserAgent ua = ctx.getUserAgent();
                     target.addEventListener
                         (SVG_EVENT_CLICK, 
