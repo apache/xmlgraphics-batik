@@ -105,13 +105,12 @@ public class GaussianBlurRed8Bit extends AbstractRed {
                                (hints.get(hints.KEY_RENDERING)));
 
         // System.out.println("StdDev: " + stdDevX + "x" + stdDevY);
-        
-        if ((stdDevX < 2) || highQuality)
+        if ((xinset != 0) && ((stdDevX < 2) || highQuality))
             convOp[0] = new ConvolveOp(makeQualityKernelX(xinset*2+1));
         else
             dX = (int)Math.floor(DSQRT2PI*stdDevX+0.5f);
 
-        if ((stdDevY < 2) || highQuality)
+        if ((yinset != 0) && ((stdDevY < 2) || highQuality))
             convOp[1] = new ConvolveOp(makeQualityKernelY(yinset*2+1));
         else
             dY = (int)Math.floor(DSQRT2PI*stdDevY+0.5f);
@@ -144,7 +143,7 @@ public class GaussianBlurRed8Bit extends AbstractRed {
      * Calculate the number of surround pixels required for a given
      * standard Deviation.  Also takes into account rendering quality
      * hint.  
-     */
+     */ 
     public static int surroundPixels(double stdDev, RenderingHints hints) {
         boolean highQuality = ((hints != null) &&
                                hints.VALUE_RENDER_QUALITY.equals
@@ -239,8 +238,9 @@ public class GaussianBlurRed8Bit extends AbstractRed {
         // doesn't bother to convolve the top and bottom edges
         int skipX;
 	// long t1 = System.currentTimeMillis();
-
-        if (convOp[0] != null) {
+        if (xinset == 0) {
+            skipX = 0;
+        } else if (convOp[0] != null) {
             tmpR2 = getColorModel().createCompatibleWritableRaster
                 (r.width, r.height);
             tmpR2 = convOp[0].filter(tmpR1, tmpR2);
@@ -264,7 +264,9 @@ public class GaussianBlurRed8Bit extends AbstractRed {
             }
         }
 
-        if (convOp[1] != null) {
+        if (yinset == 0) {
+            tmpR2 = tmpR1;
+        } else if (convOp[1] != null) {
             if (tmpR2 == null) {
                 tmpR2 = getColorModel().createCompatibleWritableRaster
                     (r.width, r.height);
