@@ -19,22 +19,29 @@ import java.awt.Paint;
  * @version $Id$
  */
 public class FillShapePainter implements ShapePainter {
-    /** The Shape to be painted */
+
+    /** 
+     * The Shape to be painted.
+     */
     protected Shape shape;
 
-    /** The paint attribute used to fill the shape. */
+    /** 
+     * The paint attribute used to fill the shape.
+     */
     protected Paint paint;
 
     /**
      * Constructs a new <tt>FillShapePainter</tt> that can be used to fill
      * a <tt>Shape</tt>.
      *
-     * @param shape Shape to be painted by this painter. Should not be null
+     * @param shape Shape to be painted by this painter
+     * Should not be null.  
      */
     public FillShapePainter(Shape shape) {
-        if(shape == null){
+        if (shape == null) {
             throw new IllegalArgumentException();
         }
+	this.shape = shape;
     }
 
     /**
@@ -47,14 +54,11 @@ public class FillShapePainter implements ShapePainter {
     }
 
     /**
-     * Paints the specified shape using the specified Graphics2D and context.
+     * Paints the specified shape using the specified Graphics2D.
      *
-     * @param shape the shape to paint
      * @param g2d the Graphics2D to use
-     * @param ctx the render context to use
      */
-     public void paint(Graphics2D g2d,
-                       GraphicsNodeRenderContext ctx) {
+     public void paint(Graphics2D g2d, GraphicsNodeRenderContext ctx) {
         if (paint != null) {
             g2d.setPaint(paint);
             g2d.fill(shape);
@@ -62,25 +66,27 @@ public class FillShapePainter implements ShapePainter {
     }
 
     /**
-     * Returns the area painted by this painter for a given input shape
-     *
-     * @param shape the shape to paint
+     * Returns the area painted by this shape painter.
      */
     public Shape getPaintedArea(GraphicsNodeRenderContext rc){
         return shape;
     }
 
     /**
-     * Sets the Shape this painter is associated with.
+     * Sets the Shape this shape painter is associated with.
+     *
      * @param shape new shape this painter should be associated with.
-     *        should not be null.
+     * Should not be null.  
      */
     public void setShape(Shape shape){
+        if (shape == null) {
+            throw new IllegalArgumentException();
+        }
         this.shape = shape;
     }
 
     /**
-     * Gets the Shape this painter is associated with.
+     * Gets the Shape this shape painter is associated with.
      *
      * @return shape associated with this Painter.
      */
