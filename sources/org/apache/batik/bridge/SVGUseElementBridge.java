@@ -17,6 +17,7 @@ import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.HiddenChildElement;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 
@@ -71,40 +72,6 @@ public class SVGUseElementBridge extends AbstractSVGBridge
             ? (Element)refElement.cloneNode(true)
             : (Element)document.importNode(refElement, true);
 
-        // create a <g> with all the attribute of the <use> element
-        // except x, y, width, height and xlink:href
-
-        Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        NamedNodeMap attrs = e.getAttributes();
-        int len = attrs.getLength();
-
-        for (int i = 0; i < len; i++) {
-            Attr attr = (Attr)attrs.item(i);
-            String ns = attr.getNamespaceURI();
-            if (ns == null) {
-                String n = attr.getNodeName();
-                if (SVG_X_ATTRIBUTE.equals(n)
-                    || SVG_Y_ATTRIBUTE.equals(n)
-                    || SVG_WIDTH_ATTRIBUTE.equals(n)
-                    || SVG_HEIGHT_ATTRIBUTE.equals(n)) {
-                    continue;
-                } else {
-                    g.setAttributeNS(null, n, attr.getValue());
-                }
-            } else {
-                String n = attr.getLocalName();
-                if (ns.equals(XLinkSupport.XLINK_NAMESPACE_URI)) {
-                    if ("href".equals(n)) {
-                        continue;
-                    } else {
-                        g.setAttributeNS(ns, n, attr.getValue());
-                    }
-                } else {
-                    g.setAttributeNS(ns, n, attr.getValue());
-                }
-            }
-        }
-
         if (SVG_SYMBOL_TAG.equals(localRefElement.getLocalName())) {
             // The referenced 'symbol' and its contents are deep-cloned into
             // the generated tree, with the exception that the 'symbol'  is
@@ -112,8 +79,8 @@ public class SVGUseElementBridge extends AbstractSVGBridge
             Element svgElement
                 = document.createElementNS(SVG_NAMESPACE_URI, SVG_SVG_TAG);
             // move the attributes from <symbol> to the <svg> element
-            attrs = localRefElement.getAttributes();
-            len = attrs.getLength();
+            NamedNodeMap attrs = localRefElement.getAttributes();
+            int len = attrs.getLength();
             for (int i = 0; i < len; i++) {
                 Attr attr = (Attr)attrs.item(i);
                 svgElement.setAttributeNS(attr.getNamespaceURI(),
@@ -146,18 +113,9 @@ public class SVGUseElementBridge extends AbstractSVGBridge
             }
         }
 
-        g.appendChild(localRefElement);
-
         // attach the referenced element to the current document
-        ((HiddenChildElement)g).setParentElement(e);
-        // compute the style of the <g> as it may have local
-        // references we have to update
-        ViewCSS viewCSS = (ViewCSS)document.getDefaultView();
-        CSSOMReadOnlyStyleDeclaration decl =
-            (CSSOMReadOnlyStyleDeclaration)(viewCSS).getComputedStyle(localRefElement, null);
-        try {
-            CSSUtilities.updateURIs(decl, refDocument.getURLObject());
-        } catch (MalformedURLException ex) { }
+        ((HiddenChildElement)localRefElement).setParentElement(e);
+        Element g = localRefElement;
 
         // compute URIs and style sheets for external reference
         if (!isLocal) {
@@ -172,7 +130,7 @@ public class SVGUseElementBridge extends AbstractSVGBridge
         CompositeGraphicsNode gn = new CompositeGraphicsNode();
         gn.getChildren().add(refNode);
 
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, g);
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
         String s;
 
         // 'x' attribute - default is 0
@@ -193,7 +151,18 @@ public class SVGUseElementBridge extends AbstractSVGBridge
 
         // set an affine transform to take into account the (x, y)
         // coordinates of the <use> element
-        gn.setTransform(AffineTransform.getTranslateInstance(x, y));
+        s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
+        AffineTransform at = AffineTransform.getTranslateInstance(x, y);
+
+        // 'transform'
+        if (s.length() != 0) {
+            at.concatenate
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
+        }
+        gn.setTransform(at);
+
+        // set an affine transform to take into account the (x, y)
+        // coordinates of the <use> element
 
         // 'visibility'
         gn.setVisible(CSSUtilities.convertVisibility(e));
@@ -218,6 +187,15 @@ public class SVGUseElementBridge extends AbstractSVGBridge
     public void buildGraphicsNode(BridgeContext ctx,
                                   Element e,
                                   GraphicsNode node) {
+
+        // 'opacity'
+        node.setComposite(CSSUtilities.convertOpacity(e));
+        // 'filter'
+        node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
+        // 'mask'
+        node.setMask(CSSUtilities.convertMask(e, node, ctx));
+        // 'clip-path'
+        node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
 
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {
