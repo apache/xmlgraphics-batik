@@ -680,4 +680,11 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textEffect2.png" />
     </test>
 
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/textEffect3.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/textEffect3.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textEffect3.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/textEffect3.png" />
+    </test>
+
 </testSuite>
