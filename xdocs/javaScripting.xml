@@ -18,6 +18,7 @@
     <title>Scripting With Java</title>
     <authors>
       <person name="Stephane Hillion" email="shillion@ilog.fr"/>
+      <person name="Thomas DeWeese" email="deweese@apache.org"/>
     </authors>
   </header>
 
@@ -30,10 +31,12 @@
     </p>
 
     <ul>
-      <li><link href="#Swing">
-        How to manipulate a JSVGCanvas' document?</link></li>
-      <li><link href="#Threads">
-        How to write thread-safe code?</link></li>
+      <li><link href="#Swing"
+            >How to manipulate a JSVGCanvas' document?</link></li>
+      <li><link href="#Threads"
+            >How to write thread-safe code?</link></li>
+      <li><link href="#SVGDOM"
+            >Using the SVG DOM</link></li>
       <li><link href="#Extension">
         How to run Java code using a &lt;script&gt; element?</link></li>
     </ul>                          
@@ -198,6 +201,69 @@ canvas.getUpdateManager().getUpdateRunnableQueue().
         happens you will get a thread deadlock.  You should
         only make invokeAndWait calls from 'third party' threads.
     </note>
+    </s1>
+
+    <!-- #################################################### -->
+
+    <anchor id="SVGDOM"/>
+    <s1 title="Using the SVG DOM">
+      <p>
+        Batik provides a fairly complete implementation of the
+        SVG DOM.  The SVG DOM provides all the functionality most 
+        applications require.  In particular the DOM implements
+        DOM Events including mutation and UI Events.
+      </p>
+      <p>
+        DOM events allow you to get notified when the cursor
+        moves over elements of interest:
+      </p>
+      <source>
+// Element of Interest.
+Element theElem;
+((EventTarget)theElem).addEventListener("mouseover", mouseOverListener, true);
+      </source>
+      <p>
+        Where <tt>mouseOverListener</tt> implements the
+        <tt>org.w3c.dom.events.EventListener</tt> interface.
+        This interface consists of the method:
+      </p>
+<source>
+public void handleEvent(Event evt);
+</source>
+      <p>
+        This is called whenever the event occurs with the
+        element it is registered on.  It is worth reviewing the
+        DOM Events specification as there are many useful features
+        to this interface that are not immediately obvious.
+      </p>
+      <p>
+        It is also worth looking at the DOM interfaces defined
+        by the SVG specification as they provide a large number
+        of useful methods, in particular the SVGLocatable:
+      </p>
+<source>
+  // Returns Bounding box of SVG Element.
+  public SVGRect   getBBox (  );
+  // Returns the transformation matrix to the screen.
+  public SVGMatrix getScreenCTM (  );
+  // Returns the transformation matrix to the given element.
+  public SVGMatrix getTransformToElement ( SVGElement element )
+                  throws SVGException;
+</source>
+      <p>
+        In particular <tt>getScreenCTM</tt> is very useful for
+        taking the 'clientX', 'clientY' attributes of the
+        DOM UIEvent and mapping them to the coordinate system
+        of an element in the SVG document:
+      </p>
+<source>
+    SVGMatrix mat  = elem.getScreenCTM();
+    SVGMatrix imat = mat.inverse();
+    SVGPoint  cPt  = document.getRootElement().createSVGPoint();
+    cPt.setX(uiEvt.clientX);
+    cPt.setY(uiEvt.clientY);
+    cPt = cPt.matrixTransform(imat);
+</source>
     </s1>
 
     <!-- #################################################### -->

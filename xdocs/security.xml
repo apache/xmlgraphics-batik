@@ -108,14 +108,14 @@
             <p><strong>Important Note</strong></p>
                 <p>
                 The default policy files assume that the applications use the 
-                Crimson parser and give appropriate permissions to its 
-                <code>lib/crimson-parser.jar</code> JAR file. If you are using 
+                Xerces parser and give appropriate permissions to its 
+                <code>lib/xerces-2_5_0.jar</code> JAR file. If you are using 
                 a different XML parser, you need to modify the policy files to 
                 grant the propser permissions to your XML parser instead of 
-                Crimson. You will have to replace:
+                Xerces. You will have to replace:
                 </p>
 <source>
-grant codeBase "${app.dev.base}/lib/crimson-parser.jar" {
+grant codeBase "${app.dev.base}/lib/xerces_2_5_0.jar" {
   permission java.security.AllPermission;
 };
 </source>

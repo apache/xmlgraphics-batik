@@ -350,7 +350,7 @@ function CardMoveManager(group, pile, cards, x, y) {
 
     var moveInfo = false;
     var destPile = findPile(this.board, evt.target);
-    if (destPile) {
+    if (destPile && destPile.dropCheck) {
       moveInfo = destPile.dropCheck(this.pile, destPile, this.cards);
     }
 
