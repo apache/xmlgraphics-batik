@@ -32,8 +32,12 @@
 <use filter="url(#dropShadow)" transform="translate(-242, -110.5) scale(2.3)" y="20" x="20" xlink:href="#Batik_Squiggle"/>
 <g filter="url(#dropShadow)" fill="white" text-anchor="middle" font-size="75" font-family="'20th Century Font', 'Futura XBlk BT'" id="topText">
 <text y=".3em">
-<tspan font-size="95">batik</tspan>1.5</text>
+<tspan font-size="95">batik</tspan>1.5.1</text>
 <text font-size="17" y="3em">http://xml.apache.org/batik</text>
+</g>
+<g filter="url(#dropShadow)" transform="translate(170, 20) rotate(-30) scale(.7)" id="betaStamp">
+<rect fill="none" stroke-width="5" stroke="red" height="40" width="180" y="-32" x="-90"/>
+<text fill="red" font-size="45" text-anchor="middle" font-family="'20th Century Font'">rc 2</text>
 </g>
 </g>
 </g>
