@@ -16,7 +16,6 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextAttribute;
-import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
@@ -31,6 +30,7 @@ import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.text.TextSpanLayout;
 
 /**
  * More sophisticated implementation of TextPainter which
@@ -111,7 +111,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             AttributedCharacterIterator runaci =
                     new AttributedCharacterSpanIterator(aci, start, end);
 
-            TextLayout layout = new TextLayout(runaci, frc);
+            TextSpanLayout layout = getTextLayoutFactory().createTextLayout(runaci, frc);
 
             if (layout.isVertical()) {
                 AttributedString as = new AttributedString(runaci);
@@ -157,7 +157,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         for (int i=0; i<textRuns.size(); ++i) {
             TextRun textRun = (TextRun) textRuns.get(i);
             AttributedCharacterIterator runaci = textRun.getACI();
-            TextLayout layout = textRun.getLayout();
+            TextSpanLayout layout = textRun.getLayout();
             runaci.first();
             //System.out.print("Painting text: ");
             //for (int j=runaci.getBeginIndex(); j<runaci.getEndIndex(); ++j) {
@@ -237,7 +237,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     private void paintOverline(TextRun textRun, Point2D location,
                      double xoffset, Graphics2D g2d) {
         AttributedCharacterIterator runaci = textRun.getACI();
-        TextLayout layout = textRun.getLayout();
+        TextSpanLayout layout = textRun.getLayout();
         java.awt.Shape overlineShape =
                getOverlineShape(runaci, layout,
                    new Point2D.Double(location.getX()+xoffset, location.getY()));
@@ -269,7 +269,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                     double xoffset, Graphics2D g2d) {
 
         AttributedCharacterIterator runaci = textRun.getACI();
-        TextLayout layout = textRun.getLayout();
+        TextSpanLayout layout = textRun.getLayout();
 
         java.awt.Shape underlineShape =
                getUnderlineShape(runaci, layout,
@@ -308,7 +308,7 @@ public class StrokingTextPainter extends BasicTextPainter {
                      double xoffset, Graphics2D g2d) {
 
         AttributedCharacterIterator runaci = textRun.getACI();
-        TextLayout layout = textRun.getLayout();
+        TextSpanLayout layout = textRun.getLayout();
 
         java.awt.Shape strikethroughShape =
                getStrikethroughShape(runaci, layout,
@@ -337,16 +337,16 @@ public class StrokingTextPainter extends BasicTextPainter {
      */
     class TextRun {
         private AttributedCharacterIterator aci;
-        private TextLayout layout;
+        private TextSpanLayout layout;
 
-        public TextRun(TextLayout layout, AttributedCharacterIterator aci) {
+        public TextRun(TextSpanLayout layout, AttributedCharacterIterator aci) {
             this.layout = layout;
             this.aci = aci;
         }
         public AttributedCharacterIterator getACI() {
             return aci;
         }
-        public TextLayout getLayout() {
+        public TextSpanLayout getLayout() {
             return layout;
         }
 
