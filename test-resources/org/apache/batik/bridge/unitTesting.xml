@@ -1,0 +1,52 @@
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- @author vincent.hardy@sun.com                                             -->
+<!-- @version $Id$       -->
+<!-- ========================================================================= -->
+<testSuite id="bridge.unitTesting"
+           name="org.apache.batik.bridge package - Unit Testing">
+
+    <!-- ================================================================ -->
+    <!-- Script Permissions check                                         -->
+    <!-- ================================================================ -->
+    <testGroup id="security" name="Script Security"
+               class="org.apache.batik.bridge.ScriptSelfTest">
+        <test id="ecmaCheckPermissionsDenied">
+            <property name="Secure" class="java.lang.Boolean" value="true" />
+        </test>
+
+        <test id="ecmaCheckPermissionsGranted">
+            <property name="Secure" class="java.lang.Boolean" value="false" />
+        </test>
+
+        <test id="ecmaCheckNoLoad">
+            <property name="Scripts" class="java.lang.String" 
+                      value="application/java-archive" />
+        </test>
+
+        <test id="ecmaCheckLoad">
+            <property name="Scripts" class="java.lang.String" 
+                      value="text/ecmascript" />
+        </test>
+
+        <test id="ecmaCheckConstrain">
+            <property name="Constrain" class="java.lang.Boolean" 
+                      value="true" />
+        </test>
+
+        <test id="ecmaCheckNoConstrain">
+            <property name="Constrain" class="java.lang.Boolean" 
+                      value="false" />
+        </test>
+
+
+    </testGroup>
+
+</testSuite>
