@@ -12,6 +12,7 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGColorProfileElement;
@@ -81,42 +82,97 @@ public class SVGOMColorProfileElement
      * <b>DOM</b>: Implements {@link SVGColorProfileElement#getLocal()}.
      */
     public String getLocal() {
-        throw new RuntimeException("!!! TODO: getLocal()");
+        return getAttributeNS(null, SVG_LOCAL_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGColorProfileElement#setLocal(String)}.
      */
     public void setLocal(String local) throws DOMException {
-        throw new RuntimeException("!!! TODO: setLocal()");
+        setAttributeNS(null, SVG_LOCAL_ATTRIBUTE, local);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGColorProfileElement#getName()}.
      */
     public String getName() {
-        throw new RuntimeException("!!! TODO: getName()");
+        return getAttributeNS(null, SVG_NAME_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGColorProfileElement#setName(String)}.
      */
     public void setName(String name) throws DOMException {
-        throw new RuntimeException("!!! TODO: setName()");
+        setAttributeNS(null, SVG_NAME_ATTRIBUTE, name);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGColorProfileElement#getRenderingIntent()}.
+     * <b>DOM</b>: Implements {@link
+     * SVGColorProfileElement#getRenderingIntent()}.
      */
     public short getRenderingIntent() {
-        throw new RuntimeException("!!! TODO: getRenderingIntent()");
+        Attr attr = getAttributeNodeNS(null, SVG_RENDERING_INTENT_ATTRIBUTE);
+        if (attr == null) {
+            return RENDERING_INTENT_AUTO;
+        }
+        String val = attr.getValue();
+        switch (val.length()) {
+        case 4:
+            if (val.equals(SVG_AUTO_VALUE)) {
+                return RENDERING_INTENT_AUTO;
+            }
+            break;
+
+        case 10:
+            if (val.equals(SVG_PERCEPTUAL_VALUE)) {
+                return RENDERING_INTENT_PERCEPTUAL;
+            }
+            if (val.equals(SVG_SATURATE_VALUE)) {
+                return RENDERING_INTENT_SATURATION;
+            }
+            break;
+
+        case 21:
+            if (val.equals(SVG_ABSOLUTE_COLORIMETRIC_VALUE)) {
+                return RENDERING_INTENT_ABSOLUTE_COLORIMETRIC;
+            }
+            if (val.equals(SVG_RELATIVE_COLORIMETRIC_VALUE)) {
+                return RENDERING_INTENT_RELATIVE_COLORIMETRIC;
+            }
+        }
+        return RENDERING_INTENT_UNKNOWN;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link SVGColorProfileElement#setRenderingIntent(short)}.
+     * <b>DOM</b>: Implements {@link
+     * SVGColorProfileElement#setRenderingIntent(short)}.
      */
     public void setRenderingIntent(short renderingIntent) throws DOMException {
-        throw new RuntimeException("!!! TODO: setRenderingIntent()");
+        switch (renderingIntent) {
+        case RENDERING_INTENT_AUTO:
+            setAttributeNS(null, SVG_RENDERING_INTENT_ATTRIBUTE,
+                           SVG_AUTO_VALUE);
+            break;
+
+        case RENDERING_INTENT_PERCEPTUAL:
+            setAttributeNS(null, SVG_RENDERING_INTENT_ATTRIBUTE,
+                           SVG_PERCEPTUAL_VALUE);
+            break;
+
+        case RENDERING_INTENT_RELATIVE_COLORIMETRIC:
+            setAttributeNS(null, SVG_RENDERING_INTENT_ATTRIBUTE,
+                           SVG_RELATIVE_COLORIMETRIC_VALUE);
+            break;
+
+        case RENDERING_INTENT_SATURATION:
+            setAttributeNS(null, SVG_RENDERING_INTENT_ATTRIBUTE,
+                           SVG_SATURATE_VALUE);
+            break;
+
+        case RENDERING_INTENT_ABSOLUTE_COLORIMETRIC:
+            setAttributeNS(null, SVG_RENDERING_INTENT_ATTRIBUTE,
+                           SVG_ABSOLUTE_COLORIMETRIC_VALUE);
+        }
     }
 
     /**

@@ -396,7 +396,7 @@ public class SVGOMDocument
      * org.w3c.dom.stylesheets.DocumentStyle#getStyleSheets()}.
      */
     public StyleSheetList getStyleSheets() {
-        throw new InternalError("Not implemented");
+        throw new RuntimeException(" !!! Not implemented");
     }
 
     // DocumentView ///////////////////////////////////////////////////////////
@@ -432,7 +432,7 @@ public class SVGOMDocument
      */
     public CSSStyleDeclaration getOverrideStyle(Element elt,
                                                 String pseudoElt) {
-        throw new InternalError("Not implemented");
+        throw new RuntimeException(" !!! Not implemented");
     }
 
     /**

@@ -75,14 +75,16 @@ public class SVGOMViewElement
     // SVGZoomAndPan support ///////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
      */
     public short getZoomAndPan() {
         return SVGZoomAndPanSupport.getZoomAndPan(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
      */
     public void setZoomAndPan(short val) {
         SVGZoomAndPanSupport.setZoomAndPan(this, val);

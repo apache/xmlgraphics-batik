@@ -20,18 +20,21 @@ import org.w3c.dom.svg.SVGAnimatedBoolean;
  */
 public class SVGExternalResourcesRequiredSupport implements SVGConstants {
 
-    private final static String ATTR_NAME = SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE;
+    private final static String ATTR_NAME =
+        SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE;
 
     /**
      * To implement {@link
      * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
-    public static SVGAnimatedBoolean getExternalResourcesRequired(AbstractElement elt) {
+    public static SVGAnimatedBoolean
+        getExternalResourcesRequired(AbstractElement elt) {
         LiveAttributeValue lav;
         lav = elt.getLiveAttributeValue(null, ATTR_NAME);
         if (lav == null) {
             lav = new SVGOMAnimatedBoolean(elt, null, ATTR_NAME,
-                                           elt.getAttributeNodeNS(null, ATTR_NAME),
+                                           elt.getAttributeNodeNS(null,
+                                                                  ATTR_NAME),
                                            "false");
             elt.putLiveAttributeValue(null, ATTR_NAME, lav);
         }

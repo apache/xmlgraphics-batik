@@ -46,7 +46,8 @@ public class SVGOMAnimateTransformElement
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    public SVGOMAnimateTransformElement(String prefix, AbstractDocument owner) {
+    public SVGOMAnimateTransformElement(String prefix,
+                                        AbstractDocument owner) {
         super(prefix, owner);
 
     }

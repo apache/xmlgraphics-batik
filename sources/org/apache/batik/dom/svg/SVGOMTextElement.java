@@ -84,7 +84,8 @@ public class SVGOMTextElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGLocatable#getScreenCTM()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getScreenCTM()}.
      */
     public SVGMatrix getScreenCTM() {
 	return SVGLocatableSupport.getScreenCTM(this);
@@ -102,7 +103,8 @@ public class SVGOMTextElement
     // SVGTransformable support /////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGTransformable#getTransform()}.
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGTransformable#getTransform()}.
      */
     public SVGAnimatedTransformList getTransform() {
 	return SVGTransformableSupport.getTransform(this);

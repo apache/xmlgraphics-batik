@@ -84,84 +84,84 @@ public class SVGOMGlyphRefElement
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#getGlyphRef()}.
      */
     public String getGlyphRef() {
-        throw new RuntimeException("!!! TODO: getGlyphRef()");
+        return getAttributeNS(null, SVG_GLYPH_REF_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#setGlyphRef(String)}.
      */
     public void setGlyphRef(String glyphRef) throws DOMException {
-        throw new RuntimeException("!!! TODO: setGlyphRef()");
+        setAttributeNS(null, SVG_GLYPH_REF_ATTRIBUTE, glyphRef);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#getFormat()}.
      */
     public String getFormat() {
-        throw new RuntimeException("!!! TODO: getFormat()");
+        return getAttributeNS(null, SVG_FORMAT_ATTRIBUTE);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#setFormat(String)}.
      */
     public void setFormat(String format) throws DOMException {
-        throw new RuntimeException("!!! TODO: setFormat()");
+        setAttributeNS(null, SVG_FORMAT_ATTRIBUTE, format);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#getX()}.
      */
     public float getX() {
-        throw new RuntimeException("!!! TODO: getX()");
+        return Float.parseFloat(getAttributeNS(null, SVG_X_ATTRIBUTE));
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#setX(float)}.
      */
     public void setX(float x) throws DOMException {
-        throw new RuntimeException("!!! TODO: setX()");
+        setAttributeNS(null, SVG_X_ATTRIBUTE, String.valueOf(x));
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#getY()}.
      */
     public float getY() {
-        throw new RuntimeException("!!! TODO: getY()");
+        return Float.parseFloat(getAttributeNS(null, SVG_Y_ATTRIBUTE));
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#setY(float)}.
      */
     public void setY(float y) throws DOMException {
-        throw new RuntimeException("!!! TODO: setY()");
+        setAttributeNS(null, SVG_Y_ATTRIBUTE, String.valueOf(y));
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#getDx()}.
      */
     public float getDx() {
-        throw new RuntimeException("!!! TODO: getDx()");
+        return Float.parseFloat(getAttributeNS(null, SVG_DX_ATTRIBUTE));
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#setDx(float)}.
      */
     public void setDx(float dx) throws DOMException {
-        throw new RuntimeException("!!! TODO: setDx()");
+        setAttributeNS(null, SVG_DX_ATTRIBUTE, String.valueOf(dx)); 
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#getDy()}.
      */
     public float getDy() {
-        throw new RuntimeException("!!! TODO: getDy()");
+        return Float.parseFloat(getAttributeNS(null, SVG_DY_ATTRIBUTE));
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGGlyphRefElement#setDy(float)}.
      */
     public void setDy(float dy) throws DOMException {
-        throw new RuntimeException("!!! TODO: setDy()");
+        setAttributeNS(null, SVG_DY_ATTRIBUTE, String.valueOf(dy)); 
     }
 
     /**

@@ -369,6 +369,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_FILTER_UNITS_ATTRIBUTE = "filterUnits";
     String SVG_FLOOD_COLOR_ATTRIBUTE = CSS_FLOOD_COLOR_PROPERTY;
     String SVG_FLOOD_OPACITY_ATTRIBUTE = CSS_FLOOD_OPACITY_PROPERTY;
+    String SVG_FORMAT_ATTRIBUTE = "format";
     String SVG_FONT_FAMILY_ATTRIBUTE = CSS_FONT_FAMILY_PROPERTY;
     String SVG_FONT_SIZE_ATTRIBUTE = CSS_FONT_SIZE_PROPERTY;
     String SVG_FONT_STRETCH_ATTRIBUTE = CSS_FONT_STRETCH_PROPERTY;
@@ -380,6 +381,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_G1_ATTRIBUTE = "g1";
     String SVG_G2_ATTRIBUTE = "g2";
     String SVG_GLYPH_NAME_ATTRIBUTE = "glyph-name";
+    String SVG_GLYPH_REF_ATTRIBUTE = "glyphRef";
     String SVG_GRADIENT_TRANSFORM_ATTRIBUTE = "gradientTransform";
     String SVG_GRADIENT_UNITS_ATTRIBUTE = "gradientUnits";
     String SVG_HANGING_ATTRIBUTE = "hanging";
@@ -408,6 +410,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_LENGTH_ADJUST_ATTRIBUTE = "lengthAdjust";
     String SVG_LIGHT_COLOR_ATTRIBUTE = "lightColor";
     String SVG_LIMITING_CONE_ANGLE_ATTRIBUTE = "limitingConeAngle";
+    String SVG_LOCAL_ATTRIBUTE = "local";
     String SVG_MARKER_HEIGHT_ATTRIBUTE = "markerHeight";
     String SVG_MARKER_UNITS_ATTRIBUTE = "markerUnits";
     String SVG_MARKER_WIDTH_ATTRIBUTE = "markerWidth";
