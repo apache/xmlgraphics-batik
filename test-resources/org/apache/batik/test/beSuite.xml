@@ -241,14 +241,18 @@
     <!-- Metadata                                                            -->
     <!-- =================================================================== -->
     <testGroup id="metadata">
-        <test id="metadata-sample-BE-01.svg" />
+        <test id="metadata-sample-BE-01.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+        </test>
     </testGroup>
 
     <!-- =================================================================== -->
     <!-- Multiple namespaces                                                 -->
     <!-- =================================================================== -->
     <testGroup id="extend">
-        <test id="extend-multiNS-BE-01.svg" />
+        <test id="extend-multiNS-BE-01.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+        </test>
     </testGroup>
 
     <!-- =================================================================== -->
