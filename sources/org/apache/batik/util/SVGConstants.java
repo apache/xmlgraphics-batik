@@ -141,6 +141,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_BBOX_ATTRIBUTE = "bbox";
     String SVG_BIAS_ATTRIBUTE = "bias";
     String SVG_CAP_HEIGHT_ATTRIBUTE = "cap-height";
+    String SVG_CLASS_ATTRIBUTE = "class";
     String SVG_CLIP_PATH_ATTRIBUTE = CSS_CLIP_PATH_PROPERTY;
     String SVG_CLIP_PATH_UNITS_ATTRIBUTE = "clipPathUnits";
     String SVG_COLOR_INTERPOLATION_ATTRIBUTE = CSS_COLOR_INTERPOLATION_PROPERTY;

@@ -40,6 +40,7 @@ public interface CSSConstants {
     String CSS_FILTER_PROPERTY = "filter";
     String CSS_FLOOD_COLOR_PROPERTY = "flood-color";
     String CSS_FLOOD_OPACITY_PROPERTY = "flood-opacity";
+    String CSS_FONT_PROPERTY = "font";
     String CSS_FONT_FAMILY_PROPERTY = "font-family";
     String CSS_FONT_SIZE_PROPERTY = "font-size";
     String CSS_FONT_SIZE_ADJUST_PROPERTY = "font-size-adjust";
@@ -106,6 +107,7 @@ public interface CSSConstants {
     String CSS_BUTTONSHADOW_VALUE = "buttonshadow";
     String CSS_BUTTONTEXT_VALUE = "buttontext";
     String CSS_CAPTIONTEXT_VALUE = "captiontext";
+    String CSS_CENTER_VALUE = "center";
     String CSS_COLLAPSE_VALUE = "collapse";
     String CSS_COMPACT_VALUE = "compact";
     String CSS_CONDENSED_VALUE = "condensed";
