@@ -1056,8 +1056,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
      */
     public void drawString(AttributedCharacterIterator iterator,
                            float x, float y) {
-        generatorCtx.errorHandler.
-            handleError(new SVGGraphics2DRuntimeException(ERR_ACI));
+        TextLayout layout = new TextLayout(iterator, getFontRenderContext());
+        layout.draw(this, x, y);
     }
 
 
