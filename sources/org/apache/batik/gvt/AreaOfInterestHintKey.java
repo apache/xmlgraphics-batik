@@ -18,8 +18,8 @@ import java.awt.Shape;
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
-final class AreaOfInterestKey extends RenderingHints.Key {
-    AreaOfInterestKey() {
+final class AreaOfInterestHintKey extends RenderingHints.Key {
+    AreaOfInterestHintKey() {
         super(1000);
     }
     public boolean isCompatibleValue(Object val) {
