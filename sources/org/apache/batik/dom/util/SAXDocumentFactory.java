@@ -189,7 +189,6 @@ public class SAXDocumentFactory
                                       InputSource is)
 	throws IOException {
 	document = implementation.createDocument(ns, root, null);
-
 	try {
             XMLReader parser =
                 XMLReaderFactory.createXMLReader(parserClassName);
@@ -201,7 +200,7 @@ public class SAXDocumentFactory
                                    this : errorHandler);
 
             parser.setFeature("http://xml.org/sax/features/namespaces", 
-			      true);
+			      false);
             parser.setFeature("http://xml.org/sax/features/namespace-prefixes",
                               true);
 	    parser.setFeature("http://xml.org/sax/features/validation",
