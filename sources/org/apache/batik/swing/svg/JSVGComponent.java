@@ -54,6 +54,8 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+
 import org.apache.batik.gvt.GraphicsNode;
 
 import org.apache.batik.gvt.event.EventDispatcher;
@@ -536,6 +538,14 @@ public class JSVGComponent extends JGVTComponent {
     public void setFragmentIdentifier(String fi) {
         fragmentIdentifier = fi;
         computeRenderingTransform();
+    }
+
+    /**
+     * Removes all images from the image cache.
+     */
+    public void flushImageCache() {
+        ImageTagRegistry reg = ImageTagRegistry.getRegistry();
+        reg.flushCache();
     }
 
     /**

@@ -824,6 +824,9 @@ public class JSVGViewerFrame
     public class ReloadAction extends AbstractAction {
         public ReloadAction() {}
         public void actionPerformed(ActionEvent e) {
+            if ((e.getModifiers() & ActionEvent.SHIFT_MASK) == 1) {
+                svgCanvas.flushImageCache();
+            }
             if (svgDocument != null) {
                 localHistory.reload();
             }
