@@ -128,7 +128,7 @@ class BridgeEventSupport {
         String language = svgElement.getContentScriptType();
         Interpreter interpret =
             ctx.getInterpreterPool().
-            getInterpreter(language);
+            getInterpreter(element.getOwnerDocument(), language);
         if (interpret != null) {
             // <!> TODO we need to memo listeners to be able to remove
             // them later.
@@ -179,8 +179,7 @@ class BridgeEventSupport {
             language = (selement = (Element)list.item(i)).
                 getAttribute("type");
             final Interpreter interpret =
-                ctx.getInterpreterPool().
-                getInterpreter(language);
+                ctx.getInterpreterPool().getInterpreter(doc, language);
             if (interpret != null) {
                 final StringBuffer script = new StringBuffer();
                 for (Node n = selement.getFirstChild(); n != null;

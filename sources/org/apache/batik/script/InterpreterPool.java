@@ -8,6 +8,8 @@
 
 package org.apache.batik.script;
 
+import org.w3c.dom.Document;
+
 /**
  * An interface allowing to create/query an <code>Interpreter</code>
  * corresponding to a particular language.
@@ -22,7 +24,7 @@ public interface InterpreterPool {
      * @param language a mimeType like string describing the language to use
      * (i.e. "text/ecmascript" for ECMAScript interpreter).
      */
-    public Interpreter getInterpreter(String language);
+    public Interpreter getInterpreter(Document document, String language);
 
     /**
      * Should allow to register an <code>InterpreterFactory</code> for the
