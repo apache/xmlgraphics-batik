@@ -30,70 +30,16 @@
 
         <text class="title" x="50%" y="40">Markers, Orient 2/2</text>
 
-        <defs>
-            <g id="crossHair" marker="none" marker-start="none" marker-end="none" marker-mid="none" stroke="black">
-                <line y1="-5" x2="0" y2="5" />
-                <line x1="-5" x2="5" y2="0" />
-            </g>
-
-            <g id="startEndCrossHairs">
-                <use x="0" y="20" xlink:href="#crossHair" />
-                <use x="30" y="0" xlink:href="#crossHair" />
-            </g>
-
-            <g id="startMidEndCrossHairs">
-                <use x="0" y="20" xlink:href="#crossHair" />
-                <use x="20" y="0" xlink:href="#crossHair" />
-                <use x="50" y="10" xlink:href="#crossHair" />
-            </g>
-
-        </defs>
-
         <g transform="translate(110, 120)">
 
-        <g id="grid" stroke="black" fill="none">
-            <rect x="-30" y="-25" width="300" height="350" fill="url(markersOrientA.svg#gridPattern)"/>
+        <use xlink:href="markersOrientA.svg#grid" />
 
-            <rect x="-30" y="-45" width="300" height="20" fill="rgb(240, 240, 240)" />
-            <rect x="-50" y="-25" width="20" height="350" fill="rgb(240, 240, 240)" />
-
-            <line x1="70" y1="-45" x2="70" y2="325" />
-            <line x1="170" y1="-45" x2="170" y2="325" />
-            <line x1="-50" y1="45" x2="270" y2="45" />
-            <line x1="-50" y1="115" x2="270" y2="115" />
-            <line x1="-50" y1="185" x2="270" y2="185" />
-            <line x1="-50" y1="255" x2="270" y2="255" />
-
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" x="20" y="-30">Middle w/quadTo</text>
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" x="120" y="-30">Middle w/ cubicTo</text>
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" x="220" y="-30">Middle w/ close</text>
-
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" 
-                  transform="translate(-35, 10) rotate(-90)">
-                moveTo
-            </text>
-
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" 
-                  transform="translate(-35, 80) rotate(-90)">
-                lineTo
-            </text>
-
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" 
-                  transform="translate(-35, 150) rotate(-90)">
-                quadTo
-            </text>
-
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" 
-                  transform="translate(-35, 220) rotate(-90)">
-                cubicTo
-            </text>
-
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" 
-                  transform="translate(-35, 290) rotate(-90)">
-                close
-            </text>
-
+        <g class="legend" stroke="none" fill="black" text-anchor="middle" >
+            <text x="20" y="-30">Middle w/quadTo</text>
+            <text x="120" y="-30">Middle w/ cubicTo</text>
+            <text x="220" y="-30">Middle w/ close</text>
         </g>
+
         <!-- ==================================== -->
         <!-- The following 5 paths have two       -->
         <!-- points, validating the various       -->
@@ -109,30 +55,30 @@
 
             <!-- Out is a moveTo -->
             <path d="M 0 20 Q 40 40 20 0 M 50 10" class="markedPath"/>
-            <use xlink:href="#startMidEndCrossHairs" />
+            <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
 
             <!-- Out is a lineTo -->
             <g transform="translate(0, 70)">
                 <path d="M 0 20 Q 20 20 20 0 L 50 10" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
             <!-- Out is a quadTo -->
             <g transform="translate(0, 140)">
                 <path d="M 0 20 Q 20 20 20 0 Q 50 0 50 10" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
             <!-- Out is a cubicTo -->
             <g transform="translate(0, 210)">
                 <path d="M 0 20 Q 20 20 20 0 C 40 -10 80 -20 50 10" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
             <!-- Out is a close -->
             <g transform="translate(0, 280)">
                 <path d="M 0 20 Q 20 20 20 0 Z" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
         </g>
@@ -152,30 +98,30 @@
 
             <!-- Out is a moveTo -->
             <path d="M 0 20 C 20 40 40 20 20 0 M 50 10" class="markedPath"/>
-            <use xlink:href="#startMidEndCrossHairs" />
+            <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
 
             <!-- Out is a lineTo -->
             <g transform="translate(0, 70)">
                 <path d="M 0 20 C 20 40 40 20 20 0 L 50 10" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
             <!-- Out is a quadTo -->
             <g transform="translate(0, 140)">
                 <path d="M 0 20 C 20 40 40 20 20 0 Q 50 0 50 10" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
             <!-- Out is a cubicTo -->
             <g transform="translate(0, 210)">
                 <path d="M 0 20 C 20 40 40 20 20 0 C 40 -10 80 -20 50 10" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
             <!-- Out is a close -->
             <g transform="translate(0, 280)">
                 <path d="M 0 20 C 20 40 40 20 20 0 Z" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
         </g>
@@ -194,33 +140,34 @@
 
 
             <!-- Out is a moveTo -->
-            <path d="M 20 0 Z M 50 10" class="markedPath"/>
-            <use xlink:href="#startMidEndCrossHairs" />
+            <path d="M 0 20 Z M 50 10" class="markedPath"/>
+            <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
 
             <!-- Out is a lineTo -->
             <g transform="translate(0, 70)">
-                <path d="M 20 0 Z L 50 10" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <path d="M 0 20 Z L 50 10" class="markedPath" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
             <!-- Out is a quadTo -->
             <g transform="translate(0, 140)">
-                <path d="M 20 0 Z Q 50 0 50 10" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <path d="M 0 20 Z Q 70 -30 50 10" class="markedPath" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
             <!-- Out is a cubicTo -->
             <g transform="translate(0, 210)">
-                <path d="M 20 0 Z C 40 -10 80 -20 50 10" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <path d="M 0 20 Z C 40 -10 80 -20 50 10" class="markedPath" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
 
-            <!-- Out is a close -->
+            <!-- Out is a close : NA -->
+            <!-- 
             <g transform="translate(0, 280)">
-                <path d="M 20 0 Z Z" class="markedPath" />
-                <use xlink:href="#startMidEndCrossHairs" />
+                <path d="M 0 20 Z Z" class="markedPath" />
+                <use xlink:href="markersOrientA.svg#startMidEndCrossHairs" />
             </g>
-
+            -->
         </g>
         </g>
     </g>
