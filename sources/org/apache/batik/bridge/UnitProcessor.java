@@ -15,6 +15,8 @@ import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.CSSConstants;
 
+import org.apache.batik.css.HiddenChildElementSupport;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
@@ -709,9 +711,9 @@ public abstract class UnitProcessor {
                                           ctx);
             default:
                 return v / cssToUserSpace(fontSize.getFloatValue(type),
-                                          CSSPrimitiveValue.CSS_NUMBER,
+                                          type,
                                           d,
-                                          ctx);
+                                          ctx.getParentElementContext());
         }
     }
 
@@ -735,9 +737,9 @@ public abstract class UnitProcessor {
                                           ctx);
             default:
                 return v * cssToUserSpace(fontSize.getFloatValue(type),
-                                          CSSPrimitiveValue.CSS_NUMBER,
+                                          type,
                                           d,
-                                          ctx);
+                                          ctx.getParentElementContext());
         }
     }
 
@@ -763,9 +765,9 @@ public abstract class UnitProcessor {
                 break;
             default:
                 fontSizeVal = cssToUserSpace(fontSize.getFloatValue(type),
-					     CSSPrimitiveValue.CSS_NUMBER,
+					     type,
                                              d,
-                                             ctx);
+                                             ctx.getParentElementContext());
         }
         float xh = ctx.getXHeight();
         return v / xh / fontSizeVal;
@@ -793,9 +795,9 @@ public abstract class UnitProcessor {
                 break;
             default:
                 fontSizeVal = cssToUserSpace(fontSize.getFloatValue(type),
-					     CSSPrimitiveValue.CSS_NUMBER,
+					     type,
                                              d,
-                                             ctx);
+                                             ctx.getParentElementContext());
         }
         float xh = ctx.getXHeight();
         return v * xh * fontSizeVal;
@@ -934,6 +936,11 @@ public abstract class UnitProcessor {
          * Returns the viewport height used to compute units.
          */
         float getViewportHeight();
+
+	/**
+	 * Returns the context of the parent element of this context.
+	 */
+	Context getParentElementContext();
     }
 
     /**
@@ -960,6 +967,14 @@ public abstract class UnitProcessor {
             return e;
         }
 
+	/**
+	 * Returns the context of the parent element of this context.
+	 */
+	public Context getParentElementContext() {
+	    return new DefaultContext
+		(ctx, HiddenChildElementSupport.getParentElement(e));
+	}
+	
         /**
          * Returns the pixel to mm factor.
          */
