@@ -56,7 +56,6 @@ import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
-import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -539,7 +538,7 @@ public class JSVGComponent extends JGVTComponent {
         if ((doc != null) && 
             !(doc.getImplementation() instanceof SVGDOMImplementation)) {
             DOMImplementation impl;
-            impl = ExtensibleSVGDOMImplementation.getDOMImplementation();
+            impl = SVGDOMImplementation.getDOMImplementation();
             Document d = DOMUtilities.deepCloneDocument(doc, impl);
             doc = d;
         }
@@ -567,7 +566,7 @@ public class JSVGComponent extends JGVTComponent {
         if ((doc != null) &&
             !(doc.getImplementation() instanceof SVGDOMImplementation)) {
             DOMImplementation impl;
-            impl = ExtensibleSVGDOMImplementation.getDOMImplementation();
+            impl = SVGDOMImplementation.getDOMImplementation();
             Document d = DOMUtilities.deepCloneDocument(doc, impl);
             doc = (SVGDocument)d;
         }
@@ -635,6 +634,8 @@ public class JSVGComponent extends JGVTComponent {
             return;
         } 
 
+        bridgeContext = createBridgeContext();
+
         switch (documentState) {
         case ALWAYS_STATIC:
             isDynamicDocument = false;
@@ -649,12 +650,19 @@ public class JSVGComponent extends JGVTComponent {
             isInteractiveDocument = true;
             break;
         case AUTODETECT:
-            isDynamicDocument = BridgeContext.isDynamicDocument(doc);
+            isDynamicDocument = bridgeContext.isDynamicDocument(doc);
             if (isDynamicDocument)
                 isInteractiveDocument = true;
             else
                 isInteractiveDocument = 
-                    BridgeContext.isInteractiveDocument(doc);
+                    bridgeContext.isInteractiveDocument(doc);
+        }
+
+        if (isInteractiveDocument) {
+            if (isDynamicDocument)
+                bridgeContext.setDynamicState(BridgeContext.DYNAMIC);
+            else
+                bridgeContext.setDynamicState(BridgeContext.INTERACTIVE);
         }
 
         Element root = doc.getDocumentElement();
@@ -663,7 +671,6 @@ public class JSVGComponent extends JGVTComponent {
 
         setDisableInteractions(!znp.equals(SVGConstants.SVG_MAGNIFY_VALUE));
 
-        bridgeContext = createBridgeContext();
         nextGVTTreeBuilder = new GVTTreeBuilder(doc, bridgeContext);
         nextGVTTreeBuilder.setPriority(Thread.MIN_PRIORITY);
 
@@ -759,12 +766,6 @@ public class JSVGComponent extends JGVTComponent {
             loader = new DocumentLoader(userAgent);
         }
         BridgeContext result = new BridgeContext(userAgent, loader);
-        if (isInteractiveDocument) {
-            if (isDynamicDocument)
-                result.setDynamicState(BridgeContext.DYNAMIC);
-            else
-                result.setDynamicState(BridgeContext.INTERACTIVE);
-        }
         return result;
     }
 

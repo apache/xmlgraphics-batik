@@ -131,7 +131,7 @@ public class PathLength {
 
             case PathIterator.SEG_MOVETO:
 
-                //System.out.println("== MOVE TO " + seg[0] + " " + seg[1]);
+                // System.err.println("== MOVE TO " + seg[0] + " " + seg[1]);
 
                 segments.add(new PathSegment(segType, seg[0], seg[1], pathLength));
                 currentX = seg[0];
@@ -143,7 +143,7 @@ public class PathLength {
 
             case PathIterator.SEG_LINETO:
 
-                //System.out.println("== LINE TO " + seg[0] + " " + seg[1]);
+                // System.err.println("== LINE TO " + seg[0] + " " + seg[1]);
 
                 pathLength += Point2D.distance(currentX, currentY, seg[0], seg[1]);
                 segments.add(new PathSegment(segType, seg[0], seg[1], pathLength));
@@ -155,7 +155,7 @@ public class PathLength {
 
             case PathIterator.SEG_CLOSE:
 
-                //System.out.println("== CLOSE TO " + lastMoveX + " " + lastMoveY);
+                // System.err.println("== CLOSE TO " + lastMoveX + " " + lastMoveY);
 
                 pathLength += Point2D.distance(currentX, currentY, lastMoveX, lastMoveY);
                 segments.add(new PathSegment(PathIterator.SEG_LINETO, lastMoveX, lastMoveY, pathLength));
@@ -251,21 +251,37 @@ public class PathLength {
     }
 
     private int findUpperIndex(float length) {
-        if (!initialised) {
+        if (!initialised)
             initialise();
-        }
-        if (length < 0) {
-        // length is before the start of the path
-        return -1;
-    }
+
+        if (length < 0)         // length is before the start of the path
+            return -1;
+        if (length > pathLength) // length is after end of path
+            return -1;
 
         // find the two segments that are each side of the length
 
+        int lb = 0, ub=segments.size()-1;
+        while (lb != ub) {
+            int curr = (lb+ub)>>1;
+            PathSegment ps = (PathSegment) segments.elementAt(curr);
+            if (ps.getLength() >= length) {
+                ub = curr;
+            } else {
+                lb = curr+1;
+            }
+        }
+        while (true) {
+            PathSegment ps = (PathSegment) segments.elementAt(ub);
+            if (ps.getSegType() != PathIterator.SEG_MOVETO)
+                break;
+            if (ub == segments.size()-1) break;
+            ub++;
+        }
+
         int upperIndex = -1;
-
-        int numSegments = segments.size();
         int currentIndex = 0;
-
+        int numSegments = segments.size();;
         while (upperIndex <= 0 && currentIndex < numSegments) {
 
             PathSegment ps = (PathSegment) segments.elementAt(currentIndex);
@@ -275,37 +291,59 @@ public class PathLength {
             }
             currentIndex++;
         }
-
+        if (ub != upperIndex) {
+            System.err.println("UB: " + ub + " UI: " + upperIndex);
+        }
         return upperIndex;
     }
 
 
     public static void main(String args[]) {
 
-        GeneralPath path = new GeneralPath();
+        GeneralPath path;
+
+        PathLength pl;
+
+        path = new GeneralPath();
         path.moveTo(100f, 100f);
         path.lineTo(200f, 150f);
-        path.lineTo(300f, 200f);
-        path.quadTo(450f, 525f, 400f, 250f);
         path.closePath();
-
-        PathLength pl = new PathLength(path);
+        pl = new PathLength(path);
 
         System.out.println("New Path Length created");
-        System.out.println("Path Length = " + pl.lengthOfPath());
         System.out.println("Path Length = " + pl.lengthOfPath());
         System.out.println("Point at 0 = " + pl.pointAtLength(0f));
         System.out.println("Point at 10 = " + pl.pointAtLength(10f));
         System.out.println("Point at 20 = " + pl.pointAtLength(20f));
         System.out.println("Point at 300 = " + pl.pointAtLength(300f));
         System.out.println("Point at 3000 = " + pl.pointAtLength(3000f));
+
+        path = new GeneralPath();
+        path.moveTo(100f, 100f);
+        path.lineTo(200f, 150f);
+        path.quadTo(450f, 525f, 400f, 250f);
+        path.closePath();
+        pl = new PathLength(path);
+
+        System.out.println("Path Length = " + pl.lengthOfPath());
         System.out.println("Point at 0 = " + pl.pointAtLength(0f));
         System.out.println("Point at 10 = " + pl.pointAtLength(10f));
         System.out.println("Point at 20 = " + pl.pointAtLength(20f));
         System.out.println("Point at 300 = " + pl.pointAtLength(300f));
+
+        path = new GeneralPath();
+        path.moveTo(100f, 100f);
+        path.lineTo(200f, 150f);
+        path.quadTo(450f, 525f, 400f, 250f);
+        path.lineTo(300f, 200f);
+        path.closePath();
+
+        pl = new PathLength(path);
         System.out.println("Path Length = " + pl.lengthOfPath());
-        System.out.println("Point at 0 = " + pl.pointAtLength(0f));
+        System.out.println("Point at 3000 = " + pl.pointAtLength(3000f));
+        System.out.println("Point at 300 = " + pl.pointAtLength(300f));
         System.out.println("Point at 10 = " + pl.pointAtLength(10f));
+        System.out.println("Point at 0 = " + pl.pointAtLength(0f));
 
     }
 

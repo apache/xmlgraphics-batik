@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 
 import org.apache.batik.css.engine.CSSEngine;
-import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.GenericAttr;
 import org.apache.batik.dom.GenericAttrNS;
 import org.apache.batik.dom.GenericCDATASection;
@@ -39,6 +39,7 @@ import org.apache.batik.dom.StyleSheetFactory;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -51,14 +52,9 @@ import org.w3c.dom.EntityReference;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.DocumentCSS;
-import org.w3c.dom.stylesheets.StyleSheetList;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGLangSpace;
 import org.w3c.dom.svg.SVGSVGElement;
-import org.w3c.dom.views.AbstractView;
-import org.w3c.dom.views.DocumentView;
 
 /**
  * This class implements {@link SVGDocument}.
@@ -67,10 +63,8 @@ import org.w3c.dom.views.DocumentView;
  * @version $Id$
  */
 public class SVGOMDocument
-    extends    AbstractDocument
+    extends    AbstractStylableDocument
     implements SVGDocument,
-               DocumentCSS,
-               DocumentView,
                SVGConstants {
     
     /**
@@ -101,16 +95,6 @@ public class SVGOMDocument
     protected transient boolean readonly;
 
     /**
-     * The default view.
-     */
-    protected transient AbstractView defaultView;
-
-    /**
-     * The CSS engine.
-     */
-    protected transient CSSEngine cssEngine;
-
-    /**
      * Creates a new uninitialized document.
      */
     protected SVGOMDocument() {
@@ -120,29 +104,7 @@ public class SVGOMDocument
      * Creates a new document.
      */
     public SVGOMDocument(DocumentType dt, DOMImplementation impl) {
-        super(impl);
-        if (dt != null) {
-            if (dt instanceof GenericDocumentType) {
-                GenericDocumentType gdt = (GenericDocumentType)dt;
-                if (gdt.getOwnerDocument() == null) 
-                    gdt.setOwnerDocument(this);
-            }
-            appendChild(dt);
-        }
-    }
-
-    /**
-     * Sets the CSS engine.
-     */
-    public void setCSSEngine(CSSEngine ctx) {
-        cssEngine = ctx;
-    }
-
-    /**
-     * Returns the CSS engine.
-     */
-    public CSSEngine getCSSEngine() {
-        return cssEngine;
+        super(dt, impl);
     }
 
     /**
@@ -384,52 +346,6 @@ public class SVGOMDocument
      */
     public void setReadonly(boolean v) {
         readonly = v;
-    }
-
-    // DocumentStyle /////////////////////////////////////////////////////////
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.stylesheets.DocumentStyle#getStyleSheets()}.
-     */
-    public StyleSheetList getStyleSheets() {
-        throw new RuntimeException(" !!! Not implemented");
-    }
-
-    // DocumentView ///////////////////////////////////////////////////////////
-
-    /**
-     * <b>DOM</b>: Implements {@link DocumentView#getDefaultView()}.
-     * @return a ViewCSS object.
-     */
-    public AbstractView getDefaultView() {
-        if (defaultView == null) {
-            SVGDOMImplementation impl = (SVGDOMImplementation)implementation;
-            defaultView = impl.createViewCSS(this);
-        }
-        return defaultView;
-    }
-
-    /**
-     * Clears the view CSS.
-     */
-    public void clearViewCSS() {
-        defaultView = null;
-        if (cssEngine != null) {
-            cssEngine.dispose();
-        }
-        cssEngine = null;
-    }
-
-    // DocumentCSS ////////////////////////////////////////////////////////////
-
-    /**
-     * <b>DOM</b>: Implements
-     * {@link DocumentCSS#getOverrideStyle(Element,String)}.
-     */
-    public CSSStyleDeclaration getOverrideStyle(Element elt,
-                                                String pseudoElt) {
-        throw new RuntimeException(" !!! Not implemented");
     }
 
     /**

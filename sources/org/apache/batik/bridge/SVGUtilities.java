@@ -30,11 +30,11 @@ import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
-import org.apache.batik.extension.svg.BatikExtConstants;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.SVG12Constants;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -625,45 +625,41 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                                           unitsType,
                                           filteredNode,
                                           uctx);
-       
        //
        // Account for region padding
        //
        units = getChainableAttributeNS
            (filterElement, null, 
-            BatikExtConstants.BATIK_EXT_FILTER_MARGINS_UNITS_ATTRIBUTE, ctx);
+            SVG12Constants.SVG_FILTER_MARGINS_UNITS_ATTRIBUTE, ctx);
        if (units.length() == 0) {
            // Default to user space on use for margins, not objectBoundingBox
            unitsType = USER_SPACE_ON_USE;
        } else {
            unitsType = parseCoordinateSystem
                (filterElement, 
-                BatikExtConstants.BATIK_EXT_FILTER_MARGINS_UNITS_ATTRIBUTE, units);
+                SVG12Constants.SVG_FILTER_MARGINS_UNITS_ATTRIBUTE, units);
        }
 
        // 'batik:dx' attribute - default is 0
-       String dxStr = filterElement.getAttributeNS(BatikExtConstants.BATIK_EXT_NAMESPACE_URI, 
-                                                   BatikExtConstants.BATIK_EXT_DX_ATRIBUTE);
+       String dxStr = filterElement.getAttributeNS(null, 
+                                                   SVG12Constants.SVG_MX_ATRIBUTE);
        if (dxStr.length() == 0) {
-           dxStr = BatikExtConstants.SVG_FILTER_DX_DEFAULT_VALUE;
+           dxStr = SVG12Constants.SVG_FILTER_MX_DEFAULT_VALUE;
        }
        // 'batik:dy' attribute - default is 0
-       String dyStr = filterElement.getAttributeNS(BatikExtConstants.BATIK_EXT_NAMESPACE_URI, 
-                                                   BatikExtConstants.BATIK_EXT_DY_ATRIBUTE);
+       String dyStr = filterElement.getAttributeNS(null, SVG12Constants.SVG_MY_ATRIBUTE);
        if (dyStr.length() == 0) {
-           dyStr = BatikExtConstants.SVG_FILTER_DY_DEFAULT_VALUE;
+           dyStr = SVG12Constants.SVG_FILTER_MY_DEFAULT_VALUE;
        }
        // 'batik:dw' attribute - default is 0
-       String dwStr = filterElement.getAttributeNS(BatikExtConstants.BATIK_EXT_NAMESPACE_URI, 
-                                                   BatikExtConstants.BATIK_EXT_DW_ATRIBUTE);
+       String dwStr = filterElement.getAttributeNS(null, SVG12Constants.SVG_MW_ATRIBUTE);
        if (dwStr.length() == 0) {
-           dwStr = BatikExtConstants.SVG_FILTER_DW_DEFAULT_VALUE;
+           dwStr = SVG12Constants.SVG_FILTER_MW_DEFAULT_VALUE;
        }
        // 'batik:dh' attribute - default is 0
-       String dhStr = filterElement.getAttributeNS(BatikExtConstants.BATIK_EXT_NAMESPACE_URI, 
-                                                   BatikExtConstants.BATIK_EXT_DH_ATRIBUTE);
+       String dhStr = filterElement.getAttributeNS(null, SVG12Constants.SVG_MH_ATRIBUTE);
        if (dhStr.length() == 0) {
-           dhStr = BatikExtConstants.SVG_FILTER_DH_DEFAULT_VALUE;
+           dhStr = SVG12Constants.SVG_FILTER_MH_DEFAULT_VALUE;
        }
        
        return extendRegion(dxStr,
@@ -702,13 +698,13 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         switch (unitsType) {
         case USER_SPACE_ON_USE:
             dx = UnitProcessor.svgHorizontalCoordinateToUserSpace
-                (dxStr, BatikExtConstants.BATIK_EXT_DX_ATRIBUTE, uctx);
+                (dxStr, SVG12Constants.SVG_MX_ATRIBUTE, uctx);
             dy = UnitProcessor.svgVerticalCoordinateToUserSpace
-                (dyStr, BatikExtConstants.BATIK_EXT_DY_ATRIBUTE, uctx);
+                (dyStr, SVG12Constants.SVG_MY_ATRIBUTE, uctx);
             dw = UnitProcessor.svgHorizontalCoordinateToUserSpace
-                (dwStr, BatikExtConstants.BATIK_EXT_DW_ATRIBUTE, uctx);
+                (dwStr, SVG12Constants.SVG_MW_ATRIBUTE, uctx);
             dh = UnitProcessor.svgVerticalCoordinateToUserSpace
-                (dhStr, BatikExtConstants.BATIK_EXT_DH_ATRIBUTE, uctx);
+                (dhStr, SVG12Constants.SVG_MH_ATRIBUTE, uctx);
             break;
         case OBJECT_BOUNDING_BOX:
             Rectangle2D bounds = filteredNode.getGeometryBounds();
@@ -716,26 +712,26 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                 dx = dy = dw = dh = 0;
             } else {
                 dx = UnitProcessor.svgHorizontalCoordinateToObjectBoundingBox
-                    (dxStr, BatikExtConstants.BATIK_EXT_DX_ATRIBUTE, uctx);
+                    (dxStr, SVG12Constants.SVG_MX_ATRIBUTE, uctx);
                 dx *= bounds.getWidth();
 
                 dy = UnitProcessor.svgVerticalCoordinateToObjectBoundingBox
-                    (dyStr, BatikExtConstants.BATIK_EXT_DY_ATRIBUTE, uctx);
+                    (dyStr, SVG12Constants.SVG_MY_ATRIBUTE, uctx);
                 dy *= bounds.getHeight();
 
                 dw = UnitProcessor.svgHorizontalCoordinateToObjectBoundingBox
-                    (dwStr, BatikExtConstants.BATIK_EXT_DW_ATRIBUTE, uctx);
+                    (dwStr, SVG12Constants.SVG_MW_ATRIBUTE, uctx);
                 dw *= bounds.getWidth();
 
                 dh = UnitProcessor.svgVerticalCoordinateToObjectBoundingBox
-                    (dhStr, BatikExtConstants.BATIK_EXT_DH_ATRIBUTE, uctx);
+                    (dhStr, SVG12Constants.SVG_MH_ATRIBUTE, uctx);
                 dh *= bounds.getHeight();
             }
             break;
         default:
             throw new Error(); // can't be reached
         }
-
+        
         region.setRect(region.getX() + dx,
                        region.getY() + dy,
                        region.getWidth() + dw,
@@ -867,9 +863,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             (parentNode.getNodeType() == Node.ELEMENT_NODE)) {
             Element parent = (Element)parentNode;
             units = getChainableAttributeNS
-                (parent,
-                 BatikExtConstants.BATIK_EXT_NAMESPACE_URI,
-                 BatikExtConstants.BATIK_EXT_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE,
+                (parent, null,
+                 SVG12Constants.SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE,
                  ctx);
         }
 
@@ -878,35 +873,35 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
         } else {
             unitsType = parseCoordinateSystem
                 (filterPrimitiveElement, 
-                 BatikExtConstants.BATIK_EXT_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE, units);
+                 SVG12Constants.SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE, units);
         }
 
         // 'batik:dx' attribute - default is 0
-        String dxStr = filterPrimitiveElement.getAttributeNS(BatikExtConstants.BATIK_EXT_NAMESPACE_URI, 
-                                                             BatikExtConstants.BATIK_EXT_DX_ATRIBUTE);
+        String dxStr = filterPrimitiveElement.getAttributeNS
+            (null, SVG12Constants.SVG_MX_ATRIBUTE);
         if (dxStr.length() == 0) {
-            dxStr = BatikExtConstants.SVG_FILTER_DX_DEFAULT_VALUE;
+            dxStr = SVG12Constants.SVG_FILTER_MX_DEFAULT_VALUE;
         }
 
         // 'batik:dy' attribute - default is 0
-        String dyStr = filterPrimitiveElement.getAttributeNS(BatikExtConstants.BATIK_EXT_NAMESPACE_URI, 
-                                                             BatikExtConstants.BATIK_EXT_DY_ATRIBUTE);
+        String dyStr = filterPrimitiveElement.getAttributeNS
+            (null, SVG12Constants.SVG_MY_ATRIBUTE);
         if (dyStr.length() == 0) {
-            dyStr = BatikExtConstants.SVG_FILTER_DY_DEFAULT_VALUE;
+            dyStr = SVG12Constants.SVG_FILTER_MY_DEFAULT_VALUE;
         }
 
         // 'batik:dw' attribute - default is 0
-        String dwStr = filterPrimitiveElement.getAttributeNS(BatikExtConstants.BATIK_EXT_NAMESPACE_URI, 
-                                                             BatikExtConstants.BATIK_EXT_DW_ATRIBUTE);
+        String dwStr = filterPrimitiveElement.getAttributeNS
+            (null, SVG12Constants.SVG_MW_ATRIBUTE);
         if (dwStr.length() == 0) {
-            dwStr = BatikExtConstants.SVG_FILTER_DW_DEFAULT_VALUE;
+            dwStr = SVG12Constants.SVG_FILTER_MW_DEFAULT_VALUE;
         }
 
         // 'batik:dh' attribute - default is 0
-        String dhStr = filterPrimitiveElement.getAttributeNS(BatikExtConstants.BATIK_EXT_NAMESPACE_URI, 
-                                                             BatikExtConstants.BATIK_EXT_DH_ATRIBUTE);
+        String dhStr = filterPrimitiveElement.getAttributeNS
+            (null, SVG12Constants.SVG_MH_ATRIBUTE);
         if (dhStr.length() == 0) {
-            dhStr = BatikExtConstants.SVG_FILTER_DH_DEFAULT_VALUE;
+            dhStr = SVG12Constants.SVG_FILTER_MH_DEFAULT_VALUE;
         }
         
         region = extendRegion(dxStr,

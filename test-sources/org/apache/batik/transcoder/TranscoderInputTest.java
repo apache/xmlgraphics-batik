@@ -62,7 +62,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import org.apache.batik.dom.GenericDOMImplementation;
-import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.test.AbstractTest;
@@ -162,12 +162,10 @@ public class TranscoderInputTest extends AbstractTest {
         public TestTranscoder() {
             addTranscodingHint(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
                                SVGConstants.SVG_NAMESPACE_URI);
-            addTranscodingHint(KEY_DOM_IMPLEMENTATION,
-                               ExtensibleSVGDOMImplementation.getDOMImplementation());
             addTranscodingHint(KEY_DOCUMENT_ELEMENT,
                                SVGConstants.SVG_SVG_TAG);
             addTranscodingHint(KEY_DOM_IMPLEMENTATION,
-                               ExtensibleSVGDOMImplementation.getDOMImplementation());
+                               SVGDOMImplementation.getDOMImplementation());
         }
 
         protected void transcode(Document document,

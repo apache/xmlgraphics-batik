@@ -38,7 +38,6 @@ import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.bridge.ViewBox;
-import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -121,7 +120,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         hints.put(KEY_DOCUMENT_ELEMENT,
                   SVGConstants.SVG_SVG_TAG);
         hints.put(KEY_DOM_IMPLEMENTATION,
-                  ExtensibleSVGDOMImplementation.getDOMImplementation());
+                  SVGDOMImplementation.getDOMImplementation());
         hints.put(KEY_MEDIA,
                   "screen");
         hints.put(KEY_DEFAULT_FONT_FAMILY,
@@ -175,7 +174,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             !(document.getImplementation() instanceof SVGDOMImplementation)) {
             DOMImplementation impl;
             impl = (DOMImplementation)hints.get(KEY_DOM_IMPLEMENTATION);
-            // impl = ExtensibleSVGDOMImplementation.getDOMImplementation();
+            // impl = SVGDOMImplementation.getDOMImplementation();
             document = DOMUtilities.deepCloneDocument(document, impl);
             if (uri != null) {
                 try { 
@@ -196,7 +195,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         boolean isDynamic = 
             (hints.containsKey(KEY_EXECUTE_ONLOAD) &&
              ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue() &&
-             BaseScriptingEnvironment.isDynamicDocument(svgDoc));
+             ctx.isDynamicDocument(svgDoc));
 
         GraphicsNode gvtRoot;
         try {

@@ -18,6 +18,7 @@
 package org.apache.batik.bridge;
 
 import java.text.AttributedCharacterIterator;
+import java.util.Map;
 
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFace;
@@ -36,6 +37,10 @@ import org.w3c.dom.NodeList;
  * @version $Id$
  */
 public class SVGFontFamily implements GVTFontFamily {
+
+    public static final 
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER =
+        GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
 
     protected GVTFontFace fontFace;
     protected Element fontElement;
@@ -88,14 +93,23 @@ public class SVGFontFamily implements GVTFontFamily {
      * @return The derived font.
      */
     public GVTFont deriveFont(float size, AttributedCharacterIterator aci) {
-        SVGFontElementBridge fontBridge
-            = (SVGFontElementBridge)ctx.getBridge(fontElement);
-        Element textElement = (Element)aci.getAttributes().get
-            (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+        return deriveFont(size, aci.getAttributes());
+    }
+
+    /**
+     * Derives a GVTFont object of the correct size from an attribute Map.
+     * @param size  The required size of the derived font.
+     * @param attrs The Attribute Map to get Values from.
+     */
+    public GVTFont deriveFont(float size, Map attrs) {
+        SVGFontElementBridge fontBridge;
+        fontBridge = (SVGFontElementBridge)ctx.getBridge(fontElement);
+        Element textElement;
+        textElement = (Element)attrs.get(TEXT_COMPOUND_DELIMITER);
         return fontBridge.createFont(ctx, fontElement, textElement, 
                                      size, fontFace);
     }
-
+     
     /**
      * This method looks at the SVG font and checks if any of
      * the glyphs use renderable child elements.  If so this

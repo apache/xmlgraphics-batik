@@ -95,6 +95,7 @@ public class SVGFilterElementBridge extends AbstractSVGBridge
         Map filterNodeMap = new HashMap(11);
         filterNodeMap.put(SVG_SOURCE_GRAPHIC_VALUE, sourceGraphic);
 
+
         Filter in = buildFilterPrimitives(filterElement,
                                           filterRegion,
                                           filteredElement,

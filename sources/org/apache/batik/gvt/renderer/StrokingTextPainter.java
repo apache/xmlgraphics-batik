@@ -111,13 +111,13 @@ public class StrokingTextPainter extends BasicTextPainter {
         = GVTAttributedCharacterIterator.TextAttribute.TEXTPATH;
 
 
-    private static final AttributedCharacterIterator.Attribute WRITING_MODE
+    public static final AttributedCharacterIterator.Attribute WRITING_MODE
         = GVTAttributedCharacterIterator.TextAttribute.WRITING_MODE;
 
-    private static final Integer WRITING_MODE_TTB
+    public static final Integer WRITING_MODE_TTB
         = GVTAttributedCharacterIterator.TextAttribute.WRITING_MODE_TTB;
 
-    private static final Integer WRITING_MODE_RTL
+    public static final Integer WRITING_MODE_RTL
         = GVTAttributedCharacterIterator.TextAttribute.WRITING_MODE_RTL;
 
     public static final 
@@ -161,6 +161,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     public void paint(TextNode node, Graphics2D g2d) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
+
         List textRuns = getTextRuns(node, aci);
 
         // draw the underline and overline first, then the actual text
@@ -172,7 +173,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             (textRuns, g2d, TextSpanLayout.DECORATION_STRIKETHROUGH);
     }
 
-    private void printAttrs(AttributedCharacterIterator aci) {
+    protected void printAttrs(AttributedCharacterIterator aci) {
         aci.first();
         int start = aci.getBeginIndex();
         System.out.print("AttrRuns: ");
@@ -193,6 +194,19 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
 
         AttributedCharacterIterator[] chunkACIs = getTextChunkACIs(aci);
+        textRuns = computeTextRuns(node, aci, chunkACIs);
+
+        // t1 = System.currentTimeMillis();
+        // layoutTime += t1-t0;
+        // System.out.println("Reorder: " + reorderTime + " FontMatching: " + fontMatchingTime + " Layout: " + layoutTime);
+        // cache the textRuns so don't need to recalculate
+        node.setTextRuns(textRuns);
+        return textRuns;
+    }
+
+    public List computeTextRuns(TextNode node, 
+                                AttributedCharacterIterator aci,
+                                AttributedCharacterIterator [] chunkACIs) {
         int [][] chunkCharMaps = new int[chunkACIs.length][];
 
         // long t0, t1;
@@ -219,7 +233,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
 
         // create text runs for each chunk and add them to the list
-        textRuns = new ArrayList();
+        List textRuns = new ArrayList();
         TextChunk chunk, prevChunk=null;
         int currentChunk = 0;
 
@@ -245,35 +259,6 @@ public class StrokingTextPainter extends BasicTextPainter {
 	    
         } while (chunk != null && currentChunk < chunkACIs.length);
 
-
-        aci.first();
-        List rgns = (List)aci.getAttribute(FLOW_REGIONS);
-
-        if (rgns != null) {
-            Iterator i = textRuns.iterator();
-            List chunkLayouts = new ArrayList();
-            TextRun tr = (TextRun)i.next();
-            List layouts = new ArrayList();
-            chunkLayouts.add(layouts);
-            layouts.add(tr.getLayout());
-            while (i.hasNext()) {
-                tr = (TextRun)i.next();
-                if (tr.isFirstRunInChunk()) {
-                    layouts = new ArrayList();
-                    chunkLayouts.add(layouts);
-                }
-                layouts.add(tr.getLayout());
-            }
-
-            org.apache.batik.gvt.text.GlyphLayout.textWrapTextChunk
-                (chunkACIs, chunkLayouts, rgns);
-        }
-
-        // t1 = System.currentTimeMillis();
-        // layoutTime += t1-t0;
-        // System.out.println("Reorder: " + reorderTime + " FontMatching: " + fontMatchingTime + " Layout: " + layoutTime);
-        // cache the textRuns so don't need to recalculate
-        node.setTextRuns(textRuns);
         return textRuns;
     }
 
@@ -281,7 +266,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Returns an array of ACIs, one for each text chunk within the given
      * text node.
      */
-    private AttributedCharacterIterator[] getTextChunkACIs
+    protected AttributedCharacterIterator[] getTextChunkACIs
         (AttributedCharacterIterator aci) {
 
         List aciList = new ArrayList();
@@ -422,7 +407,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      *
      * @return The new modified aci.  
      */
-    private AttributedCharacterIterator createModifiedACIForFontMatching
+    protected AttributedCharacterIterator createModifiedACIForFontMatching
         (TextNode node, AttributedCharacterIterator aci) {
 
         aci.first();
@@ -436,8 +421,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             end = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
             int aciLength = end-start;
 
-            Vector fontFamilies;
-            fontFamilies = (Vector)aci.getAttributes().get(GVT_FONT_FAMILIES);
+            List fontFamilies;
+            fontFamilies = (List)aci.getAttributes().get(GVT_FONT_FAMILIES);
 
             if (fontFamilies == null ) {
                 // no font families set this chunk so just increment...
@@ -618,7 +603,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     }
 
 
-    private TextChunk getTextChunk(TextNode node,
+    protected TextChunk getTextChunk(TextNode node,
                                    AttributedCharacterIterator aci,
                                    int [] charMap,
                                    List textRuns,
@@ -691,9 +676,9 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Adjusts the position of the text runs within the specified text chunk
      * to account for any text anchor properties.
      */
-    private Point2D adjustChunkOffsets(Point2D location,
-                                    List textRuns, 
-                                    TextChunk chunk) {
+    protected Point2D adjustChunkOffsets(Point2D location,
+                                         List textRuns, 
+                                         TextChunk chunk) {
         TextRun r          = (TextRun) textRuns.get(chunk.begin);
         int     anchorType = r.getAnchorType();
         Float   length     = r.getLength();
@@ -884,7 +869,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     /**
      * Paints decorations of the specified type.
      */
-    private void paintDecorations(List textRuns, 
+    protected void paintDecorations(List textRuns, 
                                   Graphics2D g2d,
                                   int decorationType) {
         Paint prevPaint = null;
@@ -1012,7 +997,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     /**
      * Paints the text in each text run. Decorations are not painted here.
      */
-    private void paintTextRuns(List textRuns, 
+    protected void paintTextRuns(List textRuns, 
                                Graphics2D g2d) {
         for (int i = 0; i < textRuns.size(); i++) {
             TextRun textRun = (TextRun)textRuns.get(i);
@@ -1164,7 +1149,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      *
      * @return The decoration outline or null if the text is not decorated.
      */
-    private Shape getDecorationOutline(List textRuns, int decorationType) {
+    protected Shape getDecorationOutline(List textRuns, int decorationType) {
 
         GeneralPath outline = null;
 
@@ -1284,7 +1269,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      *
      * @return The decoration outline or null if the text is not decorated.
      */
-    private Shape getDecorationStrokeOutline
+    protected Shape getDecorationStrokeOutline
 	(List textRuns, int decorationType) {
 
         GeneralPath outline = null;
@@ -1634,12 +1619,12 @@ public class StrokingTextPainter extends BasicTextPainter {
      */
     public class TextRun {
 
-        private AttributedCharacterIterator aci;
-        private TextSpanLayout layout;
-        private int anchorType;
-        private boolean firstRunInChunk;
-        private Float length;
-        private Integer lengthAdjust;
+        protected AttributedCharacterIterator aci;
+        protected TextSpanLayout layout;
+        protected int anchorType;
+        protected boolean firstRunInChunk;
+        protected Float length;
+        protected Integer lengthAdjust;
 
         public TextRun(TextSpanLayout layout, 
 		       AttributedCharacterIterator aci, 

@@ -27,7 +27,6 @@ package org.apache.batik.util;
  */
 public interface SVGConstants extends CSSConstants {
 
-    String TAG_TEXT_PATH = "textPath";
     String ATTR_ID = "id";
 
     /////////////////////////////////////////////////////////////////////////

@@ -24,14 +24,16 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.MissingResourceException;
-
 import java.util.Properties;
 
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.svg12.SVG12DOMImplementation;
 import org.apache.batik.util.MimeTypeConstants;
 import org.apache.batik.util.ParsedURL;
+
 import org.w3c.dom.Document;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.svg.SVGDocument;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -105,7 +107,7 @@ public class SAXSVGDocumentFactory
      * @param parser The SAX2 parser classname.
      */
     public SAXSVGDocumentFactory(String parser) {
-        super(ExtensibleSVGDOMImplementation.getDOMImplementation(), parser);
+        super(SVGDOMImplementation.getDOMImplementation(), parser);
     }
 
     /**
@@ -114,8 +116,7 @@ public class SAXSVGDocumentFactory
      * @param dd Whether a document descriptor must be generated.
      */
     public SAXSVGDocumentFactory(String parser, boolean dd) {
-        super(ExtensibleSVGDOMImplementation.getDOMImplementation(),
-              parser, dd);
+        super(SVGDOMImplementation.getDOMImplementation(), parser, dd);
     }
 
     public SVGDocument createSVGDocument(String uri) throws IOException {
@@ -302,6 +303,14 @@ public class SAXSVGDocumentFactory
             throw new RuntimeException("Bad root element");
         }
         return createDocument(uri, r);
+    }
+
+    public DOMImplementation getDOMImplementation(String ver) {
+        if ((ver == null) || (ver.length()==0) || 
+            ver.equals("1.0") || ver.equals("1.1"))
+            return SVGDOMImplementation.getDOMImplementation();
+
+        return SVG12DOMImplementation.getDOMImplementation();
     }
 
     /**

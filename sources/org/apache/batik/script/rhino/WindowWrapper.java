@@ -198,7 +198,7 @@ public class WindowWrapper extends ImporterTopLevel {
         RhinoInterpreter interp =
             (RhinoInterpreter)window.getInterpreter();
         final String uri = (String)Context.toType(args[0], String.class);
-        Window.GetURLHandler urlHandler = null;
+        Window.URLResponseHandler urlHandler = null;
         if (args[1] instanceof Function) {
             urlHandler = new GetURLFunctionWrapper
                 (interp, (Function)args[1], go);
@@ -206,7 +206,7 @@ public class WindowWrapper extends ImporterTopLevel {
             urlHandler = new GetURLObjectWrapper
                 (interp, (NativeObject)args[1], go);
         }
-        final Window.GetURLHandler fw = urlHandler;
+        final Window.URLResponseHandler fw = urlHandler;
 
         AccessControlContext acc =
             ((RhinoInterpreter)window.getInterpreter()).getAccessControlContext();
@@ -224,6 +224,67 @@ public class WindowWrapper extends ImporterTopLevel {
                         window.getURL
                             (uri, fw,
                              (String)Context.toType(args[2], String.class));
+                        return null;
+                    }
+                }, acc);
+        }
+    }
+
+    /**
+     * Wraps the 'postURL' method of the Window interface.
+     */
+    public static void postURL(Context cx,
+                               Scriptable thisObj,
+                               final Object[] args,
+                               Function funObj)
+        throws JavaScriptException {
+        int len = args.length;
+        final Window window = ((RhinoInterpreter.ExtendedContext)cx).getWindow();
+        final ScriptableObject go = ((RhinoInterpreter.ExtendedContext)cx).getGlobalObject();
+        if (len < 3) {
+            throw Context.reportRuntimeError("invalid argument count");
+        }
+        RhinoInterpreter interp =
+            (RhinoInterpreter)window.getInterpreter();
+        final String uri     = (String)Context.toType(args[0], String.class);
+        final String content = (String)Context.toType(args[1], String.class);
+        Window.URLResponseHandler urlHandler = null;
+        if (args[2] instanceof Function) {
+            urlHandler = new GetURLFunctionWrapper
+                (interp, (Function)args[2], go);
+        } else {
+            urlHandler = new GetURLObjectWrapper
+                (interp, (NativeObject)args[2], go);
+        }
+        final Window.URLResponseHandler fw = urlHandler;
+
+        AccessControlContext acc;
+        acc = interp.getAccessControlContext();
+
+        switch (len) {
+        case 3:
+            AccessController.doPrivileged(new PrivilegedAction() {
+                    public Object run(){
+                        window.postURL(uri, content, fw);
+                        return null;
+                    }
+                }, acc);
+        case 4:
+            AccessController.doPrivileged(new PrivilegedAction() {
+                    public Object run() {
+                        window.postURL
+                            (uri, content, fw,
+                             (String)Context.toType(args[3], String.class));
+                        return null;
+                    }
+                }, acc);
+        default:
+            AccessController.doPrivileged(new PrivilegedAction() {
+                    public Object run() {
+                        window.postURL
+                            (uri, content, fw,
+                             (String)Context.toType(args[3], String.class),
+                             (String)Context.toType(args[4], String.class));
                         return null;
                     }
                 }, acc);
@@ -343,7 +404,7 @@ public class WindowWrapper extends ImporterTopLevel {
      * To wrap a function passed to getURL().
      */
     protected static class GetURLFunctionWrapper
-        implements Window.GetURLHandler {
+        implements Window.URLResponseHandler {
 
         /**
          * The current interpreter.
@@ -393,7 +454,7 @@ public class WindowWrapper extends ImporterTopLevel {
      * To wrap an object passed to getURL().
      */
     private static class GetURLObjectWrapper
-        implements Window.GetURLHandler {
+        implements Window.URLResponseHandler {
 
         /**
          * The current interpreter.

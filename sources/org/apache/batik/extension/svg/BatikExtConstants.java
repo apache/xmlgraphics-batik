@@ -27,7 +27,6 @@ public interface BatikExtConstants {
     /** Namespace for batik experimental svg 1.2 elements. */
     public static final String BATIK_12_NAMESPACE_URI = 
         "http://xml.apache.org/batik/ext";
-        //         "http://www.w3.org/2000/svg";
 
     /** Namespace for batik experimental svg 1.2 attributes. */
     public static final String BATIK_12_ATTR_NAMESPACE_URI = 
@@ -41,6 +40,27 @@ public interface BatikExtConstants {
     /** Tag name for Batik's star extension. */
     public static final String BATIK_EXT_STAR_TAG = 
         "star";
+
+    /** Tag name for Batik's color switch extension. */
+    public static final String BATIK_EXT_COLOR_SWITCH_TAG = 
+        "colorSwitch";
+
+    /** Tag name for Batik's histogram normalization extension. */
+    public static final String BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG =
+        "histogramNormalization";
+
+    /** Attribute name for sides attribute */
+    public static final String BATIK_EXT_SIDES_ATTRIBUTE = 
+        "sides";
+
+    /** Attribute name for inner radius attribute */
+    public static final String BATIK_EXT_IR_ATTRIBUTE = 
+        "ir";
+
+    /** Attribute name for trim percent attribute */
+    public static final String BATIK_EXT_TRIM_ATTRIBUTE = 
+        "trim";
+
 
     /** Tag name for Batik's flowText extension (SVG 1.2). */
     public static final String BATIK_EXT_FLOW_TEXT_TAG = 
@@ -75,52 +95,6 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_FLOW_SPAN_TAG = 
         "flowSpan";
 
-    /** Tag name for Batik's solid color extension (SVG 1.2). */
-    public static final String BATIK_EXT_SOLID_COLOR_TAG = 
-        "solidColor";
-
-    /** Tag name for Batik's color switch extension. */
-    public static final String BATIK_EXT_COLOR_SWITCH_TAG = 
-        "colorSwitch";
-
-    /** Tag name for Batik's histogram normalization extension. */
-    public static final String BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG =
-        "histogramNormalization";
-
-    /** Tag name for Batik's multiImage extension. */
-    public static final String BATIK_EXT_MULTI_IMAGE_TAG =
-        "multiImage";
-
-    /** Tag name for Batik's subImage multiImage extension. */
-    public static final String BATIK_EXT_SUB_IMAGE_TAG =
-        "subImage";
-    /** Tag name for Batik's subImageRef multiImage extension. */
-    public static final String BATIK_EXT_SUB_IMAGE_REF_TAG =
-        "subImageRef";
-
-    /** Attribute name for dx attribute */
-    public static final String BATIK_EXT_DX_ATRIBUTE =
-        "dx";
-    
-    /** Attribute name for dy attribute */
-    public static final String BATIK_EXT_DY_ATRIBUTE =
-        "dy";
-    
-    /** Attribute name for dw attribute */
-    public static final String BATIK_EXT_DW_ATRIBUTE =
-        "dw";
-    
-    /** Attribute name for dh attribute */
-    public static final String BATIK_EXT_DH_ATRIBUTE =
-        "dh";
-
-    /** Attribute name for filterPrimitiveMarginsUnits */
-    public static final String BATIK_EXT_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE
-        = "filterPrimitiveMarginsUnits";
-
-    /** Attribute name for filterMarginsUnits */
-    public static final String BATIK_EXT_FILTER_MARGINS_UNITS_ATTRIBUTE
-        = "filterMarginsUnits";
 
     /** Attribute name for x attribute */
     public static final String BATIK_EXT_X_ATTRIBUTE = 
@@ -181,43 +155,11 @@ public interface BatikExtConstants {
     /** Value for vertical-align to bottom of region */
     public static final String BATIK_EXT_ALIGN_BOTTOM_VALUE = "bottom";
 
-    /** Attribute name for sides attribute */
-    public static final String BATIK_EXT_SIDES_ATTRIBUTE = 
-        "sides";
-
-    /** Attribute name for inner radius attribute */
-    public static final String BATIK_EXT_IR_ATTRIBUTE = 
-        "ir";
-
-    /** Attribute name for trim percent attribute */
-    public static final String BATIK_EXT_TRIM_ATTRIBUTE = 
-        "trim";
-
-    /** Attribute name for pixel-width attribute */
-    public static final String BATIK_EXT_MIN_PIXEL_SIZE_ATTRIBUTE = 
-        "min-pixel-size";
-
-    /** Attribute name for pixel-height attribute */
-    public static final String BATIK_EXT_MAX_PIXEL_SIZE_ATTRIBUTE = 
-        "max-pixel-size";
-
-    /** Attribute name for color attribute */
-    public static final String BATIK_EXT_SOLID_COLOR_PROPERTY = 
-        "solid-color";
-
-    /** Attribute name for opacity attribute */
-    public static final String BATIK_EXT_SOLID_OPACITY_PROPERTY = 
-        "solid-opacity";
-
-    /** Default value for filter dx */
-    public static final String SVG_FILTER_DX_DEFAULT_VALUE = "0";
-
-    /** Default value for filter dy */
-    public static final String SVG_FILTER_DY_DEFAULT_VALUE = "0";
-
-    /** Default value for filter dw */
-    public static final String SVG_FILTER_DW_DEFAULT_VALUE = "0";
-
-    /** Default value for filter dh */
-    public static final String SVG_FILTER_DH_DEFAULT_VALUE = "0";
 }
+
+
+
+
+
+
+

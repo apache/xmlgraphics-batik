@@ -76,7 +76,7 @@ public class BaseScriptingEnvironment {
     /**
      * Tells whether the given SVG document is dynamic.
      */
-    public static boolean isDynamicDocument(Document doc) {
+    public static boolean isDynamicDocument(BridgeContext ctx, Document doc) {
         Element elt = doc.getDocumentElement();
         if ((elt != null) &&
             SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
@@ -104,16 +104,21 @@ public class BaseScriptingEnvironment {
                 (null, SVGConstants.SVG_ONZOOM_ATTRIBUTE).length() > 0) {
                 return true;
             }
-            return isDynamicElement(doc.getDocumentElement());
+            return isDynamicElement(ctx, doc.getDocumentElement());
         }
         return false;
+    }
+
+    public static boolean isDynamicElement(BridgeContext ctx, Element elt) {
+        List bridgeExtensions = ctx.getBridgeExtensions(elt.getOwnerDocument());
+        return isDynamicElement(elt, ctx, bridgeExtensions);
     }
 
     /**
      * Tells whether the given SVG element is dynamic.
      */
-    public static boolean isDynamicElement(Element elt) {
-        List bridgeExtensions = BridgeContext.getBridgeExtensions();
+    public static boolean isDynamicElement
+        (Element elt, BridgeContext ctx, List bridgeExtensions) {
         Iterator i = bridgeExtensions.iterator();
         while (i.hasNext()) {
             BridgeExtension bridgeExtension = (BridgeExtension) i.next();
@@ -184,7 +189,7 @@ public class BaseScriptingEnvironment {
              n != null;
              n = n.getNextSibling()) {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
-                if (isDynamicElement((Element)n)) {
+                if (isDynamicElement(ctx, (Element)n)) {
                     return true;
                 }
             }
@@ -667,7 +672,8 @@ public class BaseScriptingEnvironment {
          * @param uri The URI where the data is located.
          * @param h A handler called when the data is available.
          */
-        public void getURL(String uri, org.apache.batik.script.Window.GetURLHandler h) {
+        public void getURL(String uri, org.apache.batik.script.Window.URLResponseHandler h) {
+            getURL(uri, h, "UTF8");
         }
 
         /**
@@ -677,9 +683,29 @@ public class BaseScriptingEnvironment {
          * @param enc The character encoding of the data.
          */
         public void getURL(String uri,
-                           org.apache.batik.script.Window.GetURLHandler h,
+                           org.apache.batik.script.Window.URLResponseHandler h,
                            String enc) {
         }
+
+        public void postURL(String uri, String content, 
+                            org.apache.batik.script.Window.URLResponseHandler h) {
+            postURL(uri, content, h, "text/plain", null);
+        }
+
+        public void postURL(String uri, String content, 
+                            org.apache.batik.script.Window.URLResponseHandler h, 
+                     String mimeType) {
+            postURL(uri, content, h, mimeType, null);
+        }
+
+        public void postURL(String uri, 
+                            String content, 
+                            org.apache.batik.script.Window.URLResponseHandler h, 
+                            String mimeType, 
+                            String fEnc) { 
+        }
+
+
 
         /**
          * Displays an alert dialog box.

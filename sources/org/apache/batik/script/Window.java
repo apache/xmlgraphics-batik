@@ -85,7 +85,7 @@ public interface Window {
      * @param uri The URI where the data is located.
      * @param h A handler called when the data is available.
      */
-    void getURL(String uri, GetURLHandler h);
+    void getURL(String uri, URLResponseHandler h);
 
     /**
      * Gets data from the given URI.
@@ -93,21 +93,58 @@ public interface Window {
      * @param h A handler called when the data is available.
      * @param enc The character encoding of the data.
      */
-    void getURL(String uri, GetURLHandler h, String enc);
+    void getURL(String uri, URLResponseHandler h, String enc);
 
     /**
-     * To handle the completion of a 'getURL()' call.
+     * Posts data to the given URI.
+     * @param uri The URI where the data is located.
+     * @param content The data to post to the server.
+     * @param h A handler called when the data is available.
      */
-    public interface GetURLHandler {
+    void postURL(String uri, String content, URLResponseHandler h);
+    
+    /**
+     * Posts data to the given URI.
+     * @param uri The URI where the data is located.
+     * @param content The data to post to the server.
+     * @param h A handler called when the data is available.
+     * @param mimeType The mimeType to asscoiate with post.
+     */
+    void postURL(String uri, String content, URLResponseHandler h, 
+                 String mimeType);
+
+    /**
+     * Posts data to the given URI.
+     * @param uri The URI where the data is located.
+     * @param content The data to post to the server.
+     * @param h A handler called when the data is available.
+     * @param mimeType The mimeType to asscoiate with post.
+     * @param enc      The encoding to apply to <tt>content</tt>
+     *                 may be "gzip", "deflate", or <tt>null</tt>.
+     */
+    void postURL(String uri, String content, URLResponseHandler h, 
+                 String mimeType, String enc);
+
+
+    /**
+     * To handle the completion of a 'getURL()' or 'postURL' call.
+     */
+    public interface URLResponseHandler {
         
         /**
-         * Called before 'getURL()' returns.
+         * Called when the response is recieved.
          * @param success Whether the data was successfully retreived.
          * @param mime The data MIME type.
          * @param content The data.
          */
         void getURLDone(boolean success, String mime, String content);
     }
+
+    /**
+     * To handle the completion of a 'getURL()' call.
+    public interface GetURLHandler extends URLResponseHandler { }
+     */
+
 
     /**
      * Displays an alert dialog box.

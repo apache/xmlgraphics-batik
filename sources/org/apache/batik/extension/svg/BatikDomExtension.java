@@ -17,11 +17,12 @@
  */
 package org.apache.batik.extension.svg;
 
+import org.apache.batik.css.engine.value.LengthManager;
 import org.apache.batik.css.engine.value.svg.OpacityManager;
 import org.apache.batik.css.engine.value.svg.SVGColorManager;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.DomExtension;
-import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
+import org.apache.batik.dom.DomExtension;
+import org.apache.batik.dom.ExtensibleDOMImplementation;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -81,7 +82,7 @@ public class BatikDomExtension
      *
      * @param ctx The DomContext instance to be updated
      */
-    public void registerTags(ExtensibleSVGDOMImplementation di) {
+    public void registerTags(ExtensibleDOMImplementation di) {
         di.registerCustomElementFactory
             (BATIK_EXT_NAMESPACE_URI,
              BATIK_EXT_REGULAR_POLYGON_TAG,
@@ -98,24 +99,9 @@ public class BatikDomExtension
              new BatikHistogramNormalizationElementFactory());
 
         di.registerCustomElementFactory
-            (BATIK_12_NAMESPACE_URI,
-             BATIK_EXT_MULTI_IMAGE_TAG,
-             new BatikMultiImageElementFactory());
-
-        di.registerCustomElementFactory
-            (BATIK_12_NAMESPACE_URI,
-             BATIK_EXT_SUB_IMAGE_TAG,
-             new BatikSubImageElementFactory());
-
-        di.registerCustomElementFactory
-            (BATIK_12_NAMESPACE_URI,
-             BATIK_EXT_SUB_IMAGE_REF_TAG,
-             new BatikSubImageRefElementFactory());
-
-        di.registerCustomElementFactory
-            (BATIK_12_NAMESPACE_URI,
-             BATIK_EXT_SOLID_COLOR_TAG,
-             new SolidColorElementFactory());
+            (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_COLOR_SWITCH_TAG,
+             new ColorSwitchElementFactory());
 
         di.registerCustomElementFactory
             (BATIK_12_NAMESPACE_URI,
@@ -151,24 +137,13 @@ public class BatikDomExtension
             (BATIK_12_NAMESPACE_URI,
              BATIK_EXT_FLOW_SPAN_TAG,
              new FlowSpanElementFactory());
-
-        di.registerCustomCSSValueManager
-            (new SVGColorManager(BATIK_EXT_SOLID_COLOR_PROPERTY));
-
-        di.registerCustomCSSValueManager
-            (new OpacityManager(BATIK_EXT_SOLID_OPACITY_PROPERTY, true));
-
-        di.registerCustomElementFactory
-            (BATIK_EXT_NAMESPACE_URI,
-             BATIK_EXT_COLOR_SWITCH_TAG,
-             new ColorSwitchElementFactory());
     }
 
     /**
      * To create a 'regularPolygon' element.
      */
     protected static class BatikRegularPolygonElementFactory 
-        implements SVGDOMImplementation.ElementFactory {
+        implements ExtensibleDOMImplementation.ElementFactory {
         public BatikRegularPolygonElementFactory() {}
         /**
          * Creates an instance of the associated element type.
@@ -184,7 +159,7 @@ public class BatikDomExtension
      * To create a 'star' element.
      */
     protected static class BatikStarElementFactory 
-        implements SVGDOMImplementation.ElementFactory {
+        implements ExtensibleDOMImplementation.ElementFactory {
         public BatikStarElementFactory() {}
         /**
          * Creates an instance of the associated element type.
@@ -198,7 +173,7 @@ public class BatikDomExtension
      * To create a 'histogramNormalization' element.
      */
     protected static class BatikHistogramNormalizationElementFactory 
-        implements SVGDOMImplementation.ElementFactory {
+        implements ExtensibleDOMImplementation.ElementFactory {
         public BatikHistogramNormalizationElementFactory() {}
         /**
          * Creates an instance of the associated element type.
@@ -210,68 +185,10 @@ public class BatikDomExtension
     }
 
     /**
-     * To create a 'multiImage' element.
-     */
-    protected static class BatikMultiImageElementFactory 
-        implements SVGDOMImplementation.ElementFactory {
-        public BatikMultiImageElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new BatikMultiImageElement
-                (prefix, (AbstractDocument)doc);
-        }
-    }
-
-    /**
-     * To create a 'subImage' element.
-     */
-    protected static class BatikSubImageElementFactory 
-        implements SVGDOMImplementation.ElementFactory {
-        public BatikSubImageElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SubImageElement(prefix, (AbstractDocument)doc);
-        }
-    }
-
-    /**
-     * To create a 'SubImageRef' element.
-     */
-    protected static class BatikSubImageRefElementFactory 
-        implements SVGDOMImplementation.ElementFactory {
-        public BatikSubImageRefElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SubImageRefElement(prefix, (AbstractDocument)doc);
-        }
-    }
-
-    /**
-     * To create a 'solidColor' element.
-     */
-    protected static class SolidColorElementFactory 
-        implements SVGDOMImplementation.ElementFactory {
-        public SolidColorElementFactory() {
-        }
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SolidColorElement(prefix, (AbstractDocument)doc);
-        }
-    }
-
-    /**
-     * To create a 'solidColor' element.
+     * To create a 'colorSwitch' element.
      */
     protected static class ColorSwitchElementFactory 
-        implements SVGDOMImplementation.ElementFactory {
+        implements ExtensibleDOMImplementation.ElementFactory {
         public ColorSwitchElementFactory() {
         }
         /**
@@ -355,8 +272,8 @@ public class BatikDomExtension
         public Element create(String prefix, Document doc) {
             return new FlowRegionElement(prefix, (AbstractDocument)doc);
         }
-    }
-
+     }
+ 
     /**
      * To create a 'flowLine' element.
      */
@@ -371,7 +288,7 @@ public class BatikDomExtension
             return new FlowLineElement(prefix, (AbstractDocument)doc);
         }
     }
-
+ 
     /**
      * To create a 'flowSpan' element.
      */
@@ -387,3 +304,5 @@ public class BatikDomExtension
         }
     }
 }
+
+

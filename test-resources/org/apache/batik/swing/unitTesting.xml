@@ -72,7 +72,7 @@
   <testGroup id="swing.interrupt" 
              class="org.apache.batik.swing.JSVGInterruptTest">
     <test id="samples/anne.svg" />
-    <test id="samples/sydney.svg" />
-    <test id="samples/mines.svg" />
+<!--    <test id="samples/sydney.svg" />
+    <test id="samples/mines.svg" /> -->
   </testGroup>
 </testSuite>

@@ -18,16 +18,24 @@
 package org.apache.batik.bridge;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.Writer;
+
 import java.net.URL;
+import java.net.URLConnection;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.DeflaterOutputStream;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
@@ -899,18 +907,18 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.GetURLHandler)}.
+         * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.URLResponseHandler)}.
          */
-        public void getURL(String uri, org.apache.batik.script.Window.GetURLHandler h) {
-            getURL(uri, h, "UTF8");
+        public void getURL(String uri, org.apache.batik.script.Window.URLResponseHandler h) {
+            getURL(uri, h, null);
         }
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.GetURLHandler,String)}.
+         * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.URLResponseHandler,String)}.
          */
         public void getURL(final String uri,
-                           final org.apache.batik.script.Window.GetURLHandler h,
+                           final org.apache.batik.script.Window.URLResponseHandler h,
                            final String enc) {
             Thread t = new Thread() {
                     public void run() {
@@ -918,24 +926,35 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                             URL burl;
                             burl = ((SVGOMDocument)document).getURLObject();
                             final ParsedURL purl = new ParsedURL(burl, uri);
-                            String e = EncodingUtilities.javaEncoding(enc);
-                            e = ((e == null) ? enc : e);
-                            Reader r =
-                                new InputStreamReader(purl.openStream(), e);
+                            String e = null;
+                            if (enc != null) {
+                                e = EncodingUtilities.javaEncoding(enc);
+                                e = ((e == null) ? enc : e);
+                            }
+
+                            InputStream is = purl.openStream();
+                            if (e == null)
+                                e = purl.getContentEncoding();
+                            Reader r;
+                            if (e == null) 
+                                r = new InputStreamReader(is);
+                            else
+                                r = new InputStreamReader(is, e);
                             r = new BufferedReader(r);
-                            final StringWriter sw = new StringWriter();
+                            final StringBuffer sb = new StringBuffer();
                             int read;
                             char[] buf = new char[4096];
                             while ((read = r.read(buf, 0, buf.length)) != -1) {
-                                sw.write(buf, 0, read);
+                                sb.append(buf, 0, read);
                             }
+                            r.close();
 
                             updateRunnableQueue.invokeLater(new Runnable() {
                                     public void run() {
                                         try {
                                             h.getURLDone(true,
                                                          purl.getContentType(),
-                                                         sw.toString());
+                                                         sb.toString());
                                         } catch (Exception e){
                                             if (userAgent != null) {
                                                 userAgent.displayError(e);
@@ -964,10 +983,128 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                 };
             t.setPriority(Thread.MIN_PRIORITY);
             t.start();
-
-                    
         }
 
+
+        final static String DEFLATE="deflate";
+        final static String GZIP   ="gzip";
+
+        public void postURL(String uri, String content, URLResponseHandler h) {
+            postURL(uri, content, h, "text/plain", null);
+        }
+
+        public void postURL(String uri, String content, URLResponseHandler h, 
+                     String mimeType) {
+            postURL(uri, content, h, mimeType, null);
+        }
+
+        public void postURL(final String uri, 
+                            final String content, 
+                            final URLResponseHandler h, 
+                            final String mimeType, 
+                            final String fEnc) {
+            Thread t = new Thread() {
+                    public void run() {
+                        try {
+                            URL burl;
+                            burl = ((SVGOMDocument)document).getURLObject();
+                            URL url;
+                            if (burl != null)
+                                url = new URL(burl, uri);
+                            else url = new URL(uri);
+                            final URLConnection conn = url.openConnection();
+                            conn.setDoOutput(true);
+                            conn.setDoInput(true);
+                            conn.setUseCaches(false);
+                            conn.setRequestProperty("Content-Type", mimeType);
+                            
+                            OutputStream os = conn.getOutputStream();
+                            String e=null, enc = fEnc;
+                            if (enc != null) {
+                                if (enc.startsWith(DEFLATE)) {
+                                    os = new DeflaterOutputStream(os);
+
+                                    if (enc.length() > DEFLATE.length())
+                                        enc = enc.substring(DEFLATE.length()+1);
+                                    else
+                                        enc = "";
+                                }
+                                if (enc.startsWith(GZIP)) {
+                                    os = new GZIPOutputStream(os);
+                                    if (enc.length() > GZIP.length())
+                                        enc = enc.substring(GZIP.length()+1);
+                                    else
+                                        enc ="";
+                                }
+                                if (enc.length() != 0) {
+                                    e = EncodingUtilities.javaEncoding(enc);
+                                    if (e == null) e = "UTF-8"; 
+                                } else {
+                                    e = enc;
+                                }
+                            }
+                            Writer w;
+                            if (e == null) 
+                                w = new OutputStreamWriter(os);
+                            else
+                                w = new OutputStreamWriter(os, e);
+                            w.write(content);
+                            w.flush();
+                            w.close();
+                            os.close();
+
+                            InputStream is = conn.getInputStream();
+                            Reader r;
+                            e =  conn.getContentEncoding();
+                            if (e == null) 
+                                r = new InputStreamReader(is);
+                            else
+                                r = new InputStreamReader(is, e);
+                            r = new BufferedReader(r);
+
+                            final StringBuffer sb = new StringBuffer();
+                            int read;
+                            char[] buf = new char[4096];
+                            while ((read = r.read(buf, 0, buf.length)) != -1) {
+                                sb.append(buf, 0, read);
+                            }
+                            r.close();
+
+                            updateRunnableQueue.invokeLater(new Runnable() {
+                                    public void run() {
+                                        try {
+                                            h.getURLDone(true,
+                                                         conn.getContentType(),
+                                                         sb.toString());
+                                        } catch (Exception e){
+                                            if (userAgent != null) {
+                                                userAgent.displayError(e);
+                                            }
+                                        }
+                                    }
+                                });
+                        } catch (Exception e) {
+                            if (e instanceof SecurityException) {
+                                userAgent.displayError(e);
+                            }
+                            updateRunnableQueue.invokeLater(new Runnable() {
+                                    public void run() {
+                                        try {
+                                            h.getURLDone(false, null, null);
+                                        } catch (Exception e){
+                                            if (userAgent != null) {
+                                                userAgent.displayError(e);
+                                            }
+                                        }
+                                    }
+                                });
+                        }
+                    }
+
+                };
+            t.setPriority(Thread.MIN_PRIORITY);
+            t.start();
+        }
 
         /**
          * Displays an alert dialog box.
