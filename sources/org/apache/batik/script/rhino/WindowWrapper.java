@@ -87,8 +87,7 @@ public class WindowWrapper extends ImporterTopLevel {
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
-        long to = ((Long)NativeJavaObject.coerceType
-                   (Long.TYPE, args[1])).longValue();
+        long to = ((Long)Context.toType(args[1], Long.TYPE)).longValue();
         if (args[0] instanceof Function) {
             RhinoInterpreter interp =
                 (RhinoInterpreter)window.getInterpreter();
@@ -98,7 +97,7 @@ public class WindowWrapper extends ImporterTopLevel {
             return window.setInterval(fw, to);
         }
         String script =
-            (String)NativeJavaObject.coerceType(String.class, args[0]);
+	  (String)Context.toType(args[0], String.class);
         return window.setInterval(script, to);
     }
 
@@ -116,8 +115,7 @@ public class WindowWrapper extends ImporterTopLevel {
         if (len < 2) {
             throw Context.reportRuntimeError("invalid argument count");
         }
-        long to = ((Long)NativeJavaObject.coerceType
-                   (Long.TYPE, args[1])).longValue();
+        long to = ((Long)Context.toType(args[1], Long.TYPE)).longValue();
         if (args[0] instanceof Function) {
             RhinoInterpreter interp =
                 (RhinoInterpreter)window.getInterpreter();
@@ -127,7 +125,7 @@ public class WindowWrapper extends ImporterTopLevel {
             return window.setTimeout(fw, to);
         }
         String script =
-            (String)NativeJavaObject.coerceType(String.class, args[0]);
+            (String)Context.toType(args[0], String.class);
         return window.setTimeout(script, to);
     }
 
@@ -143,8 +141,7 @@ public class WindowWrapper extends ImporterTopLevel {
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
         if (len >= 1) {
-            window.clearInterval(NativeJavaObject.coerceType
-                                 (Object.class, args[0]));
+            window.clearInterval(Context.toType(args[0], Object.class));
         }
     }
 
@@ -160,8 +157,7 @@ public class WindowWrapper extends ImporterTopLevel {
         WindowWrapper ww = (WindowWrapper)thisObj;
         Window window = ww.window;
         if (len >= 1) {
-            window.clearTimeout(NativeJavaObject.coerceType
-                                (Object.class, args[0]));
+            window.clearTimeout(Context.toType(args[0], Object.class));
         }
     }
 
@@ -186,8 +182,8 @@ public class WindowWrapper extends ImporterTopLevel {
         return AccessController.doPrivileged( new PrivilegedAction() {
                 public Object run() {
                     return window.parseXML
-                        ((String)NativeJavaObject.coerceType(String.class, args[0]),
-                         (Document)NativeJavaObject.coerceType(Document.class, args[1]));
+                        ((String)Context.toType(args[0], String.class),
+                         (Document)Context.toType(args[1], Document.class));
                 }
             }, acc);
     }
@@ -208,7 +204,7 @@ public class WindowWrapper extends ImporterTopLevel {
         }
         RhinoInterpreter interp =
             (RhinoInterpreter)window.getInterpreter();
-        final String uri = (String)NativeJavaObject.coerceType(String.class, args[0]);
+        final String uri = (String)Context.toType(args[0], String.class);
         Window.GetURLHandler urlHandler = null;
         if (args[1] instanceof Function) {
           urlHandler = new GetURLFunctionWrapper(interp, (Function)args[1], ww);
@@ -232,7 +228,7 @@ public class WindowWrapper extends ImporterTopLevel {
                     public Object run() {
                         window.getURL
                             (uri, fw,
-                             (String)NativeJavaObject.coerceType(String.class, args[2]));
+                             (String)Context.toType(args[2], String.class));
                         return null;
                     }
                 }, acc);
@@ -252,7 +248,7 @@ public class WindowWrapper extends ImporterTopLevel {
         Window window = ww.window;
         if (len >= 1) {
             String message =
-                (String)NativeJavaObject.coerceType(String.class, args[0]);
+                (String)Context.toType(args[0], String.class);
             window.alert(message);
         }
     }
@@ -270,7 +266,7 @@ public class WindowWrapper extends ImporterTopLevel {
         Window window = ww.window;
         if (len >= 1) {
             String message =
-                (String)NativeJavaObject.coerceType(String.class, args[0]);
+                (String)Context.toType(args[0], String.class);
             return window.confirm(message);
         }
         return false;
@@ -293,14 +289,14 @@ public class WindowWrapper extends ImporterTopLevel {
 
         case 1:
             String message =
-                (String)NativeJavaObject.coerceType(String.class, args[0]);
+                (String)Context.toType(args[0], String.class);
             return window.prompt(message);
 
         default:
             message =
-                (String)NativeJavaObject.coerceType(String.class, args[0]);
+                (String)Context.toType(args[0], String.class);
             String defVal =
-                (String)NativeJavaObject.coerceType(String.class, args[1]);
+                (String)Context.toType(args[1], String.class);
             return window.prompt(message, defVal);
         }
     }
