@@ -12,9 +12,13 @@ import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+import org.apache.batik.bridge.MissingAttributeException;
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.UnitProcessor;
-import org.w3c.dom.svg.SVGElement;
+
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.svg.SVGElement;
 
 /**
  * A factory for the &lt;ellipse> SVG element.
@@ -31,26 +35,61 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
                                 SVGElement svgElement,
                                 CSSStyleDeclaration decl,
                                 UnitProcessor.Context uctx) {
+
+        // parse the cx attribute, (default is 0)
         String s = svgElement.getAttributeNS(null, ATTR_CX);
-        float cx = UnitProcessor.svgToUserSpace(s,
-                                                svgElement,
-                                                UnitProcessor.HORIZONTAL_LENGTH,
-                                                uctx);
+        float cx = 0;
+        if (s.length() != 0) {
+            cx = UnitProcessor.svgToUserSpace(s,
+                                              svgElement,
+                                              UnitProcessor.HORIZONTAL_LENGTH,
+                                              uctx);
+        }
+
+        // parse the cy attribute, (default is 0)
         s = svgElement.getAttributeNS(null, ATTR_CY);
-        float cy = UnitProcessor.svgToUserSpace(s,
-                                                svgElement,
-                                                UnitProcessor.VERTICAL_LENGTH,
-                                                uctx);
+        float cy = 0;
+        if (s.length() != 0) {
+            cy = UnitProcessor.svgToUserSpace(s,
+                                              svgElement,
+                                              UnitProcessor.VERTICAL_LENGTH,
+                                              uctx);
+        }
+
+        // parse the rx attribute, (required and must be positive)
         s = svgElement.getAttributeNS(null, ATTR_RX);
-        float rx = UnitProcessor.svgToUserSpace(s,
-                                                svgElement,
-                                                UnitProcessor.HORIZONTAL_LENGTH,
-                                                uctx);
+        float rx;
+        if (s.length() == 0) {
+            throw new MissingAttributeException(
+                Messages.formatMessage("ellipse.rx.required", null));
+        } else {
+            rx = UnitProcessor.svgToUserSpace(s,
+                                              svgElement,
+                                              UnitProcessor.HORIZONTAL_LENGTH,
+                                              uctx);
+            if (rx < 0) {
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("ellipse.rx.negative", null));
+            }
+        }
+
+        // parse the ry attribute, (required and must be positive)
         s = svgElement.getAttributeNS(null, ATTR_RY);
-        float ry = UnitProcessor.svgToUserSpace(s,
-                                                svgElement,
-                                                UnitProcessor.VERTICAL_LENGTH,
-                                                uctx);
+        float ry;
+        if (s.length() == 0) {
+            throw new MissingAttributeException(
+                Messages.formatMessage("ellipse.ry.required", null));
+        } else {
+            ry = UnitProcessor.svgToUserSpace(s,
+                                              svgElement,
+                                              UnitProcessor.VERTICAL_LENGTH,
+                                              uctx);
+            if (ry < 0) {
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("ellipse.ry.negative", null));
+            }
+        }
+
         float x = cx - rx;
         float y = cy - ry;
         return new Ellipse2D.Float(x, y, rx*2, ry*2);

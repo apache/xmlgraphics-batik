@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.MissingAttributeException;
 import org.apache.batik.parser.AWTPolygonProducer;
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -29,6 +31,7 @@ import org.w3c.dom.svg.SVGElement;
  * @version $Id$
  */
 public class SVGPolygonElementBridge extends SVGShapeElementBridge {
+
     /**
      * Returns an <tt>GeneralPath</tt>.
      */
@@ -36,19 +39,27 @@ public class SVGPolygonElementBridge extends SVGShapeElementBridge {
                                 SVGElement elt,
                                 CSSStyleDeclaration decl,
                                 UnitProcessor.Context uctx) {
-        String pts = elt.getAttributeNS(null, ATTR_POINTS);
 
+        // parse the fill rule CSS property
         CSSPrimitiveValue v;
         v = (CSSPrimitiveValue)decl.getPropertyCSSValue(FILL_RULE_PROPERTY);
         int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
             ? PathIterator.WIND_NON_ZERO
             : PathIterator.WIND_EVEN_ODD;
-        try {
-            return AWTPolygonProducer.createShape(new StringReader(pts),
-                                                  wr,
-                                                  ctx.getParserFactory());
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
+
+        // parse the points attribute, (required)
+        String pts = elt.getAttributeNS(null, ATTR_POINTS);
+        if (pts.length() == 0) {
+            throw new MissingAttributeException(
+                Messages.formatMessage("polygon.points.required", null));
         }
+        Shape shape = null;
+        try {
+            shape = AWTPolygonProducer.createShape(new StringReader(pts),
+                                                   wr,
+                                                   ctx.getParserFactory());
+        } catch (IOException e) { /* Nothing to do */ }
+
+        return shape;
     }
 }

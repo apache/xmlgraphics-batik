@@ -194,23 +194,38 @@ public class LocalizableSupport implements Localizable {
             } else {
                 usedLocale = locale;
             }
-            resourceBundle = ResourceBundle.getBundle(bundleName,
-                                                      usedLocale,
-                                                      classLoader);
+            if (classLoader == null) {
+                resourceBundle = ResourceBundle.getBundle(bundleName,
+                                                          usedLocale);
+            } else {
+                resourceBundle = ResourceBundle.getBundle(bundleName,
+                                                          usedLocale,
+                                                          classLoader);
+            }
         } else if (locale == null) {
             // Check for group Locale and JVM default locale changes.
             if ((l = localeGroup.getLocale()) == null) {
                 if (usedLocale != (l = Locale.getDefault())) {
                     usedLocale = l;
+                    if (classLoader == null) {
+                        resourceBundle = ResourceBundle.getBundle(bundleName,
+                                                                  usedLocale);
+                    } else {
+                        resourceBundle = ResourceBundle.getBundle(bundleName,
+                                                                  usedLocale,
+                                                                  classLoader);
+                    }
+                }
+            } else if (usedLocale != l) {
+                usedLocale = l;
+                if (classLoader == null) {
+                    resourceBundle = ResourceBundle.getBundle(bundleName,
+                                                              usedLocale);
+                } else {
                     resourceBundle = ResourceBundle.getBundle(bundleName,
                                                               usedLocale,
                                                               classLoader);
                 }
-            } else if (usedLocale != l) {
-                usedLocale = l;
-                resourceBundle = ResourceBundle.getBundle(bundleName,
-                                                          usedLocale,
-                                                          classLoader);
             }
         }
         return resourceBundle;
