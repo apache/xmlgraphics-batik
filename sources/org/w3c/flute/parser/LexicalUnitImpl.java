@@ -439,6 +439,10 @@ class LexicalUnitImpl implements LexicalUnit {
 	// return new LexicalUnitImpl(line, column, previous, null, SAC_UNICODERANGE, params);
 	return null;
     }
+    static LexicalUnitImpl createInherit(int line, int column,
+                                         LexicalUnitImpl previous) {
+	return new LexicalUnitImpl(SAC_INHERIT, line, column, previous);
+    }
     static LexicalUnitImpl createComma(int line, int column,
 					  LexicalUnitImpl previous) {
 	return new LexicalUnitImpl(SAC_OPERATOR_COMMA, line, column, previous);

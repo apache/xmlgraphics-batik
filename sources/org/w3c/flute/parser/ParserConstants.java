@@ -35,47 +35,48 @@ public interface ParserConstants {
   int D = 32;
   int NAME = 33;
   int STRING = 34;
-  int IDENT = 35;
-  int NUMBER = 36;
-  int _URL = 37;
-  int URL = 38;
-  int PERCENTAGE = 39;
-  int PT = 40;
-  int MM = 41;
-  int CM = 42;
-  int PC = 43;
-  int IN = 44;
-  int PX = 45;
-  int EMS = 46;
-  int EXS = 47;
-  int DEG = 48;
-  int RAD = 49;
-  int GRAD = 50;
-  int MS = 51;
-  int SECOND = 52;
-  int HZ = 53;
-  int KHZ = 54;
-  int DIMEN = 55;
-  int HASH = 56;
-  int IMPORT_SYM = 57;
-  int MEDIA_SYM = 58;
-  int CHARSET_SYM = 59;
-  int PAGE_SYM = 60;
-  int FONT_FACE_SYM = 61;
-  int ATKEYWORD = 62;
-  int IMPORTANT_SYM = 63;
-  int RANGE0 = 64;
-  int RANGE1 = 65;
-  int RANGE2 = 66;
-  int RANGE3 = 67;
-  int RANGE4 = 68;
-  int RANGE5 = 69;
-  int RANGE6 = 70;
-  int RANGE = 71;
-  int UNI = 72;
-  int UNICODERANGE = 73;
-  int FUNCTION = 74;
-  int UNKNOWN = 75;
+  int INHERIT = 35;
+  int IDENT = 36;
+  int NUMBER = 37;
+  int _URL = 38;
+  int URL = 39;
+  int PERCENTAGE = 40;
+  int PT = 41;
+  int MM = 42;
+  int CM = 43;
+  int PC = 44;
+  int IN = 45;
+  int PX = 46;
+  int EMS = 47;
+  int EXS = 48;
+  int DEG = 49;
+  int RAD = 50;
+  int GRAD = 51;
+  int MS = 52;
+  int SECOND = 53;
+  int HZ = 54;
+  int KHZ = 55;
+  int DIMEN = 56;
+  int HASH = 57;
+  int IMPORT_SYM = 58;
+  int MEDIA_SYM = 59;
+  int CHARSET_SYM = 60;
+  int PAGE_SYM = 61;
+  int FONT_FACE_SYM = 62;
+  int ATKEYWORD = 63;
+  int IMPORTANT_SYM = 64;
+  int RANGE0 = 65;
+  int RANGE1 = 66;
+  int RANGE2 = 67;
+  int RANGE3 = 68;
+  int RANGE4 = 69;
+  int RANGE5 = 70;
+  int RANGE6 = 71;
+  int RANGE = 72;
+  int UNI = 73;
+  int UNICODERANGE = 74;
+  int FUNCTION = 75;
+  int UNKNOWN = 76;
 
   int DEFAULT = 0;
   int IN_COMMENT = 1;
@@ -116,6 +117,7 @@ public interface ParserConstants {
     "<D>",
     "<NAME>",
     "<STRING>",
+    "\"inherit\"",
     "<IDENT>",
     "<NUMBER>",
     "<_URL>",

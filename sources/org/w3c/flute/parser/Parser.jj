@@ -513,6 +513,7 @@ TOKEN :
 {
   < STRING      : ( "\"" ( <STRINGCHAR> | "'" )* "\"" ) | 
                   ( "'" ( <STRINGCHAR> | "\"" )* "'" ) >
+  | < INHERIT     : "inherit" >
   | < IDENT         : <NMSTART> ( <NMCHAR> )* >
   | < NUMBER	  : ( <D> )+ | ( <D> )* "." ( <D> )+ > 
   | < #_URL       : [ "!","#","$","%","&","*"-"~" ] | <NONASCII> | <ESCAPE> >
@@ -1379,6 +1380,9 @@ LexicalUnitImpl term(LexicalUnitImpl prev) :
 	  LexicalUnitImpl.createString(n.beginLine, n.beginColumn, prev,
 				       convertStringIndex(n.image, 1, 
 							  n.image.length() -1));}
+       | n=<INHERIT> 
+	{ result = LexicalUnitImpl.createInherit(n.beginLine,
+                                                 n.beginColumn, prev); }
        | n=<IDENT> 
 	{ result = LexicalUnitImpl.createIdent(n.beginLine, n.beginColumn,
 					       prev, convertIdent(n.image));

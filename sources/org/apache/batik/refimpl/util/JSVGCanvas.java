@@ -51,6 +51,8 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 
+import org.apache.batik.dom.svg.SVGDocumentLoader;
+
 import org.apache.batik.gvt.GraphicsNode;
 
 import org.apache.batik.gvt.event.AbstractEventDispatcher;
@@ -58,6 +60,7 @@ import org.apache.batik.gvt.event.AbstractEventDispatcher;
 import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.gvt.renderer.RendererFactory;
 
+import org.apache.batik.refimpl.bridge.BufferedDocumentLoader;
 import org.apache.batik.refimpl.bridge.ConcreteGVTBuilder;
 import org.apache.batik.refimpl.bridge.DefaultUserAgent;
 import org.apache.batik.refimpl.bridge.SVGBridgeContext;
@@ -411,6 +414,9 @@ public class JSVGCanvas
      */
     protected BridgeContext createBridgeContext(SVGDocument doc) {
         BridgeContext result = new SVGBridgeContext();
+        result.setDocumentLoader
+            (new BufferedDocumentLoader
+             (new SVGDocumentLoader(userAgent.getXMLParserClassName())));
         result.setGVTFactory(ConcreteGVTFactory.getGVTFactoryImplementation());
         result.setParserFactory(parserFactory);
         result.setUserAgent(userAgent);
@@ -654,14 +660,13 @@ public class JSVGCanvas
             Dimension size = getSize();
 
             long t1 = System.currentTimeMillis();
-            System.out.println("-----------start---------------------------");
 
             renderer.repaint(getAreaOfInterest
                              (new Rectangle(0, 0, size.width, size.height)));
 
             long t2 = System.currentTimeMillis();
-            System.out.println("-----------end--------- " +
-                               (t2 - t1) + " ms --------------");
+            System.out.println("----------- Rendering --------- " +
+                               (t2 - t1) + " ms");
 
             repaintThread = null;
             repaint();

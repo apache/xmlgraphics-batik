@@ -39,7 +39,6 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
         SVGElement svgElement = (SVGElement) element;
-        ctx.setCurrentViewport((SVGSVGElement) svgElement);
         CSSStyleDeclaration cssDecl
             = ctx.getViewCSS().getComputedStyle(element, null);
         UnitProcessor.Context uctx
@@ -92,6 +91,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         BridgeEventSupport.addDOMListener(ctx, element);
         ctx.bind(element, node);
 
+        ctx.setCurrentViewport((SVGSVGElement)svgElement);
         return node;
     }
 

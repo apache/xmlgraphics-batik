@@ -88,4 +88,11 @@ public class DefaultUserAgent implements UserAgent {
     public void runThread(Thread t) {
         t.start();
     }
+
+    /**
+     * Returns the class name of the XML parser.
+     */
+    public String getXMLParserClassName() {
+        return "org.apache.crimson.parser.XMLReaderImpl";
+    }
 }

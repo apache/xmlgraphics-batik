@@ -531,6 +531,13 @@ public class ViewerFrame
     }
 
     /**
+     * Returns the class name of the XML parser.
+     */
+    public String getXMLParserClassName() {
+        return application.getXMLParserClassName();
+    }
+
+    /**
      * Loads the given document.
      * @param s The document name.
      */
@@ -1086,10 +1093,8 @@ public class ViewerFrame
                 doc.setSVGContext(dc);
 
                 long t2 = System.currentTimeMillis();
-                System.out.println("--------------------------------");
-                System.out.println(" Document loading time: " +
+                System.out.println("-------- Document loading ----- " +
                                    (t2 - t1) + " ms");
-                System.out.println("--------------------------------");
 
                 String title = doc.getTitle();
                 if (title.equals("")) {
@@ -1121,10 +1126,8 @@ public class ViewerFrame
                 canvas.setSVGDocument(doc);
 
                 t1 = System.currentTimeMillis();
-                System.out.println("--------------------------------");
-                System.out.println(" Tree construction time: " +
+                System.out.println("-------- GVT construction ----- " +
                                    (t1 - t2) + " ms");
-                System.out.println("--------------------------------");
 
                 description
                     =  SVGUtilities.getDescription(doc.getRootElement());
