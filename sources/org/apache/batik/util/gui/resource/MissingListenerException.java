@@ -40,7 +40,7 @@ public class MissingListenerException extends RuntimeException {
      * Constructs a MissingListenerException with the specified information.
      * A detail message is a String that describes this particular exception.
      * @param s the detail message
-     * @param classname the name of the listener class
+     * @param className the name of the listener class
      * @param key the key for the missing listener.
      */
     public MissingListenerException(String s, String className, String key) {

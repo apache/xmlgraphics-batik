@@ -27,7 +27,7 @@ import javax.swing.JPanel;
 /**
  * An implementation of JPanel that uses the GridBagLayout.
  * 
- * @author  <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author  <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 

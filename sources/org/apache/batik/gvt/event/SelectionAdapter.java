@@ -21,7 +21,7 @@ package org.apache.batik.gvt.event;
 /**
  * Adapter for the listener interface for receiving selection events.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public class SelectionAdapter implements SelectionListener {

@@ -77,42 +77,43 @@ To display the available targets type:
 
   <target name="init" depends="init-args">
     <tstamp/>
-    <property name="Project"         value="Batik"/>
-    <property name="project"         value="batik"/>
-    <property name="year"            value="2004-2005"/>
-    <property name="version"         value="1.5.1"/>
-    <property name="revisionType"    value=""/>
-    <property name="revisionNumber"  value="" />
+    <property name="Project"            value="Batik"/>
+    <property name="project"            value="batik"/>
+    <property name="year"               value="2004-2005"/>
+    <property name="version"            value="1.5.1"/>
+    <property name="revisionType"       value=""/>
+    <property name="revisionNumber"     value=""/>
 
     <property file="build.properties"/>
-    <property name="debug"           value="off"/>
-    <property name="optimize"        value="on"/>
-    <property name="deprecation"     value="on"/>
+    <property name="debug"              value="off"/>
+    <property name="optimize"           value="on"/>
+    <property name="deprecation"        value="on"/>
 
-    <property name="src"             value="sources"/>
-    <property name="resources"       value="resources"/>
-    <property name="testsrc"         value="test-sources"/>
-    <property name="testresources"   value="test-resources"/>
-    <property name="dest"            value="classes"/>
-    <property name="build"           value="${project}-${version}"/>
-    <property name="docs"            value="${build}/docs"/>
-    <property name="lib"             value="lib"/>
-    <property name="samples"         value="samples"/>
-    <property name="package-prefix"  value="org/apache/${project}"/>
+    <property name="src"                value="sources"/>
+    <property name="resources"          value="resources"/>
+    <property name="testsrc"            value="test-sources"/>
+    <property name="testresources"      value="test-resources"/>
+    <property name="dest"               value="classes"/>
+    <property name="build"              value="${project}-${version}"/>
+    <property name="docs"               value="${build}/docs"/>
+    <property name="lib"                value="lib"/>
+    <property name="samples"            value="samples"/>
+    <property name="package-prefix"     value="org/apache/${project}"/>
 
-    <property name="class-prefix"    value="org.apache.${project}"/>
+    <property name="class-prefix"       value="org.apache.${project}"/>
 
-    <property name="xdocs"           value="xdocs"/>
-    <property name="skins"           value="xdocs/skins"/>
-    <property name="stylebook-class" value="org.apache.stylebook.StyleBook"/>
+    <property name="xdocs"              value="xdocs"/>
+    <property name="skins"              value="xdocs/skins"/>
+    <property name="stylebook-class"    value="org.apache.stylebook.StyleBook"/>
+    <property name="javadoc-exclusions" value=""/>
 
-    <property name="site"            value="../xml-site/targets/${project}"/>
-    <property name="site-skin"       value="${skins}/xml.apache.org/"/>
-    <property name="print-skin"      value="${skins}/printer/"/>
+    <property name="site"               value="../xml-site/targets/${project}"/>
+    <property name="site-skin"          value="${skins}/xml.apache.org/"/>
+    <property name="print-skin"         value="${skins}/printer/"/>
 
-    <property name="test-reports"    value="test-reports" />
-    <property name="test-references" value="test-references" />
-    <property name="test-resources"  value="test-resources" />
+    <property name="test-reports"       value="test-reports" />
+    <property name="test-references"    value="test-references" />
+    <property name="test-resources"     value="test-resources" />
 
     <available property="rhino.present" classname="org.mozilla.javascript.Context">
       <classpath refid="libs-classpath"/>
@@ -124,6 +125,24 @@ To display the available targets type:
       <classpath refid="libs-classpath"/>
     </available>
 
+    <condition property="javadoc-exclusions"
+               value="org.apache.batik.script.rhino">
+      <not>
+        <equals arg1="${rhino.present}" arg2="true"/>
+      </not>
+    </condition>
+    <condition property="javadoc-exclusions"
+               value="${javadoc-exclusions},org.apache.batik.script.jpython">
+      <not>
+        <equals arg1="${jpython.present}" arg2="true"/>
+      </not>
+    </condition>
+    <condition property="javadoc-exclusions"
+               value="${javadoc-exclusions},org.apache.batik.script.jacl">
+      <not>
+        <equals arg1="${jacl.present}" arg2="true"/>
+      </not>
+    </condition>
   </target>
 
   <path id="libs-classpath">
@@ -251,7 +270,7 @@ To display the available targets type:
        </fileset>
     </copy>
     <copy file="${resources}/${package-prefix}/extensions/README.txt" 
-	  todir="${build}/extensions"/>
+          todir="${build}/extensions"/>
     <copy todir="${build}/samples">
       <fileset dir="samples"/>
     </copy>
@@ -835,7 +854,7 @@ To display the available targets type:
   <target name="squiggle-ext-jar" depends="squiggle-jar">
      <mkdir dir="${build}/extensions"/>
      <jar manifest="${src}/${project}-browser-ext.mf"
-	  jarfile="${build}/extensions/${project}-squiggle-ext.jar">
+          jarfile="${build}/extensions/${project}-squiggle-ext.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle Viewer With Extensions"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
@@ -879,7 +898,7 @@ To display the available targets type:
   <target name="rasterizer-ext-jar" depends="rasterizer-jar">
      <mkdir dir="${build}/extensions"/>
      <jar manifest="${src}/${project}-rasterizer-ext.mf"
-	  jarfile="${build}/extensions/${project}-rasterizer-ext.jar">
+          jarfile="${build}/extensions/${project}-rasterizer-ext.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Rasterizer With Extensions"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
@@ -1258,6 +1277,7 @@ To display the available targets type:
                            org.xml.*,
                            org.w3c.css.*,
                            org.w3c.dom.*"
+             excludepackagenames="${javadoc-exclusions}"
              maxmemory="128m"
              sourcepath="${src}"
              destdir="${docs}/javadoc"
@@ -1324,7 +1344,7 @@ To display the available targets type:
   </target>
 
   <target name="jarDependImg" depends="compile"
-	  description="Updates jarDependImg PNG">
+          description="Updates jarDependImg PNG">
     <java fork="yes"
           classname="${class-prefix}.apps.rasterizer.Main">
       <classpath>

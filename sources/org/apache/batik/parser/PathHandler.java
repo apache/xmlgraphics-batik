@@ -41,7 +41,8 @@ public interface PathHandler {
     /**
      * Invoked when a relative moveto command has been parsed.
      * <p>Command : <b>m</b>
-     * @param x,&nbsp;y the relative coordinates for the end point
+     * @param x the relative x coordinate for the end point
+     * @param y the relative y coordinate for the end point
      * @exception ParseException if an error occured while processing the path
      */
     void movetoRel(float x, float y) throws ParseException;
@@ -49,7 +50,8 @@ public interface PathHandler {
     /**
      * Invoked when an absolute moveto command has been parsed.
      * <p>Command : <b>M</b>
-     * @param x,&nbsp;y the absolute coordinates for the end point
+     * @param x the absolute x coordinate for the end point
+     * @param y the absolute y coordinate for the end point
      * @exception ParseException if an error occured while processing the path
      */
     void movetoAbs(float x, float y) throws ParseException;
@@ -64,7 +66,8 @@ public interface PathHandler {
     /**
      * Invoked when a relative line command has been parsed.
      * <p>Command : <b>l</b>
-     * @param x,&nbsp;y the relative coordinates for the end point
+     * @param x the relative x coordinates for the end point
+     * @param y the relative y coordinates for the end point
      * @exception ParseException if an error occured while processing the path
      */
     void linetoRel(float x, float y) throws ParseException;
@@ -72,7 +75,8 @@ public interface PathHandler {
     /**
      * Invoked when an absolute line command has been parsed.
      * <p>Command : <b>L</b>
-     * @param x,&nbsp;y the absolute coordinates for the end point
+     * @param x the absolute x coordinate for the end point
+     * @param y the absolute y coordinate for the end point
      * @exception ParseException if an error occured while processing the path
      */
     void linetoAbs(float x, float y) throws ParseException;
@@ -112,9 +116,12 @@ public interface PathHandler {
     /**
      * Invoked when a relative cubic bezier curve command has been parsed.
      * <p>Command : <b>c</b>
-     * @param x1,&nbsp;y1 the relative coordinates for the first control point
-     * @param x2,&nbsp;y2 the relative coordinates for the second control point
-     * @param x,&nbsp;y the relative coordinates for the end point
+     * @param x1 the relative x coordinate for the first control point
+     * @param y1 the relative y coordinate for the first control point
+     * @param x2 the relative x coordinate for the second control point
+     * @param y2 the relative y coordinate for the second control point
+     * @param x the relative x coordinate for the end point
+     * @param y the relative y coordinate for the end point
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoCubicRel(float x1, float y1, 
@@ -125,9 +132,12 @@ public interface PathHandler {
     /**
      * Invoked when an absolute cubic bezier curve command has been parsed.
      * <p>Command : <b>C</b>
-     * @param x1,&nbsp;y1 the absolute coordinates for the first control point
-     * @param x2,&nbsp;y2 the absolute coordinates for the second control point
-     * @param x,&nbsp;y the absolute coordinates for the end point
+     * @param x1 the absolute x coordinate for the first control point
+     * @param y1 the absolute y coordinate for the first control point
+     * @param x2 the absolute x coordinate for the second control point
+     * @param y2 the absolute y coordinate for the second control point
+     * @param x the absolute x coordinate for the end point
+     * @param y the absolute y coordinate for the end point
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoCubicAbs(float x1, float y1, 
@@ -140,8 +150,10 @@ public interface PathHandler {
      * reflection of the second control point on the previous command
      * relative to the current point.
      * <p>Command : <b>s</b>
-     * @param x2,&nbsp;y2 the relative coordinates for the second control point
-     * @param x,&nbsp;y the relative coordinates for the end point
+     * @param x2 the relative x coordinate for the second control point
+     * @param y2 the relative y coordinate for the second control point
+     * @param x the relative x coordinate for the end point
+     * @param y the relative y coordinate for the end point
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoCubicSmoothRel(float x2, float y2, 
@@ -153,8 +165,10 @@ public interface PathHandler {
      * reflection of the second control point on the previous command
      * relative to the current point.
      * <p>Command : <b>S</b>
-     * @param x2,&nbsp;y2 the absolute coordinates for the second control point
-     * @param x,&nbsp;y the absolute coordinates for the end point 
+     * @param x2 the absolute x coordinate for the second control point
+     * @param y2 the absolute y coordinate for the second control point
+     * @param x the absolute x coordinate for the end point
+     * @param y the absolute y coordinate for the end point
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoCubicSmoothAbs(float x2, float y2, 
@@ -163,8 +177,10 @@ public interface PathHandler {
     /**
      * Invoked when a relative quadratic bezier curve command has been parsed.
      * <p>Command : <b>q</b>
-     * @param x1,&nbsp;y1 the relative coordinates for the control point
-     * @param x,&nbsp;y the relative coordinates for the end point
+     * @param x1 the relative x coordinate for the control point
+     * @param y1 the relative y coordinate for the control point
+     * @param x the relative x coordinate for the end point
+     * @param y the relative x coordinate for the end point
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoQuadraticRel(float x1, float y1, 
@@ -173,8 +189,10 @@ public interface PathHandler {
     /**
      * Invoked when an absolute quadratic bezier curve command has been parsed.
      * <p>Command : <b>Q</b>
-     * @param x1,&nbsp;y1 the absolute coordinates for the control point
-     * @param x,&nbsp;y the absolute coordinates for the end point
+     * @param x1 the absolute x coordinate for the control point
+     * @param y1 the absolute y coordinate for the control point
+     * @param x the absolute x coordinate for the end point
+     * @param y the absolute x coordinate for the end point
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoQuadraticAbs(float x1, float y1, 
@@ -186,7 +204,8 @@ public interface PathHandler {
      * reflection of the control point on the previous command
      * relative to the current point.
      * <p>Command : <b>t</b>
-     * @param x,&nbsp;y the relative coordinates for the end point 
+     * @param x the relative x coordinate for the end point 
+     * @param y the relative y coordinate for the end point 
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoQuadraticSmoothRel(float x, float y) throws ParseException;
@@ -197,7 +216,8 @@ public interface PathHandler {
      * reflection of the control point on the previous command
      * relative to the current point.
      * <p>Command : <b>T</b>
-     * @param x,&nbsp;y the absolute coordinates for the end point 
+     * @param x the absolute x coordinate for the end point 
+     * @param y the absolute y coordinate for the end point 
      * @exception ParseException if an error occured while processing the path
      */
     void curvetoQuadraticSmoothAbs(float x, float y) throws ParseException;
@@ -207,11 +227,12 @@ public interface PathHandler {
      * <p>Command : <b>a</b>
      * @param rx the X axis radius for the ellipse
      * @param ry the Y axis radius for the ellipse 
-     * @param angle the rotation angle in degrees for the ellipse's X-axis
-     * relative to the X-axis
+     * @param xAxisRotation the rotation angle in degrees for the ellipse's
+     *                      X-axis relative to the X-axis
      * @param largeArcFlag the value of the large-arc-flag 
      * @param sweepFlag the value of the sweep-flag 
-     * @param x,&nbsp;y the relative coordinates for the end point
+     * @param x the relative x coordinate for the end point 
+     * @param y the relative y coordinate for the end point 
      * @exception ParseException if an error occured while processing the path
      */
     void arcRel(float rx, float ry, 
@@ -225,11 +246,12 @@ public interface PathHandler {
      * <p>Command : <b>A</b>
      * @param rx the X axis radius for the ellipse
      * @param ry the Y axis radius for the ellipse 
-     * @param angle the rotation angle in degrees for the ellipse's X-axis
-     * relative to the X-axis
+     * @param xAxisRotation the rotation angle in degrees for the ellipse's
+     *                      X-axis relative to the X-axis
      * @param largeArcFlag the value of the large-arc-flag 
      * @param sweepFlag the value of the sweep-flag 
-     * @param x,&nbsp;y the absolute coordinates for the end point
+     * @param x the absolute x coordinate for the end point 
+     * @param y the absolute y coordinate for the end point 
      * @exception ParseException if an error occured while processing the path
      */
     void arcAbs(float rx, float ry, 

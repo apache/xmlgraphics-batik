@@ -37,6 +37,7 @@ import org.apache.batik.dom.GenericProcessingInstruction;
 import org.apache.batik.dom.GenericText;
 import org.apache.batik.dom.StyleSheetFactory;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.SVGConstants;
 
@@ -45,6 +46,7 @@ import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
@@ -110,7 +112,7 @@ public class SVGOMDocument
     /**
      * Implements {@link Localizable#setLocale(Locale)}.
      */
-    public  void setLocale(Locale l) {
+    public void setLocale(Locale l) {
         super.setLocale(l);
         localizableSupport.setLocale(l);
     }

@@ -36,7 +36,7 @@ import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
  * This will take any source Filter and convert it to an alpha channel
  * according the the SVG Mask operation.
  *
- * @author <a href="mailto:Thomas.DeWeese@Kodak.com>Thomas DeWeese</a>
+ * @author <a href="mailto:Thomas.DeWeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public class FilterAsAlphaRable

@@ -24,7 +24,7 @@ import java.awt.geom.Point2D;
  * Context class for the SVG path element to support extra
  * methods.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public interface SVGPathContext extends SVGContext {

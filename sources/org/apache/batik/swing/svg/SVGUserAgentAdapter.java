@@ -45,7 +45,7 @@ import org.apache.batik.bridge.NoLoadScriptSecurity;
  * most of the alert,prompt,etc methods are totally useless.
  * In a GUI environment you probably want to use SVGUserAgentGUIAdapter.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public class SVGUserAgentAdapter implements SVGUserAgent {
@@ -332,12 +332,12 @@ public class SVGUserAgentAdapter implements SVGUserAgent {
      * on the ExternalResourceSecurity strategy returned by 
      * getExternalResourceSecurity.
      *
-     * @param scriptURL url for the script, as defined in
-     *        the script's xlink:href attribute. If that
+     * @param resourceURL url for the resource, as defined in
+     *        the resource's xlink:href attribute. If that
      *        attribute was empty, then this parameter should
      *        be null
      * @param docURL url for the document into which the 
-     *        script was found.
+     *        resource was found.
      */
     public void 
         checkLoadExternalResource(ParsedURL resourceURL,

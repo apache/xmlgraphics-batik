@@ -28,7 +28,7 @@ import org.apache.batik.gvt.text.TextSpanLayout;
  * FlowRoot instances.
  *
  * @see org.apache.batik.gvt.text.TextSpanLayout
- * @author <a href="dewese@apache.org">Thomas DeWeese</a>
+ * @author <a href="mailto:dewese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
 public class FlowTextLayoutFactory implements TextLayoutFactory {

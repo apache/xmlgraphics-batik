@@ -89,7 +89,7 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
  * </ul>
  *
  * @version $Id$
- * @author <a href="Henri.Ruini@nokia.com">Henri Ruini</a>
+ * @author <a href="mailto:Henri.Ruini@nokia.com">Henri Ruini</a>
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  */
 public class SVGConverter {
@@ -182,7 +182,7 @@ public class SVGConverter {
     /** SVG file extension */
     protected static final String SVG_EXTENSION = ".svg";
 
-    /** Default quality value. -1 means disabled*/
+    /** Default quality value.  A value of -1 means disabled. */
     protected static final float DEFAULT_QUALITY 
         = -1f;
 
@@ -627,7 +627,7 @@ public class SVGConverter {
     }
 
     /**
-     * Returns true if f is a File. f is found to be a file if
+     * Returns true if f is a File. <code>f</code> is found to be a file if
      * it exists and is a file. If it does not exist, it is declared
      * to be a file if it has the same extension as the DestinationType.
      */

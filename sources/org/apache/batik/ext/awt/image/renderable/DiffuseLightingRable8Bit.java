@@ -37,7 +37,7 @@ import org.apache.batik.ext.awt.image.rendered.PadRed;
 /**
  * Implementation of the DiffuseLightRable interface.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class DiffuseLightingRable8Bit
@@ -126,7 +126,7 @@ public class DiffuseLightingRable8Bit
     }
 
     /**
-     * @param New Light object
+     * @param light New Light object
      */
     public void setLight(Light light){
         touch();

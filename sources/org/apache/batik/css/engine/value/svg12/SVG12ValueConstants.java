@@ -29,7 +29,7 @@ import org.w3c.dom.css.CSSPrimitiveValue;
 /**
  * This interface provides constants for SVG 1.2 values.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public interface SVG12ValueConstants extends SVGValueConstants {

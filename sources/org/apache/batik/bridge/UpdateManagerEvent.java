@@ -51,9 +51,7 @@ public class UpdateManagerEvent extends EventObject {
      * @param source the object that originated the event, ie. the
      *               UpdateManager.
      * @param bi the image to paint.
-     * @param r The dirty area.
-     * @param cpt Indicates if the painting transform should be
-     *            cleared as a result of this event.
+     * @param das List of dirty areas.
      */
     public UpdateManagerEvent(Object source, BufferedImage bi, 
                               List das) {
@@ -68,7 +66,7 @@ public class UpdateManagerEvent extends EventObject {
      * @param source the object that originated the event, ie. the
      *               UpdateManager.
      * @param bi the image to paint.
-     * @param r The dirty area.
+     * @param das List of dirty areas.
      * @param cpt Indicates if the painting transform should be
      *            cleared as a result of this event.
      */

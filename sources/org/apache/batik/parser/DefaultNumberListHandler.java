@@ -53,7 +53,7 @@ public class DefaultNumberListHandler implements NumberListHandler {
     }
     
     /**
-     * Implements {@link NumberListHandler#numberValue()}.
+     * Implements {@link NumberListHandler#numberValue(float)}.
      */
     public void numberValue(float v) throws ParseException {
     }    

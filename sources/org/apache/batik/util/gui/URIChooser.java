@@ -49,7 +49,7 @@ import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.apache.batik.util.gui.resource.ResourceManager;
 
 /**
- * This class is a dialog used to enter an URI or to choose a local file
+ * This class is a dialog used to enter an URI or to choose a local file.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -127,7 +127,7 @@ public class URIChooser extends JDialog implements ActionMap {
     protected String chosenPath;
 
     /**
-     * Creates a new URIChooser
+     * Creates a new URIChooser.
      * @param d the parent dialog
      */
     public URIChooser(JDialog d) {
@@ -136,9 +136,8 @@ public class URIChooser extends JDialog implements ActionMap {
     }
 
     /**
-     * Creates a new URIChooser
+     * Creates a new URIChooser.
      * @param f the parent frame
-     * @param okAction the action to associate to the ok button
      */
     public URIChooser(JFrame f) {
         super(f);

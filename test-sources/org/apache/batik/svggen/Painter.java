@@ -24,7 +24,7 @@ import java.awt.Graphics2D;
  * rendering sequence. This is used to generate SVG content and
  * compare it to a reference.
  *
- * @author <a href="vhardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vhardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public interface Painter {

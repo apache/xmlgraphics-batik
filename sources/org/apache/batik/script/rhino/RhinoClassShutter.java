@@ -24,7 +24,7 @@ import org.mozilla.javascript.ClassShutter;
  *
  * Complete Class Desc
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public class RhinoClassShutter implements ClassShutter {

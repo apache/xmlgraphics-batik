@@ -60,7 +60,7 @@ public class ParsedURLDefaultProtocolHandler
     /**
      * Subclasses can override these method to construct alternate 
      * subclasses of ParsedURLData.
-     * @param the java.net.URL class we reference.
+     * @param url the java.net.URL class we reference.
      */
     protected ParsedURLData constructParsedURLData(URL url) {
         return new ParsedURLData(url);

@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * methods but for now it will have methods to do intersection
  * and enclosure checking.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public interface SVGSVGContext extends SVGContext {

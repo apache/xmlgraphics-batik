@@ -476,8 +476,8 @@ public abstract class AbstractElement
 
     /**
      * Fires a DOMAttrModified event.
-     * <!> WARNING: public accessor because of compilation problems
-     *     on Solaris. Do not change.
+     * WARNING: public accessor because of compilation problems
+     * on Solaris. Do not change.
      *
      * @param name The attribute's name.
      * @param node The attribute's node.

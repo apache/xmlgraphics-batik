@@ -352,7 +352,8 @@ public class UpdateManager  {
      * @param u2d The user to device transform.
      * @param dbr Whether the double buffering should be used.
      * @param aoi The area of interest in the renderer space units.
-     * @param width&nbsp;height The offscreen buffer size.
+     * @param width The offscreen buffer width.
+     * @param height The offscreen buffer height.
      */
     public void updateRendering(AffineTransform u2d,
                                 boolean dbr,
@@ -373,7 +374,8 @@ public class UpdateManager  {
      * @param cpt If the canvas painting transform should be cleared
      *            when the update complets
      * @param aoi The area of interest in the renderer space units.
-     * @param width&nbsp;height The offscreen buffer size.
+     * @param width The offscreen buffer width.
+     * @param height The offscreen buffer height.
      */
     public void updateRendering(AffineTransform u2d,
                                 boolean dbr,
@@ -389,7 +391,9 @@ public class UpdateManager  {
 
     /**
      * Updates the rendering buffer.
-     * @param aoi The area of interest in the renderer space units.
+     * @param areas List of areas of interest in rederer space units.
+     * @param clearPaintingTransform Indicates if the painting transform
+     *        should be cleared as a result of this update.
      */
     protected void updateRendering(List areas, 
                                    boolean clearPaintingTransform) {

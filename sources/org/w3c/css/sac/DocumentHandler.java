@@ -25,7 +25,7 @@ public interface DocumentHandler {
      * The CSS parser will invoke this method only once, before any other
      * methods in this interface.
      *
-     * @param uri The URI of the style sheet. @@TODO can be NULL ! (inline style sheet)
+     * @param source The source of the style sheet.
      * @exception CSSException Any CSS exception, possibly wrapping another
      *                         exception.  
      */
@@ -40,7 +40,7 @@ public interface DocumentHandler {
      * method until it has either abandoned parsing (because of an
      * unrecoverable error) or reached the end of input.  
      *
-     * @param uri The URI of the style sheet.
+     * @param source The source of the style sheet.
      * @exception CSSException Any CSS exception, possibly wrapping another
      *                         exception.  
      */
@@ -61,7 +61,7 @@ public interface DocumentHandler {
      * Receive notification of an unknown rule t-rule not supported by this
      * parser.
      *
-     * @param at-rule The complete ignored at-rule.
+     * @param atRule The complete ignored at-rule.
      * @exception CSSException Any CSS exception, possibly wrapping another
      *                         exception.  
      */
@@ -84,8 +84,8 @@ public interface DocumentHandler {
      *
      * @param uri The URI of the imported style sheet.
      * @param media The intended destination media for style information.
-     * @param defaultNamepaceURI The default namespace URI for the imported
-     *                           style sheet.
+     * @param defaultNamespaceURI The default namespace URI for the imported
+     *                            style sheet.
      * @exception CSSException Any CSS exception, possibly wrapping another
      *                         exception.
      */
@@ -132,7 +132,7 @@ public interface DocumentHandler {
     /**
      * Receive notification of the end of a media statement.
      *
-     * @param media The intended destination medium for style information.
+     * @param name the name of the page (if any, null otherwise)
      * @param pseudo_page the pseudo page (if any, null otherwise)
      * @exception CSSException Any CSS exception, possibly wrapping another
      *                         exception.  

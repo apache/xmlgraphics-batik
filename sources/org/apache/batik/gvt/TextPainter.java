@@ -37,7 +37,6 @@ public interface TextPainter {
      *
      * @param node the TextNode to paint
      * @param g2d the Graphics2D to use
-     * @param context the rendering context.
      */
     void paint(TextNode node, Graphics2D g2d);
 

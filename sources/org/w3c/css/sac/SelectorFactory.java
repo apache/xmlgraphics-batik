@@ -156,9 +156,9 @@ public interface SelectorFactory {
      *
      * @param nodeType the type of nodes in the siblings list.
      * @param child the child selector
-     * @param adjacent the direct adjacent selector
+     * @param directAdjacent the direct adjacent selector
      * @return the sibling selector with nodeType 
-               equals to org.w3c.dom.Node.ELEMENT_NODE
+     *         equals to org.w3c.dom.Node.ELEMENT_NODE
      * @exception CSSException If this selector is not supported.
      */
     SiblingSelector createDirectAdjacentSelector(short nodeType,

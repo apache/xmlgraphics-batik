@@ -21,7 +21,7 @@ package org.apache.batik.ext.awt.image.renderable;
  * Implements a Morphology operation, where the kernel size is
  * defined by radius along the x and y axis.
  *
- * @author <a href="mailto:sheng.pei@eng.sun.com>Sheng Pei</a>
+ * @author <a href="mailto:sheng.pei@eng.sun.com">Sheng Pei</a>
  * @version $Id$
  */
 public interface MorphologyRable extends Filter {

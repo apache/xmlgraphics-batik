@@ -35,7 +35,7 @@ import org.apache.batik.ext.awt.image.rendered.PadRed;
 /**
  * GaussianBlurRable implementation
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class GaussianBlurRable8Bit

@@ -26,7 +26,7 @@ import org.apache.batik.gvt.font.GVTLineMetrics;
  *
  * Complete Class Desc
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 class WordInfo {

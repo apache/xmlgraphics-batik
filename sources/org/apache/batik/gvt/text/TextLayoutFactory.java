@@ -27,7 +27,7 @@ import java.text.AttributedCharacterIterator;
  * instances.
  *
  * @see org.apache.batik.gvt.text.TextSpanLayout
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public interface TextLayoutFactory {

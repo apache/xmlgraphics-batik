@@ -32,8 +32,8 @@ import org.apache.batik.gvt.GraphicsNode;
  * for containment are performed from the EventDispatcher's "root"
  * node.</p>
  *
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
- * @author <a href="tkormann@ilog.fr>Thierry Kormann</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @author <a href="mailto:tkormann@ilog.fr">Thierry Kormann</a>
  * @version $Id$ */
 public interface EventDispatcher {
 

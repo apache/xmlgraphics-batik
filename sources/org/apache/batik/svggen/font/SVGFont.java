@@ -259,7 +259,8 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     }
 
     /**
-     * Returns a <font>...</font> block, defining the specified font.
+     * Returns a &lt;font&gt;&#x2e;&#x2e;&#x2e;&lt;/font&gt; block,
+     * defining the specified font.
      *
      * @param font The TrueType font to be converted to SVG
      * @param id An XML id attribute for the font element

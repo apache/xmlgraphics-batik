@@ -34,7 +34,7 @@ import org.apache.batik.swing.svg.SVGUserAgentGUIAdapter;
  * It reports errors interactively, and it takes a list of URI's
  * to open.
  *
- * @author <a href="mailto:Thomas.DeWeese@Kodak.com>deweese</a>
+ * @author <a href="mailto:Thomas.DeWeese@Kodak.com">deweese</a>
  * @version $Id$
  */
 public class JSVG extends JFrame{

@@ -32,7 +32,7 @@ public class InterpreterException extends Exception {
      * Builds an instance of <code>InterpreterException</code>.
      * @param message the <code>Exception</code> message.
      * @param lineno the number of the line the error occurs.
-     * @param columno the number of the column the error occurs.
+     * @param columnno the number of the column the error occurs.
      */
     public InterpreterException(String message, int lineno, int columnno) {
         super(message);
@@ -45,7 +45,7 @@ public class InterpreterException extends Exception {
      * @param exception the embedded exception.
      * @param message the <code>Exception</code> message.
      * @param lineno the number of the line the error occurs.
-     * @param columno the number of the column the error occurs.
+     * @param columnno the number of the column the error occurs.
      */
     public InterpreterException(Exception exception,
                                 String message, int lineno, int columnno) {

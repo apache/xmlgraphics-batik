@@ -77,7 +77,7 @@ public abstract class UnitProcessor {
      * Returns the specified value with the specified direction in
      * objectBoundingBox units.
      *
-     * @param s the value
+     * @param value the value
      * @param type the type of the value
      * @param d the direction of the value
      * @param ctx the context used to resolve relative value

@@ -604,8 +604,8 @@ public class TIFFDirectory extends Object implements Serializable {
 
     /**
      * Returns a boolean indicating whether the byte order used in the
-     * the TIFF file is big-endian (i.e. whether the byte order is from  
-     * the most significant to the least significant)
+     * the TIFF file is big-endian.  That is, whether the byte order is from  
+     * the most significant to the least significant.
      */
     public boolean isBigEndian() {
 	return isBigEndian;

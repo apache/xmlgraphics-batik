@@ -153,7 +153,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * @param SVG Canvas size. May be null (equivalent to 100%, 100%)
+     * @param svgCanvasSize SVG Canvas size. May be null (equivalent to 100%, 100%)
      */
     public final void setSVGCanvasSize(Dimension svgCanvasSize) {
         this.svgCanvasSize = new Dimension(svgCanvasSize);
@@ -210,7 +210,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * @param new extension handler this SVGGraphics2D should use
+     * @param extensionHandler new extension handler this SVGGraphics2D
+     *        should use
      */
     public final void setExtensionHandler(ExtensionHandler extensionHandler) {
         generatorCtx.setExtensionHandler(extensionHandler);
@@ -227,7 +228,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
 
     /**
      * @param domFactory Factory which will produce Elements for the DOM tree
-     *                    this Graphics2D generates.
+     *                   this Graphics2D generates.
      * @param imageHandler defines how images are referenced in the
      *                     generated SVG fragment
      * @param extensionHandler defines how Java 2D API extensions map
@@ -268,7 +269,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * @param generatorContext the <code>SVGGeneratorContext</code> instance
+     * Creates a new SVGGraphics2D object.
+     * @param generatorCtx the <code>SVGGeneratorContext</code> instance
      * that will provide all useful information to the generator.
      * @param textAsShapes if true, all text is turned into SVG shapes in the
      *        convertion. No SVG text is output.
@@ -515,8 +517,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
      *
      * @param svgRoot an SVG element underwhich the content should 
      *        be appended.
-     * @returns the svg root node of the SVG document associated with 
-     *          this object.
+     * @return the svg root node of the SVG document associated with 
+     *         this object.
      */
     public Element getRoot(Element svgRoot) {
         svgRoot = domTreeManager.getRoot(svgRoot);
@@ -846,9 +848,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * </pre>
      * @param op the filter to be applied to the image before rendering
      * @param img the <code>BufferedImage</code> to be rendered
-     * @param x,&nbsp;y the location in user space where the upper left
-     * corner of the
-     * image is rendered
+     * @param x the x coordinate in user space where the upper left
+     *          corner of the image is rendered
+     * @param y the y coordinate in user space where the upper left
+     *          corner of the image is rendered
      * @see #transform
      * @see #setTransform
      * @see #setComposite
@@ -966,7 +969,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * that no rendering is done if the specified transform is
      * noninvertible.
      * @param img the image to be rendered
-     * @param xform the transformation from image space into user space
+     * @param trans2 the transformation from image space into user space
      * @see #transform
      * @see #setTransform
      * @see #setComposite
@@ -1036,7 +1039,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * <code>Transform</code>, and <code>Composite</code> attributes. Note
      * that no rendering is done if the specified transform is
      * noninvertible.
-     *<p>
+     * <p>
      * Rendering hints set on the <code>Graphics2D</code> object might
      * be used in rendering the <code>RenderableImage</code>.
      * If explicit control is required over specific hints recognized by a
@@ -1044,9 +1047,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * are used is required, then a <code>RenderedImage</code> should be
      * obtained directly from the <code>RenderableImage</code>
      * and rendered using
-     *{@link #drawRenderedImage(RenderedImage, AffineTransform)}.
+     * {@link #drawRenderedImage(RenderedImage, AffineTransform)}.
      * @param img the image to be rendered
-     * @param xform the transformation from image space into user space
+     * @param trans2 the transformation from image space into user space
      * @see #transform
      * @see #setTransform
      * @see #setComposite
@@ -1120,8 +1123,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * left, in which case the coordinate supplied is the location of the
      * leftmost character on the baseline.
      * @param s the <code>String</code> to be rendered
-     * @param x,&nbsp;y the coordinates where the <code>String</code>
-     * should be rendered
+     * @param x the x coordinate where the <code>String</code>
+     *          should be rendered
+     * @param y the y coordinate where the <code>String</code>
+     *          should be rendered
      * @see #setPaint
      * @see java.awt.Graphics#setColor
      * @see java.awt.Graphics#setFont
@@ -1205,8 +1210,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * longer text but shapes), but it is graphically accurate.
      *
      * @param iterator the iterator whose text is to be rendered
-     * @param x,&nbsp;y the coordinates where the iterator's text is to be
-     * rendered
+     * @param x the x coordinate where the iterator's text is to be rendered
+     * @param y the y coordinate where the iterator's text is to be rendered
      * @see #setPaint
      * @see java.awt.Graphics#setColor
      * @see #setTransform

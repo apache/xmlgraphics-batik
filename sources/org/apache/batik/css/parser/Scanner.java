@@ -104,7 +104,7 @@ public class Scanner {
 
     /**
      * Creates a new Scanner object.
-     * @param r The reader to scan.
+     * @param s The string to scan.
      */
     public Scanner(String s) throws ParseException {
         try {

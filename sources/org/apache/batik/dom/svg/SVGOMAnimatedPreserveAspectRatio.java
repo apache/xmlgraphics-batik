@@ -26,9 +26,10 @@ import org.w3c.dom.svg.SVGPreserveAspectRatio;
 import org.w3c.dom.svg.SVGException;
 
 /**
- * This class implements the {@link SVGAnimatePreserveAspectRatio} interface.
+ * This class implements the {@link SVGAnimatedPreserveAspectRatio} interface.
  *
  * @author  Tonny Kohar
+ * @version $Id$
  */
 public class SVGOMAnimatedPreserveAspectRatio 
     implements SVGAnimatedPreserveAspectRatio, LiveAttributeValue {

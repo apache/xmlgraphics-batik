@@ -57,7 +57,7 @@ public class CSSException extends RuntimeException {
     
     /**
      * Creates a new CSSException with an embeded exception.
-     * @param a the embeded exception.
+     * @param e the embeded exception.
      */
     public CSSException(Exception e) {
 	this.code = SAC_UNSPECIFIED_ERR;
@@ -66,7 +66,7 @@ public class CSSException extends RuntimeException {
 
     /**
      * Creates a new CSSException with a specific code.
-     * @param a the embeded exception.
+     * @param code the embeded exception.
      */
     public CSSException(short code) {
         this.code = code;

@@ -40,7 +40,7 @@ import javax.swing.KeyStroke;
 
 /**
  * This class represents a menu factory which builds
- * menubars and menus from the content of a resource file.<br>
+ * menubars and menus from the content of a resource file. <br>
  *
  * The resource entries format is (for a menubar named 'MenuBar'):<br>
  * <pre>

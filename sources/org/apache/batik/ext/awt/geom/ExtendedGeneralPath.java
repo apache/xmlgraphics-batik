@@ -90,9 +90,10 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
      * indicate if we increase or decrease the angles and the final
      * point of the arc.
      *
-     * @param rx,&nbsp;ry the radii of the ellipse
+     * @param rx the x radius of the ellipse
+     * @param ry the y radius of the ellipse
      *
-     * @param theta the angle from the x-axis of the current
+     * @param angle the angle from the x-axis of the current
      * coordinate system to the x-axis of the ellipse in degrees.
      *
      * @param largeArcFlag the large arc flag. If true the arc
@@ -103,8 +104,8 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
      * center to arc sweeps through decreasing angles otherwise it
      * sweeps through increasing angles
      *
-     * @param x,&nbsp;y the absolute coordinates of the final point of
-     * the arc.
+     * @param x the absolute x coordinate of the final point of the arc.
+     * @param y the absolute y coordinate of the final point of the arc.
      */
     public synchronized void arcTo(float rx, float ry,
                                    float angle,

@@ -34,11 +34,9 @@ import org.apache.batik.gvt.text.GlyphLayout;
 import org.apache.batik.gvt.TextNode;
 
 /**
- * One line Class Desc
+ * A GlyphLayout class for SVG 1.2 flowing text.
  *
- * Complete Class Desc
- *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public class FlowExtGlyphLayout extends GlyphLayout {
@@ -501,10 +499,9 @@ public class FlowExtGlyphLayout extends GlyphLayout {
      * over space in the flow rect and scaling that value by 1.0 to
      * align to the bottom, 0.5 for middle and 0.0 for top.
      *
-     * @param verticalAlignOffset the {@link java.awt.geom.Point2D.Float} object that 
-     *                            is storing the alignment offset.
-     * @param currentRegion the {@link RegionInfo} object that we 
-     *                      are rendering into.
+     * @param verticalAlignOffset the {@link java.awt.geom.Point2D.Float}
+     *        object that is storing the alignment offset.
+     * @param region the {@link RegionInfo} object that we are rendering into.
      * @param maxDescent the very lowest point this line reaches.
      */
     public static void updateVerticalAlignOffset

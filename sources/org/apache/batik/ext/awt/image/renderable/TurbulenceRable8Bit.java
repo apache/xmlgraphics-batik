@@ -136,7 +136,7 @@ public class TurbulenceRable8Bit
 
     /**
      * Sets the turbulence region
-     * @param TurbulenceRegion region to fill with turbulence function.
+     * @param turbulenceRegion region to fill with turbulence function.
      */
     public void setTurbulenceRegion(Rectangle2D turbulenceRegion) {
         touch();

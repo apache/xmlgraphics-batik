@@ -138,7 +138,7 @@ public interface LexicalUnit {
      */
     public static final short SAC_PERCENTAGE		= 23;
     /**
-     * URI: <code>uri(...)</code>.
+     * URI: <code>uri(&#x2e;&#x2e;&#x2e;)</code>.
      * @see #getStringValue
      */
     public static final short SAC_URI		        = 24;
@@ -215,7 +215,7 @@ public interface LexicalUnit {
      */
     public static final short SAC_STRING_VALUE		= 36;
     /**
-     * Attribute: <code>attr(...)</code>.
+     * Attribute: <code>attr(&#x2e;&#x2e;&#x2e;)</code>.
      * @see #getStringValue
      */
     public static final short SAC_ATTR		        = 37;

@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * You can subclass it to change the defaults.
  *
  * @see org.apache.batik.svggen.SVGGraphics2D#SVGGraphics2D(SVGGeneratorContext,boolean)
- * @author <a href="mailto:cjolif@ilog.fr>Christophe Jolif</a>
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
 public class SVGGeneratorContext implements ErrorConstants {

@@ -108,7 +108,8 @@ public class ThumbnailDialog extends JDialog {
     /**
      * Constructs a new <tt>ThumbnailDialog</tt> for the specified canvas.
      *
-     * @param canvas the canvas that owns the SVG document to display
+     * @param owner the owner frame
+     * @param svgCanvas the canvas that owns the SVG document to display
      */
     public ThumbnailDialog(Frame owner, JSVGCanvas svgCanvas) {
         super(owner, resources.getString("Dialog.title"));

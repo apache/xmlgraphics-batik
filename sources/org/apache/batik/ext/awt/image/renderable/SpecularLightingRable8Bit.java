@@ -37,7 +37,7 @@ import org.apache.batik.ext.awt.image.rendered.SpecularLightingRed;
 /**
  * Implementation of the SpecularLightRable interface.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class SpecularLightingRable8Bit
@@ -133,7 +133,7 @@ public class SpecularLightingRable8Bit
     }
 
     /**
-     * @param New Light object
+     * @param light New Light object
      */
     public void setLight(Light light){
         touch();

@@ -143,7 +143,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
      * Writes the specified image to the specified output.
      * @param img the image to write
      * @param output the output where to store the image
-     * @param TranscoderException if an error occured while storing the image
+     * @throws TranscoderException if an error occured while storing the image
      */
     public abstract void writeImage(BufferedImage img, TranscoderOutput output)
         throws TranscoderException;

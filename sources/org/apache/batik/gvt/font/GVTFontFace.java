@@ -24,7 +24,7 @@ import org.apache.batik.util.SVGConstants;
  *
  * Complete Class Desc
  *
- * @author <a href="mailto:deweese@apache.org>l449433</a>
+ * @author <a href="mailto:deweese@apache.org">l449433</a>
  * @version $Id$
  */
 public class GVTFontFace implements SVGConstants {

@@ -25,7 +25,7 @@ import javax.swing.filechooser.FileFilter;
  * This implementation of FileFilter will allows SVG files
  * with extention '.svg' or '.svgz'.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */

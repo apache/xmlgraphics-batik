@@ -41,8 +41,8 @@ public class ArabicTextHandler {
 
     /**
      * If the AttributedString contains any arabic chars, assigns an
-     * arabic form attribute, ie. initial|medial|terminal|isolated, to
-     * each arabic char.
+     * arabic form attribute, i&#x2e;e&#x2e; initial|medial|terminal|isolated,
+     * to each arabic char.
      *
      * @param as The string to attach the arabic form attributes to.
      * @return An attributed string with arabic form attributes.  

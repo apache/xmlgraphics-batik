@@ -535,7 +535,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      *
      * @param ctx the bridge context
      * @param e the image element
-     * @param uriStr the uri of the image
+     * @param img the image to use in creating the graphics node
      */
     protected GraphicsNode createRasterImageNode(BridgeContext ctx,
                                                  Element       e,

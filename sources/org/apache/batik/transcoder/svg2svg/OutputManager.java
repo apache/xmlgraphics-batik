@@ -88,7 +88,8 @@ public class OutputManager {
 
     /**
      * Creates a new output manager.
-     * @param s The scanner used for input tokenization.
+     * @param pp The PrettyPrinter used for formatting the output.
+     * @param w The Writer to write the output to.
      */
     public OutputManager(PrettyPrinter pp, Writer w) {
         prettyPrinter = pp;
@@ -155,7 +156,6 @@ public class OutputManager {
     /**
      * Prints top level white spaces.
      * @param text The space text.
-     * @param opt whether the space is optional.
      */
     public void printTopSpaces(char[] text) throws IOException {
         if (prettyPrinter.getFormat()) {

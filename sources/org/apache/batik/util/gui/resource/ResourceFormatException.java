@@ -40,7 +40,7 @@ public class ResourceFormatException extends RuntimeException {
      * Constructs a ResourceFormatException with the specified information.
      * A detail message is a String that describes this particular exception.
      * @param s the detail message
-     * @param classname the name of the resource class
+     * @param className the name of the resource class
      * @param key the key for the malformed resource.
      */
     public ResourceFormatException(String s, String className, String key) {

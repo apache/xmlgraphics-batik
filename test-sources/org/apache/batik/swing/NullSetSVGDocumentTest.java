@@ -33,7 +33,7 @@ import org.apache.batik.test.TestReport;
  * ensures that when this is passed to JSVGComponet.setDocument it is
  * properly imported to an SVGOMDocument and rendered from there.
  *
- * @author <a href="mailto:deweese@apache.org>l449433</a>
+ * @author <a href="mailto:deweese@apache.org">l449433</a>
  * @version $Id$
  */
 public class NullSetSVGDocumentTest extends JSVGMemoryLeakTest {

@@ -50,7 +50,7 @@ public class AWTTransformProducer implements TransformListHandler {
 
     /**
      * Utility method for creating an AffineTransform.
-     * @param r The reader used to read the transform specification.
+     * @param s The transform specification.
      */
     public static AffineTransform createAffineTransform(String s)
         throws ParseException {

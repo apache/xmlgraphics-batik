@@ -34,8 +34,8 @@ import org.apache.batik.gvt.text.TextLayoutFactory;
  * Suitable for use with "standard" java.awt.font.TextAttributes only.
  * @see java.awt.font.TextAttribute
  *
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
- * @author <a href="vincent.hardy@sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public abstract class BasicTextPainter implements TextPainter {

@@ -138,7 +138,7 @@ public class DynamicRenderer extends StaticRenderer {
      * the failed rendering will be visible in the image returned
      * by getOffscreen.
      *
-     * @param areas a List of regions to be repainted, in the current
+     * @param devRLM regions to be repainted, in the current
      * user space coordinate system.  
      */
     // long lastFrame = -1;

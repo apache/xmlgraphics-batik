@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
  * RasterRable This is used to wrap a Rendered Image back into the
  * RenderableImage world.
  *
- * @author <a href="mailto:Thomas.DeWeese@Kodak.com>Thomas DeWeese</a>
+ * @author <a href="mailto:Thomas.DeWeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public class MultiResGraphicsNode

@@ -23,7 +23,7 @@ import java.awt.Shape;
  * Interface describing object that can be selected or have selections
  * made on it.
  *
- * @author <a href="bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public interface Selectable {
