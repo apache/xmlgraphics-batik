@@ -75,6 +75,7 @@ public class ParsedURLDefaultProtocolHandler
         }
 
         // new Exception("Custom Parse: " + urlStr).printStackTrace();
+        // System.out.println("Custom Parse: " + urlStr);
 
         ParsedURLData ret = constructParsedURLData();
 
@@ -82,6 +83,16 @@ public class ParsedURLDefaultProtocolHandler
 
         int pidx=0, idx;
         int len = urlStr.length();
+
+        // Pull fragement id off first...
+        idx = urlStr.indexOf('#');
+        ret.ref = null;
+        if (idx != -1) {
+            if (idx+1 < urlStr.length())
+                ret.ref = urlStr.substring(idx+1);
+            urlStr = urlStr.substring(0,idx);
+        }
+
         String prefix = urlStr;
         if ((idx = prefix.indexOf('/')) != -1)
             // Only check for ':' prior to first '/'
@@ -110,22 +121,19 @@ public class ParsedURLDefaultProtocolHandler
             // No slashes (apache.org) or a double slash 
             // (//apache.org/....) so
             // we should have host[:port] before next slash.
-
-            if (idx != -1) 
+            if (idx != -1)
                 pidx+=2;  // Skip double slash...
 
             idx = urlStr.indexOf('/', pidx);  // find end of host:Port spec
             String hostPort;
-            if (idx == -1) 
+            if (idx == -1)
                 // Just host and port nothing following...
                 hostPort = urlStr.substring(pidx);
             else
                 // Path spec follows...
                 hostPort = urlStr.substring(pidx, idx);
 
-            hostPort = hostPort;
-
-            pidx = idx;  // Remember location of '/'
+            int hidx = idx;  // Remember location of '/'
 
             // pull apart host and port number...
             idx = hostPort.indexOf(':');
@@ -150,23 +158,18 @@ public class ParsedURLDefaultProtocolHandler
                     }
                 }
             }
+            if (((ret.host == null) || (ret.host.indexOf('.') == -1)) &&
+                (ret.port == -1))
+                // no '.' in a host spec??? and no port, probably
+                // just a path.
+                ret.host = null;
+            else
+                pidx = hidx;
         }
 
         if ((pidx == -1) || (pidx >= len)) return ret; // Nothing follows
 
-        String pathRef = urlStr.substring(pidx);
-        pathRef = pathRef;
-
-        idx = pathRef.indexOf('#');
-        ret.ref = null;
-        if (idx == -1) {
-            // No ref (fragment) in URL
-            ret.path = pathRef;
-        } else {
-            ret.path = pathRef.substring(0,idx);
-            if (idx+1 < pathRef.length())
-                ret.ref = pathRef.substring(idx+1);
-        }
+        ret.path = urlStr.substring(pidx);
         return ret;
     }
 
