@@ -359,22 +359,24 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             }
         }
 
-        AffineTransform txf = g2d.getTransform();
-        Shape devClip = g2d.getClip();
-        g2d.setTransform(txf);
-        boolean antialiasedClip = isAntialiasedClip(rc.getTransform(),
-                                                    rc.getRenderingHints(),
-                                                    rc.getAreaOfInterest(),
-                                                    devClip);
-        boolean useOffscreen = isOffscreenBufferNeeded();
-        
-        useOffscreen |= antialiasedClip;
-
         //
         // Only paint if needed.
         //
         // paintNeeded = true;
         if (paintNeeded){
+            AffineTransform txf = g2d.getTransform();
+            boolean antialiasedClip = false;
+            if(clip != null){
+                antialiasedClip = 
+                    isAntialiasedClip(rc.getTransform(),
+                                      rc.getRenderingHints(),
+                                      clip.getClipPath());
+            }
+
+            boolean useOffscreen = isOffscreenBufferNeeded();
+
+            useOffscreen |= antialiasedClip;
+
             if (!useOffscreen) {
                   // Render directly on the canvas
                 primitivePaint(g2d, rc);
@@ -416,12 +418,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     bi = new BufferedImage(cm, wr,
                                            cm.isAlphaPremultiplied(), null);
 
-                    Rectangle2D filterBounds = filteredImage.getBounds2D();
-
                     if(antialiasedClip){
                         // Remove hard edged clip
                         g2d.setClip(null);
                     }
+
+                    Rectangle2D filterBounds = filteredImage.getBounds2D();
+                    g2d.clip(filterBounds);
 
                     g2d.setTransform(IDENTITY);
                     g2d.drawImage(bi, null,
@@ -472,21 +475,34 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      */
     protected boolean isAntialiasedClip(AffineTransform usr2dev,
                                         RenderingHints hints,
-                                        Shape aoi,
-                                        Shape devAoi){
+                                        Shape clip){
         boolean antialiased = false;
+        //
+        // Antialias clip if:
+        // + Antialiasing is on *or* rendering quality is on
+        // *and*
+        // + clip is not null
+        // *and*
+        // + clip is not a rectangle in device space.
+        // 
+        // This leaves out the case where the node clip is a
+        // rectangle and the current clip (i.e., the intersection
+        // of the current Graphics2D's clip and this node's clip)
+        // is not a rectangle.
+        //
         if((hints.get(RenderingHints.KEY_ANTIALIASING) ==
             RenderingHints.VALUE_ANTIALIAS_ON) ||
            (hints.get(RenderingHints.KEY_RENDERING) ==
             RenderingHints.VALUE_RENDER_QUALITY)){
-            if(!(aoi instanceof Rectangle2D &&
+            if(!(clip instanceof Rectangle2D &&
                  usr2dev.getShearX() == 0 &&
-                 usr2dev.getShearY() == 0) &&
-               !(devAoi instanceof Rectangle2D)){
+                 usr2dev.getShearY() == 0)){
                 antialiased = true;
+                // System.out.println("Using antialiased clip" + clip.getClass().getName());
             }
         }
-        return antialiased;
+        // return antialiased;
+        return false;
     }
 
     //
