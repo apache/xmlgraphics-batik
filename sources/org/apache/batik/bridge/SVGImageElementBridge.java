@@ -163,6 +163,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         node.setMask(CSSUtilities.convertMask(e, node, ctx));
         // 'clip-path'
         node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
+        // 'pointer-events'
+        node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
 
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {

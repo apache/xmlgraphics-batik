@@ -102,21 +102,21 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * null, this text node will use its default text painter
      * (StrokingTextPainter.getInstance()).
      *
-     * @param textPainter the text painter to use 
+     * @param textPainter the text painter to use
      */
     public void setTextPainter(TextPainter textPainter) {
-	if (textPainter == null) {
-	    this.textPainter = StrokingTextPainter.getInstance();
-	} else {
-	    this.textPainter = textPainter;
-	}
+        if (textPainter == null) {
+            this.textPainter = StrokingTextPainter.getInstance();
+        } else {
+            this.textPainter = textPainter;
+        }
     }
 
     /**
      * Returns the text painter of this text node.
      */
     public TextPainter getTextPainter() {
-	return textPainter;
+        return textPainter;
     }
 
     /**
@@ -141,9 +141,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public String getText() {
         if (text == null) {
             StringBuffer buf = new StringBuffer(aci.getEndIndex());
-            for (char c = aci.first(); 
-		 c != CharacterIterator.DONE; 
-		 c = aci.next()) {
+            for (char c = aci.first();
+                 c != CharacterIterator.DONE;
+                 c = aci.next()) {
                 buf.append(c);
             }
             text = buf.toString();
@@ -199,13 +199,13 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     /**
      * Invalidates this <tt>TextNode</tt>. This node and all its ancestors have
      * been informed that all its cached values related to its bounds must be
-     * recomputed.  
+     * recomputed.
      */
     protected void invalidateGeometryCache() {
         super.invalidateGeometryCache();
         primitiveBounds = null;
         geometryBounds = null;
-	outline = null;
+        outline = null;
     }
 
     /**
@@ -230,34 +230,19 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
             if (aci != null) {
                 geometryBounds = textPainter.getBounds(this);
             }
-	}
+        }
         return geometryBounds;
-    }
-
-    /**
-     * Returns true if the specified Point2D is inside the boundary of this
-     * node, false otherwise.
-     *
-     * @param p the specified Point2D in the user space
-     */
-    public boolean contains(Point2D p) {
-	Rectangle2D b = getBounds();
-	if (b != null) {
-	    return b.contains(p.getX(), p.getY());
-	} else {
-	    return false;
-	}
     }
 
     /**
      * Returns the outline of this node.
      */
     public Shape getOutline() {
-	if (outline == null) {
-	    if (aci != null) {
-		outline = textPainter.getDecoratedShape(this);
-	    }
-	}
+        if (outline == null) {
+            if (aci != null) {
+                outline = textPainter.getDecoratedShape(this);
+            }
+        }
         return outline;
     }
 
@@ -339,7 +324,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
                 ranges[0] = temp;
             }
             o = new AttributedCharacterSpanIterator
-		(aci, ranges[0], ranges[1]+1);
+                (aci, ranges[0], ranges[1]+1);
         }
         return o;
     }
@@ -350,8 +335,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @return a Shape which encloses the current text selection.
      */
     public Shape getHighlightShape() {
-        Shape highlightShape = 
-	    textPainter.getHighlightShape(beginMark, endMark);
+        Shape highlightShape =
+            textPainter.getHighlightShape(beginMark, endMark);
         AffineTransform t = getGlobalTransform();
         highlightShape = t.createTransformedShape(highlightShape);
         return highlightShape;
@@ -415,32 +400,32 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         /**
          * The anchor which enables the rendered characters to be aligned such
          * that the start of the text string is at the initial current text
-         * location.  
-	 */
+         * location.
+         */
         public static final Anchor START = new Anchor(ANCHOR_START);
 
         /**
          * The anchor which enables the rendered characters to be aligned such
          * that the middle of the text string is at the initial current text
-         * location.  
-	 */
+         * location.
+         */
         public static final Anchor MIDDLE = new Anchor(ANCHOR_MIDDLE);
 
         /**
          * The anchor which enables the rendered characters to be aligned such
          * that the end of the text string is at the initial current text
-         * location.  
-	 */
+         * location.
+         */
         public static final Anchor END = new Anchor(ANCHOR_END);
 
-	/**
-	 * The anchor type.
-	 */
+        /**
+         * The anchor type.
+         */
         private int type;
 
-        /** 
-	 * No instance of this class.
-	 */
+        /**
+         * No instance of this class.
+         */
         private Anchor(int type) {
             this.type = type;
         }

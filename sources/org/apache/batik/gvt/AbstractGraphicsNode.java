@@ -114,7 +114,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected Filter filter;
 
     /**
-     * .The GraphicsNodeRable for this node.
+     * Indicates how this graphics node reacts to events.
+     */
+    protected int pointerEventType = VISIBLE_PAINTED;
+
+    /**
+     * The GraphicsNodeRable for this node.
      */
     protected WeakReference graphicsNodeRable;
 
@@ -131,6 +136,26 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
     // Properties methods
     //
+
+    /**
+     * Returns the type that describes how this graphics node reacts to events.
+     *
+     * @return VISIBLE_PAINTED | VISIBLE_FILL | VISIBLE_STROKE | VISIBLE |
+     * PAINTED | FILL | STROKE | ALL | NONE
+     */
+    public int getPointerEventType() {
+        return pointerEventType;
+    }
+
+    /**
+     * Sets the type that describes how this graphics node reacts to events.
+     *
+     * @param pointerEventType VISIBLE_PAINTED | VISIBLE_FILL | VISIBLE_STROKE |
+     * VISIBLE | PAINTED | FILL | STROKE | ALL | NONE
+     */
+    public void setPointerEventType(int pointerEventType) {
+        this.pointerEventType = pointerEventType;
+    }
 
     /**
      * Sets the transform of this node.
@@ -892,7 +917,26 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param p the specified Point2D in the user space
      */
     public boolean contains(Point2D p) {
-        return getBounds().contains(p);
+        Rectangle2D b = getBounds();
+        if (b == null || !b.contains(p)) {
+            return false;
+        }
+        switch(pointerEventType) {
+        case VISIBLE_PAINTED:
+        case VISIBLE_FILL:
+        case VISIBLE_STROKE:
+        case VISIBLE:
+            return isVisible;
+        case PAINTED:
+        case FILL:
+        case STROKE:
+        case ALL:
+            return true;
+        case NONE:
+            return false;
+        default:
+            return false;
+        }
     }
 
     /**

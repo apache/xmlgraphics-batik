@@ -39,6 +39,59 @@ import org.apache.batik.gvt.filter.GraphicsNodeRable;
 public interface GraphicsNode {
 
     /**
+     * Indicates that this graphics node can be the target for events when it
+     * is visible and when the mouse is over the "painted" area.
+     */
+    public static final int VISIBLE_PAINTED = 0;
+
+    /**
+     * Indicates that this graphics node can be the target for events when it
+     * is visible and when the mouse is over the filled area if any.
+     */
+    public static final int VISIBLE_FILL = 1;
+
+    /**
+     * Indicates that this graphics node can be the target for events when it
+     * is visible and when the mouse is over the stroked area if any.
+     */
+    public static final int VISIBLE_STROKE = 2;
+
+    /**
+     * Indicates that this graphics node can be the target for events when it
+     * is visible and whatever is the filled and stroked area.
+     */
+    public static final int VISIBLE = 3;
+
+    /**
+     * Indicates that this graphics node can be the target for events when the
+     * mouse is over the painted area whatever or not it is the visible.
+     */
+    public static final int PAINTED = 4;
+
+    /**
+     * Indicates that this graphics node can be the target for events when the
+     * mouse is over the filled area whatever or not it is the visible.
+     */
+    public static final int FILL = 5;
+
+    /**
+     * Indicates that this graphics node can be the target for events when the
+     * mouse is over the stroked area whatever or not it is the visible.
+     */
+    public static final int STROKE = 6;
+
+    /**
+     * Indicates that this graphics node can be the target for events if any
+     * cases.
+     */
+    public static final int ALL = 7;
+
+    /**
+     * Indicates that this graphics node can not be the target for events.
+     */
+    public static final int NONE = 8;
+
+    /**
      * The identity affine transform matrix used to draw renderable images.
      */
     public static final AffineTransform IDENTITY = new AffineTransform();
@@ -46,6 +99,22 @@ public interface GraphicsNode {
     //
     // Properties methods
     //
+
+    /**
+     * Returns the type that describes how this graphics node reacts to events.
+     *
+     * @return VISIBLE_PAINTED | VISIBLE_FILL | VISIBLE_STROKE | VISIBLE |
+     * PAINTED | FILL | STROKE | ALL | NONE
+     */
+    int getPointerEventType();
+
+    /**
+     * Sets the type that describes how this graphics node reacts to events.
+     *
+     * @param pointerEventType VISIBLE_PAINTED | VISIBLE_FILL | VISIBLE_STROKE |
+     * VISIBLE | PAINTED | FILL | STROKE | ALL | NONE
+     */
+    void setPointerEventType(int pointerEventType);
 
     /**
      * Sets the transform of this node.

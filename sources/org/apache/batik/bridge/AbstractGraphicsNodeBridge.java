@@ -53,10 +53,10 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * @return a graphics node that represents the specified element
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
-	// 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-	if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
-	    return null;
-	}
+        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+        if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+            return null;
+        }
 
         GraphicsNode node = instantiateGraphicsNode();
         // 'transform'
@@ -95,6 +95,8 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         node.setMask(CSSUtilities.convertMask(e, node, ctx));
         // 'clip-path'
         node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
+        // 'pointer-events'
+        node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
 
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {

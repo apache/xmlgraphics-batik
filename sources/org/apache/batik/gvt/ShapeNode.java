@@ -50,6 +50,11 @@ public class ShapeNode extends AbstractGraphicsNode {
     private Shape paintedArea;
 
     /**
+     * Internal Cache: The sensitive area.
+     */
+    private Shape sensitiveArea;
+
+    /**
      * Constructs a new empty <tt>ShapeNode</tt>.
      */
     public ShapeNode() {}
@@ -82,7 +87,7 @@ public class ShapeNode extends AbstractGraphicsNode {
      * Sets the <tt>ShapePainter</tt> used by this shape node to render its
      * shape.
      *
-     * @param newShapePainter the new ShapePainter to use 
+     * @param newShapePainter the new ShapePainter to use
      */
     public void setShapePainter(ShapePainter newShapePainter) {
         invalidateGeometryCache();
@@ -134,13 +139,14 @@ public class ShapeNode extends AbstractGraphicsNode {
     /**
      * Invalidates this <tt>ShapeNode</tt>. This node and all its ancestors have
      * been informed that all its cached values related to its bounds must be
-     * recomputed.  
+     * recomputed.
      */
     protected void invalidateGeometryCache() {
         super.invalidateGeometryCache();
         primitiveBounds = null;
         geometryBounds = null;
         paintedArea = null;
+        sensitiveArea = null;
     }
 
     /**
@@ -151,13 +157,38 @@ public class ShapeNode extends AbstractGraphicsNode {
      */
     public boolean contains(Point2D p) {
         Rectangle2D b = getBounds();
-        if (b != null) {
-            return (b.contains(p) &&
-                    paintedArea != null &&
-                    paintedArea.contains(p));
-        } else {
-	    return false;
-	}
+        if (b == null || !b.contains(p)) {
+            return false;
+        }
+        Shape s;
+        switch(pointerEventType) {
+        case VISIBLE_PAINTED:
+        case VISIBLE_FILL:
+        case VISIBLE_STROKE:
+            s = getSensitiveArea();
+            if (s != null) {
+                return isVisible && s.contains(p);
+            } else {
+                return false;
+            }
+        case VISIBLE:
+            return isVisible;
+        case PAINTED:
+        case FILL:
+        case STROKE:
+            s = getSensitiveArea();
+            if (s != null) {
+                return s.contains(p);
+            } else {
+                return false;
+            }
+        case ALL:
+            return true;
+        case NONE:
+            return false;
+        default:
+            return false;
+        }
     }
 
     /**
@@ -195,6 +226,56 @@ public class ShapeNode extends AbstractGraphicsNode {
             }
         }
         return primitiveBounds;
+    }
+
+    /**
+     * Returns the shape that represents the sensitive area of this graphics
+     * node.
+     */
+    public Shape getSensitiveArea() {
+        if (sensitiveArea == null) {
+            // <!> NOT REALLY NICE CODE BUT NO OTHER WAY
+            ShapePainter strokeShapePainter = null;
+            ShapePainter fillShapePainter = null;
+            if (shapePainter instanceof StrokeShapePainter) {
+                strokeShapePainter = shapePainter;
+            } else if (shapePainter instanceof FillShapePainter) {
+                fillShapePainter = shapePainter;
+            } else {
+                CompositeShapePainter cp = (CompositeShapePainter)shapePainter;
+                for (int i=0; i < cp.getShapePainterCount(); ++i) {
+                    ShapePainter sp = cp.getShapePainter(i);
+                    if (sp instanceof StrokeShapePainter) {
+                        strokeShapePainter = sp;
+                    } else if (sp instanceof FillShapePainter) {
+                        fillShapePainter = sp;
+                    }
+                }
+            }
+            switch(pointerEventType) {
+            case VISIBLE_PAINTED:
+            case PAINTED:
+                sensitiveArea = shapePainter.getPaintedArea();
+                break;
+            case VISIBLE_FILL:
+            case FILL:
+                if (fillShapePainter != null) {
+                    sensitiveArea = fillShapePainter.getPaintedArea();
+                }
+                break;
+            case VISIBLE_STROKE:
+            case STROKE:
+                if (strokeShapePainter != null) {
+                    sensitiveArea = strokeShapePainter.getPaintedArea();
+                }
+                break;
+            case ALL:
+            case NONE:
+            default:
+                // nothing to tdo
+            }
+        }
+        return sensitiveArea;
     }
 
     /**

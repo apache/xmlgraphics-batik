@@ -38,6 +38,41 @@ public class ImageNode extends CompositeGraphicsNode {
         }
     }
 
+    /**
+     * Returns true if the specified Point2D is inside the boundary of this
+     * node, false otherwise.
+     *
+     * @param p the specified Point2D in the user space
+     */
+    public boolean contains(Point2D p) {
+        switch(pointerEventType) {
+        case VISIBLE_PAINTED:
+        case VISIBLE_FILL:
+        case VISIBLE_STROKE:
+        case VISIBLE:
+            return isVisible && super.contains(p);
+        case PAINTED:
+        case FILL:
+        case STROKE:
+        case ALL:
+            return super.contains(p);
+        case NONE:
+            return false;
+        default:
+            return false;
+        }
+    }
+
+    /**
+     * Returns the GraphicsNode containing point p if this node or one of its
+     * children is sensitive to mouse events at p.
+     *
+     * @param p the specified Point2D in the user space
+     */
+    public GraphicsNode nodeHitAt(Point2D p) {
+        return (contains(p) ? super.nodeHitAt(p) : null);
+    }
+
     //
     // Properties methods
     //
