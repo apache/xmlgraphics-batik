@@ -296,6 +296,20 @@ To display the available targets type:
   </target>
 
 
+  <!-- All batik in a single jar, without SAX and DOM bindings
+       (dependencies: batik-ext.jar) -->
+  <target name="libs-jar" depends="compile, prepare-build">
+    <jar jarfile="${build}/lib/${project}-libs.jar">
+      <fileset dir="${dest}" excludes="**/CVS">
+        <include name="org/apache/batik/**"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+        <include name="**"/>
+      </fileset>
+    </jar>
+  </target>
+
+
   <!-- What is needed to the JSVGCanvas bean in a jar,
        including the XML parser -->
   <target name="bean" depends="compile, prepare-build">

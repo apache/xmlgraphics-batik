@@ -230,8 +230,8 @@ public abstract class AbstractDocument
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#cloneNode(boolean)}.
      */
     public Node cloneNode(boolean deep) {
-	String message = null;
         Document n = (Document)newNode();
+        copyInto(n);
         if (deep) {
             for (Node c = getFirstChild();
                  c != null;
