@@ -102,6 +102,7 @@ public class PathLength {
     protected void initialise() {
 
 	pathLength = 0f;
+
 	FlatteningPathIterator fpi = new FlatteningPathIterator(path.getPathIterator(new AffineTransform()), 0.01f);
 	segments = new Vector(20);
 	float lastMoveX = 0f;

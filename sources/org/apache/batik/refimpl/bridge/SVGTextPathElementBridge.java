@@ -26,6 +26,8 @@ import java.awt.geom.PathIterator;
 import java.io.StringReader;
 import java.io.IOException;
 
+import java.net.MalformedURLException;
+
 import java.text.AttributedString;
 
 import java.util.HashMap;
@@ -51,11 +53,13 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.util.awt.font.TextPathLayout;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSValueList;
 import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * A factory for the &lt;textPath&gt; SVG element.
@@ -360,34 +364,48 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
 
 	// get the path
 
+	URIResolver ur;
+	ur = new URIResolver((SVGDocument)element.getOwnerDocument(),
+			     ctx.getDocumentLoader());
 	String uriString = XLinkSupport.getXLinkHref(element);
 	Shape path = null;
 
-        if (uriString != null) {
-            if (uriString.startsWith("#")) {
-                uriString = uriString.substring(1);
-                Element pathElement = element.getOwnerDocument().getElementById(uriString);
-                if (pathElement != null){
-		    
-		    String d = pathElement.getAttributeNS(null, ATTR_D);
-		    try {
-			
-			// add the transform for the path as well
+	try {
+	    Node n = ur.getNode(uriString);
+	    if (n.getOwnerDocument() == null) {
+		throw new Error("Can't use documents");
+	    }
+	    Element elt = (Element)n;
+	    boolean local =
+		n.getOwnerDocument() == element.getOwnerDocument();
+	
+	    Element pathElement = null;
+	    if (local) {
+		pathElement = (Element)elt.cloneNode(true);
+	    } else {
+		pathElement = (Element)element.getOwnerDocument().importNode(elt, true);
 
-			path = AWTPathProducer.createShape(new StringReader(d),
-							   PathIterator.WIND_NON_ZERO,
-							   ctx.getParserFactory());
-		    } catch (IOException e) {
-			throw new RuntimeException(e.getMessage());
-		    }
-
-		} else {
-                    System.out.println("Could not find : " + uriString +
-                                       " in document");
-                }
-            }
-        }
-
+	    }
+	
+	    if (pathElement != null) {
+	    
+		String d = pathElement.getAttributeNS(null, ATTR_D);
+		try {
+		
+		    // add the transform for the path as well
+		
+		    path = AWTPathProducer.createShape(new StringReader(d),
+						       PathIterator.WIND_NON_ZERO,
+						       ctx.getParserFactory());
+		} catch (IOException e) {
+		    throw new RuntimeException(e.getMessage());
+		}
+	    
+	    }
+	} catch (Exception ex) {
+	    System.out.println("bad url " + uriString);
+	    ex.printStackTrace();
+	}
 
 	GlyphVector vector = font.createGlyphVector(new FontRenderContext(null, true, true),
 						    new String(text));
