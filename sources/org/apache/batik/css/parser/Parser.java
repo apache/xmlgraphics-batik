@@ -603,6 +603,9 @@ public class Parser
 
             if (current != LexicalUnits.LEFT_CURLY_BRACE) {
                 reportError("left.curly.brace");
+                if (current == LexicalUnits.RIGHT_CURLY_BRACE) {
+                    nextIgnoreSpaces();
+                }
             } else {
                 nextIgnoreSpaces();
         
