@@ -14,6 +14,12 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.util.Map;
+import java.util.Hashtable;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -43,6 +49,20 @@ import org.apache.batik.util.gui.UserStyleDialog;
  */
 public class PreferenceDialog extends JDialog 
     implements GridBagConstants {
+
+    /**
+     * The return value if 'OK' is chosen.
+     */
+    public final static int OK_OPTION = 0;
+
+    /**
+     * The return value if 'Cancel' is chosen.
+     */
+    public final static int CANCEL_OPTION = 1;
+
+    //////////////////////////////////////////////////////////////
+    // GUI Resources Keys
+    //////////////////////////////////////////////////////////////
 
     public static final String LABEL_USER_OPTIONS 
         = "PreferenceDialog.label.user.options";
@@ -107,6 +127,35 @@ public class PreferenceDialog extends JDialog
     public static final String CONFIG_CANCEL_MNEMONIC
         = "PreferenceDialog.config.cancel.mnemonic";
 
+    //////////////////////////////////////////////////////////////
+    // Following are the preference keys used in the
+    // PreferenceManager model.
+    //////////////////////////////////////////////////////////////
+    
+    public static final String PREFERENCE_KEY_LANGUAGES
+        = "preference.key.languages";
+
+    public static final String PREFERENCE_KEY_USER_STYLESHEET
+        = "preference.key.user.stylesheet";
+
+    public static final String PREFERENCE_KEY_SHOW_RENDERING
+        = "preference.key.show.rendering";
+
+    public static final String PREFERENCE_KEY_AUTO_ADJUST_WINDOW
+        = "preference.key.auto.adjust.window";
+
+    public static final String PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING
+        = "preference.key.enable.double.buffering";
+
+    public static final String PREFERENCE_KEY_SHOW_DEBUG_TRACE
+        = "preference.key.show.debug.trace";
+
+    public static final String PREFERENCE_KEY_PROXY_HOST
+        = "preference.key.proxy.host";
+
+    public static final String PREFERENCE_KEY_PROXY_PORT
+        = "preference.key.proxy.port";
+
     /**
      * <tt>PreferenceManager</tt> used to store and retrieve
      * preferences
@@ -119,13 +168,100 @@ public class PreferenceDialog extends JDialog
     protected ConfigurationPanelSelector configPanelSelector;
 
     /**
+     * Allows selection of the user languages
+     */
+    protected LanguageDialog.Panel languagePanel;
+
+    /**
+     * Allows selection of a user stylesheet
+     */
+    protected UserStyleDialog.Panel userStylesheetPanel;
+
+    protected JCheckBox showRendering;
+
+    protected JCheckBox autoAdjustWindow;
+
+    protected JCheckBox showDebugTrace;
+
+    protected JCheckBox enableDoubleBuffering;
+
+    protected JTextField host, port;
+
+    /**
+     * Code indicating whether the dialog was OKayed
+     * or cancelled
+     */
+    protected int returnCode;
+
+    /**
      * Default constructor
      */
-    public PreferenceDialog(){
+    public PreferenceDialog(PreferenceManager model){
         super((Frame)null, true);
 
+        if(model == null){
+            throw new IllegalArgumentException();
+        }
+
+        this.model = model;
         buildGUI();
+        initializeGUI();
         pack();
+    }
+
+    /**
+     * Initializes the GUI components with the values
+     * from the model.
+     */
+    protected void initializeGUI(){
+        //
+        // Initialize language. The set of languages is
+        // defined by a String.
+        //
+        String languages = model.getString(PREFERENCE_KEY_LANGUAGES);
+        languagePanel.setLanguages(languages);
+
+        //
+        // Initializes the User Stylesheet
+        //
+        String userStylesheetPath = model.getString(PREFERENCE_KEY_USER_STYLESHEET);
+        userStylesheetPanel.setPath(userStylesheetPath);
+
+        //
+        // Initializes the browser options
+        //
+        showRendering.setSelected(model.getBoolean(PREFERENCE_KEY_SHOW_RENDERING));
+        autoAdjustWindow.setSelected(model.getBoolean(PREFERENCE_KEY_AUTO_ADJUST_WINDOW));
+        enableDoubleBuffering.setSelected(model.getBoolean(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING));
+        showDebugTrace.setSelected(model.getBoolean(PREFERENCE_KEY_SHOW_DEBUG_TRACE));
+
+        //
+        // Initialize the proxy options
+        //
+        host.setText(model.getString(PREFERENCE_KEY_PROXY_HOST));
+        port.setText(model.getString(PREFERENCE_KEY_PROXY_PORT));
+    }
+
+    /**
+     * Stores current setting in PreferenceManager model
+     */
+    protected void savePreferences(){
+        model.setString(PREFERENCE_KEY_LANGUAGES,
+                        languagePanel.getLanguages());
+        model.setString(PREFERENCE_KEY_USER_STYLESHEET,
+                        userStylesheetPanel.getPath());
+        model.setBoolean(PREFERENCE_KEY_SHOW_RENDERING,
+                         showRendering.isSelected());
+        model.setBoolean(PREFERENCE_KEY_AUTO_ADJUST_WINDOW,
+                         autoAdjustWindow.isSelected());
+        model.setBoolean(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING,
+                         enableDoubleBuffering.isSelected());
+        model.setBoolean(PREFERENCE_KEY_SHOW_DEBUG_TRACE,
+                         showDebugTrace.isSelected());
+        model.setString(PREFERENCE_KEY_PROXY_HOST,
+                        host.getText());
+        model.setString(PREFERENCE_KEY_PROXY_PORT,
+                        port.getText());
     }
 
     /**
@@ -157,6 +293,23 @@ public class PreferenceDialog extends JDialog
         cancelButton.setMnemonic(Resources.getCharacter(CONFIG_CANCEL_MNEMONIC));
         p.add(okButton);
         p.add(cancelButton);
+
+        okButton.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    setVisible(false);
+                    returnCode = OK_OPTION;
+                    savePreferences();
+                    dispose();
+                }
+            });
+
+        cancelButton.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    setVisible(false);
+                    returnCode = CANCEL_OPTION;
+                    dispose();
+                }
+            });
 
         return p;
     }
@@ -219,11 +372,13 @@ public class PreferenceDialog extends JDialog
     }
 
     protected Component buildUserLanguage(){
-        return new LanguageDialog.Panel();
+        languagePanel = new LanguageDialog.Panel();
+        return languagePanel;
     }
 
     protected Component buildUserStyleSheet(){
-        return new UserStyleDialog.Panel();
+        userStylesheetPanel = new UserStyleDialog.Panel();
+        return userStylesheetPanel;
     }
 
     protected Component buildUserFont(){
@@ -232,13 +387,13 @@ public class PreferenceDialog extends JDialog
 
     protected Component buildBehavior(){
         JGridBagPanel p = new JGridBagPanel();
-        JCheckBox showRendering 
+        showRendering 
             = new JCheckBox(Resources.getString(LABEL_SHOW_RENDERING));
-        JCheckBox autoAdjustWindow
+        autoAdjustWindow
             = new JCheckBox(Resources.getString(LABEL_AUTO_ADJUST_WINDOW));
-        JCheckBox enableDoubleBuffering
+        enableDoubleBuffering
             = new JCheckBox(Resources.getString(LABEL_ENABLE_DOUBLE_BUFFERING));
-        JCheckBox showDebugTrace
+        showDebugTrace
             = new JCheckBox(Resources.getString(LABEL_SHOW_DEBUG_TRACE));
 
         p.add(showRendering,    0, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
@@ -257,9 +412,9 @@ public class PreferenceDialog extends JDialog
 
     protected Component buildNetwork(){
         JGridBagPanel p = new JGridBagPanel();
-        JTextField host = new JTextField(Resources.getInteger(CONFIG_HOST_TEXT_FIELD_LENGTH));
+        host = new JTextField(Resources.getInteger(CONFIG_HOST_TEXT_FIELD_LENGTH));
         JLabel hostLabel = new JLabel(Resources.getString(LABEL_HOST));
-        JTextField port = new JTextField(Resources.getInteger(CONFIG_PORT_TEXT_FIELD_LENGTH));
+        port = new JTextField(Resources.getInteger(CONFIG_PORT_TEXT_FIELD_LENGTH));
         JLabel portLabel = new JLabel(Resources.getString(LABEL_PORT));
         p.add(hostLabel, 0, 0, 1, 1, WEST, HORIZONTAL, 0, 0);
         p.add(host, 0, 1, 1, 1, CENTER, HORIZONTAL, 0, 0);
@@ -280,9 +435,40 @@ public class PreferenceDialog extends JDialog
         return new JButton("Applications");
     }
 
+    /**
+     * Shows the dialog
+     * @return OK_OPTION or CANCEL_OPTION
+     */
+    public int showDialog(){
+        pack();
+        show();
+        return returnCode;
+    }
+
     public static void main(String[] args){
-        PreferenceDialog dlg = new PreferenceDialog();
-        dlg.show();
+        Map defaults = new Hashtable();
+        defaults.put(PREFERENCE_KEY_LANGUAGES, "fr");
+        defaults.put(PREFERENCE_KEY_SHOW_RENDERING, new Boolean(true));
+        defaults.put(PREFERENCE_KEY_AUTO_ADJUST_WINDOW, new Boolean(true));
+        defaults.put(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING, new Boolean(true));
+        defaults.put(PREFERENCE_KEY_SHOW_DEBUG_TRACE, new Boolean(true));
+        defaults.put(PREFERENCE_KEY_PROXY_HOST, "webcache.eng.sun.com");
+        defaults.put(PREFERENCE_KEY_PROXY_PORT, "8080");
+
+        XMLPreferenceManager manager 
+            = new XMLPreferenceManager(args[0], defaults);
+        PreferenceDialog dlg = new PreferenceDialog(manager);
+        int c = dlg.showDialog();
+        if(c == OK_OPTION){
+            try{
+                manager.save();
+                System.out.println("Done Saving options");
+                System.exit(0);
+            }catch(Exception e){
+                System.err.println("Could not save options");
+                e.printStackTrace();
+            }
+        }
     }
 }
 
