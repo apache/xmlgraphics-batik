@@ -76,6 +76,7 @@ public class SVGInputHandler implements SquiggleInputHandler {
         }
 
         String path = purl.getPath();
+        if (path == null) return false;
 
         return accept(path);
     }
@@ -84,6 +85,7 @@ public class SVGInputHandler implements SquiggleInputHandler {
      * Returns true if the resource at the given path can be handled
      */
     public boolean accept(String path) {
+        if (path == null) return false;
         for (int i=0; i<SVG_FILE_EXTENSIONS.length; i++) {
             if (path.endsWith(SVG_FILE_EXTENSIONS[i])) {
                 return true;

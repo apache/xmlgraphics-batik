@@ -60,7 +60,22 @@ public abstract class GlyphOrientationManager extends AbstractValueManager {
 	case LexicalUnit.SAC_RADIAN:
             return new FloatValue(CSSPrimitiveValue.CSS_RAD,
                                   lu.getFloatValue());
+	case LexicalUnit.SAC_INTEGER:
+        { 
+            float n = lu.getIntegerValue();
+            if (n == 0f)
+                return new FloatValue(CSSPrimitiveValue.CSS_DEG, 0f);
+            break;
         }
+	case LexicalUnit.SAC_REAL:
+        { 
+            float n = lu.getFloatValue();
+            if (n == 0f)
+                return new FloatValue(CSSPrimitiveValue.CSS_DEG, 0f);
+            break;
+        }
+    }
+        
         throw createInvalidLexicalUnitDOMException(lu.getLexicalUnitType());
     }
 
