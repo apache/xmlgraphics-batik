@@ -18,6 +18,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
@@ -25,6 +26,8 @@ import java.awt.geom.Dimension2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -75,6 +78,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.JWindow;
 
 import javax.swing.border.TitledBorder;
 
@@ -152,6 +156,7 @@ public class ViewerFrame
     public final static String FORWARD_ACTION     = "ForwardAction";
     public final static String CLOSE_ACTION       = "CloseAction";
     public final static String EXIT_ACTION        = "ExitAction";
+    public final static String FULLSCREEN_ACTION  = "FullscreenAction";
     public final static String SOURCE_ACTION      = "SourceAction";
     public final static String DESCRIPTION_ACTION = "DescriptionAction";
     public final static String TREE_ACTION        = "TreeAction";
@@ -389,6 +394,7 @@ public class ViewerFrame
         listeners.put(FORWARD_ACTION,     forwardAction);
         listeners.put(CLOSE_ACTION,       application.createCloseAction(this));
         listeners.put(EXIT_ACTION,        application.createExitAction());
+        listeners.put(FULLSCREEN_ACTION,  new FullscreenAction());
         listeners.put(SOURCE_ACTION,      new SourceAction());
         listeners.put(DESCRIPTION_ACTION, new DescriptionAction());
         listeners.put(TREE_ACTION,        new TreeAction());
@@ -968,6 +974,54 @@ public class ViewerFrame
             }
         }
     }
+
+    private JWindow fullscreenWindow;
+    private boolean isFullscreen = false;
+
+    /**
+     * Toggle the view of the current document in fullscreen.
+     */
+    protected class FullscreenAction extends AbstractAction
+        implements KeyListener {
+
+        public void keyTyped(KeyEvent e) {
+        }
+
+        public void keyReleased(KeyEvent e) {}
+
+        public void keyPressed(KeyEvent e) {
+            if (((e.getModifiers() & e.CTRL_MASK) != 0)){
+                if (e.getKeyCode() == KeyEvent.VK_X) {
+                    fullscreenWindow.dispose();
+                    fullscreenWindow.getContentPane().remove(canvas);
+                    panel.add(canvas, BorderLayout.CENTER);
+                    show();
+                    isFullscreen = false;
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_1) {
+                    canvas.getAction(JSVGCanvas.UNZOOM_ACTION).actionPerformed(null);
+                }
+            }
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            // create the fullscreen window
+            if (fullscreenWindow == null) {
+                fullscreenWindow = new JWindow();
+                Toolkit tk = Toolkit.getDefaultToolkit();
+                fullscreenWindow.setSize(tk.getScreenSize());
+                //fullscreenWindow.setSize(new Dimension(400, 400));
+                fullscreenWindow.addKeyListener(this);
+            }
+            panel.remove(canvas);
+            fullscreenWindow.getContentPane().add(canvas,
+                                                  BorderLayout.CENTER);
+            dispose();
+            fullscreenWindow.show();
+            isFullscreen = true;
+        }
+    }
+
 
     /**
      * To view the current document source.

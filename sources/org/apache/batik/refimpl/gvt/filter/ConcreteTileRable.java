@@ -125,13 +125,151 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
         return (Rectangle2D)tiledRegion.clone();
     }
 
+    public RenderedImage createRendering(RenderContext rc){
+        // Just copy over the rendering hints.
+        RenderingHints rh = rc.getRenderingHints();
+        if (rh == null) rh = new RenderingHints(null);
+
+        // update the current affine transform
+        AffineTransform at = rc.getTransform();
+
+        double sx = at.getScaleX();
+        double sy = at.getScaleY();
+
+        double shx = at.getShearX();
+        double shy = at.getShearY();
+
+        double tx = at.getTranslateX();
+        double ty = at.getTranslateY();
+
+        // The Scale is the "hypotonose" of the matrix vectors.
+        double scaleX = Math.sqrt(sx*sx + shy*shy);
+        double scaleY = Math.sqrt(sy*sy + shx*shx);
+
+        //
+        // Compute the actual tiled area (intersection of AOI
+        // and bounds) and the actual tile (anchored in the
+        // upper left corner of the tiled area
+        //
+
+        // tiledRect
+        Rectangle2D tiledRect = getBounds2D();
+        Shape aoiShape = rc.getAreaOfInterest();
+        Rectangle2D aoiRect = aoiShape.getBounds2D();
+        Rectangle2D.intersect(tiledRect, aoiRect, tiledRect);
+
+        // tileRect
+        Rectangle2D tileRect = getActualTileBounds(tiledRect);
+        
+        // Adjust the scale so that the tiling happens on pixel
+        // boundaries on both axis.
+        // Desired pixel rect width
+        int dw = (int)(Math.ceil(tileRect.getWidth()*scaleX));
+        int dh = (int)(Math.ceil(tileRect.getHeight()*scaleY));
+
+        double tileScaleX = dw/tileRect.getWidth();
+        double tileScaleY = dh/tileRect.getHeight();
+
+        // System.out.println("scaleX/scaleY : " + scaleX + " / " + scaleY);
+        // System.out.println("tileScaleX/tileScaleY : " + tileScaleX + " / " + tileScaleY);
+
+        // Adjust the translation so that the tile's origin falls on
+        // pixel boundary
+        int dx = (int)(Math.floor(tileRect.getX()*tileScaleX));
+        int dy = (int)(Math.floor(tileRect.getY()*tileScaleY));
+
+        double ttx = dx - tileRect.getX()*tileScaleX;
+        double tty = dy - tileRect.getY()*tileScaleY;
+
+        // System.out.println("ttx/tty : " + ttx + " / " + tty);
+
+        // Get result unsheared or rotated
+        AffineTransform tileAt = 
+            AffineTransform.getTranslateInstance(ttx, tty);
+        tileAt.scale(tileScaleX, tileScaleY);
+
+        // System.out.println("tileRect in userSpace   : " + tileRect);
+        // System.out.println("tileRect in deviceSpace : " + tileAt.createTransformedShape(tileRect).getBounds2D());
+
+        RenderContext tileRc 
+            = new RenderContext(tileAt,
+                                rc.getAreaOfInterest(),
+                                rh);
+
+        RenderedImage tileRed = createTile(tileRc);
+        // System.out.println("tileRed : " + tileRed.getMinX() + "/" + tileRed.getMinY() + "/" 
+        // + tileRed.getWidth() + "/" + tileRed.getHeight());
+        if(tileRed == null){
+            return null;
+        }
+
+        Rectangle tiledArea = tileAt.createTransformedShape(rc.getAreaOfInterest()).getBounds();
+        if(tiledArea.width <= 0 || tiledArea.height <= 0){
+            return null;
+        }
+
+        RenderedImage tiledRed 
+            = new TileRed(tiledArea, tileRed);
+
+        /*org.apache.batik.test.gvt.ImageDisplay.showImage("Tile",
+          tileRed);*/
+
+        // Return sheared/rotated tiled image
+        AffineTransform shearAt =
+            new AffineTransform(sx/scaleX, shy/scaleX,
+                                shx/scaleY, sy/scaleY,
+                                tx, ty);
+        
+        shearAt.scale(scaleX/tileScaleX, scaleY/tileScaleY);
+        shearAt.translate(-ttx, -tty);
+        
+        if(shearAt.isIdentity()){
+            return tiledRed;
+        }
+       
+        CachableRed cr 
+            = new ConcreteRenderedImageCachableRed(tiledRed);
+
+        cr = new AffineRed(cr, shearAt, rh);
+
+        return cr;
+    }
+
+    public Rectangle2D getActualTileBounds(Rectangle2D tiledRect){
+        // Get the tile rectangle in user space
+        Rectangle2D tileRect = (Rectangle2D)tileRegion.clone();
+
+        // System.out.println("tileRect : " + tileRect);
+        // System.out.println("tiledRect: " + tiledRect);
+
+        if ((tileRect.getWidth()   <= 0)
+            || (tileRect.getHeight()  <= 0)
+            || (tiledRect.getWidth()  <= 0)
+            || (tiledRect.getHeight() <= 0))
+            return null;
+
+
+        double tileWidth = tileRect.getWidth();
+        double tileHeight = tileRect.getHeight();
+        
+        double tiledWidth = tiledRect.getWidth();
+        double tiledHeight = tiledRect.getHeight();
+
+        double w = Math.min(tileWidth, tiledWidth);
+        double h = Math.min(tileHeight, tiledHeight);
+
+        Rectangle2D realTileRect 
+            = new Rectangle2D.Double(tiledRect.getX(),
+                                     tiledRect.getY(),
+                                     w, h);
+
+        return realTileRect;
+    }
+
     /**
-     * Creates a rendering for the given render context.
-     * This filter gets a rendering from its source and
-     * tiles it into its own filter region.
+     * Computes the tile to use for the tiling operation.
      * 
-     * The procedure used to tile is as follows. A tile
-     * is created which has its origin in the upper left
+     * The tile has its origin in the upper left
      * corner of the tiled region. That tile is separated 
      * into 4 areas: top-left, top-right, bottom-left and
      * bottom-right. Each of these areas is mapped to 
@@ -143,7 +281,7 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
      * requested from the source.
      * 
      */
-    public RenderedImage createRendering(RenderContext rc){
+    public RenderedImage createTile(RenderContext rc){
         // Rendered result
         RenderedImage result = null;
 
@@ -243,6 +381,17 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
         else{
             dy *= -1;
         }
+
+        //
+        // Adjust dx and dy so that they fall on a pixel boundary
+        //
+        double scaleX = usr2dev.getScaleX();
+        double scaleY = usr2dev.getScaleY();
+        double tdx = Math.floor(scaleX*dx);
+        double tdy = Math.floor(scaleY*dy);
+
+        dx = tdx/scaleX;
+        dy = tdy/scaleY;
 
         // System.out.println("dx / dy / w / h : " + dx + " / " + dy + " / " + w + " / " + h);
 
@@ -392,6 +541,10 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
         final Rectangle realTileRectDev 
             = usr2dev.createTransformedShape(realTileRect).getBounds();
         
+        if(realTileRectDev.width == 0 || realTileRectDev.height == 0){
+            return null;
+        }
+
         BufferedImage realTileBI
             = new BufferedImage(realTileRectDev.width,
                                 realTileRectDev.height,
@@ -469,109 +622,13 @@ public class ConcreteTileRable extends AbstractRable implements TileRable{
 
                 // redTxf.setToTranslation(redVec.x, redVec.y);
             g.drawRenderedImage(DRed, redTxf);
-            /*g.setPaint(java.awt.Color.red);
-              g.fillRect(DRed.getMinX(), DRed.getMinY(),
-              DRed.getWidth(), DRed.getHeight());*/
         }
-
-        /*g.setTransform(new AffineTransform());
-            g.setPaint(new java.awt.Color(0, 0, 0));
-            g.translate(-realTileRectDev.x,
-                        -realTileRectDev.y);
-            g.transform(usr2dev);
-            g.draw(realTileRect);*/
 
         CachableRed realTile;
         realTile = new ConcreteBufferedImageCachableRed(realTileBI,
                                                         realTileRectDev.x,
                                                         realTileRectDev.y);
 
-        //
-        // Now, realTile is anchored in the upper left corner of the 
-        // tiled area. 
-        //
-        Rectangle tiledRectDev 
-            = usr2dev.createTransformedShape(tiledRect).getBounds();
-
-            // System.out.println("tiledRectDev    : " + tiledRectDev);
-
-        BufferedImage tiledRed 
-            = new BufferedImage(tiledRectDev.width,
-                                tiledRectDev.height,
-                                BufferedImage.TYPE_INT_ARGB);
-
-        double curX = 0, curY = 0;
-        Point2D.Double tileOrigin = new Point2D.Double();
-        AffineTransform tileTxf = new AffineTransform();
-
-        g = tiledRed.createGraphics();
-        // g.setPaint(java.awt.Color.red);
-        // g.fillRect(0, 0, tiledRed.getWidth(), tiledRed.getHeight());
-        // g.setPaint(java.awt.Color.yellow);
-        g.translate(-tiledRectDev.x,
-                    -tiledRectDev.y);
-        /*g.fillRect(tiledRectDev.x, tiledRectDev.y,
-              tiledRectDev.width, tiledRectDev.height);*/
-
-            /*while(curY < tiledHeight){
-                while(curX < tiledWidth){
-                    tileOrigin.x = curX;
-                    tileOrigin.y = curY;
-
-                    usr2dev.deltaTransform(tileOrigin,
-                                           tileOrigin);
-                    
-                    tileTxf.setToTranslation(tileOrigin.x,
-                                             tileOrigin.y);
-                    
-                    System.out.println("tileTxf : " + tileOrigin.x + " / " + tileOrigin.y);
-                    g.drawRenderedImage(realTile, tileTxf);
-                    // g.setPaint(java.awt.Color.red);
-                    // g.fillRect(realTile.getMinX(), realTile.getMinY(), realTile.getWidth(), realTile.getHeight());
-                    curX += w;
-                }
-                curY += h;
-                curX = 0;
-                }*/
-            
-        int i = 0, j=0;
-        tileOrigin.x = 0;
-        tileOrigin.y = h;
-        usr2dev.deltaTransform(tileOrigin, tileOrigin);
-        int itx = (int)Math.round(tileOrigin.getX());
-        int ity = (int)Math.round(tileOrigin.getY());
-
-        tileOrigin.x = w;
-        tileOrigin.y = 0;
-        usr2dev.deltaTransform(tileOrigin, tileOrigin);
-        int jtx = (int)Math.round(tileOrigin.getX());
-        int jty = (int)Math.round(tileOrigin.getY());
-
-        while(curY < tiledHeight){
-            while(curX < tiledWidth){
-                /*tileOrigin.x = curX;
-                  tileOrigin.y = curY;
-
-                  usr2dev.deltaTransform(tileOrigin,
-                  tileOrigin);*/
-                    
-                tileTxf.setToTranslation(i*itx + j*jtx,
-                                         i*ity + j*jty);
-                    
-                // System.out.println("tileTxf : " + tileTxf.getTranslateX() + " / " + tileTxf.getTranslateY());
-                g.drawRenderedImage(realTile, tileTxf);
-                // g.setPaint(java.awt.Color.red);
-                // g.fillRect(realTile.getMinX(), realTile.getMinY(), realTile.getWidth(), realTile.getHeight());
-                curX += w;
-                j++;
-            }
-            curY += h;
-            curX = 0;
-            j = 0;
-            i++;
-        }
-            
-        return  new ConcreteBufferedImageCachableRed
-            (tiledRed, tiledRectDev.x, tiledRectDev.y);
+        return realTile;
     }
 }
