@@ -27,14 +27,14 @@
         <s1 title="SVG Tools and Applications">
                 <p>The Batik distribution contains several pre-packaged demos:</p>
                 <ul>
-                    <li><link href="#svgviewer">SVG Browser</link>. The SVG Browser lets you view SVG file,
+                    <li><link href="svgviewer.html">SVG Browser</link>. The SVG Browser lets you view SVG file,
                 zoom, pan and rotate in the content and select text items in the image. </li>
-                    <li><link href="#rasterizer">SVG Rasterizer</link>. >TheSVG Rasterizer converts SVG
+                    <li><link href="svgrasterizer.html">SVG Rasterizer</link>. >TheSVG Rasterizer converts SVG
                 files into JPEG or PNG images.</li>
-                    <li><link href="#prettyPrinter">SVG Pretty Printer</link>. The SVG Pretty Printer lets developers pretty-up
+                    <li><link href="svgpp.html">SVG Pretty Printer</link>. The SVG Pretty Printer lets developers pretty-up
                 their SVG files and get their tabulations and other cosmetic parameters in order. It
                 can also be used to modify the DOCTYPE declaration on SVG files.</li>
-                    <li><link href="#ttf2svg">SVG Font Converter</link>. The SVG Font Converter lets developers convert
+                    <li><link href="ttf2svg.html">SVG Font Converter</link>. The SVG Font Converter lets developers convert
                 character ranges from the True Type Font format to the SVG Font format to embed in
                 SVG documents. This allows SVG document to be fully self-contained be rendered 
                 exactly the same on all systems</li>
