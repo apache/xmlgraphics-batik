@@ -71,7 +71,6 @@ import java.util.Set;
  */
 public class BidiAttributedCharacterIterator implements AttributedCharacterIterator {
 
-    private AttributedCharacterIterator aci;
     private AttributedCharacterIterator reorderedACI;
     private FontRenderContext frc;
     private int chunkStart;
@@ -79,6 +78,18 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
 
     private final static Map mirroredGlyphs = new HashMap(50);
 
+
+    protected BidiAttributedCharacterIterator
+        (AttributedCharacterIterator reorderedACI,
+         FontRenderContext frc,
+         int chunkStart,
+         int [] newCharOrder) {
+        this.reorderedACI = reorderedACI;
+        this.frc = frc;
+        this.chunkStart = chunkStart;
+        this.newCharOrder = newCharOrder;
+    }
+                                              
 
     /**
      * Constructs a character iterator that represents the visual display order
@@ -169,18 +180,18 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
             (GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL,
              new Integer(currBiDi), runStart, numChars);
 
+        aci = as.getIterator();
+
         if ((runStart == 0) && (currBiDi==0)) {
             // This avoids all the mucking about we need to do when
             // bidi is actually performed for cases where it
             // is not actually needed.
-            this.aci = this.reorderedACI = as.getIterator();
+            this.reorderedACI = aci;
             newCharOrder = new int[numChars];
             for (int i=0; i<numChars; i++)
                 newCharOrder[i] = chunkStart+i;
             return;
         }
-
-        this.aci = as.getIterator();
 
         //  work out the new character order
         newCharOrder = doBidiReorder(charIndices, charLevels, 
@@ -190,7 +201,7 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
         StringBuffer reorderedString = new StringBuffer();
         char c;
         for (int i = 0; i < numChars; i++) {
-            c = this.aci.setIndex(newCharOrder[i]);
+            c = aci.setIndex(newCharOrder[i]);
 
             // check for mirrored char
             int bidiLevel = tl.getCharacterLevel(newCharOrder[i]);
@@ -208,13 +219,13 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
         AttributedString reorderedAS 
             = new AttributedString(reorderedString.toString());
         Map [] attrs = new Map[numChars];
-        int start=this.aci.getBeginIndex();
-        int end  =this.aci.getEndIndex();
+        int start=aci.getBeginIndex();
+        int end  =aci.getEndIndex();
         int index = start;
         while (index < end) {
-            this.aci.setIndex(index);
-            Map attrMap = this.aci.getAttributes();
-            int extent = this.aci.getRunLimit();
+            aci.setIndex(index);
+            Map attrMap = aci.getAttributes();
+            int extent  = aci.getRunLimit();
             for (int i=index; i<extent; i++)
                 attrs[i-start] = attrMap;
             index = extent;
@@ -234,10 +245,10 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
         reorderedAS.addAttributes(prevAttrMap, runStart, numChars);
 
         // transfer any position atttributes to the new first char
-        this.aci.first();
-        Float x = (Float) this.aci.getAttribute
+        aci.first();
+        Float x = (Float) aci.getAttribute
             (GVTAttributedCharacterIterator.TextAttribute.X);
-        Float y = (Float) this.aci.getAttribute
+        Float y = (Float) aci.getAttribute
             (GVTAttributedCharacterIterator.TextAttribute.Y);
 
         if (x != null && !x.isNaN()) {
@@ -410,7 +421,8 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
      */
     public Object clone() {
         return new BidiAttributedCharacterIterator
-            ((AttributedCharacterIterator)aci.clone(), frc, chunkStart);
+            ((AttributedCharacterIterator)reorderedACI.clone(), 
+             frc, chunkStart, (int [])newCharOrder.clone());
     }
 
     /**

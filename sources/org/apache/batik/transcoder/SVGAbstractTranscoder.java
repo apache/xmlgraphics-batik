@@ -259,9 +259,10 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
             // The document has no viewBox, we need to resize it by hand.
             // we want to keep the document size ratio
-            float d = Math.max(docWidth, docHeight);
-            float dd = Math.max(width, height);
-            float scale = dd/d;
+            float xscale, yscale;
+            xscale = width/docWidth;
+            yscale = height/docHeight;
+            float scale = Math.min(xscale,yscale);
             Px = AffineTransform.getScaleInstance(scale, scale);
         }
         // take the AOI into account if any

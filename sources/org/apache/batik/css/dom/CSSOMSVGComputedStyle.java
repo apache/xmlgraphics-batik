@@ -79,12 +79,12 @@ public class CSSOMSVGComputedStyle extends CSSOMComputedStyle {
      * Creates a CSSValue to manage the value at the given index.
      */
     protected CSSValue createCSSValue(int idx) {
-        if (idx > SVGCSSEngine.WRITING_MODE_INDEX) {
-            if (cssEngine.getValueManagers()[idx] instanceof SVGColorManager) {
-                return new ComputedCSSColorValue(idx);
-            }
+        if (idx > SVGCSSEngine.FINAL_INDEX) {
             if (cssEngine.getValueManagers()[idx] instanceof SVGPaintManager) {
                 return new ComputedCSSPaintValue(idx);
+            }
+            if (cssEngine.getValueManagers()[idx] instanceof SVGColorManager) {
+                return new ComputedCSSColorValue(idx);
             }
         } else {
             switch (idx) {

@@ -52,6 +52,7 @@ package org.apache.batik.bridge;
 
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -395,8 +396,8 @@ public class UpdateManager  {
             fireEvent(updateStartedDispatcher,new UpdateManagerEvent
                       (this, repaintManager.getOffScreen(), null));
 
-            List l = repaintManager.updateRendering(areas);
-
+            Collection c = repaintManager.updateRendering(areas);
+            List l = new ArrayList(c);
             fireEvent(updateCompletedDispatcher,new UpdateManagerEvent
                       (this, repaintManager.getOffScreen(), l));
         } catch (ThreadDeath td) {

@@ -383,5 +383,6 @@ public class SVGCSSEngine extends CSSEngine {
     public final static int VISIBILITY_INDEX = UNICODE_BIDI_INDEX + 1;
     public final static int WORD_SPACING_INDEX = VISIBILITY_INDEX + 1;
     public final static int WRITING_MODE_INDEX = WORD_SPACING_INDEX + 1;
+    public final static int FINAL_INDEX = WRITING_MODE_INDEX;
 
 }

@@ -52,9 +52,9 @@ package org.apache.batik.gvt.renderer;
 
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.util.List;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.ext.awt.geom.RectListManager;
 
 /**
  * Interface for GVT Renderers.
@@ -91,7 +91,7 @@ public interface Renderer {
      * @param areas a List of regions to be repainted, in the current
      * user space coordinate system.  
      */
-    public void repaint(List areas);
+    public void repaint(RectListManager areas);
 
     /**
      * Sets the transform from the current user space (as defined by

@@ -61,7 +61,7 @@ import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.batik.ext.awt.geom.RectListManager;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
@@ -107,7 +107,7 @@ public class DynamicRenderer extends StaticRenderer {
     /**
      * Flush a list of rectangles of cached image data.
      */
-    public void flush(List areas) {
+    public void flush(Collection areas) {
         // Since we don't cache we don't need to flush
         return;
     }
@@ -175,8 +175,8 @@ public class DynamicRenderer extends StaticRenderer {
      * user space coordinate system.  
      */
     // long lastFrame = -1;
-    public void repaint(List areas) {
-        if (areas == null)
+    public void repaint(RectListManager devRLM) {
+        if (devRLM == null)
             return;
 
         // long t0 = System.currentTimeMillis();
@@ -209,43 +209,9 @@ public class DynamicRenderer extends StaticRenderer {
             (dstR.y+dstR.height > srcR.y+srcR.height))
             cr = new PadRed(cr, dstR, PadMode.ZERO_PAD, null);
 
-        Rectangle [] devRects = new Rectangle[areas.size()];
-        Iterator iter = areas.iterator();
+        boolean repaintAll = false;
+
         Rectangle dr = copyRaster.getBounds();
-        float dmgSz = 0f;
-        int sz=0;
-        // System.out.println("DR: " + dr);
-        while (iter.hasNext()) {
-            Shape s = (Shape)iter.next();
-            s = usr2dev.createTransformedShape(s);
-            Rectangle2D r2d = s.getBounds2D();
-            int x0 = (int)Math.floor(r2d.getX());
-            int y0 = (int)Math.floor(r2d.getY());
-            int x1 = (int)Math.ceil(r2d.getX()+r2d.getWidth());
-            int y1 = (int)Math.ceil(r2d.getY()+r2d.getHeight());
-            // Rectangle r = new Rectangle(x0, y0, x1-x0+1, y1-y0+1);
-
-            // This rectangle must be outset one pixel to ensure
-            // it includes the effects of anti-aliasing on object.s
-            Rectangle r = new Rectangle(x0-1, y0-1, x1-x0+3, y1-y0+3);
-
-            // System.out.println("  Rect   [" + sz+ "]: " + r);
-            //System.out.println("  Rect2D [" + sz+ "]: " + r2d);
-            if (!dr.intersects(r)) continue;
-            r = dr.intersection(r);
-            devRects[sz++] = r;
-            dmgSz += r.width*(float)r.height;
-        }
-        RectListManager devRLM =null;
-        try {
-             devRLM = new RectListManager(devRects, 0, sz);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        // Merge the repaint rectangles...
-        devRLM.mergeRects(COPY_OVERHEAD, COPY_LINE_OVERHEAD);
-        boolean repaintAll = (dmgSz > offScreenWidth*offScreenHeight*0.9f);
 
         // Ensure only one thread works on baseRaster at a time...
         synchronized (syncRaster) {
@@ -265,16 +231,16 @@ public class DynamicRenderer extends StaticRenderer {
                                   -copyRaster.getMinY());
                 }
 
+                
                 if ((isDoubleBuffered) &&
                     (currentRaster != null) && 
                     (damagedAreas  != null)) {
-                    
                     damagedAreas.subtract(devRLM, COPY_OVERHEAD, 
                                           COPY_LINE_OVERHEAD);
                     damagedAreas.mergeRects(COPY_OVERHEAD, 
                                             COPY_LINE_OVERHEAD); 
 
-                    iter = damagedAreas.iterator();
+                    Iterator iter = damagedAreas.iterator();
                     while (iter.hasNext()) {
                         Rectangle r = (Rectangle)iter.next();
                         // System.out.println("Copy: " + r);
@@ -290,9 +256,12 @@ public class DynamicRenderer extends StaticRenderer {
                     }
                 }
 
-                iter = devRLM.iterator();
+                Iterator iter = devRLM.iterator();
                 while (iter.hasNext()) {
                     Rectangle r = (Rectangle)iter.next();
+                    if (!dr.intersects(r)) continue;
+                    r = dr.intersection(r);
+                    
                     WritableRaster dst = copyRaster.createWritableChild
                         (r.x, r.y, r.width, r.height, r.x, r.y, null);
                     cr.copyData(dst);

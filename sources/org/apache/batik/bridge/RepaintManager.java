@@ -56,10 +56,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Iterator;
+import java.util.Collection;
 
 import org.apache.batik.gvt.renderer.ImageRenderer;
+import org.apache.batik.ext.awt.geom.RectListManager;
 
 /**
  * This class manages the rendering of a GVT tree.
@@ -69,6 +71,9 @@ import org.apache.batik.gvt.renderer.ImageRenderer;
  * @version $Id$
  */
 public class RepaintManager {
+    final static int COPY_OVERHEAD      = 1000;
+    final static int COPY_LINE_OVERHEAD = 10;
+
     /**
      * The renderer used to repaint the buffer.
      */
@@ -86,7 +91,8 @@ public class RepaintManager {
      * @param aoi The area of interest in the renderer space units.
      * @return the list of the rectangles to repaint.
      */
-    public List updateRendering(List areas) throws InterruptedException {
+    public Collection updateRendering(Collection areas) 
+        throws InterruptedException {
         renderer.flush(areas);
         List rects = new ArrayList(areas.size());
         AffineTransform at = renderer.getTransform();
@@ -106,9 +112,16 @@ public class RepaintManager {
                 
             rects.add(r);
         }
+        RectListManager devRLM =null;
+        try {
+             devRLM = new RectListManager(rects);
+             devRLM.mergeRects(COPY_OVERHEAD, COPY_LINE_OVERHEAD);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
 
-        renderer.repaint(areas);
-        return rects;
+        renderer.repaint(devRLM);
+        return devRLM;
     }
 
     /**
@@ -138,5 +151,4 @@ public class RepaintManager {
     public BufferedImage getOffScreen(){
         return renderer.getOffScreen();
     }
-
 }
