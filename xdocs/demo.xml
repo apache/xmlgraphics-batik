@@ -25,40 +25,20 @@
 
     <body>
         <s1 title="SVG Tools and Applications">
-            <s2 title="Intro">
                 <p>The Batik distribution contains several pre-packaged demos:</p>
                 <ul>
-                    <li><link href="#svgviewer">SVG Browser</link></li>
-                    <li><link href="#rasterizer">SVG Rasterizer</link></li>
-                    <li><link href="#prettyPrinter">SVG Pretty Printer</link></li>
-                    <li><link href="#ttf2svg">SVG Font Converter</link></li>
-                </ul>
-            </s2>
-            <anchor id="svgviewer" />
-            <s2 title="SVG Browser">
-                <figure src="images/viewer.jpg" alt="Batik SVG Browser"/>
-                <p>The <link href="svgviewer.html">SVG Browser</link> lets you view SVG file,
-                zoom, pan and rotate in the content and select text items in the image.</p>
-            </s2>
-            <anchor id="rasterizer" />
-            <s2 title="SVG Rasterizer">
-                <figure src="images/rasterizer.jpg" alt="Batik Rasterizer"/>
-                <p>The <link href="svgrasterizer.html">SVG Rasterizer</link> converts SVG
-                files into JPEG or PNG images.</p>
-            </s2>
-            <anchor id="prettyPrinter" />
-            <s2 title="SVG Pretty Printer">
-                <p>The <link href="svgpp.html">SVG Pretty Printer</link> lets developers pretty-up
+                    <li><link href="#svgviewer">SVG Browser</link>. The SVG Browser lets you view SVG file,
+                zoom, pan and rotate in the content and select text items in the image. </li>
+                    <li><link href="#rasterizer">SVG Rasterizer</link>. >TheSVG Rasterizer converts SVG
+                files into JPEG or PNG images.</li>
+                    <li><link href="#prettyPrinter">SVG Pretty Printer</link>. The SVG Pretty Printer lets developers pretty-up
                 their SVG files and get their tabulations and other cosmetic parameters in order. It
-                can also be used to modify the DOCTYPE declaration on SVG files.</p>
-            </s2>
-            <anchor id="ttf2svg"/>
-            <s2 title="SVG Font Converter">
-                <p>The <link href="ttf2svg.html">SVG Font Converter</link> lets developers convert
+                can also be used to modify the DOCTYPE declaration on SVG files.</li>
+                    <li><link href="#ttf2svg">SVG Font Converter</link>. The SVG Font Converter lets developers convert
                 character ranges from the True Type Font format to the SVG Font format to embed in
                 SVG documents. This allows SVG document to be fully self-contained be rendered 
-                exactly the same on all systems</p>
-            </s2>
+                exactly the same on all systems</li>
+                </ul>
         </s1>
  
    </body>
