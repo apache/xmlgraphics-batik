@@ -54,7 +54,7 @@ public class SAXSVGDocumentFactory
      * @param parser The SAX2 parser classname.
      */
     public SAXSVGDocumentFactory(String parser) {
-	super(SVGDOMImplementation.getDOMImplementation(), parser);
+        super(SVGDOMImplementation.getDOMImplementation(), parser);
     }
 
     /**
@@ -63,17 +63,17 @@ public class SAXSVGDocumentFactory
      * @exception IOException if an error occured while reading the document.
      */
     public SVGOMDocument createDocument(String uri) throws IOException {
-	SVGOMDocument doc;
+        SVGOMDocument doc;
         InputSource is = new InputSource(uri);
 
-	try {
+        try {
             doc = (SVGOMDocument)super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
-	    doc.setURLObject(new URL(uri));
-	} catch (MalformedURLException e) {
-	    throw new IOException(e.getMessage());
-	}
-	return doc;
+            doc.setURLObject(new URL(uri));
+        } catch (MalformedURLException e) {
+            throw new IOException(e.getMessage());
+        }
+        return doc;
     }
 
     /**
@@ -83,18 +83,18 @@ public class SAXSVGDocumentFactory
      * @exception IOException if an error occured while reading the document.
      */
     public SVGOMDocument createDocument(String uri, InputStream inp) throws IOException {
-	SVGOMDocument doc;
+        SVGOMDocument doc;
         InputSource is = new InputSource(inp);
         is.setSystemId(uri);
 
-	try {
+        try {
             doc = (SVGOMDocument)super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
-	    doc.setURLObject(new URL(uri));
-	} catch (MalformedURLException e) {
-	    throw new IOException(e.getMessage());
-	}
-	return doc;
+            doc.setURLObject(new URL(uri));
+        } catch (MalformedURLException e) {
+            throw new IOException(e.getMessage());
+        }
+        return doc;
     }
 
     /**
@@ -104,18 +104,18 @@ public class SAXSVGDocumentFactory
      * @exception IOException if an error occured while reading the document.
      */
     public SVGOMDocument createDocument(String uri, Reader r) throws IOException {
-	SVGOMDocument doc;
+        SVGOMDocument doc;
         InputSource is = new InputSource(r);
         is.setSystemId(uri);
 
-	try {
+        try {
             doc = (SVGOMDocument)super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
-	    doc.setURLObject(new URL(uri));
-	} catch (MalformedURLException e) {
-	    throw new IOException(e.getMessage());
-	}
-	return doc;
+            doc.setURLObject(new URL(uri));
+        } catch (MalformedURLException e) {
+            throw new IOException(e.getMessage());
+        }
+        return doc;
     }
 
     /**
@@ -131,7 +131,7 @@ public class SAXSVGDocumentFactory
             !"svg".equals(root)) {
             throw new RuntimeException("Bad root element");
         }
-        return super.createDocument(ns, root, uri);
+        return createDocument(uri);
     }
 
     /**
@@ -148,7 +148,7 @@ public class SAXSVGDocumentFactory
             !"svg".equals(root)) {
             throw new RuntimeException("Bad root element");
         }
-        return super.createDocument(ns, root, uri, is);
+        return createDocument(uri, is);
     }
 
     /**
@@ -165,7 +165,7 @@ public class SAXSVGDocumentFactory
             !"svg".equals(root)) {
             throw new RuntimeException("Bad root element");
         }
-        return super.createDocument(ns, root, uri, r);
+        return createDocument(uri, r);
     }
 
     /**
@@ -173,23 +173,23 @@ public class SAXSVGDocumentFactory
      * org.xml.sax.EntityResolver#resolveEntity(String,String)}.
      */
     public InputSource resolveEntity(String publicId, String systemId)
-	throws SAXException {
-	try {
-	    if (uris == null) {
-		ResourceBundle rb;
+        throws SAXException {
+        try {
+            if (uris == null) {
+                ResourceBundle rb;
                 rb = ResourceBundle.getBundle(DTDS,
                                               Locale.getDefault());
-		uris = rb.getString("uris");
-	    }
-	    if (uris.indexOf(systemId) != -1) {
-		return new InputSource
-		    (getClass().getResource
+                uris = rb.getString("uris");
+            }
+            if (uris.indexOf(systemId) != -1) {
+                return new InputSource
+                    (getClass().getResource
                      ("resources/svg-20001102.dtd").toString());
-	    }
+            }
         } catch (MissingResourceException e) {
             throw new SAXException(e);
         }
         // Let the SAX parser find the entity.
-	return null;
+        return null;
     }
 }

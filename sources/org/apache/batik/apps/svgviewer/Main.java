@@ -65,7 +65,7 @@ public class Main implements ViewerFrame.Application {
     static {
         bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
     }
-    
+
     /**
      * The XML parser class name.
      */
@@ -101,6 +101,10 @@ public class Main implements ViewerFrame.Application {
                 i++;
                 Font font = new Font("Dialog", Font.PLAIN, 10);
                 SwingInitializer.swingDefaultsFontInit(font);
+            } else if (args[i].equals("-mf")) {
+                i++;
+                Font font = new Font("Arial", Font.PLAIN, 12);
+                SwingInitializer.swingDefaultsFontInit(font);
             } else if (args[i].equals("-lnf")) {
                 i++;
                 if (i >= args.length) {
@@ -123,7 +127,7 @@ public class Main implements ViewerFrame.Application {
             }
             args = t;
         }
-        
+
         Experiments.registerExperimentBridges();
         CSSDocumentHandler.setParserClassName
             (bundle.getString(CSS_PARSER_CLASS_NAME_KEY));
@@ -228,7 +232,7 @@ public class Main implements ViewerFrame.Application {
     }
 
     // Actions /////////////////////////////////////////////////
-    
+
     /**
      * To close a frame.
      */

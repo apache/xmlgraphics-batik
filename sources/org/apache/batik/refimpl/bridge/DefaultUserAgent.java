@@ -28,6 +28,17 @@ import org.w3c.dom.svg.SVGAElement;
  */
 public class DefaultUserAgent implements UserAgent {
 
+    String parser;
+
+    public DefaultUserAgent() {
+        // <!> deprecated
+        this("org.apache.crimson.parser.XMLReaderImpl");
+    }
+
+    public DefaultUserAgent(String parser) {
+        this.parser = parser;
+    }
+
     /**
      * Returns the default size of the viewport of this user agent (0, 0).
      */
@@ -113,7 +124,7 @@ public class DefaultUserAgent implements UserAgent {
      * Returns the class name of the XML parser.
      */
     public String getXMLParserClassName() {
-        return "org.apache.crimson.parser.XMLReaderImpl";
+        return parser;
     }
 
     /**

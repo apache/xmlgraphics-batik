@@ -25,24 +25,10 @@ import org.w3c.dom.Document;
  *
  * <ul>
  * <li>The XML parser classname
- * <li>The CSS parser classname
  * <li>The DOM Implementation
  * <li>The namespace URI of the document
  * <li>The root element of the document
  * </ul>
- *
- * Ex:
- * <pre><tt>
- * hints.put(KEY_XML_PARSER_CLASSNAME,
- *           "org.apache.crimson.parser.XMLReaderImpl");
- * hints.put(KEY_DOM_IMPLEMENTATION,
- *           org.apache.batik.dom.svg.SVGDOMImplementation.getDOMImplementation());
- * hints.put(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
- *           org.apache.batik.util.SVGConstants.SVG_NAMESPACE_URI);
- * hints.put(KEY_DOCUMENT_ELEMENT,
- *           "svg");
- *
- * </tt></pre>
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -75,7 +61,11 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
     protected XMLAbstractTranscoder() {}
 
     /**
-     * Transcodes the specified XML input in the specified output.
+     * Transcodes the specified XML input in the specified output. All
+     * <tt>TranscoderException</tt> exceptions not catched previously
+     * are tagged as fatal errors (ie. call the <tt>fatalError</tt>
+     * method of the <tt>ErrorHandler</tt>).
+     *
      * @param input the XML input to transcode
      * @param output the ouput where to transcode
      * @exception TranscoderException if an error occured while transcoding
@@ -142,7 +132,13 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
         }
         // call the dedicated transcode method
         if (document != null) {
-            transcode(document, output);
+            try {
+                transcode(document, output);
+            } catch(TranscoderException ex) {
+                // at this time, all TranscoderExceptions are fatal errors
+                handler.fatalError(ex);
+                return;
+            }
         }
     }
 

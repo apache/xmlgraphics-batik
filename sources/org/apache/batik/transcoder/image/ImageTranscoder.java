@@ -8,23 +8,43 @@
 
 package org.apache.batik.transcoder.image;
 
-import java.awt.Color;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.renderer.Renderer;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.XMLAbstractTranscoder;
+import org.apache.batik.transcoder.image.resources.Messages;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 
+import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.svg.DefaultSVGContext;
+
 // <!> FIXME : Those import clauses will changed with new design
 import org.apache.batik.refimpl.gvt.renderer.StaticRenderer;
+import org.apache.batik.css.CSSDocumentHandler;
+import org.apache.batik.refimpl.bridge.ConcreteGVTBuilder;
+import org.apache.batik.refimpl.bridge.DefaultBridgeContext;
 import org.apache.batik.refimpl.bridge.SVGUtilities;
+import org.apache.batik.refimpl.bridge.DefaultUserAgent;
 
 /**
  * This class enables to transcode an input to an image of any format.
@@ -37,6 +57,9 @@ import org.apache.batik.refimpl.bridge.SVGUtilities;
  * <p>The <tt>KEY_BACKGROUND_COLOR</tt> defines the background color
  * to use for opaque image formats, or the background color that may
  * be used for image formats that support alpha channel.
+ *
+ * <p>The <tt>KEY_AOI</tt> represents the area of interest to paint
+ * in device space.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -54,15 +77,29 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
     public static final TranscodingHints.Key KEY_HEIGHT = new LengthKey(1);
 
     /**
-     * The image background color key. Used by opaque image formats
+     * The image background paint key. Used by opaque image formats
      * and could be used by image formats that support alpha channel.
      */
-    public static final TranscodingHints.Key KEY_BACKGROUND_COLOR = new ColorKey(0);
+    public static final TranscodingHints.Key KEY_BACKGROUND_COLOR = new PaintKey(0);
+
+    /**
+     * The area of interest key.
+     */
+    public static final TranscodingHints.Key KEY_AOI = new RectangleKey(0);
 
     /**
      * Constructs a new <tt>ImageTranscoder</tt>.
      */
-    protected ImageTranscoder() {}
+    protected ImageTranscoder() {
+        CSSDocumentHandler.setParserClassName(
+            "org.apache.batik.css.parser.Parser");
+        hints.put(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
+                  SVGConstants.SVG_NAMESPACE_URI);
+        hints.put(KEY_DOCUMENT_ELEMENT,
+                  SVGConstants.TAG_SVG);
+        hints.put(KEY_DOM_IMPLEMENTATION,
+                  SVGDOMImplementation.getDOMImplementation());
+    }
 
     /**
      * Transcodes the specified Document as an image in the specified output.
@@ -72,16 +109,115 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      */
     protected void transcode(Document document, TranscoderOutput output)
             throws TranscoderException {
-    }
+        if (!(document instanceof SVGOMDocument)) {
+            throw new TranscoderException(
+                Messages.formatMessage("notsvg", null));
+        }
+        SVGDocument svgDoc = (SVGDocument)document;
+        SVGSVGElement root = svgDoc.getRootElement();
+        // initialize the SVG document with the appropriate context
+        String parserClassname = (String)hints.get(KEY_XML_PARSER_CLASSNAME);
+        UserAgent userAgent = new DefaultUserAgent(parserClassname);
+        DefaultSVGContext svgCtx = new DefaultSVGContext();
+        svgCtx.setPixelToMM(userAgent.getPixelToMM());
+        ((SVGOMDocument)document).setSVGContext(svgCtx);
 
-    /**
-     * Returns the specified length in pixels.
-     * @param length the length to parse and convert in pixels
-     */
-    private int getLengthInPixels(String length) throws TranscoderException {
+        // get the width and height attributes of the SVG document
+        int docWidth = (int)root.getWidth().getBaseVal().getValue();
+        int docHeight = (int)root.getHeight().getBaseVal().getValue();
+        // get transcoding hints
+        Paint bgcolor = null;
+        if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
+            bgcolor = (Paint)hints.get(KEY_BACKGROUND_COLOR);
+        }
+        int imgWidth = -1;
+        if (hints.containsKey(KEY_WIDTH)) {
+            imgWidth = ((Integer)hints.get(KEY_WIDTH)).intValue();
+        }
+        int imgHeight = -1;
+        if (hints.containsKey(KEY_HEIGHT)) {
+            imgHeight = ((Integer)hints.get(KEY_HEIGHT)).intValue();
+        }
+        Rectangle aoi;
+        if (hints.containsKey(KEY_AOI)) {
+            aoi = (Rectangle)hints.get(KEY_AOI);
+        } else {
+            aoi = new Rectangle(0, 0, docWidth, docHeight);
+        }
+        // compute the image's width and height according the hints
+        int width, height;
+        if (imgWidth > 0 && imgHeight > 0) {
+            width = imgWidth;
+            height = imgHeight;
+        } else if (imgHeight > 0) {
+            width = (docWidth * imgHeight) / docHeight;
+            height = imgHeight;
+        } else if (imgWidth > 0) {
+            width = imgWidth;
+            height = (docHeight * imgWidth) / docWidth;
+        } else {
+            width = docWidth;
+            height = docHeight;
+        }
+
+        //
+        // Compute the zoom factor and position considering the image size
+        // and the aoi coordinates and dimension
+        //
+        //      [preserveAspectRatio]
+        //      [scale]
+        // Px = [translate]
+        //
+        // With:
+        //
+        // [preserveAspectRatio] : initial scale factor to fit image size
+        // [scale] : take into account the size of the aoi
+        // [translate] : take into account the (x, y) coordinates of the aoi
+        //
+
+        // preserve aspect ratio matrix
+        AffineTransform Px;
+        Px = SVGUtilities.getPreserveAspectRatioTransform(root, width, height);
+        if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
+            // The document has no viewBox, we need to resize it by hand.
+            // we want to keep the document size ratio
+            float d = Math.max(docWidth, docHeight);
+            float dd = Math.max(width, height);
+            float scale = dd/d;
+            Px = AffineTransform.getScaleInstance(scale, scale);
+        }
+        // aoi translation matrix
+        AffineTransform Mx =
+            AffineTransform.getTranslateInstance(-aoi.x, -aoi.y);
+        // aoi scale factor
+        float sx = (float)docWidth / aoi.width;
+        float sy = (float)docHeight / aoi.height;
+        Mx.preConcatenate(AffineTransform.getScaleInstance(sx, sy));
+
+        Px.concatenate(Mx);
+
+        // build the GVT tree
+        GVTBuilder builder = new ConcreteGVTBuilder();
+        BridgeContext ctx = new DefaultBridgeContext(userAgent, svgDoc);
+        GraphicsNode gvtRoot = builder.build(ctx, svgDoc);
+        // prepare the image to be painted
+        BufferedImage img = createImage(width, height);
+        Graphics2D g2d = img.createGraphics();
+        g2d.setClip(0, 0, width, height);
+        if (bgcolor != null) {
+            g2d.setComposite(AlphaComposite.Src);
+            g2d.setPaint(bgcolor);
+            g2d.fillRect(0, 0, width, height);
+        }
+        g2d.setComposite(AlphaComposite.SrcOver);
+        // paint the SVG document using the bridge package
+        Renderer renderer = new StaticRenderer(img);
+        renderer.setTransform(Px);
+        renderer.setTree(gvtRoot);
         try {
-            return Integer.parseInt(length);
-        } catch (NumberFormatException ex) {
+            renderer.repaint(aoi);
+            writeImage(img, output);
+        } catch (Exception ex) {
             throw new TranscoderException(ex);
         }
     }
@@ -124,20 +260,31 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             super(privatekey);
         }
         public boolean isCompatibleValue(Object v) {
-            // don't parse the length now !
-            return (v instanceof String);
+            return (v instanceof Integer);
         }
     }
 
     /**
-     * A transcoding Key represented as a color.
+     * A transcoding Key represented as a background paint.
      */
-    private static class ColorKey extends TranscodingHints.Key {
-        public ColorKey(int privatekey) {
+    private static class PaintKey extends TranscodingHints.Key {
+        public PaintKey(int privatekey) {
             super(privatekey);
         }
         public boolean isCompatibleValue(Object v) {
-            return (v instanceof Color);
+            return (v instanceof Paint);
+        }
+    }
+
+    /**
+     * A transcoding Key represented as a rectangle.
+     */
+    private static class RectangleKey extends TranscodingHints.Key {
+        public RectangleKey(int privatekey) {
+            super(privatekey);
+        }
+        public boolean isCompatibleValue(Object v) {
+            return (v instanceof Rectangle);
         }
     }
 }
