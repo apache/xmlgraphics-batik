@@ -626,6 +626,7 @@ public class Scanner {
                     }
                     return type = LexicalUnits.IDENTIFIER;
                 }
+                inputBuffer.next();
                 throw new ParseException("character",
                                          inputBuffer.getLine(),
                                          inputBuffer.getColumn());
