@@ -25,11 +25,6 @@ public class PathParser extends NumberParser {
     protected PathHandler pathHandler;
 
     /**
-     * Whether the last character was a 'e' or 'E'.
-     */
-    protected boolean eRead;
-
-    /**
      * Creates a new PathParser.
      */
     public PathParser() {
@@ -834,7 +829,9 @@ public class PathParser extends NumberParser {
     protected void readNumber() throws ParseException {
 	bufferSize = 0;
 	bufferize();
-	eRead = false;
+	boolean eRead = false;
+	boolean eJustRead = false;
+	boolean dotRead = false;
         for (;;) {
 	    read();
 	    switch (current) {
@@ -853,21 +850,30 @@ public class PathParser extends NumberParser {
 	    case 'a': case 'A':
 	    case 'z': case 'Z':
 	    case ',':
+            case -1:
 		return;
 	    case 'e': case 'E':
+                if (eRead) {
+                    return;
+                }
+		eJustRead = true;
 		eRead = true;
 		bufferize();
 		break;
+            case '.':
+                if (eRead || dotRead) {
+                    return;
+                }
+                dotRead = true;
+                bufferize();
+                break;
 	    case '+':
 	    case '-':
-		if (!eRead) {
+		if (!eJustRead) {
 		    return;
 		}
 	    default:
-		if (current == -1) {
-		    return;
-		}
-		eRead = false;
+		eJustRead = false;
 		bufferize();
 	    }
 	}

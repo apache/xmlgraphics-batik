@@ -43,10 +43,10 @@ public class SAXSVGDocumentFactory
     implements SVGDocumentFactory {
 
     /**
-     * The dtd URIs resource bundle class name.
+     * The dtd public IDs resource bundle class name.
      */
-    protected final static String DTDS =
-        "org.apache.batik.dom.svg.resources.dtduris";
+    protected final static String DTDIDS =
+        "org.apache.batik.dom.svg.resources.dtdids";
 
     /**
      * Constant for HTTP content type header charset field.
@@ -54,9 +54,9 @@ public class SAXSVGDocumentFactory
     protected final static String HTTP_CHARSET = "charset";
 
     /**
-     * The accepted DTD URIs.
+     * The accepted DTD public IDs.
      */
-    protected static String uris;
+    protected static String dtdids;
 
     /**
      * Creates a new SVGDocumentFactory object.
@@ -240,13 +240,13 @@ public class SAXSVGDocumentFactory
     public InputSource resolveEntity(String publicId, String systemId)
         throws SAXException {
         try {
-            if (uris == null) {
+            if (dtdids == null) {
                 ResourceBundle rb;
-                rb = ResourceBundle.getBundle(DTDS,
+                rb = ResourceBundle.getBundle(DTDIDS,
                                               Locale.getDefault());
-                uris = rb.getString("uris");
+                dtdids = rb.getString("publicIds");
             }
-            if (uris.indexOf(systemId) != -1) {
+            if (dtdids.indexOf(publicId) != -1) {
                 return new InputSource
                     (getClass().getResource
                      ("resources/svg10.dtd").toString());
