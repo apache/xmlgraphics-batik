@@ -292,7 +292,13 @@ class BridgeEventSupport {
                                   evt.isControlDown(), evt.isAltDown(),
                                   evt.isShiftDown(), evt.isMetaDown(),
                                   button, target);
-            target.dispatchEvent(mevent);
+            try {
+                target.dispatchEvent(mevent);
+            } catch (RuntimeException e) {
+                // runtime exceptions may appear we need to display them...
+                ua.displayError("scripting error in event handling: "+
+                                e.getMessage());
+            }
         }
     }
 

@@ -14,6 +14,9 @@ import java.util.HashMap;
 
 /**
  * The reference implementation of the <code>InterpreterPool</code> interface.
+ * It is able to create <code>Interpreter</code> instances for ECMAScript,
+ * Python and Tcl scripting languages if you provide the right jar files in
+ * your CLASSPATH (i.e. Rhino, JPython and Jacl jar files).
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
@@ -39,7 +42,8 @@ public class ConcreteInterpreterPool implements InterpreterPool {
 
     /**
      * Builds an instance of <code>ConcreteInterpreterPool</code> that
-     * will deal with the given <code>Document</code>.
+     * will create <code>Interpreter</code> instances for the the given
+     * <code>Document</code>.
      */
     public ConcreteInterpreterPool(Document doc) {
         document = doc;
@@ -50,7 +54,7 @@ public class ConcreteInterpreterPool implements InterpreterPool {
             putInterpreterFactory("text/ecmascript",
                                   factory);
         } catch (Throwable t1) {
-            // may append if the class is not there
+            // may append if the class is not in the CLASSPATH
         }
         try {
             factory =
@@ -58,7 +62,7 @@ public class ConcreteInterpreterPool implements InterpreterPool {
             putInterpreterFactory("text/python",
                                   factory);
         } catch (Throwable t2) {
-            // may append if the class is not ther e
+            // may append if the class is not in the CLASSPATH
         }
         try {
             factory =
@@ -66,17 +70,21 @@ public class ConcreteInterpreterPool implements InterpreterPool {
             putInterpreterFactory("text/tcl",
                                   factory);
         } catch (Throwable t3) {
-            // may append if the class is not there
+            // may append if the class is not in the CLASSPATH
         }
     }
 
     /**
      * Returns a unique instance of an implementation of
      * <code>Interpreter</code> interface that match the given language.
-     * It returns <code>null</code> if the interpreter cannot be build.
+     * It returns <code>null</code> if the interpreter cannot be build (for
+     * example the language is not recognized by this
+     * <code>InterpreterPool</code>). The variable "document" in the returned
+     * interpreter will reference the instance of <code>Document</code>
+     * to which the <code>InterpreterPool</code> is linked.
      * @param language a mimeType like string describing the language to use
-     * (i.e. "text/ecmascript" for ECMAScript interpreter).
-     * @param document the <code>Document instance</code>.
+     * (i.e. "text/ecmascript" for ECMAScript interpreter, "text/tcl" for Tcl
+     * interpreter...).
      */
     public Interpreter getInterpreter(String language) {
         Interpreter interpreter = (Interpreter)interpreters.get(language);
@@ -100,7 +108,10 @@ public class ConcreteInterpreterPool implements InterpreterPool {
 
     /**
      * Registers an <code>InterpreterFactory</code> for the given
-     * language.
+     * language. This allows you to add other languages to the default
+     * ones or to replace the <code>InterpreterFactory</code> used to create
+     * an <code>Interpreter</code> instance for a particular language to
+     * be able to have your own interpreter.
      * @param language the language for which the factory is registered.
      * @parma factory the <code>InterpreterFactory</code> that will allow to
      * create a interpreter for the language.
