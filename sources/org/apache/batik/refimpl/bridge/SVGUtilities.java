@@ -603,10 +603,10 @@ public class SVGUtilities implements SVGConstants {
                              uctx,
                              ATTR_FILTER_UNITS,
                              VALUE_OBJECT_BOUNDING_BOX,
-                             VALUE_FILTER_X_DEFAULT,
-                             VALUE_FILTER_Y_DEFAULT,
-                             VALUE_FILTER_WIDTH_DEFAULT,
-                             VALUE_FILTER_HEIGHT_DEFAULT);
+                             DEFAULT_VALUE_FILTER_X,
+                             DEFAULT_VALUE_FILTER_Y,
+                             DEFAULT_VALUE_FILTER_WIDTH,
+                             DEFAULT_VALUE_FILTER_HEIGHT);
     }
 
     /**
@@ -629,10 +629,10 @@ public class SVGUtilities implements SVGConstants {
                              uctx,
                              ATTR_MASK_UNITS,
                              VALUE_OBJECT_BOUNDING_BOX,
-                             VALUE_MASK_X_DEFAULT,
-                             VALUE_MASK_Y_DEFAULT,
-                             VALUE_MASK_WIDTH_DEFAULT,
-                             VALUE_MASK_HEIGHT_DEFAULT);
+                             DEFAULT_VALUE_MASK_X,
+                             DEFAULT_VALUE_MASK_Y,
+                             DEFAULT_VALUE_MASK_WIDTH,
+                             DEFAULT_VALUE_MASK_HEIGHT);
     }
 
     /**
@@ -655,10 +655,10 @@ public class SVGUtilities implements SVGConstants {
                              uctx,
                              ATTR_PATTERN_UNITS,
                              VALUE_OBJECT_BOUNDING_BOX,
-                             VALUE_PATTERN_X_DEFAULT,
-                             VALUE_PATTERN_Y_DEFAULT,
-                             VALUE_PATTERN_WIDTH_DEFAULT,
-                             VALUE_PATTERN_HEIGHT_DEFAULT);
+                             DEFAULT_VALUE_PATTERN_X,
+                             DEFAULT_VALUE_PATTERN_Y,
+                             DEFAULT_VALUE_PATTERN_WIDTH,
+                             DEFAULT_VALUE_PATTERN_HEIGHT);
     }
 
     /**

@@ -179,8 +179,7 @@ public class CSSUtilities implements SVGConstants {
 
          // Cannot access referenced mask
          if(clipPathElement == null){
-             System.out.println("Could not find : " + uriString +
-                                " in document");
+             System.out.println("Could not find : "+ uriString +" in document");
              return null;
          }
 

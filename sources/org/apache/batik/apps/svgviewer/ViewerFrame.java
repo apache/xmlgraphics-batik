@@ -1174,8 +1174,7 @@ public class ViewerFrame
             canvas.setSVGDocument(null);
             reloadAction.update(false);
             stopAction.update(true);
-            statusBar.setMainMessage
-                (resources.getString("Document.loading"));
+            statusBar.setMainMessage(resources.getString("Document.loading"));
             break;
         case (DocumentLoadingEvent.LOADED):
             // New doc has been loaded, prepare for new view
@@ -1185,8 +1184,7 @@ public class ViewerFrame
             dc.setUserStyleSheetURI(userStyleSheetURI);
             doc.setSVGContext(dc);
             domViewer.setDocument(doc, (ViewCSS)doc.getDocumentElement());
-            statusBar.setMainMessage(resources.getString
-                                         ("Document.creating"));
+            statusBar.setMainMessage(resources.getString("Document.creating"));
             break;
         case (DocumentLoadingEvent.DONE):
             doc = (SVGOMDocument) e.getValue();

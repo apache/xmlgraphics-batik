@@ -18,19 +18,18 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.ClipBridge;
 import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.ObjectBoundingBoxViewport;
 import org.apache.batik.bridge.Viewport;
-
 import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-
 import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
-
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -100,14 +99,21 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
 
             // check if the node is a valid Element
             if (node.getNodeType() != node.ELEMENT_NODE) {
-                throw new Error("Bad node type "+node.getNodeName());
+                continue;
             }
             Element child = (Element)node;
+            String namespaceURI = child.getNamespaceURI();
+            if (namespaceURI == null ||
+                    !namespaceURI.equals(SVG_NAMESPACE_URI)) {
+                continue; // skip element in the wrong namespace
+            }
 
             GraphicsNode clipNode = builder.build(ctx, child) ;
             // check if a GVT node has been created
             if (clipNode == null) {
-                throw new Error("Bad node type "+node.getNodeName());
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("clipPath.subelement.illegal",
+                                        new Object[] {node.getLocalName()}));
             }
             hasChildren = true;
             // compute the outline of the current Element
@@ -135,6 +141,8 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             }
             clipPath.add(new Area(outline));
         }
+        // restore the viewport
+        ctx.setCurrentViewport(oldViewport);
         if (!hasChildren) {
             return null; // no clipPath defined
         }
@@ -143,15 +151,10 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         ShapeNode clipPathNode = gvtFactory.createShapeNode();
         clipPathNode.setShape(clipPath);
         Clip clipElementClipPath =
-            CSSUtilities.convertClipPath(clipElement,
-                                         clipPathNode,
-                                         ctx);
+            CSSUtilities.convertClipPath(clipElement, clipPathNode, ctx);
         if (clipElementClipPath != null) {
             clipPath.subtract(new Area(clipElementClipPath.getClipPath()));
         }
-
-        // restore the viewport
-        ctx.setCurrentViewport(oldViewport);
 
         // OTHER PROBLEM: SHOULD TAKE MASK REGION INTO ACCOUNT
         Filter filter = gn.getFilter();

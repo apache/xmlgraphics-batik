@@ -16,22 +16,22 @@ import java.io.StringReader;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.PaintBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.ObjectBoundingBoxViewport;
+import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.bridge.Viewport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GVTFactory;
-import org.apache.batik.parser.AWTTransformProducer;
-import org.apache.batik.parser.ParserFactory;
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
-
-import org.apache.batik.refimpl.gvt.ConcretePatternPaint;
-
+import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.parser.ParserFactory;
+import org.apache.batik.refimpl.bridge.resources.Messages;
+import org.apache.batik.refimpl.gvt.ConcretePatternPaint;
 import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -111,18 +111,26 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
             // check if the node is a valid Element
             if (node.getNodeType() != node.ELEMENT_NODE) {
-                throw new Error("Bad node type "+node.getNodeName());
+                continue;
             }
             Element child = (Element) node;
+            String namespaceURI = child.getNamespaceURI();
+            if (namespaceURI == null ||
+                    !namespaceURI.equals(SVG_NAMESPACE_URI)) {
+                continue; // skip element in the wrong namespace
+            }
 
             GraphicsNode patternNode = builder.build(ctx, child) ;
             // check if a GVT node has been created
             if (patternNode == null) {
-                throw new Error("Bad node type "+node.getNodeName());
+                throw new IllegalAttributeValueException(
+                    Messages.formatMessage("pattern.subelement.illegal",
+                                           new Object[] {node.getLocalName()}));
             }
             hasChildren = true;
             patternContentNode.getChildren().add(patternNode);
         }
+        // restore the viewport
         ctx.setCurrentViewport(oldViewport);
         if (!hasChildren) {
             return null; // no pattern defined
@@ -139,8 +147,8 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         CSSStyleDeclaration cssDecl
             = ctx.getViewCSS().getComputedStyle(paintElement, null);
 
-        CSSPrimitiveValue vbOverflow
-            = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(CSS_OVERFLOW_PROPERTY);
+        CSSPrimitiveValue vbOverflow =
+            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(CSS_OVERFLOW_PROPERTY);
 
         String overFlowValue = vbOverflow.getStringValue();
         if(overFlowValue.length() == 0){
@@ -152,10 +160,8 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             overflow = false;
         }
 
-        //
         // Get pattern region. This is from the paintedElement, as
         // percentages are from the referencing element.
-        //
         CSSStyleDeclaration cssDeclPainted
             = ctx.getViewCSS().getComputedStyle(paintedElement, null);
         UnitProcessor.Context uctx
@@ -166,18 +172,12 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                                 paintedElement,
                                                 paintedNode,
                                                 uctx);
-
-        //
-        // Get the transform that will initialize the
-        // viewport for the pattern's viewBox
-        //
+        // Get the transform that will initialize the viewport for the
+        // pattern's viewBox
         boolean hasViewBox = false;
-
         // viewBox -> patterRegion (viewport)
         AffineTransform preserveAspectRatioTransform = null;
-
         String viewBoxAttr = paintElement.getAttributeNS(null, ATTR_VIEW_BOX);
-
         Rectangle2D viewBox = null;
         if (viewBoxAttr.length() > 0) {
             preserveAspectRatioTransform
@@ -192,10 +192,8 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             hasViewBox = true;
         }
 
-        //
         // Compute transform on pattern content. This is only necessary if there
         // is no viewBox
-        //
         AffineTransform patternContentTransform = null;
         if (!hasViewBox) {
             if(VALUE_OBJECT_BOUNDING_BOX.equals(patternContentUnits)){
@@ -237,16 +235,12 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                 patternContentNode = newPatternContentNode;
             }
         } else {
-            //
-            // There may be an additional boundingBoxSpace to
-            // user space transform needed.
-            //
+            // May be an additional boundingBoxSpace to user space
+            // transform is needed.
             nodeTransform = patternContentTransform;
         }
 
-        //
         // Now, build a Paint from the pattern content
-        //
         Paint paint = new ConcretePatternPaint(patternContentNode,
                                                nodeTransform,
                                                patternRegion,
