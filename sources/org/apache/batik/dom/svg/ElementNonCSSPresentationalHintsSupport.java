@@ -46,6 +46,7 @@ public class ElementNonCSSPresentationalHintsSupport {
 	PRESENTATION_ATTRIBUTES.add("fill");
         PRESENTATION_ATTRIBUTES.add("fill-opacity");
         PRESENTATION_ATTRIBUTES.add("fill-rule");
+        PRESENTATION_ATTRIBUTES.add("filter");
         PRESENTATION_ATTRIBUTES.add("flood-color");
         PRESENTATION_ATTRIBUTES.add("flood-opacity");
         PRESENTATION_ATTRIBUTES.add("font-family");

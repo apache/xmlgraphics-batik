@@ -8,10 +8,15 @@
 
 package org.apache.batik.dom.svg;
 
+import org.apache.batik.css.ElementNonCSSPresentationalHints;
+import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.OverrideStyleElement;
 
 import org.apache.batik.dom.util.XLinkSupport;
 
+import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -27,7 +32,10 @@ import org.w3c.dom.svg.SVGGradientElement;
  */
 public abstract class SVGOMGradientElement
     extends    SVGOMElement
-    implements SVGGradientElement {
+    implements SVGGradientElement,
+               OverrideStyleElement,
+	       ExtendedElementCSSInlineStyle,
+	       ElementNonCSSPresentationalHints {
 
     /**
      * Creates a new SVGOMGradientElement object.
@@ -68,6 +76,83 @@ public abstract class SVGOMGradientElement
 	throw new RuntimeException(" !!! TODO: SVGOMGradientElement.getSpreadMethod()");
     }
  
+    // ElementNonCSSPresentationalHints ////////////////////////////////////
+
+    /**
+     * Returns the translation of the non-CSS hints to the corresponding
+     * CSS rules. The result can be null.
+     */
+    public CSSStyleDeclaration getNonCSSPresentationalHints() {
+	return ElementNonCSSPresentationalHintsSupport.
+            getNonCSSPresentationalHints(this);
+    }
+
+    // SVGStylable support ///////////////////////////////////////////////////
+
+    /**
+     * The stylable support.
+     */
+    protected SVGStylableSupport stylableSupport;
+
+    /**
+     * Returns stylableSupport different from null.
+     */
+    protected final SVGStylableSupport getStylableSupport() {
+	if (stylableSupport == null) {
+	    stylableSupport = new SVGStylableSupport();
+	}
+	return stylableSupport;
+    }
+
+    /**
+     * Implements {@link
+     * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
+     */
+    public boolean hasStyle() {
+        return SVGStylableSupport.hasStyle(this);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
+     */
+    public CSSStyleDeclaration getStyle() {
+        return getStylableSupport().getStyle(this);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
+     */
+    public CSSValue getPresentationAttribute(String name) {
+        return getStylableSupport().getPresentationAttribute(name, this);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGStylable#getClassName()}.
+     */
+    public SVGAnimatedString getClassName() {
+        return getStylableSupport().getClassName(this);
+    }
+
+    // OverrideStyleElement ///////////////////////////////////////////
+
+    /**
+     * Implements {@link
+     * OverrideStyleElement#hasOverrideStyle(String)}.
+     */
+    public boolean hasOverrideStyle(String pseudoElt) {
+	return getStylableSupport().hasOverrideStyle(pseudoElt);
+    }    
+
+    /**
+     * Implements {@link
+     * OverrideStyleElement#getOverrideStyle(String)}.
+     */
+    public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
+	return getStylableSupport().getOverrideStyle(pseudoElt, this);
+    }
+
     // XLink support //////////////////////////////////////////////////////
 
     /**

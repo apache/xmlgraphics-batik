@@ -584,8 +584,9 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 s = v.getStringValue();
                 switch (s.charAt(0)) {
                 case 'u':
-                    result.put(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE,
-                               GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_ON);
+                    result.put(
+                        GVTAttributedCharacterIterator.TextAttribute.UNDERLINE,
+                        GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_ON);
                     if (sp != null) {
                         result.put(GVTAttributedCharacterIterator.
                                    TextAttribute.UNDERLINE_STROKE_PAINT, sp);
@@ -604,8 +605,9 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                GVTAttributedCharacterIterator.TextAttribute.OVERLINE_ON);
                     break;
                 case 'l':
-                    result.put(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH,
-                               GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_ON);
+                    result.put(
+                        GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH,
+                        GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_ON);
                 }
             }
         }
@@ -613,7 +615,3 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         return result;
     }
 }
-
-
-
-
