@@ -301,14 +301,20 @@ public class JGVTComponent extends JComponent {
      * @param color the new color of the selection overlay
      */
     public void setSelectionOverlayColor(Color color) {
-	textSelectionManager.setSelectionOverlayColor(color);
+	if (textSelectionManager != null) {
+	    textSelectionManager.setSelectionOverlayColor(color);
+	}
     }
 
     /**
      * Returns the color of the selection overlay.
      */
     public Color getSelectionOverlayColor() {
-	return textSelectionManager.getSelectionOverlayColor();
+	if (textSelectionManager != null) {
+	    return textSelectionManager.getSelectionOverlayColor();
+	} else {
+	    throw new IllegalArgumentException("Selection is disabled");
+	}
     }
 
     /**
@@ -318,14 +324,20 @@ public class JGVTComponent extends JComponent {
      * @param color the new color of the outline of the selection overlay 
      */
     public void setSelectionOverlayStrokeColor(Color color) {
-	textSelectionManager.setSelectionOverlayStrokeColor(color);
+	if (textSelectionManager != null) {
+	    textSelectionManager.setSelectionOverlayStrokeColor(color);
+	}
     }
 
     /**
      * Returns the color of the outline of the selection overlay.
      */
     public Color getSelectionOverlayStrokeColor() {
-	return textSelectionManager.getSelectionOverlayStrokeColor();
+	if (textSelectionManager != null) {
+	    return textSelectionManager.getSelectionOverlayStrokeColor();
+	} else {
+	    throw new IllegalArgumentException("Selection is disabled");
+	}
     }
 
     /**
@@ -335,7 +347,9 @@ public class JGVTComponent extends JComponent {
      * @param state true implies the selection overlay will be in XOR mode 
      */
     public void setSelectionOverlayXORMode(boolean state) {
-	textSelectionManager.setSelectionOverlayXORMode(state);
+	if (textSelectionManager != null) {
+	    textSelectionManager.setSelectionOverlayXORMode(state);
+	}
     }
 
     /**
@@ -343,7 +357,11 @@ public class JGVTComponent extends JComponent {
      * otherwise.
      */
     public boolean isSelectionOverlayXORMode() {
-	return textSelectionManager.isSelectionOverlayXORMode();
+	if (textSelectionManager != null) {
+	    return textSelectionManager.isSelectionOverlayXORMode();
+	} else {
+	    throw new IllegalArgumentException("Selection is disabled");
+	}
     }
 
     /**
