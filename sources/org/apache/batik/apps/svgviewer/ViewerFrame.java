@@ -49,6 +49,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -68,6 +69,7 @@ import org.apache.batik.gvt.event.EventDispatcher;
 
 import org.apache.batik.refimpl.util.JSVGCanvas;
 
+import org.apache.batik.util.SVGFileFilter;
 import org.apache.batik.util.SVGUtilities;
 
 import org.apache.batik.util.gui.DOMViewer;
@@ -99,6 +101,7 @@ public class ViewerFrame
                UserAgent {
     // The actions names.
     public final static String OPEN_ACTION        = "OpenAction";
+    public final static String OPEN_PAGE_ACTION   = "OpenPageAction";
     public final static String NEW_WINDOW_ACTION  = "NewWindowAction";
     public final static String RELOAD_ACTION      = "ReloadAction";
     public final static String CLOSE_ACTION       = "CloseAction";
@@ -242,8 +245,10 @@ public class ViewerFrame
             });
 
         uriChooser = new URIChooser(this, new URIChooserOKAction());
+        uriChooser.setFileFilter(new SVGFileFilter());
 
         listeners.put(OPEN_ACTION,        new OpenAction());
+        listeners.put(OPEN_PAGE_ACTION,   new OpenPageAction());
         listeners.put(NEW_WINDOW_ACTION,  new NewWindowAction());
         listeners.put(RELOAD_ACTION,      reloadAction);
         listeners.put(CLOSE_ACTION,       application.createCloseAction(this));
@@ -344,6 +349,27 @@ public class ViewerFrame
         return 0.33f;
     }
 
+    /**
+     * Loads the given document.
+     * @param s The document name.
+     */
+    public void loadDocument(String s) {
+        uri = s;
+        File f = new File(uri);
+        if (f.exists()) {
+            if (f.isDirectory()) {
+                uri = null;
+            } else {
+                uri = "file:" + uri;
+            }
+        }
+        if (uri != null) {
+            locationBar.setText(uri);
+            thread = new DocumentThread(uri);
+            thread.start();
+        }
+    }
+
     // ActionMap /////////////////////////////////////////////////////
 
     /**
@@ -409,20 +435,7 @@ public class ViewerFrame
     public class URIChooserOKAction extends AbstractAction {
         public URIChooserOKAction() {}
         public void actionPerformed(ActionEvent e) {
-            uri = uriChooser.getText();
-            File f = new File(uri);
-            if (f.exists()) {
-                if (f.isDirectory()) {
-                    uri = null;
-                } else {
-                    uri = "file:" + uri;
-                }
-            }
-            if (uri != null) {
-                locationBar.setText(uri);
-                thread = new DocumentThread(uri);
-                thread.start();
-            }
+            loadDocument(uriChooser.getText());
         }
     }
     
@@ -431,6 +444,30 @@ public class ViewerFrame
      */
     public class OpenAction extends AbstractAction {
         public OpenAction() {}
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser =
+                new JFileChooser((uri == null) ? "." : uri);
+            fileChooser.setFileHidingEnabled(false);
+            fileChooser.setFileSelectionMode
+                (JFileChooser.FILES_AND_DIRECTORIES);
+            fileChooser.setFileFilter(new SVGFileFilter());
+
+            int choice = fileChooser.showOpenDialog(ViewerFrame.this);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                File f = fileChooser.getSelectedFile();
+                try {
+                    loadDocument(f.getCanonicalPath());
+                } catch (IOException ex) {
+                }
+            }
+        }
+    }
+
+    /**
+     * To open a new document
+     */
+    public class OpenPageAction extends AbstractAction {
+        public OpenPageAction() {}
         public void actionPerformed(ActionEvent e) {
             uriChooser.pack();
 

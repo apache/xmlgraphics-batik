@@ -37,6 +37,8 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import javax.swing.filechooser.FileFilter;
+
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.ButtonFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
@@ -100,6 +102,11 @@ public class URIChooser extends JDialog implements ActionMap {
     protected String currentPath = ".";
 
     /**
+     * The file filter.
+     */
+    protected FileFilter fileFilter;
+
+    /**
      * Creates a new URIChooser
      * @param d the parent dialog
      * @param okAction the action to associate to the ok button
@@ -124,6 +131,13 @@ public class URIChooser extends JDialog implements ActionMap {
      */
     public String getText() {
         return textField.getText();
+    }
+
+    /**
+     * Sets the file filter to use with the file selector.
+     */
+    public void setFileFilter(FileFilter ff) {
+        fileFilter = ff;
     }
 
     /**
@@ -238,7 +252,10 @@ public class URIChooser extends JDialog implements ActionMap {
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
                 (JFileChooser.FILES_AND_DIRECTORIES);
-
+            if (fileFilter != null) {
+                fileChooser.setFileFilter(fileFilter);
+            }
+            
             int choice = fileChooser.showOpenDialog(URIChooser.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
                 File f = fileChooser.getSelectedFile();

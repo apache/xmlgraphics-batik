@@ -10,6 +10,7 @@ package org.apache.batik.dom;
 
 import java.util.MissingResourceException;
 import org.apache.batik.dom.events.EventSupport;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.XMLSupport;
 import org.w3c.dom.DOMException;
@@ -396,6 +397,14 @@ public abstract class AbstractNode implements ExtendedNode {
 	if (eventSupport != null) {
 	    eventSupport.removeEventListener(type, listener, useCapture);
 	}
+    }
+
+    /**
+     * Implements {@link
+     * org.apache.batik.dom.event.NodeEventTarget#getParentNodeEventTarget()}.
+     */
+    public NodeEventTarget getParentNodeEventTarget() {
+	return (NodeEventTarget)getParentNode();
     }
 
     /**
