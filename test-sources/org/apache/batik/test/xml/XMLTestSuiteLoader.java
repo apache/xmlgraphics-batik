@@ -20,18 +20,15 @@ import java.lang.reflect.Method;
 
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+
 import org.apache.batik.test.DefaultTestSuite;
 import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestSuite;
 import org.apache.batik.test.Test;
 import org.apache.batik.test.TestException;
 import org.apache.batik.test.TestReportProcessor;
-
-import org.apache.batik.dom.util.DocumentFactory;
-import org.apache.batik.dom.util.SAXDocumentFactory;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-
-import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.xml.sax.InputSource;
 
@@ -86,18 +83,14 @@ public class XMLTestSuiteLoader implements XTSConstants {
      */
     protected static Document loadTestSuiteDocument(String testSuiteURI)
         throws TestException{
-        DocumentFactory df 
-            = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(), 
-                                     XMLResourceDescriptor.getXMLParserClassName());
 
         Document doc = null;
 
         try{
-            URL url = new URL(testSuiteURI);
-            doc = df.createDocument(null,
-                                    XTS_TEST_SUITE_TAG,
-                                    url.toString(),
-                                    url.openStream());
+            DocumentBuilder docBuilder
+                = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+            doc = docBuilder.parse(testSuiteURI);
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
@@ -127,12 +120,10 @@ public class XMLTestSuiteLoader implements XTSConstants {
             = new DefaultTestSuite();
 
         String suiteName 
-            = element.getAttributeNS(null,
-                                     XTS_NAME_ATTRIBUTE);
+            = element.getAttribute(XTS_NAME_ATTRIBUTE);
 
         String suiteId 
-            = element.getAttributeNS(null,
-                                     XTS_ID_ATTRIBUTE);
+            = element.getAttribute(XTS_ID_ATTRIBUTE);
 
         testSuite.setId(suiteId);
 
@@ -165,8 +156,7 @@ public class XMLTestSuiteLoader implements XTSConstants {
             Test t = (Test)XMLReflect.buildObject(element);
 
             String id 
-                = element.getAttributeNS(null,
-                                         XTS_ID_ATTRIBUTE);
+                = element.getAttribute(XTS_ID_ATTRIBUTE);
             t.setId(id);
             return t;
         }catch (Exception e) {
@@ -174,7 +164,7 @@ public class XMLTestSuiteLoader implements XTSConstants {
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
             throw new TestException(CANNOT_CREATE_TEST,
-                                    new Object[] { element.getAttributeNS(null, XR_CLASS_ATTRIBUTE),
+                                    new Object[] { element.getAttribute(XR_CLASS_ATTRIBUTE),
                                                    e.getClass().getName(),
                                                    e.getMessage(),
                                                    sw.toString() },

@@ -22,6 +22,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+
 import org.apache.batik.test.DefaultTestSuite;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
@@ -30,12 +33,6 @@ import org.apache.batik.test.Test;
 import org.apache.batik.test.TestFilter;
 import org.apache.batik.test.TestException;
 import org.apache.batik.test.TestReportProcessor;
-
-import org.apache.batik.dom.util.DocumentFactory;
-import org.apache.batik.dom.util.SAXDocumentFactory;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-
-import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.xml.sax.InputSource;
 
@@ -271,7 +268,7 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
             throw new TestException(CANNOT_CREATE_TEST_REPORT_PROCESSOR,
-                                    new Object[] { element.getAttributeNS(null, XR_CLASS_ATTRIBUTE),
+                                    new Object[] { element.getAttribute(XR_CLASS_ATTRIBUTE),
                                                    e.getClass().getName(),
                                                    e.getMessage(),
                                                    sw.toString() },
@@ -293,10 +290,10 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
         //
         // Set the testRun name and id on the top level testSuite
         //
-        String name = element.getAttributeNS(null, XTRun_NAME_ATTRIBUTE);
+        String name = element.getAttribute(XTRun_NAME_ATTRIBUTE);
         testSuite.setName(name);
         
-        String id = element.getAttributeNS(null, XTRun_ID_ATTRIBUTE);
+        String id = element.getAttribute(XTRun_ID_ATTRIBUTE);
         testSuite.setId(id);
 
         Element[] testSuites 
@@ -305,7 +302,7 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
         int n = testSuites != null ? testSuites.length : 0;
         for(int i=0; i<n; i++){
             String suiteHref = 
-                testSuites[i].getAttributeNS(null, XTRun_HREF_ATTRIBUTE);
+                testSuites[i].getAttribute(XTRun_HREF_ATTRIBUTE);
 
             Test test = XMLTestSuiteLoader.loadTestSuite(suiteHref, testSuite);
             if(test != null){
@@ -532,18 +529,15 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
             }
         }
 
-        DocumentFactory df 
-            = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(), 
-                                     XMLResourceDescriptor.getXMLParserClassName());
-
         Document doc = null;
 
         try{
             System.err.println("Loading document ...");
-            doc = df.createDocument(null,
-                                    XTRun_TEST_RUN_TAG,
-                                    url.toString(),
-                                    url.openStream());
+
+            DocumentBuilder docBuilder
+                = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+            doc = docBuilder.parse(url.toString());
         }catch(Exception e){
             e.printStackTrace();
             System.err.println(Messages.formatMessage(INVALID_DOCUMENT,
