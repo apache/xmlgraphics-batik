@@ -299,6 +299,9 @@
         <test id="samples/tests/spec/scripting/text_children2.svg" />
         <test id="samples/tests/spec/scripting/text_children3.svg" />
         <test id="samples/tests/spec/scripting/tspanProperties.svg" />
+        <test id="samples/tests/spec/scripting/image.svg" />
+        <test id="samples/tests/spec/scripting/imageraster.svg" />
+        <test id="samples/tests/spec/scripting/imagesvg.svg" />
     </testGroup>
 
 </testSuite>
