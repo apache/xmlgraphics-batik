@@ -8,8 +8,6 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-
-
 import java.awt.RenderingHints;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
@@ -261,9 +259,22 @@ public class DisplacementMapOp implements BufferedImageOp, RasterOp {
         DataBufferInt in2DB = (DataBufferInt)in2Raster.getDataBuffer();
 
         // Offset defines where in the stack the real data begin
-        final int srcOff = srcDB.getOffset();
-        final int dstOff = dstDB.getOffset();
-        final int in2Off = in2DB.getOffset();
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)src.getSampleModel();
+
+        final int srcOff = srcDB.getOffset() +
+            sppsm.getOffset(src.getMinX() - src.getSampleModelTranslateX(),
+                            src.getMinY() - src.getSampleModelTranslateY());
+
+        sppsm = (SinglePixelPackedSampleModel)dest.getSampleModel();
+        final int dstOff = dstDB.getOffset() +
+            sppsm.getOffset(dest.getMinX() - dest.getSampleModelTranslateX(),
+                            dest.getMinY() - dest.getSampleModelTranslateY());
+
+        sppsm = (SinglePixelPackedSampleModel)in2.getSampleModel();
+        final int in2Off = in2DB.getOffset() +
+            sppsm.getOffset(in2.getMinX() - dest.getSampleModelTranslateX(),
+                            in2.getMinY() - dest.getSampleModelTranslateY());
 
         // Stride is the distance between two consecutive column elements,
         // in the one-dimention dataBuffer

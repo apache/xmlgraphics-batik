@@ -587,12 +587,17 @@ public final class TurbulencePatternGenerator{
 
         // Access the integer buffer for the destination Raster
         DataBufferInt dstDB = (DataBufferInt)dest.getDataBuffer();
-        int dstOff = dstDB.getOffset();
-        int dstScanStride = ((SinglePixelPackedSampleModel)dest.getSampleModel()).getScanlineStride();
-        final int destPixels[] = dstDB.getBankData()[0];
-        int dstAdjust = dstScanStride - w;
+        SinglePixelPackedSampleModel sppsm;
         int minX = dest.getMinX();
         int minY = dest.getMinY();
+        sppsm = (SinglePixelPackedSampleModel)dest.getSampleModel();
+        int dstOff = dstDB.getOffset() +
+            sppsm.getOffset(minX - dest.getSampleModelTranslateX(),
+                            minY - dest.getSampleModelTranslateY());
+
+        int dstScanStride = sppsm.getScanlineStride();
+        final int destPixels[] = dstDB.getBankData()[0];
+        int dstAdjust = dstScanStride - w;
 
         // Generate pixel pattern now
         int r=0, g=0, b=0, a=0;

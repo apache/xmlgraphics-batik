@@ -110,9 +110,21 @@ public class DiffuseLightingRed extends AbstractRed{
         
         int w = wr.getWidth();
         int h = wr.getHeight();
+        int minX = wr.getMinX();
+        int minY = wr.getMinY();
+
         DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
         int[] pixels = db.getBankData()[0];
-        int offset = db.getOffset();
+
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
+
+        final int offset = 
+            (db.getOffset() +
+             sppsm.getOffset(minX-wr.getSampleModelTranslateX(), 
+                             minY-wr.getSampleModelTranslateY()));
+        // int offset = db.getOffset();
+
         int scanStride = 
             ((SinglePixelPackedSampleModel)wr.getSampleModel())
             .getScanlineStride();
@@ -120,8 +132,6 @@ public class DiffuseLightingRed extends AbstractRed{
         int p = offset;
         int r=0, g=0, b=0;
         int i=0, j=0;
-        int minX = wr.getMinX();
-        int minY = wr.getMinY();
 
         System.out.println("Getting diffuse red : " + minX + "/" + minY + "/" + w + "/" + h);
         double x = scaleX*minX;
