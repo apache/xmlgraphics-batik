@@ -64,5 +64,6 @@ public class SVGViewCSS extends CommonViewCSS {
 	addRelativeValueResolver(new OpacityResolver("stroke-opacity", true));
 	addRelativeValueResolver(new TextAnchorResolver());
 	addRelativeValueResolver(new TextRenderingResolver());
+	addRelativeValueResolver(new WritingModeResolver());
     }
 }
