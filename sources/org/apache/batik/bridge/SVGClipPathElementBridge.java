@@ -114,8 +114,14 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
 
             // compute the outline of the current clipPath's child
             int wr = CSSUtilities.convertClipRule(child);
-            GeneralPath path =
-                new GeneralPath(clipNode.getTransformedOutline());
+            GeneralPath path;
+            Shape cno = clipNode.getOutline();
+            AffineTransform cnt = clipNode.getTransform();
+            if (cnt != null) {
+                path = new GeneralPath(cnt.createTransformedShape(cno));
+            } else {
+                path = new GeneralPath(cno);
+            }
             path.setWindingRule(wr);
             Shape outline = Tx.createTransformedShape(path);
 

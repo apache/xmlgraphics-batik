@@ -228,18 +228,6 @@ public interface GraphicsNode {
     void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
 
     /**
-     * Sets the hit detector for this node.
-     *
-     * @param hitDetector the new hit detector
-     */
-    void setGraphicsNodeHitDetector(GraphicsNodeHitDetector hitDetector);
-
-    /**
-     * Returns the hit detector for this node.
-     */
-    GraphicsNodeHitDetector getGraphicsNodeHitDetector();
-
-    /**
      * Dispatches a graphics node mouse event to this node or one of its child.
      *
      * @param evt the evt to dispatch
@@ -356,10 +344,4 @@ public interface GraphicsNode {
      * Returns the outline of this node.
      */
     Shape getOutline();
-
-    /**
-     * Returns the transformed outline of this node.
-     */
-    Shape getTransformedOutline();
-
 }

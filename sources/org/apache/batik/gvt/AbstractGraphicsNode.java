@@ -61,11 +61,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected EventListenerList listeners;
 
     /**
-     * The hit detector used to filter mouse events.
-     */
-    protected GraphicsNodeHitDetector hitDetector;
-
-    /**
      * The transform of this graphics node.
      */
     protected AffineTransform transform;
@@ -602,22 +597,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Sets the hit detector for this node.
-     *
-     * @param hitDetector the new hit detector
-     */
-    public void setGraphicsNodeHitDetector(GraphicsNodeHitDetector hitDetector){
-        this.hitDetector = hitDetector;
-    }
-
-    /**
-     * Returns the hit detector for this node.
-     */
-    public GraphicsNodeHitDetector getGraphicsNodeHitDetector() {
-        return hitDetector;
-    }
-
-    /**
      * Dispatches a graphics node mouse event to this node or one of its child.
      *
      * @param evt the evt to dispatch
@@ -927,31 +906,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns the transformed outline of this node.
-     */
-    public Shape getTransformedOutline() {
-        if (transform != null) {
-            return transform.createTransformedShape(getOutline());
-        } else {
-            return getOutline();
-        }
-    }
-
-    /**
      * Returns the GraphicsNode containing point p if this node or one of its
      * children is sensitive to mouse events at p.
      *
      * @param p the specified Point2D in the user space
      */
     public GraphicsNode nodeHitAt(Point2D p) {
-        if (hitDetector != null) {
-            if (hitDetector.isHit(this, p)) {
-                return this;
-            } else {
-                return null;
-            }
-        } else {
-            return (contains(p) ? this : null);
-        }
+        return (contains(p) ? this : null);
     }
 }
