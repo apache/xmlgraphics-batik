@@ -778,7 +778,7 @@ public class GlyphLayout implements TextSpanLayout {
             // merging seperately, and anyways with this much space
             // between them the extra outline shouldn't hurt..
             GeneralPath gp = new GeneralPath();
-            if (dist < 2*sz) {
+            if (dist < sz) {
                 // Close enough to merge with previous char...
                 System.arraycopy(boxes, 0, chull, 0, 8);
                 int npts = makeConvexHull(chull, 8);
@@ -1856,9 +1856,10 @@ public class GlyphLayout implements TextSpanLayout {
         float y0     = (float)cRect.getY();
         float x0, width, height;
 
-        float lineMult     = 1.0f;
-        float nextLineMult = 0.0f;
-        float dy           = 0.0f;
+        boolean lineHeightRelative = true;
+        float lineHeight           = 1.0f;
+        float nextLineMult         = 0.0f;
+        float dy                   = 0.0f;
 
         //System.out.println("Chunks: " + numChunks);
         
@@ -1915,42 +1916,59 @@ public class GlyphLayout implements TextSpanLayout {
 
             float prevDesc = 0.0f;
             GlyphIterator gi = new GlyphIterator(aci, gv);
-            GlyphIterator breakGI  = null;
+            GlyphIterator breakGI  = null, newBreakGI = null;
             GlyphIterator lineGI   =  gi.copy();
             while (!gi.done()) {
                 boolean doBreak = false;
                 boolean partial = false;
 
-                if (!gi.isBreakChar() &&
+                if (gi.isPrinting() &&
                     (breakGI != null) && // Don't break at first char in line
                     (gi.getAdv() > width)) {
                     gi = breakGI.copy(gi);  // Back up to break loc...
 
-                    nextLineMult = 1.1f;
+                    nextLineMult = 1;
                     doBreak = true;
                     partial = false;
                 } else if (gi.isLastChar()) {
-                    nextLineMult = 1.1f;
+                    nextLineMult = 1;
                     doBreak = true;
                     partial = true;
                 } 
                 int lnBreaks = gi.getLineBreaks();
                 if (lnBreaks != 0) {
                     if (doBreak)
-                        nextLineMult -= 1.1;
-                    nextLineMult += lnBreaks*1.1f;
+                        nextLineMult -= 1;
+                    nextLineMult += lnBreaks;
                     partial = true;
                     doBreak = true;
                 }
+
                 if (!doBreak) {
+                    // System.out.println("No Brk Adv: " + gi.getAdv());
+                    // We don't need to break the line because of this char
+                    // So we just check if we need to update our break loc.
                     if ((gi.isBreakChar()) ||
                         (breakGI == null)  ||
-                        (!breakGI.isBreakChar()))
-                        breakGI = gi.copy(breakGI);
-
-                    gi.nextChar();
+                        (!breakGI.isBreakChar())) {
+                        // Make this the new break if curr char is a
+                        // break char or we don't have any break chars
+                        // yet, or our current break char is also not
+                        // a break char.
+                        newBreakGI = gi.copy(newBreakGI);
+                        gi.nextChar();
+                        if (gi.getChar() != GlyphIterator.ZERO_WIDTH_JOINER) {
+                            GlyphIterator tmpGI = breakGI;
+                            breakGI = newBreakGI;
+                            newBreakGI = tmpGI;
+                        }
+                    } else {
+                        gi.nextChar();
+                    }
                     continue;
                 }
+
+                // System.out.println("   Brk Adv: " + gi.getAdv());
 
                 // We will now attempt to break the line just
                 // after the breakGI.
@@ -1962,16 +1980,19 @@ public class GlyphLayout implements TextSpanLayout {
 
                 // Get the nomial line advance based on the
                 // largest font we encountered on line...
-                // Fix this to be based on font ascent/descent.
-                float ladv = (gi.getMaxFontSize()*.8f+prevDesc);
-                    
-                dy += ladv*lineMult;
-                    // Remember the effect of p's br's at the end of this line.
-                lineMult = nextLineMult;
-                nextLineMult = 0f;
+                float lineSize = gi.getMaxAscent()+gi.getMaxDescent(); 
+                float lineBoxHeight;
+                if (lineHeightRelative) 
+                    lineBoxHeight = gi.getMaxFontSize()*lineHeight;
+                else
+                    lineBoxHeight = lineHeight;
+                float halfLeading = (lineBoxHeight-lineSize)/2;
 
+                float ladv = prevDesc + halfLeading + gi.getMaxAscent();
+                float newDesc = halfLeading + gi.getMaxDescent();
 
-                if ((dy + gi.getMaxFontSize()*.2f) > height)  {
+                dy += ladv;
+                if ((dy + newDesc) > height)  {
                     // The current Line doesn't fit in the
                     // current flow rectangle so we need to
                     // move line to the next flow rect.
@@ -1998,7 +2019,6 @@ public class GlyphLayout implements TextSpanLayout {
                     // New rect so no previous row to consider...
                     dy        = 0; // mi.getTopMargin();
                     prevDesc  = 0;
-                    lineMult  = 1.0f; // don't pile up lineMults from
                     // previous flows?
 
                     if (gi.getAdv() > oldWidth) {
@@ -2008,8 +2028,11 @@ public class GlyphLayout implements TextSpanLayout {
                     continue;
                 }
 
+                prevDesc = newDesc + (nextLineMult-1)*lineBoxHeight;
+                nextLineMult = 0f;
+
+                
                 // System.out.println("Fit: " + dy);
-                prevDesc = gi.getMaxFontSize()*.2f;
                 lineInfos.add(gi.getLineInfo
                               (new Point2D.Float(x0, y0+dy),
                                width,

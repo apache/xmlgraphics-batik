@@ -61,11 +61,6 @@ public class TextSelectionManager {
     protected Overlay selectionOverlay = new SelectionOverlay();
 
     /**
-     * The GVT root.
-     */
-    protected GraphicsNode gvtRoot;
-
-    /**
      * The mouse listener.
      */
     protected MouseListener mouseListener;
@@ -88,7 +83,7 @@ public class TextSelectionManager {
     /**
      * The color of the selection overlay.
      */
-    protected Color selectionOverlayColor = new Color(200, 200, 255, 100);
+    protected Color selectionOverlayColor = new Color(100, 100, 255, 100);
 
     /**
      * The color of the outline of the selection overlay.
