@@ -12,7 +12,7 @@ package org.apache.batik.util;
  * Interface for classes which listen to DocumentEvents.
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
- * @version $Id $
+ * @version $Id$
  */
 public interface DocumentListener {
 
