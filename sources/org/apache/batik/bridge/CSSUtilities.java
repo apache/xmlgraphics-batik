@@ -860,27 +860,16 @@ public abstract class CSSUtilities
     public static void computeStyleAndURIs(Element refElement,
                                            Element localRefElement,
                                            String  uri) {
-        String xmlBase = XMLBaseSupport.getCascadedXMLBase(localRefElement);
-        ParsedURL purl;
-        if (xmlBase != null) {
-            // We have a current base so merge it with our new base and
-            // set the result...
-            purl = new ParsedURL(xmlBase, uri);
-        } else {
-            // No current base so just use the new uri.
-            purl = new ParsedURL(uri);
-        }
+	// Pull fragement id off first...
+        int len = uri.length();
+        int idx = uri.indexOf('#');
+        if (idx != -1)
+            uri = uri.substring(0,idx);
 
-        // Get the URL sans fragment.
-        uri = purl.getPortStr();
-        String path = purl.getPath();
-        if (path != null)
-            uri += path;
-
+	// Only set xml:base if we have a real URL.
         if (uri.length() != 0)
-            // Only set xml:base if we have a real URL.
             localRefElement.setAttributeNS(XML_NAMESPACE_URI,
-                                           "xml:base",
+                                           "base",
                                            uri);
 
         CSSEngine engine    = CSSUtilities.getCSSEngine(localRefElement);

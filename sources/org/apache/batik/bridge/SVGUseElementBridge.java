@@ -72,7 +72,7 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         if (uri.length() == 0)
             throw new BridgeException(e, ERR_URI_MALFORMED, 
                                       new Object[] {uri});
-            
+
         Element refElement = ctx.getReferencedElement(e, uri);
         SVGOMDocument document
             = (SVGOMDocument)e.getOwnerDocument();

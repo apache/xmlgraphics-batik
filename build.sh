@@ -44,4 +44,6 @@ if [ $# != 0 ] ; then
   shift 1
 fi
 
+# $JAVA_HOME/bin/java -version
+
 $JAVA_HOME/bin/java $ANT_OPTS -classpath $CP org.apache.tools.ant.Main -emacs -Dant.home=$ANT_HOME $TARGET -Dargs="$*"

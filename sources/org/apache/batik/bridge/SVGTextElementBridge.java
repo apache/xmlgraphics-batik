@@ -636,7 +636,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                      Element element) {
         
         AttributedStringBuffer asb = new AttributedStringBuffer();
-        fillAttributedStringBuffer(ctx, element, true, null, asb);
+        fillAttributedStringBuffer(ctx, element, true, null, null, asb);
         return asb.toAttributedString();
     }
 
@@ -647,6 +647,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                               Element element,
                                               boolean top,
                                               TextPath textPath,
+                                              Integer bidiLevel,
                                               AttributedStringBuffer asb) {
         // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
         if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
@@ -657,10 +658,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
         boolean first = true;
         boolean last;
-        boolean stripFirst = !preserve;
-        boolean stripLast = !preserve;
+        boolean stripFirst  = !preserve;
+        boolean stripLast   = !preserve;
         Element nodeElement = element;
-        Map map = null;
+
+	Map map = getAttributeMap(ctx, element, textPath, bidiLevel);
+	Object o = map.get(TextAttribute.BIDI_EMBEDDING);
+        Integer subBidiLevel = bidiLevel;
+	if (o != null)
+	    subBidiLevel = ((Integer)o);
 
         for (Node n = element.getFirstChild();
              n != null;
@@ -687,6 +693,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                nodeElement,
                                                false,
                                                textPath,
+                                               subBidiLevel,
                                                asb);
                 } else if (ln.equals(SVG_TEXT_PATH_TAG)) {
                     SVGTextPathElementBridge textPathBridge
@@ -698,6 +705,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                    nodeElement,
                                                    false,
                                                    newTextPath,
+                                                   subBidiLevel,
                                                    asb);
                     }
                 } else if (ln.equals(SVG_TREF_TAG)) {
@@ -710,7 +718,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                         if (stripLast && !asb.isEmpty()) {
                             asb.stripLast();
                         }
-                        Map m = getAttributeMap(ctx, nodeElement, textPath);
+                        Map m = getAttributeMap(ctx, nodeElement, 
+						textPath, bidiLevel);
                         asb.append(s, m);
                     }
                 } else if (ln.equals(SVG_A_TAG)) {
@@ -724,6 +733,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                                nodeElement,
                                                false,
                                                textPath,
+                                               subBidiLevel,
                                                asb);
                 }
                 break;
@@ -733,12 +743,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 s = normalizeString(s, preserve, stripFirst, last && top);
                 if (s != null) {
                     stripLast = !preserve && s.charAt(0) == ' ';
-                    if (stripLast && !asb.isEmpty()) {
+                    if (stripLast && !asb.isEmpty())
                         asb.stripLast();
-                    }
-                    if (map == null) {
-                        map = getAttributeMap(ctx, element, textPath);
-                    }
                     asb.append(s, map);
                 }
             }
@@ -1299,7 +1305,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      */
     protected Map getAttributeMap(BridgeContext ctx,
                                   Element element,
-                                  TextPath textPath) {
+                                  TextPath textPath,
+                                  Integer bidiLevel) {
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
 
         Map result = new HashMap();
@@ -1383,7 +1390,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             (element, SVGCSSEngine.UNICODE_BIDI_INDEX);
         s = val.getStringValue();
         if (s.charAt(0) == 'n') {
-            result.put(TextAttribute.BIDI_EMBEDDING, ZERO);
+            if (bidiLevel != null)
+                result.put(TextAttribute.BIDI_EMBEDDING, bidiLevel);
         } else {
 
             // Text direction
@@ -1399,38 +1407,32 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             val = CSSUtilities.getComputedStyle
                 (element, SVGCSSEngine.DIRECTION_INDEX);
             String rs = val.getStringValue();
+	    int cbidi = 0;
+	    if (bidiLevel != null) cbidi = bidiLevel.intValue();
+
+	    // We don't care if it was embed or override we just want
+	    // it's level here. So map override to positive value.
+	    if (cbidi < 0) cbidi = -cbidi;
+
             switch (rs.charAt(0)) {
             case 'l':
                 result.put(TextAttribute.RUN_DIRECTION,
                            TextAttribute.RUN_DIRECTION_LTR);
-
-                switch (s.charAt(0)) {
-                case 'b': // bidi-override
-                    result.put(TextAttribute.BIDI_EMBEDDING,
-                               new Integer(-2));
-                    break;
-                case 'e': // embed
-                    result.put(TextAttribute.BIDI_EMBEDDING,
-                               new Integer(2));
-                    break;
-                }
-
-                break;
+		if ((cbidi & 0x1) == 1) cbidi++; // was odd now even
+		else                    cbidi+=2; // next greater even number
             case 'r':
                 result.put(TextAttribute.RUN_DIRECTION,
                            TextAttribute.RUN_DIRECTION_RTL);
-                switch (s.charAt(0)) {
-                case 'b': // bidi-override
-                    result.put(TextAttribute.BIDI_EMBEDDING,
-                               new Integer(-1));
-                    break;
-                case 'e': // embed
-                    result.put(TextAttribute.BIDI_EMBEDDING,
-                               new Integer(1));
-                    break;
-                }
-                break;
-            }
+		if ((cbidi & 0x1) == 1) cbidi+=2; // next greater odd number
+		else                    cbidi++; // was even now odd
+	    }
+	    
+	    switch (s.charAt(0)) {
+	    case 'b': // bidi-override
+		cbidi = -cbidi; // For bidi-override we want a negative number.
+		break;
+	    }
+	    result.put(TextAttribute.BIDI_EMBEDDING, new Integer(cbidi));
         }
 
         // Writing mode
