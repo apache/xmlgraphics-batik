@@ -471,18 +471,22 @@ To display the available targets type:
   <target name="css-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-css.jar">
       <fileset dir="${dest}">
-        <include name="${package-prefix}/css/*.class"/>
-        <include name="${package-prefix}/css/event/*.class"/>
+        <include name="${package-prefix}/css/dom/*.class"/>
+        <include name="${package-prefix}/css/engine/*.class"/>
+        <include name="${package-prefix}/css/engine/sac/*.class"/>
+        <include name="${package-prefix}/css/engine/value/*.class"/>
+        <include name="${package-prefix}/css/engine/value/css2/*.class"/>
+        <include name="${package-prefix}/css/engine/value/svg/*.class"/>
         <include name="${package-prefix}/css/parser/*.class"/>
-        <include name="${package-prefix}/css/sac/*.class"/>
-        <include name="${package-prefix}/css/value/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
-        <include name="${package-prefix}/css/resources/**"/>
-        <include name="${package-prefix}/css/event/resources/**"/>
-        <include name="${package-prefix}/css/parser/resources/**"/>
+        <include name="${package-prefix}/css/dom/resources/**"/>
         <include name="${package-prefix}/css/sac/resources/**"/>
-        <include name="${package-prefix}/css/value/resources/**"/>
+        <include name="${package-prefix}/css/parser/resources/**"/>
+        <include name="${package-prefix}/css/engine/resources/**"/>
+        <include name="${package-prefix}/css/engine/value/resources/**"/>
+        <include name="${package-prefix}/css/engine/value/css2/resources/**"/>
+        <include name="${package-prefix}/css/engine/value/svg/resources/**"/>
       </fileset>
     </jar>
   </target>
@@ -492,11 +496,9 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-svg-dom.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/dom/svg/*.class"/>
-        <include name="${package-prefix}/css/svg/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/dom/svg/resources/**"/>
-        <include name="${package-prefix}/css/svg/resources/**"/>
       </fileset>
     </jar>
   </target>
