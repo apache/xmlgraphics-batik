@@ -83,17 +83,6 @@ public class SVGOMAnimatedLength
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedLength#setBaseVal(SVGLength)}.
-     */
-    public void setBaseVal(SVGLength bv) throws DOMException {
-	baseVal = (SVGOMLength)bv;
-	element.putLiveAttributeValue(attributeNsURI, attributeName, baseVal);
-	baseVal.setAttributeModifier(this);
-	setAttributeValue(baseVal.getValueAsString());
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGAnimatedLength#getAnimVal()}.
      */
     public SVGLength getAnimVal() {

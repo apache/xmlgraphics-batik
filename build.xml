@@ -58,6 +58,7 @@ To display the available targets type:
 
   <target name="init" depends="init-args">
     <tstamp/>
+    <property name="Project" value="Batik"/>
     <property name="project" value="batik"/>
     <property name="year"    value="2000"/>
 
@@ -96,7 +97,11 @@ To display the available targets type:
     <echo message="   svgviewer  --> runs the SVG viewer"/>
     <echo message="   javadoc    --> generates the API documentation"/>
     <echo message="   site       --> generates the site documentation"/>
+    <echo message="   sitedoc    --> generates the site documentation without"/>
+    <echo message="                  the Javadoc"/>
+    <echo message="   html       --> generates the site documentation in docs/"/>
     <echo message="   htmldoc    --> generates the site documentation in docs/"/>
+    <echo message="                  without the Javadoc"/>
     <echo message="   printerdoc --> generates the printable documentation in"/>
     <echo message="                  docs/print"/>
     <echo message="   clean      --> cleans up the directory"/>
@@ -149,6 +154,7 @@ To display the available targets type:
     <mkdir dir="${docs}"/>
   </target>
 
+  <target name="html" depends="javadoc, prepare-docs"/>
   <target name="htmldoc" depends="prepare-docs">
     <copy file="${xdocs}/site-book.xml"
           tofile="${xdocs}/book.xml"
@@ -170,9 +176,8 @@ To display the available targets type:
     </java>
   </target>
 
-  <target name="site" depends="sitedoc"/>
+  <target name="site" depends="site-javadoc, sitedoc"/>
   <target name="sitedoc" depends="init">
-    <mkdir dir="${site}"/>
     <copy file="${xdocs}/site-book.xml"
           tofile="${xdocs}/book.xml"
           filtering="on"/>
@@ -182,9 +187,50 @@ To display the available targets type:
     </java>
   </target>
 
+  <target name="site-javadoc" depends="javadoc">
+    <mkdir dir="${site}"/>
+    <copy todir="${site}/javadoc">
+      <fileset dir="${docs}/javadoc"/>
+    </copy>
+  </target>
+
+  <target name="javadocs" depends="javadoc"/>
+  <target name="javadoc" depends="prepare-docs">
+    <mkdir dir="${docs}/javadoc"/>
+    <javadoc packagenames="${class-prefix}.apps.*,
+                           ${class-prefix}.bridge.*,
+                           ${class-prefix}.css.*,
+                           ${class-prefix}.dom.*,
+                           ${class-prefix}.gvt.*,
+                           ${class-prefix}.i18n.*,
+                           ${class-prefix}.parser.*,
+                           ${class-prefix}.refimpl.*,
+                           ${class-prefix}.script.*,
+                           ${class-prefix}.transcoder.*,
+                           ${class-prefix}.util.*,
+                           org.xml.*,
+                           org.w3c.css.*,
+                           org.w3c.dom.*"
+             sourcepath="${src}"
+             destdir="${docs}/javadoc"
+             author="false"
+             version="false"
+             use="true"
+             windowtitle="${Project} Javadoc"
+             doctitle="${Project} API Specification"
+             bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved.">
+      <classpath>
+        <pathelement location="lib/xalan_2_0_D01.jar" />
+      </classpath>
+    </javadoc>
+  </target>
+
+  <target name="clean-docs" depends="init">
+    <delete dir="${docs}"/>
+  </target>
 
   <!-- Cleans everything .................................................. -->
   <target name="clean"
-          depends="clean-compile"
+          depends="clean-compile, clean-docs"
           description="Cleans everything"/>
 </project>
