@@ -28,5 +28,3 @@ chmod 0755 $ANT_HOME/bin/antRun
 
 $JAVA_HOME/bin/java $ANT_OPTS -classpath $CP org.apache.tools.ant.Main -Dant.home=$ANT_HOME $*
 
-
-

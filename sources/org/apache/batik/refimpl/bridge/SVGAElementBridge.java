@@ -10,7 +10,9 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.AlphaComposite;
 import java.awt.Composite;
+import java.awt.Cursor;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 
 import java.io.StringReader;
@@ -71,9 +73,18 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
         Mask mask = CSSUtilities.convertMask(element, gn, ctx);
         gn.setMask(mask);
 
+        Shape clip = CSSUtilities.convertClipPath(element, gn, ctx);
+        gn.setClippingArea(clip);
+
         EventTarget et = (EventTarget)element;
         et.addEventListener("click",
                             new AnchorListener(ctx.getUserAgent()), false);
+        et.addEventListener("mouseover",
+                            new CursorMouseOverListener(ctx.getUserAgent()),
+                            false);
+        et.addEventListener("mouseout",
+                            new CursorMouseOutListener(ctx.getUserAgent()),
+                            false);
 
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
@@ -89,15 +100,18 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
     public boolean isContainer() {
         return true;
     }
-    
+
     /**
      * To handle a click on an anchor.
      */
     protected static class AnchorListener implements EventListener {
+
         protected UserAgent userAgent;
+
         public AnchorListener(UserAgent ua) {
             userAgent = ua;
         }
+
         public void handleEvent(Event evt) {
             SVGAElement elt = null;
             for (Element e = (Element)evt.getTarget();
@@ -109,6 +123,62 @@ public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
                 }
             }
             userAgent.openLink(elt);
+        }
+    }
+
+    /**
+     * To handle a mouseover on an anchor and set the cursor.
+     */
+    protected static class CursorMouseOverListener implements EventListener {
+
+        protected UserAgent userAgent;
+
+        public CursorMouseOverListener(UserAgent ua) {
+            userAgent = ua;
+        }
+
+        public void handleEvent(Event evt) {
+            SVGAElement elt = null;
+            for (Element e = (Element)evt.getTarget();
+                 e != null;
+                 e = HiddenChildElementSupport.getParentElement(e)) {
+                if (e instanceof SVGAElement) {
+                    elt = (SVGAElement)e;
+                    break;
+                }
+            }
+            Cursor cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+            userAgent.setSVGCursor(cursor);
+            if (elt != null) {
+                userAgent.displayMessage(elt.getHref().getBaseVal());
+            }
+        }
+    }
+
+    /**
+     * To handle a mouseout on an anchor and set the cursor.
+     */
+    protected static class CursorMouseOutListener implements EventListener {
+
+        protected UserAgent userAgent;
+
+        public CursorMouseOutListener(UserAgent ua) {
+            userAgent = ua;
+        }
+
+        public void handleEvent(Event evt) {
+            SVGAElement elt = null;
+            for (Element e = (Element)evt.getTarget();
+                 e != null;
+                 e = HiddenChildElementSupport.getParentElement(e)) {
+                if (e instanceof SVGAElement) {
+                    elt = (SVGAElement)e;
+                    break;
+                }
+            }
+            Cursor cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+            userAgent.setSVGCursor(cursor);
+            userAgent.displayMessage("");
         }
     }
 }

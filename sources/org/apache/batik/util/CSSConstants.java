@@ -46,9 +46,20 @@ public interface CSSConstants {
     String TEXT_ANCHOR_PROPERTY = "text-anchor";
     String TEXT_DECORATION_PROPERTY = "text-decoration";
 
+
     // The CSS property values.
-    //
     String AUTO = "auto";
+    String CROSSHAIR = "crosshair";
+    String DEFAULT  = "default";
+    String E_RESIZE  = "e-resize";
+    String MOVE  = "move";
+    String N_RESIZE  = "n-resize";
+    String NE_RESIZE  = "ne-resize";
     String NONE = "none";
     String NORMAL = "normal";
+    String NW_RESIZE  = "nw-resize";
+    String POINTER  = "pointer";
+    String SE_RESIZE  = "se-resize";
+
+
 }

@@ -8,9 +8,10 @@
 
 package org.apache.batik.refimpl.bridge;
 
-import org.apache.batik.gvt.event.EventDispatcher;
+import java.awt.Cursor;
 import org.apache.batik.bridge.UserAgent;
-
+import org.apache.batik.gvt.event.EventDispatcher;
+import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 
 /**
@@ -20,6 +21,7 @@ import org.w3c.dom.svg.SVGAElement;
  * @version $Id$
  */
 public class DefaultUserAgent implements UserAgent {
+
     /**
      * Returns the <code>EventDispatcher</code> used by the
      * <code>UserAgent</code> to dispatch events on GVT.
@@ -33,6 +35,13 @@ public class DefaultUserAgent implements UserAgent {
      */
     public void displayError(String message) {
         System.err.println(message);
+    }
+
+    /**
+     * Displays a message in the User Agent interface.
+     */
+    public void displayMessage(String message) {
+        System.out.println(message);
     }
 
     /**
@@ -62,6 +71,14 @@ public class DefaultUserAgent implements UserAgent {
      * @param elt The activated link element.
      */
     public void openLink(SVGAElement elt) {
-        System.out.println("Linking not allowed.");
+        System.out.println("UnsupportedOperationException");
+    }
+
+    /**
+     * Informs the user agent to change the cursor.
+     * @param cursor the new cursor
+     */
+    public void setSVGCursor(Cursor cursor) {
+        System.out.println("UnsupportedOperationException");
     }
 }

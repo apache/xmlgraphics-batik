@@ -470,6 +470,13 @@ public class ViewerFrame
     }
 
     /**
+     * Displays a message in the User Agent interface.
+     */
+    public void displayMessage(String message) {
+        statusBar.setMainMessage(message);
+    }
+
+    /**
      * Returns the pixel to mm factor.
      */
     public float getPixelToMM() {
@@ -497,6 +504,14 @@ public class ViewerFrame
      */
     public void openLink(SVGAElement elt) {
         application.openLink(this, elt);
+    }
+
+    /**
+     * Informs the user agent to change the cursor.
+     * @param cursor the new cursor
+     */
+    public void setSVGCursor(Cursor cursor) {
+        canvas.setCursor(cursor);
     }
 
     /**
