@@ -88,7 +88,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
 
         // Compute the transform matrix of this clipPath Element
         AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(clipElement.getAttributeNS(null, ATTR_TRANSFORM)),
+           (new StringReader(clipElement.getAttributeNS(null, ATTR_TRANSFORM)),
              bridgeContext.getParserFactory());
 
         String units = clipElement.getAttributeNS(null, ATTR_CLIP_PATH_UNITS);
