@@ -252,6 +252,15 @@ public class SVGRenderingAccuracyTest implements Test{
                                                               e.getException().getMessage()})) });
             report.setPassed(false);
             return report;
+        }catch(Exception e){
+            report.setErrorCode(ERROR_CANNOT_TRANSCODE_SVG);
+            report.setDescription(new TestReport.Entry[]{
+                new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
+                          Messages.formatMessage(ERROR_CANNOT_TRANSCODE_SVG,
+                                                 new String[]{svgURL.toExternalForm(), 
+                                                              e.getMessage()})) });
+            report.setPassed(false);
+            return report;
         }
 
         //
