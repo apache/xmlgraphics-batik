@@ -145,13 +145,13 @@ public abstract class SVGAbstractGradientElementBridge
      */
     protected static MultipleGradientPaint.CycleMethodEnum convertSpreadMethod
         (Element paintElement, String s) {
-        if (VALUE_REPEAT.equals(s)) {
+        if (SVG_REPEAT_VALUE.equals(s)) {
             return MultipleGradientPaint.REPEAT;
         }
-        if (VALUE_REFLECT.equals(s)) {
+        if (SVG_REFLECT_VALUE.equals(s)) {
             return MultipleGradientPaint.REFLECT;
         }
-        if (VALUE_PAD.equals(s)) {
+        if (SVG_PAD_VALUE.equals(s)) {
             return MultipleGradientPaint.NO_CYCLE;
         }
         throw new BridgeException

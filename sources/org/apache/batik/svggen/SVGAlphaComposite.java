@@ -177,45 +177,45 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
         switch(composite.getRule()){
         case AlphaComposite.CLEAR:
             operator = SVG_ARITHMETIC_VALUE;
-            input1 = VALUE_SOURCE_GRAPHIC;
-            input2 = VALUE_BACKGROUND_IMAGE;
+            input1 = SVG_SOURCE_GRAPHIC_VALUE;
+            input2 = SVG_BACKGROUND_IMAGE_VALUE;
             id = ID_PREFIX_ALPHA_COMPOSITE_CLEAR;
             break;
         case AlphaComposite.SRC:
             operator = SVG_ARITHMETIC_VALUE;
-            input1 = VALUE_SOURCE_GRAPHIC;
-            input2 = VALUE_BACKGROUND_IMAGE;
+            input1 = SVG_SOURCE_GRAPHIC_VALUE;
+            input2 = SVG_BACKGROUND_IMAGE_VALUE;
             id = ID_PREFIX_ALPHA_COMPOSITE_SRC;
-            k2 = VALUE_DIGIT_ONE;
+            k2 = SVG_DIGIT_ONE_VALUE;
             break;
         case AlphaComposite.SRC_IN:
             operator = SVG_IN_VALUE;
-            input1 = VALUE_SOURCE_GRAPHIC;
-            input2 = VALUE_BACKGROUND_IMAGE;
+            input1 = SVG_SOURCE_GRAPHIC_VALUE;
+            input2 = SVG_BACKGROUND_IMAGE_VALUE;
             id = ID_PREFIX_ALPHA_COMPOSITE_SRC_IN;
             break;
         case AlphaComposite.SRC_OUT:
             operator = SVG_OUT_VALUE;
-            input1 = VALUE_SOURCE_GRAPHIC;
-            input2 = VALUE_BACKGROUND_IMAGE;
+            input1 = SVG_SOURCE_GRAPHIC_VALUE;
+            input2 = SVG_BACKGROUND_IMAGE_VALUE;
             id = ID_PREFIX_ALPHA_COMPOSITE_SRC_OUT;
             break;
         case AlphaComposite.DST_IN:
             operator = SVG_IN_VALUE;
-            input2 = VALUE_SOURCE_GRAPHIC;
-            input1 = VALUE_BACKGROUND_IMAGE;
+            input2 = SVG_SOURCE_GRAPHIC_VALUE;
+            input1 = SVG_BACKGROUND_IMAGE_VALUE;
             id = ID_PREFIX_ALPHA_COMPOSITE_DST_IN;
             break;
         case AlphaComposite.DST_OUT:
             operator = SVG_OUT_VALUE;
-            input2 = VALUE_SOURCE_GRAPHIC;
-            input1 = VALUE_BACKGROUND_IMAGE;
+            input2 = SVG_SOURCE_GRAPHIC_VALUE;
+            input1 = SVG_BACKGROUND_IMAGE_VALUE;
             id = ID_PREFIX_ALPHA_COMPOSITE_DST_OUT;
             break;
         case AlphaComposite.DST_OVER:
             operator = SVG_OVER_VALUE;
-            input2 = VALUE_SOURCE_GRAPHIC;
-            input1 = VALUE_BACKGROUND_IMAGE;
+            input2 = SVG_SOURCE_GRAPHIC_VALUE;
+            input1 = SVG_BACKGROUND_IMAGE_VALUE;
             id = ID_PREFIX_ALPHA_COMPOSITE_DST_OVER;
             break;
         default:
@@ -228,12 +228,12 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
         compositeFilter.setAttributeNS(null, ATTR_ID, id);
         compositeFilter.setAttributeNS(null, SVG_FILTER_UNITS_ATTRIBUTE,
                                      SVG_OBJECT_BOUNDING_BOX_VALUE);
-        compositeFilter.setAttributeNS(null, SVG_X_ATTRIBUTE, VALUE_ZERO_PERCENT);
-        compositeFilter.setAttributeNS(null, SVG_Y_ATTRIBUTE, VALUE_ZERO_PERCENT);
+        compositeFilter.setAttributeNS(null, SVG_X_ATTRIBUTE, SVG_ZERO_PERCENT_VALUE);
+        compositeFilter.setAttributeNS(null, SVG_Y_ATTRIBUTE, SVG_ZERO_PERCENT_VALUE);
         compositeFilter.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                       VALUE_HUNDRED_PERCENT);
+                                       SVG_HUNDRED_PERCENT_VALUE);
         compositeFilter.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                                       VALUE_HUNDRED_PERCENT);
+                                       SVG_HUNDRED_PERCENT_VALUE);
 
         Element feComposite =
             generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
@@ -242,14 +242,14 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
         feComposite.setAttributeNS(null, SVG_IN_ATTRIBUTE, input1);
         feComposite.setAttributeNS(null, SVG_IN2_ATTRIBUTE, input2);
         feComposite.setAttributeNS(null, SVG_K2_ATTRIBUTE, k2);
-        feComposite.setAttributeNS(null, SVG_RESULT_ATTRIBUTE, VALUE_COMPOSITE);
+        feComposite.setAttributeNS(null, SVG_RESULT_ATTRIBUTE, SVG_COMPOSITE_VALUE);
 
         Element feFlood =
             generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_FE_FLOOD_TAG);
         feFlood.setAttributeNS(null, SVG_FLOOD_COLOR_ATTRIBUTE, "white");
         feFlood.setAttributeNS(null, SVG_FLOOD_OPACITY_ATTRIBUTE, "1");
-        feFlood.setAttributeNS(null, SVG_RESULT_ATTRIBUTE, VALUE_FLOOD);
+        feFlood.setAttributeNS(null, SVG_RESULT_ATTRIBUTE, SVG_FLOOD_VALUE);
 
 
         Element feMerge =
@@ -258,12 +258,12 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
         Element feMergeNodeFlood =
             generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_FE_MERGE_NODE_TAG);
-        feMergeNodeFlood.setAttributeNS(null, SVG_IN_ATTRIBUTE, VALUE_FLOOD);
+        feMergeNodeFlood.setAttributeNS(null, SVG_IN_ATTRIBUTE, SVG_FLOOD_VALUE);
         Element feMergeNodeComposite =
             generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_FE_MERGE_NODE_TAG);
         feMergeNodeComposite.setAttributeNS(null, SVG_IN_ATTRIBUTE,
-                                            VALUE_COMPOSITE);
+                                            SVG_COMPOSITE_VALUE);
 
         feMerge.appendChild(feMergeNodeFlood);
         feMerge.appendChild(feMergeNodeComposite);

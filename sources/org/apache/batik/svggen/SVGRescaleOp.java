@@ -115,7 +115,7 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter {
             Element feFuncB = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                          SVG_FE_FUNC_B_TAG);
             Element feFuncA = null;
-            String type = VALUE_TYPE_LINEAR;
+            String type = SVG_TYPE_LINEAR_VALUE;
 
             if(offsets.length == 1){
                 String slope = doubleString(scaleFactors[0]);

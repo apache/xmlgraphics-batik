@@ -77,7 +77,7 @@ public class SVGFilterElementBridge implements FilterBridge,
 
         // create a map for filter nodes to advertise themselves as named source
         Map filterNodeMap = new HashMap(11);
-        filterNodeMap.put(VALUE_SOURCE_GRAPHIC, sourceGraphic);
+        filterNodeMap.put(SVG_SOURCE_GRAPHIC_VALUE, sourceGraphic);
 
         Filter in = buildFilterPrimitives(filterElement,
                                           filterRegion,

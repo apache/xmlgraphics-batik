@@ -141,7 +141,7 @@ public class SVGTexturePaint extends AbstractSVGConverter {
             patternAttrBuf.append(URL_SUFFIX);
 
             patternDesc = new SVGPaintDescriptor(patternAttrBuf.toString(),
-                                                 VALUE_OPAQUE,
+                                                 SVG_OPAQUE_VALUE,
                                                  patternDef);
 
             descMap.put(texture, patternDesc);

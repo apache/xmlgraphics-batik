@@ -40,7 +40,7 @@ public class SVGOMStyleElement
     protected static Map attributeValues = new HashMap(3);
     static {
         Map values = new HashMap(2);
-        values.put(SVG_SPACE_ATTRIBUTE, VALUE_PRESERVE);
+        values.put(SVG_SPACE_ATTRIBUTE, SVG_PRESERVE_VALUE);
         attributeValues.put(XMLSupport.XML_NAMESPACE_URI, values);
     }
 

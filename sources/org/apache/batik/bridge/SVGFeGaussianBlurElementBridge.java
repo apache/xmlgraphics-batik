@@ -87,7 +87,7 @@ public class SVGFeGaussianBlurElementBridge
         // The default region is the union of the input sources
         // regions unless 'in' is 'SourceGraphic' in which case the
         // default region is the filterChain's region
-        Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        Filter sourceGraphics = (Filter)filterMap.get(SVG_SOURCE_GRAPHIC_VALUE);
         Rectangle2D defaultRegion;
         if (in == sourceGraphics) {
             defaultRegion = filterRegion;

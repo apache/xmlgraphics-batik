@@ -122,7 +122,7 @@ public class SVGMarkerElementBridge implements MarkerBridge,
         s = markerElement.getAttributeNS(null, SVG_ORIENT_ATTRIBUTE);
         if (s.length() == 0) {
             orient = 0;
-        } else if (VALUE_AUTO.equals(s)) {
+        } else if (SVG_AUTO_VALUE.equals(s)) {
             orient = Double.NaN;
         } else {
             try {

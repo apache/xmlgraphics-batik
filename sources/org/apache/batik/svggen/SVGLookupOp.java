@@ -139,7 +139,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
             Element feFuncB = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                          SVG_FE_FUNC_B_TAG);
             Element feFuncA = null;
-            String type = VALUE_TYPE_TABLE;
+            String type = SVG_TYPE_TABLE_VALUE;
 
             if(lookupTables.length == 1){
                 feFuncR.setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);

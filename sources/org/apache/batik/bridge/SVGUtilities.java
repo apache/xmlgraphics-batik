@@ -127,8 +127,8 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             String name =
                 (n.getPrefix() == null) ? n.getNodeName() : n.getLocalName();
             if (name.equals(SVG_DESC_TAG)) {
-                preserve
-                    = ((SVGLangSpace)n).getXMLspace().equals(VALUE_PRESERVE);
+                preserve = ((SVGLangSpace)n).getXMLspace().equals
+                    (SVG_PRESERVE_VALUE);
                 for (n = n.getFirstChild(); n != null; n = n.getNextSibling()) {
                     if (n.getNodeType() == Node.TEXT_NODE) {
                         result += n.getNodeValue();

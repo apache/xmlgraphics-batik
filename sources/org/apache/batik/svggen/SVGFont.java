@@ -66,8 +66,8 @@ public class SVGFont extends AbstractSVGConverter {
      * SVG Styles corresponding to the fontStyles
      */
     static final String svgStyles[] = {
-        /*POSTURE_REGULAR*/   VALUE_FONT_STYLE_NORMAL,
-        /*POSTURE_OBLIQUE*/   VALUE_FONT_STYLE_ITALIC
+        /*POSTURE_REGULAR*/   SVG_FONT_STYLE_NORMAL_VALUE,
+        /*POSTURE_OBLIQUE*/   SVG_FONT_STYLE_ITALIC_VALUE
     };
 
     /**
@@ -92,17 +92,17 @@ public class SVGFont extends AbstractSVGConverter {
      * SVG Weights corresponding to the fontWeights
      */
     static final String svgWeights[] = {
-        /*EXTRA_LIGHT*/ VALUE_FONT_WEIGHT_100,
-        /*LIGHT*/       VALUE_FONT_WEIGHT_200,
-        /*DEMILIGHT*/   VALUE_FONT_WEIGHT_300,
-        /*REGULAR*/     VALUE_FONT_WEIGHT_NORMAL,
-        /*SEMIBOLD*/    VALUE_FONT_WEIGHT_500,
-        /*MEDIUM*/      VALUE_FONT_WEIGHT_500,
-        /*DEMIBOLD*/    VALUE_FONT_WEIGHT_600,
-        /*BOLD*/        VALUE_FONT_WEIGHT_BOLD,
-        /*HEAVY*/       VALUE_FONT_WEIGHT_800,
-        /*EXTRABOLD*/   VALUE_FONT_WEIGHT_800,
-        /*ULTRABOLD*/   VALUE_FONT_WEIGHT_900
+        /*EXTRA_LIGHT*/ SVG_FONT_WEIGHT_100_VALUE,
+        /*LIGHT*/       SVG_FONT_WEIGHT_200_VALUE,
+        /*DEMILIGHT*/   SVG_FONT_WEIGHT_300_VALUE,
+        /*REGULAR*/     SVG_FONT_WEIGHT_NORMAL_VALUE,
+        /*SEMIBOLD*/    SVG_FONT_WEIGHT_500_VALUE,
+        /*MEDIUM*/      SVG_FONT_WEIGHT_500_VALUE,
+        /*DEMIBOLD*/    SVG_FONT_WEIGHT_600_VALUE,
+        /*BOLD*/        SVG_FONT_WEIGHT_BOLDER_VALUE,
+        /*HEAVY*/       SVG_FONT_WEIGHT_800_VALUE,
+        /*EXTRABOLD*/   SVG_FONT_WEIGHT_800_VALUE,
+        /*ULTRABOLD*/   SVG_FONT_WEIGHT_900_VALUE
     };
 
     /**

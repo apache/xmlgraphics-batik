@@ -123,19 +123,19 @@ public class SVGColorProfileElementBridge
         if (intent.length() == 0) {
             return ICCColorSpaceExt.AUTO;
         }
-        if (VALUE_RENDERING_INTENT_PERCEPTUAL_VALUE.equals(intent)) {
+        if (SVG_RENDERING_INTENT_PERCEPTUAL_VALUE.equals(intent)) {
             return ICCColorSpaceExt.PERCEPTUAL;
         }
-        if (VALUE_RENDERING_INTENT_AUTO_VALUE.equals(intent)) {
+        if (SVG_RENDERING_INTENT_AUTO_VALUE.equals(intent)) {
             return ICCColorSpaceExt.AUTO;
         }
-        if (VALUE_RENDERING_INTENT_RELATIVE_COLORIMETRIC_VALUE.equals(intent)) {
+        if (SVG_RENDERING_INTENT_RELATIVE_COLORIMETRIC_VALUE.equals(intent)) {
             return ICCColorSpaceExt.RELATIVE_COLORIMETRIC;
         }
-        if (VALUE_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC_VALUE.equals(intent)) {
+        if (SVG_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC_VALUE.equals(intent)) {
             return ICCColorSpaceExt.ABSOLUTE_COLORIMETRIC;
         }
-        if (VALUE_RENDERING_INTENT_SATURATION_VALUE.equals(intent)) {
+        if (SVG_RENDERING_INTENT_SATURATION_VALUE.equals(intent)) {
             return ICCColorSpaceExt.SATURATION;
         }
         throw new BridgeException
