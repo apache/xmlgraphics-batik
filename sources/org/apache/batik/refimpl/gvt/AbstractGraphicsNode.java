@@ -11,10 +11,12 @@ package org.apache.batik.refimpl.gvt;
 import java.awt.Cursor;
 import java.awt.Composite;
 import java.awt.AlphaComposite;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.awt.image.RenderedImage;
@@ -273,147 +275,93 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
 
     public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        if (!isOffscreenBufferNeeded()) {
-            Shape defaultClip = g2d.getClip();
-            Composite defaultComposite = g2d.getComposite();
-            AffineTransform defaultTransform = g2d.getTransform();
-            RenderingHints defaultHints = g2d.getRenderingHints();
+        //
+        // Set up graphic context. It is important to setup the 
+        // transform first, because the clip is defined in this
+        // node's user space.
+        //
+        Shape defaultClip = g2d.getClip();
+        Composite defaultComposite = g2d.getComposite();
+        AffineTransform defaultTransform = g2d.getTransform();
+        RenderingHints defaultHints = g2d.getRenderingHints();
 
-            if (clip != null) {
-                g2d.clip(clip);
-            }
-            if (composite != null) {
-                g2d.setComposite(composite);
-            }
-
-            if (transform != null) {
-                g2d.transform(transform);
-            }
-            if (hints != null) {
-                g2d.addRenderingHints(hints);
-            }
-
-            primitivePaint(g2d, rc);
-
-            // Restore default rendering attributes
-            g2d.setTransform(defaultTransform);
-            g2d.setRenderingHints(defaultHints);
-            g2d.setClip(defaultClip);
-            g2d.setComposite(defaultComposite);
-        } else {
-            Shape defaultClip = g2d.getClip();
-            Composite defaultComposite = g2d.getComposite();
-
-            Filter nodeImage 
-                = rc.getGraphicsNodeRableFactory().createGraphicsNodeRable(this);
-            Filter filteredImage = null;
-            
-            if(filter != null){
-                traceFilter(filter, "=====>> ");
-                filteredImage = filter;
-            }
-            else{
-                // <!> NEED FIX & HACK. Problem in ConcreteGraphicsNodeRable is worked around by using
-                // ConcretePadRable. Needs to be fixed.
-                filteredImage = new org.apache.batik.refimpl.gvt.filter.ConcretePadRable(nodeImage,
-                                                                                         nodeImage.getBounds2D(),
-                                                                                         PadMode.ZERO_PAD);
-                // filteredImage = nodeImage;
-            }
-
-            if(clip != null){
-                g2d.clip(clip);
-            }
-            if(composite != null){
-                g2d.setComposite(composite);
-            }
-
-            // Create the render context for drawing this 
-            // node.
-            AffineTransform usr2dev = g2d.getTransform();
-            if(transform != null){
-                usr2dev.concatenate(transform);
-            }
-            RenderContext context = new RenderContext(usr2dev, g2d.getClip(), g2d.getRenderingHints());
-            RenderedImage renderedNodeImage = filteredImage.createRendering(context);
-
-            if(renderedNodeImage != null){
-                AffineTransform defaultTransform = g2d.getTransform();
-                g2d.setTransform(IDENTITY);
-                System.out.println("rend X: " + renderedNodeImage.getMinX() +
-                                   " rend Y: " + renderedNodeImage.getMinY());
-
-                // THIS WORKS, BUT BREAKS WITH FILTER-RES ON (PROBABLY A SEPERATE
-                // PROBLEM.
-                g2d.drawRenderedImage(renderedNodeImage, IDENTITY);
-
-                // THIS WORKS FOR PAN, BUT SCALING IS BROKEN
-                // g2d.drawRenderableImage(filteredImage, 
-                //                        AffineTransform.getTranslateInstance(renderedNodeImage.getMinX(), 
-                //                                                             renderedNodeImage.getMinY()));
-                g2d.setTransform(defaultTransform);
-            }
-                
-            g2d.setClip(defaultClip);
-            g2d.setComposite(defaultComposite);
-            // throw new Error("Not yet implemented");
-            /*
-            Shape defaultClip = g2d.getClip();
-            Composite defaultComposite = g2d.getComposite();
-            RenderableImage nodeImage = rc.getSourceGraphicsNode(this);
-            if(clip != null){
-                g2d.clip(clip);
-            }
-            if(composite != null){
-                g2d.setComposite(composite);
-            }
-
-            // Create the render context for drawing this 
-            // node.
-            RenderContext context = new RenderContext(g2d.getTransform(),
-                                                      g2d.getRenderingHints());
-            RenderedImage renderedNodeImage =
-                nodeImage.createRendering(context);
-            AffineTransform defaultTransform = g2d.getTransform();
-            g2d.setTransform(IDENTITY);
-            g2d.translate(renderedNodeImage.getMinX(),
-                          renderedNodeImage.getMinY());
-            g2d.drawRenderedImage(renderedNodeImage, IDENTITY);
-
-            g2d.setTransform(defaultTransform);
-            g2d.setClip(defaultClip);
-            g2d.setComposite(defaultComposite);
-            */
+        if (transform != null) {
+            g2d.transform(transform);
         }
-            /* Offscreen rendering required. The process is the following:
-             *
-             * 1. Filter.
-             *    If filtering required, ask the filter to create a
-             *    RenderableImage.  Else render the node in an
-             *    offscreen image (the size of the image is computed
-             *    using the bounds of the node in device space).  At
-             *    the end of this step, get a RenderedImage that is
-             *    sized and positioned in device space (this is
-             *    important to get resolution independant filter
-             *    results).
-             *
-             * 2. Mask.
-             *    Create an offscreen buffer to perform masking (i.e.,
-             *    paint the mask into the result of 1., using
-             *    AlphaComposite.SrcIn compositing rule and extract
-             *    subraster corresponding to the intersection of the
-             *    filter area and the mask.). This operation happens in
-             *    device space.
-             *
-             * 3. Compositing and Clipping.
-             *    Paint the result of 2. after setting the proper clip
-             *    and composition rule on the destination
-             *    Graphics2D. Clip has to be converted to device space
-             *    for that operation.
-             */
-            // <!> FIXME : TODO
-    }
+        if (clip != null) {
+            g2d.clip(clip);
+        }
+        if (composite != null) {
+            g2d.setComposite(composite);
+        }
+        
+        if (hints != null) {
+            g2d.addRenderingHints(hints);
+        }
 
+        //
+        // Check if any painting is needed at all. Get the clip (in user space)
+        // and see if it intersects with this node's bounds (in user space).
+        //
+        boolean paintNeeded = true;
+        Rectangle2D bounds = getBounds();
+        Shape clip = g2d.getClip();
+        if(clip != null){
+            Rectangle2D clipBounds = clip.getBounds();
+            if(!bounds.intersects(clipBounds.getX(),
+                                  clipBounds.getY(),
+                                  clipBounds.getWidth(),
+                                  clipBounds.getHeight())){
+                // System.out.println("clipBounds : " + clipBounds);
+                // System.out.println("bounds     : " + bounds);
+                // System.out.println("==> Not painting");
+                paintNeeded = false;
+            }
+        }
+
+        //
+        // Only paint if needed.
+        //
+        if (paintNeeded){
+            if (!isOffscreenBufferNeeded()) {
+                // Render directly on the canvas
+                primitivePaint(g2d, rc);
+            } else{
+                Filter nodeImage 
+                    = rc.getGraphicsNodeRableFactory().createGraphicsNodeRable(this);
+                Filter filteredImage = null;
+                
+                if(filter != null){
+                    traceFilter(filter, "=====>> ");
+                    filteredImage = filter;
+                }
+                else{
+                    /*filteredImage = new org.apache.batik.refimpl.gvt.filter.ConcretePadRable(nodeImage,
+                                                                                             nodeImage.getBounds2D(),
+                                                                                             PadMode.ZERO_PAD);*/
+                    filteredImage = nodeImage;
+                }
+                
+                // Create the render context for drawing this node.
+                AffineTransform usr2dev = g2d.getTransform();
+                RenderContext context = new RenderContext(usr2dev, g2d.getClip(), g2d.getRenderingHints());
+                RenderedImage renderedNodeImage = filteredImage.createRendering(context);
+                
+                if(renderedNodeImage != null){
+                    g2d.setTransform(IDENTITY);
+                    g2d.drawRenderedImage(renderedNodeImage, IDENTITY);
+                }
+            }
+            
+        }
+
+        // Restore default rendering attributes
+        g2d.setTransform(defaultTransform);
+        g2d.setRenderingHints(defaultHints);
+        g2d.setClip(defaultClip);
+        g2d.setComposite(defaultComposite);
+    }
+        
     /**
      * DEBUG: Trace filter chain
      */
