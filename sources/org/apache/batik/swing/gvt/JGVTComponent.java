@@ -317,15 +317,30 @@ public class JGVTComponent extends JComponent {
         if (eventsEnabled) {
             eventDispatcher = new AWTEventDispatcher();
             if (selectableText) {
-                textSelectionManager =
-                    new TextSelectionManager(this, eventDispatcher);
+                textSelectionManager = createTextSelectionManager();
             }
         }
+    }
+
+    /**
+     *  Creates the TextSelectionManager to be used by this
+     * JGVTComponent.  Subclasses may override to provide a
+     * custom subclass.
+     */
+    protected TextSelectionManager createTextSelectionManager() {
+        return new TextSelectionManager(this, eventDispatcher);
     }
 
     ////////////////////////////////////////////////////////////////////////
     // Selection methods
     ////////////////////////////////////////////////////////////////////////
+
+    /**
+     *  Returns the current Text selection manager for the Component.
+     */
+    public TextSelectionManager getTextSelectionManager() {
+        return textSelectionManager;
+    }
 
     /**
      * Sets the color of the selection overlay to the specified color.

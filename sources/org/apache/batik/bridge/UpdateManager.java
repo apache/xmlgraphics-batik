@@ -76,6 +76,11 @@ public class UpdateManager  {
     protected RunnableQueue updateRunnableQueue;
 
     /**
+     * The RunHandler for the RunnableQueue.
+     */
+    protected RunnableQueue.RunHandler runHandler;
+
+    /**
      * Whether the update manager is running.
      */
     protected boolean running;
@@ -130,7 +135,7 @@ public class UpdateManager  {
         document = doc;
 
         updateRunnableQueue = RunnableQueue.createRunnableQueue();
-        RunnableQueue.RunHandler runHandler = createRunHandler();
+        runHandler = createRunHandler();
         updateRunnableQueue.setRunHandler(runHandler);
 
         graphicsNode = gn;
@@ -254,17 +259,27 @@ public class UpdateManager  {
      * Suspends the update manager.
      */
     public synchronized void suspend() {
-        if (running) {
-            suspendCalled = true;
+        // System.err.println("Suspend: " + suspendCalled + " : " + running);
+        if (updateRunnableQueue.getQueueState() == RunnableQueue.RUNNING) {
             updateRunnableQueue.suspendExecution(false);
         }
+        suspendCalled = true;
     }
 
     /**
      * Resumes the update manager.
      */
     public synchronized void resume() {
-        if (!running) {
+        // System.err.println("Resume: " + suspendCalled + " : " + running);
+
+        // if (suspendCalled) {
+        //     UpdateManagerEvent ev = new UpdateManagerEvent
+        //         (this, null, null);
+        //     // FIXX: Must happen in a different thread!
+        //     fireEvent(suspendedDispatcher, ev); 
+        //     fireEvent(resumedDispatcher, ev);
+        // }
+        if (updateRunnableQueue.getQueueState() != RunnableQueue.RUNNING) {
             updateRunnableQueue.resumeExecution();
         }
     }
@@ -576,11 +591,14 @@ public class UpdateManager  {
          * Called when the execution of the queue has been suspended.
          */
         public void executionSuspended(RunnableQueue rq) {
-            if (suspendCalled) {
-                running = false;
-                UpdateManagerEvent ev = new UpdateManagerEvent
-                    (this, null, null);
-                fireEvent(suspendedDispatcher, ev);
+            synchronized (UpdateManager.this) {
+                // System.err.println("Suspended: " + suspendCalled);
+                if (suspendCalled) {
+                    running = false;
+                    UpdateManagerEvent ev = new UpdateManagerEvent
+                        (this, null, null);
+                    fireEvent(suspendedDispatcher, ev);
+                }
             }
         }
         
@@ -588,13 +606,17 @@ public class UpdateManager  {
          * Called when the execution of the queue has been resumed.
          */
         public void executionResumed(RunnableQueue rq) {
-            if (suspendCalled && !running) {
-                running = true;
-                suspendCalled = false;
+            synchronized (UpdateManager.this) {
+                // System.err.println("Resumed: " + suspendCalled + 
+                //                    " : " + running);
+                if (suspendCalled && !running) {
+                    running = true;
+                    suspendCalled = false;
 
-                UpdateManagerEvent ev = new UpdateManagerEvent
-                    (this, null, null);
-                fireEvent(resumedDispatcher, ev);
+                    UpdateManagerEvent ev = new UpdateManagerEvent
+                        (this, null, null);
+                    fireEvent(resumedDispatcher, ev);
+                }
             }
         }
     }
