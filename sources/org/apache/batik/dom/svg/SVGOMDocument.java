@@ -114,7 +114,7 @@ public class SVGOMDocument
     protected SVGContext context;
 
     /**
-     * The element factories.
+     * The SVG element factories.
      */
     protected HashTable factories = new HashTable();
     {
