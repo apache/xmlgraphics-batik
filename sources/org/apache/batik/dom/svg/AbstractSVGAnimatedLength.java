@@ -30,7 +30,7 @@ import org.w3c.dom.svg.SVGLength;
 public abstract class AbstractSVGAnimatedLength
     implements SVGAnimatedLength,
                LiveAttributeValue {
-    
+
     /**
      * This constant represents horizontal lengths.
      */
@@ -48,13 +48,6 @@ public abstract class AbstractSVGAnimatedLength
      */
     public final static short OTHER_LENGTH =
         UnitProcessor.OTHER_LENGTH;
-
-    /**
-     * The unit string representations.
-     */
-    protected final static String[] UNITS = {
-        "", "", "%", "em", "ex", "px", "cm", "mm", "in", "pt", "pc"
-    };
 
     /**
      * The associated element.
@@ -114,7 +107,7 @@ public abstract class AbstractSVGAnimatedLength
      */
     public SVGLength getBaseVal() {
         if (baseVal == null) {
-            baseVal = new BaseSVGLength();
+            baseVal = new BaseSVGLength(direction);
         }
         return baseVal;
     }
@@ -156,33 +149,18 @@ public abstract class AbstractSVGAnimatedLength
     /**
      * This class represents the SVGLength returned by getBaseVal().
      */
-    protected class BaseSVGLength implements SVGLength {
-
-        /**
-         * The type of this length.
-         */
-        protected short unitType;
-
-        /**
-         * The value of this length.
-         */
-        protected float value;
+    protected class BaseSVGLength extends AbstractSVGLength {
 
         /**
          * Whether this length is valid.
          */
         protected boolean valid;
-
-        /**
-         * The context used to resolve the units.
-         */
-        protected UnitProcessor.Context context;
         
         /**
          * Creates a new BaseSVGLength.
          */
-        public BaseSVGLength() {
-            context = new DefaultContext();
+        public BaseSVGLength(short direction) {
+            super(direction);
         }
 
         /**
@@ -193,95 +171,13 @@ public abstract class AbstractSVGAnimatedLength
         }
 
         /**
-         * <b>DOM</b>: Implements {@link SVGLength#getUnitType()}.
-         */
-        public short getUnitType() {
-            revalidate();
-            return unitType;
-        }
-
-        /**
-         * <b>DOM</b>: Implements {@link SVGLength#getValue()}.
-         */
-        public float getValue() {
-            revalidate();
-            return UnitProcessor.svgToUserSpace(value, unitType,
-                                                direction, context);
-        }
-
-        /**
-         * <b>DOM</b>: Implements {@link SVGLength#setValue(float)}.
-         */
-        public void setValue(float value) throws DOMException {
-            revalidate();
-            this.value = UnitProcessor.userSpaceToSVG(value, unitType,
-                                                      direction, context);
-            resetAttribute();
-        }
-
-        /**
-         * <b>DOM</b>: Implements {@link SVGLength#getValueInSpecifiedUnits()}.
-         */
-        public float getValueInSpecifiedUnits() {
-            revalidate();
-            return value;
-        }
-
-        /**
-         * <b>DOM</b>: Implements {@link
-         * SVGLength#setValueInSpecifiedUnits(float)}.
-         */
-        public void setValueInSpecifiedUnits(float value) throws DOMException {
-            revalidate();
-            this.value = value;
-            resetAttribute();
-        }
-
-        /**
-         * <b>DOM</b>: Implements {@link SVGLength#getValueAsString()}.
-         */
-        public String getValueAsString() {
-            Attr attr = element.getAttributeNodeNS(namespaceURI, localName);
-            if (attr == null) {
-                return getDefaultValue();
-            }
-            return attr.getValue();
-        }
-
-        /**
-         * <b>DOM</b>: Implements {@link SVGLength#setValueAsString(String)}.
-         */
-        public void setValueAsString(String value) throws DOMException {
-            element.setAttributeNS(namespaceURI, localName, value);
-        }
-        
-        /**
-         * <b>DOM</b>: Implements {@link
-         * SVGLength#newValueSpecifiedUnits(short,float)}.
-         */
-        public void newValueSpecifiedUnits(short unit, float value) {
-            unitType = unit;
-            this.value = value;
-            resetAttribute();
-        }
-
-        /**
-         * <b>DOM</b>: Implements {@link
-         * SVGLength#convertToSpecifiedUnits(short)}.
-         */
-        public void convertToSpecifiedUnits(short unit) {
-            float v = getValue();
-            unitType = unit;
-            setValue(v);
-        }
-
-        /**
          * Resets the value of the associated attribute.
          */
-        protected void resetAttribute() {
+        protected void reset() {
             try {
                 changing = true;
-                setValueAsString(value + UNITS[unitType]);
+                String value = getValueAsString();
+                element.setAttributeNS(namespaceURI, localName, value);
             } finally {
                 changing = false;
             }
@@ -295,81 +191,26 @@ public abstract class AbstractSVGAnimatedLength
                 return;
             }
 
-            String s = getValueAsString();
-            try {
-                LengthParser lengthParser = new LengthParser();
-                UnitProcessor.UnitResolver ur =
-                    new UnitProcessor.UnitResolver();
-                lengthParser.setLengthHandler(ur);
-                lengthParser.parse(s);
-                unitType = ur.unit;
-                value = ur.value;
-            } catch (ParseException e) {
-                unitType = SVG_LENGTHTYPE_UNKNOWN;
-                value = 0;
+            String s = null;
+
+            Attr attr = element.getAttributeNodeNS(namespaceURI, localName);
+
+            if (attr == null) {
+                s = getDefaultValue();
             }
+            else{
+                s = attr.getValue();
+            }
+
+            parse(s);
+
             valid = true;
         }
 
         /**
-         * To resolve the units.
          */
-        protected class DefaultContext implements UnitProcessor.Context {
-
-            /**
-             * Returns the element.
-             */
-            public Element getElement() {
-                return element;
-            }
-
-            /**
-             * Returns the size of a px CSS unit in millimeters.
-             */
-            public float getPixelUnitToMillimeter() {
-                SVGContext ctx = ((SVGOMElement)element).getSVGContext();
-                return ctx.getPixelUnitToMillimeter();
-            }
-
-            /**
-             * Returns the size of a px CSS unit in millimeters.
-             * This will be removed after next release.
-             * @see #getPixelUnitToMillimeter();
-             */
-            public float getPixelToMM() {
-                return getPixelUnitToMillimeter();
-            
-            }
-
-            /**
-             * Returns the font-size value.
-             */
-            public float getFontSize() {
-                return ((SVGOMElement)element).getSVGContext().getFontSize();
-            }
-
-            /**
-             * Returns the x-height value.
-             */
-            public float getXHeight() {
-                return 0.5f;
-            }
-
-            /**
-             * Returns the viewport width used to compute units.
-             */
-            public float getViewportWidth() {
-                return ((SVGOMElement)element).getSVGContext().
-                    getViewportWidth();
-            }
-
-            /**
-             * Returns the viewport height used to compute units.
-             */
-            public float getViewportHeight() {
-                return ((SVGOMElement)element).getSVGContext().
-                    getViewportHeight();
-            }
+        protected SVGOMElement getAssociatedElement(){
+            return (SVGOMElement)element;
         }
     }
 }

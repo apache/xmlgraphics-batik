@@ -44,6 +44,8 @@ import org.w3c.dom.svg.SVGViewSpec;
 import org.w3c.dom.views.AbstractView;
 import org.w3c.dom.views.DocumentView;
 
+import java.awt.geom.AffineTransform;
+
 /**
  * This class implements {@link org.w3c.dom.svg.SVGSVGElement}.
  *
@@ -340,7 +342,7 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGLength()}.
      */
     public SVGLength createSVGLength() {
-        throw new RuntimeException("!!! TODO: createSVGNumber()");
+        return new SVGOMLength(this);
     }
 
     public SVGAngle               createSVGAngle (  ) {
@@ -364,10 +366,12 @@ public class SVGOMSVGElement
         return new SVGOMRect(0,0,0,0);
     }
     public SVGTransform           createSVGTransform (  ) {
-        throw new Error();
+        return new SVGOMTransform();
     }
     public SVGTransform     createSVGTransformFromMatrix ( SVGMatrix matrix ) {
-        throw new Error();
+        SVGOMTransform tr = new SVGOMTransform();
+        tr.setMatrix(matrix);
+        return tr;
     }
     public Element         getElementById ( String elementId ) {
         return ((SVGOMDocument)getDocument()).getElementById(elementId);

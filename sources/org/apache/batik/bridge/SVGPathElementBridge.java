@@ -11,6 +11,8 @@ package org.apache.batik.bridge;
 import java.awt.Shape;
 import java.io.StringReader;
 
+import java.awt.geom.GeneralPath;
+
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.ParseException;
@@ -27,6 +29,12 @@ import org.w3c.dom.events.MutationEvent;
  * @version $Id$
  */
 public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
+
+    /**
+     * default shape for the update of 'd' when
+     * the value is the empty string.
+     */
+    protected static final Shape DEFAULT_SHAPE = new GeneralPath();
 
     /**
      * Constructs a new bridge for the &lt;path> element.
@@ -87,8 +95,12 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
         String attrName = evt.getAttrName();
         if (attrName.equals(SVG_D_ATTRIBUTE)) {
-
-            buildShape(ctx, e, (ShapeNode)node);
+            if ( evt.getNewValue().length() == 0 ){
+                ((ShapeNode)node).setShape(DEFAULT_SHAPE);
+            }
+            else{
+                buildShape(ctx, e, (ShapeNode)node);
+            }
             handleGeometryChanged();
         } else {
             super.handleDOMAttrModifiedEvent(evt);

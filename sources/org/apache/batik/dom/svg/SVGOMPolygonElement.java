@@ -51,7 +51,7 @@ public class SVGOMPolygonElement
      * org.w3c.dom.svg.SVGAnimatedPoints#getPoints()}.
      */
     public SVGPointList getPoints() {
-        throw new RuntimeException(" !!! TODO: getPoints()");
+        return SVGAnimatedPointsSupport.getPoints(this);
     }
 
     /**
@@ -59,7 +59,7 @@ public class SVGOMPolygonElement
      * org.w3c.dom.svg.SVGAnimatedPoints#getAnimatedPoints()}.
      */
     public SVGPointList getAnimatedPoints() {
-        throw new RuntimeException(" !!! TODO: getAnimatedPoints()");
+        return SVGAnimatedPointsSupport.getAnimatedPoints(this);
     }
 
     /**

@@ -11,6 +11,8 @@ package org.apache.batik.dom.svg;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAnimatedTransformList;
 
+import org.apache.batik.util.SVGConstants;
+
 /**
  * This class provides support for the SVGTransformable interface.
  *
@@ -25,10 +27,27 @@ public class SVGTransformableSupport {
     }
     
     /**
+     * Default value for the 'transform' attribute.
+     */
+    public static final String TRANSFORM_DEFAULT_VALUE
+        = "";
+
+    /**
      * To implement {@link
      * org.w3c.dom.svg.SVGTransformable#getTransform()}.
      */
-    public static SVGAnimatedTransformList getTransform(Element elt) {
-	throw new RuntimeException(" !!! TODO: getTransform()");
+    public static SVGAnimatedTransformList getTransform(AbstractElement elt) {
+        SVGOMAnimatedTransformList result =(SVGOMAnimatedTransformList)
+            elt.getLiveAttributeValue(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE);
+        if (result == null) {
+            result = new SVGOMAnimatedTransformList(elt, null,
+                                                    SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                                                    TRANSFORM_DEFAULT_VALUE);
+            elt.putLiveAttributeValue(null,
+                                      SVGConstants.SVG_TRANSFORM_ATTRIBUTE, 
+                                      (LiveAttributeValue)result);
+        }
+        return result;
+
     }
 }
