@@ -269,6 +269,7 @@
         <test id="samples/tests/spec/scripting/xyModifOnLoad.svg" />
         <test id="samples/tests/spec/scripting/fill.svg" />
         <test id="samples/tests/spec/scripting/visibility.svg" />
+        <test id="samples/tests/spec/scripting/textProperties.svg" />
     </testGroup>
 
 </testSuite>

@@ -179,14 +179,16 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         if (ctx.isDynamic()) {
             layoutedText = new AttributedString(as.getIterator());
         }
+        TextNode tn = (TextNode)node;
+        tn.setAttributedCharacterIterator(as.getIterator());
 
         // now add the painting attributes, cannot do it before this because
         // some of the Paint objects need to know the bounds of the text
         // and this isn't know until the text node aci is set
         TextDecoration textDecoration = 
-            getTextDecoration(e, (TextNode)node, new TextDecoration(), ctx);
-        addPaintAttributes(as, e, (TextNode)node, textDecoration, ctx);
-        ((TextNode)node).setAttributedCharacterIterator(as.getIterator());
+            getTextDecoration(e, tn, new TextDecoration(), ctx);
+        addPaintAttributes(as, e, tn, textDecoration, ctx);
+        tn.setAttributedCharacterIterator(as.getIterator());
 
         super.buildGraphicsNode(ctx, e, node);
     }
@@ -245,6 +247,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                     addGlyphPositionAttributes(as, e, ctx);
                     layoutedText = new AttributedString(as.getIterator());
                     TextNode tn = (TextNode)node;
+                    tn.setAttributedCharacterIterator(as.getIterator());
                     TextDecoration textDecoration = 
                         getTextDecoration(e, tn, new TextDecoration(), ctx);
                     addPaintAttributes(as, e, tn, textDecoration, ctx);
@@ -276,10 +279,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         case SVGCSSEngine.TEXT_DECORATION_INDEX: {
             if (!hasNewACI) {
                 hasNewACI = true;
-                System.out.println(node+" "+property);
                 AttributedString as = 
                     new AttributedString(layoutedText.getIterator());
                 TextNode tn = (TextNode)node;
+                tn.setAttributedCharacterIterator(as.getIterator());
                 TextDecoration textDecoration = 
                     getTextDecoration(e, tn, new TextDecoration(), ctx);
                 addPaintAttributes(as, e, tn, textDecoration, ctx);
