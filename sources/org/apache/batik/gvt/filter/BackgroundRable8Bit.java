@@ -239,7 +239,8 @@ public class BackgroundRable8Bit
      */
     public Filter getBackground(GraphicsNode gn,
                                 GraphicsNode child,
-                                GraphicsNodeRenderContext rc) {
+                                GraphicsNodeRenderContext rc,
+                                Rectangle2D aoi) {
         if (gn == null) {
             throw new IllegalArgumentException
                 ("BackgroundImage requested yet no parent has " +
@@ -254,7 +255,9 @@ public class BackgroundRable8Bit
 
         Vector srcs = new Vector();
         if (r2d == null) {
-            Filter f = getBackground(gn.getParent(), gn, rc);
+            AffineTransform at = gn.getTransform();
+            Rectangle2D paoi = at.createTransformedShape(aoi).getBounds2D();
+            Filter f = getBackground(gn.getParent(), gn, rc, paoi);
             if (f != null)
               srcs.add(f);
         }
@@ -273,20 +276,18 @@ public class BackgroundRable8Bit
                 //                    "\n  ChildGN: " + childGN);
                 if (childGN == child)
                     break;
-                GraphicsNodeRable gnr;
-                gnr  = gnrf.createGraphicsNodeRable(childGN, rc);
-                gnr.setUsePrimitivePaint(false);
-                srcs.add(gnr);
+
+                AffineTransform at = childGN.getTransform();
+                Rectangle2D cbounds = childGN.getBounds(rc);
+                cbounds = at.createTransformedShape(cbounds).getBounds2D();
+                if (aoi.intersects(cbounds)) {
+                    GraphicsNodeRable gnr;
+                    gnr  = gnrf.createGraphicsNodeRable(childGN, rc);
+                    gnr.setUsePrimitivePaint(false);
+                    srcs.add(gnr);
+                }
             }
         }
-        /*  If this is uncommented then children appear in background img.
-        else {
-            // System.out.println("Parent: "      + gn);
-            GraphicsNodeRable gnr;
-            gnr  = gnrf.createGraphicsNodeRable(gn);
-            srcs.add(gnr);
-        }
-        */
 
         if (srcs.size() == 0)
             return null;
@@ -295,7 +296,7 @@ public class BackgroundRable8Bit
         if (srcs.size() == 1)
             ret = (Filter)srcs.get(0);
         else
-            ret = new CompositeRable8Bit(srcs, CompositeRule.OVER);
+            ret = new CompositeRable8Bit(srcs, CompositeRule.OVER, false);
 
         if (child != null) {
             // We are returning the filter to child so make
@@ -346,15 +347,20 @@ public class BackgroundRable8Bit
         gnrc = GraphicsNodeRenderContext.
             getGraphicsNodeRenderContext(renderContext);
 
-        Filter f = getBackground(node, null, gnrc);
+        Rectangle2D r2d = getBounds2D();
+
+        Shape aoi = renderContext.getAreaOfInterest();
+        if (aoi != null) {
+            Rectangle2D aoiR2d = aoi.getBounds2D();
+            if (r2d.intersects(aoiR2d) == false)
+                return null;
+            Rectangle2D.intersect(r2d, aoiR2d, r2d);
+        }
+
+        Filter f = getBackground(node, null, gnrc, r2d);
+
         if ( f == null)
             return null;
-        // org.apache.batik.test.gvt.ImageDisplay.showImage
-        //     ("PrePad", f.createRendering(renderContext));
-
-        Rectangle2D r2d = getBounds2D();
-        // f = new PadRable8Bit(f, r2d, PadMode.ZERO_PAD);
-        // System.out.println("Bounds: " + r2d);
 
         RenderedImage ri = f.createRendering(renderContext);
         return ri;

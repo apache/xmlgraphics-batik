@@ -140,7 +140,7 @@ public class SVGFeBlendElementBridge implements FilterPrimitiveBridge,
         Vector srcs = new Vector(2);
         srcs.add(in2);
         srcs.add(in1);
-        filter = new CompositeRable8Bit(srcs, rule);
+        filter = new CompositeRable8Bit(srcs, rule, true);
 
         filter = new PadRable8Bit(filter, blendArea, PadMode.ZERO_PAD);
 

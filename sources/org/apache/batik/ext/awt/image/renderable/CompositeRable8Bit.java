@@ -13,6 +13,9 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 import java.util.List;
 import java.util.Iterator;
 
+import java.awt.color.ColorSpace;
+import java.awt.Composite;
+import java.awt.CompositeContext;
 import java.awt.Shape;
 import java.awt.Rectangle;
 import java.awt.Graphics2D;
@@ -22,7 +25,9 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
 
 import java.awt.image.renderable.RenderContext;
 
@@ -43,12 +48,20 @@ public class CompositeRable8Bit
     implements CompositeRable {
 
     protected CompositeRule rule;
+    protected ColorSpace    colorspace;
+    protected boolean       csIsLinear;
 
     public CompositeRable8Bit(List srcs,
-                                  CompositeRule rule) {
+                              CompositeRule rule,
+                              boolean csIsLinear) {
         super(srcs);
 
         this.rule = rule;
+        this.csIsLinear = csIsLinear;
+        if (csIsLinear)
+            colorspace = ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB);
+        else
+            colorspace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
     }
 
       /**
@@ -70,14 +83,40 @@ public class CompositeRable8Bit
 
       /**
        * Get the composite rule in use for combining the sources.
-       * @returns Composite rule currently in use.
+       * @return Composite rule currently in use.
        */
     public CompositeRule getCompositeRule() {
         return this.rule;
     }
 
+      /**
+       * Set the colorspace to perform compositing in
+       * @param cs ColorSpace to use.
+       */
+    public void setCompositeColorSpace(ColorSpace cs) {
+        touch();
+        if (cs == ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB))
+            csIsLinear = true;
+        else if (cs == ColorSpace.getInstance(ColorSpace.CS_sRGB))
+            csIsLinear = false;
+        else
+            throw new IllegalArgumentException
+                ("Unsupported ColorSpace for Composite: " + cs);
+        this.colorspace = cs;
+    }
+
+      /**
+       * Get the colorspace to that compositing will be performed in
+       * @return ColorSpace for compositing.
+       */
+    public ColorSpace getCompositeColorSpace() {
+        return this.colorspace;
+    }
+
 
     protected RenderedImage createRenderingOver(RenderContext rc) {
+        // System.out.println("Rendering Over: " + rule);
+
         // Just copy over the rendering hints.
         RenderingHints rh = rc.getRenderingHints();
         if (rh == null) rh = new RenderingHints(null);
@@ -98,24 +137,28 @@ public class CompositeRable8Bit
             Rectangle2D.intersect(r, aoiR, r);
         }
 
-        AffineTransform translate = 
-            AffineTransform.getTranslateInstance(-r.x, -r.y);
-
-        BufferedImage bi = GraphicsUtil.makeLinearBufferedImage
+        BufferedImage bi;
+        if (csIsLinear)
+            bi = GraphicsUtil.makeLinearBufferedImage
             (r.width, r.height, true);
+        else
+            bi = new BufferedImage(r.width, r.height, 
+                                   BufferedImage.TYPE_INT_ARGB_PRE);
 
         Graphics2D g2d = bi.createGraphics();
 
         // Make sure we draw with what hints we have.
         g2d.setRenderingHints(rh);
-        g2d.setTransform(translate);
-        g2d.transform(at);
+        g2d.translate(-r.x, -r.y);
+        if (at != null)
+            g2d.transform(at);
 
         Iterator i = srcs.iterator();
         while (i.hasNext()) {
             GraphicsUtil.drawImage(g2d, (Filter)i.next());
         }
 
+        // System.out.println("Done Over: " + rule);
         return new BufferedImageCachableRed(bi, r.x, r.y);
     }
 
@@ -133,6 +176,8 @@ public class CompositeRable8Bit
         if (rule == CompositeRule.OVER)
             return createRenderingOver(rc);
 
+        // System.out.println("Rendering General: " + rule);
+
         // Just copy over the rendering hints.
         RenderingHints rh = rc.getRenderingHints();
         if (rh == null) rh = new RenderingHints(null);
@@ -140,28 +185,45 @@ public class CompositeRable8Bit
         // update the current affine transform
         AffineTransform at = rc.getTransform();
 
-        Shape aoi = rc.getAreaOfInterest();
-        if (aoi == null) aoi = getBounds2D();
+        Rectangle2D aoi = rc.getAreaOfInterest().getBounds2D();
+        if (aoi == null) 
+            aoi = getBounds2D();
+        else {
+            Rectangle2D bounds2d = getBounds2D();
+            if (bounds2d.intersects(aoi) == false)
+                return null;
+                
+            Rectangle2D.intersect(aoi, bounds2d, aoi);
+        }
 
-        // AOI bounds in device space...
+        // AOI bounds in device space.  Ideally we would limit r to
+        // the actual region needed based on the current mode.  So for
+        // IN we only need the intersection of all source.  For OUT we
+        // only need the region under the last source (most of the
+        // rest are r so I don't worry about it too much).
         Rectangle r = at.createTransformedShape(aoi).getBounds();
 
-        if ((r.width <= 0) || (r.height <= 0))
-            return null;
+        BufferedImage bi;
+        if (csIsLinear)
+            bi = GraphicsUtil.makeLinearBufferedImage
+            (r.width, r.height, true);
+        else
+            bi = new BufferedImage(r.width, r.height, 
+                                   BufferedImage.TYPE_INT_ARGB_PRE);
 
-        // I originally had this be premultipled but someone was
-        // multiplying the alpha each time a composite was done (I'm
-        // guessing it was trying to unmultiply composite, remultiply,
-        // but the unmultiply failed to do anything...).
-        BufferedImage bi = GraphicsUtil.makeLinearBufferedImage
-            (r.width, r.height, false);
+        WritableRaster wr = bi.getRaster();
+
+        Composite comp = new SVGComposite(rule);
 
         Graphics2D g2d = bi.createGraphics();
-        g2d.translate(-r.x, -r.y);
 
         // Make sure we draw with what hints we have.
         g2d.setRenderingHints(rh);
+        g2d.setComposite(comp);
+        g2d.translate(-r.x, -r.y);
 
+        rc = new RenderContext(at, aoi, rh);
+        
         Iterator i = srcs.iterator();
         boolean first = true;
         while (i.hasNext()) {
@@ -170,28 +232,57 @@ public class CompositeRable8Bit
 
             // Get our sources image...
             RenderedImage ri = filt.createRendering(rc);
-            // No output image keep going...
+            // No output image keep going
+            // FIXX: Should we do something different for IN/OUT/ARITH???
             if (ri == null)
                 continue;
-            CachableRed cr = RenderedImageCachableRed.wrap(ri);
-            cr = GraphicsUtil.convertToLsRGB(cr);
+            CachableRed cr;
+            cr = GraphicsUtil.wrap(ri);
+
+            if (csIsLinear)
+                cr = GraphicsUtil.convertToLsRGB(cr);
+            else
+                cr = GraphicsUtil.convertTosRGB(cr);
 
             if ((ri.getMinX()   != r.x)     || (ri.getMinY()   != r.y) ||
                 (ri.getWidth()  != r.width) || (ri.getHeight() != r.height)) {
                 cr = new PadRed(cr, r, PadMode.ZERO_PAD, rh);
             }
 
-            GraphicsUtil.drawImage(g2d, cr);
-
             if (first) {
-                  // After the first image we set the composite rule.
-                g2d.setComposite(new SVGComposite(rule));
+                wr = wr.createWritableTranslatedChild(r.x, r.y);
+                cr.copyData(wr);
+                if (cr.getColorModel().isAlphaPremultiplied() == false) {
+                    GraphicsUtil.coerceData(wr, cr.getColorModel(), true);
+                }
+                wr = bi.getRaster();
                 first = false;
+            } else {
+
+                // If I allow any of the other modes to fall into
+                // the draw case they fail miserably.  But OVER
+                // is used alot and is significantly faster in the
+                // draw case, and works as long as the source and dest
+                // colorspace match (which the always will here).
+                if (csIsLinear && (rule != CompositeRule.OVER)) {
+                    // System.out.println("In manual");
+                    Raster ras = cr.getData(r);
+                    ras = ras.createTranslatedChild(0,0);
+                    CompositeContext compCont;
+                    compCont = comp.createContext(cr.getColorModel(),
+                                                  bi.getColorModel(),
+                                                  rh);
+                    compCont.compose(ras, wr, wr);
+                } else {
+                    // System.out.println("In Draw");
+                    GraphicsUtil.drawImage(g2d, cr);
+                }
             }
                         
 
         }
 
+        // System.out.println("Done General: " + rule);
         return new BufferedImageCachableRed(bi, r.x, r.y);
     }
 }

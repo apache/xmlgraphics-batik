@@ -115,7 +115,309 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
         //constant, incorporates the translation components from the matrix
         gc = (a02-start.x)*constX + (a12-start.y)*constY;	       	
     }
+
+    protected void fillHardNoCycle(int[] pixels, int off, int adjust, 
+                              int x, int y, int w, int h) {
+
+        //constant which can be pulled out of the inner loop
+        final float initConst = (dgdX*x) + gc;
+
+        for(int i=0; i<h; i++) { //for every row
+            //initialize current value to be start.
+            float g = initConst + dgdY*(y+i); 
+            final int rowLimit = off+w;  // end of row iteration
+
+            if (dgdX == 0) {
+                if (g < 0) g = 0;
+                if (g > 1) g = 1;
+
+                // Could be a binary search...
+                int gradIdx = 0;
+                while (gradIdx < gradientsLength) {
+                    if (g < fractions[gradIdx+1])
+                        break;
+                    gradIdx++;
+                }
+
+                float delta = (g-fractions[gradIdx]);
+                float idx  = ((delta*GRADIENT_SIZE_INDEX)
+                              /normalizedIntervals[gradIdx])+0.5f;
+                final int val = gradients[gradIdx][(int)idx];
+                while (off < rowLimit) {
+                    pixels[off++] = val;
+                }
+            } else {
+                int gradSteps;
+                int preGradSteps;
+                final int preVal, postVal;
+                if (dgdX > 0) {
+                    gradSteps    = (int)         ((1-g)/dgdX);
+                    preGradSteps = (int)Math.ceil((0-g)/dgdX);
+                    preVal  = gradients[0][0];
+                    postVal = 
+                        gradients[gradients.length-1][GRADIENT_SIZE_INDEX];
+                } else { // dgdX < 0
+                    gradSteps    = (int)         ((0-g)/dgdX);
+                    preGradSteps = (int)Math.ceil((1-g)/dgdX);
+                    preVal  = 
+                        gradients[gradients.length-1][GRADIENT_SIZE_INDEX];
+                    postVal = gradients[0][0];
+                }
+
+                if (gradSteps > w) 
+                    gradSteps = w;
+                final int gradLimit    = off + gradSteps;
+
+                if (preGradSteps > 0) {
+                    if (preGradSteps > w)
+                        preGradSteps = w;
+                    final int preGradLimit = off + preGradSteps;
+
+                    while (off < preGradLimit) {
+                        pixels[off++] = preVal;
+                    }
+                    g += dgdX*preGradSteps;
+                }
+                        
+                if (dgdX > 0) {
+                    // Could be a binary search...
+                    int gradIdx = 0;
+                    while (gradIdx < gradientsLength) {
+                        if (g < fractions[gradIdx+1])
+                            break;
+                        gradIdx++;
+                    }
+                    
+                    while (off < gradLimit) {
+                        float delta = (g-fractions[gradIdx]);
+                        int [] grad = gradients[gradIdx];
+
+                        int steps = 
+                            (int)Math.ceil((fractions[gradIdx+1]-g)/dgdX);
+                        int subGradLimit = off + steps;
+                        if (subGradLimit > gradLimit)
+                            subGradLimit = gradLimit;
+
+                        int idx  = (int)(((delta*GRADIENT_SIZE_INDEX)
+                                          /normalizedIntervals[gradIdx])
+                                         *(1<<16)) + (1<<15);
+                        int step = (int)(((dgdX*GRADIENT_SIZE_INDEX)
+                                          /normalizedIntervals[gradIdx])
+                                         *(1<<16));
+                        while (off < subGradLimit) {
+                            pixels[off++] = grad[idx>>16];
+                            idx += step;
+                        }
+                        g+=dgdX*steps;
+                        gradIdx++;
+                    }
+                } else {
+                    // Could be a binary search...
+                    int gradIdx = gradientsLength-1;
+                    while (gradIdx >= 0) {
+                        if (g > fractions[gradIdx])
+                            break;
+                        gradIdx--;
+                    }
+                    
+                    while (off < gradLimit) {
+                        float delta = (g-fractions[gradIdx]);
+                        int [] grad = gradients[gradIdx];
+
+                        int steps        = (int)Math.ceil(delta/-dgdX);
+                        int subGradLimit = off + steps;
+                        if (subGradLimit > gradLimit)
+                            subGradLimit = gradLimit;
+
+                        int idx  = (int)(((delta*GRADIENT_SIZE_INDEX)
+                                          /normalizedIntervals[gradIdx])
+                                         *(1<<16)) + (1<<15);
+                        int step = (int)(((dgdX*GRADIENT_SIZE_INDEX)
+                                          /normalizedIntervals[gradIdx])
+                                         *(1<<16));
+                        while (off < subGradLimit) {
+                            pixels[off++] = grad[idx>>16];
+                            idx += step;
+                        }
+                        g+=dgdX*steps;
+                        gradIdx--;
+                    }
+                }
+
+                while (off < rowLimit) {
+                    pixels[off++] = postVal;
+                }
+            }
+            off += adjust; //change in off from row to row
+        }
+    }
+
+    protected void fillSimpleNoCycle(int[] pixels, int off, int adjust, 
+                                int x, int y, int w, int h) {
+        //constant which can be pulled out of the inner loop
+        final float initConst = (dgdX*x) + gc;
+        final float      step = dgdX*fastGradientArraySize;
+        final int      fpStep = (int)(step*(1<<16));  // fix point step
+
+        for(int i=0; i<h; i++){ //for every row
+            //initialize current value to be start.
+            float g = initConst + dgdY*(y+i); 
+            g *= fastGradientArraySize;
+            g += 0.5; // rounding factor...
+
+            final int rowLimit = off+w;  // end of row iteration
+
+            if (dgdX == 0) {
+                final int val = gradient[(int)g];
+                while (off < rowLimit) {
+                    pixels[off++] = val;
+                }
+            } else {
+                int gradSteps;
+                int preGradSteps;
+                final int preVal, postVal;
+                if (dgdX > 0) {
+                    gradSteps = (int)((fastGradientArraySize-g)/step);
+                    preGradSteps = (int)Math.ceil(0-g/step);
+                    preVal  = gradient[0];
+                    postVal = gradient[fastGradientArraySize];
+
+                } else { // dgdX < 0
+                    gradSteps    = (int)((0-g)/step);
+                    preGradSteps = 
+                        (int)Math.ceil((fastGradientArraySize-g)/step);
+                    preVal  = gradient[fastGradientArraySize];
+                    postVal = gradient[0];
+                }
+
+                if (gradSteps > w) 
+                    gradSteps = w;
+                final int gradLimit    = off + gradSteps;
+
+                if (preGradSteps > 0) {
+                    if (preGradSteps > w)
+                        preGradSteps = w;
+                    final int preGradLimit = off + preGradSteps;
+
+                    while (off < preGradLimit) {
+                        pixels[off++] = preVal;
+                    }
+                    g += step*preGradSteps;
+                }
+                        
+                int fpG = (int)(g*(1<<16));
+                while (off < gradLimit) {
+                    pixels[off++] = gradient[fpG>>16];
+                    fpG += fpStep;
+                }
+                        
+                while (off < rowLimit) {
+                    pixels[off++] = postVal;
+                }
+            }
+            off += adjust; //change in off from row to row
+        }
+    }
     
+    protected void fillSimpleRepeat(int[] pixels, int off, int adjust, 
+                               int x, int y, int w, int h) {
+
+        final float initConst = (dgdX*x) + gc;
+
+        // Limit step to fractional part of
+        // fastGradientArraySize (the non fractional part has
+        // no affect anyways, and would mess up lots of stuff
+        // below).
+        float step = (dgdX - (int)dgdX)*fastGradientArraySize;
+
+                // Make it a Positive step (a small negative step is
+                // the same as a positive step slightly less than
+                // fastGradientArraySize.
+        if (step < 0) 
+            step += fastGradientArraySize;
+
+        for(int i=0; i<h; i++) { //for every row
+            //initialize current value to be start.
+            float g = initConst + dgdY*(y+i); 
+
+            // now Limited between -1 and 1.
+            g = g-(int)g;
+            // put in the positive side.
+            if (g < 0)
+                g += 1;
+                        
+            // scale for gradient array... 
+            g *= fastGradientArraySize;
+            g += 0.5; // rounding factor
+            final int rowLimit = off+w;  // end of row iteration
+            while (off < rowLimit) {
+                int idx = (int)g;
+                if (idx >= fastGradientArraySize) {
+                    g   -= fastGradientArraySize;
+                    idx -= fastGradientArraySize; 
+                }
+                pixels[off++] = gradient[idx];
+                g += step;
+            }
+
+            off += adjust; //change in off from row to row
+        }
+    }
+
+
+    protected void fillSimpleReflect(int[] pixels, int off, int adjust, 
+                                int x, int y, int w, int h) {
+        final float initConst = (dgdX*x) + gc;
+
+        for (int i=0; i<h; i++) { //for every row
+            //initialize current value to be start.
+            float g = initConst + dgdY*(y+i); 
+
+            // now limited g to -2<->2
+            g = g - 2*((int)(g/2.0f));
+
+            float step = dgdX;
+            // Pull it into the positive half
+            if (g < 0) {
+                g = -g; //take absolute value
+                step = - step;  // Change direction..
+            }
+
+            // Now do the same for dgdX. This is safe because
+            // any step that is a multiple of 2.0 has no
+            // affect, hence we can remove it which the first
+            // part does.  The second part simply adds 2.0
+            // (which has no affect due to the cylcle) to move
+            // all negative step values into the positive
+            // side.
+            step = step - 2*((int)step/2.0f);
+            if (step < 0) 
+                step += 2.0;
+            final int reflectMax = 2*fastGradientArraySize;
+
+            // Scale for gradient array.
+            g    *= fastGradientArraySize;
+            g    += 0.5;
+            step *= fastGradientArraySize;
+            final int rowLimit = off+w;  // end of row iteration
+            while (off < rowLimit) {
+                int idx = (int)g;
+                if (idx >= reflectMax) {
+                    g   -= reflectMax;
+                    idx -= reflectMax;
+                }
+
+                if (idx <= fastGradientArraySize)
+                    pixels[off++] = gradient[idx];
+                else
+                    pixels[off++] = gradient[reflectMax-idx];
+                g+= step;
+            }
+
+            off += adjust; //change in off from row to row
+        }
+    }
+        
     /**
      * Return a Raster containing the colors generated for the graphics
      * operation.  This is where the area is filled with colors distributed
@@ -128,23 +430,36 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
     protected void fillRaster(int[] pixels, int off, int adjust, 
                               int x, int y, int w, int h) {
 	
-        float g = 0;     //current value for row gradients
-	
-        int rowLimit = off + w;  //Used to end iteration on rows   
-	
         //constant which can be pulled out of the inner loop
-        float initConst = (dgdX*x) + gc;
-	
-        for(int i=0; i<h; i++){ //for every row
-            g = initConst + dgdY*(y+i); //initialize current value to be start.
-	    
-            while(off < rowLimit){ //for every pixel in this row.
-                pixels[off++] = indexIntoGradientsArrays(g); //get the color
-                g += dgdX; //incremental change in g
+        final float initConst = (dgdX*x) + gc;
+
+        if (!isSimpleLookup) {
+            if (cycleMethod == MultipleGradientPaint.NO_CYCLE) {
+                fillHardNoCycle(pixels, off, adjust, x, y, w, h);
             }
-	    
-            off += adjust; //change in off from row to row
-            rowLimit = off + w; //rowlimit is width + offset.
+            else {
+                //initialize current value to be start.
+                for(int i=0; i<h; i++){ //for every row
+                    float g = initConst + dgdY*(y+i); 
+                
+                    final int rowLimit = off+w;  // end of row iteration
+                    while(off < rowLimit){ //for every pixel in this row.
+                        //get the color
+                        pixels[off++] = indexIntoGradientsArrays(g); 
+                        g += dgdX; //incremental change in g
+                    }
+                    off += adjust; //change in off from row to row
+                }
+            }
+        } else {
+            // Simple implementations: just scale index by array size
+            
+            if (cycleMethod == MultipleGradientPaint.NO_CYCLE)
+                fillSimpleNoCycle(pixels, off, adjust, x, y, w, h);
+            else if (cycleMethod == MultipleGradientPaint.REPEAT)
+                fillSimpleRepeat(pixels, off, adjust, x, y, w, h);
+            else //cycleMethod == MultipleGradientPaint.REFLECT
+                fillSimpleReflect(pixels, off, adjust, x, y, w, h);
         }
     }
     

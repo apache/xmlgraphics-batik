@@ -242,4 +242,39 @@ public final class CompositeRule implements java.io.Serializable {
         }
     }
 
+    /**
+     * This is called by the serialization code before it returns
+     * an unserialized object. To provide for unicity of
+     * instances, the instance that was read is replaced by its
+     * static equivalent. See the serialiazation specification for
+     * further details on this method's logic.
+     */
+    public String toString() {
+        switch(rule){
+        case RULE_OVER:
+            return "[CompositeRule: OVER]";
+        case RULE_IN:
+            return "[CompositeRule: IN]";
+        case RULE_OUT:
+            return "[CompositeRule: OUT]";
+        case RULE_ATOP:
+            return "[CompositeRule: ATOP]";
+        case RULE_XOR:
+            return "[CompositeRule: XOR]";
+        case RULE_ARITHMETIC:
+            return ("[CompositeRule: ARITHMATIC k1:" +
+                    k1 + " k2: " + k2 + " k3: " + k3 + " k4: " + k4 + "]");
+        case RULE_MULTIPLY:
+            return "[CompositeRule: MULTIPLY]";
+        case RULE_SCREEN:
+            return "[CompositeRule: SCREEN]";
+        case RULE_DARKEN:
+            return "[CompositeRule: DARKEN]";
+        case RULE_LIGHTEN:
+            return "[CompositeRule: LIGHTEN]";
+        default:
+            throw new Error("Unknown Composite Rule type");
+        }
+    }
+
 }

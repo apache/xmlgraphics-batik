@@ -9,6 +9,7 @@
 package org.apache.batik.ext.awt.image.renderable;
 
 import java.util.List;
+import java.awt.color.ColorSpace;
 
 /**
  * Composites a list of images according to a single composite rule.
@@ -32,7 +33,20 @@ public interface CompositeRable extends Filter {
 
       /**
        * Get the composite rule in use for combining the sources.
-       * @returns Composite rule currently in use.
+       * @return Composite rule currently in use.
        */
     public CompositeRule getCompositeRule();
+
+      /**
+       * Set the colorspace to perform compositing in
+       * @param cs ColorSpace to use.
+       */
+    public void setCompositeColorSpace(ColorSpace cs);
+
+      /**
+       * Get the colorspace to that compositing will be performed in
+       * @return ColorSpace for compositing.
+       */
+    public ColorSpace getCompositeColorSpace();
+
 }

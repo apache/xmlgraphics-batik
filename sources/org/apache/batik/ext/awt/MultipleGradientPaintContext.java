@@ -9,6 +9,7 @@
 package org.apache.batik.ext.awt;
 
 import java.awt.*;
+import java.awt.color.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 import java.lang.ref.WeakReference;
@@ -32,8 +33,26 @@ abstract class MultipleGradientPaintContext implements PaintContext {
     protected ColorModel model;
 
     /** Color model used if gradient colors are all opaque */
-    private static ColorModel xrgbmodel =
-        new DirectColorModel(24, 0x00ff0000, 0x0000ff00, 0x000000ff);
+    private static ColorModel lrgbmodel_NA = new DirectColorModel
+        (ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
+         24, 0xff0000, 0xFF00, 0xFF, 0x0,
+         false, DataBuffer.TYPE_INT);
+
+    private static ColorModel srgbmodel_NA = new DirectColorModel
+        (ColorSpace.getInstance(ColorSpace.CS_sRGB),
+         24, 0xff0000, 0xFF00, 0xFF, 0x0,
+         false, DataBuffer.TYPE_INT);
+
+    /** Color model used if some gradient colors are transparent */
+    private static ColorModel lrgbmodel_A = new DirectColorModel
+        (ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
+         32, 0xff0000, 0xFF00, 0xFF, 0xFF000000,
+         false, DataBuffer.TYPE_INT);
+
+    private static ColorModel srgbmodel_A = new DirectColorModel
+        (ColorSpace.getInstance(ColorSpace.CS_sRGB),
+         32, 0xff0000, 0xFF00, 0xFF, 0xFF000000,
+         false, DataBuffer.TYPE_INT);
 
      /** The cached colorModel */
     protected static ColorModel cachedModel;
@@ -76,16 +95,19 @@ abstract class MultipleGradientPaintContext implements PaintContext {
     /** Array of gradient arrays, one array for each interval.  Used by
      *  calculateMultipleArrayGradient().
      */
-    private int[][] gradients;
+    protected int[][] gradients;
+
+    /** Length of the 2D slow lookup gradients array. */
+    protected int gradientsLength;
 
     /** Normalized intervals array */
-    private float[] normalizedIntervals;
+    protected float[] normalizedIntervals;
 
     /** fractions array */
-    private float[] fractions;
+    protected float[] fractions;
 
     /** Non-normalized intervals array */
-    private float[] intervals;
+    protected float[] intervals;
 
     /** Gradient colors */
     private Color[] colors;
@@ -108,8 +130,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
     /** Constant number of max colors between any 2 arbitrary colors.
      * Used for creating and indexing gradients arrays.
      */
-    private static final int GRADIENT_SIZE = 256;
-    private static final int GRADIENT_SIZE_INDEX = GRADIENT_SIZE -1;
+    protected static final int GRADIENT_SIZE = 256;
+    protected static final int GRADIENT_SIZE_INDEX = GRADIENT_SIZE -1;
 
     /** Maximum length of the fast single-array.  If the estimated array size
      * is greater than this, switch over to the slow lookup method.
@@ -117,9 +139,6 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      * satisfactory performance for the common case (fast lookup).
      */
     private static final int MAX_GRADIENT_ARRAY_SIZE = 5000;
-
-    /** Length of the 2D slow lookup gradients array. */
-    private int gradientsLength;
 
    /** Constructor for superclass. Does some initialization, but leaves most
     * of the heavy-duty math for calculateGradient(), so the subclass may do
@@ -270,6 +289,15 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         this.cycleMethod = cycleMethod;
         this.colorSpace = colorSpace;
 
+
+        // Setup an example Model, we may refine it later.
+        if (cm.getColorSpace() == lrgbmodel_A.getColorSpace())
+            model = lrgbmodel_A;
+        else if (cm.getColorSpace() == srgbmodel_A.getColorSpace())
+            model = srgbmodel_A;
+        else 
+            throw new IllegalArgumentException
+                ("Unsupported ColorSpace for interpolation");
     }
 
 
@@ -330,10 +358,12 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         }
 
         // Use the most 'economical' model.
-        if((transparencyTest >>> 24) == 0xff)
-            model = xrgbmodel;
-        else
-            model = ColorModel.getRGBdefault();
+        if((transparencyTest >>> 24) == 0xff) {
+            if (model.getColorSpace() == lrgbmodel_NA.getColorSpace())
+                model = lrgbmodel_NA;
+            else if (model.getColorSpace() == srgbmodel_NA.getColorSpace())
+                model = srgbmodel_NA;
+        }
     }
 
 
@@ -405,9 +435,20 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         //if interpolation occurred in Linear RGB space, convert the
         //gradients back to SRGB using the lookup table
         if (colorSpace == LinearGradientPaint.LINEAR_RGB) {
-
-            for (int i = 0; i < gradient.length; i++) {
-                gradient[i] = convertEntireColorLinearRGBtoSRGB(gradient[i]);
+            if (model.getColorSpace() == 
+                ColorSpace.getInstance(ColorSpace.CS_sRGB)) {
+                for (int i = 0; i < gradient.length; i++) {
+                    gradient[i] = 
+                        convertEntireColorLinearRGBtoSRGB(gradient[i]);
+                }
+            }
+        } else {
+            if (model.getColorSpace() == 
+                ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)) {
+                for (int i = 0; i < gradient.length; i++) {
+                    gradient[i] = 
+                        convertEntireColorSRGBtoLinearRGB(gradient[i]);
+                }
             }
         }
 
@@ -463,11 +504,23 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         //if interpolation occurred in Linear RGB space, convert the
         //gradients back to SRGB using the lookup table
         if (colorSpace == LinearGradientPaint.LINEAR_RGB) {
-
-            for (int j = 0; j < gradients.length; j++) {
-                for (int i = 0; i < gradients[j].length; i++) {
-                    gradients[j][i] =
-                        convertEntireColorLinearRGBtoSRGB(gradients[j][i]);
+            if (model.getColorSpace() == 
+                ColorSpace.getInstance(ColorSpace.CS_sRGB)) {
+                for (int j = 0; j < gradients.length; j++) {
+                    for (int i = 0; i < gradients[j].length; i++) {
+                        gradients[j][i] =
+                            convertEntireColorLinearRGBtoSRGB(gradients[j][i]);
+                    }
+                }
+            }
+        } else {
+            if (model.getColorSpace() == 
+                ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)) {
+                for (int j = 0; j < gradients.length; j++) {
+                    for (int i = 0; i < gradients[j].length; i++) {
+                        gradients[j][i] =
+                            convertEntireColorSRGBtoLinearRGB(gradients[j][i]);
+                    }
                 }
             }
         }
@@ -530,6 +583,32 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         r1 =  LinearRGBtoSRGB[r1];
         g1 =  LinearRGBtoSRGB[g1];
         b1 =  LinearRGBtoSRGB[b1];
+
+        //re-compact the components
+        return ((a1 << 24) |
+                (r1 << 16) |
+                (g1 << 8) |
+                b1);
+    }
+
+    /** Yet another helper function.  This one extracts the color components
+     * of an integer RGB triple, converts them from LinearRGB to SRGB, then
+     * recompacts them into an int.
+     */
+    private int convertEntireColorSRGBtoLinearRGB(int rgb) {
+
+        int a1, r1, g1, b1; //color components
+
+        //extract red, green, blue components
+        a1 = (rgb >> 24) & 0xff;
+        r1 = (rgb >> 16) & 0xff;
+        g1 = (rgb >> 8) & 0xff;
+        b1 = rgb & 0xff;
+
+        //use the lookup table
+        r1 =  SRGBtoLinearRGB[r1];
+        g1 =  SRGBtoLinearRGB[g1];
+        b1 =  SRGBtoLinearRGB[b1];
 
         //re-compact the components
         return ((a1 << 24) |

@@ -13,6 +13,7 @@ import java.awt.Composite;
 import java.awt.CompositeContext;
 import java.awt.RenderingHints;
 
+import java.awt.color.ColorSpace;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
@@ -39,19 +40,31 @@ public class SVGComposite
     public CompositeContext createContext(ColorModel srcCM,
                                           ColorModel dstCM,
                                           RenderingHints hints) {
+        if (false) {
+            ColorSpace srcCS = srcCM.getColorSpace();
+            ColorSpace dstCS = dstCM.getColorSpace();
+            System.out.println("srcCS: " + srcCS);
+            System.out.println("dstCS: " + dstCS);
+            System.out.println
+                ("lRGB: " + ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB));
+            System.out.println
+                ("sRGB: " + ColorSpace.getInstance(ColorSpace.CS_sRGB));
+        }
         switch (rule.getRule()) {
         case CompositeRule.RULE_OVER:
-            return AlphaComposite.SrcOver.createContext(srcCM, dstCM, hints);
+            return new OverCompositeContext(srcCM, dstCM);
+
         case CompositeRule.RULE_IN:
-            return AlphaComposite.SrcIn.  createContext(srcCM, dstCM, hints);
+            return new InCompositeContext  (srcCM, dstCM);
+
         case CompositeRule.RULE_OUT:
-            return AlphaComposite.SrcOut. createContext(srcCM, dstCM, hints);
+            return new OutCompositeContext (srcCM, dstCM);
 
         case CompositeRule.RULE_ATOP:
             return new AtopCompositeContext(srcCM, dstCM);
 
         case CompositeRule.RULE_XOR:
-            return new XorCompositeContext(srcCM, dstCM);
+            return new XorCompositeContext (srcCM, dstCM);
 
         case CompositeRule.RULE_ARITHMETIC:
             float [] coeff = rule.getCoefficients();
@@ -106,7 +119,6 @@ public class SVGComposite
                 dstPreCM = GraphicsUtil.coerceData((WritableRaster)dstIn,
                                                    dstCM, true);
 
-            
             precompose(src, dstIn, dstOut);
 
             if (!srcCM.isAlphaPremultiplied())
@@ -120,6 +132,120 @@ public class SVGComposite
                     GraphicsUtil.coerceData((WritableRaster)dstIn, 
                                             dstPreCM, false);
             }
+        }
+    }
+
+    public static class OverCompositeContext 
+        extends AlphaPreCompositeContext {
+        OverCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
+            int [] srcPix = null;
+            int [] dstPix = null;
+
+            int x=dstOut.getMinX();
+            int w=dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int y1=y0 + dstOut.getHeight();
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            for (int y = y0; y<y1; y++) {
+                srcPix = src.getPixels  (x, y, w, 1, srcPix);
+                dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
+                int sp  = 0;
+                int end = w*4;
+                while(sp<end) {
+                    final int dstM = (255-srcPix[sp+3])*norm;
+                    dstPix[sp] =(srcPix[sp] + dstPix[sp]*dstM +pt5)>>>24; ++sp;
+                    dstPix[sp] =(srcPix[sp] + dstPix[sp]*dstM +pt5)>>>24; ++sp;
+                    dstPix[sp] =(srcPix[sp] + dstPix[sp]*dstM +pt5)>>>24; ++sp;
+                    dstPix[sp] =(srcPix[sp] + dstPix[sp]*dstM +pt5)>>>24; ++sp;
+                }
+                dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+
+        }
+    }
+
+    public static class InCompositeContext 
+        extends AlphaPreCompositeContext {
+        InCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
+            int [] srcPix = null;
+            int [] dstPix = null;
+
+            int x=dstOut.getMinX();
+            int w=dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int y1=y0 + dstOut.getHeight();
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            for (int y = y0; y<y1; y++) {
+                srcPix = src.getPixels  (x, y, w, 1, srcPix);
+                dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
+                int sp  = 0;
+                int end = w*4;
+                while(sp<end) {
+                    final int srcM = dstPix[sp+3]*norm;
+                    dstPix[sp] = (srcPix[sp]*srcM + pt5)>>>24; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + pt5)>>>24; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + pt5)>>>24; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + pt5)>>>24; ++sp;
+                }
+                dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+
+        }
+    }
+
+    public static class OutCompositeContext 
+        extends AlphaPreCompositeContext {
+        OutCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
+            int [] srcPix = null;
+            int [] dstPix = null;
+
+            int x=dstOut.getMinX();
+            int w=dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int y1=y0 + dstOut.getHeight();
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            for (int y = y0; y<y1; y++) {
+                srcPix = src.getPixels  (x, y, w, 1, srcPix);
+                dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
+                int sp  = 0;
+                int end = w*4;
+                while(sp<end) {
+                    final int srcM = (255-dstPix[sp+3])*norm;
+                    dstPix[sp] = (srcPix[sp]*srcM + pt5)>>>24; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + pt5)>>>24; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + pt5)>>>24; ++sp;
+                    dstPix[sp] = (srcPix[sp]*srcM + pt5)>>>24; ++sp;
+                }
+                dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+
         }
     }
 
@@ -141,6 +267,8 @@ public class SVGComposite
             int y1=y0 + dstOut.getHeight();
 
             final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
             for (int y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
@@ -149,10 +277,12 @@ public class SVGComposite
                 while(sp<end) {
                     final int srcM = (    dstPix[sp+3])*norm;
                     final int dstM = (255-srcPix[sp+3])*norm;
-                    dstPix[sp] =(srcPix[sp]*srcM + dstPix[sp]*dstM)>>>24; ++sp;
-                    dstPix[sp] =(srcPix[sp]*srcM + dstPix[sp]*dstM)>>>24; ++sp;
-                    dstPix[sp] =(srcPix[sp]*srcM + dstPix[sp]*dstM)>>>24; ++sp;
+                    dstPix[sp] =(srcPix[sp]*srcM + dstPix[sp]*dstM +pt5)>>>24;
                     ++sp;
+                    dstPix[sp] =(srcPix[sp]*srcM + dstPix[sp]*dstM +pt5)>>>24;
+                    ++sp;
+                    dstPix[sp] =(srcPix[sp]*srcM + dstPix[sp]*dstM +pt5)>>>24;
+                    sp+=2;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }
@@ -179,6 +309,8 @@ public class SVGComposite
             int y1=y0 + dstOut.getHeight();
 
             final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
             for (int y = y0; y<y1; y++) {
                 srcPix = src.getPixels  (x, y, w, 1, srcPix);
                 dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
@@ -189,13 +321,13 @@ public class SVGComposite
                     final int dstM = (255-srcPix[sp+3])*norm;
 
                     dstPix[sp] = (srcPix[sp]*srcM + 
-                                  dstPix[sp]*dstM)>>>24; ++sp;
+                                  dstPix[sp]*dstM + pt5)>>>24; ++sp;
                     dstPix[sp] = (srcPix[sp]*srcM + 
-                                  dstPix[sp]*dstM)>>>24; ++sp;
+                                  dstPix[sp]*dstM + pt5)>>>24; ++sp;
                     dstPix[sp] = (srcPix[sp]*srcM + 
-                                  dstPix[sp]*dstM)>>>24; ++sp;
+                                  dstPix[sp]*dstM + pt5)>>>24; ++sp;
                     dstPix[sp] = (srcPix[sp]*srcM + 
-                                  dstPix[sp]*dstM)>>>24; ++sp;
+                                  dstPix[sp]*dstM + pt5)>>>24; ++sp;
                 }
                 dstOut.setPixels(x, y, w, 1, dstPix);
             }
