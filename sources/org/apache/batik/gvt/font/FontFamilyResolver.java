@@ -60,12 +60,8 @@ public class FontFamilyResolver {
 
         GraphicsEnvironment env;
         env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        String fontNames[] = null;
-        Font[] list = env.getAllFonts();
-        fontNames = new String[list.length];
-        for(int i = 0 ; i < list.length ; i++ ){
-            fontNames[i] = list[i].getName();
-        }
+        String fontNames[] = env.getAvailableFontFamilyNames();
+
         int nFonts = fontNames != null ? fontNames.length : 0;
         for(int i=0; i<nFonts; i++){
             fonts.put(fontNames[i].toLowerCase(), fontNames[i]);
