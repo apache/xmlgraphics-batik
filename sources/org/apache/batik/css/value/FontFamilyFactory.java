@@ -117,7 +117,8 @@ public class FontFamilyFactory
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.INVALID_ACCESS_ERR,
 	     "invalid.lexical.unit",
-	     new Object[] { new Integer(lu.getLexicalUnitType()) });
+	     new Object[] { new Integer(lu.getLexicalUnitType()),
+                            getPropertyName() });
     }
 
     /**
@@ -135,7 +136,7 @@ public class FontFamilyFactory
 	 * Returns the name of the property handled.
 	 */
 	public String getPropertyName() {
-	    return "";
+	    return null;
 	}
     
 	/**

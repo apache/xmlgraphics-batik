@@ -58,14 +58,9 @@ public abstract class CommonViewCSS extends AbstractViewCSS {
 
         String uri  = ctx.getUserStyleSheetURI();
         if (uri != null) {
-            userAgentStyleSheet =
+            userStyleSheet =
                 impl.createCSSStyleSheet("User Style Sheet", "all");
-            try {
-                CSSDocumentHandler.parseStyleSheet
-                    ((CSSOMStyleSheet)userAgentStyleSheet, uri);
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
+            CSSDocumentHandler.parseStyleSheet((CSSOMStyleSheet)userStyleSheet, uri);
         }
     }
 }

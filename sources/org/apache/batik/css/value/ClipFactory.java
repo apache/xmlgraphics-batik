@@ -9,6 +9,7 @@
 package org.apache.batik.css.value;
 
 import org.apache.batik.css.CSSDOMExceptionFactory;
+
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.css.sac.Parser;
 import org.w3c.dom.DOMException;
@@ -21,6 +22,7 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class ClipFactory extends AbstractRectFactory {
+
     /**
      * Creates a new ClipFactory object.
      * @param p The CSS parser used to parse the CSS texts.
@@ -49,7 +51,7 @@ public class ClipFactory extends AbstractRectFactory {
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.INVALID_ACCESS_ERR,
 		     "invalid.identifier",
-		     new Object[] { lu.getStringValue() });
+		     new Object[] { lu.getStringValue(), getPropertyName() });
 	    }
 	    return AUTO_VALUE;
 	default:
@@ -70,7 +72,7 @@ public class ClipFactory extends AbstractRectFactory {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
 	}
 	return AUTO_VALUE;
     }

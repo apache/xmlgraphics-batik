@@ -55,7 +55,8 @@ public abstract class AbstractRectFactory extends AbstractValueFactory {
                 throw CSSDOMExceptionFactory.createDOMException
                     (DOMException.INVALID_ACCESS_ERR,
                      "invalid.lexical.unit",
-                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+                     new Object[] { new Integer(lu.getLexicalUnitType()),
+                                    getPropertyName() });
             }
             lu = lu.getNextLexicalUnit();
             CSSPrimitiveValue r;
@@ -66,7 +67,8 @@ public abstract class AbstractRectFactory extends AbstractValueFactory {
                 throw CSSDOMExceptionFactory.createDOMException
                     (DOMException.INVALID_ACCESS_ERR,
                      "invalid.lexical.unit",
-                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+                     new Object[] { new Integer(lu.getLexicalUnitType()),
+                                    getPropertyName() });
             }
             lu = lu.getNextLexicalUnit();
             CSSPrimitiveValue b;
@@ -77,7 +79,8 @@ public abstract class AbstractRectFactory extends AbstractValueFactory {
                 throw CSSDOMExceptionFactory.createDOMException
                     (DOMException.INVALID_ACCESS_ERR,
                      "invalid.lexical.unit",
-                     new Object[] { new Integer(lu.getLexicalUnitType()) });
+                     new Object[] { new Integer(lu.getLexicalUnitType()),
+                                    getPropertyName() });
             }
             lu = lu.getNextLexicalUnit();
             CSSPrimitiveValue l;
@@ -87,6 +90,7 @@ public abstract class AbstractRectFactory extends AbstractValueFactory {
         throw CSSDOMExceptionFactory.createDOMException
             (DOMException.INVALID_ACCESS_ERR,
              "invalid.lexical.unit",
-             new Object[] { new Integer(lu.getLexicalUnitType()) });
+             new Object[] { new Integer(lu.getLexicalUnitType()),
+                            getPropertyName() });
     }
 }

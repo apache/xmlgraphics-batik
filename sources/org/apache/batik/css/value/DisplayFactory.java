@@ -58,7 +58,7 @@ public class DisplayFactory
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "display";
+	return CSS_DISPLAY_PROPERTY;
     }
     
     /**

@@ -32,6 +32,7 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.bridge.UserAgent;
 
+import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
@@ -149,6 +150,10 @@ public class JSVGComponent extends JGVTComponent {
 
     /**
      * Loads a SVG document from the given URL.
+     * <em>Note: Because the loading is multi-threaded, the current
+     * SVG document is not garanteed to be updated after this method
+     * returns. The only way to be notified a document has been loaded
+     * is to listen to the <tt>SVGDocumentLoaderEvent</tt>s.</em>
      */
     public void loadSVGDocument(String url) {
         stopProcessing();
@@ -189,6 +194,9 @@ public class JSVGComponent extends JGVTComponent {
         }
         svgDocument = doc;
 
+        DefaultSVGContext ctx = (DefaultSVGContext)((SVGOMDocument)doc).getSVGContext();
+        ctx.setUserStyleSheetURI(userAgent.getUserStyleSheetURI());
+
         Element root = doc.getDocumentElement();
         String znp = root.getAttributeNS(null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
         if (!znp.equals(SVGConstants.SVG_MAGNIFY_VALUE)) {
@@ -208,6 +216,13 @@ public class JSVGComponent extends JGVTComponent {
         initializeEventHandling();
 
         gvtTreeBuilder.start();
+    }
+
+    /**
+     * Returns the current SVG document.
+     */
+    public SVGDocument getSVGDocument() {
+        return svgDocument;
     }
 
     /**

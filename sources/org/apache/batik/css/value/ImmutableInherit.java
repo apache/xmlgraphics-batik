@@ -60,8 +60,7 @@ public class ImmutableInherit extends AbstractImmutableValue {
     public String getStringValue() throws DOMException {
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.INVALID_ACCESS_ERR,
-	     "inherit.not.string",
-	     new Object[] {});
+	     "inherit.not.string", null);
     }
 
     /**

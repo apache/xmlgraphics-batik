@@ -93,13 +93,13 @@ public class CSSDocumentHandler implements DocumentHandler {
 	    parser.setConditionFactory(AbstractCSSRule.CONDITION_FACTORY);
 	    parser.setDocumentHandler(new CSSDocumentHandler(ss, true));
 	    parser.parseStyleSheet(is);
-	} catch (DOMException e) {
-	    throw e;
 	} catch (Exception e) {
+            e.printStackTrace();
+            String m = e.getMessage();
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.SYNTAX_ERR,
 		 "syntax.error.at",
-		 new Object[] { uri });
+		 new Object[] { uri, (m == null) ? "" : m });
 	}
     }
 
@@ -115,7 +115,10 @@ public class CSSDocumentHandler implements DocumentHandler {
 	    parser.setDocumentHandler(new CSSDocumentHandler(ss, true));
 	    parser.parseStyleSheet(new InputSource(new StringReader(rules)));
 	} catch (DOMException e) {
-	    throw e;
+	    throw CSSDOMExceptionFactory.createDOMException
+		(DOMException.SYNTAX_ERR,
+		 "rules.syntax.error",
+		 new Object[] { rules + "\n" + e.getMessage() });
 	} catch (Exception e) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.SYNTAX_ERR,
@@ -138,7 +141,10 @@ public class CSSDocumentHandler implements DocumentHandler {
 	    parser.parseRule(new InputSource(new StringReader(rule)));
 	    return ssh.currentRule;
 	} catch (DOMException e) {
-	    throw e;
+	    throw CSSDOMExceptionFactory.createDOMException
+		(DOMException.SYNTAX_ERR,
+		 "rule.syntax.error",
+		 new Object[] { rule + "\n" + e.getMessage() });
 	} catch (Exception e) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.SYNTAX_ERR,
@@ -318,6 +324,12 @@ public class CSSDocumentHandler implements DocumentHandler {
 	CSSOMStyleDeclaration sd;
 	sd = (CSSOMStyleDeclaration)((CSSOMStyleRule)currentRule).getStyle();
 	ValueFactory f = factories.get(name);
+        if (f == null) {
+	    throw CSSDOMExceptionFactory.createDOMException
+		(DOMException.SYNTAX_ERR,
+		 "invalid.property",
+		 new Object[] { name });
+        }
 	f.createCSSValue(value, sd, (important) ? "!important" : "");
     }
 }

@@ -67,7 +67,7 @@ public class LengthFactory extends AbstractLengthFactory {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
 	}
 	return AUTO_VALUE;
     }

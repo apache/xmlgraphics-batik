@@ -11,6 +11,7 @@ package org.apache.batik.css.value;
 import org.apache.batik.css.CSSDOMExceptionFactory;
 import org.apache.batik.css.CSSOMValue;
 import org.apache.batik.css.PropertyMap;
+
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.css.sac.Parser;
 import org.w3c.dom.DOMException;
@@ -180,7 +181,7 @@ public class ColorFactory
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { lu.getStringValue() });
+		 new Object[] { lu.getStringValue(), getPropertyName() });
 	default:
 	    return super.createValue(lu);
 	}
@@ -198,7 +199,7 @@ public class ColorFactory
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
 	}
 	String s = value.toLowerCase().intern();
 	Object v = factories.get(s);
@@ -208,7 +209,7 @@ public class ColorFactory
         throw CSSDOMExceptionFactory.createDOMException
             (DOMException.INVALID_ACCESS_ERR,
              "invalid.identifier",
-             new Object[] { value });
+             new Object[] { value, getPropertyName() });
     }
 
     /**

@@ -124,7 +124,10 @@ public class CSSOMStyleRule
 	    fireCSSStyleRuleChangeCancel();
 	    selectors = s;
 	    style = sd;
-	    throw e;
+	    throw CSSDOMExceptionFactory.createDOMException
+		(DOMException.INVALID_ACCESS_ERR,
+		 "style.rule.value",
+		 new Object[] { cssText + "\n" + e.getMessage() });
 	} catch (Exception e) {
 	    style.fireCSSStyleDeclarationChangeCancel();
 	    fireCSSStyleRuleChangeCancel();

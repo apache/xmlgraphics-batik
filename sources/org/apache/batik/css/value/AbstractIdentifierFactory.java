@@ -46,14 +46,16 @@ public abstract class AbstractIdentifierFactory extends AbstractValueFactory {
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.INVALID_ACCESS_ERR,
 		     "invalid.identifier",
-		     new Object[] { lu.getStringValue() });
+		     new Object[] { lu.getStringValue(),
+                                    getPropertyName() });
 	    }
 	    return (ImmutableValue)v;
 	default:
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.lexical.unit",
-		 new Object[] { new Integer(lu.getLexicalUnitType()) });
+		 new Object[] { new Integer(lu.getLexicalUnitType()),
+                                getPropertyName() });
 	}
     }
 
@@ -69,14 +71,14 @@ public abstract class AbstractIdentifierFactory extends AbstractValueFactory {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
 	}
 	Object v = getIdentifiers().get(value.toLowerCase().intern());
 	if (v == null) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
 	}
 	return (ImmutableValue)v;
     }

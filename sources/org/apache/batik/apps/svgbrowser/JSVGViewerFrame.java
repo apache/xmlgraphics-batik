@@ -159,6 +159,8 @@ public class JSVGViewerFrame
     public final static String RESET_TRANSFORM_ACTION = "ResetTransformAction";
     public final static String ZOOM_IN_ACTION = "ZoomInAction";
     public final static String ZOOM_OUT_ACTION = "ZoomOutAction";
+    public final static String PREVIOUS_TRANSFORM_ACTION = "PreviousTransformAction";
+    public final static String NEXT_TRANSFORM_ACTION = "NextTransformAction";
     public final static String STOP_ACTION = "StopAction";
     public final static String DOUBLE_BUFFER_ACTION = "DoubleBufferAction";
     public final static String AUTO_ADJUST_ACTION = "AutoAdjustAction";
@@ -236,6 +238,18 @@ public class JSVGViewerFrame
     protected StopAction stopAction = new StopAction();
 
     /**
+     * The previous transform action
+     */
+    protected PreviousTransformAction previousTransformAction =
+        new PreviousTransformAction();
+
+    /**
+     * The next transform action
+     */
+    protected NextTransformAction nextTransformAction =
+        new NextTransformAction();
+
+    /**
      * The debug flag.
      */
     protected boolean debug;
@@ -311,6 +325,11 @@ public class JSVGViewerFrame
     protected LocalHistory localHistory;
 
     /**
+     * The transform history.
+     */
+    protected TransformHistory transformHistory = new TransformHistory();
+
+    /**
      * the ShowRenderingAction.
      */
     protected ShowRenderingAction showRenderingAction = new ShowRenderingAction();
@@ -342,6 +361,8 @@ public class JSVGViewerFrame
         listeners.put(RESET_TRANSFORM_ACTION, new ResetTransformAction());
         listeners.put(ZOOM_IN_ACTION, new ZoomInAction());
         listeners.put(ZOOM_OUT_ACTION, new ZoomOutAction());
+        listeners.put(PREVIOUS_TRANSFORM_ACTION, previousTransformAction);
+        listeners.put(NEXT_TRANSFORM_ACTION, nextTransformAction);
         listeners.put(STOP_ACTION, stopAction);
         listeners.put(DOUBLE_BUFFER_ACTION, new DoubleBufferAction());
         listeners.put(AUTO_ADJUST_ACTION, new AutoAdjustAction());
@@ -961,6 +982,66 @@ public class JSVGViewerFrame
     }
 
     /**
+     * To go back to the previous transform
+     */
+    public class PreviousTransformAction extends    AbstractAction
+                                         implements JComponentModifier {
+        List components = new LinkedList();
+        public PreviousTransformAction() {}
+        public void actionPerformed(ActionEvent e) {
+            if (transformHistory.canGoBack()) {
+                transformHistory.back();
+                update();
+                nextTransformAction.update();
+                svgCanvas.setRenderingTransform(transformHistory.currentTransform());
+            }
+        }
+
+        public void addJComponent(JComponent c) {
+            components.add(c);
+            c.setEnabled(false);
+        }
+
+        protected void update() {
+            boolean b = transformHistory.canGoBack();
+            Iterator it = components.iterator();
+            while (it.hasNext()) {
+                ((JComponent)it.next()).setEnabled(b);
+            }
+        }
+    }
+
+    /**
+     * To go forward to the next transform
+     */
+    public class NextTransformAction extends    AbstractAction
+                                         implements JComponentModifier {
+        List components = new LinkedList();
+        public NextTransformAction() {}
+        public void actionPerformed(ActionEvent e) {
+            if (transformHistory.canGoForward()) {
+                transformHistory.forward();
+                update();
+                previousTransformAction.update();
+                svgCanvas.setRenderingTransform(transformHistory.currentTransform());
+            }
+        }
+
+        public void addJComponent(JComponent c) {
+            components.add(c);
+            c.setEnabled(false);
+        }
+
+        protected void update() {
+            boolean b = transformHistory.canGoForward();
+            Iterator it = components.iterator();
+            while (it.hasNext()) {
+                ((JComponent)it.next()).setEnabled(b);
+            }
+        }
+    }
+
+    /**
      * To stop the current processing.
      */
     public class StopAction extends    AbstractAction
@@ -1223,6 +1304,10 @@ public class JSVGViewerFrame
         localHistory.update(s);
         backAction.update();
         forwardAction.update();
+
+        transformHistory = new TransformHistory();
+        previousTransformAction.update();
+        nextTransformAction.update();
     }
 
     /**
@@ -1354,6 +1439,10 @@ public class JSVGViewerFrame
         }
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
+
+        transformHistory.update(svgCanvas.getRenderingTransform());
+        previousTransformAction.update();
+        nextTransformAction.update();
     }
 
     /**
@@ -1407,6 +1496,7 @@ public class JSVGViewerFrame
          */
         public void displayError(Exception ex) {
             displayError(ex.getMessage());
+            ex.printStackTrace();
         }
 
         /**

@@ -8,10 +8,13 @@
 
 package org.apache.batik.css.value;
 
+import java.io.IOException;
 import java.io.StringReader;
+
 import org.apache.batik.css.CSSDOMExceptionFactory;
 import org.apache.batik.css.CSSOMStyleDeclaration;
 import org.apache.batik.css.CSSOMValue;
+
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.css.sac.Parser;
@@ -57,11 +60,9 @@ public abstract class AbstractValueFactory
 	    InputSource is = new InputSource(new StringReader(text));
 	    LexicalUnit lu = parser.parsePropertyValue(is);
 	    return createValue(lu);
-	} catch (Exception e) {
-	    throw CSSDOMExceptionFactory.createDOMException
-		(DOMException.INVALID_ACCESS_ERR,
-		 e.getMessage(),
-		 new Object[] {});
+	} catch (IOException e) {
+            // Should never happen
+            throw new InternalError(e.getMessage());
 	}
     }
 
@@ -90,8 +91,8 @@ public abstract class AbstractValueFactory
 	throws DOMException {
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.NOT_SUPPORTED_ERR,
-	     "bad.unit.type",
-	     new Object[] { new Integer(unitType) });
+	     "invalid.lexical.unit",
+	     new Object[] { new Integer(unitType), getPropertyName() });
     }
 
     /**
@@ -104,8 +105,8 @@ public abstract class AbstractValueFactory
 	throws DOMException {
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.NOT_SUPPORTED_ERR,
-	     "bad.unit.type",
-	     new Object[] { new Integer(type) });
+	     "invalid.lexical.unit",
+	     new Object[] { new Integer(type), getPropertyName() });
     }
 
     /**
@@ -143,7 +144,8 @@ public abstract class AbstractValueFactory
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.INVALID_ACCESS_ERR,
 		     "invalid.lexical.unit",
-		     new Object[] { new Integer(lu.getLexicalUnitType()) });
+		     new Object[] { new Integer(lu.getLexicalUnitType()),
+                                    AbstractValueFactory.this.getPropertyName() });
 	    }
 	    return new ImmutableString(CSSPrimitiveValue.CSS_STRING,
 				       lu.getStringValue());
@@ -160,8 +162,9 @@ public abstract class AbstractValueFactory
 	    if (type != CSSPrimitiveValue.CSS_STRING) {
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.NOT_SUPPORTED_ERR,
-		     "bad.unit.type",
-		     new Object[] { new Integer(type) });
+		     "invalid.lexical.unit",
+		     new Object[] { new Integer(type),
+                                    AbstractValueFactory.this.getPropertyName() });
 	    }
 	    return new ImmutableString(type, value);
 	}
@@ -196,7 +199,8 @@ public abstract class AbstractValueFactory
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.INVALID_ACCESS_ERR,
 		     "invalid.lexical.unit",
-		     new Object[] { new Integer(lu.getLexicalUnitType()) });
+		     new Object[] { new Integer(lu.getLexicalUnitType()),
+                                    AbstractValueFactory.this.getPropertyName() });
 	    }
 	    return new ImmutableString(CSSPrimitiveValue.CSS_URI,
 				       lu.getStringValue());
@@ -213,8 +217,9 @@ public abstract class AbstractValueFactory
 	    if (type != CSSPrimitiveValue.CSS_URI) {
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.NOT_SUPPORTED_ERR,
-		     "bad.unit.type",
-		     new Object[] { new Integer(type) });
+		     "invalid.lexical.unit",
+		     new Object[] { new Integer(type),
+                                    AbstractValueFactory.this.getPropertyName() });
 	    }
 	    return new ImmutableString(type, value);
 	}

@@ -576,7 +576,9 @@ public class JGVTComponent extends JComponent {
                 progressivePaintThread.setPriority(Thread.MIN_PRIORITY + 1);
                 progressivePaintThread.start();
             }
-            suspendInteractions = false;
+            if (!doubleBufferedRendering) {
+                suspendInteractions = false;
+            }
         }
         
         /**
@@ -584,6 +586,10 @@ public class JGVTComponent extends JComponent {
          */
         public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
             interruptProgressivePaintThread();
+
+            if (doubleBufferedRendering) {
+                suspendInteractions = false;
+            }
 
             gvtTreeRenderer = null;
             if (needRender) {
@@ -618,6 +624,10 @@ public class JGVTComponent extends JComponent {
          */
         private void renderingStopped() {
             interruptProgressivePaintThread();
+
+            if (doubleBufferedRendering) {
+                suspendInteractions = false;
+            }
 
             gvtTreeRenderer = null;
             if (needRender) {

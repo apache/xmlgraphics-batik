@@ -73,7 +73,7 @@ public class EnableBackgroundFactory
 		throw CSSDOMExceptionFactory.createDOMException
 		    (DOMException.INVALID_ACCESS_ERR,
 		     "invalid.identifier",
-		     new Object[] { lu.getStringValue() });
+		     new Object[] { lu.getStringValue(), getPropertyName() });
 	    }
 
 	    if (v == ACCUMULATE_VALUE) {
@@ -89,7 +89,8 @@ public class EnableBackgroundFactory
                     }
                     throw CSSDOMExceptionFactory.createDOMException
                         (DOMException.INVALID_ACCESS_ERR,
-                         "unexpected.end.of.list", null);
+                         "unexpected.end.of.list",
+                         new Object[] { getPropertyName() });
                 }
 		list.append(new CSSOMValue(lengthFactory,
 					   lengthFactory.createValue(lu)));
@@ -99,7 +100,8 @@ public class EnableBackgroundFactory
             throw CSSDOMExceptionFactory.createDOMException
                 (DOMException.INVALID_ACCESS_ERR,
                  "invalid.lexical.unit",
-                 new Object[] { new Integer(lu.getLexicalUnitType()) });
+                 new Object[] { new Integer(lu.getLexicalUnitType()),
+                                getPropertyName() });
 	}
     }
 
@@ -115,13 +117,13 @@ public class EnableBackgroundFactory
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
 	}
 	if (!value.equalsIgnoreCase(CSS_ACCUMULATE_VALUE)) {
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,
 		 "invalid.identifier",
-		 new Object[] { value });
+		 new Object[] { value, getPropertyName() });
 	}
 	return ACCUMULATE_VALUE;
     }
@@ -141,7 +143,7 @@ public class EnableBackgroundFactory
 	 * Returns the name of the property handled.
 	 */
 	public String getPropertyName() {
-	    return "";
+	    return null;
 	}
     }
 }

@@ -10,6 +10,7 @@ package org.apache.batik.css.value;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.css.ViewCSS;
 
@@ -21,6 +22,7 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class ClipResolver implements RelativeValueResolver {
+
     /**
      * Whether the handled property is inherited or not.
      */
