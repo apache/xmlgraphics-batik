@@ -49,6 +49,8 @@ import org.w3c.dom.css.CSSPrimitiveValue;
 public class SVGImageElementBridge implements GraphicsNodeBridge,
                                               SVGConstants {
 
+    public final static String PROTOCOL_DATA = "data:";
+
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element){
         SVGElement svgElement = (SVGElement) element;
         CSSStyleDeclaration cssDecl
@@ -94,6 +96,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
                  uriStr);
 
         URL url;
+        Rectangle2D bounds = new Rectangle2D.Float(x, y, w, h);
 
         try {
             // This get's our base document's URL and then
@@ -102,16 +105,20 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
             SVGDocument svgDoc = (SVGDocument)doc;
             String docURLStr   = svgDoc.getURL();
             URL docUrl         = new URL(docURLStr);
-            url                = new URL(docUrl,uriStr);
+            if(!uriStr.startsWith(PROTOCOL_DATA)){
+                url            = new URL(docUrl,uriStr);
+                node.setImage(RasterRable.create(url, bounds));
+            }
+            else{
+                node.setImage(RasterRable.create(uriStr, bounds));
+            }
         }
         catch (MalformedURLException mue) {
+            mue.printStackTrace();
             throw new IllegalArgumentException
                 ("Malformed URL given: " + uriStr);
         }
 
-        Rectangle2D bounds = new Rectangle2D.Float(x, y, w, h);
-
-        node.setImage(RasterRable.create(url, bounds));
         node.setImageBounds(bounds);
 
         // Initialize the transform

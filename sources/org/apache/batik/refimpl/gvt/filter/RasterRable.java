@@ -11,6 +11,8 @@ package org.apache.batik.refimpl.gvt.filter;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.CachableRed;
 import org.apache.batik.gvt.filter.PadMode;
+import org.apache.batik.util.svg.Base64Decoder;
+
 import java.net.URL;
 
 import java.awt.Component;
@@ -36,6 +38,9 @@ import java.awt.image.WritableRaster;
 import java.awt.image.ColorModel;
 import java.awt.image.renderable.RenderContext;
 
+import java.io.EOFException;
+import java.io.IOException;
+
 /**
  * RasterRable This is used to wrap a Rendered Image back into the 
  * RenderableImage world.
@@ -45,6 +50,7 @@ import java.awt.image.renderable.RenderContext;
  */
 public class RasterRable
     extends    AbstractRable {
+    public final static String BASE64        = "base64,";
 
     CachableRed src;
 
@@ -103,6 +109,64 @@ public class RasterRable
         return cr;
     }
 
+    public static Filter create(String dataUrl, Rectangle2D bounds){
+        try{
+            // 
+            // Using the data protocol
+            //
+            int start = dataUrl.indexOf(BASE64);
+            if(start > 0){
+                start += BASE64.length();
+            }
+            String imageData = dataUrl.substring(start);
+            Base64Decoder decoder = new Base64Decoder();
+            byte imageBuffer[] = null;
+            try{
+                imageBuffer = decoder.decodeBuffer(imageData);
+            }catch(EOFException e){
+                System.out.println("Done decoding Base64 data");
+            }
+            Image decodedImage = Toolkit.getDefaultToolkit().createImage(imageBuffer);
+            MediaTracker tracker = new MediaTracker(mediaComponent);
+            tracker.addImage(decodedImage, 0);
+            try{
+                tracker.waitForAll();
+            }catch(InterruptedException e){
+                tracker.removeImage(decodedImage);
+            }finally {
+                if(decodedImage!=null)
+                    tracker.removeImage(decodedImage);
+                    
+                if(tracker.isErrorAny()){
+                    throw new Error("Error loading decoded image data");
+                }
+            }
+
+            //
+            // Brute force (stupid?) conversion to ARGB image, then
+            // to a CachableRed
+            // 
+            BufferedImage bi = new BufferedImage(decodedImage.getWidth(null),
+                                                 decodedImage.getHeight(null),
+                                                 BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = bi.createGraphics();
+            g.drawImage(decodedImage, 0, 0, null);
+
+            // org.apache.batik.test.gvt.ImageDisplay.showImage("Loaded image", bi);
+            // g.setPaint(java.awt.Color.red);
+            // g.fillRect(0, 0, bi.getWidth(), bi.getHeight());
+            // org.apache.batik.test.gvt.ImageDisplay.showImage("Loaded image 2", bi);
+            g.dispose();
+
+            System.out.println("Decoded image " + bi.getWidth() + " by " + bi.getHeight());
+            return new RasterRable(new 
+                ConcreteBufferedImageCachableRed(bi));
+        }catch(IOException e){
+            return null;
+        }
+
+    }
+
     public static Filter create(URL url, Rectangle2D bounds) {
         return new RasterRable(url);
     }
@@ -129,16 +193,18 @@ public class RasterRable
         }
 
         public void run() {
-
+            
             BufferedImage bi = cache.request(url);
-
+            
             if (bi == null) {
-                Image img = tk.createImage(url);
+                String protocol = url.getProtocol();
+                Image img = img = tk.createImage(url);
+
                 int myID;
                 synchronized (this) {
                     myID = id++;
                 }
-
+                    
                 mediaTracker.addImage(img, myID);
                 while (true) {
                     try {
