@@ -124,7 +124,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             }
             try {
                node.paint(g2d, rc);
-            } catch (InterruptedException ie) { }
+            } catch (InterruptedException ie) {
+               break;
+            }
         }
     }
 

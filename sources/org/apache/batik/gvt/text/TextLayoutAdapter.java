@@ -39,11 +39,13 @@ public class TextLayoutAdapter implements TextSpanLayout {
     private TextLayout layout;
     private AttributedCharacterIterator aci;
     private Point2D offset;
+    private AffineTransform transform;
 
     public TextLayoutAdapter(TextLayout layout, Point2D offset, AttributedCharacterIterator aci) {
         this.layout = layout;
         this.aci = aci;
         this.offset = adjustOffset(offset);
+        this.transform = computeTransform();
     }
 
     /**
@@ -52,7 +54,15 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * @param g2d the Graphics2D to use
      */
     public void draw(Graphics2D g2d) {
-        layout.draw(g2d, (float) offset.getX(), (float) offset.getY());
+        AffineTransform t;
+        if (transform != null) {
+            t = g2d.getTransform();
+            g2d.transform(transform);
+            layout.draw(g2d, 0f, 0f);
+            g2d.setTransform(t);
+        } else {
+            layout.draw(g2d, 0f, 0f);
+        }
     }
 
     /**
@@ -72,6 +82,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
      */
     public void setOffset(Point2D offset) {
         this.offset = offset;
+        this.transform = computeTransform();
     }
 
     /**
@@ -79,9 +90,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * by an AffineTransform.
      */
     public Shape getOutline() {
-        AffineTransform nt = AffineTransform.getTranslateInstance(
-               offset.getX(), offset.getY());
-        return layout.getOutline(nt);
+        return layout.getOutline(transform);
     }
 
     /**
@@ -103,20 +112,15 @@ public class TextLayoutAdapter implements TextSpanLayout {
         if ((decorationType & DECORATION_OVERLINE) != 0) {
              g.append(getOverlineShape(aci, layout), false);
         }
-        AffineTransform nt = AffineTransform.getTranslateInstance(
-               offset.getX(), offset.getY());
-        return nt.createTransformedShape(g);
+        return transform.createTransformedShape(g);
     }
 
     /**
      * Returns the rectangular bounds of the completed glyph layout.
      */
     public Rectangle2D getBounds() {
-        Rectangle2D bounds = layout.getBounds();
-        return new Rectangle2D.Double(bounds.getX()+offset.getX(),
-                                      bounds.getY()+offset.getY(),
-                                      bounds.getWidth(),
-                                      bounds.getHeight());
+        Shape bounds = layout.getBounds();
+        return transform.createTransformedShape(bounds).getBounds2D();
     }
 
     /**
@@ -156,9 +160,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * @param end the index of the last glyph in the contiguous selection.
      */
     public Shape getLogicalHighlightShape(int begin, int end) {
-        AffineTransform nt = AffineTransform.getTranslateInstance(
-                                           offset.getX(), offset.getY());
-        return nt.createTransformedShape(
+        return transform.createTransformedShape(
                   layout.getLogicalHighlightShape(begin, end));
     }
 
@@ -171,8 +173,13 @@ public class TextLayoutAdapter implements TextSpanLayout {
      * @param y the y coordinate of the point to be tested.
      */
     public TextHit hitTestChar(float x, float y) {
-        TextHitInfo hit = layout.hitTestChar(x-(float) offset.getX(),
-                                             y-(float) offset.getY());
+
+        Point2D p = new Point2D.Float(x, y);
+        try {
+        transform.inverseTransform(p, p);
+        } catch (java.awt.geom.NoninvertibleTransformException nite) {;}
+        TextHitInfo hit = layout.hitTestChar((float) p.getX(),
+                                             (float) p.getY());
         return new TextHit(hit.getCharIndex(), hit.isLeadingEdge());
     }
 
@@ -197,7 +204,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
                 layout.getAscent();
         Stroke overlineStroke =
             new BasicStroke(getDecorationThickness(runaci, layout));
-        return overlineStroke.createStrokedShape(
+        return  overlineStroke.createStrokedShape(
                            new java.awt.geom.Line2D.Double(
                            0f, y,
                            layout.getAdvance(), y));
@@ -273,6 +280,12 @@ public class TextLayoutAdapter implements TextSpanLayout {
     }
 
 // private
+
+    private AffineTransform computeTransform() {
+         AffineTransform nt = AffineTransform.getTranslateInstance(
+               offset.getX(), offset.getY());
+         return nt;
+    }
 
     private Point2D adjustOffset(Point2D p) {
 

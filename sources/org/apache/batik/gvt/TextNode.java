@@ -117,6 +117,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
                                        rc.getFontRenderContext());
             } else {
                 // Don't cache if ACI is null
+                System.out.println("ACI is null for "+this);
                 return new Rectangle2D.Float(0, 0, 0, 0);
             }
         }
@@ -174,7 +175,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @param the anchor of this node
      */
     public boolean selectAt(double x, double y, GraphicsNodeRenderContext rc) {
-         beginMark = rc.getTextPainter().selectAt(x, y, aci, rc);
+         beginMark = rc.getTextPainter().selectAt(x, y, aci, this, rc);
          return true; // assume this always changes selection, for now.
     }
 
@@ -183,7 +184,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @param the anchor of this node
      */
     public boolean selectTo(double x, double y, GraphicsNodeRenderContext rc) {
-        Mark tmpMark = rc.getTextPainter().selectTo(x, y, beginMark, aci, rc);
+        Mark tmpMark = rc.getTextPainter().selectTo(x, y, beginMark, aci, this, rc);
         boolean result = false;
 
         if (tmpMark != endMark) {
@@ -199,7 +200,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @param the anchor of this node
      */
     public boolean selectAll(double x, double y, GraphicsNodeRenderContext rc) {
-        endMark = rc.getTextPainter().selectAll(x, y, aci, rc);
+        endMark = rc.getTextPainter().selectAll(x, y, aci, this, rc);
         beginMark = endMark;
         return true;
     }

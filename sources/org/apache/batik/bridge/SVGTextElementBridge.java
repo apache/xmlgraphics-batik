@@ -333,6 +333,9 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                         as = createAttributedString(s, map, indexMap, preserve,
                                                     stripFirst, last && top);
                         if (as != null) {
+                            // NOTE: we get position attributes from the
+                            // surrounding text or tspan node, not the tref
+                            // link target
                             addGlyphPositionAttributes(
                                  as, true, indexMap, ctx, nodeElement);
                             stripLast = !preserve && 
@@ -513,7 +516,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
 
         // glyph and sub-element positions
             String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
-            //System.out.println("X: "+s);
             if (s.length() != 0) {
                 float x[] = SVGUtilities.svgToUserSpaceArray(element,
                                             SVG_X_ATTRIBUTE, s,

@@ -49,7 +49,7 @@ public interface TextPainter {
      * implement hit testing and text selection.
      */
     public Mark selectAt(double x, double y, AttributedCharacterIterator aci,
-                         GraphicsNodeRenderContext context);
+                         TextNode node, GraphicsNodeRenderContext context);
 
     /**
      * Continues a text selection on a particular AttributedCharacterIterator,
@@ -65,7 +65,7 @@ public interface TextPainter {
      */
     public Mark selectTo(double x, double y, Mark beginMark,
                             AttributedCharacterIterator aci,
-                            GraphicsNodeRenderContext context);
+                            TextNode node, GraphicsNodeRenderContext context);
 
     /**
      * Select all of the text represented by an AttributedCharacterIterator,
@@ -81,7 +81,7 @@ public interface TextPainter {
      */
     public Mark selectAll(double x, double y,
                             AttributedCharacterIterator aci,
-                            GraphicsNodeRenderContext context);
+                            TextNode node, GraphicsNodeRenderContext context);
 
     /*
      * Get an array of index pairs corresponding to the indices within an
