@@ -26,12 +26,12 @@
       <image x="0" y="0" clip-path="url(#clipPath1)" width="100" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="50" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+AAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="50" preserveAspectRatio="none" xlink:show="replace" />
       <text xml:space="preserve" x="110" y="25" stroke="none">Clip set to device bounds
       </text>
       <text xml:space="preserve" x="110" y="25" transform="translate(0,70)" stroke="none">Clip set to upper right quarter
       </text>
-      <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(0,70)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath2)" preserveAspectRatio="xMidYMid meet" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
+      <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(0,70)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath2)" preserveAspectRatio="none" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:actuate="onRequest" />
@@ -41,7 +41,7 @@ AAAASUVORK5CYII=" xlink:actuate="onRequest" />
       </text>
       <text xml:space="preserve" x="110" y="30" stroke="none">after .5 scale
       </text>
-      <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath2)" preserveAspectRatio="xMidYMid meet" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
+      <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath2)" preserveAspectRatio="none" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:actuate="onRequest" />
@@ -52,14 +52,14 @@ AAAASUVORK5CYII=" xlink:actuate="onRequest" />
       <image x="0" y="0" clip-path="url(#clipPath3)" width="100" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="50" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+AAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="50" preserveAspectRatio="none" xlink:show="replace" />
     </g>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,280)">
       <text xml:space="preserve" x="110" y="15" stroke="none">Non-Rectagular clip after
       </text>
       <text xml:space="preserve" x="110" y="30" stroke="none">.5 scale
       </text>
-      <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath4)" preserveAspectRatio="xMidYMid meet" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
+      <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath4)" preserveAspectRatio="none" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:actuate="onRequest" />
@@ -69,7 +69,7 @@ AAAASUVORK5CYII=" xlink:actuate="onRequest" />
       </text>
       <text xml:space="preserve" x="110" y="30" stroke="none">.5 scale
       </text>
-      <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath5)" preserveAspectRatio="xMidYMid meet" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
+      <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" clip-path="url(#clipPath5)" preserveAspectRatio="none" height="50" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" xlink:actuate="onRequest" />

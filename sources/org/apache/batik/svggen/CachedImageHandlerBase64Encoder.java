@@ -8,14 +8,18 @@
 
 package org.apache.batik.svggen;
 
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.geom.AffineTransform;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.w3c.dom.*;
 
 import org.apache.batik.util.Base64EncoderStream;
+import org.apache.batik.ext.awt.image.codec.ImageEncoder;
+import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
 
 
 /**
@@ -26,8 +30,7 @@ import org.apache.batik.util.Base64EncoderStream;
  * @author <a href="mailto:paul_evenblij@compuware.com">Paul Evenblij</a>
  * @version $Id$
  */
-public class CachedImageHandlerBase64Encoder extends ImageHandlerBase64Encoder {
-
+public class CachedImageHandlerBase64Encoder extends DefaultCachedImageHandler {
     /**
      * Build a <code>CachedImageHandlerBase64Encoder</code> instance.
      */
@@ -37,64 +40,23 @@ public class CachedImageHandlerBase64Encoder extends ImageHandlerBase64Encoder {
     }
     
    /**
-     * Creates an Element which can refer to an image.
-     * Note that no assumptions should be made by the caller about the
-     * corresponding SVG tag.
-     */
+    * Creates an Element which can refer to an image.
+    * Note that no assumptions should be made by the caller about the
+    * corresponding SVG tag.
+    */
     public Element createElement(SVGGeneratorContext generatorContext) {
         // Create a DOM Element in SVG namespace to refer to an image
         // For this cached version we return <use>
         Element imageElement =
             generatorContext.getDOMFactory().createElementNS(
-                                    SVG_NAMESPACE_URI, SVG_USE_TAG);
-
+                                                             SVG_NAMESPACE_URI, SVG_USE_TAG);
+        
         return imageElement;
     }
 
-    
-    /**
-     * This version of handleHREF encodes the input image into a
-     * PNG image whose bytes are then encoded with Base64. The
-     * resulting encoded data is used to set the url on the
-     * input imageElement.
-     */
-    protected void handleHREF(RenderedImage image, Element imageElement,
-                              SVGGeneratorContext generatorContext)
-        throws SVGGraphics2DIOException {
 
-        //
-        // Setup Base64Encoder stream to byte array.
-        //
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        Base64EncoderStream b64Encoder = new Base64EncoderStream(os);
-        try {
-            //
-            // Now, encode the input image to the base 64 stream.
-            //
-            encodeImage(image, b64Encoder);
-
-            // Close the b64 encoder stream (terminates the b64 streams).
-            b64Encoder.close();
-        } catch (IOException e) {
-            // Should not happen because we are doing in-memory processing
-            throw new SVGGraphics2DIOException(ERR_UNEXPECTED, e);
-        }
-
-        //
-        // Ask for a href from the image cacher
-        //
-        String href = imageCacher.lookup(os,
-                                         image.getWidth(),
-                                         image.getHeight(),
-                                         generatorContext);
-
-        //
-        // Finally, write out url
-        //
-        imageElement.setAttributeNS(XLINK_NAMESPACE_URI,
-                                    ATTR_XLINK_HREF,
-                                    href);
-
+    public String getRefPrefix(){
+        return "";
     }
 
     /**
@@ -115,20 +77,33 @@ public class CachedImageHandlerBase64Encoder extends ImageHandlerBase64Encoder {
         AffineTransform af  = null;
         double hRatio = dstWidth / srcWidth;
         double vRatio = dstHeight / srcHeight;
-        double xScaled = x / hRatio;
-        double yScaled = y / vRatio;
 
         if(hRatio != 1 || vRatio != 1) {
             af = AffineTransform.getScaleInstance(hRatio, vRatio);
         }
         imageElement.setAttributeNS(null,
                                     SVG_X_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(xScaled));
+                                    AbstractSVGConverter.doubleString(x));
         imageElement.setAttributeNS(null,
                                     SVG_Y_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(yScaled));
+                                    AbstractSVGConverter.doubleString(y));
             
         return af;
+    }
+
+    /**
+     * Uses PNG encoding.
+     */
+    public void encodeImage(BufferedImage buf, OutputStream os)
+            throws IOException {
+        Base64EncoderStream b64Encoder = new Base64EncoderStream(os);
+        ImageEncoder encoder = new PNGImageEncoder(b64Encoder, null);
+        encoder.encode(buf);
+        b64Encoder.close();
+    }
+
+    public int getBufferedImageType(){
+        return BufferedImage.TYPE_INT_ARGB;
     }
 }
 

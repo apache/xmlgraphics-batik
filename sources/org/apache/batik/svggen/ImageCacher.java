@@ -55,8 +55,15 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
      *
      * @param domTreeManager the DOMTreeManager for the tree this cacher works on
      */
-    protected void setDOMTreeManager(DOMTreeManager domTreeManager) {
+    public void setDOMTreeManager(DOMTreeManager domTreeManager) {
+        if (domTreeManager == null){
+            throw new IllegalArgumentException();
+        }
         this.domTreeManager = domTreeManager;
+    }
+
+    public DOMTreeManager getDOMTreeManager(){
+        return domTreeManager;
     }
 
     /**
@@ -196,7 +203,7 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
          *
          * @param domTreeManager the DOMTreeManager for the tree this cacher works on
          */
-        protected void setDOMTreeManager(DOMTreeManager domTreeManager) {
+        public void setDOMTreeManager(DOMTreeManager domTreeManager) {
             // A new DOMTreeManager implies a new cache, because we cache
             // images in the SVG tree itself
             if(this.domTreeManager != domTreeManager) {
@@ -239,7 +246,7 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
                                SVGGeneratorContext ctx) {
 
             Document domFactory = domTreeManager.getDOMFactory();
-            Element imageDefs = getImageDefs(domFactory, ctx);
+            // Element imageDefs = getImageDefs(domFactory, ctx);
             
             // Create and initialize the new image element
             Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI,
@@ -253,7 +260,8 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
             imageElement.setAttributeNS(DefaultImageHandler.XLINK_NAMESPACE_URI,
                                               ATTR_XLINK_HREF,
                                               href);
-            imageDefs.appendChild(imageElement);
+            // imageDefs.appendChild(imageElement);
+            domTreeManager.addOtherDef(imageElement);
         }
         
 
@@ -265,7 +273,7 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
          *  A nicer implementation would group all imageDefs sections into
          *  one.
          */
-        private Element getImageDefs(Document domFactory,
+        /*private Element getImageDefs(Document domFactory,
                                      SVGGeneratorContext ctx) {
         
             Element imageDefs = domFactory.createElementNS(SVG_NAMESPACE_URI,
@@ -277,7 +285,7 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
             domTreeManager.appendGroup(imageDefs, null);
 
             return imageDefs;
-        }
+            }*/
     }
         
     /**

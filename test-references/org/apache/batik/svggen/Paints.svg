@@ -11,8 +11,8 @@
         <stop stop-opacity="1" stop-color="yellow" offset="100%" />
       </linearGradient>
       <pattern x="10" y="20" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="pattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-        <image width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
-MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+        <image x="0" y="0" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
+MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" preserveAspectRatio="none" xlink:show="replace" />
       </pattern>
     </defs>
     <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,30)">

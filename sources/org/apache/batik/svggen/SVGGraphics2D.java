@@ -169,6 +169,13 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
+     * @return the GenericImageHandler used by this SVGGraphics2D instance
+     */
+    public final GenericImageHandler getGenericImageHandler(){
+        return generatorCtx.genericImageHandler;
+    }
+
+    /**
      * @return the extension handler used by this SVGGraphics2D instance
      */
     public final ExtensionHandler getExtensionHandler(){
@@ -293,6 +300,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                                  DEFAULT_MAX_GC_OVERRIDES);
         this.domGroupManager = new DOMGroupManager(gc, domTreeManager);
         this.domTreeManager.addGroupManager(domGroupManager);
+        generatorCtx.genericImageHandler.setDOMTreeManager(domTreeManager);
     }
 
     /**
@@ -562,18 +570,31 @@ public class SVGGraphics2D extends AbstractGraphics2D
     public boolean drawImage(Image img, int x, int y,
                              ImageObserver observer) {
         Element imageElement =
-            getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-        imageElement.setAttributeNS(null, SVG_X_ATTRIBUTE, Integer.toString(x));
-        imageElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, Integer.toString(y));
-        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                    Integer.toString(img.getWidth(null)));
-        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                                  Integer.toString(img.getHeight(null)));
-        getImageHandler().handleImage(img, imageElement, generatorCtx);
-        domGroupManager.addElement(imageElement);
+            getGenericImageHandler().createElement(getGeneratorContext());
+        AffineTransform xform = getGenericImageHandler().handleImage(
+                                                         img, imageElement,
+                                                         x, y,
+                                                         img.getWidth(null),
+                                                         img.getHeight(null),
+                                                         getGeneratorContext());
+        
+        if (xform == null) {
+            domGroupManager.addElement(imageElement);
+        } else {
+            AffineTransform inverseTransform = null;
+            try {
+                inverseTransform = xform.createInverse();
+            } catch(NoninvertibleTransformException e) {
+                // This should never happen since handleImage
+                // always returns invertible transform
+                throw new SVGGraphics2DRuntimeException(ERR_UNEXPECTED);
+            }
+            gc.transform(xform);
+            domGroupManager.addElement(imageElement);
+            gc.transform(inverseTransform);
+        }
         return true;
     }
-
 
     /**
      * Draws as much of the specified image as has already been scaled
@@ -612,15 +633,29 @@ public class SVGGraphics2D extends AbstractGraphics2D
                              int width, int height,
                              ImageObserver observer){
         Element imageElement =
-            getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-        getImageHandler().handleImage(img, imageElement, generatorCtx);
-        imageElement.setAttributeNS(null, SVG_X_ATTRIBUTE, Integer.toString(x));
-        imageElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, Integer.toString(y));
-        imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                                    Integer.toString(width));
-        imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                                    Integer.toString(height));
-        domGroupManager.addElement(imageElement);
+            getGenericImageHandler().createElement(getGeneratorContext());
+        AffineTransform xform 
+            = getGenericImageHandler().handleImage(
+                                       img, imageElement,
+                                       x, y,
+                                       width, height,
+                                       getGeneratorContext());
+        
+        if (xform == null) {
+            domGroupManager.addElement(imageElement);
+        } else {
+            AffineTransform inverseTransform = null;
+            try {
+                inverseTransform = xform.createInverse();
+            } catch(NoninvertibleTransformException e) {
+                // This should never happen since handleImage
+                // always returns invertible transform
+                throw new SVGGraphics2DRuntimeException(ERR_UNEXPECTED);
+            }
+            gc.transform(xform);
+            domGroupManager.addElement(imageElement);
+            gc.transform(inverseTransform);
+        }
         return true;
     }
 
@@ -886,20 +921,35 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @see #setClip
      */
     public void drawRenderedImage(RenderedImage img,
-                                  AffineTransform xform) {
-        Element image =
-            getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-        getImageHandler().handleImage(img, image, generatorCtx);
-        image.setAttributeNS(null, SVG_X_ATTRIBUTE,
-                             Integer.toString(img.getMinX()));
-        image.setAttributeNS(null, SVG_Y_ATTRIBUTE,
-                             Integer.toString(img.getMinY()));
-        image.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                             Integer.toString(img.getWidth()));
-        image.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                             Integer.toString(img.getHeight()));
+                                  AffineTransform trans2) {
 
-        if (xform == null) {
+        Element image =
+            getGenericImageHandler().createElement(getGeneratorContext());
+        AffineTransform trans1 
+            = getGenericImageHandler().handleImage(
+                                       img, image,
+                                       img.getMinX(),
+                                       img.getMinY(),
+                                       img.getWidth(),
+                                       img.getHeight(),
+                                       getGeneratorContext());
+        
+        AffineTransform xform;
+        
+        // Concatenate the transformation we receive from the imageHandler
+        // to the user-supplied one. Be aware that both may be null.
+        if (trans2 == null) {
+            xform = trans1;
+        } else {
+            if(trans1 == null) {
+                xform = trans2;
+             } else {
+                xform = new AffineTransform(trans2);
+                xform.concatenate(trans1);
+            }
+        }
+
+        if(xform == null) {
             domGroupManager.addElement(image);
         } else if(xform.getDeterminant() != 0){
             AffineTransform inverseTransform = null;
@@ -920,7 +970,6 @@ public class SVGGraphics2D extends AbstractGraphics2D
             gc.setTransform(savTransform);
         }
     }
-
 
     /**
      * Renders a
@@ -953,18 +1002,34 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * @see #drawRenderedImage
      */
     public void drawRenderableImage(RenderableImage img,
-                                    AffineTransform xform){
-        Element image = getDOMFactory().createElementNS(SVG_NAMESPACE_URI,
-                                                        SVG_IMAGE_TAG);
-        getImageHandler().handleImage(img, image, generatorCtx);
-        image.setAttributeNS(null, SVG_X_ATTRIBUTE,
-                           AbstractSVGConverter.doubleString(img.getMinX()));
-        image.setAttributeNS(null, SVG_Y_ATTRIBUTE,
-                           AbstractSVGConverter.doubleString(img.getMinY()));
-        image.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
-                           AbstractSVGConverter.doubleString(img.getWidth()));
-        image.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
-                           AbstractSVGConverter.doubleString(img.getHeight()));
+                                    AffineTransform trans2){
+                                    
+        Element image =
+            getGenericImageHandler().createElement(getGeneratorContext());
+        
+        AffineTransform trans1 = 
+            getGenericImageHandler().handleImage(
+                                     img, image,
+                                     img.getMinX(),
+                                     img.getMinY(),
+                                     img.getWidth(),
+                                     img.getHeight(),
+                                     getGeneratorContext());
+        
+        AffineTransform xform;
+
+        // Concatenate the transformation we receive from the imageHandler
+        // to the user-supplied one. Be aware that both may be null.
+        if (trans2 == null) {
+            xform = trans1;
+        } else {
+            if(trans1 == null) {
+                xform = trans2;
+             } else {
+                xform = new AffineTransform(trans2);
+                xform.concatenate(trans1);
+            }
+        }
 
         if (xform == null) {
             domGroupManager.addElement(image);
@@ -987,6 +1052,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
             gc.setTransform(savTransform);
         }
     }
+
 
     /**
      * Renders the text specified by the specified <code>String</code>,

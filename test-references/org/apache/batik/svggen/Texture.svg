@@ -7,16 +7,16 @@
   <g>
     <defs id="defs1">
       <pattern x="0" y="0" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="pattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-        <image width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
-MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+        <image x="0" y="0" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
+MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" preserveAspectRatio="none" xlink:show="replace" />
       </pattern>
       <pattern x="10" y="10" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="pattern2" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-        <image width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
-MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+        <image x="0" y="0" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
+MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" preserveAspectRatio="none" xlink:show="replace" />
       </pattern>
       <pattern x="0" y="0" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="pattern3" height="10" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-        <image width="10" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAI0lEQVR42mP8z8AA
-RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="10" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+        <image x="0" y="0" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAI0lEQVR42mP8z8AA
+RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="10" preserveAspectRatio="none" xlink:show="replace" />
       </pattern>
     </defs>
     <g fill="url(#pattern1)" text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,20)" stroke="url(#pattern1)">

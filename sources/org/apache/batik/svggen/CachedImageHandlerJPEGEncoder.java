@@ -9,16 +9,24 @@
 package org.apache.batik.svggen;
 
 import java.awt.image.BufferedImage;
-import org.w3c.dom.*;
+
+import java.io.OutputStream;
+import java.io.IOException;
+
+import com.sun.image.codec.jpeg.*;
 
 /**
- * Caching version of the JPEG image handler.
+ * GenericImageHandler which caches JPEG images.
  *
  * @author <a href="mailto:paul_evenblij@compuware.com">Paul Evenblij</a>
  * @version $Id$
  */
-public class CachedImageHandlerJPEGEncoder extends ImageHandlerJPEGEncoder {
+public class CachedImageHandlerJPEGEncoder extends DefaultCachedImageHandler {
+    public static final String CACHED_JPEG_PREFIX = "jpegImage";
+    public static final String CACHED_JPEG_SUFFIX = ".jpg";
 
+    protected String refPrefix = "";
+     
     /**
      * @param imageDir directory where this handler should generate images.
      *        If null, an IllegalArgumentException is thrown.
@@ -28,19 +36,28 @@ public class CachedImageHandlerJPEGEncoder extends ImageHandlerJPEGEncoder {
      */
     public CachedImageHandlerJPEGEncoder(String imageDir, String urlRoot)
         throws SVGGraphics2DIOException {
-        super(imageDir, urlRoot);
+        refPrefix = urlRoot + "/";
         setImageCacher(new ImageCacher.External(imageDir,
-                                                getPrefix(),
-                                                getSuffix()));
+                                                CACHED_JPEG_PREFIX,
+                                                CACHED_JPEG_SUFFIX));
+    }
+   
+    /**
+     * Uses JPEG encoding.
+     */
+    public void encodeImage(BufferedImage buf, OutputStream os)
+        throws IOException {
+        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(os);
+        JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(buf);
+        param.setQuality(1, false);
+        encoder.encode(buf, param);
     }
 
-    /**
-     * Save with caching.
-     */
-    protected void saveBufferedImageToFile(Element imageElement,
-                                           BufferedImage buf,
-                                           SVGGeneratorContext generatorContext)
-        throws SVGGraphics2DIOException {
-        cacheBufferedImage(imageElement, buf, generatorContext);
-    }                
+    public int getBufferedImageType(){
+        return BufferedImage.TYPE_INT_RGB;
+    }
+
+    public String getRefPrefix(){
+        return refPrefix;
+    }
 }

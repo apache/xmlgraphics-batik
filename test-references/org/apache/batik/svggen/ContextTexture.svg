@@ -25,16 +25,13 @@
     <g>
       <defs id="testdefs1">
         <pattern x="0" y="0" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <image width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
-MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+          <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" />
         </pattern>
         <pattern x="10" y="10" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern2" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <image width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
-MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+          <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" />
         </pattern>
         <pattern x="0" y="0" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern3" height="10" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <image width="10" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAI0lEQVR42mP8z8AA
-RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="10" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+          <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" />
         </pattern>
         <font horiz-adv-x="75.0" id="testfont1">
           <font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal" />
@@ -59,6 +56,10 @@ RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYII=" xlink:type="simple
           <glyph unicode="z" horiz-adv-x="50.0" d="M1.953125 0 L1.953125 7.125 L34.96875 45.015625 Q29.34375 44.734375 25.046875 44.734375 L3.90625 44.734375 L3.90625 51.859375 L46.296875 51.859375 L46.296875 46.046875 L18.21875 13.140625 L12.796875 7.125 Q18.703125 7.5625 23.875 7.5625 L47.859375 7.5625 L47.859375 0 L1.953125 0 Z" />
           <glyph unicode="l" horiz-adv-x="22.216797" d="M6.390625 0 L6.390625 71.578125 L15.1875 71.578125 L15.1875 0 L6.390625 0 Z" />
         </font>
+        <image width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAALklEQVR42mP8z8AA
+RIQBIwNxgImBymDUwFEDB4OBoAxAVE75/380DEcNHMEGAgA9ZQUjAKh+SgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+        <image width="10" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAI0lEQVR42mP8z8AA
+RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="10" id="testimage2" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
       </defs>
       <g class="testC1" transform="translate(0,20)">
         <rect width="80" x="0" height="80" y="0" class="testC2" />

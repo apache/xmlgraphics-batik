@@ -68,6 +68,8 @@
           <glyph unicode="E" horiz-adv-x="41.552734" d="M4.109375 79.046875 L38.375 79.046875 L38.375 63.234375 L24.65625 63.234375 L24.65625 48.25 L37.5 48.25 L37.5 33.203125 L24.65625 33.203125 L24.65625 15.828125 L39.75 15.828125 L39.75 0 L4.109375 0 L4.109375 79.046875 Z" />
           <glyph unicode="H" horiz-adv-x="55.51758" d="M51.375 79.046875 L51.375 0 L30.8125 0 L30.8125 33.203125 L24.65625 33.203125 L24.65625 0 L4.109375 0 L4.109375 79.046875 L24.65625 79.046875 L24.65625 50.78125 L30.8125 50.78125 L30.8125 79.046875 L51.375 79.046875 Z" />
         </font>
+        <image width="2" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVR42mP8/5/h
+PwMjAwMTiAAyGQAyFwQCULgtXgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="2" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
       </defs>
       <g class="testC1">
         <text xml:space="preserve" x="10" y="20" class="testC2">Text antialiasing
@@ -88,10 +90,8 @@
       <g class="testC10" transform="translate(0,200)">
         <text xml:space="preserve" x="10" y="30" class="testC11">Interpolation Nearest Neighbor / Bicubic
         </text>
-        <image x="10" y="50" width="40" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAE0lEQVR42mP4/5/h
-PwMDIxADaQAq6gT93tAyKwAAAABJRU5ErkJggg==" xlink:type="simple" class="testC12" xlink:actuate="onRequest" height="40" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
-        <image x="60" y="50" width="40" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAE0lEQVR42mP4/5/h
-PwMDIxADaQAq6gT93tAyKwAAAABJRU5ErkJggg==" xlink:type="simple" class="testC13" xlink:actuate="onRequest" height="40" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+        <use x="10" y="50" transform="matrix(20,0,0,20,0,0)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onRequest" xlink:show="replace" />
+        <use x="60" y="50" transform="matrix(20,0,0,20,0,0)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC13" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
     </g>
   </g>

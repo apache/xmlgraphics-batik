@@ -49,6 +49,13 @@ public class SVGGeneratorContext implements ErrorConstants {
     ImageHandler imageHandler;
 
     /**
+     * Generic image handler. This allows more sophisticated 
+     * image handling strategies than the <tt>ImageHandler</tt>
+     * interfaces.
+     */
+    GenericImageHandler genericImageHandler;
+
+    /**
      * To deal with Java 2D extension (custom java.awt.Paint for example).
      */
     ExtensionHandler extensionHandler;
@@ -280,6 +287,19 @@ public class SVGGeneratorContext implements ErrorConstants {
         if (imageHandler == null)
             throw new SVGGraphics2DRuntimeException(ERR_IMAGE_HANDLER_NULL);
         this.imageHandler = imageHandler;
+        this.genericImageHandler = new SimpleImageHandler(imageHandler);
+    }
+
+    /**
+     * Sets the {@link org.apache.batik.svggen.GenericImageHandler}
+     * to be used. 
+     */
+    final public void setGenericImageHandler(GenericImageHandler genericImageHandler){
+        if (genericImageHandler == null){
+            throw new SVGGraphics2DRuntimeException(ERR_IMAGE_HANDLER_NULL);
+        }
+        this.imageHandler = null;
+        this.genericImageHandler = genericImageHandler;
     }
 
     /**

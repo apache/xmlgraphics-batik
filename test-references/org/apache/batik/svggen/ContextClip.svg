@@ -76,58 +76,44 @@
           <glyph unicode="-" horiz-adv-x="33.30078" d="M3.171875 21.484375 L3.171875 30.328125 L30.171875 30.328125 L30.171875 21.484375 L3.171875 21.484375 Z" />
           <glyph unicode="N" horiz-adv-x="72.2168" d="M7.625 0 L7.625 71.578125 L17.328125 71.578125 L54.9375 15.375 L54.9375 71.578125 L64.015625 71.578125 L64.015625 0 L54.296875 0 L16.703125 56.25 L16.703125 0 L7.625 0 Z" />
         </font>
+        <image width="100" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAYAAACqNX6+AAAAbklEQVR42u3asQ0A
+MAgEMYjYf+UkQ1C9fEyALDq67p+EOmKLOiUgAgJEQIAICBABASIgAgJEQIAICBAB
+ASIgAgJEQIBos0n5k0v5lHMhQAQEiIAAERAgAgJEQAQEiIAAERAgAgJEQAQEiIAA
+0W4PbEgEZMeFA8QAAAAASUVORK5CYII=" xlink:type="simple" xlink:actuate="onRequest" height="50" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
       </defs>
       <g class="testC1">
-        <image x="0" y="0" width="100" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
-MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
-ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYII=" xlink:type="simple" class="testC2" xlink:actuate="onRequest" height="50" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+        <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC2" xlink:actuate="onRequest" xlink:show="replace" />
         <text xml:space="preserve" x="110" y="25" class="testC3">Clip set to device bounds
         </text>
         <text xml:space="preserve" x="110" y="25" class="testC4" transform="translate(0,70)">Clip set to upper right quarter
         </text>
-        <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="translate(0,70)" width="100" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="50" class="testC5" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
-MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
-ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYII=" xlink:actuate="onRequest" />
+        <use x="0" y="0" transform="translate(0,70)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC5" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
       <g class="testC6" transform="translate(0,140)">
         <text xml:space="preserve" x="110" y="15" class="testC7">Clip set to upper right quarter
         </text>
         <text xml:space="preserve" x="110" y="30" class="testC8">after .5 scale
         </text>
-        <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="50" class="testC9" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
-MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
-ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYII=" xlink:actuate="onRequest" />
+        <use x="0" y="0" transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC9" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
       <g class="testC10" transform="translate(0,210)">
         <text xml:space="preserve" x="110" y="25" class="testC11">Non-Rectagular clip
         </text>
-        <image x="0" y="0" width="100" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
-MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
-ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYII=" xlink:type="simple" class="testC12" xlink:actuate="onRequest" height="50" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
+        <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
       <g class="testC13" transform="translate(0,280)">
         <text xml:space="preserve" x="110" y="15" class="testC14">Non-Rectagular clip after
         </text>
         <text xml:space="preserve" x="110" y="30" class="testC15">.5 scale
         </text>
-        <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="50" class="testC16" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
-MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
-ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYII=" xlink:actuate="onRequest" />
+        <use x="0" y="0" transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC16" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
       <g class="testC17" transform="translate(0,350)">
         <text xml:space="preserve" x="110" y="15" class="testC18">Non-Rectagular clip before
         </text>
         <text xml:space="preserve" x="110" y="30" class="testC19">.5 scale
         </text>
-        <image xmlns:xlink="http://www.w3.org/1999/xlink" transform="scale(0.5,0.5)" width="100" xlink:show="replace" xlink:type="simple" preserveAspectRatio="xMidYMid meet" height="50" class="testC20" x="0" y="0" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
-MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
-ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYII=" xlink:actuate="onRequest" />
+        <use x="0" y="0" transform="scale(0.5,0.5)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC20" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
     </g>
   </g>

@@ -88,11 +88,17 @@ public class JPainterCompare extends JPanel implements SVGConstants{
      * configuration.
      */
     protected SVGGraphics2D buildSVGGraphics2D() {
-        // CSSDocumentHandler.setParserClassName(CSS_PARSER_CLASS_NAME);
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
         String namespaceURI = SVGDOMImplementation.SVG_NAMESPACE_URI;
         Document domFactory = impl.createDocument(namespaceURI, SVG_SVG_TAG, null);
-        return new SVGGraphics2D(domFactory);
+
+        // Create a default context from our Document instance
+        SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
+
+        GenericImageHandler ihandler = new CachedImageHandlerBase64Encoder();
+        ctx.setGenericImageHandler(ihandler);
+
+        return new SVGGraphics2D(ctx, false);
     }
 
     static class LoaderListener extends SVGDocumentLoaderAdapter{
