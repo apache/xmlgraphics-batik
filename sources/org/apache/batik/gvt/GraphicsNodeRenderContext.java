@@ -151,9 +151,9 @@ public class GraphicsNodeRenderContext extends RenderContext{
              ctx.getRenderingHints() != null ? (FontRenderContext)(ctx.getRenderingHints().get(KEY_FONT_RENDER_CONTEXT)) : null,
              ctx.getRenderingHints() != null ? (TextPainter)(ctx.getRenderingHints().get(KEY_TEXT_PAINTER)) : null,
              ctx.getRenderingHints() != null ? (GraphicsNodeRableFactory)(ctx.getRenderingHints().get(KEY_GRAPHICS_NODE_RABLE_FACTORY)) : null
-              );
+             );
     }
-
+    
     /**
      * @param transform user space to device space transform
      * @param aoi area of interest
@@ -167,12 +167,12 @@ public class GraphicsNodeRenderContext extends RenderContext{
                                      GraphicsNodeRableFactory gnrFactory){
         super(transform, aoi, hints);
         if (textPainter != null) {
-	    setTextPainter(textPainter);
-	}
+            setTextPainter(textPainter);
+        }
         if (frc != null) {
-	    setFontRenderContext(frc);
-	} 
-
+            setFontRenderContext(frc);
+        } 
+        
         setGraphicsNodeRableFactory(gnrFactory);
 
         if(gnrFactory == null){

@@ -78,7 +78,7 @@ public class ConcretePatternPaintContext implements PaintContext {
      * @param node GraphicsNode generating the pixel pattern
      * @param nodeTransformSource additional transform to apply to the 
      *        pattern content node.
-     * @param patternRegion region to which the pattern is constrained
+     * @param patternTile region to which the pattern is constrained
      * @param overflow controls whether the pattern region clips the 
      *        pattern tile
      */
@@ -87,7 +87,7 @@ public class ConcretePatternPaintContext implements PaintContext {
                                        RenderingHints hints,
                                        GraphicsNode node,
                                        AffineTransformSource nodeTransformSource,
-                                       FilterRegion patternRegion,
+                                       FilterRegion patternTile,
                                        boolean overflow){
         if(usr2dev == null){
             throw new IllegalArgumentException();
@@ -101,7 +101,7 @@ public class ConcretePatternPaintContext implements PaintContext {
             throw new IllegalArgumentException();
         }
 
-        if(patternRegion == null){
+        if(patternTile == null){
             throw new IllegalArgumentException();
         }
 
@@ -114,14 +114,16 @@ public class ConcretePatternPaintContext implements PaintContext {
         }
 
         Rectangle2D nodeBounds = node.getBounds();
-        Rectangle2D patternBounds = patternRegion.getRegion();
+        Rectangle2D patternBounds = patternTile.getRegion();
         tileX = patternBounds.getX();
         tileY = patternBounds.getY();
         tileWidth = patternBounds.getWidth();
         tileHeight = patternBounds.getHeight();
 
-        // System.out.println("nodeBounds    : " + nodeBounds);
-        // System.out.println("patternBounds : " + patternBounds);
+        Shape aoiShape = (Shape)hints.get(GraphicsNode.KEY_AREA_OF_INTEREST);
+        Rectangle2D aoi = (aoiShape == null? null : aoiShape.getBounds2D());
+        System.out.println("nodeBounds    : " + nodeBounds);
+        System.out.println("patternBounds : " + patternBounds);
 
         //
         // adjustTxf applies the nodeTransform first, then
@@ -141,26 +143,23 @@ public class ConcretePatternPaintContext implements PaintContext {
 
         Rectangle2D padBounds = (Rectangle2D)patternBounds.clone();
         if(overflow){
-            // System.out.println("Pattern overflow ....");
             //
             // When there is overflow, make sure we take the 
             // full node bounds into account.
             //
-            /*AffineTransform adjustTxfInv = null;
-            try{
-                adjustTxfInv = adjustTxf.createInverse();
-            }catch(NoninvertibleTransformException e){
-            }finally {
-                if(adjustTxfInv == null){
-                    adjustTxfInv = new AffineTransform();
-                }
-                }*/
-                
             Rectangle2D adjustedNodeBounds 
                 = adjustTxf.createTransformedShape(nodeBounds).getBounds2D();
 
-            // System.out.println("adjustedBounds : " + adjustedNodeBounds);
+            System.out.println("adjustedBounds : " + adjustedNodeBounds);
             padBounds.add(adjustedNodeBounds);
+        }
+
+        // Take area of interest into account
+        if(aoi != null){
+            System.out.println("padBounds : " + padBounds);
+            System.out.println("aoi           : " + aoi);
+            // Rectangle2D.intersect(padBounds, aoi, padBounds);
+            System.out.println("padBounds : " + padBounds);
         }
 
         // System.out.println("padBounds : " + padBounds);
@@ -170,22 +169,18 @@ public class ConcretePatternPaintContext implements PaintContext {
                                    padBounds,
                                    PadMode.ZERO_PAD);
 
-        // System.out.println("Created PadRable");
+        System.out.println("Created PadRable");
 
         padTxf = new AffineTransform(usr2dev);
 
-        // Compute area of interest
-        // TO BE DONE: THIS DOES NOT TAKE INTO ACCOUNT THAT 
-        // THE AREA OF INTEREST MAY BE A SUB-REGION OF A PATTERN
-        // TILE.
         RenderContext rc = new RenderContext(padTxf,
                                              padBounds,
                                              hints);
         tile = pad.createRendering(rc);
 
-        // System.out.println("Created rendering");
+        System.out.println("Created rendering");
         if(tile == null){
-            // System.out.println("Tile was null");
+            System.out.println("Tile was null");
             WritableRaster wr = rasterCM.createCompatibleWritableRaster(32, 32);
             tile = new BufferedImage(rasterCM, wr, false, null);
         }
@@ -206,7 +201,6 @@ public class ConcretePatternPaintContext implements PaintContext {
         return rasterCM;
     }
 
-    // TO DO: CHECK THAT THE CODE DOES NOT BREAK WITH OVERFLOW
     public Raster getRaster(int x, int y, int width, int height){
         if(raster == null){
             raster = rasterCM.createCompatibleWritableRaster(width, height);
@@ -311,7 +305,7 @@ public class ConcretePatternPaintContext implements PaintContext {
                 AffineTransform tileTxf 
                 = AffineTransform.getTranslateInstance(nTileX*tx, nTileY*ty);*/
 
-                g.drawRenderedImage(tile, tileTxfBad);
+                g.drawRenderedImage(tile, tileTxf);
 
                 curX += tileWidth;
             }

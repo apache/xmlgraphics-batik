@@ -8,10 +8,12 @@
 
 package org.apache.batik.refimpl.gvt.filter;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.FilterChainRable;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadRable;
@@ -20,6 +22,8 @@ import org.apache.batik.gvt.filter.FilterResRable;
 import org.apache.batik.gvt.filter.PadMode;
 
 import org.apache.batik.gvt.GraphicsNode;
+
+import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
 
 /**
  * Implements a filter chain. A filter chain is defined by its
@@ -223,6 +227,15 @@ public class ConcreteFilterChainRable extends AbstractRable
         // Update crop region
         crop.setPadRect(filterRegion.getRegion());
 
-        return crop.createRendering(context);
+        AffineTransform usr2dev = context.getTransform();
+        if(usr2dev.getShearX() != 0 || 
+           usr2dev.getShearY() != 0){
+            Clip clip = new ConcreteClipRable(crop, 
+                                              filterRegion.getRegion());
+            return clip.createRendering(context);
+        }
+        else{
+            return crop.createRendering(context);
+        }
     }
 }

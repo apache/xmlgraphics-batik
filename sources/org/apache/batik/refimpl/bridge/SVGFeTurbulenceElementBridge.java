@@ -8,19 +8,31 @@
 
 package org.apache.batik.refimpl.bridge;
 
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderContext;
+
 import java.util.Map;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.FilterRegion;
+import org.apache.batik.gvt.filter.PadMode;
+import org.apache.batik.gvt.filter.PadRable;
 import org.apache.batik.gvt.filter.TurbulenceRable;
+import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteTurbulenceRable;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
@@ -136,7 +148,15 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
             = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
-        String units = filterElement.getAttributeNS(null, ATTR_FILTER_UNITS);
+
+        // Get unit. Comes from parent node.
+        Node parentNode = filterElement.getParentNode();
+        String units = VALUE_USER_SPACE_ON_USE;
+        if((parentNode != null)
+           &&
+           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
+            units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+        }
 
         final FilterRegion turbulenceRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -156,6 +176,16 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
         turbulenceRable.setStitched(stitchTiles);
         turbulenceRable.setFractalNoise(feTurbulenceType);
 
+        /*Clip clip 
+            = new ConcreteClipRable(turbulenceRable,
+                                    new Rectangle(0, 0, 0, 0)){
+                    public RenderedImage createRendering(RenderContext rc){
+                        setClipPath(turbulenceRegion.getRegion());
+                        return super.createRendering(rc);
+                    }
+                };
+
+                return clip;*/
         return turbulenceRable;
     }
 
