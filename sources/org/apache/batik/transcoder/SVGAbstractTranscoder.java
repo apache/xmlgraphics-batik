@@ -74,6 +74,12 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$ */
 public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     /**
+     * Value used as a default for the default font-family hint
+     */
+    public static final String DEFAULT_DEFAULT_FONT_FAMILY 
+        = "Arial, Helvetica, sans-serif";
+
+    /**
      * Current area of interest.
      */
     protected Rectangle2D curAOI;
@@ -105,6 +111,8 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                   ExtensibleSVGDOMImplementation.getDOMImplementation());
         hints.put(KEY_MEDIA,
                   "screen");
+        hints.put(KEY_DEFAULT_FONT_FAMILY,
+                  DEFAULT_DEFAULT_FONT_FAMILY);
         hints.put(KEY_EXECUTE_ONLOAD, 
                   Boolean.FALSE);
         hints.put(KEY_ALLOWED_SCRIPT_TYPES,
@@ -362,6 +370,33 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      * </TABLE>
      */
     public static final TranscodingHints.Key KEY_MEDIA
+        = new StringKey();
+
+    /**
+     * The default font-family key.
+     *
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_DEFAULT_FONT_FAMILY</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">"Arial, Helvetica, sans-serif"</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Controls the default
+     * value used by the CSS engine for the font-family property
+     * when that property is unspecified.Specify the media to use with CSS.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_DEFAULT_FONT_FAMILY
         = new StringKey();
 
     /**
@@ -642,6 +677,16 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             if (s != null) return s;
 
             return super.getMedia();
+        }
+
+        /**
+         * Returns the default font family.
+         */
+        public String getDefaultFontFamily() {
+            String s = (String)hints.get(KEY_DEFAULT_FONT_FAMILY);
+            if (s != null) return s;
+
+            return super.getDefaultFontFamily();
         }
 
         /**

@@ -253,6 +253,9 @@ public class SVGConverter {
     /** Media type for which the SVG image should be rendered */
     protected String mediaType = null;
 
+    /** Default value for the font-family when it is unspecified */
+    protected String defaultFontFamily = null;
+
     /** Alternate stylesheet for which should be applied to the SVG */
     protected String alternateStylesheet = null;
 
@@ -478,6 +481,19 @@ public class SVGConverter {
 
     public String getMediaType(){
         return mediaType;
+    }
+
+    /**
+     * Sets the <tt>defaultFontFamily</tt> value. This value controls
+     * the default value for the font-family CSS property when that
+     * property is unspecified.
+     */
+    public void setDefaultFontFamily(String defaultFontFamily) {
+        this.defaultFontFamily = defaultFontFamily;
+    }
+
+    public String getDefaultFontFamily() {
+        return defaultFontFamily;
     }
 
     /**
@@ -781,6 +797,11 @@ public class SVGConverter {
         // Set CSS Media
         if (mediaType != null){
             map.put(ImageTranscoder.KEY_MEDIA, mediaType);
+        }
+
+        // Set default font-family
+        if (defaultFontFamily != null) {
+            map.put(ImageTranscoder.KEY_DEFAULT_FONT_FAMILY, defaultFontFamily);
         }
 
         // Set alternateStylesheet

@@ -353,6 +353,16 @@ public class Main implements SVGConverterController {
         = Messages.get("Main.cl.option.media.type.description", "No description");
 
     /**
+     * Option to specify the default value for the font-family
+     * CSS property when converting the SVG image
+     */
+    public static String CL_OPTION_DEFAULT_FONT_FAMILY
+        = Messages.get("Main.cl.option.default.font.family", "-font-family");
+
+    public static String CL_OPTION_DEFAULT_FONT_FAMILY_DESCRIPTION
+        = Messages.get("Main.cl.option.default.font.family.description", "No description");
+
+    /**
      * Option to specify the CSS alternate stylesheet when
      * converting the SVG images
      */
@@ -578,6 +588,18 @@ public class Main implements SVGConverterController {
                                   return CL_OPTION_MEDIA_TYPE_DESCRIPTION;
                               }
                           });
+
+        optionMap.put(CL_OPTION_DEFAULT_FONT_FAMILY,
+                      new SingleValueOptionHandler() {
+                          public void handleOption(String optionValue,
+                                                   SVGConverter c){
+                              c.setDefaultFontFamily(optionValue);
+                          }
+
+                          public String getOptionDescription(){
+                              return CL_OPTION_DEFAULT_FONT_FAMILY_DESCRIPTION;
+                          }
+                      });
 
         optionMap.put(CL_OPTION_ALTERNATE_STYLESHEET,
                       new SingleValueOptionHandler(){

@@ -135,6 +135,12 @@ public class Main implements Application {
     public static final String URI_SEPARATOR = " ";
 
     /**
+     * Default font-family value. 
+     */
+    public static final String DEFAULT_DEFAULT_FONT_FAMILY 
+        = "Arial, Helvetica, sans-serif";
+
+    /**
      * SVG initialization file, used to trigger loading of most of
      * the Batik classes
      */
@@ -272,6 +278,8 @@ public class Main implements Application {
                      "");
         defaults.put(PreferenceDialog.PREFERENCE_KEY_CSS_MEDIA,
                      "screen");
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_DEFAULT_FONT_FAMILY,
+                     DEFAULT_DEFAULT_FONT_FAMILY);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_IS_XML_PARSER_VALIDATING,
                      Boolean.FALSE);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING,
@@ -711,6 +719,15 @@ public class Main implements Application {
     public String getUserStyleSheetURI() {
         return preferenceManager.getString
             (PreferenceDialog.PREFERENCE_KEY_USER_STYLESHEET);
+    }
+
+    /**
+     * Returns the default value for the CSS
+     * "font-family" property
+     */
+    public String getDefaultFontFamily() {
+        return preferenceManager.getString
+            (PreferenceDialog.PREFERENCE_KEY_DEFAULT_FONT_FAMILY);
     }
 
     /**
