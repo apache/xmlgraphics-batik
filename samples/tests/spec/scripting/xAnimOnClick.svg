@@ -31,35 +31,41 @@
     var t;
     var start;
     var end;
-    var inc;
-    var frac;    
+    var inc =2;
+    var frac=2;    
+    var cont;
 
-    function moveToX(evt, target, val){
+    function startAnim(evt, target, xStart, xEnd){
         r = evt.target;
         doc = r.ownerDocument;
         t = doc.getElementById(target);
-        start = parseInt(t.getAttribute('x'));
-        end = val;
-        inc = 1;
-        frac = 1;
+        start = xStart
+        end   = xEnd;
+        cont = 1;
         cyclopse();
+    }
+
+    function stopAnim(evt) {
+        cont = 0;
     }
 
     function cyclopse() {
         t.setAttribute('x', (end-start)*frac/100+start);
         if (frac == 100) {
-          inc = -1;
+          inc = -2;
         } else if (frac == 0) {
-          inc = 1;
+          inc = 2;
         }
         frac += inc;
-        setTimeout('cyclopse()', 50);
+        if (cont == 1) {
+          setTimeout('cyclopse()', 50);
+        }
     }
 
     </script>
 
-    <g id="test-content" transform="translate(0,125)">
-        <g transform="translate(75,0)">
+    <g id="test-content">
+        <g transform="translate(75,125)">
             <text class="legend" x="75" y="70">Position A</text>
 
             <rect id="originalPlaceShadowBorder" stroke="black" fill="none"
@@ -72,23 +78,36 @@
             </g>
         </g>
 
-        <g transform="translate(225,0)">
+        <g transform="translate(225,125)">
             <text class="legend" x="75" y="70">Position B</text>
 
-            <rect id="targetPlaceShadowBorder"  fill="yellow" stroke="black"
+            <rect id="targetPlaceShadowBorder"  fill="lightBlue" stroke="black"
                   x="32" y="77" width="86" height="46"/>
 
-            <g onclick="moveToX(evt, 'targetRect', '260')">
+            <g >
                 <circle cx="75" cy="100" r="10" style="fill:crimson;stroke:black;"/>
                 <line x1="75" x2="75" y1="90" y2="110" style="stroke:black;fill:none" />
                 <line x1="65" x2="85" y1="100" y2="100" style="stroke:black;fill:none" />
             </g>
         </g>
 
-        <rect id="targetRect" x="110" y="80" width="80" height="40" style="fill:red;fill-opacity:0.5" />
+        <g id="play" onclick="startAnim(evt, 'targetRect', 110, 260)"
+           stroke="black" fill="#DDD" transform="translate(160, 260)" >
+            <rect x="0" y="0" width="50" height="40" rx="5" ry="5"/>
+            <polygon fill="green" points="10,10 40,20 10,30"/>
+        </g>
+
+        <g id="play" onclick="stopAnim(evt)"
+           stroke="black" fill="#DDD" transform="translate(240, 260)" >
+            <rect x="0" y="0" width="50" height="40" rx="5" ry="5"/>
+            <rect fill="yellow" x="10" y="10" width="10" height="20"/>
+            <rect fill="yellow" x="30" y="10" width="10" height="20"/>
+        </g>
+
+        <rect id="targetRect" x="110" y="205" width="80" height="40" style="fill:red;fill-opacity:0.5" />
 
         <text class="legend">
-        <tspan x="225" y="145">Click on the Position B target (crimson circle)</tspan>
-        <tspan x="225" y="160">The transparent red rectangle should move between rects.</tspan></text>
+        <tspan x="225" y="330">Click on Play button (green triangle) to start animation</tspan>
+        <tspan x="225" y="345">Click on Pause button (yellow rects) to stop animation</tspan></text>
     </g>
 </svg>
