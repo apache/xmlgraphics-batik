@@ -33,7 +33,7 @@ public class Scanner {
     /**
      * The current column.
      */
-    protected int column = 1;
+    protected int column;
 
     /**
      * The current char.
@@ -1199,11 +1199,9 @@ public class Scanner {
      * end of stream has been reached.
      */
     protected int nextChar() throws IOException {
-        if ((readPosition == readCount) && (!fillReadBuffer())) {
+        if (readPosition == readCount && !fillReadBuffer()) {
             return current = -1;
         }
-
-        current = readBuffer[readPosition++];
 
         if (current != 10) {
             column++;
@@ -1211,6 +1209,8 @@ public class Scanner {
             line++;
             column = 1;
         }
+
+        current = readBuffer[readPosition++];
 
         if (position == buffer.length) {
             char[] t = new char[position * 3 / 2];
@@ -1221,11 +1221,12 @@ public class Scanner {
         return buffer[position++] = (char)current;
     }
 
-    protected final boolean fillReadBuffer() throws IOException {
+    private boolean fillReadBuffer() throws IOException {
         if (readCount != 0) {
             if (readPosition == readCount) {
                 readBuffer[0] = readBuffer[readCount-1];
-                readCount=readPosition=1;
+                readCount = 1;
+                readPosition = 1;
             } else {
                 // we keep the last char in our readBuffer.
                 System.arraycopy(readBuffer, readPosition-1, readBuffer, 0, 
@@ -1236,46 +1237,52 @@ public class Scanner {
         }
 
         // No reader so can't extend...
-        if (reader == null)
+        if (reader == null) {
             return (readCount != readPosition);
+        }
                     
         // remember where the fill starts...
-        int src=readCount-1;
-        if (src < 0) src = 0;
+        int src = readCount - 1;
+        if (src < 0) {
+            src = 0;
+        }
 
         // Refill the readBuffer...
         int read = reader.read(readBuffer, readCount, 
                                readBuffer.length-readCount);
-        if (read == -1)
-            return (readCount != readPosition);
+        if (read == -1) {
+            return readCount != readPosition;
+        }
 
-        readCount+=read; // add in chars read.
-
-        
+        readCount += read; // add in chars read.
         collapseCRNL(src); // Now collapse cr/nl...
 
-        return (readCount != readPosition);
+        return readCount != readPosition;
     }
 
-    protected final void collapseCRNL(int src) {
+    private void collapseCRNL(int src) {
         // Now collapse cr/nl...
-        while (src<readCount) {
+        while (src < readCount) {
             if (readBuffer[src] != 13) {
                 src++;
             } else {
                 readBuffer[src] = 10;
                 src++;
-                if (src>=readCount) break;
+                if (src >= readCount) {
+                    break;
+                }
                 if (readBuffer[src] == 10) {
                     // We now need to collapse some of the chars to
                     // eliminate cr/nl pairs.  This is where we do it...
                     int dst = src; // start writing where this 10 is
                     src++; // skip reading this 10.
-                    while (src<readCount) {
+                    while (src < readCount) {
                         if (readBuffer[src] == 13) {
                             readBuffer[dst++] = 10;
                             src++;
-                            if (src>=readCount) break;
+                            if (src >= readCount) {
+                                break;
+                            }
                             if (readBuffer[src] == 10) {
                                 src++;
                             }

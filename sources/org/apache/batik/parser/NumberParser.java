@@ -41,14 +41,11 @@ public abstract class NumberParser extends AbstractParser {
                 current = -1;
                 break;
             }
-            current = buffer[position++];
             column++;
+            current = buffer[position++];
         }
 
         m1: switch (current) {
-        case 10:
-            line++;
-            column = 1;
         default:
             reportError("character.unexpected",
                         new Object[] { new Integer(current) });
@@ -63,8 +60,8 @@ public abstract class NumberParser extends AbstractParser {
                 if (position == count && !fillBuffer()) {
                     current = -1;
                 } else {
-                    current = buffer[position++];
                     column++;
+                    current = buffer[position++];
                 }
                 switch (current) {
                 case '1': case '2': case '3': case '4': 
@@ -72,9 +69,6 @@ public abstract class NumberParser extends AbstractParser {
                     break l;
                 case '.': case 'e': case 'E':
                     break m1;
-                case 10:
-                    line++;
-                    column = 1;
                 default:
                     return 0f;
                 case '0':
@@ -94,13 +88,10 @@ public abstract class NumberParser extends AbstractParser {
                 if (position == count && !fillBuffer()) {
                     current = -1;
                 } else {
-                    current = buffer[position++];
                     column++;
+                    current = buffer[position++];
                 }
                 switch (current) {
-                case 10:
-                    line++;
-                    column = 1;
                 default:
                     break l;
                 case '0': case '1': case '2': case '3': case '4': 
@@ -113,13 +104,10 @@ public abstract class NumberParser extends AbstractParser {
             if (position == count && !fillBuffer()) {
                 current = -1;
             } else {
-                current = buffer[position++];
                 column++;
+                current = buffer[position++];
             }
             m2: switch (current) {
-            case 10:
-                line++;
-                column = 1;
             default:
             case 'e': case 'E':
                 if (!mantRead) {
@@ -135,17 +123,14 @@ public abstract class NumberParser extends AbstractParser {
                         if (position == count && !fillBuffer()) {
                             current = -1;
                         } else {
-                            current = buffer[position++];
                             column++;
+                            current = buffer[position++];
                         }
                         expAdj--;
                         switch (current) {
                         case '1': case '2': case '3': case '4': 
                         case '5': case '6': case '7': case '8': case '9': 
                             break l;
-                        case 10:
-                            line++;
-                            column = 1;
                         default:
                             if (!mantRead) {
                                 return 0f;
@@ -166,13 +151,10 @@ public abstract class NumberParser extends AbstractParser {
                     if (position == count && !fillBuffer()) {
                         current = -1;
                     } else {
-                        current = buffer[position++];
                         column++;
+                        current = buffer[position++];
                     }
                     switch (current) {
-                    case 10:
-                        line++;
-                        column = 1;
                     default:
                         break l;
                     case '0': case '1': case '2': case '3': case '4': 
@@ -187,13 +169,10 @@ public abstract class NumberParser extends AbstractParser {
             if (position == count && !fillBuffer()) {
                 current = -1;
             } else {
-                current = buffer[position++];
                 column++;
+                current = buffer[position++];
             }
             switch (current) {
-            case 10:
-                line++;
-                column = 1;
             default:
                 reportError("character.unexpected",
                             new Object[] { new Integer(current) });
@@ -204,13 +183,10 @@ public abstract class NumberParser extends AbstractParser {
                 if (position == count && !fillBuffer()) {
                     current = -1;
                 } else {
-                    current = buffer[position++];
                     column++;
+                    current = buffer[position++];
                 }
                 switch (current) {
-                case 10:
-                    line++;
-                    column = 1;
                 default:
                     reportError("character.unexpected",
                                 new Object[] { new Integer(current) });
@@ -228,16 +204,13 @@ public abstract class NumberParser extends AbstractParser {
                     if (position == count && !fillBuffer()) {
                         current = -1;
                     } else {
-                        current = buffer[position++];
                         column++;
+                        current = buffer[position++];
                     }
                     switch (current) {
                     case '1': case '2': case '3': case '4': 
                     case '5': case '6': case '7': case '8': case '9': 
                         break l;
-                    case 10:
-                        line++;
-                        column = 1;
                     default:
                         break en;
                     case '0':
@@ -254,13 +227,10 @@ public abstract class NumberParser extends AbstractParser {
                     if (position == count && !fillBuffer()) {
                         current = -1;
                     } else {
-                        current = buffer[position++];
                         column++;
+                        current = buffer[position++];
                     }
                     switch (current) {
-                    case 10:
-                        line++;
-                        column = 1;
                     default:
                         break l;
                     case '0': case '1': case '2': case '3': case '4': 
@@ -282,20 +252,29 @@ public abstract class NumberParser extends AbstractParser {
         return buildFloat(mant, exp);
     }
 
+    /**
+     * Computes a float from mantissa and exponent.
+     */
     public static float buildFloat(int mant, int exp) {
-        if ((exp < -125) || (mant==0)) return 0f;
-        if (exp >  128) {
-            if (mant > 0) return Float.POSITIVE_INFINITY;
-            else          return Float.NEGATIVE_INFINITY;
+        if (exp < -125 || mant == 0) {
+            return 0f;
         }
 
-        if (exp == 0) return mant;
-            
-        if (mant >= 1<<26)
-            mant++;  // round up trailing bits if they will be dropped.
+        if (exp >  128) {
+            return (mant > 0)
+                ? Float.POSITIVE_INFINITY
+                : Float.NEGATIVE_INFINITY;
+        }
 
-        if (exp >  0) return mant*pow10[exp];
-        else          return mant/pow10[-exp];
+        if (exp == 0) {
+            return mant;
+        }
+            
+        if (mant >= 1 << 26) {
+            mant++;  // round up trailing bits if they will be dropped.
+        }
+
+        return (exp > 0) ? mant * pow10[exp] : mant / pow10[-exp];
     }
 
     /**
@@ -303,8 +282,8 @@ public abstract class NumberParser extends AbstractParser {
      */
     private static final float pow10[] = new float [128];
     static {
-      for (int i=0; i<pow10.length; i++) {
-        pow10[i] = (float)Math.pow(10, i);
-      }
+        for (int i = 0; i < pow10.length; i++) {
+            pow10[i] = (float)Math.pow(10, i);
+        }
     };
 }
