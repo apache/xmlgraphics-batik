@@ -17,7 +17,7 @@
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
 
-<?xml-stylesheet type="text/css" href="../../resources/style/useStylesheet2.css" ?>
+<?xml-stylesheet type="text/css" href="../../resources/style/subdir/useStylesheet2.css" ?>
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>
 
 <svg width="450" height="500" viewBox="0 0 450 500">
