@@ -268,7 +268,7 @@ To display the available targets type:
   <!-- Note that this is needed to avoid having the class files in the classes          -->
   <!-- subdirectory, which interferes with the tests, because classes in that directory -->
   <!-- are loaded first in the development version.                                     -->
-  <target name="testjars" depends="security2.jar, IWasLoaded.jar, IWasLoadedToo.jar, JarCheckPermissionsGranted.jar, JarCheckPermissionsDenied.jar" />
+  <target name="testjars" depends="security2.jar, IWasLoaded.jar, IWasLoadedToo.jar, JarCheckPermissionsGranted.jar, JarCheckPermissionsDenied.jar, java-binding.jar" />
 
   <target name       ="compiletestjars"
           depends    ="compile"
