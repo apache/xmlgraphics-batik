@@ -660,7 +660,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             //(modulo behavior discards integer component)
             position = position - (int)position;
 
-            //position should now be between -1 and 1
+            //position now be between -1 and 1
 
             if (position < 0) {
                 position = position + 1; //force it to be in the range 0-1

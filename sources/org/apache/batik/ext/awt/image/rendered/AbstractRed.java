@@ -344,30 +344,20 @@ public abstract class AbstractRed implements CachableRed {
         this.tileWidth  = sm.getWidth();
         this.tileHeight = sm.getHeight();
 
-        int x0, y0, x1, y1;
-
-        // In the following code I use (x+y-1)/y as an all integer
-        // form of Math.ceil(x/(double)y).
+        int x1, y1, maxTileX, maxTileY;
 
         // This computes and caches important information about the
         // structure of the tile grid in general.
+        minTileX = getXTile(bounds.x);
+        minTileY = getYTile(bounds.y);
 
-        x0 = bounds.x-tileGridXOff; // left edge in tile coords;
-        if (x0 > 0) minTileX = x0/tileWidth;
-        else        minTileX = -(((-x0)+tileWidth-1)/tileWidth);
+        x1       = bounds.x + bounds.width-1;     // Xloc of right edge
+        maxTileX = getXTile(x1);
+        numXTiles = maxTileX-minTileX+1;
 
-        y0 = bounds.y-tileGridYOff; // top edge in tile coords;
-        if (y0 > 0) minTileY = y0/tileHeight;
-        else        minTileY = -(((-y0)+tileHeight-1)/tileHeight);
-
-
-        x0        = minTileX*tileWidth+tileGridXOff;   // X loc of min tile...
-        x1        = bounds.x + bounds.width-1;         // Xloc of right edge
-        numXTiles = ((x1-x0)+tileWidth-1)/tileWidth;
-
-        y0        = minTileY*tileHeight+tileGridYOff;  // Y loc of min tile...
-        y1        = bounds.y + bounds.height-1;        // Yloc of bottom edge
-        numYTiles = ((y1-y0)+tileHeight-1)/tileHeight;
+        y1       = bounds.y + bounds.height-1;     // Yloc of right edge
+        maxTileY = getYTile(y1);
+        numYTiles = maxTileY-minTileY+1;
     }
 
 

@@ -90,7 +90,7 @@ public class SVGFilterElementBridge implements FilterBridge,
             return null; // no filter primitives found, disable the filter.
         } else {
             filterChain.setSource(in);
-            return in;
+            return filterChain;
         }
     }
 

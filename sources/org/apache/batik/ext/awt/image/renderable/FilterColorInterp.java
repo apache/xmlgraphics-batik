@@ -18,7 +18,7 @@ import java.awt.color.ColorSpace;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public interface FilterColorInterp extends Filter{
+public interface FilterColorInterp extends Filter {
 
     /**
      * Returns true if this operation is to be performed in

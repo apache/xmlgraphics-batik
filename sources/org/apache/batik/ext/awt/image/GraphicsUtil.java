@@ -212,6 +212,7 @@ public class GraphicsUtil {
             }
 
             Rectangle gcR = getDestinationBounds(g2d);
+            // System.out.println("ClipRects: " + clipR + " -> " + gcR);
             if (gcR != null) {
                 if (clipR.intersects(gcR) == false)
                     return; // Nothing to draw...
@@ -998,14 +999,20 @@ public class GraphicsUtil {
             else if (is_INT_PACK_Data(wr.getSampleModel(), true))
                 mult_INT_PACK_Data(wr);
             else {
-                norm = 1/255;
-                for (int y=0; y<wr.getHeight(); y++)
-                    for (int x=0; x<wr.getWidth(); x++) {
+                norm = 1f/255f;
+                int x0, x1, y0, y1, a, b;
+                float alpha;
+                x0 = wr.getMinX();
+                x1 = x0+wr.getWidth();
+                y0 = wr.getMinY();
+                y1 = y0+wr.getHeight();
+                for (int y=y0; y<y1; y++)
+                    for (int x=x0; x<x1; x++) {
                         pixel = wr.getPixel(x,y,pixel);
-                        int a = pixel[bands-1];
+                        a = pixel[bands-1];
                         if ((a >= 0) && (a < 255)) {
-                            float alpha = a*norm;
-                            for (int b=0; b<bands-1; b++)
+                            alpha = a*norm;
+                            for (b=0; b<bands-1; b++)
                                 pixel[b] = (int)(pixel[b]*alpha+0.5f);
                             wr.setPixel(x,y,pixel);
                         }
@@ -1017,13 +1024,19 @@ public class GraphicsUtil {
             else if (is_INT_PACK_Data(wr.getSampleModel(), true))
                 divide_INT_PACK_Data(wr);
             else {
-                for (int y=0; y<wr.getHeight(); y++)
-                    for (int x=0; x<wr.getWidth(); x++) {
+                int x0, x1, y0, y1, a, b;
+                float ialpha;
+                x0 = wr.getMinX();
+                x1 = x0+wr.getWidth();
+                y0 = wr.getMinY();
+                y1 = y0+wr.getHeight();
+                for (int y=y0; y<y1; y++)
+                    for (int x=x0; x<x1; x++) {
                         pixel = wr.getPixel(x,y,pixel);
-                        int a = pixel[bands-1];
+                        a = pixel[bands-1];
                         if ((a > 0) && (a < 255)) {
-                            float ialpha = 255/(float)a;
-                            for (int b=0; b<bands-1; b++)
+                            ialpha = 255/(float)a;
+                            for (b=0; b<bands-1; b++)
                                 pixel[b] = (int)(pixel[b]*ialpha+0.5f);
                             wr.setPixel(x,y,pixel);
                         }
