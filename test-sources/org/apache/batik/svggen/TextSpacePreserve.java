@@ -30,7 +30,6 @@ public class TextSpacePreserve implements Painter {
 
 
         // Print text with spaces.
-        g.drawString("Hello Java", legendX, legendY);
         g.drawString("     space before.", legendX, legendY);
         g.drawString("Multiple spaces between A and B: A    B", legendX, legendY + 20);
         g.drawString("This is a first line\n     and this is a second line starting with spaces", 
