@@ -134,7 +134,6 @@ public class JarCheckPermissionsDenied implements ScriptHandler {
         {"RuntimePermission setFactory", new RuntimePermission("setFactory")}, 
         {"RuntimePermission setIO", new RuntimePermission("setIO")}, 
         {"RuntimePermission modifyThread", new RuntimePermission("modifyThread")}, 
-        {"RuntimePermission stopThread", new RuntimePermission("stopThread")}, 
         {"RuntimePermission modifyThreadGroup", new RuntimePermission("modifyThreadGroup")}, 
         {"RuntimePermission getProtectionDomain", new RuntimePermission("getProtectionDomain")}, 
         {"RuntimePermission readFileDescriptor", new RuntimePermission("readFileDescriptor")}, 
@@ -190,23 +189,38 @@ public class JarCheckPermissionsDenied implements ScriptHandler {
         // class has permission to access the server
         //
         URL docURL = ((SVGOMDocument)document).getURLObject();
-        if (docURL != null && docURL.getHost() != null && !"".equals(docURL.getHost())) {
-            permissions = new Object[basePermissions.length + 3][2];
-            System.arraycopy(basePermissions, 0, 
-                             permissions, 3, basePermissions.length);
+        if ((docURL != null) && 
+            (docURL.getHost() != null) && 
+            (!"".equals(docURL.getHost()))) {
+
+            permissions = new Object[basePermissions.length + 4][2];
 
             String docHost = docURL.getHost();
             if (docURL.getPort() != -1) {
                 docHost += ":" + docURL.getPort();
             }
 
-            permissions[0][0] = "SocketPermission accept " + docHost;
-            permissions[0][1] = new SocketPermission(docHost, "accept");
-            permissions[1][0] = "SocketPermission connect " + docHost;
-            permissions[1][1] = new SocketPermission(docHost, "connect");
-            permissions[2][0] = "SocketPermission resolve " + docHost;
-            permissions[2][1] = new SocketPermission(docHost, "resolve");
-            nGrantedTmp = 3;
+            int i=0;
+            permissions[i][0] = "SocketPermission accept " + docHost;
+            permissions[i][1] = new SocketPermission(docHost, "accept");
+            i++;
+
+            permissions[i][0] = "SocketPermission connect " + docHost;
+            permissions[i][1] = new SocketPermission(docHost, "connect");
+            i++;
+
+            permissions[i][0] = "SocketPermission resolve " + docHost;
+            permissions[i][1] = new SocketPermission(docHost, "resolve");
+            i++;
+            
+            permissions[i][0] = "RuntimePermission stopThread";
+            permissions[i][1] = new RuntimePermission("stopThread");
+            i++;
+
+            nGrantedTmp = i;
+
+            System.arraycopy(basePermissions, 0, permissions, i, 
+                             basePermissions.length);
         } else {
             permissions = basePermissions;
         }

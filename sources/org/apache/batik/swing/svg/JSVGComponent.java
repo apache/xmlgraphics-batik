@@ -839,7 +839,10 @@ public class JSVGComponent extends JGVTComponent {
         if (!(gn instanceof CompositeGraphicsNode))
             return null;
         CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
-        gn = (GraphicsNode)cgn.getChildren().get(0);
+        List children = cgn.getChildren();
+        if (children.size() == 0) 
+            return null;
+        gn = (GraphicsNode)children.get(0);
         if (!(gn instanceof CanvasGraphicsNode))
             return null;
         return (CanvasGraphicsNode)gn;
@@ -2401,7 +2404,7 @@ public class JSVGComponent extends JGVTComponent {
         }
         
         /**
-         * Informs the user agent that the text selection has changed.
+         * Informs the user agent that the text selection should changed.
          * @param start The Mark for the start of the selection.
          * @param end   The Mark for the end of the selection.
          */
@@ -2416,7 +2419,24 @@ public class JSVGComponent extends JGVTComponent {
                     });
             }
         }
-        
+
+        /**
+         * Informs the user agent that the text selection should changed.
+         * @param start The Mark for the start of the selection.
+         * @param end   The Mark for the end of the selection.
+         */
+        public void deselectAll() {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.deselectAll();
+            } else {
+                EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            userAgent.deselectAll();
+                        }
+                    });
+            }
+        }
+
         /**
          * Returns the class name of the XML parser.
          */
@@ -3098,7 +3118,15 @@ public class JSVGComponent extends JGVTComponent {
          * @param end   The Mark for the end of the selection.
          */
         public void setTextSelection(Mark start, Mark end) {
-            JSVGComponent.this.textSelectionManager.setSelection(start, end);
+            JSVGComponent.this.select(start, end);
+        }
+
+        /**
+         * Informs the user agent that the text selection should be
+         * cleared.
+         */
+        public void deselectAll() {
+            JSVGComponent.this.deselectAll();
         }
 
         /**

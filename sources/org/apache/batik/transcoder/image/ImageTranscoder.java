@@ -131,6 +131,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
         // ImageRenderer renderer = rendFactory.createDynamicImageRenderer();
         ImageRenderer renderer = rendFactory.createStaticImageRenderer();
         renderer.updateOffScreen(w, h);
+        // curTxf.translate(0.5, 0.5);
         renderer.setTransform(curTxf);
         renderer.setTree(this.root);
         this.root = null; // We're done with it...

@@ -105,25 +105,35 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
         SwingUtilities.invokeAndWait( new Runnable() {
                 public void run() {
                     // System.out.println("In Invoke");
-                    theCanvas.dispose();
                     theFrame.remove(theCanvas);
+                    theCanvas.dispose();
+
                     theFrame.dispose();
                     theFrame=null;
                     theCanvas=null;
                 }
             });
 
-        {
-            // Create a new Frame to take focus for Swing so old one
-            // can be GC'd.
-            javax.swing.JFrame jframe = new javax.swing.JFrame("FocusFrame"); 
-            // registerObjectDesc(jframe, "FocusFrame");
-            jframe.setSize(new java.awt.Dimension(40, 50));
-            jframe.setVisible(true);
-            jframe.setVisible(false);
-            jframe.dispose();
-        }
+        try  { Thread.sleep(100); } catch (InterruptedException ie) { }
 
+        SwingUtilities.invokeAndWait( new Runnable() {
+                public void run() {
+                    // Create a new Frame to take focus for Swing so old one
+                    // can be GC'd.
+                    theFrame = new JFrame("FocusFrame"); 
+                    // registerObjectDesc(jframe, "FocusFrame");
+                    theFrame.setSize(new java.awt.Dimension(40, 50));
+                    theFrame.setVisible(true);
+                }});
+
+        try  { Thread.sleep(100); } catch (InterruptedException ie) { }
+        
+        SwingUtilities.invokeAndWait( new Runnable() {
+                public void run() {
+                    theFrame.setVisible(false);
+                    theFrame.dispose();
+                }});
+        
         handler = null;
         if (failReport != null) return failReport;
         DefaultTestReport report = new DefaultTestReport(this);

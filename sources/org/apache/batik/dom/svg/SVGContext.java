@@ -120,4 +120,10 @@ public interface SVGContext {
      * Returns the font-size on the associated element.
      */
     float getFontSize();
+
+    /**
+     * Informs the user agent that the text selection should be
+     * cleared.
+     */
+    void deselectAll();
 }

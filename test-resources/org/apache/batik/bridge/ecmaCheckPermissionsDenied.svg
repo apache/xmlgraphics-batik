@@ -116,7 +116,6 @@ var basePermissions = [
         ["RuntimePermission setFactory", new RuntimePermission("setFactory")], 
         ["RuntimePermission setIO", new RuntimePermission("setIO")], 
         ["RuntimePermission modifyThread", new RuntimePermission("modifyThread")], 
-        ["RuntimePermission stopThread", new RuntimePermission("stopThread")], 
         ["RuntimePermission modifyThreadGroup", new RuntimePermission("modifyThreadGroup")], 
         ["RuntimePermission getProtectionDomain", new RuntimePermission("getProtectionDomain")], 
         ["RuntimePermission readFileDescriptor", new RuntimePermission("readFileDescriptor")], 
@@ -159,18 +158,19 @@ function init(){
             docHost += ":" + docURL.getPort();
         }
 
-        permissions[0] = ["SocketPermission accept " + docHost,
+        nGranted = 0;
+        permissions[nGranted++] = ["SocketPermission accept " + docHost,
                           new SocketPermission(docHost, "accept")];
-        permissions[1] = ["SocketPermission connect " + docHost,
+        permissions[nGranted++] = ["SocketPermission connect " + docHost,
                           new SocketPermission(docHost, "connect")];
-        permissions[2] = ["SocketPermission resolve " + docHost,
+        permissions[nGranted++] = ["SocketPermission resolve " + docHost,
                           new SocketPermission(docHost, "resolve")];
-        // permissions.concat(basePermissions);
+        permissions[nGranted++] = ["RuntimePermission stopThread", 
+                                   new RuntimePermission("stopThread")];
 
         for (var i=0; i<basePermissions.length; i++){
-            permissions[3+i] = basePermissions[i];
+            permissions[nGranted+i] = basePermissions[i];
         }
-        nGranted = 3;
     } else {
         permissions = basePermissions;
     }
