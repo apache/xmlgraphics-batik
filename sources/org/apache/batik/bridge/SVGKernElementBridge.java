@@ -15,13 +15,23 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
- * An base Bridge class for the kerning elements.
+ * A base Bridge class for the kerning elements.
  *
  * @author <a href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</a>
  * @version $Id$
  */
 public abstract class SVGKernElementBridge extends AbstractSVGBridge {
 
+    /**
+     * Creates a Kern object that repesents the specified kerning element.
+     *
+     * @param ctx The bridge context.
+     * @param kernElement The kerning element. Should be either a &lt;hkern>
+     * or &lt;vkern> element.
+     * @param font The font the kerning is related to.
+     *
+     * @return kern The new Kern object
+     */
     public Kern createKern(BridgeContext ctx,
                            Element kernElement,
                            SVGGVTFont font) {

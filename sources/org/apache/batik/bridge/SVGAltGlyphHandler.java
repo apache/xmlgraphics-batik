@@ -18,21 +18,38 @@ import java.awt.font.FontRenderContext;
 import org.w3c.dom.Element;
 
 /**
- * SVG font altGlyph handler.
+ * SVG font altGlyph handler. This class handles the creation of an alternate
+ * GVTGlyphVector for the altGlyph element.
  *
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
 public class SVGAltGlyphHandler implements AltGlyphHandler, SVGConstants {
 
-    BridgeContext ctx;
-    Element textElement;
+    private BridgeContext ctx;
+    private Element textElement;
 
+    /**
+     * Constructs an SVGAltGlyphHandler.
+     *
+     * @param ctx The bridge context, this is needed during rendering to find
+     * any referenced glyph elements.
+     * @param textElement The element that contains text to be replaced by the
+     * alternate glyphs. This should be an altGlyph element.
+     */
     public SVGAltGlyphHandler(BridgeContext ctx, Element textElement) {
         this.ctx = ctx;
         this.textElement = textElement;
     }
 
+    /**
+     * Creates a glyph vector containing the alternate glyphs.
+     *
+     * @param frc The current font render context.
+     * @param fontSize The required font size.
+     * @return The GVTGlyphVector containing the alternate glyphs, or null if
+     * the alternate glyphs could not be found.
+     */
     public GVTGlyphVector createGlyphVector(FontRenderContext frc, float fontSize) {
         if (textElement.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
             SVGAltGlyphElementBridge altGlyphBridge = (SVGAltGlyphElementBridge)ctx.getBridge(textElement);

@@ -49,7 +49,6 @@ public abstract class SVGFontUtilities implements SVGConstants {
      * Given a font family name tries to find a matching SVG font object.
      * If finds one, returns an SVGFontFamily otherwise returns an
      * UnresolvedFontFamily.
-     * TODO: should match against font-variant as well.
      *
      * @param textElement The text element that the font family will be attached to.
      * @param ctx The bridge context, used to search for a matching SVG font element.
@@ -65,6 +64,8 @@ public abstract class SVGFontUtilities implements SVGConstants {
                                              String fontFamilyName,
                                              String fontWeight,
                                              String fontStyle) {
+
+        // TODO: should match against font-variant as well
 
         // if this is a new document reset the fontFamilyMap
         if (fontFamilyMap == null || textElement.getOwnerDocument() != currentDocument) {
@@ -233,6 +234,15 @@ public abstract class SVGFontUtilities implements SVGConstants {
         }
     }
 
+    /**
+     * Returns a string that contains all of the font weight numbers for the
+     * specified font weight attribute value.
+     *
+     * @param fontWeight The font-weight attribute value.
+     *
+     * @return The font weight expressed as font weight numbers.
+     *         e.g. "normal" becomes "400".
+     */
     private static String getFontWeightNumberString(String fontWeight) {
         if (fontWeight.equals(SVG_NORMAL_VALUE)) {
             return SVG_400_VALUE;

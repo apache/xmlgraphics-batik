@@ -33,6 +33,7 @@ import java.util.Vector;
 import java.util.StringTokenizer;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
+import org.apache.batik.css.AbstractViewCSS;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
@@ -122,6 +123,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
         // 'y' attribute - default is 0
         s = e.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+
         float y = 0;
         if (s.length() != 0) {
             StringTokenizer st = new StringTokenizer(s);
@@ -792,7 +794,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
 
         // Text baseline adjustment.
-        // TODO: support for <percentage> and <length> values.
         v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
             (CSS_BASELINE_SHIFT_PROPERTY);
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
@@ -817,12 +818,9 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             result.put(GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT,
                        new Float(f*fs/100f));
         } else {
-            // TODO
+
             f = UnitProcessor.cssOtherLengthToUserSpace
                 (v, CSS_BASELINE_SHIFT_PROPERTY, uctx);
-
-            // XXX: HORIZONTAL LENGTH not appropriate for vertical layout!
-
             result.put(GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT, new Float(f));
         }
 
@@ -1158,22 +1156,38 @@ public class SVGTextElementBridge extends AbstractSVGBridge
     }
 
 
+    /**
+     * Constructs a TextDecoration object for the specified element. This will
+     * contain all of the decoration properties to be used when drawing the
+     * text.
+     */
     private TextDecoration getTextDecoration(Element element, GraphicsNode node,
                        TextDecoration parentTextDecoration, BridgeContext ctx) {
 
         TextDecoration textDecoration = new TextDecoration(parentTextDecoration);
 
-        CSSOMReadOnlyStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
-        CSSValue cssVal = cssDecl.getPropertyCSSValueInternal(CSS_TEXT_DECORATION_PROPERTY);
+        AbstractViewCSS viewCss = CSSUtilities.getViewCSS(element);
+        CSSOMReadOnlyStyleDeclaration styleDecl = viewCss.getCascadedStyle(element, null);
+
+        // determine if text-decoration was explicity set on this element
+        CSSValue cssVal = styleDecl.getLocalPropertyCSSValue(CSS_TEXT_DECORATION_PROPERTY);
+        if (cssVal == null) {
+            // not explicitly set so return the copy of the parent's decoration
+            return textDecoration;
+        }
+
         short t = cssVal.getCssValueType();
 
         if (t == CSSValue.CSS_VALUE_LIST) {
+
+            // first check to see if its a valid list,
+            // ie. if it contains none then that is the only element
+            CSSValueList lst = (CSSValueList)cssVal;
 
             Paint paint = PaintServer.convertFillPaint(element, node, ctx);
             Paint strokePaint = PaintServer.convertStrokePaint(element, node, ctx);
             Stroke stroke = PaintServer.convertStroke(element, ctx);
 
-            CSSValueList lst = (CSSValueList)cssVal;
             for (int i = 0; i < lst.getLength(); i++) {
                 CSSPrimitiveValue v = (CSSPrimitiveValue)lst.item(i);
                 String s = v.getStringValue();
@@ -1211,11 +1225,11 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                         textDecoration.strikethroughStroke = stroke;
                     }
                     break;
-                case 'n':
-                    textDecoration = new TextDecoration();
-                    break;
                 }
             }
+        } else if (t == CSSValue.CSS_PRIMITIVE_VALUE) {
+            // must be explicitly set to "none"
+            return new TextDecoration();
         }
         return textDecoration;
     }
@@ -1233,7 +1247,17 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         Paint strikethroughStrokePaint;
         Stroke strikethroughStroke;
 
-        TextDecoration() {}
+        TextDecoration() {
+            underlinePaint = null;
+            underlineStrokePaint = null;
+            underlineStroke = null;
+            overlinePaint = null;
+            overlineStrokePaint = null;
+            overlineStroke = null;
+            strikethroughPaint = null;
+            strikethroughStrokePaint = null;
+            strikethroughStroke = null;
+        }
 
         TextDecoration(TextDecoration td) {
             underlinePaint = td.underlinePaint;
