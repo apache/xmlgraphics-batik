@@ -8,8 +8,8 @@
 
 package org.apache.batik.script;
 
-import org.w3c.dom.Document;
 import java.util.HashMap;
+import org.w3c.dom.Document;
 
 /**
  * The reference implementation of the <code>InterpreterPool</code> interface.
@@ -20,7 +20,7 @@ import java.util.HashMap;
  * @version $Id$
  */
 public class ConcreteInterpreterPool implements InterpreterPool {
-    private Document document;
+
     private HashMap factories = new HashMap(3);
     private HashMap interpreters = new HashMap(1);
 
@@ -34,18 +34,11 @@ public class ConcreteInterpreterPool implements InterpreterPool {
         "org.apache.batik.script.jacl.JaclInterpreterFactory";
 
     /**
-     * Builds an instance of <code>ConcreteInterpreterPool</code>.
-     */
-    public ConcreteInterpreterPool() {
-    }
-
-    /**
      * Builds an instance of <code>ConcreteInterpreterPool</code> that
      * will create <code>Interpreter</code> instances for the the given
      * <code>Document</code>.
      */
-    public ConcreteInterpreterPool(Document doc) {
-        document = doc;
+    public ConcreteInterpreterPool() {
         InterpreterFactory factory = null;
         try {
             factory =
@@ -85,7 +78,7 @@ public class ConcreteInterpreterPool implements InterpreterPool {
      * (i.e. "text/ecmascript" for ECMAScript interpreter, "text/tcl" for Tcl
      * interpreter...).
      */
-    public Interpreter getInterpreter(String language) {
+    public Interpreter getInterpreter(Document document, String language) {
         Interpreter interpreter = (Interpreter)interpreters.get(language);
         if (interpreter == null) {
             InterpreterFactory factory = (InterpreterFactory)factories.

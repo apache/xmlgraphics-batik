@@ -125,232 +125,44 @@ public class BridgeContext implements SVGConstants {
     protected BridgeContext() {}
 
     /**
-     * Constructs a new bridge context for the specified SVG document
-     * and using the specified user agent.
-     * @param svgDocument the SVG document
+     * Constructs a new bridge context.
      * @param userAgent the user agent
      * @param rc the graphics node renderer context
      */
-    public BridgeContext(SVGDocument svgDocument,
-                         UserAgent userAgent,
+    public BridgeContext(UserAgent userAgent,
                          GraphicsNodeRenderContext rc) {
-        String parserClassname = userAgent.getXMLParserClassName();
-        DocumentLoader documentLoader =
-            new BufferedDocumentLoader(new SVGDocumentLoader(parserClassname));
-        InterpreterPool interpreterPool =
-            new ConcreteInterpreterPool(svgDocument);
-        initialize(svgDocument, userAgent, rc, interpreterPool, documentLoader);
+        this(userAgent,
+             rc,
+             new ConcreteInterpreterPool(),
+             new BufferedDocumentLoader(
+                 new SVGDocumentLoader(userAgent.getXMLParserClassName())));
     }
 
     /**
-     * Constructs a new bridge context for the specified SVG document
-     * and using the specified user agent.
-     * @param svgDocument the SVG document
+     * Constructs a new bridge context.
      * @param userAgent the user agent
      * @param rc the graphics node renderer context
      * @param interpreterPool the interpreter pool
      * @param documentLoader document loader
      */
-    public BridgeContext(SVGDocument svgDocument,
-                         UserAgent userAgent,
+    public BridgeContext(UserAgent userAgent,
                          GraphicsNodeRenderContext rc,
                          InterpreterPool interpreterPool,
                          DocumentLoader documentLoader) {
-        initialize(svgDocument, userAgent, rc, interpreterPool, documentLoader);
-    }
-
-    /**
-     * Initializes this bridge context with the specified parameters.
-     * @param svgDocument the SVG document
-     * @param userAgent the user agent
-     * @param rc the graphics node renderer context
-     * @param interpreterPool the interpreter pool
-     * @param documentLoader document loader
-     */
-    protected void initialize(SVGDocument svgDocument,
-                              UserAgent userAgent,
-                              GraphicsNodeRenderContext rc,
-                              InterpreterPool interpreterPool,
-                              DocumentLoader documentLoader) {
         this.userAgent = userAgent;
         this.viewport = new UserAgentViewport(userAgent);
-        this.viewCSS = (ViewCSS)svgDocument.getRootElement();
         this.rc = rc;
         this.interpreterPool = interpreterPool;
         this.documentLoader = documentLoader;
-        registerSVGBridges(this); // FIXME should not be here
+        registerSVGBridges(this);
     }
 
     /**
-     * Registers the bridges to handle SVG 1.0 elements.
-     * @param ctx the bridge context to initialize
+     * Should be partially removed when removing the ViewCSS from the bridge.
      */
-    public static void registerSVGBridges(BridgeContext ctx) {
-
-        // --- TO BE REMOVED ---
-        if (globalBridges != null) {
-            Iterator it = globalBridges.keySet().iterator();
-            while (it.hasNext()) {
-                String ns = (String)it.next();
-                Map m = (Map)globalBridges.get(ns);
-                if (m != null) {
-                    Iterator mit = m.keySet().iterator();
-                    while (mit.hasNext()) {
-                        String ln = (String)mit.next();
-                        ctx.putBridge(ns, ln, (Bridge)m.get(ln));
-                    }
-                }
-            }
-        }
-        // --- END TO BE REMOVED ---
-
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_A_TAG,
-                      new SVGAElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_CIRCLE_TAG,
-                      new SVGCircleElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_CLIP_PATH_TAG,
-                      new SVGClipPathElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_ELLIPSE_TAG,
-                      new SVGEllipseElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_BLEND_TAG,
-                      new SVGFeBlendElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI, SVG_FE_COLOR_MATRIX_TAG,
-                      new SVGFeColorMatrixElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_COMPONENT_TRANSFER_TAG,
-                      new SVGFeComponentTransferElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_COMPOSITE_TAG,
-                      new SVGFeCompositeElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_CONVOLVE_MATRIX_TAG,
-                      new SVGFeConvolveMatrixElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_DIFFUSE_LIGHTING_TAG,
-                      new SVGFeDiffuseLightingElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_DISPLACEMENT_MAP_TAG,
-                      new SVGFeDisplacementMapElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_FLOOD_TAG,
-                      new SVGFeFloodElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_GAUSSIAN_BLUR_TAG,
-                      new SVGFeGaussianBlurElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_IMAGE_TAG,
-                      new SVGFeImageElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_MERGE_TAG,
-                      new SVGFeMergeElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_MORPHOLOGY_TAG,
-                      new SVGFeMorphologyElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_OFFSET_TAG,
-                      new SVGFeOffsetElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_SPECULAR_LIGHTING_TAG,
-                      new SVGFeSpecularLightingElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_TILE_TAG,
-                      new SVGFeTileElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FE_TURBULENCE_TAG,
-                      new SVGFeTurbulenceElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_FILTER_TAG,
-                      new SVGFilterElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_G_TAG,
-                      new SVGGElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_IMAGE_TAG,
-                      new SVGImageElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_LINE_TAG,
-                      new SVGLineElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_LINEAR_GRADIENT_TAG,
-                      new SVGLinearGradientBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_MARKER_TAG,
-                      new SVGMarkerElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_MASK_TAG,
-                      new SVGMaskElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_PATH_TAG,
-                      new SVGPathElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_PATTERN_TAG,
-                      new SVGPatternElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_POLYLINE_TAG,
-                      new SVGPolylineElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_POLYGON_TAG,
-                      new SVGPolygonElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_RADIAL_GRADIENT_TAG,
-                      new SVGRadialGradientBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_RECT_TAG,
-                      new SVGRectElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_SVG_TAG,
-                      new SVGSVGElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_SWITCH_TAG,
-                      new SVGSwitchElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_TEXT_TAG,
-                      new SVGTextElementBridge());
-
-        ctx.putBridge(SVG_NAMESPACE_URI,
-                      SVG_USE_TAG,
-                      new SVGUseElementBridge());
+    void initialize(SVGDocument svgDocument, GVTBuilder gvtBuilder) {
+        this.viewCSS = (ViewCSS)svgDocument.getRootElement();
+        this.gvtBuilder = gvtBuilder;
     }
 
     //
@@ -377,14 +189,6 @@ public class BridgeContext implements SVGConstants {
      */
     public GVTBuilder getGVTBuilder() {
         return gvtBuilder;
-    }
-
-    /**
-     * Sets the GVT builder used to construct graphics nodes.
-     * @param gvtBuilder the GVT builder
-     */
-    public void setGVTBuilder(GVTBuilder gvtBuilder) { // FIXME: Should be package public
-        this.gvtBuilder = gvtBuilder;
     }
 
     /**
@@ -698,9 +502,176 @@ public class BridgeContext implements SVGConstants {
         }
     }
 
-    //
-    // --- TO BE REMOVED ---
-    //
+    /**
+     * Registers the bridges to handle SVG 1.0 elements.
+     * @param ctx the bridge context to initialize
+     */
+    public static void registerSVGBridges(BridgeContext ctx) {
+
+        // local bridges to handle elements in custom namespace
+        if (globalBridges != null) {
+            Iterator it = globalBridges.keySet().iterator();
+            while (it.hasNext()) {
+                String ns = (String)it.next();
+                Map m = (Map)globalBridges.get(ns);
+                if (m != null) {
+                    Iterator mit = m.keySet().iterator();
+                    while (mit.hasNext()) {
+                        String ln = (String)mit.next();
+                        ctx.putBridge(ns, ln, (Bridge)m.get(ln));
+                    }
+                }
+            }
+        }
+
+        // bridges to handle elements in the SVG namespace
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_A_TAG,
+                      new SVGAElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_CIRCLE_TAG,
+                      new SVGCircleElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_CLIP_PATH_TAG,
+                      new SVGClipPathElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_ELLIPSE_TAG,
+                      new SVGEllipseElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_BLEND_TAG,
+                      new SVGFeBlendElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI, SVG_FE_COLOR_MATRIX_TAG,
+                      new SVGFeColorMatrixElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_COMPONENT_TRANSFER_TAG,
+                      new SVGFeComponentTransferElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_COMPOSITE_TAG,
+                      new SVGFeCompositeElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_CONVOLVE_MATRIX_TAG,
+                      new SVGFeConvolveMatrixElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_DIFFUSE_LIGHTING_TAG,
+                      new SVGFeDiffuseLightingElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_DISPLACEMENT_MAP_TAG,
+                      new SVGFeDisplacementMapElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_FLOOD_TAG,
+                      new SVGFeFloodElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_GAUSSIAN_BLUR_TAG,
+                      new SVGFeGaussianBlurElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_IMAGE_TAG,
+                      new SVGFeImageElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_MERGE_TAG,
+                      new SVGFeMergeElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_MORPHOLOGY_TAG,
+                      new SVGFeMorphologyElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_OFFSET_TAG,
+                      new SVGFeOffsetElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_SPECULAR_LIGHTING_TAG,
+                      new SVGFeSpecularLightingElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_TILE_TAG,
+                      new SVGFeTileElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FE_TURBULENCE_TAG,
+                      new SVGFeTurbulenceElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_FILTER_TAG,
+                      new SVGFilterElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_G_TAG,
+                      new SVGGElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_IMAGE_TAG,
+                      new SVGImageElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_LINE_TAG,
+                      new SVGLineElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_LINEAR_GRADIENT_TAG,
+                      new SVGLinearGradientBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_MARKER_TAG,
+                      new SVGMarkerElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_MASK_TAG,
+                      new SVGMaskElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_PATH_TAG,
+                      new SVGPathElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_PATTERN_TAG,
+                      new SVGPatternElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_POLYLINE_TAG,
+                      new SVGPolylineElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_POLYGON_TAG,
+                      new SVGPolygonElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_RADIAL_GRADIENT_TAG,
+                      new SVGRadialGradientBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_RECT_TAG,
+                      new SVGRectElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_SVG_TAG,
+                      new SVGSVGElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_SWITCH_TAG,
+                      new SVGSwitchElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_TEXT_TAG,
+                      new SVGTextElementBridge());
+
+        ctx.putBridge(SVG_NAMESPACE_URI,
+                      SVG_USE_TAG,
+                      new SVGUseElementBridge());
+    }
 
     /**
      * The global bridges.
@@ -724,8 +695,12 @@ public class BridgeContext implements SVGConstants {
     }
 
     /** The Update manager.*/
-    private BridgeUpdateManager updateManager;
+    private BridgeUpdateManager updateManager = new BridgeUpdateManager(this);
 
+    /**
+     * Returns the update manager.
+     * <b>Experimental method for dynamic behavior.</b>
+     */
     public BridgeUpdateManager getBridgeUpdateManager(){
         return updateManager;
     }
@@ -733,7 +708,8 @@ public class BridgeContext implements SVGConstants {
     /**
      * The factory class for vending <tt>GraphicsNodeRable</tt> objects.
      */
-    private GraphicsNodeRableFactory graphicsNodeRableFactory = new ConcreteGraphicsNodeRableFactory();
+    private GraphicsNodeRableFactory graphicsNodeRableFactory =
+        new ConcreteGraphicsNodeRableFactory();
 
     public GraphicsNodeRableFactory getGraphicsNodeRableFactory(){
         return graphicsNodeRableFactory;

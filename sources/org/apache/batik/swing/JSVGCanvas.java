@@ -467,10 +467,9 @@ public class JSVGCanvas
                 public void run() {
                     GraphicsNode root = null;
                     try {
-                        BridgeContext bridgeContext =
-                            createBridgeContext(doc);
+                        BridgeContext bridgeContext = createBridgeContext();
                         //bridgeContext.setGraphicsNodeRenderContext(getRendererFactory().getRenderContext());
-                        bridgeContext.setGVTBuilder(builder); // FIXME Should be removed
+                        //bridgeContext.setGVTBuilder(builder);
                         long t1 = System.currentTimeMillis();
                         if (Thread.currentThread().isInterrupted()) {
                             throw new InterruptedException();
@@ -666,12 +665,10 @@ public class JSVGCanvas
     /**
      * Creates a new bridge context.
      */
-    protected BridgeContext createBridgeContext(SVGDocument doc) {
+    protected BridgeContext createBridgeContext() {
         GraphicsNodeRenderContext rc = getRendererFactory().getRenderContext();
-        BridgeContext result = new BridgeContext(doc, userAgent, rc);
-        result.setDocumentLoader
-            (new BufferedDocumentLoader
-             (new SVGDocumentLoader(userAgent.getXMLParserClassName())));
+        BridgeContext result = new BridgeContext(userAgent, rc);
+        // result.setDocumentLoader(new BufferedDocumentLoader(new SVGDocumentLoader(userAgent.getXMLParserClassName())));
         //result.setUserAgent(userAgent);
         //result.setGraphicsNodeRableFactory(new ConcreteGraphicsNodeRableFactory());
         //result.setGraphicsNodeRenderContext(getRendererFactory().getRenderContext());

@@ -186,9 +186,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         // build the GVT tree
         GVTBuilder builder = new ConcreteGVTBuilder();
         GraphicsNodeRenderContext rc = new StaticRendererFactory().getRenderContext(); // <!> FIX ME
-        BridgeContext ctx = new BridgeContext(svgDoc,
-                                              userAgent,
-                                              rc);
+        BridgeContext ctx = new BridgeContext(userAgent, rc);
         GraphicsNode gvtRoot = builder.build(ctx, svgDoc);
         // paint the SVG document using the bridge package
         renderer.setTransform(Px);
