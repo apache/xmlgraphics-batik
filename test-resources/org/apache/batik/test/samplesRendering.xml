@@ -219,6 +219,7 @@
     <testGroup id="tests.spec.text">
         <test id="samples/tests/spec/text/longTextOnPath.svg" />
         <test id="samples/tests/spec/text/smallFonts.svg" />
+        <test id="samples/tests/spec/text/textAnchor.svg" />
         <test id="samples/tests/spec/text/textBiDi.svg" />
         <test id="samples/tests/spec/text/textDecoration.svg" />
         <test id="samples/tests/spec/text/textEffect.svg" />
