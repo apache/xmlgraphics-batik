@@ -75,7 +75,7 @@
         <s1 title="The SVG Specification">
         <p>
         Scalable Vector Graphics, SVG, is a <link href="http://www.w3.org">W3C</link>
-        Candidate Recommendation. It defines an XML grammar for rich 2D graphics
+        recommendation. It defines an XML grammar for rich 2D graphics
         which includes features such as transparency, arbitrary geometry, filter
         effects (shadows, lighting effects, etc...), scripting and animation.
         </p>
@@ -83,10 +83,9 @@
         The SVG specification can be found on the 
         <link href="http://www.w3.org/TR/SVG/">W3C site</link>. <strong>Batik 1.0 is conformant
         with the November 2nd, 2000 Candidate Recommendation Specification</strong> and its 
-        modifications leading to the upcoming Proposed Recommendation. Note that because
-        SVG is not a final Recommendation yet, it may still change. The Batik team will
-        keep the implementation current with the latest specification developments.
-        </p>
+        modifications leading to the upcoming Proposed Recommendation. The current 1.1rcN releases
+        are (and the upcoming 1.1 release
+        will be) conformant with the final recommendation of September 4th, 2000. </p>
          </s1>
 
         <s1 title="Batik's Implementation Status">
