@@ -19,10 +19,6 @@ import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 
-
-
-
-
 /**
  * Default BumpMap implementation.
  *
@@ -83,8 +79,19 @@ public class DefaultBumpMap implements BumpMap {
         double[] n;
 
         DataBufferInt db = (DataBufferInt)r.getDataBuffer();
+
+
         int[] pixels = db.getBankData()[0];
-        int offset = db.getOffset();
+
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)r.getSampleModel();
+
+        final int offset = 
+            (db.getOffset() +
+             sppsm.getOffset(r.getMinX() -r.getSampleModelTranslateX(), 
+                             r.getMinY() -r.getSampleModelTranslateY()));
+        // int offset = db.getOffset();
+
         int scanStride = 
         ((SinglePixelPackedSampleModel)r.getSampleModel())
         .getScanlineStride();

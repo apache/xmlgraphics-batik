@@ -241,8 +241,18 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         DataBufferInt dstDB = (DataBufferInt)dest.getDataBuffer();
 
         // Offset defines where in the stack the real data begin
-        final int srcOff = srcDB.getOffset();
-        final int dstOff = dstDB.getOffset();
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)src.getSampleModel();
+
+        final int srcOff = srcDB.getOffset() +
+            sppsm.getOffset(src.getMinX() - src.getSampleModelTranslateX(),
+                            src.getMinY() - src.getSampleModelTranslateY());
+
+
+        sppsm = (SinglePixelPackedSampleModel)dest.getSampleModel();
+        final int dstOff = dstDB.getOffset() +
+            sppsm.getOffset(dest.getMinX() - dest.getSampleModelTranslateX(),
+                            dest.getMinY() - dest.getSampleModelTranslateY());
 
         // Stride is the distance between two consecutive column elements,
         // in the one-dimention dataBuffer

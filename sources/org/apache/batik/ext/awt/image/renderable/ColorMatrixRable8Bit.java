@@ -23,6 +23,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.rendered.ColorMatrixRed;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 
 /**
@@ -215,7 +216,7 @@ public class ColorMatrixRable8Bit
         CachableRed srcCR = GraphicsUtil.wrap(srcRI);
         srcCR = GraphicsUtil.convertToLsRGB(srcCR);
 
-        final int srcMinX = srcCR.getMinX();
+        /*final int srcMinX = srcCR.getMinX();
         final int srcMinY = srcCR.getMinY();
 
         //
@@ -241,6 +242,8 @@ public class ColorMatrixRable8Bit
                                                  null);
 
 
-        return new BufferedImageCachableRed(dstBI, srcMinX, srcMinY);
+                                                 return new ConcreteBufferedImageCachableRed(dstBI, srcMinX, srcMinY);*/
+
+        return new ColorMatrixRed(matrix, srcCR);
     }
 }
