@@ -146,7 +146,6 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             ImageEncoder encoder = new PNGImageEncoder(os, null);
             encoder.encode(buf);
-            os.flush();
             os.close();
             return os.toByteArray();
         } catch(IOException e) {
