@@ -240,7 +240,7 @@ public class EventSupport {
 		fireEventListeners(node, evt, false);
 	    }
 	}
-	return evt.getPreventDefault();
+	return !evt.getPreventDefault();
     }
 
     private static void fireEventListeners(NodeEventTarget node, 

@@ -198,7 +198,7 @@ public abstract class AbstractEvent implements Event {
      * of event flow.  
      */
     public void preventDefault() {
-	this.preventDefault = false;
+	this.preventDefault = true;
     }
 
     /**
@@ -245,7 +245,7 @@ public abstract class AbstractEvent implements Event {
     }
 
     void preventDefault(boolean state) {
-	this.preventDefault = !state;
+	this.preventDefault = state;
     }
 
     void setCurrentTarget(EventTarget currentTarget) {
@@ -254,5 +254,10 @@ public abstract class AbstractEvent implements Event {
 
     void setTarget(EventTarget target) {
 	this.target = target;
+    }
+
+    public static boolean getEventPreventDefault(Event evt) {
+        AbstractEvent ae = (AbstractEvent)evt;
+        return ae.getPreventDefault();
     }
 }
