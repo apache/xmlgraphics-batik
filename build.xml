@@ -582,6 +582,8 @@ To display the available targets type:
     <mkdir dir="${test-reports}"/>
     <mkdir dir="${test-references}/samples/accepted-variation"/>
     <mkdir dir="${test-references}/samples/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/tests/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/tests/candidate-variation"/>
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner"
           jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
