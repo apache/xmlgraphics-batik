@@ -168,7 +168,7 @@ public class SVGUseElementBridge extends AbstractSVGBridge
 
         // 'transform'
         if (s.length() != 0) {
-            at.concatenate
+            at.preConcatenate
                 (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
         }
         gn.setTransform(at);
