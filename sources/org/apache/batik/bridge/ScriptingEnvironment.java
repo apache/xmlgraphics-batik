@@ -721,15 +721,27 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
                             updateRunnableQueue.invokeLater(new Runnable() {
                                     public void run() {
-                                        h.getURLDone(true,
-                                                     purl.getContentType(),
-                                                     sw.toString());
+                                        try {
+                                            h.getURLDone(true,
+                                                         purl.getContentType(),
+                                                         sw.toString());
+                                        } catch (Exception e){
+                                            if (userAgent != null) {
+                                                userAgent.displayError(e);
+                                            }
+                                        }
                                     }
                                 });
                         } catch (Exception e) {
                             updateRunnableQueue.invokeLater(new Runnable() {
                                     public void run() {
-                                        h.getURLDone(false, null, null);
+                                        try {
+                                            h.getURLDone(false, null, null);
+                                        } catch (Exception e){
+                                            if (userAgent != null) {
+                                                userAgent.displayError(e);
+                                            }
+                                        }
                                     }
                                 });
                         }
