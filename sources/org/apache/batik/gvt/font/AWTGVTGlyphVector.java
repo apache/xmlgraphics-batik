@@ -243,7 +243,6 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
 
         double maxWidth = -1;
         double maxHeight = -1;
-
         for (int i = 0; i < getNumGlyphs(); i++) {
 
             if (!glyphVisible[i]) {
@@ -261,7 +260,6 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
                                  scaleFactor);
             float glyphHeight = (glyphMetrics.getVerticalAdvance()/
                                  scaleFactor);
-
             Rectangle2D glyphBounds = new Rectangle2D.Double(glyphX,
                                                              glyphY,
                                                              glyphWidth,
@@ -285,9 +283,9 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
                 Point2D p3 = new Point2D.Double(glyphBounds.getMinX(),
                                                 glyphBounds.getMaxY());
 
+                Point2D gpos = getGlyphPosition(i);
                 AffineTransform tr = AffineTransform.getTranslateInstance
-                    (getGlyphPosition(i).getX(),
-                     getGlyphPosition(i).getY());
+                    (gpos.getX(), gpos.getY());
 
                 if (glyphTransform != null)
                     tr.concatenate(glyphTransform);
@@ -343,28 +341,26 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
 
                 Rectangle2D glyphBounds = tempLogicalBounds[i].getBounds2D();
 
-                double x = glyphBounds.getMinX();
+                double x     = glyphBounds.getMinX();
                 double width = glyphBounds.getWidth();
 
                 if ((i < getNumGlyphs()-1) &&
                     (tempLogicalBounds[i+1] != null)) {
                     // make this glyph extend to the start of the next one
-                    Rectangle2D nextGlyphBounds =
-                        tempLogicalBounds[i+1].getBounds2D();
+                    Rectangle2D ngb = tempLogicalBounds[i+1].getBounds2D();
 
-                    if (nextGlyphBounds.getX() > x) {
-                        // going left to right (this is pretty hoky)
-                        width = nextGlyphBounds.getX() - x;
-                    } else {
-                        double newGlyphX = (nextGlyphBounds.getX() +
-                                            nextGlyphBounds.getWidth());
-                        width += (x - newGlyphX);
-                        x = newGlyphX;
+                    if (ngb.getX() > x) {
+                        double nw = ngb.getX() - x;
+                        if ((nw < width*1.15) && (nw > width*.85)) {
+                            double delta = (nw-width)*.5;
+                            width += delta;
+                            ngb.setRect(ngb.getX()-delta, ngb.getY(),
+                                        ngb.getWidth()+delta, ngb.getHeight());
+                        }
                     }
                 }
-
                 tempLogicalBounds[i] = new Rectangle2D.Double
-                    (x, logicalBounds.getMinY(),
+                    (x,     logicalBounds.getMinY(),
                      width, logicalBounds.getHeight());
             }
         } else if (logicalBounds.getWidth() < maxWidth*1.5) {
@@ -382,18 +378,17 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
                 if ((i < getNumGlyphs()-1) &&
                     (tempLogicalBounds[i+1] != null)) {
                     // make this glyph extend to the start of the next one
-                    Rectangle2D nextGlyphBounds =
-                        tempLogicalBounds[i+1].getBounds2D();
-                    if (nextGlyphBounds.getY() > y) { // going top to bottom
-                        height = nextGlyphBounds.getY() - y;
-                    } else {
-                        double newGlyphY = (nextGlyphBounds.getY() +
-                                            nextGlyphBounds.getHeight());
-                        height += (y - newGlyphY);
-                        y = newGlyphY;
+                    Rectangle2D ngb = tempLogicalBounds[i+1].getBounds2D();
+                    if (ngb.getY() > y) { // going top to bottom
+                        double nh = ngb.getY() - y;
+                        if ((nh < height*1.15) && (nh > height*.85)) {
+                            double delta = (nh-height)*.5;
+                            height += delta;
+                            ngb.setRect(ngb.getX(), ngb.getY()-delta,
+                                        ngb.getWidth(), ngb.getHeight()+delta);
+                        }
                     }
                 }
-
                 tempLogicalBounds[i] = new Rectangle2D.Double
                     (logicalBounds.getMinX(),  y,
                      logicalBounds.getWidth(), height);
@@ -410,33 +405,31 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      * GVTGlyphVector.
      */
     public GVTGlyphMetrics getGlyphMetrics(int glyphIndex) {
-        if (glyphMetrics[glyphIndex] == null) {
-/*
-            GlyphMetrics gm = awtGlyphVector.getGlyphMetrics(glyphIndex);
-            Rectangle2D gmB = gm.getBounds2D();
-*/
-            // -- start glyph cache code --
-            Point2D glyphPos = defaultGlyphPositions[glyphIndex];
-            char c = ci.setIndex(ci.getBeginIndex()+glyphIndex);
-            ci.setIndex(ci.getBeginIndex());
-            AWTGlyphGeometryCache.Value v = AWTGVTFont.getGlyphGeometry
-                (gvtFont, c, awtGlyphVector, glyphIndex, glyphPos);
-            Rectangle2D gmB = v.getBounds2D();
-           // -- end glyph cache code --
+        if (glyphMetrics[glyphIndex] != null) 
+            return glyphMetrics[glyphIndex];
 
-            Rectangle2D bounds = new Rectangle2D.Double
-                (gmB.getX()     * scaleFactor, gmB.getY()      * scaleFactor,
-                 gmB.getWidth() * scaleFactor, gmB.getHeight() * scaleFactor);
+        // -- start glyph cache code --
+        Point2D glyphPos = defaultGlyphPositions[glyphIndex];
+        char c = ci.setIndex(ci.getBeginIndex()+glyphIndex);
+        ci.setIndex(ci.getBeginIndex());
+        AWTGlyphGeometryCache.Value v = AWTGVTFont.getGlyphGeometry
+            (gvtFont, c, awtGlyphVector, glyphIndex, glyphPos);
+        Rectangle2D gmB = v.getBounds2D();
+        // -- end glyph cache code --
 
-            // defaultGlyphPositions has one more entry than glyphs
-            // the last entry stores the total advance for the
-            // glyphVector.
-            float adv = (float)(defaultGlyphPositions[glyphIndex+1].getX()-
-                                defaultGlyphPositions[glyphIndex]  .getX());
-            glyphMetrics[glyphIndex] =  new GVTGlyphMetrics
-                (adv*scaleFactor, (ascent+descent),
-                 bounds, GlyphMetrics.STANDARD);
-        }
+        Rectangle2D bounds = new Rectangle2D.Double
+            (gmB.getX()     * scaleFactor, gmB.getY()      * scaleFactor,
+             gmB.getWidth() * scaleFactor, gmB.getHeight() * scaleFactor);
+
+        // defaultGlyphPositions has one more entry than glyphs
+        // the last entry stores the total advance for the
+        // glyphVector.
+        float adv = (float)(defaultGlyphPositions[glyphIndex+1].getX()-
+                            defaultGlyphPositions[glyphIndex]  .getX());
+        glyphMetrics[glyphIndex] =  new GVTGlyphMetrics
+            (adv*scaleFactor, (ascent+descent),
+             bounds, GlyphMetrics.STANDARD);
+
         return glyphMetrics[glyphIndex];
     }
 
@@ -671,19 +664,50 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             Point2D glyphPos = defaultGlyphPositions[i];
             float x = (float)((glyphPos.getX() * scaleFactor)-shiftLeft);
             float y = (float) (glyphPos.getY() * scaleFactor);
-            if (glyphPositions[i] == null) {
-                glyphPositions[i] = new Point2D.Float(x,y);
-            } else {
-                glyphPositions[i].x = x;
-                glyphPositions[i].y = y;
-            }
 
             // if c is a transparent arabic char then need to shift the
             // following glyphs left so that the current glyph is overwritten
             char c = ci.setIndex(i + ci.getBeginIndex());
+            /*
             if (ArabicTextHandler.arabicCharTransparent(c)) {
+                int j;
                 shiftLeft += getGlyphMetrics(i).getHorizontalAdvance();
-            }
+                for (j=i+1; j<getNumGlyphs(); j++) {
+                    char c2 = ci.setIndex(j+ci.getBeginIndex());
+                    if (!ArabicTextHandler.arabicCharTransparent(c2)) break;
+                    shiftLeft += getGlyphMetrics(j).getHorizontalAdvance();
+                }
+                if (j != getNumGlyphs()) {
+                    Point2D glyphPosBase = defaultGlyphPositions[j];
+                    double rEdge = glyphPosBase.getX()+getGlyphMetrics(j).getHorizontalAdvance();
+                    rEdge -= shiftLeft;
+                    for (int k=i; k<j; k++) {
+                        glyphTransforms   [k] = null;
+                        glyphVisualBounds [k] = null;
+                        glyphLogicalBounds[k] = null;
+                        glyphOutlines     [k] = null;
+                        glyphMetrics      [k] = null;
+                        x = (float)rEdge-getGlyphMetrics(k).getHorizontalAdvance();
+                        y = (float) (defaultGlyphPositions[k].getY() * scaleFactor);
+                        if (glyphPositions[k] == null) {
+                            glyphPositions[k] = new Point2D.Float(x,y);
+                        } else {
+                            glyphPositions[k].x = x;
+                            glyphPositions[k].y = y;
+                        }
+                    }
+                    i = j-1;
+                }
+            } else {
+            */
+                if (glyphPositions[i] == null) {
+                    glyphPositions[i] = new Point2D.Float(x,y);
+                } else {
+                    glyphPositions[i].x = x;
+                    glyphPositions[i].y = y;
+                }
+                // }
+
         }
 
         // Need glyph pos for point after last char...

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2004  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -238,9 +238,19 @@ public class GraphicsUtil {
             SampleModel srcSM = cr.getSampleModel();
             if ((srcSM.getWidth()*srcSM.getHeight()) >=
                 (clipR.width*clipR.height))
-                // if srcSM tiles are larger than the clip size
+                // if srcSM tiles are around the clip size
                 // then just draw the renderedImage 
                 useDrawRenderedImage = true;
+
+            Object atpHint = g2d.getRenderingHint
+                (RenderingHintsKeyExt.KEY_AVOID_TILE_PAINTING);
+
+            if (atpHint == RenderingHintsKeyExt.VALUE_AVOID_TILE_PAINTING_ON)
+                useDrawRenderedImage = true; //for PDF and PS transcoders
+
+            if (atpHint == RenderingHintsKeyExt.VALUE_AVOID_TILE_PAINTING_OFF)
+                useDrawRenderedImage = false;
+
 
             WritableRaster wr;
             if (useDrawRenderedImage) {

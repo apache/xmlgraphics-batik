@@ -55,7 +55,6 @@ public class Glyph {
     private AffineTransform transform;
     private Point2D.Float position;
     private GVTGlyphMetrics metrics;
-    private float kernScale;
 
     private Shape outline; // cache the glyph outline
     private Rectangle2D bounds; // cache the glyph bounds
@@ -72,7 +71,7 @@ public class Glyph {
     public Glyph(String unicode, Vector names,
                  String orientation, String arabicForm, String lang,
                  Point2D horizOrigin, Point2D vertOrigin, float horizAdvX,
-                 float vertAdvY, int glyphCode, float kernScale,
+                 float vertAdvY, int glyphCode,
                  TextPaintInfo tpi,
                  Shape dShape, GraphicsNode glyphChildrenNode) {
 
@@ -95,16 +94,6 @@ public class Glyph {
         this.vertOrigin = vertOrigin;
         this.horizAdvX = horizAdvX;
         this.vertAdvY = vertAdvY;
-        if (this.unicode != null) {
-            if (this.unicode.length() > 0
-                && ArabicTextHandler.arabicCharTransparent(this.unicode.charAt(0))) {
-                // if this glyph is arabic and transparent,
-                // then it doesn't cause any advance
-                this.horizAdvX = 0;
-                this.vertAdvY = 0;
-            }
-        }
-        this.kernScale = kernScale;
         this.glyphCode = glyphCode;
         this.position = new Point2D.Float(0,0);
         this.outline = null;
@@ -281,8 +270,8 @@ public class Glyph {
      * @return The kerned glyph metics
      */
     public GVTGlyphMetrics getGlyphMetrics(float hkern, float vkern) {
-        return new GVTGlyphMetrics(getHorizAdvX() - (hkern * kernScale),
-                                   getVertAdvY() - (vkern * kernScale),
+        return new GVTGlyphMetrics(getHorizAdvX() - hkern,
+                                   getVertAdvY() - vkern,
                                    getGeometryBounds(), 
                                    GlyphMetrics.COMPONENT);
 

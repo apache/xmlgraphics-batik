@@ -72,7 +72,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
     private KerningTable vKerningTable;
     private String language;
     private String orientation;
-
+    private float  scale;
     private GVTLineMetrics lineMetrics=null;
 
     /**
@@ -121,6 +121,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         this.missingGlyphElement = missingGlyphElement;
         this.hkernElements = hkernElements;
         this.vkernElements = vkernElements;
+        this.scale         = fontSize/fontFace.getUnitsPerEm();
         this.textElement = textElement;
 
         this.language = XMLSupport.getXMLLang(textElement);
@@ -182,8 +183,11 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
             || glyphCode2 < 0 || glyphCode2 >= glyphUnicodes.length) {
             return 0f;
         }
-        return hKerningTable.getKerningValue(glyphCode1, glyphCode2,
-                glyphUnicodes[glyphCode1], glyphUnicodes[glyphCode2]);
+        float ret;
+        ret = hKerningTable.getKerningValue(glyphCode1, glyphCode2,
+                                            glyphUnicodes[glyphCode1], 
+                                            glyphUnicodes[glyphCode2]);
+        return ret*scale;
     }
 
     /**
@@ -201,8 +205,11 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
             || glyphCode2 < 0 || glyphCode2 >= glyphUnicodes.length) {
             return 0f;
         }
-        return vKerningTable.getKerningValue(glyphCode1, glyphCode2,
-                glyphUnicodes[glyphCode1], glyphUnicodes[glyphCode2]);
+        float ret;
+        ret = vKerningTable.getKerningValue(glyphCode1, glyphCode2,
+                                            glyphUnicodes[glyphCode1], 
+                                            glyphUnicodes[glyphCode2]);
+        return ret*scale;
     }
 
     /**

@@ -322,7 +322,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
         // return a new Glyph
         return new Glyph(unicode, names, orientation,
                          arabicForm, lang, horizOrigin, vertOrigin,
-                         horizAdvX, vertAdvY, glyphCode, scale,
+                         horizAdvX, vertAdvY, glyphCode, 
                          tpi, dShape, glyphContentNode);
     }
 }
