@@ -8,23 +8,23 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.Paint;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+
 import java.util.Map;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
 
+import org.apache.batik.gvt.CompositeShapePainter;
+import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
+import org.apache.batik.gvt.StrokeShapePainter;
 
 import org.w3c.dom.Element;
-
-import org.apache.batik.gvt.CompositeShapePainter;
-import org.apache.batik.gvt.FillShapePainter;
-import org.apache.batik.gvt.StrokeShapePainter;
-import java.awt.Paint;
-import java.awt.Shape;
 
 /**
  * The base bridge class for shapes. Subclasses bridge <tt>ShapeNode</tt>.
@@ -32,8 +32,7 @@ import java.awt.Shape;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class SVGShapeElementBridge
-    extends AbstractGraphicsNodeBridge {
+public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
 
     /**
      * Constructs a new bridge for SVG shapes.
@@ -175,23 +174,25 @@ public abstract class SVGShapeElementBridge
                 shapeNode.setShapePainter(createShapePainter(ctx, e, shapeNode));
             }
             break;
-        } case SVGCSSEngine.SHAPE_RENDERING_INDEX: {
-              RenderingHints hints = node.getRenderingHints();
-              hints = CSSUtilities.convertShapeRendering(e, hints);
-              if (hints != null) {
-                  node.setRenderingHints(hints);
-              }
-              break;
-          } case SVGCSSEngine.COLOR_RENDERING_INDEX: {
-                RenderingHints hints = node.getRenderingHints();
-                hints = CSSUtilities.convertColorRendering(e, hints);
-                if (hints != null) {
-                    node.setRenderingHints(hints);
-                }
-                break;
-            } default: {
-                  super.handleCSSPropertyChanged(property);
-              }
+        }
+        case SVGCSSEngine.SHAPE_RENDERING_INDEX: {
+            RenderingHints hints = node.getRenderingHints();
+            hints = CSSUtilities.convertShapeRendering(e, hints);
+            if (hints != null) {
+                node.setRenderingHints(hints);
+            }
+            break;
+          }
+        case SVGCSSEngine.COLOR_RENDERING_INDEX: {
+            RenderingHints hints = node.getRenderingHints();
+            hints = CSSUtilities.convertColorRendering(e, hints);
+            if (hints != null) {
+                node.setRenderingHints(hints);
+            }
+            break;
+        } 
+        default:
+            super.handleCSSPropertyChanged(property);
         }
     }
 }
