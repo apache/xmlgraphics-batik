@@ -489,7 +489,7 @@ public class JSVGComponent extends JGVTComponent {
                 return;
             }
 
-            setGraphicsNode(e.getGVTRoot(), false);
+            JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
             Dimension2D dim = bridgeContext.getDocumentSize();
             setPreferredSize(new Dimension((int)dim.getWidth(), (int)dim.getHeight()));
             invalidate();
@@ -510,7 +510,7 @@ public class JSVGComponent extends JGVTComponent {
                 startDocumentLoader();
                 return;
             }
-            image = null;
+            JSVGComponent.this.image = null;
             repaint();
         }
 
@@ -533,10 +533,10 @@ public class JSVGComponent extends JGVTComponent {
             GraphicsNode gn = e.getGVTRoot();
             Dimension2D dim = bridgeContext.getDocumentSize();
             if (gn == null || dim == null) {
-                image = null;
+                JSVGComponent.this.image = null;
                 repaint();
             } else {
-                setGraphicsNode(gn, false);
+                JSVGComponent.this.setGraphicsNode(gn, false);
                 setPreferredSize(new Dimension((int)dim.getWidth(),
                                                (int)dim.getHeight()));
                 invalidate();
@@ -561,7 +561,7 @@ public class JSVGComponent extends JGVTComponent {
                 return;
             }
 
-            if (eventsEnabled) {
+            if (JSVGComponent.this.eventsEnabled) {
                 Event evt = svgDocument.createEvent("SVGEvents");
                 evt.initEvent("SVGLoad", false, false);
                 ((EventTarget)(svgDocument.getRootElement())).dispatchEvent(evt);
@@ -664,7 +664,7 @@ public class JSVGComponent extends JGVTComponent {
          * <code>UserAgent</code> to dispatch events on GVT.
          */
         public EventDispatcher getEventDispatcher() {
-            return eventDispatcher;
+            return JSVGComponent.this.eventDispatcher;
         }
 
         /**
@@ -783,7 +783,7 @@ public class JSVGComponent extends JGVTComponent {
          */
         protected void fireLinkActivatedEvent(SVGAElement elt, String href) {
             Object[] ll = linkActivationListeners.toArray();
-            
+
             if (ll.length > 0) {
                 LinkActivationEvent ev;
                 ev = new LinkActivationEvent(JSVGComponent.this, elt, href);
@@ -854,7 +854,7 @@ public class JSVGComponent extends JGVTComponent {
 
         /**
          * Lets the bridge tell the user agent that the following
-         * extension is supported by the bridge.  
+         * extension is supported by the bridge.
          */
         public void registerExtension(BridgeExtension ext) {
             Iterator i = ext.getImplementedExtensions();

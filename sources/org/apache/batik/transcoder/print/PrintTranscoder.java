@@ -763,7 +763,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
     /**
      * A user agent implementation for <tt>PrintTranscoder</tt>.
      */
-    class PrintTranscoderUserAgent implements UserAgent {
+    protected class PrintTranscoderUserAgent implements UserAgent {
 
         /**
          * Returns the default size of this user agent (400x400).
@@ -906,7 +906,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
 
         /**
          * Lets the bridge tell the user agent that the following
-         * ex   tension is supported by the bridge.  
+         * ex   tension is supported by the bridge.
          */
         public void registerExtension(BridgeExtension ext) {
             Iterator i = ext.getImplementedExtensions();
