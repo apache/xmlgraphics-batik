@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.util;
+package org.apache.batik.dom.svg;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
@@ -19,6 +19,7 @@ import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.LengthHandler;
 import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
+import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.resources.Messages;
 
 import org.w3c.dom.Element;
