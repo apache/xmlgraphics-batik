@@ -196,7 +196,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             len++;
         }
 
-        //if the first gradient stop is not equal to one, fix this condition
+        //if the last gradient stop is not equal to one, fix this condition
         if (fractions[fractions.length - 1] != 1f) {
             fixLast = true;
             len++;

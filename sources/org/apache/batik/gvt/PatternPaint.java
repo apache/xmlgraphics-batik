@@ -19,6 +19,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 
 import java.awt.image.ColorModel;
+import java.awt.image.Raster;
 
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
@@ -67,6 +68,8 @@ public class PatternPaint implements Paint {
      * the pattern tile
      */
     private boolean overflow;
+
+    private PatternPaintContext lastContext;
 
     /**
      * Constructs a new <tt>PatternPaint</tt>.
@@ -148,29 +151,39 @@ public class PatternPaint implements Paint {
                                       Rectangle2D     userBounds,
                                       AffineTransform xform,
                                       RenderingHints  hints) {
-
-        // System.out.println("userBounds : " + userBounds);
-        // System.out.println("patternTransform : " + patternTransform);
-
         // Concatenate the patternTransform to xform
         if (patternTransform != null) {
             xform = new AffineTransform(xform);
             xform.concatenate(patternTransform);
-	    
-            try {
-                AffineTransform patternTransformInv = 
-		    patternTransform.createInverse();
-                userBounds = patternTransformInv.
-                    createTransformedShape(userBounds).getBounds2D();
-            }
-            catch(NoninvertibleTransformException e){  }
         }
 
-        return new PatternPaintContext(cm, xform,
+        if ((lastContext!= null) &&
+            lastContext.getColorModel().equals(cm)) {
+            
+            double p[] = new double[6];
+            double q[] = new double[6];
+            xform.getMatrix(p);
+            lastContext.getUsr2Dev().getMatrix(q);
+            if ((p[0] == q[0]) && (p[1] == q[1]) && 
+                (p[2] == q[2]) && (p[3] == q[3])) {
+                if ((p[4] == q[4]) && (p[5] == q[5]))
+                    return lastContext;
+                else 
+                    return new PatternPaintContextWrapper
+                        (lastContext, 
+                         (int)(q[4]-p[4]+0.5),
+                         (int)(q[5]-p[5]+0.5));
+            }
+        }
+        // System.out.println("CreateContext Called: " + this);
+        // System.out.println("CM : " + cm);
+        // System.out.println("xForm : " + xform);
+        
+        lastContext = new PatternPaintContext(cm, xform,
                                        hints, tile,
                                        patternRegion,
-                                       userBounds,
                                        overflow);
+        return lastContext;
     }
 
     /**
@@ -178,5 +191,25 @@ public class PatternPaint implements Paint {
      */
     public int getTransparency(){
         return TRANSLUCENT;
+    }
+
+    static class PatternPaintContextWrapper implements PaintContext {
+        PatternPaintContext ppc;
+        int xShift, yShift;
+        PatternPaintContextWrapper(PatternPaintContext ppc,
+                            int xShift, int yShift) {
+            this.ppc = ppc;
+            this.xShift = xShift;
+            this.yShift = yShift;
+        }
+
+        public void dispose(){ }
+
+        public ColorModel getColorModel(){
+            return ppc.getColorModel();
+        }
+        public Raster getRaster(int x, int y, int width, int height){
+            return ppc.getRaster(x+xShift, y+yShift, width, height);
+        }
     }
 }

@@ -58,6 +58,9 @@ public class PatternPaintContext implements PaintContext {
      */
     private RenderedImage tiled;
 
+    protected AffineTransform usr2dev;
+
+    public AffineTransform getUsr2Dev() { return usr2dev; }
 
     private static Rectangle EVERYTHING = 
         new Rectangle(Integer.MIN_VALUE/4, Integer.MIN_VALUE/4, 
@@ -67,7 +70,7 @@ public class PatternPaintContext implements PaintContext {
      * @param destCM     ColorModel that receives the paint data
      * @param usr2dev    user space to device space transform
      * @param hints      RenderingHints
-     * @param userBounds of the region tiled by this paint. In user space.
+     * @param patternRegion region tiled by this paint. In user space.
      * @param overflow   controls whether the pattern region clips the
      *                   pattern tile
      */
@@ -76,7 +79,6 @@ public class PatternPaintContext implements PaintContext {
                                RenderingHints  hints,
                                Filter          tile,
                                Rectangle2D     patternRegion,
-                               Rectangle2D     userBounds,
                                boolean         overflow) {
 
         if(usr2dev == null){
@@ -91,7 +93,8 @@ public class PatternPaintContext implements PaintContext {
             throw new IllegalArgumentException();
         }
 
-        // System.out.println("UsrB: " + userBounds);
+        this.usr2dev    = usr2dev;
+
         // System.out.println("PatB: " + patternRegion);
         // System.out.println("Tile: " + tile);
 
