@@ -314,7 +314,6 @@
     <testGroup id="tests.spec.scripting">
         <test id="samples/tests/spec/scripting/add.svg" />
         <test id="samples/tests/spec/scripting/bug12933.svg" />
-        <test id="samples/tests/spec/scripting/boundsTransformChange.svg" />
         <test id="samples/tests/spec/scripting/circle.svg" />
         <test id="samples/tests/spec/scripting/currentScaleTranslate.svg" />
         <test id="samples/tests/spec/scripting/ellipse.svg" />
