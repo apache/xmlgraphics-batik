@@ -385,7 +385,7 @@ public class Main implements Application {
         if (viewerFrames.size() == 0) {
             System.exit(0);
         }
-        f.setVisible(false);
+        f.dispose();
     }
 
     /**
