@@ -231,7 +231,7 @@ Rf8DTS4R1NiSnhkAAAAASUVORK5CYIIR
         <!-- ================================================ -->
         <!-- Colors defined with icc profiles                 -->
         <!-- ================================================ -->
-        <g id="testColorsICCAuto" transform="translate(163, 10)">
+        <g transform="translate(163, 10)">
             <rect x="0" y="0" width="25" height="25" fill="rgb(179, 70, 25) icc-color(changeColorAuto, 0.702, 0.2745, 0.098)" />
             <rect x="25" y="0" width="25" height="25" fill="rgb(138, 237, 76) icc-color(changeColorAuto, 0.5412, 0.9294, 0.298)" />
             <rect x="50" y="0" width="25" height="25" fill="rgb(88, 35, 244) icc-color(changeColorAuto, 0.3451, 0.1373, 0.9569)" />
@@ -244,7 +244,7 @@ Rf8DTS4R1NiSnhkAAAAASUVORK5CYIIR
             <rect x="100" y="25" width="25" height="25" fill="rgb(255, 255, 255) icc-color(changeColorAuto, 1.0, 1.0, 1.0)" />
         </g>
 
-        <g id="testColorsICCPerceptual" transform="translate(163, 80)">
+        <g transform="translate(163, 80)">
             <rect x="0" y="0" width="25" height="25" fill="rgb(179, 70, 25) icc-color(changeColorPerceptual, 0.702, 0.2745, 0.098)" />
             <rect x="25" y="0" width="25" height="25" fill="rgb(138, 237, 76) icc-color(changeColorPerceptual, 0.5412, 0.9294, 0.298)" />
             <rect x="50" y="0" width="25" height="25" fill="rgb(88, 35, 244) icc-color(changeColorPerceptual, 0.3451, 0.1373, 0.9569)" />
@@ -258,7 +258,7 @@ Rf8DTS4R1NiSnhkAAAAASUVORK5CYIIR
         </g>
 
 
-        <g id="testColorsICCSaturation" transform="translate(163, 150)">
+        <g transform="translate(163, 150)">
             <rect x="0" y="0" width="25" height="25" fill="rgb(179, 70, 25) icc-color(changeColorSaturation, 0.702, 0.2745, 0.098)" />
             <rect x="25" y="0" width="25" height="25" fill="rgb(138, 237, 76) icc-color(changeColorSaturation, 0.5412, 0.9294, 0.298)" />
             <rect x="50" y="0" width="25" height="25" fill="rgb(88, 35, 244) icc-color(changeColorSaturation, 0.3451, 0.1373, 0.9569)" />
@@ -271,7 +271,7 @@ Rf8DTS4R1NiSnhkAAAAASUVORK5CYIIR
             <rect x="100" y="25" width="25" height="25" fill="rgb(255, 255, 255) icc-color(changeColorSaturation, 1.0, 1.0, 1.0)" />
         </g>
 
-        <g id="testColorsICCRelativeColorimetric" transform="translate(163, 220)">
+        <g transform="translate(163, 220)">
             <rect x="0" y="0" width="25" height="25" fill="rgb(179, 70, 25) icc-color(changeColorRelativeColorimetric, 0.702, 0.2745, 0.098)" />
             <rect x="25" y="0" width="25" height="25" fill="rgb(138, 237, 76) icc-color(changeColorRelativeColorimetric, 0.5412, 0.9294, 0.298)" />
             <rect x="50" y="0" width="25" height="25" fill="rgb(88, 35, 244) icc-color(changeColorRelativeColorimetric, 0.3451, 0.1373, 0.9569)" />
@@ -284,7 +284,7 @@ Rf8DTS4R1NiSnhkAAAAASUVORK5CYIIR
             <rect x="100" y="25" width="25" height="25" fill="rgb(255, 255, 255) icc-color(changeColorRelativeColorimetric, 1.0, 1.0, 1.0)" />
         </g>
 
-        <g id="testColorsICCAbsoluteColorimetric" transform="translate(163, 290)">
+        <g transform="translate(163, 290)">
             <rect x="0" y="0" width="25" height="25" fill="rgb(179, 70, 25) icc-color(changeColorAbsoluteColorimetric, 0.702, 0.2745, 0.098)" />
             <rect x="25" y="0" width="25" height="25" fill="rgb(138, 237, 76) icc-color(changeColorAbsoluteColorimetric, 0.5412, 0.9294, 0.298)" />
             <rect x="50" y="0" width="25" height="25" fill="rgb(88, 35, 244) icc-color(changeColorAbsoluteColorimetric, 0.3451, 0.1373, 0.9569)" />
