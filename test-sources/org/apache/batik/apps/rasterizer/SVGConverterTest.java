@@ -171,6 +171,7 @@ public class SVGConverterTest extends DefaultTestSuite {
             
         addTest(t);
         t.setId("SourcesConfigTest.SimpleList");
+        
 
         //
         // Check destination
@@ -192,6 +193,20 @@ public class SVGConverterTest extends DefaultTestSuite {
             };
         addTest(t);
         t.setId("DestConfigTest.DstDir");
+
+        //
+        // Check that complete process goes without error
+        //
+        t = new OperationTest(){
+                protected void configure(SVGConverter c){
+                    c.setSources(new String[]{"samples/anne.svg"});
+                    c.setDst(new File("anne.png"));
+                    File file = new File("anne.png");
+                    file.deleteOnExit();
+                }
+            };
+        addTest(t);
+        t.setId("OperationTest.Bug4888");
 
         ///////////////////////////////////////////////////////////////////////
         // Add configuration error test. These tests check that the expected
@@ -671,6 +686,22 @@ abstract class AbstractConfigTest extends AbstractTest implements SVGConverterCo
     public void onSourceTranscodingSuccess(SVGConverterSource source,
                                            File dest){
     }    
+}
+
+/**
+ * Tests that a convertion task goes without exception.
+ */
+class OperationTest extends AbstractTest{
+    public TestReport runImpl() throws Exception {
+        SVGConverter c = new SVGConverter();
+        configure(c);
+        c.execute();
+        return reportSuccess();
+    }
+
+    protected void configure(SVGConverter c){
+        // Should be overridden by subclasses.
+    }
 }
 
 /**

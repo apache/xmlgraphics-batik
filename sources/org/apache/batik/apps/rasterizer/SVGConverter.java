@@ -864,15 +864,18 @@ public class SVGConverter {
 
 
         // Create object from output directory.
-        outputDir = new File(output.getParent());
-        if (outputDir.exists() == false) {
-            // Output directory doesn't exist, so create it.
-            success = outputDir.mkdirs();
-        } else {
-            if (outputDir.isDirectory() == false) {
-                // File, which have a same name as the output directory, exists.
-                // Create output directory.
+        String parentDir = output.getParent();
+        if (parentDir != null){
+            outputDir = new File(output.getParent());
+            if (outputDir.exists() == false) {
+                // Output directory doesn't exist, so create it.
                 success = outputDir.mkdirs();
+            } else {
+                if (outputDir.isDirectory() == false) {
+                    // File, which have a same name as the output directory, exists.
+                    // Create output directory.
+                    success = outputDir.mkdirs();
+                }
             }
         }
 
