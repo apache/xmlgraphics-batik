@@ -228,6 +228,9 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
                 geometryBounds.add(nodeBounds);
             }
         }
+        else{
+            b = geometryBounds;
+        }
 
         return b;
     }

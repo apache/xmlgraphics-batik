@@ -103,6 +103,7 @@ public class FilterRegionTransformerBoundingBox implements FilterRegionTransform
         desc.ty = (float)bounds.getY();
         desc.sx = (float)bounds.getWidth();
         desc.sy = (float)bounds.getHeight();
+
         return desc;
     }
 }

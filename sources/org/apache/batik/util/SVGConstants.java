@@ -153,6 +153,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_PRESERVE_ASPECT_RATIO = "preserveAspectRatio";
     String ATTR_PRIMITIVE_UNITS = "primitiveUnits";
     String ATTR_R = "r";
+    String ATTR_RADIUS = "radius";
     String ATTR_RESULT = "result";
     String ATTR_RESULT_SCALE = "resultScale";
     String ATTR_RX = "rx";
@@ -210,6 +211,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_COMPOSITE = "composite";
     String VALUE_CRISP_EDGES = "crispEdges";
     String VALUE_DIGIT_ONE = "1";
+    String VALUE_DILATE = "dilate";
     String VALUE_EDGE_DUPLICATE = "duplicate";
     String VALUE_EDGE_NONE = "none";
     String VALUE_END = "end";
