@@ -47,13 +47,14 @@ public class SVGBrokenLinkProvider implements BrokenLinkProvider {
 
         Class cls = SVGBrokenLinkProvider.class;
         URL blURL = cls.getResource("BrokenLink.svg");
+        if (blURL == null) return;
 
         GVTBuilder builder = new GVTBuilder();
         try {
             Document svgDoc = loader.loadDocument(blURL.toString());
             gvtRoot = builder.build(ctx, svgDoc);
         } catch (Throwable t) {
-            t.printStackTrace();
+            // t.printStackTrace();
         }
     }
 

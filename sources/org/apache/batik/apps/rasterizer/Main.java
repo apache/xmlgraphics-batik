@@ -22,8 +22,9 @@ import java.net.MalformedURLException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
-import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.batik.transcoder.image.TIFFTranscoder;
 import org.xml.sax.InputSource;
 
 /**
@@ -139,6 +140,8 @@ public class Main {
             t = new JPEGTranscoder();
         } else if (mimeType.equals("image/png")) {
             t = new PNGTranscoder();
+        } else if (mimeType.equals("image/tiff")) {
+            t = new TIFFTranscoder();
         }
         if (t == null) {
             error("No transcoder found for mime type : "+mimeType);

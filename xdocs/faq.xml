@@ -499,4 +499,40 @@
             any of the Batik's applications.</p></answer>
 </faq>
 
+<faq>
+    <question>
+    I can use the Batik extension tags with the source 
+    distribution but not with the binary distribution.
+    What am I missing?
+    </question>
+    <answer><p>
+    When running from the source distribution you automatically get
+    the service provider entries for the Batik extension tags
+    (regularPolygon, and star for example).  We choose not to include
+    these by default in the binary distribution for the Batik
+    applications.
+    </p>
+    <p> 
+    You can make the Batik extension tags available by putting the
+    'lib/batik-extensions.jar' file on the java class path.
+    </p></answer>
+</faq>
+
+<faq>
+    <question>
+    Why do I get red circles when I view the samples/extensions files?
+    </question>
+    <answer><p>
+    You are using the binary distribution.  This distribution does not
+    include support for our example extensions (they are just
+    examples so other people can do much more interesting things).
+    </p>
+    
+    <p>
+    If you really want to view these examples (they aren't that
+    interesting) you should arrange for lib/batik-extensions.jar to be
+    on your class path.
+    </p></answer>
+</faq>
+
 </faqs>

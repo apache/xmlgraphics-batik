@@ -269,6 +269,7 @@ To display the available targets type:
                                script-jar,
                                transcoder-jar,
                                bridge-jar,
+                               extension-jar,
                                xml-jar,
                                root-jar,
                                svg-pp-jar,
@@ -531,8 +532,24 @@ To display the available targets type:
         <include name="${package-prefix}/swing/**/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
+        <include name="${package-prefix}/bridge/BrokenLink.svg"/>
         <include name="${package-prefix}/bridge/**/resources/*"/>
         <include name="${package-prefix}/swing/**/resources/*"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <!-- Extensions (dependencies: all) -->
+  <target name="extension-jar" depends="compile, prepare-build">
+    <jar jarfile="${build}/lib/${project}-extension.jar">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+        <include name="META-INF/services/*"/>
+      </fileset>
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/extension/**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+        <include name="${package-prefix}/extension/**/resources/*"/>
       </fileset>
     </jar>
   </target>

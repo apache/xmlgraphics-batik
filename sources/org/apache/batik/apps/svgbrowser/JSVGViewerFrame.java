@@ -102,6 +102,7 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.batik.transcoder.image.TIFFTranscoder;
 
 import org.apache.batik.transcoder.print.PrintTranscoder;
 
@@ -157,8 +158,9 @@ public class JSVGViewerFrame
     public final static String BACK_ACTION = "BackAction";
     public final static String FORWARD_ACTION = "ForwardAction";
     public final static String PRINT_ACTION = "PrintAction";
-    public final static String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
     public final static String EXPORT_AS_JPG_ACTION = "ExportAsJPGAction";
+    public final static String EXPORT_AS_PNG_ACTION = "ExportAsPNGAction";
+    public final static String EXPORT_AS_TIFF_ACTION = "ExportAsTIFFAction";
     public final static String PREFERENCES_ACTION = "PreferencesAction";
     public final static String CLOSE_ACTION = "CloseAction";
     public final static String VIEW_SOURCE_ACTION = "ViewSourceAction";
@@ -343,8 +345,9 @@ public class JSVGViewerFrame
         listeners.put(BACK_ACTION, backAction);
         listeners.put(FORWARD_ACTION, forwardAction);
         listeners.put(PRINT_ACTION, new PrintAction());
-        listeners.put(EXPORT_AS_PNG_ACTION, new ExportAsPNGAction());
         listeners.put(EXPORT_AS_JPG_ACTION, new ExportAsJPGAction());
+        listeners.put(EXPORT_AS_PNG_ACTION, new ExportAsPNGAction());
+        listeners.put(EXPORT_AS_TIFF_ACTION, new ExportAsTIFFAction());
         listeners.put(PREFERENCES_ACTION, new PreferencesAction());
         listeners.put(CLOSE_ACTION, new CloseAction());
         listeners.put(EXIT_ACTION, application.createExitAction(this));
@@ -838,6 +841,59 @@ public class JSVGViewerFrame
     }
 
     /**
+     * To save the current document as JPG.
+     */
+    public class ExportAsJPGAction extends AbstractAction {
+        public ExportAsJPGAction() {}
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser =
+                new JFileChooser(makeAbsolute(currentExportPath));
+            fileChooser.setDialogTitle(resources.getString("ExportAsJPG.title"));
+            fileChooser.setFileHidingEnabled(false);
+            fileChooser.setFileSelectionMode
+                (JFileChooser.FILES_ONLY);
+
+            int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                final File f = fileChooser.getSelectedFile();
+                BufferedImage buffer = svgCanvas.getOffScreen();
+                if (buffer != null) {
+                    statusBar.setMessage
+                        (resources.getString("Message.exportAsJPG"));
+
+                    // create a BufferedImage of the appropriate type
+                    int w = buffer.getWidth();
+                    int h = buffer.getHeight();
+                    final ImageTranscoder trans = new JPEGTranscoder();
+                    trans.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                                             application.getXMLParserClassName());
+                    final BufferedImage img = trans.createImage(w, h);
+
+                    // paint the buffer to the image
+                    Graphics2D g2d = img.createGraphics();
+                    g2d.setColor(Color.white);
+                    g2d.fillRect(0, 0, w, h);
+                    g2d.drawImage(buffer, null, 0, 0);
+                    new Thread() {
+                        public void run() {
+                            try {
+                                currentExportPath = f;
+                                OutputStream ostream =
+                                    new BufferedOutputStream(new FileOutputStream(f));
+                                trans.writeImage(img, new TranscoderOutput(ostream));
+                                ostream.flush();
+                                ostream.close();
+                            } catch (Exception ex) { }
+                            statusBar.setMessage
+                                (resources.getString("Message.done"));
+                        }
+                    }.start();
+                }
+            }
+        }
+    }
+
+    /**
      * To save the current document as PNG.
      */
     public class ExportAsPNGAction extends AbstractAction {
@@ -889,14 +945,14 @@ public class JSVGViewerFrame
     }
 
     /**
-     * To save the current document as JPG.
+     * To save the current document as TIFF.
      */
-    public class ExportAsJPGAction extends AbstractAction {
-        public ExportAsJPGAction() {}
+    public class ExportAsTIFFAction extends AbstractAction {
+        public ExportAsTIFFAction() {}
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser =
                 new JFileChooser(makeAbsolute(currentExportPath));
-            fileChooser.setDialogTitle(resources.getString("ExportAsJPG.title"));
+            fileChooser.setDialogTitle(resources.getString("ExportAsTIFF.title"));
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
                 (JFileChooser.FILES_ONLY);
@@ -907,31 +963,30 @@ public class JSVGViewerFrame
                 BufferedImage buffer = svgCanvas.getOffScreen();
                 if (buffer != null) {
                     statusBar.setMessage
-                        (resources.getString("Message.exportAsJPG"));
+                        (resources.getString("Message.exportAsTIFF"));
 
                     // create a BufferedImage of the appropriate type
                     int w = buffer.getWidth();
                     int h = buffer.getHeight();
-                    final ImageTranscoder trans = new JPEGTranscoder();
-                    trans.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                                             application.getXMLParserClassName());
+                    final ImageTranscoder trans = new TIFFTranscoder();
+                    trans.addTranscodingHint
+                        (TIFFTranscoder.KEY_XML_PARSER_CLASSNAME,
+                         application.getXMLParserClassName());
                     final BufferedImage img = trans.createImage(w, h);
 
                     // paint the buffer to the image
                     Graphics2D g2d = img.createGraphics();
-                    g2d.setColor(Color.white);
-                    g2d.fillRect(0, 0, w, h);
                     g2d.drawImage(buffer, null, 0, 0);
                     new Thread() {
                         public void run() {
                             try {
                                 currentExportPath = f;
-                                OutputStream ostream =
-                                    new BufferedOutputStream(new FileOutputStream(f));
-                                trans.writeImage(img, new TranscoderOutput(ostream));
+                                OutputStream ostream = new BufferedOutputStream
+                                    (new FileOutputStream(f));
+                                trans.writeImage
+                                    (img, new TranscoderOutput(ostream));
                                 ostream.flush();
-                                ostream.close();
-                            } catch (Exception ex) { }
+                            } catch (Exception ex) {}
                             statusBar.setMessage
                                 (resources.getString("Message.done"));
                         }
