@@ -1,20 +1,29 @@
 <?xml version="1.0" standalone="no"?>
-<!-- ========================================================================= -->
-<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
-<!--                                                                           -->
-<!-- This software is published under the terms of the Apache Software License -->
-<!-- version 1.1, a copy of which has been included with this distribution in  -->
-<!-- the LICENSE file.                                                         -->
-<!-- ========================================================================= -->
+<!--
 
-<!-- ========================================================================= -->
-<!-- This simple XSL stylesheet is used to automatically generate the splash   -->
-<!-- screen for the documentation and the Squiggle browser. See the 'splash'   -->
-<!-- target in build.xml.                                                      -->
-<!--                                                                           -->
-<!-- @author vincent.hardy@eng.sun.com                                         -->
-<!-- @version $Id$      -->
-<!-- ========================================================================= -->
+   Copyright 2002,2004-2005  The Apache Software Foundation 
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<!-- ====================================================================== -->
+<!-- This simple XSL stylesheet is used to automatically generate the       -->
+<!-- splash screen for the documentation and the Squiggle browser. See the  -->
+<!-- 'splash' target in build.xml.                                          -->
+<!--                                                                        -->
+<!-- @author vincent.hardy@eng.sun.com                                      -->
+<!-- @version $Id$       -->
+<!-- ====================================================================== -->
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  
                               xmlns:xlink="http://www.w3.org/1999/xlink"
