@@ -1,3 +1,24 @@
+/*****************************************************************************
+ * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
+ *****************************************************************************/
+
+/**
+ * This ECMA Script file represents an example of untrusted code.
+ *
+ * It creates a number of Java Permissions and checks that access is denied.
+ * the tests fail if the Permissions are granted.
+ *
+ * The only thing that the class should be allowed to make is a connection
+ * back to the server that served the document containing this script.
+ *
+ * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
+ * @version $Id$
+ */
+
 importPackage(Packages.java.awt);
 importPackage(Packages.java.io);
 importPackage(Packages.java.lang.reflect);
@@ -151,10 +172,11 @@ init();
 
 function runEcmascriptSecurityTest(){
     var sm = System.getSecurityManager();
-    
+    var successCnt = 0;
     if (sm == null){
         for (var i=0; i<nGranted; i++) {
             statusRects[i].setAttributeNS(null, "class", "passedTest");
+            successCnt++;
         }
         for (var i=nGranted; i<permissions.length; i++) {
             statusRects[i].setAttributeNS(null, "class", "failedTest");
@@ -167,6 +189,7 @@ function runEcmascriptSecurityTest(){
             try {
                 sm.checkPermission(p);
                 statusRects[i].setAttributeNS(null, "class", "passedTest");
+                successCnt++;
             } catch (se){
                 statusRects[i].setAttributeNS(null, "class", "failedTest");
                 se.printStackTrace();
@@ -180,7 +203,21 @@ function runEcmascriptSecurityTest(){
                 statusRects[i].setAttributeNS(null, "class", "failedTest");
             } catch (se){
                 statusRects[i].setAttributeNS(null, "class", "passedTest");
+                successCnt++;
             }
         }
     }
+
+    // Update the global status
+    var globalStatus = document.getElementById("globalStatus");
+    if ( successCnt == (statusRects.length) ) {
+        globalStatus.setAttributeNS(null, "class", "passedTest");
+    } else {
+        globalStatus.setAttributeNS(null, "class", "failedTest");
+    }
+
+    var successRatioString = "Test Result: " + successCnt + " / " + statusRects.length;
+    var successRatio = document.getElementById("successRatio");
+    successRatio.replaceChild(document.createTextNode(successRatioString),
+                              successRatio.getFirstChild());
 }

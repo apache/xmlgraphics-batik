@@ -223,10 +223,12 @@ public class UntrustedScriptHandler implements ScriptHandler {
         testButton.addEventListener("click", new EventListener() {
                 public void handleEvent(Event evt){
                     SecurityManager sm = System.getSecurityManager();
-                    
+                    int successCnt = 0;
+
                     if (sm == null){
                         for (int i=0; i<nGranted; i++) {
                             statusRects[i].setAttributeNS(null, "class", "passedTest");
+                            successCnt++;
                         }
                         for (int i=nGranted; i<permissions.length; i++) {
                             statusRects[i].setAttributeNS(null, "class", "failedTest");
@@ -239,19 +241,11 @@ public class UntrustedScriptHandler implements ScriptHandler {
                             try {
                                 sm.checkPermission(p);
                                 statusRects[i].setAttributeNS(null, "class", "passedTest");
+                                successCnt++;
                             } catch (SecurityException se){
                                 statusRects[i].setAttributeNS(null, "class", "failedTest");
                                 System.out.println("*********************************************");
                                 se.printStackTrace();
-
-                                /*Element tooltipDesc = doc.createElementNS(svgNS, "desc");
-                                tooltipDesc.appendChild(doc.createTextNode(se.getMessage()));
-                                Node curDesc = statusRects[i].getFirstChild();
-                                if (curDesc == null){
-                                    statusRects[i].appendChild(tooltipDesc);
-                                } else {
-                                    statusRects[i].replaceChild(tooltipDesc, curDesc);
-                                    }*/
                             }
                         }
 
@@ -263,39 +257,28 @@ public class UntrustedScriptHandler implements ScriptHandler {
                                 statusRects[i].setAttributeNS(null, "class", "failedTest");
                             } catch (SecurityException se){
                                 statusRects[i].setAttributeNS(null, "class", "passedTest");
+                                successCnt++;
                             }
                         }
+
                     }
+
+                    // Update the global status
+                    Element globalStatus = doc.getElementById("globalStatus");
+                    if ( successCnt == (statusRects.length) ) {
+                        globalStatus.setAttributeNS(null, "class", "passedTest");
+                    } else {
+                        globalStatus.setAttributeNS(null, "class", "failedTest");
+                    }
+                    
+                    String successRatioString = "Test Result: " + successCnt + " / " + statusRects.length;
+                    Element successRatio = doc.getElementById("successRatio");
+                    successRatio.replaceChild(doc.createTextNode(successRatioString),
+                                              successRatio.getFirstChild());
+                    
                 }
             }, false);
 
-        //
-        // Register an event handler on elements
-        //
-        /* final EventTarget fileAccessTest = (EventTarget)doc.getElementById("fileAccessTest");
-        fileAccessTest.addEventListener("click", new EventListener() {
-                public void handleEvent(Event evt){
-                    try {
-                        File f = new File("build.xml");
-                        long l = f.length();
- 
-                        FileReader fr = new FileReader(f);
-                        char[] buf = new char[(int)l];
-                        fr.read(buf, 0, (int)l);
-                        String content = new String(buf);
-                        ((Element)fileAccessTest).setAttributeNS(null, "fill", "rgb(255,0,0)");
-                    } catch (Exception e){
-                        ((Element)fileAccessTest).setAttributeNS(null, "fill", "rgb(0,255,0)");
-                    }
-                }
-            }, false);
-
-        fileAccessTest.addEventListener("mouseover", new EventListener() {
-                public void handleEvent(Event evt){
-                    ((Element)fileAccessTest).setAttributeNS(null, "fill", "gray");
-                }
-                }, false);*/
-        
         
     }
 
