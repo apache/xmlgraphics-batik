@@ -20,39 +20,177 @@
 <faq>
     <question>What is Batik?</question>
     <answer>
-        <p>
+        <p>        <img src="images/batikUses.jpg" alt="Batik use cases" />
         Batik is a Java based toolkit for applications which handle
         images in the Scalable Vector Graphics (SVG) format for
         various purposes, such as viewing, generation or manipulation.
         </p>
         <p>
         The project's ambition is to give developers a set of core modules which can be used together 
-        or individually to support specific SVG solutions. Examples of modules are SVG parsers, SVG 
-        generators and SVG DOM implementations. Another ambition of the Batik project is to make 
+        or individually to support specific SVG solutions. Examples of modules are an
+        <link href="glossary.html#SVGParser">SVG parser</link>, an 
+        <link href="glossary.html#SVGGenerator">SVG generator</link>
+        and an <link href="glossary.html#SVGDOM">SVG DOM </link>
+        implementations. Another ambition of the Batik project is to make 
         it highly extensible (for example, Batik allows the developer to handle custom SVG tags).
         Even though the goal of the project is to provide a set 
         of core modules, one of the deliveries is a full fledged SVG Viewer implementation which 
         validates the various modules and their inter-operability. 
+        </p>
+        <p>
+        In a nutshell, Batik provides building blocks that developers can assemble in 
+        various ways in their Java technology applications to generate, 
+        parse, view or convert SVG contents. For example, Batik contains
+        a Swing component that can add SVG viewing capability to all Java
+        technology applications. Batik can also be used to generate SVG on
+        a client or on a server, and Batik can convert SVG content into
+        other formats such as JPEG or PNG. Batik's goal is to make it easy
+        for application developers to handle SVG content for various 
+        purposes, client-side or server-side, as illustrated in the following
+        diagram.
         </p>
     </answer>
 
 </faq>
 
 <faq>
-    <question>Where does the name come from?</question>
+    <question>What is SVG?</question>
     <answer>
         <p>
-        Batik is one of Java's famous and highly developed art traditions.
-        Batik is generally thought of as the most quintessentially Indonesian
-        textile.
-        Motifs of flowers, twinning plants, leaves buds, flowers, birds,
-        butterflies, fish, insects and geometric forms are rich in symbolic
-        association and variety; there are about three thousand recorded batik
-        patterns.
+        SVG (Scalable Vector Graphics) is an open-standard language for describing 
+        two-dimensional (2D) graphics in XML. It is a Candidate Recommendation from the 
+        <link href="http://www.w3.org">W3C</link>. SVG lets you describe rich images
+        with features such as gradients, transparency, filter effects and animation.
         </p>
         <p>
-        We think that Batik evokes gracefully Java, Graphics and High-quality,
-        terms that consitute the core of the toolkit.
+        SVG allows for three types of graphic objects: shapes (e.g., paths consisting 
+        of straight lines and curves), images and text. Graphical objects can be grouped, 
+        styled, transformed and composited (e.g., drawn with transparency). SVG has a 
+        large set of static features that includes nested transformations, clipping 
+        paths, masking and filter effects.
+        </p>
+        <p>
+        In addition, SVG images can be dynamic and interactive. A rich set of event
+        handlers such as onmouseover and onclick can be assigned to any SVG
+        graphical object. These handlers can invoke scripts, which, in response to an
+        event, can dynamically modify the SVG graphic through the SVG Document Object Model
+        (DOM) API, allowing, for example scripts to change the color or location of graphical 
+        elements in reaction to events. </p>
+        <p>SVG graphical elements can also be animated through scripting. Alternatively,
+        animation sequences can be expressed directly in XML because SVG leverages the
+        <link href="http://www.w3.org/AudioVideo/">SMIL</link> specification for multimedia,
+        another <link href="http://www.w3.org">W3C</link> specification. 
+        </p>
+    </answer>
+</faq>
+
+<faq>
+    <question>What can I do with Batik?</question>
+    <answer>
+        <p>
+        Batik contains several modules that can be used independently such as an SVG parser,
+        a object oriented vector tookit (<link href="glossary.html#GVT">GVT</link>) and
+        a set of extensions to the Java 2D API (such as sophisticated fill types and 
+        filter effects).</p>
+        <p>
+        However, Batik comes with three packaged applications: an 
+        <link href="svgviewer.html">SVG viewer</link> (in the 
+        org.apache.batik.apps.svgviewer package) an 
+        <link href="svgrasterizer.html">SVG rasterizer</link> (in the 
+        org.apache.batik.apps.rasterizer package) and an SVG Generator 
+        (in the org.apache.batik.util.awt.svg package) that allows
+        all Java applications to export their graphics to the SVG format. 
+        </p>
+        <p>
+        The SVG viewer can display SVG documents and lets the user zoom, pan 
+        and rotate any SVG document, view the SVG source, link between SVG 
+        documents, view a tree representation of the SVG DOM and more. One
+        important component of the SVG viewer is the JSVGCanvas component that
+        can be plugged in any Java application to provide SVG viewing capability.
+        </p>
+        <p>
+        The SVG rasterizer lets the user convert SVG files to raster formats such
+        as JPEG and PNG. It contains an extensible mechanism so that arbitrary
+        raster formats can be added. For example, the rasterizer lets you create 
+        one SVG file with a specical effect (e.g., shadows, gradients, etc...), 
+        turn it into an PNG image, then modify the SVG source (e.g., modify
+        a piece of text or a color), and generate another PNG image from it. This
+        way, you can easily generate a series of images sharing a common
+        theme or look and feel to post on a web site (note that the rasterizer
+        can also be used on a web server to do this conversion automatically).
+        
+        </p>
+        <p>
+        The SVG generator lets all Java application export their graphics
+        as SVG, with no more requirements than for drawing to the screen or
+        for printing. For example, if you have an application that displays
+        a pie chart in a window, you can use the SVG generator to simply 
+        export that pie chart to the SVG format (with no more work than
+        for printing that pie chart or drawing it to the screen).
+        </p>
+        <p>
+        These three applications show that Batik can be used client side (the viewer
+        can be used on any client machine, and the SVG generator can be used in client
+        desktop applications to export SVG) and server side (the rasterizer can be
+        used to serve SVG images to client machines that do not have SVG support; the
+        SVG generator can be used to dynamically generate SVG content on a server).
+        </p>
+        <p>
+        The SVG viewer and the rasterizer are only examples of the type of 
+        applications Batik allows. Its architecture allows the different modules to
+        be used in different ways and other applications are possible, such as 
+        transcoders (to other vector formats, such as PDF, for example). Furthermore,
+        the Graphic Vector Toolkit could be used to render other graphic formats
+        such as XHTML.
+        </p>
+    </answer>
+</faq>
+
+<faq>
+    <question>How can I see a demo?</question>
+    <answer>
+        <p>
+        You can either <link href="dist">download</link>
+        Batik and run the viewer or follow this <link href="svgapplet.html">link</link>
+        to see an on-line demo of Batik's capabilities.
+        </p>
+        <p>
+        You can also see 
+        <link href="svgviewer.html">screenshots</link> 
+        of the Batik SVG viewer, images created from the 
+        <link href="svgrasterizer.html">rasterizer</link>
+        and an <link href="svggen.html">example</link>
+        of how to use the SVG Graphics2D generator.
+        </p>
+    </answer>
+
+</faq>
+
+<faq>
+    <question>Why do we have such a project at Apache?</question>
+    <answer>
+        <p>
+        Apache's mission is to allow the web to be an open environment and
+        to remain an open environment. Batik is an open source implementation of
+        a key format for today and tomorow's web and fits well in Apache's mission.
+        </p>
+    </answer>
+
+</faq>
+
+<faq>
+    <question>How does Batik relate to other Apache projects?</question>
+    <answer>
+        <p>
+        Batik will likely be used in <link href="http://xml.apache.org/cocoon/index.html">Cocoon</link> 
+        for server side rasterization of SVG images. In addition, the Batik and the
+        <link href="http://xml.apache.org/fop/index.html">FOP</link> teams have started to work
+        together to define how the projects can leverage each other's work for SVG to PDF 
+        conversion.
+        </p>
+        <p>
+        Note that Batik uses <link href="http://xml.apache.org/xalan-j/index.html">Xalan</link> for its 
+        support of XSL transformations (have a look at the xsltest.svg file in the distribution).
         </p>
     </answer>
 
@@ -78,10 +216,10 @@
         In addition, the Batik project is supported by <link href="http://www.ibm.com">IBM</link>.
         </p>
         <p>
-        This is a lot of big companies: is Batik only for big companies? Certainly not!
-        Even though some big companies are involved in Batik, the project is not limited
-        to big corporations and, as all other Apache project, is opened to everyone based
-        on merit.
+        We encourage anyone to participate. As with all ASF project, all efforts are
+        volunteer-based. We are looking for individuals to work with us on
+        fulfilling our goals for Batik in the spirit of collaborative open-source
+        software development.
         </p>
     </answer>
 
@@ -105,7 +243,7 @@
         <p>
         The process for contributing to Batik is the same as for other
         Java projects at Apache. A formal description of that process
-        can be found, for example, on the <link
+        can be found on the <link
         href="http://jakarta.apache.org/guidelines/index.html">Jakarta</link>
         web site.
         </p>
@@ -117,181 +255,6 @@
         checkout the <link
         href="http://xml.apache.org/websrc/index.cgi/xml-batik/">latest
         code</link>.
-        </p>
-    </answer>
-
-</faq>
-
-<faq>
-    <question>What can I do with Batik?</question>
-    <answer>
-        <p>
-        Batik contains several modules that can be used independantly: an SVG parser,
-        a object oriented vector tookit (GVT), a set of extensions to the Java 2D API
-        (such as Paints and filters) and more.
-        However, Batik comes with three applications: an SVG viewer (in the 
-        org.apache.batik.apps.svgviewer package) an SVG rasterizer (in the 
-        org.apache.batik.apps.rasterizer package) and an SVG Generator 
-        (in the org.apache.batik.util.awt.svg package) that allows
-        all Java applications to export their graphics to the SVG format. 
-        </p>
-        <p>
-        The SVG viewer can display SVG documents and lets the user zoom, pan 
-        and rotate any SVG document, view the SVG source, link between SVG 
-        documents, view a tree representation of the SVG DOM and more. One
-        important component of the SVG viewer is the JSVGCanvas component that
-        can be plugged in any Java application to provide SVG viewing capability.
-        </p>
-        <p>
-        The SVG rasterizer lets the user convert SVG files to raster formats such
-        as JPEG and PNG. It contains an extensible mechanism so that arbitrary
-        raster formats can be added.
-        </p>
-        <p>
-        The SVG generator lets all Java application export their graphics
-        as SVG, with no more requirements than for drawing to the screen or
-        for printing.
-        </p>
-        <p>
-        These three applications show that Batik can be used client side (the viewer
-        can be used on any client machine, and the SVG generator can be used in client
-        desktop applications to export SVG) and server side (the rasterizer can be
-        used to serve SVG images to client machines that do not have SVG support; the
-        SVG generator can be used to dynamically generate SVG content on a server).
-        </p>
-        <p>
-        The SVG viewer and the rasterizer are only examples of the type of 
-        applications Batik allows. Its architecture allows the different modules to
-        be used in different ways and other applications are possible, such as 
-        transcoders (to other vector formats, such as PDF, for example). Furthermore,
-        the Graphic Vector Toolkit could be used to render other graphic format
-        such as XHTML.
-        </p>
-    </answer>
-</faq>
-
-<faq>
-
-    <question>Where can I find the SVG specification?</question>
-    <answer>
-        <p>
-        The SVG specification is available from the 
-        <link href="http://www.w3.org/TR/SVG/">W3C Web site</link> 
-        </p>
-    </answer>
-
-</faq>
-
-<faq>
-    <question>How can I create and author SVG content?</question>
-    <answer>
-        <p>
-        Well, you can always use vi or xemacs, but there are many graphic
-        authoring packages that can export SVG documents.
-        You can get a list of tools that can export SVG from the 
-        <link href="http://www.w3.org/Graphics/SVG/SVG-Implementations#edit">implementation</link>
-        section of the SVG Home page on the W3C web site. You can also 
-        imagine building a tool on top of Batik: feel free to contribute!
-        </p>
-        <p>
-        Authoring is one way of creating SVG content, and graphic authoring
-        packages are useful for that purpose. However, there are many types
-        of graphics which can be generated, such as stock quotes, statistical
-        data, etc... For that type of graphics, there are many ways to generate
-        SVG content. For example, if your data (say stock information) is contained
-        in an XML document, you could use XSLT to transform your XML data into
-        SVG. If your data comes from a data base and you retrieve that data
-        in a servlet on a Web server (e.g., using JDBC), you could use the 
-        Java binding for the DOM API to generate an SVG document from the 
-        data base data. You could also use Batik's SVG generator and use the
-        Java 2D API to generate that graphic.
-        </p>
-        <p>
-        The following URLs will be useful to learn more about each of 
-        these solutions:
-        </p>
-        <ul>
-            <li><link href="http://xml.apache.org/xalan-j/index.html">Xalan for XSLT</link></li>
-            <li><link href="http://xml.apache.org/xerces-j/index.html">Xerces</link> and
-                <link href="http://java.sun.com/xml/download.html">Crimson</link> for the DOM API</li>
-            <li><link href="svggen.html">SVG Generator</link></li>
-        </ul>
-    </answer>
-</faq>
-
-<faq>
-
-    <question>What are the benefits of SVG being an XML grammar?</question>
-    <answer>
-        <p>
-        Being an XML grammar gives SVG can leverage work done around XML, 
-        and SVG actually leverages other grammars such as XLink and SMIL
-        for the animation.
-        </p>
-        <p>
-        Beyond the use and mix with other XML syntaxes, being an XML grammer
-        lets SVG benefit from the pletora of XML tools that make is so easy
-        to manipulate, generate, search and edit SVG files.
-        </p>
-    </answer>
-
-</faq>
-
-<faq>
-    <question>How can I see a demo?</question>
-    <answer>
-        <p>
-        You can either <link href="dist">download</link>
-        Batik and run the viewer or follow this <link href="http://xml.apache.org/xml-batik/demo/pluggin">link</link>
-        to see an on-line demo of Batik's capabilities.
-        </p>
-        <p>
-        You can also see 
-        <link href="demo/svgviewerScreenShot">screenshots</link> 
-        of the Batik SVG viewer, images created from the 
-        <link href="demo/rasterizerImages">rasterizer</link>
-        and an <link href="demo/svggenExample">example</link>
-        of how to use the SVG Graphics2D generator.
-        </p>
-    </answer>
-
-</faq>
-
-<faq>
-    <question>What other SVG products are out there?</question>
-    <answer>
-        <p>
-        There are many companies supporting SVG and you will find a list of 
-        available implementations on the <link href="http://www.w3.org/Graphics/SVG/SVG-Implementations">
-        W3C's SVG implementation page</link>
-        </p>
-    </answer>
-
-</faq>
-
-<faq>
-    <question>Why do we have such a project at Apache?</question>
-    <answer>
-        <p>
-        Apache's mission is to allow the web to be an open environment and
-        to remain an open environment. Batik is an open source implementation of
-        a key format for today and tomorow's web and fits well in Apache's mission.
-        </p>
-    </answer>
-
-</faq>
-
-<faq>
-    <question>How does Batik relate to other Apache projects?</question>
-    <answer>
-        <p>
-        Batik will be merged with <link href="">Cocoon</link> for server side rasterization of 
-        SVG images and will likely be used in <link href="">FOP</link> for converting
-        SVG images to PDF.
-        </p>
-        <p>
-        Note that Batik uses Xalan for its support of XSL transformations (have a look
-        at the xsltest.svg file in the distribution.
         </p>
     </answer>
 
@@ -315,13 +278,118 @@
 </faq>
 
 <faq>
+    <question>How can I create and author SVG content?</question>
+    <answer>
+        <p>
+        Well, you can always use a plain text editor such as vi or 
+        xemacs, but there are many graphic authoring packages that can export SVG documents 
+        and that will let you author SVG content visually.</p>
+        <p>
+        You can get a list of tools that can export SVG from the 
+        <link href="http://www.w3.org/Graphics/SVG/SVG-Implementations#edit">implementation</link>
+        section of the SVG Home page on the W3C web site. You can also 
+        imagine building a tool on top of Batik: feel free to contribute!
+        </p>
+        <p>
+        Authoring is one way of creating SVG content, and graphic authoring
+        packages are useful for that purpose. However, there are many types
+        of graphics which can be generated, such as stock quotes, statistical
+        data, etc... For these types of graphics, there are many ways to generate
+        SVG content. For example, if your data (say stock information) is contained
+        in an XML document, you could use XSLT to transform your XML data into
+        SVG. If your data comes from a data base and you retrieve that data
+        in a servlet on a Web server (e.g., using JDBC), you could use the 
+        Java binding for the DOM API to generate an SVG document from the 
+        data base data. You could also use Batik's SVG generator and use the
+        Java 2D API to generate that graphic.
+        </p>
+        <p>
+        The following URLs will be useful to learn more about each of 
+        these solutions:
+        </p>
+        <ul>
+            <li><link href="http://xml.apache.org/xalan-j/index.html">Xalan for XSLT</link></li>
+            <li><link href="http://xml.apache.org/xerces-j/index.html">Xerces</link> and
+                <link href="http://java.sun.com/xml/download.html">Crimson</link> for the DOM API</li>
+            <li><link href="svggen.html">SVG Generator</link></li>
+        </ul>
+    </answer>
+</faq>
+
+<faq>
+    <question>What other SVG products are out there?</question>
+    <answer>
+        <p>
+        There are many companies supporting SVG and you will find a list of 
+        available implementations on the <link href="http://www.w3.org/Graphics/SVG/SVG-Implementations">
+        W3C's SVG implementation page</link>
+        </p>
+    </answer>
+
+</faq>
+
+<faq>
+
+    <question>Where can I find the SVG specification?</question>
+    <answer>
+        <p>
+        The SVG specification is available from the 
+        <link href="http://www.w3.org/TR/SVG/">W3C Web site</link> 
+        </p>
+    </answer>
+
+</faq>
+
+<faq>
     <question>How much of SVG does Batik implement?</question>
     <answer>
         <p>
         The following <link href="status.html">status page</link>
-        show how much of the SVG specification Batik implements by showing which 
+        shows how much of the SVG specification Batik implements by showing which 
         of the tests in the SVG Basic Effectivity test suite Batik successfully passes.
         </p>
+    </answer>
+
+</faq>
+
+<faq>
+
+    <question>What are the benefits of SVG being an XML grammar?</question>
+    <answer>
+        <p>
+        Being an XML grammar means SVG can leverage work done around XML, 
+        and SVG actually leverages other grammars such as XLink and SMIL
+        for the animation.
+        </p>
+        <p>
+        Beyond the use and mix with other XML syntaxes, being an XML grammer
+        lets SVG benefit from the pletora of XML tools that make is so easy
+        to manipulate, generate, search and edit SVG files.
+        </p>
+    </answer>
+
+</faq>
+
+
+<faq>
+    <question>Where does the name come from?</question>
+    <answer>
+        <p>
+        Batik is one of Java's famous and highly developed art traditions.
+        Batik is generally thought of as the most quintessentially Indonesian
+        textile.
+        Motifs of flowers, twining plants, leaves buds, flowers, birds,
+        butterflies, fish, insects and geometric forms are rich in symbolic
+        association and variety; there are about three thousand recorded batik
+        patterns.
+        </p>
+        <p>
+        We think that Batik evokes gracefully Java, graphics and high-quality,
+        terms that constitute the core of the toolkit.
+        </p>
+        <p>
+        The following <link href="http://www.culturalbridge.com/idgallbk1.htm">
+        page</link> shows examples of what Batik textures look like.</p>
     </answer>
 
 </faq>

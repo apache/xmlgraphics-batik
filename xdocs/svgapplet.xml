@@ -13,25 +13,23 @@
 <!-- author vincent.hardy@eng.sun.com                                          -->
 <!-- version $Id$ -->
 <!-- ========================================================================= -->
+
 <document>
     <header>
-        <title>Batik SVG Toolkit</title>
-        <subtitle>SVG Tools</subtitle>
+        <title>Batik - SVG Applet (Java Pluggin)</title>
+        <subtitle>Viewing SVG in a Browser</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
-            <person name="Thierry Kormann" email="tkormann@apache.org"/>
         </authors>
     </header>
 
     <body>
-        <s1 title="SVG Tools">
-          <ul>
-            <li><link href="svgviewer.html">SVG Viewer</link></li>
-            <li><link href="svgapplet.html">SVG Applet</link></li>
-            <li><link href="svgrasterizer.html">SVG Rasterizer</link></li>
-            <li><link href="svggen.html">SVG Graphics2D Generator</link></li>
-          </ul>
+        <s1 title="Introduction">
+
+        <p>
+        Bla, bla
+        </p>
+
         </s1>
- 
-   </body>
+    </body>
 </document>
