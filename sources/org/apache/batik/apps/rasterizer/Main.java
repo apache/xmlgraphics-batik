@@ -19,10 +19,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.net.URL;
 import java.net.MalformedURLException;
-import org.apache.batik.refimpl.transcoder.ConcreteTranscoderFactory;
 import org.apache.batik.refimpl.transcoder.ImageTranscoder;
+import org.apache.batik.refimpl.transcoder.PngTranscoder;
+import org.apache.batik.refimpl.transcoder.JpegTranscoder;
 import org.apache.batik.transcoder.Transcoder;
-import org.apache.batik.transcoder.TranscoderFactory;
 import org.xml.sax.InputSource;
 
 /**
@@ -92,9 +92,17 @@ public class Main {
                 continue;
             }
         }
-        TranscoderFactory factory =
+        /*TranscoderFactory factory =
             ConcreteTranscoderFactory.getTranscoderFactoryImplementation();
-        Transcoder t = factory.createTranscoder(mimeType);
+            */
+        Transcoder t = null;
+        if (mimeType.equals("image/jpg") ||
+                mimeType.equals("image/jpeg") ||
+                mimeType.equals("image/jpe")) {
+            t = new JpegTranscoder();
+        } else if (mimeType.equals("image/png")) {
+            t = new PngTranscoder();
+        }
         if (t == null) {
             error("No transcoder found for mime type : "+mimeType);
             System.exit(1);

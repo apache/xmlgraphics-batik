@@ -38,11 +38,10 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
 import java.net.MalformedURLException;
 
-import org.apache.batik.refimpl.transcoder.ConcreteTranscoderFactory;
 import org.apache.batik.refimpl.transcoder.ImageTranscoder;
+import org.apache.batik.refimpl.transcoder.PngTranscoder;
 
 import org.apache.batik.transcoder.Transcoder;
-import org.apache.batik.transcoder.TranscoderFactory;
 
 import org.apache.batik.util.awt.image.ImageLoader;
 import org.apache.batik.util.awt.svg.*;
@@ -747,30 +746,13 @@ public class Main {
     // Convenient methods
     //
     static String getImageName(String uri) {
-        String mimeType = getTranscoder().getMimeType();
         if (uri.endsWith(".svg")) {
             uri = uri.substring(0, uri.lastIndexOf(".svg"));
-            int k = mimeType.lastIndexOf('/');
-            if (k > 0) {
-                String ext = mimeType.substring(k+1);
-                if (ext.length() > 0) {
-                    uri += "."+ext;
-                }
-            } else {
-                uri += "."+mimeType;
-            }
+            uri += ".png";
         }
         else if (uri.endsWith(".xml")) {
             uri = uri.substring(0, uri.lastIndexOf(".xml"));
-            int k = mimeType.lastIndexOf('/');
-            if (k > 0) {
-                String ext = mimeType.substring(k+1);
-                if (ext.length() > 0) {
-                    uri += "."+ext;
-                }
-            } else {
-                uri += "."+mimeType;
-            }
+            uri += ".png";
         }
         return uri;
     }
@@ -918,9 +900,7 @@ public class Main {
      * Returns the transcoder to use.
      */
     public static Transcoder getTranscoder() {
-        TranscoderFactory factory =
-            ConcreteTranscoderFactory.getTranscoderFactoryImplementation();
-        return factory.createTranscoder("image/png");
+        return new PngTranscoder();
     }
 
     /**

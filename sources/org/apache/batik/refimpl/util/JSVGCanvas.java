@@ -1053,7 +1053,7 @@ public class JSVGCanvas
         int h = size.height;
 
         transform = SVGUtilities.getPreserveAspectRatioTransform
-            (elt, w, h, parserFactory);
+            (elt, w, h);
 
         initialScale = transform.getScaleX();
         updateBaseTransform();
@@ -1945,7 +1945,7 @@ public class JSVGCanvas
             int h = size.height;
 
             transform = SVGUtilities.getPreserveAspectRatioTransform
-                (elt, w, h, parserFactory);
+                (elt, w, h);
 
             if (transform.isIdentity()) {
                 float dw = elt.getWidth().getBaseVal().getValue();

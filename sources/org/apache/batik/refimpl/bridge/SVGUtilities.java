@@ -285,8 +285,7 @@ public class SVGUtilities implements SVGConstants {
     public static AffineTransform getPreserveAspectRatioTransform
             (SVGElement    elt,
              float         w,
-             float         h,
-             ParserFactory pf) {
+             float         h) {
         AffineTransform result = new AffineTransform();
         String vba = elt.getAttributeNS(null, ATTR_VIEW_BOX);
         float[] vb = parseViewBoxAttribute(vba);
@@ -297,7 +296,7 @@ public class SVGUtilities implements SVGConstants {
             return result;
         }
 
-        PreserveAspectRatioParser p = pf.createPreserveAspectRatioParser();
+        PreserveAspectRatioParser p = new PreserveAspectRatioParser();
         PreserveAspectRatio ph = new PreserveAspectRatio();
         p.setPreserveAspectRatioHandler(ph);
 

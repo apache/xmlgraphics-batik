@@ -59,9 +59,4 @@ public interface Transcoder {
      * warnings and errors, or null if any.
      */
     ErrorHandler getErrorHandler();
-
-    /**
-     * Returns the mime type of the ouput format of this transcoder.
-     */
-    String getMimeType();
 }

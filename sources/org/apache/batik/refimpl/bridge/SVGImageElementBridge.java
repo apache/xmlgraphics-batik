@@ -132,7 +132,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         return imgNode;
     }
 
-    public void buildGraphicsNode(GraphicsNode node, 
+    public void buildGraphicsNode(GraphicsNode node,
                                   BridgeContext ctx,
                                   Element element) {
         CSSStyleDeclaration cssDecl
@@ -219,7 +219,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         float h = (float)bounds.getHeight();
         AffineTransform at;
         at = SVGUtilities.getPreserveAspectRatioTransform
-            (element, w, h, ctx.getParserFactory());
+            (element, w, h);
         at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
         result.setTransform(at);
         try {
@@ -228,7 +228,7 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
             GraphicsNodeRableFactory gnrFactory
                 = ctx.getGraphicsNodeRableFactory();
 
-            Filter filter = gnrFactory.createGraphicsNodeRable(node, 
+            Filter filter = gnrFactory.createGraphicsNodeRable(node,
                                        ctx.getGraphicsNodeRenderContext());
 
             Shape clip = at.createTransformedShape

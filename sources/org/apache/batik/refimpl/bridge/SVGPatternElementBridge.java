@@ -83,7 +83,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                 Element paintedElement,
                                 Element paintElement) {
 
-        GraphicsNodeRenderContext rc = 
+        GraphicsNodeRenderContext rc =
                          ctx.getGraphicsNodeRenderContext();
 
         Viewport oldViewport = ctx.getCurrentViewport();
@@ -193,8 +193,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                 = SVGUtilities.getPreserveAspectRatioTransform
                 ((SVGElement)paintElement,
                  (float)patternRegion.getWidth(),
-                 (float)patternRegion.getHeight(),
-                 ctx.getParserFactory());
+                 (float)patternRegion.getHeight());
 
             float vb[] = SVGUtilities.parseViewBoxAttribute(viewBoxAttr);
             viewBox = new Rectangle2D.Float(vb[0], vb[1], vb[2], vb[3]);
