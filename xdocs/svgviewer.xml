@@ -36,7 +36,7 @@
             <li><link href="#viewingMultiple">Viewing multiple SVG files</link></li>
             <li><link href="#viewingSource">Viewing the source</link></li>
             <li><link href="#viewingTree">Viewing the document tree</link></li>
-            <li><link href="#zooming">Zooming, panning, rotating documents</link></li>
+            <li><link href="#zooming">Zooming, panning and rotating documents. Thumbnail</link></li>
         </ul>
 
         </s1>
@@ -55,14 +55,15 @@
             that you chose to download. The following describes how to start the viewer
             for each distribution</p>
 
-            <s2 title="Startint the viewer for the binary distribution">
+            <s2 title="Starting the viewer for the binary distribution">
 
                 <p>If you downloaded the binary distribution of Batik, you should have
-                gotten a file called <em>batik-1.0.jar</em>. To start the viewer, simply
+                gotten a file called <em>batik-1.0beta.zip</em>, which, when expanded, 
+                created a <em>batik-svgviewer.jar</em> file. To start the viewer, simply
                 type the following on the command line:</p>
-                <p><em>java -jar batik-1.0.jar</em></p>
+                <p><em>java -jar batik-svgviewer.jar</em></p>
                 <p>You can pass options to the command line:</p>
-                <p><em>java -jar batik-1.0.jar [-sf] [-lnf [lookAndFeelName]] [svgURL]</em></p>
+                <p><em>java -jar batik-viewer.jar [-sf] [-lnf [lookAndFeelName]] [svgURL]</em></p>
                 <p>Where:</p>
                     <ul>
                         <li><em>-sf</em> will make the viewer use small fonts in the GUI.</li>
@@ -72,10 +73,10 @@
                     </ul>
                 <p>For example:</p>
                 <ul>
-                    <li><em>java -jar batik-1.0.jar -sf</em> starts the viewer with small fonts.</li>
-                    <li><em>java -jar batik-1.0.jar -lnf com.sun.java.swing.plaf.motif.MotifLookAndFeel</em> starts the viewer with 
+                    <li><em>java -jar batik-svgviewer.jar -sf</em> starts the viewer with small fonts.</li>
+                    <li><em>java -jar batik-svgviewer.jar -lnf com.sun.java.swing.plaf.motif.MotifLookAndFeel</em> starts the viewer with 
                         the Motif look and feel. The default look and feel is Metal, the default Swing look and feel</li>
-                    <li><em>java -jar batik-1.0.jar -sf logo.svg</em> starts the viewer with the logo.svg file open (and small fonts,
+                    <li><em>java -jar batik-svgviewer.jar -sf logo.svg</em> starts the viewer with the logo.svg file open (and small fonts,
                         because of -sf)</li>
                 </ul>
             </s2>
@@ -96,17 +97,15 @@
                         viewer</li>
                 </ul>
                 <p>You can pass options to the viewer as follows:</p>
-                <p><em>build svgviewer -Dargs="[-sf] [-lnf [lookAndFeelName]] [svgURL]</em></p>
+                <p><em>build svgviewer -Dargs="[-sf] [-lnf [lookAndFeelName]] [svgURL]"</em></p>
                 <p>Refer to "Starting the viewer for the binary distribution" for an explanation of these
                 options</p>
             </s2>
 
             <s2 title="SVG viewer screen shot">
 
-                <p><link href="images/svgviewerDefaultRegular.jpg">Batik
-                   <icon src="images/svgviewerDefaultSmall.jpg" alt="Batik Viewer"/></link></p>
+                <figure src="images/svgviewerDefaultRegular.jpg" alt="Batik Viewer"/>
                 
-
             </s2>
         </s1>
 
@@ -149,9 +148,9 @@
             access is on the Web, you will need to use a proxy server to access that content,
             the same way you need to set up a proxy server for your HTML browser. </p>
             <p>For users of the binary distribution, you need to type, at the command prompt:</p>
-            <p><em>java -Dhttp.proxyHost=&lt;proxyHost&gt; -Dhttp.proxyPort=&lt;proxyPort&gt; -jar batik-1.0.jar</em></p>
+            <p><em>java -Dhttp.proxyHost=&lt;proxyHost&gt; -Dhttp.proxyPort=&lt;proxyPort&gt; -jar batik-svgviewer.jar</em></p>
             <p>For example, if your proxy is firewall.eng.mycompany.com on port 8080:</p>
-            <p><em>java -Dhttp.proxyHost=firewall.eng.mycompany.com -Dhttp.proxyPort=8080 -jar batik-1.0.jar</em></p>
+            <p><em>java -Dhttp.proxyHost=firewall.eng.mycompany.com -Dhttp.proxyPort=8080 -jar batik-svgviewer.jar</em></p>
             <p />
             <p>For users of the binary distribution, you need to edit the <em>build.xml</em> file
             in the root directory to set the equivalent properties:</p>
@@ -264,6 +263,18 @@
                 to the new mouse cursor location. When you are satisfied with that angle, you can release
                 the mouse button and the document will be displayed with the rotation you have specified.
                 </p>
+            </s2>
+
+            <s2 title="Thumbnail">
+                <figure src="images/svgviewerThumbnail.gif" alt="SVG Viewer Thumbnail" />
+                <p>Panning in the document window can be difficult after you have zoomed into a document
+                because you cannot see the whole document. Panning on large documents (or with a large
+                zoom factor) is made easy by the thumbnail that you can bring up through the
+                "View -&gt; View Document Thumbnail" menu item or Ctrl-O keyboard acceleration. The 
+                thumbnail shows a rectangular marker that represents the "Area of Interest", i.e., the 
+                region currently displayed in the window (the visible portion of the document). You
+                can grag that little marker with the left mouse button and drag it to another area
+                of interest to view a different portion of the document in the main window.</p>
             </s2>
         </s1>
 

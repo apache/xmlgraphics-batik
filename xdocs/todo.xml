@@ -38,14 +38,10 @@
         </action>
 
         <action context="docs" assigned-to="VH">
-            SVG Viewer page with Screen Shots.
-        </action>
-
-        <action context="docs" assigned-to="TK">
             SVG Viewer Pluggin page
         </action>
 
-        <action context="docs" assigned-to="TK">
+        <action context="docs" assigned-to="VH">
             SVG Rasterizer image examples
         </action>
 
@@ -57,14 +53,6 @@
             Error handling (tolerance on DOCTYPE and processing errors)
         </action>
 
-        <action context="code" assigned-to="VH">
-            Improve patterns quality
-        </action>
-
-        <action context="code" assigned-to="DJ">
-            SVG Font support
-        </action>
-
         <action context="code" assigned-to="CJ">
             Fix issue with passing a script function
             instead of a listener.
@@ -73,13 +61,6 @@
         <action context="code"
                 assigned-to="CJ">
             Make sure we pass dom-eventListeners-BE-04.svg
-        </action>
-
-        <action context="code"
-                assigned-to="TK">
-            Modify thumbnail area of interest marker so that
-            the top arrow is smaller and the area of interest
-            has a minimum size (e.g., 10px by 10px)
         </action>
 
         <action context="code" assigned-to="TK">
@@ -100,14 +81,24 @@
             supported SVG text features.
         </action>
 
-        <action context="code" assigned-to="TK">
-            Thumbnails for documents with no viewBox should implement
-            preserveAspectRatio
-        </action>
-
     </actions>
 
     <actions priority="medium">
+        <action context="code"
+                assigned-to="TK">
+            Modify thumbnail area of interest marker so that
+            the top arrow is smaller and the area of interest
+            has a minimum size (e.g., 10px by 10px)
+        </action>
+
+        <action context="code" assigned-to="DJ">
+            SVG Font support
+        </action>
+
+        <action context="code" assigned-to="VH">
+            Improve patterns quality
+        </action>
+
         <action context="code"
                 assigned-to="VH">
             hueRotate bug in ColorMatrix.
@@ -143,10 +134,6 @@
 
         <action context="code" assigned-to="VH">
         feColorMatrix - bug in hueRotate
-        </action>
-
-        <action context="code" assigned-to="VH">
-            feBlend
         </action>
 
         <action context="code" assigned-to="TD">
@@ -190,6 +177,33 @@
             In initial paint, if thumbnail can be created by 
             resampling main window, do that instead of re-rendering
             GVT tree. Applies only to initial paint.
+        </action>
+
+        <action context="code" assigned-to="VH">
+            Remove ATTR_HREF from org.apache.batik.util.awt.svg.SVGSyntax
+        </action>
+
+        <action context="code" assigned-to="VH">
+            Implement static LUT for Identity in IdentityTransfer
+        </action>
+
+        <action context="code" assigned-to="TK">
+            Fix feOffset implementation so that dx and dy take the 
+            primitiveUnits into account.
+        </action>
+
+        <action context="code" assigned-to="TD">
+            Run profiling on viewer to check GVT tree build time
+        </action>
+
+        <action context="code" assigned-to="TD">
+            Add optimized code for CompositeContext implementations
+            for SinglePixelPackedSampleModel cases.
+        </action>
+
+        <action context="code" assigned-to="VH">
+            Add precision handling as suggested by Brian Bosela in
+            SVG Generator.
         </action>
 
     </actions>

@@ -57,7 +57,7 @@
         contents. For example, using Batik's SVG generator, a Java application
         can very easily export its graphics in the SVG format. Using 
         Batik's SVG processor and viewer, an application can very easily
-        integrate SVG viewing capabilities. Another possibilities is to
+        integrate SVG viewing capabilities. Another possibility is to
         use Batik's modules to convert SVG to various formats, such as 
         raster images (JPEG or PNG).
         </p>
@@ -76,13 +76,14 @@
         </p>
         <p>
         The SVG specification can be found on the 
-        <link href="http://www.w3.org/TR/SVG/">W3C site</link>.
+        <link href="http://www.w3.org/TR/SVG/">W3C site</link>. Batik 1.0 is conformant
+        with the November 2nd, 2000 Candidate Recommendation Specification.
         </p>
          </s1>
 
         <s1 title="Batik's Implementation Status">
         <p>
-        At this time, Batik provides a good support for all the SVG static 
+        At this time, Batik provides a good implementation for all the SVG static 
         features, supports linking, and has some scripting support, even though dynamic 
         modification of SVG documents is not yet available and animation is
         not supported.

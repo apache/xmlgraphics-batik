@@ -55,7 +55,7 @@
             <anchor id="svggen" />
             <s2 title="SVG Graphics2D Generator">
                 <figure src="images/svggen.jpg" alt="Batik SVG Generator"/>
-                <p>The <link href="svggen.html">SVG Graphics2D Generator</link>lets Java
+                <p>The <link href="svggen.html">SVG Graphics2D Generator</link> lets Java
                 Technology applications export their graphics as SVG.</p>
             </s2>
         </s1>
