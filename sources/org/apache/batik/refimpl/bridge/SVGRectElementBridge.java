@@ -68,7 +68,7 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
                                                 svgElement,
                                                 UnitProcessor.VERTICAL_LENGTH,
                                                 uctx);
-        ry = (ry > w / 2) ? w / 2 : ry;
+        ry = (ry > h / 2) ? h / 2 : ry;
 
         if (rxs && rys) {
             if (rx == 0 || ry == 0) {

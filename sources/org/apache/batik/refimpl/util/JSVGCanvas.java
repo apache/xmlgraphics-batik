@@ -197,7 +197,6 @@ public class JSVGCanvas extends JComponent {
         
         updateBuffer(w, h);
         if (repaint) {
-            clearBuffer(w, h);
             renderer = rendererFactory.createRenderer(buffer);
             renderer.setTransform(transform);
         }
@@ -207,6 +206,7 @@ public class JSVGCanvas extends JComponent {
             repaint = true;
         }
         if (repaint) {
+            clearBuffer(w, h);
             renderer.repaint(new Rectangle2D.Float(0, 0, w, h));
         }
         repaint = false;
