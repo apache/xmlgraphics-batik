@@ -88,6 +88,13 @@ public class UserAgentAdapter implements UserAgent {
     }
 
     /**
+     * Returns this user agent's CSS media.
+     */
+    public String getMedia() {
+        return "all";
+    }
+
+    /**
      * Returns the user stylesheet 
      */
     public String getUserStyleSheetURI() {

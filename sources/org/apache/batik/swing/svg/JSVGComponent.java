@@ -919,6 +919,16 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         /**
+         * Returns this user agent's CSS media.
+         */
+        public String getMedia() {
+            if (svgUserAgent != null) {
+                return svgUserAgent.getMedia();
+            }
+            return "screen";
+        }
+
+        /**
          * Returns the location on the screen of the
          * client area in the UserAgent.
          */

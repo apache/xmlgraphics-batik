@@ -1738,6 +1738,13 @@ public class JSVGViewerFrame
         }
 
         /**
+         * Returns this user agent's CSS media.
+         */
+        public String getMedia() {
+            return "screen";
+        }
+
+        /**
          * Opens a link.
          * @param uri The document URI.
          * @param newc Whether the link should be activated in a new component.

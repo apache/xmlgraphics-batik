@@ -10,6 +10,8 @@ package org.apache.batik.bridge;
 
 import java.util.List;
 
+import org.apache.batik.css.AbstractViewCSS;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
@@ -21,6 +23,8 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import org.w3c.dom.views.DocumentView;
 
 /**
  * This class is responsible for creating a GVT tree using an SVG DOM tree.
@@ -44,6 +48,11 @@ public class GVTBuilder implements SVGConstants {
      * the GVT tree
      */
     public GraphicsNode build(BridgeContext ctx, Document document) {
+        // set the media type
+        AbstractViewCSS view;
+        view = (AbstractViewCSS)((DocumentView)document).getDefaultView();
+        view.setMedia(ctx.getUserAgent().getMedia());
+
         // inform the bridge context the builder to use
         ctx.setGVTBuilder(this);
 
