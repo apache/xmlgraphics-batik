@@ -319,6 +319,22 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     }
 
     /////////////////////////////////////////////////////////////////////////
+    // 'display'
+    /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns true if the specified element has to be displayed, false
+     * otherwise. Checks the 'display' property.
+     *
+     * @param e the element
+     */
+    public static boolean convertDisplay(Element e) {
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        CSSValue v = decl.getPropertyCSSValueInternal(CSS_DISPLAY_PROPERTY);
+        return (((CSSPrimitiveValue)v).getStringValue().charAt(0) != 'n');
+    }
+
+    /////////////////////////////////////////////////////////////////////////
     // 'visibility'
     /////////////////////////////////////////////////////////////////////////
 

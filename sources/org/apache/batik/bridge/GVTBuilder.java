@@ -63,6 +63,9 @@ public class GVTBuilder implements SVGConstants {
             // create the associated composite graphics node
             GraphicsNodeBridge gnBridge = (GraphicsNodeBridge)bridge;
             topNode = gnBridge.createGraphicsNode(ctx, svgElement);
+            if (topNode == null) {
+                return null;
+            }
             buildComposite(ctx, svgElement, (CompositeGraphicsNode)topNode);
             gnBridge.buildGraphicsNode(ctx, svgElement, topNode);
         } catch (BridgeException ex) {
@@ -93,6 +96,10 @@ public class GVTBuilder implements SVGConstants {
      * the GVT tree
      */
     public GraphicsNode build(BridgeContext ctx, Element e) {
+        // check the display property
+        if (!CSSUtilities.convertDisplay(e)) {
+            return null;
+        }
         // get the appropriate bridge according to the specified element
         Bridge bridge = ctx.getBridge(e);
         if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
@@ -144,6 +151,10 @@ public class GVTBuilder implements SVGConstants {
         // Check for interruption.
         if (Thread.currentThread().isInterrupted()) {
             throw new InterruptedBridgeException();
+        }
+        // check the display property
+        if (!CSSUtilities.convertDisplay(e)) {
+            return;
         }
         // get the appropriate bridge according to the specified element
         Bridge bridge = ctx.getBridge(e);
