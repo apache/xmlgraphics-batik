@@ -26,6 +26,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGSVGElement;
 import org.w3c.dom.svg.SVGSymbolElement;
 
@@ -39,6 +43,21 @@ public class SVGUseElementBridge extends AbstractSVGBridge
     implements GraphicsNodeBridge, ErrorConstants {
 
     /**
+     * The element that has been handled by this bridge.
+     */
+    protected Element e;
+
+    /**
+     * The graphics node constructed by this bridge.
+     */
+    protected GraphicsNode node;
+
+    /**
+     * The bridge context to use for dynamic updates.
+     */
+    protected BridgeContext ctx;
+
+    /**
      * Constructs a new bridge for the &lt;use> element.
      */
     public SVGUseElementBridge() {}
@@ -50,8 +69,11 @@ public class SVGUseElementBridge extends AbstractSVGBridge
         return SVG_USE_TAG;
     }
 
+    /**
+     * Returns a new instance of this bridge.
+     */
     public Bridge getInstance(){
-        return this;
+        return new SVGUseElementBridge();
     }
 
     /**
@@ -211,6 +233,13 @@ public class SVGUseElementBridge extends AbstractSVGBridge
 
         // bind the specified element and its associated graphics node if needed
         if (ctx.isDynamic()) {
+            ((EventTarget)e).addEventListener("DOMAttrModified", 
+                                              new DOMAttrModifiedEventListener(),
+                                              false);
+            this.e = e;
+            this.node = node;
+            this.ctx = ctx;
+
             ctx.bind(e, node);
         }
     }
@@ -220,5 +249,43 @@ public class SVGUseElementBridge extends AbstractSVGBridge
      */
     public boolean isComposite() {
         return false;
+    }
+
+    // dynamic support
+
+    /**
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
+     */
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        String attrName = evt.getAttrName();
+
+        BridgeUpdateEvent be = new BridgeUpdateEvent();
+        fireBridgeUpdateStarting(be);
+        System.out.println("Unsupported attribute modification: "+attrName+
+                           " on "+e.getLocalName());
+        fireBridgeUpdateCompleted(be);
+    }
+
+
+    /**
+     * The listener class for 'DOMAttrModified' event.
+     */
+    protected class DOMAttrModifiedEventListener implements EventListener {
+
+        /**
+         * Handles 'DOMAttrModfied' events and deleguates to the
+         * 'handleDOMAttrModifiedEvent' method any changes to the
+         * GraphicsNode if any.
+         *
+         * @param evt the DOM event
+         */
+        public void handleEvent(Event evt) {
+            if (evt.getTarget() != e) {
+                return;
+            }
+            handleDOMAttrModifiedEvent((MutationEvent)evt);
+        }
     }
 }

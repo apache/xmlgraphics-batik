@@ -220,8 +220,8 @@ public class EventSupport {
 	for (int i=0; i < listeners.length; ++i) {
 	    try {
 		listeners[i].handleEvent(evt);
-	    } catch (Throwable th) { 
-		// <!> FIXME: should do something else
+	    } catch (Throwable th) {
+                th.printStackTrace(System.err);
 	    }
 	}
     }
