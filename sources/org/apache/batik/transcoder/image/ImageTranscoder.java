@@ -23,6 +23,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
@@ -130,9 +131,24 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         DefaultSVGContext svgCtx = new DefaultSVGContext();
         svgCtx.setPixelToMM(userAgent.getPixelToMM());
         ((SVGOMDocument)document).setSVGContext(svgCtx);
+
+        // build the GVT tree
+        GVTBuilder builder = new GVTBuilder();
+        ImageRendererFactory rendFactory = new StaticRendererFactory();
+        GraphicsNodeRenderContext rc = rendFactory.getRenderContext();
+        BridgeContext ctx = new BridgeContext(userAgent, rc);
+        GraphicsNode gvtRoot;
+        try {
+            gvtRoot = builder.build(ctx, svgDoc);
+        } catch (BridgeException ex) {
+            throw new TranscoderException(ex);
+        }
         // get the 'width' and 'height' attributes of the SVG document
-        float docWidth = (int)root.getWidth().getBaseVal().getValue();
-        float docHeight = (int)root.getHeight().getBaseVal().getValue();
+        float docWidth = (float)ctx.getDocumentSize().getWidth();
+        float docHeight = (float)ctx.getDocumentSize().getHeight();
+        ctx = null;
+        builder = null;
+
         // compute the image's width and height according the hints
         float imgWidth = -1;
         if (hints.containsKey(KEY_WIDTH)) {
@@ -186,16 +202,6 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         // prepare the image to be painted
         int w = (int)width;
         int h = (int)height;
-
-        // build the GVT tree
-        GVTBuilder builder = new GVTBuilder();
-        ImageRendererFactory rendFactory = new StaticRendererFactory();
-        GraphicsNodeRenderContext rc = rendFactory.getRenderContext();
-
-        BridgeContext ctx = new BridgeContext(userAgent, rc);
-        GraphicsNode gvtRoot = builder.build(ctx, svgDoc);
-        ctx = null;
-        builder = null;
 
         // paint the SVG document using the bridge package
         // create the appropriate renderer
