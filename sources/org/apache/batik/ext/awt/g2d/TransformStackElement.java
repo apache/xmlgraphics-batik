@@ -19,7 +19,8 @@ import java.awt.geom.AffineTransform;
  * @author <a href="mailto:paul_evenblij@compuware.com">Paul Evenblij</a>
  * @version $Id$
  */
-abstract public class TransformStackElement implements Cloneable{
+public abstract class TransformStackElement implements Cloneable{
+
     /**
      * Transform type
      */
@@ -34,12 +35,12 @@ abstract public class TransformStackElement implements Cloneable{
      * @param type transform type
      * @param transformParameters parameters for transform
      */
-    private TransformStackElement(TransformType type,
-                                  double transformParameters[]){
+    protected TransformStackElement(TransformType type,
+                                    double transformParameters[]){
         this.type = type;
         this.transformParameters = transformParameters;
     }
-
+    
     /**
      * @return an object which is a deep copy of this one
      */
@@ -58,59 +59,59 @@ abstract public class TransformStackElement implements Cloneable{
         return newElement;
     }
 
-    /**
-     * @return a String describing this object
-     */
-    public String toString(){
-        // return SVGTransform.convertTransform(this);
-        return super.toString();
-    }
-
     /*
      * Factory methods
      */
 
-    public static TransformStackElement createTranslateElement(double tx, double ty){
-        return new TransformStackElement(TransformType.TRANSLATE, new double[]{ tx, ty }) {
-                       boolean isIdentity(double[] parameters) {
-                           return parameters[0] == 0 && parameters[1] == 0;
-                       }
-                   };
+    public static TransformStackElement createTranslateElement(double tx, 
+                                                               double ty){
+        return new TransformStackElement(TransformType.TRANSLATE, 
+                                         new double[]{ tx, ty }) {
+                boolean isIdentity(double[] parameters) {
+                    return parameters[0] == 0 && parameters[1] == 0;
+                }
+            };
     }
 
     public static TransformStackElement createRotateElement(double theta){
-        return new TransformStackElement(TransformType.ROTATE, new double[]{ theta }) {
-                       boolean isIdentity(double[] parameters) {
-                           return Math.cos(parameters[0]) == 1;
-                       }
-                   };
+        return new TransformStackElement(TransformType.ROTATE, 
+                                         new double[]{ theta }) {
+                boolean isIdentity(double[] parameters) {
+                    return Math.cos(parameters[0]) == 1;
+                }
+            };
     }
 
-    public static TransformStackElement createScaleElement(double scaleX, double scaleY){
-        return new TransformStackElement(TransformType.SCALE, new double[]{ scaleX, scaleY }) {
-                       boolean isIdentity(double[] parameters) {
-                           return parameters[0] == 1 && parameters[1] == 1;
-                       }
-                   };
+    public static TransformStackElement createScaleElement(double scaleX, 
+                                                           double scaleY){
+        return new TransformStackElement(TransformType.SCALE, 
+                                         new double[]{ scaleX, scaleY }) {
+                boolean isIdentity(double[] parameters) {
+                    return parameters[0] == 1 && parameters[1] == 1;
+                }
+            };
+    }
+    
+    public static TransformStackElement createShearElement(double shearX, 
+                                                           double shearY){
+        return new TransformStackElement(TransformType.SHEAR, 
+                                         new double[]{ shearX, shearY }) {
+                boolean isIdentity(double[] parameters) {
+                    return parameters[0] == 0 && parameters[1] == 0;
+                }
+            };
     }
 
-    public static TransformStackElement createShearElement(double shearX, double shearY){
-        return new TransformStackElement(TransformType.SHEAR, new double[]{ shearX, shearY }) {
-                       boolean isIdentity(double[] parameters) {
-                           return parameters[0] == 0 && parameters[1] == 0;
-                       }
-                   };
-    }
-
-    public static TransformStackElement createGeneralTransformElement(AffineTransform txf){
+    public static TransformStackElement createGeneralTransformElement
+        (AffineTransform txf){
         double matrix[] = new double[6];
         txf.getMatrix(matrix);
         return new TransformStackElement(TransformType.GENERAL, matrix) {
-                       boolean isIdentity(double[] m) {
-                           return (m[0] == 1 && m[2] == 0 && m[4] == 0 &&
-                                   m[1] == 0 && m[3] == 1 && m[5] == 0);
-                       }
-                   };
+                boolean isIdentity(double[] m) {
+                    return (m[0] == 1 && m[2] == 0 && m[4] == 0 &&
+                            m[1] == 0 && m[3] == 1 && m[5] == 0);
+                }
+            };
     }
     
     /**
