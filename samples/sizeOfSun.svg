@@ -137,11 +137,13 @@
     </g>
 
     <!-- ######################################################################### -->
+<!--
     <filter id="blur" filterUnits="objectBoundingBox" primitiveUnits="objectBoundingBox" 
             x="-10%" y="-25%" width="120%" height="150%" > 
         <feGaussianBlur stdDeviation="64 48" x="-10%" y="-25%" width="120%" height="150%" /> 
         <feColorMatrix type="matrix" values="1.1 0 0 0 0   0 1.1 0 0 0   0 0 1.1 0 0   0 0 0 1.1 0" /> 
     </filter>
+-->
     <radialGradient id="sunGradient" fx=".3" fy=".3">
       <stop style="stop-color:white" offset=".1"/>
       <stop style="stop-color:Gold" offset=".8"/>
@@ -151,8 +153,10 @@
       <rect id="clip" x="-143" y="-500" width="2780" height="1000"/>
     </clipPath>
     <g id="sun">
+<!--
       <circle cx="1247" cy="0" r="1460" style="filter:url(#blur); fill:#ffb200;"/>
       <ellipse cx="1247" cy="0" rx="1386" ry="1390" style="fill:black;"/>
+-->
       <circle cx="1247" cy="0" r="1390" style="fill:url(#sunGradient); clip-path:url(#clip)"/>
     </g>
 
