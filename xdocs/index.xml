@@ -131,7 +131,7 @@
         <li><link href="http://www.optimalj.com">OptimalJ</link>, a UML Class Diagram Editor for NetBeans, uses Batik to export SVG. </li>
         <li><link href="http://xweb.sf.net">XWeb</link>, a tool to create websites automatically out of XML input. Uses the Batik SVG Rasterizer.</li>
         <li><link href="http://www.elixirtech.com/ElixirReport">ElixirTech's ElixirReport</link> uses 
-        Batik for charting and SVG component.</li>
+        Batik for charting and for its SVG component.</li>
         </ul>
         </s1>
     </body>
