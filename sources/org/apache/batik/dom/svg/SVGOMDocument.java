@@ -8,11 +8,10 @@
 
 package org.apache.batik.dom.svg;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
+
 import java.util.Locale;
 import java.util.MissingResourceException;
 
@@ -27,21 +26,19 @@ import org.apache.batik.dom.GenericCDATASection;
 import org.apache.batik.dom.GenericComment;
 import org.apache.batik.dom.GenericDocumentFragment;
 import org.apache.batik.dom.GenericElement;
-import org.apache.batik.dom.GenericElementNS;
 import org.apache.batik.dom.GenericEntityReference;
 import org.apache.batik.dom.GenericProcessingInstruction;
 import org.apache.batik.dom.GenericText;
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
 import org.apache.batik.dom.StyleSheetFactory;
-import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.dom.util.HashTable;
+
 import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
 
+import org.apache.batik.util.SVGConstants;
+
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
-
-import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
@@ -56,6 +53,7 @@ import org.w3c.dom.EntityReference;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
+
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.DocumentCSS;
 import org.w3c.dom.stylesheets.LinkStyle;
@@ -79,7 +77,7 @@ public class SVGOMDocument
                DocumentCSS,
                DocumentView,
                SVGConstants {
-
+    
     /**
      * The error messages bundle class name.
      */
@@ -89,8 +87,13 @@ public class SVGOMDocument
     /**
      * The localizable support for the error messages.
      */
-    protected LocalizableSupport localizableSupport =
+    protected transient LocalizableSupport localizableSupport =
         new LocalizableSupport(RESOURCES);
+
+    /**
+     * The string representing the referrer.
+     */
+    protected String referrer = "";
 
     /**
      * The url of the document.
@@ -100,22 +103,22 @@ public class SVGOMDocument
     /**
      * Is this document immutable?
      */
-    protected boolean readonly;
+    protected transient boolean readonly;
 
     /**
      * The default view.
      */
-    protected AbstractView defaultView;
+    protected transient AbstractView defaultView;
+
+    /**
+     * The document's stylesheets.
+     */
+    protected transient DOMStyleSheetList styleSheets;
 
     /**
      * The document context.
      */
-    protected SVGContext context = new DefaultSVGContext();
-
-    /**
-     * The string representing the referrer.
-     */
-    protected String referrer;
+    protected transient SVGContext context;
 
     /**
      * Creates a new uninitialized document.
@@ -126,8 +129,7 @@ public class SVGOMDocument
     /**
      * Creates a new document.
      */
-    public SVGOMDocument(DocumentType dt,
-                         DOMImplementation impl) {
+    public SVGOMDocument(DocumentType dt, DOMImplementation impl) {
         super(impl);
         if (dt != null) {
             appendChild(dt);
@@ -135,16 +137,12 @@ public class SVGOMDocument
     }
 
     /**
-     * Returns a new uninitialized instance of this object's class.
-     */
-    protected Node newNode() {
-        return new SVGOMDocument();
-    }
-
-    /**
      * Returns this document context.
      */
     public SVGContext getSVGContext() {
+        if (context == null) {
+            context = new DefaultSVGContext();
+        }
         return context;
     }
 
@@ -156,7 +154,7 @@ public class SVGOMDocument
     }
 
     /**
-     * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
+     * Implements {@link Localizable#setLocale(Locale)}.
      */
     public  void setLocale(Locale l) {
         super.setLocale(l);
@@ -164,8 +162,7 @@ public class SVGOMDocument
     }
 
     /**
-     * Implements {@link
-     * org.apache.batik.i18n.Localizable#formatMessage(String,Object[])}.
+     * Implements {@link Localizable#formatMessage(String,Object[])}.
      */
     public String formatMessage(String key, Object[] args)
         throws MissingResourceException {
@@ -177,39 +174,39 @@ public class SVGOMDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGDocument#getTitle()}.
+     * <b>DOM</b>: Implements {@link SVGDocument#getTitle()}.
      */
     public String getTitle() {
-        String result = "";
-        SVGSVGElement elt = getRootElement();
+        StringBuffer sb = new StringBuffer();
         boolean preserve = false;
-        for (Node n = elt.getFirstChild(); n != null; n = n.getNextSibling()) {
-            if (n.getNodeType() == Node.ELEMENT_NODE) {
-                String name = (n.getPrefix() == null)
-                    ? n.getNodeName()
-                    : n.getLocalName();
-                if (name.equals("title")) {
-                    preserve =
-                        ((SVGLangSpace)n).getXMLspace().equals("preserve");
+
+        for (Node n = getDocumentElement().getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            String ns = n.getNamespaceURI();
+            if (ns != null && ns.equals(SVG_NAMESPACE_URI)) {
+                if (n.getLocalName().equals(SVG_TITLE_TAG)) {
+                    preserve = ((SVGLangSpace)n).getXMLspace().equals("preserve");
                     for (n = n.getFirstChild();
                          n != null;
                          n = n.getNextSibling()) {
                         if (n.getNodeType() == Node.TEXT_NODE) {
-                            result += n.getNodeValue();
+                            sb.append(n.getNodeValue());
                         }
                     }
                     break;
                 }
             }
         }
+
+        String s = sb.toString();
         return (preserve)
-            ? XMLSupport.preserveXMLSpace(result)
-            : XMLSupport.defaultXMLSpace(result);
+            ? XMLSupport.preserveXMLSpace(s)
+            : XMLSupport.defaultXMLSpace(s);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGDocument#getReferrer()}.
+     * <b>DOM</b>: Implements {@link SVGDocument#getReferrer()}.
      */
     public String getReferrer() {
         return referrer;
@@ -223,15 +220,14 @@ public class SVGOMDocument
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGDocument#getDomain()}.
+     * <b>DOM</b>: Implements {@link SVGDocument#getDomain()}.
      */
     public String getDomain() {
         return (url == null) ? null : url.getHost();
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGDocument#getRootElement()}.
+     * <b>DOM</b>: Implements {@link SVGDocument#getRootElement()}.
      */
     public SVGSVGElement getRootElement() {
         return (SVGSVGElement)getDocumentElement();
@@ -256,44 +252,6 @@ public class SVGOMDocument
      */
     public void setURLObject(URL url) {
         this.url = url;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Document#getElementById(String)}.
-     */
-    public Element getElementById(String elementId) {
-        if (elementId == null || elementId.equals("")) {
-            return null;
-        }
-        Element e = getDocumentElement();
-        if (e == null) {
-            return null;
-        }
-        return getById(elementId, e);
-    }
-
-    /**
-     * An auxiliary method used by getElementById.
-     */
-    protected static Element getById(String id, Node node) {
-        if (!(node instanceof ElementWithID)) {
-            return null;
-        }
-
-        ElementWithID e = (ElementWithID)node;
-        if (e.getID().equals(id)) {
-            return (Element)e;
-        }
-        for (Node n = node.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            Element result = getById(id, n);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
     }
 
     /**
@@ -394,21 +352,44 @@ public class SVGOMDocument
         return impl.createElementNS(this, namespaceURI, qualifiedName);
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link org.w3c.dom.Document#getElementById(String)}.
+     */
+    public Element getElementById(String elementId) {
+        if (elementId == null || elementId.equals("")) {
+            return null;
+        }
+        Element e = getDocumentElement();
+        if (e == null) {
+            return null;
+        }
+        return getById(elementId, e);
+    }
+
+    /**
+     * An auxiliary method used by getElementById.
+     */
+    protected static Element getById(String id, Node node) {
+        if (!(node instanceof ElementWithID)) {
+            return null;
+        }
+
+        ElementWithID e = (ElementWithID)node;
+        if (e.getID().equals(id)) {
+            return (Element)e;
+        }
+        for (Node n = node.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            Element result = getById(id, n);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
     // AbstractDocument ///////////////////////////////////////////////
-
-    /**
-     * Tests whether the event dispatching must be done.
-     */
-    public boolean getEventsEnabled() {
-        return eventsEnabled;
-    }
-
-    /**
-     * Sets the eventsEnabled property.
-     */
-    public void setEventsEnabled(boolean b) {
-        eventsEnabled = b;
-    }
 
     /**
      * Tests whether this node is readonly.
@@ -426,14 +407,13 @@ public class SVGOMDocument
 
     // DocumentStyle /////////////////////////////////////////////////////////
 
-    DOMStyleSheetList styleSheets;
-
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.stylesheets.DocumentStyle#getStyleSheets()}.
      */
     public StyleSheetList getStyleSheets() {
         if (styleSheets == null) {
+            // !!! TODO: Live list
             getStyleSheets(this, styleSheets = new DOMStyleSheetList());
         }
         return styleSheets;
@@ -457,15 +437,13 @@ public class SVGOMDocument
     // DocumentView ///////////////////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.views.DocumentView#getDefaultView()}.
+     * <b>DOM</b>: Implements {@link DocumentView#getDefaultView()}.
      * @return a ViewCSS object.
      */
     public AbstractView getDefaultView() {
         if (defaultView == null) {
-            defaultView = new SVGViewCSS(this, context);
-            SVGDOMImplementation impl =
-                (SVGDOMImplementation)getImplementation();
+            defaultView = new SVGViewCSS(this, getSVGContext());
+            SVGDOMImplementation impl = (SVGDOMImplementation)implementation;
             ((SVGViewCSS)defaultView).setUserAgentStyleSheet
                 (impl.getUserAgentStyleSheet());
         }
@@ -475,8 +453,7 @@ public class SVGOMDocument
     // DocumentCSS ////////////////////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.css.DocumentCSS#getOverrideStyle(Element,String)}.
+     * <b>DOM</b>: Implements {@link DocumentCSS#getOverrideStyle(Element,String)}.
      */
     public CSSStyleDeclaration getOverrideStyle(Element elt,
                                                 String pseudoElt) {
@@ -488,4 +465,49 @@ public class SVGOMDocument
         }
         return null;
     }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMDocument();
+    }
+
+    /**
+     * Copy the fields of the current node into the given node.
+     * @param n a node of the type of this.
+     */
+    protected Node copyInto(Node n) {
+	super.copyInto(n);
+	SVGOMDocument sd = (SVGOMDocument)n;
+        sd.localizableSupport = new LocalizableSupport(RESOURCES);
+        sd.referrer = referrer;
+        sd.url = url;
+	return n;
+    }
+
+    /**
+     * Deeply copy the fields of the current node into the given node.
+     * @param n a node of the type of this.
+     */
+    protected Node deepCopyInto(Node n) {
+	super.deepCopyInto(n);
+        SVGOMDocument sd = (SVGOMDocument)n;
+        sd.localizableSupport = new LocalizableSupport(RESOURCES);
+        sd.referrer = referrer;
+        sd.url = url;
+	return n;
+    }
+
+    // Serialization //////////////////////////////////////////////////////
+
+    /**
+     * Reads the object from the given stream.
+     */
+    private void readObject(ObjectInputStream s) 
+        throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        
+        localizableSupport = new LocalizableSupport(RESOURCES);
+    }        
 }

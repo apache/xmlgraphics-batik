@@ -15,7 +15,7 @@ import org.w3c.dom.svg.SVGPointList;
 import org.w3c.dom.svg.SVGPolylineElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGPolylineElement}.
+ * This class implements {@link SVGPolylineElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -40,10 +40,10 @@ public class SVGOMPolylineElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "polyline";
+        return SVG_POLYLINE_TAG;
     }
 
     /**
@@ -51,7 +51,7 @@ public class SVGOMPolylineElement
      * org.w3c.dom.svg.SVGAnimatedPoints#getPoints()}.
      */
     public SVGPointList getPoints() {
-        throw new RuntimeException(" !!! TODO");
+        throw new RuntimeException(" !!! TODO: getPoints()");
     }
 
     /**
@@ -59,7 +59,7 @@ public class SVGOMPolylineElement
      * org.w3c.dom.svg.SVGAnimatedPoints#getAnimatedPoints()}.
      */
     public SVGPointList getAnimatedPoints() {
-        throw new RuntimeException(" !!! TODO");
+        throw new RuntimeException(" !!! TODO: getAnimatedPoints()");
     }
 
     /**

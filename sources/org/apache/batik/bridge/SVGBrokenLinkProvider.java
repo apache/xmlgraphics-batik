@@ -18,12 +18,15 @@ import org.apache.batik.gvt.renderer.StaticRenderer;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.i18n.LocalizableSupport;
 
-import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg.SVGOMDescElement;
+import org.apache.batik.dom.util.DOMUtilities;
+
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
 
 import java.util.Map;
@@ -66,7 +69,7 @@ public class SVGBrokenLinkProvider extends DefaultBrokenLinkProvider {
     }
 
     /**
-     * This method is responsbile for constructing an image that will
+     * This method is responsible for constructing an image that will
      * represent the missing image in the document.  This method
      * recives information about the reason a broken link image is
      * being requested in the <tt>code</tt> and <tt>params</tt>
@@ -82,12 +85,11 @@ public class SVGBrokenLinkProvider extends DefaultBrokenLinkProvider {
                                      Object[] params) {
         if (gvtRoot != null) {
             String message = formatMessage(base, code, params);
-            SVGOMDocument doc = new SVGOMDocument
-                (null, ExtensibleSVGDOMImplementation.getDOMImplementation());
-            doc.appendChild(doc.importNode(svgDoc.getRootElement(), true));
-
+            Document doc = DOMUtilities.deepCloneDocument(svgDoc,
+                                                          svgDoc.getImplementation());
             Element infoE = doc.getElementById("More_About");
-            Element desc = new SVGOMDescElement(null, doc);
+            Element desc = doc.createElementNS(SVGConstants.SVG_NAMESPACE_URI,
+                                               SVGConstants.SVG_DESC_TAG);
             desc.appendChild(doc.createTextNode(message));
             infoE.appendChild(desc);
 

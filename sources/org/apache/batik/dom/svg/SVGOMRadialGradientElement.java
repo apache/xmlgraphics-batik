@@ -8,8 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.Node;
@@ -17,7 +15,7 @@ import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGRadialGradientElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGRadialGradientElement}.
+ * This class implements {@link SVGRadialGradientElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -25,31 +23,6 @@ import org.w3c.dom.svg.SVGRadialGradientElement;
 public class SVGOMRadialGradientElement
     extends    SVGOMGradientElement
     implements SVGRadialGradientElement {
-
-    /**
-     * The reference to the cx attribute.
-     */
-    protected WeakReference cxReference;
-
-    /**
-     * The reference to the cy attribute.
-     */
-    protected WeakReference cyReference;
-
-    /**
-     * The reference to the r attribute.
-     */
-    protected WeakReference rReference;
-
-    /**
-     * The reference to the fx attribute.
-     */
-    protected WeakReference fxReference;
-
-    /**
-     * The reference to the fy attribute.
-     */
-    protected WeakReference fyReference;
 
     /**
      * Creates a new SVGOMRadialGradientElement object.
@@ -67,7 +40,7 @@ public class SVGOMRadialGradientElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_RADIAL_GRADIENT_TAG;
@@ -78,13 +51,7 @@ public class SVGOMRadialGradientElement
      * org.w3c.dom.svg.SVGRadialGradientElement#getCx()}.
      */
     public SVGAnimatedLength getCx() {
-        SVGAnimatedLength result;
-        if (cxReference == null ||
-            (result = (SVGAnimatedLength)cxReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE, null);
-            cxReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getCx()");
     }
 
     /**
@@ -92,13 +59,7 @@ public class SVGOMRadialGradientElement
      * org.w3c.dom.svg.SVGRadialGradientElement#getCy()}.
      */
     public SVGAnimatedLength getCy() {
-        SVGAnimatedLength result;
-        if (cyReference == null ||
-            (result = (SVGAnimatedLength)cyReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE, null);
-            cyReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getCy()");
     }
 
     /**
@@ -106,13 +67,7 @@ public class SVGOMRadialGradientElement
      * org.w3c.dom.svg.SVGRadialGradientElement#getR()}.
      */
     public SVGAnimatedLength getR() {
-        SVGAnimatedLength result;
-        if (rReference == null ||
-            (result = (SVGAnimatedLength)rReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_R_ATTRIBUTE, null);
-            rReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getR()");
     }
 
     /**
@@ -120,14 +75,7 @@ public class SVGOMRadialGradientElement
      * org.w3c.dom.svg.SVGRadialGradientElement#getFx()}.
      */
     public SVGAnimatedLength getFx() {
-        SVGAnimatedLength result;
-        if (fxReference == null ||
-            (result = (SVGAnimatedLength)fxReference.get()) == null) {
-            result = new SVGOMAnimatedLength
-                (this, null, SVG_FX_ATTRIBUTE, null);
-            fxReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getFx()");
     }
 
     /**
@@ -135,14 +83,7 @@ public class SVGOMRadialGradientElement
      * org.w3c.dom.svg.SVGRadialGradientElement#getFy()}.
      */
     public SVGAnimatedLength getFy() {
-        SVGAnimatedLength result;
-        if (fyReference == null ||
-            (result = (SVGAnimatedLength)fyReference.get()) == null) {
-            result = new SVGOMAnimatedLength
-                (this, null, SVG_FY_ATTRIBUTE, null);
-            fyReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getFy()");
     }
 
     /**

@@ -8,25 +8,17 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.ElementNonCSSPresentationalHints;
-import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSValue;
+
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGAnimatedTransformList;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
-import org.w3c.dom.svg.SVGExternalResourcesRequired;
-import org.w3c.dom.svg.SVGGElement;
-import org.w3c.dom.svg.SVGStringList;
 import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGRect;
+import org.w3c.dom.svg.SVGStringList;
 
 /**
  * This class provides a common superclass for all graphics elements.
@@ -34,11 +26,8 @@ import org.w3c.dom.svg.SVGRect;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class SVGGraphicsElement
-    extends    SVGOMElement
-    implements OverrideStyleElement,
-	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints {
+public abstract class SVGGraphicsElement extends SVGStylableElement {
+    
     /**
      * Creates a new SVGGraphicsElement.
      */
@@ -55,183 +44,75 @@ public abstract class SVGGraphicsElement
 
     }
 
-    // ElementNonCSSPresentationalHints ////////////////////////////////////
-
-    /**
-     * Returns the translation of the non-CSS hints to the corresponding
-     * CSS rules. The result can be null.
-     */
-    public CSSStyleDeclaration getNonCSSPresentationalHints() {
-	return ElementNonCSSPresentationalHintsSupport.
-            getNonCSSPresentationalHints(this);
-    }
-
-    // SVGTransformable support /////////////////////////////////////////////
-
-    /**
-     * The transformable support.
-     */
-    protected SVGTransformableSupport transformableSupport;
-
-    /**
-     * Returns stylableSupport different from null.
-     */
-    protected final SVGTransformableSupport getTransformableSupport() {
-	if (transformableSupport == null) {
-	    transformableSupport = new SVGTransformableSupport();
-	}
-	return transformableSupport;
-    }
+    // SVGLocatable support /////////////////////////////////////////////
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getNearestViewportElement()}.
+     * org.w3c.dom.svg.SVGLocatable#getNearestViewportElement()}.
      */
     public SVGElement getNearestViewportElement() {
-	return getTransformableSupport().getNearestViewportElement(this);
+	return SVGLocatableSupport.getNearestViewportElement(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getFarthestViewportElement()}.
+     * org.w3c.dom.svg.SVGLocatable#getFarthestViewportElement()}.
      */
     public SVGElement getFarthestViewportElement() {
-	return getTransformableSupport().getFarthestViewportElement(this);
+	return SVGLocatableSupport.getFarthestViewportElement(this);
     }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getBBox()}.
+     */
+    public SVGRect getBBox() {
+	return SVGLocatableSupport.getBBox(this);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getCTM()}.
+     */
+    public SVGMatrix getCTM() {
+	return SVGLocatableSupport.getCTM(this);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getScreenCTM()}.
+     */
+    public SVGMatrix getScreenCTM() {
+	return SVGLocatableSupport.getScreenCTM(this);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGLocatable#getTransformToElement(SVGElement)}.
+     */
+    public SVGMatrix getTransformToElement(SVGElement element)
+	throws SVGException {
+	return SVGLocatableSupport.getTransformToElement(element, this);
+    }
+
+    // SVGTransformable support //////////////////////////////////////////////
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTransformable#getTransform()}.
      */
     public SVGAnimatedTransformList getTransform() {
-	return getTransformableSupport().getTransform(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getBBox()}.
-     */
-    public SVGRect getBBox() {
-	return getTransformableSupport().getBBox(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getCTM()}.
-     */
-    public SVGMatrix getCTM() {
-	return getTransformableSupport().getCTM(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getScreenCTM()}.
-     */
-    public SVGMatrix getScreenCTM() {
-	return getTransformableSupport().getScreenCTM(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getTransformToElement(SVGElement)}.
-     */
-    public SVGMatrix getTransformToElement(SVGElement element)
-	throws SVGException {
-	return getTransformableSupport().getTransformToElement(element, this);
-    }
-    
-    // SVGStylable support ///////////////////////////////////////////////////
-
-    /**
-     * The stylable support.
-     */
-    protected SVGStylableSupport stylableSupport;
-
-    /**
-     * Returns stylableSupport different from null.
-     */
-    protected final SVGStylableSupport getStylableSupport() {
-	if (stylableSupport == null) {
-	    stylableSupport = new SVGStylableSupport();
-	}
-	return stylableSupport;
-    }
-
-    /**
-     * Implements {@link
-     * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
-     */
-    public boolean hasStyle() {
-        return SVGStylableSupport.hasStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
-     */
-    public CSSStyleDeclaration getStyle() {
-        return getStylableSupport().getStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
-     */
-    public CSSValue getPresentationAttribute(String name) {
-        return getStylableSupport().getPresentationAttribute(name, this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getClassName()}.
-     */
-    public SVGAnimatedString getClassName() {
-        return getStylableSupport().getClassName(this);
-    }
-
-    // OverrideStyleElement ///////////////////////////////////////////
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#hasOverrideStyle(String)}.
-     */
-    public boolean hasOverrideStyle(String pseudoElt) {
-	return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }    
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#getOverrideStyle(String)}.
-     */
-    public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return getStylableSupport().getOverrideStyle(pseudoElt, this);
+	return SVGTransformableSupport.getTransform(this);
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
-
-    /**
-     * The SVGExternalResourcesRequired support.
-     */
-    protected SVGExternalResourcesRequiredSupport
-        externalResourcesRequiredSupport;
-
-    /**
-     * Returns testsSupport different from null.
-     */
-    protected final SVGExternalResourcesRequiredSupport
-	getExternalResourcesRequiredSupport() {
-	if (externalResourcesRequiredSupport == null) {
-	    externalResourcesRequiredSupport =
-                new SVGExternalResourcesRequiredSupport();
-	}
-	return externalResourcesRequiredSupport;
-    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return getExternalResourcesRequiredSupport().
+	return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 
@@ -268,26 +149,11 @@ public abstract class SVGGraphicsElement
     // SVGTests support ///////////////////////////////////////////////////
 
     /**
-     * The tests support.
-     */
-    protected SVGTestsSupport testsSupport;
-
-    /**
-     * Returns testsSupport different from null.
-     */
-    protected final SVGTestsSupport getTestsSupport() {
-	if (testsSupport == null) {
-	    testsSupport = new SVGTestsSupport();
-	}
-	return testsSupport;
-    }
-
-    /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
-	return getTestsSupport().getRequiredFeatures(this);
+	return SVGTestsSupport.getRequiredFeatures(this);
     }
 
     /**
@@ -295,7 +161,7 @@ public abstract class SVGGraphicsElement
      * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
-	return getTestsSupport().getRequiredExtensions(this);
+	return SVGTestsSupport.getRequiredExtensions(this);
     }
 
     /**
@@ -303,7 +169,7 @@ public abstract class SVGGraphicsElement
      * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
-	return getTestsSupport().getSystemLanguage(this);
+	return SVGTestsSupport.getSystemLanguage(this);
     }
 
     /**
@@ -311,6 +177,6 @@ public abstract class SVGGraphicsElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-	return getTestsSupport().hasExtension(extension, this);
+	return SVGTestsSupport.hasExtension(extension, this);
     }
 }

@@ -8,14 +8,13 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGEllipseElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGEllipseElement}.
+ * This class implements {@link SVGEllipseElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -23,48 +22,6 @@ import org.w3c.dom.svg.SVGEllipseElement;
 public class SVGOMEllipseElement
     extends    SVGGraphicsElement
     implements SVGEllipseElement {
-
-    /**
-     * The DefaultAttributeValueProducer for cx.
-     */
-    protected final static DefaultAttributeValueProducer
-        CX_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_ELLIPSE_CX_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The DefaultAttributeValueProducer for cy.
-     */
-    protected final static DefaultAttributeValueProducer
-        CY_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_ELLIPSE_CY_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The reference to the cx attribute.
-     */
-    protected transient WeakReference cxReference;
-
-    /**
-     * The reference to the cy attribute.
-     */
-    protected transient WeakReference cyReference;
-
-    /**
-     * The reference to the rx attribute.
-     */
-    protected transient WeakReference rxReference;
-
-    /**
-     * The reference to the ry attribute.
-     */
-    protected transient WeakReference ryReference;
 
     /**
      * Creates a new SVGOMEllipseElement object.
@@ -82,54 +39,31 @@ public class SVGOMEllipseElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_ELLIPSE_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGEllipseElement#getCx()}.
+     * <b>DOM</b>: Implements {@link SVGEllipseElement#getCx()}.
      */
     public SVGAnimatedLength getCx() {
-        SVGAnimatedLength result;
-        if (cxReference == null ||
-            (result = (SVGAnimatedLength)cxReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE,
-                                             CX_DEFAULT_VALUE_PRODUCER);
-            cxReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getCx()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGEllipseElement#getCy()}.
+     * <b>DOM</b>: Implements {@link SVGEllipseElement#getCy()}.
      */
     public SVGAnimatedLength getCy() {
-        SVGAnimatedLength result;
-        if (cyReference == null ||
-            (result = (SVGAnimatedLength)cyReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE,
-                                             CY_DEFAULT_VALUE_PRODUCER);
-            cyReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getCy()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGEllipseElement#getRx()}.
+     * <b>DOM</b>: Implements {@link SVGEllipseElement#getRx()}.
      */
     public SVGAnimatedLength getRx() {
-        SVGAnimatedLength result;
-        if (rxReference == null ||
-            (result = (SVGAnimatedLength)rxReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_RX_ATTRIBUTE, null);
-            rxReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getRx()");
     }
 
     /**
@@ -137,13 +71,7 @@ public class SVGOMEllipseElement
      * org.w3c.dom.svg.SVGEllipseElement#getRy()}.
      */
     public SVGAnimatedLength getRy() {
-        SVGAnimatedLength result;
-        if (ryReference == null ||
-            (result = (SVGAnimatedLength)ryReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_RY_ATTRIBUTE, null);
-            ryReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getRy()");
     }
 
     /**

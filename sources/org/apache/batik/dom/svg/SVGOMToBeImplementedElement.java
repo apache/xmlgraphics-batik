@@ -25,7 +25,7 @@ public class SVGOMToBeImplementedElement
     /**
      * This element's local name
      */
-    private String localName;
+    protected String localName;
 
     /**
      * Creates a new SVGOMToBeImplementedElement object.

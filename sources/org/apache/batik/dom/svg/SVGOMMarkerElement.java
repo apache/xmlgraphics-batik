@@ -8,20 +8,11 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
-import org.apache.batik.css.ElementNonCSSPresentationalHints;
-import org.apache.batik.css.ExtendedElementCSSInlineStyle;
-
 import org.apache.batik.dom.AbstractDocument;
 
-import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.Node;
-
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSValue;
 
 import org.w3c.dom.svg.SVGAngle;
 import org.w3c.dom.svg.SVGAnimatedAngle;
@@ -41,31 +32,20 @@ import org.w3c.dom.svg.SVGMarkerElement;
  * @version $Id$
  */
 public class SVGOMMarkerElement
-    extends    SVGOMElement
-    implements SVGMarkerElement,
-               OverrideStyleElement,
-               ExtendedElementCSSInlineStyle,
-               ElementNonCSSPresentationalHints {
+    extends    SVGStylableElement
+    implements SVGMarkerElement {
     
     /**
-     * The reference to the refX attribute.
+     * The attribute initializer.
      */
-    protected transient WeakReference refXReference;
-
-    /**
-     * The reference to the refY attribute.
-     */
-    protected transient WeakReference refYReference;
-
-    /**
-     * The reference to the markerWidth attribute.
-     */
-    protected transient WeakReference markerWidthReference;
-
-    /**
-     * The reference to the markerHeight attribute.
-     */
-    protected transient WeakReference markerHeightReference;
+    protected final static AttributeInitializer attributeInitializer;
+    static {
+        attributeInitializer = new AttributeInitializer(1);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                                          "xMidYMid meet");
+    }
 
     /**
      * Creates a new SVGOMMarkerElement object.
@@ -83,7 +63,7 @@ public class SVGOMMarkerElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_MARKER_TAG;
@@ -93,89 +73,63 @@ public class SVGOMMarkerElement
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getRefX()}.
      */
     public SVGAnimatedLength getRefX() {
-        SVGAnimatedLength result;
-        if (refXReference == null ||
-            (result = (SVGAnimatedLength)refXReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_REF_X_ATTRIBUTE, null);
-            refXReference = new WeakReference(result);
-        }
-        return result;
+	throw new RuntimeException(" !!! TODO: getRefX()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getRefY()}.
      */
     public SVGAnimatedLength getRefY() {
-        SVGAnimatedLength result;
-        if (refYReference == null ||
-            (result = (SVGAnimatedLength)refYReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_REF_Y_ATTRIBUTE, null);
-            refYReference = new WeakReference(result);
-        }
-        return result;
+	throw new RuntimeException(" !!! TODO: getRefY()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getMarkerUnits()}.
      */
     public SVGAnimatedEnumeration getMarkerUnits() {
-	throw new RuntimeException(" !!! TODO: SVGOMMarkerElement.getMarkerUnits()");
+	throw new RuntimeException(" !!! TODO: getMarkerUnits()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getMarkerWidth()}.
      */
     public SVGAnimatedLength getMarkerWidth() {
-        SVGAnimatedLength result;
-        if (markerWidthReference == null ||
-            (result = (SVGAnimatedLength)markerWidthReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_MARKER_WIDTH_ATTRIBUTE,
-                                             null);
-            markerWidthReference = new WeakReference(result);
-        }
-        return result;
+	throw new RuntimeException(" !!! TODO: getMarkerWidth()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getMarkerHeight()}.
      */
     public SVGAnimatedLength getMarkerHeight() {
-        SVGAnimatedLength result;
-        if (markerHeightReference == null ||
-            (result = (SVGAnimatedLength)markerHeightReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_MARKER_HEIGHT_ATTRIBUTE,
-                                             null);
-            markerHeightReference = new WeakReference(result);
-        }
-        return result;
+	throw new RuntimeException(" !!! TODO: getMarkerHeight()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getOrientType()}.
      */
     public SVGAnimatedEnumeration getOrientType() {
-	throw new RuntimeException(" !!! TODO: SVGOMMarkerElement.getOrientType()");
+	throw new RuntimeException(" !!! TODO: getOrientType()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#getOrientAngle()}.
      */
     public SVGAnimatedAngle getOrientAngle() {
-	throw new RuntimeException(" !!! TODO: SVGOMMarkerElement.getOrientAngle()");
+	throw new RuntimeException(" !!! TODO: getOrientAngle()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#setOrientToAuto()}.
      */
     public void setOrientToAuto() {
-	throw new RuntimeException(" !!! TODO: SVGOMMarkerElement.setOrientToAuto()");
+	throw new RuntimeException(" !!! TODO: setOrientToAuto()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGMarkerElement#setOrientToAngle(SVGAngle)}.
      */
     public void setOrientToAngle(SVGAngle angle) {
-	throw new RuntimeException(" !!! TODO: SVGOMMarkerElement.setOrientToAngle()");
+	throw new RuntimeException(" !!! TODO: setOrientToAngle()");
     }
 
     // SVGFitToViewBox support ////////////////////////////////////////////
@@ -185,7 +139,7 @@ public class SVGOMMarkerElement
      * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-	throw new RuntimeException(" !!! TODO: SVGOMMarkerElement.getViewBox()");
+	throw new RuntimeException(" !!! TODO: getViewBox()");
     }
 
     /**
@@ -193,113 +147,17 @@ public class SVGOMMarkerElement
      * org.w3c.dom.svg.SVGFitToViewBox#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
-	throw new RuntimeException
-	    (" !!! TODO: SVGOMMarkerElement.getPreserveAspectRatio()");
-    }
-
-    // ElementNonCSSPresentationalHints ////////////////////////////////////
-
-    /**
-     * Returns the translation of the non-CSS hints to the corresponding
-     * CSS rules. The result can be null.
-     */
-    public CSSStyleDeclaration getNonCSSPresentationalHints() {
-        return ElementNonCSSPresentationalHintsSupport.
-            getNonCSSPresentationalHints(this);
-    }
-
-    // SVGStylable support ///////////////////////////////////////////////////
-
-    /**
-     * The stylable support.
-     */
-    protected SVGStylableSupport stylableSupport;
-
-    /**
-     * Returns stylableSupport different from null.
-     */
-    protected final SVGStylableSupport getStylableSupport() {
-        if (stylableSupport == null) {
-            stylableSupport = new SVGStylableSupport();
-        }
-        return stylableSupport;
-    }
-
-    /**
-     * Implements {@link
-     * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
-     */
-    public boolean hasStyle() {
-        return SVGStylableSupport.hasStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
-     */
-    public CSSStyleDeclaration getStyle() {
-        return getStylableSupport().getStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
-     */
-    public CSSValue getPresentationAttribute(String name) {
-        return getStylableSupport().getPresentationAttribute(name, this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getClassName()}.
-     */
-    public SVGAnimatedString getClassName() {
-        return getStylableSupport().getClassName(this);
-    }
-
-    // OverrideStyleElement ///////////////////////////////////////////
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#hasOverrideStyle(String)}.
-     */
-    public boolean hasOverrideStyle(String pseudoElt) {
-        return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#getOverrideStyle(String)}.
-     */
-    public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-        return getStylableSupport().getOverrideStyle(pseudoElt, this);
+	throw new RuntimeException(" !!! TODO: getPreserveAspectRatio()");
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
-
-    /**
-     * The SVGExternalResourcesRequired support.
-     */
-    protected SVGExternalResourcesRequiredSupport
-        externalResourcesRequiredSupport;
-
-    /**
-     * Returns testsSupport different from null.
-     */
-    protected final SVGExternalResourcesRequiredSupport
-        getExternalResourcesRequiredSupport() {
-        if (externalResourcesRequiredSupport == null) {
-            externalResourcesRequiredSupport =
-                new SVGExternalResourcesRequiredSupport();
-        }
-        return externalResourcesRequiredSupport;
-    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-        return getExternalResourcesRequiredSupport().
+        return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 
@@ -331,6 +189,14 @@ public class SVGOMMarkerElement
      */
     public void setXMLspace(String space) {
         XMLSupport.setXMLSpace(this, space);
+    }
+
+    /**
+     * Returns the AttributeInitializer for this element type.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**

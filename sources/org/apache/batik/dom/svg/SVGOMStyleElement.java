@@ -8,9 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.css.CSSOMStyleSheet;
 import org.apache.batik.dom.AbstractDocument;
@@ -24,7 +21,7 @@ import org.w3c.dom.stylesheets.StyleSheet;
 import org.w3c.dom.svg.SVGStyleElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGStyleElement}.
+ * This class implements {@link SVGStyleElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -35,13 +32,15 @@ public class SVGOMStyleElement
                LinkStyle {
 
     /**
-     * The attribute-value map map.
+     * The attribute initializer.
      */
-    protected static Map attributeValues = new HashMap(3);
+    protected final static AttributeInitializer attributeInitializer;
     static {
-        Map values = new HashMap(2);
-        values.put(SVG_SPACE_ATTRIBUTE, SVG_PRESERVE_VALUE);
-        attributeValues.put(XMLSupport.XML_NAMESPACE_URI, values);
+        attributeInitializer = new AttributeInitializer(1);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          "xml:space",
+                                          "preserve");
     }
 
     /**
@@ -69,7 +68,7 @@ public class SVGOMStyleElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "style";
+        return SVG_STYLE_TAG;
     }
 
     /**
@@ -101,75 +100,67 @@ public class SVGOMStyleElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStyleElement#getXMLspace()}.
+     * <b>DOM</b>: Implements {@link SVGStyleElement#getXMLspace()}.
      */
     public String getXMLspace() {
         return XMLSupport.getXMLSpace(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStyleElement#setXMLspace(String)}.
+     * <b>DOM</b>: Implements {@link SVGStyleElement#setXMLspace(String)}.
      */
     public void setXMLspace(String xmlspace) throws DOMException {
         XMLSupport.setXMLSpace(this, xmlspace);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStyleElement#getType()}.
+     * <b>DOM</b>: Implements {@link SVGStyleElement#getType()}.
      */
     public String getType() {
         return getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStyleElement#setType(String)}.
+     * <b>DOM</b>: Implements {@link SVGStyleElement#setType(String)}.
      */
     public void setType(String type) throws DOMException {
         setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStyleElement#getMedia()}.
+     * <b>DOM</b>: Implements {@link SVGStyleElement#getMedia()}.
      */
     public String getMedia() {
         return getAttribute(SVG_MEDIA_ATTRIBUTE);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStyleElement#setMedia(String)}.
+     * <b>DOM</b>: Implements {@link SVGStyleElement#setMedia(String)}.
      */
     public void setMedia(String media) throws DOMException {
         setAttribute(SVG_MEDIA_ATTRIBUTE, media);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStyleElement#getTitle()}.
+     * <b>DOM</b>: Implements {@link SVGStyleElement#getTitle()}.
      */
     public String getTitle() {
         return getAttribute(SVG_TITLE_ATTRIBUTE);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStyleElement#setTitle(String)}.
+     * <b>DOM</b>: Implements {@link SVGStyleElement#setTitle(String)}.
      */
     public void setTitle(String title) throws DOMException {
         setAttribute(SVG_TITLE_ATTRIBUTE, title);
     }
 
     /**
-     * Returns the default attribute values in a map.
+     * Returns the AttributeInitializer for this element type.
      * @return null if this element has no attribute with a default value.
      */
-    protected Map getDefaultAttributeValues() {
-        return attributeValues;
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**

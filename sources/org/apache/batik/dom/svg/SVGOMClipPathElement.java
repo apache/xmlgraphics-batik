@@ -17,30 +17,14 @@ import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGClipPathElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGClipPathElement}.
+ * This class implements {@link SVGClipPathElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public class SVGOMClipPathElement
-    extends    SVGClippingMaskingElement
+    extends    SVGGraphicsElement
     implements SVGClipPathElement {
-
-    /**
-     * The DefaultAttributeValueProducer for clipPathUnits.
-     */
-    protected final static DefaultAttributeValueProducer
-        CLIP_PATH_UNITS_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_CLIP_PATH_CLIP_PATH_UNITS_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The clipPathUnits attribute reference.
-     */
-    protected transient WeakReference clipPathUnitsReference;
 
     /**
      * Creates a new SVGOMClipPathElement object.
@@ -58,7 +42,7 @@ public class SVGOMClipPathElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_CLIP_PATH_TAG;
@@ -69,17 +53,7 @@ public class SVGOMClipPathElement
      * org.w3c.dom.svg.SVGGradientElement#getGradientUnits()}.
      */
     public SVGAnimatedEnumeration getClipPathUnits() {
-        SVGAnimatedEnumeration result;
-        if (clipPathUnitsReference == null ||
-            (result = (SVGAnimatedEnumeration)clipPathUnitsReference.get()) == null) {
-            result = new SVGOMAnimatedEnumeration(this, null,
-                                                  SVG_CLIP_PATH_UNITS_ATTRIBUTE,
-                                                  STRING_TO_SHORT_UNITS,
-                                                  SHORT_TO_STRING_UNITS,
-                                                CLIP_PATH_UNITS_DEFAULT_VALUE_PRODUCER);
-            clipPathUnitsReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getClipPathUnits()");
     }
 
     /**

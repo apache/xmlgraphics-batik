@@ -31,6 +31,8 @@ public interface SVGConstants extends CSSConstants {
         "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd";
     String SVG_NAMESPACE_URI =
         "http://www.w3.org/2000/svg";
+    String SVG_VERSION =
+        "1.0";
 
     /////////////////////////////////////////////////////////////////////////
     // SVG features
@@ -140,6 +142,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_BASE_FREQUENCY_ATTRIBUTE = "baseFrequency";
     String SVG_BBOX_ATTRIBUTE = "bbox";
     String SVG_BIAS_ATTRIBUTE = "bias";
+    String SVG_CALC_MODE_ATTRIBUTE = "calcMode";
     String SVG_CAP_HEIGHT_ATTRIBUTE = "cap-height";
     String SVG_CLASS_ATTRIBUTE = "class";
     String SVG_CLIP_PATH_ATTRIBUTE = CSS_CLIP_PATH_PROPERTY;
@@ -304,6 +307,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_V_IDEOGRAPHIC_ATTRIBUTE = "v-ideographic";
     String SVG_V_MATHEMATICAL_ATTRIBUTE = "v-mathematical";
     String SVG_VALUES_ATTRIBUTE = "values";
+    String SVG_VERSION_ATTRIBUTE = "version";
     String SVG_VERT_ADV_Y_ATTRIBUTE = "vert-adv-y";
     String SVG_VERT_ORIGIN_X_ATTRIBUTE = "vert-origin-x";
     String SVG_VERT_ORIGIN_Y_ATTRIBUTE = "vert-origin-y";
@@ -402,6 +406,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_OPTIMIZE_SPEED_VALUE = "optimizeSpeed";
     String SVG_OUT_VALUE = "out";
     String SVG_OVER_VALUE = "over";
+    String SVG_PACED_VALUE = "paced";
     String SVG_PAD_VALUE = "pad";
     String SVG_PERCEPTUAL_VALUE = "perceptual";
     String SVG_PRESERVE_VALUE = "preserve";
@@ -426,6 +431,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_STROKE_WIDTH_VALUE = "strokeWidth";
     String SVG_TABLE_VALUE = "table";
     String SVG_TERMINAL_VALUE = "terminal";
+    String SVG_TRANSLATE_VALUE = "translate";
     String SVG_TRUE_VALUE = "true";
     String SVG_TURBULENCE_VALUE = "turbulence";
     String SVG_USER_SPACE_ON_USE_VALUE = "userSpaceOnUse";

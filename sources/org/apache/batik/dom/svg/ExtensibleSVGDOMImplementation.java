@@ -17,7 +17,7 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.GenericElement;
 import org.apache.batik.dom.GenericElementNS;
 import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.dom.util.HashTable;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 
 import org.apache.batik.util.Service;
 
@@ -45,7 +45,7 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
     /**
      * The custom elements factories.
      */
-    protected HashTable customFactories;
+    protected DoublyIndexedTable customFactories;
 
     /**
      * Returns the default instance of this class.
@@ -73,13 +73,9 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
                                              String localName,
                                              ElementFactory factory) {
         if (customFactories == null) {
-            customFactories = new HashTable();
+            customFactories = new DoublyIndexedTable();
         }
-        HashTable ht = (HashTable)customFactories.get(namespaceURI);
-        if (ht == null) {
-            customFactories.put(namespaceURI, ht = new HashTable());
-        }
-        ht.put(localName, factory);
+        customFactories.put(namespaceURI, localName, factory);
     }
 
     /**
@@ -102,14 +98,12 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
         }
         if (namespaceURI != null) {
             if (customFactories != null) {
-                HashTable ht = (HashTable)customFactories.get(namespaceURI);
-                if (ht != null) {
-                    String name = DOMUtilities.getLocalName(qualifiedName);
-                    ElementFactory cef = (ElementFactory)ht.get(name);
-                    if (cef != null) {
-                        return cef.create(DOMUtilities.getPrefix(qualifiedName),
-                                          document);
-                    }
+                String name = DOMUtilities.getLocalName(qualifiedName);
+                ElementFactory cef = (ElementFactory)customFactories.get(namespaceURI,
+                                                                         name);
+                if (cef != null) {
+                    return cef.create(DOMUtilities.getPrefix(qualifiedName),
+                                      document);
                 }
             }
             return new GenericElementNS(namespaceURI.intern(),

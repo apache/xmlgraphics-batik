@@ -26,25 +26,25 @@ import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGSymbolElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGSymbolElement}.
+ * This class implements {@link SVGSymbolElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public class SVGOMSymbolElement
-    extends    SVGOMElement
-    implements SVGSymbolElement,
-	       OverrideStyleElement,
-	       ExtendedElementCSSInlineStyle {
+    extends    SVGStylableElement
+    implements SVGSymbolElement {
 
     /**
-     * The attribute-value map map.
+     * The attribute initializer.
      */
-    protected static Map attributeValues = new HashMap(3);
+    protected final static AttributeInitializer attributeInitializer;
     static {
-        Map values = new HashMap(2);
-        values.put("preserveAspectRatio", "xMidYMid meet");
-        attributeValues.put(null, values);
+        attributeInitializer = new AttributeInitializer(1);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                                          "xMidYMid meet");
     }
 
     /**
@@ -64,84 +64,10 @@ public class SVGOMSymbolElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "symbol";
-    }
-
-    /**
-     * Returns the default attribute values in a map.
-     * @return null if this element has no attribute with a default value.
-     */
-    protected Map getDefaultAttributeValues() {
-        return attributeValues;
-    }
-
-    // SVGStylable support ///////////////////////////////////////////////////
-
-    /**
-     * The stylable support.
-     */
-    protected SVGStylableSupport stylableSupport;
-
-    /**
-     * Returns stylableSupport different from null.
-     */
-    protected final SVGStylableSupport getStylableSupport() {
-	if (stylableSupport == null) {
-	    stylableSupport = new SVGStylableSupport();
-	}
-	return stylableSupport;
-    }
-
-    /**
-     * Implements {@link
-     * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
-     */
-    public boolean hasStyle() {
-        return getStylableSupport().hasStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
-     */
-    public CSSStyleDeclaration getStyle() {
-        return getStylableSupport().getStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
-     */
-    public CSSValue getPresentationAttribute(String name) {
-        return getStylableSupport().getPresentationAttribute(name, this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getClassName()}.
-     */
-    public SVGAnimatedString getClassName() {
-        return getStylableSupport().getClassName(this);
-    }
-
-    // OverrideStyleElement ///////////////////////////////////////////
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#hasOverrideStyle(String)}.
-     */
-    public boolean hasOverrideStyle(String pseudoElt) {
-	return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }    
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#getOverrideStyle(String)}.
-     */
-    public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return getStylableSupport().getOverrideStyle(pseudoElt, this);
+        return SVG_SYMBOL_TAG;
     }
 
     // SVGLangSpace support //////////////////////////////////////////////////
@@ -195,49 +121,36 @@ public class SVGOMSymbolElement
     // SVGFitToViewBox support ////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
+     * <b>DOM</b>: Implements {@link SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-	throw new RuntimeException(" !!! TODO: SVGOMSVGElement.getViewBox()");
+	throw new RuntimeException(" !!! TODO: getViewBox()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFitToViewBox#getPreserveAspectRatio()}.
+     * <b>DOM</b>: Implements {@link SVGFitToViewBox#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
-	throw new RuntimeException
-	    (" !!! TODO: SVGOMSVGElement.getPreserveAspectRatio()");
+	throw new RuntimeException(" !!! TODO: getPreserveAspectRatio()");
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
-
-    /**
-     * The SVGExternalResourcesRequired support.
-     */
-    protected SVGExternalResourcesRequiredSupport
-        externalResourcesRequiredSupport;
-
-    /**
-     * Returns testsSupport different from null.
-     */
-    protected final SVGExternalResourcesRequiredSupport
-	getExternalResourcesRequiredSupport() {
-	if (externalResourcesRequiredSupport == null) {
-	    externalResourcesRequiredSupport =
-                new SVGExternalResourcesRequiredSupport();
-	}
-	return externalResourcesRequiredSupport;
-    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGExternalResourcesRequired}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return getExternalResourcesRequiredSupport().
+	return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
+    }
+
+    /**
+     * Returns the AttributeInitializer for this element type.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**

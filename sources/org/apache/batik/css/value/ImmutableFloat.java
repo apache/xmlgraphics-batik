@@ -76,7 +76,11 @@ public class ImmutableFloat extends AbstractImmutablePrimitiveValue {
      *  A string representation of the current value. 
      */
     public String getCssText() {
-	return floatValue + getUnitRepresentation(unitType);
+        String s = "" + floatValue;
+        if (s.endsWith(".0")) {
+            s = s.substring(0, s.length() - 2);
+        }
+	return s + getUnitRepresentation(unitType);
     }
 
     /**

@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGFEFuncRElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEFuncRElement}.
+ * This class implements {@link SVGFEFuncRElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -26,7 +26,7 @@ public class SVGOMFEFuncRElement
     /**
      * Creates a new Element object.
      */
-    public SVGOMFEFuncRElement() {
+    protected SVGOMFEFuncRElement() {
     }
 
     /**
@@ -39,7 +39,7 @@ public class SVGOMFEFuncRElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_FE_FUNC_R_TAG;

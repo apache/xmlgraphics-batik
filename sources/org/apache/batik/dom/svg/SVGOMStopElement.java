@@ -8,18 +8,10 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
-import org.apache.batik.css.ElementNonCSSPresentationalHints;
-import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.OverrideStyleElement;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedNumber;
-import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGStopElement;
 
 /**
@@ -29,16 +21,8 @@ import org.w3c.dom.svg.SVGStopElement;
  * @version $Id$
  */
 public class SVGOMStopElement
-    extends    SVGOMElement
-    implements SVGStopElement,
-               OverrideStyleElement,
-	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints {
-
-    /**
-     * The reference to the offset attribute.
-     */
-    protected transient WeakReference offsetReference;
+    extends    SVGStylableElement
+    implements SVGStopElement {
 
     /**
      * Creates a new SVGOMStopElement object.
@@ -51,13 +35,12 @@ public class SVGOMStopElement
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    public SVGOMStopElement(String prefix,
-                            AbstractDocument owner) {
+    public SVGOMStopElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_STOP_TAG;
@@ -68,92 +51,9 @@ public class SVGOMStopElement
      * org.w3c.dom.svg.SVGStopElement#getOffset()}.
      */
     public SVGAnimatedNumber getOffset() {
-	SVGAnimatedNumber result;
-	if (offsetReference == null ||
-	    (result = (SVGAnimatedNumber)offsetReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_OFFSET_ATTRIBUTE, null);
-	    offsetReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getOffset()");
     }
     
-    // ElementNonCSSPresentationalHints ////////////////////////////////////
-
-    /**
-     * Returns the translation of the non-CSS hints to the corresponding
-     * CSS rules. The result can be null.
-     */
-    public CSSStyleDeclaration getNonCSSPresentationalHints() {
-	return ElementNonCSSPresentationalHintsSupport.
-            getNonCSSPresentationalHints(this);
-    }
-
-    // SVGStylable support ///////////////////////////////////////////////////
-
-    /**
-     * The stylable support.
-     */
-    protected SVGStylableSupport stylableSupport;
-
-    /**
-     * Returns stylableSupport different from null.
-     */
-    protected final SVGStylableSupport getStylableSupport() {
-	if (stylableSupport == null) {
-	    stylableSupport = new SVGStylableSupport();
-	}
-	return stylableSupport;
-    }
-
-    /**
-     * Implements {@link
-     * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
-     */
-    public boolean hasStyle() {
-        return SVGStylableSupport.hasStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
-     */
-    public CSSStyleDeclaration getStyle() {
-        return getStylableSupport().getStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
-     */
-    public CSSValue getPresentationAttribute(String name) {
-        return getStylableSupport().getPresentationAttribute(name, this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getClassName()}.
-     */
-    public SVGAnimatedString getClassName() {
-        return getStylableSupport().getClassName(this);
-    }
-
-    // OverrideStyleElement ///////////////////////////////////////////
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#hasOverrideStyle(String)}.
-     */
-    public boolean hasOverrideStyle(String pseudoElt) {
-	return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }    
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#getOverrideStyle(String)}.
-     */
-    public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return getStylableSupport().getOverrideStyle(pseudoElt, this);
-    }
-
     /**
      * Returns a new uninitialized instance of this object's class.
      */

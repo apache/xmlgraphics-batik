@@ -15,7 +15,7 @@ import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEComponentTransferElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEComponentTransferElement}.
+ * This class implements {@link SVGFEComponentTransferElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -23,11 +23,6 @@ import org.w3c.dom.svg.SVGFEComponentTransferElement;
 public class SVGOMFEComponentTransferElement
     extends    SVGOMFilterPrimitiveStandardAttributes
     implements SVGFEComponentTransferElement {
-
-    /**
-     * The reference to the in attribute.
-     */
-    protected transient WeakReference inReference;
 
     /**
      * Creates a new SVGOMFEComponentTransferElement object.
@@ -53,17 +48,10 @@ public class SVGOMFEComponentTransferElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGFEComponentTransferElement#getIn1()}.
+     * <b>DOM</b>: Implements {@link SVGFEComponentTransferElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-	SVGAnimatedString result;
-	if (inReference == null ||
-	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-	    inReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException("!!! TODO: getIn1()");
     }
 
     /**

@@ -8,14 +8,16 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.util.XMLSupport;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGAElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGAElement}.
+ * This class implements {@link SVGAElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -23,10 +25,30 @@ import org.w3c.dom.svg.SVGAElement;
 public class SVGOMAElement
     extends    SVGURIReferenceGraphicsElement
     implements SVGAElement {
+
     /**
-     * The reference to the target attribute.
+     * The attribute initializer.
      */
-    protected transient WeakReference targetReference;
+    protected final static AttributeInitializer attributeInitializer;
+    static {
+        attributeInitializer = new AttributeInitializer(4);
+        attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
+                                          null,
+                                          "xmlns:xlink",
+                                          XLinkSupport.XLINK_NAMESPACE_URI);
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "type",
+                                          "simple");
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "show",
+                                          "replace");
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "actuate",
+                                          "onRequest");
+    }
 
     /**
      * Creates a new SVGOMAElement object.
@@ -44,24 +66,26 @@ public class SVGOMAElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_A_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGAElement#getTarget()}.
+     * <b>DOM</b>: Implements {@link SVGAElement#getTarget()}.
      */
     public SVGAnimatedString getTarget() {
-	SVGAnimatedString result;
-	if (targetReference == null ||
-	    (result = (SVGAnimatedString)targetReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_TARGET_ATTRIBUTE);
-	    targetReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException("!!! TODO: getTarget()");
     } 
+
+    /**
+     * Returns the AttributeInitializer for this element type.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
+    }
 
     /**
      * Returns a new uninitialized instance of this object's class.

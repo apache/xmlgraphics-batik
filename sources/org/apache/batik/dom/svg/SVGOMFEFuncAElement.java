@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGFEFuncAElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEFuncAElement}.
+ * This class implements {@link SVGFEFuncAElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -39,7 +39,7 @@ public class SVGOMFEFuncAElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_FE_FUNC_A_TAG;

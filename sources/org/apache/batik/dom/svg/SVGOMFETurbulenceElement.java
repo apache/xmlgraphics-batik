@@ -8,11 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.Attr;
@@ -25,7 +20,7 @@ import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFETurbulenceElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFETurbulenceElement}.
+ * This class implements {@link SVGFETurbulenceElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -35,93 +30,19 @@ public class SVGOMFETurbulenceElement
     implements SVGFETurbulenceElement {
 
     /**
-     * The DefaultAttributeValueProducer for numOctaves.
+     * The attribute initializer.
      */
-    protected final static DefaultAttributeValueProducer
-        NUM_OCTAVES_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_FE_TURBULENCE_NUM_OCTAVES_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The DefaultAttributeValueProducer for seed.
-     */
-    protected final static DefaultAttributeValueProducer
-        SEED_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_FE_TURBULENCE_SEED_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The reference to the numOctaves attribute.
-     */
-    protected transient WeakReference numOctavesReference;
-
-    /**
-     * The reference to the seed attribute.
-     */
-    protected transient WeakReference seedReference;
-
-    /**
-     * The reference to the stitchTiles attribute.
-     */
-    protected transient WeakReference stitchTilesReference;
-
-    /**
-     * The reference to the type attribute.
-     */
-    protected transient WeakReference typeReference;
-
-    /**
-     * The reference to the base frequency x value.
-     */
-    protected transient WeakReference baseFrequencyXReference;
-
-    /**
-     * The reference to the base frequency y value.
-     */
-    protected transient WeakReference baseFrequencyYReference;
-
-    /**
-     * The attribute-value map.
-     */
-    protected static Map attributeValues = new HashMap(2);
+    protected final static AttributeInitializer attributeInitializer;
     static {
-        Map values = new HashMap(3);
-        values.put(SVG_STITCH_TILES_ATTRIBUTE, SVG_NO_STITCH_VALUE);
-        values.put(SVG_TYPE_ATTRIBUTE, SVG_TURBULENCE_VALUE);
-        attributeValues.put(null, values);
-    }
-
-    // The enumeration maps
-    protected final static Map STRING_TO_SHORT_STITCH_TILES = new HashMap(3);
-    protected final static Map SHORT_TO_STRING_STITCH_TILES = new HashMap(3);
-    protected final static Map STRING_TO_SHORT_TYPE = new HashMap(3);
-    protected final static Map SHORT_TO_STRING_TYPE = new HashMap(3);
-    static {
-        STRING_TO_SHORT_STITCH_TILES.put(SVG_STITCH_VALUE,
-                                         SVGOMAnimatedEnumeration.createShort((short)1));
-        STRING_TO_SHORT_STITCH_TILES.put(SVG_NO_STITCH_VALUE,
-                                         SVGOMAnimatedEnumeration.createShort((short)2));
-
-        SHORT_TO_STRING_STITCH_TILES.put(SVGOMAnimatedEnumeration.createShort((short)1),
-                                         SVG_STITCH_VALUE);
-        SHORT_TO_STRING_STITCH_TILES.put(SVGOMAnimatedEnumeration.createShort((short)2),
-                                         SVG_NO_STITCH_VALUE);
-
-        STRING_TO_SHORT_TYPE.put(SVG_FRACTAL_NOISE_VALUE,
-                                 SVGOMAnimatedEnumeration.createShort((short)1));
-        STRING_TO_SHORT_TYPE.put(SVG_TURBULENCE_VALUE,
-                                 SVGOMAnimatedEnumeration.createShort((short)2));
-
-        SHORT_TO_STRING_TYPE.put(SVGOMAnimatedEnumeration.createShort((short)1),
-                                 SVG_FRACTAL_NOISE_VALUE);
-        SHORT_TO_STRING_TYPE.put(SVGOMAnimatedEnumeration.createShort((short)2),
-                                 SVG_TURBULENCE_VALUE);
+        attributeInitializer = new AttributeInitializer(2);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_STITCH_TILES_ATTRIBUTE,
+                                          SVG_NO_STITCH_VALUE);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_TYPE_ATTRIBUTE,
+                                          SVG_TURBULENCE_VALUE);
     }
 
     /**
@@ -141,172 +62,60 @@ public class SVGOMFETurbulenceElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_FE_TURBULENCE_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFETurbulenceElement#getBaseFrequencyX()}.
+     * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getBaseFrequencyX()}.
      */
     public SVGAnimatedNumber getBaseFrequencyX() {
-        SVGAnimatedNumber result;
-        if (baseFrequencyXReference == null ||
-            (result = (SVGAnimatedNumber)baseFrequencyXReference.get()) == null) {
-            result = new SVGAnimatedNumber() {
-                public float getBaseVal() {
-                    Attr a = getAttributeNodeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE);
-                    if (a != null) {
-                        StringTokenizer st = new StringTokenizer(a.getValue(), " ");
-                        if (st.hasMoreTokens()) {
-                            return Float.parseFloat(st.nextToken());
-                        }
-                    }
-                    return 0;
-                }
-                public void setBaseVal(float baseVal) throws DOMException {
-                    String bfy = "";
-                    Attr a = getAttributeNodeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE);
-                    if (a != null) {
-                        StringTokenizer st = new StringTokenizer(a.getValue(), " ");
-                        if (st.hasMoreTokens()) {
-                            st.nextToken();
-                            if (st.hasMoreTokens()) {
-                                bfy = st.nextToken();
-                            }
-                        }
-                    }
-                    setAttributeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE,
-                                   Float.toString(baseVal) +
-                                   ((bfy.length() == 0) ? "" :" " + bfy));
-                }
-                public float getAnimVal() {
-                    throw new RuntimeException(" !!! TODO");
-                }
-            };
-            baseFrequencyXReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO getBaseFrequencyX()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFETurbulenceElement#getBaseFrequencyY()}.
+     * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getBaseFrequencyY()}.
      */
     public SVGAnimatedNumber getBaseFrequencyY() {
-        SVGAnimatedNumber result;
-        if (baseFrequencyYReference == null ||
-            (result = (SVGAnimatedNumber)baseFrequencyYReference.get()) == null) {
-            result = new SVGAnimatedNumber() {
-                public float getBaseVal() {
-                    Attr a = getAttributeNodeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE);
-                    if (a != null) {
-                        StringTokenizer st = new StringTokenizer(a.getValue(), " ");
-                        if (st.hasMoreTokens()) {
-                            String s = st.nextToken();
-                            if (st.hasMoreTokens()) {
-                                return Float.parseFloat(st.nextToken());
-                            }
-                            return Float.parseFloat(s);
-                        }
-                    }
-                    return 0;
-                }
-                public void setBaseVal(float baseVal) throws DOMException {
-                    Attr a = getAttributeNodeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE);
-                    String bfx = "0 ";
-                    if (a != null) {
-                        StringTokenizer st = new StringTokenizer(a.getValue(), " ");
-                        if (st.hasMoreTokens()) {
-                            bfx = st.nextToken() + " ";
-                        }
-                    }
-                    setAttributeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE,
-                                   bfx + Float.toString(baseVal));
-                }
-                public float getAnimVal() {
-                    throw new RuntimeException(" !!! TODO");
-                }
-            };
-            baseFrequencyXReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO getBaseFrequencyY()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFETurbulenceElement#getNumOctaves()}.
+     * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getNumOctaves()}.
      */
     public SVGAnimatedInteger getNumOctaves() {
-        SVGAnimatedInteger result;
-        if (numOctavesReference == null ||
-            (result = (SVGAnimatedInteger)numOctavesReference.get()) == null) {
-            result = new SVGOMAnimatedInteger(this, null, SVG_NUM_OCTAVES_ATTRIBUTE,
-                                              NUM_OCTAVES_DEFAULT_VALUE_PRODUCER);
-            numOctavesReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO getNumOctaves()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFETurbulenceElement#getSeed()}.
+     * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getSeed()}.
      */
     public SVGAnimatedNumber getSeed() {
-        SVGAnimatedNumber result;
-        if (seedReference == null ||
-            (result = (SVGAnimatedNumber)seedReference.get()) == null) {
-            result = new SVGOMAnimatedNumber(this, null, SVG_SEED_ATTRIBUTE,
-                                             SEED_DEFAULT_VALUE_PRODUCER);
-            seedReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO getSeed()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGFETurbulenceElement#getStitchTiles()}.
+     * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getStitchTiles()}.
      */
     public SVGAnimatedEnumeration getStitchTiles() {
-        SVGAnimatedEnumeration result;
-        if (stitchTilesReference == null ||
-            (result = (SVGAnimatedEnumeration)stitchTilesReference.get()) == null) {
-            result = new SVGOMAnimatedEnumeration(this, null,
-                                                  SVG_STITCH_TILES_ATTRIBUTE,
-                                                  STRING_TO_SHORT_STITCH_TILES,
-                                                  SHORT_TO_STRING_STITCH_TILES,
-                                                  null);
-            stitchTilesReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO getStitchTiles()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGFETurbulenceElement#getType()}.
+     * <b>DOM</b>: Implements {@link SVGFETurbulenceElement#getType()}.
      */
     public SVGAnimatedEnumeration getType() {
-        SVGAnimatedEnumeration result;
-        if (typeReference == null ||
-            (result = (SVGAnimatedEnumeration)typeReference.get()) == null) {
-            result = new SVGOMAnimatedEnumeration(this, null,
-                                                  SVG_TYPE_ATTRIBUTE,
-                                                  STRING_TO_SHORT_TYPE,
-                                                  SHORT_TO_STRING_TYPE,
-                                                  null);
-            typeReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO getType()");
     }
 
     /**
-     * Returns the default attribute values in a map.
+     * Returns the AttributeInitializer for this element type.
      * @return null if this element has no attribute with a default value.
      */
-    protected Map getDefaultAttributeValues() {
-        return attributeValues;
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**

@@ -8,18 +8,17 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
-import org.w3c.dom.svg.SVGAnimatedString;
-import org.w3c.dom.svg.SVGElementInstance;
 import org.w3c.dom.svg.SVGImageElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGImageElement}.
+ * This class implements {@link SVGImageElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -29,46 +28,32 @@ public class SVGOMImageElement
     implements SVGImageElement {
 
     /**
-     * The DefaultAttributeValueProducer for x.
+     * The attribute initializer.
      */
-    protected final static DefaultAttributeValueProducer
-        X_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_IMAGE_X_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The DefaultAttributeValueProducer for y.
-     */
-    protected final static DefaultAttributeValueProducer
-        Y_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_IMAGE_Y_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The reference to the x attribute.
-     */
-    protected transient WeakReference xReference;
-
-    /**
-     * The reference to the y attribute.
-     */
-    protected transient WeakReference yReference;
-
-    /**
-     * The reference to the width attribute.
-     */
-    protected transient WeakReference widthReference;
-
-    /**
-     * The reference to the height attribute.
-     */
-    protected transient WeakReference heightReference;
+    protected final static AttributeInitializer attributeInitializer;
+    static {
+        attributeInitializer = new AttributeInitializer(5);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                                          "xMidYMid meet");
+        attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
+                                          null,
+                                          "xmlns:xlink",
+                                          XLinkSupport.XLINK_NAMESPACE_URI);
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "type",
+                                          "simple");
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "show",
+                                          "replace");
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "actuate",
+                                          "onRequest");
+    }
 
     /**
      * Creates a new SVGOMImageElement object.
@@ -86,75 +71,53 @@ public class SVGOMImageElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_IMAGE_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGImageElement#getX()}.
+     * <b>DOM</b>: Implements {@link SVGImageElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        SVGAnimatedLength result;
-        if (xReference == null ||
-            (result = (SVGAnimatedLength)xReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE,
-                                             X_DEFAULT_VALUE_PRODUCER);
-            xReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getX()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGImageElement#getY()}.
+     * <b>DOM</b>: Implements {@link SVGImageElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        SVGAnimatedLength result;
-        if (yReference == null ||
-            (result = (SVGAnimatedLength)yReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE,
-                                             Y_DEFAULT_VALUE_PRODUCER);
-            yReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getY()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGImageElement#getWidth()}.
+     * <b>DOM</b>: Implements {@link SVGImageElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        SVGAnimatedLength result;
-        if (widthReference == null ||
-            (result = (SVGAnimatedLength)widthReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
-            widthReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getWidth()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGImageElement#getHeight()}.
+     * <b>DOM</b>: Implements {@link SVGImageElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        SVGAnimatedLength result;
-        if (heightReference == null ||
-            (result = (SVGAnimatedLength)heightReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
-            heightReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getHeight()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGImageElement#getPreserveAspectRatio()}.
+     * <b>DOM</b>: Implements {@link SVGImageElement#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
-        throw new RuntimeException
-            (" !!! TODO: SVGOMImageElement.getPreserveAspectRatio()");
+        throw new RuntimeException(" !!! TODO: getPreserveAspectRatio()");
+    }
+
+    /**
+     * Returns the AttributeInitializer for this element type.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**

@@ -8,15 +8,13 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
 import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGFEDistantLightElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEDistantLightElement}.
+ * This class implements {@link SVGFEDistantLightElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -24,38 +22,6 @@ import org.w3c.dom.svg.SVGFEDistantLightElement;
 public class SVGOMFEDistantLightElement
     extends    SVGOMElement
     implements SVGFEDistantLightElement {
-
-    /**
-     * The DefaultAttributeValueProducer for azimuth.
-     */
-    protected final static DefaultAttributeValueProducer
-        AZIMUTH_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_FE_DISTANT_LIGHT_AZIMUTH_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The DefaultAttributeValueProducer for elevation.
-     */
-    protected final static DefaultAttributeValueProducer
-        ELEVATION_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_FE_DISTANT_LIGHT_ELEVATION_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The reference to the azimuth attribute.
-     */
-    protected transient WeakReference azimuthReference;
-
-    /**
-     * The reference to the elevation attribute.
-     */
-    protected transient WeakReference elevationReference;
 
     /**
      * Creates a new SVGOMFEDistantLightElement object.
@@ -74,40 +40,24 @@ public class SVGOMFEDistantLightElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_FE_DISTANT_LIGHT_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEDistantLightElement#getAzimuth()}.
+     * <b>DOM</b>: Implements {@link SVGFEDistantLightElement#getAzimuth()}.
      */
     public SVGAnimatedNumber getAzimuth() {
-        SVGAnimatedNumber result;
-        if (azimuthReference == null ||
-            (result = (SVGAnimatedNumber)azimuthReference.get()) == null) {
-            result = new SVGOMAnimatedNumber(this, null, SVG_AZIMUTH_ATTRIBUTE,
-                                             AZIMUTH_DEFAULT_VALUE_PRODUCER);
-            azimuthReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getAzimuth");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEDistantLightElement#getElevation()}.
+     * <b>DOM</b>: Implements {@link SVGFEDistantLightElement#getElevation()}.
      */
     public SVGAnimatedNumber getElevation() {
-        SVGAnimatedNumber result;
-        if (elevationReference == null ||
-            (result = (SVGAnimatedNumber)elevationReference.get()) == null) {
-            result = new SVGOMAnimatedNumber(this, null, SVG_ELEVATION_ATTRIBUTE,
-                                             ELEVATION_DEFAULT_VALUE_PRODUCER);
-            elevationReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getElevation()");
     }
 
     /**

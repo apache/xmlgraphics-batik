@@ -8,7 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.Node;
@@ -38,7 +37,7 @@ import org.w3c.dom.svg.SVGPathSegMovetoRel;
 import org.w3c.dom.svg.SVGPoint;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGPathElement}.
+ * This class implements {@link SVGPathElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -70,77 +69,68 @@ public class SVGOMPathElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGPathElement#getPathLength()}.
+     * <b>DOM</b>: Implements {@link SVGPathElement#getPathLength()}.
      */
     public SVGAnimatedNumber getPathLength() {
-        throw new RuntimeException(" !!! SVGOMPathElement#getPathLength()");
+        throw new RuntimeException(" !!! getPathLength()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGPathElement#getTotalLength()}.
+     * <b>DOM</b>: Implements {@link SVGPathElement#getTotalLength()}.
      */
     public float getTotalLength() {
-        throw new RuntimeException(" !!! SVGOMPathElement#getTotalLength()");
+        throw new RuntimeException(" !!! getTotalLength()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGPathElement#getPointAtLength(float)}.
+     * <b>DOM</b>: Implements {@link SVGPathElement#getPointAtLength(float)}.
      */
     public SVGPoint getPointAtLength(float distance) {
-        throw new RuntimeException(" !!! SVGOMPathElement#getPointAtLength()");
+        throw new RuntimeException(" !!! getPointAtLength()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGPathElement#getPathSegAtLength(float)}.
+     * <b>DOM</b>: Implements {@link SVGPathElement#getPathSegAtLength(float)}.
      */
     public int getPathSegAtLength(float distance) {
-        throw new RuntimeException(" !!! SVGOMPathElement#getPathSegAtLength()");
+        throw new RuntimeException(" !!! getPathSegAtLength()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPathData#getPathSegList()}.
+     * <b>DOM</b>: Implements {@link SVGPathElement#getPathSegList()}.
      */
     public SVGPathSegList getPathSegList() {
-        throw new RuntimeException(" !!! SVGOMPathElement#getPathSegList()");
+        throw new RuntimeException(" !!! getPathSegList()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPathData#getNormalizedPathSegList()}.
+     * <b>DOM</b>: Implements {@link SVGPathElement#getNormalizedPathSegList()}.
      */
     public SVGPathSegList getNormalizedPathSegList() {
-        throw new RuntimeException(" !!! SVGOMPathElement#getNormalizedPathSegList()");
+        throw new RuntimeException(" !!! getNormalizedPathSegList()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPathData#getAnimatedPathSegList()}.
+     * <b>DOM</b>: Implements {@link SVGPathElement#getAnimatedPathSegList()}.
      */
     public SVGPathSegList getAnimatedPathSegList() {
-        throw new RuntimeException(" !!! SVGOMPathElement#getAnimatedPathSegList()");
+        throw new RuntimeException(" !!! getAnimatedPathSegList()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedPathData#getAnimatedNormalizedPathSegList()}.
+     * <b>DOM</b>: Implements {@link SVGPathElement#getAnimatedNormalizedPathSegList()}.
      */
     public SVGPathSegList getAnimatedNormalizedPathSegList() {
-        throw new RuntimeException(" !!! SVGOMPathElement#getAnimatedNormalizedPathSegList()");
+        throw new RuntimeException(" !!! getAnimatedNormalizedPathSegList()");
     }
 
     // Factory methods /////////////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGPathElement#createSVGPathSegClosePath()}.
+     * <b>DOM</b>: Implements {@link SVGPathElement#createSVGPathSegClosePath()}.
      */
     public SVGPathSegClosePath createSVGPathSegClosePath() {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegClosePath()");
+        throw new RuntimeException(" !!! createSVGPathSegClosePath()");
     }
 
     /**
@@ -148,7 +138,7 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegMovetoAbs(float,float)}.
      */
     public SVGPathSegMovetoAbs createSVGPathSegMovetoAbs(float x, float y) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegMovetoAbs()");
+        throw new RuntimeException(" !!! createSVGPathSegMovetoAbs()");
     }
 
     /**
@@ -156,7 +146,7 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegMovetoRel(float,float)}.
      */
     public SVGPathSegMovetoRel createSVGPathSegMovetoRel(float x, float y) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegMovetoRel()");
+        throw new RuntimeException(" !!! createSVGPathSegMovetoRel()");
     }
 
     /**
@@ -164,7 +154,7 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegLinetoAbs(float,float)}.
      */
     public SVGPathSegLinetoAbs createSVGPathSegLinetoAbs(float x, float y) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegLinetoAbs()");
+        throw new RuntimeException(" !!! createSVGPathSegLinetoAbs()");
     }
 
     /**
@@ -172,43 +162,39 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegLinetoRel(float,float)}.
      */
     public SVGPathSegLinetoRel createSVGPathSegLinetoRel(float x, float y) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegLinetoRel()");
+        throw new RuntimeException(" !!! createSVGPathSegLinetoRel()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link
      * SVGPathElement#createSVGPathSegLinetoHorizontalAbs(float)}.
      */
-    public SVGPathSegLinetoHorizontalAbs createSVGPathSegLinetoHorizontalAbs
-        (float x) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegLinetoHorizontalAbs()");
+    public SVGPathSegLinetoHorizontalAbs createSVGPathSegLinetoHorizontalAbs(float x) {
+        throw new RuntimeException(" !!! createSVGPathSegLinetoHorizontalAbs()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link
      * SVGPathElement#createSVGPathSegLinetoHorizontalRel(float)}.
      */
-    public SVGPathSegLinetoHorizontalRel createSVGPathSegLinetoHorizontalRel
-        (float x) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegLinetoHorizontalRel()");
+    public SVGPathSegLinetoHorizontalRel createSVGPathSegLinetoHorizontalRel(float x) {
+        throw new RuntimeException(" !!! createSVGPathSegLinetoHorizontalRel()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link
      * SVGPathElement#createSVGPathSegLinetoVerticalAbs(float)}.
      */
-    public SVGPathSegLinetoVerticalAbs createSVGPathSegLinetoVerticalAbs
-        (float y) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegLinetoVerticalAbs()");
+    public SVGPathSegLinetoVerticalAbs createSVGPathSegLinetoVerticalAbs(float y) {
+        throw new RuntimeException(" !!! createSVGPathSegLinetoVerticalAbs()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link
      * SVGPathElement#createSVGPathSegLinetoVerticalRel(float)}.
      */
-    public SVGPathSegLinetoVerticalRel createSVGPathSegLinetoVerticalRel
-        (float y) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegLinetoVerticalRel()");
+    public SVGPathSegLinetoVerticalRel createSVGPathSegLinetoVerticalRel(float y) {
+        throw new RuntimeException(" !!! createSVGPathSegLinetoVerticalRel()");
     }
 
     /**
@@ -217,7 +203,7 @@ public class SVGOMPathElement
      */
     public SVGPathSegCurvetoCubicAbs createSVGPathSegCurvetoCubicAbs
         (float x, float y, float x1, float y1, float x2, float y2) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegCurvetoCubicAbs()");
+        throw new RuntimeException(" !!! createSVGPathSegCurvetoCubicAbs()");
     }
 
     /**
@@ -226,7 +212,7 @@ public class SVGOMPathElement
      */
     public SVGPathSegCurvetoCubicRel createSVGPathSegCurvetoCubicRel
         (float x, float y, float x1, float y1, float x2, float y2) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegCurvetoCubicRel()");
+        throw new RuntimeException(" !!! createSVGPathSegCurvetoCubicRel()");
     }
 
     /**
@@ -235,7 +221,7 @@ public class SVGOMPathElement
      */
     public SVGPathSegCurvetoQuadraticAbs createSVGPathSegCurvetoQuadraticAbs
         (float x, float y, float x1, float y1) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegCurvetoQuadraticAbs()");
+        throw new RuntimeException(" !!! createSVGPathSegCurvetoQuadraticAbs()");
     }
 
     /**
@@ -244,7 +230,7 @@ public class SVGOMPathElement
      */
     public SVGPathSegCurvetoQuadraticRel createSVGPathSegCurvetoQuadraticRel
         (float x, float y, float x1, float y1) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegCurvetoQuadraticRel()");
+        throw new RuntimeException(" !!! createSVGPathSegCurvetoQuadraticRel()");
     }
 
     /**
@@ -252,9 +238,8 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegCurvetoCubicSmoothAbs(float,float,float,float)}.
      */
     public SVGPathSegCurvetoCubicSmoothAbs
-            createSVGPathSegCurvetoCubicSmoothAbs
-            (float x, float y, float x2, float y2) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegCurvetoCubicSmoothAbs()");
+            createSVGPathSegCurvetoCubicSmoothAbs(float x, float y, float x2, float y2) {
+        throw new RuntimeException(" !!! createSVGPathSegCurvetoCubicSmoothAbs()");
     }
 
     /**
@@ -262,9 +247,8 @@ public class SVGOMPathElement
      * SVGPathElement#createSVGPathSegCurvetoCubicSmoothRel(float,float,float,float)}.
      */
     public SVGPathSegCurvetoCubicSmoothRel
-            createSVGPathSegCurvetoCubicSmoothRel
-            (float x, float y, float x2, float y2) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegCurvetoCubicSmoothRel()");
+            createSVGPathSegCurvetoCubicSmoothRel(float x, float y, float x2, float y2) {
+        throw new RuntimeException(" !!! createSVGPathSegCurvetoCubicSmoothRel()");
     }
 
     /**
@@ -273,7 +257,7 @@ public class SVGOMPathElement
      */
     public SVGPathSegCurvetoQuadraticSmoothAbs
             createSVGPathSegCurvetoQuadraticSmoothAbs(float x, float y) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegCurvetoQuadraticSmoothAbs()");
+        throw new RuntimeException(" !!! createSVGPathSegCurvetoQuadraticSmoothAbs()");
     }
 
     /**
@@ -282,7 +266,7 @@ public class SVGOMPathElement
      */
     public SVGPathSegCurvetoQuadraticSmoothRel
             createSVGPathSegCurvetoQuadraticSmoothRel(float x, float y) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegCurvetoQuadraticSmoothRel()");
+        throw new RuntimeException(" !!! createSVGPathSegCurvetoQuadraticSmoothRel()");
     }
 
     /**
@@ -292,7 +276,7 @@ public class SVGOMPathElement
     public SVGPathSegArcAbs createSVGPathSegArcAbs
         (float x, float y, float r1, float r2, float angle,
          boolean largeArcFlag, boolean sweepFlag) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegArcAbs()");
+        throw new RuntimeException(" !!! createSVGPathSegArcAbs()");
     }
 
     /**
@@ -302,7 +286,7 @@ public class SVGOMPathElement
     public SVGPathSegArcRel createSVGPathSegArcRel
         (float x, float y, float r1, float r2, float angle,
          boolean largeArcFlag, boolean sweepFlag) {
-        throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegArcRel()");
+        throw new RuntimeException(" !!! createSVGPathSegArcRel()");
     }
 
     /**

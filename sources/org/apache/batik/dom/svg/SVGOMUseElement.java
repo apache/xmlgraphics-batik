@@ -8,9 +8,9 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
@@ -29,24 +29,28 @@ public class SVGOMUseElement
     implements SVGUseElement {
 
     /**
-     * The reference to the x attribute.
+     * The attribute initializer.
      */
-    protected transient WeakReference xReference;
-
-    /**
-     * The reference to the y attribute.
-     */
-    protected transient WeakReference yReference;
-
-    /**
-     * The reference to the width attribute.
-     */
-    protected transient WeakReference widthReference;
-
-    /**
-     * The reference to the height attribute.
-     */
-    protected transient WeakReference heightReference;
+    protected final static AttributeInitializer attributeInitializer;
+    static {
+        attributeInitializer = new AttributeInitializer(4);
+        attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
+                                          null,
+                                          "xmlns:xlink",
+                                          XLinkSupport.XLINK_NAMESPACE_URI);
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "type",
+                                          "simple");
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "show",
+                                          "replace");
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "actuate",
+                                          "onRequest");
+    }
 
     /**
      * Creates a new SVGOMUseElement object.
@@ -64,79 +68,60 @@ public class SVGOMUseElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_USE_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGUseElement#getX()}.
+     * <b>DOM</b>: Implements {@link SVGUseElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-	SVGAnimatedLength result;
-	if (xReference == null ||
-	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
-	    xReference = new WeakReference(result);
-	}
-	return result;
+	throw new RuntimeException(" !!! TODO: getX()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGUseElement#getY()}.
+     * <b>DOM</b>: Implements {@link SVGUseElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-	SVGAnimatedLength result;
-	if (yReference == null ||
-	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
-	    yReference = new WeakReference(result);
-	}
-	return result;
+	throw new RuntimeException(" !!! TODO: getY()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGUseElement#getWidth()}.
+     * <b>DOM</b>: Implements {@link SVGUseElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-	SVGAnimatedLength result;
-	if (widthReference == null ||
-	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
-	    widthReference = new WeakReference(result);
-	}
-	return result;
+	throw new RuntimeException(" !!! TODO: getWidth()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGUseElement#getHeight()}.
+     * <b>DOM</b>: Implements {@link SVGUseElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-	SVGAnimatedLength result;
-	if (heightReference == null ||
-	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
-	    heightReference = new WeakReference(result);
-	}
-	return result;
+	throw new RuntimeException(" !!! TODO: getHeight()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGUseElement#getInstanceRoot()}.
+     * <b>DOM</b>: Implements {@link SVGUseElement#getInstanceRoot()}.
      */
     public SVGElementInstance getInstanceRoot() {
-	throw new RuntimeException(" !!! TODO: SVGOMUseElement.getInstanceRoot()");
+	throw new RuntimeException(" !!! TODO: getInstanceRoot()");
     }
  
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGUseElement#getAnimatedInstanceRoot()}.
+     * <b>DOM</b>: Implements {@link SVGUseElement#getAnimatedInstanceRoot()}.
      */
     public SVGElementInstance getAnimatedInstanceRoot() {
-	throw new RuntimeException(" !!! TODO: SVGOMUseElement.getAnimatedInstanceRoot()");
+	throw new RuntimeException(" !!! TODO: getAnimatedInstanceRoot()");
+    }
+
+    /**
+     * Returns the AttributeInitializer for this element type.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**

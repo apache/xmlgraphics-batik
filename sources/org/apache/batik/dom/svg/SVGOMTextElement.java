@@ -8,7 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.DOMException;
@@ -22,7 +21,7 @@ import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGTextElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGTextElement}.
+ * This class implements {@link SVGTextElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -30,16 +29,6 @@ import org.w3c.dom.svg.SVGTextElement;
 public class SVGOMTextElement
     extends    SVGOMTextPositioningElement
     implements SVGTextElement {
-
-    /**
-     * The reference to the x attribute.
-     */
-    protected transient WeakReference xReference;
-
-    /**
-     * The reference to the y attribute.
-     */
-    protected transient WeakReference yReference;
 
     /**
      * Creates a new SVGOMTextElement object.
@@ -63,78 +52,61 @@ public class SVGOMTextElement
         return SVG_TEXT_TAG;
     }
 
-    // SVGTransformable support /////////////////////////////////////////////
-
-    /**
-     * The transformable support.
-     */
-    protected SVGTransformableSupport transformableSupport;
-
-    /**
-     * Returns stylableSupport different from null.
-     */
-    protected final SVGTransformableSupport getTransformableSupport() {
-	if (transformableSupport == null) {
-	    transformableSupport = new SVGTransformableSupport();
-	}
-	return transformableSupport;
-    }
+    // SVGLocatable support /////////////////////////////////////////////
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getNearestViewportElement()}.
+     * org.w3c.dom.svg.SVGLocatable#getNearestViewportElement()}.
      */
     public SVGElement getNearestViewportElement() {
-	return getTransformableSupport().getNearestViewportElement(this);
+	return SVGLocatableSupport.getNearestViewportElement(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getFarthestViewportElement()}.
+     * org.w3c.dom.svg.SVGLocatable#getFarthestViewportElement()}.
      */
     public SVGElement getFarthestViewportElement() {
-	return getTransformableSupport().getFarthestViewportElement(this);
+	return SVGLocatableSupport.getFarthestViewportElement(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getTransform()}.
-     */
-    public SVGAnimatedTransformList getTransform() {
-	return getTransformableSupport().getTransform(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getBBox()}.
+     * <b>DOM</b>: Implements {@link SVGLocatable#getBBox()}.
      */
     public SVGRect getBBox() {
-	return getTransformableSupport().getBBox(this);
+	return SVGLocatableSupport.getBBox(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getCTM()}.
+     * <b>DOM</b>: Implements {@link SVGLocatable#getCTM()}.
      */
     public SVGMatrix getCTM() {
-	return getTransformableSupport().getCTM(this);
+	return SVGLocatableSupport.getCTM(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getScreenCTM()}.
+     * <b>DOM</b>: Implements {@link SVGLocatable#getScreenCTM()}.
      */
     public SVGMatrix getScreenCTM() {
-	return getTransformableSupport().getScreenCTM(this);
+	return SVGLocatableSupport.getScreenCTM(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTransformable#getTransformToElement(SVGElement)}.
+     * org.w3c.dom.svg.SVGLocatable#getTransformToElement(SVGElement)}.
      */
     public SVGMatrix getTransformToElement(SVGElement element)
 	throws SVGException {
-	return getTransformableSupport().getTransformToElement(element, this);
+	return SVGLocatableSupport.getTransformToElement(element, this);
+    }
+
+    // SVGTransformable support /////////////////////////////////////////////
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGTransformable#getTransform()}.
+     */
+    public SVGAnimatedTransformList getTransform() {
+	return SVGTransformableSupport.getTransform(this);
     }
 
     /**

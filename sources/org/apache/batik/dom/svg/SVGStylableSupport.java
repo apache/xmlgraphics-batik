@@ -8,9 +8,8 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-import org.apache.batik.dom.util.OverrideStyleElement;
-import org.apache.batik.dom.util.OverrideStyleElementSupport;
+import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -23,26 +22,7 @@ import org.w3c.dom.svg.SVGAnimatedString;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGStylableSupport {
-    /**
-     * The name of the style attribute.
-     */
-    public final static String STYLE = "style";
-
-    /**
-     * The name of the class attribute.
-     */
-    public final static String CLASS = "class";
-
-    /**
-     * The reference to the inline style.
-     */
-    protected WeakReference inlineStyle;
-
-    /**
-     * The override style support.
-     */
-    protected OverrideStyleElementSupport overrideStyleSupport;
+public class SVGStylableSupport implements SVGConstants {
 
     /**
      * Creates a new SVGStylableSupport object.
@@ -55,23 +35,19 @@ public class SVGStylableSupport {
      * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
      */
     public static boolean hasStyle(Element elt) {
-        return elt.hasAttribute(STYLE);
+        return elt.hasAttribute(SVG_STYLE_ATTRIBUTE);
     }
 
     /**
      * To implement {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
      */
-    public CSSStyleDeclaration getStyle(Element elt) {
+    public static CSSStyleDeclaration getStyle(Element elt) {
+	// !!! TODO: getStyle()
         CSSStyleDeclaration style;
-        if (inlineStyle == null ||
-            (style = (CSSStyleDeclaration)inlineStyle.get()) == null) {
-	    SVGDOMImplementation impl;
-            impl = (SVGDOMImplementation)elt.getOwnerDocument().
-                getImplementation();
-	    style = impl.createCSSStyleDeclaration();
-	    style.setCssText(elt.getAttribute(STYLE));
-            inlineStyle = new WeakReference(style);
-        }
+        SVGDOMImplementation impl;
+        impl = (SVGDOMImplementation)elt.getOwnerDocument().getImplementation();
+        style = impl.createCSSStyleDeclaration();
+        style.setCssText(elt.getAttribute(SVG_STYLE_ATTRIBUTE));
         return style;
     }
 
@@ -79,40 +55,35 @@ public class SVGStylableSupport {
      * To implement {@link
      * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
      */
-    public CSSValue getPresentationAttribute(String name, Element elt) {
-	throw new RuntimeException
-	    (" !!! TODO: SVGStylableSupport.getPresentationAttribute()");
+    public static CSSValue getPresentationAttribute(String name, Element elt) {
+	throw new RuntimeException(" !!! TODO: getPresentationAttribute()");
     }
 
     /**
      * To implement {@link
      * org.w3c.dom.svg.SVGStylable#getClassName()}.
      */
-    public SVGAnimatedString getClassName(Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGStylableSupport.getClassName()");
+    public static SVGAnimatedString getClassName(Element elt) {
+	throw new RuntimeException(" !!! TODO: getClassName()");
     }
 
     /**
      * To implements {@link
      * OverrideStyleElement#hasOverrideStyle(String)}.
      */
-    public boolean hasOverrideStyle(String pseudoElt) {
-        return (overrideStyleSupport == null) ||
-            overrideStyleSupport.hasOverrideStyle(pseudoElt);
-    }    
+    public static boolean hasOverrideStyle(String pseudoElt) {
+        // !!! TODO: hasOverrideStyle()
+        return false;
+    }
 
     /**
      * To implements {@link
      * OverrideStyleElement#getOverrideStyle(String)}.
      */
-    public CSSStyleDeclaration getOverrideStyle(String pseudoElt,
-                                                Element elt) {
-        if (overrideStyleSupport == null) {
-            Document doc = elt.getOwnerDocument();
-            SVGDOMImplementation impl;
-            impl = (SVGDOMImplementation)doc.getImplementation();
-            overrideStyleSupport = new OverrideStyleElementSupport(impl);
-        }
-        return overrideStyleSupport.getOverrideStyle(pseudoElt);
+    public static CSSStyleDeclaration getOverrideStyle(String pseudoElt, Element elt) {
+	// !!! TODO: getOverrideStyle()
+        Document doc = elt.getOwnerDocument();
+        SVGDOMImplementation impl = (SVGDOMImplementation)doc.getImplementation();
+        return impl.createCSSStyleDeclaration();
     }
 }

@@ -8,19 +8,12 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
-import org.apache.batik.css.ElementNonCSSPresentationalHints;
-import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
@@ -39,31 +32,36 @@ import org.w3c.dom.svg.SVGStringList;
  * @version $Id$
  */
 public class SVGOMPatternElement
-    extends    SVGOMElement
-    implements SVGPatternElement,
-               OverrideStyleElement,
-               ExtendedElementCSSInlineStyle,
-               ElementNonCSSPresentationalHints {
+    extends    SVGStylableElement
+    implements SVGPatternElement {
 
     /**
-     * The reference to the x attribute.
+     * The attribute initializer.
      */
-    protected WeakReference xReference;
-
-    /**
-     * The reference to the y attribute.
-     */
-    protected WeakReference yReference;
-
-    /**
-     * The reference to the width attribute.
-     */
-    protected WeakReference widthReference;
-
-    /**
-     * The reference to the height attribute.
-     */
-    protected WeakReference heightReference;
+    protected final static AttributeInitializer attributeInitializer;
+    static {
+        attributeInitializer = new AttributeInitializer(5);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                                          "xMidYMid meet");
+        attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
+                                          null,
+                                          "xmlns:xlink",
+                                          XLinkSupport.XLINK_NAMESPACE_URI);
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "type",
+                                          "simple");
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "show",
+                                          "replace");
+        attributeInitializer.addAttribute(XLinkSupport.XLINK_NAMESPACE_URI,
+                                          "xlink",
+                                          "actuate",
+                                          "onRequest");
+    }
 
     /**
      * Creates a new SVGOMPatternElement object.
@@ -89,67 +87,45 @@ public class SVGOMPatternElement
     }
 
     /**
-     * To implement {@link
-     * org.w3c.dom.svg.SVGPatternElement#getPatternTransform()}.
+     * To implement {@link SVGPatternElement#getPatternTransform()}.
      */
     public SVGAnimatedTransformList getPatternTransform() {
-        throw new RuntimeException(" !!! TODO: SVGOMPatternElement.getPatternTransform()");
+        throw new RuntimeException(" !!! TODO: getPatternTransform()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGPatternElement#getPatternUnits()}.
+     * <b>DOM</b>: Implements {@link SVGPatternElement#getPatternUnits()}.
      */
     public SVGAnimatedEnumeration getPatternUnits() {
-        throw new RuntimeException(" !!! TODO: SVGOMPatternElement.getPatternUnits()");
+        throw new RuntimeException(" !!! TODO: getPatternUnits()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGPatternElement#getPatternContentUnits()}.
+     * <b>DOM</b>: Implements {@link SVGPatternElement#getPatternContentUnits()}.
      */
     public SVGAnimatedEnumeration getPatternContentUnits() {
-        throw new RuntimeException(" !!! TODO: SVGOMPatternElement.getPatternUnits()");
+        throw new RuntimeException(" !!! TODO: getPatternUnits()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGPatternElement#getX()}.
+     * <b>DOM</b>: Implements {@link SVGPatternElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        SVGAnimatedLength result;
-        if (xReference == null ||
-            (result = (SVGAnimatedLength)xReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, "x", null);
-            xReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getX()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGPatternElement#getY()}.
+     * <b>DOM</b>: Implements {@link SVGPatternElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        SVGAnimatedLength result;
-        if (yReference == null ||
-            (result = (SVGAnimatedLength)yReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, "y", null);
-            yReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getY()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGPatternElement#getWidth()}.
+     * <b>DOM</b>: Implements {@link SVGPatternElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        SVGAnimatedLength result;
-        if (widthReference == null ||
-            (result = (SVGAnimatedLength)widthReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, "width", null);
-            widthReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getWidth()");
     }
 
     /**
@@ -157,148 +133,17 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGPatternElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        SVGAnimatedLength result;
-        if (heightReference == null ||
-            (result = (SVGAnimatedLength)heightReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, "height", null);
-            heightReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException(" !!! TODO: getHeight()");
     }
 
     // XLink support //////////////////////////////////////////////////////
-
-    /**
-     * The SVGURIReference support.
-     */
-    protected SVGURIReferenceSupport uriReferenceSupport;
-
-    /**
-     * Returns uriReferenceSupport different from null.
-     */
-    protected final SVGURIReferenceSupport getSVGURIReferenceSupport() {
-        if (uriReferenceSupport == null) {
-            uriReferenceSupport = new SVGURIReferenceSupport();
-        }
-        return uriReferenceSupport;
-    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
     public SVGAnimatedString getHref() {
-        return getSVGURIReferenceSupport().getHref(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#getXlinkType()}.
-     */
-    public String getXlinkType() {
-        return XLinkSupport.getXLinkType(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#setXlinkType(String)}.
-     */
-    public void setXlinkType(String str) {
-        XLinkSupport.setXLinkType(this, str);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#getXlinkRole()}.
-     */
-    public String getXlinkRole() {
-        return XLinkSupport.getXLinkRole(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#setXlinkRole(String)}.
-     */
-    public void setXlinkRole(String str) {
-        XLinkSupport.setXLinkRole(this, str);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#getXlinkArcRole()}.
-     */
-    public String getXlinkArcRole() {
-        return XLinkSupport.getXLinkArcRole(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#setXlinkArcRole(String)}.
-     */
-    public void setXlinkArcRole(String str) {
-        XLinkSupport.setXLinkArcRole(this, str);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#getXlinkTitle()}.
-     */
-    public String getXlinkTitle() {
-        return XLinkSupport.getXLinkTitle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#setXlinkTitle(String)}.
-     */
-    public void setXlinkTitle(String str) {
-        XLinkSupport.setXLinkTitle(this, str);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#getXlinkShow()}.
-     */
-    public String getXlinkShow() {
-        return XLinkSupport.getXLinkShow(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#setXlinkShow(String)}.
-     */
-    public void setXlinkShow(String str) {
-        XLinkSupport.setXLinkShow(this, str);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#getXlinkActuate()}.
-     */
-    public String getXlinkActuate() {
-        return XLinkSupport.getXLinkActuate(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGURIReference#setXlinkActuate(String)}.
-     */
-    public void setXlinkActuate(String str) {
-        XLinkSupport.setXLinkActuate(this, str);
-    }
-
-    /**
-     * Returns the value of the 'xlink:href' attribute of the given element.
-     */
-    public String getXlinkHref() {
-        return XLinkSupport.getXLinkHref(this);
-    }
-
-    /**
-     * Sets the value of the 'xlink:href' attribute of the given element.
-     */
-    public void setXlinkHref(String str) {
-        XLinkSupport.setXLinkHref(this, str);
+        return SVGURIReferenceSupport.getHref(this);
     }
 
     // SVGFitToViewBox support ////////////////////////////////////////////
@@ -308,7 +153,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-        throw new RuntimeException(" !!! TODO: SVGOMSVGElement.getViewBox()");
+        throw new RuntimeException(" !!! TODO: getViewBox()");
     }
 
     /**
@@ -316,36 +161,17 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGFitToViewBox#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
-        throw new RuntimeException
-            (" !!! TODO: SVGOMSVGElement.getPreserveAspectRatio()");
+        throw new RuntimeException(" !!! TODO: getPreserveAspectRatio()");
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
-
-    /**
-     * The SVGExternalResourcesRequired support.
-     */
-    protected SVGExternalResourcesRequiredSupport
-        externalResourcesRequiredSupport;
-
-    /**
-     * Returns testsSupport different from null.
-     */
-    protected final SVGExternalResourcesRequiredSupport
-        getExternalResourcesRequiredSupport() {
-        if (externalResourcesRequiredSupport == null) {
-            externalResourcesRequiredSupport =
-                new SVGExternalResourcesRequiredSupport();
-        }
-        return externalResourcesRequiredSupport;
-    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-        return getExternalResourcesRequiredSupport().
+        return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 
@@ -382,26 +208,11 @@ public class SVGOMPatternElement
     // SVGTests support ///////////////////////////////////////////////////
 
     /**
-     * The tests support.
-     */
-    protected SVGTestsSupport testsSupport;
-
-    /**
-     * Returns testsSupport different from null.
-     */
-    protected final SVGTestsSupport getTestsSupport() {
-        if (testsSupport == null) {
-            testsSupport = new SVGTestsSupport();
-        }
-        return testsSupport;
-    }
-
-    /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
-        return getTestsSupport().getRequiredFeatures(this);
+        return SVGTestsSupport.getRequiredFeatures(this);
     }
 
     /**
@@ -409,7 +220,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
-        return getTestsSupport().getRequiredExtensions(this);
+        return SVGTestsSupport.getRequiredExtensions(this);
     }
 
     /**
@@ -417,7 +228,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
-        return getTestsSupport().getSystemLanguage(this);
+        return SVGTestsSupport.getSystemLanguage(this);
     }
 
     /**
@@ -425,84 +236,15 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-        return getTestsSupport().hasExtension(extension, this);
-    }
-
-    // ElementNonCSSPresentationalHints ////////////////////////////////////
-
-    /**
-     * Returns the translation of the non-CSS hints to the corresponding
-     * CSS rules. The result can be null.
-     */
-    public CSSStyleDeclaration getNonCSSPresentationalHints() {
-        return ElementNonCSSPresentationalHintsSupport.
-            getNonCSSPresentationalHints(this);
-    }
-
-    // SVGStylable support ///////////////////////////////////////////////////
-
-    /**
-     * The stylable support.
-     */
-    protected SVGStylableSupport stylableSupport;
-
-    /**
-     * Returns stylableSupport different from null.
-     */
-    protected final SVGStylableSupport getStylableSupport() {
-        if (stylableSupport == null) {
-            stylableSupport = new SVGStylableSupport();
-        }
-        return stylableSupport;
+        return SVGTestsSupport.hasExtension(extension, this);
     }
 
     /**
-     * Implements {@link
-     * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
+     * Returns the AttributeInitializer for this element type.
+     * @return null if this element has no attribute with a default value.
      */
-    public boolean hasStyle() {
-        return SVGStylableSupport.hasStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
-     */
-    public CSSStyleDeclaration getStyle() {
-        return getStylableSupport().getStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
-     */
-    public CSSValue getPresentationAttribute(String name) {
-        return getStylableSupport().getPresentationAttribute(name, this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getClassName()}.
-     */
-    public SVGAnimatedString getClassName() {
-        return getStylableSupport().getClassName(this);
-    }
-
-    // OverrideStyleElement ///////////////////////////////////////////
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#hasOverrideStyle(String)}.
-     */
-    public boolean hasOverrideStyle(String pseudoElt) {
-        return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#getOverrideStyle(String)}.
-     */
-    public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-        return getStylableSupport().getOverrideStyle(pseudoElt, this);
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**
