@@ -21,7 +21,7 @@ import java.awt.geom.*;
  * <p><b>Warning</b> : An elliptical arc may be composed of several
  * path segments. For futher details, see the SVG Appendix&nbsp;F.6
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public class ExtendedGeneralPath implements Shape, Cloneable {
