@@ -149,12 +149,31 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         CompositeGraphicsNode gn = new CompositeGraphicsNode();
         gn.getChildren().add(refNode);
 
+        gn.setTransform(computeTransform(e));
+
+        // set an affine transform to take into account the (x, y)
+        // coordinates of the <use> element
+
+        // 'visibility'
+        gn.setVisible(CSSUtilities.convertVisibility(e));
+
+        // 'enable-background'
+        Rectangle2D r = CSSUtilities.convertEnableBackground(e);
+        if (r != null) {
+            gn.setBackgroundEnable(r);
+        }
+        return gn;
+    }
+
+    /**
+     * Computes the AffineTransform for the node
+     */
+    protected AffineTransform computeTransform(Element e) {
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
-        String s;
 
         // 'x' attribute - default is 0
         float x = 0;
-        s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        String s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
         if (s.length() != 0) {
             x = UnitProcessor.svgHorizontalCoordinateToUserSpace
                 (s, SVG_X_ATTRIBUTE, uctx);
@@ -178,21 +197,9 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             at.preConcatenate
                 (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
         }
-        gn.setTransform(at);
 
-        // set an affine transform to take into account the (x, y)
-        // coordinates of the <use> element
-
-        // 'visibility'
-        gn.setVisible(CSSUtilities.convertVisibility(e));
-
-        // 'enable-background'
-        Rectangle2D r = CSSUtilities.convertEnableBackground(e);
-        if (r != null) {
-            gn.setBackgroundEnable(r);
-        }
-        return gn;
-    }
+        return at;
+     }
 
     /**
      * Creates the GraphicsNode depending on the GraphicsNodeBridge
@@ -215,6 +222,13 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        super.handleDOMAttrModifiedEvent(evt);
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_X_ATTRIBUTE) ||
+            attrName.equals(SVG_Y_ATTRIBUTE) ||
+            attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
+            String s = evt.getNewValue();
+            node.setTransform(computeTransform(e));
+            handleGeometryChanged();
+        }
     }
 }

@@ -1,0 +1,177 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Dynamic update for use                                                    -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@sun.com                                             -->
+<!-- @version $Id$     -->
+<!-- ========================================================================= -->
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body" width="450" height="500" viewBox="0 0 450 500">
+<title>Update on &lt;use&gt;</title>
+
+    <text x="50%" y="45" class="title">x/y/transform update on &lt;use&gt;</text>
+
+    <script type="text/ecmascript"> <![CDATA[
+
+    function runTest(){
+        document.getElementById('x').setAttributeNS(null, 'x', '20');
+        document.getElementById('y').setAttributeNS(null, 'y', '15');
+        document.getElementById('transform').setAttributeNS(null, 'transform', 'rotate(20)');
+    }
+
+    ]]> </script>
+
+
+    <defs>    
+        <rect id="symbol" x="-10" y="-10" width="20" height="20" />
+
+        <rect id="titleCell" x="-60" y="-15" width="120" height="20" />
+        <rect id="tableCell" x="-60" y="-20" width="120" height="40" />
+        <rect id="button" x="-30" y="-15" width="60" height="20" />
+
+    </defs>
+
+    <style type="text/css"><![CDATA[
+        use.tableHeader  {
+            fill: #eeeeee;
+            stroke: black;
+        }
+
+        text.tableHeader {
+            text-anchor: middle;
+            stroke: none;
+            fill: black;
+        }
+
+        use.tableCell {
+            fill: white;
+            stroke: black;
+        }
+
+        text.tableCell {
+            text-anchor: middle;
+            stroke: none;
+            fill: black;
+        }
+
+        use.button {
+            fill: #eeeeee;
+            stroke: black;
+        }
+
+        text.button {
+            fill: black;
+            stroke: none;
+            text-anchor: middle;
+        }
+
+        .reference {
+            fill: none;
+            stroke: black;
+        }
+
+        .symbol {
+            fill: gold;
+            stroke: crimson;
+            stroke-width: 4;
+        }
+        
+    ]]></style>
+
+    <g transform="translate(165, 160)">
+        <g id="tableHeader" class="tableHeader">
+            <g>
+                <use class="tableHeader" xlink:href="#titleCell" />
+                <text class="tableHeader">Attribute</text>
+            </g>
+
+            <g transform="translate(120,0)">
+                <use class="tableHeader" xlink:href="#titleCell" />
+                <text class="tableHeader">&lt;use&gt; and ref</text>
+            </g>
+
+        </g>
+
+        <g id="xRow" transform="translate(0,25)">
+            <g>
+                <use class="tableCell" xlink:href="#tableCell" />
+                <text class="tableCell">x</text>
+            </g>
+
+            <g transform="translate(120,0)" >
+                <use class="tableCell" xlink:href="#tableCell" />
+                <use id="x" x="10" y="5" class="symbol" xlink:href="#symbol"/>
+                <use        x="20" y="5"  class="reference" xlink:href="#symbol"/>
+            </g>
+
+        </g>
+
+        <g id="yRow" transform="translate(0,65)">
+            <g>
+                <use class="tableCell" xlink:href="#tableCell" />
+                <text class="tableCell">y</text>
+            </g>
+
+            <g transform="translate(120,0)" >
+                <use class="tableCell" xlink:href="#tableCell" />
+                <use id="y" x="10" y="0" class="symbol" xlink:href="#symbol"/>
+                <use        x="10" y="15" class="reference" xlink:href="#symbol"/>
+            </g>
+
+        </g>
+
+        <g id="transformRow" transform="translate(0,105)">
+            <g>
+                <use class="tableCell" xlink:href="#tableCell" />
+                <text class="tableCell">transform</text>
+            </g>
+
+            <g transform="translate(120,0)" >
+                <use class="tableCell" xlink:href="#tableCell" />
+                <use id="transform" 
+                     x="10" y="5"  class="symbol" xlink:href="#symbol"/>
+                <use x="10" y="5"  transform="rotate(20)" class="reference" xlink:href="#symbol"/>
+            </g>
+
+        </g>
+
+        <a onclick="runTest()">
+            <use class="button" xlink:href="#button" x="60" y="200" />
+            <text class="button" x="60" y="200">Run Test</text>
+        </a>
+    </g>
+ 
+<!--
+  <use id="use" xlink:href="#Rect" x="20" y="40" width="100" height="80"
+       transform="scale(1.2)" onclick="scale('use')" />
+
+  <a onclick="removeChangeAdd('use')">
+        <text x="80" y="35" text-anchor="middle">Remove, modify, add</text>
+  </a>
+
+  <a onclick="removeChangeAdd('rect')" transform="translate(160,0)">
+        <text x="80" y="35" text-anchor="middle">Remove, modify, add</text>
+  </a>
+
+  <rect id="rect" x="150" y="40" width="100" height="80" transform="scale(1.2)"
+        style="fill:green; stroke:yellow" onclick="scale('rect')" />
+
+
+  <text x="175" y="190" style="font-size:20pt; text-anchor:middle">
+    Transform problem.
+  </text>
+-->
+</svg>
+
