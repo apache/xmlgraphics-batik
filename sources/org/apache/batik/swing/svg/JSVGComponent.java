@@ -212,6 +212,9 @@ public class JSVGComponent extends JGVTComponent {
             throw new IllegalArgumentException("Invalid DOM implementation.");
         }
         svgDocument = doc;
+        if (loader == null) {
+            loader = new DocumentLoader(userAgent.getXMLParserClassName());
+        }
 
         DefaultSVGContext ctx = (DefaultSVGContext)((SVGOMDocument)doc).getSVGContext();
         ctx.setUserStyleSheetURI(userAgent.getUserStyleSheetURI());
