@@ -51,8 +51,7 @@
         <image x="0" y="0" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYIJY
-" class="testC2" height="50" />
+AAAASUVORK5CYII=" class="testC2" height="50" />
         <text x="110" y="25" class="testC3">Clip set to device bounds
         </text>
         <text x="110" y="25" class="testC4" transform="translate(0,70)">Clip set to upper right quarter
@@ -60,8 +59,7 @@ AAAASUVORK5CYIJY
         <image x="0" y="0" transform="translate(0,70)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYIJY
-" class="testC5" height="50" />
+AAAASUVORK5CYII=" class="testC5" height="50" />
       </g>
       <g class="testC6" transform="translate(0,140)">
         <text x="110" y="15" class="testC7">Clip set to upper right quarter
@@ -71,8 +69,7 @@ AAAASUVORK5CYIJY
         <image x="0" y="0" transform="scale(0.5,0.5)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYIJY
-" class="testC9" height="50" />
+AAAASUVORK5CYII=" class="testC9" height="50" />
       </g>
       <g class="testC10" transform="translate(0,210)">
         <text x="110" y="25" class="testC11">Non-Rectagular clip
@@ -80,8 +77,7 @@ AAAASUVORK5CYIJY
         <image x="0" y="0" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYIJY
-" class="testC12" height="50" />
+AAAASUVORK5CYII=" class="testC12" height="50" />
       </g>
       <g class="testC13" transform="translate(0,280)">
         <text x="110" y="15" class="testC14">Non-Rectagular clip after
@@ -91,8 +87,7 @@ AAAASUVORK5CYIJY
         <image x="0" y="0" transform="scale(0.5,0.5)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYIJY
-" class="testC16" height="50" />
+AAAASUVORK5CYII=" class="testC16" height="50" />
       </g>
       <g class="testC17" transform="translate(0,350)">
         <text x="110" y="15" class="testC18">Non-Rectagular clip before
@@ -102,8 +97,7 @@ AAAASUVORK5CYIJY
         <image x="0" y="0" transform="scale(0.5,0.5)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
-AAAASUVORK5CYIJY
-" class="testC20" height="50" />
+AAAASUVORK5CYII=" class="testC20" height="50" />
       </g>
     </g>
   </g>

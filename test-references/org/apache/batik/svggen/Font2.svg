@@ -43,14 +43,14 @@
       <text x="10" y="30" stroke="none">Font Families
       </text>
     </g>
-    <g text-rendering="optimizeLegibility" font-size="18" shape-rendering="geometricPrecision" font-family="&apos;LucidaSans&apos;" transform="translate(0,141)">
+    <g text-rendering="optimizeLegibility" font-size="18" shape-rendering="geometricPrecision" font-family="&apos;Lucida Sans&apos;" transform="translate(0,141)">
       <text x="10" y="40" stroke="none">Lucida Sans
       </text>
-      <text x="10" y="40" font-family="&apos;LucidaBright&apos;" transform="translate(0,25.2)" stroke="none">Lucida Bright
+      <text x="10" y="40" font-family="&apos;Lucida Bright&apos;" transform="translate(0,25.2)" stroke="none">Lucida Bright
       </text>
-      <text x="10" y="40" font-family="&apos;Arial&apos;" transform="translate(0,46.2)" stroke="none">Lucida Console
+      <text x="10" y="40" font-family="&apos;Lucida Console&apos;" transform="translate(0,46.2)" stroke="none">Lucida Console
       </text>
-      <text x="10" y="40" font-family="&apos;LucidaSansTypewriter&apos;" transform="translate(0,71.4)" stroke="none">Lucida Sans Typewriter
+      <text x="10" y="40" font-family="&apos;Lucida Sans Typewriter&apos;" transform="translate(0,71.4)" stroke="none">Lucida Sans Typewriter
       </text>
     </g>
     <g font-size="16" transform="translate(0,282.4)" fill="rgb(102,102,153)" text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" stroke="rgb(102,102,153)" font-weight="bold">

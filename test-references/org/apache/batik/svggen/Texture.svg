@@ -8,18 +8,15 @@
     <defs id="defs1">
       <pattern x="0" y="0" width="20" patternUnits="userSpaceOnUse" id="pattern1" height="20">
         <image width="20" height="20" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
-MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggoAP
-" />
+MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" />
       </pattern>
       <pattern x="10" y="10" width="20" patternUnits="userSpaceOnUse" id="pattern2" height="20">
         <image width="20" height="20" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAJUlEQVR42mP8z4AP
-MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggoAP
-" />
+MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" />
       </pattern>
       <pattern x="0" y="0" width="10" patternUnits="userSpaceOnUse" id="pattern3" height="10">
         <image width="10" height="10" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAI0lEQVR42mP8z8AA
-RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYIL8
-" />
+RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYII=" />
       </pattern>
     </defs>
     <g fill="url(#pattern1)" text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,20)" stroke="url(#pattern1)">

@@ -25,11 +25,11 @@
 .testC17 {font-style:italic;font-weight:bold;stroke:none;}
 .testC18 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-weight:bold;stroke:rgb(102,102,153);font-size:16;fill:rgb(102,102,153);}
 .testC19 {stroke:none;}
-.testC20 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-family:'LucidaSans';font-size:18;}
+.testC20 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-family:'Lucida Sans';font-size:18;}
 .testC21 {stroke:none;}
-.testC22 {font-family:'LucidaBright';stroke:none;}
-.testC23 {font-family:'Arial';stroke:none;}
-.testC24 {font-family:'LucidaSansTypewriter';stroke:none;}
+.testC22 {font-family:'Lucida Bright';stroke:none;}
+.testC23 {font-family:'Lucida Console';stroke:none;}
+.testC24 {font-family:'Lucida Sans Typewriter';stroke:none;}
 .testC25 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-weight:bold;stroke:rgb(102,102,153);font-size:16;fill:rgb(102,102,153);}
 .testC26 {stroke:none;}
 .testC27 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-family:sans-serif;font-size:14;}
