@@ -31,7 +31,7 @@ import java.util.zip.GZIPInputStream;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
-import org.apache.batik.refimpl.bridge.SVGUtilities;
+import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;

@@ -44,10 +44,10 @@ import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 
 // <!> FIXME : Those import clauses will change with new design
-import org.apache.batik.refimpl.bridge.ConcreteGVTBuilder;
-import org.apache.batik.refimpl.bridge.DefaultBridgeContext;
-import org.apache.batik.refimpl.bridge.SVGUtilities;
-import org.apache.batik.refimpl.gvt.renderer.StaticRenderer;
+import org.apache.batik.bridge.ConcreteGVTBuilder;
+import org.apache.batik.bridge.DefaultBridgeContext;
+import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.gvt.renderer.StaticRenderer;
 
 /**
  * This class enables to transcode an input to an image of any format.
