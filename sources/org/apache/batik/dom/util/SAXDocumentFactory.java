@@ -23,6 +23,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -102,6 +103,11 @@ public class SAXDocumentFactory
      * The stack used to store the namespace URIs.
      */
     protected HashTableStack namespaces;
+
+    /**
+     * The error handler.
+     */
+    protected ErrorHandler errorHandler;
 
     /**
      * Creates a new SAXDocumentFactory object.
@@ -191,7 +197,8 @@ public class SAXDocumentFactory
             parser.setContentHandler(this);
             parser.setDTDHandler(this);
             parser.setEntityResolver(this);
-            parser.setErrorHandler(this);
+            parser.setErrorHandler((errorHandler == null) ?
+                                   this : errorHandler);
 
             parser.setFeature("http://xml.org/sax/features/namespaces", 
 			      true);
@@ -247,6 +254,13 @@ public class SAXDocumentFactory
      */
     public boolean isValidating() {
 	return isValidating;
+    }
+
+    /**
+     * Sets a custom error handler.
+     */
+    public void setErrorHandler(ErrorHandler eh) {
+        errorHandler = eh;
     }
 
     /**
@@ -378,7 +392,6 @@ public class SAXDocumentFactory
      * org.xml.sax.ErrorHandler#warning(SAXParseException)}.
      */
     public void warning(SAXParseException ex) throws SAXException {
-	throw ex;
     }
 
     /**
