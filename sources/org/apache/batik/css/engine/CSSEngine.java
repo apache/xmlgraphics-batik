@@ -265,6 +265,11 @@ public abstract class CSSEngine {
     protected List listeners = Collections.synchronizedList(new LinkedList());
 
     /**
+     * Used to fire a change event for all the properties.
+     */
+    protected final int[] ALL_PROPERTIES;
+
+    /**
      * Creates a new CSSEngine.
      * @param doc The associated document.
      * @param uri The document URI.
@@ -347,6 +352,11 @@ public abstract class CSSEngine {
                                 false);
             styleDeclarationUpdateHandler =
                 new StyleDeclarationUpdateHandler();
+        }
+
+        ALL_PROPERTIES = new int[getNumberOfProperties()];
+        for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
+            ALL_PROPERTIES[i] = i;
         }
     }
 
@@ -1388,69 +1398,77 @@ public abstract class CSSEngine {
             }
 
             if (removed) {
-                // Invalidate the entire style map
+                // Invalidate all the values.
                 elt.setComputedStyleMap(null, null);
-            }
 
-            // Invalidate the relative values
-            boolean fs = (fontSizeIndex == -1)
-                ? false
-                : updated[fontSizeIndex];
-            boolean lh = (lineHeightIndex == -1)
-                ? false
-                : updated[lineHeightIndex];
-            boolean cl = (colorIndex == -1)
-                ? false
-                : updated[colorIndex];
-            int count = 0;
-
-            for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
-                if (!updated[i]) {
-                    if (style.isComputed(i)) {
-                        if (fs && style.isFontSizeRelative(i)) {
-                            updated[i] = true;
-                                count++;
-                                if (!removed) {
-                                    clearComputedValue(style, i);
-                                }
-                        }
-                        if (lh && style.isLineHeightRelative(i)) {
-                            updated[i] = true;
-                            count++;
-                            if (!removed) {
-                                clearComputedValue(style, i);
-                            }
-                        }
-                        if (cl && style.isColorRelative(i)) {
-                            updated[i] = true;
-                            count++;
-                            if (!removed) {
-                                clearComputedValue(style, i);
-                            }
-                        }
-                    }
-                } else {
-                    count++;
-                }
-            }
-
-            if (count > 0) {
-                int[] props = new int[count];
-                count = 0;
-                for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
-                    if (updated[i]) {
-                        props[count++] = i;
-                    }
-                }
-                firePropertiesChangedEvent(elt, props);
-
+                firePropertiesChangedEvent(elt, ALL_PROPERTIES);
+                    
                 for (Node n = elt.getFirstChild();
                      n != null;
                      n = n.getNextSibling()) {
-                    propagateChanges(n, props);
+                    propagateChanges(n, ALL_PROPERTIES);
                     Node c = getImportedChild(n);
                     if (c != null) {
-                        propagateChanges(c, props);
+                        propagateChanges(c, ALL_PROPERTIES);
+                    }
+                }
+            } else {
+                int count = 0;
+            
+
+                // Invalidate the relative values
+                boolean fs = (fontSizeIndex == -1)
+                    ? false
+                    : updated[fontSizeIndex];
+                boolean lh = (lineHeightIndex == -1)
+                    ? false
+                    : updated[lineHeightIndex];
+                boolean cl = (colorIndex == -1)
+                    ? false
+                    : updated[colorIndex];
+                
+                for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
+                    if (!updated[i]) {
+                        if (style.isComputed(i)) {
+                            if (fs && style.isFontSizeRelative(i)) {
+                                updated[i] = true;
+                                count++;
+                                clearComputedValue(style, i);
+                            }
+                            if (lh && style.isLineHeightRelative(i)) {
+                                updated[i] = true;
+                                count++;
+                                clearComputedValue(style, i);
+                            }
+                            if (cl && style.isColorRelative(i)) {
+                                updated[i] = true;
+                                count++;
+                                clearComputedValue(style, i);
+                            }
+                        }
+                    } else {
+                        count++;
+                    }
+                }
+
+                if (count > 0) {
+                    int[] props = new int[count];
+                    count = 0;
+                    for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
+                        if (updated[i]) {
+                            props[count++] = i;
+                    }
+                    }
+                    firePropertiesChangedEvent(elt, props);
+                    
+                    for (Node n = elt.getFirstChild();
+                         n != null;
+                         n = n.getNextSibling()) {
+                        propagateChanges(n, props);
+                        Node c = getImportedChild(n);
+                        if (c != null) {
+                            propagateChanges(c, props);
+                        }
                     }
                 }
             }
@@ -1592,16 +1610,9 @@ public abstract class CSSEngine {
                                                value,
                                                important);
             } else {
-                boolean vimp = styleMap.isImportant(i);
-                if (important && vimp) {
-                    short vorig = styleMap.getOrigin(i);
-                    if (vorig == StyleMap.USER_ORIGIN) {
-                        // The previous value comes from the user and
-                        // is important, so it must not be updated.
-                        return;
-                    }
-                }
-                if (vimp && !important) {
+                if (styleMap.isImportant(i)) {
+                    // The previous value is important, and a value
+                    // from a style attribute cannot be important...
                     return;
                 }
 
@@ -1612,7 +1623,6 @@ public abstract class CSSEngine {
                 Value v = valueManagers[i].createValue(value, CSSEngine.this);
                 styleMap.putMask(i, (short)0);
                 styleMap.putValue(i, v);
-                styleMap.putImportant(i, important);
                 styleMap.putOrigin(i, StyleMap.INLINE_AUTHOR_ORIGIN);
             }
         }
@@ -1625,8 +1635,103 @@ public abstract class CSSEngine {
                                                    StyleMap style,
                                                    String property,
                                                    MutationEvent evt) {
-        System.out.println("NON-CSS HINT MODIFIED: Not supported");
+        int idx = getPropertyIndex(property);
 
+        if (style.isImportant(idx)) {
+            // The current value is important, and a value
+            // from an XML attribute cannot be important...
+            return;
+        }
+
+        switch (style.getOrigin(idx)) {
+        case StyleMap.AUTHOR_ORIGIN:
+        case StyleMap.INLINE_AUTHOR_ORIGIN:
+            // The current value has a greater priority
+            return;
+        }
+        
+        boolean comp = style.isComputed(idx);
+
+        try {
+            LexicalUnit lu;
+            lu = parser.parsePropertyValue(evt.getNewValue());
+            ValueManager vm = valueManagers[idx];
+            Value v = vm.createValue(lu, CSSEngine.this);
+            style.putMask(idx, (short)0);
+            style.putValue(idx, v);
+            style.putOrigin(idx, StyleMap.NON_CSS_ORIGIN);
+        } catch (Exception e) {
+            e.printStackTrace();
+            String m = e.getMessage();
+            String s =
+                Messages.formatMessage("property.syntax.error.at",
+                                       new Object[] { documentURI.toString(),
+                                                      property,
+                                                      evt.getNewValue(),
+                                                      (m == null) ? "" : m });
+            throw new DOMException(DOMException.SYNTAX_ERR, s);
+        }
+
+        if (!comp) {
+            // The previous value was not computed: nobody is
+            // interested by this property modifications
+            return;
+        }
+
+        boolean[] updated = styleDeclarationUpdateHandler.updatedProperties;
+        for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
+            updated[i] = false;
+        }
+        updated[idx] = true;
+
+        // Invalidate the relative values
+        boolean fs = idx == fontSizeIndex;
+        boolean lh = idx == lineHeightIndex;
+        boolean cl = idx == colorIndex;
+        int count = 0;
+
+        for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
+            if (!updated[i]) {
+                if (style.isComputed(i)) {
+                    if (fs && style.isFontSizeRelative(i)) {
+                        updated[i] = true;
+                        count++;
+                        clearComputedValue(style, i);
+                    }
+                    if (lh && style.isLineHeightRelative(i)) {
+                        updated[i] = true;
+                        count++;
+                        clearComputedValue(style, i);
+                    }
+                    if (cl && style.isColorRelative(i)) {
+                        updated[i] = true;
+                        count++;
+                        clearComputedValue(style, i);
+                    }
+                }
+            } else {
+                count++;
+            }
+        }
+
+        int[] props = new int[count];
+        count = 0;
+        for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
+            if (updated[i]) {
+                props[count++] = i;
+            }
+        }
+        firePropertiesChangedEvent(elt, props);
+
+        for (Node n = elt.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            propagateChanges(n, props);
+            Node c = getImportedChild(n);
+            if (c != null) {
+                propagateChanges(c, props);
+            }
+        }
     }
 
     /**
@@ -1648,6 +1753,9 @@ public abstract class CSSEngine {
                 // element, so it does not require an update...
                 return;
             }
+
+            // !!! TODO: class mutation
+            // !!! TODO: id mutation
 
             MutationEvent mevt = (MutationEvent)evt;
             Node attr = mevt.getRelatedNode();

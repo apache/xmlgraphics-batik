@@ -221,7 +221,9 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY);
         if ((obj != null) && (obj instanceof SVGDocument)) {
             // Ok so we are dealing with a broken link.
-            return createSVGImageNode(ctx, e, (SVGDocument)obj);
+            SVGOMDocument doc = (SVGOMDocument)obj;
+            ctx.initializeDocument(doc);
+            return createSVGImageNode(ctx, e, doc);
         }
         node.setImage(img);
         Rectangle2D imgBounds = img.getBounds2D();

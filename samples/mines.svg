@@ -11,7 +11,7 @@
 <!-- ====================================================================== -->
 
 <!-- ====================================================================== -->
-<!-- Defines the Batik Logo using an SVG font.                              -->
+<!-- Minesweeper in SVG                                                     -->
 <!--                                                                        -->
 <!-- @author thomas.deweese@kodak.com                                       -->
 <!-- @version $Id$    -->
@@ -73,7 +73,7 @@
 	  }
 
 	  for (var i=0; i<numMines; i++) {
-	    var index = new Integer(Math.random()*(numDown*numAcross)).intValue();
+	    var index = Math.round(Math.random()*(numDown*numAcross));
 	    if ((index >= (numDown*numAcross)) ||
 	        (boardArray[index]!=0)) {
 	       i--;
