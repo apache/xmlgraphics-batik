@@ -29,14 +29,16 @@
 
         <p>
         <img src="images/logo.gif" alt="Batik Logo"/>
-        Batik is a Java based toolkit for applications which
+        Batik is a Java based toolkit for applications which handle
         images in the <link href="http://www.w3.org/TR/SVG/">Scalable Vector Graphics (SVG)</link> format for
         various purposes, such as viewing, generation or manipulation.
         </p>
         <p>
         The project's ambition is to give developers a set of core modules which can be used together 
         or individually to support specific SVG solutions. Examples of modules are SVG parsers, SVG 
-        generators and SVG DOM implementations. Even though the goal of the project is to provide a set 
+        generators and SVG DOM implementations. Another ambition for the Batik project is to make 
+        it highly extensible (for example, Batik allows the developer to handle custom SVG tags).
+        Even though the goal of the project is to provide a set 
         of core modules, one of the deliveries is a full fledged SVG Viewer implementation which 
         validates the various modules and their inter-operability. 
         </p>
@@ -45,7 +47,7 @@
 
         <s1 title="Applications of Batik">
         <p>
-        With Batik, you can view SVG documents on all platforms where
+        With Batik, you can manipulate SVG documents on all platforms where
         Java is available. You can also use the various Batik modules to
         generate, manipulate, transcode and search SVG images in your 
         applications.
@@ -65,7 +67,7 @@
         </p>
          </s1>
 
-        <s1 title="SVG 1.0 Beta Support">
+        <s1 title="The SVG Specification">
         <p>
         Scalable Vector Graphics, SVG, is a <link href="http://www.w3.org">W3C</link>
         Candidate Recommendation. It defines an XML grammar for rich 2D graphics
@@ -78,12 +80,12 @@
         </p>
          </s1>
 
-        <s1 title="Batik Limitations">
+        <s1 title="Batik's Implementation Status">
         <p>
-        At this time, Batik does not support all of the SVG features. It 
-        provides a good support for all the SVG static features, supports
-        linking, and has some scripting support, even though dynamic 
-        modification of SVG documents is not yet available. 
+        At this time, Batik provides a good support for all the SVG static 
+        features, supports linking, and has some scripting support, even though dynamic 
+        modification of SVG documents is not yet available and animation is
+        not supported.
         </p>
         <p>
         You will find a detailed description of the set of SVG features
