@@ -45,6 +45,7 @@ import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
 import org.apache.batik.ext.awt.geom.RectListManager;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.HaltingThread;
 
 /**
  * Simple implementation of the Renderer that simply does static
@@ -396,7 +397,7 @@ public class StaticRenderer implements ImageRenderer {
             cr.copyData(copyRaster);
         }
 
-        if (!Thread.currentThread().isInterrupted()) {
+        if (!HaltingThread.hasBeenHalted()) {
             // Swap the buffers if the rendering completed cleanly.
             BufferedImage tmpBI = workingOffScreen;
 

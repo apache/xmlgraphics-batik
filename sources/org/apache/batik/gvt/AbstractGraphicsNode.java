@@ -41,6 +41,7 @@ import org.apache.batik.gvt.event.GraphicsNodeChangeListener;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.gvt.filter.Mask;
+import org.apache.batik.util.HaltingThread;
 
 /**
  * A partial implementation of the <tt>GraphicsNode</tt> interface.
@@ -422,11 +423,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param g2d the Graphics2D to use
      */
     public void paint(Graphics2D g2d){
-        // first, make sure we haven't been interrupted
-        if (Thread.currentThread().isInterrupted()) {
-            return;
-        }
-
         if ((composite != null) &&
             (composite instanceof AlphaComposite)) {
             AlphaComposite ac = (AlphaComposite)composite;
@@ -757,10 +753,10 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
             bounds = normalizeRectangle(bounds);
 
-            // Make sure we haven't been interrupted
-            if (Thread.currentThread().isInterrupted()) {
-                // The Thread has been interrupted. Invalidate
-                // any cached values and proceed.
+            // Check If we should halt early.
+            if (HaltingThread.hasBeenHalted()) {
+                // The Thread has been 'halted'. 
+                // Invalidate any cached values and proceed.
                 invalidateGeometryCache();
             }
         }

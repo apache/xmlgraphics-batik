@@ -6,12 +6,12 @@
   xmlns="http://www.w3.org/2000/svg" 
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
-<script language="text/ecmascript" xlink:href="script/util.js"/>
-<script language="text/ecmascript" xlink:href="script/board.js"/>
-<script language="text/ecmascript" xlink:href="script/deck.js"/>
-<script language="text/ecmascript" xlink:href="script/card.js"/>
-<script language="text/ecmascript" xlink:href="script/pile.js"/>
-<script language="text/ecmascript"><![CDATA[
+<script type="text/ecmascript" xlink:href="script/util.js"/>
+<script type="text/ecmascript" xlink:href="script/board.js"/>
+<script type="text/ecmascript" xlink:href="script/deck.js"/>
+<script type="text/ecmascript" xlink:href="script/card.js"/>
+<script type="text/ecmascript" xlink:href="script/pile.js"/>
+<script type="text/ecmascript"><![CDATA[
     var svgns   = "http://www.w3.org/2000/svg";
     var xlinkns = "http://www.w3.org/1999/xlink";
     var cg = document.getElementById("cards");

@@ -29,6 +29,8 @@ import org.apache.batik.bridge.InterruptedBridgeException;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.EventDispatcher;
 import org.apache.batik.util.EventDispatcher.Dispatcher;
+import org.apache.batik.util.HaltingThread;
+
 import org.w3c.dom.svg.SVGDocument;
 
 
@@ -39,7 +41,7 @@ import org.w3c.dom.svg.SVGDocument;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class GVTTreeBuilder extends Thread {
+public class GVTTreeBuilder extends HaltingThread {
 
     /**
      * The SVG document to give to the bridge.
@@ -62,22 +64,12 @@ public class GVTTreeBuilder extends Thread {
     protected Exception exception;
 
     /**
-     * Boolean indicating if this thread has ever been interrupted.
-     */
-    protected boolean beenInterrupted;
-
-    /**
      * Creates a new GVTTreeBuilder.
      */
     public GVTTreeBuilder(SVGDocument   doc,
                           BridgeContext bc) {
         svgDocument = doc;
         bridgeContext = bc;
-        beenInterrupted = false;
-    }
-
-    public boolean getBeenInterrupted() {
-        synchronized (this) { return beenInterrupted; }
     }
 
     /**
@@ -89,7 +81,7 @@ public class GVTTreeBuilder extends Thread {
         try {
             fireEvent(startedDispatcher, ev);
 
-            if (getBeenInterrupted()) {
+            if (isHalted()) {
                 fireEvent(cancelledDispatcher, ev);
                 return;
             }
@@ -102,7 +94,7 @@ public class GVTTreeBuilder extends Thread {
             }
             GraphicsNode gvtRoot = builder.build(bridgeContext, svgDocument);
 
-            if (getBeenInterrupted()) {
+            if (isHalted()) {
                 fireEvent(cancelledDispatcher, ev);
                 return;
             }
@@ -128,13 +120,6 @@ public class GVTTreeBuilder extends Thread {
             fireEvent(failedDispatcher, ev);
         } finally {
             // bridgeContext.getDocumentLoader().dispose();
-        }
-    }
-
-    public void interrupt() {
-        super.interrupt();
-        synchronized (this) {
-            beenInterrupted = true;
         }
     }
 

@@ -25,6 +25,8 @@ import java.util.List;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.util.EventDispatcher;
 import org.apache.batik.util.EventDispatcher.Dispatcher;
+import org.apache.batik.util.HaltingThread;
+
 import org.w3c.dom.svg.SVGDocument;
 
 /**
@@ -33,7 +35,7 @@ import org.w3c.dom.svg.SVGDocument;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGDocumentLoader extends Thread {
+public class SVGDocumentLoader extends HaltingThread {
 
     /**
      * The URL of the document,
@@ -56,11 +58,6 @@ public class SVGDocumentLoader extends Thread {
     protected List listeners = Collections.synchronizedList(new LinkedList());
 
     /**
-     * Boolean indicating if this thread has ever been interrupted.
-     */
-    protected boolean beenInterrupted;
-
-    /**
      * Creates a new SVGDocumentLoader.
      * @param u The URL of the document.
      * @param l The document loader to use
@@ -68,11 +65,6 @@ public class SVGDocumentLoader extends Thread {
     public SVGDocumentLoader(String u, DocumentLoader l) {
         url = u;
         loader = l;
-        beenInterrupted = false;
-    }
-
-    public boolean getBeenInterrupted() {
-        synchronized (this) { return beenInterrupted; }
     }
 
     /**
@@ -83,14 +75,14 @@ public class SVGDocumentLoader extends Thread {
         evt = new SVGDocumentLoaderEvent(this, null);
         try {
             fireEvent(startedDispatcher, evt);
-            if (getBeenInterrupted()) {
+            if (isHalted()) {
                 fireEvent(cancelledDispatcher, evt);
                 return;
             }
 
             SVGDocument svgDocument = (SVGDocument)loader.loadDocument(url);
 
-            if (getBeenInterrupted()) {
+            if (isHalted()) {
                 fireEvent(cancelledDispatcher, evt);
                 return;
             }
@@ -110,13 +102,6 @@ public class SVGDocumentLoader extends Thread {
             t.printStackTrace();
             exception = new Exception(t.getMessage());
             fireEvent(failedDispatcher, evt);
-        }
-    }
-
-    public void interrupt() {
-        super.interrupt();
-        synchronized (this) {
-            beenInterrupted = true;
         }
     }
 

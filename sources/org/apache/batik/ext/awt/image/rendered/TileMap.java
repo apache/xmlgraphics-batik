@@ -23,6 +23,7 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 
 import org.apache.batik.util.CleanerThread;
+import org.apache.batik.util.HaltingThread;
 
 public class TileMap implements TileStore {
     private static final boolean DEBUG = false;
@@ -128,7 +129,7 @@ public class TileMap implements TileStore {
             // In all likelyhood the contents of this tile is junk!
             // So don't cache it (returning is probably fine since it
             // shouldn't come back to haunt us...)
-            if (Thread.currentThread().isInterrupted())
+            if (HaltingThread.hasBeenHalted())
                 return ras;
 
             if (item != null)

@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import org.apache.batik.util.HaltingThread;
+
 /**
  * A CompositeGraphicsNode is a graphics node that can contain graphics nodes.
  *
@@ -146,11 +148,15 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
         // Paint children
         for (int i=0; i < count; ++i) {
+            if (HaltingThread.hasBeenHalted())
+                return;
+
             GraphicsNode node = children[i];
             if (node == null) {
                 continue;
             }
             node.paint(g2d);
+
         }
     }
 
@@ -205,9 +211,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             }
         }
         
-        // Make sure we haven't been interrupted
-        if (Thread.currentThread().isInterrupted()) {
-            // The Thread has been interrupted.
+        // Check If we should halt early.
+        if (HaltingThread.hasBeenHalted()) {
+            // The Thread has been halted.
             // Invalidate any cached values and proceed.
             invalidateGeometryCache();
         }

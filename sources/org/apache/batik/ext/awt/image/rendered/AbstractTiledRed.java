@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.util.HaltingThread;
 
 /**
  * This is an abstract base class that takes care of most of the
@@ -430,7 +431,8 @@ public abstract class AbstractTiledRed
             // e.printStackTrace();
         }
 
-        if (Thread.currentThread().isInterrupted())
+        // Check If we should halt early.
+        if (HaltingThread.hasBeenHalted())
             return;
 
         idx = 0;
@@ -462,7 +464,8 @@ public abstract class AbstractTiledRed
                     // System.out.println("Computing : " + x + "," + y);
                 
                     ras = getTile(tx, ty);// Compute the tile..
-                    if (Thread.currentThread().isInterrupted())
+                    // Check If we should halt early.
+                    if (HaltingThread.hasBeenHalted())
                         return;
 
                     if (is_INT_PACK)
@@ -577,7 +580,8 @@ public abstract class AbstractTiledRed
 	    if (use_INT_PACK) GraphicsUtil.copyData_INT_PACK(child, wr);
 	    else              GraphicsUtil.copyData_FALLBACK(child, wr);
 
-	    if (Thread.currentThread().isInterrupted())
+            // Check If we should halt early.
+            if (HaltingThread.hasBeenHalted())
 		return;
 	}
     }
@@ -604,7 +608,8 @@ public abstract class AbstractTiledRed
 	    // System.out.println("Computing : " + child);
 	    genRect(child);
 
-	    if (Thread.currentThread().isInterrupted())
+            // Check If we should halt early.
+            if (HaltingThread.hasBeenHalted())
 		return;
 	}
     }

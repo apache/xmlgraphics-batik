@@ -47,20 +47,11 @@
  Apache Software Foundation, please see <http://www.apache.org/>.
 
 */
-var isAdobe = false;
-try {
-  var vStr = getSVGViewerVersion();
-  var idx = vStr.indexOf("; ");
-  if (idx != -1) {
-    var ver = parseFloat(vStr.substring(idx+2));
-    if (ver <= 3)
-      isAdobe = true;
-  }
-} catch (x) { }
 
-  function screenCTM(elem) {
-    if (!isAdobe) 
-    return elem.getScreenCTM();
+function screenCTM(elem) {
+    if (elem.getScreenCTM)
+      return elem.getScreenCTM();
+
     if (elem == root) {
       var scale = root.currentScale;
       var trans = root.currentTranslate;
@@ -79,7 +70,7 @@ try {
   }
 
 function transformToElement(from, to) {
-  if (!isAdobe) 
+  if (!from.getTransformToElement) 
     return from.getTransformToElement(to);
   var m1 = screenCTM(from);
   var m2 = screenCTM(to);

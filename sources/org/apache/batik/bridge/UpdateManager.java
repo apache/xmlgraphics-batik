@@ -291,7 +291,7 @@ public class UpdateManager  {
                         } else {
                             running = false;
                             scriptingEnvironment.interrupt();
-                            updateRunnableQueue.getThread().interrupt();
+                            updateRunnableQueue.getThread().halt();
                         }
                     }
                 }
@@ -324,7 +324,7 @@ public class UpdateManager  {
                         // everything before we send the 
                         // UpdateMangerStopped event.
                         scriptingEnvironment.interrupt();
-                        updateRunnableQueue.getThread().interrupt();
+                        updateRunnableQueue.getThread().halt();
                         bridgeContext.dispose();
 
                         // Send the UpdateManagerStopped event.

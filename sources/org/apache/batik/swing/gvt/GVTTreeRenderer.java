@@ -27,6 +27,7 @@ import org.apache.batik.bridge.InterruptedBridgeException;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.util.EventDispatcher;
 import org.apache.batik.util.EventDispatcher.Dispatcher;
+import org.apache.batik.util.HaltingThread;
 
 /**
  * This class represents an object which renders asynchroneaously
@@ -35,7 +36,7 @@ import org.apache.batik.util.EventDispatcher.Dispatcher;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class GVTTreeRenderer extends Thread {
+public class GVTTreeRenderer extends HaltingThread {
 
     /**
      * The renderer used to paint.
@@ -73,11 +74,6 @@ public class GVTTreeRenderer extends Thread {
     protected List listeners = Collections.synchronizedList(new LinkedList());
 
     /**
-     * Boolean indicating if this thread has ever been interrupted.
-     */
-    protected boolean beenInterrupted;
-
-    /**
      * Creates a new GVTTreeRenderer.
      * @param r The renderer to use to paint.
      * @param usr2dev The user to device transform.
@@ -94,11 +90,6 @@ public class GVTTreeRenderer extends Thread {
         doubleBuffering = dbuffer;
         this.width = width;
         this.height = height;
-        beenInterrupted = false;
-    }
-
-    public boolean getBeenInterrupted() {
-        synchronized (this) { return beenInterrupted; }
     }
 
     /**
@@ -114,7 +105,7 @@ public class GVTTreeRenderer extends Thread {
             renderer.updateOffScreen(width, height);
             renderer.clearOffScreen();
 
-            if (getBeenInterrupted()) {
+            if (isHalted()) {
                 fireEvent(cancelledDispatcher, ev);
                 return;
             }
@@ -122,14 +113,14 @@ public class GVTTreeRenderer extends Thread {
             ev = new GVTTreeRendererEvent(this, renderer.getOffScreen());
             fireEvent(startedDispatcher, ev);
 
-            if (getBeenInterrupted()) {
+            if (isHalted()) {
                 fireEvent(cancelledDispatcher, ev);
                 return;
             }
 
             renderer.repaint(areaOfInterest);
 
-            if (getBeenInterrupted()) {
+            if (isHalted()) {
                 fireEvent(cancelledDispatcher, ev);
                 return;
             }
@@ -149,13 +140,6 @@ public class GVTTreeRenderer extends Thread {
         } catch (Throwable t) {
             t.printStackTrace();
             fireEvent(failedDispatcher, ev);
-        }
-    }
-
-    public void interrupt() {
-        super.interrupt();
-        synchronized (this) {
-            beenInterrupted = true;
         }
     }
 

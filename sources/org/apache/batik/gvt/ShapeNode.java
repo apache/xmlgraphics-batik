@@ -22,6 +22,8 @@ import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import org.apache.batik.util.HaltingThread;
+
 /**
  * A graphics node that represents a shape.
  *
@@ -235,10 +237,10 @@ public class ShapeNode extends AbstractGraphicsNode {
             else
                 primitiveBounds = shapePainter.getPaintedBounds2D();
 
-            // Make sure we haven't been interrupted
-            if (Thread.currentThread().isInterrupted()) {
-                // The Thread has been interrupted. Invalidate
-                // any cached values and proceed.
+            // Check If we should halt early.
+            if (HaltingThread.hasBeenHalted()) {
+                // The Thread has been halted. 
+                // Invalidate any cached values and proceed.
                 invalidateGeometryCache();
             }
         }

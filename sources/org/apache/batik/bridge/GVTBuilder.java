@@ -20,7 +20,9 @@ package org.apache.batik.bridge;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
+import org.apache.batik.util.HaltingThread;
 import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -174,8 +176,8 @@ public class GVTBuilder implements SVGConstants {
     protected void buildGraphicsNode(BridgeContext ctx,
                                      Element e,
                                      CompositeGraphicsNode parentNode) {
-        // Check for interruption.
-        if (Thread.currentThread().isInterrupted()) {
+        // Check If we should halt early.
+        if (HaltingThread.hasBeenHalted()) {
             throw new InterruptedBridgeException();
         }
         // get the appropriate bridge according to the specified element
