@@ -78,7 +78,6 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
 
         String aspectRatio
             = e.getAttributeNS(null, SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
-
         return getPreserveAspectRatioTransform(e, viewBox, aspectRatio, w, h);
     }
 
@@ -180,7 +179,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
         implements PreserveAspectRatioHandler {
 
         public short align;
-        public boolean meet;
+        public boolean meet = true;
 
         /**
          * Invoked when the PreserveAspectRatio parsing starts.

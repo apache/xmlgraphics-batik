@@ -36,7 +36,7 @@ public class StrokeShapePainter implements ShapePainter {
     /**
      * Constructs a new <tt>ShapePainter</tt> that can be used to draw
      * the outline of a <tt>Shape</tt>.
-     * 
+     *
      * @param shape shape to be painted by this painter. Should not be null.
      */
     public StrokeShapePainter(Shape shape) {
@@ -91,7 +91,7 @@ public class StrokeShapePainter implements ShapePainter {
         if(paint != null && stroke != null){
             return stroke.createStrokedShape(shape);
         } else {
-            return shape;
+            return null;
         }
     }
 
