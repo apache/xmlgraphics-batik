@@ -28,40 +28,34 @@
   <test:testResult id="testResult" />
 
   <script type="text/ecmascript"><![CDATA[
-   var testNS = "http://xml.apache.org/batik/test";
+
+   var testNS = "http://xml.apache.org/batik/test"
 
    function runTest() {
-     var result = document.getElementById("testResult");
+     var result = document.getElementById("testResult")
 
-     var elt = document.getElementById("targetElement");
-     result.setAttributeNS(null, "result", "failed");
+     var elt = document.getElementById("targetElement")
+     result.setAttributeNS(null, "result", "failed")
 
      if (elt == null){
-        result.setAttributeNS(null, "errorCode", "cannot.find.test.element");
-        var entry = document.createElementNS(testNS, "errorDescriptionEntry");
-        entry.setAttributeNS(null, "id", "missing.element.id");
-        entry.setAttributeNS(null, "value", "targetElement");
-        result.appendChild(entry);
-        return;
+        result.setAttributeNS(null, "errorCode", "cannot.find.test.element")
+        var entry = document.createElementNS(testNS, "errorDescriptionEntry")
+        entry.setAttributeNS(null, "id", "missing.element.id")
+        entry.setAttributeNS(null, "value", "targetElement")
+        result.appendChild(entry)
+        return
      }
 
-     var decl = elt.getStyle();
+     var val = elt.getPresentationAttribute("fill") 
 
-     if (decl == null){
-        result.setAttributeNS(null, "errorCode", "getStyle() returned null");
-        return;
+     if (val == null) {
+        result.setAttributeNS(null, "errorCode", "CSSStyleDeclaration.getPropertyCSSValue returned null")
+        return
      }
 
-     var val = decl.getPropertyCSSValue("fill");
+     var rgb = val.getRGBColor()
 
-     if ( val == null ){
-        result.setAttributeNS(null, "errorCode", "CSSStyleDeclaration.getPropertyCSSValue returned null");
-        return;
-     }
-
-     val = val.getRGBColor()
-
-     if (val.red.cssText != "1"){
+     if (rgb.red.cssText != "1"){
         result.setAttributeNS(null, "errorCode", "invalid red component");
         var entry = document.createElementNS(testNS, "errorDescriptionEntry");
         entry.setAttributeNS(null, "id", "expected.red");
@@ -69,12 +63,12 @@
         result.appendChild(entry);
         entry = document.createElementNS(testNS, "errorDescriptionEntry");
         entry.setAttributeNS(null, "id", "found.red");
-        entry.setAttributeNS(null, "value", "" + val.red);
+        entry.setAttributeNS(null, "value", "" + rgb.red);
         result.appendChild(entry);
         return;
      }
 
-     if (val.green.cssText != "2"){
+     if (rgb.green.cssText != "2"){
         result.setAttributeNS(null, "errorCode", "invalid green component");
         var entry = document.createElementNS(testNS, "errorDescriptionEntry");
         entry.setAttributeNS(null, "id", "expected.green");
@@ -82,12 +76,12 @@
         result.appendChild(entry);
         entry = document.createElementNS(testNS, "errorDescriptionEntry");
         entry.setAttributeNS(null, "id", "found.green");
-        entry.setAttributeNS(null, "value", "" + val.green);
+        entry.setAttributeNS(null, "value", "" + rgb.green);
         result.appendChild(entry);
         return;
      }
 
-     if (val.blue.cssText != "3"){
+     if (rgb.blue.cssText != "3"){
         result.setAttributeNS(null, "errorCode", "invalid blue component");
         var entry = document.createElementNS(testNS, "errorDescriptionEntry");
         entry.setAttributeNS(null, "id", "expected.blue");
@@ -95,18 +89,61 @@
         result.appendChild(entry);
         entry = document.createElementNS(testNS, "errorDescriptionEntry");
         entry.setAttributeNS(null, "id", "found.blue");
-        entry.setAttributeNS(null, "value", "" + val.blue);
+        entry.setAttributeNS(null, "value", "" + rgb.blue);
         result.appendChild(entry);
         return;
      }
 
-    result.setAttributeNS(null, "result", "passed");
+     elt.setAttributeNS(null, "fill", "#030201")
+
+     if (rgb.red.cssText != "3"){
+        result.setAttributeNS(null, "errorCode", "invalid red component");
+        var entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "expected.red");
+        entry.setAttributeNS(null, "value", "1");
+        result.appendChild(entry);
+        entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "found.red");
+        entry.setAttributeNS(null, "value", "" + rgb.red);
+        result.appendChild(entry);
+        return;
+     }
+
+     if (rgb.green.cssText != "2"){
+        result.setAttributeNS(null, "errorCode", "invalid green component");
+        var entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "expected.green");
+        entry.setAttributeNS(null, "value", "2");
+        result.appendChild(entry);
+        entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "found.green");
+        entry.setAttributeNS(null, "value", "" + rgb.green);
+        result.appendChild(entry);
+        return;
+     }
+
+     if (rgb.blue.cssText != "1"){
+        result.setAttributeNS(null, "errorCode", "invalid blue component");
+        var entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "expected.blue");
+        entry.setAttributeNS(null, "value", "3");
+        result.appendChild(entry);
+        entry = document.createElementNS(testNS, "errorDescriptionEntry");
+        entry.setAttributeNS(null, "id", "found.blue");
+        entry.setAttributeNS(null, "value", "" + rgb.blue);
+        result.appendChild(entry);
+        return;
+     }
+
+     result.setAttributeNS(null, "result", "passed");
    }
+
   ]]></script>
 
   <g fill="blue">
     <rect x="10%" y="10%" width="80%" height="80%"
-          style="opacity:0.5; fill: rgb(1,2,3)" id="targetElement"/>
+          fill="rgb(1,2,3)" id="targetElement"/>
   </g>
-</svg>
 
+
+</svg>
