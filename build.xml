@@ -228,9 +228,9 @@ To display the available targets type:
     <javac srcdir="${src}" destdir="${dest}" deprecation="on">
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>
-      <exclude name="**/rhino*" unless="rhino.present"/>      
-      <exclude name="**/jpython*" unless="jpython.present"/>
-      <exclude name="**/jacl*" unless="jacl.present"/>
+      <exclude name="**/rhino/*" unless="rhino.present"/>      
+      <exclude name="**/jpython/*" unless="jpython.present"/>
+      <exclude name="**/jacl/*" unless="jacl.present"/>
     </javac>
   </target>
 
