@@ -469,7 +469,20 @@ public class SVGGraphics2D extends AbstractGraphics2D
      *         object
      */
     public Element getRoot(){
-        Element svgRoot = domTreeManager.getRoot();
+        return getRoot(null);
+    }
+
+    /**
+     * This version of the getRoot method will append the input svgRoot
+     * and set its attributes.
+     *
+     * @param svgRoot an SVG element underwhich the content should 
+     *        be appended.
+     * @returns the svg root node of the SVG document associated with 
+     *          this object.
+     */
+    public Element getRoot(Element svgRoot) {
+        svgRoot = domTreeManager.getRoot(svgRoot);
         if (svgCanvasSize != null){
             svgRoot.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
                                    "" + svgCanvasSize.width);

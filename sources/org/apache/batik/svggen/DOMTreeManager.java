@@ -220,8 +220,20 @@ public class DOMTreeManager implements SVGSyntax, ErrorConstants {
      * the topLevelGroup.
      */
     public Element getRoot(){
-        Element svg = generatorContext.domFactory.
-            createElementNS(SVG_NAMESPACE_URI, SVG_SVG_TAG);
+        return getRoot(null);
+    }
+
+    /**
+     * Returns the root element with the generic definitions and
+     * the topLevelGroup.
+     */
+    public Element getRoot(Element svgElement){
+        Element svg = svgElement;
+
+        if (svg == null) {
+            svg = generatorContext.domFactory.
+                createElementNS(SVG_NAMESPACE_URI, SVG_SVG_TAG);
+        } 
 
         // Enable background if required by AlphaComposite convertion
         if (gcConverter.getCompositeConverter().

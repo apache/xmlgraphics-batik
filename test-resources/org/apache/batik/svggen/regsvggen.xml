@@ -38,4 +38,6 @@
     <test id="Texture" />
     <test id="TextSpacePreserve" />    
     <test id="TransformCollapse" />
+
+    <test id="GetRootTest" class="org.apache.batik.svggen.GetRootTest" />
 </testSuite>
