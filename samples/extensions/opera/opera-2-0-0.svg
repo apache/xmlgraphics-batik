@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg width="180" height="270" viewBox="0 0 180 270" 
+xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:batikExt="http://xml.apache.org/batik/ext">
+   <batikExt:multiImage x="0" y="0" width="180" height="180"
+         xlink:href="multires/opera-2-0-0.jpg"
+         pixel-width="180" pixel-height="180">
+      <batikExt:subImage xlink:href="opera-1-0-0.svg"
+            pixel-width="360" pixel-height="360"/>
+   </batikExt:multiImage>
+   <rect class="overlay" fill="none" stroke="#0F0" stroke-width="4" x="0" y="0" width="180" height="180"/>
+   <batikExt:multiImage x="0" y="180" width="180" height="90"
+         xlink:href="multires/opera-2-0-1.jpg"
+         pixel-width="180" pixel-height="90">
+      <batikExt:subImage xlink:href="opera-1-0-2.svg"
+            pixel-width="360" pixel-height="180"/>
+   </batikExt:multiImage>
+   <rect class="overlay" fill="none" stroke="#0F0" stroke-width="4" x="0" y="180" width="180" height="90"/>
+</svg>
