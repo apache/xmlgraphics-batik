@@ -21,6 +21,7 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.bridge.Bridge;
 
 import org.apache.batik.util.SVGConstants;
@@ -83,6 +84,9 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                                  ((ConcreteBridgeContext)ctx),
                              true);
 
+        RootGraphicsNode root = ctx.getGVTFactory().createRootGraphicsNode();
+        root.getChildren().add(treeRoot);
+
         EventListener listener;
         listener = new BridgeDOMInsertedRemovedListener
             ((ConcreteBridgeContext)ctx);
@@ -93,13 +97,12 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
         ((EventTarget)svgRoot).
             addEventListener("DOMNodeRemoved", listener, true);
 
-
         // <!> TODO as previous lines this should be done only if we want
         // binding !!!!
         BridgeEventSupport.addGVTListener(ctx, svgRoot);
         BridgeEventSupport.loadScripts(ctx, svgDocument);
 
-        return treeRoot;
+        return root;
     }
 
 
