@@ -175,7 +175,8 @@ To display the available targets type:
   <target name="bin-zip" depends="jars">
     <copy file="README" todir="${build}"/>
     <copy file="LICENSE" todir="${build}"/>
-    <copy file="LICENSE.rhino" todir="${build}"/>
+    <copy file="lib/LICENSE.js.txt" todir="${build}/lib"/>
+    <copy file="lib/README.js.txt" todir="${build}/lib"/>
     <copy todir="${build}/samples">
       <fileset dir="samples"/>
     </copy>
@@ -208,7 +209,8 @@ To display the available targets type:
 
     <copy file="README" todir="${build}"/>
     <copy file="LICENSE" todir="${build}"/>
-    <copy file="LICENSE.rhino" todir="${build}"/>
+    <copy file="lib/LICENSE.js.txt" todir="${build}/lib"/>
+    <copy file="lib/README.js.txt" todir="${build}/lib"/>
     <copy todir="${build}/samples">
       <fileset dir="samples"/>
     </copy>
