@@ -250,16 +250,16 @@
 	}
 
         function updateText(id, lbl) {
-            var elt = document.getElementById(id)
+            var elt = document.getElementById(id);
             var grp = elt.parentNode;
-            var newelt = elt.cloneNode(true)
+            var newelt = elt.cloneNode(true);
 
             if (newelt.firstChild == null) {
-                newelt.appendChild(document.createTextNode(lbl))
+                newelt.appendChild(document.createTextNode(lbl));
             } else {
-                newelt.replaceChild(document.createTextNode(lbl), newelt.firstChild)
+                newelt.replaceChild(document.createTextNode(lbl), newelt.firstChild);
             }
-            grp.replaceChild(newelt, elt)
+            grp.replaceChild(newelt, elt);
         }
 
 	function largerBoard(evt) {

@@ -9,7 +9,7 @@
 package org.apache.batik.extension;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.svg.AbstractElement;
+import org.apache.batik.dom.svg.SVGOMElement;
 
 /**
  * This class implements the basic features an element must have in order
@@ -18,7 +18,8 @@ import org.apache.batik.dom.svg.AbstractElement;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class ExtensionElement extends AbstractElement {
+public abstract class ExtensionElement 
+    extends SVGOMElement {
 
     /**
      * Creates a new Element object.

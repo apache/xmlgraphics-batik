@@ -66,6 +66,14 @@ import org.apache.batik.gvt.text.TextSpanLayout;
 public class StrokingTextPainter extends BasicTextPainter {
 
     public static final 
+        AttributedCharacterIterator.Attribute FLOW_REGIONS =
+        GVTAttributedCharacterIterator.TextAttribute.FLOW_REGIONS;
+
+    public static final 
+        AttributedCharacterIterator.Attribute FLOW_PARAGRAPH =
+        GVTAttributedCharacterIterator.TextAttribute.FLOW_PARAGRAPH;
+
+    public static final 
         AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER 
         = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
 
@@ -93,6 +101,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         AttributedCharacterIterator.Attribute TEXTPATH
         = GVTAttributedCharacterIterator.TextAttribute.TEXTPATH;
 
+
     private static final AttributedCharacterIterator.Attribute WRITING_MODE
         = GVTAttributedCharacterIterator.TextAttribute.WRITING_MODE;
 
@@ -114,6 +123,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     static Set extendedAtts = new HashSet();
 
     static {
+        extendedAtts.add(FLOW_PARAGRAPH);
         extendedAtts.add(TEXT_COMPOUND_DELIMITER);
         extendedAtts.add(GVT_FONT);
         extendedAtts.add(BIDI_LEVEL);
@@ -223,31 +233,30 @@ public class StrokingTextPainter extends BasicTextPainter {
         } while (chunk != null && currentChunk < chunkACIs.length);
 
 
-        if (false) {
-            // When doing text wrapping there should only ever be
-            // one text chunk (as chunks are caused by use of 
-            // the 'x' and 'y' attributes which aren't allowed in
-            // the 'textFlow' element.
+        aci.first();
+        List rgns = (List)aci.getAttribute(FLOW_REGIONS);
+
+        if (rgns != null) {
             Iterator i = textRuns.iterator();
+            List chunkLayouts = new ArrayList();
+            TextRun tr = (TextRun)i.next();
             List layouts = new ArrayList();
-            while (i.hasNext()) {
-                TextRun tr = (TextRun)i.next();
+            chunkLayouts.add(layouts);
+            layouts.add(tr.getLayout());
+            while (true) {
+                while (i.hasNext()) {
+                    tr = (TextRun)i.next();
+                    if (tr.isFirstRunInChunk()) break;
+                    layouts.add(tr.getLayout());
+                }
+
+                if (!i.hasNext()) break;
+                layouts = new ArrayList();
+                chunkLayouts.add(layouts);
                 layouts.add(tr.getLayout());
             }
-
-            List rects = new ArrayList();
-            rects.add(new Rectangle2D.Float( 17, 80, 200, 400));
-            rects.add(new Rectangle2D.Float(233, 80, 200, 400));
-
-            List brLocs = new ArrayList();
-            brLocs.add(new Integer(292));
-            brLocs.add(new Integer(476));
-            List pLocs = new ArrayList();
-            pLocs.add(new Integer(96));
-            pLocs.add(new Integer(175));
-
             org.apache.batik.gvt.text.GlyphLayout.textWrapTextChunk
-                (chunkACIs[0], layouts, rects, brLocs, pLocs, 3);
+                (chunkACIs, chunkLayouts, rgns);
         }
 
         // t1 = System.currentTimeMillis();
@@ -291,6 +300,14 @@ public class StrokingTextPainter extends BasicTextPainter {
                 }
 
                 prevTextPath = textPath;
+
+                // We need to text chunk based on flow paragraphs.
+                // This prevents BIDI reordering across paragraphs.
+                if (aci.getAttribute(FLOW_PARAGRAPH) != null) {
+                    end = aci.getRunLimit(FLOW_PARAGRAPH);
+                    aci.setIndex(end);
+                    break;
+                }
 
                 // find end of compound.
                 end   = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
@@ -337,6 +354,8 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             // found the end of a text chunck
             int chunkEndIndex = aci.getIndex();
+            // System.out.println("Bounds: " + chunkStartIndex + 
+            //                    "," + chunkEndIndex);
             aciList.add(new AttributedCharacterSpanIterator
                 (aci, chunkStartIndex, chunkEndIndex));
 
@@ -435,6 +454,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextSpanLayout layout = getTextLayoutFactory().
                 createTextLayout(runaci, subCharMap, 
                                  offset, fontRenderContext);
+            // System.out.println("TextRun: " + start +  "->" + end + 
+            //                    " Start: " + isChunkStart);
             TextRun run = new TextRun(layout, runaci, isChunkStart);
             textRuns.add(run);
             Point2D layoutAdvance = layout.getAdvance2D();

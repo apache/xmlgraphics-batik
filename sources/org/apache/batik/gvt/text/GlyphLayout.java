@@ -86,6 +86,16 @@ public class GlyphLayout implements TextSpanLayout {
 
 
     
+    public static final AttributedCharacterIterator.Attribute FLOW_LINE_BREAK
+        = GVTAttributedCharacterIterator.TextAttribute.FLOW_LINE_BREAK;
+
+    public static final AttributedCharacterIterator.Attribute FLOW_PARAGRAPH 
+        = GVTAttributedCharacterIterator.TextAttribute.FLOW_PARAGRAPH;
+
+    public static final AttributedCharacterIterator.Attribute 
+        FLOW_EMPTY_PARAGRAPH 
+        = GVTAttributedCharacterIterator.TextAttribute.FLOW_EMPTY_PARAGRAPH;
+
     public static final AttributedCharacterIterator.Attribute 
         TEXT_COMPOUND_DELIMITER 
         = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
@@ -1793,6 +1803,10 @@ public class GlyphLayout implements TextSpanLayout {
     //   Should dy be considered for line offsets? (super scripts)
     //   Should p's & br's carry over from flow rect to flow rect if
     //   so how much????
+    //
+    //   How are Margins done?  Can't figure out Box size until
+    //   after we know the margins.
+    //   Should 'A' element be allowed in 'flowPara'.
     //   
     //   For Full justification:
     //       Streach glyphs to fill line? (attribute?)
@@ -1809,330 +1823,137 @@ public class GlyphLayout implements TextSpanLayout {
     /**
      * This will wrap the text associated with <tt>aci</tt> and
      * <tt>layouts</tt>.
-     * @param aci The Attributed Charater Iterator for text to wrap.
-     *            used exclusively to access font information.
-     * @param layouts A List of GlyphLayout objects that are to
-     *                be wrapped as a whole.
+     * @param acis An array of Attributed Charater Iterators containing the 
+     *             text to wrap.  There is one aci per text chunk
+     *             (which maps to flowPara elements. Used to access
+     *             font, paragraph, and line break info.
+     * @param ChunkLayouts A List of List of GlyphLayout objects.  There
+     *                     is a List of GlyphLayout objects for each
+     *                     flowPara element.  There is a GlyphLayout
+     *                     for approximately each sub element in the 
+     *                     flowPara element.
      * @param flowRects A List of Rectangle2D representing the regions
      *                  to flow text into.
-     * @param brLocs A List of Integer.  Each integer indicates the
-     *               the aci index of the char after the end of a
-     *               br/line element.  Note that a particular value can 
-     *               be repeated several times for sequences of br/line
-     *               elements without chars between them.
-     * @param pLocs A List of Integer.  Each integer indicates the
-     *               the aci index of the char after the end of a
-     *               p element.  Note that a particular value can be
-     *               repeated several times for sequences of p
-     *               elements without chars between them.
-     * @param justification an integer in the range: 0-3. 0 is left, 
-     *                      1 is center, 2 is right, and 
-     *                      3 is fully justified.
      */
-    public static void textWrapTextChunk(AttributedCharacterIterator aci,
-                                         List layouts,
-                                         List flowRects,
-                                         List brLocs,
-                                         List pLocs,
-                                         int justification) {
-        int aciIndex = aci.getBeginIndex();
-        int aciEnd   = aci.getEndIndex();
-
-        char ch = aci.first();
-        
-        Iterator iter = layouts.iterator();
+    public static void textWrapTextChunk(AttributedCharacterIterator [] acis,
+                                         List chunkLayouts,
+                                         List flowRects) {
+        int justification;
+        int numChunks = acis.length;
+        // System.out.println("Len: " + acis.length + " Size: " + 
+        //                    chunkLayouts.size());
 
         // Make a list of the GlyphVectors so we can construct a
         // multiGlyphVector that makes them all look like one big
         // glyphVector
-        List gvs = new LinkedList();
-        while (iter.hasNext()) {
-            GlyphLayout gl = (GlyphLayout)iter.next();
-            gvs.add(gl.getGlyphVector());
-        }
-
-        GVTGlyphVector gv = new MultiGlyphVector(gvs);
-
-        int numGlyphs = gv.getNumGlyphs();
-        float[] gp = gv.getGlyphPositions(0, numGlyphs+1, null);
-
-        if (numGlyphs == 0) return;
-
-        // Now pull the line break locations out into an array so
-        // I can jump around a bit easier.
-        int brIdx = 0;
-        int [] brLoc = new int[brLocs.size()+1];
-        iter = brLocs.iterator();
-        while (iter.hasNext())
-            brLoc[brIdx++] = ((Integer)iter.next()).intValue();
-        brLoc[brIdx] = aciEnd+1;
-        brIdx = 0;
-            
-        // Now pull the paragraph break locations out into an array so
-        // I can jump around a bit easier.
-        int pIdx = 0;
-        int [] pLoc = new int[pLocs.size()+1];
-        iter = pLocs.iterator();
-        while (iter.hasNext())
-            pLoc[pIdx++] = ((Integer)iter.next()).intValue();
-        pLoc[pIdx] = aciEnd+1;
-        pIdx = 0;
-        
+        GVTGlyphVector [] gvs = new GVTGlyphVector [acis.length];
+        Iterator clIter = chunkLayouts.iterator();
 
         // Get an iterator for the flow rects.
         Iterator flowRectsIter = flowRects.iterator();
-        if (!flowRectsIter.hasNext()) {
-            // No place to flow into, hide all glyphs.
-            for (int i=0; i>numGlyphs; i++)
-                gv.setGlyphVisible(i, false);
-            return;
-        }
-
-        // Ok get the info for the first rectangle...
+        // Get info for new flow rect.
         Rectangle2D cRect = (Rectangle2D)flowRectsIter.next();
-        float x0     = (float)cRect.getX();
         float y0     = (float)cRect.getY();
-        float width  = (float)cRect.getWidth();
-        float height = (float)cRect.getHeight();
+        float x0, width, height;
 
-        // Get the font size at the start of the string...
-        float fontSize = 12;
-        Float fsFloat = (Float)aci.getAttributes().get(TextAttribute.SIZE);
-        if (fsFloat != null) {
-            fontSize = fsFloat.floatValue();
-        }
-        // Figure out where the font size might change again...
-        int runLimit  = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
+        float lineMult     = 1.0f;
+        float nextLineMult = 0.0f;
+        float dy           = 0.0f;
 
-        // This is our current max font size
-        float maxFontSize = fontSize;
-        // This is the font size of the last printing char.
-        float chFontSize  = fontSize;
-
-        // Information for backing up to word Break (used when
-        // wrapping normal lines.  
-
-        // Glyph index of last break char seen (-1 if no break char on line)
-        int   wBreakIdx         = -1;
-        // The ACI index of last break char seen.
-        int   wBreakACI         = -1;
-        // Glyph index of last 'printing' char before last space seen 
-        // (needed to do visual justification on glyph bounds).
-        int   wBreakChIdx       = -1;
-        // The total advance for line including last non-space char.
-        float wBreakAdv         =  0;
-        // The total advance for line including spaces at end of line.
-        float wBreakAdj         =  0;
-        // The font size at last space seen.
-        float wBreakFontSize    = fontSize;
-        // The runLimit (for fonts) at last space seen.
-        int   wBreakRunLimit    = runLimit;
-        // The max font size since last space seen (printable chars only).  
-        float wBreakMaxFontSize = maxFontSize;
-
-        // Information for backing up to line start.
-        // This is needed when we reach the end of a
-        // line and realize it doesn't fit in the
-        // current rect.
-        // Glyph Index of first char on current line.
-        int   lBreakIdx       = -1;
-        // ACI Index of first char on current line.
-        int   lBreakACI       = -1;
-        // font size at start of line
-        float lBreakFontSize  = fontSize;
-        // runLimit (for font size) at start of line.
-        int   lBreakRunLimit  = runLimit;
-        // The index into the brLoc array at start of line
-        int   lBreakBrIdx     = 0;
-        // The index into the pLoc array at start of line
-        int   lBreakPIdx      = 0;
-
-        // Offset from top of current rect for baseline.
-        float dy       = 0;
-        // Printing char advance on line so far.
-        float adv      = 0;
-        // Advance of current char plus any leading non-printing chars.
-        float chAdv    = 0;
-        // GlyphIndex of last printing char seen 
-        // (used for full justification on glyph bounds).
-        int   lastChar = 0;
-        // The descent from previous line we need to incorporate
-        float prevDesc = 0;
-
-
-        // Used to know if we are doing the first glyph after line start.
-        int  lineStart     = 0;
-
-        // Per-line information lists.  Used after line breaks have
-        // been decided upon.
-        List lineStarts    = new LinkedList(); // glyph index of line starts
-        List lineLocs      = new LinkedList(); // Point2D of line start.
-        List lineAdvs      = new LinkedList(); // Visual width of line.
-        List lineAdjs      = new LinkedList(); // x Offset for line 
-        List lineLastCharW = new LinkedList(); // used in full justification.
-        List linePartial   = new LinkedList(); // should line be justified?
-
-        lineStarts.add(new Integer(0));
-        int i;
-        boolean chIsSpace    = isSpace(ch);
-        boolean partial      = false;
-        float   nextLineMult = 1.0f;
-        float   lineMult     = 1.0f;
-
-        // Let's start looking at glyphs....
-        for (i=0; i<numGlyphs; i++) {
-
-            // Update font size for this char if needed.
-            if (aciIndex >= runLimit) {
-                runLimit = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
-                fsFloat = (Float)aci.getAttributes().get(TextAttribute.SIZE);
-                if (fsFloat != null) {
-                    fontSize = fsFloat.floatValue();
-                } else {
-                    fontSize = 12;
-                }
-                // System.out.println("ACI: " + aciIndex + 
-                //                    " runLimit: " + runLimit +
-                //                    " FS: " + fontSize);
-            }
-
-            // Get advance for this glyph...
-            float gmAdv = gp[2*i+2] - gp[2*i];
-
-            // Add to the 'Char adv' which includes any non printing
-            // chars before this char.
-            chAdv += gmAdv;
-
-            // System.out.println("Ch : '" + ch + "' Idx: " + aciIndex);
-    
-            // If it's a space remeber it as a breaking location but
-            // don't check for line break yet (wait till non-space char).
-            if (chIsSpace) {
-                wBreakIdx      = i;
-                wBreakChIdx    = lastChar;
-                wBreakACI      = aciIndex;
-                wBreakAdv      = adv;
-                wBreakAdj      = adv+chAdv;
-                wBreakFontSize = fontSize;
-                wBreakRunLimit = runLimit;
-
-                // New break loc so incorporate wBreakMaxFontSize
-                if (wBreakMaxFontSize > maxFontSize)
-                    maxFontSize = wBreakMaxFontSize;
-
-                wBreakMaxFontSize = chFontSize;
-            }
-
-            if (!chIsSpace) {
-                // Ok we are a printing char so include all the
-                // advaces we have collected.
-                adv += chAdv;
-
-                // Remember the size of this char...
-                chFontSize = fontSize;
-            }
-
-            boolean doBreak = false;
-
-            // Don't break at first char in line 
-            // (otherwise nothing will ever get drawn).
-            if (!chIsSpace &&
-                (lineStart != i) && 
-                (adv > width)
-                ) {
-
-                // Better logic for wrap (allow it to squeeze upto 1/2 as
-                // much as it would streatch if word wrapped).
-                // (((wBreakIdx == -1) && (adv > width)) ||  // no break avail
-                //  (adv-width > (width-wBreakAdv)*.5))
-
-
-
-                if (wBreakIdx == -1) {
-                    // Break in the middle of word.  Back out gmAdv
-                    // since it will be used on the next line.
-                    wBreakAdv   = adv-gmAdv;
-                    wBreakAdj   = adv-gmAdv;
-                    wBreakChIdx = lastChar;
-
-                    i--; // reconsider letter (will get inc'd later).
-
-                    // Include max font since last break char in max calc.
-                    if (wBreakMaxFontSize > maxFontSize)
-                        maxFontSize = wBreakMaxFontSize;
-                } else {
-                    // We have a break char to back up to.
-                    // Reset state to just after breaking chars.
-                    i          = wBreakIdx;
-                    aciIndex   = wBreakACI;
-                    fontSize   = wBreakFontSize;
-                    chFontSize = wBreakFontSize;
-                    runLimit   = wBreakRunLimit;
-
-                    aciIndex += gv.getCharacterCount(i,i);
-                    ch        = aci.setIndex(aciIndex);
-                    chIsSpace = isSpace(ch);
-                }
-
-                nextLineMult = 1.0f;
-                doBreak = true;
-                partial = false;
-            }
-
-            // Track how many p's and br's we hit here.
-            int pCount  = 0;
-            int brCount = 0;
-            // did we just pass a p or br?
-            if ((aciIndex >= pLoc [pIdx]) ||
-                (aciIndex >= brLoc[brIdx])) {
-
-                // Count the P's here...
-                while (aciIndex >= pLoc[pIdx]) {
-                    pIdx++;
-                    pCount++;
-                    nextLineMult += 1.5;
-                }
-
-                // Count the br's here...
-                while (aciIndex >= brLoc[brIdx]) {
-                    brIdx++;
-                    brCount++;
-                    nextLineMult += 1.0;
-                }
-
-                if (doBreak) {
-                    // If we were going to word wrap here anyway
-                    // Don't double space...
-                    nextLineMult -= 1.0f;
-                } else {
-                    // We need to specify the break
-                    if (chIsSpace) {
-                        wBreakAdv   = adv;
-                        wBreakAdj   = adv+(chAdv-gmAdv);
-                    } else {
-                        // If a char with prior spaces then keep
-                        // spaces on prev line and char on this line...
-                        wBreakAdv   = adv-gmAdv;
-                        wBreakAdj   = adv-gmAdv;
+        //System.out.println("Chunks: " + numChunks);
+        
+        float prevBotMargin = 0;
+        for (int chunk=0; clIter.hasNext(); chunk++) {
+            // System.out.println("Chunk: " + chunk);
+            AttributedCharacterIterator aci = acis[chunk];
+            {
+                List extraP = (List)aci.getAttribute(FLOW_EMPTY_PARAGRAPH);
+                if (extraP != null) {
+                    Iterator epi = extraP.iterator();
+                    while (epi.hasNext()) {
+                        MarginInfo emi = (MarginInfo)epi.next();
+                        dy += ((prevBotMargin > emi.getTopMargin()) 
+                               ? prevBotMargin 
+                               : emi.getTopMargin());
+                        prevBotMargin = emi.getBottomMargin();
                     }
-
-                    wBreakChIdx = lastChar;
-
-                    i--; // reconsider letter.
-
-                    // Include max font since break as max.
-                    if (wBreakMaxFontSize > maxFontSize)
-                        maxFontSize = wBreakMaxFontSize;
                 }
-                
-                doBreak = true;
-                partial = true;
+            }
+            aci.first();
+            MarginInfo mi = (MarginInfo)aci.getAttribute(FLOW_PARAGRAPH);
+            justification = mi.getJustification();
+
+            List gvl = new LinkedList();
+            List layouts = (List)clIter.next();
+            Iterator iter = layouts.iterator();
+            while (iter.hasNext()) {
+                GlyphLayout gl = (GlyphLayout)iter.next();
+                gvl.add(gl.getGlyphVector());
+            }
+            GVTGlyphVector gv = new MultiGlyphVector(gvl);
+            gvs[chunk] = gv;
+            int numGlyphs = gv.getNumGlyphs();
+
+            // System.out.println("Glyphs: " + numGlyphs);
+
+            if (cRect == null) {
+                for(int idx=0; idx <numGlyphs; idx++) 
+                    gv.setGlyphVisible(idx, false);
+                continue;
             }
 
+            dy += ((prevBotMargin > mi.getTopMargin()) ? 
+                   prevBotMargin : mi.getTopMargin());
+            prevBotMargin = mi.getBottomMargin();
 
-            if (doBreak) {
+            x0    = (float)cRect.getX() + mi.getLeftMargin();
+            width = (float)(cRect.getWidth() - 
+                            (mi.getLeftMargin()+mi.getRightMargin()));
+            height = (float)cRect.getHeight();
+            
+            List lineInfos = new LinkedList();
+
+            float prevDesc = 0.0f;
+            GlyphIterator gi = new GlyphIterator(aci, gv);
+            GlyphIterator breakGI  = null;
+            GlyphIterator lineGI   =  gi.copy();
+            while (!gi.done()) {
+                boolean doBreak = false;
+                boolean partial = false;
+
+                if (!gi.isBreakChar() &&
+                    (breakGI != null) && // Don't break at first char in line
+                    (gi.getAdv() > width)) {
+                    gi = breakGI.copy(gi);  // Back up to break loc...
+
+                    nextLineMult = 1.1f;
+                    doBreak = true;
+                    partial = false;
+                } else if (gi.isLastChar()) {
+                    nextLineMult = 1.1f;
+                    doBreak = true;
+                    partial = true;
+                } 
+                int lnBreaks = gi.getLineBreaks();
+                if (lnBreaks != 0) {
+                    if (doBreak)
+                        nextLineMult -= 1.1;
+                    nextLineMult += lnBreaks*1.1f;
+                    partial = true;
+                    doBreak = true;
+                }
+                if (!doBreak) {
+                    if ((gi.isBreakChar()) ||
+                        (breakGI == null)  ||
+                        (!breakGI.isBreakChar()))
+                        breakGI = gi.copy(breakGI);
+
+                    gi.nextChar();
+                    continue;
+                }
+
                 // We will now attempt to break the line just
-                // before the current char.
+                // after the breakGI.
 
                 // Note we are trying to figure out where the current
                 // line is going to be placed (not the next line).  We
@@ -2141,192 +1962,79 @@ public class GlyphLayout implements TextSpanLayout {
 
                 // Get the nomial line advance based on the
                 // largest font we encountered on line...
-                float ladv = (maxFontSize*.8f+prevDesc)*1.1f;
-
-                // This is modified by any p's or br's we hit at
-                // the end of the last line.
+                // Fix this to be based on font ascent/descent.
+                float ladv = (gi.getMaxFontSize()*.8f+prevDesc);
+                    
                 dy += ladv*lineMult;
-
-                // Remember the effect of p's br's at the end of this line.
+                    // Remember the effect of p's br's at the end of this line.
                 lineMult = nextLineMult;
-
-                // Set ourself up for next line...
-                nextLineMult = 0.0f;
-
-                // System.out.println("Break L [" + lineStart + "," + i + 
-                //                    "] Loc: " + (y0+dy) + 
-                //                    " adv: " + wBreakAdv +
-                //                    " adj: " + wBreakAdj);
-
-                if ((dy + maxFontSize*.2f) <= height) {
-                    // The line fits in the current flow rectangle.
-
-                    // System.out.println("Fits: " + (dy + maxFontSize*.2f));
+                nextLineMult = 0f;
 
 
-                    // Now remember info about start of next line.
-                    // (needed so we can back up if that line doesn't
-                    // fit in current rectangle).
-                    lBreakIdx      = i+1;
-                    lBreakACI      = aciIndex;
-                    lBreakFontSize = fontSize;
-                    lBreakRunLimit = runLimit;
-                    lBreakPIdx     = pIdx;
-                    lBreakBrIdx    = brIdx;
+                if ((dy + gi.getMaxFontSize()*.2f) > height)  {
+                    // The current Line doesn't fit in the
+                    // current flow rectangle so we need to
+                    // move line to the next flow rect.
 
-                    // Now we tweak line advance to account for
-                    // visual bounds of last glyph.
-                    Rectangle2D lastCharB = gv.getGlyphVisualBounds
-                        (wBreakChIdx).getBounds2D();
-                    Point2D     lastCharL = gv.getGlyphPosition
-                        (wBreakChIdx);
-                    float charW   = (float)
-                        (lastCharB.getX()+lastCharB.getWidth()-
-                         lastCharL.getX());
-                    float charAdv = gp[2*wBreakChIdx+2]-gp[2*wBreakChIdx];
-                    wBreakAdv -= charAdv-charW;
+                    // System.out.println("Doesn't Fit: " + dy);
 
-                    // Add all the info about the current line to lists.
-                    lineLocs.add   (new Point2D.Float(x0, y0+dy));
-                    lineAdvs.add   (new Float(wBreakAdv));
-                    lineAdjs.add   (new Float(wBreakAdj));
-                    lineLastCharW.add (new Float(charW));
-                    linePartial.add(new Boolean(partial));
-
-                    // Remember where next line starts.
-                    lineStart = i+1;
-                    lineStarts.add (new Integer(lineStart));
-
-                    // Remember how far down this line goes into
-                    // next line.
-                    prevDesc        = maxFontSize*.2f;
-                } else {
-                    // The current line doesn't fit in the current
-                    // flow rectangle so we need to go move line to
-                    // the next flow rectangle.
-
-                    // System.out.println("Doesn't Fit: " + 
-                    //                    (dy + maxFontSize*.2f));
-
-
-                    if (!flowRectsIter.hasNext())
+                    if (!flowRectsIter.hasNext()) {
+                        cRect = null;
+                        gi = lineGI.copy(gi);
                         break; // No flow rect stop layout here...
+                    }
 
-                    // Remember how wide this rectangle is...
+                        // Remember how wide this rectangle is...
                     float oldWidth = width;
 
                     // Get info for new flow rect.
                     cRect = (Rectangle2D)flowRectsIter.next();
-                    x0     = (float)cRect.getX();
-                    y0     = (float)cRect.getY();
-                    width  = (float)cRect.getWidth();
+                    x0    = (float) cRect.getX() + mi.getLeftMargin();
+                    y0    = (float) cRect.getY();
+                    width = (float)(cRect.getWidth() - 
+                                    (mi.getLeftMargin()+mi.getRightMargin()));
                     height = (float)cRect.getHeight();
 
                     // New rect so no previous row to consider...
-                    dy        = 0;
+                    dy        = 0; // mi.getTopMargin();
                     prevDesc  = 0;
                     lineMult  = 1.0f; // don't pile up lineMults from
-                                      // previous flows?
+                    // previous flows?
 
-                    if (cRect.getWidth() >= oldWidth) {
-                        // new rect is same width or wider so
-                        // we can reuse our work on this line.
-
-                        // Just undo anything we added in
-                        if (!chIsSpace)
-                            adv -= chAdv;
-
-                        chAdv -= gmAdv;
-                        // Unadvance p's and br's for this char...
-                        pIdx  -= pCount;
-                        brIdx -= brCount;
-                        continue;
+                    if (gi.getAdv() > oldWidth) {
+                        // need to back up to start of line...
+                        gi = lineGI.copy(gi);
                     }
-
-                    // new rect is smaller so back up to line start
-                    // and try with new flow rect.
-                    i          = lBreakIdx-1; // loop will inc...
-                    aciIndex   = lBreakACI;
-                    fontSize   = lBreakFontSize;
-                    chFontSize = lBreakFontSize;
-                    runLimit   = lBreakRunLimit;
-                    pIdx       = lBreakPIdx;
-                    brIdx      = lBreakBrIdx;
-
-                    ch       = aci.setIndex(aciIndex);
-                    chIsSpace = isSpace(ch);
+                    continue;
                 }
 
-                // Set fontSize max's to last printing char size.
-                maxFontSize       = chFontSize;
-                wBreakMaxFontSize = chFontSize;
-
-                // New line so reset line advance info.
-                adv=0;
-                chAdv=0;
-                wBreakIdx = -1;
-                continue;
+                // System.out.println("Fit: " + dy);
+                prevDesc = gi.getMaxFontSize()*.2f;
+                lineInfos.add(gi.getLineInfo
+                              (new Point2D.Float(x0, y0+dy),
+                               width,
+                               partial));
+                gi.newLine();
+                // The line fits in the current flow rectangle.
+                lineGI  = gi.copy(lineGI);
+                breakGI = null;
             }
+            dy += prevDesc;
 
-            if (!chIsSpace) {
-                // Don't include spaces in max font size calc.
-                if (chFontSize > wBreakMaxFontSize) {
-                    wBreakMaxFontSize = chFontSize;
-                }
+            int idx = gi.getGlyphIndex();
+            while(idx <numGlyphs) 
+                gv.setGlyphVisible(idx++, false);
 
-                // Remember this as last non-space char...
-                lastChar = i;
-
-                // Reset char advance (incorporated into adv above).
-                chAdv = 0;
-            }
-
-            // Increment everything for ext char...
-            aciIndex += gv.getCharacterCount(i,i);
-            ch = aci.setIndex(aciIndex);
-            chIsSpace = isSpace(ch);
+            layoutChunk(aci, gv, justification, lineInfos);
         }
+    }
 
-        // Include max font since break char in max.
-        if (wBreakMaxFontSize > maxFontSize)
-            maxFontSize = wBreakMaxFontSize;
-        dy += (maxFontSize*.8f+prevDesc)*1.1f;
-        if ((dy + .2f*maxFontSize) >= height) {
-            // Last line of text didn't fit...
-            i = lineStart;
-        } else {
-            Rectangle2D lastCharB = gv.getGlyphVisualBounds
-                (lastChar).getBounds2D();
-            Point2D     lastCharL = gv.getGlyphPosition(lastChar);
-            float charW   = (float)
-                (lastCharB.getX()+lastCharB.getWidth()-
-                 lastCharL.getX());
-            float charAdv = gp[2*lastChar+2]-gp[2*lastChar];
-
-            lineStarts.add (new Integer(i));
-            lineLocs.add   (new Point2D.Float(x0, y0+dy));
-            lineAdvs.add   (new Float(adv-(charAdv-charW)));
-            lineAdjs.add   (new Float(adv+chAdv));
-            lineLastCharW.add (new Float(charW));
-            linePartial.add(new Boolean(true));
-        }
-
-        // ignore any glyphs i+  (didn't fit in rects.)  
-        for (int j=i; j<numGlyphs; j++) 
-            gv.setGlyphVisible(j, false);
-
-        // Limit ourselves to i glyphs...
-        numGlyphs = i;
-
-
-        Iterator lStartIter    =lineStarts.iterator();
-        Iterator lLocIter      =lineLocs.iterator();
-        Iterator lAdvIter      =lineAdvs.iterator();
-        Iterator lAdjIter      =lineAdjs.iterator();
-        Iterator lLastCharWIter=lineLastCharW.iterator();
-        Iterator lPartIter      =linePartial.iterator();
-
-        lineStart             = ((Integer)lStartIter.next()).intValue();
+    public static void layoutChunk(AttributedCharacterIterator aci,
+                                   GVTGlyphVector gv, int justification,
+                                   List lineInfos) {
+        Iterator lInfoIter = lineInfos.iterator();
+        int numGlyphs      = gv.getNumGlyphs();
+        float [] gp        = gv.getGlyphPositions(0, numGlyphs+1, null);
         Point2D.Float lineLoc = null;
         float         lineAdv = 0;
         float         lineAdj = 0;
@@ -2336,38 +2044,45 @@ public class GlyphLayout implements TextSpanLayout {
 
         float xScale=1;
         float xAdj=0;
-        float charW;
+        float charW=0;
+        float lineWidth=0;
+        boolean partial = false;
 
         // This loop goes through and puts glyphs where they belong
         // based on info collected in first trip through glyphVector...
-        i =0;
-        for (; i<numGlyphs; i++) {
-            if (i == lineStart) {
+        int lineEnd = 0;
+        int i;
+        for (i =0; i<numGlyphs; i++) {
+            if (i == lineEnd) {
                 // Always comes through here on first char...
 
                 // Update offset for new line based on last line length
                 xOrig += lineAdj;
 
                 // Get new values for everything...
-                lineStart = ((Integer)lStartIter.next()).intValue();
-                lineLoc   = (Point2D.Float)lLocIter.next();
-                lineAdv   = (  (Float)lAdvIter.next())  .floatValue();
-                lineAdj   = (  (Float)lAdjIter.next())  .floatValue();
-                charW     = (  (Float)lLastCharWIter.next())  .floatValue();
-                partial   = ((Boolean)lPartIter.next()) .booleanValue();
+                if (!lInfoIter.hasNext())
+                    break;
+                LineInfo li = (LineInfo)lInfoIter.next();
+                lineEnd   = li.getEndIdx();
+                lineLoc   = li.getLocation();
+                lineAdv   = li.getAdvance();
+                lineAdj   = li.getOffset();
+                charW     = li.getLastCharWidth();
+                lineWidth = li.getLineWidth();
+                partial   = li.isPartialLine();
 
                 xAdj = 0;
                 xScale = 1;
                 // Recalc justification info.
                 switch (justification) {
                 case 0: default: break;                  // Left
-                case 1: xAdj = (width-lineAdv)/2; break; // Center
-                case 2: xAdj =  width-lineAdv;    break; // Right
+                case 1: xAdj = (lineWidth-lineAdv)/2; break; // Center
+                case 2: xAdj =  lineWidth-lineAdv;    break; // Right
                 case 3:                                  // Full
-                    if ((!partial) && (lineStart != i+1)) {
+                    if ((!partial) && (lineEnd != i+1)) {
                         // More than one char on line...
                         // Scale char spacing to fill line.
-                        xScale = (width-charW)/(lineAdv-charW);
+                        xScale = (lineWidth-charW)/(lineAdv-charW);
                     }
                     break;
                 }
@@ -2380,9 +2095,5 @@ public class GlyphLayout implements TextSpanLayout {
         float x = lineLoc.x + (gp[2*i]  -xOrig)*xScale+xAdj;
         float y = lineLoc.y + (gp[2*i+1]-yOrig);
         gv.setGlyphPosition(i, new Point2D.Float(x, y));
-    }
-
-    protected static boolean isSpace(char ch) {
-        return ((ch == ' ') || (ch == '\t'));
     }
 }
