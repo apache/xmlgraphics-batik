@@ -85,8 +85,8 @@ PwMjAwMTiAAyGQAyFwQCULgtXgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate=
       </g>
       <g class="testC10" transform="translate(0,200)">
         <text xml:space="preserve" x="10" y="30" class="testC11">Interpolation Nearest Neighbor / Bicubic</text>
-        <use x="10" y="50" transform="matrix(20,0,0,20,0,0)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onRequest" xlink:show="replace" />
-        <use x="60" y="50" transform="matrix(20,0,0,20,0,0)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC13" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="matrix(20,0,0,20,10,50)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC12" xlink:actuate="onRequest" xlink:show="replace" />
+        <use transform="matrix(20,0,0,20,60,50)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" class="testC13" xlink:actuate="onRequest" xlink:show="replace" />
       </g>
     </g>
   </g>

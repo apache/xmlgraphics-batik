@@ -25,13 +25,13 @@
     <g>
       <defs id="testdefs1">
         <pattern x="0" y="0" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern1" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" />
+          <use xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" />
         </pattern>
         <pattern x="10" y="10" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern2" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" />
+          <use xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage1" />
         </pattern>
         <pattern x="0" y="0" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" patternUnits="userSpaceOnUse" xlink:type="simple" xlink:actuate="onRequest" id="testpattern3" height="10" preserveAspectRatio="xMidYMid meet" xlink:show="replace">
-          <use x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" />
+          <use xlink:type="simple" xlink:actuate="onRequest" xlink:show="replace" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#testimage2" />
         </pattern>
         <font horiz-adv-x="75.0" id="testfont1">
           <font-face ascent="92.163086" descent="19.555664" units-per-em="100" font-family="Arial" font-style="normal" font-weight="normal" />
