@@ -371,10 +371,8 @@ public class WindowWrapper extends ScriptableObject {
                                     (ScriptableObject)interpreter.evaluate
                                     (new StringReader("new Object()"));
                                 so.put("success", so,
-                                       Context.toObject((success) ?
-                                                        Boolean.TRUE :
-                                                        Boolean.FALSE,
-                                                        windowWrapper));
+                                       (success) ?
+                                       Boolean.TRUE : Boolean.FALSE);
                                 if (mime != null) {
                                     so.put("contentType", so,
                                            Context.toObject(mime,
