@@ -271,6 +271,10 @@
         <test id="samples/tests/spec/scripting/visibility.svg" />
         <test id="samples/tests/spec/scripting/textProperties.svg" />
         <test id="samples/tests/spec/scripting/nestedsvg.svg" />
+        <test id="samples/tests/spec/scripting/text.svg" />
+        <test id="samples/tests/spec/scripting/text_children1.svg" />
+        <test id="samples/tests/spec/scripting/text_children2.svg" />
+        <test id="samples/tests/spec/scripting/text_children3.svg" />
     </testGroup>
 
 </testSuite>

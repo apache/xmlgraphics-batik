@@ -217,7 +217,230 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
         return false;
     }
 
+    // Listener implementation //////////////////////////////////
+
+    /**
+     * The DOM EventListener to receive 'DOMNodeRemoved' event.
+     */
+    protected DOMChildNodeRemovedEventListener childNodeRemovedEventListener = 
+        new DOMChildNodeRemovedEventListener();
+
+    /**
+     * The DOM EventListener invoked when a node is removed.
+     */
+    protected class DOMChildNodeRemovedEventListener implements EventListener {
+
+        /**
+         * Handles 'DOMNodeRemoved' event type.
+         */
+        public void handleEvent(Event evt) {
+            
+            handleDOMChildNodeRemovedEvent((MutationEvent)evt);            
+        }
+    }
+
+    /**
+     * The DOM EventListener to receive 'DOMSubtreeModified' event.
+     */
+    protected DOMSubtreeModifiedEventListener subtreeModifiedEventListener = 
+        new DOMSubtreeModifiedEventListener();
+
+    /**
+     * The DOM EventListener invoked when the subtree is modified.
+     */
+    protected class DOMSubtreeModifiedEventListener implements EventListener {
+
+        /**
+         * Handles 'DOMSubtreeModified' event type.
+         */
+        public void handleEvent(Event evt) {
+
+            handleDOMSubtreeModifiedEvent((MutationEvent)evt);
+        }
+    }
+
     // BridgeUpdateHandler implementation //////////////////////////////////
+
+    /**
+     * This method insures that any modification to a text
+     * element and its children is going to be reflected 
+     * into the GVT tree.
+     */
+    protected void initializeDynamicSupport(BridgeContext ctx,
+                                            Element e,
+                                            GraphicsNode node) {
+        super.initializeDynamicSupport(ctx,e,node);
+
+        EventTarget evtTarget = (EventTarget)e;
+
+        //to be notified when a child is removed from the 
+        //<text> element.
+        evtTarget.addEventListener("DOMNodeRemoved",
+                                   childNodeRemovedEventListener,
+                                   true);
+        //to be notified when the modification of the subtree
+        //of the <text> element is done
+        evtTarget.addEventListener("DOMSubtreeModified",
+                                   subtreeModifiedEventListener,
+                                   false);
+    }
+
+    /**
+     * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
+     */
+    public void handleDOMNodeInsertedEvent(MutationEvent evt){
+        Node childNode = (Node)evt.getTarget();
+        
+        //check the type of the node inserted before discard the layout
+        //in the case of <title> or <desc> or <metadata>, the layout
+        //is unchanged
+        switch( childNode.getNodeType() ){
+            case Node.TEXT_NODE:
+            case Node.CDATA_SECTION_NODE:
+                layoutedText = null;
+                break;
+            case Node.ELEMENT_NODE:
+                String nodeName = childNode.getNodeName();
+                if (nodeName.equals(SVG_TSPAN_TAG) ||
+                    nodeName.equals(SVG_ALT_GLYPH_TAG) ||
+                    nodeName.equals(SVG_A_TAG) ||
+                    nodeName.equals(SVG_TEXT_PATH_TAG) ||
+                    nodeName.equals(SVG_TREF_TAG)) {
+                    
+                    layoutedText = null;
+                }
+                break;
+            default:
+        }
+        if ( layoutedText == null ){
+            computeLayoutedText();
+        }
+    }
+
+    /**
+     * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
+     */
+    public void handleDOMNodeRemovedEvent(MutationEvent evt){
+
+        EventTarget evtTarget = (EventTarget)evt.getTarget();
+
+        evtTarget.removeEventListener("DOMNodeRemoved",
+                                   childNodeRemovedEventListener,
+                                   true);
+        evtTarget.removeEventListener("DOMSubtreeModified",
+                                   subtreeModifiedEventListener,
+                                   false);
+
+        super.handleDOMNodeRemovedEvent(evt);
+    }
+
+    /**
+     * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
+     */
+    public void handleDOMChildNodeRemovedEvent(MutationEvent evt){
+
+        Node childNode = (Node)evt.getTarget();
+        
+        //check the type of the node inserted before discard the layout
+        //in the case of <title> or <desc> or <metadata>, the layout
+        //is unchanged
+        switch( childNode.getNodeType() ){
+            case Node.TEXT_NODE:
+            case Node.CDATA_SECTION_NODE:
+                //the parent has to be a displayed node
+                if ( isParentDisplayed( childNode ) ){
+                    layoutedText = null;
+                }
+                break;
+            case Node.ELEMENT_NODE:
+                String nodeName = childNode.getNodeName();
+                if (nodeName.equals(SVG_TSPAN_TAG) ||
+                    nodeName.equals(SVG_ALT_GLYPH_TAG) ||
+                    nodeName.equals(SVG_A_TAG) ||
+                    nodeName.equals(SVG_TEXT_PATH_TAG) ||
+                    nodeName.equals(SVG_TREF_TAG)) {
+                    
+                    layoutedText = null;
+                }
+                break;
+            default:
+        }
+        //if the layoutedText was set to null,
+        //then wait for DOMSubtreeChange to recompute it.
+    }
+
+    /**
+     * Invoked when an MutationEvent of type 'DOMSubtree' is fired.
+     */
+    public void handleDOMSubtreeModifiedEvent(MutationEvent evt){
+        //an operation occured onto the children of the
+        //text element, check if the layout was discarded
+        if ( layoutedText == null ){
+            computeLayoutedText();
+        }
+    }
+
+    /**
+     * Invoked when an MutationEvent of type 'DOMCharacterDataModified' 
+     * is fired.
+     */
+    public void handleDOMCharacterDataModified(MutationEvent evt){
+
+        Node childNode = (Node)evt.getTarget();
+
+        //if the parent is displayed, then discard the layout.
+        if ( isParentDisplayed( childNode ) ){
+            layoutedText = null;
+        }
+    }
+    /**
+     * Indicate of the parent of a node is
+     * a displayed element.
+     * &lt;title&gt;, &lt;desc&gt; and &lt;metadata&gt;
+     * are non displayable elements.
+     *
+     * @return true if the parent of the node is &lt;text&gt;, 
+     *   &lt;tspan&gt;, &lt;tref&gt;, &lt;textPath&gt;, &lt;a&gt;,
+     *   &lt;altGlyph&gt;
+     */
+    protected boolean isParentDisplayed( Node childNode ){
+        Node parentNode = childNode.getParentNode();
+                
+        if ( parentNode.getNodeType() == Node.ELEMENT_NODE ){
+            String nodeName = parentNode.getNodeName();
+            if (nodeName.equals(SVG_TEXT_TAG) ||
+                nodeName.equals(SVG_TSPAN_TAG) ||
+                nodeName.equals(SVG_ALT_GLYPH_TAG) ||
+                nodeName.equals(SVG_A_TAG) ||
+                nodeName.equals(SVG_TEXT_PATH_TAG) ||
+                nodeName.equals(SVG_TREF_TAG)) {
+                
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Recompute the layout of the &lt;text&gt; node.
+     *
+     * Assign onto the TextNode pending to the element
+     * the new recomputed AtrributedString. Also
+     * update <code>layoutedText</code> with the new
+     * value.
+     */
+    protected void computeLayoutedText()
+    {
+        AttributedString as = buildAttributedString(ctx, e);
+        addGlyphPositionAttributes(as, e, ctx);
+        layoutedText = new AttributedString(as.getIterator());
+        TextNode tn = (TextNode)node;
+        tn.setAttributedCharacterIterator(as.getIterator());
+        TextDecoration textDecoration = 
+            getTextDecoration(e, tn, new TextDecoration(), ctx);
+        addPaintAttributes(as, e, tn, textDecoration, ctx);
+        tn.setAttributedCharacterIterator(as.getIterator());
+    }
 
     /**
      * This flag bit indicates if a new ACI has been created in
@@ -230,7 +453,23 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
      * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        super.handleDOMAttrModifiedEvent(evt);
+        String attrName = evt.getAttrName();
+        if (attrName.equals(SVG_X_ATTRIBUTE) ||
+            attrName.equals(SVG_Y_ATTRIBUTE) ||
+            attrName.equals(SVG_DX_ATTRIBUTE) ||
+            attrName.equals(SVG_DY_ATTRIBUTE) ||
+            attrName.equals(SVG_ROTATE_ATTRIBUTE) ){
+
+            if ( attrName.equals(SVG_X_ATTRIBUTE) ||
+                 attrName.equals(SVG_Y_ATTRIBUTE)){
+                ((TextNode)node).setLocation(getLocation(ctx, e));
+            }
+
+            computeLayoutedText();
+        }
+        else{
+            super.handleDOMAttrModifiedEvent(evt);
+        }
     }
 
     /**
