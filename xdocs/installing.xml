@@ -99,7 +99,7 @@
         various components you will find in the download area and
         their intended use:</p>
       <ul>
-        <li><strong>batik-</strong><em>version</em><strong>.zip</strong> (e.g., <code>batik-1.5.zip.</code>)
+        <li><strong>batik-</strong><em>version</em><strong>.zip</strong> (e.g., <code>batik-1.5.zip</code>)<br/>
           The <em>binary distribution</em> contains a compiled
           executable JAR files that let you get started with
           Batik easily. This  is the recommended distribution
@@ -109,7 +109,8 @@
           set of sample SVG files.</li>
 
         <li><strong>batik-src-</strong><em>version</em><strong>.zip</strong> 
-          (e.g., <code>batik-src-1.5.zip.</code>)The <em>source
+          (e.g., <code>batik-src-1.5.zip</code>)<br/>
+          The <em>source
             distribution</em> contains a complete snapshot of
           the Batik source code, documentation, regression tools
           and utilities as well as the script for building
@@ -119,9 +120,34 @@
           understand how Batik can be integrated in their
           applications or how Batik can be extended. </li>
 
-        <li><strong>batik-docs-</strong><em>version</em><strong>.zip</strong>
+        <li><strong>batik-docs-</strong><em>version</em><strong>.zip</strong><br/>
           The <em>documentation bundle</em> contains a copy of 
           the Javadoc for the Batik source code.</li>
+      </ul>
+
+      <p>We make nightly copies of the source tree avaiable from the
+      <link href="http://cvs.apache.org/builds/xml-batik">Apache
+      build</link> server. These builds represent the current state of
+      development and may or may not be as stable as releases.
+      There are two types of distributions provided.</p>
+      <ul>
+        <li><strong>batik-cvs-</strong><em>date</em><strong>.zip</strong>
+          (e.g., <code>batik-cvs-03-09-26.zip</code>)<br/> 
+
+          This contains a complete copy of the CVS tree, including
+          support for running <link href="test.html">regard</link>
+          Batik's regression testing utility.  In particular this
+          includes all the reference images for testing.  Developers
+          are encouraged to get these or better use <link
+          href="cvs.html">CVS</link> directly.
+        </li>
+        <li><strong>batik-src-</strong><em>date</em><strong>.zip</strong>
+          (e.g., <code>batik-src-03-09-26.zip</code>)<br/> 
+
+          This contains all the source code an libraries needed to
+          build and run Batik from source. But does not include the
+          testing facilities.
+        </li>
       </ul>
 
       <p>Older releases are avaiable from the <link
