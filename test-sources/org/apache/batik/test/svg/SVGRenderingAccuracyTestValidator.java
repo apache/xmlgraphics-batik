@@ -45,6 +45,14 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
         "</svg>\n";
 
     /**
+     * Simple valid SVG content used for this test
+     */
+    private static final String validSVGVariation
+        = "<svg width=\"450\" height=\"500\" viewBox=\"0 0 450 500\"> \n" +
+        "    <rect x=\"25\" y=\"25\" width=\"400\" height=\"450\" fill=\"#0000cc\" /> \n" +
+        "</svg>\n";
+
+    /**
      * Simple valid SVG content used for this test, small size
      */
     private static final String validSmallSVG 
@@ -96,12 +104,13 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
         addTest(new DifferentSizes());
         addTest(new SameSizeDifferentContent());
         addTest(new AccurateRendering());
+        addTest(new AccurateRenderingWithVariation());
     }
     
     /**
      * Creates a SVG source URL for the given svg content
      */
-    public static URL createSVGSourceURL(String svgContent) throws Throwable{
+    public static URL createSVGSourceURL(String svgContent) throws Exception{
         File tmpFile = File.createTempFile(SVGRenderingAccuracyTest.TEMP_FILE_PREFIX,
                                            null);
         FileWriter writer = new FileWriter(tmpFile);
@@ -113,7 +122,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
     /**
      * Helper method: creates a valid reference image
      */
-    public static URL createValidReferenceImage(String svgContent) throws Throwable{
+    public static URL createValidReferenceImage(String svgContent) throws Exception{
         TranscoderInput validSrc = new TranscoderInput(new StringReader(svgContent));
         
         File tmpFile = File.createTempFile(SVGRenderingAccuracyTest.TEMP_FILE_PREFIX,
@@ -140,7 +149,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
      * error is reported as a failure.
      */
     static class InvalidSVGURL extends TestReportValidator {
-        public TestReport runImpl() throws Throwable {
+        public TestReport runImpl() throws Exception {
             // Create an invalid URL for the SVG file
             URL invalidSVGURL = new URL("http",
                                         "dummyHost",
@@ -166,7 +175,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
      * error is reported as a failure.
      */
     static class InvalidSVGContent extends TestReportValidator {
-        public TestReport runImpl() throws Throwable {
+        public TestReport runImpl() throws Exception {
             // Create an SVG URL from invalid SVG content.
             URL validSVGURL = createSVGSourceURL(invalidSVG);
             
@@ -189,7 +198,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
      * URL for the reference image.
      */
     static class InvalidReferenceImageURL extends TestReportValidator {
-        public TestReport runImpl() throws Throwable {
+        public TestReport runImpl() throws Exception {
             // Create a valid SVG URL from valid SVG content.
             URL validSVGURL = createSVGSourceURL(validSVG);
 
@@ -217,7 +226,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
      * but the reference image does not exist
      */
     static class InexistingReferenceImage extends TestReportValidator {
-        public TestReport runImpl() throws Throwable {
+        public TestReport runImpl() throws Exception {
             // Create a valid SVG URL from valid SVG content.
             URL validSVGURL = createSVGSourceURL(validSVG);
 
@@ -241,7 +250,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
     }
 
     static class DifferentSizes extends TestReportValidator {
-        public TestReport runImpl() throws Throwable {
+        public TestReport runImpl() throws Exception {
             //
             // Create a valid SVG URL from valid SVG content.
             //
@@ -267,7 +276,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
     }
 
     static class SameSizeDifferentContent extends TestReportValidator {
-        public TestReport runImpl() throws Throwable {
+        public TestReport runImpl() throws Exception {
             // Create a valid SVG URL from valid SVG content.
             URL validSVGURL = createSVGSourceURL(validSVG);
 
@@ -287,7 +296,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
     }
 
     static class AccurateRendering extends TestReportValidator {
-        public TestReport runImpl() throws Throwable {
+        public TestReport runImpl() throws Exception {
             // Create a valid SVG URL from valid SVG content.
             URL validSVGURL = createSVGSourceURL(validSVG);
 
@@ -296,6 +305,43 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
 
             setConfig(new SVGRenderingAccuracyTest(validSVGURL,
                                                    validRefImageURL),
+                      true,
+                      null);
+
+            return super.runImpl();
+        }
+    }
+
+    /**
+     * Validates that test passes if proper variation is given
+     */
+    static class AccurateRenderingWithVariation extends TestReportValidator {
+        public TestReport runImpl() throws Exception {
+            // Create a valid SVG URL from valid SVG content.
+            URL validSVGURL = createSVGSourceURL(validSVG);
+
+            // Create an valid URL for the reference image.
+            URL validRefImageURL = createValidReferenceImage(validSVGVariation);
+
+            SVGRenderingAccuracyTest t 
+                = new SVGRenderingAccuracyTest(validSVGURL,
+                                               validRefImageURL);
+
+            File tmpVariationFile = File.createTempFile(SVGRenderingAccuracyTest.TEMP_FILE_PREFIX, null);
+
+            // Run the test with the tmpVariationFile
+            t.setSaveVariation(tmpVariationFile);
+
+            setConfig(t,
+                      false,
+                      SVGRenderingAccuracyTest.ERROR_SVG_RENDERING_NOT_ACCURATE);
+
+            super.runImpl();            
+
+            t.setVariationURL(tmpVariationFile.toURL());
+            t.setSaveVariation(null);
+
+            setConfig(t,
                       true,
                       null);
 

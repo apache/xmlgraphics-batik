@@ -342,9 +342,10 @@ public class XMLTestReportProcessor
                                         XTR_KEY_ATTRIBUTE,
                                         key.toString());
             
-            entryElement.setAttributeNS(null, 
-                                        XTR_VALUE_ATTRIBUTE,
-                                        value!=null?value.toString():"null");
+            Attr a = reportDocument.createAttributeNS(null,
+                                                      XTR_VALUE_ATTRIBUTE);
+            a.setValue(value!=null?value.toString():"null");
+            entryElement.setAttributeNodeNS(a);
 
         }
     }
@@ -400,6 +401,16 @@ public class XMLTestReportProcessor
     static private final String SPACE = " ";
     static private final String EQUAL_SIGN = "=";
     static private final String DOUBLE_QUOTE = "\"";
+    static private final char CHAR_QUOT = '\"';
+    static private final char CHAR_LT = '<';
+    static private final char CHAR_GT = '>';
+    static private final char CHAR_APOS = '\'';
+    static private final char CHAR_AMP = '&';
+    static private final String ENTITY_QUOT = "&quot;";
+    static private final String ENTITY_LT = "&lt;";
+    static private final String ENTITY_GT = "&gt;";
+    static private final String ENTITY_APOS = "&apos;";
+    static private final String ENTITY_AMP = "&amp;";
 
     static private final String PROPERTY_LINE_SEPARATOR = "line.separator";
     static private final String PROPERTY_LINE_SEPARATOR_DEFAULT = "\n";
@@ -462,9 +473,36 @@ public class XMLTestReportProcessor
                 writer.write(attr.getName());
                 writer.write(EQUAL_SIGN);
                 writer.write(DOUBLE_QUOTE);
-                writer.write(attr.getValue());
+                writer.write(encode(attr.getValue()));
                 writer.write(DOUBLE_QUOTE);
             }
+        }
+    }
+
+    /**
+     * Poor way of replacing '<', '>', '"', '&' and '''
+     * in attribute values.
+     */
+    protected String encode(String attrValue){
+        StringBuffer sb = new StringBuffer(attrValue);
+        replace(sb, CHAR_AMP, ENTITY_AMP);
+        replace(sb, CHAR_LT, ENTITY_LT);
+        replace(sb, CHAR_GT, ENTITY_GT);
+        replace(sb, CHAR_QUOT, ENTITY_QUOT);
+        replace(sb, CHAR_APOS, ENTITY_APOS);
+        return sb.toString();
+    }
+
+    protected void replace(StringBuffer s, 
+                             char c, 
+                             String r){
+        String v = s.toString() + 1;
+        int i = v.length();
+
+        while( (i=v.lastIndexOf(c, --i)) != -1 ){
+            System.out.println("replacing " + c + " at index " + i);
+            s.deleteCharAt(i);
+            s.insert(i, r);
         }
     }
 }

@@ -49,7 +49,7 @@ public abstract class AbstractTest implements Test {
     public final TestReport run(){
         try{
             return runImpl();
-        }catch(Throwable e){
+        }catch(Exception e){
             try {
                 
                 StringWriter trace = new StringWriter();
@@ -88,5 +88,5 @@ public abstract class AbstractTest implements Test {
      * are looking for in the code they exercise but will let 
      * exceptions due to their own processing propagate. 
      */
-    public abstract TestReport runImpl() throws Throwable;
+    public abstract TestReport runImpl() throws Exception;
 }

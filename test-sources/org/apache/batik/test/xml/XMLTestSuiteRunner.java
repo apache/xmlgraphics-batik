@@ -16,6 +16,8 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+
 import java.util.Vector;
 
 import org.apache.batik.test.DefaultTestSuite;
@@ -250,8 +252,54 @@ public class XMLTestSuiteRunner implements XTSConstants{
         Constructor constructor 
             = getDeclaredConstructor(cl, argsClasses);
         
-        return constructor.newInstance(argsArray);
+        return configureObject(constructor.newInstance(argsArray),
+                               element);
     }
+
+    /**
+     * Implementation helper: configures a generic object
+     */
+    public Object configureObject(Object obj,
+                                  Element element) throws Exception {
+        NodeList children = element.getChildNodes();
+        if(children != null && children.getLength() > 0){
+            int n = children.getLength();
+            Vector args = new Vector();
+            for(int i=0; i<n; i++){
+                Node child = children.item(i);
+                if(child.getNodeType() == Node.ELEMENT_NODE){
+                    Element childElement = (Element)child;
+                    String tagName = childElement.getTagName().intern();
+                    if(tagName == XTS_PROPERTY_TAG){
+                        Object arg = buildArgument(childElement);
+                        String propertyName 
+                            = childElement.getAttributeNS(null, XTS_NAME_ATTRIBUTE);
+                        setObjectProperty(obj, propertyName, arg);
+                    }
+                }
+            }
+            
+        }
+        
+        return obj;
+    }
+
+    /**
+     * Sets the property with given name on object to the input value
+     */
+    protected void setObjectProperty(Object obj,
+                                     String propertyName,
+                                     Object propertyValue) 
+        throws Exception {
+        Class cl = obj.getClass();
+        Method m = cl.getDeclaredMethod("set" + propertyName,
+                                        new Class[]{propertyValue.getClass()});
+
+        if(m != null){
+            m.invoke(obj, new Object[]{propertyValue});
+        }
+    }
+
 
     /**
      * Returns a constructor that has can be used for the input class

@@ -122,7 +122,7 @@ public class TestReportValidator extends AbstractTest {
         this.expectedStatus = expectedStatus;
     }
 
-    public TestReport runImpl() throws Throwable {
+    public TestReport runImpl() throws Exception {
         TestReport tr = test.run();
         
         //
