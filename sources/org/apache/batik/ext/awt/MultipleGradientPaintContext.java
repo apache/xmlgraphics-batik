@@ -28,6 +28,8 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
  */
 abstract class MultipleGradientPaintContext implements PaintContext {
 
+    protected final static boolean DEBUG = false;
+
     /**
      * The color model data is generated in (always un premult).
      */
@@ -103,6 +105,12 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      *  calculateMultipleArrayGradient().
      */
     protected int[][] gradients;
+
+    /** This holds the blend of all colors in the gradient.
+     *  we use this at extreamly low resolutions to ensure we
+     *  get a decent blend of the colors.
+     */
+    protected int gradientAverage;
 
     /** Length of the 2D slow lookup gradients array. */
     protected int gradientsLength;
@@ -412,6 +420,12 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         int gradientsTot = 1; //the eventual size of the single array
 
+        // These are fixed point 8.16 (start with 0.5)
+        int aveA = 0x008000;
+        int aveR = 0x008000;
+        int aveG = 0x008000;
+        int aveB = 0x008000;
+
         //for every interval (transition between 2 colors)
         for(int i=0; i < gradients.length; i++){
 
@@ -428,10 +442,23 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             //fill this array with the colors in between rgb1 and rgb2
             interpolate(rgb1, rgb2, gradients[i]);
 
+            // Calculate Average of two colors...
+            int argb = gradients[i][GRADIENT_SIZE/2];
+            float norm = normalizedIntervals[i];
+            aveA += (int)(((argb>> 8)&0xFF0000)*norm);
+            aveR += (int)(((argb    )&0xFF0000)*norm);
+            aveG += (int)(((argb<< 8)&0xFF0000)*norm);
+            aveB += (int)(((argb<<16)&0xFF0000)*norm);
+
             //if the colors are opaque, transparency should still be 0xff000000
             transparencyTest &= rgb1;
             transparencyTest &= rgb2;
         }
+
+        gradientAverage = (((aveA & 0xFF0000)<< 8) |
+                           ((aveR & 0xFF0000)    ) |
+                           ((aveG & 0xFF0000)>> 8) |
+                           ((aveB & 0xFF0000)>>16));
 
         // Put all gradients in a single array
         gradient = new int[gradientsTot];
@@ -494,6 +521,12 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         int rgb1; //2 colors to interpolate
         int rgb2;
 
+        // These are fixed point 8.16 (start with 0.5)
+        int aveA = 0x008000;
+        int aveR = 0x008000;
+        int aveG = 0x008000;
+        int aveB = 0x008000;
+
         //for every interval (transition between 2 colors)
         for(int i=0; i < gradients.length; i++){
 
@@ -507,10 +540,23 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             //fill this array with the colors in between rgb1 and rgb2
             interpolate(rgb1, rgb2, gradients[i]);
 
+            // Calculate Average of two colors...
+            int argb = gradients[i][GRADIENT_SIZE/2];
+            float norm = normalizedIntervals[i];
+            aveA += (int)(((argb>> 8)&0xFF0000)*norm);
+            aveR += (int)(((argb    )&0xFF0000)*norm);
+            aveG += (int)(((argb<< 8)&0xFF0000)*norm);
+            aveB += (int)(((argb<<16)&0xFF0000)*norm);
+
             //if the colors are opaque, transparency should still be 0xff000000
             transparencyTest &= rgb1;
             transparencyTest &= rgb2;
         }
+
+        gradientAverage = (((aveA & 0xFF0000)<< 8) |
+                           ((aveR & 0xFF0000)    ) |
+                           ((aveG & 0xFF0000)>> 8) |
+                           ((aveB & 0xFF0000)>>16));
 
         //if interpolation occurred in Linear RGB space, convert the
         //gradients back to SRGB using the lookup table
@@ -761,6 +807,477 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         return gradients[gradients.length - 1][GRADIENT_SIZE_INDEX];
     }
+
+
+    /** Helper function to index into the gradients array.  This is necessary
+     * because each interval has an array of colors with uniform size 255.
+     * However, the color intervals are not necessarily of uniform length, so
+     * a conversion is required.  This version also does anti-aliasing by
+     * averaging the gradient over position+/-(sz/2).
+     *
+     * @param position the unmanipulated position.  want to map this into the
+     * range 0 to 1
+     * @param sz the size in gradient space to average.
+     *
+     * @returns ARGB integer color to display
+     */
+    protected final int indexGradientAntiAlias(float position, float sz) {
+
+        //first, manipulate position value depending on the cycle method.
+        if (cycleMethod == MultipleGradientPaint.NO_CYCLE) {
+            if (DEBUG) System.out.println("NO_CYCLE");
+            float p1 = position-(sz/2);
+            float p2 = position+(sz/2);
+
+            if (p1 > 1) {
+                if (isSimpleLookup)
+                    return gradient[fastGradientArraySize];
+                else 
+                    return gradients[gradients.length-1][GRADIENT_SIZE_INDEX];
+            }
+            if (p2 < 0) {
+                if (isSimpleLookup) return gradient[0];
+                else                return gradients[0][0];
+            }
+            int interior;
+            float top_weight=0, bottom_weight=0, frac;
+            if (p2 > 1) {
+                top_weight = (p2-1)/sz;
+                if (p1 <0) {
+                    bottom_weight = -p1/sz;
+                    frac=1;
+                    interior = gradientAverage;
+                } else {
+                    frac=1-p1;
+                    interior = getAntiAlias(p1, true, 1, false, 1-p1, 1);
+                }
+            } else if (p1 < 0) {
+                bottom_weight = -p1/sz;
+                frac = p2;
+                interior = getAntiAlias(0, true, p2, false, p2, 1);
+            } else
+                return getAntiAlias(p1, true, p2, false, sz, 1);
+            
+            int norm = (int)((1<<16)*frac/sz);
+            int pA = (((interior>>>20)&0xFF0)*norm)>>16;
+            int pR = (((interior>> 12)&0xFF0)*norm)>>16;
+            int pG = (((interior>>  4)&0xFF0)*norm)>>16;
+            int pB = (((interior<<  4)&0xFF0)*norm)>>16;
+
+            if (bottom_weight != 0) {
+                int bPix;
+                if (isSimpleLookup) bPix = gradient[0];
+                else                bPix = gradients[0][0];
+
+                // System.out.println("ave: " + gradientAverage);
+                norm = (int)((1<<16)*bottom_weight);
+                pA += (((bPix>>>20) & 0xFF0)*norm)>>16;
+                pR += (((bPix>> 12) & 0xFF0)*norm)>>16;
+                pG += (((bPix>>  4) & 0xFF0)*norm)>>16;
+                pB += (((bPix<<  4) & 0xFF0)*norm)>>16;
+            }
+
+            if (top_weight != 0) {
+                int tPix;
+                if (isSimpleLookup)
+                    tPix = gradient[fastGradientArraySize];
+                else 
+                    tPix = gradients[gradients.length-1][GRADIENT_SIZE_INDEX];
+
+                norm = (int)((1<<16)*top_weight);
+                pA += (((tPix>>>20) & 0xFF0)*norm)>>16;
+                pR += (((tPix>> 12) & 0xFF0)*norm)>>16;
+                pG += (((tPix>>  4) & 0xFF0)*norm)>>16;
+                pB += (((tPix<<  4) & 0xFF0)*norm)>>16;
+            }
+
+            return (((pA&0xFF0)<<20)  |
+                    ((pR&0xFF0)<<12)  |
+                    ((pG&0xFF0)<< 4)  |
+                    ((pB&0xFF0)>> 4));
+        }
+
+        // See how many times we are going to "wrap around" the gradient,
+        // array.
+        int intSz = (int)sz;
+        
+        float weight = 1f;
+        if (intSz != 0) {
+            // We need to make sure that sz is < 1.0 otherwise 
+            // p1 and p2 my pass each other which will cause no end of
+            // trouble.
+            sz -= intSz;
+            weight = (1-sz)/(intSz+sz);
+            if (weight < 0.1)
+                // The part of the color from the location will be swamped
+                // by the averaged part of the gradient so just use the
+                // average color for the gradient.
+                return gradientAverage;
+        }
+            
+        // So close to full gradient just use the average value...
+        if (sz > 0.99)
+            return gradientAverage;
+            
+            // Go up and down from position by 1/2 sz.
+        float p1 = position-(sz/2);
+        float p2 = position+(sz/2);
+        if (DEBUG) System.out.println("P1: " + p1 + " P2: " + p2);
+
+        // These indicate the direction to go from p1 and p2 when
+        // averaging...
+        boolean p1_up=true;
+        boolean p2_up=false;
+
+        if (cycleMethod == MultipleGradientPaint.REPEAT) {
+            if (DEBUG) System.out.println("REPEAT");
+
+            // Get positions between -1 and 1
+            p1=p1-(int)p1;
+            p2=p2-(int)p2;
+
+            // force to be in rage 0-1.
+            if (p1 <0) p1 += 1;
+            if (p2 <0) p2 += 1;
+        }
+
+        else {  //cycleMethod == MultipleGradientPaint.REFLECT
+            if (DEBUG) System.out.println("REFLECT");
+
+            //take absolute values
+            // Note when we reflect we change sense of p1/2_up.
+            if (p2 < 0) {
+                p1 = -p1; p1_up = !p1_up;
+                p2 = -p2; p2_up = !p2_up;
+            } else if (p1 < 0) { 
+                p1 = -p1; p1_up = !p1_up; 
+            }
+
+            int part1, part2;
+            part1 = (int)p1;   // take the integer part
+            p1   = p1 - part1; // get the fractional part
+
+            part2 = (int)p2;   // take the integer part
+            p2   = p2 - part2; // get the fractional part
+
+            // if integer part is odd we want the reflected color instead.
+            // Note when we reflect we change sense of p1/2_up.
+            if ((part1 & 0x01) == 1) {
+                p1 = 1-p1;
+                p1_up = !p1_up;
+            }
+
+            if ((part2 & 0x01) == 1) {
+                p2 = 1-p2;
+                p2_up = !p2_up;
+            }
+
+            // Check if in the end they just got switched around.
+            // this commonly happens if they both end up negative.
+            if ((p1 > p2) && !p1_up && p2_up) {
+                float t = p1;
+                p1 = p2; 
+                p2 = t;
+                p1_up = true;
+                p2_up = false;
+            }
+        }
+
+        return getAntiAlias(p1, p1_up, p2, p2_up, sz, weight);
+    }
+
+
+    private final int getAntiAlias(float p1, boolean p1_up,
+                                   float p2, boolean p2_up,
+                                   float sz, float weight) {
+
+        // Until the last set of ops these are 28.4 fixed point values.
+        int ach=0, rch=0, gch=0, bch=0;
+        if (isSimpleLookup) {
+            p1 *= fastGradientArraySize;
+            p2 *= fastGradientArraySize;
+
+            int idx1 = (int)p1;
+            int idx2 = (int)p2;
+
+            // Simpliest case we just take the average value.
+            // Note that this may not be correct in all cases,
+            // but saves us always doing the summation between idx1 and idx2.
+            if ((idx1 <= idx2) && p1_up && !p2_up)
+                return gradient[(idx1+idx2)>>1];
+
+            if (DEBUG) System.out.println( "P1: " + p1 + " " + p1_up +
+                                           " P2: " + p2 + " " + p2_up);
+
+            // Do the bulk of the work, all the whole gradient entries
+            // for idx1 and idx2.
+            int pix, norm;
+            if (p1_up) {
+                for (int i=idx1+1; i<fastGradientArraySize; i++) {
+                    pix  = gradient[i];
+                    ach += ((pix>>>20)&0xFF0);
+                    rch += ((pix>>>12)&0xFF0);
+                    gch += ((pix>>> 4)&0xFF0);
+                    bch += ((pix<<  4)&0xFF0);
+                }
+            } else {
+                for (int i=0; i<idx1; i++) {
+                    pix  = gradient[i];
+                    ach += ((pix>>>20)&0xFF0);
+                    rch += ((pix>>>12)&0xFF0);
+                    gch += ((pix>>> 4)&0xFF0);
+                    bch += ((pix<<  4)&0xFF0);
+                }
+            }
+
+            if (p2_up) {
+                for (int i=idx2+1; i<fastGradientArraySize; i++) {
+                    pix  = gradient[i];
+                    ach += ((pix>>>20)&0xFF0);
+                    rch += ((pix>>>12)&0xFF0);
+                    gch += ((pix>>> 4)&0xFF0);
+                    bch += ((pix<<  4)&0xFF0);
+                }
+            } else {
+                for (int i=0; i<idx2; i++) {
+                    pix  = gradient[i];
+                    ach += ((pix>>>20)&0xFF0);
+                    rch += ((pix>>>12)&0xFF0);
+                    gch += ((pix>>> 4)&0xFF0);
+                    bch += ((pix<<  4)&0xFF0);
+                }
+            }
+
+            // Normalize the summation so far...
+            int isz = (int)((1<<16)/(sz*fastGradientArraySize));
+            ach = (ach*isz)>>16;
+            rch = (rch*isz)>>16;
+            gch = (gch*isz)>>16;
+            bch = (bch*isz)>>16;
+
+            // Clean up with the partial buckets at each end.
+            if (p1_up) norm = (int)(((1-(p1-idx1))*(1<<16))
+                                    /(sz*fastGradientArraySize));
+            else       norm = (int)(((p1-idx1)*(1<<16))
+                                    /(sz*fastGradientArraySize));
+            pix = gradient[idx1];
+            ach += (((pix>>>20)&0xFF0) *norm)>>16;
+            rch += (((pix>>>12)&0xFF0) *norm)>>16;
+            gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+            bch += (((pix<<  4)&0xFF0) *norm)>>16;
+
+            if (p2_up) norm = (int)(((1-(p2-idx2))*(1<<16))
+                                    /(sz*fastGradientArraySize));
+            else       norm = (int)(((p2-idx2)*(1<<16))
+                                    /(sz*fastGradientArraySize));
+            pix = gradient[idx2];
+            ach += (((pix>>>20)&0xFF0) *norm)>>16;
+            rch += (((pix>>>12)&0xFF0) *norm)>>16;
+            gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+            bch += (((pix<<  4)&0xFF0) *norm)>>16;
+
+            // Round and drop the 4bits frac.
+            ach = (ach+0x08)>>4;
+            rch = (rch+0x08)>>4;
+            gch = (gch+0x08)>>4;
+            bch = (bch+0x08)>>4;
+
+        } else {
+            int idx1=0, idx2=0;
+            int i1=-1, i2=-1;
+            float f1=0, f2=0;
+            // Find which gradient interval our points fall into.
+            for (int i = 0; i < gradientsLength; i++) {
+                if ((p1 < fractions[i+1]) && (i1 == -1)) { 
+                    //this is the array we want
+                    i1 = i;
+                    f1 = p1 - fractions[i];
+
+                    f1 = ((f1/normalizedIntervals[i])
+                             *GRADIENT_SIZE_INDEX);
+                    //this is the  interval we want.
+                    idx1 = (int)f1;
+                    if (i2 != -1) break;
+                }
+                if ((p2 < fractions[i+1]) && (i2 == -1)) { 
+                    //this is the array we want
+                    i2 = i;
+                    f2 = p2 - fractions[i];
+                    
+                    f2 = ((f2/normalizedIntervals[i])
+                             *GRADIENT_SIZE_INDEX);
+                    //this is the interval we want.
+                    idx2 = (int)f2;
+                    if (i1 != -1) break;
+                }
+            }
+
+            if (i1 == -1) {
+                i1 = gradients.length - 1;
+                f1 = idx1 = GRADIENT_SIZE_INDEX;
+            }
+
+            if (i2 == -1) {
+                i2 = gradients.length - 1;
+                f2 = idx2 = GRADIENT_SIZE_INDEX;
+            }
+
+            if (DEBUG) System.out.println("I1: " + i1 + " Idx1: " + idx1 +
+                                          " I2: " + i2 + " Idx2: " + idx2); 
+
+            // Simple case within one gradient array (so the average
+            // of the two idx gives us the true average of colors).
+            if ((i1 == i2) && (idx1 <= idx2) && p1_up && !p2_up)
+                return gradients[i1][(idx1+idx2+1)>>1];
+
+            // i1 != i2
+
+            int pix, norm;
+            int base = (int)((1<<16)/sz);
+            if ((i1 < i2) && p1_up && !p2_up) {
+                norm = (int)((base
+                              *normalizedIntervals[i1]
+                              *(GRADIENT_SIZE_INDEX-f1))
+                             /GRADIENT_SIZE_INDEX);
+                pix  = gradients[i1][(idx1+GRADIENT_SIZE)>>1];
+                ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                bch += (((pix<<  4)&0xFF0) *norm)>>16;
+
+                for (int i=i1+1; i<i2; i++) {
+                    norm = (int)(base*normalizedIntervals[i]);
+                    pix  = gradients[i][GRADIENT_SIZE>>1];
+                  
+                    ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                    rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                    gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                    bch += (((pix<<  4)&0xFF0) *norm)>>16;
+                }
+
+                norm = (int)((base*normalizedIntervals[i2]*f2)
+                             /GRADIENT_SIZE_INDEX);
+                pix  = gradients[i2][(idx2+1)>>1];
+                ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                bch += (((pix<<  4)&0xFF0) *norm)>>16;
+            } else {
+                if (p1_up) {
+                    norm = (int)((base
+                                  *normalizedIntervals[i1]
+                                  *(GRADIENT_SIZE_INDEX-f1))
+                                 /GRADIENT_SIZE_INDEX);
+                    pix  = gradients[i1][(idx1+GRADIENT_SIZE)>>1];
+                } else {
+                    norm = (int)((base*normalizedIntervals[i1]*f1)
+                                 /GRADIENT_SIZE_INDEX);
+                    pix  = gradients[i1][(idx1+1)>>1];
+                }
+                ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                bch += (((pix<<  4)&0xFF0) *norm)>>16;
+
+                if (p2_up) {
+                    norm = (int)((base
+                                  *normalizedIntervals[i2]
+                                  *(GRADIENT_SIZE_INDEX-f2))
+                                 /GRADIENT_SIZE_INDEX);
+                    pix  =  gradients[i2][(idx2+GRADIENT_SIZE)>>1];
+                } else {
+                    norm = (int)((base*normalizedIntervals[i2]*f2)
+                                 /GRADIENT_SIZE_INDEX);
+                    pix  = gradients[i2][(idx2+1)>>1];
+                }
+                ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                bch += (((pix<<  4)&0xFF0) *norm)>>16;
+
+                if (p1_up) {
+                    for (int i=i1+1; i<gradientsLength; i++) {
+                        norm = (int)(base*normalizedIntervals[i]);
+                        pix  = gradients[i][GRADIENT_SIZE>>1];
+
+                        ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                        rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                        gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                        bch += (((pix<<  4)&0xFF0) *norm)>>16;
+                    }
+                } else {
+                    for (int i=0; i<i1; i++) {
+                        norm = (int)(base*normalizedIntervals[i]);
+                        pix  = gradients[i][GRADIENT_SIZE>>1];
+                  
+                        ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                        rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                        gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                        bch += (((pix<<  4)&0xFF0) *norm)>>16;
+                    }
+                }
+
+                if (p2_up) {
+                    for (int i=i2+1; i<gradientsLength; i++) {
+                        norm = (int)(base*normalizedIntervals[i]);
+                        pix  = gradients[i][GRADIENT_SIZE>>1];
+
+                        ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                        rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                        gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                        bch += (((pix<<  4)&0xFF0) *norm)>>16;
+                    }
+                } else {
+                    for (int i=0; i<i2; i++) {
+                        norm = (int)(base*normalizedIntervals[i]);
+                        pix  = gradients[i][GRADIENT_SIZE>>1];
+
+                        ach += (((pix>>>20)&0xFF0) *norm)>>16;
+                        rch += (((pix>>>12)&0xFF0) *norm)>>16;
+                        gch += (((pix>>> 4)&0xFF0) *norm)>>16;
+                        bch += (((pix<<  4)&0xFF0) *norm)>>16;
+                    }
+                }
+
+            }
+            ach = (ach+0x08)>>4;
+            rch = (rch+0x08)>>4;
+            gch = (gch+0x08)>>4;
+            bch = (bch+0x08)>>4;
+            if (DEBUG) System.out.println("Pix: [" + ach + ", " + rch + 
+                                          ", " + gch + ", " + bch + "]");
+        }
+
+        if (weight != 1) {
+            // System.out.println("ave: " + gradientAverage);
+            int aveW = (int)((1<<16)*(1-weight));
+            int aveA = ((gradientAverage>>>24) & 0xFF)*aveW;
+            int aveR = ((gradientAverage>> 16) & 0xFF)*aveW;
+            int aveG = ((gradientAverage>>  8) & 0xFF)*aveW;
+            int aveB = ((gradientAverage     ) & 0xFF)*aveW;
+
+            int iw = (int)(weight*(1<<16));
+            ach = ((ach*iw)+aveA)>>16;
+            rch = ((rch*iw)+aveR)>>16;
+            gch = ((gch*iw)+aveG)>>16;
+            bch = ((bch*iw)+aveB)>>16;
+        }
+        // If any high bits are set we are not in range.
+              // If the highest bit is set then we are negative so
+              // clamp to zero else we are > 255 so clamp to 255.
+        if ((ach & 0xFFFFFF00) != 0)
+            ach = ((ach & 0x80000000) != 0)?0:255;
+        if ((rch & 0xFFFFFF00) != 0)
+            rch = ((rch & 0x80000000) != 0)?0:255;
+        if ((gch & 0xFFFFFF00) != 0)
+            gch = ((gch & 0x80000000) != 0)?0:255;
+        if ((bch & 0xFFFFFF00) != 0)
+            bch = ((bch & 0x80000000) != 0)?0:255;
+
+              
+        return ((ach<<24) | (rch<<16) | (gch<<8) | bch);
+    }
+
 
     /** Helper function to convert a color component in sRGB space to linear
      * RGB space.  Used to build a static lookup table.

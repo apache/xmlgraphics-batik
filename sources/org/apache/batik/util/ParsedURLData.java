@@ -83,7 +83,7 @@ public class ParsedURLData {
 
         port     = url.getPort();
 
-        path     = url.getPath();
+        path     = url.getFile();
         if ((path != null) && (path.length() == 0)) 
             path = null;
 

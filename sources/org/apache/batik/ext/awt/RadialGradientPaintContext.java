@@ -26,6 +26,8 @@ import java.awt.geom.*;
  */
 final class RadialGradientPaintContext extends MultipleGradientPaintContext {  
     
+    private static final boolean USE_ANTI_ALIAS = false;
+
     /** True when (focus == center)  */
     private boolean isSimpleFocus = false;
 
@@ -418,6 +420,8 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
         int indexer = off; //index variable for pixels array
         int i, j; //indexing variables for FOR loops
         int pixInc = w+adjust;//incremental index change for pixels array
+
+        float delta, pixSzSq = (float)(a00*a00+a01*a01+a10*a10+a11*a11);
 	
         for (j = 0; j < h; j++) { //for every row
 	    
@@ -427,8 +431,9 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
             //for every column (inner loop begins here)
             for (i = 0; i < w; i++) {	       			
 	
-                // special case to avoid divide by zero
-                if (X == focusX) {		   
+                // special case to avoid divide by zero or very near zero
+                if (((X-focusX)>-0.000001) &&
+                    ((X-focusX)< 0.000001)) {		   
                     solutionX = focusX;
 		    
                     solutionY = centerY;
@@ -469,14 +474,6 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
                 //intersection point to the focus. Want the squares so we can
                 //do 1 square root after division instead of 2 before.
 
-                deltaXSq = X - focusX;
-                deltaXSq = deltaXSq * deltaXSq;
-
-                deltaYSq = Y - focusY;
-                deltaYSq = deltaYSq * deltaYSq;
-
-                currentToFocusSq = deltaXSq + deltaYSq;
-
                 deltaXSq = (float)solutionX - focusX;
                 deltaXSq = deltaXSq * deltaXSq;
 
@@ -485,12 +482,25 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
 
                 intersectToFocusSq = deltaXSq + deltaYSq;
 
+                deltaXSq = X - focusX;
+                deltaXSq = deltaXSq * deltaXSq;
+
+                deltaYSq = Y - focusY;
+                deltaYSq = deltaYSq * deltaYSq;
+
+                currentToFocusSq = deltaXSq + deltaYSq;
+
                 //want the percentage (0-1) of the current point along the 
                 //focus-circumference line
                 g = (float)Math.sqrt(currentToFocusSq / intersectToFocusSq);
-	       	       		
-                //save the color at this point
-                pixels[indexer + i] = indexIntoGradientsArrays(g);
+
+                //Get the color at this point
+                if (USE_ANTI_ALIAS) {
+                    delta = (float)Math.sqrt(pixSzSq/intersectToFocusSq);
+                    pixels[indexer + i] = indexGradientAntiAlias(g, delta);
+                } else {
+                    pixels[indexer + i] = indexIntoGradientsArrays(g);
+                }
 		
                 X += a00; //incremental change in X, Y
                 Y += a10;	
