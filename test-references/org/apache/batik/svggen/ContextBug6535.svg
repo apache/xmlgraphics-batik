@@ -34,14 +34,10 @@
         </font>
       </defs>
       <g class="testC1" transform="scale(10,10)">
-        <text xml:space="preserve" x="4" y="4" class="testC2">Hello, size 10
-        </text>
-        <text xml:space="preserve" x="4" y="8" class="testC3">Hello, size 15
-        </text>
-        <text xml:space="preserve" x="160" y="40" class="testC4" transform="scale(0.1,0.1)">Hello, size 10
-        </text>
-        <text xml:space="preserve" x="160" y="80" class="testC5" transform="scale(0.1,0.1)">Hello, size 15
-        </text>
+        <text xml:space="preserve" x="4" y="4" class="testC2">Hello, size 10</text>
+        <text xml:space="preserve" x="4" y="8" class="testC3">Hello, size 15</text>
+        <text xml:space="preserve" x="160" y="40" class="testC4" transform="scale(0.1,0.1)">Hello, size 10</text>
+        <text xml:space="preserve" x="160" y="80" class="testC5" transform="scale(0.1,0.1)">Hello, size 15</text>
       </g>
     </g>
   </g>

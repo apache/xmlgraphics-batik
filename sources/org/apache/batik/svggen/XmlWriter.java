@@ -263,7 +263,6 @@ class XmlWriter implements SVGConstants {
         boolean pureText = true;
 
         oldIndent = out.getIndentLevel();
-
         try {
             out.setIndentLevel(oldIndent + 2);
             for(int i = 0; i < length; i++) {
@@ -275,7 +274,9 @@ class XmlWriter implements SVGConstants {
             }
         } finally {
             out.setIndentLevel(oldIndent);
-            out.printIndent();          // for ETag
+            if (length > 0 && children.item(length-1).getNodeType() != Node.TEXT_NODE){
+                out.printIndent();          // for ETag
+            }
         }
     }
 

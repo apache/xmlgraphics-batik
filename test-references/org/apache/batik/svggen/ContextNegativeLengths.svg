@@ -79,33 +79,27 @@
         </font>
       </defs>
       <g class="testC1">
-        <text xml:space="preserve" x="10" y="20" class="testC2">Rectangle
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC2">Rectangle</text>
         <line y2="38" x1="110" class="testC3" x2="110" y1="30" />
         <line y2="30" x1="150" class="testC4" x2="155" y1="30" />
         <rect width="5" x="170" height="8" y="30" class="testC5" />
-        <text xml:space="preserve" x="10" y="20" class="testC6" transform="translate(0,35)">RoundRectangle2D
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC6" transform="translate(0,35)">RoundRectangle2D</text>
         <line transform="translate(0,35)" x1="110" x2="110" y1="30" y2="38" class="testC7" />
         <line transform="translate(0,35)" x1="150" x2="155" y1="30" y2="30" class="testC8" />
         <rect x="170" y="30" transform="translate(0,35)" width="5" class="testC9" rx="1" ry="1" height="8" />
-        <text xml:space="preserve" x="10" y="20" class="testC10" transform="translate(0,70)">RoundRectangle2D, negative radius
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC10" transform="translate(0,70)">RoundRectangle2D, negative radius</text>
         <line transform="translate(0,70)" x1="110" x2="110" y1="30" y2="38" class="testC11" />
         <line transform="translate(0,70)" x1="150" x2="155" y1="30" y2="30" class="testC12" />
         <rect x="170" y="30" transform="translate(0,70)" width="5" class="testC13" rx="1" ry="1" height="8" />
-        <text xml:space="preserve" x="10" y="20" class="testC14" transform="translate(0,105)">Circle
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC14" transform="translate(0,105)">Circle</text>
         <circle r="0" class="testC15" cx="30" transform="translate(0,105)" cy="30" />
         <circle r="2.5" class="testC16" cx="52.5" transform="translate(0,105)" cy="32.5" />
-        <text xml:space="preserve" x="10" y="20" class="testC17" transform="translate(0,140)">Ellipse
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC17" transform="translate(0,140)">Ellipse</text>
         <circle r="0" class="testC18" cx="90" transform="translate(0,140)" cy="30" />
         <line transform="translate(0,140)" x1="110" x2="110" y1="30" y2="38" class="testC19" />
         <line transform="translate(0,140)" x1="150" x2="155" y1="30" y2="30" class="testC20" />
         <ellipse transform="translate(0,140)" rx="2.5" cx="172.5" class="testC21" ry="4" cy="34" />
-        <text xml:space="preserve" x="10" y="20" class="testC22" transform="translate(0,175)">fill3Drect
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC22" transform="translate(0,175)">fill3Drect</text>
         <line transform="translate(0,175)" x1="30" x2="31" y1="30" y2="30" class="testC23" />
         <rect x="50" y="30" transform="translate(0,175)" width="1" class="testC24" height="8" />
         <rect x="39" y="30" transform="translate(0,175)" width="1" class="testC25" height="7" />

@@ -79,8 +79,7 @@
         </font>
       </defs>
       <g class="testC1">
-        <text xml:space="preserve" x="10" y="20" class="testC2">Simple vertical gradient
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC2">Simple vertical gradient</text>
         <rect width="100" x="10" height="100" y="30" class="testC3" />
         <path d="M-5 0 L5 0 M0 -5 L0 5" class="testC4" transform="translate(30,40)" />
       </g>
@@ -88,20 +87,17 @@
         <path class="testC6" d="M-5 0 L5 0 M0 -5 L0 5" />
       </g>
       <g class="testC7" transform="translate(0,140)">
-        <text xml:space="preserve" x="10" y="20" class="testC8">Non Cyclic / Cyclic Gradients
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC8">Non Cyclic / Cyclic Gradients</text>
         <rect x="0" y="0" transform="translate(10,30)" width="100" class="testC9" height="30" />
         <rect x="0" y="0" transform="translate(10,60)" width="100" class="testC10" height="30" />
         <line transform="translate(10,60)" x1="0" x2="100" y1="0" y2="0" class="testC11" />
       </g>
       <g class="testC12" transform="translate(0,240)">
-        <text xml:space="preserve" x="10" y="20" class="testC13">Sheared GradientPaint
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC13">Sheared GradientPaint</text>
         <rect x="0" y="0" transform="translate(10,25) matrix(1,0,0.5,1,0,0)" width="100" class="testC14" height="40" />
       </g>
       <g class="testC15" transform="translate(0,320)">
-        <text xml:space="preserve" x="10" y="20" class="testC16">Opacity in stop color
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC16">Opacity in stop color</text>
         <rect width="100" x="10" height="30" y="30" class="testC17" />
       </g>
     </g>

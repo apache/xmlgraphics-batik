@@ -63,20 +63,16 @@
 RIQBIwNxgImBymDUwFEDB4OBoAxAVE75/380DEcNHMEGAgA9ZQUjAKh+SgAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" id="testimage1" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
       </defs>
       <g class="testC1" transform="translate(0,30)">
-        <text xml:space="preserve" x="10" y="10" class="testC2">Semi transparent black
-        </text>
-        <text xml:space="preserve" x="40" y="60" class="testC3">Behind Rectangle
-        </text>
+        <text xml:space="preserve" x="10" y="10" class="testC2">Semi transparent black</text>
+        <text xml:space="preserve" x="40" y="60" class="testC3">Behind Rectangle</text>
       </g>
       <g class="testC4" transform="translate(0,30)">
         <rect width="100" x="10" height="60" y="20" class="testC5" />
       </g>
       <g class="testC6" transform="translate(0,120)">
-        <text xml:space="preserve" x="10" y="10" class="testC7">Red to Yellow linear gradient
-        </text>
+        <text xml:space="preserve" x="10" y="10" class="testC7">Red to Yellow linear gradient</text>
         <rect width="100" x="10" height="60" y="20" class="testC8" />
-        <text xml:space="preserve" x="10" y="10" class="testC9" transform="translate(0,90)">Texture Paint
-        </text>
+        <text xml:space="preserve" x="10" y="10" class="testC9" transform="translate(0,90)">Texture Paint</text>
         <rect x="10" y="20" transform="translate(0,90)" width="100" class="testC10" height="60" />
       </g>
     </g>

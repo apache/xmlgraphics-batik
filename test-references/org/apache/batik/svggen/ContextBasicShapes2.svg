@@ -49,17 +49,13 @@
         </font>
       </defs>
       <g class="testC1">
-        <text xml:space="preserve" x="10" y="20" class="testC2">Arc2D
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC2">Arc2D</text>
         <path class="testC3" d="M60 50 C60 38.95430374145508 48.8071174621582 30 35 30 C21.192880630493164 30 10 38.95430374145508 10 50 C10 61.04569625854492 21.192880630493164 70 35 70 L35 50 Z" />
-        <text xml:space="preserve" x="10" y="20" class="testC4" transform="translate(0,90)">Ellipse
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC4" transform="translate(0,90)">Ellipse</text>
         <ellipse transform="translate(0,90)" rx="50" cx="60" class="testC5" ry="20" cy="50" />
-        <text xml:space="preserve" x="10" y="20" class="testC6" transform="translate(150,0)">GeneralPath, lineTo
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC6" transform="translate(150,0)">GeneralPath, lineTo</text>
         <path d="M10 30 L60 30 L60 70 L10 30 Z" class="testC7" transform="translate(150,0)" />
-        <text xml:space="preserve" x="10" y="20" class="testC8" transform="translate(150,90)">GeneralPath, curveTo
-        </text>
+        <text xml:space="preserve" x="10" y="20" class="testC8" transform="translate(150,90)">GeneralPath, curveTo</text>
         <path d="M10 30 C35 10 35 50 60 30 C80 55 40 55 60 80 C35 60 35 100 10 80 C-10 55 30 55 10 30 Z" class="testC9" transform="translate(150,90)" />
       </g>
     </g>
