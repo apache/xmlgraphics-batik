@@ -179,7 +179,7 @@ public class StaticRenderer implements Renderer {
         }
         this.usr2dev = usr2dev;
         // Update the RenderContext in the nodeRenderContext
-        //nodeRenderContext.setTransform(usr2dev);
+        nodeRenderContext.setTransform(usr2dev);
     }
 
     /**
