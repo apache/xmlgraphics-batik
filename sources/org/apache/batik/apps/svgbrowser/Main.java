@@ -8,6 +8,7 @@
 
 package org.apache.batik.apps.svgbrowser;
 
+import java.awt.Dimension;
 import java.awt.Font;
 
 import java.awt.event.ActionEvent;
@@ -30,11 +31,20 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 
 import javax.swing.plaf.FontUIResource;
 
 import org.apache.batik.css.CSSDocumentHandler;
+
+import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
+import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
+import org.apache.batik.swing.svg.GVTTreeBuilderAdapter;
+import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
+import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
+import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 
 import org.apache.batik.util.PreferenceManager;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -54,7 +64,7 @@ public class Main implements Application {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
-        new Main(args).run();
+        new Main(args);
     }
 
     /**
@@ -125,6 +135,8 @@ public class Main implements Application {
         CSSDocumentHandler.setParserClassName
         (resources.getString(CSS_PARSER_CLASS_NAME_KEY));
 
+        // Preferences
+        //
         Map defaults = new HashMap(11);
 
         defaults.put(PreferenceDialog.PREFERENCE_KEY_LANGUAGES,
@@ -159,6 +171,49 @@ public class Main implements Application {
             setPreferences();
         } catch (Exception e) {
         }
+
+        // Initialization
+        //
+        final AboutDialog initDialog = new AboutDialog();
+        final JProgressBar pb = new JProgressBar(0, 4);
+        initDialog.getContentPane().add("South", pb);
+
+        // Work around pack() bug on some platforms
+        Dimension ss = initDialog.getToolkit().getScreenSize();
+        Dimension ds = initDialog.getPreferredSize();
+
+        initDialog.setLocation((ss.width  - ds.width) / 2,
+                               (ss.height - ds.height) / 2);
+
+        initDialog.setSize(ds);
+        initDialog.setVisible(true);
+
+        final JSVGViewerFrame v = new JSVGViewerFrame(this);
+        JSVGCanvas c = v.getJSVGCanvas();
+        c.addSVGDocumentLoaderListener(new SVGDocumentLoaderAdapter() {
+            public void documentLoadingStarted(SVGDocumentLoaderEvent e) {
+                pb.setValue(1);
+            }
+            public void documentLoadingCompleted(SVGDocumentLoaderEvent e) {
+                pb.setValue(2);
+            }
+        });
+        c.addGVTTreeBuilderListener(new GVTTreeBuilderAdapter() {
+            public void gvtBuildCompleted(GVTTreeBuilderEvent e) {
+                pb.setValue(3);
+            }
+        });
+        c.addGVTTreeRendererListener(new GVTTreeRendererAdapter() {
+            public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
+                pb.setValue(4);
+                initDialog.dispose();
+                v.dispose();
+                System.gc();
+                run();
+            }
+        });
+        c.setSize(100, 100);
+        c.loadSVGDocument(Main.class.getResource("resources/init.svg").toString());
     }
 
     /**
