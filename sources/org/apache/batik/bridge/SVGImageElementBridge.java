@@ -240,7 +240,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
          */
         ProtectedStream reference = null;
         try {
-            reference = openStream(purl);
+            reference = openStream(e, purl);
         } catch (SecurityException ex) {
             throw new BridgeException(e, ERR_URI_UNSECURE,
                                       new Object[] {uriStr});
@@ -266,7 +266,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             reference.retry();
         } catch (IOException ioe) {
             // Couldn't reset stream so reopen it.
-            reference = openStream(purl);
+            reference = openStream(e, purl);
         }
 
         try {
@@ -289,7 +289,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             reference.retry();
         } catch (IOException ioe) {
             // Couldn't reset stream so reopen it.
-            reference = openStream(purl);
+            reference = openStream(e, purl);
         }
 
         try {
@@ -345,7 +345,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
     }
 
-    protected ProtectedStream openStream(ParsedURL purl) {
+    protected ProtectedStream openStream(Element e, ParsedURL purl) {
         ProtectedStream ret = null;
         try {
             List mimeTypes = new ArrayList
