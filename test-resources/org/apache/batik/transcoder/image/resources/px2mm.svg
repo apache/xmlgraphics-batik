@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<svg width="450" height="500">
+
+<rect x="25" y="25" width="200pt" height="100" fill="crimson" />
+
+<rect x="25" y="150" width="200px" height="100" fill="orange" />
+
+</svg>
