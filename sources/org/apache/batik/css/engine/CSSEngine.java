@@ -648,14 +648,16 @@ public abstract class CSSEngine {
 
         // Apply the user-agent style-sheet to the result.
         if (userAgentStyleSheet != null) {
-            putStyleSheetRules(elt, pseudo, result, userAgentStyleSheet,
-                               StyleMap.USER_AGENT_ORIGIN);
+            List rules = new ArrayList();
+            addMatchingRules(rules, userAgentStyleSheet, elt, pseudo);
+            addRules(elt, pseudo, result, rules, StyleMap.USER_AGENT_ORIGIN);
         }
 
         // Apply the user properties style-sheet to the result.
         if (userStyleSheet != null) {
-            putStyleSheetRules(elt, pseudo, result, userStyleSheet,
-                               StyleMap.USER_ORIGIN);
+            List rules = new ArrayList();
+            addMatchingRules(rules, userStyleSheet, elt, pseudo);
+            addRules(elt, pseudo, result, rules, StyleMap.USER_ORIGIN);
         }
 
         element = elt;
@@ -693,17 +695,20 @@ public abstract class CSSEngine {
         // Apply the document style-sheets to the result.
         List snodes = getStyleSheetNodes();
         int slen = snodes.size();
-        for (int i = 0; i < slen; i++) {
-            CSSStyleSheetNode ssn = (CSSStyleSheetNode)snodes.get(i);
-            StyleSheet ss = ssn.getCSSStyleSheet();
-            if (ss != null &&
-                (!ss.isAlternate() ||
-                 ss.getTitle() == null ||
-                 ss.getTitle().equals(alternateStyleSheet)) &&
-                mediaMatch(ss.getMedia())) {
-                putStyleSheetRules(elt, pseudo, result, ss,
-                                   StyleMap.AUTHOR_ORIGIN);
+        if (slen > 0) {
+            List rules = new ArrayList();
+            for (int i = 0; i < slen; i++) {
+                CSSStyleSheetNode ssn = (CSSStyleSheetNode)snodes.get(i);
+                StyleSheet ss = ssn.getCSSStyleSheet();
+                if (ss != null &&
+                    (!ss.isAlternate() ||
+                     ss.getTitle() == null ||
+                     ss.getTitle().equals(alternateStyleSheet)) &&
+                    mediaMatch(ss.getMedia())) {
+                    addMatchingRules(rules, ss, elt, pseudo);
+                }
             }
+            addRules(elt, pseudo, result, rules, StyleMap.AUTHOR_ORIGIN);
         }
 
         // Apply the inline style to the result.
@@ -1131,6 +1136,46 @@ public abstract class CSSEngine {
                     addMatchingRules(rules, mr, elt, pseudo);
                 }
                 break;
+            }
+        }
+    }
+
+    /**
+     * Adds the rules contained in the given list to a stylemap.
+     */
+    protected void addRules(Element elt,
+                            String pseudo,
+                            StyleMap sm,
+                            List rules,
+                            short origin) {
+        sortRules(rules, elt, pseudo);
+        int rlen = rules.size();
+        int props = getNumberOfProperties();
+
+        if (origin == StyleMap.AUTHOR_ORIGIN) {
+            for (int r = 0; r < rlen; r++) {
+                StyleRule sr = (StyleRule)rules.get(r);
+                StyleDeclaration sd = sr.getStyleDeclaration();
+                int len = sd.size();
+                for (int i = 0; i < len; i++) {
+                    putAuthorProperty(sm,
+                                      sd.getIndex(i),
+                                      sd.getValue(i),
+                                      sd.getPriority(i),
+                                      origin);
+                }
+            }
+        } else {
+            for (int r = 0; r < rlen; r++) {
+                StyleRule sr = (StyleRule)rules.get(r);
+                StyleDeclaration sd = sr.getStyleDeclaration();
+                int len = sd.size();
+                for (int i = 0; i < len; i++) {
+                    int idx = sd.getIndex(i);
+                    sm.putValue(idx, sd.getValue(i));
+                    sm.putImportant(idx, sd.getPriority(i));
+                    sm.putOrigin(idx, origin);
+                }
             }
         }
     }

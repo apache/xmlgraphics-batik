@@ -95,7 +95,7 @@ public class CSSOMSVGComputedStyle extends CSSOMComputedStyle {
     /**
      * To manage a computed paint CSSValue.
      */
-    protected class ComputedCSSPaintValue
+    public class ComputedCSSPaintValue
         extends CSSOMSVGPaint
         implements CSSOMSVGPaint.ValueProvider {
         
