@@ -130,7 +130,6 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
         focusY = fy;
         radius = r;
 
-
         this.isSimpleFocus = (focusX == centerX) && (focusY == centerY);
         this.isNonCyclic = (cycleMethod == RadialGradientPaint.NO_CYCLE);
 	
@@ -240,9 +239,9 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
                                                            int adjust, 
                                                            int x, int y, 
                                                            int w, int h) {
-        float iSq;  // Square distance index
+        float iSq=0;  // Square distance index
         final float indexFactor = fastGradientArraySize / radius;      
-	
+
         //constant part of X and Y coordinates for the entire raster
         final float constX = (a00*x) + (a01*y) + constA;
         final float constY = (a10*x) + (a11*y) + constB;
@@ -258,6 +257,23 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
         int end, j; //indexing variables
         int indexer = off;//used to index pixels array
 
+        temp        = ((deltaX * deltaX) + (deltaY * deltaY));
+        gDeltaDelta = ((temp * 2));
+
+        if (temp > fixedArraySizeSq) {
+            // This combination of scale and circle radius means
+            // essentially no pixels will be anything but the end
+            // stop color.  This also avoids math problems.
+            final int val = gradientOverflow;
+            for(j = 0; j < h; j++){ //for every row
+                //for every column (inner loop begins here)
+                for (end = indexer+w; indexer < end; indexer++) 
+                    pixels[indexer] = val;
+                indexer += adjust;
+            }
+            return;
+        }
+
         // For every point in the raster, calculate the color at that point
         for(j = 0; j < h; j++){ //for every row
             //x and y (in user space) of the first pixel of this row
@@ -266,25 +282,23 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
 
             // these values below here allow for an incremental calculation
             // of dX^2 + dY^2 
-            temp = ((deltaX * deltaX) + (deltaY * deltaY));
 
             //initialize to be equal to distance squared
             g = (((dY * dY) + (dX * dX)) );
             gDelta =  (((((deltaY * dY) + (deltaX * dX))* 2) + 
                         temp));	 
-            gDeltaDelta = ((temp * 2));
 	    
             //for every column (inner loop begins here)
             for (end = indexer+w; indexer < end; indexer++) {	       
                 //determine the distance to the center
 		
                 //since this is a non cyclic fill raster, crop at "1" and 0
-                if (g > fixedArraySizeSq) {
-                    gIndex = fastGradientArraySize;
+                if (g >= fixedArraySizeSq) {
+                    pixels[indexer] = gradientOverflow;
                 }
 		
                 // This should not happen as gIndex is a square
-                // quantity. Code commented out on purpose
+                // quantity. Code commented out on purpose, can't underflow.
                 // else if (g < 0) {
                 //    gIndex = 0;		    
                 // }
@@ -294,11 +308,11 @@ final class RadialGradientPaintContext extends MultipleGradientPaintContext {
                     
                     iSqInt = (int)iSq; //chop off fractional part
                     iSq -= iSqInt;		    
-                    gIndex = (int)((iSq * sqrtLutFixed[iSqInt + 1]) + 
-                                   ((1-iSq) * sqrtLutFixed[iSqInt]));
+                    gIndex = sqrtLutFixed[iSqInt];
+                    gIndex += (int)(iSq * (sqrtLutFixed[iSqInt + 1]-gIndex));
+                    pixels[indexer] = gradient[gIndex]; 
                 }
 		
-                pixels[indexer] = gradient[gIndex]; 
 				
                 //incremental calculation
                 g += gDelta;
