@@ -51,8 +51,8 @@ import java.io.IOException;
  * @author      Chuck McManis
  * @version $Id$
  *
- * @see         CharacterDecoder;
- * @see         BASE64Encoder
+ * @see         CharacterDecoder
+ * @see         Base64Encoder
  */
 
 public abstract class CharacterEncoder {

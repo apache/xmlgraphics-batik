@@ -71,7 +71,6 @@ public class SVGTexturePaint extends AbstractSVGConverter{
      * @return a descriptor whose paint value references
      *         a pattern. The definition of the
      *         pattern in put in the patternDefsMap
-     * @see #getPatternDefSet
      */
     public SVGPaintDescriptor toSVG(TexturePaint texture){
         // Reuse definition if pattern has already been converted

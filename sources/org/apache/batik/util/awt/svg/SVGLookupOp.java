@@ -65,7 +65,6 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
      * @return a description of the SVG filter corresponding to
      *         lookupOp. The definition of the feComponentTransfer
      *         filter in put in feComponentTransferDefSet
-     * @see #getFilterDefSet
      */
     public SVGFilterDescriptor toSVG(LookupOp lookupOp){
         // Reuse definition if lookupOp has already been converted

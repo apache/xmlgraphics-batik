@@ -31,7 +31,6 @@ public class ImageLoader {
      *
      * @param path location of image file in local file system.
      * @return loaded image at path or url
-     * @see #java.io.File.toUrl
      */
     public static synchronized Image loadImage(String path){
         File file = new File(path);
@@ -50,7 +49,6 @@ public class ImageLoader {
      *
      * @param url URL where the image file is located.
      * @return loaded image at path or url
-     * @see #java.io.File.toUrl
      */
     public static synchronized Image loadImage(URL url){
         Image image = null;

@@ -56,7 +56,6 @@ public class SVGLinearGradient extends AbstractSVGConverter{
      * @return a description of the SVG paint and opacity corresponding
      to the gradient Paint. The definiton of the
      *         linearGradient is put in the linearGradientDefsMap
-     * @see #getLinearGradientDefSet
      */
     public SVGPaintDescriptor toSVG(GradientPaint gradient){
         // Reuse definition if gradient has already been converted
