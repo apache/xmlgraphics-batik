@@ -105,7 +105,18 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 GraphicsNode node
                     = builder.build(bridgeContext, (Element)child) ;
                 if(node != null){
-                    Shape outline = new TransformedShape(node.getOutline(), ats);
+                    CSSStyleDeclaration childDecl
+                        = bridgeContext.getViewCSS().getComputedStyle((Element)child, null);
+                    GeneralPath outline =
+                        new GeneralPath(new TransformedShape(node.getOutline(), ats));
+                    // set the clip-rule
+                    CSSPrimitiveValue v;
+                    v = (CSSPrimitiveValue)childDecl.getPropertyCSSValue(CLIP_RULE_PROPERTY);
+                    int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
+                        ? GeneralPath.WIND_NON_ZERO
+                        : GeneralPath.WIND_EVEN_ODD;
+                    outline.setWindingRule(wr);
+
                     ClipSource clipSource = new ClipSource(outline);
                     // compute clip-path on the child
                     ShapeNode outlineNode =
@@ -124,7 +135,6 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 }
             }
         }
-        //Shape childrenClipPath = area;
 
         //
         // Now clipPath represents the current clip path defined by the
@@ -144,16 +154,6 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             merge.subtract(new ClipSource(clipElementClipPath.getClipPath()));
             clipPath = merge;
         }
-
-        // Convert the Area to a path and apply the winding rule
-        //GeneralPath clip = new GeneralPath(clipPath);
-        CSSPrimitiveValue v;
-        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CLIP_RULE_PROPERTY);
-        int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
-            ? GeneralPath.WIND_NON_ZERO
-            : GeneralPath.WIND_EVEN_ODD;
-
-        clipPath.setWindingRule(wr);
         bridgeContext.setCurrentViewport(oldViewport); // restore the viewport
 
         // OTHER PROBLEM: SHOULD TAKE MASK REGION INTO ACCOUNT
@@ -178,7 +178,6 @@ class ClipSource implements Shape {
     private List addList = new LinkedList();
     private List subtractList = new LinkedList();
     private Shape source;
-    private int clipRule;
 
     public ClipSource() {
     }
@@ -193,10 +192,6 @@ class ClipSource implements Shape {
 
     public void subtract(ClipSource area) {
         subtractList.add(area);
-    }
-
-    public void setWindingRule(int clipRule) {
-        this.clipRule = clipRule;
     }
 
     protected void resolve() {
@@ -217,8 +212,8 @@ class ClipSource implements Shape {
             }
             addList = null;
             subtractList = null;
+            source = null;
             GeneralPath clipPath = new GeneralPath(area);
-            clipPath.setWindingRule(clipRule);
             resolvedArea = clipPath;
         }
     }
