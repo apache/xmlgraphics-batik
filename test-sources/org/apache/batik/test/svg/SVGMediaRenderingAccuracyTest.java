@@ -18,33 +18,15 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGMediaRenderingAccuracyTest extends SVGRenderingAccuracyTest {
-    
-    /**
-     * The media to use for rendering.
-     */
-    protected String media;
-
-    /**
-     * Constructor.
-     * @param svgURL the URL String for the SVG document being tested.
-     * @param refImgURL the URL for the reference image.
-     * @param m The media to use.
-     */
-    public SVGMediaRenderingAccuracyTest(String svgURL,
-                                         String refImgURL,
-                                         String m) {
-        super(svgURL, refImgURL);
-        media = m;
-    }
-
+public class SVGMediaRenderingAccuracyTest 
+    extends ParametrizedRenderingAccuracyTest {
     /**
      * Returns the <tt>ImageTranscoder</tt> the Test should
      * use
      */
     public ImageTranscoder getTestImageTranscoder(){
         ImageTranscoder t = super.getTestImageTranscoder();
-        t.addTranscodingHint(PNGTranscoder.KEY_MEDIA, media);
+        t.addTranscodingHint(PNGTranscoder.KEY_MEDIA, parameter);
         return t;
     }
 

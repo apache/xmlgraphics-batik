@@ -20,24 +20,12 @@ import org.w3c.dom.Document;
  * @version $Id$
  */
 public class SVGAlternateStyleSheetRenderingAccuracyTest
-    extends SVGRenderingAccuracyTest {
-    
-    /**
-     * The stylesheet to use for rendering.
-     */
-    protected String title;
-
+    extends ParametrizedRenderingAccuracyTest {
     /**
      * Constructor.
-     * @param svgURL the URL String for the SVG document being tested.
-     * @param refImgURL the URL for the reference image.
-     * @param t The stylesheet title to use.
      */
-    public SVGAlternateStyleSheetRenderingAccuracyTest(String svgURL,
-                                                       String refImgURL,
-                                                       String t) {
-        super(svgURL, refImgURL);
-        title = t;
+    public SVGAlternateStyleSheetRenderingAccuracyTest(){
+        super();
     }
 
     /**
@@ -48,7 +36,7 @@ public class SVGAlternateStyleSheetRenderingAccuracyTest
      */
     protected Document manipulateSVGDocument(Document doc) {
         // enable the stylesheet
-        ((SVGOMDocument)doc).enableAlternateStyleSheet(title);
+        ((SVGOMDocument)doc).enableAlternateStyleSheet(parameter);
         return doc;
     }
 }
