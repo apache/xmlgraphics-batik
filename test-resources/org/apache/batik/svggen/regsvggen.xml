@@ -16,5 +16,24 @@
         <arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/BasicShapes.svg" />
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/BasicShapes.svg" />
     </test>
-
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.BasicShapes2" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/BasicShapes2.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/BasicShapes2.svg" />
+    </test>
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.AffineTransform" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/AffineTransform.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/AffineTransform.svg" />
+    </test>
+     <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.AttributedCharacterIterator" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/AttributedCharacterIterator.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/AttributedCharacterIterator.svg" />
+    </test>
+ <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.BEExample" />
+	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/BEExample.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/BEExample.svg" />
+    </test>
 </testSuite>
