@@ -652,6 +652,13 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/rasterImageViewBoxClip.png" />
     </test>
 
+    <test id="samples/tests/externalPaints.svg" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.lang.String" value="samples/tests/externalPaints.svg"/>
+        <arg class="java.lang.String" value="test-references/samples/tests/externalPaints.png"/>
+        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/externalPaints.png"/>
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/externalPaints.png"/>
+    </test>
+
 
     <test id="samples/tests/systemColors.svg" class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.lang.String" value="samples/tests/systemColors.svg" />
@@ -901,13 +908,5 @@
         <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/cssMediaProjection.png"/>
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/cssMediaProjection.png"/>
     </test>
-
-    <test id="samples/tests/externalPaints.svg" class=org.apache.batik.test.svg.SVGRenderingAccuracyTest">
-        <arg class="java.lang.String" value="samples/tests/externalPaints.svg"/>
-        <arg class="java.lang.String" value="test-references/samples/tests/externalPaints.png"/>
-        <property name="VariationURL" class="java.lang.String" value="test-references/samples/accepted-variation/externalPaints.png"/>
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/externalPaints.png"/>
-    </test>
-
 
 </testSuite>
