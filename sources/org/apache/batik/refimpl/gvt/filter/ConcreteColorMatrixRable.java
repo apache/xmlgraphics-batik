@@ -120,11 +120,11 @@ public class ConcreteColorMatrixRable
             }
         }
 
-        for(int i=0; i<4; i++){
+        /*for(int i=0; i<4; i++){
             for(int j=0; j<5; j++)
                 System.out.print(newMatrix[i][j] + " ");
             System.out.println();
-        }
+            }*/
 
         ConcreteColorMatrixRable filter 
             = new ConcreteColorMatrixRable();
@@ -161,21 +161,31 @@ public class ConcreteColorMatrixRable
         float cos = (float)Math.cos(a);
         float sin = (float)Math.sin(a);
 
-        float a00 = (float)(0.213 + cos*0.787 - sin*0.213);
-        float a01 = (float)(0.715 - cos*0.715 - sin*0.715);
-        float a02 = (float)(0.072 - cos*0.072 + sin*0.928);
-        float a10 = (float)(0.213 - cos*0.212 + sin*0.143);
-        float a11 = (float)(0.715 + cos*0.285 + sin*0.140);
-        float a12 = (float)(0.072 - cos*0.072 - sin*0.283);
-        float a20 = (float)(0.213 - cos*0.213 - sin*0.787);
-        float a21 = (float)(0.715 - cos*0.715 + sin*0.715);
-        float a22 = (float)(0.072 + cos*0.928 + sin*0.072);
+        // System.out.println("sin : " + sin + " cos : " + cos);
+
+        float a00 = 0.213f + cos*0.787f - sin*0.213f;
+        float a10 = 0.213f - cos*0.212f + sin*0.143f;
+        float a20 = 0.213f - cos*0.213f - sin*0.787f;
+
+        float a01 = 0.715f - cos*0.715f - sin*0.715f;
+        float a11 = 0.715f + cos*0.285f + sin*0.140f;
+        float a21 = 0.715f - cos*0.715f + sin*0.715f;
+
+        float a02 = 0.072f - cos*0.072f + sin*0.928f;
+        float a12 = 0.072f - cos*0.072f - sin*0.283f;
+        float a22 = 0.072f + cos*0.928f + sin*0.072f;
 
         filter.matrix = new float[][] {
             { a00, a01, a02, 0, 0 },
             { a10, a11, a12, 0, 0 },
             { a20, a21, a22, 0, 0 },
             { 0,   0,   0,   1, 0 }};
+
+        /*for(int i=0; i<4; i++){
+            for(int j=0; j<5; j++)
+                System.out.print(filter.matrix[i][j] + " ");
+            System.out.println();
+            }*/
 
         return filter;
     }
@@ -205,7 +215,7 @@ public class ConcreteColorMatrixRable
         final int srcMinY = srcRI.getMinY();
 
         RenderingHints hints = rc.getRenderingHints();
-        BandCombineOp op = new BandCombineOp(matrix, null);
+        ColorMatrixOp op = new ColorMatrixOp(matrix, null);
 
         //
         // Wrap source in buffered image

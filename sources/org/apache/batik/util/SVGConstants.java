@@ -145,6 +145,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_ORDER = "order";
     String ATTR_ORDER_X = "orderX";
     String ATTR_ORDER_Y = "orderY";
+    String ATTR_PATTERN_TRANSFORM = "patternTransform";
     String ATTR_PATTERN_UNITS = "patternUnits";
     String ATTR_POINTS_AT_X = "pointsAtX";
     String ATTR_POINTS_AT_Y = "pointsAtY";

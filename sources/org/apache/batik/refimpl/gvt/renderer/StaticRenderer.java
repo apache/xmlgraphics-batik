@@ -151,14 +151,14 @@ public class StaticRenderer implements Renderer {
         // Now, paint into offscreen image
         Graphics2D g = offScreen.createGraphics();
 
+        // Set default rendering hints
+        g.addRenderingHints(nodeRenderContext.getRenderingHints());
+
         // Set initial transform as required by the render context
         g.transform(nodeRenderContext.getTransform());
 
         // Set initial clip
         g.clip(nodeRenderContext.getAreaOfInterest());
-
-        // Set default rendering hints
-        g.addRenderingHints(nodeRenderContext.getRenderingHints());
 
         // Render tree
         if(treeRoot != null) {

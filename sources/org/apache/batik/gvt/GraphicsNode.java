@@ -70,6 +70,12 @@ public interface GraphicsNode {
     AffineTransform getTransform();
 
     /**
+     * Returns the concatenated transform, i.e., this node's 
+     * transform preconcatenated with it's parent's transforms.
+     */
+    AffineTransform getGlobalTransform();
+
+    /**
      * Sets the composite of this node.
      * @param composite the composite of this node
      */

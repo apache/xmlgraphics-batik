@@ -145,6 +145,9 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)), 
              ctx.getParserFactory());
 
+        System.out.println("gradientTransform : " + at);
+        System.out.println("shearX            : " + at.getShearX());
+
         AffineTransformSource ats 
             = SVGUtilities.convertAffineTransformSource(at, 
                                                         paintedNode, 

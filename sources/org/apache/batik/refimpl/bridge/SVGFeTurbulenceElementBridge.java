@@ -55,7 +55,7 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
                          Filter in,
                          FilterRegion filterRegion,
                          Map filterMap){
-        System.out.println("In SVGFeTurbulenceElementBridge" );
+        // System.out.println("In SVGFeTurbulenceElementBridge" );
 
         //
         // Get baseFrequency along each of the user space axis

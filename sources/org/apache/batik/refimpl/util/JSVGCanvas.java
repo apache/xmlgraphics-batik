@@ -324,7 +324,7 @@ public class JSVGCanvas
     public void setSVGDocument(SVGDocument doc) {
         if (document != null) {
             // fire the unload event
-            Event evt = document.createEvent("SVGEvent");
+            Event evt = document.createEvent("SVGEvents");
             evt.initEvent("SVGUnload", false, false);
             ((EventTarget)(document.
                            getRootElement())).
@@ -343,7 +343,7 @@ public class JSVGCanvas
             // <!> HACK maybe not the right place to dispatch
             // this event
             // fire the load event
-            Event evt = document.createEvent("SVGEvent");
+            Event evt = document.createEvent("SVGEvents");
             evt.initEvent("SVGLoad", false, false);
             ((EventTarget)(document.
                            getRootElement())).
