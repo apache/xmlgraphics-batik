@@ -180,23 +180,6 @@ public abstract class AbstractElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Element#getElementsByTagName(String)}.
-     */
-    public NodeList getElementsByTagName(String name) {
-	Node n = getFirstChild();
-	if (n == null || name == null) {
-	    return EMPTY_NODE_LIST;
-	}
-	Nodes result = new Nodes();
-        while (n != null) {
-            getElementsByTagName(n, name, result);
-            n = n.getNextSibling();
-        }
-	return result;
-    }
-
-    /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#normalize()}.
      */
     public void normalize() {
@@ -287,21 +270,51 @@ public abstract class AbstractElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.Element#getElementsByTagNameNS(String,String)}.
+     * Called when a child node has been added.
      */
-    public NodeList getElementsByTagNameNS(String namespaceURI,
-                                           String localName) {
-	Node n = getFirstChild();
-	if (n == null || localName == null) {
-	    return EMPTY_NODE_LIST;
-	}
-	Nodes result = new Nodes();
-        while (n != null) {
-            getElementsByTagNameNS(n, namespaceURI, localName, result);
-            n = n.getNextSibling();
+    protected void nodeAdded(Node node) {
+        invalidateElementsByTagName(node);
+    }
+
+    /**
+     * Called when a child node is going to be removed.
+     */
+    protected void nodeToBeRemoved(Node node) {
+        invalidateElementsByTagName(node);
+    }
+
+    /**
+     * Invalidates the ElementsByTagName objects of this node and its parents.
+     */
+    private void invalidateElementsByTagName(Node node) {
+        if (node.getNodeType() != ELEMENT_NODE) {
+            return;
         }
-	return result;
+        AbstractDocument ad = getCurrentDocument();
+        String ns = node.getNamespaceURI();
+        String ln = (ns == null) ? node.getNodeName() : node.getLocalName();
+        for (Node n = this; n != null; n = n.getParentNode()) {
+            switch (n.getNodeType()) {
+            case ELEMENT_NODE:
+            case DOCUMENT_NODE:
+                ElementsByTagName l = ad.getElementsByTagName(n, ns, ln);
+                if (l != null) {
+                    l.invalidate();
+                }
+                l = ad.getElementsByTagName(n, "*", ln);
+                if (l != null) {
+                    l.invalidate();
+                }
+                l = ad.getElementsByTagName(n, ns, "*");
+                if (l != null) {
+                    l.invalidate();
+                }
+                l = ad.getElementsByTagName(n, "*", "*");
+                if (l != null) {
+                    l.invalidate();
+                }
+            }
+        }
     }
 
     /**

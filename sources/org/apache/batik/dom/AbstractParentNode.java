@@ -92,6 +92,8 @@ public abstract class AbstractParentNode extends AbstractNode {
 					       (ExtendedNode)refChild);
 	    n.setParentNode(this);
 
+            nodeAdded(n);
+
 	    // Mutation event
 	    fireDOMNodeInsertedEvent(n);
 	    fireDOMSubtreeModifiedEvent();
@@ -131,12 +133,15 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    fireDOMNodeRemovedEvent(oldChild);
 
             getCurrentDocument().nodeToBeRemoved(oldChild);
+            nodeToBeRemoved(oldChild);
 
 	    // Node modification
 	    ExtendedNode n = (ExtendedNode)newChild;
 	    ExtendedNode o = childNodes.replace(n, (ExtendedNode)oldChild);
 	    n.setParentNode(this);
 	    o.setParentNode(null);
+
+            nodeAdded(n);
 
 	    // Mutation event
 	    fireDOMNodeInsertedEvent(n);
@@ -167,6 +172,7 @@ public abstract class AbstractParentNode extends AbstractNode {
 	fireDOMNodeRemovedEvent(oldChild);
 
         getCurrentDocument().nodeToBeRemoved(oldChild);
+        nodeToBeRemoved(oldChild);
 
 	// Node modification
 	ExtendedNode result = childNodes.remove((ExtendedNode)oldChild);
@@ -198,6 +204,8 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    // Node modification
 	    ExtendedNode n = childNodes.append((ExtendedNode)newChild);
 	    n.setParentNode(this);
+
+            nodeAdded(n);
 
 	    // Mutation event
 	    fireDOMNodeInsertedEvent(n);
@@ -240,6 +248,42 @@ public abstract class AbstractParentNode extends AbstractNode {
     }
 
     /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.Element#getElementsByTagName(String)}.
+     */
+    public NodeList getElementsByTagName(String name) {
+	if (name == null) {
+	    return EMPTY_NODE_LIST;
+	}
+        AbstractDocument ad = getCurrentDocument();
+        ElementsByTagName result = ad.getElementsByTagName(this, null, name);
+        if (result == null) {
+            result = new ElementsByTagName(null, name);
+            ad.putElementsByTagName(this, null, name, result);
+        }
+        return result;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.Element#getElementsByTagNameNS(String,String)}.
+     */
+    public NodeList getElementsByTagNameNS(String namespaceURI,
+                                           String localName) {
+	if (localName == null) {
+	    return EMPTY_NODE_LIST;
+	}
+        AbstractDocument ad = getCurrentDocument();
+        ElementsByTagName result = ad.getElementsByTagName(this, namespaceURI,
+                                                           localName);
+        if (result == null) {
+            result = new ElementsByTagName(namespaceURI, localName);
+            ad.putElementsByTagName(this, namespaceURI, localName, result);
+        }
+        return result;
+    }
+
+    /**
      * Recursively fires a DOMNodeInsertedIntoDocument event.
      */
     public void fireDOMNodeInsertedIntoDocumentEvent() {
@@ -266,56 +310,15 @@ public abstract class AbstractParentNode extends AbstractNode {
     }
 
     /**
-     * An auxiliary method of getElementsByTagName.
+     * Called when a child node has been added.
      */
-    protected static void getElementsByTagName(Node node, String name,
-                                               Nodes list) {
-	if (node.getNodeType() == ELEMENT_NODE) {
-	    if (name.equals("*") || name.equals(node.getNodeName())) {
-		list.append(node);
-	    }
-	}
-	for (Node n = node.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-	    getElementsByTagName(n, name, list);
-	}
+    protected void nodeAdded(Node n) {
     }
 
     /**
-     * An auxiliary method for getElementsByTagNameNS.
+     * Called when a child node is going to be removed.
      */
-    protected static void getElementsByTagNameNS(Node   node,
-						 String ns,
-						 String name,
-						 Nodes  list) {
-	if (node.getNodeType() == ELEMENT_NODE) {
-	    if (stringMatches(ns, node.getNamespaceURI()) &&
-		(name.equals("*") || name.equals(node.getLocalName()))) {
-		list.append(node);
-	    }
-	}
-	for (Node n = node.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-	    getElementsByTagNameNS(n, ns, name, list);
-	}
-    }
-
-    /**
-     * String matching for getElementsByTagNameNS function.
-     */
-    private static boolean stringMatches(String s1, String s2) {
-	if (s1 == null && s2 == null) {
-	    return true;
-	}
-	if (s1 == null || s2 == null) {
-	    return false;
-	}
-	if (s1.equals("*")) {
-	    return true;
-	}
-	return s1.equals(s2);
+    protected void nodeToBeRemoved(Node n) {
     }
 
     /**
@@ -445,7 +448,8 @@ public abstract class AbstractParentNode extends AbstractNode {
     /**
      * To manage a list of nodes.
      */
-    protected static class Nodes implements NodeList {
+    protected class ElementsByTagName implements NodeList {
+
 	/**
 	 * The table.
 	 */
@@ -454,18 +458,33 @@ public abstract class AbstractParentNode extends AbstractNode {
 	/**
 	 * The number of nodes.
 	 */
-	protected int size;
+	protected int size = -1;
+
+        /**
+         * The namespace URI identifier.
+         */
+        protected String namespaceURI;
+
+        /**
+         * The local name identifier.
+         */
+        protected String localName;
 
 	/**
 	 * Creates a new Nodes object.
 	 */
-	public Nodes() {
+	public ElementsByTagName(String ns, String ln) {
+            namespaceURI = ns;
+            localName = ln;
 	}
 
 	/**
-	 * <b>DOM</b>: Implements {@link org.w3c.dom.NodeList#item(int)}.
+	 * <b>DOM</b>: Implements {@link NodeList#item(int)}.
 	 */
 	public Node item(int index) {
+            if (size == -1) {
+                initialize();
+            }
 	    if (table == null || index < 0 || index > size) {
 		return null;
 	    }
@@ -473,17 +492,27 @@ public abstract class AbstractParentNode extends AbstractNode {
 	}
 
 	/**
-	 * <b>DOM</b>: Implements {@link org.w3c.dom.NodeList#getLength()}.
+	 * <b>DOM</b>: Implements {@link NodeList#getLength()}.
 	 * @return {@link #size}.
 	 */
 	public int getLength() {
+            if (size == -1) {
+                initialize();
+            }
 	    return size;
 	}
+
+        /**
+         * Invalidates the list.
+         */
+        public void invalidate() {
+            size = -1;
+        }
 
 	/**
 	 * Appends a node to the list.
 	 */
-	public void append(Node n) {
+	protected void append(Node n) {
 	    if (table == null) {
 		table = new Node[11];
 	    } else if (size == table.length - 1) {
@@ -495,6 +524,47 @@ public abstract class AbstractParentNode extends AbstractNode {
 	    }
 	    table[size++] = n;
 	}
+
+        /**
+         * Initializes the list.
+         */
+        protected void initialize() {
+            size = 0;
+            for (Node n = AbstractParentNode.this.getFirstChild();
+                 n != null;
+                 n = n.getNextSibling()) {
+                initialize(n);
+            }
+        }
+
+        private void initialize(Node node) {
+            if (node.getNodeType() == ELEMENT_NODE) {
+                String ns = node.getNamespaceURI();
+                String nm = (ns == null) ? node.getNodeName() : node.getLocalName();
+                if (nsMatch(namespaceURI, node.getNamespaceURI()) &&
+                    (localName.equals("*") || localName.equals(nm))) {
+                    append(node);
+                }
+            }
+            for (Node n = node.getFirstChild();
+                 n != null;
+                 n = n.getNextSibling()) {
+                initialize(n);
+            }
+        } 
+
+        private boolean nsMatch(String s1, String s2) {
+            if (s1 == null && s2 == null) {
+                return true;
+            }
+            if (s1 == null || s2 == null) {
+                return false;
+            }
+            if (s1.equals("*")) {
+                return true;
+            }
+            return s1.equals(s2);
+        }
     }
 
     /**
