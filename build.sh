@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 # build.sh - Unix Build Script for Apache Batik
 #
-# $Id: build.sh,v 1.10.2.13 2000/09/28 19:53:04 rossb Exp $
+# $Id$
 # -----------------------------------------------------------------------------
 
 # ----- Verify and Set Required Environment Variables -------------------------
@@ -18,7 +18,7 @@ fi
 
 # ----- Set Up The Runtime Classpath ------------------------------------------
 
-CP=$JAVA_HOME/lib/tools.jar:$ANT_HOME/lib/build/ant_1_2.jar:./lib/build/crimson.jar:./lib/build/jaxp.jar
+CP=$JAVA_HOME/lib/tools.jar:$ANT_HOME/lib/build/ant_1_3.jar:./lib/build/parser.jar:./lib/build/jaxp.jar
  
 # ----- Execute The Requested Build -------------------------------------------
 

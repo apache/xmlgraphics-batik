@@ -2,7 +2,7 @@
 :: -----------------------------------------------------------------------------
 :: build.bat - Win32 Build Script for Apache Batik
 ::
-:: $Id: build.bat,v 1.10.2.14 2000/10/16 16:34:46 bloritsch Exp $
+:: $Id$
 :: -----------------------------------------------------------------------------
 
 :: ----- Verify and Set Required Environment Variables -------------------------
@@ -19,7 +19,7 @@ set ANT_HOME=.
 :: ----- Set Up The Runtime Classpath ------------------------------------------
 
 
-set CP=%JAVA_HOME%\lib\tools.jar;%ANT_HOME%\lib\build\ant_1_2.jar;.\lib\build\crimson.jar;.\lib\build\jaxp.jar
+set CP=%JAVA_HOME%\lib\tools.jar;%ANT_HOME%\lib\build\ant_1_3.jar;.\lib\build\parser.jar;.\lib\build\jaxp.jar
  
 
 :: ----- Execute The Requested Build -------------------------------------------
