@@ -147,34 +147,40 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
     // fire property change methods.
     //
-    protected void firePropertyChange(String propertyName, boolean oldValue,
-                                      boolean newValue){
+    protected void firePropertyChange(String propertyName,
+                                      boolean oldValue, boolean newValue){
         // First fire to local listeners
         pcs.firePropertyChange(propertyName, oldValue, newValue);
         // fire to root node listeners if possible.
-        RootGraphicsNode node = getRoot();
-        if (root != null)
-            ((ConcreteRootGraphicsNode)root).fireGlobalPropertyChange(propertyName, oldValue, newValue);
+        if (root != null) {
+            ConcreteRootGraphicsNode node = (ConcreteRootGraphicsNode) root;
+            node.fireGlobalPropertyChange(this, propertyName,
+                                          oldValue, newValue);
+        }
     }
 
-    protected void firePropertyChange(String propertyName, int oldValue,
-                                      int newValue){
+    protected void firePropertyChange(String propertyName,
+                                      int oldValue, int newValue){
         // First fire to local listeners
         pcs.firePropertyChange(propertyName, oldValue, newValue);
         // fire to root node listeners if possible.
-        RootGraphicsNode node = getRoot();
-        if (root != null)
-            ((ConcreteRootGraphicsNode)root).fireGlobalPropertyChange(propertyName, oldValue, newValue);
+        if (root != null) {
+            ConcreteRootGraphicsNode node = (ConcreteRootGraphicsNode) root;
+            node.fireGlobalPropertyChange(this, propertyName,
+                                          oldValue, newValue);
+        }
     }
 
-    protected void firePropertyChange(String propertyName, Object oldValue,
-                                      Object newValue){
+    protected void firePropertyChange(String propertyName,
+                                      Object oldValue, Object newValue){
         // First fire to local listeners
         pcs.firePropertyChange(propertyName, oldValue, newValue);
         // fire to root node listeners if possible.
-        RootGraphicsNode node = getRoot();
-        if (root != null)
-            ((ConcreteRootGraphicsNode)root).fireGlobalPropertyChange(propertyName, oldValue, newValue);
+        if (root != null) {
+            ConcreteRootGraphicsNode node = (ConcreteRootGraphicsNode) root;
+            node.fireGlobalPropertyChange(this, propertyName,
+                                          oldValue, newValue);
+        }
     }
 
     //

@@ -60,6 +60,8 @@ public class StaticRenderer implements Renderer {
      */
     protected GraphicsNodeRenderContext nodeRenderContext;
 
+    protected AffineTransform usr2dev = new AffineTransform();
+
     /**
      * @param offScreen image where the Renderer should do its rendering
      */
@@ -73,14 +75,15 @@ public class StaticRenderer implements Renderer {
         hints.put(RenderingHints.KEY_INTERPOLATION,
                   RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        FontRenderContext fontRenderContext = new FontRenderContext(new AffineTransform(), true,
-                                                                    true);
+        FontRenderContext fontRenderContext =
+            new FontRenderContext(new AffineTransform(), true, true);
         TextPainter textPainter = new StrokingTextPainter();
 
-        GraphicsNodeRableFactory gnrFactory = new ConcreteGraphicsNodeRableFactory();
+        GraphicsNodeRableFactory gnrFactory =
+            new ConcreteGraphicsNodeRableFactory();
 
         this.nodeRenderContext =
-            new GraphicsNodeRenderContext(new AffineTransform(),
+            new GraphicsNodeRenderContext(usr2dev,
                                           null,
                                           hints,
                                           fontRenderContext,
@@ -132,6 +135,7 @@ public class StaticRenderer implements Renderer {
             return;
         }
         // First, set the Area Of Interest in the renderContext
+        nodeRenderContext.setTransform(usr2dev);
         nodeRenderContext.setAreaOfInterest(area);
 
         // Now, paint into offscreen image
@@ -147,8 +151,9 @@ public class StaticRenderer implements Renderer {
         g.addRenderingHints(nodeRenderContext.getRenderingHints());
 
         // Render tree
-        if(treeRoot != null)
+        if(treeRoot != null) {
             treeRoot.paint(g, nodeRenderContext);
+        }
     }
 
     /**
@@ -159,9 +164,10 @@ public class StaticRenderer implements Renderer {
      *        the identity transform will be set.
      */
     public void setTransform(AffineTransform usr2dev){
-        if(usr2dev == null)
+        if(usr2dev == null) {
             usr2dev = new AffineTransform();
-
+        }
+        this.usr2dev = usr2dev;
         // Update the RenderContext in the nodeRenderContext
         nodeRenderContext.setTransform(usr2dev);
     }
