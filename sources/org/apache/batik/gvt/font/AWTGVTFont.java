@@ -9,13 +9,17 @@
 package org.apache.batik.gvt.font;
 
 import java.awt.Font;
+import java.awt.Shape;
 
 import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphMetrics;
 import java.awt.font.GlyphVector;
 import java.awt.font.LineMetrics;
 import java.awt.font.TextAttribute;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import java.text.CharacterIterator;
 
@@ -37,9 +41,10 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
  * @version $Id$
  */
 public class AWTGVTFont implements GVTFont {
-    private Font  awtFont;
-    private float size;
-    private float scale;
+
+    protected Font  awtFont;
+    protected float size;
+    protected float scale;
 
     /**
      * Creates a new AWTGVTFont that wraps the given Font.
@@ -47,11 +52,10 @@ public class AWTGVTFont implements GVTFont {
      * @param font The font object to wrap.
      */
     public AWTGVTFont(Font font) {
-        if (font.getSize2D() < 1f) {
-            size = font.getSize2D();
-            awtFont = font.deriveFont(10f);
-        }
-        scale = size/awtFont.getSize2D();
+        this.size = font.getSize2D();
+        this.awtFont = font.deriveFont(FONT_SIZE);
+        this.scale = size/awtFont.getSize2D();
+        initializeFontCache(awtFont);
     }
 
     /**
@@ -61,11 +65,10 @@ public class AWTGVTFont implements GVTFont {
      * @param scale The scale factor to apply to font...
      */
     public AWTGVTFont(Font font, float scale) {
-        if (font.getSize2D() < 1f) {
-            this.size = font.getSize2D()*scale;;
-            this.awtFont = font.deriveFont(10f);
-        }
+        this.size = font.getSize2D()*scale;;
+        this.awtFont = font.deriveFont(FONT_SIZE);
         this.scale = size/awtFont.getSize2D();
+        initializeFontCache(awtFont);
     }
 
     /**
@@ -75,16 +78,16 @@ public class AWTGVTFont implements GVTFont {
      */
     public AWTGVTFont(Map attributes) {
         Float sz = (Float)attributes.get(TextAttribute.SIZE);
-        if ((sz != null) && (sz.floatValue() < 1f)) {
-            size = sz.floatValue();
-            attributes.put(TextAttribute.SIZE, new Float(10f));
-            awtFont = new Font(attributes);
+        if (sz != null) {
+            this.size = sz.floatValue();
+            attributes.put(TextAttribute.SIZE, new Float(FONT_SIZE));
+            this.awtFont = new Font(attributes);
         } else {
-            awtFont = new Font(attributes);
-            size = awtFont.getSize2D();
+            this.awtFont = new Font(attributes);
+            this.size = awtFont.getSize2D();
         }
-
-        scale = size/awtFont.getSize2D();
+        this.scale = size/awtFont.getSize2D();
+        initializeFontCache(awtFont);
     }
 
     /**
@@ -95,9 +98,10 @@ public class AWTGVTFont implements GVTFont {
      * @param size The required font size.
      */
     public AWTGVTFont(String name, int style, int size) {
-        this.awtFont = new Font(name, style, size);
+        this.awtFont = new Font(name, style, (int)FONT_SIZE);
         this.size  = size;
-        this.scale = 1;
+        this.scale = size/awtFont.getSize2D();
+        initializeFontCache(awtFont);
     }
 
     /**
@@ -147,8 +151,8 @@ public class AWTGVTFont implements GVTFont {
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
                                             char[] chars) {
 
-        StringCharacterIterator sci = 
-	    new StringCharacterIterator(new String(chars));
+        StringCharacterIterator sci =
+            new StringCharacterIterator(new String(chars));
         GlyphVector gv = awtFont.createGlyphVector(frc, chars);
         return new AWTGVTGlyphVector(gv, this, scale, sci);
     }
@@ -177,10 +181,10 @@ public class AWTGVTFont implements GVTFont {
      *  array and the specified FontRenderContext.
      */
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
-                                            int[] glyphCodes, 
+                                            int[] glyphCodes,
                                             CharacterIterator ci) {
         return new AWTGVTGlyphVector
-            (awtFont.createGlyphVector(frc, glyphCodes), 
+            (awtFont.createGlyphVector(frc, glyphCodes),
              this, scale, ci);
     }
 
@@ -188,12 +192,13 @@ public class AWTGVTFont implements GVTFont {
      * Returns a new GlyphVector object created with the specified String and
      * the specified FontRenderContext.
      */
-    public GVTGlyphVector createGlyphVector(FontRenderContext frc, String str) {
+    public GVTGlyphVector createGlyphVector(FontRenderContext frc, String str)
+    {
 
         StringCharacterIterator sci = new StringCharacterIterator(str);
 
         return new AWTGVTGlyphVector
-	    (awtFont.createGlyphVector(frc, str), this, scale, sci);
+            (awtFont.createGlyphVector(frc, str), this, scale, sci);
     }
 
     /**
@@ -207,8 +212,8 @@ public class AWTGVTFont implements GVTFont {
     /**
      *  Returns a LineMetrics object created with the specified arguments.
      */
-    public GVTLineMetrics getLineMetrics(char[] chars, 
-                                         int beginIndex, 
+    public GVTLineMetrics getLineMetrics(char[] chars,
+                                         int beginIndex,
                                          int limit,
                                          FontRenderContext frc) {
         return new GVTLineMetrics
@@ -218,12 +223,12 @@ public class AWTGVTFont implements GVTFont {
     /**
      * Returns a GVTLineMetrics object created with the specified arguments.
      */
-    public GVTLineMetrics getLineMetrics(CharacterIterator ci, 
+    public GVTLineMetrics getLineMetrics(CharacterIterator ci,
                                          int beginIndex,
-                                         int limit, 
+                                         int limit,
                                          FontRenderContext frc) {
         return new GVTLineMetrics
-	    (awtFont.getLineMetrics(ci, beginIndex, limit, frc), scale);
+            (awtFont.getLineMetrics(ci, beginIndex, limit, frc), scale);
     }
 
     /**
@@ -237,12 +242,12 @@ public class AWTGVTFont implements GVTFont {
     /**
      * Returns a GVTLineMetrics object created with the specified arguments.
      */
-    public GVTLineMetrics getLineMetrics(String str, 
-                                         int beginIndex, 
+    public GVTLineMetrics getLineMetrics(String str,
+                                         int beginIndex,
                                          int limit,
                                          FontRenderContext frc) {
         return new GVTLineMetrics
-	    (awtFont.getLineMetrics(str, beginIndex, limit, frc), scale);
+            (awtFont.getLineMetrics(str, beginIndex, limit, frc), scale);
     }
 
     /**
@@ -266,12 +271,61 @@ public class AWTGVTFont implements GVTFont {
         return 0f;
     }
 
+    /////////////////////////////////////////////////////////////////////////
+
+    public static final float FONT_SIZE = 48f;
+
     /**
-     * Returns a string representation of this font. This is for debugging
-     * purposes only.
+     * Returns the geometry of the specified character. This method also put
+     * the in cache the geometry associated to the specified character if
+     * needed.
      */
-    public String toString() {
-        return awtFont.getFontName();
+    public static
+        AWTGlyphGeometryCache.Value getGlyphGeometry(AWTGVTFont font,
+                                                     char c,
+                                                     GlyphVector gv,
+                                                     int glyphIndex,
+                                                     Point2D glyphPos) {
+
+        AWTGlyphGeometryCache glyphCache =
+            (AWTGlyphGeometryCache)fontCache.get(font.awtFont);
+
+        AWTGlyphGeometryCache.Value v = glyphCache.get(c);
+        if (v == null) {
+            Shape outline = gv.getGlyphOutline(glyphIndex);
+            GlyphMetrics metrics = gv.getGlyphMetrics(glyphIndex);
+            Rectangle2D gmB = metrics.getBounds2D();
+            if (AWTGVTGlyphVector.outlinesPositioned()) {
+                AffineTransform tr = AffineTransform.getTranslateInstance
+                    (-glyphPos.getX(), -glyphPos.getY());
+                outline = tr.createTransformedShape(outline);
+            }
+            v = new AWTGlyphGeometryCache.Value(outline, gmB);
+            //System.out.println("put "+font.awtFont+" "+c);
+            glyphCache.put(c, v);
+        }
+        return v;
     }
+
+    //
+    // static cache for AWTGVTFont
+    //
+
+    static Map fontCache = new HashMap(11);
+
+    static void initializeFontCache(Font awtFont) {
+        if (!fontCache.containsKey(awtFont)) {
+            fontCache.put(awtFont, new AWTGlyphGeometryCache());
+        }
+    }
+
+    static void putAWTGVTFont(AWTGVTFont font) {
+        fontCache.put(font.awtFont, font);
+    }
+
+    static AWTGVTFont getAWTGVTFont(Font awtFont) {
+        return (AWTGVTFont)fontCache.get(awtFont);
+    }
+
 }
 
