@@ -60,7 +60,7 @@
 	</g>
     </defs>
     <rect x="1" y="1" width="446" height="496" fill="none" stroke="black" />
-    <use xlink:href="#BatikTag" />
+    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#BatikTag" />
     
     </xsl:copy>
   </xsl:template>

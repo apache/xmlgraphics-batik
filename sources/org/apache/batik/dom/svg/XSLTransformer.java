@@ -23,10 +23,11 @@ import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.util.SVGConstants;
 
-import org.apache.trax.Processor;
-import org.apache.trax.Result;
-import org.apache.trax.Templates;
-import org.apache.trax.Transformer;
+import org.apache.xalan.xslt.StylesheetRoot;
+import org.apache.xalan.xslt.XSLTInputSource;
+import org.apache.xalan.xslt.XSLTProcessor;
+import org.apache.xalan.xslt.XSLTProcessorFactory;
+import org.apache.xalan.xslt.XSLTResultTarget;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,6 +56,24 @@ public class XSLTransformer {
      */
     public static Reader transform(Reader r, List sl) {
         try {
+            XSLTProcessor p = XSLTProcessorFactory.getProcessor();
+
+            Iterator it = sl.iterator();
+            while (it.hasNext()) {
+                String uri = (String)it.next();
+                Node n = (Node)it.next();
+
+                XSLTInputSource is = new XSLTInputSource(n);
+                is.setSystemId(uri);
+                StylesheetRoot ss = p.processStylesheet(is);
+
+                StringWriter w = new StringWriter();
+
+                ss.process(new XSLTInputSource(r), new XSLTResultTarget(w));
+                r = new StringReader(w.getBuffer().toString());
+            }
+
+            /*
             Processor p = Processor.newInstance("xslt");
 
             Iterator it = sl.iterator();
@@ -78,11 +97,10 @@ public class XSLTransformer {
 
             StringWriter w = new StringWriter();
 
-            Result res = new Result(w);
-            tr.transform(new InputSource(r), res);
+            tr.transform(new StreamSource(r), new StreamResult(w));
 
             return new StringReader(w.getBuffer().toString());
-
+            */
         } catch (Exception e) {
             e.printStackTrace();
         }

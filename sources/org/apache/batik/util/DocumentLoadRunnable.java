@@ -216,17 +216,16 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
                 is.close();
                 is = url.openStream();
             }
-            Reader r = new InputStreamReader(is);
 
             checkInterrupt();
             try {  // Hack to catch bad things that can happen when parser is interrupted
-                doc = df.createDocument(documentURI, new InputSource(r));
+                doc = df.createDocument(documentURI, new InputSource(is));
             } catch (NoClassDefFoundError e) {
                 throw new InterruptedException("Parser interrupted?");
             }
             checkInterrupt();
             List l = XSLTransformer.getStyleSheets(doc.getFirstChild(),
-                                                       documentURI);
+                                                   documentURI);
             if (l.size() > 0) {
                 // XSL transformations
                 is.close();
@@ -240,8 +239,7 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
                     is.close();
                     is = url.openStream();
                 }
-                r = new InputStreamReader(is);
-                r = XSLTransformer.transform(r, l);
+                Reader r = XSLTransformer.transform(new InputStreamReader(is), l);
                 doc = df.createDocument(documentURI, new InputSource(r));
             }
 
