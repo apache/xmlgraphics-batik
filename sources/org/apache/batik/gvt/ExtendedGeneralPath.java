@@ -186,8 +186,6 @@ public class ExtendedGeneralPath implements Shape, Cloneable {
         arc.height = ry * 2.0;
         arc.start = -angleStart;
         arc.extent = -angleExtent;
-        System.out.println(arc.x+" "+arc.y+" "+arc.width+" "+arc.height+" "+
-                           arc.start+" "+arc.extent);
         AffineTransform t = AffineTransform.getRotateInstance(angle, cx, cy);
         Shape s = t.createTransformedShape(arc);
         append(s, true);
