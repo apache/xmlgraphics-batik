@@ -763,7 +763,6 @@ public class JGVTComponent extends JComponent {
             suspendInteractions = true;
             if (!progressivePaint && !doubleBufferedRendering) {
                 image = null;
-                immediateRepaint();
             }
         }
 
@@ -771,7 +770,6 @@ public class JGVTComponent extends JComponent {
          * Called when a rendering started.
          */
         public void gvtRenderingStarted(GVTTreeRendererEvent e) {
-            paintingTransform = null;
             if (progressivePaint && !doubleBufferedRendering) {
                 image = e.getImage();
                 progressivePaintThread = new HaltingThread() {
@@ -803,6 +801,7 @@ public class JGVTComponent extends JComponent {
                 progressivePaintThread.start();
             }
             if (!doubleBufferedRendering) {
+                paintingTransform = null;
                 suspendInteractions = false;
             }
         }
@@ -814,6 +813,7 @@ public class JGVTComponent extends JComponent {
             haltProgressivePaintThread();
 
             if (doubleBufferedRendering) {
+                paintingTransform = null;
                 suspendInteractions = false;
             }
 
