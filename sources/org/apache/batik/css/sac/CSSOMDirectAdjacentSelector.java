@@ -21,13 +21,14 @@ import org.w3c.dom.Node;
  * @version $Id$
  */
 
-public class CSSOMDirectAdjacentSelector extends AbstractCombinatorSelector {
+public class CSSOMDirectAdjacentSelector extends AbstractSiblingSelector {
     /**
      * Creates a new CSSOMDirectAdjacentSelector object.
      */
-    public CSSOMDirectAdjacentSelector(Selector parent,
+    public CSSOMDirectAdjacentSelector(short type,
+                                       Selector parent,
                                        SimpleSelector simple) {
-	super(parent, simple);
+	super(type, parent, simple);
     }
 
     /**
@@ -46,9 +47,9 @@ public class CSSOMDirectAdjacentSelector extends AbstractCombinatorSelector {
         while ((n = n.getPreviousSibling()) != null &&
                n.getNodeType() != Node.ELEMENT_NODE);
 	if (n != null) {
-	    return ((ExtendedSelector)getParentSelector()).match((Element)n,
+	    return ((ExtendedSelector)getSelector()).match((Element)n,
                                                                  null) &&
-		   ((ExtendedSelector)getSimpleSelector()).match(e, pseudoE);
+		   ((ExtendedSelector)getSiblingSelector()).match(e, pseudoE);
 	}	
 	return false;
     }
@@ -57,6 +58,6 @@ public class CSSOMDirectAdjacentSelector extends AbstractCombinatorSelector {
      * Returns a representation of the selector.
      */
     public String toString() {
-	return getParentSelector() + " + " + getSimpleSelector();
+	return getSelector() + " + " + getSiblingSelector();
     }
 }

@@ -247,9 +247,14 @@ class LexicalUnitImpl implements LexicalUnit {
 	    text = getFunctionName() + "(" + getParameters() + ")";
 	    break;
 	case SAC_IDENT:
+	    text = "attr(" + getStringValue() + ")";
+	    break;
 	case SAC_STRING_VALUE:
+	    // @@SEEME. not exact
+	    text = "\"" + getStringValue() + "\"";
+	    break;
 	case SAC_ATTR:
-	    text = getStringValue();
+	    text = "attr(" + getStringValue() + ")";
 	    break;
 	case SAC_UNICODERANGE:
 	    text = "@@TODO";
@@ -262,7 +267,7 @@ class LexicalUnitImpl implements LexicalUnit {
 	    break;
 	}
 	if (next != null) {
-	    return text + next;
+	    return text + ' ' + next;
 	} else {
 	    return text;
 	}
@@ -380,6 +385,10 @@ class LexicalUnitImpl implements LexicalUnit {
 	return new LexicalUnitImpl(line, column, previous,
 						 SAC_DIMENSION, s, v);
     }
+    static LexicalUnitImpl createInherit(int line, int column,
+					 LexicalUnitImpl previous) {
+	return new LexicalUnitImpl(line, column, previous, SAC_INHERIT, "inherit");
+    }
     static LexicalUnitImpl createIdent(int line, int column,
 				       LexicalUnitImpl previous, String s) {
 	return new LexicalUnitImpl(line, column, previous, SAC_IDENT, s);
@@ -436,12 +445,8 @@ class LexicalUnitImpl implements LexicalUnit {
     static LexicalUnitImpl createUnicodeRange(int line, int column,
 					      LexicalUnit previous, 
 					      LexicalUnit params) {
-	// return new LexicalUnitImpl(line, column, previous, null, SAC_UNICODERANGE, params);
+	// @@ return new LexicalUnitImpl(line, column, previous, null, SAC_UNICODERANGE, params);
 	return null;
-    }
-    static LexicalUnitImpl createInherit(int line, int column,
-                                         LexicalUnitImpl previous) {
-	return new LexicalUnitImpl(SAC_INHERIT, line, column, previous);
     }
     static LexicalUnitImpl createComma(int line, int column,
 					  LexicalUnitImpl previous) {

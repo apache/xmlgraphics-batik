@@ -13,7 +13,7 @@
  */
 package org.w3c.flute.parser.selectors;
 
-import org.w3c.css.sac.CombinatorSelector;
+import org.w3c.css.sac.SiblingSelector;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SimpleSelector;
 
@@ -21,7 +21,7 @@ import org.w3c.css.sac.SimpleSelector;
  * @version $Revision$
  * @author  Philippe Le Hegaret
  */
-public class DirectAdjacentSelectorImpl implements CombinatorSelector {
+public class DirectAdjacentSelectorImpl implements SiblingSelector {
 
     Selector       child;
     SimpleSelector directAdjacent;
@@ -42,18 +42,21 @@ public class DirectAdjacentSelectorImpl implements CombinatorSelector {
 	this.directAdjacent = directAdjacent;
     }
     
+    public short getNodeType() {
+	return 1;
+    }
         
     /**
      * Returns the parent selector.
      */    
-    public Selector getParentSelector() {
+    public Selector getSelector() {
 	return child;
     }
 
     /*
      * Returns the simple selector.
      */    
-    public SimpleSelector getSimpleSelector() {
+    public SimpleSelector getSiblingSelector() {
 	return directAdjacent;
     }
 }

@@ -13,15 +13,13 @@ package org.w3c.css.sac;
  * @author  Philippe Le Hegaret
  * @see Selector#SAC_DESCENDANT_SELECTOR
  * @see Selector#SAC_CHILD_SELECTOR
- * @see Selector#SAC_DIRECT_ADJACENT_SELECTOR
- * @see Selector#SAC_INDIRECT_ADJACENT_SELECTOR
  */
-public interface CombinatorSelector extends Selector {
+public interface DescendantSelector extends Selector {
     
     /**
      * Returns the parent selector.
      */    
-    public Selector getParentSelector();
+    public Selector getAncestorSelector();
 
     /*
      * Returns the simple selector.

@@ -20,12 +20,12 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class CSSOMChildSelector extends AbstractCombinatorSelector {
+public class CSSOMChildSelector extends AbstractDescendantSelector {
     /**
      * Creates a new CSSOMChildSelector object.
      */
-    public CSSOMChildSelector(Selector parent, SimpleSelector simple) {
-	super(parent, simple);
+    public CSSOMChildSelector(Selector ancestor, SimpleSelector simple) {
+	super(ancestor, simple);
     }
 
     /**
@@ -42,7 +42,7 @@ public class CSSOMChildSelector extends AbstractCombinatorSelector {
     public boolean match(Element e, String pseudoE) {
 	Node n = e.getParentNode();
 	if (n != null && n.getNodeType() == Node.ELEMENT_NODE) {
-	    return ((ExtendedSelector)getParentSelector()).match((Element)n,
+	    return ((ExtendedSelector)getAncestorSelector()).match((Element)n,
                                                                  null) &&
 		   ((ExtendedSelector)getSimpleSelector()).match(e, pseudoE);
 	}
@@ -55,8 +55,8 @@ public class CSSOMChildSelector extends AbstractCombinatorSelector {
     public String toString() {
 	SimpleSelector s = getSimpleSelector();
 	if (s.getSelectorType() == SAC_PSEUDO_ELEMENT_SELECTOR) {
-	    return "" + getParentSelector() + s;
+	    return "" + getAncestorSelector() + s;
 	}
-	return getParentSelector() + " > " + s;
+	return getAncestorSelector() + " > " + s;
     }
 }

@@ -20,12 +20,12 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class CSSOMDescendantSelector extends AbstractCombinatorSelector {
+public class CSSOMDescendantSelector extends AbstractDescendantSelector {
     /**
      * Creates a new CSSOMDescendantSelector object.
      */
-    public CSSOMDescendantSelector(Selector parent, SimpleSelector simple) {
-	super(parent, simple);
+    public CSSOMDescendantSelector(Selector ancestor, SimpleSelector simple) {
+	super(ancestor, simple);
     }
 
     /**
@@ -40,7 +40,7 @@ public class CSSOMDescendantSelector extends AbstractCombinatorSelector {
      * Tests whether this selector matches the given element.
      */
     public boolean match(Element e, String pseudoE) {
-	ExtendedSelector p = (ExtendedSelector)getParentSelector();
+	ExtendedSelector p = (ExtendedSelector)getAncestorSelector();
 	for (Node n = e.getParentNode(); n != null; n = n.getParentNode()) {
 	    if (n.getNodeType() == Node.ELEMENT_NODE) {
 		if (n.getNodeType() == Node.ELEMENT_NODE &&
@@ -58,6 +58,6 @@ public class CSSOMDescendantSelector extends AbstractCombinatorSelector {
      * Returns a representation of the selector.
      */
     public String toString() {
-	return getParentSelector() + " " + getSimpleSelector();
+	return getAncestorSelector() + " " + getSimpleSelector();
     }
 }

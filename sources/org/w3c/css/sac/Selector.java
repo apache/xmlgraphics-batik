@@ -110,7 +110,7 @@ public interface Selector {
      * <pre class="example">
      *   E F
      * </pre>
-     * @see CombinatorSelector
+     * @see DescendantSelector
      */    
     public static final short SAC_DESCENDANT_SELECTOR		= 10;
 
@@ -120,7 +120,7 @@ public interface Selector {
      * <pre class="example">
      *   E > F
      * </pre>
-     * @see CombinatorSelector
+     * @see DescendantSelector
      */    
     public static final short SAC_CHILD_SELECTOR		= 11;
     /**
@@ -131,16 +131,9 @@ public interface Selector {
      * <pre class="example">
      *   E + F
      * </pre>
-     * @see CombinatorSelector
+     * @see SiblingSelector
      */
     public static final short SAC_DIRECT_ADJACENT_SELECTOR	= 12;
-    /**
-     * This selector matches two selectors who shared the same parent in the
-     * document tree and the element represented by the first sequence precedes
-     * (not necessarily immediately) the element represented by the second one.
-     * @see CombinatorSelector 
-     */
-    public static final short SAC_INDIRECT_ADJACENT_SELECTOR	= 13;
 
     /**
      * An integer indicating the type of <code>Selector</code>

@@ -13,7 +13,7 @@
  */
 package org.w3c.flute.parser.selectors;
 
-import org.w3c.css.sac.CombinatorSelector;
+import org.w3c.css.sac.DescendantSelector;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SimpleSelector;
 
@@ -21,7 +21,7 @@ import org.w3c.css.sac.SimpleSelector;
  * @version $Revision$
  * @author  Philippe Le Hegaret
  */
-public class ChildSelectorImpl implements CombinatorSelector {
+public class ChildSelectorImpl implements DescendantSelector {
 
     Selector       parent;
     SimpleSelector child;
@@ -45,7 +45,7 @@ public class ChildSelectorImpl implements CombinatorSelector {
     /**
      * Returns the parent selector.
      */    
-    public Selector getParentSelector() {
+    public Selector getAncestorSelector() {
 	return parent;
     }
 
