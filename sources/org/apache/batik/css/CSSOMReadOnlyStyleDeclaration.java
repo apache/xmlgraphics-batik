@@ -169,8 +169,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
      * Returns the local CSSValue.
      */
     public CSSValue getLocalPropertyCSSValue(String propertyName) {
-        String s = propertyName.toLowerCase().intern();
-	ValueEntry ve = properties.get(s);
+	ValueEntry ve = properties.get(propertyName);
         return (ve == null) ? null : ve.value;
     }
 
@@ -210,8 +209,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
      * Returns the local property origin.
      */
     public int getLocalPropertyOrigin(String propertyName) {
-        String s = propertyName.toLowerCase().intern();
-	ValueEntry ve = properties.get(s);
+	ValueEntry ve = properties.get(propertyName);
         return (ve == null) ? AUTHOR_ORIGIN : ve.getOrigin();
     }
 
@@ -251,8 +249,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
      * Returns the local priority.
      */
     public String getLocalPropertyPriority(String propertyName) {
-        String s = propertyName.toLowerCase().intern();
-	ValueEntry ve = properties.get(s);
+	ValueEntry ve = properties.get(propertyName);
         return (ve == null) ? "" : ve.getPriority();
     }
 
