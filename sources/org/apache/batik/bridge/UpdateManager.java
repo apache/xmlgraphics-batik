@@ -20,9 +20,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.batik.dom.DocumentWrapper;
-import org.apache.batik.dom.DOMImplementationWrapper;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.UpdateTracker;
