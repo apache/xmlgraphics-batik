@@ -25,6 +25,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -115,7 +116,20 @@ public class DOMUtilities extends XMLUtilities {
             w.write(n.getNodeValue());
             w.write("-->");
             break;
-        case Node.DOCUMENT_TYPE_NODE:
+        case Node.DOCUMENT_TYPE_NODE: {
+            DocumentType dt = (DocumentType)n;
+            w.write ("<!DOCTYPE "); 
+            w.write (n.getOwnerDocument().getDocumentElement().getNodeName());
+            String pubID = dt.getPublicId();
+            if (pubID != null) {
+                w.write (" PUBLIC \"" + dt.getNodeName() + "\" \"" +
+                           pubID + "\">");
+            } else {
+                String sysID = dt.getSystemId();
+                if (sysID != null) 
+                    w.write (" SYSTEM \"" + sysID + "\">");
+            }
+        }
             break;
         default:
             throw new Error("Internal error (" + n.getNodeType() + ")");
