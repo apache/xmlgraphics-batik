@@ -729,7 +729,9 @@ public class SVGConverter {
         }
 
         // Set onload
-        map.put(ImageTranscoder.KEY_EXECUTE_ONLOAD, new Boolean(executeOnload));
+        if (executeOnload) {
+            map.put(ImageTranscoder.KEY_EXECUTE_ONLOAD, new Boolean(executeOnload));
+        }
         
         return map;
     }
