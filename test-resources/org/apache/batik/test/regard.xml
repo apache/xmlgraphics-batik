@@ -19,11 +19,9 @@
             <!-- Stylesheet -->
         <arg class="java.lang.String" value="file:test-resources/org/apache/batik/test/svg/HTMLReport.xsl" />
             <!-- Ouput Directory -->
-        <arg class="java.lang.String" value="test-reports/html" />
-            <!-- Output file prefix -->
-        <arg class="java.lang.String" value="RegardResult" />
-            <!-- Output file suffix -->
-        <arg class="java.lang.String" value=".html" />
+        <arg class="java.lang.String" value="html" />
+            <!-- Output file name -->
+        <arg class="java.lang.String" value="regardReport.html" />
         </arg>
     </testReportProcessor>
 
