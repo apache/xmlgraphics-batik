@@ -69,7 +69,9 @@
              style="enable-background:new;" >
               <rect x="0" y="0" width="60" height="120" style="fill:Beige"/>
         
-    	      <use xlink:href="#uglyBlobs"  style="filter:url(#OffsetBGX)"/>
+    	      <use xlink:href="#uglyBlobs" />
+              <rect x="0" y="0" width="1" height="1"
+                      style="filter:url(#OffsetBGX)" />
 
               <rect x="0" y="0" width="60" height="120" 
                     style="fill:none; stroke:black; stroke-width:2"/>
@@ -77,7 +79,7 @@
                     style="fill:none; stroke:black; stroke-width:2"/>
               <g transform="translate(60, 135)">
                <text x="0" y="0" style="text-anchor:middle">
-                Left "moved" to right
+                Left Copied to right
                </text>
              </g>
     	  </g>
