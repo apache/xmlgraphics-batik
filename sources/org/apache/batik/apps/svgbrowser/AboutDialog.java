@@ -30,6 +30,8 @@ import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
+import org.apache.batik.Version;
+
 /**
  * A dialog showing the revision of the Batik viewer as well
  * as the list of contributors.
@@ -51,9 +53,6 @@ public class AboutDialog extends JWindow {
 
     public static final String LABEL_CONTRIBUTORS
         = "AboutDialog.label.contributors";
-
-    public static final String LABEL_DEVELOPMENT_BUILD
-        = "AboutDialog.label.development.build";
 
     /**
      * Default constructor
@@ -136,16 +135,7 @@ public class AboutDialog extends JWindow {
         //
         // Add exact revision information
         //
-        String tagName = "$Name$";
-        if (tagName.startsWith("$Name:")) {
-            tagName = tagName.substring(6, tagName.length()-1);
-        } else {
-            tagName = "";
-        }
-        
-        if(tagName.trim().intern().equals("")){
-            tagName = Resources.getString(LABEL_DEVELOPMENT_BUILD);
-        }
+        String tagName = Version.getVersion();
 
         panel.add(BorderLayout.SOUTH, new JLabel(tagName, SwingConstants.RIGHT));
 
