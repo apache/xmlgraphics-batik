@@ -220,7 +220,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public Rectangle2D getPrimitiveBounds(){
         if (primitiveBounds == null) {
             if (aci != null) {
-                primitiveBounds = textPainter.getPaintedBounds(this);
+                primitiveBounds = textPainter.getBounds2D(this);
             }
         }
         return primitiveBounds;
@@ -234,7 +234,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public Rectangle2D getGeometryBounds(){
         if (geometryBounds == null){
             if (aci != null) {
-                geometryBounds = textPainter.getBounds(this);
+                geometryBounds = textPainter.getGeometryBounds(this);
             }
         }
         return geometryBounds;
@@ -246,7 +246,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public Shape getOutline() {
         if (outline == null) {
             if (aci != null) {
-                outline = textPainter.getDecoratedShape(this);
+                outline = textPainter.getOutline(this);
             }
         }
         return outline;
@@ -409,7 +409,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
             float x = (float)p.getX();
             float y = (float)p.getY();
             TextHit textHit = layout.hitTestChar(x, y);
-            if (textHit != null && contains(p, layout.getBounds())) {
+            if (textHit != null && contains(p, layout.getBounds2D())) {
                 return true;
             }
         }

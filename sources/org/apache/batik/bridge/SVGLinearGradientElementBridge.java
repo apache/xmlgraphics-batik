@@ -125,6 +125,7 @@ public class SVGLinearGradientElementBridge
                                                SVG_Y2_ATTRIBUTE,
                                                coordSystemType,
                                                uctx);
+
 	// If x1 = x2 and y1 = y2, then the area to be painted will be painted
 	// as a single color using the color and opacity of the last gradient
 	// stop.

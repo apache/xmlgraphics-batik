@@ -684,6 +684,9 @@ public class StrokingTextPainter extends BasicTextPainter {
         Point2D visualAdvance;
         
         if (!doAdjust) {
+            // System.out.println("Adv: " + chunk.advance);
+            // System.out.println("LastBounds: " + lastBounds);
+            // System.out.println("LastMetrics.hadv: " + lastMetrics.getHorizontalAdvance());
             visualAdvance = new Point2D.Float
             ((float)(chunk.advance.getX() + lastBounds.getWidth() -
                      lastMetrics.getHorizontalAdvance()),
@@ -954,35 +957,11 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
     }
 
-
-    /**
-     * Get a Rectangle2D in userspace coords which encloses the textnode
-     * glyphs composed from an AttributedCharacterIterator.
-     */
-     protected Rectangle2D getBounds(TextNode node,
-				     boolean includeDecoration,
-				     boolean includeStrokeWidth) {
-
-         Rectangle2D bounds = getOutline(node, includeDecoration).getBounds2D();
-
-         if (includeStrokeWidth) {
-             Shape strokeOutline = getStrokeOutline(node, includeDecoration);
-
-             if (strokeOutline != null) {
-                bounds = bounds.createUnion(strokeOutline.getBounds2D());
-             }
-         }
-
-        return bounds;
-     }
-
     /**
      * Get a Shape in userspace coords which defines the textnode glyph outlines.
      * @param node the TextNode to measure
-     * @param includeDecoration whether to include text decoration
-     *            outlines.
      */
-    protected Shape getOutline(TextNode node, boolean includeDecoration) {
+    public Shape getOutline(TextNode node) {
 
         GeneralPath outline = null;
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
@@ -1008,61 +987,55 @@ public class StrokingTextPainter extends BasicTextPainter {
         }
 
         // append any decoration outlines
-        if (includeDecoration) {
+        Shape underline = getDecorationOutline
+            (textRuns, TextSpanLayout.DECORATION_UNDERLINE);
 
-            Shape underline = getDecorationOutline
-		(textRuns, TextSpanLayout.DECORATION_UNDERLINE);
-
-            Shape strikeThrough = getDecorationOutline
-		(textRuns, TextSpanLayout.DECORATION_STRIKETHROUGH);
-
-            Shape overline = getDecorationOutline
-		(textRuns, TextSpanLayout.DECORATION_OVERLINE);
-
-            if (underline != null) {
-                if (outline == null) {
-                    outline = new GeneralPath(underline);
-                } else {
-                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
-                    outline.append(underline, false);
-                }
+        Shape strikeThrough = getDecorationOutline
+            (textRuns, TextSpanLayout.DECORATION_STRIKETHROUGH);
+        
+        Shape overline = getDecorationOutline
+            (textRuns, TextSpanLayout.DECORATION_OVERLINE);
+        
+        if (underline != null) {
+            if (outline == null) {
+                outline = new GeneralPath(underline);
+            } else {
+                outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                outline.append(underline, false);
             }
-            if (strikeThrough != null) {
-                 if (outline == null) {
-                    outline = new GeneralPath(strikeThrough);
-                } else {
-                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
-                    outline.append(strikeThrough, false);
-                }
+        }
+        if (strikeThrough != null) {
+            if (outline == null) {
+                outline = new GeneralPath(strikeThrough);
+            } else {
+                outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                outline.append(strikeThrough, false);
             }
-            if (overline != null) {
-                if (outline == null) {
-                    outline = new GeneralPath(overline);
-                } else {
-                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
-                    outline.append(overline, false);
-                }
+        }
+        if (overline != null) {
+            if (outline == null) {
+                outline = new GeneralPath(overline);
+            } else {
+                outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
+                outline.append(overline, false);
             }
         }
 
         return outline;
     }
 
-   /**
-    * Get a Shape in userspace coords which defines the
-    * stroked textnode glyph outlines.
-    * @param node the TextNode to measure
-    * @param includeDecoration whether to include text decoration
-    *            outlines.
-    */
-    protected Shape getStrokeOutline(TextNode node, boolean includeDecoration) {
 
-        GeneralPath outline = null;
+    /**
+     * Get a Rectangle2D in userspace coords which encloses the textnode
+     * glyphs including stroke etc.
+     */
+     public Rectangle2D getBounds2D(TextNode node) {
         AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
 
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
 
+        Rectangle2D bounds = null;
         // for each text run, get its stroke outline and append it to the overall outline
         for (int i = 0; i < textRuns.size(); ++i) {
             Shape textRunStrokeOutline = null;
@@ -1073,69 +1046,42 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             TextSpanLayout textRunLayout = textRun.getLayout();
 
-            Stroke stroke = (Stroke) textRunACI.getAttribute
-		(GVTAttributedCharacterIterator.TextAttribute.STROKE);
-
-            Paint strokePaint = (Paint) textRunACI.getAttribute
-		(GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-
-            if (stroke != null && strokePaint != null) {
-                // this textRun is stroked
-                Shape textRunOutline = 
-		    textRunLayout.getOutline();
-                textRunStrokeOutline = 
-		    stroke.createStrokedShape(textRunOutline);
-            }
-
-            if (textRunStrokeOutline != null) {
-                if (outline == null) {
-                    outline = new GeneralPath(textRunStrokeOutline);
-                } else {
-                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
-                    outline.append(textRunStrokeOutline, false);
-                }
-            }
+            if (bounds == null)
+                bounds = textRunLayout.getBounds2D();
+            else
+                bounds = bounds.createUnion(textRunLayout.getBounds2D());
         }
 
         // append any stroked decoration outlines
-        if (includeDecoration) {
+        Shape underline = getDecorationStrokeOutline
+            (textRuns, TextSpanLayout.DECORATION_UNDERLINE);
 
-            Shape underline = getDecorationStrokeOutline
-		(textRuns, TextSpanLayout.DECORATION_UNDERLINE);
-
-            Shape strikeThrough = getDecorationStrokeOutline
-		(textRuns, TextSpanLayout.DECORATION_STRIKETHROUGH);
-
-            Shape overline = getDecorationStrokeOutline
-		(textRuns, TextSpanLayout.DECORATION_OVERLINE);
-
-            if (underline != null) {
-                if (outline == null) {
-                    outline = new GeneralPath(underline);
-                } else {
-                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
-                    outline.append(underline, false);
-                }
-            }
-            if (strikeThrough != null) {
-                 if (outline == null) {
-                    outline = new GeneralPath(strikeThrough);
-                } else {
-                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
-                    outline.append(strikeThrough, false);
-                }
-            }
-            if (overline != null) {
-                if (outline == null) {
-                    outline = new GeneralPath(overline);
-                } else {
-                    outline.setWindingRule(GeneralPath.WIND_NON_ZERO);
-                    outline.append(overline, false);
-                }
-            }
+        if (underline != null) {
+            if (bounds == null)
+                bounds = underline.getBounds2D();
+            else
+                bounds = bounds.createUnion(underline.getBounds2D());
         }
 
-        return outline;
+        Shape strikeThrough = getDecorationStrokeOutline
+            (textRuns, TextSpanLayout.DECORATION_STRIKETHROUGH);
+        if (strikeThrough != null) {
+            if (bounds == null)
+                bounds = strikeThrough.getBounds2D();
+            else
+                bounds = bounds.createUnion(strikeThrough.getBounds2D());
+        }
+
+        Shape overline = getDecorationStrokeOutline
+            (textRuns, TextSpanLayout.DECORATION_OVERLINE);
+        if (overline != null) {
+            if (bounds == null)
+                bounds = overline.getBounds2D();
+            else
+                bounds = bounds.createUnion(overline.getBounds2D());
+        }
+
+        return bounds;
     }
 
 
@@ -1388,7 +1334,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextRun textRun = (TextRun)textRuns.get(i);
             TextSpanLayout layout = textRun.getLayout();
             TextHit textHit = layout.hitTestChar((float) x, (float) y);
-            if (textHit != null && layout.getBounds().contains(x,y)) {
+            if (textHit != null && layout.getBounds2D().contains(x,y)) {
                 return new BasicTextPainter.BasicMark(node, textHit);
             }
         }

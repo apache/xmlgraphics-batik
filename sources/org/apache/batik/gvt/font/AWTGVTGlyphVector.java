@@ -57,7 +57,9 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     private boolean[] glyphVisible;
     private GVTGlyphMetrics [] glyphMetrics;
     private GeneralPath outline;
+    private Rectangle2D visualBounds;
     private Rectangle2D logicalBounds;
+    private Rectangle2D bounds2D;
     private float scaleFactor;
     private float ascent;
     private float descent;
@@ -92,7 +94,9 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         descent = lineMetrics.getDescent();
 
         outline       = null;
+        visualBounds  = null;
         logicalBounds = null;
+        bounds2D      = null;
         int numGlyphs = glyphVector.getNumGlyphs();
         glyphPositions     = new Point2D.Float  [numGlyphs+1];
         glyphTransforms    = new AffineTransform[numGlyphs];
@@ -146,7 +150,44 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     }
 
     /**
+     * Returns a tight bounds on the GylphVector including stroking.
+     */
+    public Rectangle2D getBounds2D(AttributedCharacterIterator aci) {
+        if (bounds2D != null)
+            return bounds2D;
+
+        Shape outline = null;
+
+        aci.first();
+        Paint fillP = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
+        if (fillP != null) {
+            outline = getOutline();
+            bounds2D = outline.getBounds2D();
+        }
+        
+        // check if we need to include the 
+        // outline of this glyph
+        Stroke stroke = (Stroke) aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.STROKE);
+        Paint paint = (Paint) aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+        if ((stroke != null) && (paint != null)) {
+            if (outline == null)
+                outline = getOutline();
+            Rectangle2D strokeBounds 
+                = stroke.createStrokedShape(outline).getBounds2D();
+            if (bounds2D == null)
+                bounds2D = strokeBounds;
+            else 
+                bounds2D = bounds2D.createUnion(strokeBounds);
+        }
+
+        return bounds2D;
+    }
+
+    /**
      *  Returns the logical bounds of this GlyphVector.
+     * This is a bound useful for hit detection and highlighting.
      */
     public Rectangle2D getLogicalBounds() {
         if (logicalBounds == null) {
@@ -554,14 +595,12 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         return outline;
     }
 
-    private Rectangle2D visualBounds;
-
     /**
      * Returns the visual bounds of this GlyphVector The visual bounds is the
      * tightest rectangle enclosing all non-background pixels in the rendered
      * representation of this GlyphVector.
      */
-    public Rectangle2D getVisualBounds() {
+    public Rectangle2D getGeometricBounds() {
         if (visualBounds == null) {
             Shape outline = getOutline();
             visualBounds = outline.getBounds2D();
@@ -583,6 +622,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         outline       = null;
         visualBounds  = null;
         logicalBounds = null;
+        bounds2D      = null;
         float shiftLeft = 0;
         int i=0;
         for (; i < getNumGlyphs(); i++) {
@@ -617,9 +657,11 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     public void setGlyphPosition(int glyphIndex, Point2D newPos) {
         glyphPositions[glyphIndex] =
             new Point2D.Float((float)newPos.getX(), (float)newPos.getY());
-        outline = null;
+        outline       = null;
+        visualBounds  = null;
         logicalBounds = null;
-        visualBounds = null;
+        bounds2D      = null;
+
         if (glyphIndex != getNumGlyphs()) {
             glyphVisualBounds [glyphIndex] = null;
             glyphLogicalBounds[glyphIndex] = null;
@@ -633,9 +675,11 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      */
     public void setGlyphTransform(int glyphIndex, AffineTransform newTX) {
         glyphTransforms[glyphIndex] = newTX;
-        outline = null;
+        outline       = null;
+        visualBounds  = null;
         logicalBounds = null;
-        visualBounds = null;
+        bounds2D      = null;
+
         glyphVisualBounds [glyphIndex] = null;
         glyphLogicalBounds[glyphIndex] = null;
         glyphOutlines     [glyphIndex] = null;
@@ -650,8 +694,10 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             return;
         glyphVisible[glyphIndex] = visible;
         outline       = null;
-        logicalBounds = null;
         visualBounds  = null;
+        logicalBounds = null;
+        bounds2D      = null;
+
         glyphVisualBounds [glyphIndex] = null;
         glyphLogicalBounds[glyphIndex] = null;
         glyphOutlines     [glyphIndex] = null;

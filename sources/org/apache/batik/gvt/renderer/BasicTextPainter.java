@@ -85,100 +85,20 @@ public abstract class BasicTextPainter implements TextPainter {
 	}
     }
 
-    /**
-     * Gets a Rectangle2D in userspace coords which encloses the
-     * textnode glyphs composed from an AttributedCharacterIterator.
-     *
-     * @param node the TextNode to measure */
-     public Rectangle2D getBounds(TextNode node) {
-         return getBounds(node, false, false);
-     }
 
     /**
-     * Gets a Rectangle2D in userspace coords which encloses the
-     * textnode glyphs composed from an AttributedCharacterIterator,
-     * inclusive of glyph decoration (underline, overline,
-     * strikethrough).
-     *
-     * @param node the TextNode to measure */
-     public Rectangle2D getDecoratedBounds(TextNode node) {
-         return getBounds(node, true, false);
-     }
-
-    /**
-     * Gets a Rectangle2D in userspace coords which encloses the textnode glyphs
-     * (as-painted, inclusive of decoration and stroke, but exclusive of
-     * filters, etc.) composed from an AttributedCharacterIterator.
-     *
-     * @param node the TextNode to measure 
-     */
-     public Rectangle2D getPaintedBounds(TextNode node) {
-         return getBounds(node, true, true);
-     }
-
-    /**
-     * Gets a Shape in userspace coords which defines the textnode glyph
-     * outlines.
-     *
+     * Get a Rectangle2D in userspace coords which encloses the textnode
+     * glyphs just including the geometry info.
      * @param node the TextNode to measure
      */
-    public Shape getShape(TextNode node) {
-        return getOutline(node, false);
+    public Rectangle2D getGeometryBounds(TextNode node) {
+        return getOutline(node).getBounds2D();
     }
-    
-    /**
-     * Gets a Shape in userspace coords which defines the decorated textnode
-     * glyph outlines.
-     *
-     * @param node the TextNode to measure 
-     */
-    public Shape getDecoratedShape(TextNode node) {
-	return getOutline(node, true);
-    }
-
-    // ------------------------------------------------------------------------
-    // Abstract methods
-    // ------------------------------------------------------------------------
-
-    /**
-     * Gets a Rectangle2D in userspace coords which encloses the textnode
-     * glyphs composed from an AttributedCharacterIterator.
-     *
-     * @param node the TextNode to measure
-     * @param includeDecoration whether to include text decoration in bounds
-     * computation.
-     * @param includeStrokeWidth whether to include the effect of stroke width
-     * in bounds computation.  
-     */
-     protected abstract Rectangle2D getBounds(TextNode node,
-					      boolean includeDecoration,
-					      boolean includeStrokeWidth);
-
-    /**
-     * Gets a Shape in userspace coords which defines the textnode glyph
-     * outlines.
-     *
-     * @param node the TextNode to measure
-     * @param includeDecoration whether to include text decoration outlines
-     */
-    protected abstract Shape getOutline(TextNode node, 
-					boolean includeDecoration);
-
-    /**
-     * Gets a Shape in userspace coords which defines the stroked textnode glyph
-     * outlines.
-     *
-     * @param node the TextNode to measure
-     * @param includeDecoration whether to include text decoration outlines 
-     */
-    protected abstract Shape getStrokeOutline(TextNode node,
-					      boolean includeDecoration);
 
     /**
      * Returns the mark for the specified parameters.
      */
     protected abstract Mark hitTest(double x, double y, TextNode node);
-
 
     // ------------------------------------------------------------------------
     // Inner class - implementation of the Mark interface

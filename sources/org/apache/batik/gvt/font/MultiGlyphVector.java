@@ -308,14 +308,33 @@ public class MultiGlyphVector implements GVTGlyphVector {
     }
 
     /**
-     * Returns the visual bounds of this GlyphVector The visual bounds is the
-     * tightest rectangle enclosing all non-background pixels in the rendered
-     * representation of this GlyphVector.
+     * Returns the  bounds of this GlyphVector. This includes
+     * stroking effects.
      */
-    public Rectangle2D getVisualBounds() {
+    public Rectangle2D getBounds2D(AttributedCharacterIterator aci) {
+        Rectangle2D ret = null;
+        int begin = aci.getBeginIndex();
+        for (int idx=0; idx<gvs.length; idx++) {
+            GVTGlyphVector gv = gvs[idx];
+            int end = gv.getCharacterCount(0, gv.getNumGlyphs())+1;
+            Rectangle2D b = gvs[idx].getBounds2D
+                (new AttributedCharacterSpanIterator(aci, begin, end));
+            if (ret == null) ret = b;
+            else ret = ret.createUnion(b);
+            begin = end;
+        }
+        return ret;
+    }
+
+    /**
+     * Returns the geometric bounds of this GlyphVector. The geometric
+     * bounds is the bounds of the geometry of the glyph vector,
+     * disregarding stroking.
+     */
+    public Rectangle2D getGeometricBounds() {
         Rectangle2D ret = null;
         for (int idx=0; idx<gvs.length; idx++) {
-            Rectangle2D b = gvs[idx].getVisualBounds();
+            Rectangle2D b = gvs[idx].getGeometricBounds();
             if (ret == null) ret = b;
             else ret = ret.createUnion(b);
         }

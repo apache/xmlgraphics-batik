@@ -399,7 +399,7 @@ public class BridgeEventSupport implements SVGConstants {
                         float x = (float)coords.getX();
                         float y = (float)coords.getY();
                         TextHit textHit = layout.hitTestChar(x, y);
-                        if (textHit != null && layout.getBounds().contains(x, y)) {
+                        if (textHit != null && layout.getBounds2D().contains(x, y)) {
                             Object delimiter = aci.getAttribute
                                 (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
                             if (delimiter instanceof Element) {

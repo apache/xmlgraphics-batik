@@ -47,6 +47,7 @@ public class Glyph {
     private float kernScale;
 
     private Shape outline; // cache the glyph outline
+    private Rectangle2D bounds; // cache the glyph bounds
 
     private Paint fillPaint;
     private Paint strokePaint;
@@ -97,6 +98,7 @@ public class Glyph {
         this.glyphCode = glyphCode;
         this.position = new Point2D.Float(0,0);
         this.outline = null;
+        this.bounds = null;
 
 
         this.fillPaint = fillPaint;
@@ -218,6 +220,7 @@ public class Glyph {
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
         outline = null;
+        bounds = null;
     }
 
     /**
@@ -237,6 +240,7 @@ public class Glyph {
     public void setPosition(Point2D position) {
         this.position = position;
         outline = null;
+        bounds = null;
     }
 
     /**
@@ -247,9 +251,9 @@ public class Glyph {
     public GVTGlyphMetrics getGlyphMetrics() {
         if (metrics == null) {
             metrics = new GVTGlyphMetrics(getHorizAdvX(), 
-					  getVertAdvY(),
-                                          getBounds(), 
-					  GlyphMetrics.COMPONENT);
+                                          getVertAdvY(),
+                                          getGeometryBounds(), 
+                                          GlyphMetrics.COMPONENT);
         }
         return metrics;
     }
@@ -266,31 +270,50 @@ public class Glyph {
     public GVTGlyphMetrics getGlyphMetrics(float hkern, float vkern) {
         return new GVTGlyphMetrics(getHorizAdvX() - (hkern * kernScale),
                                    getVertAdvY() - (vkern * kernScale),
-                                   getBounds(), GlyphMetrics.COMPONENT);
+                                   getGeometryBounds(), 
+                                   GlyphMetrics.COMPONENT);
 
     }
 
-    public Rectangle2D getBounds() {
-
-        if (dShape != null && glyphChildrenNode == null) {
-            return dShape.getBounds2D();
-        }
-        if (glyphChildrenNode != null && dShape == null) {
-            return glyphChildrenNode.getOutline().getBounds2D();
-        }
-
-        if (dShape != null && glyphChildrenNode != null) {
-            Rectangle2D dBounds = dShape.getBounds2D();
-            Rectangle2D childrenBounds = 
-		glyphChildrenNode.getOutline().getBounds2D();
-
-            return dBounds.createUnion(childrenBounds);
-        } else {
-	    return new Rectangle2D.Double(0,0,0,0);
-	}
+    public Rectangle2D getGeometryBounds() {
+        return getOutline().getBounds2D();
     }
 
+    public Rectangle2D getBounds2D() {
+        if (bounds != null) 
+            return bounds;
 
+        AffineTransform tr = 
+            AffineTransform.getTranslateInstance(position.getX(), 
+                                                 position.getY());
+        if (transform != null) {
+            tr.concatenate(transform);
+        }
+
+        Rectangle2D bounds = null;
+        if (dShape != null) {
+            if (fillPaint != null) 
+                bounds = tr.createTransformedShape(dShape).getBounds2D();
+
+            if ((stroke != null) && (strokePaint != null)) {
+                Shape s = stroke.createStrokedShape(dShape);
+                Rectangle2D r = tr.createTransformedShape(s).getBounds2D();
+                if (bounds == null) bounds = r;
+                else                bounds = r.createUnion(bounds);
+            }
+        }
+
+        if (glyphChildrenNode != null) {
+            Rectangle2D r = glyphChildrenNode.getTransformedBounds(tr);
+            if (bounds == null) bounds = r;
+            else                bounds = r.createUnion(bounds);
+        }
+        if (bounds == null) 
+            bounds = new Rectangle2D.Double
+                (position.getX(), position.getY(), 0, 0);
+
+        return bounds;
+    }
 
     /**
      * Returns the outline of this glyph. This will be positioned correctly and
