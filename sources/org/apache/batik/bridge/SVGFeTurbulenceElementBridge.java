@@ -121,6 +121,9 @@ public class SVGFeTurbulenceElementBridge
         // update the filter Map
         updateFilterMap(filterElement, turbulenceRable, filterMap);
 
+        // handle the 'color-interpolation-filters' property
+        handleColorInterpolationFilters(turbulenceRable, filterElement);
+
         return turbulenceRable;
     }
 
