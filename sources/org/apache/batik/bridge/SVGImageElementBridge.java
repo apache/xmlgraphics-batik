@@ -153,7 +153,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             pDocURL = new ParsedURL(docURL);
 
         UserAgent userAgent = ctx.getUserAgent();
-        userAgent.checkLoadExternalResource(purl, pDocURL);
+
+        try {
+            userAgent.checkLoadExternalResource(purl, pDocURL);
+        } catch (SecurityException ex) {
+            throw new BridgeException(e, ERR_URI_UNSECURE,
+                                      new Object[] {uriStr});
+        }
 
         DocumentLoader loader = ctx.getDocumentLoader();
         ImageTagRegistry reg = ImageTagRegistry.getRegistry();
@@ -172,9 +178,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                 }
             } catch (BridgeException ex) {
                 throw ex;
-            } catch (SecurityException ex) {
-                throw new BridgeException(e, ERR_URI_UNSECURE,
-                                          new Object[] {uriStr});
             } catch (Exception ex) {
                 /* Nothing to do */
             } 
@@ -193,7 +196,13 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
          * it hides the mark/reset methods so only we get to
          * use them.
          */
-        ProtectedStream reference = openStream(purl);
+        ProtectedStream reference = null;
+        try {
+            reference = openStream(purl);
+        } catch (SecurityException ex) {
+            throw new BridgeException(e, ERR_URI_UNSECURE,
+                                      new Object[] {uriStr});
+        }
 
         {
             /**
@@ -215,8 +224,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             reference.retry();
         } catch (IOException ioe) {
             // Couldn't reset stream so reopen it.
-            System.err.println("Reopening");
-            ioe.printStackTrace();
             reference = openStream(purl);
         }
 
@@ -240,8 +247,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             reference.retry();
         } catch (IOException ioe) {
             // Couldn't reset stream so reopen it.
-            System.err.println("Reopening");
-            ioe.printStackTrace();
             reference = openStream(purl);
         }
 
