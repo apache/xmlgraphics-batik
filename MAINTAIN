@@ -88,7 +88,7 @@ For creating a distribution the following steps must be done:
 
         http://nagoya.apache.org/wiki/apachewiki.cgi?SigningReleases
 
-    e.g. gpg --output batik-1.5.zip.asc --detach-sig --armor batik-1.5.zip
+    e.g. gpg --detach-sig --armor --output batik-1.5.zip.asc batik-1.5.zip
          md5 batik-1.5.zip > batik-1.5.zip.md5
 
 11) Use 'scp' to copy  the distributions (with md5 hashes, and signature 
