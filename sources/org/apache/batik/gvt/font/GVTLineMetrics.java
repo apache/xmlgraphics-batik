@@ -33,7 +33,12 @@ public class GVTLineMetrics {
     protected float overlineOffset;
     protected float overlineThickness;
 
-
+    /**
+     * Constructs a GVTLineMetrics object based on the specified line metrics.
+     *
+     * @param lineMetrics The lineMetrics object that this metrics object will
+     * be based upon.
+     */
     public GVTLineMetrics(LineMetrics lineMetrics) {
 
         this.ascent = lineMetrics.getAscent();
@@ -51,6 +56,15 @@ public class GVTLineMetrics {
         this.overlineThickness = this.underlineThickness;
     }
 
+
+    /**
+     * Constructs a GVTLineMetrics object based on the specified line metrics
+     * with a scale factor applied.
+     *
+     * @param lineMetrics The lineMetrics object that this metrics object will
+     * be based upon.
+     * @param scaleFactor The scale factor to apply to all metrics.
+     */
     public GVTLineMetrics(LineMetrics lineMetrics, float scaleFactor) {
 
         this.ascent = lineMetrics.getAscent() * scaleFactor;
@@ -69,6 +83,9 @@ public class GVTLineMetrics {
     }
 
 
+    /**
+     * Constructs a GVTLineMetrics object with the specified attributes.
+     */
     public GVTLineMetrics(float ascent, int baselineIndex, float[] baselineOffsets,
                           float descent, float height, float leading, int numChars,
                           float strikethroughOffset, float strikethroughThickness,
@@ -169,10 +186,16 @@ public class GVTLineMetrics {
         return underlineThickness;
     }
 
+    /**
+     * Returns the position of the overline relative to the baseline.
+     */
     public float getOverlineOffset() {
         return overlineOffset;
     }
 
+    /**
+     * Returns the thickness of the overline.
+     */
     public float getOverlineThickness() {
         return overlineThickness;
     }
