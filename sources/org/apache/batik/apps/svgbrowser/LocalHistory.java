@@ -164,10 +164,11 @@ public class LocalHistory {
         state = STABLE_STATE;
         if (++currentURI < visitedURIs.size()) {
             if (!visitedURIs.get(currentURI).equals(uri)) {
-                for (int i = currentURI + 1; i + index < menu.getItemCount(); i++) {
-                    JMenuItem mi = menu.getItem(index + i - 1);
+                int len = menu.getItemCount();
+                for (int i = len - 1; i >= index + currentURI + 1; i--) {
+                    JMenuItem mi = menu.getItem(i);
                     group.remove(mi);
-                    menu.remove(index + i - 1);
+                    menu.remove(i);
                 }
                 visitedURIs = visitedURIs.subList(0, currentURI + 1);
             }
@@ -176,6 +177,13 @@ public class LocalHistory {
             menu.remove(index + currentURI);
             visitedURIs.set(currentURI, uri);
         } else {
+            if (visitedURIs.size() >= 15) {
+                visitedURIs.remove(0);
+                JMenuItem mi = menu.getItem(index);
+                group.remove(mi);
+                menu.remove(index);
+                currentURI--;
+            }
             visitedURIs.add(uri);
         }
 
