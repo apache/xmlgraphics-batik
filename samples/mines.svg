@@ -17,7 +17,7 @@
 <!-- @version $Id$    -->
 <!-- ====================================================================== -->
 
-<svg id="body" width="450" height="500" viewBox="0 0 450 500"
+<svg width="450" height="500" viewBox="0 0 450 500"
      xmlns="http://www.w3.org/2000/svg" 
      xmlns:xlink="http://www.w3.org/1999/xlink">
 
@@ -309,8 +309,6 @@
       ]]>
     </script>
 
-   <title>Implementation of Minesweeper in SVG</title>
-   	
    <defs>
          <radialGradient id="bombGrad" gradientUnits="userSpaceOnUse" 
 	                 cx="5" cy="6.5" fx="4" fy="5" r="2.5">
@@ -318,75 +316,56 @@
 	    <stop offset="20%" stop-color="#888"/>
 	    <stop offset="100%" stop-color="#000"/>
 	 </radialGradient>
-      <g id="empty">
-         <path fill="#AAA" stroke="#DDD" stroke-width="0.5" 
-	       d="M0.25,0.25 h9.5 v9.5 h-9.5 v-9.5"/>
-      </g>
-      <g id="blank">
-         <rect fill="#AAA" stroke="none" width="10" height="10"/>
- 	 <path fill="#DDD" stroke="none"
- 	       d="M0,0 h10 l-1,1 h-8 v8 l-1,1 v-10"/>
- 	 <path fill="#888" stroke="none"
- 	       d="M10,10 h-10 l1,-1 h8 v-8 l1,-1 v10"/>
-      </g>
-      <g id="square0">/
-         <use xlink:href="#empty"/>
-      </g>
-      <g id="square1">/
-         <use xlink:href="#empty"/>
-	 <text x="5" y="8" text-anchor="middle" font-size="8" fill="#008"
-	 >1</text>
-      </g>
-      <g id="square2">
-         <use xlink:href="#empty"/>
-	 <text x="5" y="8" text-anchor="middle" font-size="8" fill="#00C"
-	 >2</text>
-      </g>
-      <g id="square3">
-         <use xlink:href="#empty"/>
-	 <text x="5" y="8" text-anchor="middle" font-size="8" fill="#40F"
-	 >3</text>
-      </g>
-      <g id="square4">
-         <use xlink:href="#empty"/>
-	 <text x="5" y="8" text-anchor="middle" font-size="8" fill="#80C"
-	 >4</text>
-      </g>
-      <g id="square5">
-         <use xlink:href="#empty"/>
-	 <text x="5" y="8" text-anchor="middle" font-size="8" fill="#C0C"
-	 >5</text>
-      </g>
-      <g id="square6">
-         <use xlink:href="#empty"/>
-	 <text x="5" y="8" text-anchor="middle" font-size="8" fill="#F08"
-	 >6</text>
-      </g>
-      <g id="square7">
-         <use xlink:href="#empty"/>
-	 <text x="5" y="8" text-anchor="middle" font-size="8" fill="#F04"
-	 >7</text>
-      </g>
-      <g id="square8">
-         <use xlink:href="#empty"/>
-	 <text x="5" y="8" text-anchor="middle" font-size="8" fill="#F00"
-	 >8</text>
-      </g>
+      <path id="empty" style="fill:#AAA; stroke:#DDD; stroke-width:0.5;" 
+	    d="M0.25,0.25 h9.5 v9.5 h-9.5 v-9.5"/>
 
-      <g id="bomb">
-         <use xlink:href="#empty"/>
-	 <rect fill="#000" x="4" y="3" width="2" height="2"/>
-	 <circle fill="url(#bombGrad)" cx="5" cy="6.5" r="2.5"/>
-	 <path fill="none" stroke="#000" stroke-width="0.3"
-	       d="M5,3 c0,-1.5 1.5,-1.5 1.5,0 c0,1.5 1.5,1.5  1.5,0"/>
-      </g>
+      <g id="blank"
+        ><rect style="fill:#AAA" width="10" height="10"
+        /><path style="fill:#DDD"
+ 	        d="M0,0 h10 l-1,1 h-8 v8 l-1,1 v-10"
+        /><path style="fill:#888"
+ 	        d="M10,10 h-10 l1,-1 h8 v-8 l1,-1 v10"
+      /></g>
 
-      <g id="flag">
-         <use xlink:href="#blank"/>
-	 <path d="M3.5,2 h.5 v6.5 h-1 l.5,-6.5"/>
-	 <path fill="crimson" d="M4,2 l4,1.5 l-4,1.5 z"/>
-      </g>
-      
+      <use id="square0" xlink:href="#empty"/>
+      <g id="square1" style="text-anchor:middle; font-size:8;"
+          ><use xlink:href="#empty"
+         /><text x="5" y="8" fill="#008">1</text></g>
+      <g id="square2" style="text-anchor:middle; font-size:8;"
+          ><use xlink:href="#empty"
+         /><text x="5" y="8" fill="#00C">2</text></g>
+      <g id="square3" style="text-anchor:middle; font-size:8;"
+          ><use xlink:href="#empty"
+         /><text x="5" y="8" fill="#40F">3</text></g>
+      <g id="square4" style="text-anchor:middle; font-size:8;"
+          ><use xlink:href="#empty"
+         /><text x="5" y="8" fill="#80C">4</text></g>
+      <g id="square5" style="text-anchor:middle; font-size:8;"
+          ><use xlink:href="#empty"
+         /><text x="5" y="8" fill="#C0C">5</text></g>
+      <g id="square6" style="text-anchor:middle; font-size:8;"
+          ><use xlink:href="#empty"
+         /><text x="5" y="8" fill="#F08">6</text></g>
+      <g id="square7" style="text-anchor:middle; font-size:8;"
+          ><use xlink:href="#empty"
+         /><text x="5" y="8" fill="#F04">7</text></g>
+      <g id="square8" style="text-anchor:middle; font-size:8;"
+          ><use xlink:href="#empty"
+         /><text x="5" y="8" fill="#F00">8</text></g>
+
+      <g id="bomb"
+         ><use    xlink:href="#empty"
+        /><rect   fill="#000" x="4" y="3" width="2" height="2"
+        /><circle fill="url(#bombGrad)" cx="5" cy="6.5" r="2.5"
+        /><path   fill="none" stroke="#000" stroke-width="0.3"
+	          d="M5,3 c0,-1.5 1.5,-1.5 1.5,0 c0,1.5 1.5,1.5  1.5,0"
+    /></g>
+
+      <g id="flag"
+         ><use xlink:href="#blank"
+        /><path d="M3.5,2 h.5 v6.5 h-1 l.5,-6.5"
+        /><path fill="crimson" d="M4,2 l4,1.5 l-4,1.5 z"
+    /></g>
    </defs>   
 
    <g id="body">
