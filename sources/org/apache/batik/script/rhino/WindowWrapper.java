@@ -121,11 +121,11 @@ public class WindowWrapper extends ImporterTopLevel {
             FunctionWrapper fw;
             fw = new FunctionWrapper(interp, (Function)args[0],
                                      EMPTY_ARGUMENTS);
-            return window.setInterval(fw, to);
+            return Context.toObject(window.setInterval(fw, to), thisObj);
         }
         String script =
 	  (String)Context.toType(args[0], String.class);
-        return window.setInterval(script, to);
+        return Context.toObject(window.setInterval(script, to), thisObj);
     }
 
     /**
@@ -148,11 +148,11 @@ public class WindowWrapper extends ImporterTopLevel {
             FunctionWrapper fw;
             fw = new FunctionWrapper(interp, (Function)args[0],
                                      EMPTY_ARGUMENTS);
-            return window.setTimeout(fw, to);
+            return Context.toObject(window.setTimeout(fw, to), thisObj);
         }
         String script =
             (String)Context.toType(args[0], String.class);
-        return window.setTimeout(script, to);
+        return Context.toObject(window.setTimeout(script, to), thisObj);
     }
 
     /**
@@ -203,13 +203,14 @@ public class WindowWrapper extends ImporterTopLevel {
         AccessControlContext acc =
             ((RhinoInterpreter)window.getInterpreter()).getAccessControlContext();
 
-        return AccessController.doPrivileged( new PrivilegedAction() {
+        Object ret = AccessController.doPrivileged( new PrivilegedAction() {
                 public Object run() {
                     return window.parseXML
                         ((String)Context.toType(args[0], String.class),
                          (Document)Context.toType(args[1], Document.class));
                 }
             }, acc);
+        return Context.toObject(ret, thisObj);
     }
 
     /**
@@ -281,7 +282,7 @@ public class WindowWrapper extends ImporterTopLevel {
     /**
      * Wraps the 'confirm' method of the Window interface.
      */
-    public static boolean confirm(Context cx,
+    public static Object confirm(Context cx,
                                   Scriptable thisObj,
                                   Object[] args,
                                   Function funObj)
@@ -291,15 +292,18 @@ public class WindowWrapper extends ImporterTopLevel {
         if (len >= 1) {
             String message =
                 (String)Context.toType(args[0], String.class);
-            return window.confirm(message);
+            if (window.confirm(message))
+                return Context.toObject(Boolean.TRUE, thisObj);
+            else
+                return Context.toObject(Boolean.FALSE, thisObj);
         }
-        return false;
+        return Context.toObject(Boolean.FALSE, thisObj);
     }
 
     /**
      * Wraps the 'prompt' method of the Window interface.
      */
-    public static String prompt(Context cx,
+    public static Object prompt(Context cx,
                                 Scriptable thisObj,
                                 Object[] args,
                                 Function funObj)
@@ -308,19 +312,19 @@ public class WindowWrapper extends ImporterTopLevel {
         Window window = ((RhinoInterpreter.ExtendedContext)cx).getWindow();
         switch (len) {
         case 0:
-            return "";
+            return Context.toObject("", thisObj);
 
         case 1:
             String message =
                 (String)Context.toType(args[0], String.class);
-            return window.prompt(message);
+            return Context.toObject(window.prompt(message), thisObj);
 
         default:
             message =
                 (String)Context.toType(args[0], String.class);
             String defVal =
                 (String)Context.toType(args[1], String.class);
-            return window.prompt(message, defVal);
+            return Context.toObject(window.prompt(message, defVal), thisObj);
         }
     }
 

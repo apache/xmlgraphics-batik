@@ -60,7 +60,8 @@
 
   <svg width="800" height="600" viewBox="0 0 800 600" 
     xmlns="http://www.w3.org/2000/svg" 
-    xmlns:xlink="http://www.w3.org/1999/xlink">
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    onload="loadHandler(evt)">
 
     <script language="text/ecmascript" xlink:href="script/util.js"/>
     <script language="text/ecmascript" xlink:href="script/board.js"/>
@@ -73,6 +74,7 @@
     var cg = document.getElementById("cards");
     var dragGroup = document.getElementById("drag");
     var winGroup = document.getElementById("win");
+    var root     = document.getRootElement();
 
     var BOARD = new Board(cg, dragGroup);
     BOARD.setNotifyMoveDone(solitareMoveDone);
@@ -86,8 +88,30 @@
     var pileUp, pileDown;
     var dealUp, dealDown;
 
+  function loadHandler(evt) {
+     getURL("cards/default.svg", setupCards);  
+  }
+  
+  function setupCards(result) {
+     if (!result.content) 
+	return;
+     var doc = parseXML(result.content, document);
+     var fc;
+     for (fc=doc.firstChild; fc; fc = fc.nextSibling) {
+	if (fc.nodeName == "svg") break;
+     }
+     if (fc.nodeName != "svg") return;
+     for (fc=fc.firstChild; fc; fc = fc.nextSibling) {
+	if (fc.nodeName == "defs") break;
+     }
+     if (fc.nodeName != "defs") return;
+     root.appendChild(fc);
+     init();
+  }
+	
+
     function init() {
-      var deck = new Deck(document, 1, "cards/default.svg", 75, 105);
+      var deck = new Deck(document, 1, "", 75, 105);
       deck.shuffle();
       for (var i=0; i<4; i++) {
         DECK_PILES[i].setDragCheck(deckDragCheck);
@@ -131,7 +155,6 @@
         dealUp.addCard(deck.dealCard(i==2));
       }
     }
-    init();
 
 var DOUBLE_CLICK_TGT;
 var DOUBLE_CLICK_X;
