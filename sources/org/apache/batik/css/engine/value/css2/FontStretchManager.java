@@ -96,11 +96,11 @@ public class FontStretchManager extends IdentifierManager {
         if (value == ValueConstants.NARROWER_VALUE) {
             sm.putParentRelative(idx, true);
 
-            Element p = CSSEngine.getParentCSSStylableElement(elt);
+            CSSStylableElement p = CSSEngine.getParentCSSStylableElement(elt);
             if (p == null) {
                 return ValueConstants.SEMI_CONDENSED_VALUE;
             }
-            Value v = engine.getComputedStyle(elt, pseudo, idx);
+            Value v = engine.getComputedStyle(p, pseudo, idx);
             if (v == ValueConstants.NORMAL_VALUE) {
                 return ValueConstants.SEMI_CONDENSED_VALUE;
             }
@@ -129,11 +129,11 @@ public class FontStretchManager extends IdentifierManager {
         } else if (value == ValueConstants.WIDER_VALUE) {
             sm.putParentRelative(idx, true);
 
-            Element p = CSSEngine.getParentCSSStylableElement(elt);
+            CSSStylableElement p = CSSEngine.getParentCSSStylableElement(elt);
             if (p == null) {
                 return ValueConstants.SEMI_CONDENSED_VALUE;
             }
-            Value v = engine.getComputedStyle(elt, pseudo, idx);
+            Value v = engine.getComputedStyle(p, pseudo, idx);
             if (v == ValueConstants.NORMAL_VALUE) {
                 return ValueConstants.SEMI_EXPANDED_VALUE;
             }
