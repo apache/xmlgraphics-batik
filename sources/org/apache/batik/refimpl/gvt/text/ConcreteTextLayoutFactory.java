@@ -8,10 +8,13 @@
 
 package org.apache.batik.refimpl.gvt.text;
 
+import java.util.Set;
+import java.util.HashSet;
 import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
 import java.text.AttributedCharacterIterator;
 
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextSpanLayout;
 import org.apache.batik.gvt.text.TextLayoutFactory;
 
@@ -31,8 +34,19 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
      * AttributedCharacterIterator.
      * @param aci the character iterator to be laid out
      */
-    public TextSpanLayout createTextLayout(AttributedCharacterIterator aci, 
+    public TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
                                                 FontRenderContext frc) {
-        return new TextLayoutAdapter(new TextLayout(aci, frc));
+        Set keys = aci.getAllAttributeKeys();
+        Set glyphPositionKeys = new HashSet();
+        glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.X);
+        glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.Y);
+        glyphPositionKeys.add(
+                       GVTAttributedCharacterIterator.TextAttribute.ROTATION);
+        glyphPositionKeys.retainAll(keys);
+        if (glyphPositionKeys.isEmpty()) {
+            return new TextLayoutAdapter(new TextLayout(aci, frc), aci);
+        } else {
+            return new GlyphLayout(aci, frc);
+        }
     }
 }

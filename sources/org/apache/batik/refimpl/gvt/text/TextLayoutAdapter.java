@@ -10,10 +10,15 @@ package org.apache.batik.refimpl.gvt.text;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.BasicStroke;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.font.TextLayout;
+import java.awt.font.TextAttribute;
 import java.awt.font.TextHitInfo;
+import java.text.AttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextSpanLayout;
 import org.apache.batik.gvt.text.TextHit;
 
@@ -29,9 +34,11 @@ import org.apache.batik.gvt.text.TextHit;
 public class TextLayoutAdapter implements TextSpanLayout {
 
     private TextLayout layout;
+    private AttributedCharacterIterator aci;
 
-    public TextLayoutAdapter(TextLayout layout) {
+    public TextLayoutAdapter(TextLayout layout, AttributedCharacterIterator aci) {
         this.layout = layout;
+        this.aci = aci;
     }
 
     /**
@@ -55,6 +62,29 @@ public class TextLayoutAdapter implements TextSpanLayout {
     }
 
     /**
+     * Returns the outline of the specified decorations on the glyphs,
+     * transformed by an AffineTransform.
+     * @param decorationType an integer indicating the type(s) of decorations
+     *     included in this shape.  May be the result of "OR-ing" several
+     *     values together:
+     * e.g. <tt>DECORATION_UNDERLINE | DECORATION_STRIKETHROUGH</tt>
+     * @param t an AffineTransform to apply to the outline before returning it.
+     */
+    public Shape getDecorationOutline(int decorationType, AffineTransform t) {
+        GeneralPath g = new GeneralPath();
+        if ((decorationType & DECORATION_UNDERLINE) != 0) {
+             g.append(getUnderlineShape(aci, layout), false);
+        }
+        if ((decorationType & DECORATION_STRIKETHROUGH) != 0) {
+             g.append(getStrikethroughShape(aci, layout), false);
+        }
+        if ((decorationType & DECORATION_OVERLINE) != 0) {
+             g.append(getOverlineShape(aci, layout), false);
+        }
+        return t.createTransformedShape(g);
+    }
+
+    /**
      * Returns the rectangular bounds of the completed glyph layout.
      */
     public Rectangle2D getBounds() {
@@ -62,9 +92,19 @@ public class TextLayoutAdapter implements TextSpanLayout {
     }
 
     /**
+     * Returns the rectangular bounds of the completed glyph layout.
+     */
+    public Rectangle2D getDecoratedBounds() {
+        Rectangle2D dbounds = getDecorationOutline(
+          DECORATION_UNDERLINE|DECORATION_OVERLINE|DECORATION_STRIKETHROUGH,
+                     new AffineTransform()).getBounds2D();
+       return dbounds.createUnion(getBounds());
+    }
+
+    /**
      * Returns the dimension of the completed glyph layout in the
      * primary text advance direction (e.g. width, for RTL or LTR text).
-     * (This is the dimension that should be used for positioning 
+     * (This is the dimension that should be used for positioning
      * adjacent layouts.)
      */
     public float getAdvance() {
@@ -84,7 +124,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
     /**
      * Perform hit testing for coordinate at x, y.
      * @return a TextHit object encapsulating the character index for
-     *     successful hits and whether the hit is on the character 
+     *     successful hits and whether the hit is on the character
      *     leading edge.
      * @param x the x coordinate of the point to be tested.
      * @param y the y coordinate of the point to be tested.
@@ -94,24 +134,100 @@ public class TextLayoutAdapter implements TextSpanLayout {
         return new TextHit(hit.getCharIndex(), hit.isLeadingEdge());
     }
 
+    public boolean isVertical() {
+        return layout.isVertical();
+    }
+
     public int getCharacterCount() {
         return layout.getCharacterCount();
     }
 
-    public float getAscent() {
-        return layout.getAscent();
+//protected
+
+    /**
+     * Returns a shape describing the overline decoration for a given ACI.
+     * Does not rely on TextLayout's
+     * internal strikethrough but computes it manually.
+     */
+    protected Shape getOverlineShape(AttributedCharacterIterator runaci,
+                                          TextLayout layout) {
+        double y = layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE] -
+                layout.getAscent();
+        Stroke overlineStroke =
+            new BasicStroke(getDecorationThickness(runaci, layout));
+        return overlineStroke.createStrokedShape(
+                           new java.awt.geom.Line2D.Double(
+                           0f, y,
+                           layout.getAdvance(), y));
     }
 
-    public float getDescent() {
-        return layout.getDescent();
+    /**
+     * Returns a shape describing the strikethrough line for a given ACI.
+     * Does not rely on TextLayout's
+     * internal strikethrough but computes it manually.
+     */
+    protected Shape getUnderlineShape(AttributedCharacterIterator runaci,
+                                          TextLayout layout) {
+        double y = (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
+                        + layout.getDescent())/2;
+        Stroke underlineStroke =
+            new BasicStroke(getDecorationThickness(runaci, layout));
+
+        return underlineStroke.createStrokedShape(
+                           new java.awt.geom.Line2D.Double(
+                           0f, y,
+                           layout.getAdvance(), y));
     }
 
-    public float[] getBaselineOffsets() {
-        return layout.getBaselineOffsets();
+    /**
+     * Returns a shape describing the strikethrough line for a given ACI.
+     * Does not rely on TextLayout's
+     * internal strikethrough but computes it manually.
+     */
+    protected Shape getStrikethroughShape(AttributedCharacterIterator runaci,
+                                          TextLayout layout) {
+        double y = (layout.getBaselineOffsets()[java.awt.Font.ROMAN_BASELINE]
+             - layout.getAscent())/3;
+                     // XXX: 3 is a hack for cosmetic reasons
+        // TODO: the strikethrough offset should be calculated
+        // from the font instead!
+        Stroke strikethroughStroke =
+            new BasicStroke(getDecorationThickness(runaci, layout));
+
+        return strikethroughStroke.createStrokedShape(
+                           new java.awt.geom.Line2D.Double(
+                           0f, y,
+                           layout.getAdvance(), y));
     }
 
-    public boolean isVertical() {
-        return layout.isVertical();
+    protected float getDecorationThickness(AttributedCharacterIterator aci,
+                                                         TextLayout layout) {
+            // thickness divisor: text decoration thickness is
+            // equal to the text advance divided by this number
+            float thick_div;
+            Object textWeight = aci.getAttribute(TextAttribute.WEIGHT);
+            if (textWeight == TextAttribute.WEIGHT_REGULAR) {
+                thick_div = 14f;
+            } else if (textWeight == TextAttribute.WEIGHT_BOLD) {
+                thick_div = 11f;
+            } else if (textWeight == TextAttribute.WEIGHT_LIGHT) {
+                thick_div = 18f;
+            } else if (textWeight == TextAttribute.WEIGHT_DEMIBOLD) {
+                thick_div = 12f;
+            } else if (textWeight == TextAttribute.WEIGHT_DEMILIGHT) {
+                thick_div = 16f;
+            } else if (textWeight == TextAttribute.WEIGHT_EXTRABOLD) {
+                thick_div = 10f;
+            } else if (textWeight == TextAttribute.WEIGHT_EXTRA_LIGHT) {
+                thick_div = 20f;
+            } else if (textWeight == TextAttribute.WEIGHT_SEMIBOLD) {
+                thick_div = 13f;
+            } else if (textWeight == TextAttribute.WEIGHT_ULTRABOLD) {
+                thick_div = 9f;
+            } else {
+                thick_div = 14f;
+            }
+        return layout.getAscent()/thick_div;
     }
 
 }

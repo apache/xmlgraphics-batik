@@ -49,26 +49,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     static Set extendedAtts = new HashSet();
 
     static {
-        extendedAtts.add(
-                GVTAttributedCharacterIterator.TextAttribute.STROKE);
-        extendedAtts.add(
-                GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-        extendedAtts.add(
-                GVTAttributedCharacterIterator.TextAttribute.UNDERLINE);
-        extendedAtts.add(
-                GVTAttributedCharacterIterator.TextAttribute.OVERLINE);
-        extendedAtts.add(
-                GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH);
-        extendedAtts.add(
-                GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
-        extendedAtts.add(
-                GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
-        extendedAtts.add(
-                GVTAttributedCharacterIterator.
-                                      TextAttribute.UNDERLINE_STROKE_PAINT);
-        extendedAtts.add(TextAttribute.FOREGROUND);
-        extendedAtts.add(TextAttribute.SUPERSCRIPT);
-        extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.OPACITY);
+        extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
     }
 
     /**
@@ -239,8 +220,10 @@ public class StrokingTextPainter extends BasicTextPainter {
         AttributedCharacterIterator runaci = textRun.getACI();
         TextSpanLayout layout = textRun.getLayout();
         java.awt.Shape overlineShape =
-               getOverlineShape(runaci, layout,
-                   new Point2D.Double(location.getX()+xoffset, location.getY()));
+                layout.getDecorationOutline(
+                           TextSpanLayout.DECORATION_OVERLINE,
+                              AffineTransform.getTranslateInstance(
+                                  location.getX()+xoffset, location.getY()));
 
         Paint paint = (Paint) runaci.getAttribute(
             TextAttribute.FOREGROUND);
@@ -271,9 +254,10 @@ public class StrokingTextPainter extends BasicTextPainter {
         AttributedCharacterIterator runaci = textRun.getACI();
         TextSpanLayout layout = textRun.getLayout();
 
-        java.awt.Shape underlineShape =
-               getUnderlineShape(runaci, layout,
-                   new Point2D.Double(location.getX()+xoffset, location.getY()));
+        Shape underlineShape = layout.getDecorationOutline(
+                           TextSpanLayout.DECORATION_UNDERLINE,
+                              AffineTransform.getTranslateInstance(
+                                  location.getX()+xoffset, location.getY()));
 
         // TODO: change getAdvance to getVisibleAdvance for
         // ACIs which do not inherit their underline attribute
@@ -311,8 +295,10 @@ public class StrokingTextPainter extends BasicTextPainter {
         TextSpanLayout layout = textRun.getLayout();
 
         java.awt.Shape strikethroughShape =
-               getStrikethroughShape(runaci, layout,
-                   new Point2D.Double(location.getX()+xoffset, location.getY()));
+                layout.getDecorationOutline(
+                           TextSpanLayout.DECORATION_STRIKETHROUGH,
+                              AffineTransform.getTranslateInstance(
+                                  location.getX()+xoffset, location.getY()));
 
         Paint paint = (Paint) runaci.getAttribute(
             TextAttribute.FOREGROUND);

@@ -436,6 +436,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         Map result = new HashMap();
         CSSPrimitiveValue v;
 
+        result.put(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER, element);
+
         // Font size
         float fs = CSSUtilities.convertFontSize((SVGElement)element,
                                                 ctx,

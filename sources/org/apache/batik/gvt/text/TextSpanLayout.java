@@ -28,6 +28,13 @@ import java.awt.geom.AffineTransform;
  */
 public interface TextSpanLayout {
 
+    public int DECORATION_UNDERLINE = 0x1;
+    public int DECORATION_STRIKETHROUGH = 0x2;
+    public int DECORATION_OVERLINE = 0x4;
+    public int DECORATION_ALL = DECORATION_UNDERLINE |
+                                DECORATION_OVERLINE |
+                                DECORATION_STRIKETHROUGH;
+
     /**
      * Paints the specified text layout using the
      * specified Graphics2D and rendering context.
@@ -45,14 +52,31 @@ public interface TextSpanLayout {
     public Shape getOutline(AffineTransform t);
 
     /**
+     * Returns the outline of the specified decorations on the glyphs,
+     * transformed by an AffineTransform.
+     * @param decorationType an integer indicating the type(s) of decorations
+     *     included in this shape.  May be the result of "OR-ing" several
+     *     values together:
+     * e.g. <tt>DECORATION_UNDERLINE | DECORATION_STRIKETHROUGH</tt>
+     * @param t an AffineTransform to apply to the outline before returning it.
+     */
+    public Shape getDecorationOutline(int decorationType, AffineTransform t);
+
+    /**
      * Returns the rectangular bounds of the completed glyph layout.
      */
     public Rectangle2D getBounds();
 
     /**
+     * Returns the rectangular bounds of the completed glyph layout,
+     * inclusive of "decoration" (underline, overline, etc.)
+     */
+    public Rectangle2D getDecoratedBounds();
+
+    /**
      * Returns the dimension of the completed glyph layout in the
      * primary text advance direction (e.g. width, for RTL or LTR text).
-     * (This is the dimension that should be used for positioning 
+     * (This is the dimension that should be used for positioning
      * adjacent layouts.)
      */
     public float getAdvance();
@@ -64,27 +88,25 @@ public interface TextSpanLayout {
      * @param end the index of the last glyph in the contiguous selection.
      */
     public Shape getLogicalHighlightShape(int begin, int end);
-    
+
     /**
      * Perform hit testing for coordinate at x, y.
      * @return a TextHit object encapsulating the character index for
-     *     successful hits and whether the hit is on the character 
+     *     successful hits and whether the hit is on the character
      *     leading edge.
      * @param x the x coordinate of the point to be tested.
      * @param y the y coordinate of the point to be tested.
      */
     public TextHit hitTestChar(float x, float y);
 
-    // the following methods may be deprecated before next release...
-    
-    public int getCharacterCount();
-
-    public float getAscent();
-
-    public float getDescent();
-  
-    public float[] getBaselineOffsets();
-
+    /**
+     * Returns true if the advance direction of this text is vertical.
+     */
     public boolean isVertical();
+
+    /**
+     * Returns the number of characters in this layout.
+     */
+    public int getCharacterCount();
 
 }
