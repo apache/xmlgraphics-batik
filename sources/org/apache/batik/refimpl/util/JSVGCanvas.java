@@ -419,9 +419,15 @@ public class JSVGCanvas
      * Notifies that the specified area of interest need to be repainted.
      * @param aoi the area of interest to repaint
      */
-    public void notifyRepaintedRegion(Shape aoi) {
-        renderer.repaint(aoi);
-        Rectangle2D r = transform.createTransformedShape(aoi).getBounds();
+    public void notifyRepaintedRegion(Shape oldAoi, Shape newAoi) {
+        clearBuffer(oldAoi);
+        clearBuffer(newAoi);
+        renderer.repaint(oldAoi);
+        renderer.repaint(newAoi);
+        Rectangle2D r = transform.createTransformedShape(oldAoi).getBounds();
+        repaint((int)r.getX()-1, (int)r.getY()-1,
+                (int)r.getWidth()+2, (int)r.getHeight()+2);
+        r = transform.createTransformedShape(newAoi).getBounds();
         repaint((int)r.getX()-1, (int)r.getY()-1,
                 (int)r.getWidth()+2, (int)r.getHeight()+2);
     }
@@ -529,6 +535,17 @@ public class JSVGCanvas
         g.fillRect(0, 0, w, h);
     }
 
+
+    /**
+     * Clears the offscreen buffer.
+     */
+    protected void clearBuffer(Shape aoi) {
+        Graphics2D g = buffer.createGraphics();
+        g.setComposite(AlphaComposite.SrcOver);
+        g.setClip(aoi.getBounds());
+        g.setPaint(Color.white);
+        g.fill(aoi);
+    }
 
     /**
      * Clears a specific buffer.
@@ -1334,6 +1351,17 @@ public class JSVGCanvas
         }
 
         /**
+         * Clears the offscreen buffer.
+         */
+        protected void clearBuffer(Shape aoi) {
+            Graphics2D g = offscreenBuffer.createGraphics();
+            g.setComposite(AlphaComposite.SrcOver);
+            g.setClip(aoi.getBounds());
+            g.setPaint(Color.white);
+            g.fill(aoi);
+        }
+
+        /**
          * Updates the offscreen buffer.
          * @param w&nbsp;h The size of the component.
          */
@@ -1380,9 +1408,16 @@ public class JSVGCanvas
          * Notifies that the specified area of interest need to be repainted.
          * @param aoi the area of interest to repaint
          */
-        public void notifyRepaintedRegion(Shape aoi) {
-            renderer.repaint(aoi);
-            Rectangle2D r = transform.createTransformedShape(aoi).getBounds();
+        public void notifyRepaintedRegion(Shape oldAoi, Shape newAoi) {
+            clearBuffer(oldAoi);
+            clearBuffer(newAoi);
+            renderer.repaint(oldAoi);
+            renderer.repaint(newAoi);
+            Rectangle2D r =
+                transform.createTransformedShape(oldAoi).getBounds();
+            repaint((int)r.getX()-1, (int)r.getY()-1,
+                    (int)r.getWidth()+2, (int)r.getHeight()+2);
+            r = transform.createTransformedShape(newAoi).getBounds();
             repaint((int)r.getX()-1, (int)r.getY()-1,
                     (int)r.getWidth()+2, (int)r.getHeight()+2);
         }

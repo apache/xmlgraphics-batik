@@ -8,11 +8,15 @@
 
 package org.apache.batik.refimpl.gvt;
 
-import org.apache.batik.gvt.RootGraphicsNode;
-
+import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import javax.swing.event.EventListenerList;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.RootGraphicsNode;
+import org.apache.batik.gvt.event.GraphicsNodePaintEvent;
+import org.apache.batik.gvt.event.GraphicsNodePaintListener;
 
 /**
  * An implementation of the <tt>RootGraphicsNode</tt> interface.
@@ -22,6 +26,7 @@ import java.beans.PropertyChangeSupport;
  */
 public class ConcreteRootGraphicsNode extends ConcreteCompositeGraphicsNode
     implements RootGraphicsNode {
+
     /**
      * Used to manage and fire property change listeners.
      */
@@ -39,6 +44,57 @@ public class ConcreteRootGraphicsNode extends ConcreteCompositeGraphicsNode
     public RootGraphicsNode getRoot() {
         return this;
     }
+
+    //////////////////////////////////////////////////////////////////////
+    // Global Paint Listener
+    //////////////////////////////////////////////////////////////////////
+
+    /**
+     * Adds the specified graphics node paint listener to receive graphics
+     * node paint events from all elements of the GVT tree.
+     * @param l the graphics node paint listener to add
+     */
+    public void addGraphicsNodePaintListener(GraphicsNodePaintListener l) {
+        if (listeners == null) {
+            listeners = new EventListenerList();
+        }
+        listeners.add(GraphicsNodePaintListener.class, l);
+    }
+
+    /**
+     * Removes the specified graphics node paint listener so that it no
+     * longer receives graphics node paint change events from all nodes of
+     * the GVT tree.
+     * @param l the graphics node paint listener to remove
+     */
+    public void removeGraphicsNodePaintListener(GraphicsNodePaintListener l) {
+        if (listeners != null) {
+            listeners.remove(GraphicsNodePaintListener.class, l);
+        }
+    }
+
+    /**
+     * Fires a graphics node paint event.
+     */
+    protected void fireGraphicsNodePaintListener(GraphicsNode source,
+                                                 Rectangle2D oldBounds) {
+        if (listeners != null) {
+            GraphicsNodePaintListener[] listeners =
+                (GraphicsNodePaintListener[])
+                getListeners(GraphicsNodePaintListener.class);
+            GraphicsNodePaintEvent evt =
+                new GraphicsNodePaintEvent(source,
+                                  GraphicsNodePaintEvent.GRAPHICS_NODE_MODIFIED,
+                                           oldBounds);
+            for (int i=0; i < listeners.length; ++i) {
+                listeners[i].graphicsNodeModified(evt);
+            }
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////
+    // Global Property Change Listener
+    //////////////////////////////////////////////////////////////////////
 
     /**
      * Adds the specified property change listener to receive property

@@ -194,6 +194,29 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
     }
 
+    /**
+     * Fires the paint listener.
+     * @param oldBounds the old bounds of this node in renderer space.
+     */
+    protected void fireGraphicsNodePaintListener(Rectangle2D oldBounds) {
+        if (root != null) {
+            ConcreteRootGraphicsNode node = (ConcreteRootGraphicsNode) root;
+            node.fireGraphicsNodePaintListener(this, oldBounds);
+        }
+    }
+
+    protected Rectangle2D getGlobalBounds() {
+        if (root == null) {
+            return null;
+        }
+        Rectangle2D r = getBounds();
+        if (r == null) {
+            return null;
+        } else {
+            return getGlobalTransform().createTransformedShape(r).getBounds();
+        }
+    }
+
     //
     // Properties methods
     //
@@ -209,9 +232,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setTransform(AffineTransform newTransform) {
+        Rectangle2D oldBounds = getGlobalBounds();
+        invalidateGeometryCache();
         AffineTransform oldTransform = transform;
         this.transform = newTransform;
         firePropertyChange("transform", oldTransform, newTransform);
+        fireGraphicsNodePaintListener(oldBounds);
     }
 
     public AffineTransform getTransform() {
@@ -231,10 +257,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setComposite(Composite newComposite) {
+        Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
         Composite oldComposite = composite;
         this.composite = newComposite;
         firePropertyChange("composite", oldComposite, newComposite);
+        fireGraphicsNodePaintListener(oldBounds);
     }
 
     public Composite getComposite() {
@@ -242,9 +270,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setVisible(boolean isVisible) {
+        Rectangle2D oldBounds = getGlobalBounds();
         boolean oldIsVisible = this.isVisible;
         this.isVisible = isVisible;
         firePropertyChange("visible", oldIsVisible, isVisible);
+        fireGraphicsNodePaintListener(oldBounds);
     }
 
     public boolean isVisible() {
@@ -252,10 +282,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setClip(Clip newClipper) {
+        Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
         Clip oldClip = clip;
         this.clip = newClipper;
         firePropertyChange("clippingArea", oldClip, newClipper);
+        fireGraphicsNodePaintListener(oldBounds);
     }
 
     public Clip getClip() {
@@ -287,10 +319,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setMask(Mask newMask) {
+        Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
         Mask oldMask = mask;
         this.mask = newMask;
         firePropertyChange("mask", oldMask, newMask);
+        fireGraphicsNodePaintListener(oldBounds);
     }
 
     public Mask getMask() {
@@ -298,10 +332,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setFilter(Filter newFilter) {
+        Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
         Filter oldFilter = filter;
         this.filter = newFilter;
         firePropertyChange("filter", oldFilter, newFilter);
+        fireGraphicsNodePaintListener(oldBounds);
     }
 
     public Filter getFilter() {
@@ -367,7 +403,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             AffineTransform txf = g2d.getTransform();
             boolean antialiasedClip = false;
             if(clip != null){
-                antialiasedClip = 
+                antialiasedClip =
                     isAntialiasedClip(rc.getTransform(),
                                       rc.getRenderingHints(),
                                       clip.getClipPath());
@@ -391,14 +427,14 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                     // traceFilter(filter, "=====>> ");
                     filteredImage = filter;
                 }
-                
+
                 if (mask != null) {
                     if (mask.getSource() != filteredImage){
                         mask.setSource(filteredImage);
                     }
                     filteredImage = mask;
                 }
-                
+
                 if (clip != null && antialiasedClip) {
                     if (clip.getSource() != filteredImage){
                         clip.setSource(filteredImage);
@@ -484,7 +520,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         // + clip is not null
         // *and*
         // + clip is not a rectangle in device space.
-        // 
+        //
         // This leaves out the case where the node clip is a
         // rectangle and the current clip (i.e., the intersection
         // of the current Graphics2D's clip and this node's clip)

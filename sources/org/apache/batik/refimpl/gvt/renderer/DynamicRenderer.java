@@ -17,6 +17,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
+import org.apache.batik.gvt.event.GraphicsNodePaintEvent;
+import org.apache.batik.gvt.event.GraphicsNodePaintListener;
 
 /**
  * Simple implementation of the Renderer that supports dynamic updates.
@@ -31,11 +33,16 @@ public class DynamicRenderer extends StaticRenderer {
      * notify the <tt>RepaintHandler</tt> that a region has to be repainted.
      */
     protected UpdateListener updateListener = new UpdateListener();
+
     /**
      * The handler to notify that a region has to be repainted.
      */
     protected RepaintHandler repaintHandler;
 
+    /**
+     * Constructs a new dynamic renderer with the specified buffer image.
+     * @param offScreen the offscreen buffer to use
+     */
     public DynamicRenderer(BufferedImage offScreen) {
         super(offScreen);
     }
@@ -46,58 +53,47 @@ public class DynamicRenderer extends StaticRenderer {
         }
         RootGraphicsNode root = (RootGraphicsNode) this.treeRoot;
         if (updateListener != null && root != null) {
-            root.removeGlobalPropertyChangeListener(updateListener);
+            //root.removeGlobalPropertyChangeListener(updateListener);
+            root.removeGraphicsNodePaintListener(updateListener);
         }
         root = (RootGraphicsNode) newTreeRoot;
         super.setTree(root);
-        root.addGlobalPropertyChangeListener(updateListener);
+        //root.addGlobalPropertyChangeListener(updateListener);
+        root.addGraphicsNodePaintListener(updateListener);
     }
 
+    /**
+     * Sets the repaint handler to the specified repaint handler.
+     * @param repaintHandler the new repaint handler of this renderer
+     */
     public void setRepaintHandler(RepaintHandler repaintHandler) {
         this.repaintHandler = repaintHandler;
     }
 
+    /**
+     * Returns the repaint handler of this dynamic renderer.
+     */
     public RepaintHandler getRepaintHandler() {
         return repaintHandler;
-    }
-
-    /**
-     * Returns the bounds of the specified graphics node in the
-     * current user space coordinate system.
-     * @param node the graphics node
-     */
-    protected Shape getBoundsInRendererSpace(GraphicsNode node) {
-        Rectangle2D bounds = node.getBounds();
-        AffineTransform Gx = getGlobalTransform(node);
-        return Gx.createTransformedShape(bounds);
-    }
-
-    protected AffineTransform getGlobalTransform(GraphicsNode node) {
-        AffineTransform Gx = new AffineTransform();
-        RootGraphicsNode root = node.getRoot();
-        while (node != root) {
-            AffineTransform at = node.getTransform();
-            if (at != null) {
-                Gx.preConcatenate(at);
-            }
-            node = node.getParent();
-        }
-        return Gx;
     }
 
     /**
      * Simple listener that fire the repaint handler when the GVT tree
      * has been modified.
      */
-    protected class UpdateListener implements PropertyChangeListener {
+    protected class UpdateListener implements PropertyChangeListener,
+                                              GraphicsNodePaintListener {
+
         public void propertyChange(PropertyChangeEvent evt) {
+        }
+
+        public void graphicsNodeModified(GraphicsNodePaintEvent evt) {
             GraphicsNode node = (GraphicsNode) evt.getSource();
-            Shape aoi = getBoundsInRendererSpace(node);
-            /*
-            System.out.println(node+" propertyChange "+evt.getPropertyName()+
-                               " "+evt.getOldValue()+" "+evt.getNewValue());
-                               */
-            repaintHandler.notifyRepaintedRegion(aoi);
+            AffineTransform Gx = node.getGlobalTransform();
+            Shape oldAoi = evt.getOldBounds();
+            Shape newAoi =
+                Gx.createTransformedShape(node.getBounds()).getBounds();
+            repaintHandler.notifyRepaintedRegion(oldAoi, newAoi);
         }
     }
 
@@ -111,7 +107,7 @@ public class DynamicRenderer extends StaticRenderer {
          * Notifies that the specified area of interest need to be repainted.
          * @param aoi the area of interest to repaint
          */
-        void notifyRepaintedRegion(Shape aoi);
+        void notifyRepaintedRegion(Shape oldAoi, Shape newAoi);
 
     }
 }
