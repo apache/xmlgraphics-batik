@@ -722,7 +722,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
     /**
      * Builds a new BufferedImage that is the difference between the two input images
      */
-    protected BufferedImage buildDiffImage(BufferedImage ref,
+    public static BufferedImage buildDiffImage(BufferedImage ref,
                                            BufferedImage gen){
         BufferedImage diff = new BufferedImage(ref.getWidth(),
                                                ref.getHeight(),

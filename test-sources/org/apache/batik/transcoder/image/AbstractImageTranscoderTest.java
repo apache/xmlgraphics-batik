@@ -13,9 +13,11 @@ import java.awt.image.RenderedImage;
 
 import java.io.FileOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -27,15 +29,22 @@ import java.util.Map;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 
+import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
+import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
+
 import org.apache.batik.util.ParsedURL;
 
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 
+import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
+
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
+import org.apache.batik.test.svg.SVGRenderingAccuracyTest;
 
 /**
  * The base class for the ImageTranscoder tests.
@@ -52,6 +61,12 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 	"AbstractImageTranscoderTest.error.image.differ";
 
     /**
+     * Tag for difference image URI.
+     */
+    public static final String DIFFERENCE_IMAGE =
+	"AbstractImageTranscoderTest.error.difference.image";
+
+    /**
      * Error when an exception occured while transcoding.
      */
     public static final String ERROR_TRANSCODING =
@@ -64,11 +79,39 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
     }
 
     /**
+     * Resolves the input string as follows.
+     * + First, the string is interpreted as a file description.
+     *   If the file exists, then the file name is turned into
+     *   a URL.
+     * + Otherwise, the string is supposed to be a URL. If it
+     *   is an invalid URL, an IllegalArgumentException is thrown.
+     */
+    protected URL resolveURL(String url){
+        // Is url a file?
+        File f = (new File(url)).getAbsoluteFile();
+        if(f.getParentFile().exists()){
+            try{
+                return f.toURL();
+            }catch(MalformedURLException e){
+                throw new IllegalArgumentException();
+            }
+        }
+        
+        // url is not a file. It must be a regular URL...
+        try{
+            return new URL(url);
+        }catch(MalformedURLException e){
+            throw new IllegalArgumentException(url);
+        }
+    }
+
+    DefaultTestReport report;
+    /**
      * Runs this test. This method will only throw exceptions if some aspect of
      * the test's internal operation fails.
      */
     public TestReport runImpl() throws Exception {
-	DefaultTestReport report = new DefaultTestReport(this);
+	report = new DefaultTestReport(this);
 
 	try {
 	    DiffImageTranscoder transcoder = 
@@ -81,12 +124,6 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 
 	    TranscoderInput input = createTranscoderInput();
 	    transcoder.transcode(input, null);
-	    
-	    if (!transcoder.isIdentical()) {
-		report.setErrorCode(ERROR_IMAGE_DIFFER);
-		report.addDescriptionEntry(ERROR_IMAGE_DIFFER, "");
-		report.setPassed(false);
-	    }
 	} catch (Exception ex) {
 	    report.setErrorCode(ERROR_TRANSCODING);
 	    report.addDescriptionEntry(ERROR_TRANSCODING, toString(ex));
@@ -125,32 +162,6 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 	StringWriter trace = new StringWriter();
 	ex.printStackTrace(new PrintWriter(trace));
 	return trace.toString();
-    }
-
-    /**
-     * Resolves the input string as follows.
-     * + First, the string is interpreted as a file description.
-     *   If the file exists, then the file name is turned into
-     *   a URL.
-     * + Otherwise, the string is supposed to be a URL. If it
-     *   is an invalid URL, an IllegalArgumentException is thrown.
-     */
-    public static URL resolveURL(String url){
-        // Is url a file?
-        File f = (new File(url)).getAbsoluteFile();
-        if (f.exists()) {
-            try {
-                return f.toURL();
-            } catch (MalformedURLException e) {
-                throw new IllegalArgumentException(url);
-            }
-        }
-        // url is not a file. It must be a regular URL...
-        try {
-            return new URL(url);
-        } catch(MalformedURLException e) {
-            throw new IllegalArgumentException(url);
-        }
     }
 
     static String filename;
@@ -200,7 +211,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
     /**
      * A custom ImageTranscoder for testing.
      */
-    protected static class DiffImageTranscoder extends ImageTranscoder {
+    protected class DiffImageTranscoder extends ImageTranscoder {
 
 	/** The result of the image comparaison. */
 	protected boolean state;
@@ -251,7 +262,28 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
                 ostream.write(imgData, 0, imgData.length);
                 ostream.flush();
                 ostream.close();
-            } catch (Exception ex) {}
+            } catch (Exception ex) { }
+            return;
+        }
+
+        protected void writeCandidateVariation(byte [] imgData, byte [] refData)
+        {
+            writeCandidateReference(imgData);
+            try {
+                BufferedImage ref = getImage(new ByteArrayInputStream(refData));
+                BufferedImage img = getImage(new ByteArrayInputStream(imgData));
+                BufferedImage diff = 
+                    SVGRenderingAccuracyTest.buildDiffImage(ref, img);
+                String s = new File(filename).getName();
+                s = ("test-references/org/apache/batik/transcoder/image/"+
+                     "candidate-variation/"+s);
+                PNGImageEncoder encoder 
+                    = new PNGImageEncoder
+                    (new FileOutputStream(s),
+                     PNGEncodeParam.getDefaultEncodeParam(diff));
+                encoder.encode(diff);
+                report.addDescriptionEntry(DIFFERENCE_IMAGE,new File(s));
+            } catch (Exception e) { }
         }
 
 	/**
@@ -269,24 +301,33 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
             byte [] imgData = out.toByteArray();
 
             if (refImgData == null) {
+                report.setErrorCode(ERROR_IMAGE_DIFFER);
+                report.addDescriptionEntry(ERROR_IMAGE_DIFFER, "");
+                report.setPassed(false);
                 writeCandidateReference(imgData);
                 state = false;
                 return;
             }
             
             if (refImgData.length != imgData.length) {
-                writeCandidateReference(imgData);
-                state = false;
+                String varURI;
+                report.setErrorCode(ERROR_IMAGE_DIFFER);
+                report.addDescriptionEntry(ERROR_IMAGE_DIFFER, "");
+                report.setPassed(false);
+                writeCandidateVariation(imgData, refImgData);
                 return;
             }
 
             for (int i = 0; i < refImgData.length; ++i) {
                 if (refImgData[i] != imgData[i]) {
-                    writeCandidateReference(imgData);
-                    state = false;
+                    report.setErrorCode(ERROR_IMAGE_DIFFER);
+                    report.addDescriptionEntry(ERROR_IMAGE_DIFFER, "");
+                    report.setPassed(false);
+                    writeCandidateVariation(imgData, refImgData);
                     return;
                 }
             }
+            
 	    state = true;
 	}
 
@@ -297,5 +338,23 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 	public boolean isIdentical() {
 	    return state;
 	}
+    }
+
+    protected BufferedImage getImage(InputStream is) 
+        throws IOException {
+        ImageTagRegistry reg = ImageTagRegistry.getRegistry();
+        Filter filt = reg.readStream(is);
+        if(filt == null)
+            throw new IOException("Couldn't read Stream");
+
+        RenderedImage red = filt.createDefaultRendering();
+        if(red == null)
+            throw new IOException("Couldn't render Stream");
+        
+        BufferedImage img = new BufferedImage(red.getWidth(),
+                                              red.getHeight(),
+                                              BufferedImage.TYPE_INT_ARGB);
+        red.copyData(img.getRaster());
+        return img;
     }
 }
