@@ -52,7 +52,7 @@ public abstract class AbstractNode
     /**
      * The owner document.
      */
-    protected transient AbstractDocument ownerDocument;
+    protected AbstractDocument ownerDocument;
 
     /**
      * The event support.

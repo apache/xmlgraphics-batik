@@ -59,31 +59,26 @@ public class PointsParser extends NumberParser {
     }
 
     /**
-     * Parses the given reader.
+     * Parses the given current stream.
      */
     protected void doParse() throws ParseException {
-	pointsHandler.startPoints();
+        pointsHandler.startPoints();
 
-	read();
-	skipSpaces();
+        read();
+        skipSpaces();
 
-	loop: for (;;) {
-	    if (current == -1) {
-		break loop;
-	    }
-	    try {
-		float x = parseFloat();
-		skipCommaSpaces();
-		float y = parseFloat();
+        loop: for (;;) {
+            if (current == -1) {
+                break loop;
+            }
+            float x = parseFloat();
+            skipCommaSpaces();
+            float y = parseFloat();
 		    
-		pointsHandler.point(x, y);
-	    } catch (NumberFormatException e) {
-            reportError("character.unexpected",
-                        new Object[] { new Integer(current) });
-	    }
-	    skipCommaSpaces();
-	}
+            pointsHandler.point(x, y);
+            skipCommaSpaces();
+        }
 
-	pointsHandler.endPoints();
+        pointsHandler.endPoints();
     }
 }

@@ -803,25 +803,6 @@ public abstract class AbstractElement
             int result = (ns == null) ? 0 : ns.hashCode();
             return result ^ nm.hashCode();
         }
-
-        // Serialization ///////////////////////////////////////////////////
-
-        // A standard write is enough.
-
-        /**
-         * Reads the object from the given stream.
-         */
-        private void readObject(ObjectInputStream s) 
-            throws IOException, ClassNotFoundException {
-            s.defaultReadObject();
-
-            int len = getLength();
-            for (int i = len - 1; i >= 0; i--) {
-                AbstractAttr attr = (AbstractAttr)item(i);
-                attr.setOwnerDocument(AbstractElement.this.getOwnerDocument());
-                attr.setOwnerElement(AbstractElement.this);
-            }
-        }
     }
 
     /**

@@ -1,0 +1,6 @@
+<doc attr="value1">
+  <elt1/>
+  <elt2 attr2="value2">
+    Content
+  </elt2>
+</doc>
