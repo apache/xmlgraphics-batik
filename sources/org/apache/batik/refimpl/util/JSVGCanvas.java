@@ -343,7 +343,7 @@ public class JSVGCanvas
             // <!> HACK maybe not the right place to dispatch
             // this event
             // fire the load event
-            Event evt = document.createEvent("SVGEvents");
+            Event evt = document.createEvent("SVGEvent");
             evt.initEvent("SVGLoad", false, false);
             ((EventTarget)(document.
                            getRootElement())).
