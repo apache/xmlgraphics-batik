@@ -10,7 +10,7 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<testSuite id="unitTesting" name="Test Module - Unit Testing">
+<testSuite id="test.unitTesting" name="Test Module - Unit Testing">
     <!-- ========================================================================== -->
     <!-- Validates that the XMLTestSuiteRunner class is operating as expected       -->
     <!-- ========================================================================== -->
