@@ -41,8 +41,7 @@
 
     function removeAll(evt) {
         var g = evt.target;
-//        while (g.hasChildNodes) {
-        while (g.firstChild != null) {
+        while (g.hasChildNodes()) {
                 g.removeChild(g.firstChild);
         }
     }
