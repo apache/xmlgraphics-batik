@@ -45,9 +45,7 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
 	}
         // delegates to subclasses the shape construction
         buildShape(ctx, e, shapeNode);
-        if (shapeNode.getShape() == null) {
-	    return null; // Disable the rendering if something bad happens
-        }
+
         // 'shape-rendering' and 'color-rendering'
         RenderingHints hints = CSSUtilities.convertShapeRendering(e, null);
         hints = CSSUtilities.convertColorRendering(e, hints);

@@ -894,6 +894,21 @@ public class JSVGComponent extends JGVTComponent {
              "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 
+
+    /**
+     * This method is called when the component knows the desired
+     * size of the window (based on width/height of outermost SVG
+     * element).
+     * The default implementation simply calls setPreferredSize,
+     * and invalidate.
+     * However it is often useful to pack the window containing 
+     * this component.
+     */
+    public void setMySize(Dimension d) {
+        setPreferredSize(d);
+        invalidate();
+    }
+
     /**
      * The JGVTComponentListener.
      */
@@ -1065,8 +1080,9 @@ public class JSVGComponent extends JGVTComponent {
             }
 
             Dimension2D dim = bridgeContext.getDocumentSize();
-            setMySize(new Dimension((int)dim.getWidth(),
-                                    (int)dim.getHeight()));
+            Dimension   mySz = new Dimension((int)dim.getWidth(),
+                                             (int)dim.getHeight());
+            JSVGComponent.this.setMySize(mySz);
             SVGSVGElement elt = svgDocument.getRootElement();
             Dimension d = getSize();
             prevComponentSize = d;
@@ -1094,20 +1110,6 @@ public class JSVGComponent extends JGVTComponent {
                     
                 JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
                 scheduleGVTRendering();
-            }
-        }
-
-        public void setMySize(Dimension d) {
-            setPreferredSize(d);
-            invalidate();
-            Container p = getParent();
-            while (p != null) {
-                if (p instanceof Window) {
-                    Window w = (Window) p;
-                    w.pack();
-                    break;
-                }
-                p = p.getParent();
             }
         }
 
@@ -1152,8 +1154,9 @@ public class JSVGComponent extends JGVTComponent {
                 JSVGComponent.this.image = null;
                 repaint();
             } else {
-                setMySize(new Dimension((int)dim.getWidth(),
-                                        (int)dim.getHeight()));
+                Dimension d= new Dimension((int)dim.getWidth(),
+                                           (int)dim.getHeight());
+                JSVGComponent.this.setMySize(d);
                 JSVGComponent.this.setGraphicsNode(gn, false);
                 computeRenderingTransform();
             }

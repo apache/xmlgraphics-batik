@@ -98,6 +98,8 @@ public class ShapeNode extends AbstractGraphicsNode {
      * @param newShapePainter the new ShapePainter to use
      */
     public void setShapePainter(ShapePainter newShapePainter) {
+        if (shape == null) // Doesn't matter if we don't have a shape.
+            return;
         fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.shapePainter = newShapePainter;
@@ -252,6 +254,8 @@ public class ShapeNode extends AbstractGraphicsNode {
     public Shape getSensitiveArea() {
         if (sensitiveArea != null) 
             return sensitiveArea;
+        if (shapePainter == null)
+            return null;
 
         // <!> NOT REALLY NICE CODE BUT NO OTHER WAY
         ShapePainter strokeShapePainter = null;
@@ -260,8 +264,9 @@ public class ShapeNode extends AbstractGraphicsNode {
             strokeShapePainter = shapePainter;
         } else if (shapePainter instanceof FillShapePainter) {
             fillShapePainter = shapePainter;
-        } else {
+        } else if (shapePainter instanceof CompositeShapePainter) {
             CompositeShapePainter cp = (CompositeShapePainter)shapePainter;
+
             for (int i=0; i < cp.getShapePainterCount(); ++i) {
                 ShapePainter sp = cp.getShapePainter(i);
                 if (sp instanceof StrokeShapePainter) {
@@ -270,7 +275,8 @@ public class ShapeNode extends AbstractGraphicsNode {
                     fillShapePainter = sp;
                 }
             }
-        }
+        } else return null; // Don't know what we have...
+
 
         switch(pointerEventType) {
         case VISIBLE_PAINTED:

@@ -435,9 +435,10 @@ public class JSVGViewerFrame
         // of unnecessary large images.
         //
         svgCanvas = new JSVGCanvas(userAgent, true, true){
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                Dimension screenSize;
                 
                 {
+                    screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                     setMaximumSize(screenSize);
                 }
                 
@@ -447,7 +448,20 @@ public class JSVGViewerFrame
                     if (s.height > screenSize.height) s.height = screenSize.height;
                     return s;
                 }
+
                 
+                /**
+                 * This method is called when the component knows the desired
+                 * size of the window (based on width/height of outermost SVG
+                 * element). We override it to immediately pack this frame.
+                 */
+                public void setMySize(Dimension d) {
+                    setPreferredSize(d);
+                    invalidate();
+                    if (JSVGViewerFrame.this.autoAdjust) {
+                        JSVGViewerFrame.this.pack();
+                    }
+                }
             };
         
         javax.swing.ActionMap map = svgCanvas.getActionMap();
@@ -1847,9 +1861,6 @@ public class JSVGViewerFrame
         svgCanvas.setSelectionOverlayXORMode
             (application.isSelectionOverlayXORMode());
         svgCanvas.requestFocus();  // request focus when load completes.
-        if (autoAdjust) {
-            pack();
-        }
     }
 
     /**
