@@ -1,37 +1,107 @@
 <testSuite name="regard">
-		<!-- ======================================= -->
-		<!-- XMLTestReportProcessor is not fully     -->
-		<!-- functional yet.                         -->
-		<!-- ======================================= -->
-		<!-- <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" /> -->
+    <!-- ======================================= -->
+    <!-- XMLTestReportProcessor is not fully     -->
+    <!-- functional yet.                     -->
+    <!-- ======================================= -->
+    <!-- <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" /> -->
 
-		<!-- ======================================= -->
-		<!-- Enter the email address and mail server -->
-		<!-- to use.                                 -->
-		<!-- ======================================= -->
+    <!-- ======================================= -->
+    <!-- Enter the email address and mail server -->
+    <!-- to use.                                 -->
+    <!-- ======================================= -->
     <testReportProcessor class="org.apache.batik.test.TestReportMailer">
-        <arg class="java.lang.String" value="someone@somewhere.com" />
-        <arg class="java.lang.String" value="someoneElse@somewhereElse.com" />
-        <arg class="java.lang.String" value="mailServer@myprovider.com" />
+        <arg class="java.lang.String" value="vhardy@eng.sun.com" />
+        <arg class="java.lang.String" value="vhardy@eng.sun.com,vincent.hardy@eng.sun.com" />
+        <arg class="java.lang.String" value="some.server.com" />
     </testReportProcessor>
 
-		<!-- ========================================================================== -->
+    <!-- ========================================================================== -->
     <!-- Validates that the SVGRenderingAccuracyTest class is operating as expected -->
-		<!-- ========================================================================== -->
+    <!-- ========================================================================== -->
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" />
 
-		
-		<!-- ========================================================================== -->
-		<!-- The following tests correspond to what regard used to do.                  -->
-		<!-- ========================================================================== -->
+        
+    <!-- ========================================================================== -->
+    <!-- The following tests correspond to what regard used to do.                  -->
+    <!-- ========================================================================== -->
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/anne.svg" />
-        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/solaris/anne.png" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/anne.png" />
     </test>
-
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/asf-logo.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/asf-logo.png" />
+    </test><test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/authors.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/authors.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/barChart.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/barChart.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/batik3D.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/batik3D.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/batik70.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/batik70.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/batikBatik.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/batikBatik.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/batikFX.svg" />
-        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/solaris/batikFX.png" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/batikFX.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/batikLogo.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/batikLogo.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/batikMusic.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/batikMusic.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/batikYin.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/batikYin.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/chessboard.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/chessboard.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/gradients.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/gradients.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/henryV.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/henryV.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/logoShadowOffset.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/logoShadowOffset.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/logoTexture.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/logoTexture.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/moonPhases.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/moonPhases.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/sizeOfSun.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/sizeOfSun.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/textRotate.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/textRotate.png" />
+    </test>
+    <test  class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/textRotateShadows.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/win/textRotateShadows.png" />
     </test>
 
 </testSuite>
