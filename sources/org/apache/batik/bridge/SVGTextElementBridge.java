@@ -491,6 +491,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         }
         if (sb.length() > 0) {
             as = new AttributedString(sb.toString(), m);
+        } else {
+            as = new AttributedString(" ", m);
         }
         return as;
     }
