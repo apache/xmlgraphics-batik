@@ -26,8 +26,11 @@
     <g id="testContent">
         <text class="title" x="50%" y="10%" font-size="3%" text-anchor="middle" >
             BiDi Text / International Text</text>
-        <text x="50%" y="25%" font-size="2.5%" text-anchor="middle">Some text goes <tspan fill="blue" direction="rtl" unicode-bidi="bidi-override">right to left</tspan>, other text goes left to right.</text>
-        <text style="font-style:oblique;font-size:2%;text-anchor:middle" x="50%" y="30%">
+        <text x="50%" y="25%" font-size="2.5%" text-anchor="middle">Some text goes <tspan fill="blue" direction="rtl" unicode-bidi="bidi-override">(right to left)</tspan>, other text goes (left to right).</text>
+      
+        <text x="50%" y="30%" font-size="2.5%" text-anchor="middle">Some <tspan fill="darkred" direction="rtl" unicode-bidi="embed">(embedded bidi)</tspan> text.</text>
+     
+      <text style="font-style:oblique;font-size:2%;text-anchor:middle" x="50%" y="35%">
                Text selection allows visually discontiguous 
                selections across bi-directional text.
         </text>
