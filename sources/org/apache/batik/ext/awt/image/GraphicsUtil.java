@@ -70,9 +70,6 @@ import org.apache.batik.ext.awt.image.SVGComposite;
  */
 public class GraphicsUtil {
 
-    public static boolean useMacOSXHacks = 
-	("Mac OS X".equals(System.getProperty("os.name")));
-
     public static AffineTransform IDENTITY = new AffineTransform();
 
     /**
@@ -286,7 +283,7 @@ public class GraphicsUtil {
             // System.out.println("Starting Draw: " + cr);
             // long startTime = System.currentTimeMillis();
 
-            boolean useDrawRenderedImage = useMacOSXHacks;
+            boolean useDrawRenderedImage = false;
 
             SampleModel srcSM = cr.getSampleModel();
             if ((srcSM.getWidth()*srcSM.getHeight()) >
@@ -387,16 +384,17 @@ public class GraphicsUtil {
                             System.out.println("IR: "      + iR);
                         }
 
-                        AffineTransform trans;
-                        trans = AffineTransform.getTranslateInstance(iR.x, 
-                                                                     iR.y);
+                        // For some reason using the transform version
+                        // causes a gStackUnderflow error but if I just 
+                        // use the drawImage with an x & y it works.
+                        g2d.drawImage(subBI, iR.x, iR.y, null);
+                        // AffineTransform trans 
+                        //  = AffineTransform.getTranslateInstance(iR.x, iR.y);
+                        // g2d.drawImage(subBI, trans, null);
 
                         // String label = "sub [" + x + ", " + y + "]: ";
                         // org.ImageDisplay.showImage
                         //     (label, subBI);
-
-                        g2d.drawImage(subBI, trans, null);
-                        // big2d.fillRect(0, 0, tw, th);
                     }
                     xStep = -xStep; // Reverse directions.
                     xloc += xStep;   // Get back in bounds.
