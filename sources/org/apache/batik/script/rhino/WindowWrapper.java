@@ -77,6 +77,30 @@ public class WindowWrapper extends ScriptableObject {
     }
 
     /**
+     * Wraps the 'eval' methods of the Window interface.
+     */
+    public static void jsFunction_eval(Context cx,
+                                       Scriptable thisObj,
+                                       Object[] args,
+                                       Function funObj)
+        throws JavaScriptException {
+        int len = args.length;
+        WindowWrapper ww = (WindowWrapper)thisObj;
+        Window window = ww.window;
+        if (len >= 1) {
+            String code =
+                (String)NativeJavaObject.coerceType(String.class, args[0]);
+            RhinoInterpreter interp =
+                (RhinoInterpreter)window.getInterpreter();
+            try {
+                interp.evaluate(code);
+            } catch (InterpreterException e) {
+                throw new JavaScriptException(e);
+            }
+        }
+    }
+
+    /**
      * Wraps the 'setInterval' methods of the Window interface.
      */
     public static Object jsFunction_setInterval(Context cx,
