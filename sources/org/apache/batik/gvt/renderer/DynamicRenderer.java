@@ -60,11 +60,16 @@ public class DynamicRenderer extends StaticRenderer {
      * @param areas a List of regions to be repainted, in the current
      * user space coordinate system.  
      */
+    // long lastFrame = -1;
     public void repaint(List areas) throws InterruptedException {
         if (areas == null)
             return;
 
         // long t0 = System.currentTimeMillis();
+        // if (lastFrame != -1) {
+        //     System.out.println("InterFrame time: " + (t0-lastFrame));
+        // }
+        // lastFrame = t0;
 
         CachableRed cr;
         WritableRaster syncRaster;
@@ -110,7 +115,7 @@ public class DynamicRenderer extends StaticRenderer {
                 // System.out.println("Repainting All");
                 cr.copyData(copyRaster);
             } else {
-                if ((isDoubleBuffered)      &&
+                if ((isDoubleBuffered) &&
                     (currentRaster != null) && 
                     (damagedAreas  != null)) {
                     iter = damagedAreas.iterator();
