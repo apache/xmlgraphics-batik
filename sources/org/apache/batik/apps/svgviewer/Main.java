@@ -95,6 +95,15 @@ public class Main implements ViewerFrame.Application {
         createAndShowViewerFrame();
         if (args.length > 0) {
             mainFrame.loadDocument(args[0]);
+        } else {
+            mainFrame.setFixedSize(true);
+            mainFrame.loadDocument
+                (Main.class.getResource("resources/usage.svg").toString());
+            try {
+                mainFrame.getLoadingThread().join();
+            } catch (InterruptedException e) {
+            }
+            mainFrame.setFixedSize(false);
         }
     }
 
