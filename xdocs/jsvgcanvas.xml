@@ -19,7 +19,7 @@
         <title>JSVGCanvas Tutorial</title>
         <subtitle>A brief introduction to the JSVGCanvas</subtitle>
         <authors>
-            <person name="Thierry Kormann" email="tkormann@apache.org"/>
+            <person name="Thierry Kormann"  email="tkormann@apache.org"/>
         </authors>
     </header>
 
@@ -53,6 +53,13 @@ href="http://java.sun.com/docs/books/tutorial/uiswing/overview/threads.html">the
 swing tutorial</link>. The JSVGCanvas is also a <link
 href="http://java.sun.com/products/javabeans/">JavaBean</link> so it can be used
 in visual application builders.
+
+</p>
+
+<p>
+
+<em>Note:</em> If you try this example, do not forget to set your classpath so
+that it contains the Batik classes and resources, and Crimson (lib/crimson-parser.jar).
 
 </p>
 
