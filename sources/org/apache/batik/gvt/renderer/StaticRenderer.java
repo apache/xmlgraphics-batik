@@ -335,7 +335,7 @@ public class StaticRenderer implements ImageRenderer {
      * @param area region to be repainted, in the current user space
      * coordinate system.  
      */
-    public void repaint(Shape area) throws InterruptedException {
+    public void repaint(Shape area) {
         if (area == null) return;
         List l = new ArrayList(1);
         l.add(area);
@@ -355,7 +355,7 @@ public class StaticRenderer implements ImageRenderer {
      * @param areas a List of regions to be repainted, in the current
      * user space coordinate system.  
      */
-    public void repaint(List areas) throws InterruptedException {
+    public void repaint(List areas) {
 
         if (areas == null)
             return;
