@@ -62,7 +62,7 @@ public class DOMUtilitiesCharacterEscaping extends AbstractTest {
 
         text = doc.getElementById("myText");
         cdata = (CDATASection)text.getFirstChild();
-        if (cdata.getData().eqauls(unescapedContent)) {
+        if (cdata.getData().equals(unescapedContent)) {
             return reportSuccess();
         } 
 

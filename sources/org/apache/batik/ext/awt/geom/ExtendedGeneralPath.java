@@ -18,7 +18,7 @@ import java.awt.geom.Rectangle2D;
 
 /**
  * The <code>ExtendedGeneralPath</code> class represents a geometric
- * path constructed from straight lines, quadratic and cubic (Bézier)
+ * path constructed from straight lines, quadratic and cubic (Bezier)
  * curves and elliptical arc. This class delegates lines and curves to
  * an enclosed <code>GeneralPath</code>. Elliptical arc is implemented
  * using an <code>Arc2D</code> in float precision.
