@@ -198,10 +198,10 @@ public class AttributedCharacterSpanIterator implements
      * <br><b>Specified by:</b> java.text.CharacterIterator.
      */
     public char next() {
-        if (getIndex() < end ) {
+        if (getIndex() < end-1 ) {
             return aci.next();
         } else {
-            return CharacterIterator.DONE;
+	    return setIndex(end);
         }
     }
 
@@ -214,7 +214,7 @@ public class AttributedCharacterSpanIterator implements
         if (getIndex() > begin) {
             return aci.previous();
         } else {
-            return aci.current();
+            return CharacterIterator.DONE;
         }
     }
 
@@ -225,8 +225,18 @@ public class AttributedCharacterSpanIterator implements
      * <br><b>Specified by:</b> java.text.CharacterIterator.
      */
     public char setIndex(int position) {
-        int ndx = Math.min(end, position);
-        ndx = Math.max(position, begin);
-        return aci.setIndex(ndx); 
+        int ndx = Math.max(position, begin);
+        ndx = Math.min(ndx, end);
+        char c = aci.setIndex(ndx);
+	if (ndx == end) {
+            c = CharacterIterator.DONE; 
+	}
+	return c;
     }
 }
+
+
+
+
+
+

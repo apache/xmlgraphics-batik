@@ -56,6 +56,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         float advance = 0f;
         extendedAtts.add(
                 GVTAttributedCharacterIterator.TextAttribute.STROKE);
+	extendedAtts.add(
+		GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
         aci.first();
         /*
          * We iterate through the spans over extended attributes,
@@ -74,6 +76,7 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             AttributedCharacterIterator runaci =
                     new AttributedCharacterSpanIterator(aci, start, end);
+	    
             TextLayout layout = new TextLayout(runaci, frc);
             TextRun run = new TextRun(layout, runaci);
             textRuns.add(run);
@@ -108,7 +111,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             // check if we need to fill this glyph
             Paint paint = (Paint) runaci.getAttribute(TextAttribute.FOREGROUND);
             if (paint != null) {
-                textRun.getLayout().draw(g2d, (float)(location.getX() + x), (float)(location.getY()));
+                textRun.getLayout().draw(g2d, 
+		    (float)(location.getX() + x), (float)(location.getY()));
             }
             // check if we need to draw the outline of this glyph
             Stroke stroke = (Stroke) runaci.getAttribute(
@@ -116,7 +120,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             paint = (Paint) runaci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
             if (stroke != null && paint != null) {
-                AffineTransform t = AffineTransform.getTranslateInstance(location.getX() + x, location.getY());
+                AffineTransform t = AffineTransform.getTranslateInstance(
+                                        location.getX() + x, location.getY());
                 g2d.setStroke(stroke);
                 g2d.setPaint(paint);
                 g2d.draw(textRun.getLayout().getOutline(t));
@@ -124,7 +129,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             x += textRun.getLayout().getAdvance();
         }
 
-        // FIXME: Finish implementation! (Currently only understands STROKE, STROKE_PAINT)
+        // FIXME: Finish implementation! 
+	// (Currently only understands STROKE, STROKE_PAINT)
     }
 
     /**
