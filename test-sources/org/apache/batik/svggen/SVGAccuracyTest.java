@@ -34,7 +34,7 @@ import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
 
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.dom.GenericDOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
 
@@ -341,8 +341,8 @@ public class SVGAccuracyTest extends AbstractTest
      */
     protected SVGGraphics2D buildSVGGraphics2D() {
         // CSSDocumentHandler.setParserClassName(CSS_PARSER_CLASS_NAME);
-        DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
-        String namespaceURI = SVGDOMImplementation.SVG_NAMESPACE_URI;
+        DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
+        String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
         Document domFactory = impl.createDocument(namespaceURI, SVG_SVG_TAG, null);
         SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
         GraphicContextDefaults defaults 
