@@ -36,8 +36,6 @@ import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.renderable.Clip;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadMode;
-import org.apache.batik.gvt.event.CompositeGraphicsNodeEvent;
-import org.apache.batik.gvt.event.CompositeGraphicsNodeListener;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
 import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
@@ -523,31 +521,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
 
     /**
-     * Adds the specified composite graphics node listener to receive
-     * composite graphics node events from this node.
-     * @param l the composite graphics node listener to add
-     */
-    public void addCompositeGraphicsNodeListener(
-                                              CompositeGraphicsNodeListener l) {
-        if (listeners == null) {
-            listeners = new EventListenerList();
-        }
-        listeners.add(CompositeGraphicsNodeListener.class, l);
-    }
-
-    /**
-     * Removes the specified composite graphics node listener so that it
-     * no longer receives composite graphics node events from this node.
-     * @param l the composite graphics node listener to remove
-     */
-    public void removeCompositeGraphicsNodeListener(
-                                              CompositeGraphicsNodeListener l) {
-        if (listeners != null) {
-            listeners.remove(CompositeGraphicsNodeListener.class, l);
-        }
-    }
-
-    /**
      * Adds the specified graphics node mouse listener to receive
      * graphics node mouse events from this node.
      * @param l the graphics node mouse listener to add
@@ -648,13 +621,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * Dispatches the specified event to the interested registered listeners.
      * @param evt the event to dispatch
      */
-    public void dispatch(GraphicsNodeEvent evt) {
-        int id = evt.getID();
-        switch(id) {
-        case CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED:
-        case CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED:
-            processCompositeEvent((CompositeGraphicsNodeEvent)evt);
-            break;
+    public void dispatchEvent(GraphicsNodeEvent evt) {
+        switch(evt.getID()) {
         case GraphicsNodeMouseEvent.MOUSE_PRESSED:
         case GraphicsNodeMouseEvent.MOUSE_RELEASED:
         case GraphicsNodeMouseEvent.MOUSE_MOVED:
@@ -686,37 +654,37 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             switch (evt.getID()) {
             case GraphicsNodeMouseEvent.MOUSE_MOVED:
                 for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseMoved((GraphicsNodeMouseEvent)evt.clone());
+                    listeners[i].mouseMoved(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_DRAGGED:
                 for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseDragged((GraphicsNodeMouseEvent)evt.clone());
+                    listeners[i].mouseDragged(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_ENTERED:
                 for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseEntered((GraphicsNodeMouseEvent)evt.clone());
+                    listeners[i].mouseEntered(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_EXITED:
                 for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseExited((GraphicsNodeMouseEvent)evt.clone());
+                    listeners[i].mouseExited(evt);
                 }
                     break;
             case GraphicsNodeMouseEvent.MOUSE_CLICKED:
                 for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseClicked((GraphicsNodeMouseEvent)evt.clone());
+                    listeners[i].mouseClicked(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_PRESSED:
                 for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mousePressed((GraphicsNodeMouseEvent)evt.clone());
+                    listeners[i].mousePressed(evt);
                 }
                 break;
             case GraphicsNodeMouseEvent.MOUSE_RELEASED:
                 for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseReleased((GraphicsNodeMouseEvent)evt.clone());
+                    listeners[i].mouseReleased(evt);
                 }
                 break;
                 default:
@@ -761,34 +729,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Processes a composite event occuring on this graphics node.
-     * @param evt the event to process
-     */
-   public void processCompositeEvent(CompositeGraphicsNodeEvent evt) {
-        if ((listeners != null) && acceptEvent(evt)) {
-            CompositeGraphicsNodeListener [] listeners =
-                (CompositeGraphicsNodeListener[])
-                getListeners(CompositeGraphicsNodeListener.class);
-
-            switch (evt.getID()) {
-            case CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].graphicsNodeAdded(evt);
-                }
-                break;
-            case CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].graphicsNodeRemoved(evt);
-                }
-                break;
-            default:
-                throw new Error("Unknown Composite Event type: "+evt.getID());
-            }
-        }
-        evt.consume();
-    }
-
-    /**
      * Returns true is this node accepts the specified event, false otherwise.
      * @param evt the event to check
      */
@@ -798,7 +738,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
         return true;
     }
-
 
     //
     // Structural methods

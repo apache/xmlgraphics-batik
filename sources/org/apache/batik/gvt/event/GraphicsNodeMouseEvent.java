@@ -143,18 +143,6 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
     }
 
     /**
-     * Transforms the event's coordinates to a new position according
-     * to the specified transform.
-     * @param t the transform to use
-     */
-    public synchronized void transform(AffineTransform t) {
-        Point2D.Float p2d = new Point2D.Float(x, y);
-        t.transform(p2d, p2d);
-        x = p2d.x;
-        y = p2d.y;
-    }
-
-    /**
      * Return the number of mouse clicks associated with this event.
      * @return integer value for the number of clicks
      */

@@ -185,7 +185,7 @@ public interface GraphicsNode {
      * Dispatches the specified event to the interested registered listeners.
      * @param evt the event to dispatch
      */
-    void dispatch(GraphicsNodeEvent evt);
+    void dispatchEvent(GraphicsNodeEvent evt);
 
     /**
      * Adds the specified graphics node mouse listener to receive
