@@ -119,6 +119,7 @@ To display the available targets type:
     <echo message="   dist-tgz      --> build the tgz distributions"/>
     <echo message="   compile       --> compiles the source code"/>
     <echo message="   svgviewer     --> runs the SVG viewer"/>
+    <echo message="   svgbrowser    --> runs the SVG browser"/>
     <echo message="   svgrasterizer --> runs the SVG rasterizer"/>
     <echo message="   svgpp         --> runs the SVG pretty-printer"/>
     <echo message="   regard        --> runs the regard regression utility"/>
@@ -251,6 +252,7 @@ To display the available targets type:
                                svg-pp-jar,
                                svggen-jar,
                                svg-viewer-jar,
+                               svg-browser-jar,
                                rasterizer-jar">
     <copy todir="${build}/lib">
       <fileset dir="${lib}">
@@ -495,6 +497,21 @@ To display the available targets type:
   </target>
 
 
+  <!-- SVG Browser (dependencies: all) -->
+  <target name="svg-browser-jar" depends="compile, prepare-build">
+    <jar manifest="${src}/${project}-browser.mf"
+         jarfile="${build}/${project}-svgbrowser.jar">
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
+        <include name="${package-prefix}/experiment/**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}">
+        <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+
   <!-- Rasterizer (dependencies: all except GUI util) -->
   <target name="rasterizer-jar" depends="compile, prepare-build">
     <jar manifest="${src}/${project}-rasterizer.mf"
@@ -527,6 +544,19 @@ To display the available targets type:
         <pathelement location="resources" />
       </classpath>
       <arg value="${args}"/>
+    </java>
+  </target>
+
+  <target name="svgbrowser"
+          depends="compile"
+          description="Runs the SVG browser">
+    <java fork="yes"
+          classname="${class-prefix}.apps.svgbrowser.Main">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <pathelement location="resources" />
+      </classpath>
     </java>
   </target>
 

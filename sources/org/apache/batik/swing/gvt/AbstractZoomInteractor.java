@@ -1,0 +1,209 @@
+/*****************************************************************************
+ * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
+ *****************************************************************************/
+
+package org.apache.batik.swing.gvt;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
+
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
+
+/**
+ * This class represents a zoom interactor.
+ * To use it, just redefine the {@link
+ * InteractorAdapter#startInteraction(InputEvent)} method.
+ *
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @version $Id$
+ */
+public class AbstractZoomInteractor extends InteractorAdapter {
+
+    /**
+     * Whether the interactor has finished.
+     */
+    protected boolean finished = true;
+
+    /**
+     * The mouse x start position.
+     */
+    protected int xStart;
+
+    /**
+     * The mouse y start position.
+     */
+    protected int yStart;
+
+    /**
+     * The mouse x current position.
+     */
+    protected int xCurrent;
+
+    /**
+     * The mouse y current position.
+     */
+    protected int yCurrent;
+
+    /**
+     * The zoom marker top line.
+     */
+    protected Line2D markerTop;
+
+    /**
+     * The zoom marker left line.
+     */
+    protected Line2D markerLeft;
+
+    /**
+     * The zoom marker bottom line.
+     */
+    protected Line2D markerBottom;
+
+    /**
+     * The zoom marker right line.
+     */
+    protected Line2D markerRight;
+
+    /**
+     * The overlay.
+     */
+    protected Overlay overlay = new ZoomOverlay();
+
+    /**
+     * Used to draw marker
+     */
+    protected BasicStroke markerStroke = new BasicStroke(1,
+                                                         BasicStroke.CAP_SQUARE,
+                                                         BasicStroke.JOIN_MITER,
+                                                         10,
+                                                         new float[] { 4, 4 }, 0);
+
+    /**
+     * Tells whether the interactor has finished.
+     */
+    public boolean endInteraction() {
+        return finished;
+    }
+
+    // MouseListener ///////////////////////////////////////////////////////
+        
+    /**
+     * Invoked when a mouse button has been pressed on a component.
+     */
+    public void mousePressed(MouseEvent e) {
+        if (!finished) {
+            mouseExited(e);
+            return;
+        }
+        
+        finished = false;
+        markerTop = null;
+        markerLeft = null;
+        markerBottom = null;
+        markerRight = null;
+
+        xStart = e.getX();
+        yStart = e.getY();
+    }
+
+    /**
+     * Invoked when a mouse button has been released on a component.
+     */
+    public void mouseReleased(MouseEvent e) {
+        finished = true;
+        JGVTComponent c = (JGVTComponent)e.getSource();
+        overlay.paint(c.getGraphics());
+
+        xCurrent = e.getX();
+        yCurrent = e.getY();
+
+        if ((xCurrent - xStart) != 0 &&
+            (yCurrent - yStart) != 0) {
+
+            Dimension size = c.getSize();
+
+            // Zoom factor
+            float scaleX = size.width / (float)(xCurrent - xStart);
+            float scaleY = size.height / (float)(yCurrent - yStart);
+            float scale = (scaleX < scaleY) ? scaleX : scaleY;
+        
+            // Zoom translate
+            AffineTransform at = new AffineTransform();
+            at.scale(scale, scale);
+            at.translate(-xStart, -yStart);
+
+            at.concatenate(c.getRenderingTransform());
+            c.setRenderingTransform(at);
+        }
+    }
+
+    /**
+     * Invoked when the mouse exits a component.
+     */
+    public void mouseExited(MouseEvent e) {
+        finished = true;
+        JGVTComponent c = (JGVTComponent)e.getSource();
+        overlay.paint(c.getGraphics());
+    }
+
+    // MouseMotionListener /////////////////////////////////////////////////
+
+    /**
+     * Invoked when a mouse button is pressed on a component and then 
+     * dragged.  Mouse drag events will continue to be delivered to
+     * the component where the first originated until the mouse button is
+     * released (regardless of whether the mouse position is within the
+     * bounds of the component).
+     */
+    public void mouseDragged(MouseEvent e) {
+        JGVTComponent c = (JGVTComponent)e.getSource();
+
+        overlay.paint(c.getGraphics());
+
+        xCurrent = e.getX();
+        yCurrent = e.getY();
+
+        markerTop    = new Line2D.Float(xStart, yStart, xCurrent,  yStart);
+        markerLeft   = new Line2D.Float(xStart, yStart, xStart, yCurrent);
+        markerBottom = new Line2D.Float(xStart, yCurrent,  xCurrent,  yCurrent);
+        markerRight  = new Line2D.Float(xCurrent,  yCurrent,  xCurrent,  yStart);
+
+        overlay.paint(c.getGraphics());
+    }
+
+    /**
+     * To paint the interactor.
+     */
+    protected class ZoomOverlay implements Overlay {
+        
+        /**
+         * Paints this overlay.
+         */
+        public void paint(Graphics g) {
+            if (markerTop != null) {
+                Graphics2D g2d = (Graphics2D)g;
+
+                g2d.setXORMode(Color.white);
+                g2d.setColor(Color.black);
+                g2d.setStroke(markerStroke);
+
+                g2d.draw(markerTop);
+                g2d.draw(markerLeft);
+                g2d.draw(markerBottom);
+                g2d.draw(markerRight);
+            }
+        }
+    }
+}
