@@ -96,10 +96,10 @@ public class RhinoInterpreter implements Interpreter {
 
     /**
      * The SecuritySupport implementation for Batik,
-     * which ensures scripts have access to the 
+     * which ensures scripts have access to the
      * server they were downloaded from
      */
-    private SecuritySupport securitySupport 
+    private SecuritySupport securitySupport
         = new BatikSecuritySupport();
 
     /**
@@ -111,21 +111,21 @@ public class RhinoInterpreter implements Interpreter {
 
     /**
      * Default Context for scripts. This is used only for efficiency
-     * reason. 
+     * reason.
      */
     protected Context defaultContext;
 
     /**
-     * Context vector, to make sure we are not 
+     * Context vector, to make sure we are not
      * setting the security context too many times
      */
     protected Vector contexts = new Vector();
 
     /**
      * Build a <code>Interpreter</code> for ECMAScript using Rhino.
-     * 
+     *
      * @param documentURL the URL for the document which references
-     *        
+     *
      * @see org.apache.batik.script.Interpreter
      * @see org.apache.batik.script.InterpreterPool
      */
@@ -137,7 +137,7 @@ public class RhinoInterpreter implements Interpreter {
         // entering a context
         defaultContext = enterContext();
         Context ctx = defaultContext;
-            
+
         try {
 
             // init std object with an importer
@@ -166,7 +166,7 @@ public class RhinoInterpreter implements Interpreter {
     }
 
     /**
-     * Implementation helper. Makes sure the proper security is set 
+     * Implementation helper. Makes sure the proper security is set
      * on the context.
      */
     public Context enterContext(){
@@ -178,7 +178,7 @@ public class RhinoInterpreter implements Interpreter {
                 ctx.setSecuritySupport(securitySupport);
                 contexts.add(ctx);
 
-                // Hopefully, we are not switching threads too 
+                // Hopefully, we are not switching threads too
                 // often ....
                 defaultContext = ctx;
             }
@@ -245,7 +245,7 @@ public class RhinoInterpreter implements Interpreter {
      */
     public Object evaluate(final String scriptstr)
         throws InterpreterException {
- 
+
         final Context ctx = enterContext();
 
         ctx.setWrapHandler(wrapHandler);
@@ -356,6 +356,14 @@ public class RhinoInterpreter implements Interpreter {
                 // The window becomes the global object.
                 globalObject =
                     (ScriptableObject)globalObject.get(BIND_NAME_WINDOW, globalObject);
+		
+		// we need to init it as a global object...
+		ctx = enterContext();
+		try {
+		  ctx.initStandardObjects(globalObject);
+		} finally {
+		  Context.exit();
+		}
             } catch (Exception e) {
                 // Cannot happen.
             }
@@ -415,7 +423,7 @@ public class RhinoInterpreter implements Interpreter {
     /**
      * To build an argument list.
      */
-    public interface ArgumentsBuilder { 
+    public interface ArgumentsBuilder {
         Object[] buildArguments();
     }
 
