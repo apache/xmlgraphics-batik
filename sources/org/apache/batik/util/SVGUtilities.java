@@ -9,6 +9,7 @@
 package org.apache.batik.util;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.io.StringReader;
 import java.util.StringTokenizer;
 
@@ -22,6 +23,10 @@ import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.parser.PreserveAspectRatioHandler;
 import org.apache.batik.parser.PreserveAspectRatioParser;
+import org.apache.batik.gvt.PointTransformer;
+import org.apache.batik.gvt.PointTransformerIdentity;
+import org.apache.batik.gvt.PointTransformerBoundingBox;
+import org.apache.batik.gvt.TransformedPoint;
 import org.apache.batik.refimpl.gvt.filter.ConcreteFilterRegion;
 import org.apache.batik.refimpl.gvt.filter.FilterChainRegion;
 import org.apache.batik.refimpl.gvt.filter.FilterPrimitiveRegion;
@@ -710,6 +715,114 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
+     * Creates a <tt>Point2D</tt> instance for the input
+     * x and y attribute value in 'units'.
+     */
+    public static Point2D
+        convertPoint(SVGElement svgElement, String xStr, String yStr, String units,
+                     GraphicsNode node, UnitProcessor.Context uctx){
+        // pointTransformer will hold the gradient point to
+        // user space transformer.
+        Point2D point;
+        PointTransformer pointTransformer = null;
+
+        if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
+            //
+            // Values are in 'objectBoundingBox' units
+            // These cannot be resolved at construction time,
+            // so we keep value in 'bounding box space'. We
+            // build a TransformedPoint that
+            // will resolve bounding box coordinates to user
+            // space coordinates upon rendering (i.e., when the
+            // LazyPoint's getPoint method is invoked.
+            //
+
+            // Build FilterRegionTransformer
+            pointTransformer = new PointTransformerBoundingBox(node);
+
+            // Now, resolve x and y values.
+            // For each value, we distinguish two cases: percentages
+            // and other. If a percentage value is used, it is converted
+            // to a 'bounding box' space coordinate by division by 100
+            // Otherwise, standard unit conversion is used.
+            LengthParser p = uctx.getParserFactory().createLengthParser();
+            UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
+            p.setLengthHandler(ur);
+
+            // x  value
+            float x = 0; // default value
+            if(xStr.length() > 0){
+                p.parse(new StringReader(xStr));
+
+                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
+                    x = ur.value / 100f;
+                }
+                else{
+                    x = UnitProcessor.svgToUserSpace(ur.unit,
+                                                     ur.value,
+                                                     svgElement,
+                                                     UnitProcessor.HORIZONTAL_LENGTH,
+                                                     uctx);
+                }
+            }
+
+
+            // y  value
+            float y = 0; // default value
+            ur = new UnitProcessor.UnitResolver();
+            p.setLengthHandler(ur);
+            if(yStr.length() > 0){
+                p.parse(new StringReader(yStr));
+
+                if(ur.unit == SVGLength.SVG_LENGTHTYPE_PERCENTAGE){
+                    y = ur.value / 100f;
+                }
+                else{
+                    y = UnitProcessor.svgToUserSpace(ur.unit,
+                                                     ur.value,
+                                                     svgElement,
+                                                     UnitProcessor.VERTICAL_LENGTH,
+                                                     uctx);
+                }
+            }
+
+            System.out.println("New BB Point : " + x + " / " + y);
+            point = new TransformedPoint(x, y, pointTransformer);
+        }
+        else{
+            // Values are in 'userSpaceOnUse'. Everything, including percentages,
+            // can be resolved now (percentages refer to the viewPort)
+            //
+
+            // Build a PointTransformer that does not do anything
+            pointTransformer = new PointTransformerIdentity();
+
+            // Now, resolve x and y
+            float x = 0;
+            if(xStr.length() > 0){
+                x = UnitProcessor.svgToUserSpace(xStr,
+                                                 svgElement,
+                                                 UnitProcessor.HORIZONTAL_LENGTH,
+                                                 uctx);
+            }
+
+            float y = 0;
+            if(yStr.length() > 0){
+                y = UnitProcessor.svgToUserSpace(yStr,
+                                                 svgElement,
+                                                 UnitProcessor.VERTICAL_LENGTH,
+                                                 uctx);
+            }
+
+            System.out.println("New US Point Str : " + xStr + " / " + yStr);
+            System.out.println("New US Point : " + x + " / " + y);
+            point = new TransformedPoint(x, y, pointTransformer);
+        }
+
+        return point;
+    }
+
+    /**
      * Creates a <tt>FilterRegion</tt> for the input filter
      * primitive element, processing the element as a node in
      * a filter chain.
@@ -879,7 +992,7 @@ public class SVGUtilities implements SVGConstants {
      * and height attributes. Uses the input <tt>GraphicsNode</tt>
      * as a default for the region bounds
      */
-    public static FilterRegion convertFilterRegion(Element filteredElement,
+    /*public static FilterRegion convertFilterRegion(Element filteredElement,
                                                    GraphicsNode node,
                                                    UnitProcessor.Context uctx){
 
@@ -918,7 +1031,7 @@ public class SVGUtilities implements SVGConstants {
         return new ConcreteFilterRegion(node,
                                         new Float(x), new Float(y),
                                         new Float(width), new Float(height));
-    }
+                                        }*/
 
     /**
      * Parses a Float value pair. This assumes that the input attribute
@@ -947,3 +1060,4 @@ public class SVGUtilities implements SVGConstants {
         return pair;
     }
 }
+

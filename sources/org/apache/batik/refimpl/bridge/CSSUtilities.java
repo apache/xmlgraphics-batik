@@ -15,28 +15,38 @@ import java.awt.Composite;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.ClipBridge;
 import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.bridge.MaskBridge;
+import org.apache.batik.bridge.PaintBridge;
+
 import org.apache.batik.gvt.CompositeShapePainter;
 import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.StrokeShapePainter;
+
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
+
 import org.apache.batik.refimpl.bridge.resources.Messages;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSValueList;
 import org.w3c.dom.css.RGBColor;
+
 import org.w3c.dom.svg.SVGElement;
 
 /**
@@ -56,7 +66,7 @@ public class CSSUtilities implements SVGConstants {
      * Initializes the composite corresponding to the
      * opacity attribute in the input <tt>GraphicsNode</tt>
      */
-    public static Composite convertOpacityToComposite(CSSPrimitiveValue val){
+    public static Composite convertOpacityToComposite(CSSPrimitiveValue val) {
         float opacity = convertOpacity(val);
         Composite composite = null;
         if(opacity > 0) {
@@ -247,18 +257,19 @@ public class CSSUtilities implements SVGConstants {
      * @param uctx the UnitProcessor context
      */
     public static ShapePainter convertStrokeAndFill(SVGElement svgElement,
+                                                    GraphicsNode node,
                                                     BridgeContext ctx,
                                                     CSSStyleDeclaration decl,
                                                     UnitProcessor.Context uctx){
         GVTFactory f = ctx.getGVTFactory();
         CompositeShapePainter painter = f.createCompositeShapePainter();
         // resolve fill
-        ShapePainter fillPainter = convertFill(svgElement, ctx, decl, uctx);
+        ShapePainter fillPainter = convertFill(svgElement, node, ctx, decl, uctx);
         if (fillPainter != null) {
             painter.addShapePainter(fillPainter);
         }
         // resolve stroke
-        ShapePainter strokePainter = convertStroke(svgElement, ctx, decl, uctx);
+        ShapePainter strokePainter = convertStroke(svgElement, node, ctx, decl, uctx);
         if (strokePainter != null) {
             painter.addShapePainter(strokePainter);
         }
@@ -275,6 +286,7 @@ public class CSSUtilities implements SVGConstants {
      * @param uctx the UnitProcessor context
      */
     public static ShapePainter convertStroke(SVGElement svgElement,
+                                             GraphicsNode node,
                                              BridgeContext ctx,
                                              CSSStyleDeclaration decl,
                                              UnitProcessor.Context uctx) {
@@ -283,7 +295,7 @@ public class CSSUtilities implements SVGConstants {
                                                    ctx,
                                                    decl,
                                                    uctx);
-        Paint paint = convertStrokeToPaint(decl);
+        Paint paint = convertStrokeToPaint(svgElement, node, ctx, decl, uctx);
 
         StrokeShapePainter painter = ctx.getGVTFactory().createStrokeShapePainter();
         painter.setStroke(stroke);
@@ -295,7 +307,11 @@ public class CSSUtilities implements SVGConstants {
      * Returns a Paint object that corresponds to the various
      * stroke attributes in the input element
      */
-    public static Paint convertStrokeToPaint(CSSStyleDeclaration decl) {
+    public static Paint convertStrokeToPaint(SVGElement element,
+                                             GraphicsNode node,
+                                             BridgeContext ctx,
+                                             CSSStyleDeclaration decl,
+                                             UnitProcessor.Context uctx) {
         // resolve the paint of the StrokeShapePainter
         CSSPrimitiveValue v
             = (CSSPrimitiveValue) decl.getPropertyCSSValue(STROKE_PROPERTY);
@@ -309,8 +325,9 @@ public class CSSUtilities implements SVGConstants {
             Color c = convertColor(v.getRGBColorValue(), opacity);
             return c;
         case CSSPrimitiveValue.CSS_URI:
-            // <!> FIXME : TODO !!!
-            throw new Error("Not yet implemented");
+            Paint uriPaint = convertURIStrokeToPaint(element, node, ctx,
+                                                     decl, uctx, v.getStringValue());
+            return uriPaint;
         }
 
         return null;
@@ -425,30 +442,92 @@ public class CSSUtilities implements SVGConstants {
      * @param uctx the UnitProcessor context
      */
     public static ShapePainter convertFill(SVGElement svgElement,
+                                           GraphicsNode node,
                                            BridgeContext ctx,
                                            CSSStyleDeclaration decl,
                                            UnitProcessor.Context uctx) {
         GVTFactory f = ctx.getGVTFactory();
         FillShapePainter painter = null;
-        // resolve the paint of the FillShapePainter
-        CSSPrimitiveValue v
-            = (CSSPrimitiveValue) decl.getPropertyCSSValue(FILL_PROPERTY);
-        switch(v.getPrimitiveType()) {
-        case CSSPrimitiveValue.CSS_IDENT:
-            return null; // stroke:'none'
-        case CSSPrimitiveValue.CSS_RGBCOLOR:
+        Paint fillPaint = convertFillToPaint(svgElement,
+                                             node,
+                                             ctx,
+                                             decl,
+                                             uctx);
+        if(fillPaint != null){
             painter = f.createFillShapePainter();
-            CSSPrimitiveValue vv = (CSSPrimitiveValue)
-                decl.getPropertyCSSValue(FILL_OPACITY_PROPERTY);
-            float opacity = convertOpacity(vv);
-            Color c = convertColor(v.getRGBColorValue(), opacity);
-            painter.setPaint(c);
-            break;
-        case CSSPrimitiveValue.CSS_URI:
-            // <!> FIXME : TODO !!!
-            throw new Error("Not yet implemented");
+            painter.setPaint(fillPaint);
         }
+
         return painter;
+    }
+
+    /**
+     * Converts the element referenced by uri into a Paint object
+     */
+    public static Paint convertURIFillToPaint(SVGElement svgElement,
+                                              GraphicsNode node,
+                                              BridgeContext ctx,
+                                              CSSStyleDeclaration decl,
+                                              UnitProcessor.Context uctx,
+                                              String fillUri){
+        if(fillUri.startsWith("#")){
+            fillUri = fillUri.substring(1);
+        }
+
+        //
+        // First, get a PaintBridge for the referenced value
+        //
+        Document doc = svgElement.getOwnerDocument();
+        Element paintElement = doc.getElementById(fillUri);
+        Paint paint = null;
+        if(paintElement != null){
+            PaintBridge paintBridge = (PaintBridge)ctx.getBridge(paintElement);
+
+            //
+            // Now, use bridge to convert paint
+            //
+            if(paintBridge != null){
+                paint = paintBridge.createFillPaint(ctx, node, svgElement, paintElement);
+            }
+        }
+        else{
+            System.out.println("Could not find a paint definition for : " + fillUri);
+        }
+
+        return paint;
+    }
+
+    /**
+     * Converts the element referenced by uri into a Paint object
+     */
+    public static Paint convertURIStrokeToPaint(SVGElement svgElement,
+                                                GraphicsNode node,
+                                                BridgeContext ctx,
+                                                CSSStyleDeclaration decl,
+                                                UnitProcessor.Context uctx,
+                                                String strokeUri){
+        if(strokeUri.startsWith("#")){
+            strokeUri = strokeUri.substring(1);
+        }
+
+        //
+        // First, get a PaintBridge for the referenced value
+        //
+        Paint paint = null;
+        Document doc = svgElement.getOwnerDocument();
+        Element paintElement = doc.getElementById(strokeUri);
+        if(paintElement != null){
+            PaintBridge paintBridge = (PaintBridge)ctx.getBridge(paintElement);
+
+            //
+            // Now, use bridge to convert paint
+            //
+            if(paintBridge != null){
+                paint = paintBridge.createStrokePaint(ctx, node, svgElement, paintElement);
+            }
+        }
+
+        return paint;
     }
 
     /**
@@ -456,7 +535,11 @@ public class CSSUtilities implements SVGConstants {
      * Element using the specified context and css style declaration.
      * @param decl the css style declaration
      */
-    public static Paint convertFillToPaint(CSSStyleDeclaration decl) {
+    public static Paint convertFillToPaint(SVGElement element,
+                                           GraphicsNode node,
+                                           BridgeContext ctx,
+                                           CSSStyleDeclaration decl,
+                                           UnitProcessor.Context uctx) {
         CSSPrimitiveValue v
             = (CSSPrimitiveValue) decl.getPropertyCSSValue(FILL_PROPERTY);
         switch(v.getPrimitiveType()) {
@@ -469,7 +552,10 @@ public class CSSUtilities implements SVGConstants {
             Color c = convertColor(v.getRGBColorValue(), opacity);
             return c;
         case CSSPrimitiveValue.CSS_URI:
-            // <!> FIXME : TODO !!!
+            Paint uriPaint = convertURIFillToPaint(element, node, ctx,
+                                                   decl, uctx, v.getStringValue());
+
+            return uriPaint;
         }
         throw new Error("Not yet implemented");
     }
@@ -488,6 +574,22 @@ public class CSSUtilities implements SVGConstants {
         float opacity = convertOpacity(vv);
 
         System.out.println("Flood color: " + v.getCssText());
+        return convertColor(v.getRGBColorValue(), opacity);
+    }
+
+    /**
+     * Returns the <tt>Color</tt> corresponding to the stop
+     * attributes.
+     * @param decl the css style declaration
+     */
+    public static Color convertStopColorToPaint(CSSStyleDeclaration decl) {
+        CSSPrimitiveValue v
+            = (CSSPrimitiveValue) decl.getPropertyCSSValue
+            (STOP_COLOR_PROPERTY);
+        CSSPrimitiveValue vv = (CSSPrimitiveValue)
+            decl.getPropertyCSSValue(STOP_OPACITY_PROPERTY);
+        float opacity = convertOpacity(vv);
+
         return convertColor(v.getRGBColorValue(), opacity);
     }
 
@@ -703,4 +805,23 @@ public class CSSUtilities implements SVGConstants {
         return filter;
     }
 
+    /**
+     * Converts the input value to a ratio. If the input value ends
+     * with a % character, it is considered a percentage. Otherwise,
+     * it is considered a plain floating point value
+     */
+    public static float convertRatio(String v){
+        if(v == null){
+            throw new IllegalArgumentException();
+        }
+
+        float d = 1;
+        if(v.endsWith("%")){
+            v = v.substring(0, v.length() - 1);
+            d = 100;
+        }
+
+        return Float.parseFloat(v)/d;
+    }
 }
+

@@ -30,7 +30,8 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants {
+public class SVGFeTurbulenceElementBridge implements FilterBridge,
+                                                     SVGConstants {
     /**
      * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
@@ -59,9 +60,10 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants 
         //
         // Get baseFrequency along each of the user space axis
         //
-        String baseFrequencyAttr = filterElement.getAttributeNS(null,
-                                                                ATTR_BASE_FREQUENCY);
-        Float baseFrequencies[] = SVGUtilities.buildFloatPair(baseFrequencyAttr);
+        String baseFrequencyAttr =
+            filterElement.getAttributeNS(null, ATTR_BASE_FREQUENCY);
+        Float baseFrequencies[] =
+            SVGUtilities.buildFloatPair(baseFrequencyAttr);
         float baseFrequencyX = DEFAULT_VALUE_BASE_FREQUENCY;
         if(baseFrequencies[0] != null){
             baseFrequencyX = baseFrequencies[0].floatValue();
@@ -75,32 +77,29 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants 
         //
         // Get number of octaves
         //
-        String numOctavesAttr = filterElement.getAttributeNS(null,
-                                                             ATTR_NUM_OCTAVES);
+        String numOctavesAttr =
+            filterElement.getAttributeNS(null, ATTR_NUM_OCTAVES);
         int numOctaves = DEFAULT_VALUE_NUM_OCTAVES;
-        try{
+        try {
             numOctaves = SVGUtilities.convertSVGInteger(numOctavesAttr);
-        }catch(NumberFormatException e){
-            // use default
+        } catch(NumberFormatException e) {
         }
 
         //
         // Get seed
         //
-        String seedAttr = filterElement.getAttributeNS(null,
-                                                       ATTR_SEED);
+        String seedAttr = filterElement.getAttributeNS(null, ATTR_SEED);
         int seed = DEFAULT_VALUE_SEED;
-        try{
+        try {
             seed = SVGUtilities.convertSVGInteger(seedAttr);
-        }catch(NumberFormatException e){
-            // use default
+        } catch(NumberFormatException e) {
         }
 
         //
         // Get Stitch procedure
         //
-        String stitchTilesAttr = filterElement.getAttributeNS(null,
-                                                              ATTR_STITCH_TILES);
+        String stitchTilesAttr =
+            filterElement.getAttributeNS(null, ATTR_STITCH_TILES);
         boolean stitchTiles = DEFAULT_VALUE_STITCH_TILES;
         if(VALUE_STITCH.equals(stitchTilesAttr)){
             stitchTiles = true;
@@ -134,17 +133,18 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants 
 
         // Turbulence region is defined by the filter region
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
-
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
+        String units = filterElement.getAttributeNS(null, ATTR_FILTER_UNITS);
 
         final FilterRegion turbulenceRegion
-            = SVGUtilities.convertFilterRegion(filteredElement,
-                                               filteredNode,
-                                               uctx);
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        filterRegion,
+                                                        units,
+                                                        filteredNode,
+                                                        uctx);
 
         TurbulenceRable turbulenceRable
             = new ConcreteTurbulenceRable(turbulenceRegion);
@@ -167,3 +167,4 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge, SVGConstants 
         // <!> FIXME : TODO
     }
 }
+
