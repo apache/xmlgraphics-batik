@@ -46,15 +46,19 @@ public class RepaintRateManager extends Thread {
      * current frame-rate easily)
      */
     public void run() {
+        // <!> IMPORTANT
+        // The 'time' should be controlled by a TimeLine abstraction
+        // and not necessarily rely on the System 'real world' time.
+        // <!> END IMPORTANT
+
         long lastFrameTime;
         long currentTime;
         long tm;
         long sleepTime;
 
-        final RepaintManager rm = updateManager.getRepaintManager();
         Runnable repaintRunnable = new NoRepaintRunnable() {
                 public void run() {
-                    rm.repaint();
+                    updateManager.repaint();
                 }
             };
         RunnableQueue rq = updateManager.getUpdateRunnableQueue();

@@ -25,8 +25,6 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 import javax.swing.event.EventListenerList;
-import org.apache.batik.gvt.event.CompositeGraphicsNodeEvent;
-import org.apache.batik.gvt.event.CompositeGraphicsNodeListener;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
 
 /**
@@ -137,80 +135,6 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     // Event support methods
     //
 
-    /**
-     * Dispatches the specified event to the interested registered listeners.
-     *
-     * @param evt the event to dispatch
-     */
-    public void dispatchEvent(GraphicsNodeEvent evt) {
-        super.dispatchEvent(evt);
-        switch(evt.getID()) {
-        case CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED:
-        case CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED:
-            processCompositeEvent((CompositeGraphicsNodeEvent)evt);
-            break;
-        default:
-            break;
-        }
-    }
-
-    /**
-     * Adds the specified composite graphics node listener to receive composite
-     * graphics node events from this node.
-     *
-     * @param l the composite graphics node listener to add 
-     */
-    public void addCompositeGraphicsNodeListener
-	(CompositeGraphicsNodeListener l) {
-
-        if (listeners == null) {
-            listeners = new EventListenerList();
-        }
-        listeners.add(CompositeGraphicsNodeListener.class, l);
-    }
-
-    /**
-     * Removes the specified composite graphics node listener so that it no
-     * longer receives composite graphics node events from this node.
-     *
-     * @param l the composite graphics node listener to remove 
-     */
-    public void removeCompositeGraphicsNodeListener
-	(CompositeGraphicsNodeListener l) {
-
-        if (listeners != null) {
-            listeners.remove(CompositeGraphicsNodeListener.class, l);
-        }
-    }
-
-    /**
-     * Processes a composite event occuring on this graphics node.
-     *
-     * @param evt the event to process
-     */
-   public void processCompositeEvent(CompositeGraphicsNodeEvent evt) {
-        if ((listeners != null) && acceptEvent(evt)) {
-            CompositeGraphicsNodeListener [] listeners =
-                (CompositeGraphicsNodeListener[])
-                getListeners(CompositeGraphicsNodeListener.class);
-
-            switch (evt.getID()) {
-            case CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].graphicsNodeAdded(evt);
-                }
-                break;
-            case CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].graphicsNodeRemoved(evt);
-                }
-                break;
-            default:
-                throw new Error("Unknown Composite Event type: "+evt.getID());
-            }
-        }
-        evt.consume();
-    }
 
     //
     // Geometric methods
@@ -567,10 +491,10 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         // Invalidates cached values
         invalidateGeometryCache();
         // Create and dispatch events
-        int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED;
-        dispatchEvent(new CompositeGraphicsNodeEvent(this, id, oldNode));
-        id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
-        dispatchEvent(new CompositeGraphicsNodeEvent(this, id, node));
+        // int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED;
+        // dispatchEvent(new CompositeGraphicsNodeEvent(this, id, oldNode));
+        // id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
+        // dispatchEvent(new CompositeGraphicsNodeEvent(this, id, node));
         fireGraphicsNodeChangeCompleted();
         return oldNode;
      }
@@ -604,8 +528,8 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         // Invalidates cached values
         invalidateGeometryCache();
         // Create and dispatch event
-        int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
-        dispatchEvent(new CompositeGraphicsNodeEvent(this, id, node));
+        // int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
+        // dispatchEvent(new CompositeGraphicsNodeEvent(this, id, node));
         fireGraphicsNodeChangeCompleted();
         return true;
     }
@@ -650,8 +574,8 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         // Invalidates cached values
         invalidateGeometryCache();
         // Create and dispatch event
-        int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
-        dispatchEvent(new CompositeGraphicsNodeEvent(this, id, node));
+        // int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED;
+        // dispatchEvent(new CompositeGraphicsNodeEvent(this, id, node));
         fireGraphicsNodeChangeCompleted();
     }
 
@@ -726,8 +650,8 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         // Invalidates cached values
         invalidateGeometryCache();
         // Create and dispatch event
-        int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED;
-        dispatchEvent(new CompositeGraphicsNodeEvent(this, id, oldNode));
+        // int id = CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED;
+        // dispatchEvent(new CompositeGraphicsNodeEvent(this, id, oldNode));
         fireGraphicsNodeChangeCompleted();
         return oldNode;
     }

@@ -66,29 +66,9 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     protected Document document;
 
     /**
-     * The renderer used to paint.
-     */
-    protected ImageRenderer renderer;
-
-    /**
      * The update RunnableQueue.
      */
     protected RunnableQueue updateRunnableQueue;
-
-    /**
-     * The initial time.
-     */
-    protected long initialTime;
-
-    /**
-     * The time elapsed in suspended state.
-     */
-    protected long suspendedTime;
-
-    /**
-     * The starting time of the current pause.
-     */
-    protected long suspendStartTime;
 
     /**
      * Whether the update manager is running.
@@ -106,11 +86,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     protected List listeners = Collections.synchronizedList(new LinkedList());
 
     /**
-     * The starting time.
-     */
-    protected long startingTime;
-
-    /**
      * The scripting environment.
      */
     protected ScriptingEnvironment scriptingEnvironment;
@@ -119,11 +94,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * The repaint manager.
      */
     protected RepaintManager repaintManager;
-
-    /**
-     * The repaint-rate manager.
-     */
-    protected RepaintRateManager repaintRateManager;
 
     /**
      * The update tracker.
@@ -179,10 +149,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         updateRunnableQueue.preemptLater(new Runnable() {
                 public void run() {
                     synchronized (UpdateManager.this) {
-                        startingTime = System.currentTimeMillis();
-
                         running = true;
-                        renderer = r;
         
                         updateTracker = new UpdateTracker();
                         RootGraphicsNode root = graphicsNode.getRoot();
@@ -192,10 +159,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                         }
 
                         repaintManager =
-                            new RepaintManager(UpdateManager.this, renderer);
-                        repaintRateManager =
-                            new RepaintRateManager(UpdateManager.this);
-                        repaintRateManager.start();
+                            new RepaintManager(r);
 
                         fireManagerStartedEvent();
                         started = true;
@@ -256,17 +220,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     }
 
     /**
-     * Returns the presentation time, in milliseconds.
-     */
-    public long getPresentationTime() {
-        if (running) {
-            return System.currentTimeMillis() - initialTime - suspendedTime;
-        } else {
-            return suspendStartTime - initialTime - suspendedTime;
-        }
-    }
-
-    /**
      * Suspends the update manager.
      */
     public synchronized void suspend() {
@@ -298,9 +251,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                         public void run() {
                             synchronized (UpdateManager.this) {
                                 running = false;
-                                if (repaintManager != null) {
-                                    repaintRateManager.interrupt();
-                                }
                                 scriptingEnvironment.interrupt();
                                 updateRunnableQueue.getThread().interrupt();
                             }
@@ -321,7 +271,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
             throw new IllegalStateException("UpdateManager not started.");
         }
 
-        // Invoke first to cancel the pending tasks
+        // Invoke first to cancel the pending tasksaalder@bsf.ca
         updateRunnableQueue.preemptLater(new Runnable() {
                 public void run() {
                     synchronized (UpdateManager.this) {
@@ -332,7 +282,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                             dispatchEvent(evt);
                         running = false;
                     
-                        repaintRateManager.interrupt();
                         scriptingEnvironment.interrupt();
                         updateRunnableQueue.getThread().interrupt();
                         fireManagerStoppedEvent();
@@ -340,14 +289,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                 }
             });
         resume();
-    }
-
-    /**
-     * Call this to let the Update Manager know that certain areas
-     * in the image have been modified and need to be rerendered..
-     */
-    public void modifiedAreas(List areas) {
-        repaintManager.modifiedAreas(areas);
     }
 
     /**
@@ -362,16 +303,10 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                                 Shape aoi,
                                 int width,
                                 int height) {
-        try {
-            fireStartedEvent(renderer.getOffScreen());
-            
-            List l = repaintManager.updateRendering(u2d, dbr, aoi,
-                                                    width, height);
-            
-            fireCompletedEvent(renderer.getOffScreen(), l);
-        } catch (Exception e) {
-            fireFailedEvent();
-        }
+        repaintManager.setupRenderer(u2d,dbr,aoi,width,height);
+        List l = new ArrayList(1);
+        l.add(aoi);
+        updateRendering(l);
     }
 
     /**
@@ -380,15 +315,29 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      */
     public void updateRendering(List areas) {
         try {
-            fireStartedEvent(renderer.getOffScreen());
+            fireStartedEvent(repaintManager.getOffScreen());
 
             List l = repaintManager.updateRendering(areas);
 
-            fireCompletedEvent(renderer.getOffScreen(), l);
+            fireCompletedEvent(repaintManager.getOffScreen(), l);
         } catch (Exception e) {
             fireFailedEvent();
         }
     }
+
+    /**
+     * Repaints the dirty areas, if needed.
+     */
+    public void repaint() {
+        if (updateTracker.hasChanged()) {
+            List dirtyAreas = updateTracker.getDirtyAreas();
+            if (dirtyAreas != null) {
+                updateRendering(dirtyAreas);
+            }
+            updateTracker.clear();
+        }
+    }
+
 
     /**
      * Adds a UpdateManagerListener to this UpdateManager.
@@ -510,7 +459,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      */
     public void runnableInvoked(RunnableQueue rq, Runnable r) {
         if (running && !(r instanceof NoRepaintRunnable)) {
-            repaintManager.repaint();
+            repaint();
         }
     }
 
@@ -520,7 +469,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     public void executionSuspended(RunnableQueue rq) {
         if (suspendCalled) {
             running = false;
-            suspendStartTime = System.currentTimeMillis();
             fireManagerSuspendedEvent();
         }
     }
@@ -533,7 +481,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
             running = true;
 
             suspendCalled = false;
-            suspendedTime = System.currentTimeMillis() - suspendStartTime;
             fireManagerResumedEvent();
         }
     }

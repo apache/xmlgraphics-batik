@@ -14,6 +14,8 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
+import java.awt.image.BufferedImage;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,86 +28,29 @@ import org.apache.batik.gvt.renderer.ImageRenderer;
  * This class manages the rendering of a GVT tree.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class RepaintManager {
-    
-    /**
-     * The associated UpdateManager.
-     */
-    protected UpdateManager updateManager;
-
     /**
      * The renderer used to repaint the buffer.
      */
     protected ImageRenderer renderer;
 
     /**
-     * Whether or not the manager is active.
-     */
-    protected boolean enabled;
-
-    /**
      * Creates a new repaint manager.
      */
-    public RepaintManager(UpdateManager um, ImageRenderer r) {
-        updateManager = um;
+    public RepaintManager(ImageRenderer r) {
         renderer = r;
     }
     
-    /**
-     * Repaints the dirty areas, if needed.
-     */
-    public void repaint() {
-        UpdateTracker ut = updateManager.getUpdateTracker();
-        if (ut.hasChanged()) {
-            List dirtyAreas = ut.getDirtyAreas();
-            if (dirtyAreas != null) {
-                // Calls the UpdateManager methods
-                // to allow events to be fired.
-                updateManager.modifiedAreas(dirtyAreas);
-                updateManager.updateRendering(dirtyAreas);
-            }
-            ut.clear();
-        }
-    }
-
-    /**
-     * Call this to let the Repaint Manager know that certain areas
-     * in the image have been modified and need to be rerendered..
-     */
-    public void modifiedAreas(List areas) {
-        renderer.flush(areas);
-    }
-
-    /**
-     * Updates the rendering buffer.
-     * @param u2d The user to device transform.
-     * @param dbr Whether the double buffering should be used.
-     * @param aoi The area of interest in the renderer space units.
-     * @param width&nbsp;height The offscreen buffer size.
-     * @return the list of the rectangles to repaint.
-     */
-    public List updateRendering(AffineTransform u2d,
-                                boolean dbr,
-                                Shape aoi,
-                                int width,
-                                int height) throws InterruptedException {
-        renderer.setTransform(u2d);
-        renderer.setDoubleBuffered(dbr);
-        renderer.updateOffScreen(width, height);
-        renderer.clearOffScreen();
-        List l = new ArrayList(1);
-        l.add(aoi);
-        return updateRendering(l);
-    }
-
     /**
      * Updates the rendering buffer.
      * @param aoi The area of interest in the renderer space units.
      * @return the list of the rectangles to repaint.
      */
     public List updateRendering(List areas) throws InterruptedException {
+        renderer.flush(areas);
         List rects = new ArrayList(areas.size());
         AffineTransform at = renderer.getTransform();
 
@@ -128,4 +73,33 @@ public class RepaintManager {
         renderer.repaint(areas);
         return rects;
     }
+
+    /**
+     * Sets up the renderer so that it is ready to render for the new
+     * 'context' defined by the user to device transform, double buffering
+     * state, area of interest and width/height.
+     * @param u2d The user to device transform.
+     * @param dbr Whether the double buffering should be used.
+     * @param aoi The area of interest in the renderer space units.
+     * @param width&nbsp;height The offscreen buffer size.
+     */
+    public void setupRenderer(AffineTransform u2d,
+                              boolean dbr,
+                              Shape aoi,
+                              int width,
+                              int height) {
+        renderer.setTransform(u2d);
+        renderer.setDoubleBuffered(dbr);
+        renderer.updateOffScreen(width, height);
+        renderer.clearOffScreen();
+    }
+
+    /**
+     * Returns the renderer's offscreen, i.e., the current state as rendered
+     * by the associated renderer.
+     */
+    public BufferedImage getOffScreen(){
+        return renderer.getOffScreen();
+    }
+
 }
