@@ -15,7 +15,9 @@ import java.util.Map;
 
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.FilterAlphaRable;
+import org.apache.batik.ext.awt.image.renderable.FilterColorInterpolation;
 import org.apache.batik.ext.awt.image.renderable.FloodRable8Bit;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.BackgroundRable8Bit;
 
@@ -113,6 +115,21 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
         String s = filterElement.getAttributeNS(null, SVG_RESULT_ATTRIBUTE);
         if ((s.length() != 0) && (s.trim().length() != 0)) {
             filterMap.put(s, filter);
+        }
+    }
+
+    /**
+     * Handles the 'color-interpolation-filters' CSS property.
+     *
+     * @param filter the filter
+     * @param filterElement the filter element
+     */
+    protected static void handleColorInterpolationFilters(Filter filter,
+                                                          Element filterElement) {
+        if (filter instanceof FilterColorInterpolation) {
+            boolean isLinear
+                = CSSUtilities.convertColorInterpolationFilter(filterElement);
+            ((FilterColorInterpolation)filter).setColorSpaceLinear(isLinear);
         }
     }
 

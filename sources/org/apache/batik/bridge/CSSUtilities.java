@@ -146,6 +146,26 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     }
 
     /////////////////////////////////////////////////////////////////////////
+    // 'color-interpolation-filter'
+    /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns the color space for the specified filter element. Checks the
+     * 'color-interpolation-filter' property and returns true if the color space
+     * is linear, false otherwise (sRGB).
+     *
+     * @param filterElement the element
+     */
+    public static boolean convertColorInterpolationFilter(Element filterElement) {
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(filterElement);
+        CSSPrimitiveValue v
+            = (CSSPrimitiveValue) decl.getPropertyCSSValueInternal
+            (CSS_COLOR_INTERPOLATION_FILTERS_PROPERTY);
+
+        return CSS_LINEARRGB_VALUE.equals(v.getStringValue());
+    }
+
+    /////////////////////////////////////////////////////////////////////////
     // 'color-interpolation'
     /////////////////////////////////////////////////////////////////////////
 
