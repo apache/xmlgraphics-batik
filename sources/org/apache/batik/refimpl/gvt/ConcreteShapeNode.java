@@ -124,11 +124,15 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     }
 
     public boolean contains(Point2D p) {
-        return (getBounds().contains(p) && paintedArea.contains(p));
+        return (getBounds().contains(p) &&
+                paintedArea != null &&
+                paintedArea.contains(p));
     }
 
     public boolean intersects(Rectangle2D r) {
-        return (getBounds().intersects(r) && paintedArea.intersects(r));
+        return (getBounds().intersects(r) &&
+                paintedArea != null &&
+                paintedArea.intersects(r));
     }
 
     public Rectangle2D getPrimitiveBounds() {
