@@ -26,6 +26,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseListener;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
@@ -275,8 +276,8 @@ public class JSVGCanvas
         AbstractEventDispatcher dispatcher =
             (AbstractEventDispatcher)userAgent.getEventDispatcher();
         if (dispatcher != null) {
-            addMouseListener(dispatcher);
-            addMouseMotionListener(dispatcher);
+            //addMouseListener(dispatcher);
+            //addMouseMotionListener(dispatcher);
             addKeyListener(dispatcher);
         }
 
@@ -344,7 +345,7 @@ public class JSVGCanvas
                     bridgeContext = createBridgeContext(doc);
                     bridgeContext.setViewCSS((ViewCSS)doc.getDocumentElement());
                     bridgeContext.setGVTBuilder(builder);
-                    
+
                     long t1 = System.currentTimeMillis();
 
                     gvtRoot = builder.build(bridgeContext, document);
@@ -353,9 +354,9 @@ public class JSVGCanvas
 
                     System.out.println("---- GVT tree construction ---- " +
                                        (t2 - t1) + " ms");
-                    
+
                     computeTransform();
-                    
+
                     // <!> HACK maybe not the right place to dispatch
                     // this event
                     // fire the load event
@@ -364,7 +365,7 @@ public class JSVGCanvas
                     ((EventTarget)(document.
                                    getRootElement())).
                         dispatchEvent(evt);
-                    
+
                     ((EventTarget)doc).addEventListener("DOMAttrModified",
                                                         new MutationListener(),
                                                         false);
@@ -381,7 +382,7 @@ public class JSVGCanvas
                 }
                 repaint = true;
                 repaint();
-                
+
                 if (thumbnailCanvas != null) {
                     thumbnailCanvas.fullRepaint();
                 }
@@ -775,9 +776,8 @@ public class JSVGCanvas
     /**
      * To handle the mouse events.
      */
-    protected class MouseListener
-        extends    MouseAdapter
-        implements MouseMotionListener {
+    protected class MouseListener implements java.awt.event.MouseListener,
+                                             MouseMotionListener {
 
         protected Cursor cursor;
         protected int sx;
@@ -785,9 +785,22 @@ public class JSVGCanvas
         protected boolean mouseExited;
 
         public MouseListener() {}
+
+        public void mouseClicked(MouseEvent e) {
+            AbstractEventDispatcher dispatcher =
+                (AbstractEventDispatcher)userAgent.getEventDispatcher();
+            dispatcher.mouseClicked(e);
+        }
+
+        public void mouseEntered(MouseEvent e) {
+            AbstractEventDispatcher dispatcher =
+                (AbstractEventDispatcher)userAgent.getEventDispatcher();
+            dispatcher.mouseEntered(e);
+        }
+
         public void mousePressed(MouseEvent e) {
             int mods = e.getModifiers();
-
+            boolean operationPerformed = false;
             if ((mods & e.BUTTON1_MASK) != 0) {
                 mouseExited = false;
                 sx = e.getX();
@@ -798,11 +811,13 @@ public class JSVGCanvas
                     }
                     setCursor(PAN_CURSOR);
                     panTransform = new AffineTransform();
+                    operationPerformed = true;
                 } else if ((mods & e.CTRL_MASK) != 0) {
                     if (cursor == null) {
                         cursor = getCursor();
                     }
                     setCursor(ZOOM_CURSOR);
+                    operationPerformed = true;
                 }
             } else if ((mods & e.BUTTON3_MASK) != 0) {
                 mouseExited = false;
@@ -815,14 +830,25 @@ public class JSVGCanvas
                     setCursor(ROTATE_CURSOR);
                     rotateTransform = new AffineTransform();
                     paintRotateMarker(sx, sy);
+                    operationPerformed = true;
+                }
+            }
+            if (!operationPerformed) {
+                // nothing done so forward the event to the dispatcher
+                AbstractEventDispatcher dispatcher =
+                    (AbstractEventDispatcher)userAgent.getEventDispatcher();
+                if (dispatcher != null) {
+                    dispatcher.mouseEntered(e);
                 }
             }
         }
+
         public void mouseDragged(MouseEvent e) {
             int mods = e.getModifiers();
-
+            boolean operationPerformed = false;
             if ((mods & e.BUTTON1_MASK) != 0) {
                 if ((mods & e.SHIFT_MASK) != 0 && panTransform != null) {
+                    operationPerformed = true;
                     if (!mouseExited) {
                         int x = e.getX();
                         int y = e.getY();
@@ -832,33 +858,55 @@ public class JSVGCanvas
                         repaint();
                     }
                 } else if ((mods & e.CTRL_MASK) != 0) {
+                    operationPerformed = true;
                     paintZoomMarker(e.getX(), e.getY());
-                } else {
-                    endOperation(e.getX(), e.getY());
                 }
             } else if ((mods & e.BUTTON3_MASK) != 0) {
                 if ((mods & e.CTRL_MASK) != 0) {
+                    operationPerformed = true;
                     paintRotateMarker(e.getX(), e.getY());
                 }
             }
-
+            if (!operationPerformed) {
+                // nothing done so forward the event to the dispatcher
+                AbstractEventDispatcher dispatcher =
+                    (AbstractEventDispatcher)userAgent.getEventDispatcher();
+                if (dispatcher != null) {
+                    dispatcher.mouseEntered(e);
+                }
+            }
         }
+
         public void mouseReleased(MouseEvent e) {
             int mods = e.getModifiers();
-
+            boolean operationPerformed = false;
             if ((mods & e.BUTTON1_MASK) != 0) {
                 if (cursor != null) {
+                    operationPerformed = true;
                     endOperation(e.getX(), e.getY());
                 }
             } else if ((mods & e.BUTTON3_MASK) != 0) {
                 if (cursor != null) {
+                    operationPerformed = true;
                     endOperation(e.getX(), e.getY());
                 }
             }
+            if (!operationPerformed) {
+                // nothing done so forward the event to the dispatcher
+                AbstractEventDispatcher dispatcher =
+                    (AbstractEventDispatcher)userAgent.getEventDispatcher();
+                if (dispatcher != null) {
+                    dispatcher.mouseEntered(e);
+                }
+            }
+        }
 
-        }
         public void mouseMoved(MouseEvent e) {
+            AbstractEventDispatcher dispatcher =
+                (AbstractEventDispatcher)userAgent.getEventDispatcher();
+            dispatcher.mouseMoved(e);
         }
+
         public void mouseExited(MouseEvent e) {
             mouseExited = true;
             markerTop = null;
@@ -867,7 +915,11 @@ public class JSVGCanvas
             markerRight = null;
             panTransform = null;
             repaint();
+            AbstractEventDispatcher dispatcher =
+                (AbstractEventDispatcher)userAgent.getEventDispatcher();
+            dispatcher.mouseExited(e);
         }
+
         protected void endOperation(int x, int y) {
             setCursor(cursor);
             cursor = null;
