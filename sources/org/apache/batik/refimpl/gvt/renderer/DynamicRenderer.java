@@ -67,7 +67,12 @@ public class DynamicRenderer extends StaticRenderer {
      * @param node the graphics node
      */
     protected Shape getBoundsInRendererSpace(GraphicsNode node) {
-        // compute the matrix to go to renderer space
+        Rectangle2D bounds = node.getBounds();
+        AffineTransform Gx = getGlobalTransform(node);
+        return Gx.createTransformedShape(bounds);
+    }
+
+    protected AffineTransform getGlobalTransform(GraphicsNode node) {
         AffineTransform Gx = new AffineTransform();
         RootGraphicsNode root = node.getRoot();
         while (node != root) {
@@ -77,8 +82,7 @@ public class DynamicRenderer extends StaticRenderer {
             }
             node = node.getParent();
         }
-        Rectangle2D bounds = node.getBounds();
-        return Gx.createTransformedShape(bounds);
+        return Gx;
     }
 
     /**
@@ -89,6 +93,10 @@ public class DynamicRenderer extends StaticRenderer {
         public void propertyChange(PropertyChangeEvent evt) {
             GraphicsNode node = (GraphicsNode) evt.getSource();
             Shape aoi = getBoundsInRendererSpace(node);
+            /*
+            System.out.println(node+" propertyChange "+evt.getPropertyName()+
+                               " "+evt.getOldValue()+" "+evt.getNewValue());
+                               */
             repaintHandler.notifyRepaintedRegion(aoi);
         }
     }
