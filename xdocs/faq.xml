@@ -530,4 +530,28 @@
     </p></answer>
 </faq>
 
+<faq>
+    <question>
+    I am trying to use Batik and FOP together but Batik does not work and
+    fails on the org.w3c.xxx packages. What is happening?
+    </question>
+
+    <answer>
+        <p>Both FOP and Batik use the org.w3c.xxx packages. Depending on the 
+        version of FOP and Batik, Batik has been using a version of these
+        packages which is more recent than the one in the w3c.jar file FOP 
+        uses. However, if the w3c.jar file which comes with the FOP distribution
+        is loaded before the Batik jar files, then, the version coming with 
+        FOP takes precedence (i.e., that is the version the Java Virtual Machine
+        loads). Because that version is incompatible with Batik, you get a 
+        failure.</p>
+        <p>The solution is to either repackage the w3c.jar file with the 
+        classes in the Batik distribution (you will need the Batik source
+        distrib to do that), or you will need to make sure the Batik jars are
+        loaded before the w3c.jar, for example by putting them before the
+        w3c.jar file in your classpath. If you are copying your jar files to
+        ..jre/lib/ext, you can simply remove the FOP w3c.jar file from that
+        directory.</p>
+    </answer>
+</faq>
 </faqs>
