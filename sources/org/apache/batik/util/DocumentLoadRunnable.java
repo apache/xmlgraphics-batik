@@ -220,7 +220,11 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
             Reader r = new InputStreamReader(is);
 
             checkInterrupt();
-            doc = df.createDocument(documentURI, new InputSource(r));
+            try {  // Hack to catch bad things that can happen when parser is interrupted
+                doc = df.createDocument(documentURI, new InputSource(r));
+            } catch (NoClassDefFoundError e) {
+                throw new InterruptedException("Parser interrupted?");
+            }
             checkInterrupt();
             List l = XSLTransformer.getStyleSheets(doc.getFirstChild(),
                                                        documentURI);
