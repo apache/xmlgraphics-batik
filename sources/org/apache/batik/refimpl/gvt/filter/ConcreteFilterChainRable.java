@@ -227,6 +227,7 @@ public class ConcreteFilterChainRable extends AbstractRable
         // Update crop region
         crop.setPadRect(filterRegion.getRegion());
 
+        /**
         AffineTransform usr2dev = context.getTransform();
         if(usr2dev.getShearX() != 0 || 
            usr2dev.getShearY() != 0){
@@ -236,6 +237,7 @@ public class ConcreteFilterChainRable extends AbstractRable
         }
         else{
             return crop.createRendering(context);
-        }
+            }*/
+        return crop.createRendering(context);
     }
 }
