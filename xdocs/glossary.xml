@@ -54,7 +54,7 @@
         <s1 title="SVG Generator">
 
         <p>
-        The SVG Generator is a component of Batik that allows Java applications 
+        The SVG Generator is a module of Batik that allows Java applications 
         to create SVG content without needing specific knowledge of SVG. Applications
         doing graphics in Java use an API, embodied by the Graphics2D class, to 
         do all their rendering operations. They use the same code, but different 
