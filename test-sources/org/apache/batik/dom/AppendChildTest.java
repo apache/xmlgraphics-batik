@@ -27,6 +27,9 @@ public class AppendChildTest extends AbstractTest {
     public static String ERROR_GET_ELEMENT_BY_ID_FAILED 
         = "error.get.element.by.id.failed";
 
+    public static String ERROR_EXCEPTION_NOT_THROWN
+        = "error.exception.not.thrown";
+
     public static String ENTRY_KEY_ID 
         = "entry.key.id";
 
@@ -75,7 +78,15 @@ public class AppendChildTest extends AbstractTest {
                                                    url.openStream());
 
         DocumentFragment docFrag = otherDocument.createDocumentFragment();
-        docFrag.appendChild(doc.getDocumentElement());
-        return reportSuccess();
+        try {
+            docFrag.appendChild(doc.getDocumentElement());
+        } catch (DOMException ex) {
+            return reportSuccess();
+        }
+
+        DefaultTestReport report = new DefaultTestReport(this);
+        report.setErrorCode(ERROR_EXCEPTION_NOT_THROWN);
+        report.setPassed(false);
+        return report;
     }
 }
