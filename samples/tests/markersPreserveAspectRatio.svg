@@ -39,14 +39,14 @@
                 <path d="M 0 3 l 1 0 l -0.5 -1 z" />
             </g>
 
-            <g id="markerContent">
-                <rect x="0" y="0" width="3" height="3" fill="black" /> 
+            <g id="markerContent" stroke="none">
+                <rect x="0" y="0" width="3" height="3" fill="black" />
                 <use xlink:href="#markerColumn" fill="crimson" />
                 <use xlink:href="#markerColumn" x="1" fill="gold" />
                 <use xlink:href="#markerColumn" x="2" fill="orange" />
             </g>
 
-            <path id="testPath" d="M 60 20 l 30 0 l 30 0" />
+            <path id="testPath" d="M 60 20 l 30 0 l 30 0" fill="none"/>
 
             <!-- ============================= -->
             <!-- Marker Definitions            -->
@@ -72,7 +72,7 @@
             <marker id="meetNone" markerWidth="20" markerHeight="30" 
                     viewBox="0 0 3 3" orient="0" refX="1.5" refY="1.5" 
                     markerUnits="strokeWidth" overflow="hidden"
-                    preserveAspectRatio="meet none">
+                    preserveAspectRatio="none meet">
                 <g>
                     <use xlink:href="#markerContent" />
                 </g>
@@ -81,7 +81,7 @@
             <marker id="sliceNone" markerWidth="20" markerHeight="30" 
                     viewBox="0 0 3 3" orient="0" refX="1.5" refY="1.5" 
                     markerUnits="strokeWidth" overflow="hidden"
-                    preserveAspectRatio="slice none">
+                    preserveAspectRatio="none slice">
                 <g>
                     <use xlink:href="#markerContent" />
                 </g>
@@ -555,8 +555,8 @@
             <g marker-start="url(#startEndMarker)" transform="translate(0, 360)"
                 marker-end="url(#startEndMarker)" stroke="black">
 
-                <!-- <use xlink:href="#testPath" marker-mid="url(#meetNone)" />
-                <use xlink:href="#testPath" marker-mid="url(#sliceNone)" x="100"/> -->
+                <use xlink:href="#testPath" marker-mid="url(#meetNone)" />
+                <use xlink:href="#testPath" marker-mid="url(#sliceNone)" x="100"/> 
                 <use xlink:href="#testPath" marker-mid="url(#noneNone)" x="200"/> 
 
             </g>

@@ -61,19 +61,19 @@
             <marker id="startMarker" markerWidth="4" markerHeight="4" 
                     viewBox="0 0 100 100" orient="0" refX="50" refY="50"
                     markerUnits="strokeWidth">
-                <circle cx="50" cy="50" r="50" fill="url(#whiteSphere)" />
+                <circle cx="50" cy="50" r="50" fill="url(#whiteSphere)" stroke="none"/>
             </marker>
                     
             <marker id="midMarker" markerWidth="4" markerHeight="4" 
                     viewBox="0 0 100 100" orient="0" refX="50" refY="50"
                     markerUnits="strokeWidth">
-                <circle cx="50" cy="50" r="50" fill="url(#graySphere)" />
+                <circle cx="50" cy="50" r="50" fill="url(#graySphere)" stroke="none"/>
             </marker>
                     
             <marker id="endMarker" markerWidth="4" markerHeight="4" 
                     viewBox="0 0 100 100" orient="0" refX="50" refY="50"
                     markerUnits="strokeWidth">
-                <circle cx="50" cy="50" r="50" fill="url(#blackSphere)" />
+                <circle cx="50" cy="50" r="50" fill="url(#blackSphere)" stroke="none"/>
             </marker>
                     
         </defs>

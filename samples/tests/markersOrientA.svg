@@ -33,7 +33,7 @@
         <defs>
             <g id="arrowMarker">
 
-                <g marker="none" >
+                <g stroke="none" >
                     <circle r="3" />
                     <rect x="-1" y="0" width="2" height="7" />
                     <path d="M -3 6 l 6 0 l -3 3 z" />
