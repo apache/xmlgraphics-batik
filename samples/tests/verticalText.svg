@@ -48,12 +48,12 @@
         </g>
 
 
-        <text x="50" y="75" writing-mode="tb" font-size="15">Writing top to bottom &#x44e5;&#x44e6; </text>
-        <text x="100" y="75" glyph-orientation-vertical="auto" writing-mode="tb" font-size="15">Glyph Orientation:auto&#x44e5;&#x44e6;</text>
-        <text x="150" y="75" glyph-orientation-vertical="0" writing-mode="tb" font-size="15">Glyph Orientation:0&#x44e5;&#x44e6;</text>
-        <text x="200" y="75" glyph-orientation-vertical="90" writing-mode="tb" font-size="15">Glyph Orientation:90&#x44e5;&#x44e6;</text>
-        <text x="250" y="75" glyph-orientation-vertical="180" writing-mode="tb" font-size="15">Glyph Orientation:180&#x44e5;&#x44e6;</text>
-        <text x="300" y="75" glyph-orientation-vertical="270" writing-mode="tb" font-size="15">Glyph Orientation:270&#x44e5;&#x44e6;</text>
+        <text x="50" y="75" writing-mode="tb" font-size="15">Writing top to bottom&#x753b;&#x50cf;</text>
+        <text x="100" y="75" glyph-orientation-vertical="auto" writing-mode="tb" font-size="15">Glyph Orientation:auto&#x753b;&#x50cf;</text>
+        <text x="150" y="75" glyph-orientation-vertical="0" writing-mode="tb" font-size="15">Glyph Orientation:0&#x753b;&#x50cf;</text>
+        <text x="200" y="75" glyph-orientation-vertical="90" writing-mode="tb" font-size="15">Glyph Orientation:90&#x753b;&#x50cf;</text>
+        <text x="250" y="75" glyph-orientation-vertical="180" writing-mode="tb" font-size="15">Glyph Orientation:180&#x753b;&#x50cf;</text>
+        <text x="300" y="75" glyph-orientation-vertical="270" writing-mode="tb" font-size="15">Glyph Orientation:270&#x753b;&#x50cf;</text>
         <text x="350" y="75" writing-mode="tb" font-size="15">Embedded <tspan fill="red">&lt;tspan&gt;</tspan> element</text>
         <text x="400" y="75" writing-mode="tb" font-size="15">Embedded <tspan fill="blue" glyph-orientation-vertical="0">orientated</tspan> element</text>
        
