@@ -29,6 +29,11 @@ public interface CSSContext {
     Value getSystemColor(String ident);
 
     /**
+     * Returns the value corresponding to the default font-family.
+     */
+    Value getDefaultFontFamily();
+
+    /**
      * Returns a lighter font-weight.
      */
     float getLighterFontWeight(float f);

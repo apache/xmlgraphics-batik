@@ -8,7 +8,10 @@
 
 package org.apache.batik.css.engine.value.css2;
 
+import org.apache.batik.css.engine.CSSContext;
 import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.StyleMap;
 
 import org.apache.batik.css.engine.value.AbstractValueManager;
 import org.apache.batik.css.engine.value.ListValue;
@@ -39,7 +42,6 @@ public class FontFamilyManager extends AbstractValueManager {
      */
     protected final static ListValue DEFAULT_VALUE = new ListValue();
     static {
-        // !!! TODO: Move it to the context.
         DEFAULT_VALUE.append
             (new StringValue(CSSPrimitiveValue.CSS_STRING,
                              "Arial"));
@@ -149,5 +151,22 @@ public class FontFamilyManager extends AbstractValueManager {
                 throw createMalformedLexicalUnitDOMException();
             }
         }
+    }
+
+    /**
+     * Implements {@link
+     * ValueManager#computeValue(CSSStylableElement,String,CSSEngine,int,StyleMap,Value)}.
+     */
+    public Value computeValue(CSSStylableElement elt,
+                              String pseudo,
+                              CSSEngine engine,
+                              int idx,
+                              StyleMap sm,
+                              Value value) {
+        if (value == DEFAULT_VALUE) {
+            CSSContext ctx = engine.getCSSContext();
+            value = ctx.getDefaultFontFamily();
+        }
+        return value;
     }
 }

@@ -98,6 +98,11 @@ public interface UserAgent {
     float getBolderFontWeight(float f);
 
     /**
+     * Returns the default font family.
+     */
+    String getDefaultFontFamily();
+
+    /**
      * Returns the language settings.
      */
     String getLanguages();
