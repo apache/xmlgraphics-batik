@@ -23,6 +23,8 @@ import java.io.Writer;
 
 import java.net.URL;
 
+import java.util.Calendar;
+
 import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestReportProcessor;
 import org.apache.batik.test.TestSuite;
@@ -61,8 +63,12 @@ public class XMLTestReportProcessor
     public static interface XMLReportConsumer {
         /**
          * Invoked when new report has been generated.
+         * @param xmlReport file containing the xml report
+         * @param reportDirectory base directory where any resource relative
+         *        to the report processing should be stored.
          */
-        public void onNewReport(File xmlReport) throws Exception ;
+        public void onNewReport(File xmlReport,
+                                File reportDirectory) throws Exception ;
     }
 
     /**
@@ -78,41 +84,50 @@ public class XMLTestReportProcessor
         = "xml.XMLTestReportProcessor.error.report.resources.directory.unusable";
 
     /**
-     * Prefix for the files created by this processor
-     */
-    public static final String XML_TEST_REPORT_PREFIX
-        = Messages.formatMessage("XMLTestReportProcessor.config.xml.test.report.prefix", null);
-
-    /**
-     * Prefix for the resource files created by this processor. Resource files are 
-     * copies of files found as Entries in TestReports.
-     */
-    public static final String XML_TEST_REPORT_RESOURCE_PREFIX
-        = Messages.formatMessage("XMLTestReportProcessor.config.xml.test.report.resource.prefix", null);
-
-    /**
-     * Suffix for the files created by this processor
-     */
-    public static final String XML_TEST_REPORT_SUFFIX
-        = Messages.formatMessage("XMLTestReportProcessor.config.xml.test.report.suffix", null);
-
-    /**
      * Default report directory
      */
     public static final String XML_TEST_REPORT_DEFAULT_DIRECTORY 
         = Messages.formatMessage("XMLTestReportProcessor.config.xml.test.report.default.directory", null);
 
     /**
-     * Default report resources directory
+     * Directory where the XML report is created
      */
-    public static final String XML_TEST_REPORT_RESOURCES_DEFAULT_DIRECTORY 
-        = Messages.formatMessage("XMLTestReportProcessor.config.xml.test.report.resources.default.directory", null);
-								 
+    public static final String XML_REPORT_DIRECTORY
+        = Messages.formatMessage("XMLTestReportProcessor.xml.report.directory", null);
+
+    /**
+     * Directory where resources (e.g., images) referenced by the
+     * XML report are copied.
+     */
+    public static final String XML_RESOURCES_DIRECTORY
+        = Messages.formatMessage("XMLTestReportProcessor.xml.resources.directory", null);
+
+    /**
+     * Test report name
+     */
+    public static final String XML_TEST_REPORT_NAME
+        = Messages.formatMessage("XMLTestReportProcessor.config.xml.test.report.name", null);
+
     /**
      * The XMLReportConsumer instance is notified whenever 
      * this object generates a new report.
      */
     protected XMLReportConsumer consumer;
+
+    /**
+     * Directory into which this processor puts all files and resources.
+     */
+    protected File reportDirectory;
+
+    /**
+     * Directory into which XML files are created
+     */
+    protected File xmlDirectory;
+
+    /**
+     * Directory into whichr resources refered to by XML files are created
+     */
+    protected File xmlResourcesDirectory;
 
     /**
      * Default constructor
@@ -136,13 +151,10 @@ public class XMLTestReportProcessor
         throws TestException {
 
         /**
-         * First, try to create the directories for the 
-         * report and report resources if they do not exist
+         * First, create the directories for the 
+         * report and report resources 
          */
-        checkDirectory(getReportDirectory(), 
-                       ERROR_REPORT_DIRECTORY_UNUSABLE);
-        checkDirectory(getReportResourcesDirectory(), 
-                       ERROR_REPORT_RESOURCES_DIRECTORY_UNUSABLE);
+        initializeReportDirectories();
         
         try {
             
@@ -172,7 +184,7 @@ public class XMLTestReportProcessor
             File xmlReport = serializeReport(root);
 
             if(consumer != null){
-                consumer.onNewReport(xmlReport);
+                consumer.onNewReport(xmlReport, getReportDirectory());
             }
 
         } catch(Exception e) {
@@ -215,11 +227,60 @@ public class XMLTestReportProcessor
 
     /**
      * By default, the report directory is given by a configuration 
-     * variable.
+     * variable. Each test run will create a sub directory with 
+     * the current date and time as the same. All the resources 
+     * created by the report processor are then put into that
+     * "dated" directory.
      */
-    public File getReportDirectory() {
-        File file = new File(XML_TEST_REPORT_DEFAULT_DIRECTORY);
-        return file;
+    public void initializeReportDirectories() throws TestException {
+        //
+        // Base report directory
+        //
+        File baseReportDir = new File(XML_TEST_REPORT_DEFAULT_DIRECTORY);
+        checkDirectory(baseReportDir, ERROR_REPORT_DIRECTORY_UNUSABLE);
+        
+        //
+        // Create sub-directory name based on date and time
+        //
+        Calendar c = Calendar.getInstance();
+        String dirName = "" + c.get(c.YEAR) + "."
+            + c.get(c.MONTH) + "." 
+            + makeTwoDigits(c.get(c.DAY_OF_MONTH)) + "-"
+            + makeTwoDigits(c.get(c.HOUR_OF_DAY)) + "h"
+            + makeTwoDigits(c.get(c.MINUTE)) + "m"
+            + makeTwoDigits(c.get(c.SECOND)) + "s";
+        
+        reportDirectory = new File(baseReportDir, dirName);
+        checkDirectory(reportDirectory, ERROR_REPORT_DIRECTORY_UNUSABLE);
+
+        //
+        // Now, create a sub-directory for XML files and 
+        // anotherone for resources
+        //
+        xmlDirectory = new File(reportDirectory, XML_REPORT_DIRECTORY);
+        checkDirectory(xmlDirectory, ERROR_REPORT_DIRECTORY_UNUSABLE);
+
+        xmlResourcesDirectory = new File(xmlDirectory, XML_RESOURCES_DIRECTORY);
+        checkDirectory(xmlResourcesDirectory, ERROR_REPORT_DIRECTORY_UNUSABLE);
+    }
+
+    /**
+     * Forces a two digit string 
+     */
+    protected String makeTwoDigits(int i){
+        if(i > 9){
+            return "" + i;
+        }
+        else{
+            return "0" + i;
+        }
+    }
+
+    /**
+     * Returns the report directory
+     */
+    public File getReportDirectory(){
+        return reportDirectory;
     }
 
     /**
@@ -227,7 +288,7 @@ public class XMLTestReportProcessor
      * given by a configuration variable.
      */
     public File getReportResourcesDirectory() {
-        return new File(XML_TEST_REPORT_RESOURCES_DEFAULT_DIRECTORY);
+        return xmlResourcesDirectory;
     }
 
     /**
@@ -338,9 +399,7 @@ public class XMLTestReportProcessor
             //
             File tmpFile = (File)value;
 
-            File tmpFileCopy = File.createTempFile(XML_TEST_REPORT_RESOURCE_PREFIX,
-                                                   tmpFile.getName(),
-                                                   getReportResourcesDirectory());
+            File tmpFileCopy = createResourceFileForName(tmpFile.getName());
 
             copy(tmpFile, tmpFileCopy);
 
@@ -380,6 +439,44 @@ public class XMLTestReportProcessor
     }
 
     /**
+     * Untility method. Creates a file in the resources directory
+     * for the given name. If a file in that directory does not 
+     * exist yet, then it is used. Otherwise, a file with the same
+     * name with a digit suffix is created. For example, if "myFile.png"
+     * is requested, then "myFile.png" is created or "myFile<n>.png"
+     * where <n> will be one or several digits.
+     */
+    protected File createResourceFileForName(String fileName){
+        File r = new File(xmlResourcesDirectory, fileName);
+        if(!r.exists()){
+            return r;
+        }
+        else{
+            return createResourceFileForName(fileName, 1);
+        } 
+    }
+
+    protected File createResourceFileForName(String fileName,
+                                             int instance){
+        // First, create a 'versioned' file name
+        int n = fileName.lastIndexOf('.');
+        String iFileName = fileName + instance;
+        if(n != -1){
+            iFileName = fileName.substring(0, n) + instance
+                + fileName.substring(n, fileName.length());
+        }
+
+        File r = new File(xmlResourcesDirectory, iFileName);
+        if(!r.exists()){
+            return r;
+        }
+        else{
+            return createResourceFileForName(fileName,
+                                             instance + 1);
+        }
+    }
+
+    /**
      * Utility method. Copies in to out
      */
     protected void copy(File in, File out) throws IOException {
@@ -403,12 +500,10 @@ public class XMLTestReportProcessor
         //
         // First, create a new File
         //
-        File tmpFile = File.createTempFile(XML_TEST_REPORT_PREFIX,
-                                           XML_TEST_REPORT_SUFFIX,
-                                           getReportDirectory());
+        File reportFile = new File(xmlDirectory, 
+                                   XML_TEST_REPORT_NAME);
 
-        FileWriter fw = new FileWriter(tmpFile);
-
+        FileWriter fw = new FileWriter(reportFile);
 
         serializeElement(reportElement,
                          "",
@@ -416,7 +511,7 @@ public class XMLTestReportProcessor
 
         fw.close();
 
-        return tmpFile;
+        return reportFile;
     }
 
     

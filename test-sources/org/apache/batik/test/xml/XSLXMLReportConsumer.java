@@ -54,57 +54,48 @@ public class XSLXMLReportConsumer
     private String outputDirectory;
 
     /**
-     * Prefix for the output file names
+     * Output file name
      */
-    private String outputPrefix;
-
-    /**
-     * Suffix for the output file names.
-     */
-    private String outputSuffix;
+    private String outputFileName;
 
     /**
      * Constructor
      * @param stylesheet URI for the stylesheet to apply to the XML report
      * @param outputDirectory directory where the result of the XSL transformation
      *                  should be written
-     * @param outputPrefix prefix for the output file name
-     * @param outputSuffic suffic for the output file name.
+     * @param outputFileName name of the output report.
      */
     public XSLXMLReportConsumer(String stylesheet,
                                 String outputDirectory,
-                                String outputPrefix,
-                                String outputSuffix){
+                                String outputFileName){
         this.stylesheet = stylesheet;
         this.outputDirectory = outputDirectory;
-        this.outputPrefix = outputPrefix;
-        this.outputSuffix = outputSuffix;
+        this.outputFileName = outputFileName;
     }
 
     /**
      * When a new report has been generated, this consumer
      * applies the same stylesheet to the input XML document
      */
-    public void onNewReport(File xmlReport)
+    public void onNewReport(File xmlReport, 
+                            File reportDirectory)
         throws Exception{
 
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = tFactory.newTransformer(new StreamSource(stylesheet));
         
         transformer.transform(new StreamSource(xmlReport.toURL().toString()), 
-                              new StreamResult(new FileOutputStream(createNewReportOutput().getAbsolutePath())));
+                              new StreamResult(new FileOutputStream(createNewReportOutput(reportDirectory).getAbsolutePath())));
     }
     
     /**
      * Returns a new file in the outputDirectory, with 
-     * the requested prefix/suffix
+     * the requested report name.
      */
-    public File createNewReportOutput() throws Exception{
-        File dir = new File(outputDirectory);
+    public File createNewReportOutput(File reportDirectory) throws Exception{
+        File dir = new File(reportDirectory, outputDirectory);
         checkDirectory(dir);
-        return File.createTempFile(outputPrefix,
-                                   outputSuffix,
-                                   dir);
+        return new File(dir, outputFileName);
     }
 
     /**
