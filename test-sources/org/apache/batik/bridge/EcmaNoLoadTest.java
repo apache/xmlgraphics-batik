@@ -83,9 +83,27 @@ public class EcmaNoLoadTest extends DefaultTestSuite {
                     SVGOnLoadExceptionTest t = buildTest(scripts,
                                                          scriptSource[i],
                                                          scriptOrigin[k],
-                                                         secure[j]);
+                                                         secure[j],
+                                                         false);
                     addTest(t);
                 }
+            }
+        }
+
+        //
+        // If script run in restricted mode, then there should be
+        // a security exception, no matter what the other settings are
+        // (if we are running code under a security manager, that is,
+        // i.e., secure is true).
+        scripts = "text/ecmascript";
+        for (int i=0; i<scriptSource.length; i++) {
+            for (int k=0; k<scriptOrigin.length; k++) {
+                SVGOnLoadExceptionTest t = buildTest(scripts,
+                                                     scriptSource[i],
+                                                     scriptOrigin[k],
+                                                     true,
+                                                     true);
+                addTest(t);
             }
         }
 
@@ -95,7 +113,6 @@ public class EcmaNoLoadTest extends DefaultTestSuite {
         // the script should not be loaded (e.g., if scriptOrigin
         // is embeded and trying to load an external script).
         //
-        scripts = "text/ecmascript";
         for (int j=0; j<scriptOrigin.length; j++) {
             int max = j;
             if (j == scriptOrigin.length - 1) {
@@ -105,25 +122,28 @@ public class EcmaNoLoadTest extends DefaultTestSuite {
                 for (int k=0; k<secure.length; k++) {
                     SVGOnLoadExceptionTest t= buildTest(scripts, scriptSource[i],
                                                         scriptOrigin[j],
-                                                        secure[k]);
+                                                        secure[k],
+                                                        false);
                     addTest(t);
                 }
             }
         }
     }
 
-    SVGOnLoadExceptionTest buildTest(String scripts, String id, String origin, boolean secure) {
+    SVGOnLoadExceptionTest buildTest(String scripts, String id, String origin, boolean secure, boolean restricted) {
         SVGOnLoadExceptionTest t = new SVGOnLoadExceptionTest();
         String desc = 
             "(scripts=" + scripts + 
             ")(scriptOrigin=" + origin +
-            ")(secure=" + secure + ")";
+            ")(secure=" + secure +
+            ")(restricted=" + restricted + ")";
         
         t.setId(id + desc);
         t.setScriptOrigin(origin);
         t.setSecure(secure);
         t.setScripts(scripts);
         t.setExpectedExceptionClass("java.lang.SecurityException");
+        t.setRestricted(restricted);
 
         return t;
     }

@@ -79,13 +79,14 @@ public class BatikSecurityController extends SecurityController {
      */
     public GeneratedClassLoader createClassLoader
         (final ClassLoader parentLoader, Object securityDomain) {
+
         if (securityDomain instanceof RhinoClassLoader) {
             return (RhinoClassLoader)securityDomain;
         }
 		
         // FIXX: This should be supported by intersecting perms.
         // Calling var script = Script(source); script(); is not supported
-        throw new RuntimeException("NOT SUPPORTED");
+        throw new SecurityException("Script() objects are not supported");
     }
 
     /**
@@ -95,6 +96,7 @@ public class BatikSecurityController extends SecurityController {
      * allowed by the current stack.
      */
     public Object getDynamicSecurityDomain(Object securityDomain) {
+
         ClassLoader loader = (RhinoClassLoader)securityDomain;
         // Already have a rhino loader in place no need to
         // do anything (normally you would want to union the
@@ -130,6 +132,7 @@ public class BatikSecurityController extends SecurityController {
         }
 
         try {
+            // acc = new AccessController(acc, acc.getDomainCombiner());
             return AccessController.doPrivileged
                 (new PrivilegedExceptionAction() {
                         public Object run() throws JavaScriptException {

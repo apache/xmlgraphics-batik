@@ -294,14 +294,11 @@ public class BaseScriptingEnvironment {
     public Interpreter getInterpreter(String lang) {
         interpreter = bridgeContext.getInterpreter(lang);
         if (interpreter == null) {
-            if (languages.contains(lang))
+            if (languages.contains(lang)) {
                 // Already issued warning so just return null;
                 return null;
-
-            UserAgent ua = bridgeContext.getUserAgent();
-            if (ua != null) {
-                ua.displayError(new Exception("Unknown language: " + lang));
             }
+
             // So we know we have processed this interpreter.
             languages.add(lang);
             return null;

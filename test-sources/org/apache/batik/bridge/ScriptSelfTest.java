@@ -57,13 +57,21 @@ import org.apache.batik.test.svg.SelfContainedSVGOnLoadTest;
 
 import java.security.AccessController;
 import java.security.AccessControlContext;
+import java.security.CodeSource;
 import java.security.PrivilegedExceptionAction;
 import java.security.PrivilegedActionException;
 import java.security.ProtectionDomain;
+import java.security.Permission;
+import java.security.PermissionCollection;
 import java.security.Permissions;
+import java.security.Policy;
 
 import java.io.FilePermission;
+import java.io.File;
 
+import java.net.URL;
+
+import java.util.Enumeration;
 /**
  * Helper class to simplify writing the unitTesting.xml file for 
  * the bridge.
@@ -76,7 +84,6 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
     String scripts = "text/ecmascript, application/java-archive";
     boolean secure = true;
     String scriptOrigin = "any";
-    boolean restricted = false;
     String fileName;
 
     TestUserAgent userAgent = new TestUserAgent();
@@ -110,14 +117,6 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
         this.scriptOrigin = scriptOrigin;
     }
 
-    public boolean getRestricted() {
-        return restricted;
-    }
-
-    public void setRestricted(boolean restricted) {
-        this.restricted = restricted;
-    }
-
     public void setScripts(String scripts){
         this.scripts = scripts;
     }
@@ -136,37 +135,6 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
         }
 
         try {
-            if (!restricted) {
-                return superRunImpl();
-            } else {
-                // Emulate calling from restricted code. We create a 
-                // calling context with only the permission to read
-                // the file.
-                FilePermission permission 
-                    = new FilePermission(fileName, "read");
-                Permissions permissions = new Permissions();
-                permissions.add(permission);
-                ProtectionDomain domain = new ProtectionDomain(null, permissions);
-                AccessControlContext ctx = new AccessControlContext
-                    (new ProtectionDomain[] {domain});
-
-                try {
-                    return (TestReport)AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                            public Object run() throws Exception {
-                                return superRunImpl();
-                            }
-                        }, ctx);
-                } catch (PrivilegedActionException pae) {
-                    throw pae.getException();
-                }
-            }
-        } finally {
-            ase.enforceSecurity(false);
-        }
-    }
-
-    protected TestReport superRunImpl() throws Exception {
-        try {
             return super.runImpl();
         } catch (ExceptionInInitializerError e) {
             e.printStackTrace();
@@ -174,6 +142,8 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
         } catch (NoClassDefFoundError e) {
             // e.printStackTrace();
             throw new Exception(e.getMessage());
+        } finally {
+            ase.enforceSecurity(false);
         }
     }
 
@@ -205,8 +175,6 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
                 }
             }
 
-            System.err.println(">>>>>>>>>>>>> using script security: " + scriptSecurity + 
-                               " for " + scriptPURL + " referenced from " + docPURL);
             return scriptSecurity;
         }
     }

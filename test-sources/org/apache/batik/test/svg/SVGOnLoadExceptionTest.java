@@ -79,6 +79,21 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.batik.util.ApplicationSecurityEnforcer;
 
+import java.security.AccessController;
+import java.security.AccessControlContext;
+import java.security.CodeSource;
+import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedActionException;
+import java.security.ProtectionDomain;
+import java.security.Permission;
+import java.security.PermissionCollection;
+import java.security.Permissions;
+import java.security.Policy;
+
+import java.io.FilePermission;
+
+import java.util.Enumeration;
+
 /**
  * This test takes an SVG file as an input. It processes the input SVG
  * (meaning it turns it into a GVT tree) and then dispatches the 'onload'
@@ -199,6 +214,25 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
      */
     protected Boolean validate = new Boolean(false);
 
+    /**
+     * The name of the test file
+     */
+    protected String fileName;
+
+    /**
+     * Controls whether on not the document should be processed from
+     * a 'restricted' context, one with no createClassLoader permission.
+     */
+    protected boolean restricted = false;
+
+    public boolean getRestricted() {
+        return restricted;
+    }
+
+    public void setRestricted(boolean restricted) {
+        this.restricted = restricted;
+    }
+
     public void setScripts(String scripts){
         this.scripts = scripts;
     }
@@ -272,7 +306,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
             if (i != -1) {
                 id = id.substring(0, i);
             }
-            String fileName = "test-resources/org/apache/batik/" + id + ".svg";
+            fileName = "test-resources/org/apache/batik/" + id + ".svg";
             svgURL = resolveURL(fileName);
         }
     }
@@ -324,62 +358,111 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         }
 
         try {
-            //
-            // First step: 
-            //
-            // Load the input SVG into a Document object
-            //
-            String parserClassName = XMLResourceDescriptor.getXMLParserClassName();
-            SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parserClassName);
-            f.setValidating(validate.booleanValue());
-            Document doc = null;
-            
-            try {
-                doc = f.createDocument(svgURL);
-            } catch(Exception e){
-                return handleException(e);
-            } 
-            
-            //
-            // Second step:
-            // 
-            // Now that the SVG file has been loaded, build
-            // a GVT Tree from it
-            //
-            TestUserAgent userAgent = buildUserAgent();
-            GVTBuilder builder = new GVTBuilder();
-            BridgeContext ctx = new BridgeContext(userAgent);
-            ctx.setDynamic(true);
-            Exception e = null;
-            try {
-                builder.build(ctx, doc);
-                BaseScriptingEnvironment scriptEnvironment 
-                    = new BaseScriptingEnvironment(ctx);
-                scriptEnvironment.loadScripts();
-                scriptEnvironment.dispatchSVGLoadEvent();
-            } catch (Exception ex){
-                e = ex;
-            } finally {
-                if (e == null && userAgent.e != null) {
-                    e = userAgent.e;
+            if (!restricted) {
+                return testImpl();
+            } else {
+                // Emulate calling from restricted code. We create a 
+                // calling context with only the permission to read
+                // the file.
+                Policy policy = Policy.getPolicy();
+                URL classesURL = (new File("classes")).toURL();
+                CodeSource cs = new CodeSource(classesURL, null);
+                PermissionCollection permissionsOrig
+                    = policy.getPermissions(cs);
+                Permissions permissions = new Permissions();
+                Enumeration iter = permissionsOrig.elements();
+                while (iter.hasMoreElements()) {
+                    Permission p = (Permission)iter.nextElement();
+                    if (!(p instanceof RuntimePermission)) {
+                        if (!(p instanceof java.security.AllPermission)) {
+                            permissions.add(p);
+                        } 
+                    } else {
+                        if (!"createClassLoader".equals(p.getName())) {
+                            permissions.add(p);
+                        } 
+                    }
                 }
 
-                if (e != null) {
-                    return handleException(e);
+                permissions.add(new FilePermission(fileName, "read"));
+                permissions.add(new RuntimePermission("accessDeclaredMembers"));
+
+                ProtectionDomain domain = new ProtectionDomain(null, permissions);
+                AccessControlContext ctx = new AccessControlContext
+                    (new ProtectionDomain[] {domain});
+
+                try {
+                    return (TestReport)AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                            public Object run() throws Exception {
+                                return testImpl();
+                            }
+                        }, ctx);
+                } catch (PrivilegedActionException pae) {
+                    throw pae.getException();
                 }
-            } 
-            
-            //
-            // If we got here, it means that the expected exception did not
-            // happen. Report an error
-            //
-            TestReport report = reportError(ERROR_EXCEPTION_DID_NOT_OCCUR);
-            report.addDescriptionEntry(ENTRY_KEY_EXPECTED_EXCEPTION,
-                                       expectedExceptionClass);
-            return report;
+            }
         } finally {
             ase.enforceSecurity(false);
         }
+    }
+
+    /**
+     * Implementation helper
+     */
+    protected TestReport testImpl() {
+        //
+        // First step: 
+        //
+        // Load the input SVG into a Document object
+        //
+        String parserClassName = XMLResourceDescriptor.getXMLParserClassName();
+        SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parserClassName);
+        f.setValidating(validate.booleanValue());
+        Document doc = null;
+        
+        try {
+            doc = f.createDocument(svgURL);
+        } catch(Exception e){
+            return handleException(e);
+        } 
+        
+        //
+        // Second step:
+        // 
+        // Now that the SVG file has been loaded, build
+        // a GVT Tree from it
+        //
+        TestUserAgent userAgent = buildUserAgent();
+        GVTBuilder builder = new GVTBuilder();
+        BridgeContext ctx = new BridgeContext(userAgent);
+        ctx.setDynamic(true);
+        Exception e = null;
+        try {
+            builder.build(ctx, doc);
+            BaseScriptingEnvironment scriptEnvironment 
+                = new BaseScriptingEnvironment(ctx);
+            scriptEnvironment.loadScripts();
+            scriptEnvironment.dispatchSVGLoadEvent();
+        } catch (Exception ex){
+            e = ex;
+        } finally {
+            if (e == null && userAgent.e != null) {
+                e = userAgent.e;
+            }
+            
+            if (e != null) {
+                return handleException(e);
+            }
+        } 
+        
+        //
+        // If we got here, it means that the expected exception did not
+        // happen. Report an error
+        //
+        TestReport report = reportError(ERROR_EXCEPTION_DID_NOT_OCCUR);
+        report.addDescriptionEntry(ENTRY_KEY_EXPECTED_EXCEPTION,
+                                   expectedExceptionClass);
+        return report;
     }
 
     /** 
@@ -387,7 +470,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
      * If they match, then the test passes. Otherwise, the test fails
      */
     protected TestReport handleException(Exception e) {
-        if (!e.getClass().getName().equals(expectedExceptionClass)) {
+        if (!isMatch(e.getClass(), expectedExceptionClass)) {
             TestReport report = reportError(ERROR_UNEXPECTED_EXCEPTION);
             report.addDescriptionEntry(ENTRY_KEY_UNEXPECTED_EXCEPTION,
                                        e.getClass().getName());
@@ -407,6 +490,20 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
                 }
             }
             return reportSuccess();
+        }
+    }
+
+    /**
+     * Check if the input class' name (or one of its base classes) matches
+     * the input name.
+     */
+    protected boolean isMatch(final Class cl, final String name) {
+        if (cl == null) {
+            return false;
+        } else if (cl.getName().equals(name)) {
+            return true;
+        } else {
+            return isMatch(cl.getSuperclass(), name);
         }
     }
 

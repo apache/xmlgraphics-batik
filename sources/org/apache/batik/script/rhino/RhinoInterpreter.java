@@ -190,7 +190,7 @@ public class RhinoInterpreter implements Interpreter {
             for (int i = 0; i < TO_BE_IMPORTED.length; i++) {
                 p[i] = new NativeJavaPackage(TO_BE_IMPORTED[i], rhinoClassLoader);
             } try {
-              ScriptableObject.callMethod(globalObject, "importPackage", p);
+                ScriptableObject.callMethod(globalObject, "importPackage", p);
             } catch (JavaScriptException e) {
               // cannot happen as we know the method is there and
               // the parameters are ok
