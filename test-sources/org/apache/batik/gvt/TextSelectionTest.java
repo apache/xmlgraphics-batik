@@ -204,6 +204,7 @@ public class TextSelectionTest extends AbstractTest {
             GVTBuilder     builder   = new GVTBuilder();
 
             ctx     = new BridgeContext(userAgent, loader);
+            ctx.setDynamic(true);
             svgDoc  = (SVGDocument)loader.loadDocument(svg.toString());
             gvtRoot = builder.build(ctx, svgDoc);
         } catch(Exception e) {
@@ -224,7 +225,7 @@ public class TextSelectionTest extends AbstractTest {
         Shape highlight = null;
         try {
             Element e = svgDoc.getElementById(id);
-            // System.out.println("Element: " + e + " CTX: " + ctx );
+            /// System.out.println("Element: " + e + " CTX: " + ctx );
             GraphicsNode gn = ctx.getGraphicsNode(e);
             if (gn == null) {
                 report.setErrorCode(ERROR_BAD_ID);
