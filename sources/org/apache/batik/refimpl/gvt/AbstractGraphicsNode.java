@@ -16,6 +16,7 @@ import java.awt.Shape;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
@@ -305,18 +306,20 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         AffineTransform defaultTransform = g2d.getTransform();
         RenderingHints defaultHints = g2d.getRenderingHints();
 
+        if (hints != null) {
+            g2d.addRenderingHints(hints);
+        }
         if (transform != null) {
             g2d.transform(transform);
         }
         if (clip != null) {
             g2d.clip(clip);
+            // Work around clipping issue. DO NOT REMOVE, EVEN
+            // if it looks stupid.
+            g2d.setClip(new GeneralPath(g2d.getClip()));
         }
         if (composite != null) {
             g2d.setComposite(composite);
-        }
-
-        if (hints != null) {
-            g2d.addRenderingHints(hints);
         }
 
         rc.setTransform(g2d.getTransform());
@@ -385,8 +388,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
 
         // Restore default rendering attributes
-        g2d.setTransform(defaultTransform);
         g2d.setRenderingHints(defaultHints);
+        g2d.setTransform(defaultTransform);
         g2d.setClip(defaultClip);
         g2d.setComposite(defaultComposite);
     }
