@@ -237,6 +237,12 @@ public class ConcreteBackgroundRable
     public Filter getBackground(GraphicsNode gn,
                                 GraphicsNode child,
                                 GraphicsNodeRenderContext rc) {
+        if (gn == null) {
+            throw new IllegalArgumentException
+                ("BackgroundImage requested yet no parent has " +
+                 "'enable-background:new'");
+        }
+
         Rectangle2D r2d = null;
         if (gn instanceof CompositeGraphicsNode) {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
@@ -246,10 +252,12 @@ public class ConcreteBackgroundRable
         Vector srcs = new Vector();
         if (r2d == null) {
             Filter f = getBackground(gn.getParent(), gn, rc);
-            if (f == null)
-                return null;
-            srcs.add(f);
+            if (f != null)
+              srcs.add(f);
         }
+
+        GraphicsNodeRableFactory gnrf;
+        gnrf = rc.getGraphicsNodeRableFactory();
 
         if (child != null) {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
@@ -257,16 +265,26 @@ public class ConcreteBackgroundRable
             Iterator i = children.iterator();
             while (i.hasNext()) {
                 GraphicsNode childGN = (GraphicsNode)i.next();
+                // System.out.println("Parent: "      + cgn + 
+                //                    "\n  Child: "   + child + 
+                //                    "\n  ChildGN: " + childGN);
                 if (childGN == child)
                     break;
                 GraphicsNodeRable gnr;
-                GraphicsNodeRableFactory gnrf;
-                gnrf = rc.getGraphicsNodeRableFactory();
                 gnr  = gnrf.createGraphicsNodeRable(childGN, rc);
                 gnr.setUsePrimitivePaint(false);
                 srcs.add(gnr);
             }
         }
+        /*  If this is uncommented then children appear in background img.
+        else {
+            // System.out.println("Parent: "      + gn);
+            GraphicsNodeRable gnr;
+            gnr  = gnrf.createGraphicsNodeRable(gn);
+            srcs.add(gnr);
+        }
+        */
+
         if (srcs.size() == 0)
             return null;
 
@@ -328,12 +346,11 @@ public class ConcreteBackgroundRable
         Filter f = getBackground(node, null, gnrc);
         if ( f == null)
             return null;
-
         // org.apache.batik.test.gvt.ImageDisplay.showImage
         //     ("PrePad", f.createRendering(renderContext));
 
         Rectangle2D r2d = getBounds2D();
-        f = new ConcretePadRable(f, r2d, PadMode.ZERO_PAD);
+        // f = new ConcretePadRable(f, r2d, PadMode.ZERO_PAD);
         // System.out.println("Bounds: " + r2d);
 
         RenderedImage ri = f.createRendering(renderContext);

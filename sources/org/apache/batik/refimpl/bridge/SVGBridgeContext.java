@@ -89,6 +89,9 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, SVG_FE_COMPOSITE_TAG,
                   new SVGFeCompositeElementBridge());
 
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_CONVOLVE_MATRIX_TAG,
+                  new SVGFeConvolveMatrixElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, SVG_FE_DISPLACEMENT_MAP_TAG,
                   new SVGFeDisplacementMapElementBridge());
 

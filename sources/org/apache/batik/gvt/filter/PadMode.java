@@ -22,11 +22,17 @@ public final class PadMode implements java.io.Serializable {
       /** Pad edges by replicating edge pixels */
     public static final int MODE_REPLICATE = 2;
 
+      /** Pad edges by wrapping around edge pixels */
+    public static final int MODE_WRAP = 3;
+
       /** Pad edges with zeros */
     public static final PadMode ZERO_PAD = new PadMode(MODE_ZERO_PAD);
 
       /** Pad edges by replicating edge pixels */
     public static final PadMode REPLICATE = new PadMode(MODE_REPLICATE);
+
+      /** Pad edges by replicating edge pixels */
+    public static final PadMode WRAP = new PadMode(MODE_WRAP);
 
     /**
      * Returns the mode of this pad mode.
@@ -57,6 +63,8 @@ public final class PadMode implements java.io.Serializable {
             return ZERO_PAD;
         case MODE_REPLICATE:
             return REPLICATE;
+        case MODE_WRAP:
+            return WRAP;
         default:
             throw new Error("Unknown Pad Mode type");
         }
