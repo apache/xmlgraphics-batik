@@ -2242,7 +2242,7 @@ public class JSVGViewerFrame
          * Returns the  medium font size. 
          */
         public float getMediumFontSize() {
-            // <!> FIXME: Should that 72 be 96?
+            // 9pt (72pt == 1in)
             return 9f * 25.4f / (72f * getPixelUnitToMillimeter());
         }
 

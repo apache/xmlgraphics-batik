@@ -14,10 +14,11 @@
     class="org.apache.batik.css.dom.EcmaScriptCSSDOMTest">
 
     <testGroup id="basic" name="Basic CSS DOM Testing">
-        <test id="rgbTest" />
-        <test id="rgbUpdateTest" />
-        <test id="rgbPresentationTest" />
-        <test id="bug9740" />
-        <test id="bug9779" />
+        <test id="rgbTest"/>
+        <test id="rgbUpdateTest"/>
+        <test id="rgbPresentationTest"/>
+        <test id="bug9740"/>
+        <test id="bug9779"/>
+        <test id="bug11670"/>
     </testGroup>
 </testSuite>

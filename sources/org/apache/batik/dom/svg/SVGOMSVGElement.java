@@ -9,6 +9,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.DOMException;
@@ -56,11 +57,15 @@ public class SVGOMSVGElement
      */
     protected final static AttributeInitializer attributeInitializer;
     static {
-        attributeInitializer = new AttributeInitializer(6);
+        attributeInitializer = new AttributeInitializer(7);
         attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
                                           null,
                                           "xmlns",
                                           SVG_NAMESPACE_URI);
+        attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
+                                          "xmlns",
+                                          "xlink",
+                                          XLinkSupport.XLINK_NAMESPACE_URI);
         attributeInitializer.addAttribute(null,
                                           null,
                                           SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
