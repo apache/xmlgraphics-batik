@@ -74,7 +74,22 @@ public class AboutDialog extends JWindow
     public AboutDialog(Frame owner){
         super(owner);
         buildGUI();
-        setLocationRelativeTo(owner);
+
+        addKeyListener(new KeyAdapter(){
+                public void keyPressed(KeyEvent e){
+                    if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                        setVisible(false);
+                        dispose();
+                    }
+                }
+            });
+
+        addMouseListener(new MouseAdapter(){
+                public void mousePressed(MouseEvent e){
+                    setVisible(false);
+                    dispose();
+                }
+            });
     }
 
     public void setLocationRelativeTo(Frame f) {
@@ -147,22 +162,6 @@ public class AboutDialog extends JWindow
         setBackground(Color.white);
         getContentPane().setBackground(Color.white);
 
-        addKeyListener(new KeyAdapter(){
-                public void keyPressed(KeyEvent e){
-                    if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-                        setVisible(false);
-                        dispose();
-                    }
-                }
-            });
-
-        addMouseListener(new MouseAdapter(){
-                public void mousePressed(MouseEvent e){
-                    setVisible(false);
-                    dispose();
-                }
-            });
-
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(Color.white);
         p.add(panel, BorderLayout.CENTER);
@@ -176,7 +175,7 @@ public class AboutDialog extends JWindow
 
         p.add(contributors,
               BorderLayout.SOUTH);
-        p.setBorder
+        ((JComponent)getContentPane()).setBorder
             (BorderFactory.createCompoundBorder
              (BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.gray, Color.black),
               BorderFactory.createCompoundBorder
@@ -185,16 +184,6 @@ public class AboutDialog extends JWindow
                BorderFactory.createLineBorder(Color.black)),
               BorderFactory.createEmptyBorder(10, 10, 10, 10))));
         
-        // getContentPane().setLayout(new FlowLayout());
         getContentPane().add(p);
-
-        // pack();
-        // pack(); // This is not a mistake but a work-around.
-        // The layout is not done properly on the first pack();
-    }
-
-    public static void main(String args[]){
-        AboutDialog dlg = new AboutDialog();
-        dlg.setVisible(true);
     }
 }
