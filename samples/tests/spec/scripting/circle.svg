@@ -1,0 +1,56 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Modification of a circle attributes                                    -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+    <title>&lt;circle&gt; attributes 'onload'</title>
+
+    <text x="50%" y="45" class="title">&lt;circle&gt; attributes in 'onload'</text>
+
+    <script type="text/ecmascript">
+
+    function initCircle(evt, cx, cy, r) {
+        var elt = evt.target;
+        elt.setAttribute("r", r)
+        elt.setAttribute("cx", cx)
+        elt.setAttribute("cy", cy)
+    }
+
+    </script>
+
+    <g id="test-content">
+
+        <circle r="1"  style="fill:orange" 
+              onload="initCircle(evt, 225, 155, 50)" />
+
+        <circle r="1" style="fill:gold" 
+              onload="initCircle(evt, '50%', '355px', '10%')" />
+
+        <g style="stroke:black; fill:none; stroke-width:2">
+          <circle cx="225"  cy="155" r="50" />
+          <circle cx="50%"  cy="355px" r="10%"  />
+        </g>
+
+        <g style="fill:black; stroke:none; text-anchor:middle">
+                <text x="225" y="230" >cx, cy, r</text>
+                <text x="225" y="430" >cx, cy, r (units and %)</text>
+        </g>
+    </g>
+</svg>
