@@ -45,6 +45,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 
+import java.net.MalformedURLException;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -55,6 +57,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import java.util.zip.GZIPInputStream;
 
@@ -132,6 +135,7 @@ import org.apache.batik.transcoder.image.TIFFTranscoder;
 import org.apache.batik.transcoder.print.PrintTranscoder;
 
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.Service;
 import org.apache.batik.util.MimeTypeConstants;
 import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.JErrorPane;
@@ -275,6 +279,16 @@ public class JSVGViewerFrame
      */
     public final static String PROPERTY_OS_WINDOWS_PREFIX 
         = Resources.getString("JSVGViewerFrame.property.os.windows.prefix");
+
+    /**
+     * The input handlers
+     */
+    protected static Vector handlers;
+
+    /**
+     * The default input handler
+     */
+    protected static SquiggleInputHandler defaultHandler = new SVGInputHandler();
 
     /**
      * The resource bundle
@@ -517,7 +531,7 @@ public class JSVGViewerFrame
             JMenuBar mb = mf.createJMenuBar("MenuBar");
             setJMenuBar(mb);
 
-            localHistory = new LocalHistory(mb, svgCanvas);
+            localHistory = new LocalHistory(mb, this);
 
             String uri[] = application.getVisitedURIs();
             for (int i=0; i<uri.length; i++) {
@@ -693,7 +707,7 @@ public class JSVGViewerFrame
                         }
                         locationBar.setText(st);
                         locationBar.addToHistory(st);
-                        svgCanvas.loadSVGDocument(st);
+                        showSVGDocument(st);
                     }
                 }
             }
@@ -773,20 +787,109 @@ public class JSVGViewerFrame
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
                 (JFileChooser.FILES_ONLY);
-            fileChooser.addChoosableFileFilter(new SVGFileFilter());
 
+            //
+            // Add file filters from the handlers map
+            //
+            Iterator iter = getHandlers().iterator();
+            while (iter.hasNext()) {
+                SquiggleInputHandler handler 
+                    = (SquiggleInputHandler)iter.next();
+                fileChooser.addChoosableFileFilter
+                    (new SquiggleInputHandlerFilter(handler));
+            }
+            
             int choice = fileChooser.showOpenDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
                 File f = fileChooser.getSelectedFile();
-
-                try {
-                    currentPath = f;
-                    svgCanvas.loadSVGDocument(f.toURL().toString());
-                } catch (IOException ex) {
-                    userAgent.displayError(ex);
+                
+                currentPath = f;
+                try { 
+                    String furl = f.toURL().toString();
+                    showSVGDocument(furl);
+                } catch (MalformedURLException ex) {
+                    if (userAgent != null) {
+                        userAgent.displayError(ex);
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * Shows the given document into the viewer frame
+     */
+    public void showSVGDocument(String uri){
+        try {
+            ParsedURL purl = new ParsedURL(uri);
+            SquiggleInputHandler 
+                handler = getInputHandler(purl);
+            
+            handler.handle(purl,
+                           JSVGViewerFrame.this);
+        } catch (Exception e) {
+            if (userAgent != null) {
+                userAgent.displayError(e);
+            }
+        }
+
+    }
+
+    /**
+     * Returns the input handler for the given URI
+     */
+    public SquiggleInputHandler getInputHandler(ParsedURL purl) throws IOException {
+        Iterator iter = getHandlers().iterator();
+        SquiggleInputHandler handler = null;
+
+        while (iter.hasNext()) {
+            SquiggleInputHandler curHandler = 
+                (SquiggleInputHandler)iter.next();
+            if (curHandler.accept(purl)) {
+                handler = curHandler;
+                break;
+            }
+        }
+
+        // No handler found, use the default one.
+        if (handler == null) {
+            handler = defaultHandler;
+        }
+
+        return handler;
+    }
+
+
+    /**
+     * Returns the list of input file handler. 
+     */
+    protected static Vector getHandlers() {
+        if (handlers != null) {
+            return handlers;
+        }
+
+        handlers = new Vector();
+        registerHandler(new SVGInputHandler());
+        
+        Iterator iter = Service.providers(SquiggleInputHandler.class);
+        while (iter.hasNext()) {
+            SquiggleInputHandler handler 
+                = (SquiggleInputHandler)iter.next();
+
+            registerHandler(handler);
+        }
+
+        return handlers;
+    }
+
+    /**
+     * Registers an input file handler by adding it to the handlers map.
+     * @param handler the new input handler to register.
+     */
+    public static synchronized 
+        void registerHandler(SquiggleInputHandler handler) {
+        Vector handlers = getHandlers();
+        handlers.addElement(handler);
     }
 
     /**
@@ -842,7 +945,8 @@ public class JSVGViewerFrame
                         if (t.length() != 0) {
                             s += "#" + t;
                         }
-                        svgCanvas.loadSVGDocument(s);
+
+                        showSVGDocument(s);
                     }
                 }
             }
@@ -1223,8 +1327,11 @@ public class JSVGViewerFrame
                     try {
                         Document  doc = new PlainDocument();
 
+                        ParsedURL purl = new ParsedURL(svgDocument.getURL());
                         InputStream is
-                            = u.openStream(MimeTypeConstants.MIME_TYPES_SVG);
+                            = u.openStream(getInputHandler(purl).
+                                           getHandledMimeTypes());
+                        // u.openStream(MimeTypeConstants.MIME_TYPES_SVG);
 
                         Reader in = XMLUtilities.createXMLDocumentReader(is);
                         int len;
@@ -1595,6 +1702,7 @@ public class JSVGViewerFrame
         svgCanvas.setCursor(WAIT_CURSOR);
     }
 
+
     /**
      * Called when the loading of a document was completed.
      */
@@ -1603,9 +1711,22 @@ public class JSVGViewerFrame
             System.out.print("Document load completed in ");
             System.out.println((System.currentTimeMillis() - time) + " ms");
         }
-        svgDocument = e.getSVGDocument();
+
+        setSVGDocument(e.getSVGDocument(),
+                       e.getSVGDocument().getURL(),
+                       e.getSVGDocument().getTitle());
+    }
+
+    /**
+     * Forces the viewer frame to show the input SVGDocument
+     */
+    public void setSVGDocument(SVGDocument svgDocument,
+                               String svgDocumentURL,
+                               String svgDocumentTitle) {
+        this.svgDocument = svgDocument;
+
         if (domViewer != null) {
-            if(domViewer.isVisible()) {
+            if(domViewer.isVisible() && svgDocument != null) {
                 domViewer.setDocument(svgDocument,
                                       (ViewCSS)svgDocument.getDocumentElement());
             } else {
@@ -1615,7 +1736,7 @@ public class JSVGViewerFrame
         }
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
-        String s = svgDocument.getURL();
+        String s = svgDocumentURL;
         String t = svgCanvas.getFragmentIdentifier();
         if (t != null) {
             s += "#" + t;
@@ -1626,7 +1747,7 @@ public class JSVGViewerFrame
             title = getTitle();
         }
 
-        String dt = svgDocument.getTitle();
+        String dt = svgDocumentTitle;
         if (dt.length() != 0) {
             setTitle(title + ":" + dt);
         } else {
@@ -2173,7 +2294,7 @@ public class JSVGViewerFrame
             if (newc) {
                 application.openLink(uri);
             } else {
-                svgCanvas.loadSVGDocument(uri);
+                showSVGDocument(uri);
             }
         }
 
