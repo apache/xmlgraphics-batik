@@ -23,7 +23,7 @@ import java.awt.Insets;
  * @version $Id$
  */
 
-public class JGridBagPanel extends JPanel {
+public class JGridBagPanel extends JPanel implements GridBagConstants{
     /**
      * Provides insets desired for a given grid cell
      */
@@ -92,94 +92,6 @@ public class JGridBagPanel extends JPanel {
      */
     public static final InsetsManager DEFAULT_INSETS = new DefaultInsetsManager();
 
-    /**
-     * Specify that this component is the 
-     * last component in its column or row. 
-     * @since   JDK1.0
-     */
-    public static final int REMAINDER = GridBagConstraints.REMAINDER;
-
-    /**
-     * Do not resize the component. 
-     * @since   JDK1.0
-     */
-    public static final int NONE = GridBagConstraints.NONE;
-
-    /**
-     * Resize the component both horizontally and vertically. 
-     * @since   JDK1.0
-     */
-    public static final int BOTH = GridBagConstraints.BOTH;
-
-    /**
-     * Resize the component horizontally but not vertically. 
-     * @since   JDK1.0
-     */
-    public static final int HORIZONTAL = GridBagConstraints.HORIZONTAL;
-
-    /**
-     * Resize the component vertically but not horizontally. 
-     * @since   JDK1.0
-     */
-    public static final int VERTICAL = GridBagConstraints.VERTICAL;
-
-    /**
-     * Put the component in the center of its display area.
-     * @since    JDK1.0
-     */
-    public static final int CENTER = GridBagConstraints.CENTER;
-
-    /**
-     * Put the component at the top of its display area,
-     * centered horizontally. 
-     * @since   JDK1.0
-     */
-    public static final int NORTH = GridBagConstraints.NORTH;
-
-    /**
-     * Put the component at the top-right corner of its display area. 
-     * @since   JDK1.0
-     */
-    public static final int NORTHEAST = GridBagConstraints.NORTHEAST;
-
-    /**
-     * Put the component on the left side of its display area, 
-     * centered vertically.
-     * @since    JDK1.0
-     */
-    public static final int EAST = GridBagConstraints.EAST;
-
-    /**
-     * Put the component at the bottom-right corner of its display area. 
-     * @since   JDK1.0
-     */
-    public static final int SOUTHEAST = GridBagConstraints.SOUTHEAST;
-
-    /**
-     * Put the component at the bottom of its display area, centered 
-     * horizontally. 
-     * @since   JDK1.0
-     */
-    public static final int SOUTH = GridBagConstraints.SOUTH;
-
-    /**
-     * Put the component at the bottom-left corner of its display area. 
-     * @since   JDK1.0
-     */
-    public static final int SOUTHWEST = GridBagConstraints.SOUTHWEST;
-
-    /**
-     * Put the component on the left side of its display area, 
-     * centered vertically.
-     * @since    JDK1.0
-     */
-    public static final int WEST = GridBagConstraints.WEST;
-
-    /**
-     * Put the component at the top-left corner of its display area. 
-     * @since   JDK1.0
-     */
-    public static final int NORTHWEST = GridBagConstraints.NORTHWEST;
 
     /**
      * Used to get insets at any given cell location

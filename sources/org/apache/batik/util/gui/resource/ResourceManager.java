@@ -126,4 +126,18 @@ public class ResourceManager {
                                               key);
 	}
     }
+
+    public int getCharacter(String key)
+        throws MissingResourceException, ResourceFormatException {
+        String s = getString(key);
+        
+        if(s == null || s.length() == 0){
+            throw new ResourceFormatException("Malformed character",
+                                              bundle.getClass().getName(),
+                                              key);
+        }
+
+        return s.charAt(0);
+    }
+
 }
