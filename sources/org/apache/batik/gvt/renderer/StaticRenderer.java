@@ -163,7 +163,7 @@ public class StaticRenderer implements ImageRenderer {
         offScreenHeight = height;
     }
 
-    public BufferedImage getOffScreen() {
+    public synchronized BufferedImage getOffScreen() {
         if (treeRoot == null)
             return null;
 
@@ -305,7 +305,7 @@ public class StaticRenderer implements ImageRenderer {
 
         // Render tree
 /*        long t0 = System.currentTimeMillis();*/
-        if(treeRoot != null) {
+        if (treeRoot != null) {
             getOffScreen();
             Rectangle srcR = rootCR.getBounds();
             Rectangle dstR = raster.getBounds();

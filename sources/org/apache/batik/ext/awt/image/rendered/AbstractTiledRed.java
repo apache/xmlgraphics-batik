@@ -12,6 +12,8 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Vector;
+import java.util.Iterator;
 import java.awt.Rectangle;
 
 import java.awt.image.Raster;
@@ -273,9 +275,9 @@ public abstract class AbstractTiledRed
      * available 
      */
 
-    public class TileBlock {
-        int xloc, yloc;
-        int w, h, benefit;
+    public static class TileBlock {
+        int occX, occY, occW, occH;
+        int xOff, yOff, w, h, benefit;
         boolean [] occupied;
 
         /**
@@ -288,30 +290,74 @@ public abstract class AbstractTiledRed
          * @param occupied Which entries in the block are already
          *                 computed.
          */
-        TileBlock(int xloc, int yloc, int w, int h, boolean [] occupied) {
-            this.xloc     = xloc;
-            this.yloc     = yloc;
-            this.w        = w;
-            this.h        = h;
+        TileBlock(int occX, int occY, int occW, int occH, boolean [] occupied,
+                  int xOff, int yOff, int w, int h) {
+            this.occX = occX;
+            this.occY = occY;
+            this.occW = occW;
+            this.occH = occH;
+            this.xOff = xOff;
+            this.yOff = yOff;
+            this.w    = w   ;
+            this.h    = h   ;
             this.occupied = occupied;
-            if (occupied.length != w*h)
-                throw new IllegalArgumentException
-                    ("Occupied array must be equal to widthxheight");
+
+
+
             // System.out.println("Block: [" + 
             //                    xloc + "," + yloc + ","  + 
             //                    w + "," + h + "]");
-            for (int i=0; i<occupied.length; i++)
-                if (!occupied[i])
-                    benefit++;
+            for (int y=0; y<h; y++)
+                for (int x=0; x<w; x++)                
+                    if (!occupied[x+xOff+occW*(y+yOff)])
+                        benefit++;
         }
+
+        /**
+         * Really nice to string that outlines what tiles are filled
+         * and what region this block covers.  Really useful for
+         * debugging the TileBlock stuff.
+         */
+        public String toString() {
+            String ret = "";
+            for (int y=0; y<occH; y++) {
+                for (int x=0; x<occW+1; x++) {
+                    if ((x==xOff) || (x==xOff+w)) {
+                        if ((y==yOff) || (y==yOff+h-1))
+                            ret += "+";
+                        else  if ((y>yOff) && (y<yOff+h-1))
+                            ret += "|";
+                        else 
+                            ret += " ";
+                    } 
+                    else if ((y==yOff)     && (x> xOff) && (x < xOff+w))
+                        ret += "-";
+                    else if ((y==yOff+h-1) && (x> xOff) && (x < xOff+w))
+                        ret += "_";
+                    else
+                        ret += " ";
+
+                    if (x== occW)
+                        continue;
+
+                    if (occupied[x+y*occW]) 
+                        ret += "*";
+                    else
+                        ret += ".";
+                }
+                ret += "\n";
+            }
+            return ret;
+        }
+
         /** 
          * Return the x location of this block of tiles
          */
-        int getXLoc()    { return xloc; }
+        int getXLoc()    { return occX+xOff; }
         /** 
          * Return the y location of this block of tiles
          */
-        int getYLoc()    { return yloc; }
+        int getYLoc()    { return occY+yOff; }
         /** 
          * Return the width of this block of tiles
          */
@@ -335,7 +381,7 @@ public abstract class AbstractTiledRed
         /**
          * Returns the total amount of work for the array of tile blocks
          */
-        int getWork(TileBlock [] blocks) { 
+        static int getWork(TileBlock [] blocks) { 
             int ret=0;
             for (int i=0; i<blocks.length; i++) 
                 ret += blocks[i].getWork();
@@ -348,26 +394,30 @@ public abstract class AbstractTiledRed
          * blocks defined by this block.
          */
         TileBlock [] getBestSplit() {
-            TileBlock [] bestSplit = new TileBlock [] { this };
-
+            if (simplify())
+                return null;
+            
             // Optimal split already...
             if (benefit == w*h)
-                return bestSplit;
+                return new TileBlock [] { this };
 
+            return splitOneGo();
+
+            /*
+            TileBlock [] bestSplit = new TileBlock [] { this };
             int bestWork = getWork();
 
             // Otherwise go through each occupied block try splitting
             // at each and see what the best split for each is.
             for (int y=0; y<h; y++) {
-                boolean prevOcc = false;
                 for (int x=0; x<w; x++) {
                     if (Thread.currentThread().isInterrupted())
                         return null;
 
-                    if (!occupied[x+y*w]) 
+                    if (!occupied[x+xOff+occW*(y+yOff)]) 
                         continue;
 
-                    TileBlock [] split = getBestSplitAt(x+xloc, y+yloc);
+                    TileBlock [] split = getBestSplitAt(x+xOff, y+yOff);
                     if (split == null) continue;
 
                     int cWork = getWork(split);
@@ -379,324 +429,366 @@ public abstract class AbstractTiledRed
                     }
                 }
             }
-            return bestSplit;
+            */
         }
 
-        /**
-         * Computes a good set of TileBlocks assuming a split
-         * at location x,y in the current block.
-         */
-        TileBlock [] getBestSplitAt(int x, int y) {
-            TileBlock [] split = splitAtH(x, y);
-            TileBlock [][] bestSplits = new TileBlock[split.length][];
-            int count=0;
-            int workH =0;
-            for (int i=0; i<split.length; i++) {
-                bestSplits[i]  =     split [i].getBestSplit();
-                if (bestSplits[i] == null)
-                    return null;
+        public TileBlock [] splitOneGo() {
+            boolean [] filled = (boolean [])occupied.clone();
+            Vector items = new Vector();
+            for (int y=yOff; y<yOff+h; y++)
+                for (int x=xOff; x<xOff+w; x++) {
+                    if (!filled[x+y*occW]) {
+                        // We have an unfilled tile slot, so first we
+                        // figure out how long the slot is in this row.
+                        int cw = xOff+w-x;
+                        for (int cx=x; cx<x+cw; cx++)
+                            if (filled[cx+y*occW])
+                                cw = cx-x;
+                            else
+                                filled[cx+y*occW] = true;  // fill as we go..
 
-                count         += bestSplits[i].length;
-                workH         += getWork(bestSplits[i]);
-            }
+                        // Then we check the next rows until we hit
+                        // a row that doesn't have this slot all free.
+                        // at which point we stop...
+                        int ch=1;
+                        for (int cy=y+1; cy<yOff+h; cy++) {
+                            int cx=x;
+                            for (; cx<x+cw; cx++) 
+                                if (filled[cx+cy*occW])
+                                    break;
 
-            if (workH > benefit+2) {
-                // H split is not quite optimal check V split.
-                TileBlock [] splitV = splitAtV(x, y);
-                TileBlock [][] bestSplitsV = new TileBlock[splitV.length][];
-                int countV=0;
-                int workV =0;
-                for (int i=0; i<splitV.length; i++) {
-                    bestSplitsV[i]  =     splitV [i].getBestSplit();
-                    if (bestSplitsV[i] == null)
-                        return null;
+                            // Partial row so bail (we'll get it later..)
+                            if (cx != x+cw)
+                                break;
 
-                    countV         += bestSplitsV[i].length;
-                    workV          += getWork(bestSplitsV[i]);
+                            // Fill in the slot since we will use it...
+                            for (cx=x; cx<x+cw; cx++) 
+                                filled[cx+cy*occW] = true;
+                            ch++;
+                        }
+                        items.add(new TileBlock(occX, occY, occW, occH, 
+                                                occupied, x, y, cw, ch));
+                        x+=(cw-1);
+                    }
                 }
-                if (workV < workH) {
-                    // System.out.println("Using VSplit");
-                    split      = splitV;
-                    bestSplits = bestSplitsV;
-                    count      = countV;
-                }
-            }
 
-            TileBlock[] ret = new TileBlock[count];
-            count =0;
-            for (int i=0; i<split.length; i++) {
-                System.arraycopy(bestSplits[i], 0, 
-                                 ret, count, bestSplits[i].length);
-                count += bestSplits[i].length;
-            }
+            TileBlock [] ret = new TileBlock[items.size()];
+            Iterator iter = items.iterator();
+            int i=0;
+            while (iter.hasNext())
+                ret[i++] = (TileBlock)iter.next();
             return ret;
         }
 
-        /**
-         * This splits the current block at x, y
-         * We always split above row y and below y 
-         * the the strip to the left and right of x:
-         *<pre>
-         *            Split 1
-         * __________________________________
-         *    Split 3 | x,y | Split 4
-         * __________________________________
-         *            Split 2
-         *</pre>
+         public boolean simplify() {
+             for (int y=0; y<h; y++) {
+                 int x;
+                 for (x=0; x<w; x++)                
+                     if (!occupied[x+xOff+occW*(y+yOff)])
+                         break;
+                 if (x!=w) break;
+
+                 // Fully occupied row so remove it.
+                 yOff++;
+                 y--;
+                 h--;
+             }
+
+             // return true if we were simplified out of existance.
+             if (h==0) return true;
+
+             // If we make it past here we must have at least one good block.
+
+             for (int y=h-1; y>=0; y--) {
+                 int x;
+                 for (x=0; x<w; x++)                
+                     if (!occupied[x+xOff+occW*(y+yOff)])
+                         break;
+                 if (x!=w) break;
+
+                 // Fully occupied row so remove it.
+                 h--;
+             }
+
+             for (int x=0; x<w; x++) {
+                 int y;
+                 for (y=0; y<h; y++)
+                     if (!occupied[x+xOff+occW*(y+yOff)])
+                         break;
+                 if (y!=h) break;
+
+                 // Fully occupied Col so remove it. 
+                 xOff++;
+                 x--;
+                 w--;
+             }
+
+             for (int x=w-1; x>=0; x--) {
+                 int y;
+                 for (y=0; y<h; y++)
+                     if (!occupied[x+xOff+occW*(y+yOff)])
+                         break;
+                 if (y!=h) break;
+
+                 // Fully occupied Col so remove it. 
+                 w--;
+             }
+
+             return false;
+         }
+
+        /** What follows in residual code that tries to take a more
+         * global and sophisticated approach balancing block size
+         * vs. regeneration of tiles.  I have deprecated this in favor
+         * of the splitOneGo code that is very straight forward,
+         * but may not give quiet as good a set of splits (although
+         * in practice I think it's results are similar if not better
+         * in some important common cases).
          */
-        TileBlock [] splitAtH(int x, int y) {
-            x-= xloc;
-            y-= yloc;
-            if ((x<0) || (x>=w)) 
-                throw new IllegalArgumentException
-                    ("X out of range: " + x+xloc);
-            if ((y<0) || (y>=h)) 
-                throw new IllegalArgumentException
-                    ("Y out of range: " + y+yloc);
 
-            int splits = 0;
+//          public static TileBlock merge(TileBlock tb1, TileBlock tb2) {
+//              if ((tb1.occX     != tb2.occX) ||
+//                  (tb1.occY     != tb2.occY) ||
+//                  (tb1.occW     != tb2.occW) ||
+//                  (tb1.occH     != tb2.occH) ||
+//                  (tb1.occupied != tb2.occupied))
+//                  throw new IllegalArgumentException
+//                      ("To merge blocks they must be from the same grid");
 
-            TileBlock block1 = null;
-            if (y != 0) {
-                int c=0, startRow=0, endRow=0;
-                for (int j=0; j<y; j++) {
-                    boolean rowFull = true;
-                    for (int i=0; i< w; i++) {
-                        rowFull = rowFull && occupied[i+j*w];
-                    }
-                    if (!rowFull)
-                        endRow = j;
-                    else if (startRow == j) {
-                        // Full row at the top.
-                        startRow++;
-                    }
-                }
-                
-                // Check if fully occupied.
-                if (endRow>=startRow) {
-                    int rows = endRow-startRow+1;
-                    boolean [] occ = new boolean [w*rows];
-                    System.arraycopy(occupied, startRow*w, occ, 0, w*rows);
-                    block1 = new TileBlock(xloc, startRow+yloc, 
-                                           w, rows, occ);
-                    splits++;
-                }
-            }
+//              if (tb1.xOff == tb2.xOff) {
+//                  // Left edges aligned...
+//                  if (tb1.w != tb2.w) 
+//                      throw new IllegalArgumentException
+//                          ("Blocks must match on a side");
+//                  if (tb1.yOff+tb1.h == tb2.yOff) 
+//                      return new TileBlock
+//                          (tb1.occX, tb1.occY, tb1.occW, tb1.occH, tb1.occupied,
+//                           tb1.xOff, tb1.yOff, tb1.w, tb1.h+tb2.h);
+//                  else if (tb2.yOff+tb2.h == tb1.yOff) 
+//                      return new TileBlock
+//                          (tb1.occX, tb1.occY, tb1.occW, tb1.occH, tb1.occupied,
+//                           tb2.xOff, tb2.yOff, tb2.w, tb2.h+tb1.h);
+//                  else
+//                      throw new IllegalArgumentException
+//                          ("Blocks top and bottom don't meet");
+//              }
 
-            TileBlock block2 = null;
-            if (y != h-1) {
-                int c=0, startRow=y+1, endRow=y+1;
-                for (int j=y+1; j<h; j++) {
-                    boolean rowFull = true;
-                    for (int i=0; i< w; i++) {
-                        rowFull = rowFull && occupied[i+j*w];
-                    }
-                    if (!rowFull)
-                        endRow = j;
-                    else if (startRow == j) {
-                        // Full row at the top.
-                        startRow++;
-                    }
-                }
-                
-                // Check if fully occupied.
-                if (endRow>=startRow) {
-                    int rows = endRow-startRow+1;
-                    boolean [] occ = new boolean [w*rows];
-                    System.arraycopy(occupied, startRow*w, occ, 0, w*rows);
-                    block2 = new TileBlock(xloc, startRow+yloc, 
-                                           w, rows, occ);
-                    splits++;
-                }
-            }
+//              if (tb1.yOff == tb2.yOff) {
+//                  // top edges aligned...
+//                  if (tb1.h != tb2.h) 
+//                      throw new IllegalArgumentException
+//                          ("Blocks must match on a side");
+//                  if (tb1.xOff+tb1.w == tb2.xOff) 
+//                      return new TileBlock
+//                          (tb1.occX, tb1.occY, tb1.occW, tb1.occH, tb1.occupied,
+//                           tb1.xOff, tb1.yOff, tb1.w+tb2.w, tb1.h);
+//                  else if (tb2.xOff+tb2.w == tb1.xOff) 
+//                      return new TileBlock
+//                          (tb1.occX, tb1.occY, tb1.occW, tb1.occH, tb1.occupied,
+//                           tb2.xOff, tb2.yOff, tb2.w+tb1.w, tb2.h);
+//                  else
+//                      throw new IllegalArgumentException
+//                          ("Blocks left and right don't meet");
+//              }
 
-            TileBlock block3 = null;
-            if (x != 0) {
-                int off = y*w;
-                int startCol = 0, endCol=0;
-                for (int i=0; i< x; i++) {
-                    if (!occupied[i+off])
-                        endCol=i;
-                    else if (startCol == i)
-                        startCol++;
-                }
-                if (endCol>=startCol) {
-                    int cols = endCol-startCol+1;
-                    boolean [] occ = new boolean[cols];
-                    System.arraycopy(occupied, off+startCol, occ, 0, cols);
-                    block3 = new TileBlock(xloc+startCol, yloc+y, 
-                                           cols, 1, occ);
-                    splits++;
-                }
-            }
+//              throw new IllegalArgumentException
+//                  ("Blocks don't align in the grid");
+//          }
 
-            TileBlock block4 = null;
-            if (x != w-1) {
-                int off = y*w;
-                int startCol = x+1, endCol=x+1;
-                for (int i=x+1; i< w; i++) {
-                    if (!occupied[i+off])
-                        endCol=i;
-                    else if (startCol == i)
-                        startCol++;
-                }
-                if (endCol>=startCol) {
-                    int cols = endCol-startCol+1;
-                    boolean [] occ = new boolean[cols];
-                    System.arraycopy(occupied, off+startCol, occ, 0, cols);
-                    block4 = new TileBlock(xloc+startCol, yloc+y, 
-                                           cols, 1, occ);
-                    splits++;
-                }
-            }
+//          /**
+//           * Computes a good set of TileBlocks assuming a split
+//           * at location x,y in the current block.  */
+//          TileBlock [] getBestSplitAt(int x, int y) {
+//              TileBlock [] split = splitAtH(x, y);
+//              TileBlock [][] bestSplits = new TileBlock[split.length][];
+//              int count=0;
+//              int workH =0;
+//              for (int i=0; i<split.length; i++) {
+//                  bestSplits[i]  =     split [i].getBestSplit();
+//                  if (bestSplits[i] == null)
+//                      return null;
 
-            TileBlock [] ret = new TileBlock[splits];
-            int count=0;
-            if (block1 != null) ret[count++] = block1;
-            if (block2 != null) ret[count++] = block2;
-            if (block3 != null) ret[count++] = block3;
-            if (block4 != null) ret[count++] = block4;
+//                  count         += bestSplits[i].length;
+//                  workH         += getWork(bestSplits[i]);
+//              }
 
-            return ret;
-        }
+//              if (workH > benefit+2) {
+//                  // H split is not quite optimal check V split.
+//                  TileBlock [] splitV = splitAtV(x, y);
+//                  TileBlock [][] bestSplitsV = new TileBlock[splitV.length][];
+//                  int countV=0;
+//                  int workV =0;
+//                  for (int i=0; i<splitV.length; i++) {
+//                      bestSplitsV[i]  =     splitV [i].getBestSplit();
+//                      if (bestSplitsV[i] == null)
+//                          return null;
 
-        /**
-         * This splits the current block at x, y
-         * We always split Left and right of x and
-         * the the columns above and below y,
-         *<pre>
-         *            | Split 3 |
-         *            |_________|
-         *    Split 1 |   x,y   | Split 2
-         *            |_________|
-         *            | Split 4 |
-         *</pre>
-         */
-        TileBlock [] splitAtV(int x, int y) {
-            x-= xloc;
-            y-= yloc;
-            if ((x<0) || (x>=w)) 
-                throw new IllegalArgumentException
-                    ("X out of range: " + x+xloc);
-            if ((y<0) || (y>=h)) 
-                throw new IllegalArgumentException
-                    ("Y out of range: " + y+yloc);
+//                      countV         += bestSplitsV[i].length;
+//                      workV          += getWork(bestSplitsV[i]);
+//                  }
+//                  if (workV < workH) {
+//                      // System.out.println("Using VSplit");
+//                      split      = splitV;
+//                      bestSplits = bestSplitsV;
+//                      count      = countV;
+//                  }
+//              }
 
-            int splits = 0;
+//              TileBlock[] ret = new TileBlock[count];
+//              count =0;
+//              for (int i=0; i<split.length; i++) {
+//                  System.arraycopy(bestSplits[i], 0, 
+//                                   ret, count, bestSplits[i].length);
+//                  count += bestSplits[i].length;
+//              }
+//              return ret;
+//          }
 
-            TileBlock block1 = null;
-            if (x > 0) {
-                int r=0, startCol=0, endCol=0;
-                for (int i=0; i< x; i++) {
-                    boolean colFull = true;
-                    for (int j=0; j<h; j++) {
-                        colFull = colFull && occupied[i+j*w];
-                    }
-                    if (!colFull)
-                        endCol = i;
-                    else if (startCol == i) {
-                        // Full Col at the first nonfull Col.
-                        startCol++;
-                    }
-                }
-                
-                // Check if fully occupied.
-                if (endCol>=startCol) {
-                    int cols = endCol-startCol+1;
-                    boolean [] occ = new boolean [h*cols];
-                    int idx=0;
-                    for (int j=0; j<h; j++)
-                        for (int i=startCol; i<=endCol; i++)
-                            occ[idx++] = occupied[j*w+i];
-                    
-                    block1 = new TileBlock(startCol+xloc, yloc, 
-                                           cols, h, occ);
-                    splits++;
-                }
-            }
+//          /**
+//           * This splits the current block at x, y
+//           * We always split above row y and below y 
+//           * the the strip to the left and right of x:
+//           *<pre>
+//           *            Split 1
+//           * __________________________________
+//           *    Split 3 | x,y | Split 4
+//           * __________________________________
+//           *            Split 2
+//           *</pre>
+//           */
+//          TileBlock [] splitAtH(int x, int y) {
+//              if ((x<-1) || (x>occW)) 
+//                  throw new IllegalArgumentException
+//                      ("X out of range: " + x);
+//              if ((y<-1) || (y>occH)) 
+//                  throw new IllegalArgumentException
+//                      ("Y out of range: " + y);
 
-            TileBlock block2 = null;
-            if (x < w-1) {
-                int r=0, startCol=x+1, endCol=x+1;
-                for (int i=x+1; i<w; i++) {
-                    boolean colFull = true;
-                    for (int j=0; j<h; j++) {
-                        colFull = colFull && occupied[i+j*w];
-                    }
-                    if (!colFull)
-                        endCol = i;
-                    else if (startCol == i) {
-                        // Full Col at the first nonfull Col.
-                        startCol++;
-                    }
-                }
-                
-                // Check if fully occupied.
-                if (endCol>=startCol) {
-                    int cols = endCol-startCol+1;
-                    boolean [] occ = new boolean [h*cols];
-                    int idx=0;
-                    for (int j=0; j<h; j++)
-                        for (int i=startCol; i<=endCol; i++)
-                            occ[idx++] = occupied[j*w+i];
-                    
-                    block2 = new TileBlock(startCol+xloc, yloc, 
-                                           cols, h, occ);
-                    splits++;
-                }
-            }
+//              int splits = 0;
 
-            TileBlock block3 = null;
-            if (y > 0) {
-                int startRow = 0, endRow=0;
-                for (int j=0; j< y; j++) {
-                    if (!occupied[j*w+x])
-                        endRow=j;
-                    else if (startRow == j)
-                        startRow++;
-                }
-                if (endRow>=startRow) {
-                    int rows = endRow-startRow+1;
-                    boolean [] occ = new boolean[rows];
-                    int idx=0;
-                    for (int j=startRow; j<= endRow; j++)
-                        occ[idx++] = occupied[j*w+x];
-                    block3 = new TileBlock(x+xloc, yloc+startRow, 
-                                           1, rows, occ);
-                    splits++;
-                }
-            }
+//              TileBlock block1 = null;
+//              if (y > yOff) {
+//                  block1 = new TileBlock(occX, occY, occW, occH, occupied,
+//                                         xOff, yOff, w, y-yOff);
+//                  if (block1.simplify())
+//                      block1=null;
+//                  else
+//                      splits++;
+//              }
 
-            TileBlock block4 = null;
-            if (y < h-1) {
-                int startRow = y+1, endRow=y+1;
-                for (int j=y+1; j< h; j++) {
-                    if (!occupied[j*w+x])
-                        endRow=j;
-                    else if (startRow == j)
-                        startRow++;
-                }
-                if (endRow>=startRow) {
-                    int rows = endRow-startRow+1;
-                    boolean [] occ = new boolean[rows];
-                    int idx=0;
-                    for (int j=startRow; j<= endRow; j++)
-                        occ[idx++] = occupied[j*w+x];
-                    block4 = new TileBlock(x+xloc, yloc+startRow, 
-                                           1, rows, occ);
-                    splits++;
-                }
-            }
+//              TileBlock block2 = null;
+//              if (y<yOff+h-1) {
+//                  block2 = new TileBlock(occX, occY, occW, occH, occupied,
+//                                         xOff, y+1, w, (yOff+h)-(y+1));
+//                  if (block2.simplify())
+//                      block2=null;
+//                  else
+//                      splits++;
+//              }
 
-            TileBlock [] ret = new TileBlock[splits];
-            int count=0;
-            if (block1 != null) ret[count++] = block1;
-            if (block2 != null) ret[count++] = block2;
-            if (block3 != null) ret[count++] = block3;
-            if (block4 != null) ret[count++] = block4;
+//              TileBlock block3 = null;
+//              if (x > xOff) {
+//                  block3 = new TileBlock(occX, occY, occW, occH, occupied,
+//                                         xOff, y, x-xOff, 1);
+//                  if (block3.simplify())
+//                      block3=null;
+//                  else
+//                      splits++;
+//              }
 
-            return ret;
-        }
+//              TileBlock block4 = null;
+//              if (x < xOff+w-1) {
+//                  block4 = new TileBlock(occX, occY, occW, occH, occupied,
+//                                         x+1, y, (xOff+w)-(x+1), 1);
+//                  if (block4.simplify())
+//                      block4=null;
+//                  else
+//                      splits++;
+//              }
+
+//              TileBlock [] ret = new TileBlock[splits];
+//              int count=0;
+//              if (block1 != null) ret[count++] = block1;
+//              if (block2 != null) ret[count++] = block2;
+//              if (block3 != null) ret[count++] = block3;
+//              if (block4 != null) ret[count++] = block4;
+
+//              return ret;
+//          }
+
+//          /**
+//           * This splits the current block at x, y
+//           * We always split Left and right of x and
+//           * the the columns above and below y,
+//           *<pre>
+//           *            | Split 3 |
+//           *            |_________|
+//           *    Split 1 |   x,y   | Split 2
+//           *            |_________|
+//           *            | Split 4 |
+//           *</pre>
+//           */
+//          TileBlock [] splitAtV(int x, int y) {
+//              if ((x<-1) || (x>occW)) 
+//                  throw new IllegalArgumentException
+//                      ("X out of range: " + x);
+//              if ((y<-1) || (y>occH)) 
+//                  throw new IllegalArgumentException
+//                      ("Y out of range: " + y);
+
+//              int splits = 0;
+
+//              TileBlock block1 = null;
+//              if ((x > xOff)) {
+//                  block1 = new TileBlock(occX, occY, occW, occH, occupied,
+//                                         xOff, yOff, x-xOff, h);
+//                  if (block1.simplify())
+//                      block1=null;
+//                  else
+//                      splits++;
+//              }
+
+//              TileBlock block2 = null;
+//              if (x<xOff+w-1) {
+//                  block2 = new TileBlock(occX, occY, occW, occH, occupied,
+//                                         x+1, yOff, (xOff+w)-(x+1), h);
+//                  if (block2.simplify())
+//                      block2=null;
+//                  else
+//                      splits++;
+//              }
+
+//              TileBlock block3 = null;
+//              if (y > yOff) {
+//                  block3 = new TileBlock(occX, occY, occW, occH, occupied,
+//                                         x, yOff, 1, y-yOff);
+//                  if (block3.simplify())
+//                      block3=null;
+//                  else
+//                      splits++;
+//              }
+
+//              TileBlock block4 = null;
+//              if (y < yOff+h-1) {
+//                  block4 = new TileBlock(occX, occY, occW, occH, occupied,
+//                                         x, y+1, 1, (yOff+h)-(y+1));
+//                  if (block4.simplify())
+//                      block4=null;
+//                  else
+//                      splits++;
+//              }
+
+//              TileBlock [] ret = new TileBlock[splits];
+//              int count=0;
+//              if (block1 != null) ret[count++] = block1;
+//              if (block2 != null) ret[count++] = block2;
+//              if (block3 != null) ret[count++] = block3;
+//              if (block4 != null) ret[count++] = block4;
+
+//              return ret;
+//          }
+
+
     }
 
 
@@ -759,6 +851,7 @@ public abstract class AbstractTiledRed
 
         boolean [] got = new boolean[2*(tx1-tx0+1) + 2*(ty1-ty0+1)];
         int idx = 0;
+        int numFound = 0;
         // Collect all the tiles that we currently have in cache...
         for (int y=ty0; y<=ty1; y++) {
             for (int x=tx0; x<=tx1; x++) {
@@ -772,6 +865,8 @@ public abstract class AbstractTiledRed
 
                 if (!found) continue;
 
+                numFound++;
+
                 if (is_INT_PACK)
                     GraphicsUtil.copyData_INT_PACK(ras, wr);
                 else
@@ -779,18 +874,26 @@ public abstract class AbstractTiledRed
             }
         }
 
+        // System.out.println("Found: " + numFound + " out of " + 
+        //                    ((tx1-tx0+1)*(ty1-ty0+1)));
+
         // Compute the stuff from the middle in the largest possible Chunks.
         if ((xtiles > 0) && (ytiles > 0)) {
-            TileBlock block = new TileBlock(insideTx0, insideTy0,
-                                            xtiles, ytiles, occupied);
+            TileBlock block = new TileBlock
+                (insideTx0, insideTy0, xtiles, ytiles, occupied,
+                 0, 0, xtiles, ytiles);
             // System.out.println("Starting Splits");
             TileBlock [] blocks = block.getBestSplit();
-            // System.out.println("Ending Splits: " + blocks.length);
 
             // System.out.println("Starting Computation: " + this);
             if (blocks != null)
+                // System.out.println("Ending Splits: " + blocks.length);
+
                 for (int i=0; i<blocks.length; i++) {
                     TileBlock curr = blocks[i];
+                    
+                    // System.out.println("Block " + i + ":\n" + curr);
+
                     int xloc = curr.getXLoc()*tileWidth +tileGridXOff;
                     int yloc = curr.getYLoc()*tileHeight+tileGridYOff;
                     Rectangle tb = new Rectangle(xloc, yloc,
