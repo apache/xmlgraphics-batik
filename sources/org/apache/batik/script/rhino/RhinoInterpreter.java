@@ -24,6 +24,7 @@ import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeJavaPackage;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.WrappedException;
 
 /**
@@ -33,9 +34,6 @@ import org.mozilla.javascript.WrappedException;
  * @version $Id$
  */
 public class RhinoInterpreter implements Interpreter {
-    private Scriptable scope = null;
-    private Context context = null;
-
     private static String[] TO_BE_IMPORTED = {
         "java.lang",
         "org.w3c.dom",
@@ -46,6 +44,9 @@ public class RhinoInterpreter implements Interpreter {
         "org.w3c.dom.svg",
         "org.w3c.dom.views"
     };
+
+    private Context context = null;
+    private ScriptableObject globalObject = null;
 
     /**
      * Build a <code>Interpreter</code> for ECMAScript using Rhino.
@@ -58,17 +59,31 @@ public class RhinoInterpreter implements Interpreter {
         try {
             // init std object with an importer
             ImporterTopLevel importer = new ImporterTopLevel();
-            scope = context.initStandardObjects(importer);
+            globalObject = (ScriptableObject)context.initStandardObjects(importer);
             // import Java lang package & DOM Level 2 & SVG DOM packages
             NativeJavaPackage[] p= new NativeJavaPackage[TO_BE_IMPORTED.length];
             for (int i = 0; i < TO_BE_IMPORTED.length; i++) {
                 p[i] = new NativeJavaPackage(TO_BE_IMPORTED[i]);
             }
-            importer.importPackage(context, scope, p, null);
+            importer.importPackage(context, globalObject, p, null);
             context.setWrapHandler(new EventTargetWrapHandler(this));
         } finally {
             Context.exit();
         }
+    }
+
+    /**
+     * This method returns the ECMAScript global object used by this interpreter.
+     */
+    protected ScriptableObject getGlobalObject() {
+        return globalObject;
+    }
+
+    /**
+     * This method returns the default context in which the interpreter runs.
+     */
+    protected Context getContext() {
+        return context;
     }
 
     // org.apache.batik.script.Intepreter implementation
@@ -84,7 +99,7 @@ public class RhinoInterpreter implements Interpreter {
         Object rv = null;
         Context ctx = Context.enter(context);
         try {
-            rv = ctx.evaluateReader(scope,
+            rv = ctx.evaluateReader(globalObject,
                                     scriptreader,
                                     "<SVG>",
                                     1, null);
@@ -123,8 +138,8 @@ public class RhinoInterpreter implements Interpreter {
      * @param object the Java object
      */
     public void bindObject(String name, Object object) {
-        Scriptable jsObject =  Context.toObject(object, scope);
-        scope.put(name, scope, jsObject);
+        Scriptable jsObject =  Context.toObject(object, globalObject);
+        globalObject.put(name, globalObject, jsObject);
     }
 
     /**
@@ -135,9 +150,9 @@ public class RhinoInterpreter implements Interpreter {
         throws JavaScriptException {
         Context ctx = Context.enter(context);
         try {
-            arg = Context.toObject(arg, scope);
+            arg = Context.toObject(arg, globalObject);
             Object[] args = {arg};
-            handler.call(ctx, scope, scope, args);
+            handler.call(ctx, globalObject, globalObject, args);
         } finally {
             Context.exit();
         }
@@ -147,7 +162,7 @@ public class RhinoInterpreter implements Interpreter {
      * Build the wrapper for objects implement <code>EventTarget</code>.
      */
     Scriptable buildEventTargetWrapper(EventTarget obj) {
-        return new EventTargetWrapper(scope, obj, this);
+        return new EventTargetWrapper(globalObject, obj, this);
     }
 
     /**
