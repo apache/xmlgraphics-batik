@@ -593,7 +593,7 @@ public class JGVTComponent extends JComponent {
                                 });
                                 sleep(200);
                             }
-                        } catch (Exception e) {
+                        } catch (Exception ex) {
                         }
                     }
                 };

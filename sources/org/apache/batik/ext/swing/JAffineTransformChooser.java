@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -27,9 +28,7 @@ import java.io.Serializable;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
-import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
-import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -445,31 +444,20 @@ public class JAffineTransformChooser extends JGridBagPanel{
 
             JButton cancelButton = new JButton(cancelString);
 
-            // The following few lines are used to register esc to close the dialog
-            Action cancelKeyAction = new AbstractAction() {
-                    public void actionPerformed(ActionEvent e) {
-                        hide();
+            addKeyListener(new KeyAdapter(){
+                    public void keyPressed(KeyEvent evt){
+                        if(evt.getKeyCode() == KeyEvent.VK_ESCAPE){
+                            hide();
+                        }
                     }
-                }; 
-            KeyStroke cancelKeyStroke = KeyStroke.getKeyStroke((char)KeyEvent.VK_ESCAPE);
-            InputMap inputMap = cancelButton.getInputMap(JComponent.
-                                                         WHEN_IN_FOCUSED_WINDOW);
-            ActionMap actionMap = cancelButton.getActionMap();
-            if (inputMap != null && actionMap != null) {
-                inputMap.put(cancelKeyStroke, ACTION_COMMAND_CANCEL);
-                actionMap.put(ACTION_COMMAND_CANCEL, cancelKeyAction);
-            }
-            // end esc handling
-
-            cancelButton.setActionCommand(ACTION_COMMAND_CANCEL);
-            if (cancelListener != null) {
-                cancelButton.addActionListener(cancelListener);
-            }
+                });
+            
             cancelButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         hide();
                     }
                 });
+            
             buttonPane.add(cancelButton);
 
             JButton resetButton = new JButton(resetString);
