@@ -391,6 +391,9 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     // 'opacity'
     /////////////////////////////////////////////////////////////////////////
 
+    public final static Composite transparent = 
+        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0);
+
     /**
      * Returns a composite object that represents the 'opacity' of the
      * specified element.
@@ -399,12 +402,11 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      */
     public static Composite convertOpacity(Element e) {
         CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
-        CSSValue v =
-            getComputedStyle(e).getPropertyCSSValueInternal
+        CSSValue v = decl.getPropertyCSSValueInternal
             (CSS_OPACITY_PROPERTY);
         float opacity = PaintServer.convertOpacity(v);
         if (opacity <= 0f) {
-            return null;
+            return transparent;
         } else if (opacity >= 1f) {
             return AlphaComposite.SrcOver;
         } else {

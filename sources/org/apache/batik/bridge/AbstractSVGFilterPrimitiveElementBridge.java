@@ -129,6 +129,8 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
         if (filter instanceof FilterColorInterpolation) {
             boolean isLinear
                 = CSSUtilities.convertColorInterpolationFilters(filterElement);
+            // System.out.println("IsLinear: " + isLinear +
+            //                    " Filter: " + filter);
             ((FilterColorInterpolation)filter).setColorSpaceLinear(isLinear);
         }
     }
