@@ -336,6 +336,7 @@
         <test id="samples/tests/spec/text/textOnPathSpaces.svg" />
         <test id="samples/tests/spec/text/textPCDATA.svg" />
         <test id="samples/tests/spec/text/textProperties.svg" />
+        <test id="samples/tests/spec/text/textProperties2.svg" />
         <test id="samples/tests/spec/text/textStyles.svg" />
         <test id="samples/tests/spec/text/verticalText.svg" />
         <test id="samples/tests/spec/text/verticalTextOnPath.svg" />
@@ -417,5 +418,6 @@
         <test id="samples/tests/spec/scripting/setProperty.svg" />
         <test id="samples/tests/spec/scripting/styling.svg" />
         <test id="samples/tests/spec/scripting/text_content.svg" />
+        <test id="samples/tests/spec/scripting/textProperties2.svg" />
     </testGroup>
 </testSuite>

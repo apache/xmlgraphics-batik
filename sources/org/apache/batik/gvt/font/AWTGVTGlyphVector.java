@@ -174,7 +174,9 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
 
         if (tpi == null)
             return null;
-
+        if (!tpi.visible) 
+            return null;
+            
         cacheTPI = new TextPaintInfo(tpi);
         Shape outline = null;
         if (tpi.fillPaint != null) {
@@ -818,6 +820,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         TextPaintInfo tpi = (TextPaintInfo)aci.getAttribute
             (GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO);
         if (tpi == null) return;
+        if (!tpi.visible) return;
+
         Paint  fillPaint   = tpi.fillPaint;
         Stroke stroke      = tpi.strokeStroke;
         Paint  strokePaint = tpi.strokePaint;

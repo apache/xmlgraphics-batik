@@ -535,9 +535,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                           Element element,
                                           BridgeContext ctx) {
         // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-        if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
+        if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
+            (!CSSUtilities.convertDisplay(element))) {
             return;
         }
+
         AttributedCharacterIterator aci = as.getIterator();
 
         // calculate which chars in the string belong to this element
@@ -624,21 +626,22 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         // first try to find CSS properties that change the layout
         for (int i=0; i < properties.length; ++i) {
             switch(properties[i]) {
-            case SVGCSSEngine.TEXT_ANCHOR_INDEX:
-            case SVGCSSEngine.FONT_SIZE_INDEX:
-            case SVGCSSEngine.FONT_WEIGHT_INDEX:
-            case SVGCSSEngine.FONT_STYLE_INDEX:
-            case SVGCSSEngine.FONT_STRETCH_INDEX:
-            case SVGCSSEngine.FONT_FAMILY_INDEX:
             case SVGCSSEngine.BASELINE_SHIFT_INDEX:
-            case SVGCSSEngine.UNICODE_BIDI_INDEX:
             case SVGCSSEngine.DIRECTION_INDEX:
-            case SVGCSSEngine.WRITING_MODE_INDEX:
-            case SVGCSSEngine.GLYPH_ORIENTATION_VERTICAL_INDEX:
+            case SVGCSSEngine.DISPLAY_INDEX:
+            case SVGCSSEngine.FONT_FAMILY_INDEX:
+            case SVGCSSEngine.FONT_SIZE_INDEX:
+            case SVGCSSEngine.FONT_STRETCH_INDEX:
+            case SVGCSSEngine.FONT_STYLE_INDEX:
+            case SVGCSSEngine.FONT_WEIGHT_INDEX:
             case SVGCSSEngine.GLYPH_ORIENTATION_HORIZONTAL_INDEX:
+            case SVGCSSEngine.GLYPH_ORIENTATION_VERTICAL_INDEX:
+            case SVGCSSEngine.KERNING_INDEX: 
             case SVGCSSEngine.LETTER_SPACING_INDEX:
+            case SVGCSSEngine.TEXT_ANCHOR_INDEX:
+            case SVGCSSEngine.UNICODE_BIDI_INDEX:
             case SVGCSSEngine.WORD_SPACING_INDEX:
-            case SVGCSSEngine.KERNING_INDEX: {
+            case SVGCSSEngine.WRITING_MODE_INDEX: {
                 if (!hasNewACI) {
                     hasNewACI = true;
                     computeLaidoutText(ctx, e, node);
@@ -790,7 +793,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                               Integer bidiLevel,
                                               AttributedStringBuffer asb) {
         // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-        if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
+        if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
+            (!CSSUtilities.convertDisplay(element))) {
             return;
         }
         
@@ -811,7 +815,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         for (Node n = element.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-            
+
             last = n.getNextSibling() == null;
             
             int lastChar = asb.getLastChar();
@@ -820,11 +824,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
-                if (!SVG_NAMESPACE_URI.equals(n.getNamespaceURI())) {
+                if (!SVG_NAMESPACE_URI.equals(n.getNamespaceURI()))
                     break;
-                }
                 
                 nodeElement = (Element)n;
+
                 String ln = n.getLocalName();
                 
                 if (ln.equals(SVG_TSPAN_TAG) ||
@@ -1137,7 +1141,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                               BridgeContext ctx) {
 
         // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-        if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
+        if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
+            (!CSSUtilities.convertDisplay(element))) {
             return;
         }
         AttributedCharacterIterator aci = as.getIterator();
@@ -1257,16 +1262,17 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             if (child.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
-            if (!SVG_NAMESPACE_URI.equals(child.getNamespaceURI())) {
+            if (!SVG_NAMESPACE_URI.equals(child.getNamespaceURI()))
                 continue;
-            }
+
             String ln = child.getLocalName();
             if (ln.equals(SVG_TSPAN_TAG) ||
                 ln.equals(SVG_ALT_GLYPH_TAG) ||
                 ln.equals(SVG_A_TAG) ||
                 ln.equals(SVG_TEXT_PATH_TAG) ||
                 ln.equals(SVG_TREF_TAG)) {
-                addGlyphPositionAttributes(as, (Element)child, ctx);
+                Element childElement = (Element)child;
+                addGlyphPositionAttributes(as, childElement, ctx);
             }
         }
     }
@@ -1280,7 +1286,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                                       TextPaintInfo pi,
                                       BridgeContext ctx) {
         // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-        if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
+        if ((!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) ||
+            (!CSSUtilities.convertDisplay(element))) {
             return;
         }
         Object o = elemTPI.get(element);
@@ -1301,16 +1308,16 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             if (child.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
-            if (!SVG_NAMESPACE_URI.equals(child.getNamespaceURI())) {
+            if (!SVG_NAMESPACE_URI.equals(child.getNamespaceURI()))
                 continue;
-            }
+
+            Element childElement = (Element)child;
             String ln = child.getLocalName();
             if (ln.equals(SVG_TSPAN_TAG) ||
                 ln.equals(SVG_ALT_GLYPH_TAG) ||
                 ln.equals(SVG_A_TAG) ||
                 ln.equals(SVG_TEXT_PATH_TAG) ||
                 ln.equals(SVG_TREF_TAG)) {
-                Element childElement = (Element)child;
                 TextPaintInfo pi = getTextPaintInfo(childElement, node,
                                                         parentPI, ctx);
                 addPaintAttributes(as, childElement, node, pi, ctx);
@@ -1708,6 +1715,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         else
             pi.composite    = AlphaComposite.SrcOver;
 
+        pi.visible      = CSSUtilities.convertVisibility(element);
         pi.fillPaint    = PaintServer.convertFillPaint  (element, node, ctx);
         pi.strokePaint  = PaintServer.convertStrokePaint(element, node, ctx);
         pi.strokeStroke = PaintServer.convertStroke     (element);
