@@ -163,7 +163,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
     }
 
 
-    public class MyImgObs implements ImageObserver {
+    public static class MyImgObs implements ImageObserver {
         boolean widthDone = false;
         boolean heightDone = false;
         boolean imageDone = false;

@@ -371,15 +371,16 @@ public class PNGImageEncoder extends ImageEncoderImpl {
                     int val = clamp(samples[s] >> bitShift, maxValue);
                     tmp = (tmp << bitDepth) | val;
 
-                    if ((pos++ & mask) == mask) {
+                    if (pos++  == mask) {
                         currRow[count++] = (byte)tmp;
                         tmp = 0;
+                        pos = 0;
                     }
                 }
 
                 // Left shift the last byte
-                if ((pos & mask) != 0) {
-                    tmp <<= ((8/bitDepth) - pos)*bitDepth;
+                if (pos != 0) {
+                    tmp <<= (samplesPerByte - pos)*bitDepth;
                     currRow[count++] = (byte)tmp;
                 }
                 break;
