@@ -8,6 +8,8 @@
 
 package org.apache.batik.bridge;
 
+import java.util.List;
+
 import org.apache.batik.gvt.UpdateTracker;
 
 /**
@@ -50,8 +52,9 @@ public class RepaintManager extends Thread {
                     updateManager.getUpdateRunnableQueue().invokeAndWait
                         (new Runnable() {
                             public void run() {
-                                    updateManager.updateRendering
-                                        (ut.getDirtyAreas());
+                                List dirtyAreas = ut.getDirtyAreas();
+                                updateManager.modifiedAreas(dirtyAreas);
+                                updateManager.updateRendering(dirtyAreas);
                                 ut.clear();
                             }
                         });

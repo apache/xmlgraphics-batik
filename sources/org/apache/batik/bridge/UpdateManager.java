@@ -288,6 +288,20 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     }
 
     /**
+     * Call this to let the Update Manager know that certain areas
+     * in the image have been modified and need to be rerendered..
+     */
+    public void modifiedAreas(List areas) {
+        AffineTransform at = renderer.getTransform();
+        Iterator i = areas.iterator();
+        while (i.hasNext()) {
+            Shape s = (Shape)i.next();
+            Rectangle r = at.createTransformedShape(s).getBounds();
+            renderer.flush(r);
+        }
+    }
+
+    /**
      * Updates the rendering buffer.
      * @param u2d The user to device transform.
      * @param dbr Whether the double buffering should be used.
@@ -322,7 +336,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
             while (i.hasNext()) {
                 Shape s = (Shape)i.next();
                 Rectangle r = at.createTransformedShape(s).getBounds();
-                renderer.flush(r);
                 rects.add(r);
             }
 

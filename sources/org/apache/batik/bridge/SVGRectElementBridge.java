@@ -198,11 +198,31 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
             Rectangle2D r = (Rectangle2D)node.getShape();
             // System.out.println("Old r: " + r);
 
-            r.setRect(Float.parseFloat(((MutationEvent)evt).getNewValue()),
-                      r.getY(),
-                      r.getWidth(),
-                      r.getHeight());
+            MutationEvent mevt = (MutationEvent)evt;
+            if (mevt.getAttrName().equals("x")){
+                r.setRect(Float.parseFloat(((MutationEvent)evt).getNewValue()),
+                          r.getY(),
+                          r.getWidth(),
+                          r.getHeight());
+            } else if (mevt.getAttrName().equals("y")){
+                r.setRect(r.getX(),
+                          Float.parseFloat(((MutationEvent)evt).getNewValue()),
+                          r.getWidth(),
+                          r.getHeight());
 
+            } else if (mevt.getAttrName().equals("width")){
+                r.setRect(r.getX(),
+                          r.getY(),
+                          Float.parseFloat(((MutationEvent)evt).getNewValue()),
+                          r.getHeight());
+
+            }else if (mevt.getAttrName().equals("height")){
+                r.setRect(r.getX(),
+                          r.getY(),
+                          r.getWidth(),
+                          Float.parseFloat(((MutationEvent)evt).getNewValue()));
+
+            }
             // System.out.println("New r: " + r);
 
             node.setShape(r);
