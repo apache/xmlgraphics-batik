@@ -469,12 +469,17 @@ public class JGVTComponent extends JComponent {
         return progressivePaint;
     }
 
+    public Rectangle getRenderRect() {
+        Dimension d = getSize();
+        return new Rectangle(0, 0, d.width, d.height);
+    }
+
     /**
      * Repaints immediately the component.
      */
     public void immediateRepaint() {
         if (EventQueue.isDispatchThread()) {
-            Rectangle visRect = getVisibleRect();
+            Rectangle visRect = getRenderRect();
             if (doubleBufferedRendering)
                 repaint(visRect.x,     visRect.y, 
                         visRect.width, visRect.height);
@@ -485,7 +490,7 @@ public class JGVTComponent extends JComponent {
             try {
                 EventQueue.invokeAndWait(new Runnable() {
                         public void run() {
-                            Rectangle visRect = getVisibleRect();
+                            Rectangle visRect = getRenderRect();
                             if (doubleBufferedRendering)
                                 repaint(visRect.x,     visRect.y, 
                                         visRect.width, visRect.height);
@@ -507,7 +512,7 @@ public class JGVTComponent extends JComponent {
 
         Graphics2D g2d = (Graphics2D)g;
 
-        Rectangle visRect = getVisibleRect();
+        Rectangle visRect = getRenderRect();
         g2d.setComposite(AlphaComposite.SrcOver);
         g2d.setPaint(getBackground());
         g2d.fillRect(visRect.x,     visRect.y, 
@@ -650,7 +655,7 @@ public class JGVTComponent extends JComponent {
      * Renders the GVT tree.
      */
     protected void renderGVTTree() {
-        Rectangle visRect = getVisibleRect();
+        Rectangle visRect = getRenderRect();
         if (gvtRoot == null || visRect.width <= 0 || visRect.height <= 0) {
             return;
         }
@@ -804,7 +809,7 @@ public class JGVTComponent extends JComponent {
                                     public void run() {
                                         if (progressivePaintThread ==
                                             thisThread) {
-                                            Rectangle vRect = getVisibleRect();
+                                            Rectangle vRect = getRenderRect();
                                             repaint(vRect.x,     vRect.y, 
                                                     vRect.width, vRect.height);
                                         }

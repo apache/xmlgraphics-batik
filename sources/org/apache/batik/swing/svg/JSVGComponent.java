@@ -715,7 +715,7 @@ public class JSVGComponent extends JGVTComponent {
             disableInteractions = true;
             initialTransform = new AffineTransform();
             setRenderingTransform(initialTransform, false);
-            Rectangle vRect = getVisibleRect();
+            Rectangle vRect = getRenderRect();
             repaint(vRect.x,     vRect.y, 
                     vRect.width, vRect.height);
             return;
@@ -996,7 +996,7 @@ public class JSVGComponent extends JGVTComponent {
             return;
         }
 
-        final Rectangle visRect = getVisibleRect();
+        final Rectangle visRect = getRenderRect();
         if ((gvtRoot == null)    || 
             (visRect.width <= 0) || 
             (visRect.height <= 0)) {
@@ -1718,7 +1718,7 @@ public class JSVGComponent extends JGVTComponent {
 
                             List l = e.getDirtyAreas();
                             if (l != null) {
-                                Rectangle visRect = getVisibleRect();
+                                Rectangle visRect = getRenderRect();
                                 List ml = mergeRectangles
                                     (l, visRect.x, visRect.y,
                                      visRect.width - 1, visRect.height - 1);
