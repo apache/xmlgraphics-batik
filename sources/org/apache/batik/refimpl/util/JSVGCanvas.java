@@ -449,6 +449,8 @@ public class JSVGCanvas
         if (doc == null) {
             document = doc;
             setRootNode(null, null, null);
+            selectionHighlightShape = null;
+            canvasSpaceHighlightShape = null;
         } else {
             setIsLoadPending(true);
             requestCursor(WAIT_CURSOR);
@@ -649,7 +651,7 @@ public class JSVGCanvas
      * Selector instances.
      */
     public void initSelectors(GraphicsNode treeRoot) {
-        /* Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
+        Iterator nodeIter = new GraphicsNodeTreeIterator(treeRoot);
         if (textSelector == null) {
             textSelector =
                 new ConcreteTextSelector(
@@ -663,7 +665,7 @@ public class JSVGCanvas
                              (GraphicsNodeMouseListener) textSelector);
                 // should make sure this does not add duplicates
             }
-            }*/
+            }
         selectionHighlightShape = null;
         canvasSpaceHighlightShape = null;
     }
