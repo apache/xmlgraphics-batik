@@ -30,6 +30,8 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.ToolTipManager;
 
@@ -879,6 +881,32 @@ public class JSVGCanvas extends JSVGComponent {
             if (locationListener == null) {
                 locationListener = new LocationListener();
                 addMouseMotionListener(locationListener);
+            }
+        }
+
+        /**
+         * Displays an error message in the User Agent interface.
+         */
+        public void displayError(String message) {
+            if (svgUserAgent != null) {
+                super.displayError(message);
+            } else {
+                JOptionPane pane;
+                pane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE);
+                JDialog dialog = pane.createDialog(JSVGCanvas.this, "ERROR");
+                dialog.setModal(false);
+                dialog.show();
+            }
+        }
+
+        /**
+         * Displays an error resulting from the specified Exception.
+         */
+        public void displayError(Exception ex) {
+            if (svgUserAgent != null) {
+                super.displayError(ex);
+            } else {
+                displayError(ex.getMessage());
             }
         }
     }
