@@ -29,5 +29,6 @@ public interface XTRunConstants {
     // XTRun attributes
     /////////////////////////////////////////////////////////////////////////
     String XTRun_HREF_ATTRIBUTE = "href";
+    String XTRun_ID_ATTRIBUTE   = "id";
     String XTRun_NAME_ATTRIBUTE  = "name";
 }

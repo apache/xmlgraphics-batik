@@ -18,12 +18,16 @@ import java.net.MalformedURLException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.batik.test.DefaultTestSuite;
+import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestSuite;
 import org.apache.batik.test.Test;
+import org.apache.batik.test.TestFilter;
 import org.apache.batik.test.TestException;
 import org.apache.batik.test.TestReportProcessor;
 
@@ -58,6 +62,14 @@ import org.w3c.dom.NodeList;
  */
 public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
     /**
+     * Displayed when no test or testSuite matching the input id was
+     * found.
+     * {0} : unmatched id set
+     */
+    public static final String MESSAGE_UNMATCHED_TEST_IDS 
+        = "XMLTestSuiteRunner.messages.unmatched.test.ids";
+
+    /**
      * An error happened while processing a <tt>TestreportProcessor</tt>
      * description.
      * {0} : the <testReportProcessor> "className" attribute value
@@ -89,6 +101,128 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
      */
     public static final String TEST_REPORT_PROCESSING_EXCEPTION
         = "xml.XMLTestSuiteRunner.error.test.report.processing.exception";
+
+    /**
+     * Test filter which accepts all tests
+     */
+    public static class AcceptAllTestsFilter implements TestFilter{
+        public Test filter(Test t){
+            return t;
+        }
+    }
+
+    /**
+     * Test filter which only accepts tests with ids matching 
+     * the ones passed to its constructor.
+     */
+    public static class IdBasedTestFilter implements TestFilter {
+        protected String[] ids;
+        protected Set unmatchedIds = new HashSet();
+
+        public IdBasedTestFilter(String[] ids){
+            this.ids = ids;
+            for(int i=0; i<ids.length; i++){
+                unmatchedIds.add(ids[i]);
+            }
+        }
+
+        public String traceUnusedIds(){
+            Object[] ui = unmatchedIds.toArray();
+            StringBuffer sb = null; 
+            if(ui != null && ui.length > 0){
+                sb = new StringBuffer();
+                sb.append(ui[0].toString());
+                for(int i=1; i<ui.length; i++){
+                    sb.append(", ");
+                    sb.append(ui[i].toString());
+                }
+            }
+            return sb != null ? sb.toString() : null;
+        }
+
+        /**
+         * Remove children <tt>Test</tt> instances from the <tt>TestSuite</tt>
+         * if they are filtered out.
+         */
+        public void filterTestSuite(TestSuite ts){
+            Test[] t = ts.getChildrenTests();
+            int nTests = t != null ? t.length : 0;
+            for(int i=0; i<nTests; i++){
+                if(filter(t[i]) == null){
+                    ts.removeTest(t[i]);
+                }
+            }
+        }
+
+        /**
+         * Accept a test if one of the ids is found (i.e., an
+         * exact match or a substring) in the <tt>Test</tt>'s
+         * qualified id.
+         * <tt>TestSuite</tt>s are accepted if they have children and
+         * rejected if they have none.
+         */
+        public Test filter(Test t){
+            String id = t.getQualifiedId();
+            boolean isRequested = isRequestedId(id);
+
+            //
+            // First, handle TestSuite children
+            //
+            if(t instanceof TestSuite){
+                TestSuite ts = (TestSuite)t;
+                filterTestSuite(ts);
+                if(ts.getChildrenCount() > 0){
+                    return t;
+                }
+                return null;
+            }
+
+            //
+            // Now, handle leaf Tests
+            //
+            if(isRequested){
+                return t;
+            }
+
+            return null;
+        }
+
+        protected boolean isRequestedId(String id){
+            for(int i=0; i<ids.length; i++){
+                //
+                // id substring of ids[i]
+                // ======================
+                // if the test identifier (id) is a substring of one of the requested 
+                // then the test is one of the requested test parents and should be accepted.
+                // Example: id = "all.B" with requested ids = "all.A all.B.B3"
+                //          "all.B" (id) is a substring of "all.B.B3" (ids[1])
+                // Conclusion: id is accepted because it is a parent test of ids[1]
+                // 
+                // ids[i] substring of id
+                // ======================
+                // if one of the requested test identifiers (id[i]) is a substring of the
+                // test id, then one of the test children is requested, so the test should
+                // be accepted.
+                // Example: id = "all.B.B3" with requested ids = "all.B"
+                //          "all.B" (ids[0]) is a substring of "all.B.B3" (id)
+                // Conclusion: id is accepted because it is a child test of ids[0]
+                //
+                if(ids[i].lastIndexOf(id) == 0){
+                    // System.out.println("accepting " + id + ". It is (or is the a parent of) " + ids[i]);
+                    unmatchedIds.remove(ids[i]);
+                    return true;
+                }
+                
+                if(id.lastIndexOf(ids[i]) != -1){
+                    // System.out.println("accepting " + id + " it is (or is a child of) the requested " + ids[i]);
+                    unmatchedIds.remove(ids[i]);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    }
 
     /**
      * Builds an array of <tt>TestReportProcessor</tt> from the input
@@ -150,9 +284,18 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
      * &lt;testSuite&gt; elements which is loaded into
      * a <tt>Test</tt> and composited into a <tt>TestSuite</tt>
      */
-    protected DefaultTestSuite buildReferencedTestSuites(Element element)
+    protected DefaultTestSuite buildTestRunTestSuite(Element element)
         throws TestException {
         DefaultTestSuite testSuite = new DefaultTestSuite();
+
+        //
+        // Set the testRun name and id on the top level testSuite
+        //
+        String name = element.getAttributeNS(null, XTRun_NAME_ATTRIBUTE);
+        testSuite.setName(name);
+        
+        String id = element.getAttributeNS(null, XTRun_ID_ATTRIBUTE);
+        testSuite.setId(id);
 
         Element[] testSuites 
             = getChildrenByTagName(element, XTRun_TEST_SUITE_TAG);
@@ -162,7 +305,10 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
             String suiteHref = 
                 testSuites[i].getAttributeNS(null, XTRun_HREF_ATTRIBUTE);
 
-            testSuite.addTest( XMLTestSuiteLoader.loadTestSuite(suiteHref) );
+            Test test = XMLTestSuiteLoader.loadTestSuite(suiteHref, testSuite);
+            if(test != null){
+                testSuite.addTest(test);
+            }
         }
 
         return testSuite;
@@ -204,23 +350,19 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
 
     /**
      * Runs the test suite described by the input
-     * Document object. The root element on a 
-     * 'Test Run' is &lt;testRun&gt; which can
-     * contain: <br />
-     * + children &lt;testRun&gt; elements.
-     * + &lt;testReportProcessor&gt; elements.
-     * + &lt;testSuite&gt; elements
-     * <br />
-     * Each &lt;testRun&gt; element is processed
-     * by loading 
+     * Document object. If the input ids array
+     * is null or of zero length, then all the tests will be run.
+     * Otherwise, only the tests identified by 
+     * the array will be run.
      */
-    public void run(Document doc) 
+    public TestReport run(Document doc, String[] ids) 
         throws TestException {
         Element root = doc.getDocumentElement();
-        run(root);
+
+        return run(root, ids);
     }
 
-    protected TestReport runTest(Test test) 
+    protected TestReport runTest(Test test)
         throws TestException {
         try{
             return test.run();
@@ -260,20 +402,34 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
         }
     }
 
-    protected void run(Element testRunElement)
+    protected TestReport run(Element testRunElement, String[] ids)
         throws TestException{
         //
-        // First, extract the TestSuite to run
-        // the actual tests.
+        // First, build entire suite of tests
         //
-        DefaultTestSuite testSuite 
-            = buildReferencedTestSuites(testRunElement);
-        
+        Test testRun
+            = buildTestRunTestSuite(testRunElement);
+
         //
-        // Set the testRun name on the top level testSuite
+        // Filter testSuite if necessary
         //
-        String name = testRunElement.getAttributeNS(null, XTRun_NAME_ATTRIBUTE);
-        testSuite.setName(name);
+        Test filteredTestRun = testRun;
+        if(ids != null && ids.length > 0){
+            IdBasedTestFilter filter = new IdBasedTestFilter(ids);
+            filteredTestRun = filter.filter(testRun);
+            String unusedIds = filter.traceUnusedIds();
+            if(unusedIds != null){
+                System.err.println(Messages.formatMessage(MESSAGE_UNMATCHED_TEST_IDS,
+                                                          new Object[]{unusedIds}));
+            }
+        }
+
+        if(filteredTestRun == null){
+            DefaultTestReport report 
+                = new DefaultTestReport(testRun);
+            report.setPassed(true);
+            return report;
+        }
 
         //
         // Now, get the set of TestReportProcessors
@@ -282,34 +438,19 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
         TestReportProcessor[] processors 
             = extractTestReportProcessor(testRunElement);
 
+        //
+        // Run the test
+        //
+        TestReport report = runTest(testRun);
+        
+        //
+        // Process the report
+        //
         if(processors != null){
-            //
-            // Run the test
-            //
-            TestReport report = runTest(testSuite);
-            
-            //
-            // Process the report
-            //
             processReport(report, processors);
         }
 
-        //
-        // Run child testRun element
-        //
-        run( getChildrenByTagName(testRunElement,
-                                   XTRun_TEST_RUN_TAG) );
-    }
-
-    protected void run(Element[] testRunElements)
-        throws TestException{
-        if(testRunElements != null 
-           && 
-           testRunElements.length > 0){
-            for(int i=0; i<testRunElements.length; i++){
-                run(testRunElements[i]);
-            }
-        }
+        return report;
     }
 
     /**
@@ -368,6 +509,9 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
         }
         
         String uriStr = args[0];
+        String[] ids = new String[args.length - 1];
+        System.arraycopy(args, 1, ids, 0, args.length-1);
+
         File file = new File(uriStr);
         URL url = null;
         if(file.exists()){
@@ -416,7 +560,7 @@ public class XMLTestSuiteRunner implements XTRunConstants, XTSConstants{
         try{
             System.err.println("Running test run...");
             XMLTestSuiteRunner r = new XMLTestSuiteRunner();
-            r.run(doc);
+            r.run(doc, ids);
         }catch(TestException e){
             System.err.println(Messages.formatMessage(ERROR_RUNNING_TEST_SUITE,
                                                       new Object[] { e.getMessage() }));

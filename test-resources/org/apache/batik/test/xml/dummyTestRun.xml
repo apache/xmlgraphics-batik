@@ -1,0 +1,19 @@
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- A dummy test description file for the regression on the test suite        -->
+<!-- infrastructure itself.                                                    -->
+<!--                                                                           -->
+<!-- @author vincent.hardy@eng.sun.com                                         -->
+<!-- @version $Id$    -->
+<!-- ========================================================================= -->
+<testRun id="all" name="Dummy Test Run">
+    <testSuite href="file:test-resources/org/apache/batik/test/xml/testSuiteA.xml" />
+    <testSuite href="file:test-resources/org/apache/batik/test/xml/testSuiteB.xml" />
+</testRun>
