@@ -25,7 +25,7 @@
 
     <body>
         <s1 title="Introduction">
-        <figure src="images/viewer.jpg" alt="Batik Viewer"/>
+        <!-- <figure src="images/viewer.jpg" alt="Batik Viewer"/> -->
         <p>
         This page describes the main features of the SVG Viewer that comes with Batik.
         It discusses the following:</p>
@@ -103,7 +103,8 @@
 
             <s2 title="SVG viewer screen shot">
 
-                <p><link href="images/svgviewerDefaultRegular.jpg"><icon src="images/svgviewerDefaultSmall.jpg" alt="Batik Viewer"/></link></p>
+                <p><link href="images/svgviewerDefaultRegular.jpg">Batik
+                   <!-- <icon src="images/svgviewerDefaultSmall.jpg" alt="Batik Viewer"/> --></link></p>
                 
 
             </s2>
