@@ -234,6 +234,13 @@ public class PreferenceDialog extends JDialog
     }
 
     /**
+     * Returns the preference manager used by this dialog.
+     */
+    public PreferenceManager getPreferenceManager() {
+        return model;
+    }
+
+    /**
      * Initializes the GUI components with the values
      * from the model.
      */
@@ -476,7 +483,7 @@ public class PreferenceDialog extends JDialog
         p.setBorder(BorderFactory.createCompoundBorder
                     (BorderFactory.createTitledBorder
                      (BorderFactory.createEtchedBorder(),
-                     Resources.getString(TITLE_BEHAVIOR)),
+                     Resources.getString(TITLE_NETWORK)),
                      BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
         return p;

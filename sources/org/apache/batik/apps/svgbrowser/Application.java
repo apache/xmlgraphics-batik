@@ -43,4 +43,19 @@ public interface Application {
      */
     String getXMLParserClassName();
 
+    /**
+     * Shows the preference dialog.
+     */
+    void showPreferenceDialog(JSVGViewerFrame f);
+
+    /**
+     * Returns the user languages.
+     */
+    String getLanguages();
+
+    /**
+     * Returns the user stylesheet uri.
+     * @return null if no user style sheet was specified.
+     */
+    String getUserStyleSheetURI();
 }

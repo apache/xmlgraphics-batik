@@ -367,8 +367,12 @@ public class LanguageDialog extends JDialog implements ActionMap {
          */
         public String getLanguages() {
             StringBuffer result = new StringBuffer();
-            for (int i = 0; i < userListModel.getSize(); i++) {
-                result.append(userListModel.getElementAt(i) + ",");
+            if (userListModel.getSize() > 0) {
+                result.append(userListModel.getElementAt(0));
+
+                for (int i = 1; i < userListModel.getSize(); i++) {
+                    result.append("," + userListModel.getElementAt(i));
+                }
             }
             return result.toString();
         }
