@@ -508,44 +508,10 @@ public class JSVGViewerFrame
         });
 
         // Interactors initialization ///////////////////////////////////////
-
-        svgCanvas.getInteractors().add(new AbstractZoomInteractor() {
-            public boolean startInteraction(InputEvent ie) {
-                int mods = ie.getModifiers();
-                return
-                    ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                    (mods & ie.BUTTON1_MASK) != 0 &&
-                    (mods & ie.CTRL_MASK) != 0;
-            }
-        });
-        svgCanvas.getInteractors().add(new AbstractImageZoomInteractor() {
-            public boolean startInteraction(InputEvent ie) {
-                int mods = ie.getModifiers();
-                return
-                    ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                    (mods & ie.BUTTON3_MASK) != 0 &&
-                    (mods & ie.SHIFT_MASK) != 0;
-            }
-        });
-        svgCanvas.getInteractors().add(new AbstractPanInteractor() {
-            public boolean startInteraction(InputEvent ie) {
-                int mods = ie.getModifiers();
-                return
-                    ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                    (mods & ie.BUTTON1_MASK) != 0 &&
-                    (mods & ie.SHIFT_MASK) != 0;
-            }
-        });
-        svgCanvas.getInteractors().add(new AbstractRotateInteractor() {
-            public boolean startInteraction(InputEvent ie) {
-                int mods = ie.getModifiers();
-                return
-                    ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                    (mods & ie.BUTTON3_MASK) != 0 &&
-                    (mods & ie.CTRL_MASK) != 0;
-            }
-        });
-        
+        svgCanvas.setEnableZoomInteractor(true);
+        svgCanvas.setEnableImageZoomInteractor(true);
+        svgCanvas.setEnablePanInteractor(true);
+        svgCanvas.setEnableRotateInteractor(true);
     }
 
     /**
@@ -707,11 +673,11 @@ public class JSVGViewerFrame
                 new Thread() {
                     public void run(){
                         //
-                        // Build a PrintTranscoder to handle printing 
+                        // Build a PrintTranscoder to handle printing
                         // of the svgDocument object
                         //
                         PrintTranscoder pt = new PrintTranscoder();
-                            
+
                         //
                         // Set transcoding hints
                         //
@@ -724,12 +690,12 @@ public class JSVGViewerFrame
 
                         pt.addTranscodingHint(pt.KEY_SHOW_PRINTER_DIALOG,
                                               Boolean.TRUE);
-                            
+
                         //
                         // Do transcoding now
                         //
                         pt.transcode(new TranscoderInput(doc), null);
-                            
+
                         //
                         // Print
                         //
@@ -853,7 +819,7 @@ public class JSVGViewerFrame
             if (svgDocument == null) {
                 return;
             }
-            
+
             URL tu = null;
             try {
                 tu = new URL(((SVGOMDocument)svgDocument).getURLObject(), "");
@@ -869,7 +835,7 @@ public class JSVGViewerFrame
             final JTextArea ta  = new JTextArea();
             ta.setLineWrap(true);
             ta.setFont(new Font("monospaced", Font.PLAIN, 12));
-                
+
             JScrollPane scroll = new JScrollPane();
             scroll.getViewport().add(ta);
             scroll.setVerticalScrollBarPolicy
@@ -879,12 +845,12 @@ public class JSVGViewerFrame
             new Thread() {
                 public void run() {
                     char [] buffer = new char[4096];
-                    
+
                     try {
                         Document  doc = new PlainDocument();
 
                         InputStream is = u.openStream();
-                    
+
                         try {
                             is = new GZIPInputStream(is);
                         } catch (IOException ex) {
@@ -1253,7 +1219,7 @@ public class JSVGViewerFrame
      */
     public void gvtBuildStarted(GVTTreeBuilderEvent e) {
         if (debug) {
-            System.out.println("Build started..."); 
+            System.out.println("Build started...");
             time = System.currentTimeMillis();
         }
         statusBar.setMainMessage(resources.getString("Message.treeBuild"));
@@ -1388,7 +1354,7 @@ public class JSVGViewerFrame
         public void displayError(String message) {
             System.err.println(message);
         }
-    
+
         /**
          * Displays an error resulting from the specified Exception.
          */
