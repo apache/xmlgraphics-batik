@@ -1,0 +1,49 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Vertical <text>                                                           -->
+<!--                                                                           -->
+<!-- @author dean.jackson@cmis.csiro.au                                       -->
+<!-- @version $Id$     -->
+<!-- ========================================================================= -->
+<?xml-stylesheet type="text/css" href="test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+<title>Vertical Text Test</title>
+
+    <g id="content">
+
+        <text class="title" x="50%" y="40">Vertical Text Test</text>
+
+
+    <line x1="20" y1="100" x2="430" y2="100" stroke="black"/>
+
+        
+        <text x="50" y="100" writing-mode="tb" font-size="15">Writing top to bottom</text>
+
+        <text x="125" y="100" glyph-orientation-vertical="auto" writing-mode="tb" font-size="15">Glyph Orientation: auto</text>
+
+        <text x="200" y="100" glyph-orientation-vertical="0" writing-mode="tb" font-size="15">Glyph Orientation: 0</text>
+
+        <text x="275" y="100" writing-mode="tb" font-size="15">Embedded <tspan fill="red">&lt;tspan&gt;</tspan> element</text>
+
+        <text x="350" y="100" writing-mode="tb" font-size="15">Embedded <tspan fill="blue" glyph-orientation-vertical="0">orientated</tspan> element</text>
+       
+    </g>
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="../batikLogo.svg#Batik_Tag_Box" />
+
+</svg>

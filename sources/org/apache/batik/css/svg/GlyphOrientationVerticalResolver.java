@@ -30,7 +30,7 @@ public class GlyphOrientationVerticalResolver
      * Whether the handled property is inherited or not.
      */
     public boolean isInheritedProperty() {
-	return false;
+	return true;
     }
 
     /**

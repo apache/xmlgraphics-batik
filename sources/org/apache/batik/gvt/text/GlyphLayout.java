@@ -302,8 +302,14 @@ public class GlyphLayout implements TextSpanLayout {
      * Returns true if the advance direction of this text is vertical.
      */
     public boolean isVertical() {
-        // TODO: Implement this!
-        return false;
+	
+        if (aci.getAttribute(GVTAttributedCharacterIterator.
+                            TextAttribute.WRITING_MODE) == 
+            GVTAttributedCharacterIterator.TextAttribute.WRITING_MODE_TTB) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -962,6 +968,22 @@ public class GlyphLayout implements TextSpanLayout {
     }
 
 
+    protected boolean isLatinChar(char c) {
+
+        Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
+        
+        if (block == Character.UnicodeBlock.BASIC_LATIN ||
+            block == Character.UnicodeBlock.LATIN_1_SUPPLEMENT ||
+            block == Character.UnicodeBlock.LATIN_EXTENDED_ADDITIONAL ||
+            block == Character.UnicodeBlock.LATIN_EXTENDED_A ||
+            block == Character.UnicodeBlock.LATIN_EXTENDED_B) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     protected void doExplicitGlyphLayout(boolean applyOffset) {
         char ch = aci.first();
         int i=0;
@@ -976,14 +998,46 @@ public class GlyphLayout implements TextSpanLayout {
         float init_y_pos = (float) offset.getY();
         float curr_x_pos = init_x_pos;
         float curr_y_pos = init_y_pos;
+        boolean firstChar = true;
+        float verticalFirstOffset = 0f;
+        boolean verticalTextOrient = true;
 
         while (i < numGlyphs) {
+
+            if (firstChar) {
+                if (aci.getAttribute(GVTAttributedCharacterIterator.
+                                     TextAttribute.VERTICAL_ORIENTATION)
+                    == GVTAttributedCharacterIterator.
+                    TextAttribute.ORIENTATION_AUTO) {
+
+                    if (isLatinChar(ch)) {
+                        // it will be rotated
+                        verticalFirstOffset = 0f;
+                    } else {
+                        // it won't be rotated
+                        verticalFirstOffset = (float) gv.getGlyphMetrics(i).getBounds2D().getHeight();
+                    }
+                } else {
+                    verticalFirstOffset = (float) gv.getGlyphMetrics(i).getBounds2D().getHeight();
+                    verticalTextOrient = false;
+                }
+            } else {
+                if (verticalTextOrient && verticalFirstOffset == 0f 
+                    && !isLatinChar(ch)) {
+
+                    verticalFirstOffset = (float) gv.getGlyphMetrics(i).getBounds2D().getHeight();
+                }
+
+            }
+
+
 
             // ox and oy are origin adjustments for each glyph,
             // computed on the basis of baseline-shifts, etc.
             float ox = 0f;
             float oy = 0f;
             Float rotation = null;
+            float verticalTextRotation = 0f;
 
             if (ch != CharacterIterator.DONE) {
                 Float x = (Float) aci.getAttribute(
@@ -996,6 +1050,29 @@ public class GlyphLayout implements TextSpanLayout {
                              GVTAttributedCharacterIterator.TextAttribute.DY);
                 rotation = (Float) aci.getAttribute(
                         GVTAttributedCharacterIterator.TextAttribute.ROTATION);
+                
+                if (isVertical()) {
+                    if (verticalTextOrient) {
+                        if (isLatinChar(ch)) {
+                            // If character is Latin, then rotate by
+                            // 90 degrees
+                            verticalTextRotation = (float) (Math.PI / 2f);
+                        } else {
+                            verticalTextRotation = 0f;
+                        }
+                    } else {
+                        verticalTextRotation = ((Float)aci.getAttribute(GVTAttributedCharacterIterator.
+                                                                        TextAttribute.VERTICAL_ORIENTATION_ANGLE)).floatValue();
+                    }
+
+                }
+
+                if (rotation == null || rotation.isNaN()) {
+                    rotation = new Float(verticalTextRotation);
+                } else {
+                    rotation = new Float(rotation.floatValue() + verticalTextRotation);
+                }
+
 
                 if (x!= null && !x.isNaN()) {
                     if (i==0) {
@@ -1048,16 +1125,41 @@ public class GlyphLayout implements TextSpanLayout {
                         oy = -baselineAdjust;
                     }
                 }
+
+                if (isVertical()) {
+                    // offset due to rotation of first character
+                    oy += verticalFirstOffset;
+
+                    if (!verticalTextOrient) {
+                        // center the character if it's not auto orient
+                        ox -= (float) gv.getGlyphMetrics(i).getBounds2D().getWidth() / 2f;
+                    }
+                }
             }
             gv.setGlyphPosition(i, new Point2D.Float(curr_x_pos+ox,curr_y_pos+oy));
-            if (rotation != null && !rotation.isNaN()) {
+            if (rotation.floatValue() != 0f) {
                 gv.setGlyphTransform(i,
                     AffineTransform.getRotateInstance(
                         (double)rotation.floatValue()));
             }
-            curr_x_pos += (float) gv.getGlyphMetrics(i).getAdvance();
+
+            if (isVertical()) {
+                if (verticalTextOrient) {
+                    if (isLatinChar(ch)) {
+                        curr_y_pos += (float) gv.getGlyphMetrics(i).getAdvance();
+                    } else {
+                        curr_y_pos += (metrics.getAscent() + metrics.getDescent());
+                    }
+                } else {
+                    curr_y_pos += (metrics.getAscent() + metrics.getDescent());
+                }
+            } else {
+                curr_x_pos += (float) gv.getGlyphMetrics(i).getAdvance();
+            }
             ch = aci.next();
             ++i;
+            firstChar = false;
+
         }
 
         advance = new Point2D.Float((float) (curr_x_pos-offset.getX()),
