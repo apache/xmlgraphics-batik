@@ -61,7 +61,7 @@ import org.apache.batik.dom.svg.SVGDocumentLoader;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
 import org.apache.batik.gvt.GraphicsNode;
-// import org.apache.batik.gvt.GraphicsNodeTreeIterator;
+import org.apache.batik.gvt.GraphicsNodeTreeIterator;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.Selector;
 
