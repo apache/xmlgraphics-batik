@@ -1264,6 +1264,17 @@ public class StrokingTextPainter extends BasicTextPainter {
             if (anchor != null) {
                 anchorType = anchor.getType();
             }
+            // if writing mode is right to left, then need to reverse the
+            // text anchor positions
+            if (aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.WRITING_MODE)
+                == GVTAttributedCharacterIterator.TextAttribute.WRITING_MODE_RTL) {
+                if (anchorType == TextNode.Anchor.ANCHOR_START) {
+                    anchorType = TextNode.Anchor.ANCHOR_END;
+                } else if (anchorType == TextNode.Anchor.ANCHOR_END) {
+                    anchorType = TextNode.Anchor.ANCHOR_START;
+                }
+                // leave middle as is
+            }
         }
 
         public AttributedCharacterIterator getACI() {
