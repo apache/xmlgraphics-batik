@@ -25,7 +25,6 @@ import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.ConcretePatternPaint;
@@ -132,10 +131,9 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
         // Get the patternTransfrom
         AffineTransform patternTransform =
-            AWTTransformProducer.createAffineTransform
-            (new StringReader(paintElement.getAttributeNS(null,
-                                                       ATTR_PATTERN_TRANSFORM)),
-             ctx.getParserFactory());
+            SVGUtilities.convertAffineTransform(paintElement,
+                                                ATTR_PATTERN_TRANSFORM,
+                                                ctx.getParserFactory());
 
         // Get the overflow property on the pattern element
         CSSStyleDeclaration cssDecl

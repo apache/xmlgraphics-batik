@@ -23,7 +23,6 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
@@ -47,9 +46,11 @@ public class SVGSwitchElementBridge
     public GraphicsNode createGraphicsNode(BridgeContext ctx,
                                            Element element){
         GraphicsNode gn = ctx.getGVTFactory().createCompositeGraphicsNode();
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),
-             ctx.getParserFactory());
+        AffineTransform at =
+            SVGUtilities.convertAffineTransform(element,
+                                                ATTR_TRANSFORM,
+                                                ctx.getParserFactory());
+
         gn.setTransform(at);
 
         return gn;

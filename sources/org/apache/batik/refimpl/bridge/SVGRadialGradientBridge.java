@@ -18,7 +18,6 @@ import java.util.Vector;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.util.awt.RadialGradientPaint;
@@ -143,9 +142,10 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             convertSpreadMethod(spreadMethod);
 
         // Extract gradient transform
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(paintElement.getAttributeNS(null,
-                             ATTR_GRADIENT_TRANSFORM)), ctx.getParserFactory());
+        AffineTransform at =
+            SVGUtilities.convertAffineTransform(paintElement,
+                                                ATTR_GRADIENT_TRANSFORM,
+                                                ctx.getParserFactory());
 
         at = SVGUtilities.convertAffineTransform(at, paintedNode, units);
 

@@ -12,16 +12,13 @@ import java.awt.Color;
 import java.awt.Paint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-
 import java.io.StringReader;
-
 import java.util.Vector;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;

@@ -29,7 +29,6 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteMaskRable;
 import org.apache.batik.util.SVGConstants;
@@ -119,9 +118,11 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
         }
 
         // Get the mask transform
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(maskElement.getAttributeNS(null, ATTR_TRANSFORM)),
-             bridgeContext.getParserFactory());
+        AffineTransform at =
+            SVGUtilities.convertAffineTransform(maskElement,
+                                                ATTR_TRANSFORM,
+                                                bridgeContext.getParserFactory());
+
         at = SVGUtilities.convertAffineTransform(at,
                                                  maskedNode,
                                                  maskContentUnits);

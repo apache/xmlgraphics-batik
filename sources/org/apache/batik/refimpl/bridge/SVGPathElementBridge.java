@@ -10,13 +10,14 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.Shape;
 import java.awt.geom.PathIterator;
-
 import java.io.IOException;
 import java.io.StringReader;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MissingAttributeException;
 import org.apache.batik.parser.AWTPathProducer;
+import org.apache.batik.parser.ParseException;
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.UnitProcessor;
 
@@ -58,7 +59,11 @@ public class SVGPathElementBridge extends SVGShapeElementBridge {
             shape = AWTPathProducer.createShape(new StringReader(d),
                                                 wr,
                                                 ctx.getParserFactory());
-        } catch (IOException e) { /* Nothing to do */ }
+        } catch (ParseException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("path.d.invalid",
+                                       new Object[] {ex.getMessage()}));
+        } catch (IOException e) { /* can't happen - nothing to do */ }
 
         return shape;
     }

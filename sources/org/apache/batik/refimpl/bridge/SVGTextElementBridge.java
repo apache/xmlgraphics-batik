@@ -41,7 +41,6 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -110,9 +109,10 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
         // Transform
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),
-             ctx.getParserFactory());
+        AffineTransform at =
+            SVGUtilities.convertAffineTransform(element,
+                                                ATTR_TRANSFORM,
+                                                ctx.getParserFactory());
         result.setTransform(at);
 
         // parse the x attribute, (default is 0)

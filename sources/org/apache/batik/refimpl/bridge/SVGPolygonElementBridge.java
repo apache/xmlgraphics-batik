@@ -10,13 +10,14 @@ package org.apache.batik.refimpl.bridge;
 
 import java.awt.Shape;
 import java.awt.geom.PathIterator;
-
 import java.io.IOException;
 import java.io.StringReader;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MissingAttributeException;
 import org.apache.batik.parser.AWTPolygonProducer;
+import org.apache.batik.parser.ParseException;
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.util.UnitProcessor;
 
@@ -58,6 +59,10 @@ public class SVGPolygonElementBridge extends SVGShapeElementBridge {
             shape = AWTPolygonProducer.createShape(new StringReader(pts),
                                                    wr,
                                                    ctx.getParserFactory());
+        } catch (ParseException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("polygon.points.invalid",
+                                       new Object[] {ex.getMessage()}));
         } catch (IOException e) { /* Nothing to do */ }
 
         return shape;

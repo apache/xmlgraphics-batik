@@ -44,10 +44,9 @@ import org.apache.batik.gvt.ShapePainter;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.parser.AWTTransformProducer;
+import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
-import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.util.awt.font.TextPathLayout;
@@ -100,9 +99,10 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
         ShapeNode node = ctx.getGVTFactory().createShapeNode();
 
         // Transform
-        AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(element.getAttributeNS(null, ATTR_TRANSFORM)),
-             ctx.getParserFactory());
+        AffineTransform at =
+            SVGUtilities.convertAffineTransform(element,
+                                                ATTR_TRANSFORM,
+                                                ctx.getParserFactory());
         node.setTransform(at);
 
         // <!> TODO only when binding is enabled

@@ -27,7 +27,6 @@ import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
 import org.apache.batik.util.SVGConstants;
@@ -73,9 +72,10 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         GVTFactory gvtFactory = ctx.getGVTFactory();
 
         // parse the transform attribute
-        AffineTransform Tx = AWTTransformProducer.createAffineTransform
-           (new StringReader(clipElement.getAttributeNS(null, ATTR_TRANSFORM)),
-            ctx.getParserFactory());
+        AffineTransform Tx =
+            SVGUtilities.convertAffineTransform(clipElement,
+                                                ATTR_TRANSFORM,
+                                                ctx.getParserFactory());
 
         // parse the clipPathUnits attribute
         Viewport oldViewport = ctx.getCurrentViewport();
