@@ -54,7 +54,7 @@
 	    <ul>
 	        <li>
 		For Python, you need to download JPython distribution at the following
-		URL <link href="http://www.jpython.org">http://www.jpyton.org</link>. 
+		URL <link href="http://www.jpython.org">http://www.jpython.org</link>. 
 		Then you put the <code>jpython.jar</code> file in the Batik <code>
 		lib</code> directory.
 		</li>

@@ -43,13 +43,8 @@
         </action>
 
         <action context="code"
-                assigned-to="SH">
-            External use support
-        </action>
-
-        <action context="code"
                 assigned-to="TK">
-            objectBoundingBox, userSpaceOnUser for masks, clip-path
+            objectBoundingBox, userSpaceOnUser for masks,
             and patterns.
         </action>
 
@@ -65,11 +60,6 @@
 
         <action context="code"
                 assigned-to="BH">
-            tspan support
-        </action>
-
-        <action context="code"
-                assigned-to="SH">
             tspan support
         </action>
 
