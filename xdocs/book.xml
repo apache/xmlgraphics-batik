@@ -82,7 +82,7 @@
     <!-- Admin / Status          -->
     <!-- ======================= -->
     <page id="cvs"                label="CVS Repository"           source="cvs.xml"/>
-    <external                     label="Bug Database"             href="http://nagoya.apache.org/bugzilla"/>
+    <external                     label="Bug Database"             href="http://issues.apache.org/bugzilla"/>
     <separator/>
     <page id="status"             label="Status"                   source="status.xml" />
     <!-- status of the SVG DOM implementation -->
