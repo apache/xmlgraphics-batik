@@ -208,9 +208,6 @@ To display the available targets type:
       <exclude name="**/jpython*" unless="jpython.present"/>
       <exclude name="**/jacl*" unless="jacl.present"/>
     </javac>
-
-    <copy file="${src}/org/w3c/flute/util/encoding.properties"
-          todir="${dest}/org/w3c/flute/util"/>
   </target>
 
   <target name="clean-compile"
