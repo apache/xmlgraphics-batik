@@ -49,11 +49,4 @@ public interface FilterPrimitiveBridge extends Bridge {
                         Rectangle2D filterRegion,
                         Map filterMap);
 
-    /**
-     * Performs an update according to the specified event.
-     *
-     * @param evt the event describing the update to perform
-     */
-    void update(BridgeMutationEvent evt);
-
 }

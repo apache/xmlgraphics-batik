@@ -29,13 +29,5 @@ public interface MarkerBridge extends Bridge {
     Marker createMarker(BridgeContext ctx,
                         Element markerElement,
                         Element paintedElement);
-
-    /**
-     * Performs an update according to the specified event.
-     *
-     * @param evt the event describing the update to perform
-     */
-    void update(BridgeMutationEvent evt);
-
 }
 

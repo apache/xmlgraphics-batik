@@ -35,12 +35,4 @@ public interface FilterBridge extends Bridge {
                         Element filteredElement,
                         GraphicsNode filteredNode);
 
-    /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
-     *
-     * @param evt the event that describes the modification to perform
-     */
-    void update(BridgeMutationEvent evt);
-
 }

@@ -297,15 +297,6 @@ public class SVGFeComponentTransferElementBridge
         }
 
         /**
-         * Performs an update according to the specified event.
-         *
-         * @param evt the event describing the update to perform
-         */
-        public void update(BridgeMutationEvent evt) {
-            throw new Error("Not implemented");
-        }
-
-        /**
          * Converts the 'tableValues' attribute of the specified component
          * transfer function element.
          *
