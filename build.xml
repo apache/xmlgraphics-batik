@@ -137,6 +137,7 @@ To display the available targets type:
 
   <!-- Build .............................................................. -->
   <target name="build" depends="jars, html">
+    <delete dir="${build}/docs/images/BE"/>
     <zip zipfile="${project}-docs-${version}.zip" basedir="${build}"
          includes="docs/javadoc/**"/>
     <delete dir="${build}/docs/javadoc"/>
