@@ -131,6 +131,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_KERNEL_UNIT_LENGTH_X = "kernelUnitLengthX";
     String ATTR_KERNEL_UNIT_LENGTH_Y = "kernelUnitLengthY";
     String ATTR_LIGHT_COLOR = "lightColor";
+    String ATTR_LIMITING_CONE_ANGLE = "limitingConeAngle";
     String ATTR_NUM_OCTAVES = "numOctaves";
     String ATTR_MASK = "mask";
     String ATTR_MASK_UNITS = "maskUnits";
@@ -154,6 +155,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_RESULT_SCALE = "resultScale";
     String ATTR_RX = "rx";
     String ATTR_RY = "ry";
+    String ATTR_SCALE = "scale";
     String ATTR_SEED = "seed";
     String ATTR_SHAPE_RENDERING = "shape-rendering";
     String ATTR_SLOPE = "slope";

@@ -190,6 +190,9 @@ public class SVGOMDocument
         factories.put(TAG_FE_SPECULAR_LIGHTING,
                       new FeSpecularLightingElementFactory());
 
+        factories.put(TAG_FE_SPOT_LIGHT,
+                      new FeSpotLightElementFactory());
+
         factories.put(TAG_FE_TILE,
                       new FeTileElementFactory());
 
@@ -659,6 +662,7 @@ public class SVGOMDocument
      * To create a 'a' element.
      */
     protected class AElementFactory implements ElementFactory {
+        public AElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -671,6 +675,7 @@ public class SVGOMDocument
      * To create a 'circle' element.
      */
     protected class CircleElementFactory implements ElementFactory {
+        public CircleElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -683,6 +688,7 @@ public class SVGOMDocument
      * To create a 'clip-path' element.
      */
     protected class ClipPathElementFactory implements ElementFactory {
+        public ClipPathElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -697,6 +703,7 @@ public class SVGOMDocument
      * To create a 'defs' element.
      */
     protected class DefsElementFactory implements ElementFactory {
+        public DefsElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -709,6 +716,7 @@ public class SVGOMDocument
      * To create a 'desc' element.
      */
     protected class DescElementFactory implements ElementFactory {
+        public DescElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -721,6 +729,7 @@ public class SVGOMDocument
      * To create a 'ellipse' element.
      */
     protected class EllipseElementFactory implements ElementFactory {
+        public EllipseElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -733,6 +742,7 @@ public class SVGOMDocument
      * To create a 'feBlend' element.
      */
     protected class FeBlendElementFactory implements ElementFactory {
+        public FeBlendElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -745,6 +755,7 @@ public class SVGOMDocument
      * To create a 'feColorMatrix' element.
      */
     protected class FeColorMatrixElementFactory implements ElementFactory {
+        public FeColorMatrixElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -758,6 +769,7 @@ public class SVGOMDocument
      */
     protected class FeComponentTransferElementFactory
         implements ElementFactory {
+        public FeComponentTransferElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -771,6 +783,7 @@ public class SVGOMDocument
      * To create a 'feConvolveMatrix' element.
      */
     protected class FeConvolveMatrixElementFactory implements ElementFactory {
+        public FeConvolveMatrixElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -784,6 +797,7 @@ public class SVGOMDocument
      */
     protected class FeCompositeElementFactory
         implements ElementFactory {
+        public FeCompositeElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -796,6 +810,7 @@ public class SVGOMDocument
      * To create a 'feDiffuseLighting' element.
      */
     protected class FeDiffuseLightingElementFactory implements ElementFactory {
+        public FeDiffuseLightingElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -809,13 +824,13 @@ public class SVGOMDocument
      * To create a 'feDisplacementMap' element.
      */
     protected class FeDisplacementMapElementFactory implements ElementFactory {
+        public FeDisplacementMapElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_DISPLACEMENT_MAP);
+            return new SVGOMFEDisplacementMapElement(prefix,
+                                                     SVGOMDocument.this);
         }
     }
 
@@ -823,6 +838,7 @@ public class SVGOMDocument
      * To create a 'feDistantLight' element.
      */
     protected class FeDistantLightElementFactory implements ElementFactory {
+        public FeDistantLightElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -835,21 +851,20 @@ public class SVGOMDocument
      * To create a 'feFlood' element.
      */
     protected class FeFloodElementFactory implements ElementFactory {
+        public FeFloodElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_FLOOD);
+            return new SVGOMFEFloodElement(prefix, SVGOMDocument.this);
         }
     }
-
 
     /**
      * To create a 'feFuncA' element.
      */
     protected class FeFuncAElementFactory implements ElementFactory {
+        public FeFuncAElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -858,11 +873,11 @@ public class SVGOMDocument
         }
     }
 
-
     /**
      * To create a 'feFuncR' element.
      */
     protected class FeFuncRElementFactory implements ElementFactory {
+        public FeFuncRElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -871,11 +886,11 @@ public class SVGOMDocument
         }
     }
 
-
     /**
      * To create a 'feFuncG' element.
      */
     protected class FeFuncGElementFactory implements ElementFactory {
+        public FeFuncGElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -889,6 +904,7 @@ public class SVGOMDocument
      * To create a 'feFuncB' element.
      */
     protected class FeFuncBElementFactory implements ElementFactory {
+        public FeFuncBElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -901,6 +917,7 @@ public class SVGOMDocument
      * To create a 'feGaussianBlur' element.
      */
     protected class FeGaussianBlurElementFactory implements ElementFactory {
+        public FeGaussianBlurElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -914,6 +931,7 @@ public class SVGOMDocument
      * To create a 'feImage' element.
      */
     protected class FeImageElementFactory implements ElementFactory {
+        public FeImageElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -928,6 +946,7 @@ public class SVGOMDocument
      * To create a 'feMerge' element.
      */
     protected class FeMergeElementFactory implements ElementFactory {
+        public FeMergeElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -942,6 +961,7 @@ public class SVGOMDocument
      * To create a 'feMorphology' element.
      */
     protected class FeMorphologyElementFactory implements ElementFactory {
+        public FeMorphologyElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -957,6 +977,7 @@ public class SVGOMDocument
      * To create a 'feOffset' element.
      */
     protected class FeOffsetElementFactory implements ElementFactory {
+        public FeOffsetElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -971,6 +992,7 @@ public class SVGOMDocument
      * To create a 'fePointLight' element.
      */
     protected class FePointLightElementFactory implements ElementFactory {
+        public FePointLightElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -983,6 +1005,7 @@ public class SVGOMDocument
      * To create a 'feSpecularLighting' element.
      */
     protected class FeSpecularLightingElementFactory implements ElementFactory {
+        public FeSpecularLightingElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -994,9 +1017,23 @@ public class SVGOMDocument
     }
 
     /**
+     * To create a 'feSpotLight' element.
+     */
+    protected class FeSpotLightElementFactory implements ElementFactory {
+        public FeSpotLightElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMFESpotLightElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
      * To create a 'feTile' element.
      */
     protected class FeTileElementFactory implements ElementFactory {
+        public FeTileElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1011,6 +1048,7 @@ public class SVGOMDocument
      * To create a 'feTurbulence' element
      */
     protected class FeTurbulenceElementFactory implements ElementFactory{
+        public FeTurbulenceElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1025,6 +1063,7 @@ public class SVGOMDocument
      * To create a 'filter' element.
      */
     protected class FilterElementFactory implements ElementFactory {
+        public FilterElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1037,6 +1076,7 @@ public class SVGOMDocument
      * To create a 'g' element.
      */
     protected class GElementFactory implements ElementFactory {
+        public GElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1049,6 +1089,7 @@ public class SVGOMDocument
      * To create a 'image' element.
      */
     protected class ImageElementFactory implements ElementFactory {
+        public ImageElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1061,6 +1102,7 @@ public class SVGOMDocument
      * To create a 'line' element.
      */
     protected class LineElementFactory implements ElementFactory {
+        public LineElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1073,6 +1115,7 @@ public class SVGOMDocument
      * To create a 'linearGradient' element.
      */
     protected class LinearGradientElementFactory implements ElementFactory {
+        public LinearGradientElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1087,6 +1130,7 @@ public class SVGOMDocument
      * To create a 'mask' element.
      */
     protected class MaskElementFactory implements ElementFactory {
+        public MaskElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1101,6 +1145,7 @@ public class SVGOMDocument
      * To create a 'path' element.
      */
     protected class PathElementFactory implements ElementFactory {
+        public PathElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1113,6 +1158,7 @@ public class SVGOMDocument
      * To create a 'polygon' element.
      */
     protected class PolygonElementFactory implements ElementFactory {
+        public PolygonElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1125,6 +1171,7 @@ public class SVGOMDocument
      * To create a 'polyline' element.
      */
     protected class PolylineElementFactory implements ElementFactory {
+        public PolylineElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1137,6 +1184,7 @@ public class SVGOMDocument
      * To create a 'radialGradient' element.
      */
     protected class RadialGradientElementFactory implements ElementFactory {
+        public RadialGradientElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1151,6 +1199,7 @@ public class SVGOMDocument
      * To create a 'rect' element.
      */
     protected class RectElementFactory implements ElementFactory {
+        public RectElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1163,6 +1212,7 @@ public class SVGOMDocument
      * To create a 'script' element.
      */
     protected class ScriptElementFactory implements ElementFactory {
+        public ScriptElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1175,6 +1225,7 @@ public class SVGOMDocument
      * To create a 'stop' element.
      */
     protected class StopElementFactory implements ElementFactory {
+        public StopElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1189,6 +1240,7 @@ public class SVGOMDocument
      * To create a 'style' element.
      */
     protected class StyleElementFactory implements ElementFactory {
+        public StyleElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1201,6 +1253,7 @@ public class SVGOMDocument
      * To create an 'svg' element.
      */
     protected class SvgElementFactory implements ElementFactory {
+        public SvgElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1213,6 +1266,7 @@ public class SVGOMDocument
      * To create a 'switch' element.
      */
     protected class SwitchElementFactory implements ElementFactory {
+        public SwitchElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1225,6 +1279,7 @@ public class SVGOMDocument
      * To create a 'symbol' element.
      */
     protected class SymbolElementFactory implements ElementFactory {
+        public SymbolElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1237,6 +1292,7 @@ public class SVGOMDocument
      * To create a 'text' element.
      */
     protected class TextElementFactory implements ElementFactory {
+        public TextElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1249,6 +1305,7 @@ public class SVGOMDocument
      * To create a 'title' element.
      */
     protected class TitleElementFactory implements ElementFactory {
+        public TitleElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */
@@ -1261,6 +1318,7 @@ public class SVGOMDocument
      * To create a 'use' element.
      */
     protected class UseElementFactory implements ElementFactory {
+        public UseElementFactory() {}
         /**
          * Creates an instance of the associated element type.
          */

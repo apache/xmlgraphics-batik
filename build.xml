@@ -239,4 +239,11 @@
   <!-- Cleans everything -->
   <target name="clean" depends="clean-compile, clean-jars, clean-javadoc"/>
 
+  <!-- Launch the SVG viewer -->
+  <target name="svgviewer" depends="init">
+    <java classpath="classes:lib/crimson.jar:lib/js.jar:resources"
+          classname="${class-prefix}.apps.svgviewer.Main"
+          fork="yes"/>
+  </target>
+
 </project>
