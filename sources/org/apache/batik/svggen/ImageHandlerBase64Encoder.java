@@ -15,7 +15,7 @@ import java.awt.geom.AffineTransform;
 import java.io.*;
 import java.net.*;
 
-import org.apache.batik.util.Base64Encoder;
+import org.apache.batik.util.Base64EncoderStream;
 import org.apache.batik.ext.awt.image.codec.ImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
 
@@ -111,20 +111,20 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
     protected void handleHREF(RenderedImage image, Element imageElement,
                               SVGGeneratorContext generatorContext)
         throws SVGGraphics2DIOException {
-        //
-        // First, encode the input image in PNG
-        //
-        byte[] pngBytes = encodeImage(image);
 
         //
-        // Now, convert PNG data to Base64
+        // Setup Base64Encoder stream to byte array.
         //
-        Base64Encoder b64Encoder = new Base64Encoder();
-        ByteArrayInputStream is = new ByteArrayInputStream(pngBytes);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
+        Base64EncoderStream b64Encoder = new Base64EncoderStream(os);
         try {
-            b64Encoder.encodeBuffer(new ByteArrayInputStream(pngBytes),
-                                    os);
+            //
+            // Now, encode the input image to the base 64 stream.
+            //
+            encodeImage(image, b64Encoder);
+
+            // Close the b64 encoder stream (terminates the b64 streams).
+            b64Encoder.close();
         } catch (IOException e) {
             // Should not happen because we are doing in-memory processing
             throw new SVGGraphics2DIOException(ERR_UNEXPECTED, e);
@@ -140,14 +140,11 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
 
     }
 
-    public byte[] encodeImage(RenderedImage buf)
+    public void encodeImage(RenderedImage buf, OutputStream os)
         throws SVGGraphics2DIOException {
         try{
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
             ImageEncoder encoder = new PNGImageEncoder(os, null);
             encoder.encode(buf);
-            os.close();
-            return os.toByteArray();
         } catch(IOException e) {
             // We are doing in-memory processing. This should not happen.
             throw new SVGGraphics2DIOException(ERR_UNEXPECTED);

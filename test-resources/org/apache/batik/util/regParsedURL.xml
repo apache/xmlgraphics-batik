@@ -1,0 +1,59 @@
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- @author deweese@apache.org                                             -->
+<!-- @version $Id$     -->
+<!-- ====================================================================== -->
+
+<testSuite name="Parsed URL test Suite">
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <arg class="java.lang.String" value="xml.apache.org" />
+        <arg class="java.lang.String" value="//xml.apache.org" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <arg class="java.lang.String" value="http://xml.apache.org/" />
+        <arg class="java.lang.String" value="~deweese" />
+        <arg class="java.lang.String" value="http://xml.apache.org/~deweese" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <arg class="java.lang.String" value="file:///xml.apache.org" />
+        <arg class="java.lang.String" value="~deweese" />
+        <arg class="java.lang.String" value="file:/~deweese" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
+        <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <arg class="java.lang.String" value="fooz:///home/deweese/.cshrc" />
+        <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/.cshrc#abcd" />
+        <arg class="java.lang.String" 
+             value="xyz.html#efgh" />
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/xyz.html#efgh" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/home/deweese/xyz.html#efgh" />
+        <arg class="java.lang.String" 
+             value="/xyz.svg#ijkl" />
+        <arg class="java.lang.String" 
+             value="fooz://www.com:1234/xyz.svg#ijkl" />
+    </test>
+</testSuite>

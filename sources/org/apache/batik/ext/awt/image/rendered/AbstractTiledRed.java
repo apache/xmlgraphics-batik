@@ -535,6 +535,9 @@ public abstract class AbstractTiledRed
         if ((tx1 < tx0) || (ty1 < ty0))
             return;
 
+        // System.out.println("WR: " + wrR);
+        // System.out.println("ME: " + bounds);
+
         int insideTx0 = tx0;
         int insideTx1 = tx1;
 
