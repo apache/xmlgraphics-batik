@@ -96,9 +96,29 @@ public class PreferenceManager
         internal = new Properties();
     }
 
+    /**
+     * Sets a <code>String</code> representing the directory
+     * where <code>PreferenceManager</code> instances should look
+     * for preferences files. The default value is <code>null</code>
+     * which means the automatic mechanism for looking for preferences
+     * is used.
+     * @see #load
+     */
     public static void setPreferenceDirectory(String dir)
     {
         PREF_DIR = dir;
+    }
+
+    /**
+     * Returns a <code>String</code> representing the directory
+     * where <code>PreferenceManager</code> instances should look
+     * for preferences.
+     * @see #load
+     * @see #setPreferenceDirectory
+     */
+    public static String getPreferenceDirectory()
+    {
+        return PREF_DIR;
     }
 
     /**
@@ -109,6 +129,7 @@ public class PreferenceManager
      * {@link #setPreferenceDirectory} if it exists, in the user
      * home directory and then in the current user directory.
      * @exception IOException if an error occured when reading the file.
+     * @see #save
      */
     public void load()
         throws IOException
@@ -121,10 +142,16 @@ public class PreferenceManager
                 fullName = null;
             }
         if (fullName == null) {
-            try {
-                fis =
-                    new FileInputStream(fullName = PREF_DIR+FILE_SEP+prefFileName);
-            } catch (IOException e2) {
+            if (PREF_DIR != null) {
+                try {
+                    fis =
+                        new FileInputStream(fullName =
+                                            PREF_DIR+FILE_SEP+prefFileName);
+                } catch (IOException e2) {
+                    fullName = null;
+                }
+            }
+            if (fullName == null) {
                 try {
                     fis =
                         new FileInputStream(fullName =
@@ -168,10 +195,16 @@ public class PreferenceManager
                 fullName = null;
             }
         if (fullName == null) {
-            try {
-                fos =
-                    new FileOutputStream(fullName = PREF_DIR+FILE_SEP+prefFileName);
-            } catch (IOException e2) {
+            if (PREF_DIR != null) {
+                try {
+                    fos =
+                        new FileOutputStream(fullName =
+                                             PREF_DIR+FILE_SEP+prefFileName);
+                } catch (IOException e2) {
+                    fullName = null;
+                }
+            }
+            if (fullName == null) {
                 try {
                     fos =
                         new FileOutputStream(fullName =
@@ -531,9 +564,11 @@ public class PreferenceManager
     /**
      * Gets an int preference.
      */
-    public int getInt(String key)
+    public int getInteger(String key)
     {
-        int defaultValue = ((Integer)getDefault(key)).intValue();
+        int defaultValue = 0;
+        if (getDefault(key) != null)
+            defaultValue = ((Integer)getDefault(key)).intValue();
         String sp = internal.getProperty(key);
         if (sp == null) {
             return defaultValue;
@@ -553,7 +588,9 @@ public class PreferenceManager
      */
     public float getFloat(String key)
     {
-        float defaultValue = ((Float)getDefault(key)).floatValue();
+        float defaultValue = 0;
+        if (getDefault(key) != null)
+            defaultValue = ((Float)getDefault(key)).floatValue();
         String sp = internal.getProperty(key);
         if (sp == null) {
             return defaultValue;
@@ -569,13 +606,18 @@ public class PreferenceManager
     }
 
     /**
-     * Gets a boolean preference. The default is always false.
+     * Gets a boolean preference. If not found and no default returns false.
      */
     public boolean getBoolean(String key)
     {
-        if (internal.getProperty(key) == null)
-            return false;
-        return true;
+        if (internal.getProperty(key) != null)
+            return (internal.getProperty(key).equals("true"))?
+                true:false;
+        else
+            if (getDefault(key) != null)
+                return ((Boolean)getDefault(key)).booleanValue();
+            else
+                return false;
     }
 
     /**
@@ -584,7 +626,8 @@ public class PreferenceManager
     public void setRectangle(String key, Rectangle value)
     {
         if (value != null && !value.equals(getDefault(key)))
-            internal.put(key, value.x+" "+value.y+" "+value.width+" "+value.height);
+            internal.setProperty(key, value.x+" "+value.y+" "+
+                                 value.width+" "+value.height);
         else
             internal.remove(key);
     }
@@ -595,7 +638,7 @@ public class PreferenceManager
     public void setDimension(String key, Dimension value)
     {
         if (value != null && !value.equals(getDefault(key)))
-            internal.put(key, value.width+" "+value.height);
+            internal.setProperty(key, value.width+" "+value.height);
         else
             internal.remove(key);
     }
@@ -606,7 +649,7 @@ public class PreferenceManager
     public void setPoint(String key, Point value)
     {
         if (value != null && !value.equals(getDefault(key)))
-            internal.put(key, value.x+" "+value.y);
+            internal.setProperty(key, value.x+" "+value.y);
         else
             internal.remove(key);
     }
@@ -617,7 +660,7 @@ public class PreferenceManager
     public void setColor(String key, Color value)
     {
         if (value != null && !value.equals(getDefault(key)))
-            internal.put(key, value.getRed()+" "+
+            internal.setProperty(key, value.getRed()+" "+
                          value.getGreen()+" "+value.getBlue()+" "+
                          value.getAlpha());
         else
@@ -630,7 +673,7 @@ public class PreferenceManager
     public void setFont(String key, Font value)
     {
         if (value != null && !value.equals(getDefault(key)))
-            internal.put(key, value.getName()+" "+value.getSize()+" "+
+            internal.setProperty(key, value.getName()+" "+value.getSize()+" "+
                          value.getStyle());
         else
             internal.remove(key);
@@ -642,7 +685,7 @@ public class PreferenceManager
     public void setString(String key, String value)
     {
         if (value != null && !value.equals(getDefault(key)))
-            internal.put(key, value);
+            internal.setProperty(key, value);
         else
             internal.remove(key);
     }
@@ -678,7 +721,7 @@ public class PreferenceManager
     public void setURL(String key, URL value)
     {
         if (value != null && !value.equals(getDefault(key)))
-            internal.put(key, value.toString());
+            internal.setProperty(key, value.toString());
         else
             internal.remove(key);
     }
@@ -714,7 +757,7 @@ public class PreferenceManager
     public void setFile(String key, File value)
     {
         if (value != null && !value.equals(getDefault(key)))
-            internal.put(key, value.getAbsolutePath());
+            internal.setProperty(key, value.getAbsolutePath());
         else
             internal.remove(key);
     }
@@ -747,9 +790,13 @@ public class PreferenceManager
     /**
      * Sets an int property.
      */
-    public void setInt(String key, int value)
+    public void setInteger(String key, int value)
     {
-        internal.put(key, String.valueOf(value));
+        if (getDefault(key) != null &&
+            ((Integer)getDefault(key)).intValue() != value)
+            internal.setProperty(key, Integer.toString(value));
+        else
+            internal.remove(key);
     }
 
     /**
@@ -757,7 +804,11 @@ public class PreferenceManager
      */
     public void setFloat(String key, float value)
     {
-        internal.put(key, String.valueOf(value));
+        if (getDefault(key) != null &&
+            ((Float)getDefault(key)).floatValue() != value)
+            internal.setProperty(key, Float.toString(value));
+        else
+            internal.remove(key);
     }
 
     /**
@@ -765,11 +816,10 @@ public class PreferenceManager
      */
     public void setBoolean(String key, boolean value)
     {
-        if (value)
-            internal.put(key, "true");
+        if (getDefault(key) != null &&
+            ((Boolean)getDefault(key)).booleanValue() != value)
+            internal.setProperty(key, value?"true":"false");
         else
             internal.remove(key);
     }
 }
-
-
