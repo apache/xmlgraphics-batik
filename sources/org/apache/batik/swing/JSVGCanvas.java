@@ -89,8 +89,6 @@ import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
 import org.apache.batik.gvt.renderer.DynamicRenderer;
 import org.apache.batik.gvt.renderer.DynamicRendererFactory;
 
-import org.apache.batik.script.ConcreteInterpreterPool;
-
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.MissingListenerException;
 

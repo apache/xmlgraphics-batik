@@ -126,28 +126,33 @@ class BridgeEventSupport {
             }
         }
         String language = svgElement.getContentScriptType();
-        Interpreter interpret =
-            ctx.getInterpreterPool().
-            getInterpreter(element.getOwnerDocument(), language);
-        if (interpret != null) {
-            // <!> TODO we need to memo listeners to be able to remove
-            // them later.
-            // <!> TODO be smarter : don't look for doc attr on other
-            // elements.
-            for (int i = 0; i < EVENT_ATTRIBUTES.length; i++) {
-                if (!(script = element.getAttribute(EVENT_ATTRIBUTES[i])).
-                    equals("")) {
-                    target.
-                        addEventListener(EVENT_NAMES[i],
-                                         new ScriptCaller(ctx.getUserAgent(),
-                                                          script, interpret),
-                                         false);
+        Interpreter interpret = null;
+        // <!> TODO we need to memo listeners to be able to remove
+        // them later.
+        // <!> TODO be smarter : don't look for doc attr on other
+        // elements.
+        for (int i = 0; i < EVENT_ATTRIBUTES.length; i++) {
+            if (!(script = element.getAttribute(EVENT_ATTRIBUTES[i])).
+                equals("")) {
+                if (interpret == null) {
+                    // try to get the intepreter only if we have
+                    // a reason to do it!
+                    interpret = ctx.getInterpreterPool().
+                        getInterpreter(element.getOwnerDocument(), language);
+                    // the interpreter is not avaible => stop it now!
+                    if (interpret == null) {
+                        UserAgent ua = ctx.getUserAgent();
+                        if (ua != null)
+                            ua.displayError("unknow language: "+language);
+                        break;
+                    }
                 }
+                target.
+                    addEventListener(EVENT_NAMES[i],
+                                     new ScriptCaller(ctx.getUserAgent(),
+                                                      script, interpret),
+                                     false);
             }
-        } else {
-            UserAgent ua = ctx.getUserAgent();
-            if (ua != null)
-                ua.displayError("unknow language: "+language);
         }
     }
 
@@ -313,6 +318,7 @@ class BridgeEventSupport {
             } catch (IOException io) {
                 // will never appeared we don't use a file
             } catch (InterpreterException e) {
+                e.getException().printStackTrace();
                 if (ua != null)
                     ua.displayError("scripting error: " +
                                     e.getMessage());
