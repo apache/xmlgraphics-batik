@@ -83,16 +83,14 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                 GraphicsNode paintedNode,
                                 Element paintedElement,
                                 Element paintElement) {
-        String patternContentUnits 
-            = paintElement.getAttributeNS(null, 
-                                          ATTR_PATTERN_CONTENT_UNITS);
+
+        String patternContentUnits
+            = paintElement.getAttributeNS(null, ATTR_PATTERN_CONTENT_UNITS);
         if(patternContentUnits.length() == 0){
             patternContentUnits = VALUE_USER_SPACE_ON_USE;
         }
 
-        //
         // Build pattern content
-        //
         GVTBuilder builder = ctx.getGVTBuilder();
 
         CompositeGraphicsNode patternContentNode
@@ -100,55 +98,49 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
         // If we are in objectBoundingBox units, percentages
         // are relative to a (0, 0, 1, 1) viewport
-        Viewport oldViewport = ctx.getCurrentViewport();        
+        Viewport oldViewport = ctx.getCurrentViewport();
         if(VALUE_OBJECT_BOUNDING_BOX.equals(patternContentUnits)){
             ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
         }
 
         // build the GVT tree that represents the pattern
+        boolean hasChildren = false;
         for(Node child=paintElement.getFirstChild();
             child != null;
-            child = child.getNextSibling()){
-            if(child.getNodeType() == child.ELEMENT_NODE){
+            child = child.getNextSibling()) {
+            if (child.getNodeType() == child.ELEMENT_NODE) {
                 Element e = (Element)child;
                 GraphicsNode node
                     = builder.build(ctx, e) ;
-                if(node != null){
+                if (node != null){
+                    hasChildren = true;
                     patternContentNode.getChildren().add(node);
                 }
             }
         }
-        
-        if (patternContentNode == null) {
-            // System.out.println("Null pattern GN");
-            // System.out.println("patternEl: " + paintElement);
-            return null;
+        ctx.setCurrentViewport(oldViewport);
+        if (!hasChildren) {
+            return null; // no pattern defined
         }
 
-        ctx.setCurrentViewport(oldViewport);
-
-        //
         // Get the patternTransfrom
-        //
-        AffineTransform patternTransform = AWTTransformProducer.createAffineTransform
-            (new StringReader(paintElement.getAttributeNS(null, ATTR_PATTERN_TRANSFORM)),
+        AffineTransform patternTransform =
+            AWTTransformProducer.createAffineTransform
+            (new StringReader(paintElement.getAttributeNS(null,
+                                                       ATTR_PATTERN_TRANSFORM)),
              ctx.getParserFactory());
 
-        //
         // Get the overflow property on the pattern element
-        //
         CSSStyleDeclaration cssDecl
             = ctx.getViewCSS().getComputedStyle(paintElement, null);
 
-        CSSPrimitiveValue vbOverflow 
+        CSSPrimitiveValue vbOverflow
             = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(OVERFLOW_PROPERTY);
-        
+
         String overFlowValue = vbOverflow.getStringValue();
         if(overFlowValue.length() == 0){
             overFlowValue = HIDDEN;
         }
-
-        // System.out.println("Overflow value : " + overFlowValue);
 
         boolean overflow = true;
         if(HIDDEN.equals(overFlowValue)){
@@ -164,28 +156,25 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         UnitProcessor.Context uctx
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
-        Rectangle2D patternRegion 
+        Rectangle2D patternRegion
             = SVGUtilities.convertPatternRegion(paintElement,
                                                 paintedElement,
                                                 paintedNode,
                                                 uctx);
 
         //
-        // Get the transform that will initialize the 
+        // Get the transform that will initialize the
         // viewport for the pattern's viewBox
         //
         boolean hasViewBox = false;
 
         // viewBox -> patterRegion (viewport)
-        AffineTransform preserveAspectRatioTransform
-            = null;
+        AffineTransform preserveAspectRatioTransform = null;
 
-        String viewBoxAttr 
-            = paintElement.getAttributeNS(null,
-                                          ATTR_VIEW_BOX);
+        String viewBoxAttr = paintElement.getAttributeNS(null, ATTR_VIEW_BOX);
 
         Rectangle2D viewBox = null;
-        if(viewBoxAttr.length() > 0){
+        if (viewBoxAttr.length() > 0) {
             preserveAspectRatioTransform
                 = SVGUtilities.getPreserveAspectRatioTransform
                 ((SVGElement)paintElement,
@@ -194,8 +183,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                  ctx.getParserFactory());
 
             float vb[] = SVGUtilities.parseViewBoxAttribute(viewBoxAttr);
-            viewBox = new Rectangle2D.Float(vb[0], vb[1],
-                                            vb[2], vb[3]);
+            viewBox = new Rectangle2D.Float(vb[0], vb[1], vb[2], vb[3]);
             hasViewBox = true;
         }
 
@@ -204,8 +192,7 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         // is no viewBox
         //
         AffineTransform patternContentTransform = null;
-
-        if(!hasViewBox){
+        if (!hasViewBox) {
             if(VALUE_OBJECT_BOUNDING_BOX.equals(patternContentUnits)){
                 Rectangle2D bounds = paintedNode.getGeometryBounds();
                 patternContentTransform = new AffineTransform();
@@ -218,8 +205,8 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
         //
         // When there is a viewbox, need two node:
-        //  + one for the viewBox and implements the clipping (sometimes not, depending
-        //    on overflow)
+        //  + one for the viewBox and implements the clipping  (sometimes not,
+        // depending on overflow)
         //  + one for the viewBox to patternRegion transform
         //
         GVTFactory gvtFactory = ctx.getGVTFactory();
@@ -228,8 +215,8 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
             nodeTransform = preserveAspectRatioTransform;
             if(!overflow){
                 // Need to do clipping
-                CompositeGraphicsNode newPatternContentNode 
-                    = gvtFactory.createCompositeGraphicsNode(); // new CompositeGraphicsNode();
+                CompositeGraphicsNode newPatternContentNode
+                    = gvtFactory.createCompositeGraphicsNode();
 
                 newPatternContentNode.getChildren().add(patternContentNode);
 
@@ -244,9 +231,9 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
                 patternContentNode = newPatternContentNode;
             }
-        } else{
+        } else {
             //
-            // There may be an additional boundingBoxSpace to 
+            // There may be an additional boundingBoxSpace to
             // user space transform needed.
             //
             nodeTransform = patternContentTransform;
@@ -255,13 +242,12 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         //
         // Now, build a Paint from the pattern content
         //
-        Paint paint = new ConcretePatternPaint(patternContentNode, 
+        Paint paint = new ConcretePatternPaint(patternContentNode,
                                                nodeTransform,
-                                               patternRegion, 
+                                               patternRegion,
                                                overflow,
                                                patternTransform);
 
         return paint;
-
     }
 }
