@@ -85,6 +85,7 @@ public abstract class AbstractPanInteractor extends InteractorAdapter {
         yStart = e.getY();
 
         JGVTComponent c = (JGVTComponent)e.getSource();
+
         previousCursor = c.getCursor();
         c.setCursor(PAN_CURSOR);
     }
@@ -93,16 +94,24 @@ public abstract class AbstractPanInteractor extends InteractorAdapter {
      * Invoked when a mouse button has been released on a component.
      */
     public void mouseReleased(MouseEvent e) {
+        if (finished) {
+            return;
+        }
         finished = true;
 
         JGVTComponent c = (JGVTComponent)e.getSource();
 
-        AffineTransform pt = c.getPaintingTransform();
-        if (pt != null) {
-            AffineTransform rt = (AffineTransform)c.getRenderingTransform().clone();
-            rt.preConcatenate(pt);
-            c.setRenderingTransform(rt);
-        }
+        xCurrent = e.getX();
+        yCurrent = e.getY();
+
+        AffineTransform at =
+            AffineTransform.getTranslateInstance(xCurrent - xStart,
+                                                 yCurrent - yStart);
+        AffineTransform rt =
+            (AffineTransform)c.getRenderingTransform().clone();
+        rt.preConcatenate(at);
+        c.setRenderingTransform(rt);
+
         if (c.getCursor() == PAN_CURSOR) {
             c.setCursor(previousCursor);
         }
@@ -136,8 +145,9 @@ public abstract class AbstractPanInteractor extends InteractorAdapter {
         xCurrent = e.getX();
         yCurrent = e.getY();
 
-        AffineTransform at = AffineTransform.getTranslateInstance(xCurrent - xStart,
-                                                                  yCurrent - yStart);
+        AffineTransform at =
+            AffineTransform.getTranslateInstance(xCurrent - xStart,
+                                                 yCurrent - yStart);
         c.setPaintingTransform(at);
     }
 }

@@ -207,6 +207,17 @@ public class ScriptingEnvironment {
     protected JavaFunction alertFunction;
 
     /**
+     * The live scripting threads.
+     */
+    protected List liveThreads =
+        Collections.synchronizedList(new LinkedList());
+
+    /**
+     * Whether this environment has been interrupted.
+     */
+    protected boolean interrupted;
+
+    /**
      * Creates a new ScriptingEnvironment.
      * @param um The update manager.
      */
@@ -250,6 +261,20 @@ public class ScriptingEnvironment {
     }
 
     /**
+     * Interrupts the scripts.
+     */
+    public void interruptScripts() {
+        synchronized (liveThreads) {
+            interrupted = true;
+            Iterator it = liveThreads.iterator();
+            while (it.hasNext()) {
+                scriptingLock.unlock();
+                ((Thread)it.next()).interrupt();
+            }
+        }
+    }
+
+    /**
      * Suspends the scripts.
      */
     public void suspendScripts() {
@@ -262,7 +287,7 @@ public class ScriptingEnvironment {
     public void resumeScripts() {
         synchronized (suspendLock) {
             suspended = false;
-            suspendLock.notify();
+            suspendLock.notifyAll();
         }
     }
 
@@ -280,12 +305,16 @@ public class ScriptingEnvironment {
                 try {
                     suspendLock.wait();
                 } catch (InterruptedException e) {
+                    throw new StopScriptException();
                 }
             }
         }
 
         if (repaintManager == null) {
             repaintManager = updateManager.getRepaintManager();
+            if (repaintManager == null) {
+                throw new StopScriptException();
+            }
             updateRunnableQueue = updateManager.getUpdateRunnableQueue();
         }
 
@@ -306,6 +335,7 @@ public class ScriptingEnvironment {
                 try {
                     suspendLock.wait();
                 } catch (InterruptedException e) {
+                    throw new StopScriptException();
                 }
             }
         }
@@ -315,7 +345,12 @@ public class ScriptingEnvironment {
             throw new StopScriptException();
         }
         updateRunnableQueue.resumeExecution();
-        repaintManager.repaint(true);
+    
+        try {
+            repaintManager.repaint(true);
+        } catch (InterruptedException e) {
+            throw new StopScriptException();
+        }
         scriptingLock.unlock();
     }
 
@@ -541,28 +576,36 @@ public class ScriptingEnvironment {
          * The main method.
          */
         public void run() {
-            if (interpreter != null) {
-                try {
-                    beginScript();
-                } catch (StopScriptException e) {
+            try {
+                liveThreads.add(this);
+                if (interrupted) {
                     return;
                 }
-
-                try {
-                    interpreter.evaluate(getScript());
-                } catch (InterpreterException ie) {
-                    Exception ex = ie.getException();
-                    if (ex instanceof StopScriptException) {
+                if (interpreter != null) {
+                    try {
+                        beginScript();
+                    } catch (StopScriptException e) {
                         return;
                     }
-                    if (userAgent != null) {
-                        userAgent.displayError((ex != null) ? ex : ie);
+                    
+                    try {
+                        interpreter.evaluate(getScript());
+                    } catch (InterpreterException ie) {
+                        Exception ex = ie.getException();
+                        if (ex instanceof StopScriptException) {
+                            return;
+                        }
+                        if (userAgent != null) {
+                            userAgent.displayError((ex != null) ? ex : ie);
+                        }
+                    }
+                    try {
+                        endScript();
+                    } catch (StopScriptException e) {
                     }
                 }
-                try {
-                    endScript();
-                } catch (StopScriptException e) {
-                }
+            } finally {
+                liveThreads.remove(this);
             }
         }
 
