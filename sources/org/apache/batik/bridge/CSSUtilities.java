@@ -156,7 +156,9 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @param filterElement the element
      * @return true if the color space is linear, false otherwise (sRGB).
      */
-    public static boolean convertColorInterpolationFilter(Element filterElement) {
+    public static
+        boolean convertColorInterpolationFilters(Element filterElement) {
+
         CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(filterElement);
         CSSPrimitiveValue v
             = (CSSPrimitiveValue) decl.getPropertyCSSValueInternal
