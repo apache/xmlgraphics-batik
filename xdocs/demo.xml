@@ -15,7 +15,7 @@
 <!-- ========================================================================= -->
 <document>
     <header>
-        <title>Apache Batik, Tools and Applications</title>
+        <title>Tools and Applications</title>
         <subtitle>SVG Tools and Applications</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
@@ -36,25 +36,25 @@
             </s2>
             <anchor id="svgviewer" />
             <s2 title="SVG Viewer">
-                <!-- <figure src="images/viewer.jpg" alt="Batik Viewer"/> -->
+                <figure src="images/viewer.jpg" alt="Batik Viewer"/>
                 <p>The <link href="svgviewer.html">SVG Viewer</link> lets you view SVG file,
                 zoom, pan and rotate in the content and select text items in the image.</p>
             </s2>
             <anchor id="applet" />
             <s2 title="SVG Applet">
-                <!-- <figure src="images/applet.jpg" alt="Batik Applet"/> -->
+                <figure src="images/applet.jpg" alt="Batik Applet"/>
                 <p>The <link href="svgapplet.html">SVG Applet</link> delivers the viewer's 
                 display capabilities as a Java technology applet.</p>
             </s2>
             <anchor id="rasterizer" />
             <s2 title="SVG Rasterizer">
-                <!-- <figure src="images/rasterizer.jpg" alt="Batik Rasterizer"/> -->
+                <figure src="images/rasterizer.jpg" alt="Batik Rasterizer"/>
                 <p>The <link href="svgrasterizer.html">SVG Rasterizer</link> converts SVG
                 files into JPEG or PNG images.</p>
             </s2>
             <anchor id="svggen" />
             <s2 title="SVG Graphics2D Generator">
-                <!-- <figure src="images/svggen.jpg" alt="Batik SVG Generator"/> -->
+                <figure src="images/svggen.jpg" alt="Batik SVG Generator"/>
                 <p>The <link href="svggen.html">SVG Graphics2D Generator</link>lets Java
                 Technology applications export their graphics as SVG.</p>
             </s2>
