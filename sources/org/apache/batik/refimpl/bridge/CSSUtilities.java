@@ -18,6 +18,7 @@ import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
+import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.ClipBridge;
 import org.apache.batik.bridge.FilterBridge;
@@ -68,14 +69,14 @@ public class CSSUtilities implements SVGConstants {
     protected CSSUtilities() {}
 
     /**
-     * Returns the viewport 
+     * Returns the viewport
      */
     public static Rectangle2D convertEnableBackground(SVGElement svgElement,
                                                       CSSStyleDeclaration decl,
                                                       UnitProcessor.Context uctx) {
         CSSValue val;
         val = decl.getPropertyCSSValue(CSS_ENABLE_BACKGROUND_PROPERTY);
-        
+
         if (val.getCssValueType() != val.CSS_VALUE_LIST) {
             return null; // accumulate
         }
@@ -93,7 +94,7 @@ public class CSSUtilities implements SVGConstants {
                                                        svgElement,
                                                        UnitProcessor.OTHER_LENGTH,
                                                        uctx);
-                
+
                 v = (CSSPrimitiveValue)lst.item(2);
                 type = v.getPrimitiveType();
                 float y = UnitProcessor.cssToUserSpace(type,
@@ -228,10 +229,13 @@ public class CSSUtilities implements SVGConstants {
                                             new Object[] {uriString}));
              }
              // Now use the bridge to create the Clip
-             ClipBridge clipBridge = (ClipBridge)ctx.getBridge(clipPathElement);
-             if (clipBridge == null) {
-                 throw new Error(); // Should not happen
+             Bridge bridge = ctx.getBridge(clipPathElement);
+             if (bridge == null || !(bridge instanceof ClipBridge)) {
+                 throw new IllegalAttributeValueException(
+                     Messages.formatMessage("clipPath.reference.illegal",
+                                new Object[] {clipPathElement.getLocalName()}));
              }
+             ClipBridge clipBridge = (ClipBridge)bridge;
              SVGOMDocument doc =
                  (SVGOMDocument)clipPathElement.getOwnerDocument();
              ViewCSS v = ctx.getViewCSS();
@@ -283,10 +287,13 @@ public class CSSUtilities implements SVGConstants {
                                             new Object[] {uriString}));
              }
              // Now use the bridge to create the Mask
-             MaskBridge maskBridge = (MaskBridge)ctx.getBridge(maskElement);
-             if (maskBridge == null) {
-                 throw new Error(); // Should not happen
+             Bridge bridge = ctx.getBridge(maskElement);
+             if (bridge == null || !(bridge instanceof MaskBridge)) {
+                 throw new IllegalAttributeValueException(
+                     Messages.formatMessage("mask.reference.illegal",
+                                    new Object[] {maskElement.getLocalName()}));
              }
+             MaskBridge maskBridge = (MaskBridge)bridge;
              SVGOMDocument doc = (SVGOMDocument)maskElement.getOwnerDocument();
              ViewCSS v = ctx.getViewCSS();
              ctx.setViewCSS((ViewCSS)doc.getDefaultView());
@@ -528,7 +535,7 @@ public class CSSUtilities implements SVGConstants {
                                           BridgeContext ctx,
                                           CSSStyleDeclaration decl,
                                           UnitProcessor.Context uctx,
-                                          String strokeUri){
+                                          String uri){
 
         URIResolver ur =
             new URIResolver((SVGDocument)svgElement.getOwnerDocument(),
@@ -536,14 +543,21 @@ public class CSSUtilities implements SVGConstants {
 
         Element paintElement = null;
         try {
-            paintElement = ur.getElement(strokeUri);
+            paintElement = ur.getElement(uri);
         } catch (Exception ex) {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("bad.uri",
-                                       new Object[] {strokeUri}));
+                                       new Object[] {uri}));
         }
 
-        PaintBridge paintBridge = (PaintBridge)ctx.getBridge(paintElement);
+        Bridge bridge = ctx.getBridge(paintElement);
+        if (bridge == null || !(bridge instanceof PaintBridge)) {
+            throw new IllegalAttributeValueException(
+                    Messages.formatMessage("paint.reference.illegal",
+                                   new Object[] {paintElement.getLocalName()}));
+
+        }
+        PaintBridge paintBridge = (PaintBridge)bridge;
         SVGOMDocument doc = (SVGOMDocument)paintElement.getOwnerDocument();
         ViewCSS v = ctx.getViewCSS();
         ctx.setViewCSS((ViewCSS)doc.getDefaultView());
@@ -793,11 +807,13 @@ public class CSSUtilities implements SVGConstants {
                     Messages.formatMessage("bad.uri",
                                            new Object[] {uriString}));
             }
-            FilterBridge filterBridge =
-                (FilterBridge)ctx.getBridge(filterElement);
-            if (filterBridge == null) {
-                throw new Error(); // Should not happen
+            Bridge bridge = ctx.getBridge(filterElement);
+            if (bridge == null || !(bridge instanceof FilterBridge)) {
+                 throw new IllegalAttributeValueException(
+                     Messages.formatMessage("filter.reference.illegal",
+                                  new Object[] {filterElement.getLocalName()}));
             }
+            FilterBridge filterBridge = (FilterBridge)bridge;
             SVGOMDocument doc = (SVGOMDocument)filterElement.getOwnerDocument();
             ViewCSS v = ctx.getViewCSS();
             ctx.setViewCSS((ViewCSS)doc.getDefaultView());
@@ -865,7 +881,7 @@ public class CSSUtilities implements SVGConstants {
 
         case SVGUtilities.BACKGROUND_IMAGE:
             return new ConcreteBackgroundRable(node);
-            
+
         case SVGUtilities.BACKGROUND_ALPHA:
             in = new ConcreteBackgroundRable(node);
             in = new FilterAlphaRable(in);

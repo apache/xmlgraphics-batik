@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.FilterPrimitiveBridge;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.AffineRable;
@@ -50,9 +50,11 @@ import org.w3c.dom.views.DocumentView;
  * <tt>Filter</tt>.
  *
  * @author <a href="mailto:dean@w3.org">Dean Jackson</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
+public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
+                                                 SVGConstants {
 
     /**
      * Returns the <tt>Filter</tt> that implements the filter

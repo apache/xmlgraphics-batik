@@ -15,7 +15,7 @@ import java.util.Vector;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.FilterPrimitiveBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MissingAttributeException;
 
@@ -42,9 +42,10 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * <tt>Filter</tt>
  *
  * @author <a href="mailto:sheng.pei@eng.sun.com">Sheng Pei</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeDisplacementMapElementBridge implements FilterBridge,
+public class SVGFeDisplacementMapElementBridge implements FilterPrimitiveBridge,
                                                           SVGConstants {
     /**
      * Returns the <tt>Filter</tt> that implements the filter

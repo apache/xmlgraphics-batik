@@ -18,6 +18,7 @@ import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.FilterPrimitiveBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 
 import org.apache.batik.gvt.GraphicsNode;
@@ -142,12 +143,13 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             }
             Element elt = (Element)child;
             Bridge bridge = bridgeContext.getBridge(elt);
-            if (bridge == null || !(bridge instanceof FilterBridge)) {
+            if (bridge == null || !(bridge instanceof FilterPrimitiveBridge)) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("filter.subelement.illegal",
                                            new Object[] {elt.getLocalName()}));
             }
-            FilterBridge filterBridge = (FilterBridge)bridge;
+            FilterPrimitiveBridge filterBridge =
+                (FilterPrimitiveBridge)bridge;
             Filter filterNode = filterBridge.create(filteredNode,
                                                     bridgeContext,
                                                     elt,
@@ -168,7 +170,8 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             filterChain.setSource(in);
         } else {
             // No child filter node. Disable filter
-            filterChain.setSource(null);
+            //filterChain.setSource(null);
+            return null;
         }
 
         return filterChain;

@@ -19,7 +19,7 @@ import java.util.Vector;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.FilterPrimitiveBridge;
 import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.bridge.MissingAttributeException;
 
@@ -51,9 +51,11 @@ import org.w3c.dom.svg.SVGElement;
  * a concrete <tt>Filter</tt> filter implementation
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id $
  */
-public class SVGFeImageElementBridge implements FilterBridge, SVGConstants {
+public class SVGFeImageElementBridge implements FilterPrimitiveBridge,
+                                                SVGConstants {
 
     public final static String PROTOCOL_DATA = "data:";
 
