@@ -296,7 +296,9 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                         dispatchEvent(evt);
                     running = false;
                     
-                    repaintRateManager.interrupt();
+                    if (repaintManager != null) {
+                        repaintRateManager.interrupt();
+                    }
                     updateRunnableQueue.getThread().interrupt();
                     fireManagerStoppedEvent();
                 }
