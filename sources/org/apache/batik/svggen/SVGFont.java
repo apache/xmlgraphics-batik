@@ -138,14 +138,13 @@ public class SVGFont extends AbstractSVGConverter {
      * Used to keep track of which characters have been rendered by each font
      * used.
      */
-    static Map fontStringMap = new HashMap();
+    Map fontStringMap = new HashMap();
 
     /**
      * @param generatorContext used to build Elements
      */
     public SVGFont(SVGGeneratorContext generatorContext) {
         super(generatorContext);
-        fontStringMap = new HashMap();
     }
 
     /**
@@ -153,7 +152,7 @@ public class SVGFont extends AbstractSVGConverter {
      * This is so we can keep track of which glyphs are required for each
      * SVG font that is generated.
      */
-    public static void recordFontUsage(String string, Font font) {
+    public void recordFontUsage(String string, Font font) {
 
         Font commonSizeFont = createCommonSizeFont(font);
         String fontKey = commonSizeFont.getFamily() + commonSizeFont.getStyle();

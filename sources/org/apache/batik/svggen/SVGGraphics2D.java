@@ -1086,7 +1086,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                 // record that the font is being used to draw this string, this is
                 // so that the SVG Font element will only create glyphs for the
                 // characters that are needed
-                SVGFont.recordFontUsage(s, getFont());
+                domTreeManager.gcConverter.getFontConverter().recordFontUsage(s, getFont());
             }
 
             Font font = getFont();
