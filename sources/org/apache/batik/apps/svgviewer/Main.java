@@ -76,11 +76,19 @@ public class Main implements ViewerFrame.Application {
     protected int mainFrames;
 
     /**
+     * The main frame.
+     */
+    protected ViewerFrame mainFrame;
+
+    /**
      * Creates a viewer application frame.
      * @param args The command-line arguments.
      */
     public Main(String[] args) {
         createAndShowViewerFrame();
+        if (args.length > 0) {
+            mainFrame.loadDocument(args[0]);
+        }
     }
 
     // Application /////////////////////////////////////////////
@@ -92,6 +100,7 @@ public class Main implements ViewerFrame.Application {
         mainFrames++;
         ViewerFrame vf = new ViewerFrame(this);
         vf.show();
+        mainFrame = vf;
     }
 
     /**

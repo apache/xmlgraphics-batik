@@ -219,6 +219,9 @@ public abstract class AbstractViewCSS implements ViewCSS {
 		return (Element)n;
 	    }
 	}
+        if (e instanceof HiddenChildElement) {
+            return ((HiddenChildElement)e).getParentElement();
+        }
 	return null;
     }
 

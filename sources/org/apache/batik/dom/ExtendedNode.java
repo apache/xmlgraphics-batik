@@ -11,7 +11,6 @@ package org.apache.batik.dom;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.events.EventTarget;
 
 /**
  * This interface provides an access to the non DOM methods implemented by
@@ -21,7 +20,7 @@ import org.w3c.dom.events.EventTarget;
  * @version $Id$
  */
 
-public interface ExtendedNode extends EventTarget, NodeEventTarget {
+public interface ExtendedNode extends Node, NodeEventTarget {
     /**
      * Sets the name of this node.
      */

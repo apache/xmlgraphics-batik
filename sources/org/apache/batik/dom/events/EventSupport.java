@@ -17,6 +17,7 @@ import org.w3c.dom.events.*;
  * an NodeEventTarget and dispatch of events to that NodeEventTarget.  
  *
  * @see NodeEventTarget
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  */
 public class EventSupport {
@@ -277,13 +278,17 @@ public class EventSupport {
     }
 
     // Returns all ancestors of the specified node
-    private static NodeEventTarget [] getAncestors(Node node) {
-	node = node.getParentNode(); // skip current node
+    private static NodeEventTarget [] getAncestors(NodeEventTarget node) {
+	node = node.getParentNodeEventTarget(); // skip current node
 	int nancestors = 0;
-	for (Node n = node; n != null; n = n.getParentNode(), nancestors++) {}
+	for (NodeEventTarget n = node;
+             n != null;
+             n = n.getParentNodeEventTarget(), nancestors++) {}
 	NodeEventTarget [] ancestors = new NodeEventTarget[nancestors];
-	for (int i=nancestors-1; i >= 0; --i, node = node.getParentNode()) {
-	    ancestors[i] = (NodeEventTarget) node;
+	for (int i=nancestors-1;
+             i >= 0;
+             --i, node = node.getParentNodeEventTarget()) {
+	    ancestors[i] = node;
 	}
 	return ancestors;
     }
