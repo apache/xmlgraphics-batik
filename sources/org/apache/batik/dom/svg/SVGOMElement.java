@@ -27,6 +27,7 @@ import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGException;
 import org.w3c.dom.svg.SVGFitToViewBox;
 import org.w3c.dom.svg.SVGSVGElement;
 
@@ -188,6 +189,20 @@ public abstract class SVGOMElement
     }
 
     // ExtendedNode //////////////////////////////////////////////////
+
+    /**
+     * Creates an SVGException with the appropriate error message.
+     */
+    public SVGException createSVGException(short type, 
+                                           String key, 
+                                           Object [] args) {
+        try {
+            return new SVGOMException
+                (type, getCurrentDocument().formatMessage(key, args));
+        } catch (Exception e) {
+            return new SVGOMException(type, key);
+        }
+    }
 
     /**
      * Tests whether this node is readonly.

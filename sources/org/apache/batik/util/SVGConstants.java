@@ -34,6 +34,204 @@ public interface SVGConstants extends CSSConstants {
     String SVG_VERSION =
         "1.0";
 
+    //////////////////////////////////////////////////////////////////////////
+    // Events type and attributes
+    //////////////////////////////////////////////////////////////////////////
+
+    /**
+     * The event type for MouseEvent.
+     */
+    String SVG_MOUSEEVENTS_EVENT_TYPE = "MouseEvents";
+
+    /**
+     * The event type for UIEvent.
+     */
+    String SVG_UIEVENTS_EVENT_TYPE = "UIEvents";
+
+    /**
+     * The event type for SVGEvent.
+     */
+    String SVG_SVGEVENTS_EVENT_TYPE = "SVGEvents";
+
+    // ---------------------------------------------------------------------
+
+    /**
+     * The event type for 'click' MouseEvent.
+     */
+    String SVG_CLICK_EVENT_TYPE = "click";
+
+    /**
+     * The event type for 'mouseup' MouseEvent.
+     */
+    String SVG_MOUSEUP_EVENT_TYPE = "mouseup";
+
+    /**
+     * The event type for 'mousedown' MouseEvent.
+     */
+    String SVG_MOUSEDOWN_EVENT_TYPE = "mousedown";
+
+    /**
+     * The event type for 'mousemove' MouseEvent.
+     */
+    String SVG_MOUSEMOVE_EVENT_TYPE = "mousemove";
+
+    /**
+     * The event type for 'mouseout' MouseEvent.
+     */
+    String SVG_MOUSEOUT_EVENT_TYPE = "mouseout";
+
+    /**
+     * The event type for 'mouseover' MouseEvent.
+     */
+    String SVG_MOUSEOVER_EVENT_TYPE = "mouseover";
+
+    /**
+     * The event type for 'DOMFocusIn' UIEvent.
+     */
+    String SVG_DOMFOCUSIN_EVENT_TYPE = "DOMFocusIn";
+
+    /**
+     * The event type for 'DOMFocusOut' UIEvent.
+     */
+    String SVG_DOMFOCUSOUT_EVENT_TYPE = "DOMFocusOut";
+
+    /**
+     * The event type for 'DOMActivate' UIEvent.
+     */
+    String SVG_DOMACTIVATE_EVENT_TYPE = "DOMActivate";
+
+    /**
+     * The event type for 'SVGLoad' SVGEvent.
+     */
+    String SVG_SVGLOAD_EVENT_TYPE = "SVGLoad";
+
+    /**
+     * The event type for 'SVGUnload' SVGEvent.
+     */
+    String SVG_SVGUNLOAD_EVENT_TYPE = "SVGUnload";
+
+    /**
+     * The event type for 'SVGAbort' SVGEvent.
+     */
+    String SVG_SVGABORT_EVENT_TYPE = "SVGAbort";
+
+    /**
+     * The event type for 'SVGError' SVGEvent.
+     */
+    String SVG_SVGERROR_EVENT_TYPE = "SVGError";
+
+    /**
+     * The event type for 'SVGResize' SVGEvent.
+     */
+    String SVG_SVGRESIZE_EVENT_TYPE = "SVGResize";
+
+    /**
+     * The event type for 'SVGScroll' SVGEvent.
+     */
+    String SVG_SVGSCROLL_EVENT_TYPE = "SVGScroll";
+
+    /**
+     * The event type for 'SVGZoom' SVGEvent.
+     */
+    String SVG_SVGZOOM_EVENT_TYPE = "SVGZoom";
+
+    // ---------------------------------------------------------------------
+
+    /**
+     * The 'onabort' attribute name of type SVGEvents.
+     */
+    String SVG_ONABORT_ATTRIBUTE = "onabort";
+
+    /**
+     * The 'onabort' attribute name of type SVGEvents.
+     */
+    String SVG_ONACTIVATE_ATTRIBUTE = "onactivate";
+
+    /**
+     * The 'onbegin' attribute name of type SVGEvents.
+     */
+    String SVG_ONBEGIN_ATTRIBUTE = "onbegin";
+
+    /**
+     * The 'onclick' attribute name of type MouseEvents.
+     */
+    String SVG_ONCLICK_ATTRIBUTE = "onclick";
+
+    /**
+     * The 'onend' attribute name of type SVGEvents.
+     */
+    String SVG_ONEND_ATTRIBUTE = "onend";
+
+    /**
+     * The 'onerror' attribute name of type SVGEvents.
+     */
+    String SVG_ONERROR_ATTRIBUTE = "onerror";
+
+    /**
+     * The 'onfocusin' attribute name of type UIEvents.
+     */
+    String SVG_ONFOCUSIN_ATTRIBUTE = "onfocusin";
+
+    /**
+     * The 'onfocusout' attribute name of type UIEvents.
+     */
+    String SVG_ONFOCUSOUT_ATTRIBUTE = "onfocusout";
+
+    /**
+     * The 'onload' attribute name of type SVGEvents.
+     */
+    String SVG_ONLOAD_ATTRIBUTE = "onload";
+
+    /**
+     * The 'onmousedown' attribute name of type MouseEvents.
+     */
+    String SVG_ONMOUSEDOWN_ATTRIBUTE = "onmousedown";
+
+    /**
+     * The 'onmousemove' attribute name of type MouseEvents.
+     */
+    String SVG_ONMOUSEMOVE_ATTRIBUTE = "onmousemove";
+
+    /**
+     * The 'onmouseout' attribute name of type MouseEvents.
+     */
+    String SVG_ONMOUSEOUT_ATTRIBUTE = "onmouseout";
+
+    /**
+     * The 'onmouseover' attribute name of type MouseEvents.
+     */
+    String SVG_ONMOUSEOVER_ATTRIBUTE = "onmouseover";
+
+    /**
+     * The 'onmouseup' attribute name of type MouseEvents.
+     */
+    String SVG_ONMOUSEUP_ATTRIBUTE = "onmouseup";
+
+    /**
+     * The 'onrepeat' attribute name of type SVGEvents.
+     */
+    String SVG_ONREPEAT_ATTRIBUTE = "onrepeat";
+
+    /**
+     * The 'onresize' attribute name of type SVGEvents.
+     */
+    String SVG_ONRESIZE_ATTRIBUTE = "onresize";
+
+    /**
+     * The 'onscroll' attribute name of type SVGEvents.
+     */
+    String SVG_ONSCROLL_ATTRIBUTE = "onscroll";
+ 
+    /**
+     * The 'onunload' attribute name of type SVGEvents.
+     */
+    String SVG_ONUNLOAD_ATTRIBUTE = "onunload";
+
+    /**
+     * The 'onzoom' attribute name of type SVGEvents.
+     */
+    String SVG_ONZOOM_ATTRIBUTE = "onzoom";
+
     /////////////////////////////////////////////////////////////////////////
     // SVG features
     /////////////////////////////////////////////////////////////////////////
@@ -225,25 +423,6 @@ public interface SVGConstants extends CSSConstants {
     String SVG_OFFSET_ATTRIBUTE = "offset";
     String SVG_OPACITY_ATTRIBUTE = CSS_OPACITY_PROPERTY;
     String SVG_OPERATOR_ATTRIBUTE = "operator";
-    String SVG_ONABORT_ATTRIBUTE = "onabort";
-    String SVG_ONACTIVATE_ATTRIBUTE = "onactivate";
-    String SVG_ONBEGIN_ATTRIBUTE = "onbegin";
-    String SVG_ONCLICK_ATTRIBUTE = "onclick";
-    String SVG_ONEND_ATTRIBUTE = "onend";
-    String SVG_ONERROR_ATTRIBUTE = "onerror";
-    String SVG_ONFOCUSIN_ATTRIBUTE = "onfocusin";
-    String SVG_ONFOCUSOUT_ATTRIBUTE = "onfocusout";
-    String SVG_ONLOAD_ATTRIBUTE = "onload";
-    String SVG_ONMOUSEDOWN_ATTRIBUTE = "onmousedown";
-    String SVG_ONMOUSEMOVE_ATTRIBUTE = "onmousemove";
-    String SVG_ONMOUSEOUT_ATTRIBUTE = "onmouseout";
-    String SVG_ONMOUSEOVER_ATTRIBUTE = "onmouseover";
-    String SVG_ONMOUSEUP_ATTRIBUTE = "onmouseup";
-    String SVG_ONREPEAT_ATTRIBUTE = "onrepeat";
-    String SVG_ONRESIZE_ATTRIBUTE = "onresize";
-    String SVG_ONSCROLL_ATTRIBUTE = "onscroll";
-    String SVG_ONUNLOAD_ATTRIBUTE = "onunload";
-    String SVG_ONZOOM_ATTRIBUTE = "onzoom";
     String SVG_ORDER_ATTRIBUTE = "order";
     String SVG_ORDER_X_ATTRIBUTE = "orderX";
     String SVG_ORDER_Y_ATTRIBUTE = "orderY";

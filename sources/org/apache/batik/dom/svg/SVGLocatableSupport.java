@@ -9,11 +9,16 @@
 package org.apache.batik.dom.svg;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+
+import org.apache.batik.css.engine.SVGCSSEngine;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
+
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGException;
+import org.w3c.dom.svg.SVGFitToViewBox;
 import org.w3c.dom.svg.SVGMatrix;
 import org.w3c.dom.svg.SVGRect;
 
@@ -34,8 +39,15 @@ public class SVGLocatableSupport {
      * To implement {@link
      * org.w3c.dom.svg.SVGLocatable#getNearestViewportElement()}.
      */
-    public static SVGElement getNearestViewportElement(Element elt) {
-	throw new RuntimeException(" !!! TODO: getNearestViewportElement()");
+    public static SVGElement getNearestViewportElement(Element e) {
+        Element elt = e;
+        while (elt != null) {
+            elt = SVGCSSEngine.getParentCSSStylableElement(elt);
+            if (elt instanceof SVGFitToViewBox) {
+                break;
+            }
+        }
+        return (SVGElement)elt;
     }
 
     /**
@@ -43,7 +55,7 @@ public class SVGLocatableSupport {
      * org.w3c.dom.svg.SVGLocatable#getFarthestViewportElement()}.
      */
     public static SVGElement getFarthestViewportElement(Element elt) {
-	throw new RuntimeException(" !!! TODO: getFarthestViewportElement()");
+        return (SVGElement)elt.getOwnerDocument().getDocumentElement();
     }
 
     /**
@@ -93,8 +105,8 @@ public class SVGLocatableSupport {
         return new AbstractSVGMatrix() {
                 protected AffineTransform getAffineTransform() {
                     return svgelt.getSVGContext().getCTM();
-                }
-            };
+            }
+        };
     }
 
     /**
@@ -112,6 +124,31 @@ public class SVGLocatableSupport {
     public static SVGMatrix getTransformToElement(Element elt,
                                                   SVGElement element)
 	throws SVGException {
-	throw new RuntimeException(" !!! TODO: getTransformToElement()");
+        final SVGOMElement currentElt = (SVGOMElement)elt;
+        final SVGOMElement targetElt = (SVGOMElement)element;
+        return new AbstractSVGMatrix() {
+                protected AffineTransform getAffineTransform() {
+                    AffineTransform cat = 
+                        currentElt.getSVGContext().getGlobalTransform();
+                    if (cat == null) {
+                        cat = new AffineTransform();
+                    }
+                    AffineTransform tat = 
+                        targetElt.getSVGContext().getGlobalTransform();
+                    if (tat == null) {
+                        tat = new AffineTransform();
+                    }
+                    AffineTransform at = new AffineTransform(cat);
+                    try {
+                        at.preConcatenate(tat.createInverse());
+                        return at;
+                    } catch (NoninvertibleTransformException ex) {
+                        throw currentElt.createSVGException
+                            (SVGException.SVG_MATRIX_NOT_INVERTABLE,
+                             "noninvertiblematrix",
+                             null);
+                    }
+                }
+            };
     }
 }
