@@ -27,28 +27,28 @@ public class GVTDemoLauncher extends JFrame {
 
     public GVTDemoLauncher(String title, GVTDemoSetup setup) {
         super(title);
-	// Note that the order of the two calls below matters!
+        // Note that the order of the two calls below matters!
         GraphicsNodeRenderContext context = setup.createGraphicsContext();
         GraphicsNode node = setup.createGraphicsNode();
-	EventDispatcher dispatcher = setup.createEventDispatcher();
+        EventDispatcher dispatcher = setup.createEventDispatcher();
 
         JComponent comp = new JSVGCanvas(node, context);
 
         getContentPane().add(comp, BorderLayout.CENTER);
 
-	// for now, event listening in GVTDemoSetup is optional
+        // for now, event listening in GVTDemoSetup is optional
         if (dispatcher != null) {
-	    if (dispatcher instanceof MouseListener) {
-		comp.addMouseListener((MouseListener) dispatcher);
-	    }
-	    if (dispatcher instanceof MouseMotionListener) {
-		comp.addMouseMotionListener((MouseMotionListener) dispatcher);
-	    }
-	    if (dispatcher instanceof KeyListener) {
-		comp.addKeyListener((KeyListener) dispatcher);
-	    }
-	    dispatcher.setRootNode(node);
-	}
+            if (dispatcher instanceof MouseListener) {
+                comp.addMouseListener((MouseListener) dispatcher);
+            }
+            if (dispatcher instanceof MouseMotionListener) {
+                comp.addMouseMotionListener((MouseMotionListener) dispatcher);
+            }
+            if (dispatcher instanceof KeyListener) {
+                comp.addKeyListener((KeyListener) dispatcher);
+            }
+            dispatcher.setRootNode(node);
+        }
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
@@ -66,26 +66,26 @@ public class GVTDemoLauncher extends JFrame {
         GVTDemoSetup setup =
             (GVTDemoSetup) Class.forName(args[0]).newInstance();
 
-	JFrame frame = new GVTDemoLauncher(args[0], setup);
+        JFrame frame = new GVTDemoLauncher(args[0], setup);
 
         frame.pack();
         frame.show();
 
-	// This ugly code initializes the demo with a Graphics2d, if 
-	// it has an initGraphics2d(Graphics2D g2d) method.
-	//
-	Class [] classes = new Class[1];
-	classes[0] = Graphics2D.class;
-	try {
-	    Method initGraphics2d = setup.getClass().getMethod("initGraphics2d",classes);
-	    if (initGraphics2d != null) {
-		Object [] params = new Object[1];
-		params[0] = (Graphics2D) frame.getGraphics();
-		initGraphics2d.invoke(setup, params);
-	    }
-	} catch (Exception e) {
-	    ; // go on our merry way
-	}
+        // This ugly code initializes the demo with a Graphics2d, if
+        // it has an initGraphics2d(Graphics2D g2d) method.
+        //
+        Class [] classes = new Class[1];
+        classes[0] = Graphics2D.class;
+        try {
+            Method initGraphics2d = setup.getClass().getMethod("initGraphics2d",classes);
+            if (initGraphics2d != null) {
+                Object [] params = new Object[1];
+                params[0] = (Graphics2D) frame.getGraphics();
+                initGraphics2d.invoke(setup, params);
+            }
+        } catch (Exception e) {
+            ; // go on our merry way
+        }
    }
 }
 
@@ -101,13 +101,16 @@ class JSVGCanvas extends JComponent {
 
     protected void paintComponent(Graphics g) {
 
-	/* XXX: Hack - there is an inconsistency in
-	 * the way RenderingHints are specified which means
-	 * GraphicsNodeRenderContext hints are overwritten by
-	 * those from the Graphics2d.  Thus, the line below:
-	 */
-	((Graphics2D) g).addRenderingHints(context.getRenderingHints());
-        node.paint((Graphics2D) g, context);
+        /* XXX: Hack - there is an inconsistency in
+         * the way RenderingHints are specified which means
+         * GraphicsNodeRenderContext hints are overwritten by
+         * those from the Graphics2d.  Thus, the line below:
+         */
+        ((Graphics2D) g).addRenderingHints(context.getRenderingHints());
+        try {
+            node.paint((Graphics2D) g, context);
+        } catch (InterruptedException ie) {
+        }
     }
 
     public Dimension getPreferredSize() {

@@ -336,7 +336,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     // Drawing methods
     //
 
-    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
+    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) throws InterruptedException {
+
+        // first, make sure we haven't been interrupted
+        if (Thread.currentThread().isInterrupted()) {
+            throw new InterruptedException();
+        }
+
         //
         // Set up graphic context. It is important to setup the
         // transform first, because the clip is defined in this
@@ -402,7 +408,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             useOffscreen |= antialiasedClip;
 
             if (!useOffscreen) {
-                  // Render directly on the canvas
+
+              /* Render directly on the canvas
+               * Note: this operation is not interruptable,
+               * since InterruptedExceptions are caught and ignored
+               * by primitivePaint().
+               */
+
                 primitivePaint(g2d, rc);
             } else{
                 Filter filteredImage = null;

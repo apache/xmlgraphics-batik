@@ -135,6 +135,7 @@ public class ViewerFrame
     public final static String THUMBNAIL_ACTION   = "ThumbnailAction";
     public final static String STOP_ACTION        = "StopAction";
     public final static String FIXED_SIZE_ACTION  = "FixedSizeAction";
+    public final static String PROG_PAINT_ACTION  = "ProgressivePaintAction";
     public final static String LANGUAGE_ACTION    = "LanguageAction";
     public final static String USER_STYLE_ACTION  = "UserStyleAction";
     public final static String MONITOR_ACTION     = "MonitorAction";
@@ -277,6 +278,11 @@ public class ViewerFrame
     protected boolean fixedSize;
 
     /**
+     * Is incremental painting of the offscreen buffer enabled?
+     */
+    protected boolean progressivePaintEnabled;
+
+    /**
      * The event dispatcher.
      */
     private ConcreteEventDispatcher eventDispatcher =
@@ -352,6 +358,7 @@ public class ViewerFrame
         listeners.put(TREE_ACTION,        new TreeAction());
         listeners.put(THUMBNAIL_ACTION,   new ThumbnailAction());
         listeners.put(STOP_ACTION,        stopAction);
+        listeners.put(PROG_PAINT_ACTION,  new ProgressivePaintAction());
         listeners.put(FIXED_SIZE_ACTION,  new FixedSizeAction());
         listeners.put(LANGUAGE_ACTION,    new LanguageAction());
         listeners.put(USER_STYLE_ACTION,  new UserStyleAction());
@@ -528,6 +535,7 @@ public class ViewerFrame
      * @param cursor the new cursor
      */
     public void setSVGCursor(Cursor cursor) {
+        // XXX: immediate set,  but may not update "requested" value
         canvas.setCursor(cursor);
     }
 
@@ -953,6 +961,17 @@ public class ViewerFrame
     }
 
     /**
+     * To turn progressive rendering of the offscreen buffer on and off.
+     */
+    public class ProgressivePaintAction extends AbstractAction {
+        public ProgressivePaintAction() {}
+        public void actionPerformed(ActionEvent e) {
+            progressivePaintEnabled = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+            canvas.setProgressiveRenderingEnabled(progressivePaintEnabled);
+        }
+    }
+
+    /**
      * To show the language dialog.
      */
     public class LanguageAction extends AbstractAction {
@@ -1043,6 +1062,7 @@ public class ViewerFrame
         switch (e.type) {
         case (DocumentLoadingEvent.START_LOADING):
             setCursor(WAIT_CURSOR);
+            setSVGCursor(WAIT_CURSOR);
             reloadAction.update(false);
             stopAction.update(true);
             statusBar.setMainMessage
@@ -1058,7 +1078,7 @@ public class ViewerFrame
             domViewer.setDocument(doc, (ViewCSS)doc.getDocumentElement());
             statusBar.setMainMessage(resources.getString
                                          ("Document.creating"));
-            canvas.setSVGDocument(null);
+            //canvas.setSVGDocument(null);
             break;
         case (DocumentLoadingEvent.DONE):
             doc = (SVGOMDocument) e.getValue();

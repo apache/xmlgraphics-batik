@@ -106,7 +106,10 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
             if (node == null || !node.isVisible()) {
                 continue;
             }
-            node.paint(g2d, rc);
+            try {
+               node.paint(g2d, rc);
+            } catch (InterruptedException ie) {
+            }
         }
     }
 

@@ -76,11 +76,13 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
             (elt, w, h, parserFactory);
         renderer.setTransform(t);
         renderer.setTree(gvtRoot);
-        renderer.repaint(new Rectangle(0, 0, w, h));
-        // save the offscreen image
         try {
+            renderer.repaint(new Rectangle(0, 0, w, h));
+            // save the offscreen image
             writeImage(img, ostream);
         } catch (IOException ex) {
+            throw new TranscoderException(ex.getMessage(), ex);
+        } catch (InterruptedException ex) {
             throw new TranscoderException(ex.getMessage(), ex);
         }
     }

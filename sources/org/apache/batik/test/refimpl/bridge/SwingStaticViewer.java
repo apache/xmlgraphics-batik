@@ -239,7 +239,10 @@ public class SwingStaticViewer extends JComponent{
                 staticRenderer.setTree(treeRoot);
                 staticRenderer.setTransform(usr2dev);
                 setCursor(WAIT_CURSOR);
-                staticRenderer.repaint(getAreaOfInterest());
+                try {
+                    staticRenderer.repaint(getAreaOfInterest());
+                } catch (InterruptedException ie) {
+                }
                 setCursor(DEFAULT_CURSOR);
             }
         }

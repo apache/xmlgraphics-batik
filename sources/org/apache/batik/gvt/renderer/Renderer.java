@@ -38,7 +38,7 @@ public interface Renderer {
      * call this method explicitly as the Renderer listens for changes
      * on all nodes in the tree it is associated with.
      */
-    public void repaint(Shape area);
+    public void repaint(Shape area) throws InterruptedException;
 
     /**
      * Sets the transform from the current user space (as defined by
