@@ -101,7 +101,7 @@
         <tr bgcolor="white" margin-left="50pt">
             <td><xsl:value-of select="$prefix" /><xsl:value-of select="@key" /></td>
             <xsl:variable name="value" select="@value" />
-            <td><a href="{$value}"><img height="150" src="{$value}" /></a></td>
+            <td><a target="image" href="{$value}"><img height="150" src="{$value}" /></a></td>
         </tr>
     </xsl:template>
 
@@ -110,7 +110,7 @@
         <tr bgcolor="white">
             <td><xsl:value-of select="$prefix" /><xsl:value-of select="@key" /></td>
             <xsl:variable name="value" select="@value" />
-            <td><a href="{$value}"><img height="150" src="{$value}" /></a></td>
+            <td><a target="image" href="{$value}"><img height="150" src="{$value}" /></a></td>
         </tr>
     </xsl:template>
 </xsl:stylesheet>
