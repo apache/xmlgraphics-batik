@@ -265,7 +265,7 @@ public class JSVGComponent extends JGVTComponent {
 
         addSVGDocumentLoaderListener((SVGListener)listener);
         addGVTTreeBuilderListener((SVGListener)listener);
-        addUpdateManagerListener((SVGListener)listener);
+        updateManagerListeners.add(listener);
     }
 
     /**
@@ -562,7 +562,7 @@ public class JSVGComponent extends JGVTComponent {
      * Adds a UpdateManagerListener to this component.
      */
     public void addUpdateManagerListener(UpdateManagerListener l) {
-        updateManagerListeners.add(l);
+        updateManagerListeners.add(new UpdateManagerListenerWrapper(l));
     }
 
     /**
@@ -570,6 +570,102 @@ public class JSVGComponent extends JGVTComponent {
      */
     public void removeUpdateManagerListener(UpdateManagerListener l) {
         updateManagerListeners.remove(l);
+    }
+
+    /**
+     * To call the update methods from the event thread.
+     */
+    protected static class UpdateManagerListenerWrapper
+        implements UpdateManagerListener {
+
+        /**
+         * The wrapped listener.
+         */
+        protected UpdateManagerListener listener;
+
+        /**
+         * Creates a new wrapper.
+         */
+        public UpdateManagerListenerWrapper(UpdateManagerListener l) {
+            listener = l;
+        }
+
+        /**
+         * Called when the manager was started.
+         */
+        public void managerStarted(final UpdateManagerEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        listener.managerStarted(e);
+                    }
+                });
+        }
+
+        /**
+         * Called when the manager was suspended.
+         */
+        public void managerSuspended(final UpdateManagerEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        listener.managerSuspended(e);
+                    }
+                });
+        }
+
+        /**
+         * Called when the manager was resumed.
+         */
+        public void managerResumed(final UpdateManagerEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        listener.managerResumed(e);
+                    }
+                });
+        }
+
+        /**
+         * Called when the manager was stopped.
+         */
+        public void managerStopped(final UpdateManagerEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        listener.managerStopped(e);
+                    }
+                });
+        }
+
+        /**
+         * Called when an update started.
+         */
+        public void updateStarted(final UpdateManagerEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        listener.updateStarted(e);
+                    }
+                });
+        }
+
+        /**
+         * Called when an update was completed.
+         */
+        public void updateCompleted(final UpdateManagerEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        listener.updateCompleted(e);
+                    }
+                });
+        }
+
+        /**
+         * Called when an update failed.
+         */
+        public void updateFailed(final UpdateManagerEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        listener.updateFailed(e);
+                    }
+                });
+        }
     }
 
     /**

@@ -1759,62 +1759,46 @@ public class JSVGViewerFrame
      * Called when the manager was started.
      */
     public void managerStarted(UpdateManagerEvent e) {
-        EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    if (debug) {
-                        System.out.println("Manager Started");
-                    }
-                    playAction.update(false);
-                    pauseAction.update(true);
-                    stopAction.update(true);
-                }
-            });
+        if (debug) {
+            System.out.println("Manager Started");
+        }
+        playAction.update(false);
+        pauseAction.update(true);
+        stopAction.update(true);
     }
 
     /**
      * Called when the manager was suspended.
      */
     public void managerSuspended(UpdateManagerEvent e) {
-        EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    if (debug) {
-                        System.out.println("Manager Suspended");
-                    }
-                    playAction.update(true);
-                    pauseAction.update(false);
-                }
-            });
+        if (debug) {
+            System.out.println("Manager Suspended");
+        }
+        playAction.update(true);
+        pauseAction.update(false);
     }
 
     /**
      * Called when the manager was resumed.
      */
     public void managerResumed(UpdateManagerEvent e) {
-        EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    if (debug) {
-                        System.out.println("Manager Resumed");
-                    }
-                    playAction.update(false);
-                    pauseAction.update(true);
-                }
-            });
+        if (debug) {
+            System.out.println("Manager Resumed");
+        }
+        playAction.update(false);
+        pauseAction.update(true);
     }
 
     /**
      * Called when the manager was stopped.
      */
     public void managerStopped(UpdateManagerEvent e) {
-        EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    if (debug) {
-                        System.out.println("Manager Stopped");
-                    }
-                    playAction.update(false);
-                    pauseAction.update(false);
-                    stopAction.update(false);
-                }
-            });
+        if (debug) {
+            System.out.println("Manager Stopped");
+        }
+        playAction.update(false);
+        pauseAction.update(false);
+        stopAction.update(false);
     }
 
     /**
