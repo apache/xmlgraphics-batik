@@ -184,6 +184,7 @@
          <test id="samples/tests/spec/styling/cssMedia.svg" />
          <test id="samples/tests/spec/styling/cssMediaList.svg" />
          <test id="samples/tests/spec/styling/smiley.svg" />
+         <test id="samples/tests/spec/styling/emptyStyle.svg" />
 
         <!-- Alternate stylesheet tests -->
         <testGroup id="alternate" class="org.apache.batik.test.svg.SVGAlternateStyleSheetRenderingAccuracyTest">
