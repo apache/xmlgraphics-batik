@@ -27,14 +27,14 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public class FlowTextElement
+public class FlowRegionElement
     extends    PrefixableStylableExtensionElement 
     implements BatikExtConstants {
 
     /**
      * Creates a new BatikRegularPolygonElement object.
      */
-    protected FlowTextElement() {
+    protected FlowRegionElement() {
     }
 
     /**
@@ -42,7 +42,7 @@ public class FlowTextElement
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    public FlowTextElement(String prefix, AbstractDocument owner) {
+    public FlowRegionElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
     }
 
@@ -50,7 +50,7 @@ public class FlowTextElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return BATIK_EXT_FLOW_TEXT_TAG;
+        return BATIK_EXT_FLOW_REGION_TAG;
     }
 
     /**
@@ -64,6 +64,6 @@ public class FlowTextElement
      * Returns a new uninitialized instance of this object's class.
      */
     protected Node newNode() {
-        return new FlowTextElement();
+        return new FlowRegionElement();
     }
 }

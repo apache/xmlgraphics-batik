@@ -77,7 +77,7 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
      * Returns the Batik Extension namespace URI.
      */
     public String getNamespaceURI() {
-        return BATIK_EXT_NAMESPACE_URI;
+        return BATIK_12_NAMESPACE_URI;
     }
 
     /**
@@ -152,7 +152,7 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
                 continue;
             
             Element se = (Element)n;
-            if (!se.getNamespaceURI().equals(BATIK_EXT_NAMESPACE_URI))
+            if (!getNamespaceURI().equals(se.getNamespaceURI()))
                 continue;
             if (se.getLocalName().equals(BATIK_EXT_SUB_IMAGE_TAG)) {
                 addInfo(se, elems, minDim, maxDim, b);
