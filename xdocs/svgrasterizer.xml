@@ -117,8 +117,8 @@
                         help message for the rasterizer</li>
                 </ul>
                 <p>You can pass options to the rasterizer as follows:</p>
-                <p><strong>Windows: </strong><em>build svgrasterizer -Dargs="[-d &lt;directory&gt;] [-m &lt;mimeType&gt;] [@files]"</em></p>
-                <p><strong>UNIX: </strong><em>build.sh svgrasterizer -Dargs="[-d &lt;directory&gt;] [-m &lt;mimeType&gt;] [@files]"</em></p>
+                <p><strong>Windows: </strong><em>build svgrasterizer [-d &lt;directory&gt;] [-m &lt;mimeType&gt;] [@files]</em></p>
+                <p><strong>UNIX: </strong><em>build.sh svgrasterizer [-d &lt;directory&gt;] [-m &lt;mimeType&gt;] [@files]</em></p>
                 <p>Refer to <link href="#usingBinary">"Using the binary distribution" </link>for an explanation of these
                 options</p>
             </s2>
