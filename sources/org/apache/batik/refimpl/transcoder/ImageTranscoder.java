@@ -87,7 +87,7 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
         Renderer renderer = rendererFactory.createRenderer(img);
 
         AffineTransform t = SVGUtilities.getPreserveAspectRatioTransform
-            (elt, w, h, parserFactory);
+            (elt, w, h);
         renderer.setTransform(t);
         renderer.setTree(gvtRoot);
         try {

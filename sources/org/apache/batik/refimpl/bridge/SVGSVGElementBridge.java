@@ -104,7 +104,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         // parse the tranform attribute
         AffineTransform at;
         at = SVGUtilities.getPreserveAspectRatioTransform
-            (svgElement, w, h, ctx.getParserFactory());
+            (svgElement, w, h);
         at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
         if (svgElement.getOwnerSVGElement() != null) {
             // <!> as it is already done in the JSVGCanvas, we don't have to
@@ -135,7 +135,7 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         return node;
     }
 
-    public void buildGraphicsNode(GraphicsNode node, 
+    public void buildGraphicsNode(GraphicsNode node,
                                   BridgeContext ctx,
                                   Element element) {
 
