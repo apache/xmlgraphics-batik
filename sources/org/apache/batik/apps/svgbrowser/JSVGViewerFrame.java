@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -80,6 +81,9 @@ import javax.swing.filechooser.FileFilter;
 
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
+
+import org.apache.batik.bridge.UpdateManagerEvent;
+import org.apache.batik.bridge.UpdateManagerListener;
 
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
 
@@ -163,7 +167,8 @@ public class JSVGViewerFrame
                SVGDocumentLoaderListener,
                GVTTreeBuilderListener,
                GVTTreeRendererListener,
-               LinkActivationListener {
+               LinkActivationListener,
+               UpdateManagerListener {
 
     /**
      * The gui resources file name
@@ -193,6 +198,8 @@ public class JSVGViewerFrame
     public final static String PREVIOUS_TRANSFORM_ACTION = "PreviousTransformAction";
     public final static String NEXT_TRANSFORM_ACTION = "NextTransformAction";
     public final static String USE_STYLESHEET_ACTION = "UseStylesheetAction";
+    public final static String PLAY_ACTION = "PlayAction";
+    public final static String PAUSE_ACTION = "PauseAction";
     public final static String STOP_ACTION = "StopAction";
     public final static String MONITOR_ACTION = "MonitorAction";
     public final static String DOM_VIEWER_ACTION = "DOMViewerAction";
@@ -261,6 +268,16 @@ public class JSVGViewerFrame
      * The forward action
      */
     protected ForwardAction forwardAction = new ForwardAction();
+
+    /**
+     * The play action
+     */
+    protected PlayAction playAction = new PlayAction();
+
+    /**
+     * The pause action
+     */
+    protected PauseAction pauseAction = new PauseAction();
 
     /**
      * The stop action
@@ -417,6 +434,8 @@ public class JSVGViewerFrame
         listeners.put(PREVIOUS_TRANSFORM_ACTION, previousTransformAction);
         listeners.put(NEXT_TRANSFORM_ACTION, nextTransformAction);
         listeners.put(USE_STYLESHEET_ACTION, useStylesheetAction);
+        listeners.put(PLAY_ACTION, playAction);
+        listeners.put(PAUSE_ACTION, pauseAction);
         listeners.put(STOP_ACTION, stopAction);
         listeners.put(MONITOR_ACTION, new MonitorAction());
         listeners.put(DOM_VIEWER_ACTION, new DOMViewerAction());
@@ -464,6 +483,7 @@ public class JSVGViewerFrame
         svgCanvas.addGVTTreeBuilderListener(this);
         svgCanvas.addGVTTreeRendererListener(this);
         svgCanvas.addLinkActivationListener(this);
+        svgCanvas.addUpdateManagerListener(this);
 
         svgCanvas.addMouseMotionListener(new MouseMotionAdapter() {
                 public void mouseMoved(MouseEvent e) {
@@ -1261,6 +1281,54 @@ public class JSVGViewerFrame
     }
 
     /**
+     * To restart after a pause.
+     */
+    public class PlayAction extends   AbstractAction
+                            implements JComponentModifier {
+        java.util.List components = new LinkedList();
+        public PlayAction() {}
+        public void actionPerformed(ActionEvent e) {
+            svgCanvas.resumeProcessing();
+        }
+
+        public void addJComponent(JComponent c) {
+            components.add(c);
+            c.setEnabled(false);
+        }
+
+        public void update(boolean enabled) {
+            Iterator it = components.iterator();
+            while (it.hasNext()) {
+                ((JComponent)it.next()).setEnabled(enabled);
+            }
+        }
+    }
+
+    /**
+     * To pause a document.
+     */
+    public class PauseAction extends   AbstractAction
+                            implements JComponentModifier {
+        java.util.List components = new LinkedList();
+        public PauseAction() {}
+        public void actionPerformed(ActionEvent e) {
+            svgCanvas.suspendProcessing();
+        }
+
+        public void addJComponent(JComponent c) {
+            components.add(c);
+            c.setEnabled(false);
+        }
+
+        public void update(boolean enabled) {
+            Iterator it = components.iterator();
+            while (it.hasNext()) {
+                ((JComponent)it.next()).setEnabled(enabled);
+            }
+        }
+    }
+
+    /**
      * To stop the current processing.
      */
     public class StopAction extends    AbstractAction
@@ -1683,6 +1751,88 @@ public class JSVGViewerFrame
                 nextTransformAction.update();
             }
         }
+    }
+
+    // UpdateManagerListener ////////////////////////////////////////////////
+
+    /**
+     * Called when the manager was started.
+     */
+    public void managerStarted(UpdateManagerEvent e) {
+        EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    if (debug) {
+                        System.out.println("Manager Started");
+                    }
+                    playAction.update(false);
+                    pauseAction.update(true);
+                    stopAction.update(true);
+                }
+            });
+    }
+
+    /**
+     * Called when the manager was suspended.
+     */
+    public void managerSuspended(UpdateManagerEvent e) {
+        EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    if (debug) {
+                        System.out.println("Manager Suspended");
+                    }
+                    playAction.update(true);
+                    pauseAction.update(false);
+                }
+            });
+    }
+
+    /**
+     * Called when the manager was resumed.
+     */
+    public void managerResumed(UpdateManagerEvent e) {
+        EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    if (debug) {
+                        System.out.println("Manager Resumed");
+                    }
+                    playAction.update(false);
+                    pauseAction.update(true);
+                }
+            });
+    }
+
+    /**
+     * Called when the manager was stopped.
+     */
+    public void managerStopped(UpdateManagerEvent e) {
+        EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    if (debug) {
+                        System.out.println("Manager Stopped");
+                    }
+                    playAction.update(false);
+                    pauseAction.update(false);
+                    stopAction.update(false);
+                }
+            });
+    }
+
+    /**
+     * Called when an update started.
+     */
+    public void updateStarted(final UpdateManagerEvent e) {
+    }
+
+    /**
+     * Called when an update was completed.
+     */
+    public void updateCompleted(final UpdateManagerEvent e) {
+    }
+
+    /**
+     * Called when an update failed.
+     */
+    public void updateFailed(UpdateManagerEvent e) {
     }
 
     /**

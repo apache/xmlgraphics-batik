@@ -52,11 +52,15 @@ public class EventListenerWrapper implements EventListener {
     /**
      * <b>DOM</b>: Implements {@link EventListener#handleEvent(Event)}.
      */
-    public void handleEvent(Event ev) {
-        if (ev instanceof EventWrapper) {
-            eventListener.handleEvent(ev);
-        } else {
-            eventListener.handleEvent(documentWrapper.createEventWrapper(ev));
-        }
+    public void handleEvent(final Event ev) {
+        documentWrapper.invokeEventListener(new Runnable() {
+                public void run() {
+                    Event e = ev;
+                    if (!(ev instanceof EventWrapper)) {
+                        e = documentWrapper.createEventWrapper(ev);
+                    }
+                    eventListener.handleEvent(e);
+                }
+            });
     }
 }
