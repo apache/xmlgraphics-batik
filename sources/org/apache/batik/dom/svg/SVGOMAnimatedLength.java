@@ -103,7 +103,7 @@ public class SVGOMAnimatedLength
     }
 
     /**
-     * Implements {@link ModificationHandler#getObject(Object,String)}.
+     * Implements {@link ModificationHandler#getObject(Object)}.
      */
     public Object getObject(Object key) {
         return element;

@@ -43,8 +43,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
      * handler immediately.</p>
      * @param handler The transform list handler.
      */
-    public void setPreserveAspectRatioHandler(
-            PreserveAspectRatioHandler handler) {
+    public void setPreserveAspectRatioHandler(PreserveAspectRatioHandler handler) {
 	preserveAspectRatioHandler = handler;
     }
 
@@ -61,10 +60,17 @@ public class PreserveAspectRatioParser extends AbstractParser {
     public void parse(Reader r) throws ParseException {
 	initialize(r);
 
-	preserveAspectRatioHandler.startPreserveAspectRatio();
-
 	read();
 	skipSpaces();
+
+        parsePreserveAspectRatio();
+    }
+
+    /**
+     * Parses a PreserveAspectRatio attribute.
+     */
+    protected void parsePreserveAspectRatio() throws ParseException {
+	preserveAspectRatioHandler.startPreserveAspectRatio();
 
 	s: if (current == 'n') {
 	    read();
@@ -292,7 +298,7 @@ public class PreserveAspectRatioParser extends AbstractParser {
 		}
 	    }
 
-	    skipSpaces();
+	    skipCommaSpaces();
 
 	    switch (current) {
 	    case 'm':

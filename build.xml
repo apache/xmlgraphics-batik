@@ -60,8 +60,8 @@ To display the available targets type:
     <tstamp/>
     <property name="Project" value="Batik"/>
     <property name="project" value="batik"/>
-    <property name="year"    value="2000"/>
-    <property name="version" value="1.0beta2"/>
+    <property name="year"    value="2001"/>
+    <property name="version" value="1.0beta3"/>
 
     <property name="src"             value="sources"/>
     <property name="resources"       value="resources"/>
@@ -248,6 +248,7 @@ To display the available targets type:
                                bridge-jar,
                                xml-jar,
                                svg-pp-jar,
+                               svggen-jar,
                                svg-viewer-jar,
                                rasterizer-jar">
     <copy todir="${build}/lib">
@@ -304,6 +305,16 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-awt-util.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/ext/awt/**/*.class"/>
+      </fileset>
+    </jar>
+  </target>
+
+
+  <!-- AWT Util (dependencies: util) -->
+  <target name="svggen-jar" depends="compile, prepare-build">
+    <jar jarfile="${build}/lib/${project}-svggen.jar">
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/svggen/**/*.class"/>
       </fileset>
     </jar>
   </target>
@@ -618,22 +629,7 @@ To display the available targets type:
   <target name="javadocs" depends="javadoc"/>
   <target name="javadoc" depends="prepare-docs">
     <mkdir dir="${docs}/javadoc"/>
-    <javadoc packagenames="${class-prefix}.apps.*,
-                           ${class-prefix}.bridge,
-                           ${class-prefix}.css.*,
-                           ${class-prefix}.dom.*,
-                           ${class-prefix}.ext.*,
-                           ${class-prefix}.gvt.*,
-                           ${class-prefix}.i18n.*,
-                           ${class-prefix}.parser.*,
-                           ${class-prefix}.script.*,
-                           ${class-prefix}.swing.*,
-                           ${class-prefix}.transcoder,
-                           ${class-prefix}.transcoder.image,
-                           ${class-prefix}.transcoder.svg2svg,
-                           ${class-prefix}.util,
-                           ${class-prefix}.util.gui,
-                           ${class-prefix}.util.svg,
+    <javadoc packagenames="${class-prefix}.*,
                            org.xml.*,
                            org.w3c.css.*,
                            org.w3c.dom.*"

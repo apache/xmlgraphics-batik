@@ -142,6 +142,7 @@ import org.w3c.dom.svg.SVGAElement;
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public class ViewerFrame
@@ -713,6 +714,7 @@ public class ViewerFrame
      * @param s The document name.
      */
     public void loadDocument(String s) {
+        String old = uri;
         uri = s;
         File f = new File(uri);
         if (f.exists()) {
@@ -723,6 +725,18 @@ public class ViewerFrame
             }
         }
         if (uri != null) {
+            if (old != null) {
+                URL prev = null;
+                try {
+                    prev = new URL(old);
+                    if (prev.sameFile(new URL(uri))) {
+                        manageFragmentIdentifier();
+                        return;
+                    }
+                } catch (java.net.MalformedURLException e) {
+                }
+            }
+
             // interrupt any document load already underway
             if ((thread != null) && thread.isAlive()) {
                 thread.interrupt();
@@ -751,6 +765,50 @@ public class ViewerFrame
         }
     }
 
+    protected void manageFragmentIdentifier() {
+        URL u = null;
+        try {
+            u = new URL(uri);
+        } catch (java.net.MalformedURLException e) {
+            System.out.println(e.getMessage());
+        }
+        String ref = u.getRef();
+        if (ref == null) {
+            canvas.setTransform(new java.awt.geom.AffineTransform());
+        } else {
+            org.apache.batik.parser.FragmentIdentifierParser p;
+            p = new org.apache.batik.parser.FragmentIdentifierParser();
+            FragmentIdentifierHandler h = new FragmentIdentifierHandler();
+            p.setFragmentIdentifierHandler(h);
+
+            try {
+                p.parse(new java.io.StringReader(ref));
+
+                canvas.setViewBox(h.x, h.y, h.width, h.height);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+            }
+        }
+        
+    }
+
+
+    /**
+     * To manage fragment identifiers.
+     */
+    protected static class FragmentIdentifierHandler
+        extends org.apache.batik.parser.DefaultFragmentIdentifierHandler {
+        float x, y, width, height;
+        public void viewBox(float x, float y, float width, float height)
+            throws org.apache.batik.parser.ParseException {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+    }
     // ActionMap /////////////////////////////////////////////////////
 
     /**
