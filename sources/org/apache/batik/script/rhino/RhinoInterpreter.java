@@ -15,7 +15,9 @@ import java.io.StringReader;
 
 import java.net.URL;
 
+import java.security.AccessController;
 import java.security.AccessControlContext;
+import java.security.PrivilegedAction;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -224,10 +226,10 @@ public class RhinoInterpreter implements Interpreter {
      * @return if no exception is thrown during the call, should return the
      * value of the last expression evaluated in the script.
      */
-    public Object evaluate(String scriptstr)
+    public Object evaluate(final String scriptstr)
         throws InterpreterException {
  
-        Context ctx = enterContext();
+        final Context ctx = enterContext();
 
         ctx.setWrapHandler(wrapHandler);
         Script script = null;
@@ -250,14 +252,21 @@ public class RhinoInterpreter implements Interpreter {
             // this script has not been compiled yet or has been fogotten
             // since the compilation:
             // compile it and store it for future use.
-            try {
-                script = ctx.compileReader(globalObject,
-                                           new StringReader(scriptstr),
-                                           "<SVG>",
-                                           1, rhinoClassLoader);
-            } catch (IOException io) {
-                // can't happen because we use a String...
-            }
+
+            script = (Script)AccessController.doPrivileged(new PrivilegedAction() {
+                    public Object run() {
+                        try {
+                            return ctx.compileReader(globalObject,
+                                                     new StringReader(scriptstr),
+                                                     "<SVG>",
+                                                     1, rhinoClassLoader);
+                        } catch(IOException io) {
+                            // Should never happen: we are using a string
+                            throw new Error();
+                        }
+                    }
+                });
+
             if (compiledScripts.size()+1 > MAX_CACHED_SCRIPTS) {
                 // too many cached items - we should delete the oldest entry.
                 // all of this is very fast on linkedlist
