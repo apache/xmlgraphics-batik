@@ -21,6 +21,7 @@ import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * Test setDocument on JSVGComponent with non-Batik SVGOMDocument.
@@ -54,6 +55,20 @@ public class NullSetSVGDocumentTest extends JSVGMemoryLeakTest {
     public static final String ERROR_ON_SET 
         = "NullSetSVGDocumentTest.message.error.on.set";
 
+    public JSVGCanvasHandler createHandler() {
+        return new JSVGCanvasHandler(this, this) {
+                public JSVGCanvas createCanvas() { 
+                    return new JSVGCanvas() {
+                            protected void installSVGDocument(SVGDocument doc){
+                                super.installSVGDocument(doc);
+                                if (doc != null) return;
+                                handler.scriptDone();
+                            }
+                        };
+                }
+            };
+    }
+
     /* JSVGCanvasHandler.Delegate Interface */
     public boolean canvasInit(JSVGCanvas canvas) {
         theCanvas = canvas;
@@ -76,6 +91,7 @@ public class NullSetSVGDocumentTest extends JSVGMemoryLeakTest {
                         c.setSVGDocument(null);
                     }});
         } catch (Throwable t) {
+            t.printStackTrace();
             StringWriter trace = new StringWriter();
             t.printStackTrace(new PrintWriter(trace));
             DefaultTestReport report = new DefaultTestReport(this);
@@ -88,8 +104,6 @@ public class NullSetSVGDocumentTest extends JSVGMemoryLeakTest {
             report.setPassed(false);
             failReport = report;
         }
-        // Check that the original SVG Document and GVT tree are cleared.
-        checkObjects(new String[] { "SVGDoc", "GVT", "updateManager" });
     }
 
     public boolean canvasUpdated(JSVGCanvas canvas) {
@@ -99,9 +113,13 @@ public class NullSetSVGDocumentTest extends JSVGMemoryLeakTest {
 
     public void canvasDone(JSVGCanvas canvas) {
         synchronized (this) {
+            // Check that the original SVG
+            // Document and GVT tree are cleared.
+            checkObjects(new String[] { "SVGDoc", "GVT", "updateManager" });
+
             if (canvas.getOffScreen() == null)
                 return;
-
+            System.err.println(">>>>>>> Canvas not cleared");
             DefaultTestReport report = new DefaultTestReport(this);
             report.setErrorCode(ERROR_IMAGE_NOT_CLEARED);
             // It would be great to provide the image here

@@ -1,0 +1,67 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Testing calls to CSSStlyeDeclaration.setProperty                       -->
+<!--                                                                        -->
+<!-- @author deweese@apache.org                                             -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg id="body" width="450" height="500"  viewBox="0 0 450 500" 
+     xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Testing CSS DOM with setProperty.</title>
+
+
+<script><![CDATA[
+    function regardStart(){
+      setTimeout("test()", 20);
+    }
+    function test() {
+       var e, style;
+
+       e = document.getElementById("r1");
+       style = e.getStyle();
+       style.setProperty("fill","url(#lg)","");
+
+       e = document.getElementById("r2");
+       style = e.getStyle();
+       var paint = style.getPropertyCSSValue("fill");
+       paint.setPaint(SVGPaint.SVG_PAINTTYPE_URI, "#lg", "", "");
+       if (paint.getPaintType() != SVGPaint.SVG_PAINTTYPE_URI) 
+           throw ("Wrong paint type: " + paint.getPaintType());
+       if (regardTestInstance != null) 
+         regardTestInstance.scriptDone();
+    }
+]]></script>
+
+  <linearGradient id="lg" x1="25%" x2="75%" y1="75%" y2="25%">
+    <stop offset=".0" stop-color="gold" />
+    <stop offset="1" stop-color="crimson" />
+  </linearGradient>
+  
+
+  <g>
+  <title>Setting CSS properties through CSS DOM</title>
+    <text class="title" x="50%" y="40"
+    >Setting CSS properties through CSS DOM</text>
+
+
+    <rect id="r1" x="10" y="150" width="100" height="50" fill="green"/>
+    <rect id="r2" x="120" y="150" width="100" height="50" 
+          style="fill:purple"/>
+  </g>
+</svg>
+

@@ -856,8 +856,10 @@ public abstract class CSSEngine {
      * @param prop The property name.
      * @param value The property value.
      */
-    public Value parsePropertyValue(String prop, String value) {
+    public Value parsePropertyValue(CSSStylableElement elt,
+                                    String prop, String value) {
         try {
+            element = elt;
             LexicalUnit lu;
             int idx = getPropertyIndex(prop);
             lu = parser.parsePropertyValue(value);
@@ -872,7 +874,10 @@ public abstract class CSSEngine {
                                                       value,
                                                       (m == null) ? "" : m });
             throw new DOMException(DOMException.SYNTAX_ERR, s);
+        } finally {
+            element = null;
         }
+
     }
 
     /**

@@ -12,6 +12,8 @@ import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -28,8 +30,10 @@ import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.dom.svg.ExtensibleSVGDOMImplementation;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
+import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
@@ -150,9 +154,18 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
                              TranscoderOutput output)
             throws TranscoderException {
 
-        if (!(document instanceof SVGOMDocument)) {
-            throw new TranscoderException(
-                Messages.formatMessage("notsvg", null));
+        if ((document != null) &&
+            !(document.getImplementation() instanceof SVGDOMImplementation)) {
+            DOMImplementation impl;
+            impl = SVGDOMImplementation.getDOMImplementation();
+            document = DOMUtilities.deepCloneDocument(document, impl);
+            if (uri != null) {
+                try { 
+                    URL url = new URL(uri);
+                    ((SVGOMDocument)document).setURLObject(url);
+                } catch (MalformedURLException mue) {
+                }
+            }
         }
 
         ctx = new BridgeContext(userAgent);

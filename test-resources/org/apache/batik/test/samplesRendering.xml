@@ -282,6 +282,7 @@
         <test id="samples/tests/spec/text/textAnchor3.svg" />
         <test id="samples/tests/spec/text/textBiDi.svg" />
         <test id="samples/tests/spec/text/textDecoration.svg" />
+        <test id="samples/tests/spec/text/textDecoration2.svg" />
         <test id="samples/tests/spec/text/textEffect.svg" />
         <test id="samples/tests/spec/text/textEffect2.svg" />
         <test id="samples/tests/spec/text/textEffect3.svg" />
@@ -367,5 +368,6 @@
         <test id="samples/tests/spec/scripting/boundsTransformChange.svg" />
         <test id="samples/tests/spec/scripting/rootSizeChange.svg" />
         <test id="samples/tests/spec/scripting/rectResizeOnClick.svg" />
+        <test id="samples/tests/spec/scripting/setProperty.svg" />
     </testGroup>
 </testSuite>

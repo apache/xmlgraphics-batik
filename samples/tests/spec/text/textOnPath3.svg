@@ -66,7 +66,8 @@
       <use xlink:href="#path" />
       <text x="-100" y="10" fill="black"><textPath 
           fill="crimson" xlink:href="#path" startOffset="50%"
-          text-anchor="middle">Text on a path for text w/ 'x'.</textPath
+          text-anchor="middle">Text on a <tspan x="50"
+          >path for text w/ 'x'.</tspan></textPath
 	></text>
   </g>
 </svg>

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.AccessControlContext;
 import java.security.AccessController;
@@ -20,6 +21,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Vector;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
@@ -28,6 +31,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeJavaPackage;
+import org.mozilla.javascript.PropertyException;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -53,6 +57,16 @@ public class RhinoInterpreter implements Interpreter {
         "org.w3c.dom.svg",
         "org.w3c.dom.views"
     };
+
+    /**
+     * The window object
+     */
+    protected Window window;
+
+    public Window getWindow() {
+        return window;
+    }
+
 
     private static class Entry {
         String str;
@@ -99,18 +113,6 @@ public class RhinoInterpreter implements Interpreter {
         = new BatikSecurityController();
 
     /**
-     * Default Context for scripts. This is used only for efficiency
-     * reason.
-     */
-    protected Context defaultContext;
-
-    /**
-     * Context vector, to make sure we are not
-     * setting the security context too many times
-     */
-    protected Vector contexts = new Vector();
-
-    /**
      * Build a <code>Interpreter</code> for ECMAScript using Rhino.
      *
      * @param documentURL the URL for the document which references
@@ -121,8 +123,6 @@ public class RhinoInterpreter implements Interpreter {
     public RhinoInterpreter(URL documentURL) {
         rhinoClassLoader = new RhinoClassLoader(documentURL,
                                                 getClass().getClassLoader());
-        Context.setCachingEnabled(false); // reset the cache
-        Context.setCachingEnabled(true);  // enable caching again
         // entering a context
         Context ctx = enterContext();
         try {
@@ -167,23 +167,14 @@ public class RhinoInterpreter implements Interpreter {
      * on the context.
      */
     public Context enterContext(){
-        Context ctx = Context.enter();
-        if (ctx != defaultContext){
-            // Set the SecurityController the Context should
-            // use.
-            if (!contexts.contains(ctx)) {
-                ctx.setWrapFactory(wrapFactory);
-                ctx.setSecurityController(securityController);
-                // This prevents a serious memory leak where
-                // all the SVG document state is preserved.
-                ctx.setCachingEnabled(false);
-                contexts.add(ctx);
-
-                // Hopefully, we are not switching threads too
-                // often ....
-                defaultContext = ctx;
-            }
+        Context ctx = Context.getCurrentContext();
+        if (ctx == null) {
+            ctx = new ExtendedContext();
+            ctx.setWrapFactory(wrapFactory);
+            ctx.setSecurityController(securityController);
         }
+        ctx = Context.enter(ctx);
+
         return ctx;
     }
 
@@ -222,10 +213,10 @@ public class RhinoInterpreter implements Interpreter {
         final Context ctx = enterContext();
 
         try {
-          rv = ctx.evaluateReader(globalObject,
-                                  scriptreader,
-                                  description,
-                                  1, rhinoClassLoader);
+            rv = ctx.evaluateReader(globalObject,
+                                    scriptreader,
+                                    description,
+                                    1, rhinoClassLoader);
         } catch (JavaScriptException e) {
             // exception from JavaScript (possibly wrapping a Java Ex)
             if (e.getValue() instanceof Exception) {
@@ -355,16 +346,61 @@ public class RhinoInterpreter implements Interpreter {
 
         try {
             if (name.equals(BIND_NAME_WINDOW) && object instanceof Window) {
-                ((WindowWrapper)globalObject).window = (Window)object;
+                window = (Window)object;
             } else {
-                Scriptable jsObject =  Context.toObject(object, globalObject);
-                globalObject.put(name, globalObject, jsObject);
+                try {
+                    Scriptable jsObject;
+                    jsObject = Context.toObject(object, globalObject);
+                    objects.put(name, jsObject);
+                    if (ScriptableObject.getProperty(globalObject, name) ==
+                        ScriptableObject.NOT_FOUND)
+                        globalObject.defineProperty
+                            (name, new RhinoGetDelegate(name),
+                             rhinoGetter, null, ScriptableObject.READONLY);
+                } catch (PropertyException pe) {
+                    pe.printStackTrace();
+                }
             }
 
         } finally {
             Context.exit();
         }
     }
+    /**
+     * HashTable to store properties bounds on the global object.
+     * So they don't end up in the JavaMethods static table.
+     */
+    Map objects = new HashMap(4);
+
+    /**
+     * Class to act as 'get' delegate for Rhino.  This uses the
+     * currentContext to get the current Interpreter object which
+     * allows it to lookup the object requested.  This gets around the
+     * fact that the global object gets referenced from a static
+     * context but the Context does not.
+     */
+    public static class RhinoGetDelegate {
+        String name;
+        RhinoGetDelegate(String name) {
+            this.name = name;
+        }
+        public Object get(ScriptableObject so) {
+            Context ctx = Context.getCurrentContext();
+            if (ctx == null ) return null;
+            return ((ExtendedContext)ctx).getInterpreter().objects.get(name);
+        }
+    }
+    // The method to use for getting the value from the
+    // RhinoGetDelegate.
+    static Method rhinoGetter;
+    static {
+        try {
+            Class [] getterArgs = { ScriptableObject.class };
+            rhinoGetter = RhinoGetDelegate.class.getDeclaredMethod
+                ("get", getterArgs);
+        } catch (NoSuchMethodException nsm) { }
+    }
+
 
     /**
      * To be used by <code>EventTargetWrapper</code>.
@@ -440,7 +476,7 @@ public class RhinoInterpreter implements Interpreter {
      * Build the wrapper for objects implement <code>EventTarget</code>.
      */
     Scriptable buildEventTargetWrapper(EventTarget obj) {
-        return new EventTargetWrapper(globalObject, obj, this);
+        return new EventTargetWrapper(globalObject, obj);
     }
 
     /**
@@ -485,5 +521,23 @@ public class RhinoInterpreter implements Interpreter {
      */
     public String formatMessage(String key, Object[] args) {
         return null;
+    }
+
+    public class ExtendedContext extends Context {
+        public ExtendedContext() {
+            super();
+        }
+        
+        public RhinoInterpreter getInterpreter() {
+            return RhinoInterpreter.this;
+        }
+        
+        public Window getWindow() {
+            return RhinoInterpreter.this.getWindow();
+        }
+
+        public ScriptableObject getGlobalObject() {
+            return RhinoInterpreter.this.getGlobalObject();
+        }
     }
 }

@@ -35,6 +35,7 @@ import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.SVGStylableElement;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.script.Interpreter;
@@ -1176,10 +1177,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         // No cache needed since the default font family is asked only
         // one time on the root element (only if it does not have its
         // own font-family).
-        SVGOMDocument doc = (SVGOMDocument)document;
+        SVGOMDocument      doc  = (SVGOMDocument)document;
+        SVGStylableElement root = (SVGStylableElement)doc.getRootElement();
         String str = userAgent.getDefaultFontFamily();
         return doc.getCSSEngine().parsePropertyValue
-            (SVGConstants.CSS_FONT_FAMILY_PROPERTY, str);
+            (root,SVGConstants.CSS_FONT_FAMILY_PROPERTY, str);
     }
 
     /**

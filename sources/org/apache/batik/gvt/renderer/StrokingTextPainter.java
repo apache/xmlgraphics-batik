@@ -285,6 +285,9 @@ public class StrokingTextPainter extends BasicTextPainter {
                 if (start != chunkStartIndex) {
                     // If we aren't the first composite in a chunck see
                     // if we need to form a new TextChunk...
+                    // We only create new chunks when given an absolute
+                    // location in progression direction [Spec says
+                    // to do it for either but this doesn't make sense].
                     if (vertical) {
                         Float runY = (Float) aci.getAttribute(YPOS);
                         // Check for absolute location in layout direction.
@@ -297,9 +300,15 @@ public class StrokingTextPainter extends BasicTextPainter {
                             break; // If so end of chunk...
                     }
 
-                    // do additional check for the start of a textPath
+                    // Do additional check for the start of a textPath
                     if ((prevTextPath == null) && (textPath != null))
                         break;  // If so end of chunk.
+
+                    // Form a new chunk at the end of a text path.
+                    // [ This is not mentioned in the spec but makes
+                    //   sense].
+                    if ((prevTextPath != null) && (textPath == null))
+                        break;
                 }
 
                 prevTextPath = textPath;
@@ -792,7 +801,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         float tpShiftX = 0;
         float tpShiftY = 0;
 
-        // Of course X and Y override that, but they don't apply for text on a path.
+        // Of course X and Y override that, but they don't apply for
+        // text on a path.
 	if ((runX != null) && (!runX.isNaN())) {
 	    absX = runX.floatValue();
 	    tpShiftX = absX;
@@ -824,6 +834,17 @@ public class StrokingTextPainter extends BasicTextPainter {
             runaci = r.getACI();
             runaci.first();
             textPath =  (TextPath) runaci.getAttribute(TEXTPATH);
+            if (vertical) {
+                runX = (Float) runaci.getAttribute(XPOS);
+                if ((runX != null) && (!runX.isNaN())) {
+                    absX = runX.floatValue();
+                }
+            } else {
+                runY = (Float) runaci.getAttribute(YPOS);
+                if ((runY != null) && (!runY.isNaN())) {
+                    absY = runY.floatValue();
+                }
+            }
 
             if (textPath == null) {
                 layout.setOffset(new Point2D.Float(absX, absY));
@@ -852,12 +873,12 @@ public class StrokingTextPainter extends BasicTextPainter {
     private void paintDecorations(List textRuns, 
                                   Graphics2D g2d,
                                   int decorationType) {
-
         Paint prevPaint = null;
         Paint prevStrokePaint = null;
         Stroke prevStroke = null;
         Rectangle2D decorationRect = null;
-
+        double yLoc = 0, height = 0;
+        
         for (int i = 0; i < textRuns.size(); i++) {
             TextRun textRun = (TextRun)textRuns.get(i);
             AttributedCharacterIterator runaci = textRun.getACI();
@@ -894,9 +915,18 @@ public class StrokingTextPainter extends BasicTextPainter {
                     return;
             }
 
-            if (textRun.isFirstRunInChunk() || paint != prevPaint
-                || stroke != prevStroke || strokePaint != prevStrokePaint) {
-
+            if (textRun.isFirstRunInChunk()) {
+                Shape s = textRun.getLayout().getDecorationOutline
+                    (decorationType);
+                Rectangle2D r2d = s.getBounds2D();
+                yLoc   = r2d.getY();
+                height = r2d.getHeight();
+            }
+                
+            if (textRun.isFirstRunInChunk() ||
+                (paint != prevPaint) ||
+                (stroke != prevStroke) || 
+                (strokePaint != prevStrokePaint)) {
                 // if there is a current decoration, draw it now
                 if (decorationRect != null) {
 
@@ -919,18 +949,26 @@ public class StrokingTextPainter extends BasicTextPainter {
                 && !textRun.getLayout().isVertical()
                 && !textRun.getLayout().isOnATextPath()) {
 
-                // this text run should be decorated with the specified decoration type
-                // note: decorations are only supported for plain horizontal layouts
+                // this text run should be decorated with the
+                // specified decoration type 
+                // NOTE: decorations are only supported for plain
+                // horizontal layouts
 
-                Shape decorationShape = textRun.getLayout().getDecorationOutline(decorationType);
+                Shape decorationShape = 
+                    textRun.getLayout().getDecorationOutline(decorationType);
                 if (decorationRect == null) {
                     // create a new one
-                    decorationRect = decorationShape.getBounds2D();
+                    Rectangle2D r2d = decorationShape.getBounds2D();
+                    decorationRect = new Rectangle2D.Double
+                        (r2d.getX(), yLoc, r2d.getWidth(), height);
                 } else {
                     // extend the current one
                     Rectangle2D bounds = decorationShape.getBounds2D();
-                    decorationRect.setRect(decorationRect.getMinX(), decorationRect.getMinY(),
-                        bounds.getMaxX() - decorationRect.getMinX(), decorationRect.getHeight());
+                    double minX = Math.min(decorationRect.getX(), 
+                                           bounds.getX());
+                    double maxX = Math.max(decorationRect.getMaxX(), 
+                                           bounds.getMaxX());
+                    decorationRect.setRect(minX, yLoc, maxX-minX, height);
                 }
             }
             prevPaint = paint;
@@ -1123,6 +1161,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         Paint prevStrokePaint = null;
         Stroke prevStroke = null;
         Rectangle2D decorationRect = null;
+        double yLoc = 0, height = 0;
 
         for (int i = 0; i < textRuns.size(); i++) {
             TextRun textRun = (TextRun)textRuns.get(i);
@@ -1153,6 +1192,14 @@ public class StrokingTextPainter extends BasicTextPainter {
                     return null;
             }
 
+            if (textRun.isFirstRunInChunk()) {
+                Shape s = textRun.getLayout().getDecorationOutline
+                    (decorationType);
+                Rectangle2D r2d = s.getBounds2D();
+                yLoc   = r2d.getY();
+                height = r2d.getHeight();
+            }
+                
             if (textRun.isFirstRunInChunk() || 
 		paint != prevPaint || 
 		stroke != prevStroke || 
@@ -1180,18 +1227,19 @@ public class StrokingTextPainter extends BasicTextPainter {
 
                 Shape decorationShape = 
 		    textRun.getLayout().getDecorationOutline(decorationType);
-
                 if (decorationRect == null) {
                     // create a new one
-                    decorationRect = decorationShape.getBounds2D();
+                    Rectangle2D r2d = decorationShape.getBounds2D();
+                    decorationRect = new Rectangle2D.Double
+                        (r2d.getX(), yLoc, r2d.getWidth(), height);
                 } else {
                     // extend the current one
                     Rectangle2D bounds = decorationShape.getBounds2D();
-                    decorationRect.setRect
-			(decorationRect.getMinX(), 
-			 decorationRect.getMinY(),
-			 bounds.getMaxX() - decorationRect.getMinX(), 
-			 decorationRect.getHeight());
+                    double minX = Math.min(decorationRect.getX(), 
+                                           bounds.getX());
+                    double maxX = Math.max(decorationRect.getMaxX(), 
+                                           bounds.getMaxX());
+                    decorationRect.setRect(minX, yLoc, maxX-minX, height);
                 }
             }
 
@@ -1213,7 +1261,8 @@ public class StrokingTextPainter extends BasicTextPainter {
     }
 
     /**
-     * Returns the stroke outline of the specified decoration type.
+     * Returns the strokeed outline of the specified decoration type.
+     * If the decoration has no stroke it will return the fill outline
      *
      * @param textRuns The list of text runs to get the decoration outline for.
      * @param decoratonType Indicates the type of decoration required.
@@ -1230,6 +1279,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         Paint prevStrokePaint = null;
         Stroke prevStroke = null;
         Rectangle2D decorationRect = null;
+        double yLoc = 0, height = 0;
 
         for (int i = 0; i < textRuns.size(); i++) {
 
@@ -1261,6 +1311,14 @@ public class StrokingTextPainter extends BasicTextPainter {
                     return null;
             }
 
+            if (textRun.isFirstRunInChunk()) {
+                Shape s = textRun.getLayout().getDecorationOutline
+                    (decorationType);
+                Rectangle2D r2d = s.getBounds2D();
+                yLoc   = r2d.getY();
+                height = r2d.getHeight();
+            }
+                
             if (textRun.isFirstRunInChunk() || 
 		paint != prevPaint || 
 		stroke != prevStroke || 
@@ -1268,16 +1326,19 @@ public class StrokingTextPainter extends BasicTextPainter {
 
                 // if there is a current decoration, added it to the overall
                 // outline
-                if (decorationRect != null  && 
-		    prevStroke != null && 
-		    prevStrokePaint != null) {
-
-                    if (outline == null) {
-                        outline = new GeneralPath
-			    (prevStroke.createStrokedShape(decorationRect));
-                    } else {
-                        outline.append(prevStroke.createStrokedShape
-				       (decorationRect), false);
+                if (decorationRect != null) {
+		    
+                    Shape s = null;
+                    if (prevStroke != null && 
+                        prevStrokePaint != null)
+                        s = prevStroke.createStrokedShape(decorationRect);
+                    else if (prevPaint != null) 
+                        s = decorationRect;
+                    if (s != null) {
+                        if (outline == null)
+                            outline = new GeneralPath(s);
+                        else 
+                            outline.append(s, false);
                     }
                     decorationRect = null;
                 }
@@ -1296,15 +1357,17 @@ public class StrokingTextPainter extends BasicTextPainter {
 
                 if (decorationRect == null) {
                     // create a new one
-                    decorationRect = decorationShape.getBounds2D();
+                    Rectangle2D r2d = decorationShape.getBounds2D();
+                    decorationRect = new Rectangle2D.Double
+                        (r2d.getX(), yLoc, r2d.getWidth(), height);
                 } else {
                     // extend the current one
                     Rectangle2D bounds = decorationShape.getBounds2D();
-                    decorationRect.setRect
-			(decorationRect.getMinX(), 
-			 decorationRect.getMinY(),
-			 bounds.getMaxX() - decorationRect.getMinX(), 
-			 decorationRect.getHeight());
+                    double minX = Math.min(decorationRect.getX(), 
+                                           bounds.getX());
+                    double maxX = Math.max(decorationRect.getMaxX(), 
+                                           bounds.getMaxX());
+                    decorationRect.setRect(minX, yLoc, maxX-minX, height);
                 }
             }
 
@@ -1315,16 +1378,18 @@ public class StrokingTextPainter extends BasicTextPainter {
 
         // if there is a decoration rect that hasn't been added to the overall
         // outline
-        if (decorationRect != null && 
-	    prevStroke != null && 
-	    prevStrokePaint != null) {
-
-	    if (outline == null) {
-                outline = new GeneralPath(prevStroke.createStrokedShape
-					  (decorationRect));
-            } else {
-                outline.append
-		    (prevStroke.createStrokedShape(decorationRect), false);
+        if (decorationRect != null) {
+            Shape s = null;
+            if (prevStroke != null && 
+                prevStrokePaint != null)
+                s = prevStroke.createStrokedShape(decorationRect);
+            else if (prevPaint != null) 
+                s = decorationRect;
+            if (s != null) {
+                if (outline == null)
+                    outline = new GeneralPath(s);
+                else 
+                    outline.append(s, false);
             }
         }
 

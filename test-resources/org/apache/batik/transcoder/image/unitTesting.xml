@@ -27,6 +27,11 @@
 	<arg class="java.lang.String" value="test-references/samples/anne.png" />
 </test>
 
+<test id="transcoder.image.genericdocument" class="org.apache.batik.transcoder.image.GenericDocumentTest" >
+	<arg class="java.lang.String" value="samples/anne.svg" />
+	<arg class="java.lang.String" value="test-references/samples/anne.png" />
+</test>
+
 <test id="transcoder.image.reader" class="org.apache.batik.transcoder.image.ReaderTest" >
 	<arg class="java.lang.String" value="samples/anne.svg" />
 	<arg class="java.lang.String" value="test-references/samples/anne.png" />

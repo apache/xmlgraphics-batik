@@ -50,8 +50,8 @@
   <g id="test-content">
     <g style="font-size:20" >
       <text id="t1_bg" x="5"   y="135" fill="purple" >Simple Text</text>
-      <text id="t2"    x="155" y="135" fill="gold"   >Simple Text</text>
-      <text id="t1"    x="305" y="135" fill="crimson">Simple Text</text>
+      <text id="t2"    x="155" y="135" fill="crimson">Simple Text</text>
+      <text id="t1"    x="305" y="135" fill="gold"   >Simple Text</text>
     </g>
 
     <g>

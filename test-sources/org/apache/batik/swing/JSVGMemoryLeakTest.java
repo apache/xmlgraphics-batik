@@ -50,8 +50,12 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
         return TestMessages.formatMessage(key, args);
     }
 
+    public JSVGCanvasHandler createHandler() {
+        return new JSVGCanvasHandler(this, this);
+    }
+
     public TestReport doSomething() throws Exception {
-        handler = new JSVGCanvasHandler(this, this);
+        handler = createHandler();
         registerObjectDesc(handler, "Handler");
         done = false;
         handler.runCanvas(getId());

@@ -118,13 +118,15 @@ public class JSVGCanvasHandler {
     public JFrame getFrame()     { return frame; }
     public JSVGCanvas getCanvas() { return canvas; }
 
+    public JSVGCanvas createCanvas() { return new JSVGCanvas(); }
+
     public void runCanvas(String desc) {
         this.desc = desc;
         try {
             EventQueue.invokeAndWait(new Runnable() {
                     public void run() {
                         frame = new JFrame(delegate.getName());
-                        canvas = new JSVGCanvas();
+                        canvas = createCanvas();
                         frame.getContentPane().add(canvas);
                         frame.setSize(new Dimension(450, 500));
                         wl = new WindowAdapter() {
