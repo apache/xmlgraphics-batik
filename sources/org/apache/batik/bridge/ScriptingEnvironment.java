@@ -477,15 +477,17 @@ public class ScriptingEnvironment {
             }
         }
 
+        Event ev;
+        DocumentEvent de = (DocumentEvent)elt.getOwnerDocument();
+        ev = de.createEvent("SVGEvents");
+        ev.initEvent("SVGLoad", false, false);
+        EventTarget t = (EventTarget)elt;
+
         final String s =
             elt.getAttributeNS(null, SVGConstants.SVG_ONLOAD_ATTRIBUTE);
+        EventListener l = null;
         if (s.length() > 0) {
-            Event ev;
-            DocumentEvent de = (DocumentEvent)elt.getOwnerDocument();
-            ev = de.createEvent("SVGEvents");
-            ev.initEvent("SVGLoad", false, false);
-            EventTarget t = (EventTarget)elt;
-            EventListener l = new EventListener() {
+            l = new EventListener() {
                     public void handleEvent(Event evt) {
                         try {
                             interp.bindObject(EVENT_NAME, evt);
@@ -501,7 +503,9 @@ public class ScriptingEnvironment {
                     }
                 };
             t.addEventListener("SVGLoad", l, false);
-            t.dispatchEvent(ev);
+        }
+        t.dispatchEvent(ev);
+        if (s.length() > 0) {
             t.removeEventListener("SVGLoad", l, false);
         }
     }

@@ -64,9 +64,9 @@ public class SVGLoadEventDispatcher extends Thread {
      * Creates a new SVGLoadEventDispatcher.
      */
     public SVGLoadEventDispatcher(GraphicsNode gn,
-                               SVGDocument doc,
-                               BridgeContext bc,
-                               UpdateManager um) {
+                                  SVGDocument doc,
+                                  BridgeContext bc,
+                                  UpdateManager um) {
         svgDocument = doc;
         root = gn;
         bridgeContext = bc;
@@ -89,6 +89,13 @@ public class SVGLoadEventDispatcher extends Thread {
             exception = e;
             fireFailedEvent();
         }
+    }
+
+    /**
+     * Returns the update manager.
+     */
+    public UpdateManager getUpdateManager() {
+        return updateManager;
     }
 
     /**

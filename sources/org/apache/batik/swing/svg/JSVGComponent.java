@@ -185,6 +185,22 @@ import org.w3c.dom.svg.SVGSVGElement;
 public class JSVGComponent extends JGVTComponent {
 
     /**
+     * Means that the component must auto detect whether
+     * the current document is static or dynamic.
+     */
+    public final static int AUTODETECT = 0;
+
+    /**
+     * Means that all document must be considered as dynamic.
+     */
+    public final static int ALWAYS_DYNAMIC = 1; 
+
+    /**
+     * Means that all document must be considered as static.
+     */
+    public final static int ALWAYS_STATIC = 2;
+
+    /**
      * The document loader.
      */
     protected SVGDocumentLoader documentLoader;
@@ -280,6 +296,11 @@ public class JSVGComponent extends JGVTComponent {
     protected boolean isDynamicDocument;
 
     /**
+     * The document state.
+     */
+    protected int documentState;
+
+    /**
      * Creates a new JSVGComponent.
      */
     public JSVGComponent() {
@@ -315,6 +336,24 @@ public class JSVGComponent extends JGVTComponent {
     }
 
     /**
+     * Sets the document state. The given value must be one of
+     * AUTODETECT, ALWAYS_DYNAMIC or ALWAYS_STATIC.
+     */
+    public void setDocumentState(int state) {
+        documentState = state;
+    }
+
+    /**
+     * Returns the current update manager.
+     */
+    public UpdateManager getUpdateManager() {
+        if (nextUpdateManager != null) {
+            return nextUpdateManager;
+        }
+        return updateManager;
+    }
+
+    /**
      * Resumes the processing of the current document.
      */
     public void resumeProcessing() {
@@ -345,6 +384,9 @@ public class JSVGComponent extends JGVTComponent {
             gvtTreeBuilder.interrupt();
         } else if (svgLoadEventDispatcher != null) {
             svgLoadEventDispatcher.interrupt();
+        } else if (nextUpdateManager != null) {
+            nextUpdateManager.interrupt();
+            nextUpdateManager = null;
         } else if (updateManager != null) {
             updateManager.interrupt();
         } else {
@@ -413,7 +455,16 @@ public class JSVGComponent extends JGVTComponent {
             throw new IllegalArgumentException("Invalid DOM implementation.");
         }
 
-        isDynamicDocument = UpdateManager.isDynamicDocument(doc);
+        switch (documentState) {
+        case ALWAYS_STATIC:
+            isDynamicDocument = false;
+            break;
+        case ALWAYS_DYNAMIC:
+            isDynamicDocument = true;
+            break;
+        case AUTODETECT:
+            isDynamicDocument = UpdateManager.isDynamicDocument(doc);
+        }
         
         svgDocument = doc;
 
@@ -498,21 +549,21 @@ public class JSVGComponent extends JGVTComponent {
      * Starts a SVGLoadEventDispatcher thread.
      */
     protected void startSVGLoadEventDispatcher(GraphicsNode root) {
-        nextUpdateManager = new UpdateManager(bridgeContext,
-                                              root,
-                                              svgDocument);
-        SVGLoadEventDispatcher d =
+        UpdateManager um = new UpdateManager(bridgeContext,
+                                             root,
+                                             svgDocument);
+        svgLoadEventDispatcher =
             new SVGLoadEventDispatcher(root,
                                        svgDocument,
                                        bridgeContext,
-                                       nextUpdateManager);
+                                       um);
         Iterator it = svgLoadEventDispatcherListeners.iterator();
         while (it.hasNext()) {
-            d.addSVGLoadEventDispatcherListener
+            svgLoadEventDispatcher.addSVGLoadEventDispatcherListener
                 ((SVGLoadEventDispatcherListener)it.next());
         }
 
-        d.start();
+        svgLoadEventDispatcher.start();
     }
 
     /**
@@ -851,7 +902,9 @@ public class JSVGComponent extends JGVTComponent {
          */
         public void svgLoadEventDispatchCompleted
             (SVGLoadEventDispatcherEvent e) {
+            nextUpdateManager = svgLoadEventDispatcher.getUpdateManager();
             svgLoadEventDispatcher = null;
+
             if (nextGVTTreeBuilder != null) {
                 nextUpdateManager.interrupt();
                 nextUpdateManager = null;
@@ -875,6 +928,7 @@ public class JSVGComponent extends JGVTComponent {
          */
         public void svgLoadEventDispatchCancelled
             (SVGLoadEventDispatcherEvent e) {
+            nextUpdateManager = svgLoadEventDispatcher.getUpdateManager();
             svgLoadEventDispatcher = null;
 
             nextUpdateManager.interrupt();
@@ -895,6 +949,7 @@ public class JSVGComponent extends JGVTComponent {
          */
         public void svgLoadEventDispatchFailed
             (SVGLoadEventDispatcherEvent e) {
+            nextUpdateManager = svgLoadEventDispatcher.getUpdateManager();
             svgLoadEventDispatcher = null;
 
             nextUpdateManager.interrupt();
@@ -953,6 +1008,11 @@ public class JSVGComponent extends JGVTComponent {
             super.gvtRenderingCancelled(e);
 
             if (nextGVTTreeBuilder != null) {
+                if (nextUpdateManager != null) {
+                    nextUpdateManager.interrupt();
+                    nextUpdateManager = null;
+                }
+
                 startGVTTreeBuilder();
                 return;
             }
@@ -973,6 +1033,11 @@ public class JSVGComponent extends JGVTComponent {
             super.gvtRenderingFailed(e);
 
             if (nextGVTTreeBuilder != null) {
+                if (nextUpdateManager != null) {
+                    nextUpdateManager.interrupt();
+                    nextUpdateManager = null;
+                }
+
                 startGVTTreeBuilder();
                 return;
             }
@@ -1117,20 +1182,24 @@ public class JSVGComponent extends JGVTComponent {
                                 }
                             }
                             suspendInteractions = false;
-
-                            Object[] dll = updateManagerListeners.toArray();
-                            
-                            if (dll.length > 0) {
-                                for (int i = 0; i < dll.length; i++) {
-                                    ((UpdateManagerListener)dll[i]).
-                                        updateCompleted(e);
-                                }
-                            }
                         }
                     });
             } catch (Exception ex) {
             }
             
+
+            EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        Object[] dll = updateManagerListeners.toArray();
+                        
+                        if (dll.length > 0) {
+                            for (int i = 0; i < dll.length; i++) {
+                                ((UpdateManagerListener)dll[i]).
+                                    updateCompleted(e);
+                            }
+                        }
+                    }
+                });
         }
 
         /**
