@@ -11,6 +11,7 @@ package org.apache.batik.extension.svg.renderable;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
@@ -72,6 +73,10 @@ public class MultiResRable
             srcs[idx] = new SoftReference(f);
         }
 
+        // Just copy over the rendering hints.
+        RenderingHints rh = rc.getRenderingHints();
+        if (rh == null) rh = new RenderingHints(null);
+
         double sx = bounds.getWidth() /(double)f.getWidth();
         double sy = bounds.getHeight()/(double)f.getHeight();
         
@@ -79,8 +84,15 @@ public class MultiResRable
         AffineTransform at = rc.getTransform();
         at.scale(sx, sy);
 
-        rc.setTransform(at);
-        return f.createRendering(rc);
+        // Map the area of interest to our input...
+        Shape aoi = rc.getAreaOfInterest();
+        if (aoi != null) {
+            AffineTransform invAt = AffineTransform.getScaleInstance
+                (1/sx, 1/sy);
+            aoi = invAt.createTransformedShape(aoi);
+        }
+
+        return f.createRendering(new RenderContext(at, aoi, rh));
     }
 
     public RenderedImage createRendering(RenderContext rc) {
@@ -93,7 +105,7 @@ public class MultiResRable
         
         double w = bounds.getWidth()*det;
         for (int i=1; i<sizes.length; i++) {
-            if (w >= sizes[i].width) 
+            if (w > sizes[i].width) 
                 return getImage(i-1, rc);
         }
 

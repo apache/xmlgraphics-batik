@@ -23,31 +23,39 @@
      viewBox="0 0 450 500"
      xmlns:batikExt="http://xml.apache.org/batik/ext">
 
-    <title>Multi-Image Extension Tag</title>
-  
+    <title>MultiImage Extension Tag</title>
+    <defs>
+       <g id="sample">
+          <rect fill="#ADA" x="0" y="0" width="280" height="400"/>
+          <batikExt:multiImage id="img" xlink:href="multi1.jpg"
+                 x="20" y="20" width="240" height="360" 
+                 pixel-width="480" pixel-height="720">
+             <batikExt:subImage xlink:href="multi2.jpg" 
+                        pixel-width="240" pixel-height="360"/>
+             <batikExt:subImage xlink:href="multi3.jpg" 
+                        pixel-width="120" pixel-height="180"/>
+             <batikExt:subImage xlink:href="multi4.jpg" 
+                        pixel-width="60" pixel-height="90"/>
+          </batikExt:multiImage>
+       </g>
+    </defs>  
+
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
     <g id="testContent" class="legend" style="text-anchor:middle">
-        <text x="225" y="40" class="title">Multi-Image Extension Tag</text>
+        <text x="225" y="40" class="title">MultiImage Extension Tag</text>
   
-        <g transform="translate(145, 145)">
-          <rect fill="#DAA" x="0" y="0" width="160" height="220"/>
-          <batikExt:multi-image id="img" xlink:href="multi1.jpg"
-                 x="20" y="20" width="120" height="180" 
-		 pixel-width="480" pixel-height="720">
-	     <batikExt:sub-image xlink:href="multi2.jpg" 
-	                pixel-width="240" pixel-height="360"/>
-	     <batikExt:sub-image xlink:href="multi3.jpg" 
-	                pixel-width="120" pixel-height="180"/>
-	     <batikExt:sub-image xlink:href="multi4.jpg" 
-	                pixel-width="60" pixel-height="90"/>
-	  </batikExt:multi-image>
-        </g>
+        <use transform="translate(10, 50)" xlink:href="#sample"/>
+
+        <use transform="translate(300, 50) scale(.5)" xlink:href="#sample"/>
+
+        <use transform="translate(300, 260) scale(.25)" xlink:href="#sample"/>
+
     </g>
 
     <!-- ============================================================= -->
     <!-- Batik sample mark                                             -->
     <!-- ============================================================= -->
-    <!-- <use xlink:href="../batikLogo.svg#Batik_Tag_Box" /> -->
+    <use xlink:href="../batikLogo.svg#Batik_Tag_Box" />
 </svg>
