@@ -102,12 +102,6 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 continue;
             }
             Element child = (Element)node;
-            String namespaceURI = child.getNamespaceURI();
-            if (namespaceURI == null ||
-                    !namespaceURI.equals(SVG_NAMESPACE_URI)) {
-                continue; // skip element in the wrong namespace
-            }
-
             GraphicsNode clipNode = builder.build(ctx, child) ;
             // check if a GVT node has been created
             if (clipNode == null) {

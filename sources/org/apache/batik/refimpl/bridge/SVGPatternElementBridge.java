@@ -114,12 +114,6 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                 continue;
             }
             Element child = (Element) node;
-            String namespaceURI = child.getNamespaceURI();
-            if (namespaceURI == null ||
-                    !namespaceURI.equals(SVG_NAMESPACE_URI)) {
-                continue; // skip element in the wrong namespace
-            }
-
             GraphicsNode patternNode = builder.build(ctx, child) ;
             // check if a GVT node has been created
             if (patternNode == null) {
