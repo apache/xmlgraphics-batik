@@ -156,7 +156,7 @@ public abstract class AbstractEvent implements Event {
      * of event flow.  
      */
     public void preventDefault() {
-	this.preventDefault = true;
+	this.preventDefault = false;
     }
 
     /**
@@ -203,7 +203,7 @@ public abstract class AbstractEvent implements Event {
     }
 
     void preventDefault(boolean state) {
-	this.preventDefault = state;
+	this.preventDefault = !state;
     }
 
     void setCurrentTarget(EventTarget currentTarget) {

@@ -148,13 +148,11 @@ public class ApplicationSecurityEnforcer {
             // We want to install a SecurityManager.
             if (sm == null) {
                 installSecurityManager();
-                System.err.println("installed SecurityManager");
             }
         } else {
             if (sm != null) {
                 System.setSecurityManager(null);
                 lastSecurityManagerInstalled = null;
-                System.err.println("Removed SecurityManager");
             }
         }
     }
@@ -211,8 +209,6 @@ public class ApplicationSecurityEnforcer {
 
         // Forces re-loading of the security policy
         policy.refresh();
-
-        System.out.println("Enforcing secure script execution");
     }
 
     private void setJarBase(String expandedMainClassName){
