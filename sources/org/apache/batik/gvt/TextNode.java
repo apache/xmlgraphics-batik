@@ -71,11 +71,6 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     protected List textRuns;
 
     /**
-     * An array of text chunks.
-     */
-    protected AttributedCharacterIterator[] chunkACIs = null;
-
-    /**
      * The text painter used to display the text of this text node.
      */
     protected TextPainter textPainter = StrokingTextPainter.getInstance();
@@ -141,22 +136,6 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Returns an array of text chuncks as AttributedCharacterIterator.
-     */
-    public AttributedCharacterIterator[] getChunkACIs() {
-        return chunkACIs;
-    }
-
-    /**
-     * Sets the text chunks of this text node.
-     *
-     * @param chunkACIs the new text chunks of this text node
-     */
-    public void setChunkACIs(AttributedCharacterIterator[] chunkACIs) {
-        this.chunkACIs = chunkACIs;
-    }
-
-    /**
      * Returns the text of this <tt>TextNode</tt> as a string.
      */
     public String getText() {
@@ -202,7 +181,6 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         this.aci = newAci;
         text = null;
         textRuns = null;
-        chunkACIs = null;
     }
 
     /**

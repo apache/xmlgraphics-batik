@@ -64,12 +64,28 @@ import org.apache.batik.gvt.text.TextSpanLayout;
  */
 public class StrokingTextPainter extends BasicTextPainter {
 
+    public static final 
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER 
+        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
+
+    public static final 
+        AttributedCharacterIterator.Attribute GVT_FONT 
+        = GVTAttributedCharacterIterator.TextAttribute.GVT_FONT;
+
+    public static final 
+        AttributedCharacterIterator.Attribute GVT_FONT_FAMILIES 
+        = GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES;
+
+    public static final 
+        AttributedCharacterIterator.Attribute BIDI_LEVEL
+        = GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL;
+
     static Set extendedAtts = new HashSet();
 
     static {
-        extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
-        extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT);
-        extendedAtts.add(GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL);
+        extendedAtts.add(TEXT_COMPOUND_DELIMITER);
+        extendedAtts.add(GVT_FONT);
+        extendedAtts.add(BIDI_LEVEL);
     }
 
     /**
@@ -104,38 +120,42 @@ public class StrokingTextPainter extends BasicTextPainter {
             (textRuns, g2d, TextSpanLayout.DECORATION_STRIKETHROUGH);
     }
 
+    private void printAttrs(AttributedCharacterIterator aci) {
+        aci.first();
+        int start = aci.getBeginIndex();
+        System.out.print("AttrRuns: ");
+        while (aci.current() != CharacterIterator.DONE) {
+            int end   = aci.getRunLimit();
+            System.out.print(""+(end-start)+", ");
+            aci.setIndex(end);
+            start = end;
+        }
+        System.out.println("");
+    }
+
     private List getTextRuns(TextNode node, AttributedCharacterIterator aci) {
         List textRuns = node.getTextRuns();
         if (textRuns != null) {
             return textRuns;
         }
-        AttributedCharacterIterator[] chunkACIs = node.getChunkACIs();
-        if (chunkACIs == null) {
-            // add char position attributes to the aci
-            // these will be needed later if any reordering is done
-            AttributedString as = new AttributedString(aci);
-            for (int i = aci.getBeginIndex(); i < aci.getEndIndex(); i++) {
-                as.addAttribute
-		    (GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX, 
-		     new Integer(i), 
-		     i, 
-		     i+1);
-            }
 
-            aci = as.getIterator();
-            node.setAttributedCharacterIterator(aci);
+        AttributedCharacterIterator[] chunkACIs = getTextChunkACIs(aci);
+        int [][] chunkCharMaps = new int[chunkACIs.length][];
 
-            // break the aci up into text chunks
-            chunkACIs = getTextChunkACIs(aci);
-
-            // reorder each chunk ACI for bidi text
-            for (int i = 0; i < chunkACIs.length; i++) {
-                chunkACIs[i] = new BidiAttributedCharacterIterator
-		    (chunkACIs[i], fontRenderContext);
-                chunkACIs[i] = createModifiedACIForFontMatching
-		    (node, chunkACIs[i]);
-            }
-            node.setChunkACIs(chunkACIs);
+        // reorder each chunk ACI for bidi text
+        int chunkStart = aci.getBeginIndex();
+        for (int i = 0; i < chunkACIs.length; i++) {
+            BidiAttributedCharacterIterator iter;
+            iter = new BidiAttributedCharacterIterator
+                (chunkACIs[i], fontRenderContext, chunkStart);
+            chunkACIs    [i] = iter;
+            chunkCharMaps[i] = iter.getCharMap();
+            
+            chunkACIs    [i] = createModifiedACIForFontMatching
+                (node, chunkACIs[i]);
+            
+            chunkStart += (chunkACIs[i].getEndIndex()-
+                           chunkACIs[i].getBeginIndex());
         }
 
         // create text runs for each chunk and add them to the list
@@ -151,6 +171,7 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             chunk = getTextChunk(node, 
                                  chunkACIs[currentChunk], 
+                                 chunkCharMaps[currentChunk],
                                  textRuns,
                                  beginChunk, 
                                  lastChunkAdvance);
@@ -158,12 +179,11 @@ public class StrokingTextPainter extends BasicTextPainter {
             // Adjust according to text-anchor property value
             chunkACIs[currentChunk].first();
             if (chunk != null) {
-                adjustChunkOffsets
-		    (textRuns, chunk.advance, chunk.begin, chunk.end);
+                adjustChunkOffsets(textRuns, chunk.advance, 
+                                   chunk.begin, chunk.end);
                 beginChunk = chunk.end;
                 lastChunkAdvance = chunk.advance;
             }
-            chunkACIs[currentChunk].first();
             currentChunk++;
 	    
         } while (chunk != null && currentChunk < chunkACIs.length);
@@ -191,39 +211,30 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextPath prevTextPath = null;
 
             while (inChunk) {
+                int start = aci.getRunStart(TEXT_COMPOUND_DELIMITER);
+                int end = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
+                
+                // Go to start of compound.
+                aci.setIndex(start);
+                Float runX = (Float) aci.getAttribute
+                    (GVTAttributedCharacterIterator.TextAttribute.X);
+                Float runY = (Float) aci.getAttribute
+                    (GVTAttributedCharacterIterator.TextAttribute.Y);
+                TextPath textPath = (TextPath) aci.getAttribute
+                    (GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
 
-                int start = aci.getRunStart(
-                    GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
-                int end = aci.getRunLimit(
-                    GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
-
-                AttributedCharacterIterator runaci =
-                    new AttributedCharacterSpanIterator(aci, start, end);
-
-                runaci.first();
-
-                Float runX = (Float) runaci.getAttribute(
-                    GVTAttributedCharacterIterator.TextAttribute.X);
-                Float runY = (Float) runaci.getAttribute(
-                    GVTAttributedCharacterIterator.TextAttribute.Y);
-                TextPath textPath = (TextPath) runaci.getAttribute(
-                    GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
-
-                inChunk = (isChunkStart)
-                        || ((runX == null || runX.isNaN())
-                          &&(runY == null || runY.isNaN()));
+                inChunk = (   (isChunkStart)
+                           || (   (runX == null || runX.isNaN())
+                               && (runY == null || runY.isNaN())));
 
                 // do additional check for the start of a textPath
-                if (prevTextPath == null && textPath != null && !isChunkStart) {
+                if (prevTextPath == null && textPath != null && !isChunkStart)
                     inChunk = false;
-                }
 
                 if (inChunk) {
                     prevTextPath = textPath;
                     aci.setIndex(end);
                     if (aci.current() == CharacterIterator.DONE) break;
-                } else {
-                    aci.setIndex(start);
                 }
                 isChunkStart = false;
             }
@@ -231,17 +242,19 @@ public class StrokingTextPainter extends BasicTextPainter {
             // found the end of a text chunck
             int chunkEndIndex = aci.getIndex();
             AttributedCharacterIterator chunkACI =
-                    new AttributedCharacterSpanIterator(aci, chunkStartIndex, chunkEndIndex);
-            aci.setIndex(chunkEndIndex);  // need to do this because creating the
-                                          // new ACI above looses the current index
+                new AttributedCharacterSpanIterator
+                    (aci, chunkStartIndex, chunkEndIndex);
+            // need to setIndex because creating the new ACI,
+            // looses the current index.
+            aci.setIndex(chunkEndIndex);
             aciVector.add(chunkACI);
         }
 
-	// copy the text chunks into an array
+        // copy the text chunks into an array
         AttributedCharacterIterator[] aciArray = 
-	    new AttributedCharacterIterator[aciVector.size()];
-	Iterator iter = aciVector.iterator();
-	for (int i=0; iter.hasNext(); ++i) {
+            new AttributedCharacterIterator[aciVector.size()];
+        Iterator iter = aciVector.iterator();
+        for (int i=0; iter.hasNext(); ++i) {
             aciArray[i] = (AttributedCharacterIterator)iter.next();
         }
         return aciArray;
@@ -249,6 +262,7 @@ public class StrokingTextPainter extends BasicTextPainter {
 
     private TextChunk getTextChunk(TextNode node,
                                    AttributedCharacterIterator aci,
+                                   int [] charMap,
                                    List textRuns,
                                    int beginChunk,
                                    Point2D lastChunkAdvance) {
@@ -257,6 +271,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         boolean inChunk = true;
         Point2D advance = lastChunkAdvance;
         Point2D location = node.getLocation();
+        int begin = aci.getIndex();
         if (aci.current() != CharacterIterator.DONE) {
             int chunkStartIndex = aci.getIndex();
 
@@ -283,7 +298,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             do {
 
                 int start = aci.getRunStart(extendedAtts);
-                int end = aci.getRunLimit(extendedAtts);
+                int end   = aci.getRunLimit(extendedAtts);
 
                 runaci = new AttributedCharacterSpanIterator(aci, start, end);
 
@@ -324,8 +339,14 @@ public class StrokingTextPainter extends BasicTextPainter {
                         offset = new Point2D.Float((float)advance.getX(),
                                                    (float)advance.getY());
                     }
+                    
+                    int [] subCharMap = new int[end-start];
+                    for (int i=0; i<subCharMap.length; i++) {
+                        subCharMap[i] = charMap[i+start-begin];
+                    }
                     TextSpanLayout layout = getTextLayoutFactory().
-                        createTextLayout(runaci, offset, fontRenderContext);
+                        createTextLayout(runaci, subCharMap, 
+                                         offset, fontRenderContext);
                     TextRun run = new TextRun(layout, runaci, isChunkStart);
                     textRuns.add(run);
                     Point2D layoutAdvance = layout.getAdvance2D();
@@ -355,150 +376,188 @@ public class StrokingTextPainter extends BasicTextPainter {
      * text can be split on changes of font as well as tspans and trefs.
      *
      * @param node The text node that the aci belongs to.
-     * @param aci The aci to be modified.
+     * @param aci The aci to be modified should already be split into
+     *            text chunks.
      *
-     * @return The new modified aci.
+     * @return The new modified aci.  
      */
     private AttributedCharacterIterator createModifiedACIForFontMatching
         (TextNode node, AttributedCharacterIterator aci) {
 
-        // This looks like vestigial code, but perhaps it works around
-        // a bug...
-        // aci.first();
-        // AttributedCharacterSpanIterator acsi = 
-	    // new AttributedCharacterSpanIterator(aci, aci.getBeginIndex(), 
-		//                 aci.getEndIndex());
-        //
-        // AttributedString as = new AttributedString(acsi);
-        AttributedString as = new AttributedString(aci);
         aci.first();
-
+        AttributedString as = null; 
+        int asOff = 0;
+        int begin = aci.getBeginIndex();
         boolean moreChunks = true;
         while (moreChunks) {
-            int start = aci.getRunStart
-		(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
-            int end = aci.getRunLimit
-		(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+            int start = aci.getRunStart(TEXT_COMPOUND_DELIMITER);
+            int end   = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
+            int aciLength = end-start;
 
-            AttributedCharacterSpanIterator runaci
-                = new AttributedCharacterSpanIterator(aci, start, end);
-
-            Vector fontFamilies = (Vector)runaci.getAttributes().get
-                (GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES);
+            Vector fontFamilies;
+            fontFamilies = (Vector)aci.getAttributes().get(GVT_FONT_FAMILIES);
 
             if (fontFamilies == null) {
-                // no font families set, just return the same aci
-                return aci;
+                // no font families set this chunk so just increment...
+                asOff += aciLength;
+                moreChunks = (aci.setIndex(end) != aci.DONE);
+                continue;
             }
 
             // resolve any unresolved font families in the list
             Vector resolvedFontFamilies = new Vector();
             for (int i = 0; i < fontFamilies.size(); i++) {
-                GVTFontFamily fontFamily = (GVTFontFamily) fontFamilies.get(i);
+                GVTFontFamily fontFamily = (GVTFontFamily)fontFamilies.get(i);
                 if (fontFamily instanceof UnresolvedFontFamily) {
-                    GVTFontFamily resolvedFontFamily
-                        = FontFamilyResolver.resolve((UnresolvedFontFamily)fontFamily);
-                    if (resolvedFontFamily != null) {
-                        // font family was successfully resolved
-                        resolvedFontFamilies.add(resolvedFontFamily);
-                    }
-                } else {
-                    // already resolved
-                    resolvedFontFamilies.add(fontFamily);
+                    fontFamily = FontFamilyResolver.resolve
+                        ((UnresolvedFontFamily)fontFamily);
                 }
+                if (fontFamily != null) // Add font family if resolved
+                    resolvedFontFamilies.add(fontFamily);
             }
 
-            // if could not resolve at least one of the fontFamilies then use
-            // the default font
+            // if could not resolve at least one of the fontFamilies
+            // then use the default font
             if (resolvedFontFamilies.size() == 0) {
                 resolvedFontFamilies.add(FontFamilyResolver.defaultFont);
             }
 
             // create a list of fonts of the correct size
-            Float fontSizeFloat = (Float)runaci.getAttributes().get(TextAttribute.SIZE);
             float fontSize = 12;
-            if (fontSizeFloat != null) {
-                fontSize = fontSizeFloat.floatValue();
-            }
-            Vector gvtFonts = new Vector();
-            for (int i = 0; i < resolvedFontFamilies.size(); i++) {
-                GVTFont font = ((GVTFontFamily)resolvedFontFamilies.get(i)).deriveFont(fontSize, runaci);
-                gvtFonts.add(font);
+            Float fsFloat = (Float)aci.getAttributes().get(TextAttribute.SIZE);
+            if (fsFloat != null) {
+                fontSize = fsFloat.floatValue();
             }
 
             // now for each char or group of chars in the string,
             // find a font that can display it
-
-            int runaciLength = end-start;
-            boolean[] fontAssigned = new boolean[runaciLength];
-            for (int i = 0; i < runaciLength; i++) {
+            boolean[] fontAssigned = new boolean[aciLength];
+            for (int i = 0; i < aciLength; i++) {
                 fontAssigned[i] = false;
             }
 
-            for (int i = 0; i < gvtFonts.size();  i++) {
+            if (as == null)
+                as = new AttributedString(aci);
+
+            GVTFont defaultFont = null;;
+            int numSet=0;
+            int firstUnset=start;
+            for (int i = 0; i < resolvedFontFamilies.size(); i++) {
                 // assign this font to all characters it can display if it has
                 // not already been assigned
+                int currentIndex = firstUnset;
+                firstUnset = -1;
+                aci.setIndex(currentIndex);
 
-                GVTFont font = (GVTFont)gvtFonts.get(i);
+                GVTFontFamily ff;
+                ff = ((GVTFontFamily)resolvedFontFamilies.get(i));
+                GVTFont font = ff.deriveFont(fontSize, aci);
+                if (defaultFont == null)
+                    defaultFont = font;
 
-                int currentRunIndex = runaci.getBeginIndex();
-                while (currentRunIndex < runaci.getEndIndex()) {
-
-                    int displayUpToIndex = 
-                        font.canDisplayUpTo(runaci, currentRunIndex, end);
+                while (currentIndex < end) {
+                    int displayUpToIndex = font.canDisplayUpTo
+                        (aci, currentIndex, end);
 
                     if (displayUpToIndex == -1) {
-                        // for each char, if not already assigned a font,
-                        // assign this font to it
-                        for (int j = currentRunIndex; j < end; j++) {
-                            if (!fontAssigned[j - start]) {
-                                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT, font, j, j+1);
-                                fontAssigned[j - start] = true;
-                            }
-                        }
-                        currentRunIndex = runaci.getEndIndex();
+                        // Can handle the whole thing...
+                        displayUpToIndex = end;
+                    }
 
-                    } else if (displayUpToIndex > currentRunIndex) {
-                        // could display some but not all, so for each
+                    if (displayUpToIndex <= currentIndex) {
+                        if (firstUnset == -1) 
+                            firstUnset = currentIndex;
+                        // couldn't display the current char
+                        currentIndex++;
+                    } else {
+                        // could display some text, so for each
                         // char it can display, if char not already
                         // assigned a font, assign this font to it
-                        for (int j = currentRunIndex; j < displayUpToIndex; j++) {
-                            if (!fontAssigned[j - start]) {
-                                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT, font, j, j+1);
-                                fontAssigned[j - start] = true;
+                        int runStart = -1;
+                        for (int j = currentIndex; j < displayUpToIndex; j++) {
+                            if (fontAssigned[j - start]) {
+                                if (runStart != -1) {
+                                    as.addAttribute(GVT_FONT, font, 
+                                                    runStart-begin, j-begin);
+                                    runStart=-1;
+                                }
+                            } else {
+                                if (runStart == -1)
+                                    runStart = j;
                             }
+                            fontAssigned[j - start] = true;
+                            numSet++;
                         }
-                        // set currentRunIndex to be one after the char couldn't display
-                        currentRunIndex = displayUpToIndex+1;
-                    } else {
-                        // couldn't display the current char
-                        currentRunIndex++;
+                        if (runStart != -1) {
+                            as.addAttribute(GVT_FONT, font, 
+                                            runStart-begin, 
+                                            displayUpToIndex-begin);
+                        }
+
+                        // set currentIndex to be one after the char
+                        // that couldn't display
+                        currentIndex = displayUpToIndex+1;
                     }
                 }
+
+                if (numSet == aciLength) // all chars have font set;
+                    break;
             }
 
             // assign the first font to any chars haven't alreay been assigned
-            for (int i = 0; i < runaciLength; i++) {
-                if (!fontAssigned[i]) {
-                    GVTFontFamily fontFamily 
-                        = FontFamilyResolver.getFamilyThatCanDisplay
-                        (runaci.setIndex(start+i));
-                    if (fontFamily != null) {
-                        GVTFont font = fontFamily.deriveFont(fontSize, runaci);
-                        as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT,
-                                   font, start+i, start+i+1);
-                    } else {
-                        // no available fonts can display it, just use the first font in the list
-                        as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT,
-                                        gvtFonts.get(0), start+i, start+i+1);
+            int           runStart = -1;
+            GVTFontFamily prevFF   = null;
+            GVTFont       prevF    = defaultFont;
+            for (int i = 0; i < aciLength; i++) {
+                if (fontAssigned[i]) {
+                    if (runStart != -1) {
+                        as.addAttribute(GVT_FONT, prevF, 
+                                        runStart+asOff, i+asOff);
+                        runStart = -1;
+                        prevF  = null;
+                        prevFF = null;
+                    }
+                } else {
+                    char c = aci.setIndex(start+i);
+                    GVTFontFamily fontFamily;
+                    fontFamily = FontFamilyResolver.getFamilyThatCanDisplay(c);
+
+                    if (runStart == -1) {
+                        // Starting a new run...
+                        runStart = i;
+                        prevFF   = fontFamily;
+                        if (prevFF == null)
+                            prevF = defaultFont;
+                        else
+                            prevF = fontFamily.deriveFont(fontSize, aci);
+                    } else if (prevFF != fontFamily) {
+                        // Font family changed...
+                        as.addAttribute(GVT_FONT, prevF, 
+                                        runStart+asOff, i+asOff);
+                    
+                        runStart = i;
+                        prevFF = fontFamily;
+                        if (prevFF == null)
+                            prevF = defaultFont;
+                        else
+                            prevF = fontFamily.deriveFont(fontSize, aci);
                     }
                 }
             }
+            if (runStart != -1) 
+                as.addAttribute(GVT_FONT, prevF, 
+                                runStart+asOff, aciLength+asOff);
+
+            asOff += aciLength;
             if (aci.setIndex(end) == aci.DONE) {
                 moreChunks = false;
             }
         }
-        return as.getIterator();
+        if (as != null)
+            return as.getIterator();
+
+        // Didn't do anything return original ACI
+        return aci;
     }
 
 
@@ -508,9 +567,9 @@ public class StrokingTextPainter extends BasicTextPainter {
      * to account for any text anchor properties.
      */
     private void adjustChunkOffsets(List textRuns, 
-				    Point2D advance,
+                                    Point2D advance,
                                     int beginChunk, 
-				    int endChunk) {
+                                    int endChunk) {
 
         for (int n=beginChunk; n<endChunk; ++n) {
             TextRun r = (TextRun) textRuns.get(n);
@@ -529,21 +588,20 @@ public class StrokingTextPainter extends BasicTextPainter {
                 dy = (float) (-advance.getY());
                 break;
             default:
+                break;
                 // leave untouched
             }
 
             TextSpanLayout layout = r.getLayout();
-            Point2D offset = layout.getOffset();
+            Point2D        offset = layout.getOffset();
 
-            if (layout.isVertical()) {
-                layout.setOffset(new Point2D.Float(
-                                     (float) offset.getX(),
-                                     (float) offset.getY()+dy));
-            } else {
-                layout.setOffset(new Point2D.Float(
-                                    (float) offset.getX()+dx,
-                                    (float) offset.getY()));
-            }
+            if (layout.isVertical())
+                offset = new Point2D.Float((float) offset.getX(),
+                                           (float) offset.getY()+dy);
+            else
+                offset = new Point2D.Float((float) offset.getX()+dx,
+                                           (float) offset.getY());
+            layout.setOffset(offset);
         }
     }
 
@@ -551,7 +609,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Paints decorations of the specified type.
      */
     private void paintDecorations(List textRuns, 
-				  Graphics2D g2d,
+                                  Graphics2D g2d,
                                   int decorationType) {
 
         Paint prevPaint = null;
@@ -1097,25 +1155,16 @@ public class StrokingTextPainter extends BasicTextPainter {
             (index > aci.getEndIndex()))
             return null;
 
-        // get the list of text runs, this also may update the node's
-        // aci with char index information.  So we need to refetch the
-        // node's ACI...
         List textRuns = getTextRuns(node, aci);
-        aci = node.getAttributedCharacterIterator();
-
-        aci.setIndex(index);
-        int charIndex = ((Integer)aci.getAttribute
-         (GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
-        
 
         // for each text run, see if it contains the current char.
         for (int i = 0; i < textRuns.size(); ++i) {
             TextRun textRun = (TextRun)textRuns.get(i);
             TextSpanLayout layout = textRun.getLayout();
 
-            int idx = layout.getGlyphIndex(charIndex);
+            int idx = layout.getGlyphIndex(index);
             if (idx != -1) {
-                TextHit textHit = new TextHit(charIndex, leadingEdge);
+                TextHit textHit = new TextHit(index, leadingEdge);
                 return new BasicTextPainter.BasicMark
                     (node, layout, textHit);
                                                       
@@ -1151,14 +1200,10 @@ public class StrokingTextPainter extends BasicTextPainter {
     public Mark selectFirst(TextNode node) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
+        TextHit textHit = new TextHit(aci.getBeginIndex(), false);
 
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
-
-        aci.first();
-        int charIndex = ((Integer)aci.getAttribute
-                         (GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
-        TextHit textHit = new TextHit(charIndex, false);
         return new BasicTextPainter.BasicMark
             (node, ((TextRun)textRuns.get(0)).getLayout(), textHit);
     }
@@ -1167,22 +1212,15 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Selects the last glyph in the text node.
      */
     public Mark selectLast(TextNode node) {
-	
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
-
+        TextHit textHit = new TextHit(aci.getEndIndex(), false);
+        
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
-
-        TextSpanLayout lastLayout = 
-            ((TextRun)textRuns.get(textRuns.size()-1)).getLayout();
-
-        int lastGlyphIndex = lastLayout.getGlyphCount()-1;
-        aci.last();
-
-        int charIndex = ((Integer)aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
-        TextHit textHit = new TextHit(charIndex, false);
-        return  new BasicTextPainter.BasicMark(node, lastLayout, textHit);
+        return  new BasicTextPainter.BasicMark
+            (node, ((TextRun)textRuns.get(textRuns.size()-1)).getLayout(), 
+             textHit);
     }
 
     /**

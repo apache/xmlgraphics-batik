@@ -71,9 +71,10 @@ public class SVGFontFamily implements GVTFontFamily {
      */
     public GVTFont deriveFont(float size, AttributedCharacterIterator aci) {
         SVGFontElementBridge fontBridge
-               = (SVGFontElementBridge)ctx.getBridge(fontElement);
-        Element textElement = (Element)aci.getAttributes().get(
-            GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
-        return fontBridge.createFont(ctx, fontElement, textElement, size, fontFace);
+            = (SVGFontElementBridge)ctx.getBridge(fontElement);
+        Element textElement = (Element)aci.getAttributes().get
+            (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+        return fontBridge.createFont(ctx, fontElement, textElement, 
+                                     size, fontFace);
     }
 }

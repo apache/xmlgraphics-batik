@@ -39,13 +39,18 @@ public class TextLayoutAdapter implements TextSpanLayout {
 
     private TextLayout layout;
     private AttributedCharacterIterator aci;
+    private int [] charMap;
     private Point2D offset;
     private AffineTransform transform;
 
-    public TextLayoutAdapter(TextLayout layout, Point2D offset, AttributedCharacterIterator aci) {
-        this.layout = layout;
-        this.aci = aci;
-        this.offset = adjustOffset(offset);
+    public TextLayoutAdapter(TextLayout layout, 
+                             Point2D offset, 
+                             AttributedCharacterIterator aci,
+                             int [] charMap) {
+        this.layout    = layout;
+        this.aci       = aci;
+        this.charMap   = charMap;
+        this.offset    = adjustOffset(offset);
         this.transform = computeTransform();
     }
 
@@ -169,15 +174,14 @@ public class TextLayoutAdapter implements TextSpanLayout {
      */
     public int getGlyphIndex(int charIndex) {
         int numGlyphs = getGlyphCount();
-        aci.first();
+        int j=0;
         for (int i = 0; i < numGlyphs; i++) {
             int count = getCharacterCount(i, i);
             for (int n=0; n<count; n++) {
-                int glyphCharIndex = ((Integer)aci.getAttribute
-                                      (GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
+                int glyphCharIndex = charMap[j++];
                 if (charIndex == glyphCharIndex) 
                     return i;
-                if (aci.next() == AttributedCharacterIterator.DONE)
+                if (j >= charMap.length)
                     return -1;
             }
         }
@@ -220,9 +224,7 @@ public class TextLayoutAdapter implements TextSpanLayout {
         if (hit.getCharIndex() == -1) {
             return null;
         }
-        aci.setIndex(hit.getCharIndex() + aci.getBeginIndex());
-        int charIndex = ((Integer)aci.getAttribute(
-            GVTAttributedCharacterIterator.TextAttribute.CHAR_INDEX)).intValue();
+        int charIndex = charMap[hit.getCharIndex()];
         return new TextHit(charIndex, hit.isLeadingEdge());
     }
 

@@ -27,10 +27,14 @@ public interface TextLayoutFactory {
      * Returns an instance of TextSpanLayout suitable for rendering the
      * AttributedCharacterIterator.
      * @param aci the character iterator to be laid out
+     * @param charMap Indicates how chars in aci map to original
+     *                text char array.
+     * @param offset The offset position for the text layout.
      * @param frc the rendering context for the fonts used.
      */
     TextSpanLayout createTextLayout(AttributedCharacterIterator aci,
-				    Point2D offset,
-				    FontRenderContext frc);
+                                    int [] charMap,
+                                    Point2D offset,
+                                    FontRenderContext frc);
 
 }
