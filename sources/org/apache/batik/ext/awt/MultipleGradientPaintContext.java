@@ -250,6 +250,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         // The inverse transform is needed to from device to user space.
         // Get all the components of the inverse transform matrix.
         AffineTransform tInv = t.createInverse();
+
         double m[] = new double[6];
         tInv.getMatrix(m);
         a00 = (float)m[0];
@@ -1296,8 +1297,6 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
     /** Superclass getRaster... */
     public final Raster getRaster(int x, int y, int w, int h) {
-        if ((w == 0) || (h == 0)) return null;
-
         //
         // If working raster is big enough, reuse it. Otherwise,
         // build a large enough new one.
@@ -1308,7 +1307,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                 raster = getCachedRaster(dataModel, w, h);
                 saved = raster;
             }
-        //
+
         // Access raster internal int array. Because we use a DirectColorModel,
         // we know the DataBuffer is of type DataBufferInt and the SampleModel
         // is SinglePixelPackedSampleModel.
@@ -1328,7 +1327,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                                 model.isAlphaPremultiplied());
 
 
-        return raster;
+        return raster.createTranslatedChild(x, y);
     }
 
     /** Subclasses should implement this. */
