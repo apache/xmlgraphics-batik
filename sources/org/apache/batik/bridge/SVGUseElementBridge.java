@@ -34,6 +34,12 @@ import org.w3c.dom.events.MutationEvent;
  * @version $Id$
  */
 public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
+    /*
+     * Used to handle mutation of the referenced content. This is
+     * only used in dynamic context and only for reference to local
+     * content.
+     */
+    protected ReferencedElementMutationListener l;
 
     /**
      * Constructs a new bridge for the &lt;use> element.
@@ -67,6 +73,25 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             return null;
         }
 
+        CompositeGraphicsNode gn = buildCompositeGraphicsNode(ctx, e, 
+                                                              null, null);
+
+        return gn;
+    }
+
+    /**
+     * Creates a <tt>GraphicsNode</tt> from the input element and
+     * populates the input <tt>CompositeGraphicsNode</tt>
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @param gn the CompositeGraphicsNode where the use graphical 
+     *        content will be appended. The composite node is emptied
+     *        before appending new content.
+     */
+    public CompositeGraphicsNode buildCompositeGraphicsNode(BridgeContext ctx, Element e,
+                                                            CompositeGraphicsNode gn,
+                                                            ReferencedElementMutationListener l) {
         // get the referenced element
         String uri = XLinkSupport.getXLinkHref(e);
         if (uri.length() == 0)
@@ -142,8 +167,19 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         GraphicsNode refNode = builder.build(ctx, g);
 
         ///////////////////////////////////////////////////////////////////////
+        boolean update = true;
+        if (gn == null) {
+            gn = new CompositeGraphicsNode();
+            update = false;
+        }
 
-        CompositeGraphicsNode gn = new CompositeGraphicsNode();
+        if (update) {
+            int s = gn.size();
+            for (int i=0; i<s; i++) {
+                gn.remove(0);
+            }
+        }
+
         gn.getChildren().add(refNode);
 
         gn.setTransform(computeTransform(e, ctx));
@@ -159,6 +195,59 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         if (r != null) {
             gn.setBackgroundEnable(r);
         }
+
+        ///////////////////////////////////////////////////////////////////////
+        
+        // Handle mutations on content referenced in the same file if
+        // we are in a dynamic context.
+        if (isLocal && ctx.isDynamic()) {
+            if (l == null) {
+                l = new ReferencedElementMutationListener();
+                l.target = (EventTarget)refElement;
+            } else {
+                // Remove event listeners
+                EventTarget target = l.target;
+                target.removeEventListener("DOMAttrModified",
+                                           l,
+                                           true);
+                
+                target.removeEventListener("DOMNodeInserted",
+                                           l,
+                                           true);
+                
+                target.removeEventListener("DOMNodeRemoved",
+                                           l,
+                                           true);
+                
+                target.removeEventListener("DOMCharacterDataModified",
+                                           l,
+                                           true);
+            }
+        
+            EventTarget target = (EventTarget)refElement;
+            l.target = target;
+            
+            target.addEventListener("DOMAttrModified",
+                                    l,
+                                    true);
+            ctx.storeEventListener(target, "DOMAttrModified", l, true);
+            
+            target.addEventListener("DOMNodeInserted",
+                                    l,
+                                    true);
+            ctx.storeEventListener(target, "DOMNodeInserted", l, true);
+            
+            target.addEventListener("DOMNodeRemoved",
+                                    l,
+                                    true);
+            ctx.storeEventListener(target, "DOMNodeRemoved", l, true);
+            
+            target.addEventListener("DOMCharacterDataModified",
+                                    l,
+                                    true);
+            ctx.storeEventListener(target, "DOMCharacterDataModified", l, true);
+        }
+        
         return gn;
     }
 
@@ -262,6 +351,22 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         }
     }
 
+    /**
+     * Used to handle modifications to the referenced content
+     */
+    public class ReferencedElementMutationListener implements EventListener {
+        EventTarget target;
+
+        public void handleEvent(Event evt) {
+            // We got a mutation in the referenced content. We need to 
+            // build the content again, just in case.
+            // Note that this is way sub-optimal, because multiple changes
+            // to the referenced content will cause multiple updates to the
+            // referencing <use>. However, this provides the desired behavior
+            buildCompositeGraphicsNode(ctx, e, (CompositeGraphicsNode)node, this);
+        }
+    }
+
     // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
@@ -269,12 +374,18 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      */
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
         String attrName = evt.getAttrName();
+        Node evtNode = evt.getRelatedNode();
+
         if (attrName.equals(SVG_X_ATTRIBUTE) ||
             attrName.equals(SVG_Y_ATTRIBUTE) ||
             attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
             String s = evt.getNewValue();
             node.setTransform(computeTransform(e, ctx));
             handleGeometryChanged();
+        } else if (( XLinkSupport.XLINK_NAMESPACE_URI.equals
+                     (evtNode.getNamespaceURI()) ) 
+                   && SVG_HREF_ATTRIBUTE.equals(evtNode.getLocalName()) ){
+            buildCompositeGraphicsNode(ctx, e, (CompositeGraphicsNode)node, l);
         }
     }
 }

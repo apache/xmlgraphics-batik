@@ -24,18 +24,57 @@
     <text x="50%" y="45" class="title">x/y/transform update on &lt;use&gt;</text>
 
     <script type="text/ecmascript"> <![CDATA[
+    var xlinkNS = 'http://www.w3.org/1999/xlink';
+    var svgNS = 'http://www.w3.org/2000/svg';
 
     function runTest(){
         document.getElementById('x').setAttributeNS(null, 'x', '20');
         document.getElementById('y').setAttributeNS(null, 'y', '15');
         document.getElementById('transform').setAttributeNS(null, 'transform', 'rotate(20)');
+        document.getElementById('xlink').setAttributeNS(xlinkNS, 'xlink:href', '#symbol2');
+
+        var mutated = document.getElementById('mutatedSymbol');
+        while(mutated.firstChild != null) {
+            mutated.removeChild(mutated.firstChild);
+        }
+        var r = document.createElementNS(svgNS, 'rect');
+        r.setAttributeNS(null, "x", "-10");
+        r.setAttributeNS(null, "y", "-10");
+        r.setAttributeNS(null, "width", "20");
+        r.setAttributeNS(null, "height", "20");
+        r.setAttributeNS(null, "stroke-width", "4");
+        r.setAttributeNS(null, "stroke", "gold");
+        r.setAttributeNS(null, "fill", "crimson");
+        mutated.appendChild(r);
+
+        var t = document.createElementNS(svgNS, "text");
+        mutated.appendChild(t);
+        t.setAttributeNS(null, "text-anchor", "middle");
+        t.setAttributeNS(null, "fill", "gold");
+        t.setAttributeNS(null, "stroke", "none");
+        t.setAttributeNS(null, "y", "5");
+        var msg = document.createTextNode("Hello");
+        t.appendChild(msg);
+
+        msg.data = "Hi";
     }
 
-    ]]> </script>
+    ]]> </script>        <rect id="symbol" x="-10" y="-10" width="20" height="20" />
+
 
 
     <defs>    
         <rect id="symbol" x="-10" y="-10" width="20" height="20" />
+        <rect id="symbol2" x="-10" y="-10" width="20" height="20" stroke-width="4" stroke="gold" fill="crimson" />
+
+        <g id="mutatedSymbolReference">
+            <rect x="-10" y="-10" width="20" height="20" stroke-width="4" stroke="gold" fill="crimson" />
+            <text text-anchor="middle" y="5" fill="gold" stroke="none">Hi</text>
+        </g>
+
+        <g id="mutatedSymbol">
+            <rect x="-12" y="-12" width="24" height="24" class="reference" />
+        </g>
 
         <rect id="titleCell" x="-60" y="-15" width="120" height="20" />
         <rect id="tableCell" x="-60" y="-20" width="120" height="40" />
@@ -90,7 +129,7 @@
         
     ]]></style>
 
-    <g transform="translate(165, 160)">
+    <g transform="translate(165, 120)">
         <g id="tableHeader" class="tableHeader">
             <g>
                 <use class="tableHeader" xlink:href="#titleCell" />
@@ -147,31 +186,58 @@
 
         </g>
 
-        <g onclick="runTest()">
+        <g id="xlinkRow" transform="translate(0,145)">
+            <g>
+                <use class="tableCell" xlink:href="#tableCell" />
+                <text class="tableCell">xlink:href</text>
+            </g>
+
+            <g transform="translate(120,0)" >
+                <use class="tableCell" xlink:href="#tableCell" />
+                <use id="xlink" 
+                     x="5" y="0"  class="symbol" xlink:href="#symbol"/>
+                <use x="5" y="0"  class="reference" xlink:href="#symbol"/>
+            </g>
+
+        </g>
+
+        <g id="mutation" transform="translate(0,185)">
+            <g>
+                <use class="tableCell" xlink:href="#tableCell" />
+                <text class="tableCell">mutation</text>
+            </g>
+
+            <g transform="translate(120,0)" >
+                <use class="tableCell" xlink:href="#tableCell" />
+                <use id="xlink" 
+                     x="-25" y="0"  class="symbol" xlink:href="#mutatedSymbolReference"/>
+                <use x="25" y="0"  class="reference" xlink:href="#mutatedSymbol"/>
+            </g>
+
+        </g>
+
+        <g onclick="runTest()" transform="translate(0, 80)">
             <use class="button" xlink:href="#button" x="60" y="200" />
             <text class="button" x="60" y="200">Run Test</text>
         </g>
     </g>
  
-<!--
-  <use id="use" xlink:href="#Rect" x="20" y="40" width="100" height="80"
-       transform="scale(1.2)" onclick="scale('use')" />
-
-  <a onclick="removeChangeAdd('use')">
-        <text x="80" y="35" text-anchor="middle">Remove, modify, add</text>
-  </a>
-
-  <a onclick="removeChangeAdd('rect')" transform="translate(160,0)">
-        <text x="80" y="35" text-anchor="middle">Remove, modify, add</text>
-  </a>
-
-  <rect id="rect" x="150" y="40" width="100" height="80" transform="scale(1.2)"
-        style="fill:green; stroke:yellow" onclick="scale('rect')" />
 
 
-  <text x="175" y="190" style="font-size:20pt; text-anchor:middle">
-    Transform problem.
-  </text>
--->
+    <script type="text/ecmascript"><![CDATA[
+function onDone() {
+    if (!(regardTestInstance == null)) {
+        regardTestInstance.scriptDone();   
+    } else {
+        alert("This button only works when run in the regard framework");
+    }
+}
+    ]]></script>
+    <g id="done" transform="translate(195, 468)" cursor="pointer" onclick="onDone()">
+        <rect rx="5" ry="5" width="60" height="25" fill="#eeeeee" stroke="black" />
+        <text x="30" y="18" font-size="14" font-weight="bold" text-anchor="middle">Done</text>
+    </g>
+
+
 </svg>
 
