@@ -17,7 +17,8 @@ import org.apache.batik.gvt.event.*;
  * @version $Id$
  */
 public interface Selector extends GraphicsNodeMouseListener,
-                                  GraphicsNodeKeyListener {
+                                  GraphicsNodeKeyListener,
+                                  GraphicsNodeChangeListener {
 
     /**
      * Get the contents of the current selection buffer.

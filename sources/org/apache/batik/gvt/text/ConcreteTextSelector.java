@@ -25,7 +25,9 @@ import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.Selector;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.text.Mark;
+import org.apache.batik.gvt.event.GraphicsNodeChangeEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeInputEvent;
 import org.apache.batik.gvt.event.GraphicsNodeEvent;
@@ -96,6 +98,18 @@ public class ConcreteTextSelector implements Selector {
         report(evt, "keyTyped");
     }
 
+    public void changeStarted (GraphicsNodeChangeEvent gnce) {
+    }
+    public void changeCompleted (GraphicsNodeChangeEvent gnce) {
+        if (selectionNode == null) return;
+        Shape newShape =
+            ((Selectable)selectionNode).getHighlightShape();
+        dispatchSelectionEvent
+            (new SelectionEvent(getSelection(),
+                                SelectionEvent.SELECTION_CHANGED,
+                                newShape));
+    }
+
     public void setSelection(Mark begin, Mark end) {
         TextNode node = begin.getTextNode();
         if (node != end.getTextNode())
@@ -146,14 +160,25 @@ public class ConcreteTextSelector implements Selector {
             p = t.transform(p, null);
 
             if (isDeselectGesture(evt)) {
+                if (selectionNode != null)
+                    selectionNode.getRoot()
+                        .removeTreeGraphicsNodeChangeListener(this);
 
                 dispatchSelectionEvent(
                         new SelectionEvent(null,
                                 SelectionEvent.SELECTION_CLEARED,
                                 null));
                 copyToClipboard(null);
-
+                selectionNode = null;
             } else if (isSelectStartGesture(evt)) {
+                if (selectionNode != source) {
+                    if (selectionNode != null)
+                        selectionNode.getRoot()
+                            .removeTreeGraphicsNodeChangeListener(this);
+                    if (source != null)
+                        source.getRoot()
+                            .addTreeGraphicsNodeChangeListener(this);
+                }
 
                 selectionNode = source;
                 ((Selectable) source).selectAt(p.getX(), p.getY());
@@ -163,7 +188,14 @@ public class ConcreteTextSelector implements Selector {
                                 null));
 
             } else if (isSelectEndGesture(evt)) {
-
+                if (selectionNode != source) {
+                    if (selectionNode != null)
+                        selectionNode.getRoot()
+                            .removeTreeGraphicsNodeChangeListener(this);
+                    if (source != null)
+                        source.getRoot()
+                            .addTreeGraphicsNodeChangeListener(this);
+                }
                 selectionNode = source;
 
                 ((Selectable) source).selectTo(p.getX(), p.getY());
@@ -176,13 +208,13 @@ public class ConcreteTextSelector implements Selector {
                                 SelectionEvent.SELECTION_DONE,
                                 newShape));
                 copyToClipboard(oldSelection);
-
             } else
 
             if (isSelectContinueGesture(evt)) {
 
                 if (selectionNode == source) {
-                    boolean result = ((Selectable) source).selectTo(p.getX(), p.getY());
+                    boolean result = ((Selectable) source).selectTo(p.getX(), 
+                                                                    p.getY());
                     if (result) {
                         Shape newShape =
                         ((Selectable) source).getHighlightShape();
@@ -193,8 +225,15 @@ public class ConcreteTextSelector implements Selector {
                                 newShape));
                     }
                 }
-
             } else if (isSelectAllGesture(evt)) {
+                if (selectionNode != source) {
+                    if (selectionNode != null)
+                        selectionNode.getRoot()
+                            .removeTreeGraphicsNodeChangeListener(this);
+                    if (source != null)
+                        source.getRoot()
+                            .addTreeGraphicsNodeChangeListener(this);
+                }
                 selectionNode = source;
                 
                 ((Selectable) source).selectAll(p.getX(), p.getY());

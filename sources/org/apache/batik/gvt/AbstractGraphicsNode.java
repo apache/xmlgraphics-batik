@@ -650,7 +650,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         GraphicsNodeChangeListener gncl;
         while (i.hasNext()) {
             gncl = (GraphicsNodeChangeListener)i.next();
-            gncl.changeStarted(changeStartedEvent);
+            gncl.changeCompleted(changeCompletedEvent);
         }
     }
 

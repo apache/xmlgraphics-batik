@@ -1348,23 +1348,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             (index > aci.getEndIndex()))
             return null;
 
-        List textRuns = getTextRuns(node, aci);
-
-        // for each text run, see if it contains the current char.
-        for (int i = 0; i < textRuns.size(); ++i) {
-            TextRun textRun = (TextRun)textRuns.get(i);
-            TextSpanLayout layout = textRun.getLayout();
-
-            int idx = layout.getGlyphIndex(index);
-            if (idx != -1) {
-                TextHit textHit = new TextHit(index, leadingEdge);
-                return new BasicTextPainter.BasicMark
-                    (node, layout, textHit);
-                                                      
-            }
-        }
-        // Couldn't find it's layout....
-        return null;
+        TextHit textHit = new TextHit(index, leadingEdge);
+        return new BasicTextPainter.BasicMark(node, textHit);
     }
 
     protected Mark hitTest(double x, double y, TextNode node) {
@@ -1380,7 +1365,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextSpanLayout layout = textRun.getLayout();
             TextHit textHit = layout.hitTestChar((float) x, (float) y);
             if (textHit != null && layout.getBounds().contains(x,y)) {
-                return new BasicTextPainter.BasicMark(node, layout, textHit);
+                return new BasicTextPainter.BasicMark(node, textHit);
             }
         }
 
@@ -1394,11 +1379,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
         TextHit textHit = new TextHit(aci.getBeginIndex(), false);
-
-        // get the list of text runs
-        List textRuns = getTextRuns(node, aci);
-        return new BasicTextPainter.BasicMark
-            (node, ((TextRun)textRuns.get(0)).getLayout(), textHit);
+        return new BasicTextPainter.BasicMark(node, textHit);
     }
 
     /**
@@ -1408,12 +1389,7 @@ public class StrokingTextPainter extends BasicTextPainter {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
         TextHit textHit = new TextHit(aci.getEndIndex(), false);
-        
-        // get the list of text runs
-        List textRuns = getTextRuns(node, aci);
-        return  new BasicTextPainter.BasicMark
-            (node, ((TextRun)textRuns.get(textRuns.size()-1)).getLayout(), 
-             textHit);
+        return  new BasicTextPainter.BasicMark(node, textHit);
     }
 
     /**
@@ -1450,14 +1426,36 @@ public class StrokingTextPainter extends BasicTextPainter {
         result[0] = start.getHit().getCharIndex();
         result[1] = finish.getHit().getCharIndex();
 
-        // this next bit is to make sure that ligatures are selected properly
-        TextSpanLayout startLayout =  start.getLayout();
-        TextSpanLayout finishLayout = finish.getLayout();
-
-        int startGlyphIndex = startLayout.getGlyphIndex(result[0]);
-        int finishGlyphIndex = finishLayout.getGlyphIndex(result[1]);
-        int startCharCount = startLayout.getCharacterCount(startGlyphIndex, startGlyphIndex);
-        int finishCharCount = finishLayout.getCharacterCount(finishGlyphIndex, finishGlyphIndex);
+        // get the list of text runs
+        List textRuns = getTextRuns(textNode, aci);
+        Iterator trI = textRuns.iterator();
+        int startGlyphIndex = -1;
+        int endGlyphIndex = -1;
+        TextSpanLayout startLayout=null, endLayout=null;
+        while (trI.hasNext()) {
+            TextRun tr = (TextRun)trI.next();
+            TextSpanLayout tsl = tr.getLayout();
+            if (startGlyphIndex == -1) {
+                startGlyphIndex  = tsl.getGlyphIndex(result[0]);
+                if (startGlyphIndex != -1)
+                    startLayout = tsl;
+            }
+                
+            if (endGlyphIndex == -1) {
+                endGlyphIndex = tsl.getGlyphIndex(result[1]);
+                if (endGlyphIndex != -1)
+                    endLayout = tsl;
+            }
+            if ((startGlyphIndex != -1) && (endGlyphIndex != -1))
+                break;
+        }
+        if ((startLayout == null) || (endLayout == null))
+            return null;
+                
+        int startCharCount = startLayout.getCharacterCount
+            (startGlyphIndex, startGlyphIndex);
+        int endCharCount = endLayout.getCharacterCount
+            (endGlyphIndex, endGlyphIndex);
         if (startCharCount > 1) {
             if (result[0] > result[1] && startLayout.isLeftToRight()) {
                 result[0] += startCharCount-1;
@@ -1465,11 +1463,11 @@ public class StrokingTextPainter extends BasicTextPainter {
                 result[0] -= startCharCount-1;
             }
         }
-        if (finishCharCount > 1) {
-            if (result[1] > result[0] && finishLayout.isLeftToRight()) {
-                result[1] += finishCharCount-1;
-            } else if (result[0] > result[1] && !finishLayout.isLeftToRight()) {
-                result[1] -= finishCharCount-1;
+        if (endCharCount > 1) {
+            if (result[1] > result[0] && endLayout.isLeftToRight()) {
+                result[1] += endCharCount-1;
+            } else if (result[0] > result[1] && !endLayout.isLeftToRight()) {
+                result[1] -= endCharCount-1;
             }
         }
 
@@ -1501,6 +1499,8 @@ public class StrokingTextPainter extends BasicTextPainter {
         TextNode textNode = begin.getTextNode();
         if (textNode != end.getTextNode()) 
             throw new Error("Markers are from different TextNodes!");
+        if (textNode == null)
+            return null;
 
         int beginIndex = begin.getHit().getCharIndex();
         int endIndex   = end.getHit().getCharIndex();
@@ -1511,17 +1511,6 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             int tmpIndex = beginIndex;
             beginIndex = endIndex; endIndex = tmpIndex;
-        }
-
-        TextSpanLayout beginLayout = null;
-        TextSpanLayout endLayout = null;
-        if ((begin != null) && (end != null)) {
-            beginLayout = begin.getLayout();
-            endLayout   = end.getLayout();
-        }
-
-        if ((beginLayout == null) || (endLayout == null)) {
-            return null;
         }
 
         // get the list of text runs

@@ -190,18 +190,15 @@ public abstract class BasicTextPainter implements TextPainter {
     protected static class BasicMark implements Mark {
 	
         private TextNode       node;
-        private TextSpanLayout layout;
         private TextHit        hit;
 
 	/**
 	 * Constructs a new Mark with the specified parameters.
 	 */
         protected BasicMark(TextNode node,
-                            TextSpanLayout layout, 
                             TextHit hit) {
             this.hit    = hit;
             this.node   = node;
-            this.layout = layout;
         }
 
         public TextHit getHit() {
@@ -210,10 +207,6 @@ public abstract class BasicTextPainter implements TextPainter {
 
         public TextNode getTextNode() {
             return node;
-        }
-
-        public TextSpanLayout getLayout() {
-            return layout;
         }
     }
 }
