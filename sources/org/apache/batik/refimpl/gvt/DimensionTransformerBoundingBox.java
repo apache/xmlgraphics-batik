@@ -6,19 +6,20 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.gvt;
+package org.apache.batik.refimpl.gvt;
 
-import java.awt.geom.Point2D;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
- * This <tt>PointTransfomer</tt> implementation is used when the
- * point's space is in the associated node's bounding box space.
+ * Considers width/height to be in the attached object's bounding
+ * box space.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class PointTransformerBoundingBox implements PointTransformer {
+public class DimensionTransformerBoundingBox implements DimensionTransformer {
 
     /**
      * <tt>GraphicsNode</tt> whose bounding box defines the
@@ -39,10 +40,10 @@ public class PointTransformerBoundingBox implements PointTransformer {
     }
 
     /**
-     * @param node the <tt>GraphicsNode</tt> whose bounding box
-     *        defines the point's space.
+     * @param node the <tt>GralphicsNode</tt> whose bounding box
+     *        defines the dimension's space
      */
-    public PointTransformerBoundingBox(GraphicsNode node){
+    public DimensionTransformerBoundingBox(GraphicsNode node){
         if(node == null){
             throw new IllegalArgumentException();
         }
@@ -51,38 +52,19 @@ public class PointTransformerBoundingBox implements PointTransformer {
     }
 
     /**
-     * Converts the input point to the point space
+     * Converts the input width to a width in user space
      */
-    public Point2D toPointSpace(Point2D point){
+    public float widthToUserSpace(float width){
         TransformDescriptor txf = getTransformDescriptor();
-
-        if(txf.sx > 0){
-            txf.sx = 1/txf.sx;
-        }
-        else{
-            txf.sx = 0;
-        }
-
-        if(txf.sy > 0){
-            txf.sy = 1/txf.sy;
-        }
-        else{
-            txf.sy = 0;
-        }
-
-        point.setLocation(txf.sx*(point.getX() - txf.tx),
-                          txf.sy*(point.getY() - txf.ty));
-        return point;
+        return width*txf.sx;
     }
 
     /**
-     * Converts the input point to user space
+     * Converts the input height to a height in user space
      */
-    public Point2D toUserSpace(Point2D point){
+    public float heightToUserSpace(float height){
         TransformDescriptor txf = getTransformDescriptor();
-        point.setLocation(txf.sx*point.getX() + txf.tx,
-                          txf.sy*point.getY() + txf.ty);
-        return point;
+        return height*txf.sy;
     }
 
     /**
@@ -91,15 +73,7 @@ public class PointTransformerBoundingBox implements PointTransformer {
      */
     private TransformDescriptor getTransformDescriptor(){
         Rectangle2D bounds = node.getPrimitiveBounds();
-        if(bounds == null){
-            throw new Error();
-        }
-
         TransformDescriptor desc = new TransformDescriptor();
-        if(desc == null){
-            throw new Error();
-        }
-
         desc.tx = (float)bounds.getX();
         desc.ty = (float)bounds.getY();
         desc.sx = (float)bounds.getWidth();
