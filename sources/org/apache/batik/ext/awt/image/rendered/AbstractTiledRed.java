@@ -149,9 +149,40 @@ public abstract class AbstractTiledRed
                         ColorModel  cm,   SampleModel sm,
                         int tileGridXOff, int tileGridYOff,
                         Map props) {
+        init(src, bounds, cm, sm, tileGridXOff, tileGridYOff, null, props);
+    }
+
+
+    /**
+     * This is one of two basic init function (this is for single
+     * source rendereds).
+     * It is provided so subclasses can compute various values
+     * before initializing all the state in the base class.
+     * You really should call this method before returning from
+     * your subclass constructor.
+     *
+     * @param src    The source for the filter
+     * @param bounds The bounds of the image
+     * @param cm     The ColorModel to use. If null it defaults to
+     *               ComponentColorModel/ src's ColorModel.
+     * @param sm     The Sample modle to use. If this is null it will
+     *               use the src's sample model if that is null it will
+     *               construct a sample model that matches the ColorModel
+     *               and is the size of the whole image.
+     * @param tileGridXOff The x location of tile 0,0.
+     * @param tileGridYOff The y location of tile 0,0.
+     * @param tileStore The tileStore to use (or null).
+     * @param props  Any properties you want to associate with the image.
+     */
+    protected void init(CachableRed src, Rectangle   bounds,
+                        ColorModel  cm,   SampleModel sm,
+                        int tileGridXOff, int tileGridYOff,
+                        TileStore tiles,
+                        Map props) {
         super.init(src, bounds, cm, sm, tileGridXOff, tileGridYOff, props);
-        
-        tiles = createTileStore();
+        this.tiles = tiles;
+        if (this.tiles == null)
+            this.tiles = createTileStore();
     }
 
     /**
@@ -242,6 +273,10 @@ public abstract class AbstractTiledRed
 
     public TileStore getTileStore() {
         return tiles;
+    }
+
+    protected void setTileStore(TileStore tiles) {
+        this.tiles = tiles;
     }
 
     protected TileStore createTileStore() {
