@@ -18,6 +18,7 @@
 package org.apache.batik.bridge;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Paint;
 import java.awt.RenderingHints;
@@ -521,9 +522,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         // Install the attributes.
         addPaintAttributes(as, e, tn, pi, ctx);
 
-        if (usingComplexSVGFont) 
+        if (usingComplexSVGFont) {
             // Force Complex SVG fonts to be recreated, if we have them.
             tn.setAttributedCharacterIterator(as.getIterator());
+        }
     }
 
     /**
@@ -549,6 +551,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         int lastChar = getElementEndIndex(aci, element);
         TextPaintInfo pi = new TextPaintInfo();
+        // Set some basic props so we can get bounds info for complex paints.
+        pi.visible   = true;        
+        pi.fillPaint = Color.black;
+
         as.addAttribute(PAINT_INFO, pi, firstChar, lastChar+1);
         elemTPI.put(element, pi);
 
