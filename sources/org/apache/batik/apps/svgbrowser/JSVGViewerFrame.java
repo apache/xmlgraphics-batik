@@ -118,6 +118,7 @@ import org.apache.batik.transcoder.print.PrintTranscoder;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.MimeTypeConstants;
 import org.apache.batik.util.gui.DOMViewer;
+import org.apache.batik.util.gui.JErrorPane;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;
 import org.apache.batik.util.gui.URIChooser;
@@ -142,7 +143,7 @@ import org.w3c.dom.ProcessingInstruction;
 
 import org.w3c.dom.stylesheets.DocumentStyle;
 import org.w3c.dom.stylesheets.StyleSheetList;
- 
+
 import org.w3c.dom.css.CSSStyleSheet;
 
 import org.w3c.dom.css.ViewCSS;
@@ -384,14 +385,14 @@ public class JSVGViewerFrame
         listeners.put(EXIT_ACTION, application.createExitAction(this));
         listeners.put(VIEW_SOURCE_ACTION, new ViewSourceAction());
 
-	javax.swing.ActionMap cMap = svgCanvas.getActionMap();
-        listeners.put(RESET_TRANSFORM_ACTION, 
-		      cMap.get(JSVGCanvas.RESET_TRANSFORM_ACTION));
-        listeners.put(ZOOM_IN_ACTION, 
-		      cMap.get(JSVGCanvas.ZOOM_IN_ACTION));
+        javax.swing.ActionMap cMap = svgCanvas.getActionMap();
+        listeners.put(RESET_TRANSFORM_ACTION,
+                      cMap.get(JSVGCanvas.RESET_TRANSFORM_ACTION));
+        listeners.put(ZOOM_IN_ACTION,
+                      cMap.get(JSVGCanvas.ZOOM_IN_ACTION));
         listeners.put(ZOOM_OUT_ACTION,
-		      cMap.get(JSVGCanvas.ZOOM_OUT_ACTION));
- 
+                      cMap.get(JSVGCanvas.ZOOM_OUT_ACTION));
+
         listeners.put(PREVIOUS_TRANSFORM_ACTION, previousTransformAction);
         listeners.put(NEXT_TRANSFORM_ACTION, nextTransformAction);
         listeners.put(USE_STYLESHEET_ACTION, useStylesheetAction);
@@ -838,11 +839,11 @@ public class JSVGViewerFrame
                 final SVGDocument doc = svgDocument;
                 new Thread() {
                     public void run(){
-			String uri = doc.getURL();
-			String fragment = svgCanvas.getFragmentIdentifier();
-			if (fragment != null) {
-			    uri += "#"+fragment;
-			}
+                        String uri = doc.getURL();
+                        String fragment = svgCanvas.getFragmentIdentifier();
+                        if (fragment != null) {
+                            uri += "#"+fragment;
+                        }
                         //
                         // Build a PrintTranscoder to handle printing
                         // of the svgDocument object
@@ -897,8 +898,8 @@ public class JSVGViewerFrame
 
             int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
-		float quality = 
-		    JPEGOptionPanel.showDialog(JSVGViewerFrame.this);
+                float quality =
+                    JPEGOptionPanel.showDialog(JSVGViewerFrame.this);
 
                 final File f = fileChooser.getSelectedFile();
                 BufferedImage buffer = svgCanvas.getOffScreen();
@@ -911,11 +912,11 @@ public class JSVGViewerFrame
                     int h = buffer.getHeight();
                     final ImageTranscoder trans = new JPEGTranscoder();
                     trans.addTranscodingHint
-			(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
-			 application.getXMLParserClassName());
+                        (JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
+                         application.getXMLParserClassName());
                     trans.addTranscodingHint
-			(JPEGTranscoder.KEY_QUALITY, new Float(quality));
-		    
+                        (JPEGTranscoder.KEY_QUALITY, new Float(quality));
+
                     final BufferedImage img = trans.createImage(w, h);
 
                     // paint the buffer to the image
@@ -1216,7 +1217,7 @@ public class JSVGViewerFrame
                         if (title != null && "yes".equals(alt)) {
                             JRadioButtonMenuItem button;
                             button = new JRadioButtonMenuItem(title);
-                            
+
                             button.addActionListener
                                 (new java.awt.event.ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
@@ -1227,7 +1228,7 @@ public class JSVGViewerFrame
                                         svgCanvas.setSVGDocument(doc);
                                     }
                                 });
-  
+
                             buttonGroup.add(button);
                             stylesheetMenu.add(button);
                             stylesheetMenu.setEnabled(true);
@@ -1524,8 +1525,8 @@ public class JSVGViewerFrame
         }
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
-	svgCanvas.setSelectionOverlayXORMode
-	    (application.isSelectionOverlayXORMode());
+        svgCanvas.setSelectionOverlayXORMode
+            (application.isSelectionOverlayXORMode());
         if (autoAdjust) {
             pack();
         }
@@ -1542,8 +1543,8 @@ public class JSVGViewerFrame
         statusBar.setMessage(resources.getString("Message.treeCancelled"));
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
-	svgCanvas.setSelectionOverlayXORMode
-	    (application.isSelectionOverlayXORMode());
+        svgCanvas.setSelectionOverlayXORMode
+            (application.isSelectionOverlayXORMode());
     }
 
     /**
@@ -1557,8 +1558,8 @@ public class JSVGViewerFrame
         statusBar.setMessage(resources.getString("Message.treeFailed"));
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
-	svgCanvas.setSelectionOverlayXORMode
-	    (application.isSelectionOverlayXORMode());
+        svgCanvas.setSelectionOverlayXORMode
+            (application.isSelectionOverlayXORMode());
         if (autoAdjust) {
             pack();
         }
@@ -1678,8 +1679,11 @@ public class JSVGViewerFrame
          * Displays an error message.
          */
         public void displayError(String message) {
-            JOptionPane pane;
-            pane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE);
+            if (debug) {
+                System.err.println(message);
+            }
+            JOptionPane pane =
+                new JOptionPane(message, JOptionPane.ERROR_MESSAGE);
             JDialog dialog = pane.createDialog(JSVGViewerFrame.this, "ERROR");
             dialog.setModal(false);
             dialog.show(); // Safe to be called from any thread
@@ -1692,7 +1696,11 @@ public class JSVGViewerFrame
             if (debug) {
                 ex.printStackTrace();
             }
-            displayError(ex.getMessage());
+            JOptionPane pane =
+                new JErrorPane(ex, JOptionPane.ERROR_MESSAGE);
+            JDialog dialog = pane.createDialog(JSVGViewerFrame.this, "ERROR");
+            dialog.setModal(false);
+            dialog.show(); // Safe to be called from any thread
         }
 
         /**
@@ -1732,19 +1740,19 @@ public class JSVGViewerFrame
             return application.getXMLParserClassName();
         }
 
-	/**
-	 * Returns true if the XML parser must be in validation mode, false
-	 * otherwise.
-	 */
-	public boolean isXMLParserValidating() {
-	    return application.isXMLParserValidating();
-	}
+        /**
+         * Returns true if the XML parser must be in validation mode, false
+         * otherwise.
+         */
+        public boolean isXMLParserValidating() {
+            return application.isXMLParserValidating();
+        }
 
         /**
          * Returns this user agent's CSS media.
          */
         public String getMedia() {
-	    return application.getMedia();
+            return application.getMedia();
         }
 
         /**
@@ -1777,39 +1785,39 @@ public class JSVGViewerFrame
      */
     protected static class ImageFileFilter extends FileFilter {
 
-	/** The extension of the image filename. */
-	protected String extension;
+        /** The extension of the image filename. */
+        protected String extension;
 
-	public ImageFileFilter(String extension) {
-	    this.extension = extension;
-	}
+        public ImageFileFilter(String extension) {
+            this.extension = extension;
+        }
 
-	/**
-	 * Returns true if <tt>f</tt> is a file with the correct extension,
-	 * false otherwise.
-	 */
-	public boolean accept(File f) {
-	    boolean accept = false;
-	    String fileName = null;
-	    if (f != null) {
-		if (f.isDirectory()) {
-		    accept = true;
-		} else {
-		    fileName = f.getPath().toLowerCase();
-		    if (fileName.endsWith(extension)) {
-			accept = true;
-		    }
-		}
-	    }
-	    return accept;
-	}
-	
-	/**
-	 * Returns the file description
-	 */
-	public String getDescription() {
-	    return extension;
-	}
+        /**
+         * Returns true if <tt>f</tt> is a file with the correct extension,
+         * false otherwise.
+         */
+        public boolean accept(File f) {
+            boolean accept = false;
+            String fileName = null;
+            if (f != null) {
+                if (f.isDirectory()) {
+                    accept = true;
+                } else {
+                    fileName = f.getPath().toLowerCase();
+                    if (fileName.endsWith(extension)) {
+                        accept = true;
+                    }
+                }
+            }
+            return accept;
+        }
+
+        /**
+         * Returns the file description
+         */
+        public String getDescription() {
+            return extension;
+        }
     }
 
 }

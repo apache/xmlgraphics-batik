@@ -47,6 +47,7 @@ import org.apache.batik.swing.svg.JSVGComponent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGUserAgent;
 
+import org.apache.batik.util.gui.JErrorPane;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
 
@@ -91,7 +92,7 @@ public class JSVGCanvas extends JSVGComponent {
      * The key for the Action to scroll down.
      */
     public static final String SCROLL_DOWN_ACTION = "ScrollDown";
-    
+
     /**
      * The key for the Action to quickly scroll right.
      */
@@ -111,7 +112,7 @@ public class JSVGCanvas extends JSVGComponent {
      * The key for the Action to quickly scroll down.
      */
     public static final String FAST_SCROLL_DOWN_ACTION = "FastScrollDown";
-    
+
     /**
      * The key for the Action to zoom in.
      */
@@ -121,7 +122,7 @@ public class JSVGCanvas extends JSVGComponent {
      * The key for the Action to zoom out.
      */
     public static final String ZOOM_OUT_ACTION = "ZoomOut";
-    
+
     /**
      * The key for the Action to reset the transform.
      */
@@ -187,17 +188,17 @@ public class JSVGCanvas extends JSVGComponent {
      * @param ua a SVGUserAgent instance or null.
      * @param eventEnabled Whether the GVT tree should be reactive to mouse and
      * key events.
-     * @param selectableText Whether the text should be selectable.  
+     * @param selectableText Whether the text should be selectable.
      */
-    public JSVGCanvas(SVGUserAgent ua, 
-		      boolean eventsEnabled,
+    public JSVGCanvas(SVGUserAgent ua,
+                      boolean eventsEnabled,
                       boolean selectableText) {
 
         super(ua, eventsEnabled, selectableText);
 
         setPreferredSize(new Dimension(200, 200));
         setMinimumSize(new Dimension(100, 100));
-	
+
         List intl = getInteractors();
         intl.add(zoomInteractor);
         intl.add(imageZoomInteractor);
@@ -205,17 +206,17 @@ public class JSVGCanvas extends JSVGComponent {
         intl.add(rotateInteractor);
         intl.add(resetTransformInteractor);
 
-	installActions();
+        installActions();
 
-	if (eventsEnabled) {
-	    addMouseListener(new MouseAdapter() {
-		public void mousePressed(MouseEvent evt) {
-		    requestFocus();
-		}
-	    });
+        if (eventsEnabled) {
+            addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent evt) {
+                    requestFocus();
+                }
+            });
 
-	    installKeyboardActions();
-	}
+            installKeyboardActions();
+        }
     }
 
     /**
@@ -223,65 +224,65 @@ public class JSVGCanvas extends JSVGComponent {
      * <tt>Action</tt>s.
      */
     protected void installActions() {
-	ActionMap actionMap = getActionMap();
-	
-	actionMap.put(SCROLL_RIGHT_ACTION, new ScrollRightAction(10));
-	actionMap.put(SCROLL_LEFT_ACTION, new ScrollLeftAction(10));
-	actionMap.put(SCROLL_UP_ACTION, new ScrollUpAction(10));
-	actionMap.put(SCROLL_DOWN_ACTION, new ScrollDownAction(10));
-	
-	actionMap.put(FAST_SCROLL_RIGHT_ACTION, new ScrollRightAction(30));
-	actionMap.put(FAST_SCROLL_LEFT_ACTION, new ScrollLeftAction(30));
-	actionMap.put(FAST_SCROLL_UP_ACTION, new ScrollUpAction(30));
-	actionMap.put(FAST_SCROLL_DOWN_ACTION, new ScrollDownAction(30));
+        ActionMap actionMap = getActionMap();
 
-	actionMap.put(ZOOM_IN_ACTION, new ZoomInAction());
-	actionMap.put(ZOOM_OUT_ACTION, new ZoomOutAction());
+        actionMap.put(SCROLL_RIGHT_ACTION, new ScrollRightAction(10));
+        actionMap.put(SCROLL_LEFT_ACTION, new ScrollLeftAction(10));
+        actionMap.put(SCROLL_UP_ACTION, new ScrollUpAction(10));
+        actionMap.put(SCROLL_DOWN_ACTION, new ScrollDownAction(10));
 
-	actionMap.put(RESET_TRANSFORM_ACTION, new ResetTransformAction());
+        actionMap.put(FAST_SCROLL_RIGHT_ACTION, new ScrollRightAction(30));
+        actionMap.put(FAST_SCROLL_LEFT_ACTION, new ScrollLeftAction(30));
+        actionMap.put(FAST_SCROLL_UP_ACTION, new ScrollUpAction(30));
+        actionMap.put(FAST_SCROLL_DOWN_ACTION, new ScrollDownAction(30));
+
+        actionMap.put(ZOOM_IN_ACTION, new ZoomInAction());
+        actionMap.put(ZOOM_OUT_ACTION, new ZoomOutAction());
+
+        actionMap.put(RESET_TRANSFORM_ACTION, new ResetTransformAction());
     }
 
     /**
      * Builds the InputMap of this canvas with a set of predefined
-     * <tt>Action</tt>s.  
+     * <tt>Action</tt>s.
      */
     protected void installKeyboardActions() {
 
-	InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
-	KeyStroke key;
+        InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
+        KeyStroke key;
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
-	inputMap.put(key, SCROLL_RIGHT_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
+        inputMap.put(key, SCROLL_RIGHT_ACTION);
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
-	inputMap.put(key, SCROLL_LEFT_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
+        inputMap.put(key, SCROLL_LEFT_ACTION);
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0);
-	inputMap.put(key, SCROLL_UP_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0);
+        inputMap.put(key, SCROLL_UP_ACTION);
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0);
-	inputMap.put(key, SCROLL_DOWN_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0);
+        inputMap.put(key, SCROLL_DOWN_ACTION);
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.SHIFT_MASK);
-	inputMap.put(key, FAST_SCROLL_RIGHT_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.SHIFT_MASK);
+        inputMap.put(key, FAST_SCROLL_RIGHT_ACTION);
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.SHIFT_MASK);
-	inputMap.put(key, FAST_SCROLL_LEFT_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.SHIFT_MASK);
+        inputMap.put(key, FAST_SCROLL_LEFT_ACTION);
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.SHIFT_MASK);
-	inputMap.put(key, FAST_SCROLL_UP_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.SHIFT_MASK);
+        inputMap.put(key, FAST_SCROLL_UP_ACTION);
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.SHIFT_MASK);
-	inputMap.put(key, FAST_SCROLL_DOWN_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.SHIFT_MASK);
+        inputMap.put(key, FAST_SCROLL_DOWN_ACTION);
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK);
-	inputMap.put(key, ZOOM_IN_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_MASK);
+        inputMap.put(key, ZOOM_IN_ACTION);
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK);
-	inputMap.put(key, ZOOM_OUT_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK);
+        inputMap.put(key, ZOOM_OUT_ACTION);
 
-	key = KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_MASK);
-	inputMap.put(key, RESET_TRANSFORM_ACTION);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_MASK);
+        inputMap.put(key, RESET_TRANSFORM_ACTION);
     }
 
     /**
@@ -307,7 +308,7 @@ public class JSVGCanvas extends JSVGComponent {
      * property.
      *
      * @param propertyName the name of the property to listen on
-     * @param pcl the property change listener to add 
+     * @param pcl the property change listener to add
      */
     public void addPropertyChangeListener(String propertyName,
                                           PropertyChangeListener pcl) {
@@ -319,7 +320,7 @@ public class JSVGCanvas extends JSVGComponent {
      * property.
      *
      * @param propertyName the name of the property that was listened on
-     * @param pcl the property change listener to remove 
+     * @param pcl the property change listener to remove
      */
     public void removePropertyChangeListener(String propertyName,
                                              PropertyChangeListener pcl) {
@@ -430,15 +431,15 @@ public class JSVGCanvas extends JSVGComponent {
             } else {
                 getInteractors().remove(resetTransformInteractor);
             }
-            pcs.firePropertyChange("enableResetTransformInteractor", 
-				   oldValue, 
-				   b);
+            pcs.firePropertyChange("enableResetTransformInteractor",
+                                   oldValue,
+                                   b);
         }
     }
-    
+
     /**
      * Returns true if the reset transform interactor is enabled, false
-     * otherwise.  
+     * otherwise.
      */
     public boolean getEnableResetTransformInteractor() {
         return isResetTransformInteractorEnabled;
@@ -462,7 +463,7 @@ public class JSVGCanvas extends JSVGComponent {
         loadSVGDocument(uri);
         pcs.firePropertyChange("URI", oldValue, uri);
     }
-    
+
     /**
      * Creates a UserAgent.
      */
@@ -486,7 +487,7 @@ public class JSVGCanvas extends JSVGComponent {
          * Called when the loading of a document was started.
          */
         public void documentLoadingStarted(SVGDocumentLoaderEvent e) {
-	    JSVGCanvas.this.setToolTipText(null);
+            JSVGCanvas.this.setToolTipText(null);
         }
 
     }
@@ -499,17 +500,17 @@ public class JSVGCanvas extends JSVGComponent {
      * A swing action to reset the rendering transform of the canvas.
      */
     protected class ResetTransformAction extends AbstractAction {
-	public void actionPerformed(ActionEvent evt) {
-	    setFragmentIdentifier(null);
+        public void actionPerformed(ActionEvent evt) {
+            setFragmentIdentifier(null);
             resetRenderingTransform();
-	}
+        }
     }
 
     /**
      * A swing action to zoom in the canvas.
      */
     protected class ZoomInAction extends AbstractAction {
-	public void actionPerformed(ActionEvent evt) {
+        public void actionPerformed(ActionEvent evt) {
             AffineTransform at = getRenderingTransform();
             if (at != null) {
                 Dimension dim = getSize();
@@ -520,15 +521,15 @@ public class JSVGCanvas extends JSVGComponent {
                 t.translate(-x, -y);
                 t.concatenate(at);
                 setRenderingTransform(t);
-	    }
-	}
+            }
+        }
     }
 
     /**
      * A swing action to zoom out the canvas.
      */
     protected class ZoomOutAction extends AbstractAction {
-	public void actionPerformed(ActionEvent evt) {
+        public void actionPerformed(ActionEvent evt) {
             AffineTransform at = getRenderingTransform();
             if (at != null) {
                 Dimension dim = getSize();
@@ -539,8 +540,8 @@ public class JSVGCanvas extends JSVGComponent {
                 t.translate(-x, -y);
                 t.concatenate(at);
                 setRenderingTransform(t);
-	    }
-	}
+            }
+        }
     }
 
     /**
@@ -548,18 +549,18 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ScrollRightAction extends AbstractAction {
 
-	/** The scroll increment. */
-	protected int inc;
+        /** The scroll increment. */
+        protected int inc;
 
-	public ScrollRightAction(int inc) {
-	    this.inc = inc;
-	}
+        public ScrollRightAction(int inc) {
+            this.inc = inc;
+        }
 
-	public void actionPerformed(ActionEvent evt) {
-	    AffineTransform at = new AffineTransform(getRenderingTransform());
-	    at.translate(-inc, 0);
-	    setRenderingTransform(at);
-	}
+        public void actionPerformed(ActionEvent evt) {
+            AffineTransform at = new AffineTransform(getRenderingTransform());
+            at.translate(-inc, 0);
+            setRenderingTransform(at);
+        }
     }
 
     /**
@@ -567,18 +568,18 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ScrollLeftAction extends AbstractAction {
 
-	/** The scroll increment. */
-	protected int inc;
+        /** The scroll increment. */
+        protected int inc;
 
-	public ScrollLeftAction(int inc) {
-	    this.inc = inc;
-	}
+        public ScrollLeftAction(int inc) {
+            this.inc = inc;
+        }
 
-	public void actionPerformed(ActionEvent evt) {
-	    AffineTransform at = new AffineTransform(getRenderingTransform());
-	    at.translate(inc, 0);
-	    setRenderingTransform(at);
-	}
+        public void actionPerformed(ActionEvent evt) {
+            AffineTransform at = new AffineTransform(getRenderingTransform());
+            at.translate(inc, 0);
+            setRenderingTransform(at);
+        }
     }
 
     /**
@@ -586,18 +587,18 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ScrollUpAction extends AbstractAction {
 
-	/** The scroll increment. */
-	protected int inc;
+        /** The scroll increment. */
+        protected int inc;
 
-	public ScrollUpAction(int inc) {
-	    this.inc = inc;
-	}
+        public ScrollUpAction(int inc) {
+            this.inc = inc;
+        }
 
-	public void actionPerformed(ActionEvent evt) {
-	    AffineTransform at = new AffineTransform(getRenderingTransform());
-	    at.translate(0, inc);
-	    setRenderingTransform(at);
-	}
+        public void actionPerformed(ActionEvent evt) {
+            AffineTransform at = new AffineTransform(getRenderingTransform());
+            at.translate(0, inc);
+            setRenderingTransform(at);
+        }
     }
 
     /**
@@ -605,18 +606,18 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ScrollDownAction extends AbstractAction {
 
-	/** The scroll increment. */
-	protected int inc;
+        /** The scroll increment. */
+        protected int inc;
 
-	public ScrollDownAction(int inc) {
-	    this.inc = inc;
-	}
+        public ScrollDownAction(int inc) {
+            this.inc = inc;
+        }
 
-	public void actionPerformed(ActionEvent evt) {
-	    AffineTransform at = new AffineTransform(getRenderingTransform());
-	    at.translate(0, -inc);
-	    setRenderingTransform(at);
-	}
+        public void actionPerformed(ActionEvent evt) {
+            AffineTransform at = new AffineTransform(getRenderingTransform());
+            at.translate(0, -inc);
+            setRenderingTransform(at);
+        }
     }
 
     // ----------------------------------------------------------------------
@@ -704,24 +705,24 @@ public class JSVGCanvas extends JSVGComponent {
      * The <tt>CanvasUserAgent</tt> only adds tooltips to the behavior of the
      * default <tt>BridgeUserAgent</tt>.<br /> A tooltip will be displayed
      * wheneven the mouse lingers over an element which has a &lt;title&gt; or a
-     * &lt;desc&gt; child element.  
+     * &lt;desc&gt; child element.
      */
-    protected class CanvasUserAgent extends BridgeUserAgent 
+    protected class CanvasUserAgent extends BridgeUserAgent
 
         implements XMLConstants {
 
-        final String TOOLTIP_TITLE_ONLY 
+        final String TOOLTIP_TITLE_ONLY
             = "JSVGCanvas.CanvasUserAgent.ToolTip.titleOnly";
-        final String TOOLTIP_DESC_ONLY  
+        final String TOOLTIP_DESC_ONLY
             = "JSVGCanvas.CanvasUserAgent.ToolTip.descOnly";
-        final String TOOLTIP_TITLE_AND_TEXT 
+        final String TOOLTIP_TITLE_AND_TEXT
             = "JSVGCanvas.CanvasUserAgent.ToolTip.titleAndDesc";
 
         /**
          * The handleElement method builds a tool tip from the
          * content of a &lt;title&gt; element, a &lt;desc&gt;
          * element or both. <br/>
-         * Because these elements can appear in any order, here 
+         * Because these elements can appear in any order, here
          * is the algorithm used to build the tool tip:<br />
          * <ul>
          * <li>If a &lt;title&gt; is passed to <tt>handleElement</tt>
@@ -729,70 +730,70 @@ public class JSVGCanvas extends JSVGComponent {
          *     there is one, nothing is done (because the desc will do
          *     it). If there in none, the tool tip is set to the value
          *     of the &lt;title&gt; element content.</li>
-         * <li>If a &lt;desc&gt; is passed to <tt>handleElement</tt> 
+         * <li>If a &lt;desc&gt; is passed to <tt>handleElement</tt>
          *     the method checks if there is a &lt;title&gt; peer. If there
          *     is one, the content of that peer is pre-pended to the
          *     content of the &lt;desc&gt; element.</li>
-         * </ul> 
+         * </ul>
          */
         public void handleElement(Element elt, Object data){
             super.handleElement(elt, data);
-            
+
             if (elt.getNamespaceURI().equals(SVGConstants.SVG_NAMESPACE_URI)) {
                 if (elt.getLocalName().equals(SVGConstants.SVG_TITLE_TAG)) {
                     // If there is a <desc> peer, do nothing as the tooltip will
                     // be handled when handleElement is invoked for the <desc>
                     // peer.
                     if (hasPeerWithTag
-			(elt, 
-			 SVGConstants.SVG_NAMESPACE_URI, 
-			 SVGConstants.SVG_DESC_TAG)){
+                        (elt,
+                         SVGConstants.SVG_NAMESPACE_URI,
+                         SVGConstants.SVG_DESC_TAG)){
                         return;
                     }
-		    
+
                     elt.normalize();
-		    if (elt.getFirstChild() == null) {
-			return;
-		    }
+                    if (elt.getFirstChild() == null) {
+                        return;
+                    }
                     String toolTip = elt.getFirstChild().getNodeValue();
-		    if (toolTip == null || toolTip.length() == 0) {
-			return;
-		    }
+                    if (toolTip == null || toolTip.length() == 0) {
+                        return;
+                    }
                     toolTip = Messages.formatMessage
-			(TOOLTIP_TITLE_ONLY, 
-			 new Object[]{toFormattedHTML(toolTip)});
-                                            
+                        (TOOLTIP_TITLE_ONLY,
+                         new Object[]{toFormattedHTML(toolTip)});
+
                     setToolTip((Element)(elt.getParentNode()), toolTip);
                 } else if (elt.getLocalName().equals
-			   (SVGConstants.SVG_DESC_TAG)) {
+                           (SVGConstants.SVG_DESC_TAG)) {
                     // If there is a <title> peer, prepend its content to the
                     // content of the <desc> element.
                     elt.normalize();
-		    if (elt.getFirstChild() == null) {
-			return;
-		    }
+                    if (elt.getFirstChild() == null) {
+                        return;
+                    }
                     String toolTip = elt.getFirstChild().getNodeValue();
-		    if (toolTip == null || toolTip.length() == 0) {
-			return;
-		    }
+                    if (toolTip == null || toolTip.length() == 0) {
+                        return;
+                    }
 
-                    Element titlePeer = 
-			getPeerWithTag(elt,
-				       SVGConstants.SVG_NAMESPACE_URI,
-				       SVGConstants.SVG_TITLE_TAG);
+                    Element titlePeer =
+                        getPeerWithTag(elt,
+                                       SVGConstants.SVG_NAMESPACE_URI,
+                                       SVGConstants.SVG_TITLE_TAG);
                     if (titlePeer != null) {
                         titlePeer.normalize();
                         toolTip = Messages.formatMessage(TOOLTIP_TITLE_AND_TEXT,
-							 new Object[] {
-			    toFormattedHTML(titlePeer.getFirstChild().getNodeValue()),
-				toFormattedHTML(toolTip)});
+                                                         new Object[] {
+                            toFormattedHTML(titlePeer.getFirstChild().getNodeValue()),
+                                toFormattedHTML(toolTip)});
                     } else {
-                        toolTip = 
-			    Messages.formatMessage
-			    (TOOLTIP_DESC_ONLY,
-			     new Object[]{toFormattedHTML(toolTip)});
+                        toolTip =
+                            Messages.formatMessage
+                            (TOOLTIP_DESC_ONLY,
+                             new Object[]{toFormattedHTML(toolTip)});
                     }
-		    
+
                     setToolTip((Element)(elt.getParentNode()), toolTip);
                 }
             }
@@ -801,7 +802,7 @@ public class JSVGCanvas extends JSVGComponent {
         /**
          * Converts line breaks to HTML breaks and encodes special entities.
          * Poor way of replacing '<', '>', '"', '&' and ''' in attribute values.
-	 */
+         */
         public String toFormattedHTML(String str) {
             StringBuffer sb = new StringBuffer(str);
             replace(sb, XML_CHAR_AMP, XML_ENTITY_AMP);
@@ -812,11 +813,11 @@ public class JSVGCanvas extends JSVGComponent {
             replace(sb, '\n', "<br>");
             return sb.toString();
         }
-        
+
         protected void replace(StringBuffer s, char c, String r) {
             String v = s.toString() + 1;
             int i = v.length();
-            
+
             while( (i=v.lastIndexOf(c, --i)) != -1 ) {
                 s.deleteCharAt(i);
                 s.insert(i, r);
@@ -826,16 +827,16 @@ public class JSVGCanvas extends JSVGComponent {
         /**
          * Checks if there is a peer element of a given type.  This returns the
          * first occurence of the given type or null if none is found.
-	 */
-        public Element getPeerWithTag(Element elt, 
-				      String nameSpaceURI,
+         */
+        public Element getPeerWithTag(Element elt,
+                                      String nameSpaceURI,
                                       String localName) {
 
             Element p = (Element)elt.getParentNode();
             if (p == null) {
                 return null;
             }
-            
+
             for (Node n=p.getFirstChild(); n!=null; n = n.getNextSibling()) {
                 if (!nameSpaceURI.equals(n.getNamespaceURI())){
                     continue;
@@ -849,35 +850,35 @@ public class JSVGCanvas extends JSVGComponent {
             }
             return null;
         }
-        
+
         /**
          * Returns a boolean defining whether or not there is a peer of
-         * <tt>elt</tt> with the given qualified tag.  
-	 */
+         * <tt>elt</tt> with the given qualified tag.
+         */
         public boolean hasPeerWithTag(Element elt,
                                       String nameSpaceURI,
                                       String localName){
 
             return !(getPeerWithTag(elt, nameSpaceURI, localName) == null);
         }
-        
+
         /**
          * Sets the tool tip on the input element.
          */
         public void setToolTip(Element elt, String toolTip){
             EventTarget target = (EventTarget)elt;
-	    elt.normalize();
-            
+            elt.normalize();
+
             // On mouseover, set the tooltip to the title value
-            target.addEventListener(SVGConstants.SVG_EVENT_MOUSEOVER, 
+            target.addEventListener(SVGConstants.SVG_EVENT_MOUSEOVER,
                                     new ToolTipModifier(toolTip),
                                     false);
-            
+
             // On mouseout, remove the tooltip
             target.addEventListener(SVGConstants.SVG_EVENT_MOUSEOUT,
                                     new ToolTipModifier(null),
                                     false);
-            
+
             if (locationListener == null) {
                 locationListener = new LocationListener();
                 addMouseMotionListener(locationListener);
@@ -891,11 +892,12 @@ public class JSVGCanvas extends JSVGComponent {
             if (svgUserAgent != null) {
                 super.displayError(message);
             } else {
-                JOptionPane pane;
-                pane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE);
-                JDialog dialog = pane.createDialog(JSVGCanvas.this, "ERROR");
+                JOptionPane pane =
+                    new JOptionPane(message, JOptionPane.ERROR_MESSAGE);
+                JDialog dialog =
+                    pane.createDialog(JSVGCanvas.this, "ERROR");
                 dialog.setModal(false);
-                dialog.show();
+                dialog.show(); // Safe to be called from any thread
             }
         }
 
@@ -906,7 +908,11 @@ public class JSVGCanvas extends JSVGComponent {
             if (svgUserAgent != null) {
                 super.displayError(ex);
             } else {
-                displayError(ex.getMessage());
+                JOptionPane pane =
+                    new JErrorPane(ex, JOptionPane.ERROR_MESSAGE);
+                JDialog dialog = pane.createDialog(JSVGCanvas.this, "ERROR");
+                dialog.setModal(false);
+                dialog.show(); // Safe to be called from any thread
             }
         }
     }
@@ -927,14 +933,14 @@ public class JSVGCanvas extends JSVGComponent {
             lastX = evt.getX();
             lastY = evt.getY();
         }
-        
+
         public int getLastX() {
-	    return lastX; 
-	}
+            return lastX;
+        }
 
         public int getLastY() {
-	    return lastY; 
-	}
+            return lastY;
+        }
     }
 
     /**
@@ -953,7 +959,7 @@ public class JSVGCanvas extends JSVGComponent {
         protected String toolTip;
 
         /**
-         * @param toolTip value to which the JSVGCanvas should be 
+         * @param toolTip value to which the JSVGCanvas should be
          *        set when the event occurs.
          */
         public ToolTipModifier(String toolTip){
