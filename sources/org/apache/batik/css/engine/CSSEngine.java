@@ -1505,7 +1505,8 @@ public abstract class CSSEngine {
         case MutationEvent.REMOVAL:
             boolean removed = false;
 
-            if (evt.getPrevValue().length() > 0) {
+            if (evt.getPrevValue() != null &&
+                evt.getPrevValue().length() > 0) {
                 // Check if the style map has cascaded styles which
                 // come from the inline style attribute.
                 for (int i = getNumberOfProperties() - 1; i >= 0; --i) {
