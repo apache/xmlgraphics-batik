@@ -18,7 +18,7 @@ import java.awt.image.renderable.RenderContext;
 
 
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * Interface for implementing filter resolution.
@@ -178,10 +178,10 @@ public class FilterResRable8Bit extends AbstractRable
                     //
                     Rectangle2D newAOI = aoi.getBounds2D();
                     newAOI = new Rectangle2D.Double
-                        (newAOI.getX()-scaleX,
-                         newAOI.getY()-scaleY,
-                         newAOI.getWidth()+2*scaleX,
-                         newAOI.getHeight()+2*scaleY);
+                        (newAOI.getX()-1/scaleX,
+                         newAOI.getY()-1/scaleY,
+                         newAOI.getWidth()+2/scaleX,
+                         newAOI.getHeight()+2/scaleY);
 
                     newRenderContext.setAreaOfInterest(newAOI);
 
@@ -196,7 +196,7 @@ public class FilterResRable8Bit extends AbstractRable
                     result = localSource.createRendering(newRenderContext);
                     if (result != null)
                         result = new AffineRed
-                            (RenderedImageCachableRed.wrap(result),
+                            (GraphicsUtil.wrap(result),
                              resampleTxf, renderContext.getRenderingHints());
 
                     return result;

@@ -221,8 +221,8 @@ public class GaussianBlurRable8Bit
                                         shx/scaleY,  sy/scaleY,
                                         tx, ty);
             // Add a pixel all around for the affine to interpolate with.
-            outsetX = 2;
-            outsetY = 2;
+            outsetX = 1;
+            outsetY = 1;
         }
 
 

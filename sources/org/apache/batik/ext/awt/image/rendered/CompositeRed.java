@@ -268,6 +268,11 @@ public class CompositeRed extends AbstractRed {
         if (h < defSz) h = defSz;
         if (h > th)    h = th;
 
+        if ((w <= 0) || (h <= 0)) {
+            w = 1;
+            h = 1;
+        }
+
         // System.out.println("tg: " + tgX + "x" + tgY);
         // System.out.println("t: " + tw + "x" + th);
         // System.out.println("sz: " + w + "x" + h);

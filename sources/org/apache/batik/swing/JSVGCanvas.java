@@ -876,11 +876,7 @@ public class JSVGCanvas
         g2d.setPaint(getBackground());
         g2d.fillRect(0, 0, w, h);
 
-
         if (bufferNeedsRendering) {
-            renderer.updateOffScreen(w, h);
-            buffer = renderer.getOffScreen();
-
             if (panTransform != null) {
                 int tx = (int)panTransform.getTranslateX();
                 int ty = (int)panTransform.getTranslateY();
@@ -890,11 +886,13 @@ public class JSVGCanvas
             }
 
             renderer.setTransform(transform);
+            renderer.updateOffScreen(w, h);
+            buffer = renderer.getOffScreen();
+
             if (buffer != null) {
                 repaintAOI(renderer, size);
                 bufferNeedsRendering = false; // repaint is already queued
             }
-            return;
         } else { // buffer is current, just transform and draw it
 
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -1815,10 +1813,11 @@ public class JSVGCanvas
 
 
             if (bufferNeedsRendering) {
+                renderer.setTransform(transform);
                 renderer.updateOffScreen(w, h);
+
                 buffer = renderer.getOffScreen();
 
-                renderer.setTransform(transform);
                 if (buffer != null) {
                     repaintAOI(renderer, size);
                     bufferNeedsRendering = false; // repaint is already queued
