@@ -6,11 +6,10 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.test.refimpl.parser;
+package org.apache.batik.test.parser;
 
 import java.io.*;
 import org.apache.batik.parser.*;
-import org.apache.batik.refimpl.parser.*;
 
 /**
  * To test the points parser.
@@ -24,7 +23,7 @@ public class PointsParserTest {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) throws Exception {
-	PointsParser parser = new ConcretePointsParser();
+	PointsParser parser = new PointsParser();
 	parser.setPointsHandler(new TestPointsHandler());
 
 	parser.parse(new StringReader("1 2"));

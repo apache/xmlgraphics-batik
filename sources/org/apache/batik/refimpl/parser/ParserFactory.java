@@ -25,11 +25,12 @@ import org.apache.batik.parser.TransformListParser;
  * @version $Id$
  */
 public class ParserFactory implements org.apache.batik.parser.ParserFactory {
+
     /**
      * Creates and returns an angle parser.
      */
     public AngleParser createAngleParser() {
-        return new ConcreteAngleParser();
+        return new AngleParser();
     }
 
     /**
@@ -50,41 +51,41 @@ public class ParserFactory implements org.apache.batik.parser.ParserFactory {
      * Creates and returns a length parser.
      */
     public LengthParser createLengthParser() {
-        return new ConcreteLengthParser();
+        return new LengthParser();
     }
     
     /**
      * Creates and returns a length list parser.
      */
     public LengthParser createLengthListParser() {
-        return new ConcreteLengthListParser();
+        return new LengthListParser();
     }
     
     /**
      * Creates and returns a path parser.
      */
     public PathParser createPathParser() {
-        return new ConcretePathParser();
+        return new PathParser();
     }
 
     /**
      * Creates and returns a points parser.
      */
     public PointsParser createPointsParser() {
-        return new ConcretePointsParser();
+        return new PointsParser();
     }
 
     /**
      * Creates and returns a points parser.
      */
     public PreserveAspectRatioParser createPreserveAspectRatioParser() {
-        return new ConcretePreserveAspectRatioParser();
+        return new PreserveAspectRatioParser();
     }
 
     /**
      * Creates and returns a transform list parser.
      */
     public TransformListParser createTransformListParser() {
-        return new ConcreteTransformListParser();
+        return new TransformListParser();
     }
 }

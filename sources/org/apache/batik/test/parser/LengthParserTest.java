@@ -6,11 +6,10 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.test.refimpl.parser;
+package org.apache.batik.test.parser;
 
 import java.io.*;
 import org.apache.batik.parser.*;
-import org.apache.batik.refimpl.parser.*;
 
 /**
  * To test the length parser.
@@ -23,7 +22,7 @@ public class LengthParserTest {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) throws Exception {
-	LengthParser parser = new ConcreteLengthParser();
+	LengthParser parser = new LengthParser();
 	parser.setLengthHandler(new TestLengthHandler());
 
 	parser.parse(new StringReader("1.2"));
@@ -32,7 +31,7 @@ public class LengthParserTest {
 	parser.parse(new StringReader("-1.23e2%"));
 	parser.parse(new StringReader("1.2mm"));
 
-	LengthListParser parser2 = new ConcreteLengthListParser();
+	LengthListParser parser2 = new LengthListParser();
 	parser2.setLengthListHandler(new TestLengthListHandler());
 
 	parser2.parse(new StringReader("1.2"));

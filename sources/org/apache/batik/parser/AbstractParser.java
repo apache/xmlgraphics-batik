@@ -6,18 +6,18 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.refimpl.parser;
+package org.apache.batik.parser;
 
 import java.io.IOException;
 import java.io.Reader;
+
 import java.text.MessageFormat;
+
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
 import org.apache.batik.i18n.LocalizableSupport;
-import org.apache.batik.parser.ErrorHandler;
-import org.apache.batik.parser.ParseException;
-import org.apache.batik.parser.Parser;
 import org.apache.batik.util.InputBuffer;
 
 /**
@@ -28,6 +28,7 @@ import org.apache.batik.util.InputBuffer;
  * @version $Id$
  */
 public abstract class AbstractParser implements Parser {
+
     /**
      * The default resource bundle base name.
      */
