@@ -91,7 +91,7 @@ public class ConcreteRootGraphicsNode extends ConcreteCompositeGraphicsNode
                                          String propertyName,
                                          boolean oldValue, boolean newValue) {
         Object oldV = (oldValue) ? Boolean.TRUE : Boolean.FALSE;
-        Object newV = (oldValue) ? Boolean.TRUE : Boolean.FALSE;
+        Object newV = (newValue) ? Boolean.TRUE : Boolean.FALSE;
         PropertyChangeEvent evt = new PropertyChangeEvent(source,
                                                           propertyName,
                                                           oldV,
