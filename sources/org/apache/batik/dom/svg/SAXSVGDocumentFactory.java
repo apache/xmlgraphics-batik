@@ -66,7 +66,7 @@ public class SAXSVGDocumentFactory
         InputSource is = new InputSource(uri);
 
 	try {
-            doc = (SVGOMDocument)createDocument
+            doc = (SVGOMDocument)super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
 	    doc.setURLObject(new URL(uri));
 	} catch (MalformedURLException e) {
@@ -87,7 +87,7 @@ public class SAXSVGDocumentFactory
         is.setSystemId(uri);
 
 	try {
-            doc = (SVGOMDocument)createDocument
+            doc = (SVGOMDocument)super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
 	    doc.setURLObject(new URL(uri));
 	} catch (MalformedURLException e) {
@@ -108,13 +108,63 @@ public class SAXSVGDocumentFactory
         is.setSystemId(uri);
 
 	try {
-            doc = (SVGOMDocument)createDocument
+            doc = (SVGOMDocument)super.createDocument
                 (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
 	    doc.setURLObject(new URL(uri));
 	} catch (MalformedURLException e) {
 	    throw new IOException(e.getMessage());
 	}
 	return doc;
+    }
+
+    /**
+     * Creates a Document instance.
+     * @param ns The namespace URI of the root element of the document.
+     * @param root The name of the root element of the document.
+     * @param uri The document URI.
+     * @exception IOException if an error occured while reading the document.
+     */
+    public Document createDocument(String ns, String root, String uri)
+        throws IOException {
+        if (!SVGDOMImplementation.SVG_NAMESPACE_URI.equals(ns) ||
+            !"svg".equals(root)) {
+            throw new RuntimeException("Bad root element");
+        }
+        return super.createDocument(ns, root, uri);
+    }
+
+    /**
+     * Creates a Document instance.
+     * @param ns The namespace URI of the root element of the document.
+     * @param root The name of the root element of the document.
+     * @param uri The document URI.
+     * @param is The document input stream.
+     * @exception IOException if an error occured while reading the document.
+     */
+    public Document createDocument(String ns, String root, String uri, InputStream is)
+        throws IOException {
+        if (!SVGDOMImplementation.SVG_NAMESPACE_URI.equals(ns) ||
+            !"svg".equals(root)) {
+            throw new RuntimeException("Bad root element");
+        }
+        return super.createDocument(ns, root, uri, is);
+    }
+
+    /**
+     * Creates a Document instance.
+     * @param ns The namespace URI of the root element of the document.
+     * @param root The name of the root element of the document.
+     * @param uri The document URI.
+     * @param r The document reader.
+     * @exception IOException if an error occured while reading the document.
+     */
+    public Document createDocument(String ns, String root, String uri, Reader r)
+        throws IOException {
+        if (!SVGDOMImplementation.SVG_NAMESPACE_URI.equals(ns) ||
+            !"svg".equals(root)) {
+            throw new RuntimeException("Bad root element");
+        }
+        return super.createDocument(ns, root, uri, r);
     }
 
     /**
