@@ -40,9 +40,8 @@ public class ImageHandlerPNGEncoder extends AbstractImageHandlerEncoder {
      *        image handler. If null, then the url corresponding to imageDir
      *        is used.
      */
-    public ImageHandlerPNGEncoder(SVGGeneratorContext generatorContext,
-                                  String imageDir, String urlRoot) {
-        super(generatorContext, imageDir, urlRoot);
+    public ImageHandlerPNGEncoder(String imageDir, String urlRoot) {
+        super(imageDir, urlRoot);
     }
 
     /**

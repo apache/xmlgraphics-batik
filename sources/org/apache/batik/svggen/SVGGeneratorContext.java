@@ -86,7 +86,7 @@ final public class SVGGeneratorContext {
         SVGGeneratorContext ctx = new SVGGeneratorContext(domFactory);
         ctx.setIDGenerator(new SVGIDGenerator());
         ctx.setExtensionHandler(new DefaultExtensionHandler());
-        ctx.setImageHandler(new ImageHandlerBase64Encoder(ctx));
+        ctx.setImageHandler(new ImageHandlerBase64Encoder());
         return ctx;
     }
 

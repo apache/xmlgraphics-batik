@@ -62,9 +62,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
      *        image handler. If null, then the url corresponding to imageDir
      *        is used.
      */
-    public AbstractImageHandlerEncoder(SVGGeneratorContext generatorContext,
-                                       String imageDir, String urlRoot) {
-        super(generatorContext);
+    public AbstractImageHandlerEncoder(String imageDir, String urlRoot) {
         if (imageDir == null)
             throw new IllegalArgumentException(ERROR_NULL_INPUT);
 
@@ -88,7 +86,8 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
      * This template method should set the xlink:href attribute on the input
      * Element parameter
      */
-    protected void handleHREF(Image image, Element imageElement){
+    protected void handleHREF(Image image, Element imageElement,
+                              SVGGeneratorContext generatorContext){
         // Create an buffered image where the image will be drawn
         Dimension size = new Dimension(image.getWidth(null),
                                        image.getHeight(null));
@@ -102,14 +101,15 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
         g.dispose();
 
         // Save image into file
-        saveBufferedImageToFile(imageElement, buf);
+        saveBufferedImageToFile(imageElement, buf, generatorContext);
     }
 
     /**
      * This template method should set the xlink:href attribute on the input
      * Element parameter
      */
-    protected void handleHREF(RenderedImage image, Element imageElement){
+    protected void handleHREF(RenderedImage image, Element imageElement,
+                              SVGGeneratorContext generatorContext){
         // Create an buffered image where the image will be drawn
         Dimension size = new Dimension(image.getWidth(), image.getHeight());
         BufferedImage buf = buildBufferedImage(size);
@@ -124,14 +124,15 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
         g.dispose();
 
         // Save image into file
-        saveBufferedImageToFile(imageElement, buf);
+        saveBufferedImageToFile(imageElement, buf, generatorContext);
     }
 
     /**
      * This template method should set the xlink:href attribute on the input
      * Element parameter
      */
-    protected void handleHREF(RenderableImage image, Element imageElement){
+    protected void handleHREF(RenderableImage image, Element imageElement,
+                              SVGGeneratorContext generatorContext){
         // Create an buffered image where the image will be drawn
         Dimension size = new Dimension((int)Math.ceil(image.getWidth()),
                                        (int)Math.ceil(image.getHeight()));
@@ -147,10 +148,15 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
         g.dispose();
 
         // Save image into file
-        saveBufferedImageToFile(imageElement, buf);
+        saveBufferedImageToFile(imageElement, buf, generatorContext);
     }
 
-    private void saveBufferedImageToFile(Element imageElement, BufferedImage buf) {
+    private void saveBufferedImageToFile(Element imageElement,
+                                         BufferedImage buf,
+                                         SVGGeneratorContext generatorContext) {
+        if (generatorContext == null)
+            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
+
         // Create a new file in image directory
         File imageFile = null;
 
