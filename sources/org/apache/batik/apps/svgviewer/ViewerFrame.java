@@ -73,6 +73,7 @@ import org.apache.batik.util.SVGFileFilter;
 import org.apache.batik.util.SVGUtilities;
 
 import org.apache.batik.util.gui.DOMViewer;
+import org.apache.batik.util.gui.LanguageDialog;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;
 import org.apache.batik.util.gui.URIChooser;
@@ -111,6 +112,7 @@ public class ViewerFrame
     public final static String TREE_ACTION        = "TreeAction";
     public final static String STOP_ACTION        = "StopAction";
     public final static String FIXED_SIZE_ACTION  = "FixedSizeAction";
+    public final static String LANGUAGE_ACTION    = "LanguageAction";
     public final static String MONITOR_ACTION     = "MonitorAction";
 
     /**
@@ -206,6 +208,11 @@ public class ViewerFrame
     protected DOMViewer domViewer = new DOMViewer();
 
     /**
+     * The language dialog.
+     */
+    protected LanguageDialog languageDialog;
+
+    /**
      * The reload action
      */
     protected ReloadAction reloadAction = new ReloadAction();
@@ -267,6 +274,7 @@ public class ViewerFrame
         listeners.put(TREE_ACTION,        new TreeAction());
         listeners.put(STOP_ACTION,        stopAction);
         listeners.put(FIXED_SIZE_ACTION,  new FixedSizeAction());
+        listeners.put(LANGUAGE_ACTION,    new LanguageAction());
         listeners.put(MONITOR_ACTION,     new MonitorAction());
  
         JPanel p = null;
@@ -305,6 +313,9 @@ public class ViewerFrame
         // Create the status bar
         statusBar = new StatusBar();
         getContentPane().add("South", statusBar);
+
+        // Create the language dialog
+        languageDialog = new LanguageDialog(this);
 
         panel.add("Center", canvas);
         panel.revalidate();
@@ -675,6 +686,21 @@ public class ViewerFrame
         public FixedSizeAction() {}
         public void actionPerformed(ActionEvent e) {
             fixedSize = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+        }
+    }
+
+    /**
+     * To show the language dialog.
+     */
+    public class LanguageAction extends AbstractAction {
+        public LanguageAction() {}
+        public void actionPerformed(ActionEvent e) {
+            Rectangle fr = getBounds();
+            Dimension ld = languageDialog.getSize();
+            languageDialog.setLocation(fr.x + (fr.width  - ld.width) / 2,
+                                       fr.y + (fr.height - ld.height) / 2);
+            //languageDialog.setLanguages(userLanguages);
+            languageDialog.show();
         }
     }
 

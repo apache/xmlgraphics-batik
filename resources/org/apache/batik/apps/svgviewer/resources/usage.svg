@@ -26,11 +26,17 @@
   <line x1="40" y1="150" x2="280" y2="150"/>
   <line x1="50" y1="141" x2="290" y2="141"/>
   <line x1="43" y1="137" x2="286" y2="137"/>
+
   <line x1="60" y1="200" x2="350" y2="200"/>
   <line x1="63" y1="191" x2="340" y2="191"/>
   <line x1="70" y1="187" x2="310" y2="187"/>
-  <line x1="220" y1="130" x2="220" y2="230"/>
-  <line x1="250" y1="133" x2="250" y2="220"/>
+
+  <line x1="50" y1="250" x2="340" y2="250"/>
+  <line x1="63" y1="241" x2="320" y2="241"/>
+  <line x1="60" y1="237" x2="330" y2="237"/>
+
+  <line x1="220" y1="130" x2="220" y2="270"/>
+  <line x1="250" y1="133" x2="250" y2="265"/>
 </g>
 
 <g style="filter:url(#blurFilter)">
@@ -45,25 +51,27 @@
 </g>
 
 <g style="font-size:16; text-anchor:end">
-  <text x="220" y="150">Shift + Left Button:</text>
-  <text x="220" y="200">Ctrl + Left Button:</text>
+  <text x="220" y="150">Shift + Button 1:</text>
+  <text x="220" y="200">Ctrl + Button 1:</text>
+  <text x="220" y="250">Ctrl + Button 3:</text>
 </g>
 
 <g style="font-size:16pt; text-anchor:start">
   <text x="250" y="150">Pan</text>
   <text x="250" y="200">Zoom</text>
+  <text x="250" y="250">Rotate</text>
 </g>
 
 <g style="fill:none; stroke:black; stroke-width:5; filter:url(#blurFilter)">
-  <path d="M125,260q12,-10,24,0t24,0t24,0t24,0t24,0t24,0"/>
-  <path d="M125,290q12,-10,24,0t24,0t24,0t24,0t24,0t24,0"/>
-  <path d="M125,320q12,-10,24,0t24,0t24,0t24,0t24,0t24,0"/>
+  <path d="M125,300q12,-10,24,0t24,0t24,0t24,0t24,0t24,0"/>
+  <path d="M125,330q12,-10,24,0t24,0t24,0t24,0t24,0t24,0"/>
+  <path d="M125,360q12,-10,24,0t24,0t24,0t24,0t24,0t24,0"/>
 </g>
 
 <g style="fill:none; stroke-width:5"
    transform="translate(-5,-5)">
-  <path d="M125,260q12,-10,24,0t24,0t24,0t24,0t24,0t24,0" style="stroke:red"/>
-  <path d="M125,290q12,-10,24,0t24,0t24,0t24,0t24,0t24,0" style="stroke:#0C0"/>
-  <path d="M125,320q12,-10,24,0t24,0t24,0t24,0t24,0t24,0" style="stroke:#00E"/>
+  <path d="M125,300q12,-10,24,0t24,0t24,0t24,0t24,0t24,0" style="stroke:red"/>
+  <path d="M125,330q12,-10,24,0t24,0t24,0t24,0t24,0t24,0" style="stroke:#0C0"/>
+  <path d="M125,360q12,-10,24,0t24,0t24,0t24,0t24,0t24,0" style="stroke:#00E"/>
 </g>
 </svg>
