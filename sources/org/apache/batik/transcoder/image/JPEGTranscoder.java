@@ -20,11 +20,6 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.resources.Messages;
 
-import java.awt.Rectangle;
-import java.io.File;
-import java.io.FileOutputStream;
-import org.apache.batik.transcoder.TranscoderInput;
-
 /**
  * This class is an <tt>ImageTranscoder</tt> that produces a JPEG image.
  *
@@ -32,11 +27,6 @@ import org.apache.batik.transcoder.TranscoderInput;
  * @version $Id$
  */
 public class JPEGTranscoder extends ImageTranscoder {
-
-    /**
-     * The JPEG encoder quality key.
-     */
-    public static final TranscodingHints.Key KEY_QUALITY = new QualityKey(0);
 
     /**
      * Constructs a new transcoder that produces jpeg images.
@@ -61,16 +51,18 @@ public class JPEGTranscoder extends ImageTranscoder {
      * @param TranscoderException if an error occured while storing the image
      */
     public void writeImage(BufferedImage img, TranscoderOutput output)
-        throws TranscoderException {
+            throws TranscoderException {
         OutputStream ostream = output.getOutputStream();
         if (ostream == null) {
-            throw new TranscoderException("jpeg.badoutput");
+            throw new TranscoderException(
+                Messages.formatMessage("jpeg.badoutput", null));
         }
         float quality;
         if (hints.containsKey(KEY_QUALITY)) {
             quality = ((Float)hints.get(KEY_QUALITY)).floatValue();
         } else {
-            handler.error(new TranscoderException("jpeg.unspecifiedQuality"));
+            handler.error(new TranscoderException(
+                Messages.formatMessage("jpeg.unspecifiedQuality", null)));
             quality = 1f;
         }
         try {
@@ -82,6 +74,33 @@ public class JPEGTranscoder extends ImageTranscoder {
             throw new TranscoderException(ex);
         }
     }
+
+    // --------------------------------------------------------------------
+    // Keys definition
+    // --------------------------------------------------------------------
+
+    /**
+     * The encoder quality factor key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_QUALITY</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float (between 0 and 1)</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">1 (no lossy)</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">Recommended</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the JPEG image encoding quality.</TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_QUALITY
+        = new QualityKey(0);
 
     /**
      * A transcoding Key represented the JPEG image quality.
@@ -99,103 +118,4 @@ public class JPEGTranscoder extends ImageTranscoder {
             }
         }
     }
-/*
-    static void save(String inputFilename, String outputFilename,
-                     int w, int h, Rectangle aoi) throws Exception {
-        System.out.println("Saving: "+inputFilename+" to "+outputFilename);
-        JPEGTranscoder t = new JPEGTranscoder();
-        t.addTranscodingHint(KEY_XML_PARSER_CLASSNAME,
-                             "org.apache.crimson.parser.XMLReaderImpl");
-        t.addTranscodingHint(KEY_QUALITY, new Float(.8f));
-        if (w > 0) {
-            t.addTranscodingHint(KEY_WIDTH, new Integer(w));
-        }
-        if (h > 0) {
-            t.addTranscodingHint(KEY_HEIGHT, new Integer(h));
-        }
-        if (aoi != null) {
-            t.addTranscodingHint(KEY_AOI, aoi);
-        }
-        String uri = new File(inputFilename).toURL().toString();
-        TranscoderInput input = new TranscoderInput(uri);
-        OutputStream ostream = new FileOutputStream(outputFilename);
-        TranscoderOutput output = new TranscoderOutput(ostream);
-        t.transcode(input, output);
-        ostream.flush();
-        ostream.close();
-        System.out.println(outputFilename+" saved\n");
-    }
-
-    public static void main(String [] args) throws Exception {
-
-        // document with a viewport
-
-        if (args.length > 0) {
-            String s = args[0];
-            s = s.substring(s.lastIndexOf(File.separatorChar));
-            s = s.substring(1, s.lastIndexOf('.'));;
-            save(args[0], s+".jpg",
-                 -1, -1, null);
-            save(args[0], s+"-thumbnail.jpg",
-                 200, -1, null);
-        } else {
-            save("samples/anne.svg", "anne-identity.jpg",
-                 -1, -1, null);
-
-            save("samples/anne.svg", "anne-x2.jpg",
-                 900, 1000, null);
-
-            save("samples/anne.svg", "anne-thumbnail.jpg",
-                 225, -1, null);
-
-            save("samples/anne.svg", "anne-tile1.jpg",
-                 225, -1, new Rectangle(0, 0, 225, 250));
-            save("samples/anne.svg", "anne-tile2.jpg",
-                 225, -1, new Rectangle(225, 0, 225, 250));
-            save("samples/anne.svg", "anne-tile3.jpg",
-                 225, -1, new Rectangle(0, 250, 225, 250));
-            save("samples/anne.svg", "anne-tile4.jpg",
-                 225, -1, new Rectangle(225, 250, 225, 250));
-
-            save("samples/anne.svg", "anne-tile1x2.jpg",
-                 450, 500, new Rectangle(0, 0, 225, 250));
-            save("samples/anne.svg", "anne-tile2x2.jpg",
-                 450, 500, new Rectangle(225, 0, 225, 250));
-            save("samples/anne.svg", "anne-tile3x2.jpg",
-                 450, 500, new Rectangle(0, 250, 225, 250));
-            save("samples/anne.svg", "anne-tile4x2.jpg",
-                 450, 500, new Rectangle(225, 250, 225, 250));
-
-            // document without a viewport
-
-            save("local/tests/fish.svg", "fish-identity.jpg",
-                 -1, -1, null);
-
-            save("local/tests/fish.svg", "fish-x2.jpg",
-                 1200, 800, null);
-            save("local/tests/fish.svg", "fish-thumbnail.jpg",
-                 300, -1, null);
-
-            save("local/tests/fish.svg", "fish-tile1.jpg",
-                 300, -1, new Rectangle(0, 0, 300, 200));
-            save("local/tests/fish.svg", "fish-tile2.jpg",
-                 300, -1, new Rectangle(300, 0, 300, 200));
-            save("local/tests/fish.svg", "fish-tile3.jpg",
-                 300, -1, new Rectangle(0, 200, 300, 200));
-            save("local/tests/fish.svg", "fish-tile4.jpg",
-                 300, -1, new Rectangle(300, 200, 300, 200));
-
-            save("local/tests/fish.svg", "fish-tile1x2.jpg",
-                 600, 400, new Rectangle(0, 0, 300, 200));
-            save("local/tests/fish.svg", "fish-tile2x2.jpg",
-                 600, 400, new Rectangle(300, 0, 300, 200));
-            save("local/tests/fish.svg", "fish-tile3x2.jpg",
-                 600, 400, new Rectangle(0, 200, 300, 200));
-            save("local/tests/fish.svg", "fish-tile4x2.jpg",
-                 600, 400, new Rectangle(300, 200, 300, 200));
-        }
-
-        System.exit(0);
-    }
-*/
 }

@@ -11,6 +11,7 @@ package org.apache.batik.transcoder;
 import java.io.Reader;
 import java.io.InputStream;
 import org.w3c.dom.Document;
+import org.xml.sax.XMLReader;
 
 /**
  * This class represents a generic input of a <tt>Transcoder</tt>.
@@ -19,6 +20,11 @@ import org.w3c.dom.Document;
  * @version $Id$
  */
 public class TranscoderInput {
+
+    /**
+     * The optional XML reader to receive SAX events.
+     */
+    protected XMLReader xmlReader;
 
     /**
      * The optional input has a byte stream.
@@ -44,6 +50,15 @@ public class TranscoderInput {
      * Constructs a new empty <tt>TranscoderInput</tt>.
      */
     public TranscoderInput() {
+    }
+
+    /**
+     * Constructs a new <tt>TranscoderInput</tt> with the specified
+     * XML reader.
+     * @param xmlReader the XML reader of this transcoder input
+     */
+    public TranscoderInput(XMLReader xmlReader) {
+        this.xmlReader = xmlReader;
     }
 
     /**
@@ -78,6 +93,23 @@ public class TranscoderInput {
      */
     public TranscoderInput(String uri) {
         this.uri = uri;
+    }
+
+    /**
+     * Sets the input of this transcoder input with the specified
+     * XML reader.
+     * @param xmlReader the XML reader of this transcoder input
+     */
+    public void setXMLReader(XMLReader xmlReader) {
+        this.xmlReader = xmlReader;
+    }
+
+    /**
+     * Returns the XML reader of this transcoder or null if none was
+     * supplied.
+     */
+    public XMLReader getXMLReader() {
+        return xmlReader;
     }
 
     /**
