@@ -585,7 +585,7 @@ public class ViewerFrame
      * Returns the pixel to mm factor.
      */
     public float getPixelToMM() {
-        return 0.33f;
+        return 0.3528f;
     }
 
     /**
