@@ -13,6 +13,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 
+import java.awt.font.FontRenderContext;
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
@@ -22,6 +24,8 @@ import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 
 import java.util.List;
+
+import org.apache.batik.gvt.renderer.StrokingTextPainter;
 
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
@@ -72,6 +76,17 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     protected AttributedCharacterIterator[] chunkACIs = null;
 
     /**
+     * The text painter used to display the text of this text node.
+     */
+    protected TextPainter textPainter = new StrokingTextPainter();
+
+    /**
+     * The font render context to use.
+     */
+    protected FontRenderContext fontRenderContext =
+	new FontRenderContext(new AffineTransform(), true, true);
+
+    /**
      * Internal Cache: Bounds for this text node, without taking any of the
      * rendering attributes (e.g., stroke) into account
      */
@@ -91,6 +106,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * Constructs a new empty <tt>TextNode</tt>.
      */
     public TextNode() {}
+
 
     /**
      * Returns a list of text runs.
@@ -203,8 +219,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc){
         if (primitiveBounds == null) {
             if (aci != null) {
-                primitiveBounds = rc.getTextPainter().getPaintedBounds(this,
-                                       rc.getFontRenderContext());
+                primitiveBounds = textPainter.getPaintedBounds
+		    (this, fontRenderContext);
             } else {
                 // Don't cache if ACI is null
                 System.out.println("ACI is null for " + this);
@@ -223,8 +239,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
         if (geometryBounds == null){
             if (aci != null) {
-                geometryBounds = rc.getTextPainter().getBounds(this,
-                                      rc.getFontRenderContext());
+                geometryBounds = textPainter.getBounds(this, fontRenderContext);
             } else {
                 // Don't cache if ACI is null
                 System.out.println("ACI is null for " + this);
@@ -251,8 +266,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     public Shape getOutline(GraphicsNodeRenderContext rc) {
 	Shape outline;
 	if (aci != null) {
-	    outline = rc.getTextPainter().getDecoratedShape
-		(this, rc.getFontRenderContext());
+	    outline = textPainter.getDecoratedShape(this, fontRenderContext);
 	} else {
 	    // don't cache this now
 	    return new Rectangle2D.Float(0, 0, 0, 0);
@@ -270,8 +284,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @param the anchor of this node
      */
     public boolean selectAt(double x, double y, GraphicsNodeRenderContext rc) {
-         beginMark = rc.getTextPainter().selectAt(x, y, aci, this, rc);
-         return true; // assume this always changes selection, for now.
+	beginMark = textPainter.selectAt(x, y, aci, this, rc);
+	return true; // assume this always changes selection, for now.
     }
 
     /**
@@ -280,9 +294,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @param the anchor of this node
      */
     public boolean selectTo(double x, double y, GraphicsNodeRenderContext rc) {
-        Mark tmpMark = 
-	    rc.getTextPainter().selectTo(x, y, beginMark, aci, this, rc);
-
+        Mark tmpMark = textPainter.selectTo(x, y, beginMark, aci, this, rc);
         boolean result = false;
         if (tmpMark != endMark) {
             endMark = tmpMark;
@@ -297,8 +309,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @param the anchor of this node
      */
     public boolean selectAll(double x, double y, GraphicsNodeRenderContext rc) {
-        beginMark = rc.getTextPainter().selectFirst(x, y, aci, this, rc);
-        endMark = rc.getTextPainter().selectLast(x, y, aci, this, rc);
+        beginMark = textPainter.selectFirst(x, y, aci, this, rc);
+        endMark = textPainter.selectLast(x, y, aci, this, rc);
         return true;
     }
 
@@ -308,22 +320,20 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @return an object containing the selected content.
      */
     public Object getSelection(GraphicsNodeRenderContext rc) {
-        int[] ranges = rc.getTextPainter().getSelected(
-                                               aci, beginMark, endMark);
+        int[] ranges = textPainter.getSelected(aci, beginMark, endMark);
         Object o = null;
 
-        // TODO: later we can return more complex things like
+	// TODO: later we can return more complex things like
         // noncontiguous selections
         if ((ranges != null) && (ranges.length > 1)) {
-
             // make sure that they are in order
             if (ranges[0] > ranges[1]) {
                 int temp = ranges[1];
                 ranges[1] = ranges[0];
                 ranges[0] = temp;
             }
-            o = new AttributedCharacterSpanIterator(
-                                  aci, ranges[0], ranges[1]+1);
+            o = new AttributedCharacterSpanIterator
+		(aci, ranges[0], ranges[1]+1);
         }
         return o;
     }
@@ -334,12 +344,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
      * @return a Shape which encloses the current text selection.
      */
     public Shape getHighlightShape(GraphicsNodeRenderContext rc) {
-        Shape highlightShape;
-     //   System.out.println("getting highlight shape for " + this);
-        highlightShape =
-            rc.getTextPainter().getHighlightShape(beginMark,
-                                                  endMark);
-
+        Shape highlightShape = 
+	    textPainter.getHighlightShape(beginMark, endMark);
         AffineTransform t = getGlobalTransform();
         highlightShape = t.createTransformedShape(highlightShape);
         return highlightShape;
@@ -358,7 +364,6 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         if (isVisible) {
             super.paint(g2d, rc);
         }
-
     }
 
     /**
@@ -376,13 +381,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         if(clip != null && !(clip instanceof GeneralPath)){
             g2d.setClip(new GeneralPath(clip));
         }
-
         // Paint the text
-        TextPainter textPainter = rc.getTextPainter();
-        if(textPainter != null) {
-            textPainter.paint(this, g2d, rc);
-        }
-
+	textPainter.paint(this, g2d, rc);
     }
 
     /**
@@ -395,10 +395,12 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
          * The type of the START anchor.
          */
         public static final int ANCHOR_START  = 0;
+
         /**
          * The type of the MIDDLE anchor.
          */
         public static final int ANCHOR_MIDDLE = 1;
+
         /**
          * The type of the END anchor.
          */
@@ -430,7 +432,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
 	 */
         private int type;
 
-        /** No instance of this class. */
+        /** 
+	 * No instance of this class.
+	 */
         private Anchor(int type) {
             this.type = type;
         }
