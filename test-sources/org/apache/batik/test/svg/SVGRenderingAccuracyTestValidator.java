@@ -106,6 +106,7 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
         addTest(new SameSizeDifferentContent());
         addTest(new AccurateRendering());
         addTest(new AccurateRenderingWithVariation());
+        addTest(new DefaultConfigTest());
     }
     
     /**
@@ -140,6 +141,71 @@ public class SVGRenderingAccuracyTestValidator extends DefaultTestSuite {
         tmpFile.deleteOnExit();
         
         return tmpFile.toURL();
+    }
+
+
+    /**
+     * Validates that the default parameters computation is
+     * working as expected.
+     */
+    static class DefaultConfigTest extends AbstractTest {
+        String svgURL = "samples/anne.svg";
+        String expectedRefImgURL = "test-references/samples/anne.png";
+        String expectedVariationURL = "test-references/samples/accepted-variation/anne.png";
+        String expectedCandidateURL = "test-references/samples/candidate-variation/anne.png";
+
+        String ERROR_EXCEPTION_WHILE_BUILDING_TEST
+            = "error.exception.while.building.test";
+
+        String ERROR_UNEXPECTED_REFERENCE_IMAGE_URL
+            = "error.unexpected.reference.image.url";
+
+        String ERROR_UNEXPECTED_VARIATION_URL
+            = "error.unexpected.variation.url";
+
+        String ERROR_UNEXPECTED_CANDIDATE_URL
+            = "error.unexpected.candidate.url";
+
+        String ENTRY_KEY_EXPECTED_VALUE 
+            = "entry.key.expected.value";
+
+        String ENTRY_KEY_FOUND_VALUE
+            = "entry.key.found.value";
+
+        public DefaultConfigTest(){
+            super();
+            setId("defaultTest");
+        }
+
+        public TestReport runImpl() throws Exception {
+            SVGRenderingAccuracyTest t 
+                = new SamplesRenderingTest();
+
+            t.setId(svgURL);
+
+            if(!t.refImgURL.toString().endsWith(expectedRefImgURL)){
+                TestReport r = reportError(ERROR_UNEXPECTED_REFERENCE_IMAGE_URL);
+                r.addDescriptionEntry(ENTRY_KEY_EXPECTED_VALUE, expectedRefImgURL);
+                r.addDescriptionEntry(ENTRY_KEY_FOUND_VALUE, "" + t.refImgURL);
+                return r;
+            }
+
+            if(!t.variationURL.toString().endsWith(expectedVariationURL)){
+                TestReport r = reportError(ERROR_UNEXPECTED_VARIATION_URL);
+                r.addDescriptionEntry(ENTRY_KEY_EXPECTED_VALUE, expectedVariationURL);
+                r.addDescriptionEntry(ENTRY_KEY_FOUND_VALUE, "" + t.variationURL);
+                return r;
+            }
+
+            if(!t.saveVariation.toURL().toString().endsWith(expectedCandidateURL)){
+                TestReport r = reportError(ERROR_UNEXPECTED_CANDIDATE_URL);
+                r.addDescriptionEntry(ENTRY_KEY_EXPECTED_VALUE, expectedCandidateURL);
+                r.addDescriptionEntry(ENTRY_KEY_FOUND_VALUE, "" + t.saveVariation.toURL().toString());
+                return r;
+            }
+
+            return reportSuccess();
+        }
     }
 
 

@@ -133,8 +133,6 @@ public class XMLTestSuiteLoader implements XTSConstants {
             = element.getAttributeNS(null,
                                      XTS_NAME_ATTRIBUTE);
 
-        testSuite.setName(suiteName + " -- " + testSuite.getName());
-
         String suiteId 
             = element.getAttributeNS(null,
                                      XTS_ID_ATTRIBUTE);

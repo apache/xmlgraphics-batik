@@ -21,7 +21,7 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
     /**
      * This Test's name
      */
-    private String name = this.getClass().getName();
+    private String name = null;
 
     /**
      * Stores the list of child tests
@@ -66,11 +66,20 @@ public class DefaultTestSuite extends AbstractTest implements TestSuite {
     }
 
     public String getName(){
-        return name;
+        if(name != null){
+            return name;
+        }
+
+        String id = getId();
+        if(id != null && !"".equals(id)){
+            return id;
+        }
+
+        return this.getClass().getName();
     }
 
     public void setName(String name){
-        if(name == null){
+        if(name == null && !"".equals(name)){
             throw new IllegalArgumentException();
         }
 

@@ -278,6 +278,20 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
      */
     public SVGRenderingAccuracyTest(String svgURL,
                                     String refImgURL){
+        setConfig(svgURL, refImgURL);
+    }
+
+    /**
+     * For subclasses
+     */
+    protected SVGRenderingAccuracyTest(){
+    }
+
+    /**
+     * Sets this test's config.
+     */
+    public void setConfig(String svgURL,
+                          String refImgURL){
         if(svgURL == null){
             throw new IllegalArgumentException();
         }

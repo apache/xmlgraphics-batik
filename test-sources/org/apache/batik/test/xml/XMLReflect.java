@@ -32,8 +32,7 @@ public class XMLReflect implements XMLReflectConstants{
     public static Object buildObject(Element element) throws Exception {
 
         String className
-            = element.getAttributeNS(null,
-                                     XR_CLASS_ATTRIBUTE);
+            = getInheritedClassAttribute(element);
 
         Class cl = Class.forName(className);
         Object[] argsArray = null;
@@ -158,8 +157,7 @@ public class XMLReflect implements XMLReflectConstants{
      */
     public static Object buildArgument(Element element) throws Exception {
         if(!element.hasChildNodes()){
-            String classAttr = element.getAttributeNS(null,
-                                                      XR_CLASS_ATTRIBUTE);
+            String classAttr = getInheritedClassAttribute(element);
 
             // String based argument
             Class cl = Class.forName(classAttr);
@@ -182,5 +180,32 @@ public class XMLReflect implements XMLReflectConstants{
         else{
             return buildObject(element);
         }
+    }
+
+    /**
+     * The class name to use is that of the element itself or, if not
+     * specified, that of its closest ancestor which defines it
+     * (through the XR_CLASS_ATTRIBUTE
+     */
+    public static String getInheritedClassAttribute(Element element){
+        if(element != null){
+            String classAttr = element.getAttributeNS(null,
+                                                      XR_CLASS_ATTRIBUTE);
+        
+            if(classAttr == null || "".equals(classAttr)){
+                Node parent = element.getParentNode();
+                if(parent != null && parent.getNodeType() == Node.ELEMENT_NODE){
+                    return getInheritedClassAttribute((Element)parent);
+                }
+                else{
+                    return null;
+                }
+            }
+            
+            return classAttr;
+
+        }
+
+        return null;
     }
 }
