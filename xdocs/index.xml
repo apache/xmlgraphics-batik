@@ -26,7 +26,7 @@
 
     <body>
         <s1 title="Batik Overview">
-        <figure src="images/splash.png" alt="Batik release 1.1 is coming" />
+        <figure src="images/splash.png" alt="Batik release 1.1" />
 
         <p>
         Batik is a Java(tm) technology based toolkit for applications that want 
