@@ -39,6 +39,12 @@ public class TranscodingHints implements Map, Cloneable {
         BatikHints.KEY_XML_PARSER_CLASSNAME;
 
     /**
+     * The default viewport.
+     */
+    public static final Key KEY_DEFAULT_VIEWPORT =
+        BatikHints.KEY_DEFAULT_VIEWPORT;
+
+    /**
      * The <tt>GVTBuilder</tt> implementation to use.
      */
     public static final Key KEY_GVT_BUILDER =

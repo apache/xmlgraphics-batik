@@ -9,8 +9,12 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.geom.Dimension2D;
+
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.gvt.event.EventDispatcher;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 
@@ -21,6 +25,13 @@ import org.w3c.dom.svg.SVGAElement;
  * @version $Id$
  */
 public class DefaultUserAgent implements UserAgent {
+
+    /**
+     * Returns the default size of the viewport of this user agent (0, 0).
+     */
+    public Dimension2D getViewportSize() {
+        return new Dimension(0, 0);
+    }
 
     /**
      * Returns the <code>EventDispatcher</code> used by the

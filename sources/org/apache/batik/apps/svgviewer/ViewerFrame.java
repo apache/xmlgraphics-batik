@@ -16,6 +16,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.Dimension2D;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
@@ -495,6 +496,13 @@ public class ViewerFrame
     }
 
     // UserAgent ///////////////////////////////////////////////////
+
+    /**
+     * Returns the default size of the viewport of this user agent.
+     */
+    public Dimension2D getViewportSize() {
+        return canvas.getSize();
+    }
 
     /**
      * Returns the <code>EventDispatcher</code> used by the

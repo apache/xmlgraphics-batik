@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.Viewport;
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.refimpl.bridge.ConcreteGVTBuilder;
@@ -44,6 +45,11 @@ public abstract class AbstractTranscoder implements Transcoder {
                   "org.apache.crimson.parser.XMLReaderImpl");
         hints.put(TranscodingHints.KEY_GVT_BUILDER,
                   new org.apache.batik.refimpl.bridge.ConcreteGVTBuilder());
+        hints.put(TranscodingHints.KEY_DEFAULT_VIEWPORT,
+                  new Viewport() {
+            public float getWidth() { return 640f; }
+            public float getHeight() { return 480f; }
+        });
     }
 
     /**
@@ -61,8 +67,8 @@ public abstract class AbstractTranscoder implements Transcoder {
         } catch (SAXException ex) {
             throw new TranscoderException(ex.getMessage(), ex);
         } catch (InterruptedException ex) {
-	    throw new TranscoderException(ex.getMessage(), ex);
-	}
+            throw new TranscoderException(ex.getMessage(), ex);
+        }
     }
 
     public TranscodingHints getTranscodingHints() {
@@ -82,6 +88,13 @@ public abstract class AbstractTranscoder implements Transcoder {
      */
     protected GVTBuilder getGVTBuilder() {
         return (GVTBuilder) hints.get(TranscodingHints.KEY_GVT_BUILDER);
+    }
+
+    /**
+     * Returns the default Viewport to use.
+     */
+    protected Viewport getDefaultViewport() {
+        return (Viewport) hints.get(TranscodingHints.KEY_DEFAULT_VIEWPORT);
     }
 
     /**
