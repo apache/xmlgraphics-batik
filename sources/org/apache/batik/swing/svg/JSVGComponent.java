@@ -959,21 +959,75 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         // Area of interest computation.
-        AffineTransform inv;
+        AffineTransform inv = null;
         try {
             inv = renderingTransform.createInverse();
         } catch (NoninvertibleTransformException e) {
-            throw new InternalError(e.getMessage());
         }
-        final Shape s =
-            inv.createTransformedShape(visRect);
+        final Shape s;
+        if (inv == null) s = visRect;
+        else             s = inv.createTransformedShape(visRect);
 
-        updateManager.getUpdateRunnableQueue().invokeLater
-            (new Runnable() { public void run() {
-                updateManager.updateRendering(renderingTransform,
-                                              doubleBufferedRendering, true, s,
-                                              visRect.width, visRect.height);
-            }});
+        class UpdateRenderingRunnable implements Runnable {
+            AffineTransform at;
+            boolean         doubleBuf;
+            boolean         clearPaintTrans;
+            Shape           aoi;
+            int             width;
+            int             height;
+
+            boolean active;
+
+            public UpdateRenderingRunnable(AffineTransform at,
+                                           boolean doubleBuf,
+                                           boolean clearPaintTrans,
+                                           Shape aoi,
+                                           int width, int height) {
+                updateInfo(at, doubleBuf, clearPaintTrans, aoi, width, height);
+                active = true;
+            }
+
+            public void updateInfo(AffineTransform at,
+                                   boolean doubleBuf,
+                                   boolean clearPaintTrans,
+                                   Shape aoi,
+                                   int width, int height) {
+                this.at              = at;
+                this.doubleBuf       = doubleBuf;
+                this.clearPaintTrans = clearPaintTrans;
+                this.aoi             = aoi;
+                this.width           = width;
+                this.height          = height;
+                active = true;
+            }
+
+            public void deactivate() {
+                active = false;
+            }
+            public void run() {
+                if (!active) return;
+
+                updateManager.updateRendering
+                    (at, doubleBuf, clearPaintTrans, aoi, width, height);
+            }
+        }
+        RunnableQueue rq = updateManager.getUpdateRunnableQueue();
+
+        // Events compression.
+        synchronized (rq.getIteratorLock()) {
+            Iterator it = rq.iterator();
+            while (it.hasNext()) {
+                Object next = it.next();
+                if (next instanceof UpdateRenderingRunnable) {
+                    ((UpdateRenderingRunnable)next).deactivate();
+                }
+            }
+        }
+
+        rq.invokeLater(new UpdateRenderingRunnable
+                       (renderingTransform, 
+                        doubleBufferedRendering, true, s,
+                        visRect.width, visRect.height));
     }
 
     /**
