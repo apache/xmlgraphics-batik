@@ -10,7 +10,6 @@
 <!-- ========================================================================= -->
 
 <!-- ========================================================================= -->
-<!-- author stefano@apache.org                                                 -->
 <!-- author vincent.hardy@eng.sun.com                                          -->
 <!-- version $Id$ -->
 <!-- ========================================================================= -->
@@ -20,7 +19,6 @@
         <subtitle>SVG Toolkit</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
-            <person name="Stefano Mazzochi" email="stefano@apache.org" />
         </authors>
     </header>
 
