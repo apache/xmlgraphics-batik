@@ -104,6 +104,6 @@ public class XMLResourceDescriptor {
      * @param cssParserClassName the classname of the CSS parser
      */
     public static void setCSSParserClassName(String cssParserClassName) {
-        XMLResourceDescriptor.cssParserClassName = xmlParserClassName;
+        XMLResourceDescriptor.cssParserClassName = cssParserClassName;
     }
 }

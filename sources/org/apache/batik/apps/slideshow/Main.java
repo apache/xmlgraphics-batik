@@ -74,9 +74,6 @@ public class Main extends JComponent {
         loader    = new DocumentLoader(userAgent);
         ctx       = new BridgeContext(userAgent, loader);
 
-        Thread t = new RenderThread();
-        t.start();
-
         boolean frameless = false;
         if (size == null) {
             size = Toolkit.getDefaultToolkit().getScreenSize();
@@ -98,6 +95,9 @@ public class Main extends JComponent {
         size.height += 2;
         display = new BufferedImage(size.width, size.height, 
                                     BufferedImage.TYPE_INT_BGR);
+
+        Thread t = new RenderThread();
+        t.start();
 
         JWindow w = new JWindow();
         w.setBackground(Color.black);
@@ -183,7 +183,7 @@ public class Main extends JComponent {
                 c = new Cursor(Cursor.DEFAULT_CURSOR);
                 if (transitionThread != null) {
                     synchronized (transitionThread) {
-                        transitionThread.notify();
+                        transitionThread.notifyAll();
                     }
                 }
             }
@@ -269,7 +269,7 @@ public class Main extends JComponent {
 
             synchronized (Main.this) {
                 transitionThread = null;
-                Main.this.notify();
+                Main.this.notifyAll();
             }
         }
     }
