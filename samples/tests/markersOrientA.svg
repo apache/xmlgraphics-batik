@@ -95,49 +95,48 @@
 
         </defs>
 
-        <g transform="translate(100, 120)">
+        <g transform="translate(110, 120)">
 
         <g id="grid" stroke="black" fill="none">
-            <rect x="-30" y="-25" width="325" height="350" fill="url(#gridPattern)"/>
+            <rect x="-30" y="-25" width="300" height="350" fill="url(markersOrientA.svg#gridPattern)"/>
 
-            <rect x="-30" y="-45" width="325" height="20" fill="rgb(240, 240, 240)" />
+            <rect x="-30" y="-45" width="300" height="20" fill="rgb(240, 240, 240)" />
             <rect x="-50" y="-25" width="20" height="350" fill="rgb(240, 240, 240)" />
 
-            <line x1="65" y1="-45" x2="65" y2="325" />
-            <line x1="190" y1="-45" x2="190" y2="325" />
-            <line x1="-50" y1="45" x2="295" y2="45" />
-            <line x1="-50" y1="115" x2="295" y2="115" />
-            <line x1="-50" y1="185" x2="295" y2="185" />
-            <line x1="-50" y1="255" x2="295" y2="255" />
+            <line x1="70" y1="-45" x2="70" y2="325" />
+            <line x1="170" y1="-45" x2="170" y2="325" />
+            <line x1="-50" y1="45" x2="270" y2="45" />
+            <line x1="-50" y1="115" x2="270" y2="115" />
+            <line x1="-50" y1="185" x2="270" y2="185" />
+            <line x1="-50" y1="255" x2="270" y2="255" />
 
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" x="15" y="-30">start/end</text>
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" x="130" y="-30">Middle w/ moveTo</text>
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" x="240" y="-30">Middle w/ lineTo</text>
-
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" 
-                  transform="translate(-35, 10) rotate(-90)">
+            <g class="legend" text-anchor="middle" fill="black" stroke="none">
+            <text transform="translate(-35, 10) rotate(-90)">
                 moveTo
             </text>
 
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" 
-                  transform="translate(-35, 80) rotate(-90)">
+            <text transform="translate(-35, 80) rotate(-90)">
                 lineTo
             </text>
 
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" 
-                  transform="translate(-35, 150) rotate(-90)">
+            <text transform="translate(-35, 150) rotate(-90)">
                 quadTo
             </text>
 
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" 
-                  transform="translate(-35, 220) rotate(-90)">
+            <text transform="translate(-35, 220) rotate(-90)">
                 cubicTo
             </text>
 
-            <text class="legend" stroke="none" fill="black" text-anchor="middle" 
-                  transform="translate(-35, 290) rotate(-90)">
+            <text transform="translate(-35, 290) rotate(-90)">
                 close
             </text>
+            </g>
+        </g>
+
+        <g id="gridLabels" class="legend" text-anchor="middle">
+            <text x="20" y="-30">start/end</text>
+            <text x="120" y="-30">Middle w/ moveTo</text>
+            <text x="220" y="-30">Middle w/ lineTo</text>
 
         </g>
 
@@ -234,7 +233,7 @@
         <!-- in : moveTo                          -->
         <!-- ==================================== -->
         <g marker-mid="url(#midMarker)"
-           transform="translate(220, 0)"  >
+           transform="translate(200, 0)"  >
 
 
             <!-- Out is a moveTo -->

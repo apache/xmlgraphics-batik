@@ -158,7 +158,7 @@
    
         </defs>
 
-        <g transform="translate(50, 120)">
+        <g transform="translate(50, 140)">
 
         <!-- ==================================== -->
         <!-- Simply test the various settings for -->
@@ -189,15 +189,17 @@
                  marker="url(#markerHidden)"
                  style="stroke-width:1; stroke:crimson"/>
             <use xlink:href="#testPathCrossHairs" />
-
-            <use y="50" xlink:href="#testPath" 
+            
+            <use y="70" xlink:href="#testPath" 
                  marker="url(#markerOverflow)"
                  style="stroke-width:1; stroke:crimson"/>
-            <use y="50" xlink:href="#testPathCrossHairs" />
+            <use y="70" xlink:href="#testPathCrossHairs" />
 
             <g class="label" transform="translate(60, 90)" text-anchor="middle">
-                <text y="0">Various values for the </text>
-                <text y="14">overflow property</text>
+                <text y="-110">overflow="hidden"</text>
+                <text y="-50">overflow="visible"</text>
+                <text y="30">Various values for the </text>
+                <text y="44">overflow property</text>
             </g>
         </g>
 
@@ -231,14 +233,16 @@
                  style="stroke-width:.5; stroke:crimson"/>
             <use xlink:href="#testPathCrossHairs" />
 
-            <use y="50" xlink:href="#testPath" 
+            <use y="70" xlink:href="#testPath" 
                  marker="url(#markerUserSpace)"
                  style="stroke-width:.5; stroke:crimson"/>
-            <use y="50" xlink:href="#testPathCrossHairs" />
+            <use y="70" xlink:href="#testPathCrossHairs" />
 
             <g class="label" transform="translate(60, 90)" text-anchor="middle">
-                <text y="0">Various values for the </text>
-                <text y="14">markerUnits property</text>
+                <text y="-115">markerUnits="strokeWidth"</text>
+                <text y="-45">markerUnits="userSpaceOnUse"</text>
+                <text y="30">Various values for the </text>
+                <text y="44">markerUnits property</text>
             </g>
         </g>
 
