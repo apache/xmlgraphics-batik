@@ -14,15 +14,17 @@ package org.apache.batik.util;
  * creating and loading state.
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
- * @version $Id $
+ * @version $Id$
  */
 public abstract class DocumentEvent {
 
     private static final int LOADING_KEYVAL = 1;
     private static final int PROPERTY_KEYVAL = 2;
 
-    public static final DocumentEvent.Key LOADING = new DocumentEvent.Key(LOADING_KEYVAL);
-    public static final DocumentEvent.Key PROPERTY = new DocumentEvent.Key(PROPERTY_KEYVAL);
+    public static final DocumentEvent.Key LOADING =
+        new DocumentEvent.Key(LOADING_KEYVAL);
+    public static final DocumentEvent.Key PROPERTY =
+        new DocumentEvent.Key(PROPERTY_KEYVAL);
 
     public final DocumentEvent.Key classid;
     public final int type;
@@ -33,8 +35,8 @@ public abstract class DocumentEvent {
      * required to initialize final variables.
      */
     protected DocumentEvent(DocumentEvent.Key classid, int type) {
-	this.classid = classid;
-	this.type = type;
+        this.classid = classid;
+        this.type = type;
     }
 
     /**
