@@ -1,0 +1,118 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Modification of a rect's attributes                                    -->
+<!--                                                                        -->
+<!-- @author deweese@apache.org                                             -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+  <title>Resizing zero w/h items 'onload'</title>
+  <text x="50%" y="45" class="title">Resizing zero w/h items 'onload'</text>
+
+  <script type="text/ecmascript"><![CDATA[
+    function resizeRect(id, w, h) {
+      var rect = document.getElementById(id);
+      rect.setAttribute("width",  w);
+      rect.setAttribute("height", h);
+    }
+    function resizeCircle(id, r) {
+      var circle = document.getElementById(id);
+      circle.setAttribute("r",  r);
+    }
+    function resizeEllipse(id, rx, ry) {
+      var ellipse = document.getElementById(id);
+      ellipse.setAttribute("rx",  rx);
+      ellipse.setAttribute("ry",  ry);
+    }
+    ]]></script>
+
+  <linearGradient id="testGrad" gradientUnits="objectBoundingBox"
+    x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" style="stop-color:crimson" />
+    <stop offset="1" style="stop-color:gold" />
+  </linearGradient>
+
+  <g id="test-content">
+    <g fill="red" stroke="black" stroke-width="2">
+       <rect id="r1-1" x="10" y="60" width="0" height="0" 
+        onload="resizeRect('r1-1', '50', '50')"/>
+       <rect id="r1-2" x="70" y="60" width="50" height="0" 
+        onload="resizeRect('r1-2', '50', '50')"/>
+       <rect id="r1-3" x="130" y="60" width="0" height="50" 
+        onload="resizeRect('r1-3', '50', '50')"/>
+       <circle id="c1-1" cx="215" cy="85" r="0" 
+        onload="resizeCircle('c1-1', '25')"/>
+       <ellipse id="e1-1" cx="275" cy="85" rx="0" ry="0" 
+        onload="resizeEllipse('e1-1', '25', '15')"/>
+       <ellipse id="e1-2" cx="335" cy="85" rx="25" ry="0" 
+        onload="resizeEllipse('e1-2', '25', '15')"/>
+       <ellipse id="e1-3" cx="395" cy="85" rx="0" ry="15" 
+        onload="resizeEllipse('e1-3', '25', '15')"/>
+    </g>
+
+    <g fill="url(#testGrad)" stroke="black" stroke-width="2">
+       <rect id="r2-1" x="10" y="120" width="0" height="0" 
+        onload="resizeRect('r2-1', '50', '50')"/>
+       <rect id="r2-2" x="70" y="120" width="50" height="0" 
+        onload="resizeRect('r2-2', '50', '50')"/>
+       <rect id="r2-3" x="130" y="120" width="0" height="50" 
+        onload="resizeRect('r2-3', '50', '50')"/>
+       <circle id="c2-1" cx="215" cy="145" r="0" 
+        onload="resizeCircle('c2-1', '25')"/>
+       <ellipse id="e2-1" cx="275" cy="145" rx="0" ry="0" 
+        onload="resizeEllipse('e2-1', '25', '15')"/>
+       <ellipse id="e2-2" cx="335" cy="145" rx="50" ry="0" 
+        onload="resizeEllipse('e2-2', '25', '15')"/>
+       <ellipse id="e2-3" cx="395" cy="145" rx="0" ry="50" 
+        onload="resizeEllipse('e2-3', '25', '15')"/>
+    </g>
+          
+    <g fill="red" stroke="black" stroke-width="2">
+       <rect id="r3-1" x="10" y="180" width="50" height="50" 
+        onload="resizeRect('r3-1', '0', '0')"/>
+       <rect id="r3-2" x="70" y="180" width="50" height="50" 
+        onload="resizeRect('r3-2', '50', '0')"/>
+       <rect id="r3-3" x="130" y="180" width="50" height="50" 
+        onload="resizeRect('r3-3', '0', '50')"/>
+       <circle id="c3-1" cx="215" cy="205" r="25" 
+        onload="resizeCircle('c3-1', '0')"/>
+       <ellipse id="e3-1" cx="275" cy="205" rx="25" ry="15" 
+        onload="resizeEllipse('e3-1', '0', '0')"/>
+       <ellipse id="e3-2" cx="335" cy="205" rx="25" ry="15" 
+        onload="resizeEllipse('e3-2', '25', '0')"/>
+       <ellipse id="e3-3" cx="395" cy="205" rx="25" ry="15" 
+        onload="resizeEllipse('e3-3', '0', '15')"/>
+    </g>
+
+    <g fill="url(#testGrad)" stroke="black" stroke-width="2">
+       <rect id="r4-1" x="10" y="240" width="50" height="50" 
+        onload="resizeRect('r4-1', '0', '0')"/>
+       <rect id="r4-2" x="70" y="240" width="50" height="50" 
+        onload="resizeRect('r4-2', '50', '0')"/>
+       <rect id="r4-3" x="130" y="240" width="50" height="50" 
+        onload="resizeRect('r4-3', '0', '50')"/>
+       <circle id="c4-1" cx="215" cy="265" r="25" 
+        onload="resizeCircle('c4-1', '0')"/>
+       <ellipse id="e4-1" cx="275" cy="265" rx="25" ry="15" 
+        onload="resizeEllipse('e4-1', '0', '0')"/>
+       <ellipse id="e4-2" cx="335" cy="265" rx="25" ry="15" 
+        onload="resizeEllipse('e4-2', '25', '0')"/>
+       <ellipse id="e4-3" cx="395" cy="265" rx="25" ry="15" 
+        onload="resizeEllipse('e4-3', '0', '15')"/>
+    </g>
+  </g>
+</svg>
