@@ -99,7 +99,7 @@ public class SVGFilterElementBridge implements FilterBridge, SVGConstants {
             = new ConcreteFilterChainRable(sourceGraphic, filterRegion);
 
         // parse the filter resolution attribute
-        String resStr = filterElement.getAttributeNS(null, ATTR_FILTER_RES);
+        String resStr = filterElement.getAttributeNS(null, SVG_FILTER_RES_ATTRIBUTE);
         Float [] filterResolution = SVGUtilities.buildFloatPair(resStr);
         float filterResolutionX = -1; // -1 means undefined
         if (filterResolution[0] != null) {

@@ -42,7 +42,7 @@ public class SVGOMGElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "g";
+        return SVG_G_TAG;
     }
 
     /**

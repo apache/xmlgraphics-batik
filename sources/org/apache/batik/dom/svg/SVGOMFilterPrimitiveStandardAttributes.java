@@ -23,32 +23,32 @@ import org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes;
  */
 public abstract class SVGOMFilterPrimitiveStandardAttributes
     extends SVGOMElement
-    implements SVGFilterPrimitiveStandardAttributes
-{
+    implements SVGFilterPrimitiveStandardAttributes {
+
     /**
      * The reference to the x attribute.
      */
-    protected WeakReference xReference;
+    protected transient WeakReference xReference;
 
     /**
      * The reference to the y attribute.
      */
-    protected WeakReference yReference;
+    protected transient WeakReference yReference;
 
     /**
      * The reference to the width attribute.
      */
-    protected WeakReference widthReference;
+    protected transient WeakReference widthReference;
 
     /**
      * The reference to the height attribute.
      */
-    protected WeakReference heightReference;
+    protected transient WeakReference heightReference;
 
     /**
      * The reference to the result attribute.
      */
-    protected WeakReference resultReference;
+    protected transient WeakReference resultReference;
 
     /**
      * Creates a new SVGOMFilterPrimitiveStandardAttributes object.
@@ -74,7 +74,7 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_X, null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -88,7 +88,7 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_Y, null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -102,7 +102,7 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
 	SVGAnimatedLength result;
 	if (widthReference == null ||
 	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_WIDTH, null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
 	    widthReference = new WeakReference(result);
 	}
 	return result;
@@ -116,7 +116,7 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
 	SVGAnimatedLength result;
 	if (heightReference == null ||
 	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_HEIGHT, null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
 	    heightReference = new WeakReference(result);
 	}
 	return result;

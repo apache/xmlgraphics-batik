@@ -26,7 +26,7 @@ public class SVGOMFEMergeElement
     /**
      * Creates a new SVGOMFEMergeElement object.
      */
-    public SVGOMFEMergeElement() {
+    protected SVGOMFEMergeElement() {
     }
 
     /**
@@ -42,7 +42,7 @@ public class SVGOMFEMergeElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_MERGE;
+        return SVG_FE_MERGE_TAG;
     }
 
     /**

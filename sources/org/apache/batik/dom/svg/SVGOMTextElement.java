@@ -34,12 +34,12 @@ public class SVGOMTextElement
     /**
      * The reference to the x attribute.
      */
-    protected WeakReference xReference;
+    protected transient WeakReference xReference;
 
     /**
      * The reference to the y attribute.
      */
-    protected WeakReference yReference;
+    protected transient WeakReference yReference;
 
     /**
      * Creates a new SVGOMTextElement object.
@@ -60,7 +60,7 @@ public class SVGOMTextElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "text";
+        return SVG_TEXT_TAG;
     }
 
     /**
@@ -70,7 +70,7 @@ public class SVGOMTextElement
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -83,7 +83,7 @@ public class SVGOMTextElement
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
 	    yReference = new WeakReference(result);
 	}
 	return result;

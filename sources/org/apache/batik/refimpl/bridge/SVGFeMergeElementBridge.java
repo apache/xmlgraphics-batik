@@ -91,7 +91,7 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
                     !namespaceURI.equals(SVG_NAMESPACE_URI)) {
                 continue; // skip element in the wrong namespace
             }
-            if (!elt.getLocalName().equals(TAG_FE_MERGE_NODE)) {
+            if (!elt.getLocalName().equals(SVG_FE_MERGE_NODE_TAG)) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("feMerge.subelement.invalid",
                                            new Object[] {elt.getLocalName()}));

@@ -32,17 +32,17 @@ public class SVGOMFEMorphologyElement
     /**
      * The reference to the in attribute.
      */
-    protected WeakReference inReference;
+    protected transient WeakReference inReference;
 
     /**
      * The reference to the radiusX attribute.
      */
-    protected WeakReference radiusXReference;
+    protected transient WeakReference radiusXReference;
 
     /**
      * The reference to the radiusY attribute.
      */
-    protected WeakReference radiusYReference;
+    protected transient WeakReference radiusYReference;
 
     /**
      * Creates a new SVGOMFEMorphologyElement object.
@@ -63,7 +63,7 @@ public class SVGOMFEMorphologyElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_MORPHOLOGY;
+        return SVG_FE_MORPHOLOGY_TAG;
     }
 
     /**
@@ -90,26 +90,14 @@ public class SVGOMFEMorphologyElement
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getRadiusX()}.
      */
     public SVGAnimatedLength getRadiusX() {
-	SVGAnimatedLength result;
-	if (radiusXReference == null ||
-	    (result = (SVGAnimatedLength)radiusXReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "radiusX", null);
-	    radiusXReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO");
     } 
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getRadiusY()}.
      */
     public SVGAnimatedLength getRadiusY() {
-	SVGAnimatedLength result;
-	if (radiusYReference == null ||
-	    (result = (SVGAnimatedLength)radiusYReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "radiusY", null);
-	    radiusYReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO");
     } 
 
     /**

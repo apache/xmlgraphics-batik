@@ -149,16 +149,16 @@ public class SVGBufferedImageOp extends AbstractSVGFilterConverter{
         SVGBufferedImageOp converter = new SVGBufferedImageOp(domFactory,
                                                               new DefaultExtensionHandler());
 
-        Element group = domFactory.createElement(TAG_G);
+        Element group = domFactory.createElement(SVG_G_TAG);
         Element defs = domFactory.createElement(SVG_DEFS_TAG);
-        Element rectGroupOne = domFactory.createElement(TAG_G);
-        Element rectGroupTwo = domFactory.createElement(TAG_G);
+        Element rectGroupOne = domFactory.createElement(SVG_G_TAG);
+        Element rectGroupTwo = domFactory.createElement(SVG_G_TAG);
 
         for(int i=0; i<ops.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(ops[i], null);
             if(filterDesc != null){
                 Element rect = domFactory.createElement(TAG_RECT);
-                rect.setAttribute(ATTR_FILTER, filterDesc.getFilterValue());
+                rect.setAttribute(SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
                 rectGroupOne.appendChild(rect);
             }
         }
@@ -167,7 +167,7 @@ public class SVGBufferedImageOp extends AbstractSVGFilterConverter{
             SVGFilterDescriptor filterDesc = converter.toSVG(ops[i], null);
             if(filterDesc != null){
                 Element rect = domFactory.createElement(TAG_RECT);
-                rect.setAttribute(ATTR_FILTER, filterDesc.getFilterValue());
+                rect.setAttribute(SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
                 rectGroupTwo.appendChild(rect);
             }
         }

@@ -151,73 +151,73 @@ public class SVGOMDocument
         factories.put(SVG_FE_COMPOSITE_TAG,
                       new FeCompositeElementFactory());
 
-        factories.put(TAG_FE_CONVOLVE_MATRIX,
+        factories.put(SVG_FE_CONVOLVE_MATRIX_TAG,
                       new FeConvolveMatrixElementFactory());
 
-        factories.put(TAG_FE_DIFFUSE_LIGHTING,
+        factories.put(SVG_FE_DIFFUSE_LIGHTING_TAG,
                       new FeDiffuseLightingElementFactory());
 
-        factories.put(TAG_FE_DISPLACEMENT_MAP,
+        factories.put(SVG_FE_DISPLACEMENT_MAP_TAG,
                       new FeDisplacementMapElementFactory());
 
-        factories.put(TAG_FE_DISTANT_LIGHT,
+        factories.put(SVG_FE_DISTANT_LIGHT_TAG,
                       new FeDistantLightElementFactory());
 
-        factories.put(TAG_FE_FUNC_A,
+        factories.put(SVG_FE_FUNC_A_TAG,
                       new FeFuncAElementFactory());
 
-        factories.put(TAG_FE_FUNC_R,
+        factories.put(SVG_FE_FUNC_R_TAG,
                       new FeFuncRElementFactory());
 
-        factories.put(TAG_FE_FUNC_G,
+        factories.put(SVG_FE_FUNC_G_TAG,
                       new FeFuncGElementFactory());
 
-        factories.put(TAG_FE_FUNC_B,
+        factories.put(SVG_FE_FUNC_B_TAG,
                       new FeFuncBElementFactory());
 
-        factories.put(TAG_FE_FLOOD,
+        factories.put(SVG_FE_FLOOD_TAG,
                       new FeFloodElementFactory());
 
-        factories.put(TAG_FE_GAUSSIAN_BLUR,
+        factories.put(SVG_FE_GAUSSIAN_BLUR_TAG,
                       new FeGaussianBlurElementFactory());
 
-        factories.put(TAG_FE_IMAGE,
+        factories.put(SVG_FE_IMAGE_TAG,
                       new FeImageElementFactory());
 
-        factories.put(TAG_FE_MERGE,
+        factories.put(SVG_FE_MERGE_TAG,
                       new FeMergeElementFactory());
 
-        factories.put(TAG_FE_MERGE_NODE,
+        factories.put(SVG_FE_MERGE_NODE_TAG,
                       new FeMergeNodeElementFactory());
 
-        factories.put(TAG_FE_MORPHOLOGY,
+        factories.put(SVG_FE_MORPHOLOGY_TAG,
                       new FeMorphologyElementFactory());
 
-        factories.put(TAG_FE_OFFSET,
+        factories.put(SVG_FE_OFFSET_TAG,
                       new FeOffsetElementFactory());
 
-        factories.put(TAG_FE_POINT_LIGHT,
+        factories.put(SVG_FE_POINT_LIGHT_TAG,
                       new FePointLightElementFactory());
 
-        factories.put(TAG_FE_SPECULAR_LIGHTING,
+        factories.put(SVG_FE_SPECULAR_LIGHTING_TAG,
                       new FeSpecularLightingElementFactory());
 
-        factories.put(TAG_FE_SPOT_LIGHT,
+        factories.put(SVG_FE_SPOT_LIGHT_TAG,
                       new FeSpotLightElementFactory());
 
-        factories.put(TAG_FE_TILE,
+        factories.put(SVG_FE_TILE_TAG,
                       new FeTileElementFactory());
 
-        factories.put(TAG_FE_TURBULENCE,
+        factories.put(SVG_FE_TURBULENCE_TAG,
                       new FeTurbulenceElementFactory());
 
-        factories.put(TAG_FILTER,
+        factories.put(SVG_FILTER_TAG,
                       new FilterElementFactory());
 
-        factories.put(TAG_G,
+        factories.put(SVG_G_TAG,
                       new GElementFactory());
 
-        factories.put(TAG_IMAGE,
+        factories.put(SVG_IMAGE_TAG,
                       new ImageElementFactory());
 
         factories.put(TAG_LINE,
@@ -226,10 +226,10 @@ public class SVGOMDocument
         factories.put(TAG_LINEAR_GRADIENT,
                       new LinearGradientElementFactory());
 
-        factories.put(TAG_MASK,
+        factories.put(SVG_MASK_TAG,
                       new MaskElementFactory());
 
-        factories.put(TAG_METADATA,
+        factories.put(SVG_METADATA_TAG,
                       new MetadataElementFactory());
 
         factories.put(TAG_PATH,
@@ -250,7 +250,7 @@ public class SVGOMDocument
         factories.put(TAG_RECT,
                       new RectElementFactory());
 
-        factories.put(TAG_SCRIPT,
+        factories.put(SVG_SCRIPT_TAG,
                       new ScriptElementFactory());
 
         factories.put(SVG_STOP_TAG,
@@ -262,19 +262,19 @@ public class SVGOMDocument
         factories.put(TAG_SVG,
                       new SvgElementFactory());
 
-        factories.put(TAG_SWITCH,
+        factories.put(SVG_SWITCH_TAG,
                       new SwitchElementFactory());
 
         factories.put(TAG_SYMBOL,
                       new SymbolElementFactory());
 
-        factories.put(TAG_TEXT,
+        factories.put(SVG_TEXT_TAG,
                       new TextElementFactory());
 
         factories.put(TAG_TEXT_PATH,
                       new TextPathElementFactory());
 
-        factories.put(TAG_TITLE,
+        factories.put(SVG_TITLE_TAG,
                       new TitleElementFactory());
 
         factories.put(TAG_TREF,
@@ -283,7 +283,7 @@ public class SVGOMDocument
         factories.put(TAG_TSPAN,
                       new TspanElementFactory());
 
-        factories.put(TAG_USE,
+        factories.put(SVG_USE_TAG,
                       new UseElementFactory());
     }
 
@@ -1098,9 +1098,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_SPECULAR_LIGHTING);
+            return new SVGOMFESpecularLightingElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -1126,9 +1124,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_TILE);
+            return new SVGOMFETileElement(prefix, SVGOMDocument.this);
         }
     }
 
@@ -1141,9 +1137,7 @@ public class SVGOMDocument
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   SVGOMDocument.this,
-                                                   TAG_FE_TURBULENCE);
+            return new SVGOMFETurbulenceElement(prefix, SVGOMDocument.this);
         }
     }
 

@@ -42,7 +42,7 @@ public class SVGOMMetadataElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_METADATA;
+        return SVG_METADATA_TAG;
     }
 
     /**

@@ -79,7 +79,7 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
             // First time filter is converted: create its corresponding
             // SVG filter
             //
-            Element filterDef = domFactory.createElement(TAG_FILTER);
+            Element filterDef = domFactory.createElement(SVG_FILTER_TAG);
             Element feComponentTransferDef =
                 domFactory.createElement(SVG_FE_COMPONENT_TRANSFER_TAG);
 
@@ -103,9 +103,9 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
                offsets.length != 4)
                 throw new IllegalArgumentException(ERROR_ILLEGAL_BUFFERED_IMAGE_RESCALE_OP);
 
-            Element feFuncR = domFactory.createElement(TAG_FE_FUNC_R);
-            Element feFuncG = domFactory.createElement(TAG_FE_FUNC_G);
-            Element feFuncB = domFactory.createElement(TAG_FE_FUNC_B);
+            Element feFuncR = domFactory.createElement(SVG_FE_FUNC_R_TAG);
+            Element feFuncG = domFactory.createElement(SVG_FE_FUNC_G_TAG);
+            Element feFuncB = domFactory.createElement(SVG_FE_FUNC_B_TAG);
             Element feFuncA = null;
             String type = VALUE_TYPE_LINEAR;
 
@@ -134,7 +134,7 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
                 feFuncB.setAttribute(SVG_INTERCEPT_ATTRIBUTE, doubleString(offsets[2]));
 
                 if(offsets.length == 4){
-                    feFuncA = domFactory.createElement(TAG_FE_FUNC_A);
+                    feFuncA = domFactory.createElement(SVG_FE_FUNC_A_TAG);
                     feFuncA.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                     feFuncA.setAttribute(SVG_SLOPE_ATTRIBUTE,
                                          doubleString(scaleFactors[3]));
@@ -184,22 +184,22 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
 
         SVGRescaleOp converter = new SVGRescaleOp(domFactory);
 
-        Element group = domFactory.createElement(TAG_G);
+        Element group = domFactory.createElement(SVG_G_TAG);
         Element defs = domFactory.createElement(SVG_DEFS_TAG);
-        Element rectGroupOne = domFactory.createElement(TAG_G);
-        Element rectGroupTwo = domFactory.createElement(TAG_G);
+        Element rectGroupOne = domFactory.createElement(SVG_G_TAG);
+        Element rectGroupTwo = domFactory.createElement(SVG_G_TAG);
 
         for(int i=0; i<rescaleOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(rescaleOps[i]);
             Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttribute(ATTR_FILTER, filterDesc.getFilterValue());
+            rect.setAttribute(SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupOne.appendChild(rect);
         }
 
         for(int i=0; i<rescaleOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(rescaleOps[i]);
             Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttribute(ATTR_FILTER, filterDesc.getFilterValue());
+            rect.setAttribute(SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupTwo.appendChild(rect);
         }
 

@@ -8,6 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import org.w3c.dom.DOMException;
  * @version $Id$
  */
 public class SVGList {
+
     /**
      * The list implementation.
      */
@@ -92,5 +94,12 @@ public class SVGList {
     public Object appendItem(Object item) {
         list.add(item);
         return item;
+    }
+
+    /**
+     * Returns an iterator over the list.
+     */
+    public Iterator iterator() {
+        return list.iterator();
     }
 }

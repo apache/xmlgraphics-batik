@@ -22,20 +22,20 @@ public class SVGStylingAttributes implements SVGSyntax{
     static Set attrSet = new HashSet();
 
     static {
-        attrSet.add(ATTR_CLIP_PATH);
-        attrSet.add(ATTR_COLOR_INTERPOLATION);
-        attrSet.add(ATTR_COLOR_RENDERING);
-        attrSet.add(ATTR_ENABLE_BACKGROUND);
-        attrSet.add(ATTR_FILL);
-        attrSet.add(ATTR_FILL_OPACITY);
-        attrSet.add(ATTR_FILL_RULE);
-        attrSet.add(ATTR_FILTER);
-        attrSet.add(ATTR_FLOOD_COLOR);
-        attrSet.add(ATTR_FLOOD_OPACITY);
-        attrSet.add(ATTR_FONT_FAMILY);
-        attrSet.add(ATTR_FONT_SIZE);
-        attrSet.add(ATTR_FONT_WEIGHT);
-        attrSet.add(ATTR_FONT_STYLE);
+        attrSet.add(SVG_CLIP_PATH_ATTRIBUTE);
+        attrSet.add(SVG_COLOR_INTERPOLATION_ATTRIBUTE);
+        attrSet.add(SVG_COLOR_RENDERING_ATTRIBUTE);
+        attrSet.add(SVG_ENABLE_BACKGROUND_ATTRIBUTE);
+        attrSet.add(SVG_FILL_ATTRIBUTE);
+        attrSet.add(SVG_FILL_OPACITY_ATTRIBUTE);
+        attrSet.add(SVG_FILL_RULE_ATTRIBUTE);
+        attrSet.add(SVG_FILTER_ATTRIBUTE);
+        attrSet.add(SVG_FLOOD_COLOR_ATTRIBUTE);
+        attrSet.add(SVG_FLOOD_OPACITY_ATTRIBUTE);
+        attrSet.add(SVG_FONT_FAMILY_ATTRIBUTE);
+        attrSet.add(SVG_FONT_SIZE_ATTRIBUTE);
+        attrSet.add(SVG_FONT_WEIGHT_ATTRIBUTE);
+        attrSet.add(SVG_FONT_STYLE_ATTRIBUTE);
         attrSet.add(ATTR_IMAGE_RENDERING);
         attrSet.add(ATTR_MASK);
         attrSet.add(ATTR_OPACITY);

@@ -46,7 +46,7 @@ public class SVGOMFEImageElement
     /**
      * Creates a new SVGOMFEImageElement object.
      */
-    public SVGOMFEImageElement() {
+    protected SVGOMFEImageElement() {
     }
 
     /**
@@ -63,7 +63,7 @@ public class SVGOMFEImageElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_IMAGE;
+        return SVG_FE_IMAGE_TAG;
     }
 
     // XLink support //////////////////////////////////////////////////////

@@ -100,7 +100,7 @@ public class DOMGroupManager implements SVGSyntax{
      */
     void recycleCurrentGroup(){
         // Create new initial current group node
-        currentGroup = domTreeManager.domFactory.createElement(TAG_G);
+        currentGroup = domTreeManager.domFactory.createElement(SVG_G_TAG);
     }
 
     /**
@@ -146,7 +146,7 @@ public class DOMGroupManager implements SVGSyntax{
                     //
                     // Need to create a new current group
                     //
-                    currentGroup = domTreeManager.domFactory.createElement(TAG_G);
+                    currentGroup = domTreeManager.domFactory.createElement(SVG_G_TAG);
                     addElement(element);
                 }
             }
@@ -155,7 +155,7 @@ public class DOMGroupManager implements SVGSyntax{
                                 // Transform stack is invalid. Create a new current
                                 // group and validate the stack
                                 //
-                currentGroup = domTreeManager.domFactory.createElement(TAG_G);
+                currentGroup = domTreeManager.domFactory.createElement(SVG_G_TAG);
                 gc.validateTransformStack();
                 addElement(element);
             }

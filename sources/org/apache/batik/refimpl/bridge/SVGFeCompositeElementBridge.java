@@ -159,10 +159,10 @@ public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
         if (ruleStr.length() == 0) {
             rule = CompositeRule.OVER; // default value
 
-        } else if (VALUE_ATOP.equals(ruleStr)) {
+        } else if (SVG_ATOP_VALUE.equals(ruleStr)) {
             rule = CompositeRule.ATOP;
 
-        } else if (VALUE_ARITHMETIC.equals(ruleStr)) {
+        } else if (SVG_ARITHMETIC_VALUE.equals(ruleStr)) {
             String kAttr;
             float k1=0, k2=0, k3=0, k4=0;
 
@@ -187,16 +187,16 @@ public class SVGFeCompositeElementBridge implements FilterPrimitiveBridge,
             }
             rule = CompositeRule.ARITHMETIC(k1, k2, k3, k4);
 
-        } else if (VALUE_IN.equals(ruleStr)) {
+        } else if (SVG_IN_VALUE.equals(ruleStr)) {
             rule = CompositeRule.IN;
 
         } else if (SVG_OVER_VALUE.equals(ruleStr)) {
             rule = CompositeRule.OVER;
 
-        } else if (VALUE_OUT.equals(ruleStr)) {
+        } else if (SVG_OUT_VALUE.equals(ruleStr)) {
             rule = CompositeRule.OUT;
 
-        } else if (VALUE_XOR.equals(ruleStr)) {
+        } else if (SVG_XOR_VALUE.equals(ruleStr)) {
             rule = CompositeRule.XOR;
 
         } else {

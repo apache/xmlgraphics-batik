@@ -63,9 +63,10 @@ public class SVGOMAnimatedNumber implements SVGAnimatedNumber {
         Attr a = element.getAttributeNodeNS(attributeNsURI, attributeName);
         if (a != null) {
             return Float.parseFloat(a.getValue());
-        } else {
+        } else if (defaultValueProducer != null) {
             return Float.parseFloat(defaultValueProducer.getDefaultAttributeValue());
         }
+        return 0;
     }
 
     /**

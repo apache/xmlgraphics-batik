@@ -169,7 +169,7 @@ public class SVGRenderingHints extends AbstractSVGConverter{
      */
     public static void main(String args[]) throws Exception {
         Document domFactory = TestUtil.getDocumentPrototype();
-        Element group = domFactory.createElement(TAG_G);
+        Element group = domFactory.createElement(SVG_G_TAG);
         Map testMap = new Hashtable();
 
         // Various RENDERING values
@@ -235,7 +235,7 @@ public class SVGRenderingHints extends AbstractSVGConverter{
         while(iter.hasNext()){
             String testName = (String)iter.next();
             RenderingHints hints[] = (RenderingHints[])testMap.get(testName);
-            Element testGroup = domFactory.createElement(TAG_G);
+            Element testGroup = domFactory.createElement(SVG_G_TAG);
             testGroup.setAttribute(ATTR_ID, testName);
             for(int i=0; i<hints.length; i++){
                 Element testRect = domFactory.createElement(TAG_RECT);

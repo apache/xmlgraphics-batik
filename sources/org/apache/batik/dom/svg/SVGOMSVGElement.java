@@ -308,12 +308,21 @@ public class SVGOMSVGElement
     public void          deSelectAll (  ) {
         throw new Error();
     }
-    public SVGNumber              createSVGNumber (  ) {
-        throw new Error();
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGNumber()}.
+     */
+    public SVGNumber createSVGNumber() {
+        return new SVGOMNumber();
     }
-    public SVGLength              createSVGLength (  ) {
-        throw new Error();
+
+    /**
+     * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGLength()}.
+     */
+    public SVGLength createSVGLength() {
+        return new SVGOMLength();
     }
+
     public SVGAngle               createSVGAngle (  ) {
         throw new Error();
     }

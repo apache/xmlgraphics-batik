@@ -139,7 +139,7 @@ public class SVGFeComponentTransferElementBridge
             alphaFunction
                 = createComponentTransferFunction(filterElement,
                                                   children.item(curChild),
-                                                  TAG_FE_FUNC_A);
+                                                  SVG_FE_FUNC_A_TAG);
             if(alphaFunction != null){
                 curChild--;
             }
@@ -149,7 +149,7 @@ public class SVGFeComponentTransferElementBridge
             blueFunction
                 = createComponentTransferFunction(filterElement,
                                                   children.item(curChild),
-                                                  TAG_FE_FUNC_B);
+                                                  SVG_FE_FUNC_B_TAG);
             if(blueFunction != null){
                 curChild--;
             }
@@ -159,7 +159,7 @@ public class SVGFeComponentTransferElementBridge
             greenFunction
                 = createComponentTransferFunction(filterElement,
                                                   children.item(curChild),
-                                                  TAG_FE_FUNC_G);
+                                                  SVG_FE_FUNC_G_TAG);
             if(greenFunction != null){
                 curChild--;
             }
@@ -169,7 +169,7 @@ public class SVGFeComponentTransferElementBridge
             redFunction
                 = createComponentTransferFunction(filterElement,
                                                   children.item(curChild),
-                                                  TAG_FE_FUNC_R);
+                                                  SVG_FE_FUNC_R_TAG);
         }
 
 

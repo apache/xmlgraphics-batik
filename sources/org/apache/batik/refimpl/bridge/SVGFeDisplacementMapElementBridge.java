@@ -85,13 +85,13 @@ public class SVGFeDisplacementMapElementBridge implements FilterPrimitiveBridge,
         }
 
         String xChannelSelectorStr
-            = filterElement.getAttributeNS(null, ATTR_X_CHANNEL_SELECTOR);
+            = filterElement.getAttributeNS(null, SVG_X_CHANNEL_SELECTOR_ATTRIBUTE);
 
         ARGBChannel xChannelSelector =
             computeChannelSelector(xChannelSelectorStr);
 
         String yChannelSelectorStr
-            = filterElement.getAttributeNS(null, ATTR_Y_CHANNEL_SELECTOR);
+            = filterElement.getAttributeNS(null, SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE);
 
         ARGBChannel yChannelSelector
             = computeChannelSelector(yChannelSelectorStr);
@@ -185,13 +185,13 @@ public class SVGFeDisplacementMapElementBridge implements FilterPrimitiveBridge,
         ARGBChannel channelSelector;
         if (value.length() == 0) {
             channelSelector = ARGBChannel.A; // default value
-        } else if (VALUE_A.equals(value)) {
+        } else if (SVG_A_VALUE.equals(value)) {
             channelSelector = ARGBChannel.A;
-        } else if (VALUE_R.equals(value)) {
+        } else if (SVG_R_VALUE.equals(value)) {
             channelSelector = ARGBChannel.R;
-        } else if (VALUE_G.equals(value)) {
+        } else if (SVG_G_VALUE.equals(value)) {
             channelSelector = ARGBChannel.G;
-        } else if (VALUE_B.equals(value)) {
+        } else if (SVG_B_VALUE.equals(value)) {
             channelSelector = ARGBChannel.B;
         } else {
             throw new IllegalAttributeValueException(

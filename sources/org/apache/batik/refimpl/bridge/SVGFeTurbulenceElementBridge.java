@@ -77,7 +77,7 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
 
         // parse the baseFrequency attribute
         String baseFrequencyAttr =
-            filterElement.getAttributeNS(null, ATTR_BASE_FREQUENCY);
+            filterElement.getAttributeNS(null, SVG_BASE_FREQUENCY_ATTRIBUTE);
 
         Float baseFrequencies[] =
             SVGUtilities.buildFloatPair(baseFrequencyAttr);
@@ -94,29 +94,29 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
 
         // parse the numOctaves attribute
         String numOctavesAttr =
-            filterElement.getAttributeNS(null, ATTR_NUM_OCTAVES);
+            filterElement.getAttributeNS(null, SVG_NUM_OCTAVES_ATTRIBUTE);
         int numOctaves = 1; // default is 1
         if (numOctavesAttr.length() != 0) {
-            numOctaves = SVGUtilities.convertSVGInteger(ATTR_NUM_OCTAVES,
+            numOctaves = SVGUtilities.convertSVGInteger(SVG_NUM_OCTAVES_ATTRIBUTE,
                                                         numOctavesAttr);
         }
 
         // parse the seed attribute
-        String seedAttr = filterElement.getAttributeNS(null, ATTR_SEED);
+        String seedAttr = filterElement.getAttributeNS(null, SVG_SEED_ATTRIBUTE);
         int seed = 0;
         if (seedAttr.length() != 0) {
-            seed = (int) SVGUtilities.convertSVGNumber(ATTR_SEED, seedAttr);
+            seed = (int) SVGUtilities.convertSVGNumber(SVG_SEED_ATTRIBUTE, seedAttr);
         }
 
         // parse the stitchTiles attribute
         String stitchTilesAttr =
-            filterElement.getAttributeNS(null, ATTR_STITCH_TILES);
+            filterElement.getAttributeNS(null, SVG_STITCH_TILES_ATTRIBUTE);
         boolean stitchTiles;
         if (stitchTilesAttr.length() == 0) {
             stitchTiles = false; // default is noStitch
-        } else if (VALUE_STITCH.equals(stitchTilesAttr)) {
+        } else if (SVG_STITCH_VALUE.equals(stitchTilesAttr)) {
             stitchTiles = true;
-        } else if (VALUE_NO_STITCH.equals(stitchTilesAttr)) {
+        } else if (SVG_NO_STITCH_VALUE.equals(stitchTilesAttr)) {
             stitchTiles = false;
         } else {
             throw new IllegalAttributeValueException(
@@ -131,9 +131,9 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
         boolean feTurbulenceType;
         if (feTurbulenceTypeAttr.length() == 0) {
             feTurbulenceType = false; // default is turbulence
-        } else if(VALUE_FRACTAL_NOISE.equals(feTurbulenceTypeAttr)){
+        } else if(SVG_FRACTAL_NOISE_VALUE.equals(feTurbulenceTypeAttr)){
             feTurbulenceType = true;
-        } else if(VALUE_TURBULENCE.equals(feTurbulenceTypeAttr)){
+        } else if(SVG_TURBULENCE_VALUE.equals(feTurbulenceTypeAttr)){
             feTurbulenceType = false;
         } else {
             throw new IllegalAttributeValueException(

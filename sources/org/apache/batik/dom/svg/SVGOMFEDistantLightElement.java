@@ -77,7 +77,7 @@ public class SVGOMFEDistantLightElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_DISTANT_LIGHT;
+        return SVG_FE_DISTANT_LIGHT_TAG;
     }
 
     /**
@@ -88,7 +88,7 @@ public class SVGOMFEDistantLightElement
 	SVGAnimatedNumber result;
 	if (azimuthReference == null ||
 	    (result = (SVGAnimatedNumber)azimuthReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_AZIMUTH,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_AZIMUTH_ATTRIBUTE,
                                              AZIMUTH_DEFAULT_VALUE_PRODUCER);
 	    azimuthReference = new WeakReference(result);
 	}
@@ -103,7 +103,7 @@ public class SVGOMFEDistantLightElement
 	SVGAnimatedNumber result;
 	if (elevationReference == null ||
 	    (result = (SVGAnimatedNumber)elevationReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_ELEVATION,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_ELEVATION_ATTRIBUTE,
                                              ELEVATION_DEFAULT_VALUE_PRODUCER);
 	    elevationReference = new WeakReference(result);
 	}

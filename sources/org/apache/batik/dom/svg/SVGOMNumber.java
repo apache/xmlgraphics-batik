@@ -30,6 +30,11 @@ public class SVGOMNumber implements SVGNumber {
     protected ModificationHandler modificationHandler;
 
     /**
+     * Whether or not the current change is due to an internal change.
+     */
+    protected boolean internalChange;
+
+    /**
      * Sets the associated attribute modifier.
      */
     public void setModificationHandler(ModificationHandler mh) {
@@ -47,10 +52,11 @@ public class SVGOMNumber implements SVGNumber {
      * <b>DOM</b>: Implements {@link SVGNumber#setValue(float)}.
      */
     public void setValue(float val) throws DOMException {
-        if (modificationHandler == null) {
-            value = val;
-        } else {
+        value = val;
+        if (modificationHandler != null) {
+            internalChange = true;
             modificationHandler.valueChanged(this, Float.toString(val));
+            internalChange = false;
         }
     }
 
@@ -58,10 +64,12 @@ public class SVGOMNumber implements SVGNumber {
      * Parses the given string.
      */
     public void parseValue(String val) {
-        try {
-            value = Float.parseFloat(val);
-        } catch (NumberFormatException e) {
-	    throw new DOMException(DOMException.SYNTAX_ERR, e.getMessage());
+        if (!internalChange) {
+            try {
+                value = Float.parseFloat(val);
+            } catch (NumberFormatException e) {
+                throw new DOMException(DOMException.SYNTAX_ERR, e.getMessage());
+            }
         }
     }
 }

@@ -58,21 +58,21 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         String s;
         if (svgElement.getOwnerSVGElement() != null) {
             // parse the x attribute, (default is 0)
-            s = svgElement.getAttributeNS(null, ATTR_X);
+            s = svgElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
             x = 0;
             if (s.length() != 0) {
                x = SVGUtilities.svgToUserSpace(svgElement,
-                                               ATTR_X, s,
+                                               SVG_X_ATTRIBUTE, s,
                                                uctx,
                                                UnitProcessor.HORIZONTAL_LENGTH);
             }
 
             // parse the y attribute, (default is 0)
-            s = svgElement.getAttributeNS(null, ATTR_Y);
+            s = svgElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
             y = 0;
             if (s.length() != 0) {
                 y = SVGUtilities.svgToUserSpace(svgElement,
-                                                ATTR_Y, s,
+                                                SVG_Y_ATTRIBUTE, s,
                                                 uctx,
                                                 UnitProcessor.VERTICAL_LENGTH);
             }
@@ -82,22 +82,22 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         }
 
         // parse the width attribute (default is 100%)
-        s = svgElement.getAttributeNS(null, ATTR_WIDTH);
+        s = svgElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         if (s.length() == 0) {
             s = "100%";
         }
         w = SVGUtilities.svgToUserSpace(svgElement,
-                                        ATTR_WIDTH, s,
+                                        SVG_WIDTH_ATTRIBUTE, s,
                                         uctx,
                                         UnitProcessor.HORIZONTAL_LENGTH);
 
         // parse the height attribute (default is 100%)
-        s = svgElement.getAttributeNS(null, ATTR_HEIGHT);
+        s = svgElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         if (s.length() == 0) {
             s = "100%";
         }
         h = SVGUtilities.svgToUserSpace(svgElement,
-                                        ATTR_HEIGHT, s,
+                                        SVG_HEIGHT_ATTRIBUTE, s,
                                         uctx,
                                         UnitProcessor.VERTICAL_LENGTH);
 

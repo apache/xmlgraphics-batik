@@ -8,6 +8,9 @@
 
 package org.apache.batik.dom.svg;
 
+import java.util.Iterator;
+import java.util.StringTokenizer;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGException;
@@ -22,7 +25,8 @@ import org.w3c.dom.svg.SVGNumberList;
  */
 public class SVGOMNumberList
     implements SVGNumberList,
-               LiveAttributeValue {
+               LiveAttributeValue,
+               ModificationHandler {
     
     /**
      * The implementation of the list.
@@ -33,6 +37,11 @@ public class SVGOMNumberList
      * The modification handler.
      */
     protected ModificationHandler modificationHandler;
+
+    /**
+     * Whether or not the current change is due to an internal change.
+     */
+    protected boolean internalChange;
 
     /**
      * Sets the modification handler.
@@ -52,10 +61,11 @@ public class SVGOMNumberList
      * <b>DOM</b>: Implements {@link SVGNumberList#getNumberOfItems()}.
      */
     public void clear() throws DOMException {
-        if (modificationHandler == null) {
-            list.clear();
-        } else {
+        list.clear();
+        if (modificationHandler != null) {
+            internalChange = true;
             modificationHandler.valueChanged(this, "");
+            internalChange = false;
         }
     }
 
@@ -64,13 +74,14 @@ public class SVGOMNumberList
      */
     public SVGNumber initialize(SVGNumber newItem)
         throws DOMException, SVGException {
-        if (modificationHandler == null) {
-            //newItem.setModificationHandler(this);
-            return (SVGNumber)list.initialize(newItem);
-        } else {
+        SVGOMNumber result = (SVGOMNumber)list.initialize(newItem);
+        result.setModificationHandler(this);
+        if (modificationHandler != null) {
+            internalChange = true;
             modificationHandler.valueChanged(this, Float.toString(newItem.getValue()));
-            return (SVGNumber)list.getItem(0);
+            internalChange = false;
         }
+        return result;
     }
 
     /**
@@ -85,27 +96,74 @@ public class SVGOMNumberList
      */
     public SVGNumber insertItemBefore(SVGNumber newItem, int index)
         throws DOMException, SVGException {
-        if (modificationHandler == null) {
-            //newItem.setModificationHandler(this);
-            return (SVGNumber)list.insertItemBefore(newItem, index);
-        } else {
-            //modificationHandler.valueChanged(sb.toString());
-            return (SVGNumber)list.getItem(index);
+        SVGOMNumber result = (SVGOMNumber)list.insertItemBefore(newItem, index);
+        result.setModificationHandler(this);
+        if (modificationHandler != null) {
+            internalChange = true;
+            modificationHandler.valueChanged(this, getStringRepresentation());
+            internalChange = false;
         }
+        return result;
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumberList#replaceItem(SVGNumber,int)}.
+     */
     public SVGNumber replaceItem(SVGNumber newItem, int index)
         throws DOMException, SVGException {
-        return null;
+        SVGOMNumber result = (SVGOMNumber)list.replaceItem(newItem, index);
+        result.setModificationHandler(this);
+        if (modificationHandler != null) {
+            internalChange = true;
+            modificationHandler.valueChanged(this, getStringRepresentation());
+            internalChange = false;
+        }
+        return result;
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumberList#removeItem(int)}.
+     */
     public SVGNumber removeItem(int index) throws DOMException {
-        return null;
+        SVGOMNumber result = (SVGOMNumber)list.removeItem(index);
+        result.setModificationHandler(this);
+        if (modificationHandler != null) {
+            internalChange = true;
+            modificationHandler.valueChanged(this, getStringRepresentation());
+            internalChange = false;
+        }
+        return result;
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link SVGNumberList#appendItem(SVGNumber)}.
+     */
     public SVGNumber appendItem(SVGNumber newItem)
         throws DOMException, SVGException {
-        return null;
+        SVGOMNumber result = (SVGOMNumber)list.appendItem(newItem);
+        result.setModificationHandler(this);
+        if (modificationHandler != null) {
+            internalChange = true;
+            modificationHandler.valueChanged(this, getStringRepresentation());
+            internalChange = false;
+        }
+        return result;
+    }
+
+    /**
+     * Returns the string representation of the list.
+     */
+    public String getStringRepresentation() {
+        StringBuffer result = new StringBuffer();
+        Iterator it = list.iterator();
+        if (it.hasNext()) {
+            result.append(((SVGNumber)it.next()).getValue());
+        }
+        while (it.hasNext()) {
+            result.append(' ');
+            result.append(((SVGNumber)it.next()).getValue());
+        }
+        return result.toString();
     }
 
     /**
@@ -114,10 +172,12 @@ public class SVGOMNumberList
      * @param newValue The new Attr node.
      */
     public void valueChanged(Attr oldValue, Attr newValue) {
-        if (oldValue == null) {
-            parseValue(newValue.getValue());
-        } else {
-            parseValue(oldValue.getValue(), newValue.getValue());
+        if (!internalChange) {
+            if (oldValue == null) {
+                parseValue(newValue.getValue());
+            } else {
+                parseValue(oldValue.getValue(), newValue.getValue());
+            }
         }
     }
 
@@ -132,6 +192,35 @@ public class SVGOMNumberList
      * Parses the old and new values and modifies the list.
      */
     protected void parseValue(String oldVal, String newVal) {
-        
+        if (!oldVal.equals(newVal)) {
+            list.clear();
+            StringTokenizer st = new StringTokenizer(newVal, " ,");
+            while (st.hasMoreTokens()) {
+                SVGOMNumber n = new SVGOMNumber();
+                n.parseValue(st.nextToken());
+                n.setModificationHandler(this);
+                list.appendItem(n);
+            }
+        }
+    }
+
+    // ModificationHandler ///////////////////////////////////////////////
+
+    /**
+     * Implements {@link ModificationHandler#valueChanged(Object,String)}.
+     */
+    public void valueChanged(Object object, String value) {
+        if (modificationHandler != null) {
+            internalChange = true;
+            modificationHandler.valueChanged(this, getStringRepresentation());
+            internalChange = false;
+        }
+    }
+
+    /**
+     * Implements {@link ModificationHandler#getObject(Object,String)}.
+     */
+    public Object getObject(Object key) {
+        return null;
     }
 }

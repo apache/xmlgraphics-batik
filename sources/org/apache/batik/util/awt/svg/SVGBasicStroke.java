@@ -62,7 +62,7 @@ public class SVGBasicStroke extends AbstractSVGConverter{
         if(array != null)
             dashArray = dashArrayToSVG(array);
         else
-            dashArray = VALUE_NONE;
+            dashArray = SVG_NONE_VALUE;
 
         // Dash offset
         String dashOffset = doubleString(stroke.getDashPhase());
@@ -126,17 +126,28 @@ public class SVGBasicStroke extends AbstractSVGConverter{
         BasicStroke strokes[] = { new BasicStroke(),
                                   new BasicStroke(2),
                                   new BasicStroke(4.5f),
-                                  new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER),
-                                  new BasicStroke(10, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER),
-                                  new BasicStroke(10, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER),
-                                  new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL),
-                                  new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND),
-                                  new BasicStroke(50, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 100),
-                                  new BasicStroke(75, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 50, new float[]{1, 2, 3, 4}, 0.5f),
-                                  new BasicStroke(75, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 60, new float[]{10.1f, 2.4f, 3.5f, 4.2f}, 10)
+                                  new BasicStroke(10, BasicStroke.CAP_BUTT,
+                                                  BasicStroke.JOIN_MITER),
+                                  new BasicStroke(10, BasicStroke.CAP_SQUARE,
+                                                  BasicStroke.JOIN_MITER),
+                                  new BasicStroke(10, BasicStroke.CAP_ROUND,
+                                                  BasicStroke.JOIN_MITER),
+                                  new BasicStroke(10, BasicStroke.CAP_BUTT,
+                                                  BasicStroke.JOIN_BEVEL),
+                                  new BasicStroke(10, BasicStroke.CAP_BUTT,
+                                                  BasicStroke.JOIN_ROUND),
+                                  new BasicStroke(50, BasicStroke.CAP_ROUND,
+                                                  BasicStroke.JOIN_MITER, 100),
+                                  new BasicStroke(75, BasicStroke.CAP_ROUND,
+                                                  BasicStroke.JOIN_ROUND, 50,
+                                                  new float[]{1, 2, 3, 4}, 0.5f),
+                                  new BasicStroke(75, BasicStroke.CAP_ROUND,
+                                                  BasicStroke.JOIN_ROUND, 60,
+                                                  new float[]{10.1f, 2.4f, 3.5f, 4.2f},
+                                                  10)
         };
 
-        Element rectGroup = domFactory.createElement(TAG_G);
+        Element rectGroup = domFactory.createElement(SVG_G_TAG);
 
         for(int i=0; i<strokes.length; i++){
             BasicStroke stroke = strokes[i];

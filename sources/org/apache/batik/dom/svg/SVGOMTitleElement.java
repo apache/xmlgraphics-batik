@@ -43,7 +43,7 @@ public class SVGOMTitleElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "title";
+        return SVG_TITLE_TAG;
     }
 
     /**

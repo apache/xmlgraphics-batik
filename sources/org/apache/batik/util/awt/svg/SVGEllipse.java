@@ -79,7 +79,7 @@ public class SVGEllipse extends SVGGraphicObjectConverter{
 
         Document domFactory = TestUtil.getDocumentPrototype();
         SVGEllipse converter = new SVGEllipse(domFactory);
-        Element group = domFactory.createElement(TAG_G);
+        Element group = domFactory.createElement(SVG_G_TAG);
         for(int i=0; i<ellipses.length; i++)
             group.appendChild(converter.toSVG(ellipses[i]));
 

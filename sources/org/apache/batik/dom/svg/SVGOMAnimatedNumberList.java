@@ -92,13 +92,6 @@ public class SVGOMAnimatedNumberList
 	throw new RuntimeException(" !!! TODO: SVGAnimatedLength.getAnimVal()");
     }
 
-    /**
-     * Returns the associated element.
-     */
-    public SVGElement getSVGElement() {
-        return element;
-    }
-
     // ModificationHandler ///////////////////////////////////////////////
 
     /**

@@ -613,7 +613,7 @@ public class SVGUtilities implements SVGConstants {
                              node,
                              rc,
                              uctx,
-                             ATTR_FILTER_UNITS,
+                             SVG_FILTER_UNITS_ATTRIBUTE,
                              SVG_OBJECT_BOUNDING_BOX_VALUE,
                              DEFAULT_VALUE_FILTER_X,
                              DEFAULT_VALUE_FILTER_Y,
@@ -641,7 +641,7 @@ public class SVGUtilities implements SVGConstants {
                              node,
                              rc,
                              uctx,
-                             ATTR_MASK_UNITS,
+                             SVG_MASK_UNITS_ATTRIBUTE,
                              SVG_OBJECT_BOUNDING_BOX_VALUE,
                              DEFAULT_VALUE_MASK_X,
                              DEFAULT_VALUE_MASK_Y,
@@ -712,7 +712,7 @@ public class SVGUtilities implements SVGConstants {
         }
 
         // parse the x attribute
-        String xStr = filterElement.getAttributeNS(null, ATTR_X);
+        String xStr = filterElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
         if (xStr.length() == 0) {
             if (xDefault == null) {
                 throw new MissingAttributeException(
@@ -723,7 +723,7 @@ public class SVGUtilities implements SVGConstants {
             }
         }
         // parse the y attribute
-        String yStr = filterElement.getAttributeNS(null, ATTR_Y);
+        String yStr = filterElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
         if (yStr.length() == 0) {
             if (yDefault == null) {
                 throw new MissingAttributeException(
@@ -734,7 +734,7 @@ public class SVGUtilities implements SVGConstants {
             }
         }
         // parse the width attribute
-        String wStr = filterElement.getAttributeNS(null, ATTR_WIDTH);
+        String wStr = filterElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         if (wStr.length() == 0) {
             if (wDefault == null) {
                 throw new MissingAttributeException(
@@ -745,7 +745,7 @@ public class SVGUtilities implements SVGConstants {
             }
         }
         // parse the height attribute
-        String hStr = filterElement.getAttributeNS(null, ATTR_HEIGHT);
+        String hStr = filterElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         if (hStr.length() == 0) {
             if (hDefault == null) {
                 throw new MissingAttributeException(
@@ -774,16 +774,16 @@ public class SVGUtilities implements SVGConstants {
         switch(unitsType) {
         case OBJECT_BOUNDING_BOX:
             x = svgToObjectBoundingBox(filteredElement,
-                                       ATTR_X, xStr,
+                                       SVG_X_ATTRIBUTE, xStr,
                                        uctx, hd);
             y = svgToObjectBoundingBox(filteredElement,
-                                       ATTR_Y, yStr,
+                                       SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE, yStr,
                                        uctx, vd);
             w = svgToObjectBoundingBox(filteredElement,
-                                       ATTR_WIDTH, wStr,
+                                       SVG_WIDTH_ATTRIBUTE, wStr,
                                        uctx, hd);
             h = svgToObjectBoundingBox(filteredElement,
-                                       ATTR_HEIGHT, hStr,
+                                       SVG_HEIGHT_ATTRIBUTE, hStr,
                                        uctx, vd);
             // Now, take the bounds of the GraphicsNode into account
             Rectangle2D gnBounds = node.getGeometryBounds(rc);
@@ -794,16 +794,16 @@ public class SVGUtilities implements SVGConstants {
             break;
         case USER_SPACE_ON_USE:
             x = svgToUserSpaceOnUse(filteredElement,
-                                    ATTR_X, xStr,
+                                    SVG_X_ATTRIBUTE, xStr,
                                     uctx, hd);
             y = svgToUserSpaceOnUse(filteredElement,
-                                    ATTR_Y, yStr,
+                                    SVG_Y_ATTRIBUTE, yStr,
                                     uctx, vd);
             w = svgToUserSpaceOnUse(filteredElement,
-                                    ATTR_WIDTH, wStr,
+                                    SVG_WIDTH_ATTRIBUTE, wStr,
                                     uctx, hd);
             h = svgToUserSpaceOnUse(filteredElement,
-                                    ATTR_HEIGHT, hStr,
+                                    SVG_HEIGHT_ATTRIBUTE, hStr,
                                     uctx, vd);
             break;
         default:
@@ -849,16 +849,16 @@ public class SVGUtilities implements SVGConstants {
         if((parentNode != null) &&
                (parentNode.getNodeType() == parentNode.ELEMENT_NODE)) {
             Element parent = (Element) parentNode;
-            units = parent.getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+            units = parent.getAttributeNS(null, SVG_PRIMITIVE_UNITS_ATTRIBUTE);
         }
         if(units.length() == 0){
             units = SVG_USER_SPACE_ON_USE_VALUE;
         }
 
-        String xStr = filterPrimitiveElement.getAttributeNS(null, ATTR_X);
-        String yStr = filterPrimitiveElement.getAttributeNS(null, ATTR_Y);
-        String wStr = filterPrimitiveElement.getAttributeNS(null, ATTR_WIDTH);
-        String hStr = filterPrimitiveElement.getAttributeNS(null, ATTR_HEIGHT);
+        String xStr = filterPrimitiveElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        String yStr = filterPrimitiveElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        String wStr = filterPrimitiveElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+        String hStr = filterPrimitiveElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
 
         int unitsType;
         try {
@@ -867,7 +867,7 @@ public class SVGUtilities implements SVGConstants {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("region.units.invalid",
                                   new Object[] {units,
-                                                ATTR_PRIMITIVE_UNITS,
+                                                SVG_PRIMITIVE_UNITS_ATTRIBUTE,
                                        filterPrimitiveElement.getLocalName()}));
         }
 
@@ -883,25 +883,25 @@ public class SVGUtilities implements SVGConstants {
             Rectangle2D gnBounds = node.getGeometryBounds(rc);
             if (xStr.length() != 0) {
                 x = svgToObjectBoundingBox(filteredElement,
-                                           ATTR_X, xStr,
+                                           SVG_X_ATTRIBUTE, xStr,
                                            uctx, hd);
                 x = gnBounds.getX() + x*gnBounds.getWidth();
             }
             if (yStr.length() != 0) {
                 y = svgToObjectBoundingBox(filteredElement,
-                                           ATTR_Y, yStr,
+                                           SVG_Y_ATTRIBUTE, yStr,
                                            uctx, vd);
                 y = gnBounds.getY() + y*gnBounds.getHeight();
             }
             if (wStr.length() != 0) {
                 w = svgToObjectBoundingBox(filteredElement,
-                                           ATTR_WIDTH, wStr,
+                                           SVG_WIDTH_ATTRIBUTE, wStr,
                                            uctx, hd);
                 w *= gnBounds.getWidth();
             }
             if (hStr.length() != 0) {
                 h = svgToObjectBoundingBox(filteredElement,
-                                           ATTR_HEIGHT, hStr,
+                                           SVG_HEIGHT_ATTRIBUTE, hStr,
                                            uctx, vd);
                 h *= gnBounds.getHeight();
             }
@@ -909,22 +909,22 @@ public class SVGUtilities implements SVGConstants {
         case USER_SPACE_ON_USE:
             if (xStr.length() != 0) {
                 x = svgToUserSpaceOnUse(filteredElement,
-                                        ATTR_X, xStr,
+                                        SVG_X_ATTRIBUTE, xStr,
                                         uctx, hd);
             }
             if (yStr.length() != 0) {
                 y = svgToUserSpaceOnUse(filteredElement,
-                                        ATTR_Y, yStr,
+                                        SVG_Y_ATTRIBUTE, yStr,
                                         uctx, vd);
             }
             if (wStr.length() != 0) {
                 w = svgToUserSpaceOnUse(filteredElement,
-                                        ATTR_WIDTH, wStr,
+                                        SVG_WIDTH_ATTRIBUTE, wStr,
                                         uctx, hd);
             }
             if (hStr.length() != 0) {
                 h = svgToUserSpaceOnUse(filteredElement,
-                                        ATTR_HEIGHT, hStr,
+                                        SVG_HEIGHT_ATTRIBUTE, hStr,
                                         uctx, vd);
             }
             break;
