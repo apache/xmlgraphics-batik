@@ -42,4 +42,6 @@
 
     <test id="ShowSVG" class="org.apache.batik.svggen.ShowGraphics2DOutput" />
     <test id="GetRootTest" class="org.apache.batik.svggen.GetRootTest" />
+
+    <test id="bug21259" class="org.apache.batik.svggen.Bug21259" />
 </testSuite>

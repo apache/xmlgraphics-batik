@@ -41,6 +41,7 @@ import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * This implementation of the java.awt.Graphics2D abstract class
@@ -403,6 +404,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
      */
     public void stream(Element svgRoot, Writer writer, boolean useCss)
         throws SVGGraphics2DIOException {
+        Node rootParent = svgRoot.getParentNode();
+        Node nextSibling = svgRoot.getNextSibling();
+
         try {
             //
             // Enforce that the default and xlink namespace
@@ -437,6 +441,15 @@ public class SVGGraphics2D extends AbstractGraphics2D
         } catch (IOException io) {
             generatorCtx.errorHandler.
                 handleError(new SVGGraphics2DIOException(io));
+        } finally {
+            // Restore the svgRoot to its original tree position
+            if (rootParent != null) {
+                if (nextSibling == null) {
+                    rootParent.appendChild(svgRoot);
+                } else {
+                    rootParent.insertBefore(svgRoot, nextSibling);
+                }
+            }
         }
     }
 
