@@ -53,12 +53,15 @@
           <dt>Bill Haneman (BH)</dt><dd><br />
           <link href="mailto:bill.haneman@ireland.sun.com">bill.haneman@ireland.sun.com</link><br />
           <em>
-          Bill Haneman works for Sun Microsystems' Desktop Enabling Middleware group 
-          in Dublin, Ireland.  His current technical focus is on 2D APIs and in 
-          printing and transcoding technologies, though he maintains an interest in 
-          the fate of the world as a whole.  A twenty-year veteran of scientific 
-          programming and application development, he is a US expatriate who plays 
-          traditional music on the uilleann pipes.
+          Bill Haneman works for Sun Microsystems' Desktop Enabling Middleware
+          group in Dublin, Ireland, and implemented much of the Batik's text
+          support (though not SVG Fonts, thanks Bella, Dean, and David!).  He is
+          also technical lead for the Gnome Accessibility Project
+          (http://developer.gnome.org/projects/gap), an open project to provide
+          an accessibility framework for linux and Solaris(TM) desktops.  A
+          twenty-year veteran of scientific programming and application
+          development, he is a US expatriate who plays traditional Irish music
+          on the uilleann pipes. 
           </em> 
           <br /><br />
           </dd>
@@ -67,9 +70,7 @@
           <link href="mailto:vincent.hardy@eng.sun.com">vincent.hardy@eng.sun.com</link><br />
           <em>Vincent is one of the founders of the SVG Batik project at Apache and he represents Sun
           in the W3C's SVG Working Group (his daytime job is to be a member of Sun's XML Technology Center). 
-          Vincent is the author of papers and a book on the Java 2D API.
-          When he is not working on the Batik code, test or documentation, Vincent loves to write new sample
-          files for the project because.... SVG is really, really, really fun: try it, you'll love it!</em>
+          Vincent is the author of papers and a book on the Java 2D API.</em>
           <br /><br />
           </dd>
 
