@@ -36,7 +36,7 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.XMLAbstractTranscoder;
 import org.apache.batik.transcoder.image.resources.Messages;
-import org.apache.batik.gvt.renderer.Renderer;
+import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.RendererFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
@@ -184,7 +184,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
         // paint the SVG document using the bridge package
         // create the appropriate renderer
-        Renderer renderer = rendFactory.createRenderer();
+        ImageRenderer renderer = (ImageRenderer)rendFactory.createRenderer();
         renderer.updateOffScreen(w, h);
         renderer.setTransform(Px);
         renderer.setTree(gvtRoot);
