@@ -93,8 +93,9 @@ public class GVTACIImpl
      * Note that if either beginIndex or endIndex are outside the bounds
      *     of the current character array they are clipped accordingly.
      */
-    public void setAttributeArray(TextAttribute attr,
-                        Object[] attValues, int beginIndex, int endIndex) {
+    public void setAttributeArray
+        (GVTAttributedCharacterIterator.TextAttribute attr,
+         Object[] attValues, int beginIndex, int endIndex) {
 
         beginIndex = Math.max(beginIndex, 0);
         endIndex = Math.min(endIndex, simpleString.length());
