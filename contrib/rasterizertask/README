@@ -6,7 +6,7 @@
 Content of this directory
 =========================
 
-This directory contains rasterizer task for Ant. Th task can be used to 
+This directory contains rasterizer task for Ant. The task can be used to 
 convert SVG files to raster format. This has been contributed by 
 Henri Ruini (ruini@iki.fi).
 
@@ -16,3 +16,11 @@ you need to compile Batik first and then compile the task by typing
 in this directory. Type 
 .\build.bat help
 to display other available targets. These commands work only in Windows.
+
+NOTE: Due the internal changes in Ant itself the rasterizer task may not 
+work if the Ant in use is a different version from the Ant used to build 
+the task. Use the same Ant version to build and to execute task to avoid 
+strange problems.
+
+At least JDK 1.3 is needed to build and execute the task.
+

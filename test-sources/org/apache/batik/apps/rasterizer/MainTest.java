@@ -157,7 +157,7 @@ public class MainTest extends DefaultTestSuite {
         t = new MainConfigTest("-w 467.69") {
                 public TestReport validate(SVGConverter c){
                     float width = c.getWidth();
-                    if(width != 467.69){
+                    if(width == 467.69f){
                         return reportSuccess();
                     } else {
                         return reportError("-w", "" + 467.69, "" + width);
@@ -183,6 +183,33 @@ public class MainTest extends DefaultTestSuite {
     
         addTest(t);
         t.setId("MainConfigTest.height");
+
+        t = new MainConfigTest("-maxw 467.69") {
+                public TestReport validate(SVGConverter c){
+                    float maxWidth = c.getMaxWidth();
+                    if(maxWidth == 467.69f){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-maxw", "" + 467.69, "" + maxWidth);
+                    }
+                }
+            
+            };
+        addTest(t);
+        t.setId("MainConfigTest.maxWidth");
+
+        t = new MainConfigTest("-maxh 345.67") {
+                public TestReport validate(SVGConverter c){
+                    float maxHeight = c.getMaxHeight();
+                    if(maxHeight == 345.67f){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-maxh", "" + 345.67, "" + maxHeight);
+                    }
+                }
+            };
+        addTest(t);
+        t.setId("MainConfigTest.maxHeight");
 
         t = new MainConfigTest("-a 5,10,20,30") {
                 public TestReport validate(SVGConverter c){
@@ -428,6 +455,14 @@ public class MainTest extends DefaultTestSuite {
         addTest(t);
         t.setId("MainConfigErrorTest.height");
 
+        t = new MainConfigErrorTest("-maxw", "hello.svg -maxw");
+        addTest(t);
+        t.setId("MainConfigErrorTest.maxWidth");
+
+        t = new MainConfigErrorTest("-maxh", "hello.svg -maxh");
+        addTest(t);
+        t.setId("MainConfigErrorTest.maxHeight");
+
         t = new MainConfigErrorTest("-a", "hello.svg -a");
         addTest(t);
         t.setId("MainConfigErrorTest.area");
@@ -479,6 +514,14 @@ public class MainTest extends DefaultTestSuite {
         t = new MainIllegalArgTest("-h", "-h abaa");
         addTest(t);
         t.setId("MainIllegalArgTest.height");
+
+        t = new MainIllegalArgTest("-maxw", "-maxw abd");
+        addTest(t);
+        t.setId("MainIllegalArgTest.maxWidth");
+
+        t = new MainIllegalArgTest("-maxh", "-maxh abaa");
+        addTest(t);
+        t.setId("MainIllegalArgTest.maxHeight");
 
         t = new MainIllegalArgTest("a", "-a aaaaaa");
         addTest(t);

@@ -16,13 +16,17 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.util.JAXPUtils;
 
 // -- Batik classes ----------------------------------------------------------
 import org.apache.batik.apps.rasterizer.SVGConverter;
 import org.apache.batik.apps.rasterizer.DestinationType;
 import org.apache.batik.apps.rasterizer.SVGConverterException;
-
 import org.apache.batik.transcoder.image.JPEGTranscoder;
+import org.apache.batik.util.XMLResourceDescriptor;
+
+// -- SAX classes ------------------------------------------------------------
+import org.xml.sax.XMLReader;
 
 // -- Java SDK classes -------------------------------------------------------
 import java.awt.geom.Rectangle2D;
@@ -52,14 +56,19 @@ import java.util.List;
  */
 public class RasterizerTask extends MatchingTask {
 
-    // -- Class constants ----------------------------------------------------
+    // -- Constants ----------------------------------------------------------
     /**
      * Default quality value for JPEGs. This value is used when 
      * the user doesn't set the quality.
      */
-    protected static final float DEFAULT_QUALITY = 0.99f;
+    private static final float DEFAULT_QUALITY = 0.99f;
+    /**
+     * Magic string indicating that any JAXP conforming XML parser can 
+     * be used.
+     */
+    private static final String JAXP_PARSER = "jaxp";
 
-    // -- Class variables ----------------------------------------------------
+    // -- Variables ----------------------------------------------------------
     /** Result image type. The default is PNG. */
     protected DestinationType resultType = DestinationType.PNG;
 
@@ -67,6 +76,10 @@ public class RasterizerTask extends MatchingTask {
     protected float height = Float.NaN;
     /** Output image width. */
     protected float width = Float.NaN;
+    /** Maximum output image height. */
+    protected float maxHeight = Float.NaN;
+    /** Maximum output image width. */
+    protected float maxWidth = Float.NaN;
     /** Output image quality. */
     protected float quality = Float.NaN;
     /** Output Area of Interest (AOI) area. */
@@ -79,22 +92,20 @@ public class RasterizerTask extends MatchingTask {
     protected float dpi = Float.NaN;
     /** Output image language. */
     protected String language = null;
+    /** XML parser class currently in use. */
+    protected String readerClassName = XMLResourceDescriptor.getXMLParserClassName();
+
 
     /** Source image path. */
     protected File srcFile = null;
-
     /** Destination image path. */
     protected File destFile = null;
-
     /** Source directory of images. */
     protected File srcDir = null;
-
     /** Destination directory for output images. */
     protected File destDir = null;
-
     /** Contents of <code>fileset</code> elements. */
     protected Vector filesets = new Vector();
-
 
     /** Converter object used to convert SVG images to raster images. */
     protected SVGConverter converter;
@@ -143,6 +154,28 @@ public class RasterizerTask extends MatchingTask {
      */
     public void setWidth(float width) {
         this.width = width;
+    }
+
+    /**
+     * Gets <code>maxheight</code> attribute value.
+     *
+     * <p>The attribute is optional.</p>
+     *
+     * @param height Attribute value.
+     */
+    public void setMaxheight(float height) {
+        this.maxHeight = height;
+    }
+
+    /**
+     * Gets <code>maxwidth</code> attribute value.
+     *
+     * <p>The attribute is optional.</p>
+     *
+     * @param width Attribute value.
+     */
+    public void setMaxwidth(float width) {
+        this.maxWidth = width;
     }
 
     /**
@@ -217,6 +250,16 @@ public class RasterizerTask extends MatchingTask {
      */
     public void setLang(String language) {
         this.language = language;
+    }
+
+	/**
+     * Sets classname of an XML parser.
+     * The attribute is optional.
+     *
+     * @param value Java classname of an XML parser.
+     */
+    public void setClassname(String value) {
+        this.readerClassName = value;
     }
 
     /**
@@ -294,45 +337,55 @@ public class RasterizerTask extends MatchingTask {
 
         String[] sources;        // Array of input files.
 
-        // Check file and directory values.
-        if(this.srcFile != null) {
-            if(this.destFile == null) {
-                throw new BuildException("dest attribute is not set.");
-            }
-        } else {
-            if((this.srcDir == null) && (filesets.size() == 0)) {
-                throw new BuildException("No input files! Either srcdir or fileset have to be set.");
-            }
-            if(this.destDir == null) {
-                throw new BuildException("destdir attribute is not set!");
-            }
-        }
-
+		// Store default XML parser information and set user class.
+        String defaultParser = XMLResourceDescriptor.getXMLParserClassName();
         // Throws BuildException.
-        setRasterizingParameters();
-
-        // Get and set source(s).
-        sources = getSourceFiles();
-        converter.setSources(sources);
-
-        // Set destination.
-        if(this.srcFile != null) {
-            converter.setDst(this.destFile);
-        } else {
-            converter.setDst(this.destDir);
-        }
-
-        // Input filenames are stored in the converter and 
-        // everything is ready for the conversion.
-
-        log("Rasterizing " + sources.length + 
-            (sources.length == 1 ? " image " : " images ") + 
-            "from SVG to " + this.resultType.toString() + ".");
+        XMLResourceDescriptor.setXMLParserClassName(getParserClassName(readerClassName));
 
         try {
-            converter.execute();
-        } catch(SVGConverterException sce) {
-            throw new BuildException(sce.getMessage());
+            // Check file and directory values.
+            if(this.srcFile != null) {
+                if(this.destFile == null) {
+                    throw new BuildException("dest attribute is not set.");
+                }
+            } else {
+                if((this.srcDir == null) && (filesets.size() == 0)) {
+                    throw new BuildException("No input files! Either srcdir or fileset have to be set.");
+                }
+                if(this.destDir == null) {
+                    throw new BuildException("destdir attribute is not set!");
+                }
+            }
+
+            // Throws BuildException.
+            setRasterizingParameters();
+
+            // Get and set source(s).
+            sources = getSourceFiles();
+            converter.setSources(sources);
+
+            // Set destination.
+            if(this.srcFile != null) {
+                converter.setDst(this.destFile);
+            } else {
+                converter.setDst(this.destDir);
+            }
+
+            // Input filenames are stored in the converter and 
+            // everything is ready for the conversion.
+
+            log("Rasterizing " + sources.length + 
+                (sources.length == 1 ? " image " : " images ") + 
+                "from SVG to " + this.resultType.toString() + ".");
+
+            try {
+                converter.execute();
+            } catch(SVGConverterException sce) {
+                throw new BuildException(sce.getMessage());
+            }
+        } finally {
+            // Restore default XML parser for the next execute.
+            XMLResourceDescriptor.setXMLParserClassName(defaultParser);
         }
     }
 
@@ -357,17 +410,31 @@ public class RasterizerTask extends MatchingTask {
         } else {
             throw new BuildException("Unknown value in result parameter.");
         }
+        // Set size values.
         if(!Float.isNaN(this.width)) {
             if(this.width < 0) {
-                throw new BuildException("Value in width parameter must positive.");
+                throw new BuildException("Value of width parameter must positive.");
             }
             converter.setWidth(this.width);
         }
         if(!Float.isNaN(this.height)) {
             if(this.height < 0) {
-                throw new BuildException("Value in height parameter must positive.");
+                throw new BuildException("Value of height parameter must positive.");
             }
             converter.setHeight(this.height);
+        }
+        // Set maximum size values.
+        if(!Float.isNaN(this.maxWidth)) {
+            if(this.maxWidth < 0) {
+                throw new BuildException("Value of maxwidth parameter must positive.");
+            }
+            converter.setMaxWidth(this.maxWidth);
+        }
+        if(!Float.isNaN(this.maxHeight)) {
+            if(this.maxHeight < 0) {
+                throw new BuildException("Value of maxheight parameter must positive.");
+            }
+            converter.setMaxHeight(this.maxHeight);
         }
         // The quality is just swallowed if the result type is not correct.
         if(allowedToSetQuality(resultType)) {
@@ -394,10 +461,10 @@ public class RasterizerTask extends MatchingTask {
         }
         if(!Float.isNaN(this.dpi)) {
             if(this.dpi < 0) {
-                throw new BuildException("Value in dpi parameter must positive.");
+                throw new BuildException("Value of dpi parameter must positive.");
             }
             // The calculation is the same as 2.54/dpi*10 where
-            converter.setPixelToMillimeter(25.4f/this.dpi);
+            converter.setPixelUnitToMillimeter(25.4f/this.dpi);
         }
         if(this.language != null) {
             converter.setLanguage(this.language);
@@ -412,8 +479,7 @@ public class RasterizerTask extends MatchingTask {
      */
     protected String[] getSourceFiles() {
 
-        String[] list;                          // Input files in array.
-        ArrayList inputFiles = new ArrayList(); // Input files in temp list.
+        List inputFiles = new ArrayList(); // Input files in temp list.
 
         if(this.srcFile != null) {
             // Only one source and destination file have been set.
@@ -454,14 +520,8 @@ public class RasterizerTask extends MatchingTask {
             }
         }
 
-        // Copy items from list object to array.
-        list = new String[inputFiles.size()];
-        Iterator iter = inputFiles.iterator();
-        for(int i = 0 ; iter.hasNext() ; i++) {
-            list[i] = (String)iter.next();
-        }
-
-        return list;
+        // Convert List to array and return the array.
+        return (String[])inputFiles.toArray(new String[0]);
     }
 
     /**
@@ -599,6 +659,29 @@ public class RasterizerTask extends MatchingTask {
         }
 
         return new Color(r, g, b, a);
+    }
+
+    /**
+     * Returns name of an XML parser.
+     * Magic string {@link #JAXP_PARSER} is also accepted.
+     *
+     * @param className Name of the XML parser class or a magic string.
+     *
+     * @return Name of an XML parser.
+     *
+     * @throws BuildException Unable to get the name of JAXP parser.
+     */
+    private String getParserClassName(final String className) {
+        String name = className;
+        if(className.equals(JAXP_PARSER)) {
+            // Set first JAXP parser.
+            // Throws BuildException.
+            XMLReader reader = JAXPUtils.getXMLReader();
+            name = reader.getClass().getName();
+        }
+
+        log("Using class '" + name + "' to parse SVG documents.", Project.MSG_VERBOSE);
+        return name;
     }
 
 

@@ -115,6 +115,24 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_WIDTH");
 
         t = new HintsConfigTest(new Object[][]{
+            {ImageTranscoder.KEY_MAX_HEIGHT, new Float(50)}}){
+                protected void deltaConfigure(SVGConverter c){
+                    c.setMaxHeight(50);
+                }
+            };
+        addTest(t);
+        t.setId("HintsConfigTest.KEY_MAX_HEIGHT");
+
+        t = new HintsConfigTest(new Object[][]{
+            {ImageTranscoder.KEY_MAX_WIDTH, new Float(50)}}){
+                protected void deltaConfigure(SVGConverter c){
+                    c.setMaxWidth(50);
+                }
+            };
+        addTest(t);
+        t.setId("HintsConfigTest.KEY_MAX_WIDTH");
+
+        t = new HintsConfigTest(new Object[][]{
             {ImageTranscoder.KEY_MEDIA, "print"}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setMediaType("print");

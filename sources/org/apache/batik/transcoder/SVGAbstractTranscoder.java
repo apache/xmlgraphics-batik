@@ -8,14 +8,10 @@
 
 package org.apache.batik.transcoder;
 
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-
-import java.net.URL;
 
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -26,12 +22,10 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.event.EventDispatcher;
 
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
-import org.apache.batik.bridge.BridgeExtension;
 import org.apache.batik.bridge.NoLoadScriptSecurity;
 import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.RelaxedScriptSecurity;
@@ -49,13 +43,10 @@ import org.apache.batik.transcoder.keys.StringKey;
 import org.apache.batik.transcoder.image.resources.Messages;
 
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGSVGElement;
 
 
@@ -95,6 +86,9 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
      */
     protected GraphicsNode root;
 
+    /**
+     * Image's width and height.
+     */
     protected float width, height;
 
     /** The user agent dedicated to an SVG Transcoder. */
@@ -186,29 +180,8 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         ctx = null;
         builder = null;
 
-        // compute the image's width and height according the hints
-        float imgWidth = -1;
-        if (hints.containsKey(KEY_WIDTH)) {
-            imgWidth = ((Float)hints.get(KEY_WIDTH)).floatValue();
-        }
-        float imgHeight = -1;
-        if (hints.containsKey(KEY_HEIGHT)) {
-            imgHeight = ((Float)hints.get(KEY_HEIGHT)).floatValue();
-        }
+        setImageSize(docWidth, docHeight);
 
-        if (imgWidth > 0 && imgHeight > 0) {
-            width = imgWidth;
-            height = imgHeight;
-        } else if (imgHeight > 0) {
-            width = (docWidth * imgHeight) / docHeight;
-            height = imgHeight;
-        } else if (imgWidth > 0) {
-            width = imgWidth;
-            height = (docHeight * imgWidth) / docWidth;
-        } else {
-            width = docWidth;
-            height = docHeight;
-        }
         // compute the preserveAspectRatio matrix
         AffineTransform Px;
         String ref = new ParsedURL(uri).getRef();
@@ -249,6 +222,60 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         curTxf = Px;
         this.root = gvtRoot;
     }
+
+    /**
+     * Sets document size according to the hints.
+     * Global variables width and height are modified.
+     *
+     * @param docWidth Width of the document.
+     * @param docHeight Height of the document.
+     */
+    protected void setImageSize(float docWidth, float docHeight) {
+
+        // Compute the image's width and height according the hints
+        float imgWidth = -1;
+        if (hints.containsKey(KEY_WIDTH)) {
+            imgWidth = ((Float)hints.get(KEY_WIDTH)).floatValue();
+        }
+        float imgHeight = -1;
+        if (hints.containsKey(KEY_HEIGHT)) {
+            imgHeight = ((Float)hints.get(KEY_HEIGHT)).floatValue();
+        }
+
+        if (imgWidth > 0 && imgHeight > 0) {
+            width = imgWidth;
+            height = imgHeight;
+        } else if (imgHeight > 0) {
+            width = (docWidth * imgHeight) / docHeight;
+            height = imgHeight;
+        } else if (imgWidth > 0) {
+            width = imgWidth;
+            height = (docHeight * imgWidth) / docWidth;
+        } else {
+            width = docWidth;
+            height = docHeight;
+        }
+
+        // Limit image size according to the maximuxm size hints.
+        float imgMaxWidth = -1;
+        if (hints.containsKey(KEY_MAX_WIDTH)) {
+            imgMaxWidth = ((Float)hints.get(KEY_MAX_WIDTH)).floatValue();
+        }
+        float imgMaxHeight = -1;
+        if (hints.containsKey(KEY_MAX_HEIGHT)) {
+            imgMaxHeight = ((Float)hints.get(KEY_MAX_HEIGHT)).floatValue();
+        }
+
+        if ((imgMaxHeight > 0) && (height > imgMaxHeight)) {
+            width = (docWidth * imgMaxHeight) / docHeight;
+            height = imgMaxHeight;
+        }
+        if ((imgMaxWidth > 0) && (width > imgMaxWidth)) {
+            width = imgMaxWidth;
+            height = (docHeight * imgMaxWidth) / docWidth;
+        }
+    }
+
 
     // --------------------------------------------------------------------
     // Keys definition
@@ -298,6 +325,57 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     public static final TranscodingHints.Key KEY_HEIGHT
         = new LengthKey();
 
+    /**
+     * The maximum width of the image key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_MAX_WIDTH</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">The width of the top most svg element</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the maximum width of the image to create.
+     * The value will set the maximum width of the image even when 
+     * bigger width is specified in a document or set with KEY_WIDTH.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_MAX_WIDTH
+        = new LengthKey();
+
+    /**
+     * The maximux height of the image key.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_MAX_HEIGHT</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">Float</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">The height of the top most svg element</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the maximum height of the image to create. 
+     * The value will set the maximum height of the image even when 
+     * bigger height is specified in a document or set with KEY_HEIGHT.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_MAX_HEIGHT
+        = new LengthKey();
 
     /**
      * The area of interest key.
@@ -726,9 +804,9 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         }
 
         /**
-    	 * Returns true if the XML parser must be in validation mode, false
-    	 * otherwise.
-    	 */
+         * Returns true if the XML parser must be in validation mode, false
+         * otherwise.
+         */
         public boolean isXMLParserValidating() {
             Boolean b = (Boolean)SVGAbstractTranscoder.this.hints.get
                 (KEY_XML_PARSER_VALIDATING);
@@ -744,11 +822,11 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
          * 
          * @param scriptType type of script, as found in the 
          *        type attribute of the &lt;script&gt; element.
-         * @param scriptURL url for the script, as defined in
+         * @param scriptPURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docPURL url for the document into which the 
          *        script was found.
          */
         public ScriptSecurity getScriptSecurity(String scriptType,

@@ -40,7 +40,7 @@ import java.util.Map;
  */
 public class RasterizerTaskSVGConverterController implements SVGConverterController {
 
-    // -- Class variables ----------------------------------------------------
+    // -- Variables ----------------------------------------------------------
     /** Ant task that is used to log messages. */
     protected Task executingTask = null;
 
@@ -63,7 +63,6 @@ public class RasterizerTaskSVGConverterController implements SVGConverterControl
 
 
     // -- Public interface ---------------------------------------------------
-
     public boolean proceedWithComputedTask(Transcoder transcoder,
                                            Map hints,
                                            Vector sources,
@@ -80,7 +79,7 @@ public class RasterizerTaskSVGConverterController implements SVGConverterControl
                                                      File dest,
                                                      String errorCode){
         if(executingTask != null) {
-            executingTask.log("Unable to rasterize image from '" 
+            executingTask.log("Unable to rasterize image '" 
                 + source.getName() + "' to '" 
                 + dest.getAbsolutePath() + "': " + errorCode);
         }
