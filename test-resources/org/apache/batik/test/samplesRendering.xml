@@ -191,7 +191,7 @@
             <test id="samples/tests/spec/styling/alternateStylesheet.svg-Hot" />
             <test id="samples/tests/spec/styling/alternateStylesheet.svg-Cold" />
             <test id="samples/tests/spec/styling/smiley.svg-Smiling" />
-            <test id="samples/tests/spec/styling/smiley.svg-BasicSad" />
+            <test id="samples/tests/spec/styling/smiley.svg-Basic Sad" />
             <test id="samples/tests/spec/styling/smiley.svg-Wow!" />
             <test id="samples/tests/spec/styling/smiley.svg-Grim" />
             <test id="samples/tests/spec/styling/smiley.svg-Oups" />
