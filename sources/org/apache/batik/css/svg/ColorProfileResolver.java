@@ -10,36 +10,20 @@ package org.apache.batik.css.svg;
 
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
-import org.apache.batik.css.value.ImmutableFloat;
-import org.apache.batik.css.value.ImmutableRGBColor;
-import org.apache.batik.css.value.ImmutableValue;
 import org.apache.batik.css.value.RelativeValueResolver;
+
 import org.w3c.dom.Element;
-import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.ViewCSS;
 
 /**
- * This class provides a relative value resolver for the 'marker-*' CSS
+ * This class provides a relative value resolver for the color-profile
  * property.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class MarkerResolver implements RelativeValueResolver {
-
-    /**
-     * The handled property name.
-     */
-    protected String propertyName;
-
-    /**
-     * Creates a new MarkerResolver object.
-     * @param s The property name.
-     */
-    public MarkerResolver(String s) {
-        propertyName = s;
-    }
-
+public class ColorProfileResolver implements RelativeValueResolver {
+    
     /**
      * Whether the handled property is inherited or not.
      */
@@ -51,14 +35,14 @@ public class MarkerResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return propertyName;
+	return ColorProfileFactory.CSS_COLOR_PROFILE_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return new CSSOMReadOnlyValue(MarkerFactory.NONE_VALUE);
+	return new CSSOMReadOnlyValue(ColorProfileFactory.AUTO_VALUE);
     }
     
     /**
@@ -78,14 +62,6 @@ public class MarkerResolver implements RelativeValueResolver {
 			     CSSOMReadOnlyValue value,
 			     String priority,
 			     int origin) {
-        ImmutableValue im = value.getImmutableValue();
-        if (im == PaintFactory.CURRENTCOLOR_VALUE) {
-	    styleDeclaration.setPropertyCSSValue
-                (getPropertyName(),
-                 styleDeclaration.getPropertyCSSValue
-                     (SVGValueConstants.CSS_COLOR_PROPERTY),
-                 priority,
-                 origin);
-        }
+        // Nothing to do.
     }
 }
