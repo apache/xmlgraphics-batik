@@ -18,6 +18,14 @@ import java.awt.font.FontRenderContext;
  */
 public interface AltGlyphHandler {
 
+    /**
+     * Creates a glyph vector containing the alternate glyphs.
+     *
+     * @param frc The current font render context.
+     * @param fontSize The required font size.
+     * @return The GVTGlyphVector containing the alternate glyphs, or null if
+     * the alternate glyphs could not be found.
+     */
     GVTGlyphVector createGlyphVector(FontRenderContext frc, float fontSize);
 
 }

@@ -24,8 +24,8 @@ public class KerningTable {
     /**
      * Creates a KerningTable from an array of Kern entries.
      *
-     * @param entries The array of Kern elements that represent the kerning
-     * entries for the font that this kerning table is associated with.
+     * @param entries The array of Kern objects that represent the kerning
+     * entries for the font that this kerning table belongs to.
      */
 
     public KerningTable(Kern[] entries) {

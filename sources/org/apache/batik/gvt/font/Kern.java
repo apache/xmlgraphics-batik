@@ -55,7 +55,7 @@ public class Kern {
 
     /**
      * Returns true if the specified glyph is one of the glyphs considered
-     * as first by this kerning pair. Returns false otherwise.
+     * as first by this kerning entry. Returns false otherwise.
      *
      * @param glyphCode The id of the glyph to test.
      * @param glyphUnicode The unicode value of the glyph to test.
@@ -77,7 +77,7 @@ public class Kern {
 
     /**
      * Returns true if the specified glyph is one of the glyphs considered
-     * as second by this kerning pair. Returns false otherwise.
+     * as second by this kerning entry. Returns false otherwise.
      *
      * @param glyphCode The id of the glyph to test.
      * @param glyphUnicode The unicode value of the glyph to test.
@@ -99,8 +99,10 @@ public class Kern {
     }
 
     /**
-     * Give the kerning adjustment value for this entry (positive
-     * value means the space between characters should decrease)
+     * Returns the kerning adjustment value for this kerning entry (a positive
+     * value means the space between characters should decrease).
+     *
+     * @return The kerning adjustment for this kerning entry.
      */
     public float getAdjustValue() {
         return kerningAdjust;
