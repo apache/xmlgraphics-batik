@@ -311,38 +311,39 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          * Displays an alert dialog box.
          */
         public void alert(String message) {
-            javax.swing.JOptionPane.showMessageDialog
-                (null, "Script alert:\n" + message);
+            if (userAgent != null) {
+                userAgent.showAlert(message);
+            }
         }
 
         /**
          * Displays a confirm dialog box.
          */
         public boolean confirm(String message) {
-            return javax.swing.JOptionPane.showConfirmDialog
-                    (null, "Script confirm:\n" + message,
-                     "Confirm",javax.swing.JOptionPane.YES_NO_OPTION) ==
-                    javax.swing.JOptionPane.YES_OPTION;
+            if (userAgent != null) {
+                return userAgent.showConfirm(message);
+            }
+            return false;
         }
 
         /**
          * Displays an input dialog box.
          */
         public String prompt(String message) {
-            return javax.swing.JOptionPane.showInputDialog
-                ("Script prompt:\n" + message);
+            if (userAgent != null) {
+                return userAgent.showPrompt(message);
+            }
+            return null;
         }
 
         /**
          * Displays an input dialog box, given the default value.
          */
         public String prompt(String message, String defVal) {
-            return (String)javax.swing.JOptionPane.showInputDialog
-                (null,
-                 "Script prompt:\n" + message,
-                 "Prompt",
-                 javax.swing.JOptionPane.PLAIN_MESSAGE,
-                 null, null, defVal);
+            if (userAgent != null) {
+                return userAgent.showPrompt(message, defVal);
+            }
+            return null;
         }
 
         /**

@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
@@ -721,6 +722,47 @@ public class JSVGComponent extends JGVTComponent {
      */
     public void removeUpdateManagerListener(UpdateManagerListener l) {
         updateManagerListeners.remove(l);
+    }
+
+    /**
+     * Shows an alert dialog box.
+     */
+    public void showAlert(String message) {
+        JOptionPane.showMessageDialog
+            (this, Messages.formatMessage("script.alert",
+                                          new Object[] { message }));
+    }
+
+    /**
+     * Shows a prompt dialog box.
+     */
+    public String showPrompt(String message) {
+        return JOptionPane.showInputDialog
+            (this, Messages.formatMessage("script.prompt",
+                                          new Object[] { message }));
+    }
+
+    /**
+     * Shows a prompt dialog box.
+     */
+    public String showPrompt(String message, String defaultValue) {
+        return (String)JOptionPane.showInputDialog
+            (this,
+             Messages.formatMessage("script.prompt",
+                                    new Object[] { message }),
+             null,
+             JOptionPane.PLAIN_MESSAGE,
+             null, null, defaultValue);
+    }
+
+    /**
+     * Shows a confirm dialog box.
+     */
+    public boolean showConfirm(String message) {
+        return JOptionPane.showConfirmDialog
+            (this, Messages.formatMessage("script.confirm",
+                                          new Object[] { message }),
+             "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 
     /**
@@ -1522,6 +1564,79 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         /**
+         * Shows an alert dialog box.
+         */
+        public void showAlert(final String message) {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.showAlert(message);
+            } else {
+                invokeAndWait(new Runnable() {
+                        public void run() {
+                            userAgent.showAlert(message);
+                        }
+                    });
+            }
+        }
+
+        /**
+         * Shows a prompt dialog box.
+         */
+        public String showPrompt(final String message) {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.showPrompt(message);
+            } else {
+                class Query implements Runnable {
+                    String result;
+                    public void run() {
+                        result = userAgent.showPrompt(message);
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Shows a prompt dialog box.
+         */
+        public String showPrompt(final String message,
+                                 final String defaultValue) {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.showPrompt(message, defaultValue);
+            } else {
+                class Query implements Runnable {
+                    String result;
+                    public void run() {
+                        result = userAgent.showPrompt(message, defaultValue);
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Shows a confirm dialog box.
+         */
+        public boolean showConfirm(final String message) {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.showConfirm(message);
+            } else {
+                class Query implements Runnable {
+                    boolean result;
+                    public void run() {
+                        result = userAgent.showConfirm(message);
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
          * Returns the pixel to mm factor.
          */
         public float getPixelToMM() {
@@ -1847,6 +1962,47 @@ public class JSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 svgUserAgent.displayMessage(message);
             }
+        }
+
+        /**
+         * Shows an alert dialog box.
+         */
+        public void showAlert(String message) {
+            if (svgUserAgent != null) {
+                svgUserAgent.showAlert(message);
+                return;
+            }
+            JSVGComponent.this.showAlert(message);
+        }
+
+        /**
+         * Shows a prompt dialog box.
+         */
+        public String showPrompt(String message) {
+            if (svgUserAgent != null) {
+                return svgUserAgent.showPrompt(message);
+            }
+            return JSVGComponent.this.showPrompt(message);
+        }
+
+        /**
+         * Shows a prompt dialog box.
+         */
+        public String showPrompt(String message, String defaultValue) {
+            if (svgUserAgent != null) {
+                return svgUserAgent.showPrompt(message, defaultValue);
+            }
+            return JSVGComponent.this.showPrompt(message, defaultValue);
+        }
+
+        /**
+         * Shows a confirm dialog box.
+         */
+        public boolean showConfirm(String message) {
+            if (svgUserAgent != null) {
+                return svgUserAgent.showConfirm(message);
+            }
+            return JSVGComponent.this.showConfirm(message);
         }
 
         /**

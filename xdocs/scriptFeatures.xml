@@ -39,8 +39,8 @@
       </p>
       <note>In the ECMAScript programs executed in an SVG document,
             the <code>window</code> object is the global object, so
-            its properties and methods can be accessed without qualifying
-            them.</note>
+            its properties and methods can be accessed as global
+            variables and functions.</note>
       <p>
       It provides the following features:
       </p>
@@ -106,7 +106,7 @@
         <li><em>question</em>: The string to display</li>
       </ul>
       <p>
-      This method returns <code>true</code> if the user clicked on the
+      This method returns <code>true</code> if the user clicks on the
       'OK' button, <code>false</code> otherwise.
       </p>
 

@@ -74,6 +74,33 @@ public class UserAgentAdapter implements UserAgent {
     }
 
     /**
+     * Shows an alert dialog box.
+     */
+    public void showAlert(String message) {
+    }
+
+    /**
+     * Shows a prompt dialog box.
+     */
+    public String showPrompt(String message) {
+        return null;
+    }
+
+    /**
+     * Shows a prompt dialog box.
+     */
+    public String showPrompt(String message, String defaultValue) {
+        return null;
+    }
+
+    /**
+     * Shows a confirm dialog box.
+     */
+    public boolean showConfirm(String message) {
+        return false;
+    }
+
+    /**
      * Returns the pixel to millimeter conversion factor 0.26458333 (96dpi)
      */
     public float getPixelToMM() {

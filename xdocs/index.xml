@@ -90,9 +90,7 @@
         <s1 title="Batik's Implementation Status">
         <p>
         At this time, Batik provides a good implementation for all the SVG static 
-        features, supports linking, and has some scripting support, even though dynamic 
-        modification of SVG documents is not yet available and animation is
-        not supported.
+        features, supports linking, and has some scripting support, even though SMIL animation is not supported.
         </p>
         <p>
         You will find a detailed description of the set of SVG features

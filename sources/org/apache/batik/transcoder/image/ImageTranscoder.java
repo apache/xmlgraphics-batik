@@ -368,6 +368,33 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         }
 
         /**
+         * Shows an alert dialog box.
+         */
+        public void showAlert(String message) {
+        }
+
+        /**
+         * Shows a prompt dialog box.
+         */
+        public String showPrompt(String message) {
+            return null;
+        }
+
+        /**
+         * Shows a prompt dialog box.
+         */
+        public String showPrompt(String message, String defaultValue) {
+            return null;
+        }
+
+        /**
+         * Shows a confirm dialog box.
+         */
+        public boolean showConfirm(String message) {
+            return false;
+        }
+
+        /**
          * Returns the pixel to millimeter conversion factor specified in the
          * <tt>TranscodingHints</tt> or 0.3528 if any.
          */

@@ -174,9 +174,10 @@ public class SVGApplication {
 
 Each time you set a URI or a SVG DOM tree to the JSVGCanvas (using the
 <code>setURI</code> or <code>setSVGDocument</code> method), the specified
-document is first parsed (in case of a URI), built, and finally rendered. The
-proper way to be notified of those different phases is to implement a listener
-and attach it to the component. There are three types of listener:
+document is first parsed (in case of a URI), built, rendered and optionally
+updated. The proper way to be notified of those different phases is to
+implement a listener and attach it to the component. There are five types
+of listener:
 
 </p>
 
@@ -202,32 +203,57 @@ tree will then be used to render the document.
 <br /><br />
 </dd>
 
+<dt>SVGLoadEventDispatcherListener</dt>
+<dd>
+
+This listener provides a set of methods that can be used to track
+<code>SVGLoadEventDispatcherEvent</code> events. It describes the
+DOM 'SVGLoad' event dispatch phase.<br/>
+This event is triggered only in dynamic documents.
+<br /><br />
+</dd>
+
 <dt>GVTTreeRendererListener</dt>
 <dd>
 
 This listener provides a set of methods that can be used to track
 <code>GVTTreeRendererEvent</code> events. It describes the rendering phase:
-constructing an image using a GVT tree.
+constructing an image using a GVT tree.<br/>
+In dynamic documents this event is fired only once for the initial rendering.
 
 <br /><br />
 </dd>
+
+<dt>UpdateManagerListener</dt>
+<dd>
+
+This listener provides a set of methods that can be used to track
+<code>UpdateManagerEvent</code> events. It describes the running phase:
+the update manager is started and then it can be suspended, resumed or
+stopped, and graphics updates can be tracked.
+<br/>
+Only dynamic documents trigger this event.
+
+<br /><br />
+</dd>
+
 
 </dl>
 
 <p>
 
 Those listeners give a complete description of the different steps of those
-three phases (including error states). Adapter classes are available to ease the
+five phases (including error states). Adapter classes are available to ease the
 creation of new listener implementation.
 
 </p>
 
 <p>
 
-You can assume that the JSVGCanvas has completed its job (parsing, building and
-rendering) when the <code>gvtRenderingCompleted</code> method call is called and
-following a setURI or a setSVGDocument method call.
-
+For static documents, you can assume that the JSVGCanvas has completed its job (parsing, building and rendering) when the <code>gvtRenderingCompleted</code> method call is called, following a setURI or a setSVGDocument method call.<br/>
+In case of dynamic documents, the end of the computations (parsing, building,
+SVGLoad dispatch, initial rendering and updates) is marked by a call to the
+<code>updateManagerStopped</code> method.
 </p>
 
 </s1>
