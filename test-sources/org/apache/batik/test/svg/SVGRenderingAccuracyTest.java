@@ -28,8 +28,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
+import java.awt.image.ColorModel;
 
 import org.apache.batik.ext.awt.image.CompositeRule;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.CompositeRed;
 import org.apache.batik.ext.awt.image.rendered.BufferedImageCachableRed;
 
@@ -709,15 +712,54 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
         BufferedImage diff = new BufferedImage(ref.getWidth(),
                                                ref.getHeight(),
                                                BufferedImage.TYPE_INT_ARGB);
+        WritableRaster refWR = ref.getRaster();
+        WritableRaster genWR = gen.getRaster();
+        WritableRaster dstWR = diff.getRaster();
 
-        Vector src = new Vector();
-        src.addElement(new BufferedImageCachableRed(ref));
-        src.addElement(new BufferedImageCachableRed(gen));
+        boolean refPre = ref.isAlphaPremultiplied();
+        if (!refPre) {
+            ColorModel     cm = ref.getColorModel();
+            cm = GraphicsUtil.coerceData(refWR, cm, true);
+            ref = new BufferedImage(cm, refWR, true, null);
+        }
+        boolean genPre = gen.isAlphaPremultiplied();
+        if (!genPre) {
+            ColorModel     cm = gen.getColorModel();
+            cm = GraphicsUtil.coerceData(genWR, cm, true);
+            gen = new BufferedImage(cm, genWR, true, null);
+        }
 
-        CompositeRed cr = new CompositeRed(src,
-                                           CompositeRule.ARITHMETIC(0, 10, -10, 0.5f));
 
-        cr.copyToRaster(diff.getRaster());
+        int w=ref.getWidth();
+        int h=ref.getHeight();
+        int nb = ref.getSampleModel().getNumBands();
+
+        int y, i,val;
+        int [] refPix = null;
+        int [] genPix = null;
+        for (y=0; y<h; y++) {
+            refPix = refWR.getPixels  (0, y, w, 1, refPix);
+            genPix = genWR.getPixels  (0, y, w, 1, genPix);
+            for (i=0; i<refPix.length; i++) {
+                val = ((genPix[i]-refPix[i])*10)+128;
+                if ((val & 0xFFFFFF00) != 0)
+                    if ((val & 0x80000000) != 0) val = 0;
+                    else                         val = 255;
+                genPix[i] = val;
+            }
+            dstWR.setPixels(0, y, w, 1, genPix);
+        }
+
+        if (!genPre) {
+            ColorModel cm = gen.getColorModel();
+            cm = GraphicsUtil.coerceData(genWR, cm, false);
+        }
+        
+        if (!refPre) {
+            ColorModel cm = ref.getColorModel();
+            cm = GraphicsUtil.coerceData(refWR, cm, false);
+        }
+
         return diff;
     }
 

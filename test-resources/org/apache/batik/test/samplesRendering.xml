@@ -26,7 +26,7 @@
         <test id="samples/batikFX.svg" />
         <test id="samples/batikLogo.svg" />
         <test id="samples/batikYin.svg" />
-        <test id="samples/bookOfKells.svg" />
+        <test id="samples/bookOfKells.svgz" />
         <test id="samples/chessboard.svg" />
         <test id="samples/gradients.svg" />
         <test id="samples/GVT.svg" />
