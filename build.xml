@@ -164,6 +164,8 @@ To display the available targets type:
     <echo message="   clean         --> cleans up the directory"/>
     <echo message="   splash        --> Updates documentation and browser splash screens"/>
     <echo message="   jarDepend     --> Updates jar files dependency image"/>
+    <echo message="   all-jar       --> Creates a combined JAR file of the Batik"/>
+    <echo message="                     libraries in ${build}/lib"/>
     <echo message=""/>
     <echo message=" See the comments in the build.xml file for more details."/>
     <echo message=""/>
@@ -1221,6 +1223,7 @@ To display the available targets type:
              author="false"
              version="false"
              use="true"
+             splitindex="true"
              windowtitle="${Project} Javadoc"
              doctitle="${Project} API Specification"
              bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved.">

@@ -174,7 +174,7 @@ public class SVGRenderingHints extends AbstractSVGConverter{
             //
             Object textAntialiasing = hints.get(RenderingHints.KEY_TEXT_ANTIALIASING);
             if(textAntialiasing == RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
-                textRendering = SVG_OPTIMIZE_LEGIBILITY_VALUE;
+                textRendering = SVG_GEOMETRIC_PRECISION_VALUE;
             else if(textAntialiasing == RenderingHints.VALUE_TEXT_ANTIALIAS_OFF)
                 textRendering = SVG_OPTIMIZE_SPEED_VALUE;
             else if(textAntialiasing == RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT)

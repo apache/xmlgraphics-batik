@@ -205,10 +205,9 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             TextPaintInfo.equivilent(tpi, cacheTPI))
             return bounds2D;
 
-        if (tpi == null) {
-            bounds2D = new Rectangle2D.Float();
-            return bounds2D;
-        }
+        if (tpi == null)
+            return null;
+
         cacheTPI = new TextPaintInfo(tpi);
         Shape outline = null;
         if (tpi.fillPaint != null) {
@@ -231,7 +230,11 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
                 bounds2D = bounds2D.createUnion(strokeBounds);
         }
         if (bounds2D == null)
-            bounds2D = new Rectangle2D.Float();
+            return null;
+
+        if ((bounds2D.getWidth()  == 0) ||
+            (bounds2D.getHeight() == 0))
+            bounds2D = null;
 
         return bounds2D;
     }
@@ -638,16 +641,16 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      * of this GlyphVector.
      */
     public Shape getOutline() {
-        if (outline == null) {
-            outline = new GeneralPath();
-            for (int i = 0; i < getNumGlyphs(); i++) {
-                if (glyphVisible[i]) {
-                    Shape glyphOutline = getGlyphOutline(i);
-                    outline.append(glyphOutline, false);
-                }
+        if (outline != null) 
+            return outline;
+        
+        outline = new GeneralPath();
+        for (int i = 0; i < getNumGlyphs(); i++) {
+            if (glyphVisible[i]) {
+                Shape glyphOutline = getGlyphOutline(i);
+                outline.append(glyphOutline, false);
             }
         }
-
         return outline;
     }
 
