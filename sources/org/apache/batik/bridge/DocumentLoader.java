@@ -11,9 +11,11 @@ package org.apache.batik.bridge;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.batik.dom.svg.DefaultSVGContext;
+import org.apache.batik.css.engine.CSSEngine;
+
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
 import org.apache.batik.dom.util.DocumentDescriptor;
@@ -54,6 +56,11 @@ public class DocumentLoader {
     protected UserAgent userAgent;
 
     /**
+     * The bridge context.
+     */
+    protected BridgeContext bridgeContext;
+
+    /**
      * Constructs a new <tt>DocumentLoader</tt>.
      */
     protected DocumentLoader() { }
@@ -83,14 +90,22 @@ public class DocumentLoader {
         DocumentState state = (DocumentState)cacheMap.get(uri);
         if (state == null) {
             Document document = documentFactory.createDocument(uri);
-            SVGOMDocument svgDoc = (SVGOMDocument)document;
-            DefaultSVGContext ctx = (DefaultSVGContext)svgDoc.getSVGContext();
-            ctx.setUserStyleSheetURI(userAgent.getUserStyleSheetURI());
+            if (bridgeContext != null) {
+                bridgeContext.initializeDocument(document);
+            }
+
             DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
             state = new DocumentState(uri, document, desc);
             cacheMap.put(uri, state);
         }
         return state.document;
+    }
+
+    /**
+     * Sets the bridge context.
+     */
+    public void setBridgeContext(BridgeContext bc) {
+        bridgeContext = bc;
     }
 
     /**

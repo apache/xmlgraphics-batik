@@ -8,14 +8,22 @@
 
 package org.apache.batik.dom.svg;
 
+import java.net.URL;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.apache.batik.css.svg.SVGViewCSS;
-import org.apache.batik.css.value.RelativeValueResolver;
-import org.apache.batik.css.value.ValueFactory;
+import org.apache.batik.css.engine.CSSContext;
+import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.SVGCSSEngine;
+
+import org.apache.batik.css.engine.value.ShorthandManager;
+import org.apache.batik.css.engine.value.ValueManager;
+
+import org.apache.batik.css.parser.ExtendedParser;
+import org.apache.batik.css.parser.ExtendedParserWrapper;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.GenericElement;
@@ -24,6 +32,9 @@ import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.DoublyIndexedTable;
 
 import org.apache.batik.util.Service;
+import org.apache.batik.util.XMLResourceDescriptor;
+
+import org.w3c.css.sac.Parser;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
@@ -53,9 +64,14 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
     protected DoublyIndexedTable customFactories;
 
     /**
-     * The custom value resolvers.
+     * The custom value managers.
      */
-    protected List relativeValueResolvers = new LinkedList();
+    protected List customValueManagers;
+
+    /**
+     * The custom shorthand value managers.
+     */
+    protected List customShorthandManagers;
 
     /**
      * Returns the default instance of this class.
@@ -89,34 +105,87 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
     }
 
     /**
-     * Allows the user to register a new CSS value factory.
+     * Allows the user to register a new CSS value manager.
      */
-    public void registerCustomCSSValueFactory(ValueFactory vf) {
-        String name = vf.getPropertyName();
-        vf.setParser(parser);
-        presentationAttributeSet.add(name);
-        valueFactoryMap.put(name, vf);
+    public void registerCustomCSSValueManager(ValueManager vm) {
+        if (customValueManagers == null) {
+            customValueManagers = new LinkedList();
+        }
+        customValueManagers.add(vm);
     }
 
     /**
-     * Allows the user to register a new CSS value resolver.
+     * Allows the user to register a new shorthand CSS value manager.
      */
-    public void registerCustomCSSRelativeValueResolver(RelativeValueResolver rvr) {
-        presentationAttributeSet.add(rvr.getPropertyName());
-        relativeValueResolvers.add(rvr);
+    public void registerCustomCSSShorthandManager(ShorthandManager sm) {
+        if (customShorthandManagers == null) {
+            customShorthandManagers = new LinkedList();
+        }
+        customShorthandManagers.add(sm);
     }
 
     /**
-     * Creates a ViewCSS.
+     * Creates new CSSEngine and attach it to the document.
      */
-    public ViewCSS createViewCSS(SVGOMDocument doc) {
-        SVGViewCSS result = (SVGViewCSS)super.createViewCSS(doc);
-
-        ListIterator it = relativeValueResolvers.listIterator();
-        while (it.hasNext()) {
-            result.addRelativeValueResolver((RelativeValueResolver)it.next());
+    public CSSEngine createCSSEngine(SVGOMDocument doc, CSSContext ctx) {
+        if (customValueManagers == null && customShorthandManagers == null) {
+            return super.createCSSEngine(doc, ctx);
         }
 
+        String pn = XMLResourceDescriptor.getCSSParserClassName();
+        Parser p;
+        try {
+            p = (Parser)Class.forName(pn).newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
+                                   formatMessage("css.parser.class",
+                                                 new Object[] { pn }));
+        } catch (InstantiationException e) {
+            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
+                                   formatMessage("css.parser.creation",
+                                                 new Object[] { pn }));
+        } catch (IllegalAccessException e) {
+            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
+                                   formatMessage("css.parser.access",
+                                                 new Object[] { pn }));
+        }
+        ExtendedParser ep = ExtendedParserWrapper.wrap(p);
+
+        ValueManager[] vms;
+        if (customValueManagers == null) {
+            vms = new ValueManager[0];
+        } else {
+            vms = new ValueManager[customValueManagers.size()];
+            Iterator it = customValueManagers.iterator();
+            int i = 0;
+            while (it.hasNext()) {
+                vms[i++] = (ValueManager)it.next();
+            }
+        }
+
+        ShorthandManager[] sms;
+        if (customShorthandManagers == null) {
+            sms = new ShorthandManager[0];
+        } else {
+            sms = new ShorthandManager[customShorthandManagers.size()];
+            Iterator it = customShorthandManagers.iterator();
+            int i = 0;
+            while (it.hasNext()) {
+                sms[i++] = (ShorthandManager)it.next();
+            }
+        }
+
+        CSSEngine result = new SVGCSSEngine(doc,
+                                            doc.getURLObject(),
+                                            ep,
+                                            vms,
+                                            sms,
+                                            ctx);
+        URL url = getClass().getResource("resources/UserAgentStyleSheet.css");
+        if (url != null) {
+            result.setUserAgentStyleSheet(result.parseStyleSheet(url, "all"));
+        }
+        doc.setCSSEngine(result);
         return result;
     }
 
@@ -131,18 +200,19 @@ public class ExtensibleSVGDOMImplementation extends SVGDOMImplementation {
             String name = DOMUtilities.getLocalName(qualifiedName);
             ElementFactory ef = (ElementFactory)factories.get(name);
             if (ef == null) {
-                throw document.createDOMException(DOMException.NOT_FOUND_ERR,
-                                                  "invalid.element",
-                                                  new Object[] { namespaceURI,
-                                                                 qualifiedName });
+                throw document.createDOMException
+                    (DOMException.NOT_FOUND_ERR,
+                     "invalid.element",
+                     new Object[] { namespaceURI,
+                                    qualifiedName });
             }
             return ef.create(DOMUtilities.getPrefix(qualifiedName), document);
         }
         if (namespaceURI != null) {
             if (customFactories != null) {
                 String name = DOMUtilities.getLocalName(qualifiedName);
-                ElementFactory cef = (ElementFactory)customFactories.get(namespaceURI,
-                                                                         name);
+                ElementFactory cef;
+                cef = (ElementFactory)customFactories.get(namespaceURI, name);
                 if (cef != null) {
                     return cef.create(DOMUtilities.getPrefix(qualifiedName),
                                       document);

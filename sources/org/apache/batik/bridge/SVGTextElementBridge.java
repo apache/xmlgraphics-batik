@@ -22,8 +22,10 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.AttributedCharacterIterator;
+import java.text.AttributedCharacterIterator.Attribute;
 import java.text.AttributedString;
 import java.text.CharacterIterator;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,8 +34,13 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.StringTokenizer;
 
-import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
-import org.apache.batik.css.AbstractViewCSS;
+import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.StyleMap;
+import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.ComputedValue;
+import org.apache.batik.css.engine.value.ListValue;
+import org.apache.batik.css.engine.value.Value;
+
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
@@ -48,9 +55,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
-import org.w3c.dom.css.CSSValueList;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
@@ -59,11 +64,14 @@ import org.w3c.dom.events.MutationEvent;
 /**
  * Bridge class for the &lt;text> element.
  *
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
+ * @author <a href="stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public class SVGTextElementBridge extends AbstractSVGBridge
     implements BridgeUpdateHandler, GraphicsNodeBridge, ErrorConstants {
+
+    protected final static Integer ZERO = new Integer(0);
 
     /**
      * The element that has been handled by this bridge.
@@ -129,18 +137,9 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         node.setVisible(CSSUtilities.convertVisibility(e));
 
         // 'text-rendering' and 'color-rendering'
-        Map textHints = CSSUtilities.convertTextRendering(e);
-        Map colorHints = CSSUtilities.convertColorRendering(e);
-        if (textHints != null || colorHints != null) {
-            RenderingHints hints;
-            if (textHints == null) {
-                hints = new RenderingHints(colorHints);
-            } else if (colorHints == null) {
-                hints = new RenderingHints(textHints);
-            } else {
-                hints = new RenderingHints(textHints);
-                hints.putAll(colorHints);
-            }
+        RenderingHints hints = CSSUtilities.convertTextRendering(e, null);
+        hints = CSSUtilities.convertColorRendering(e, hints);
+        if (hints != null) {
             node.setRenderingHints(hints);
         }
 
@@ -163,21 +162,18 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         String s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
         float x = 0;
         if (s.length() != 0) {
-            StringTokenizer st = new StringTokenizer(s);
-            String startX = st.nextToken();
+            StringTokenizer st = new StringTokenizer(s, ", ", false);
             x = UnitProcessor.svgHorizontalCoordinateToUserSpace
-                (startX, SVG_X_ATTRIBUTE, uctx);
+                (st.nextToken(), SVG_X_ATTRIBUTE, uctx);
         }
 
         // 'y' attribute - default is 0
         s = e.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-
         float y = 0;
         if (s.length() != 0) {
-            StringTokenizer st = new StringTokenizer(s);
-            String startY = st.nextToken();
+            StringTokenizer st = new StringTokenizer(s, ", ", false);
             y = UnitProcessor.svgVerticalCoordinateToUserSpace
-                (startY, SVG_Y_ATTRIBUTE, uctx);
+                (st.nextToken(), SVG_Y_ATTRIBUTE, uctx);
         }
         return new Point2D.Float(x, y);
     }
@@ -201,7 +197,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         }
 
         e.normalize();
-        AttributedString as = buildAttributedString(ctx, e, node);
+        AttributedString as = buildAttributedString(ctx, e);
         addGlyphPositionAttributes(as, e, ctx);
         ((TextNode)node).setAttributedCharacterIterator(as.getIterator());
 
@@ -255,7 +251,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                           new DOMAttrModifiedEventListener(),
                                           false);
         ctx.bind(e, node);
-        BridgeEventSupport.addDOMListener(ctx, e);
     }
 
     /**
@@ -336,90 +331,28 @@ public class SVGTextElementBridge extends AbstractSVGBridge
      *
      * @param ctx the bridge context to use
      * @param element the text element
-     * @param textNode the textNode that will be used to paint the text
      */
     protected AttributedString buildAttributedString(BridgeContext ctx,
-                                                     Element element,
-                                                     GraphicsNode node) {
-
-        AttributedString result = null;
-        List l = buildAttributedStrings
-            (ctx, element, node, true, null, new LinkedList());
-
-        // Simple cases
-        switch (l.size()) {
-        case 0:
-            return new AttributedString(" ");
-        case 1:
-            return (AttributedString)l.get(0);
-        }
-
-        //
-        // Merge the attributed strings
-        //
-        List buffers = new LinkedList();
-        List maps = new LinkedList();
-        Iterator it = l.iterator();
-
-        // First pass: build the string buffer.
-        StringBuffer sb = new StringBuffer();
-        while (it.hasNext()) {
-            AttributedString s = (AttributedString)it.next();
-            AttributedCharacterIterator aci = s.getIterator();
-            // Build the StringBuffer
-            char c = aci.first();
-            for (; c != CharacterIterator.DONE; c = aci.next()) {
-                sb.append(c);
-            }
-        }
-        result = new AttributedString(sb.toString());
-
-        // Second pass: decorate the attributed string.
-        int i=0;
-        it = l.iterator();
-        while (it.hasNext()) {
-            AttributedString s = (AttributedString)it.next();
-            AttributedCharacterIterator aci = s.getIterator();
-            Iterator attrIter = aci.getAllAttributeKeys().iterator();
-            while (attrIter.hasNext()) { // for each attribute key...
-                AttributedCharacterIterator.Attribute key
-                    = (AttributedCharacterIterator.Attribute) attrIter.next();
-                int begin;
-                int end;
-                aci.first();
-                do {
-                    begin = aci.getRunStart(key);
-                    end = aci.getRunLimit(key);
-                    aci.setIndex(begin);
-                    Object value = aci.getAttribute(key);
-                    //System.out.println("Adding attribute "+key+": "+value+" from "+(i+begin)+"->"+(i+end));
-                    result.addAttribute(key, value, i+begin, i+end);
-                    aci.setIndex(end);
-                } while (end < aci.getEndIndex()); // more runs in aci
-            }
-            i += aci.getEndIndex();
-        }
-        return result;
+                                                     Element element) {
+        
+        AttributedStringBuffer asb = new AttributedStringBuffer();
+        fillAttributedStringBuffer(ctx, element, true, null, asb);
+        return asb.toAttributedString();
     }
 
     /**
-     * Creates the attributed strings which represent the given text
-     * element children.
+     * Fills the given AttributedStringBuffer.
      */
-    protected List buildAttributedStrings(BridgeContext ctx,
-                                          Element element,
-                                          GraphicsNode node,
-                                          boolean top,
-                                          TextPath textPath,
-                                          LinkedList result) {
-
+    protected void fillAttributedStringBuffer(BridgeContext ctx,
+                                              Element element,
+                                              boolean top,
+                                              TextPath textPath,
+                                              AttributedStringBuffer asb) {
         // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
         if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
-            return result;
+            return;
         }
-
-        // !!! return two lists
-        Map m = getAttributeMap(ctx, element, node, textPath);
+        
         String s = XMLSupport.getXMLSpace(element);
         boolean preserve = s.equals(SVG_PRESERVE_VALUE);
         boolean first = true;
@@ -427,146 +360,90 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         boolean stripFirst = !preserve;
         boolean stripLast = !preserve;
         Element nodeElement = element;
-        AttributedString as = null;
-
-        if (!result.isEmpty()) {
-            as = (AttributedString) result.getLast();
-        }
+        Map map = null;
 
         for (Node n = element.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-
+            
             last = n.getNextSibling() == null;
 
-            int lastChar = (as != null) ?
-                (as.getIterator().last()) : CharacterIterator.DONE;
+            int lastChar = asb.getLastChar();
             stripFirst = !preserve && first &&
-                (top ||
-                 (lastChar == ' ') ||
-                 (lastChar == CharacterIterator.DONE));
+                (top || lastChar == ' ' || lastChar == -1);
 
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
-
+                if (n.getNamespaceURI() != SVG_NAMESPACE_URI) {
+                    break;
+                }
+                
                 nodeElement = (Element)n;
 
-                if (n.getLocalName().equals(SVG_TSPAN_TAG) ||
-                    n.getLocalName().equals(SVG_ALT_GLYPH_TAG) ||
-                    n.getLocalName().equals(SVG_A_TAG)) {
+                String ln = n.getLocalName();
 
-                    buildAttributedStrings(ctx,
-                                           nodeElement,
-                                           node,
-                                           false,
-                                           textPath,
-                                           result);
-                } else if (n.getLocalName().equals(SVG_TEXT_PATH_TAG)) {
-
+                if (ln.equals(SVG_TSPAN_TAG) ||
+                    ln.equals(SVG_ALT_GLYPH_TAG) ||
+                    ln.equals(SVG_A_TAG)) {
+                    fillAttributedStringBuffer(ctx,
+                                               nodeElement,
+                                               false,
+                                               textPath,
+                                               asb);
+                } else if (ln.equals(SVG_TEXT_PATH_TAG)) {
                     SVGTextPathElementBridge textPathBridge
                         = (SVGTextPathElementBridge)ctx.getBridge(nodeElement);
                     TextPath newTextPath
                         = textPathBridge.createTextPath(ctx, nodeElement);
                     if (newTextPath != null) {
-                        buildAttributedStrings(ctx,
-                                           nodeElement,
-                                           node,
-                                           false,
-                                           newTextPath,
-                                           result);
+                        fillAttributedStringBuffer(ctx,
+                                                   nodeElement,
+                                                   false,
+                                                   newTextPath,
+                                                   asb);
                     }
-
-                } else if (n.getLocalName().equals(SVG_TREF_TAG)) {
-
+                } else if (ln.equals(SVG_TREF_TAG)) {
                     String uriStr = XLinkSupport.getXLinkHref((Element)n);
                     Element ref = ctx.getReferencedElement((Element)n, uriStr);
-                    s = getElementContent(ref);
-                    Map map = getAttributeMap(ctx, nodeElement, node, textPath);
-                    int[] indexMap = new int[s.length()];
-                    as = createAttributedString(s, map, indexMap, preserve,
-                                                stripFirst, last && top);
-                    if (as != null) {
-                        stripLast = !preserve &&
-                            (as.getIterator().first() == ' ');
-                        if (stripLast) {
-                            AttributedString las
-                                = (AttributedString) result.removeLast();
-                            if (las != null) {
-                                AttributedCharacterIterator iter
-                                    = las.getIterator();
-                                int endIndex = iter.getEndIndex()-1;
-                                if (iter.setIndex(endIndex) == ' ') {
-                                    las = new AttributedString
-                                        (las.getIterator (null, iter.getBeginIndex(), endIndex));
-                                }
-                                result.add(las);
-                            }
+                    s = TextUtilities.getElementContent(ref);
+                    s = normalizeString(s, preserve, stripFirst, last && top);
+                    if (s != null) {
+                        stripLast = !preserve && s.charAt(0) == ' ';
+                        if (stripLast && !asb.isEmpty()) {
+                            asb.stripLast();
                         }
-                        result.add(as);
+                        Map m = getAttributeMap(ctx, nodeElement, textPath);
+                        asb.append(s, m);
                     }
                 }
                 break;
+                
             case Node.TEXT_NODE:
             case Node.CDATA_SECTION_NODE:
                 s = n.getNodeValue();
-                int[] indexMap = new int[s.length()];
-                as = createAttributedString
-                    (s, m, indexMap, preserve, stripFirst, last && top);
-                if (as != null) {
-                    stripLast =
-                        !preserve && (as.getIterator().first() == ' ');
-                    if (stripLast && !result.isEmpty()) {
-                        AttributedString las =
-                            (AttributedString) result.removeLast();
-                        if (las != null) {
-                            AttributedCharacterIterator iter
-                                = las.getIterator();
-                            int endIndex = iter.getEndIndex()-1;
-                            if (iter.setIndex(endIndex) == ' ') {
-                                las = new AttributedString
-                                    (las.getIterator(null,
-                                        iter.getBeginIndex(), endIndex));
-                            }
-                            result.add(las);
-                        }
+                s = normalizeString(s, preserve, stripFirst, last && top);
+                if (s != null) {
+                    stripLast = !preserve && s.charAt(0) == ' ';
+                    if (stripLast && !asb.isEmpty()) {
+                        asb.stripLast();
                     }
-                    result.add(as);
+                    if (map == null) {
+                        map = getAttributeMap(ctx, element, textPath);
+                    }
+                    asb.append(s, map);
                 }
             }
             first = false;
         }
-        return result;
     }
 
     /**
-     * Returns the content of the given element.
+     * Normalizes the given string.
      */
-    protected String getElementContent(Element e) {
-        StringBuffer result = new StringBuffer();
-        for (Node n = e.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-            switch (n.getNodeType()) {
-            case Node.ELEMENT_NODE:
-                result.append(getElementContent((Element)n));
-                break;
-            case Node.TEXT_NODE:
-                result.append(n.getNodeValue());
-            }
-        }
-        return result.toString();
-    }
-
-    /**
-     * Creates an attributes string from the content of the given string.
-     */
-    protected AttributedString createAttributedString(String s,
-                                                      Map m,
-                                                      int[] indexMap,
-                                                      boolean preserve,
-                                                      boolean stripfirst,
-                                                      boolean striplast) {
-        AttributedString as = null;
+    protected String normalizeString(String s,
+                                     boolean preserve,
+                                     boolean stripfirst,
+                                     boolean striplast) {
         StringBuffer sb = new StringBuffer();
         if (preserve) {
             for (int i = 0; i < s.length(); i++) {
@@ -580,38 +457,39 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                 default:
                     sb.append(c);
                 }
-                indexMap[i] = i;
             }
         } else {
             boolean space = false;
-            for (int i = 0; i < s.length(); i++) {
+            int idx = 0;
+            if (stripfirst) {
+                loop: while (idx < s.length()) {
+                    switch (s.charAt(idx)) {
+                    default:
+                        break loop;
+                    case 10:
+                    case 13:
+                    case ' ':
+                    case '\t':
+                        idx++;
+                    }
+                }
+            }
+            for (int i = idx; i < s.length(); i++) {
                 char c = s.charAt(i);
                 switch (c) {
                 case 10:
                 case 13:
-                    break; // should break, newlines are not whitespace
+                    break;
                 case ' ':
                 case '\t':
                     if (!space) {
                         sb.append(' ');
-                        indexMap[sb.length()-1] = i;
                         space = true;
                     }
                     break;
                 default:
                     sb.append(c);
-                    indexMap[sb.length()-1] = i;
                     space = false;
-                }
-            }
-            if (stripfirst) {
-                while (sb.length() > 0) {
-                    if (sb.charAt(0) == ' ') {
-                        sb.deleteCharAt(0);
-                        System.arraycopy(indexMap, 1, indexMap, 0, sb.length());
-                    } else {
-                        break;
-                    }
                 }
             }
             if (striplast) {
@@ -624,22 +502,134 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                     }
                 }
             }
-            for (int i=sb.length(); i<indexMap.length; ++i) {
-                indexMap[i] = -1;
-            }
         }
         if (sb.length() > 0) {
-            as = new AttributedString(sb.toString(), m);
+            return sb.toString();
         } else if (stripfirst && striplast) {
-            as = new AttributedString(" ", m);
+            return " ";
         }
-        return as;
+        return null;
+    }
+
+    /**
+     * This class is used to build an AttributedString.
+     */
+    protected static class AttributedStringBuffer {
+
+        /**
+         * The strings.
+         */
+        protected List strings;
+
+        /**
+         * The attributes.
+         */
+        protected List attributes;
+        
+        /**
+         * The number of items.
+         */
+        protected int count;
+        
+        /**
+         * Creates a new empty AttributedStringBuffer.
+         */
+        public AttributedStringBuffer() {
+            strings = new ArrayList();
+            attributes = new ArrayList();
+        }
+
+        /**
+         * Tells whether this AttributedStringBuffer is empty.
+         */
+        public boolean isEmpty() {
+            return count == 0;
+        }
+
+        /**
+         * Appends a String and its associated attributes.
+         */
+        public void append(String s, Map m) {
+            strings.add(s);
+            attributes.add(m);
+            count++;
+        }
+
+        /**
+         * Returns the value of the last char or -1.
+         */
+        public int getLastChar() {
+            if (count == 0) {
+                return -1;
+            }
+            String s = (String)strings.get(count - 1);
+            return s.charAt(s.length() - 1);
+        }
+
+        /**
+         * Strips the last string last character.
+         */
+        public void stripLast() {
+            String s = (String)strings.remove(count - 1);
+            if (s.charAt(s.length() - 1) == ' ') {
+                if (s.length() == 1) {
+                    attributes.remove(count - 1);
+                    return;
+                }
+                strings.add(s.substring(0, s.length() - 1));
+            } else {
+                strings.add(s);
+            }
+        }
+
+        /**
+         * Builds an attributed string from the content of this
+         * buffer.
+         */
+        public AttributedString toAttributedString() {
+            switch (count) {
+            case 0:
+                return new AttributedString(" ");
+            case 1:
+                return new AttributedString((String)strings.get(0),
+                                            (Map)attributes.get(0));
+            }
+
+            StringBuffer sb = new StringBuffer();
+            Iterator it = strings.iterator();
+            while (it.hasNext()) {
+                sb.append((String)it.next());
+            }
+
+            AttributedString result = new AttributedString(sb.toString());
+
+            // Set the attributes
+
+            Iterator sit = strings.iterator();
+            Iterator ait = attributes.iterator();
+            int idx = 0;
+            while (sit.hasNext()) {
+                String s = (String)sit.next();
+                int nidx = idx + s.length();
+                Map m = (Map)ait.next();
+                Iterator kit = m.keySet().iterator();
+                Iterator vit = m.values().iterator();
+                while (kit.hasNext()) {
+                    Attribute attr = (Attribute)kit.next();
+                    Object val = vit.next();
+                    result.addAttribute(attr, val, idx, nidx);
+                }
+                idx = nidx;
+            }
+
+            return result;
+        }
     }
 
     /**
      * Returns true if node1 is an ancestor of node2
      */
-    private boolean nodeAncestorOf(Node node1, Node node2) {
+    protected boolean nodeAncestorOf(Node node1, Node node2) {
         if (node2 == null || node1 == null) {
             return false;
         }
@@ -677,7 +667,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         for (int i = 0; i < aci.getEndIndex(); i++) {
             aci.setIndex(i);
             Element delimeter = (Element)aci.getAttribute(
-            GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+            GVTAttributedCharacterIterator.
+            TextAttribute.TEXT_COMPOUND_DELIMITER);
             if (delimeter == element || nodeAncestorOf(element, delimeter)) {
                 firstChar = i;
                 break;
@@ -687,96 +678,106 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         for (int i = aci.getEndIndex()-1; i >= 0; i--) {
             aci.setIndex(i);
             Element delimeter = (Element)aci.getAttribute(
-                GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+                GVTAttributedCharacterIterator.
+                TextAttribute.TEXT_COMPOUND_DELIMITER);
             if (delimeter == element || nodeAncestorOf(element, delimeter)) {
                 lastChar = i;
                 break;
             }
         }
 
+        ArrayList al;
+        int len;
+
         // process the x attribute
         if (xAtt.length() != 0) {
-            float x[] = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
-                        (element, SVG_X_ATTRIBUTE, xAtt, ctx);
+            al = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
+                (element, SVG_X_ATTRIBUTE, xAtt, ctx);
+            len = al.size();
 
-            for (int i = 0; i < x.length; i++) {
-                if (firstChar+i <= lastChar) {
+            for (int i = 0; i < len; i++) {
+                if (firstChar + i <= lastChar) {
                     as.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.X,
-                         new Float(x[i]), firstChar+i, firstChar+i+1);
+                         al.get(i), firstChar+i, firstChar+i+1);
                 }
             }
         }
 
        // process the y attribute
         if (yAtt.length() != 0) {
-            float y[] = TextUtilities.svgVerticalCoordinateArrayToUserSpace
+            al = TextUtilities.svgVerticalCoordinateArrayToUserSpace
                 (element, SVG_Y_ATTRIBUTE, yAtt, ctx);
+            len = al.size();
 
-            for (int i = 0; i < y.length; i++) {
+            for (int i = 0; i < len; i++) {
                 if (firstChar+i <= lastChar) {
                     as.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.Y,
-                         new Float(y[i]), firstChar+i, firstChar+i+1);
+                         al.get(i), firstChar+i, firstChar+i+1);
                 }
             }
         }
 
         // process dx attribute
         if (dxAtt.length() != 0) {
-            float dx[] = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
+            al = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
                 (element, SVG_DX_ATTRIBUTE, dxAtt, ctx);
+            len = al.size();
 
-            for (int i = 0; i < dx.length; i++) {
+            for (int i = 0; i < len; i++) {
                 if (firstChar+i <= lastChar) {
                     as.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.DX,
-                         new Float(dx[i]), firstChar+i, firstChar+i+1);
+                         al.get(i), firstChar+i, firstChar+i+1);
                 }
             }
         }
 
         // process dy attribute
         if (dyAtt.length() != 0) {
-            float dy[] = TextUtilities.svgVerticalCoordinateArrayToUserSpace
+            al = TextUtilities.svgVerticalCoordinateArrayToUserSpace
                 (element, SVG_DY_ATTRIBUTE, dyAtt, ctx);
+            len = al.size();
 
-            for (int i = 0; i < dy.length; i++) {
+            for (int i = 0; i < len; i++) {
                 if (firstChar+i <= lastChar) {
                     as.addAttribute
                         (GVTAttributedCharacterIterator.TextAttribute.DY,
-                         new Float(dy[i]), firstChar+i, firstChar+i+1);
+                         al.get(i), firstChar+i, firstChar+i+1);
                 }
             }
         }
 
         // process rotate attribute
         if (rotateAtt.length() != 0) {
-            float rotate[] = TextUtilities.svgRotateArrayToFloats
+            al = TextUtilities.svgRotateArrayToFloats
                 (element, SVG_ROTATE_ATTRIBUTE, rotateAtt, ctx);
+            len = al.size();
 
-            if (rotate.length == 1) {  // not a list
+            if (len == 1) {  // not a list
                 // each char will have the same rotate value
                 as.addAttribute
                     (GVTAttributedCharacterIterator.TextAttribute.ROTATION,
-                    new Float(rotate[0]), firstChar, lastChar+1);
+                     al.get(0), firstChar, lastChar + 1);
 
             } else {  // its a list
                 // set each rotate value from the list
-                for (int i = 0; i < rotate.length; i++) {
+                for (int i = 0; i < len; i++) {
                     if (firstChar+i <= lastChar) {
                         as.addAttribute
-                            (GVTAttributedCharacterIterator.TextAttribute.ROTATION,
-                            new Float(rotate[i]), firstChar+i, firstChar+i+1);
+                            (GVTAttributedCharacterIterator.
+                             TextAttribute.ROTATION,
+                             al.get(i), firstChar+i, firstChar+i+1);
                     }
                 }
             }
         }
 
         // do the same for each child element
-        NodeList children = element.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            Node child = children.item(i);
+        for (Node child = element.getFirstChild();
+             child != null;
+             child = child.getNextSibling()) {
             if (child.getNodeType() == Node.ELEMENT_NODE) {
                 addGlyphPositionAttributes(as, (Element)child, ctx);
             }
@@ -804,7 +805,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         for (int i = 0; i < aci.getEndIndex(); i++) {
             aci.setIndex(i);
             Element delimeter = (Element)aci.getAttribute(
-            GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+            GVTAttributedCharacterIterator.
+            TextAttribute.TEXT_COMPOUND_DELIMITER);
             if (delimeter == element || nodeAncestorOf(element, delimeter)) {
                 firstChar = i;
                 break;
@@ -814,7 +816,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         for (int i = aci.getEndIndex()-1; i >= 0; i--) {
             aci.setIndex(i);
             Element delimeter = (Element)aci.getAttribute(
-                GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
+                GVTAttributedCharacterIterator.
+                TextAttribute.TEXT_COMPOUND_DELIMITER);
             if (delimeter == element || nodeAncestorOf(element, delimeter)) {
                 lastChar = i;
                 break;
@@ -838,7 +841,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
              sp, firstChar, lastChar+1);
 
         // Stroke
-        Stroke stroke = PaintServer.convertStroke(element, ctx);
+        Stroke stroke = PaintServer.convertStroke(element);
         as.addAttribute
             (GVTAttributedCharacterIterator.TextAttribute.STROKE,
              stroke, firstChar, lastChar+1);
@@ -892,14 +895,14 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         }
 
         // do the same for each child element
-        NodeList children = element.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            Node child = children.item(i);
+        for (Node child = element.getFirstChild();
+             child != null;
+             child = child.getNextSibling()) {
             if (child.getNodeType() == Node.ELEMENT_NODE) {
                 Element childElement = (Element)child;
-                TextDecoration childTextDecoration
-                    = getTextDecoration(childElement, node, textDecoration, ctx);
-                addPaintAttributes(as, childElement, node, childTextDecoration, ctx);
+                TextDecoration td = getTextDecoration(childElement, node,
+                                                      textDecoration, ctx);
+                addPaintAttributes(as, childElement, node, td, ctx);
             }
         }
     }
@@ -910,230 +913,90 @@ public class SVGTextElementBridge extends AbstractSVGBridge
      */
     protected Map getAttributeMap(BridgeContext ctx,
                                   Element element,
-                                  GraphicsNode node,
                                   TextPath textPath) {
-
-        CSSOMReadOnlyStyleDeclaration cssDecl
-            = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
 
         Map result = new HashMap();
-        CSSPrimitiveValue v;
         String s;
         float f;
         short t;
         boolean verticalText = false;
 
-        result.put(GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER, element);
+        result.put
+        (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER,
+         element);
 
         if (element.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
-            result.put(GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER,
-                       new SVGAltGlyphHandler(ctx, element));
+            result.put
+              (GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER,
+               new SVGAltGlyphHandler(ctx, element));
         }
 
         if (textPath != null) {
-            result.put(GVTAttributedCharacterIterator.TextAttribute.TEXTPATH, textPath);
+            result.put(GVTAttributedCharacterIterator.TextAttribute.TEXTPATH,
+                       textPath);
         }
 
         // Text-anchor
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_TEXT_ANCHOR_PROPERTY);
-        s = v.getStringValue();
-        TextNode.Anchor a;
-        switch (s.charAt(0)) {
-        case 's':
-            a = TextNode.Anchor.START;
-            break;
-        case 'm':
-            a = TextNode.Anchor.MIDDLE;
-            break;
-        default:
-            a = TextNode.Anchor.END;
-        }
-        result.put(GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE, a);
+        TextNode.Anchor a = TextUtilities.convertTextAnchor(element);
+        result.put(GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE,
+                   a);
 
-        // Font size, in user space units.
-        float fs = TextUtilities.convertFontSize(element, ctx, cssDecl, uctx);
-        result.put(TextAttribute.SIZE, new Float(fs));
+        // Font size.
+        Float fs = TextUtilities.convertFontSize(element);
+        result.put(TextAttribute.SIZE, fs);
 
         // Font weight
-        // TODO: improve support for relative values
-        // (e.g. "lighter", "bolder")
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_FONT_WEIGHT_PROPERTY);
-        String fontWeightString;
-        if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
-            fontWeightString = v.getStringValue();
-            //System.out.println("CSS Font Weight "+v.getStringValue());
-            if (v.getStringValue().charAt(0) == 'n') {
-                result.put(TextAttribute.WEIGHT,
-                           TextAttribute.WEIGHT_REGULAR);
-            } else if (v.getStringValue().charAt(0) == 'l') {
-                result.put(TextAttribute.WEIGHT,
-                           TextAttribute.WEIGHT_LIGHT);
-            } else {
-                result.put(TextAttribute.WEIGHT,
-                           TextAttribute.WEIGHT_BOLD);
-            }
-        } else {
-            //System.out.println("CSS Font Weight "+v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER));
-            fontWeightString = "" + v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
-            switch ((int)v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER)) {
-            case 100:
-                result.put(TextAttribute.WEIGHT,
-                           TextAttribute.WEIGHT_EXTRA_LIGHT);
-                break;
-            case 200:
-                result.put(TextAttribute.WEIGHT,
-                           TextAttribute.WEIGHT_LIGHT);
-                break;
-            case 300:
-                result.put(TextAttribute.WEIGHT,
-                           TextAttribute.WEIGHT_DEMILIGHT);
-                break;
-            case 400:
-                result.put(TextAttribute.WEIGHT,
-                           TextAttribute.WEIGHT_REGULAR);
-                break;
-            case 500:
-                result.put(TextAttribute.WEIGHT,
-                           TextAttribute.WEIGHT_SEMIBOLD);
-                break;
-            case 600:
-                result.put(TextAttribute.WEIGHT,
-                           //TextAttribute.WEIGHT_DEMIBOLD);
-                           TextAttribute.WEIGHT_BOLD);
-                break;
-            case 700:
-                result.put(TextAttribute.WEIGHT,
-                           TextAttribute.WEIGHT_BOLD);
-                break;
-            case 800:
-                result.put(TextAttribute.WEIGHT,
-                           //TextAttribute.WEIGHT_EXTRABOLD);
-                           TextAttribute.WEIGHT_BOLD);
-                break;
-            case 900:
-                result.put(TextAttribute.WEIGHT,
-                           //TextAttribute.WEIGHT_ULTRABOLD);
-                           TextAttribute.WEIGHT_BOLD);
-            }
-        }
+        Float fw = TextUtilities.convertFontWeight(element);
+        Value v = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.FONT_WEIGHT_INDEX);
+        String fontWeightString = v.getCssText();
+        result.put(TextAttribute.WEIGHT, fw);
 
         // Font style
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_FONT_STYLE_PROPERTY);
-        String fontStyleString = v.getStringValue();
-        switch (fontStyleString.charAt(0)) {
-        case 'n':
-            result.put(TextAttribute.POSTURE,
-                       TextAttribute.POSTURE_REGULAR);
-            break;
-        case 'o':
-        case 'i':
-            result.put(TextAttribute.POSTURE,
-                       TextAttribute.POSTURE_OBLIQUE);
-        }
-
+        String fontStyleString = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.FONT_STYLE_INDEX).getStringValue();
+        result.put(TextAttribute.POSTURE,
+                   TextUtilities.convertFontStyle(element));
 
         // Font stretch
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_FONT_STRETCH_PROPERTY);
-        String fontStretchString = v.getStringValue();
-        switch (fontStretchString.charAt(0)) {
-        case 'u':
-            if (fontStretchString.charAt(6) == 'c') {
-                result.put(TextAttribute.WIDTH,
-                           TextAttribute.WIDTH_CONDENSED);
-            } else {
-                result.put(TextAttribute.WIDTH,
-                           TextAttribute.WIDTH_EXTENDED);
-            }
-            break;
-        case 'e':
-            if (fontStretchString.charAt(6) == 'c') {
-                result.put(TextAttribute.WIDTH,
-                           TextAttribute.WIDTH_CONDENSED);
-            } else {
-                if (fontStretchString.length() == 8) {
-                    result.put(TextAttribute.WIDTH,
-                               TextAttribute.WIDTH_SEMI_EXTENDED);
-                } else {
-                    result.put(TextAttribute.WIDTH,
-                               TextAttribute.WIDTH_EXTENDED);
-                }
-            }
-            break;
-        case 's':
-            if (fontStretchString.charAt(6) == 'c') {
-                result.put(TextAttribute.WIDTH,
-                           TextAttribute.WIDTH_SEMI_CONDENSED);
-            } else {
-                result.put(TextAttribute.WIDTH,
-                           TextAttribute.WIDTH_SEMI_EXTENDED);
-            }
-            break;
-        default:
-            result.put(TextAttribute.WIDTH,
-                       TextAttribute.WIDTH_REGULAR);
-        }
-
+        String fontStretchString = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.FONT_STRETCH_INDEX).getStringValue();
+        result.put(TextAttribute.WIDTH,
+                   TextUtilities.convertFontStretch(element));
 
         // Font family
-        CSSValueList ff = (CSSValueList)cssDecl.getPropertyCSSValueInternal
-            (CSS_FONT_FAMILY_PROPERTY);
+        Value val = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.FONT_FAMILY_INDEX);
 
         //  make a list of GVTFontFamily objects
-        Vector fontFamilyList = new Vector();
-        for (int i = 0; i < ff.getLength(); i++) {
-            v = (CSSPrimitiveValue)ff.item(i);
-            String fontFamilyName = v.getStringValue();
+        List fontFamilyList = new Vector();
+        int len = val.getLength();
+        for (int i = 0; i < len; i++) {
+            Value it = val.item(i);
+            String fontFamilyName = it.getStringValue();
             GVTFontFamily fontFamily
                 = SVGFontUtilities.getFontFamily(element, ctx, fontFamilyName,
                    fontWeightString, fontStyleString);
             fontFamilyList.add(fontFamily);
         }
-        result.put(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES,
-                   fontFamilyList);
+        result.put
+            (GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES,
+             fontFamilyList);
 
         // Text baseline adjustment.
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_BASELINE_SHIFT_PROPERTY);
-        if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
-            s = v.getStringValue();
-            //System.out.println("Baseline-shift: "+s);
-            switch (s.charAt(2)) {
-            case 'p': //suPerscript
-                result.put(GVTAttributedCharacterIterator.
-                           TextAttribute.BASELINE_SHIFT,
-                           TextAttribute.SUPERSCRIPT_SUPER);
-                break;
-            case 'b': //suBscript
-                result.put(GVTAttributedCharacterIterator.
-                           TextAttribute.BASELINE_SHIFT,
-                           TextAttribute.SUPERSCRIPT_SUB);
-                break;
-            case 's': //baSeline
-                break;
-            }
-        } else if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_PERCENTAGE) {
-            f = v.getFloatValue(v.getPrimitiveType());
-            result.put(GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT,
-                       new Float(f*fs/100f));
-        } else {
-
-            f = UnitProcessor.cssOtherLengthToUserSpace
-                (v, CSS_BASELINE_SHIFT_PROPERTY, uctx);
-            result.put(GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT, new Float(f));
+        Object bs = TextUtilities.convertBaselineShift(element);
+        if (bs != null) {
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.BASELINE_SHIFT, bs);
         }
 
         // Unicode-bidi mode
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_UNICODE_BIDI_PROPERTY);
-        s = v.getStringValue();
+        val =  CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.UNICODE_BIDI_INDEX);
+        s = val.getStringValue();
         if (s.charAt(0) == 'n') {
-            result.put(TextAttribute.BIDI_EMBEDDING,
-                       new Integer(0));
+            result.put(TextAttribute.BIDI_EMBEDDING, ZERO);
         } else {
 
             // Text direction
@@ -1146,9 +1009,9 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             // is only needed when one wants to override the
             // normal writing direction for a string/substring.
 
-            v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-                (CSS_DIRECTION_PROPERTY);
-            String rs = v.getStringValue();
+            val = CSSUtilities.getComputedStyle
+                (element, SVGCSSEngine.DIRECTION_INDEX);
+            String rs = val.getStringValue();
             switch (rs.charAt(0)) {
             case 'l':
                 result.put(TextAttribute.RUN_DIRECTION,
@@ -1185,11 +1048,9 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
         // Writing mode
 
-        boolean horizontal = true;
-
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_WRITING_MODE_PROPERTY);
-        s = v.getStringValue();
+        val = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.WRITING_MODE_INDEX);
+        s = val.getStringValue();
         switch (s.charAt(0)) {
         case 'l':
             result.put(GVTAttributedCharacterIterator.
@@ -1208,141 +1069,59 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                        TextAttribute.WRITING_MODE,
                        GVTAttributedCharacterIterator.
                        TextAttribute.WRITING_MODE_TTB);
-            horizontal = false;
             break;
         }
 
         // glyph-orientation-vertical
 
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_GLYPH_ORIENTATION_VERTICAL_PROPERTY);
-
-        // why is it that getStringValue() throws an exception?
-        s = v.getCssText();
-        switch (s.charAt(0)) {
-        case 'a':
+        val = CSSUtilities.getComputedStyle
+            (element, SVGCSSEngine.GLYPH_ORIENTATION_VERTICAL_INDEX);
+        switch (val.getPrimitiveType()) {
+        case CSSPrimitiveValue.CSS_IDENT: // auto
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.VERTICAL_ORIENTATION,
                        GVTAttributedCharacterIterator.
                        TextAttribute.ORIENTATION_AUTO);
             break;
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case '.':
+        default:
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.VERTICAL_ORIENTATION,
                        GVTAttributedCharacterIterator.
                        TextAttribute.ORIENTATION_ANGLE);
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.VERTICAL_ORIENTATION_ANGLE,
-                       new Float(s));
-            break;
-        }
-
-
-        // Font stretch
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_FONT_STRETCH_PROPERTY);
-        s = v.getStringValue();
-        switch (s.charAt(0)) {
-        case 'u':
-            if (s.charAt(6) == 'c') {
-                result.put(TextAttribute.WIDTH,
-                           TextAttribute.WIDTH_CONDENSED);
-            } else {
-                result.put(TextAttribute.WIDTH,
-                           TextAttribute.WIDTH_EXTENDED);
-            }
-            break;
-        case 'e':
-            if (s.charAt(6) == 'c') {
-                result.put(TextAttribute.WIDTH,
-                           TextAttribute.WIDTH_CONDENSED);
-            } else {
-                if (s.length() == 8) {
-                    result.put(TextAttribute.WIDTH,
-                               TextAttribute.WIDTH_SEMI_EXTENDED);
-                } else {
-                    result.put(TextAttribute.WIDTH,
-                               TextAttribute.WIDTH_EXTENDED);
-                }
-            }
-            break;
-        case 's':
-            if (s.charAt(6) == 'c') {
-                result.put(TextAttribute.WIDTH,
-                           TextAttribute.WIDTH_SEMI_CONDENSED);
-            } else {
-                result.put(TextAttribute.WIDTH,
-                           TextAttribute.WIDTH_SEMI_EXTENDED);
-            }
-            break;
-        default:
-            result.put(TextAttribute.WIDTH,
-                       TextAttribute.WIDTH_REGULAR);
+                       new Float(val.getFloatValue()));
         }
 
         // text spacing properties...
 
         // Letter Spacing
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_LETTER_SPACING_PROPERTY);
-        t = v.getPrimitiveType();
-        if (t != CSSPrimitiveValue.CSS_IDENT) {
-            if (horizontal) {
-                f = UnitProcessor.cssHorizontalCoordinateToUserSpace
-                    (v, CSS_LETTER_SPACING_PROPERTY, uctx);
-            } else {
-                f = UnitProcessor.cssVerticalCoordinateToUserSpace
-                    (v, CSS_LETTER_SPACING_PROPERTY, uctx);
-            }
+        Float sp = TextUtilities.convertLetterSpacing(element);
+        if (sp != null) {
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.LETTER_SPACING,
-                       new Float(f));
+                       sp);
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.CUSTOM_SPACING,
                        Boolean.TRUE);
         }
 
         // Word spacing
-        v = (CSSPrimitiveValue)cssDecl.getPropertyCSSValueInternal
-            (CSS_WORD_SPACING_PROPERTY);
-        t = v.getPrimitiveType();
-        if (t != CSSPrimitiveValue.CSS_IDENT) {
-            if (horizontal) {
-                f = UnitProcessor.cssHorizontalCoordinateToUserSpace
-                    (v, CSS_WORD_SPACING_PROPERTY, uctx);
-            } else {
-                f = UnitProcessor.cssVerticalCoordinateToUserSpace
-                    (v, CSS_WORD_SPACING_PROPERTY, uctx);
-            }
-            result.put(GVTAttributedCharacterIterator.TextAttribute.WORD_SPACING,
-                       new Float(f));
+        sp = TextUtilities.convertWordSpacing(element);
+        if (sp != null) {
+            result.put(GVTAttributedCharacterIterator.
+                       TextAttribute.WORD_SPACING,
+                       sp);
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.CUSTOM_SPACING,
                        Boolean.TRUE);
         }
 
         // Kerning
-        s = element.getAttributeNS(null, SVG_KERNING_ATTRIBUTE);
-        if (s.length() != 0) {
-            if (horizontal) {
-                f = UnitProcessor.svgHorizontalLengthToUserSpace
-                    (s, SVG_KERNING_ATTRIBUTE, uctx);
-            } else {
-                f = UnitProcessor.svgVerticalLengthToUserSpace
-                    (s, SVG_KERNING_ATTRIBUTE, uctx);
-            }
+        sp = TextUtilities.convertKerning(element);
+        if (sp != null) {
             result.put(GVTAttributedCharacterIterator.TextAttribute.KERNING,
-                       new Float(f));
+                       sp);
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.CUSTOM_SPACING,
                        Boolean.TRUE);
@@ -1351,13 +1130,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         // textLength
         s = element.getAttributeNS(null, SVG_TEXT_LENGTH_ATTRIBUTE);
         if (s.length() != 0) {
-            if (horizontal) {
-                f = UnitProcessor.svgHorizontalLengthToUserSpace
-                    (s, SVG_TEXT_LENGTH_ATTRIBUTE, uctx);
-            } else {
-                f = UnitProcessor.svgVerticalLengthToUserSpace
-                    (s, SVG_TEXT_LENGTH_ATTRIBUTE, uctx);
-            }
+            f = UnitProcessor.svgOtherLengthToUserSpace
+                (s, SVG_TEXT_LENGTH_ATTRIBUTE, uctx);
             result.put(GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH,
                        new Float(f));
 
@@ -1367,14 +1141,16 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             if (s.length() < 10) {
                 result.put(GVTAttributedCharacterIterator.
                            TextAttribute.LENGTH_ADJUST,
-                           GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING);
+                           GVTAttributedCharacterIterator.
+                           TextAttribute.ADJUST_SPACING);
                 result.put(GVTAttributedCharacterIterator.
                            TextAttribute.CUSTOM_SPACING,
                            Boolean.TRUE);
             } else {
                 result.put(GVTAttributedCharacterIterator.
                            TextAttribute.LENGTH_ADJUST,
-                           GVTAttributedCharacterIterator.TextAttribute.ADJUST_ALL);
+                           GVTAttributedCharacterIterator.
+                           TextAttribute.ADJUST_ALL);
             }
         }
 
@@ -1387,35 +1163,36 @@ public class SVGTextElementBridge extends AbstractSVGBridge
      * contain all of the decoration properties to be used when drawing the
      * text.
      */
-    private TextDecoration getTextDecoration(Element element, GraphicsNode node,
-                       TextDecoration parentTextDecoration, BridgeContext ctx) {
-
-        TextDecoration textDecoration = new TextDecoration(parentTextDecoration);
-
-        AbstractViewCSS viewCss = CSSUtilities.getViewCSS(element);
-        CSSOMReadOnlyStyleDeclaration styleDecl = viewCss.getCascadedStyle(element, null);
-
-        // determine if text-decoration was explicity set on this element
-        CSSValue cssVal = styleDecl.getLocalPropertyCSSValue(CSS_TEXT_DECORATION_PROPERTY);
-        if (cssVal == null) {
-            // not explicitly set so return the copy of the parent's decoration
-            return textDecoration;
+    protected TextDecoration getTextDecoration(Element element,
+                                               GraphicsNode node,
+                                               TextDecoration parent,
+                                               BridgeContext ctx) {
+        int pidx = SVGCSSEngine.TEXT_DECORATION_INDEX;
+        Value val = CSSUtilities.getComputedStyle(element, pidx);
+        
+        // Was text-decoration explicity set on this element?
+        StyleMap sm = ((CSSStylableElement)element).getComputedStyleMap(null);
+        if (sm.isNullCascaded(pidx)) {
+            // If not, keep the same decorations.
+            return parent;
         }
 
-        short t = cssVal.getCssValueType();
+        TextDecoration textDecoration = new TextDecoration(parent);
 
-        if (t == CSSValue.CSS_VALUE_LIST) {
+        short t = val.getCssValueType();
 
-            // first check to see if its a valid list,
-            // ie. if it contains none then that is the only element
-            CSSValueList lst = (CSSValueList)cssVal;
+        switch (val.getCssValueType()) {
+        case CSSValue.CSS_VALUE_LIST:
+            ListValue lst = (ListValue)val;
 
             Paint paint = PaintServer.convertFillPaint(element, node, ctx);
-            Paint strokePaint = PaintServer.convertStrokePaint(element, node, ctx);
-            Stroke stroke = PaintServer.convertStroke(element, ctx);
+            Paint strokePaint = PaintServer.convertStrokePaint(element,
+                                                               node, ctx);
+            Stroke stroke = PaintServer.convertStroke(element);
 
-            for (int i = 0; i < lst.getLength(); i++) {
-                CSSPrimitiveValue v = (CSSPrimitiveValue)lst.item(i);
+            int len = lst.getLength();
+            for (int i = 0; i < len; i++) {
+                Value v = lst.item(i);
                 String s = v.getStringValue();
                 switch (s.charAt(0)) {
                 case 'u':
@@ -1453,15 +1230,19 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                     break;
                 }
             }
-        } else if (t == CSSValue.CSS_PRIMITIVE_VALUE) {
-            // must be explicitly set to "none"
-            return new TextDecoration();
+            return textDecoration;
+        default: // None
+            return TextDecoration.EMPTY_TEXT_DECORATION;
         }
-        return textDecoration;
     }
 
-
+    /**
+     * To store the text decorations of a text element.
+     */
     protected static class TextDecoration {
+
+        static final TextDecoration EMPTY_TEXT_DECORATION =
+            new TextDecoration();
 
         Paint underlinePaint;
         Paint underlineStrokePaint;
@@ -1498,5 +1279,3 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         }
     }
 }
-
-

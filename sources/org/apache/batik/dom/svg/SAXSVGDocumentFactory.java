@@ -249,7 +249,7 @@ public class SAXSVGDocumentFactory
                                               Locale.getDefault());
                 dtdids = rb.getString("publicIds");
             }
-            if (dtdids.indexOf(publicId) != -1) {
+            if (publicId != null && dtdids.indexOf(publicId) != -1) {
                 return new InputSource
                     (getClass().getResource
                      ("resources/svg10.dtd").toString());

@@ -13,11 +13,13 @@ import java.net.MalformedURLException;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
-import org.apache.batik.css.HiddenChildElement;
+import org.apache.batik.dom.svg.SVGOMCSSImportedElementRoot;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.SVGOMUseElement;
+
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 
@@ -148,13 +150,17 @@ public class SVGUseElementBridge extends AbstractSVGBridge
         }
 
         // attach the referenced element to the current document
-        ((HiddenChildElement)localRefElement).setParentElement(e);
+        SVGOMCSSImportedElementRoot root;
+        root = new SVGOMCSSImportedElementRoot(document, e);
+        root.appendChild(localRefElement);
+
+        SVGOMUseElement ue = (SVGOMUseElement)e;
+        ue.setCSSImportedElementRoot(root);
+
         Element g = localRefElement;
 
-        // compute URIs and style sheets for external reference
-        if (!isLocal) {
-            CSSUtilities.computeStyleAndURIs(refElement, localRefElement, uri);
-        }
+        // compute URIs and style sheets for the used element
+        CSSUtilities.computeStyleAndURIs(refElement, localRefElement, uri);
 
         GVTBuilder builder = ctx.getGVTBuilder();
         GraphicsNode refNode = builder.build(ctx, g);
@@ -202,8 +208,7 @@ public class SVGUseElementBridge extends AbstractSVGBridge
         gn.setVisible(CSSUtilities.convertVisibility(e));
 
         // 'enable-background'
-        Rectangle2D r
-            = CSSUtilities.convertEnableBackground(e, uctx);
+        Rectangle2D r = CSSUtilities.convertEnableBackground(e);
         if (r != null) {
             gn.setBackgroundEnable(r);
         }
@@ -263,7 +268,6 @@ public class SVGUseElementBridge extends AbstractSVGBridge
                                           new DOMAttrModifiedEventListener(),
                                           false);
         ctx.bind(e, node);
-        BridgeEventSupport.addDOMListener(ctx, e);
     }
 
     /**

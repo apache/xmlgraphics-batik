@@ -1224,12 +1224,13 @@ public class JSVGComponent extends JGVTComponent {
                 // IMPORTANT:
                 // ==========
                 //
-                // The following call is 'invokeAndWait' and not 'invokeLater'
-                // because it is essential that the UpdateManager thread (which
-                // invokes this 'updateCompleted' method, blocks until the 
-                // repaint has completed. Otherwise, there is a possibility that
-                // internal buffers would get updated in the middle of a swing
-                // repaint.
+                // The following call is 'invokeAndWait' and not
+                // 'invokeLater' because it is essential that the
+                // UpdateManager thread (which invokes this
+                // 'updateCompleted' method, blocks until the repaint
+                // has completed. Otherwise, there is a possibility
+                // that internal buffers would get updated in the
+                // middle of a swing repaint.
                 //
                 EventQueue.invokeAndWait(new Runnable() {
                         public void run() {
@@ -1805,6 +1806,25 @@ public class JSVGComponent extends JGVTComponent {
         }
         
         /**
+         * Returns this user agent's alternate style-sheet title.
+         */
+        public String getAlternateStyleSheet() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getAlternateStyleSheet();
+            } else {
+                class Query implements Runnable {
+                    String result;
+                    public void run() {
+                        result = userAgent.getAlternateStyleSheet();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
          * Returns the location on the screen of the
          * client area in the UserAgent.
          */
@@ -2168,6 +2188,16 @@ public class JSVGComponent extends JGVTComponent {
                 return svgUserAgent.getMedia();
             }
             return "screen";
+        }
+
+        /**
+         * Returns this user agent's alternate style-sheet title.
+         */
+        public String getAlternateStyleSheet() {
+            if (svgUserAgent != null) {
+                return svgUserAgent.getAlternateStyleSheet();
+            }
+            return null;
         }
 
         /**

@@ -8,15 +8,13 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.svg.SVGCSSContext;
-
 /**
  * This interface is the placeholder for SVG application informations.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface SVGContext extends SVGCSSContext {
+public interface SVGContext {
 
     /**
      * Return the pixel to millimeters factor.

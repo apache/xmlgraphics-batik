@@ -8,11 +8,15 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.ElementNonCSSPresentationalHints;
-import org.apache.batik.css.ExtendedElementCSSInlineStyle;
-import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.OverrideStyleElement;
+import java.net.MalformedURLException;
+import java.net.URL;
 
+import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.StyleMap;
+
+import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -26,10 +30,13 @@ import org.w3c.dom.svg.SVGAnimatedString;
  */
 public abstract class SVGStylableElement
     extends SVGOMElement
-    implements OverrideStyleElement,
-	       ExtendedElementCSSInlineStyle,
-               ElementNonCSSPresentationalHints {
-    
+    implements CSSStylableElement {
+
+    /**
+     * The computed style map.
+     */
+    protected StyleMap computedStyleMap;
+
     /**
      * Creates a new SVGStylableElement object.
      */
@@ -45,31 +52,75 @@ public abstract class SVGStylableElement
         super(prefix, owner);
     }
     
-    // ElementNonCSSPresentationalHints ////////////////////////////////////
+    // CSSStylableElement //////////////////////////////////////////
+    
+    /**
+     * Returns the computed style of this element/pseudo-element.
+     */
+    public StyleMap getComputedStyleMap(String pseudoElement) {
+        return computedStyleMap;
+    }
 
     /**
-     * Returns the translation of the non-CSS hints to the corresponding
-     * CSS rules. The result can be null.
+     * Sets the computed style of this element/pseudo-element.
      */
-    public CSSStyleDeclaration getNonCSSPresentationalHints() {
-        return ElementNonCSSPresentationalHintsSupport.
-            getNonCSSPresentationalHints(this);
+    public void setComputedStyleMap(String pseudoElement, StyleMap sm) {
+        computedStyleMap = sm;
+    }
+
+    /**
+     * Returns the ID of this element.
+     */
+    public String getXMLId() {
+        return getAttributeNS(null, "id");
+    }
+
+    /**
+     * Returns the class of this element.
+     */
+    public String getCSSClass() {
+        return getAttributeNS(null, "class");
+    }
+
+    /**
+     * Returns the CSS base URL of this element.
+     */
+    public URL getCSSBase() {
+        try {
+            String bu = XMLBaseSupport.getCascadedXMLBase(this);
+            if (bu == null) {
+                return null;
+            }
+            return new URL(bu);
+        } catch (MalformedURLException e) {
+            // !!! TODO
+            e.printStackTrace();
+            throw new InternalError();
+        }
+    }
+
+    /**
+     * Tells whether this element is an instance of the given pseudo
+     * class.
+     */
+    public boolean isPseudoInstanceOf(String pseudoClass) {
+        if (pseudoClass.equals("first-child")) {
+            Node n = getPreviousSibling();
+            while (n != null && n.getNodeType() != ELEMENT_NODE) {
+                n = n.getPreviousSibling();
+            }
+            return n == null;
+        }
+        return false;
     }
 
     // SVGStylable support ///////////////////////////////////////////////////
 
     /**
-     * Implements {@link ExtendedElementCSSInlineStyle#hasStyle()}.
-     */
-    public boolean hasStyle() {
-        return SVGStylableSupport.hasStyle(this);
-    }
-
-    /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
      */
     public CSSStyleDeclaration getStyle() {
-        return SVGStylableSupport.getStyle(this);
+        throw new InternalError("Not implemented");
     }
 
     /**
@@ -77,7 +128,7 @@ public abstract class SVGStylableElement
      * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
      */
     public CSSValue getPresentationAttribute(String name) {
-        return SVGStylableSupport.getPresentationAttribute(name, this);
+        throw new InternalError("Not implemented");
     }
 
     /**
@@ -85,24 +136,6 @@ public abstract class SVGStylableElement
      * org.w3c.dom.svg.SVGStylable#getClassName()}.
      */
     public SVGAnimatedString getClassName() {
-        return SVGStylableSupport.getClassName(this);
-    }
-
-    // OverrideStyleElement ///////////////////////////////////////////
-
-    /**
-     * Implements {@link
-     * org.apache.batik.dom.util.OverrideStyleElement#hasOverrideStyle(String)}.
-     */
-    public boolean hasOverrideStyle(String pseudoElt) {
-	return SVGStylableSupport.hasOverrideStyle(pseudoElt);
-    }    
-
-    /**
-     * Implements {@link
-     * org.apache.batik.dom.util.OverrideStyleElement#getOverrideStyle(String)}.
-     */
-    public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return SVGStylableSupport.getOverrideStyle(pseudoElt, this);
+        throw new InternalError("Not implemented");
     }
 }

@@ -8,7 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.HiddenChildElementSupport;
+import org.apache.batik.css.engine.CSSEngine;
 
 import org.apache.batik.dom.AbstractDocument;
 
@@ -65,7 +65,7 @@ public abstract class SVGOMElement
      * <b>DOM</b>: Implements {@link SVGElement#getId()}.
      */
     public String getId() {
-        return getID();
+        return getAttributeNS(null, "id");
     }
 
     /**
@@ -93,9 +93,9 @@ public abstract class SVGOMElement
      * <b>DOM</b>: Implements {@link SVGElement#getOwnerSVGElement()}.
      */
     public SVGSVGElement getOwnerSVGElement() {
-        for (Element e = HiddenChildElementSupport.getParentElement(this);
+        for (Element e = CSSEngine.getParentCSSStylableElement(this);
              e != null;
-             e = HiddenChildElementSupport.getParentElement(e)) {
+             e = CSSEngine.getParentCSSStylableElement(e)) {
             if (e instanceof SVGSVGElement) {
                 return (SVGSVGElement)e;
             }
@@ -107,9 +107,11 @@ public abstract class SVGOMElement
      * <b>DOM</b>: Implements {@link SVGElement#getViewportElement()}.
      */
     public SVGElement getViewportElement() {
-        for (Node n = getParentNode(); n != null; n = n.getParentNode()) {
-            if (n instanceof SVGFitToViewBox) {
-                return (SVGElement)n;
+        for (Element e = CSSEngine.getParentCSSStylableElement(this);
+             e != null;
+             e = CSSEngine.getParentCSSStylableElement(e)) {
+            if (e instanceof SVGFitToViewBox) {
+                return (SVGElement)e;
             }
         }
         return null;

@@ -11,7 +11,10 @@ package org.apache.batik.bridge;
 import java.awt.geom.Dimension2D;
 import java.io.InterruptedIOException;
 import java.io.IOException;
+
+import java.net.URL;
 import java.net.MalformedURLException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashMap;
@@ -21,7 +24,14 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.apache.batik.css.HiddenChildElementSupport;
+import org.apache.batik.css.engine.CSSContext;
+import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.SystemColorSupport;
+import org.apache.batik.css.engine.value.Value;
+
+import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.dom.svg.SVGOMDocument;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.script.Interpreter;
@@ -49,7 +59,7 @@ import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class BridgeContext implements ErrorConstants {
+public class BridgeContext implements ErrorConstants, CSSContext {
 
     /**
      * The document is bridge context is dedicated to.
@@ -196,6 +206,7 @@ public class BridgeContext implements ErrorConstants {
         this.viewportMap.put(userAgent, new UserAgentViewport(userAgent));
         this.interpreterPool = interpreterPool;
         this.documentLoader = documentLoader;
+        documentLoader.setBridgeContext(this);
         registerSVGBridges(this);
 
         // start debug leak
@@ -272,6 +283,32 @@ public class BridgeContext implements ErrorConstants {
             fontFamilyMap = null;
         }
         this.document = document;
+    }
+
+    /**
+     * Initializes the given document.
+     */
+    protected void initializeDocument(Document document) {
+        SVGOMDocument doc = (SVGOMDocument)document;
+        CSSEngine eng = doc.getCSSEngine();
+        if (eng == null) {
+            SVGDOMImplementation impl;
+            impl = (SVGDOMImplementation)doc.getImplementation();
+            eng = impl.createCSSEngine(doc, this);
+            doc.setCSSEngine(eng);
+            eng.setMedia(userAgent.getMedia());
+            String uri = userAgent.getUserStyleSheetURI();
+            if (uri != null) {
+                try {
+                    URL url = new URL(uri);
+                    eng.setUserAgentStyleSheet
+                        (eng.parseStyleSheet(url, "all"));
+                } catch (MalformedURLException e) {
+                    userAgent.displayError(e);
+                }
+            }
+            eng.setAlternateStyleSheet(userAgent.getAlternateStyleSheet());
+        }
     }
 
     /**
@@ -413,13 +450,13 @@ public class BridgeContext implements ErrorConstants {
             }
         } else {
             // search the first parent which has defined a viewport
-            e = HiddenChildElementSupport.getParentElement(e);
+            e = SVGUtilities.getParentElement(e);
             while (e != null) {
                 Viewport viewport = (Viewport)viewportMap.get(e);
                 if (viewport != null) {
                     return viewport;
                 }
-                e = HiddenChildElementSupport.getParentElement(e);
+                e = SVGUtilities.getParentElement(e);
             }
             return (Viewport)viewportMap.get(userAgent);
         }
@@ -703,6 +740,86 @@ public class BridgeContext implements ErrorConstants {
         public BridgeUpdateHandlerInfo(BridgeUpdateHandler handler) {
             this.handler = handler;
         }
+    }
+
+    // CSS context //////////////////////////////////
+
+    /**
+     * Returns the Value corresponding to the given system color.
+     */
+    public Value getSystemColor(String ident) {
+        return SystemColorSupport.getSystemColor(ident);
+    }
+
+    /**
+     * Returns a lighter font-weight.
+     */
+    public float getLighterFontWeight(float f) {
+        // !!! TODO: delegates to the UserAgent.
+        switch ((int)f) {
+        case 100: return 100;
+        case 200: return 100;
+        case 300: return 200;
+        case 400: return 300;
+        case 500: return 400;
+        case 600: return 400;
+        case 700: return 400;
+        case 800: return 400;
+        case 900: return 400;
+        default:
+            throw new IllegalArgumentException("" + f);
+        }
+    }
+
+    /**
+     * Returns a bolder font-weight.
+     */
+    public float getBolderFontWeight(float f) {
+        // !!! TODO: delegates to the UserAgent.
+        switch ((int)f) {
+        case 100: return 600;
+        case 200: return 600;
+        case 300: return 600;
+        case 400: return 600;
+        case 500: return 600;
+        case 600: return 700;
+        case 700: return 800;
+        case 800: return 900;
+        case 900: return 900;
+        default:
+            throw new IllegalArgumentException("" + f);
+        }
+    }
+
+    /**
+     * Returns the pixel to millimeters conversion factor.
+     */
+    public float getPixelToMillimeters() {
+        return userAgent.getPixelToMM();
+    }
+
+    /**
+     * Returns the medium font size.
+     */
+    public float getMediumFontSize() {
+        // !!! TODO: delegates to the UserAgent.
+        return 9f * 25.4f / (72f * getPixelToMillimeters());
+    }
+
+    /**
+     * Returns the width of the block which directly contains the
+     * given element.
+     */
+    public float getBlockWidth(Element elt) {
+        return getViewport(elt).getWidth();
+    }
+
+    /**
+     * Returns the height of the block which directly contains the
+     * given element.
+     */
+    public float getBlockHeight(Element elt) {
+        return getViewport(elt).getHeight();
     }
 
     // bridge extensions support

@@ -23,13 +23,18 @@ import org.apache.batik.bridge.ErrorConstants;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.bridge.PaintServer;
 
-import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.StyleMap;
+import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.css.engine.value.svg.ICCColor;
 
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.util.CSSConstants;
+
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.Element;
@@ -87,14 +92,19 @@ public class SolidColorBridge
                                           float opacity,
                                           BridgeContext ctx) {
         Map refs = new HashMap();
-        for (;;) {
-        CSSOMReadOnlyStyleDeclaration decl;
-        decl = CSSUtilities.getComputedStyle(paintElement);
+        CSSEngine eng = CSSUtilities.getCSSEngine(paintElement);
+        int pidx = eng.getPropertyIndex(BATIK_EXT_SOLID_OPACITY_PROPERTY);
 
-        CSSValue opacityVal = decl.getPropertyCSSValueInternal
-            (BATIK_EXT_SOLID_OPACITY_PROPERTY);
-        if (opacityVal != null) {
-            float attr = PaintServer.convertOpacity(opacityVal);
+        for (;;) {
+            Value opacityVal =
+                CSSUtilities.getComputedStyle(paintElement, pidx);
+        
+            // Was solid-opacity explicity set on this element?
+            StyleMap sm =
+                ((CSSStylableElement)paintElement).getComputedStyleMap(null);
+            if (!sm.isNullCascaded(pidx)) {
+                // It was explicit...
+                float attr = PaintServer.convertOpacity(opacityVal);
                 return (opacity * attr);
             }
 
@@ -128,24 +138,29 @@ public class SolidColorBridge
                                         float opacity,
                                         BridgeContext ctx) {
         Map refs = new HashMap();
-        for (;;) {
-            CSSOMReadOnlyStyleDeclaration decl;
-            decl = CSSUtilities.getComputedStyle(paintElement);
+        CSSEngine eng = CSSUtilities.getCSSEngine(paintElement);
+        int pidx = eng.getPropertyIndex(BATIK_EXT_SOLID_COLOR_PROPERTY);
 
-            CSSValue colorDef;
-            colorDef = decl.getPropertyCSSValueInternal
-                (BATIK_EXT_SOLID_COLOR_PROPERTY);
-            if (colorDef != null) {
-                if (colorDef.getCssValueType() == 
+        for (;;) {
+            Value colorDef =
+                CSSUtilities.getComputedStyle(paintElement, pidx);
+        
+            // Was solid-color explicity set on this element?
+            StyleMap sm =
+                ((CSSStylableElement)paintElement).getComputedStyleMap(null);
+            if (!sm.isNullCascaded(pidx)) {
+                // It was explicit...
+                if (colorDef.getCssValueType() ==
                     CSSValue.CSS_PRIMITIVE_VALUE) {
-            CSSPrimitiveValue v = (CSSPrimitiveValue)colorDef;
-                    return PaintServer.convertColor
-                        (v.getRGBColorValue(), opacity);
-        } else {
-                    PaintServer.convertRGBICCColor
-                (paintElement, (SVGColor)colorDef, opacity, ctx);
+                    return PaintServer.convertColor(colorDef, opacity);
+                } else {
+                    return PaintServer.convertRGBICCColor
+                        (paintElement, colorDef.item(0),
+                         (ICCColor)colorDef.item(1),
+                         opacity, ctx);
                 }
             }
+
 
             String uri = XLinkSupport.getXLinkHref(paintElement);
             if (uri.length() == 0) {

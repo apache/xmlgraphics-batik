@@ -149,7 +149,6 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
                                           new DOMAttrModifiedEventListener(),
                                           false);
         ctx.bind(e, node);
-        BridgeEventSupport.addDOMListener(ctx, e);
     }
 
     /**

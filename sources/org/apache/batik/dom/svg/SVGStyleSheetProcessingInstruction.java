@@ -11,11 +11,15 @@ package org.apache.batik.dom.svg;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.batik.css.ExtendedLinkStyle;
+import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSStyleSheetNode;
+import org.apache.batik.css.engine.StyleSheet;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.StyleSheetFactory;
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
+
+import org.apache.batik.dom.util.HashTable;
 
 import org.w3c.dom.Node;
 
@@ -28,8 +32,13 @@ import org.w3c.dom.Node;
  */
 public class SVGStyleSheetProcessingInstruction
     extends StyleSheetProcessingInstruction
-    implements ExtendedLinkStyle {
+    implements CSSStyleSheetNode {
     
+    /**
+     * The style-sheet.
+     */
+    protected StyleSheet styleSheet;
+
     /**
      * Creates a new ProcessingInstruction object.
      */
@@ -60,6 +69,35 @@ public class SVGStyleSheetProcessingInstruction
             }
         }
         return href;
+    }
+
+    /**
+     * Returns the associated style-sheet.
+     */
+    public StyleSheet getCSSStyleSheet() {
+        if (styleSheet == null) {
+            HashTable attrs = getPseudoAttributes();
+            String type = (String)attrs.get("type");
+
+            if ("text/css".equals(type)) {
+                try {
+                    String title     = (String)attrs.get("title");
+                    String media     = (String)attrs.get("media");
+                    String href      = (String)attrs.get("href");
+                    String alternate = (String)attrs.get("alternate");
+                    SVGOMDocument doc = (SVGOMDocument)getOwnerDocument();
+                    URL url = doc.getURLObject();
+                    CSSEngine e = doc.getCSSEngine();
+                    styleSheet = e.parseStyleSheet(new URL(url, href), media);
+                    styleSheet.setAlternate("yes".equals(alternate));
+                    styleSheet.setTitle(title);
+                } catch (MalformedURLException e) {
+                    // !!! TODO exception handling.
+                    e.printStackTrace();
+                }
+            }
+        }
+        return styleSheet;
     }
 
     /**

@@ -32,7 +32,8 @@ import java.awt.Shape;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
+public abstract class SVGShapeElementBridge
+    extends AbstractGraphicsNodeBridge {
 
     /**
      * Constructs a new bridge for SVG shapes.
@@ -58,18 +59,9 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
 	    return null; // Disable the rendering if something bad happens
         }
         // 'shape-rendering' and 'color-rendering'
-        Map shapeHints = CSSUtilities.convertShapeRendering(e);
-        Map colorHints = CSSUtilities.convertColorRendering(e);
-        if (shapeHints != null || colorHints != null) {
-            RenderingHints hints;
-            if (shapeHints == null) {
-                hints = new RenderingHints(colorHints);
-            } else if (colorHints == null) {
-                hints = new RenderingHints(shapeHints);
-            } else {
-                hints = new RenderingHints(shapeHints);
-                hints.putAll(colorHints);
-            }
+        RenderingHints hints = CSSUtilities.convertShapeRendering(e, null);
+        hints = CSSUtilities.convertColorRendering(e, hints);
+        if (hints != null) {
             shapeNode.setRenderingHints(hints);
         }
         return shapeNode;

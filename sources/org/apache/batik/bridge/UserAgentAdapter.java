@@ -122,6 +122,13 @@ public class UserAgentAdapter implements UserAgent {
     }
 
     /**
+     * Returns this user agent's alternate style-sheet title.
+     */
+    public String getAlternateStyleSheet() {
+        return null;
+    }
+
+    /**
      * Returns the user stylesheet 
      */
     public String getUserStyleSheetURI() {

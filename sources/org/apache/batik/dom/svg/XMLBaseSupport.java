@@ -10,7 +10,7 @@ package org.apache.batik.dom.svg;
 
 import java.net.URL;
 
-import org.apache.batik.css.HiddenChildElement;
+import org.apache.batik.css.engine.CSSImportedElementRoot;
 
 import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.ParsedURL;
@@ -46,23 +46,18 @@ public class XMLBaseSupport implements XMLConstants {
      */
     public static String getCascadedXMLBase(Element elt) {
         String base = null;
-        Node n = elt;
-        while (true) {
-            if (n.getParentNode() != null) {
-                n = n.getParentNode();
-            } else if (n instanceof HiddenChildElement) {
-                n = ((HiddenChildElement)n).getParentElement();
-            } else {
-                break; 
-            }
-            // new Exception("N: " + n).printStackTrace();
-            if (n== null) break;
+        Node n = elt.getParentNode();
+        while (n != null) {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 base = getCascadedXMLBase((Element)n);
                 break;
             }
+            if (n instanceof CSSImportedElementRoot) {
+                n = ((CSSImportedElementRoot)n).getCSSParentElement();
+            } else {
+                n = n.getParentNode();
+            }
         }
-
         if (base == null) {
             SVGOMDocument svgDoc;
             svgDoc = (SVGOMDocument)elt.getOwnerDocument();
@@ -73,8 +68,6 @@ public class XMLBaseSupport implements XMLConstants {
         }
         Attr attr = elt.getAttributeNodeNS(XML_NAMESPACE_URI, "base");
         if (attr != null) {
-            // System.out.println("Base: " + base + 
-            //                    " attr: " + attr.getNodeValue());
             if (base == null) {
                 base = attr.getNodeValue();
             } else {

@@ -88,6 +88,11 @@ public interface SVGUserAgent {
     String getMedia();
 
     /**
+     * Returns this user agent's alternate style-sheet title.
+     */
+    String getAlternateStyleSheet();
+
+    /**
      * Opens a link in a new component.
      * @param uri The document URI.
      * @param newc Whether the link should be activated in a new component.

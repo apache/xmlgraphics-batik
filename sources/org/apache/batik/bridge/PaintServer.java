@@ -14,7 +14,10 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
 
-import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
+import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.css.engine.value.ListValue;
+import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.css.engine.value.svg.ICCColor;
 
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 
@@ -72,30 +75,20 @@ public abstract class PaintServer
      * Returns a <tt>ShapePainter</tt> defined on the specified
      * element and for the specified shape node.
      *
-     * @param paintedElement the element with the marker CSS properties
+     * @param e the element with the marker CSS properties
      * @param node the shape node
      * @param ctx the bridge context
      */
-    public static ShapePainter convertMarkers(Element paintedElement,
+    public static ShapePainter convertMarkers(Element e,
                                               ShapeNode node,
                                               BridgeContext ctx) {
-
-        CSSOMReadOnlyStyleDeclaration decl
-            = CSSUtilities.getComputedStyle(paintedElement);
-
-        CSSValue v;
-
-        v = decl.getPropertyCSSValueInternal(CSS_MARKER_START_PROPERTY);
-        Marker startMarker
-            = convertMarker(paintedElement, (CSSPrimitiveValue)v, ctx);
-
-        v = decl.getPropertyCSSValueInternal(CSS_MARKER_MID_PROPERTY);
-        Marker midMarker
-            = convertMarker(paintedElement, (CSSPrimitiveValue)v, ctx);
-
-        v = decl.getPropertyCSSValueInternal(CSS_MARKER_END_PROPERTY);
-        Marker endMarker
-            = convertMarker(paintedElement, (CSSPrimitiveValue)v, ctx);
+        Value v;
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.MARKER_START_INDEX);
+        Marker startMarker = convertMarker(e, v, ctx);
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.MARKER_MID_INDEX);
+        Marker midMarker = convertMarker(e, v, ctx);
+        v = CSSUtilities.getComputedStyle(e, SVGCSSEngine.MARKER_END_INDEX);
+        Marker endMarker = convertMarker(e, v, ctx);
 
         if (startMarker != null || midMarker != null || endMarker != null) {
             MarkerShapePainter p = new MarkerShapePainter(node.getShape());
@@ -116,28 +109,25 @@ public abstract class PaintServer
      * Returns a <tt>Marker</tt> defined on the specified element by
      * the specified value, and for the specified shape node.
      *
-     * @param paintedElement the painted element
+     * @param e the painted element
      * @param v the CSS value describing the marker to construct
      * @param ctx the bridge context
      */
-    public static Marker convertMarker(Element paintedElement,
-                                       CSSPrimitiveValue v,
+    public static Marker convertMarker(Element e,
+                                       Value v,
                                        BridgeContext ctx) {
 
         if (v.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
             return null; // 'none'
         } else {
             String uri = v.getStringValue();
-            Element markerElement
-                = ctx.getReferencedElement(paintedElement, uri);
+            Element markerElement = ctx.getReferencedElement(e, uri);
             Bridge bridge = ctx.getBridge(markerElement);
             if (bridge == null || !(bridge instanceof MarkerBridge)) {
-                throw new BridgeException
-                    (paintedElement, ERR_CSS_URI_BAD_TARGET,
-                     new Object[] {uri});
+                throw new BridgeException(e, ERR_CSS_URI_BAD_TARGET,
+                                          new Object[] {uri});
             }
-            return ((MarkerBridge)bridge).createMarker
-                (ctx, markerElement, paintedElement);
+            return ((MarkerBridge)bridge).createMarker(ctx, markerElement, e);
         }
     }
 
@@ -173,7 +163,7 @@ public abstract class PaintServer
             fp.setPaint(fillPaint);
 
             StrokeShapePainter sp = new StrokeShapePainter(shape);
-            sp.setStroke(PaintServer.convertStroke(e, ctx));
+            sp.setStroke(PaintServer.convertStroke(e));
             sp.setPaint(strokePaint);
             CompositeShapePainter cp = new CompositeShapePainter(shape);
             cp.addShapePainter(fp);
@@ -181,7 +171,7 @@ public abstract class PaintServer
             return cp;
         } else if (strokePaint != null) {
             StrokeShapePainter sp = new StrokeShapePainter(shape);
-            sp.setStroke(PaintServer.convertStroke(e, ctx));
+            sp.setStroke(PaintServer.convertStroke(e));
             sp.setPaint(strokePaint);
             return sp;
         } else if (fillPaint != null) {
@@ -208,18 +198,15 @@ public abstract class PaintServer
     public static Paint convertStrokePaint(Element strokedElement,
                                            GraphicsNode strokedNode,
                                            BridgeContext ctx) {
-        CSSOMReadOnlyStyleDeclaration decl =
-            CSSUtilities.getComputedStyle(strokedElement);
-        // 'stroke-opacity'
-        float opacity = convertOpacity
-            (decl.getPropertyCSSValueInternal(CSS_STROKE_OPACITY_PROPERTY));
-        // 'stroke'
-        CSSValue paintDef
-            = decl.getPropertyCSSValueInternal(CSS_STROKE_PROPERTY);
+        Value v = CSSUtilities.getComputedStyle
+            (strokedElement, SVGCSSEngine.STROKE_OPACITY_INDEX);
+        float opacity = convertOpacity(v);
+        v = CSSUtilities.getComputedStyle
+            (strokedElement, SVGCSSEngine.STROKE_INDEX);
 
         return convertPaint(strokedElement,
                             strokedNode,
-                            paintDef,
+                            v,
                             opacity,
                             ctx);
     }
@@ -235,17 +222,15 @@ public abstract class PaintServer
     public static Paint convertFillPaint(Element filledElement,
                                          GraphicsNode filledNode,
                                          BridgeContext ctx) {
-        CSSOMReadOnlyStyleDeclaration decl =
-            CSSUtilities.getComputedStyle(filledElement);
-        // 'fill-opacity'
-        float opacity = convertOpacity
-            (decl.getPropertyCSSValueInternal(CSS_FILL_OPACITY_PROPERTY));
-        // 'fill'
-        CSSValue paintDef = decl.getPropertyCSSValueInternal(CSS_FILL_PROPERTY);
+        Value v = CSSUtilities.getComputedStyle
+            (filledElement, SVGCSSEngine.FILL_OPACITY_INDEX);
+        float opacity = convertOpacity(v);
+        v = CSSUtilities.getComputedStyle
+            (filledElement, SVGCSSEngine.FILL_INDEX);
 
         return convertPaint(filledElement,
                             filledNode,
-                            paintDef,
+                            v,
                             opacity,
                             ctx);
     }
@@ -263,99 +248,61 @@ public abstract class PaintServer
      */
     protected static Paint convertPaint(Element paintedElement,
                                         GraphicsNode paintedNode,
-                                        CSSValue paintDef,
+                                        Value paintDef,
                                         float opacity,
                                         BridgeContext ctx) {
-
-        //
-        // <!> FIXME: In the next version of the spec, we should be
-        // able to remove the if statement and use a SVGPaint all the time
-        //
-        // The CSS engine will give us a SVGPaint in any cases. We also
-        // should also be able to use strong typing on convertXXX methods.
-        //
         if (paintDef.getCssValueType() == CSSValue.CSS_PRIMITIVE_VALUE) {
-            CSSPrimitiveValue v = (CSSPrimitiveValue)paintDef;
-            switch (v.getPrimitiveType()) {
+            switch (paintDef.getPrimitiveType()) {
             case CSSPrimitiveValue.CSS_IDENT:
                 return null; // none
+
             case CSSPrimitiveValue.CSS_RGBCOLOR:
-                return convertColor(v.getRGBColorValue(), opacity);
+                return convertColor(paintDef, opacity);
+
             case CSSPrimitiveValue.CSS_URI:
                 return convertURIPaint(paintedElement,
                                        paintedNode,
                                        paintDef,
                                        opacity,
                                        ctx);
+
             default:
                 throw new Error(); // can't be reached
             }
-        } else { // SVGPaint
-            SVGPaint p = (SVGPaint)paintDef;
-            Paint paint = null;
-            switch (p.getPaintType()) {
-            case SVGPaint.SVG_PAINTTYPE_NONE:
-                return null; // 'none'
-            case SVGPaint.SVG_PAINTTYPE_RGBCOLOR:
-                return convertColor(p.getRGBColor(), opacity);
-/* -- The one which is missing in our current SVG DOM bindings --
-            case SVGPaint.SVG_PAINTTYPE_URI:
-                return convertURIPaint(paintedElement,
-                                       paintedNode,
-                                       p,
-                                       opacity,
-                                       ctx);
-*/
-            case SVGPaint.SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR:
-                return convertRGBICCColor(paintedElement,
-                                          (SVGColor)paintDef,
-                                          opacity,
-                                          ctx);
-            case SVGPaint.SVG_PAINTTYPE_URI_NONE:
-                return silentConvertURIPaint(paintedElement,
-                                             paintedNode,
-                                             (SVGPaint)paintDef,
-                                             opacity,
-                                             ctx);
-            case SVGPaint.SVG_PAINTTYPE_URI_CURRENTCOLOR:
-                paint = silentConvertURIPaint(paintedElement,
-                                              paintedNode,
-                                              (SVGPaint)paintDef,
-                                              opacity,
-                                              ctx);
-                if (paint == null) { // no paint found
-                    CSSOMReadOnlyStyleDeclaration decl =
-                        CSSUtilities.getComputedStyle(paintedElement);
-                    CSSValue v
-                        = decl.getPropertyCSSValueInternal(CSS_COLOR_PROPERTY);
-                    paint =  convertColor
-                        (((CSSPrimitiveValue)v).getRGBColorValue(), opacity);
+        } else { // List
+            ListValue lv = (ListValue)paintDef;
+            Value v = lv.item(0);
+            switch (v.getPrimitiveType()) {
+            case CSSPrimitiveValue.CSS_RGBCOLOR:
+                return convertRGBICCColor(paintedElement, v,
+                                          (ICCColor)lv.item(1),
+                                          opacity, ctx);
+
+            case CSSPrimitiveValue.CSS_URI:
+                Paint result = silentConvertURIPaint(paintedElement,
+                                                     paintedNode,
+                                                     lv,
+                                                     opacity,
+                                                     ctx);
+                if (result == null) {
+                    v = lv.item(1);
+                    switch (v.getPrimitiveType()) {
+                    case CSSPrimitiveValue.CSS_IDENT:
+                        return null; // none
+
+                    case CSSPrimitiveValue.CSS_RGBCOLOR:
+                        if (lv.getLength() == 2) {
+                            return convertColor(v, opacity);
+                        } else {
+                            return convertRGBICCColor(paintedElement, v,
+                                                      (ICCColor)lv.item(2),
+                                                      opacity, ctx);
+                        }
+                    default:
+                        throw new Error(); // can't be reached
+                    }
                 }
-                return paint;
-            case SVGPaint.SVG_PAINTTYPE_URI_RGBCOLOR:
-                paint = silentConvertURIPaint(paintedElement,
-                                              paintedNode,
-                                              (SVGPaint)paintDef,
-                                              opacity,
-                                              ctx);
-                if (paint == null) { // no paint found
-                    paint = convertColor(p.getRGBColor(), opacity);
-                }
-                return paint;
-            case SVGPaint.SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR:
-                paint = silentConvertURIPaint(paintedElement,
-                                              paintedNode,
-                                              (SVGPaint)paintDef,
-                                              opacity,
-                                              ctx);
-                if (paint == null) { // no paint found
-                    paint = convertRGBICCColor(paintedElement,
-                                               (SVGColor)paintDef,
-                                               opacity,
-                                               ctx);
-                }
-                return paint;
-           default:
+            default:
                 throw new Error(); // can't be reached
             }
         }
@@ -375,14 +322,15 @@ public abstract class PaintServer
      */
     public static Paint silentConvertURIPaint(Element paintedElement,
                                               GraphicsNode paintedNode,
-                                              CSSValue paintDef,
+                                              ListValue paintDef,
                                               float opacity,
                                               BridgeContext ctx) {
         Paint paint = null;
         try {
-            paint = convertURIPaint
-                (paintedElement, paintedNode, paintDef, opacity, ctx);
-        } catch (BridgeException ex) { /* ignore BridgeException */ }
+            paint = convertURIPaint(paintedElement, paintedNode,
+                                    paintDef.item(0), opacity, ctx);
+        } catch (BridgeException ex) {
+        }
         return paint;
     }
 
@@ -397,11 +345,11 @@ public abstract class PaintServer
      */
     public static Paint convertURIPaint(Element paintedElement,
                                         GraphicsNode paintedNode,
-                                        CSSValue paintDef,
+                                        Value paintDef,
                                         float opacity,
                                         BridgeContext ctx) {
 
-        String uri = ((CSSPrimitiveValue)paintDef).getStringValue();
+        String uri = paintDef.getStringValue();
         Element paintElement = ctx.getReferencedElement(paintedElement, uri);
 
         Bridge bridge = ctx.getBridge(paintElement);
@@ -422,21 +370,22 @@ public abstract class PaintServer
      * could not be used or loaded for any reason.
      *
      * @param paintedElement the element using the color
-     * @param color the color definition
+     * @param colorDef the color definition
+     * @param iccColor the ICC color definition
      * @param opacity the opacity
      * @param ctx the bridge context to use
      */
     public static Color convertRGBICCColor(Element paintedElement,
-                                           SVGColor colorDef,
+                                           Value colorDef,
+                                           ICCColor iccColor,
                                            float opacity,
                                            BridgeContext ctx) {
-        SVGICCColor iccColor = colorDef.getICCColor();
         Color color = null;
         if (iccColor != null){
             color = convertICCColor(paintedElement, iccColor, opacity, ctx);
         }
         if (color == null){
-            color = convertColor(colorDef.getRGBColor(), opacity);
+            color = convertColor(colorDef, opacity);
         }
         return color;
     }
@@ -452,7 +401,7 @@ public abstract class PaintServer
      * @param ctx the bridge context to use
      */
     public static Color convertICCColor(Element e,
-                                        SVGICCColor c,
+                                        ICCColor c,
                                         float opacity,
                                         BridgeContext ctx){
         // Get ICC Profile's name
@@ -475,21 +424,26 @@ public abstract class PaintServer
         }
 
         // Now, convert the colors to an array of floats
-        float[] colorValue = SVGUtilities.convertSVGNumberList(c.getColors());
-        if(colorValue == null){
-            return null; // no color value
+        int n = c.getNumberOfColors();
+        float[] colorValue = new float[n];
+        if (n == 0) {
+            return null;
         }
+        for (int i = 0; i < n; i++) {
+            colorValue[i] = c.getColor(i);
+        }
+
         // Convert values to RGB
         float[] rgb = profileCS.intendedToRGB(colorValue);
         return new Color(rgb[0], rgb[1], rgb[2], opacity);
     }
 
     /**
-     * Converts the given RGBColor and opacity to a Color object.
+     * Converts the given Value and opacity to a Color object.
      * @param c The CSS color to convert.
      * @param o The opacity value (0 <= o <= 1).
      */
-    public static Color convertColor(RGBColor c, float opacity) {
+    public static Color convertColor(Value c, float opacity) {
         int r = resolveColorComponent(c.getRed());
         int g = resolveColorComponent(c.getGreen());
         int b = resolveColorComponent(c.getBlue());
@@ -503,40 +457,31 @@ public abstract class PaintServer
     /**
      * Converts a <tt>Stroke</tt> object defined on the specified element.
      *
-     * @param strokedElement the element on which the stroke is specified
+     * @param e the element on which the stroke is specified
      */
-    public static Stroke convertStroke(Element strokedElement,
-                                       BridgeContext ctx) {
-
-        // percentages and units are relative to the strokedElement's viewport
-        UnitProcessor.Context uctx
-            = UnitProcessor.createContext(ctx, strokedElement);
-        CSSOMReadOnlyStyleDeclaration decl
-            = CSSUtilities.getComputedStyle(strokedElement);
-        CSSValue v;
-
-        v = decl.getPropertyCSSValueInternal(CSS_STROKE_WIDTH_PROPERTY);
-        float width = UnitProcessor.cssOtherLengthToUserSpace
-            (v, CSS_STROKE_WIDTH_PROPERTY, uctx);
-
-        v = decl.getPropertyCSSValueInternal(CSS_STROKE_LINECAP_PROPERTY);
-        int linecap = convertStrokeLinecap((CSSPrimitiveValue)v);
-
-        v = decl.getPropertyCSSValueInternal(CSS_STROKE_LINEJOIN_PROPERTY);
-        int linejoin = convertStrokeLinejoin((CSSPrimitiveValue)v);
-
-        v = decl.getPropertyCSSValueInternal(CSS_STROKE_MITERLIMIT_PROPERTY);
-        float miterlimit = convertStrokeMiterlimit((CSSPrimitiveValue)v);
-
-        v = decl.getPropertyCSSValueInternal(CSS_STROKE_DASHARRAY_PROPERTY);
-        float [] dasharray = convertStrokeDasharray(v, uctx);
+    public static Stroke convertStroke(Element e) {
+        Value v;
+        v = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.STROKE_WIDTH_INDEX);
+        float width = v.getFloatValue();
+        v = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.STROKE_LINECAP_INDEX);
+        int linecap = convertStrokeLinecap(v);
+        v = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.STROKE_LINEJOIN_INDEX);
+        int linejoin = convertStrokeLinejoin(v);
+        v = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.STROKE_MITERLIMIT_INDEX);
+        float miterlimit = convertStrokeMiterlimit(v);
+        v = CSSUtilities.getComputedStyle
+            (e, SVGCSSEngine.STROKE_DASHARRAY_INDEX);
+        float[] dasharray = convertStrokeDasharray(v);
 
         float dashoffset = 0;
         if (dasharray != null) {
-            v = decl.getPropertyCSSValueInternal
-                (CSS_STROKE_DASHOFFSET_PROPERTY);
-            dashoffset = UnitProcessor.cssOtherLengthToUserSpace
-                (v, CSS_STROKE_DASHOFFSET_PROPERTY, uctx);
+            v =  CSSUtilities.getComputedStyle
+                (e, SVGCSSEngine.STROKE_DASHOFFSET_INDEX);
+            dashoffset = v.getFloatValue();
         }
         return new BasicStroke(width,
                                linecap,
@@ -557,21 +502,16 @@ public abstract class PaintServer
      * @param v the CSS value describing the dasharray property
      * @param uctx the unit processor context used to resolve units
      */
-    public static
-        float [] convertStrokeDasharray(CSSValue v,
-                                        UnitProcessor.Context uctx) {
+    public static float [] convertStrokeDasharray(Value v) {
         float [] dasharray = null;
         if (v.getCssValueType() == CSSValue.CSS_VALUE_LIST) {
-            CSSValueList l = (CSSValueList)v;
+            ListValue l = (ListValue)v;
             int length = l.getLength();
             dasharray = new float[length];
             float sum = 0;
-            for (int i=0; i < dasharray.length; ++i) {
-                CSSValue vv = l.item(i);
-                float dash = UnitProcessor.cssOtherLengthToUserSpace
-                    (vv, CSS_STROKE_DASHARRAY_PROPERTY, uctx);
-                dasharray[i] = dash;
-                sum += dash;
+            for (int i = 0; i < dasharray.length; ++i) {
+                dasharray[i] = l.item(i).getFloatValue();
+                sum += dasharray[i];
             }
             if (sum == 0) {
                 /* 11.4 - If the sum of the <length>'s is zero, then
@@ -587,8 +527,8 @@ public abstract class PaintServer
      * Converts the 'miterlimit' property to the appropriate float number.
      * @param v the CSS value describing the miterlimit property
      */
-    public static float convertStrokeMiterlimit(CSSPrimitiveValue v) {
-        float miterlimit = v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+    public static float convertStrokeMiterlimit(Value v) {
+        float miterlimit = v.getFloatValue();
         return (miterlimit < 1f) ? 1f : miterlimit;
     }
 
@@ -596,7 +536,7 @@ public abstract class PaintServer
      * Converts the 'linecap' property to the appropriate BasicStroke constant.
      * @param v the CSS value describing the linecap property
      */
-    public static int convertStrokeLinecap(CSSPrimitiveValue v) {
+    public static int convertStrokeLinecap(Value v) {
         String s = v.getStringValue();
         switch (s.charAt(0)) {
         case 'b':
@@ -611,10 +551,11 @@ public abstract class PaintServer
     }
 
     /**
-     * Converts the 'linejoin' property to the appropriate BasicStroke constant.
+     * Converts the 'linejoin' property to the appropriate BasicStroke
+     * constant.
      * @param v the CSS value describing the linejoin property
      */
-    public static int convertStrokeLinejoin(CSSPrimitiveValue v) {
+    public static int convertStrokeLinejoin(Value v) {
         String s = v.getStringValue();
         switch (s.charAt(0)) {
         case 'm':
@@ -636,15 +577,15 @@ public abstract class PaintServer
      * Returns the value of one color component (0 <= result <= 255).
      * @param v the value that defines the color component
      */
-    public static int resolveColorComponent(CSSPrimitiveValue v) {
+    public static int resolveColorComponent(Value v) {
         float f;
         switch(v.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_PERCENTAGE:
-            f = v.getFloatValue(CSSPrimitiveValue.CSS_PERCENTAGE);
+            f = v.getFloatValue();
             f = (f > 100f) ? 100f : (f < 0f) ? 0f : f;
             return Math.round(255f * f / 100f);
         case CSSPrimitiveValue.CSS_NUMBER:
-            f = v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+            f = v.getFloatValue();
             f = (f > 255f) ? 255f : (f < 0f) ? 0f : f;
             return Math.round(f);
         default:
@@ -657,9 +598,8 @@ public abstract class PaintServer
      * @param v the value that represents the opacity
      * @return the opacity between 0 and 1
      */
-    public static float convertOpacity(CSSValue v) {
-        float r =
-            ((CSSPrimitiveValue)v).getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+    public static float convertOpacity(Value v) {
+        float r = v.getFloatValue();
         return (r < 0f) ? 0f : (r > 1f) ? 1f : r;
     }
 }

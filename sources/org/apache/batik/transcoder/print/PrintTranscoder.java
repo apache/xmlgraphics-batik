@@ -654,6 +654,30 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         = new StringKey();
 
     /**
+     * The CSS alternate style sheet title.
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_ALTERNATE_STYLESHEET</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">null</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specify the alternate style sheet to use with CSS.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_ALTERNATE_STYLESHEET
+        = new StringKey();
+
+    /**
      * The user stylesheet URI key.
      * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
      * <TR>
@@ -887,6 +911,13 @@ public class PrintTranscoder extends XMLAbstractTranscoder
          */
         public String getMedia() {
             return (String)hints.get(KEY_MEDIA);
+        }
+
+        /**
+         * Returns this user agent's alternate style-sheet title.
+         */
+        public String getAlternateStyleSheet() {
+            return (String)hints.get(KEY_ALTERNATE_STYLESHEET);
         }
 
         /**

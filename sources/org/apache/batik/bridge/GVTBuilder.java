@@ -10,12 +10,12 @@ package org.apache.batik.bridge;
 
 import java.util.List;
 
-import org.apache.batik.css.AbstractViewCSS;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
+
+import org.apache.batik.css.engine.CSSStylableElement;
 
 import org.apache.batik.util.SVGConstants;
 
@@ -50,10 +50,7 @@ public class GVTBuilder implements SVGConstants {
     public GraphicsNode build(BridgeContext ctx, Document document) {
         // the bridge context is now associated to one document
         ctx.setDocument(document);
-        // set the media type
-        AbstractViewCSS view;
-        view = (AbstractViewCSS)((DocumentView)document).getDefaultView();
-        view.setMedia(ctx.getUserAgent().getMedia());
+        ctx.initializeDocument(document);
 
         // inform the bridge context the builder to use
         ctx.setGVTBuilder(this);
@@ -167,8 +164,10 @@ public class GVTBuilder implements SVGConstants {
         if (Thread.currentThread().isInterrupted()) {
             throw new InterruptedBridgeException();
         }
+
         // check the display property
-        if (!CSSUtilities.convertDisplay(e)) {
+        if (e instanceof CSSStylableElement &&
+            !CSSUtilities.convertDisplay(e)) {
             return;
         }
         // get the appropriate bridge according to the specified element

@@ -15,11 +15,15 @@ import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 
 import org.apache.batik.util.RunnableQueue;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
 
 /**
  * This class contains the informations needed by the SVG scripting.
@@ -35,6 +39,11 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     protected Timer timer = new Timer(true);
 
     /**
+     * The bridge context.
+     */
+    protected BridgeContext context;
+
+    /**
      * The update manager.
      */
     protected UpdateManager updateManager;
@@ -45,20 +54,146 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     protected RunnableQueue updateRunnableQueue;
 
     /**
+     * The DOMAttrModified event listener.
+     */
+    protected EventListener domAttrModifiedListener;
+
+    /**
+     * The SVGAbort event listener.
+     */
+    protected EventListener svgAbortListener =
+        new ScriptingEventListener("onabort");
+
+    /**
+     * The SVGError event listener.
+     */
+    protected EventListener svgErrorListener =
+        new ScriptingEventListener("onerror");
+
+    /**
+     * The SVGResize event listener.
+     */
+    protected EventListener svgResizeListener =
+        new ScriptingEventListener("onresize");
+
+    /**
+     * The SVGScroll event listener.
+     */
+    protected EventListener svgScrollListener =
+        new ScriptingEventListener("onscroll");
+
+    /**
+     * The SVGUnload event listener.
+     */
+    protected EventListener svgUnloadListener =
+        new ScriptingEventListener("onunload");
+
+    /**
+     * The SVGZoom event listener.
+     */
+    protected EventListener svgZoomListener =
+        new ScriptingEventListener("onzoom");
+
+    /**
+     * The begin event listener.
+     */
+    protected EventListener beginListener =
+        new ScriptingEventListener("onbegin");
+
+    /**
+     * The end event listener.
+     */
+    protected EventListener endListener =
+        new ScriptingEventListener("onend");
+
+    /**
+     * The repeat event listener.
+     */
+    protected EventListener repeatListener =
+        new ScriptingEventListener("onrepeat");
+
+    /**
+     * The focusin event listener.
+     */
+    protected EventListener focusinListener =
+        new ScriptingEventListener("onfocusin");
+
+    /**
+     * The focusout event listener.
+     */
+    protected EventListener focusoutListener =
+        new ScriptingEventListener("onfocusout");
+
+    /**
+     * The activate event listener.
+     */
+    protected EventListener activateListener =
+        new ScriptingEventListener("onactivate");
+
+    /**
+     * The click event listener.
+     */
+    protected EventListener clickListener =
+        new ScriptingEventListener("onclick");
+
+    /**
+     * The mousedown event listener.
+     */
+    protected EventListener mousedownListener =
+        new ScriptingEventListener("onmousedown");
+
+    /**
+     * The mouseup event listener.
+     */
+    protected EventListener mouseupListener =
+        new ScriptingEventListener("onmouseup");
+
+    /**
+     * The mouseover event listener.
+     */
+    protected EventListener mouseoverListener =
+        new ScriptingEventListener("onmouseover");
+
+    /**
+     * The mouseout event listener.
+     */
+    protected EventListener mouseoutListener =
+        new ScriptingEventListener("onmouseout");
+
+    /**
+     * The mousemove event listener.
+     */
+    protected EventListener mousemoveListener =
+        new ScriptingEventListener("onmousemove");
+
+    /**
      * Creates a new ScriptingEnvironment.
      * @param ctx the bridge context
      */
     public ScriptingEnvironment(BridgeContext ctx) {
         super(ctx);
+        context = ctx;
         updateManager = ctx.getUpdateManager();
         updateRunnableQueue = updateManager.getUpdateRunnableQueue();
+        
+        Document doc = ctx.getDocument();
+
+        // Add the scripting listeners.
+        addScriptingListeners(doc.getDocumentElement());
+
+        // Add the listener responsible of updating the event attributes
+        EventTarget et = (EventTarget)doc;
+        domAttrModifiedListener = new DOMAttrModifiedListener();
+        et.addEventListener("DOMAttrModified",
+                            domAttrModifiedListener,
+                            false);
     }
 
     /**
      * Creates a new Window object.
      */
-    public org.apache.batik.script.Window createWindow
-        (Interpreter interp, String lang) {
+    public org.apache.batik.script.Window createWindow(Interpreter interp,
+                                                       String lang) {
         return new Window(interp, lang);
     }
 
@@ -86,10 +221,109 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     }
 
     /**
-     * Interrupts the periodic tasks.
+     * Interrupts the periodic tasks and dispose this ScriptingEnvironment.
      */
     public void interrupt() {
         timer.cancel();
+        // !!! remove the DOM listeners.
+    }
+
+    /**
+     * Adds the scripting listeners to the given element.
+     */
+    protected void addScriptingListeners(Node node) {
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
+            // Attach the listeners
+            Element elt = (Element)node;
+            EventTarget target = (EventTarget)elt;
+            if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
+                if (SVGConstants.SVG_SVG_TAG.equals(elt.getLocalName())) {
+                    // <svg> listeners
+                    if (elt.hasAttributeNS(null, "onabort")) {
+                        target.addEventListener("SVGAbort",
+                                                svgAbortListener, false);
+                    }
+                    if (elt.hasAttributeNS(null, "onerror")) {
+                        target.addEventListener("SVGError",
+                                                svgErrorListener, false);
+                    }
+                    if (elt.hasAttributeNS(null, "onresize")) {
+                        target.addEventListener("SVGResize",
+                                                svgResizeListener, false);
+                    }
+                    if (elt.hasAttributeNS(null, "onscroll")) {
+                        target.addEventListener("SVGScroll",
+                                            svgScrollListener, false);
+                    }
+                    if (elt.hasAttributeNS(null, "onunload")) {
+                        target.addEventListener("SVGUnload",
+                                                svgUnloadListener, false);
+                    }
+                    if (elt.hasAttributeNS(null, "onzoom")) {
+                        target.addEventListener("SVGZoom",
+                                                svgZoomListener, false);
+                    }
+                } else {
+                    String name = elt.getLocalName();
+                    if (name.equals(SVGConstants.SVG_SET_TAG) ||
+                        name.startsWith("animate")) {
+                        // animation listeners
+                        if (elt.hasAttributeNS(null, "onbegin")) {
+                            target.addEventListener("beginEvent",
+                                                    beginListener ,
+                                                    false);
+                        }
+                        if (elt.hasAttributeNS(null, "onend")) {
+                            target.addEventListener("endEvent",
+                                                    endListener,
+                                                    false);
+                    }
+                        if (elt.hasAttributeNS(null, "onrepeat")) {
+                            target.addEventListener("repeatEvent",
+                                                    repeatListener ,
+                                                    false);
+                        }
+                        return;
+                    }
+                }
+            }
+
+            // UI listeners
+            if (elt.hasAttributeNS(null, "onfocusin")) {
+                target.addEventListener("focusin", focusinListener, false);
+            }
+            if (elt.hasAttributeNS(null, "onfocusout")) {
+                target.addEventListener("focusout", focusoutListener, false);
+            }
+            if (elt.hasAttributeNS(null, "onactivate")) {
+                target.addEventListener("activate", activateListener, false);
+            }
+            if (elt.hasAttributeNS(null, "onclick")) {
+                target.addEventListener("click", clickListener, false);
+            } 
+            if (elt.hasAttributeNS(null, "onmousedown")) {
+                target.addEventListener("mousedown", mousedownListener, false);
+            }
+            if (elt.hasAttributeNS(null, "onmouseup")) {
+                target.addEventListener("mouseup", mouseupListener, false);
+            }
+            if (elt.hasAttributeNS(null, "onmouseover")) {
+                target.addEventListener("mouseover", mouseoverListener, false);
+            }
+            if (elt.hasAttributeNS(null, "onmouseout")) {
+                target.addEventListener("mouseout", mouseoutListener, false);
+            }
+            if (elt.hasAttributeNS(null, "onmousemove")) {
+                target.addEventListener("mousemove", mousemoveListener, false);
+            }
+        }
+
+        // Adds the listeners to the children
+        for (Node n = node.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+            addScriptingListeners(n);
+        }
     }
 
     /**
@@ -351,6 +585,60 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
          */
         public Interpreter getInterpreter() {
             return interpreter;
+        }
+    }
+
+    /**
+     * To handle the element attributes modification in the associated
+     * document.
+     */
+    protected class DOMAttrModifiedListener implements EventListener {
+        public void handleEvent(Event evt) {
+            // !!! Updates the listeners.
+        }
+    }
+
+    /**
+     * To handle a scripting event.
+     */
+    protected class ScriptingEventListener implements EventListener {
+
+        /**
+         * The script attribute.
+         */
+        protected String attribute;
+        
+        /**
+         * Creates a new ScriptingEventListener.
+         */
+        public ScriptingEventListener(String attr) {
+            attribute = attr;
+        }
+
+        /**
+         * Runs the script.
+         */
+        public void handleEvent(Event evt) {
+            Element elt = (Element)evt.getCurrentTarget();
+            // Find the scripting language
+            Element e = elt;
+            while (e == null ||
+                   !SVGConstants.SVG_NAMESPACE_URI.equals
+                   (e.getNamespaceURI()) ||
+                   !SVGConstants.SVG_SVG_TAG.equals(e.getLocalName())) {
+                e = SVGUtilities.getParentElement(e);
+            }
+            if (e == null) {
+                return;
+            }
+            String lang = e.getAttributeNS
+                (null, SVGConstants.SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE);
+
+            // Evaluate the script
+            String script = elt.getAttributeNS(null, attribute);
+            if (script.length() > 0) {
+                runEventHandler(script, evt, lang);
+            }
         }
     }
 }

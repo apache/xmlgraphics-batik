@@ -13,8 +13,6 @@ import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.batik.css.ElementWithID;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
@@ -356,13 +354,6 @@ public class SAXDocumentFactory
                     ? null
                     : namespaces.get(aname.substring(0, idx));
 		e.setAttributeNS(nsURI, aname, attributes.getValue(i));
-		if (attributes.getType(i).equals("ID") &&
-		    e instanceof ElementWithID) {
-		    String s = (idx == -1 || idx == aname.length()-1)
-			? aname
-			: aname.substring(idx + 1);
-		    ((ElementWithID)e).setIDName(nsURI, s);
-		}
 	    }
 	}
     }

@@ -8,17 +8,13 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.svg.DefaultSVGCSSContext;
-
 /**
  * This class is the placeholder for SVG application informations.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class DefaultSVGContext
-    extends    DefaultSVGCSSContext
-    implements SVGContext {
+public class DefaultSVGContext implements SVGContext {
 
     /**
      * The pixel to mm conversion factor.
