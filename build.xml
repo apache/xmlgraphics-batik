@@ -596,7 +596,7 @@ To display the available targets type:
         <pathelement location="resources" />
         <pathelement location="test-resources" />
       </classpath>
-      <arg line="test-resources/org/apache/batik/test/beSuite.xml"/>
+      <arg line="test-resources/org/apache/batik/test/samplesRendering.xml"/>
     </java>
   </target>
 
