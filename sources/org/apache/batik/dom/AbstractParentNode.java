@@ -175,9 +175,7 @@ public abstract class AbstractParentNode extends AbstractNode {
         nodeToBeRemoved(oldChild);
 
 	// Node modification
-        System.out.println("LEN1: " + childNodes.getLength());
 	ExtendedNode result = childNodes.remove((ExtendedNode)oldChild);
-        System.out.println("LEN2: " + childNodes.getLength());
 	result.setParentNode(null);
 
 	// Mutation event
