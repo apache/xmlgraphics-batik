@@ -13,22 +13,14 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
-import java.io.IOException;
-import java.io.StringReader;
-
 import java.text.AttributedCharacterIterator;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.HashMap;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
 
 import org.apache.batik.gvt.event.EventDispatcher;
-import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
-import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 
@@ -38,17 +30,10 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextHit;
 import org.apache.batik.gvt.text.TextSpanLayout;
 
-import org.apache.batik.script.Interpreter;
-import org.apache.batik.script.InterpreterException;
-import org.apache.batik.script.InterpreterPool;
-
-import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
@@ -57,15 +42,12 @@ import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MouseEvent;
 
 import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.svg.SVGSVGElement;
 
 /**
- * A class to attach listeners on the <code>Document</code> to
- * call pieces of script when necessary and to attach a listener
- * on the GVT root to propagate GVT events to the DOM.
+ * This class is responsible of tracking GraphicsNodeMouseEvent and
+ * fowarding them to the DOM as regular DOM MouseEvent.
  *
- * @author <a href="mailto:cjolif@ilog.fr>Christophe Jolif</a>
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:tkormann@ilog.fr>Thierry Kormann</a>
  * @version $Id$
  */
 public class BridgeEventSupport implements SVGConstants {
