@@ -663,6 +663,7 @@ public class CSSUtilities implements SVGConstants {
         Marker marker = markerBridge.buildMarker(ctx, 
                                                  markerElement,
                                                  paintedElement);
+        ctx.setViewCSS(v);
         return marker;
                                                  
     }
