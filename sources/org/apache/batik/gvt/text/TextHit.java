@@ -27,7 +27,7 @@ public class TextHit {
     private boolean leadingEdge;
 
     public TextHit(int charIndex, boolean leadingEdge) {
-	this.charIndex = charIndex;
+        this.charIndex = charIndex;
         this.leadingEdge = leadingEdge;
     }
 
@@ -40,10 +40,11 @@ public class TextHit {
     }
 
     public int getInsertionIndex() {
-	int i = getCharIndex();
+        int i = getCharIndex();
         if (!leadingEdge) {
             ++i;
         }
         return i;
     }
 }
+

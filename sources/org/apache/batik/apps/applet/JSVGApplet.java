@@ -30,8 +30,8 @@ import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.event.EventDispatcher;
-import org.apache.batik.refimpl.gvt.event.ConcreteEventDispatcher;
-import org.apache.batik.refimpl.util.JSVGCanvas;
+import org.apache.batik.gvt.event.ConcreteEventDispatcher;
+import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.util.DocumentEvent;
 import org.apache.batik.util.DocumentListener;
 import org.apache.batik.util.DocumentLoadRunnable;
@@ -96,7 +96,7 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
         CSSDocumentHandler.setParserClassName("org.w3c.flute.parser.Parser");
         df = new SAXSVGDocumentFactory(getXMLParserClassName());
         canvas = new JSVGCanvas(this);
-        eventDispatcher = 
+        eventDispatcher =
             new ConcreteEventDispatcher(
                 canvas.getRendererFactory().getRenderContext());
 
