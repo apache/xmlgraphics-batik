@@ -145,7 +145,14 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         // Extract stop colors and intervals
         //
         Vector stopVector = extractGradientStops(paintElement, ctx);
-
+        // if no stop, fill is 'none'
+        if (stopVector.size() == 0) {
+            return null;
+        }
+        // if one stop, the fill is just one color
+        if (stopVector.size() == 1) {
+            return ((GradientStop) stopVector.get(0)).stopColor;
+        }
         //
         // Convert the stop offsets to intervals
         //
