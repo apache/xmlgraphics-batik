@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -53,6 +54,7 @@ import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
 import org.apache.batik.gvt.renderer.StrokingTextPainter;
 
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeExtension;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
@@ -890,12 +892,24 @@ public class PrintTranscoder extends XMLAbstractTranscoder
             return FEATURES.contains(s);
         }
 
+        protected Set extensions = new HashSet();
+
         /**
          * Tells whether the given extension is supported by this
          * user agent.
          */
         public boolean supportExtension(String s) {
-            return false;
+            return extensions.contains(s);
+        }
+
+        /**
+         * Lets the bridge tell the user agent that the following
+         * ex   tension is supported by the bridge.  
+         */
+        public void registerExtension(BridgeExtension ext) {
+            Iterator i = ext.getImplementedExtensions();
+            while (i.hasNext())
+                extensions.add(i.next());
         }
     }
 

@@ -33,77 +33,83 @@ public interface UserAgent {
     /**
      * Returns the event dispatcher to use.
      */
-    EventDispatcher getEventDispatcher();
+    public EventDispatcher getEventDispatcher();
 
     /**
      * Returns the default size of the viewport.
      */
-    Dimension2D getViewportSize();
+    public Dimension2D getViewportSize();
 
     /**
      * Displays an error resulting from the specified Exception.
      */
-    void displayError(Exception ex);
+    public void displayError(Exception ex);
 
     /**
      * Displays a message in the User Agent interface.
      */
-    void displayMessage(String message);
+    public void displayMessage(String message);
 
     /**
      * Returns the pixel to mm factor.
      */
-    float getPixelToMM();
+    public float getPixelToMM();
 
     /**
      * Returns the language settings.
      */
-    String getLanguages();
+    public String getLanguages();
 
     /**
      * Returns the user stylesheet uri.
      * @return null if no user style sheet was specified.
      */
-    String getUserStyleSheetURI();
+    public String getUserStyleSheetURI();
 
     /**
      * Opens a link.
      * @param elt The activated link element.
      */
-    void openLink(SVGAElement elt);
+    public void openLink(SVGAElement elt);
 
     /**
      * Informs the user agent to change the cursor.
      * @param cursor the new cursor
      */
-    void setSVGCursor(Cursor cursor);
+    public void setSVGCursor(Cursor cursor);
 
     /**
      * Returns the class name of the XML parser.
      */
-    String getXMLParserClassName();
+    public String getXMLParserClassName();
 
     /**
      * Returns the <code>AffineTransform</code> currently
      * applied to the drawing by the UserAgent.
      */
-    AffineTransform getTransform();
+    public AffineTransform getTransform();
 
     /**
      * Returns the location on the screen of the
      * client area in the UserAgent.
      */
-    Point getClientAreaLocationOnScreen();
+    public Point getClientAreaLocationOnScreen();
 
     /**
      * Tells whether the given feature is supported by this
      * user agent.
      */
-    boolean hasFeature(String s);
+    public boolean hasFeature(String s);
 
     /**
      * Tells whether the given extension is supported by this
      * user agent.
      */
-    boolean supportExtension(String s);
+    public boolean supportExtension(String s);
+
+    /**
+     * Lets the bridge tell the user agent that the following
+     * extension is supported by the bridge.  
+     */
+    public void registerExtension(BridgeExtension ext);
 }

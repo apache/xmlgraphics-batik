@@ -1,0 +1,74 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in  the LICENSE file.                                     -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- regularPoly extension tag test                                         -->
+<!--                                                                        -->
+<!-- @author Thomas.DeWeese@Kodak.com                                       -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="extension.css" ?>
+
+<svg id="body" width="450" height="500" xml:space="preserve" 
+     viewBox="0 0 450 500"
+     xmlns:batikExt="http://xml.apache.org/batik/ext">
+
+    <title>Star Extension Tag</title>
+  
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= -->
+    <g id="testContent" class="legend" style="text-anchor:middle">
+        <text x="225" y="40" class="title">
+            Star Extension Tag
+        </text>
+  
+        <switch>
+          <g requiredExtensions="http://xml.apache.org/batik/ext/star/1.0"
+             fill="#0D0" stroke="#88F" stroke-width="2">
+      
+            <batikExt:star cx="85"  cy="135" r="50" ir="30" sides="3"/>
+            <batikExt:star cx="225" cy="135" r="50" ir="30" sides="4"/>
+            <batikExt:star cx="365" cy="135" r="50" ir="30" sides="5"/>
+      
+            <batikExt:star cx="85"  cy="275" r="50" ir="30" sides="6"/>
+            <batikExt:star cx="225" cy="275" r="50" ir="30" sides="7"/>
+            <batikExt:star cx="365" cy="275" r="50" ir="30" sides="8"/>
+      
+            <batikExt:star cx="85"  cy="415" r="50" ir="30" sides="9"/>
+            <batikExt:star cx="225" cy="415" r="50" ir="30" sides="10"/>
+            <batikExt:star cx="365" cy="415" r="50" ir="30" sides="11"/>
+      
+          </g>
+         
+          <g fill="red">
+            <circle cx="85"  cy="135" r="50"/>
+            <circle cx="225" cy="135" r="50"/>
+            <circle cx="365" cy="135" r="50"/>
+                                            
+            <circle cx="85"  cy="275" r="50"/>
+            <circle cx="225" cy="275" r="50"/>
+            <circle cx="365" cy="275" r="50"/>
+      
+            <circle cx="85"  cy="415" r="50"/>
+            <circle cx="225" cy="415" r="50"/>
+            <circle cx="365" cy="415" r="50"/>
+          </g>
+        </switch>
+    </g>
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="../batikLogo.svg#Batik_Tag_Box" />
+</svg>

@@ -1,0 +1,54 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<svg  width="100" height="100" xml:space="preserve" viewBox="0 0 100 100">
+  <defs>
+    <g id="sadFace" x="0" y="0" width="50" height="50" 
+         viewBox="0 0 50 50">
+      <defs>
+        <radialGradient id="face" gradientUnits="objectBoundingBox" 
+                        fx="25%" fy="25%">
+	    <stop offset="0%" style="stop-color:white" />
+	    <stop offset="20%" style="stop-color:#ffff88" />
+	    <stop offset="80%" style="stop-color:#BBBB33" />
+	    <stop offset="100%" style="stop-color:#666600" />
+        </radialGradient>
+        <radialGradient id="eye" gradientUnits="objectBoundingBox" 
+                        fx="25%" fy="25%">
+	    <stop offset="0%" style="stop-color:#FFFFFF" />
+	    <stop offset="20%" style="stop-color:#888888" />
+	    <stop offset="100%" style="stop-color:#000000" />
+        </radialGradient>
+      </defs>
+      <circle  cx="25" cy="25" r="25" fill="url(#face)"/>
+      <ellipse cx="15" cy="18" rx="4" ry="6" fill="url(#eye)"/>
+      <ellipse cx="35" cy="18" rx="4" ry="6" fill="url(#eye)"/>
+      <path d="M 12,35 a 15,7 0 0,1 26,0 a 20,4 0 0,0 -26,0 z" fill="black"/>
+    </g>
+  </defs>
+
+  <rect x="1" y="1" width="98" height="98"
+        fill="#8080FF" fill-opacity="0.8" stroke="black"/>
+
+
+  <g transform="translate(10,40)">
+    <g transform="rotate(-30)" >
+      <text x="0" y="0" font-size="16">Broken</text>
+    
+      <text x="0" y="16" font-size="16">Link</text>
+    </g>
+  </g>
+
+  <g transform="translate(43,43)">
+    <use xlink:href="#sadFace"/>
+  </g>
+
+</svg>

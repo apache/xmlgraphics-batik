@@ -26,10 +26,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.BridgeExtension;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
@@ -427,13 +429,26 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             return FEATURES.contains(s);
         }
 
+        protected Set extensions = new HashSet();
+
         /**
          * Tells whether the given extension is supported by this
          * user agent.
          */
         public boolean supportExtension(String s) {
-            return false;
+            return extensions.contains(s);
         }
+
+        /**
+         * Lets the bridge tell the user agent that the following
+         * ex   tension is supported by the bridge.  
+         */
+        public void registerExtension(BridgeExtension ext) {
+            Iterator i = ext.getImplementedExtensions();
+            while (i.hasNext())
+                extensions.add(i.next());
+        }
+
     }
 
     protected final static Set FEATURES = new HashSet();

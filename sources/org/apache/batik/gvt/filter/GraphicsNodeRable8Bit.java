@@ -21,12 +21,14 @@ import java.awt.image.RenderedImage;
 import java.awt.image.BufferedImage;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.renderable.RenderableImage;
+import java.util.Map;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.AbstractRable;
 import org.apache.batik.ext.awt.image.renderable.PaintRable;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
@@ -104,7 +106,24 @@ public class GraphicsNodeRable8Bit
      * @param node The GraphicsNode this image should represent
      */
     public GraphicsNodeRable8Bit(GraphicsNode node, 
-                                     GraphicsNodeRenderContext gnrc){
+                                 GraphicsNodeRenderContext gnrc){
+        if(node == null)
+            throw new IllegalArgumentException();
+
+        this.node = node;
+        this.gnrc = gnrc;
+        this.usePrimitivePaint = true;
+    }
+
+    /**
+     * @param node The GraphicsNode this image should represent
+     * @param props The Properties for this image.
+     */
+    public GraphicsNodeRable8Bit(GraphicsNode node, 
+                                 GraphicsNodeRenderContext gnrc,
+                                 Map props){
+        super((Filter)null, props);
+
         if(node == null)
             throw new IllegalArgumentException();
 
@@ -119,7 +138,7 @@ public class GraphicsNodeRable8Bit
      *        include any filters or mask operations on <tt>node</tt>
      */
     public GraphicsNodeRable8Bit(GraphicsNode node, 
-                                     boolean      usePrimitivePaint){
+                                 boolean      usePrimitivePaint){
         if(node == null)
             throw new IllegalArgumentException();
 
