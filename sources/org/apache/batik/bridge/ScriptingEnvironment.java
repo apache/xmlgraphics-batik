@@ -603,9 +603,11 @@ public class ScriptingEnvironment {
                             userAgent.displayError((ex != null) ? ex : ie);
                         }
                     }
-                    try {
-                        endScript();
-                    } catch (StopScriptException e) {
+                    if (!interrupted) {
+                        try {
+                            endScript();
+                        } catch (StopScriptException e) {
+                        }
                     }
                 }
             } finally {
