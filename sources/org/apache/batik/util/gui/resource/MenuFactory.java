@@ -45,6 +45,7 @@ import javax.swing.KeyStroke;
  *   Menu1.accelerator = accelerator
  *   Menu1.action      = action_name
  *   Menu1.selected    = true | false
+ *   Menu1.enabled     = true | false
  *   ...
  * mnemonic is a single character
  * accelerator is of the form: mod+mod+...+X
@@ -72,6 +73,7 @@ public class MenuFactory extends ResourceManager {
     private final static String ACCELERATOR_SUFFIX = ".accelerator";
     private final static String ACTION_SUFFIX      = ".action";
     private final static String SELECTED_SUFFIX    = ".selected";
+    private final static String ENABLED_SUFFIX     = ".enabled";
     private final static String ICON_SUFFIX        = ".icon";
 
     /**
@@ -339,6 +341,12 @@ public class MenuFactory extends ResourceManager {
 	    if (a instanceof JComponentModifier) {
 		((JComponentModifier)a).addJComponent(item);
 	    }
+	} catch (MissingResourceException e) {
+	}
+
+        // is the item enabled?
+	try {
+	    item.setEnabled(getBoolean(name+ENABLED_SUFFIX));
 	} catch (MissingResourceException e) {
 	}
     }

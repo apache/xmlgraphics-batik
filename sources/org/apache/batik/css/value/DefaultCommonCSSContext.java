@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.css.value.CommonCSSContext.Color;
 import org.apache.batik.util.CSSConstants;
 
 import org.w3c.dom.css.CSSPrimitiveValue;

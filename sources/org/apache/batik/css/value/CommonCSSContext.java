@@ -11,6 +11,7 @@ package org.apache.batik.css.value;
 import java.util.List;
 
 import org.apache.batik.css.CSSOMReadOnlyValue;
+import org.apache.batik.css.value.CommonCSSContext.Color;
 
 /**
  * This interface represents the context the application must provides

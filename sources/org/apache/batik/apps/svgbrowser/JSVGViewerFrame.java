@@ -395,6 +395,8 @@ public class JSVGViewerFrame
 
         svgCanvas = new JSVGCanvas(userAgent, true, true);
 
+        svgCanvas.setDoubleBufferedRendering(true);
+
         JPanel p = null;
         try {
             // Create the menu
@@ -520,26 +522,26 @@ public class JSVGViewerFrame
 
         locationBar.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                String s = locationBar.getText().trim();
-                int i = s.indexOf("#");
+                String st = locationBar.getText().trim();
+                int i = st.indexOf("#");
                 String t = "";
                 if (i != -1) {
-                    t = s.substring(i + 1);
-                    s = s.substring(0, i);
+                    t = st.substring(i + 1);
+                    st = st.substring(0, i);
                 }
-                if (!s.equals("")) {
+                if (!st.equals("")) {
                     try{
-                        File f = new File(s);
+                        File f = new File(st);
                         if (f.exists()) {
                             if (f.isDirectory()) {
-                                s = null;
+                                st = null;
                             } else {
                                 try {
-                                    s = f.getCanonicalPath();
-                                    if (s.startsWith("/")) {
-                                        s = "file:" + s;
+                                    st = f.getCanonicalPath();
+                                    if (st.startsWith("/")) {
+                                        st = "file:" + st;
                                     } else {
-                                        s = "file:/" + s;
+                                        st = "file:/" + st;
                                     }
                                 } catch (IOException ex) {
                                 }
@@ -552,12 +554,12 @@ public class JSVGViewerFrame
                         // more to do at this point.
                     }
 
-                    if (s != null) {
+                    if (st != null) {
                         if (svgDocument != null) {
                             try {
                                 SVGOMDocument doc = (SVGOMDocument)svgDocument;
                                 URL docURL = doc.getURLObject();
-                                URL url = new URL(docURL, s);
+                                URL url = new URL(docURL, st);
                                 String fi = svgCanvas.getFragmentIdentifier();
                                 fi = (fi == null) ? "" : fi;
                                 if (docURL.equals(url) && t.equals(fi)) {
@@ -567,11 +569,11 @@ public class JSVGViewerFrame
                             }
                         }
                         if (t.length() != 0) {
-                            s += "#" + t;
+                            st += "#" + t;
                         }
-                        locationBar.setText(s);
-                        locationBar.addToHistory(s);
-                        svgCanvas.loadSVGDocument(s);
+                        locationBar.setText(st);
+                        locationBar.addToHistory(st);
+                        svgCanvas.loadSVGDocument(st);
                     }
                 }
             }
