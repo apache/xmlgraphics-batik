@@ -1314,6 +1314,8 @@ public abstract class CSSEngine {
 	    return true;
 	}
 	for (int i = 0; i < ml.getLength(); i++) {
+            if (ml.item(i).equalsIgnoreCase("all"))
+                return true;
 	    for (int j = 0; j < media.getLength(); j++) {
 		if (media.item(j).equalsIgnoreCase("all") ||
                     ml.item(i).equalsIgnoreCase(media.item(j))) {
