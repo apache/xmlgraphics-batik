@@ -270,7 +270,8 @@ public class GraphicsNodeRable8Bit
         }
 
         Rectangle2D bounds2D = getBounds2D();
-        if(bounds2D.getWidth() > 0 && bounds2D.getHeight() > 0){
+        if((bounds2D.getWidth()  > 0) && 
+           (bounds2D.getHeight() > 0)) {
             cachedUsr2dev = (AffineTransform)usr2dev.clone();
             cachedRed =  new GraphicsNodeRed8Bit
                 (node, usr2dev, getGraphicsNodeRenderContext(),

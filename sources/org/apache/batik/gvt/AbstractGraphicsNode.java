@@ -866,18 +866,19 @@ public abstract class AbstractGraphicsNode implements GraphicsNode, Cloneable {
             } else {
                 bounds = filter.getBounds2D();
             }
+
             // Factor in the clipping area, if any
             if(bounds != null){
-                if(clip != null) {
-                    bounds.intersect(bounds,
-                                     clip.getClipPath().getBounds2D(),
-                                     bounds);
+                if (clip != null) {
+                    Rectangle2D clipR = clip.getClipPath().getBounds2D();
+                    if (clipR.intersects(bounds))
+                        Rectangle2D.intersect(bounds, clipR, bounds);
                 }
                 // Factor in the mask, if any
-                if(mask != null) {
-                    bounds.intersect(bounds,
-                                     mask.getBounds2D(),
-                                     bounds);
+                if (mask != null) {
+                    Rectangle2D maskR = mask.getBounds2D();
+                    if (maskR.intersects(bounds))
+                        Rectangle2D.intersect(bounds, maskR, bounds);
                 }
             }
         }

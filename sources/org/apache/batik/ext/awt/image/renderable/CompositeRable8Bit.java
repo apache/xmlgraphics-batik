@@ -155,18 +155,22 @@ public class CompositeRable8Bit
         // update the current affine transform
         AffineTransform at = rc.getTransform();
 
-        Rectangle2D aoi = rc.getAreaOfInterest().getBounds2D();
-        if (aoi != null) {
+        Shape aoi = rc.getAreaOfInterest();
+        Rectangle2D aoiR;
+        if (aoi == null) 
+            aoiR = getBounds2D();
+        else {
+            aoiR = aoi.getBounds2D();
             Rectangle2D bounds2d = getBounds2D();
-            if (bounds2d.intersects(aoi) == false)
+            if (bounds2d.intersects(aoiR) == false)
                 return null;
                 
-            Rectangle2D.intersect(aoi, bounds2d, aoi);
+            Rectangle2D.intersect(aoiR, bounds2d, aoiR);
         }
 
-        Rectangle devRect = at.createTransformedShape(aoi).getBounds();
+        Rectangle devRect = at.createTransformedShape(aoiR).getBounds();
 
-        rc = new RenderContext(at, aoi, rh);
+        rc = new RenderContext(at, aoiR, rh);
 
         Vector srcs = new Vector();
         
@@ -219,6 +223,7 @@ public class CompositeRable8Bit
             return null;
 
         // System.out.println("Done General: " + rule);
-        return new CompositeRed(srcs, rule);
+        CachableRed cr = new CompositeRed(srcs, rule);
+        return cr;
     }
 }
