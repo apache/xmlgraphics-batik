@@ -117,7 +117,6 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         ImageNode imgNode = ctx.getGVTFactory().createImageNode();
         imgNode.setImage(node);
         // bind it as soon as it's available...
-        BridgeEventSupport.addDOMListener(ctx, element);
         ctx.bind(element, imgNode);
 
         // Set node composite
@@ -148,8 +147,6 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
                                                  SVGElement svgElement,
                                                  String uriStr) {
         RasterImageNode node = ctx.getGVTFactory().createRasterImageNode();
-        // Bind it as soon as it's available...
-        ctx.bind(svgElement, node);
         // create the image
         Rectangle2D bounds = getImageBounds(ctx, svgElement);
         node.setImage(RasterRable.create(uriStr, bounds));
@@ -166,8 +163,6 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
                                                  SVGElement svgElement,
                                                  URL url) {
         RasterImageNode node = ctx.getGVTFactory().createRasterImageNode();
-        // Bind it as soon as it's available...
-        ctx.bind(svgElement, node);
         // create the image
         Rectangle2D bounds = getImageBounds(ctx, svgElement);
         node.setImage(RasterRable.create(url, bounds));
