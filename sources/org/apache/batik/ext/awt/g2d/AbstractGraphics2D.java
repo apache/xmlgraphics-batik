@@ -23,7 +23,7 @@ import java.util.Map;
  * method in a way that concrete implementations can reuse.
  *
  * This class uses a <tt>GraphicContext</tt> to store the state of
- * its various attributes that control the rendering, such as the 
+ * its various attributes that control the rendering, such as the
  * current <tt>Font</tt>, <tt>Paint</tt> or clip.
  *
  * Concrete implementations can focus on implementing the rendering
@@ -34,7 +34,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
- * @see org.apache.batik.svggen.GraphicContext
+ * @see org.apache.batik.ext.awt.g2d.GraphicContext
  */
 public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable {
     /**
