@@ -285,7 +285,7 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
      * @param w the width of the region in which the document has to fit into
      * @param h the height of the region in which the document has to fit into
      */
-    private static
+    public static
         AffineTransform getPreserveAspectRatioTransform(float [] vb,
                                                         short align,
                                                         boolean meet,

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  
+     id="body"  width="300" height="300" viewBox="0 0 32 16" preserveAspectRatio="xMidYMid meet">
+    <rect x="0" y="0" width="32" height="16" fill="black" />
+    <rect x="2" y="2" width="28" height="12" fill="orange" />
+    <rect x="15" y="0" width="2" height="16" fill="black" />
+    <rect y="7" x="0" width="32" height="2" fill="black" />
+    <rect x="12" y="4" width="8" height="8" fill="crimson" />
+</svg>
