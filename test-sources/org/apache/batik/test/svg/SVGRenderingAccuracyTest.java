@@ -448,9 +448,12 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
         File tmpFile = null;
 
         try{
-            tmpFile = File.createTempFile(TEMP_FILE_PREFIX,
-                                          TEMP_FILE_SUFFIX,
-                                          null);
+            if (candidateReference != null)
+                tmpFile = candidateReference;
+            else
+                tmpFile = File.createTempFile(TEMP_FILE_PREFIX,
+                                              TEMP_FILE_SUFFIX,
+                                              null);
         }catch(IOException e){
             report.setErrorCode(ERROR_CANNOT_CREATE_TEMP_FILE);
             report.setDescription(new TestReport.Entry[] { 
@@ -536,12 +539,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                               e.getMessage()})) });
             report.setPassed(false);
             // Try and save tmp file as a candidate variation
-            boolean deleteTmp = true;
-            if (candidateReference != null){
-                deleteTmp = tmpFile.renameTo(candidateReference);
-            }
-
-            if (deleteTmp){
+            if (candidateReference == null){
                 tmpFile.delete();
             } 
             return report;
@@ -559,7 +557,6 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                               e.getMessage()}))});
             report.setPassed(false);
             tmpFile.delete();
-            tmpFile.deleteOnExit();
             return report;
         }
 
@@ -575,12 +572,10 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                  new Object[]{refImgURL.toString(), 
                                                               tmpFile.getAbsolutePath(),
                                                               e.getMessage()}))});
-            if (candidateReference != null){
-                tmpFile.renameTo(candidateReference);
-            }
-
             report.setPassed(false);
-            tmpFile.deleteOnExit();
+            if (candidateReference == null){
+                tmpFile.delete();
+            }
             return report;
         }
 
@@ -652,18 +647,11 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                         new TestReport.Entry(Messages.formatMessage(ENTRY_KEY_DIFFERENCE_IMAGE, null),
                                              diffFile) });
 
-                    if (candidateReference != null){
-                        System.err.print(">>>>>> saving candidate reference : ");
-                        boolean res = tmpFile.renameTo(candidateReference);
-                        System.err.println(res);
-                        if (!res) {
-                            System.out.println("failed renaiming : " + tmpFile + " to " + candidateReference);
-                            System.out.println("tmpFile.existis  : " + tmpFile.exists());
-                        }
+                    if (candidateReference == null){
+                        tmpFile.delete();
                     }
                     
                     report.setPassed(false);
-                    tmpFile.deleteOnExit();
                     return report;
                 }
             }catch(Exception e){
@@ -680,12 +668,11 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                                              e.getMessage(),
                                                                              trace.toString()})) });
 
-                if (candidateReference != null){
-                    tmpFile.renameTo(candidateReference);
+                if (candidateReference == null){
+                    tmpFile.delete();
                 }
                 
                 report.setPassed(false);
-                tmpFile.deleteOnExit();
                 return report;
             }
         }
@@ -695,7 +682,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
         // Yahooooooo! everything worked out well.
         //
         report.setPassed(true);
-        tmpFile.deleteOnExit();
+        tmpFile.delete();
         return report;
     }
 
