@@ -111,9 +111,6 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
                     attrName.equals(ATTR_WIDTH) ||
                     attrName.equals(ATTR_HEIGHT)) {
                 Shape shape = createShape(ctx, svgElement, cssDecl, uctx);
-                System.out.println("update SVGRectElementBridge "+
-                                   shapeNode.getShape()+" "+
-                                   shape);
                 shapeNode.setShape(shape);
             }
             break;

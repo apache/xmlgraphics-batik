@@ -9,6 +9,7 @@
 package org.apache.batik.gvt;
 
 import java.beans.PropertyChangeListener;
+import org.apache.batik.gvt.event.GraphicsNodePaintListener;
 
 /**
  * The top-level graphics node of the GVT tree.
@@ -17,6 +18,21 @@ import java.beans.PropertyChangeListener;
  * @version $Id$
  */
 public interface RootGraphicsNode extends CompositeGraphicsNode {
+
+    /**
+     * Adds the specified graphics node paint listener to receive graphics
+     * node paint events from all elements of the GVT tree.
+     * @param l the graphics node paint listener to add
+     */
+    void addGraphicsNodePaintListener(GraphicsNodePaintListener l);
+
+    /**
+     * Removes the specified graphics node paint listener so that it no
+     * longer receives graphics node paint change events from all nodes of
+     * the GVT tree.
+     * @param l the graphics node paint listener to remove
+     */
+    void removeGraphicsNodePaintListener(GraphicsNodePaintListener l);
 
     /**
      * Adds the specified property change listener to receive property

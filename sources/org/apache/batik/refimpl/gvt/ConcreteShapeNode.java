@@ -62,10 +62,12 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     //
 
     public void setShape(Shape newShape) {
+        Rectangle2D oldBounds = getBounds();
         invalidateGeometryCache();
         Shape oldShape = shape;
         this.shape = newShape;
         firePropertyChange("shape", oldShape, newShape);
+        fireGraphicsNodePaintListener(oldBounds);
     }
 
     public Shape getShape() {
@@ -73,11 +75,13 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     }
 
     public void setShapePainter(ShapePainter newShapePainter) {
+        Rectangle2D oldBounds = getBounds();
         invalidateGeometryCache();
         ShapePainter oldShapePainter = shapePainter;
         this.shapePainter = newShapePainter;
         firePropertyChange("shapePainter",
                                oldShapePainter, newShapePainter);
+        fireGraphicsNodePaintListener(oldBounds);
     }
 
     public ShapePainter getShapePainter() {
