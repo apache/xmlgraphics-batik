@@ -77,7 +77,7 @@
     </xsl:template>
 
     <xsl:template match="description">
-        <xsl:param name="prefix" select="&#160;" />
+        <xsl:param name="prefix">&#160;</xsl:param>
         <xsl:apply-templates select="genericEntry | uriEntry | fileEntry">
             <xsl:with-param name="prefix" select="$prefix" />
         </xsl:apply-templates>
@@ -89,7 +89,7 @@
     </xsl:template>
 
     <xsl:template match="genericEntry">
-        <xsl:param name="prefix" select="&#160;" />
+        <xsl:param name="prefix">&#160;</xsl:param>
         <tr bgcolor="white">
             <td><xsl:value-of select="$prefix" /><xsl:value-of select="@key" /></td>
             <td><xsl:value-of select="@value" /></td>
@@ -97,7 +97,7 @@
     </xsl:template>
 
     <xsl:template match="uriEntry">
-        <xsl:param name="prefix" select="&#160;" />
+        <xsl:param name="prefix">&#160;</xsl:param>
         <tr bgcolor="white" margin-left="50pt">
             <td><xsl:value-of select="$prefix" /><xsl:value-of select="@key" /></td>
             <xsl:variable name="value" select="@value" />
@@ -106,7 +106,7 @@
     </xsl:template>
 
     <xsl:template match="fileEntry">
-        <xsl:param name="prefix" select="&#160;" />
+        <xsl:param name="prefix">&#160;</xsl:param>
         <tr bgcolor="white">
             <td><xsl:value-of select="$prefix" /><xsl:value-of select="@key" /></td>
             <xsl:variable name="value" select="@value" />
