@@ -132,6 +132,8 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
         MyImgObs observer = new MyImgObs();
         Toolkit.getDefaultToolkit().prepareImage(img, -1, -1, observer);
         observer.waitTilWidthHeightDone();
+        if (observer.imageError)
+            return null;
         int width  = observer.width;
         int height = observer.height;
         dr.setBounds(new Rectangle2D.Double(0, 0, width, height));
