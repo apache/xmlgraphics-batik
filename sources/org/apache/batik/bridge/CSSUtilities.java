@@ -24,12 +24,9 @@ import java.util.HashMap;
 
 import org.apache.batik.css.AbstractViewCSS;
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
-import org.apache.batik.css.CSSOMReadOnlyValue;
 import org.apache.batik.css.HiddenChildElementSupport;
-import org.apache.batik.css.value.ImmutableString;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
@@ -849,58 +846,6 @@ public abstract class CSSUtilities
                                            view,
                                            refElement,
                                            refView);
-    }
-
-    /**
-     * Partially computes the style in the use tree and set it in
-     * the target tree.
-     * Note: This method must be called only when 'def' has been added
-     * to the tree.
-     */
-    static void computeStyle(Element use, ViewCSS uv,
-                             Element def, ViewCSS dv) {
-
-        CSSOMReadOnlyStyleDeclaration usd;
-        AbstractViewCSS uview = (AbstractViewCSS)uv;
-
-        usd = (CSSOMReadOnlyStyleDeclaration)uview.computeStyle(use, null);
-        // updateURIs(usd, basePURL);
-        ((AbstractViewCSS)dv).setComputedStyle(def, null, usd);
-        for (Node un = use.getFirstChild(), dn = def.getFirstChild();
-             un != null;
-             un = un.getNextSibling(), dn = dn.getNextSibling()) {
-            if (un.getNodeType() == Node.ELEMENT_NODE) {
-                computeStyle((Element)un, uv, (Element)dn, dv);
-            }
-        }
-    }
-
-    /**
-     * Updates the URIs in the given style declaration.
-     */
-    public static void updateURIs(CSSOMReadOnlyStyleDeclaration sd, 
-                                  ParsedURL basePURL) {
-        int len = sd.getLength();
-        for (int i = 0; i < len; i++) {
-            String name = sd.item(i);
-            CSSValue val = sd.getLocalPropertyCSSValue(name);
-            if (val != null &&
-                val.getCssValueType() ==
-                CSSPrimitiveValue.CSS_PRIMITIVE_VALUE) {
-
-                CSSPrimitiveValue pv = (CSSPrimitiveValue)val;
-                if (pv.getPrimitiveType() == CSSPrimitiveValue.CSS_URI) {
-                    CSSOMReadOnlyValue v = new CSSOMReadOnlyValue
-                        (new ImmutableString
-                         (CSSPrimitiveValue.CSS_URI,
-                          new ParsedURL(basePURL, 
-                                        pv.getStringValue()).toString()));
-                    sd.setPropertyCSSValue(name, v,
-                                           sd.getLocalPropertyPriority(name),
-                                           sd.getLocalPropertyOrigin(name));
-                }
-            }
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////
