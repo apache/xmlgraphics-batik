@@ -93,6 +93,13 @@ public abstract class AbstractStyleSheet implements StyleSheet {
     public Node getOwnerNode() {
 	return ownerNode;
     }
+
+    /**
+     * Sets the owner node.
+     */
+    public void setOwnerNode(Node n) {
+        ownerNode = n;
+    }
     
     /**
      * <b>DOM</b>: Implements {@link

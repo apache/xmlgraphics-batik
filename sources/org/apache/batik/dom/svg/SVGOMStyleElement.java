@@ -10,13 +10,13 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.css.CSSOMStyleSheet;
+import org.apache.batik.css.ExtendedLinkStyle;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.DOMImplementationCSS;
-import org.w3c.dom.stylesheets.LinkStyle;
 import org.w3c.dom.stylesheets.StyleSheet;
 import org.w3c.dom.svg.SVGStyleElement;
 
@@ -29,7 +29,7 @@ import org.w3c.dom.svg.SVGStyleElement;
 public class SVGOMStyleElement
     extends    SVGOMElement
     implements SVGStyleElement,
-               LinkStyle {
+               ExtendedLinkStyle {
 
     /**
      * The attribute initializer.
@@ -95,8 +95,16 @@ public class SVGOMStyleElement
             }
             CSSDocumentHandler.parseRules(ss, sb.toString());
             sheet = ss;
+            ss.setOwnerNode(this);
         }
         return sheet;
+    }
+
+    /**
+     * Returns the URI of the referenced stylesheet.
+     */
+    public String getStyleSheetURI() {
+        return XMLBaseSupport.getCascadedXMLBase(this);
     }
 
     /**
