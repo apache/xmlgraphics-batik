@@ -379,9 +379,11 @@ public class PadRed extends AbstractRed {
                 wrX  = x;
             }
 
-            System.out.println("wr: "  + wr.getBounds());
-            System.out.println("req: [" + wrX + ", " + wrY + ", " + 
-                               repW + ", 1]");
+            if (DEBUG) {
+                System.out.println("wr: "  + wr.getBounds());
+                System.out.println("req: [" + wrX + ", " + wrY + ", " + 
+                                   repW + ", 1]");
+            }
 
             // First we get the top row of pixels from src. (we
             // go to src instead of getting the data from wr because
