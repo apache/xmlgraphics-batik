@@ -98,8 +98,7 @@ public class DefaultImageHandler implements ImageHandler, ErrorConstants {
      * height attributes.
      */
     public void handleImage(RenderableImage image, Element imageElement,
-                            SVGGeneratorContext generatorContext)
-        throws SVGGraphics2DIOException {
+                            SVGGeneratorContext generatorContext) {
         //
         // First, set the image width and height
         //
