@@ -85,9 +85,9 @@ To display the available targets type:
     <property name="revisionNumber"  value="" />
 
     <property file="build.properties"/>
-    <property name="debug"           value="off"/>
-    <property name="optimize"        value="on"/>
-    <property name="deprecation"     value="on"/>
+    <property name="debug"           value="on"/>
+    <property name="optimize"        value="off"/>
+    <property name="deprecation"     value="off"/>
 
     <property name="src"             value="sources"/>
     <property name="resources"       value="resources"/>
@@ -123,7 +123,18 @@ To display the available targets type:
     <available property="jacl.present" classname="tcl.lang.Interp">
       <classpath refid="libs-classpath"/>
     </available>
+    <available property="jdk14.present" classname="java.lang.CharSequence"/>
 
+    <condition property="src-jdk" value="sources-1.4">
+      <equals arg1="${jdk14.present}" arg2="true"/>
+    </condition>
+    <condition property="src-jdk" value="sources-1.3">
+      <not>
+        <equals arg1="${jdk14.present}" arg2="true"/>
+      </not>
+    </condition>
+
+    <echo message="src-jdk = ${src-jdk}"/>
   </target>
 
   <path id="libs-classpath">
@@ -139,7 +150,7 @@ To display the available targets type:
     </fileset>
     <fileset dir="lib">
       <include name="xerces*.jar"/>
-      <include name="xml-apis.jar"/>
+      <include name="xml-apis-dom3.jar"/>
     </fileset>
   </path>
 
@@ -383,7 +394,17 @@ To display the available targets type:
           description="Compiles the source files">
     <mkdir dir="${dest}"/>
     <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
-    <javac srcdir="${src}" destdir="${dest}" deprecation="${deprecation}" 
+    <javac destdir="${dest}" deprecation="${deprecation}" 
+           debug="${debug}" optimize="${optimize}">
+      <src path="${src}"/>
+      <src path="${src-jdk}"/>
+      <classpath refid="libs-classpath"/>
+      <exclude name="**/*.html"/>
+      <exclude name="**/rhino/*" unless="rhino.present"/>      
+      <exclude name="**/jpython/*" unless="jpython.present"/>
+      <exclude name="**/jacl/*" unless="jacl.present"/>
+    </javac>
+    <javac srcdir="${src-jdk}" destdir="${dest}" deprecation="${deprecation}" 
            debug="${debug}" optimize="${optimize}">
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>
@@ -490,7 +511,7 @@ To display the available targets type:
       </manifest>
       <fileset dir="${dest}">
         <include name="org/w3c/**"/>
-        <include name="${package-prefix}/bridge/*.class"/>
+        <include name="${package-prefix}/bridge/**/*.class"/>
         <include name="${package-prefix}/css/**/*.class"/>
         <include name="${package-prefix}/dom/**/*.class"/>
         <include name="${package-prefix}/ext/**/*.class"/>
@@ -605,7 +626,7 @@ To display the available targets type:
   </target>
 
 
-  <!-- DOM Level 2 (dependencies: ext, util) -->
+  <!-- DOM Level 3 (dependencies: ext, util) -->
   <target name="dom-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-dom.jar">
       <fileset dir="${dest}">
@@ -613,6 +634,8 @@ To display the available targets type:
         <include name="${package-prefix}/dom/events/*.class"/>
         <include name="${package-prefix}/dom/traversal/*.class"/>
         <include name="${package-prefix}/dom/util/*.class"/>
+        <include name="${package-prefix}/dom/dom3/*.class"/>
+        <include name="${package-prefix}/dom/dom3/events/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/dom/resources/*"/>
@@ -634,6 +657,7 @@ To display the available targets type:
         <include name="${package-prefix}/css/engine/value/*.class"/>
         <include name="${package-prefix}/css/engine/value/css2/*.class"/>
         <include name="${package-prefix}/css/engine/value/svg/*.class"/>
+        <include name="${package-prefix}/css/engine/value/svg12/*.class"/>
         <include name="${package-prefix}/css/parser/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
@@ -643,6 +667,7 @@ To display the available targets type:
         <include name="${package-prefix}/css/engine/value/resources/**"/>
         <include name="${package-prefix}/css/engine/value/css2/resources/**"/>
         <include name="${package-prefix}/css/engine/value/svg/resources/**"/>
+        <include name="${package-prefix}/css/engine/value/svg12/resources/**"/>
         <include name="${package-prefix}/css/parser/resources/**"/>
       </fileset>
     </jar>
@@ -653,9 +678,11 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-svg-dom.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/dom/svg/*.class"/>
+        <include name="${package-prefix}/dom/svg12/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/dom/svg/resources/**"/>
+        <include name="${package-prefix}/dom/svg12/resources/**"/>
       </fileset>
     </jar>
   </target>
@@ -1258,7 +1285,6 @@ To display the available targets type:
                            org.w3c.css.*,
                            org.w3c.dom.*"
              maxmemory="128m"
-             sourcepath="${src}"
              destdir="${docs}/javadoc"
              author="false"
              version="false"
@@ -1267,6 +1293,8 @@ To display the available targets type:
              windowtitle="${Project} Javadoc"
              doctitle="${Project} API Specification ${version}${revisionType}${revisionNumber}"
              bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved.">
+      <sourcepath refid="src"/>
+      <sourcepath refid="src-jdk"/>
       <classpath refid="libs-classpath"/>
       <link href="http://www.w3.org/2003/01/dom2-javadoc/"/>
       <link href="http://java.sun.com/j2se/1.3/docs/api/"/>

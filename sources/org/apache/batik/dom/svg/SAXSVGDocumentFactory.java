@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.Properties;
 
+import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.svg12.SVG12DOMImplementation;
@@ -169,13 +170,13 @@ public class SAXSVGDocumentFactory
             cindex = contentType.indexOf(HTTP_CHARSET);
         }
  
+        String charset = null;
         if (cindex != -1) {
             int i                 = cindex + HTTP_CHARSET.length();
             int eqIdx = contentType.indexOf('=', i);
             if (eqIdx != -1) {
                 eqIdx++; // no one is interested in the equals sign...
 
-                String charset;
                 // The patch had ',' as the terminator but I suspect
                 // that is the delimiter between possible charsets,
                 // but if another 'attribute' were in the accept header
@@ -189,7 +190,8 @@ public class SAXSVGDocumentFactory
                     charset = contentType.substring(eqIdx, idx);
                 else 
                     charset = contentType.substring(eqIdx);
-                isrc.setEncoding(charset.trim());
+                charset = charset.trim();
+                isrc.setEncoding(charset);
             }
         }
 
@@ -199,6 +201,12 @@ public class SAXSVGDocumentFactory
             (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, isrc);
         try {
             ((SVGOMDocument)doc).setURLObject(new URL(purl.toString()));
+
+            AbstractDocument d = (AbstractDocument) doc;
+            d.setDocumentURI(purl.toString());
+            d.setDocumentInputEncoding(charset);
+            d.setXmlStandalone(isStandalone);
+            d.setXmlVersion(xmlVersion);
         } catch (MalformedURLException mue) {
             // Not very likely to happen given we already opened the stream.
             throw new IOException("Malformed URL: " + uri);
@@ -225,6 +233,11 @@ public class SAXSVGDocumentFactory
             if (uri != null) {
                 ((SVGOMDocument)doc).setURLObject(new URL(uri));
             }
+
+            AbstractDocument d = (AbstractDocument) doc;
+            d.setDocumentURI(uri);
+            d.setXmlStandalone(isStandalone);
+            d.setXmlVersion(xmlVersion);
         } catch (MalformedURLException e) {
             throw new IOException(e.getMessage());
         }
@@ -249,6 +262,11 @@ public class SAXSVGDocumentFactory
             if (uri != null) {
                 ((SVGOMDocument)doc).setURLObject(new URL(uri));
             }
+
+            AbstractDocument d = (AbstractDocument) doc;
+            d.setDocumentURI(uri);
+            d.setXmlStandalone(isStandalone);
+            d.setXmlVersion(xmlVersion);
         } catch (MalformedURLException e) {
             throw new IOException(e.getMessage());
         }

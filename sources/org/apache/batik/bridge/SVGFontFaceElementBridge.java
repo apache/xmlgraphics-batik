@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import org.apache.batik.dom.svg.XMLBaseSupport;
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.util.ParsedURL;
 
@@ -314,7 +314,7 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
             if (n.getLocalName().equals(SVG_FONT_FACE_URI_TAG)) {
                 Element ffuri = (Element)n;
                 String uri = XLinkSupport.getXLinkHref(ffuri);
-                String base = XMLBaseSupport.getCascadedXMLBase(ffuri);
+                String base = AbstractNode.getBaseURI(ffuri);
                 ParsedURL purl;
                 if (base != null) purl = new ParsedURL(base, uri);
                 else              purl = new ParsedURL(uri);

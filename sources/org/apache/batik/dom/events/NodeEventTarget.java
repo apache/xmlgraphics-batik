@@ -27,7 +27,8 @@ import org.w3c.dom.events.EventTarget;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public interface NodeEventTarget extends EventTarget {
+public interface NodeEventTarget
+        extends org.apache.batik.dom.dom3.events.EventTarget {
 
     /**
      * Returns the event support instance for this node, or null if any.

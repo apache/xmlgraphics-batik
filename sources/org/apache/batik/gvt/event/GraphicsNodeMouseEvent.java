@@ -26,7 +26,7 @@ import org.apache.batik.gvt.GraphicsNode;
 /**
  * An event which indicates that a mouse action occurred in a graphics node.
  *
- * @author <a href="cjolif@ilog.fr>Christophe Jolif</a>
+ * @author <a href="cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
@@ -125,13 +125,13 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      * @see #getRelatedNode
      */
     public GraphicsNodeMouseEvent(GraphicsNode source, int id,
-                                  long when, int modifiers,
+                                  long when, int modifiers, int lockState,
                                   float x, float y, 
                                   int clientX, int clientY,
                                   int screenX, int screenY, 
                                   int clickCount,
                                   GraphicsNode relatedNode) {
-        super(source, id, when, modifiers);
+        super(source, id, when, modifiers, lockState);
         this.x = x;
         this.y = y;
         this.clientX = clientX;
@@ -148,8 +148,10 @@ public class GraphicsNodeMouseEvent extends GraphicsNodeInputEvent {
      * @param evt the AWT mouse event which is the source of this
      *            GraphicsNodeEvent
      */
-    public GraphicsNodeMouseEvent(GraphicsNode source, MouseEvent evt) {
-        super(source, evt);
+    public GraphicsNodeMouseEvent(GraphicsNode source,
+                                  MouseEvent evt,
+                                  int lockState) {
+        super(source, evt, lockState);
         this.x = evt.getX();
         this.y = evt.getY();
         this.clickCount = evt.getClickCount();

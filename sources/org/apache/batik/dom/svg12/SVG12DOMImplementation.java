@@ -29,6 +29,7 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.GenericElement;
 import org.apache.batik.dom.GenericElementNS;
+import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.HashTable;
@@ -42,6 +43,7 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
+import org.w3c.dom.events.Event;
 
 /**
  * This class implements the {@link DOMImplementation} interface.
@@ -90,7 +92,8 @@ public class SVG12DOMImplementation
                                    String qualifiedName,
                                    DocumentType doctype)
         throws DOMException {
-        Document result = new SVGOMDocument(doctype, this);
+        SVGOMDocument result = new SVGOMDocument(doctype, this);
+        result.setIsSVG12(true);
         // BUG 32108: return empty document if qualifiedName is null.
         if (qualifiedName != null)
             result.appendChild(result.createElementNS(namespaceURI,
@@ -118,6 +121,21 @@ public class SVG12DOMImplementation
         return new GenericElementNS(namespaceURI.intern(),
                                     qualifiedName.intern(),
                                     document);
+    }
+
+    /**
+     * Creates an DocumentEventSupport object suitable for use with
+     * this implementation.
+     */
+    public DocumentEventSupport createDocumentEventSupport() {
+        DocumentEventSupport result =  super.createDocumentEventSupport();
+        result.registerEventFactory("WheelEvent",
+                                    new DocumentEventSupport.EventFactory() {
+                                        public Event createEvent() {
+                                            return new SVGOMWheelEvent();
+                                        }
+                                    });
+        return result;
     }
 
     // The element factories /////////////////////////////////////////////////

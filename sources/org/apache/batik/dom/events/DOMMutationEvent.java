@@ -27,7 +27,9 @@ import org.w3c.dom.events.MutationEvent;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  */
-public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
+public class DOMMutationEvent
+        extends AbstractEvent
+        implements org.apache.batik.dom.dom3.events.MutationEvent {
 
     private Node relatedNode;
     private String prevValue;
@@ -116,6 +118,26 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
 	this.prevValue = prevValueArg;
 	this.newValue = newValueArg;
 	this.attrName = attrNameArg;
+        this.attrChange = attrChangeArg;
+    }
+
+    /**
+     * <b>DOM</b>: Initializes this event object.
+     */
+    public void initMutationEventNS(String namespaceURIArg,
+                                    String typeArg, 
+                                    boolean canBubbleArg, 
+                                    boolean cancelableArg, 
+                                    Node relatedNodeArg, 
+                                    String prevValueArg, 
+                                    String newValueArg, 
+                                    String attrNameArg,
+                                    short attrChangeArg) {
+        initEventNS(namespaceURIArg, typeArg, canBubbleArg, cancelableArg);
+        this.relatedNode = relatedNodeArg;
+        this.prevValue = prevValueArg;
+        this.newValue = newValueArg;
+        this.attrName = attrNameArg;
         this.attrChange = attrChangeArg;
     }
 }
