@@ -168,6 +168,7 @@
         <test id="samples/tests/spec/paints/linearGradientOrientation.svg" />
         <test id="samples/tests/spec/paints/linearGradientLine.svg" />
         <test id="samples/tests/spec/paints/radialGradientLine.svg" />
+        <test id="samples/tests/spec/paints/gradientPoint.svg" />
         <test id="samples/tests/spec/paints/patternPreserveAspectRatioA.svg" />
         <test id="samples/tests/spec/paints/patternRegionA.svg" />
         <test id="samples/tests/spec/paints/patternRegionB.svg" />

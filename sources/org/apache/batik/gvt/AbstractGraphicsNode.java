@@ -743,6 +743,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 }
             }
 
+            bounds = normalizeRectangle(bounds);
+
             // Make sure we haven't been interrupted
             if (Thread.currentThread().isInterrupted()) {
                 // The Thread has been interrupted. Invalidate
@@ -888,4 +890,38 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     public GraphicsNode nodeHitAt(Point2D p) {
         return (contains(p) ? this : null);
     }
+
+    static double EPSILON = 1e-6;
+
+    /**
+     * This method makes sure that neither the width nor height of the
+     * rectangle is zero.  But it tries to make them very small
+     * relatively speaking.  
+     */
+    protected Rectangle2D normalizeRectangle(Rectangle2D bounds) {
+        if ((bounds.getWidth() < EPSILON)) {
+            if (bounds.getHeight() < EPSILON) {
+                AffineTransform gt = getGlobalTransform();
+                double det = Math.sqrt(gt.getDeterminant());
+                return new Rectangle2D.Double
+                    (bounds.getX(), bounds.getY(), EPSILON/det, EPSILON/det);
+            } else {
+                double tmpW = bounds.getHeight()*EPSILON;
+                if (tmpW < bounds.getWidth())
+                    tmpW = bounds.getWidth();
+                return new Rectangle2D.Double
+                    (bounds.getX(), bounds.getY(), 
+                     tmpW, bounds.getHeight());
+            }
+        } else if (bounds.getHeight() < EPSILON) {
+            double tmpH = bounds.getWidth()*EPSILON;
+            if (tmpH < bounds.getHeight())
+                tmpH = bounds.getHeight();
+            return new Rectangle2D.Double
+                (bounds.getX(), bounds.getY(), 
+                 bounds.getWidth(), tmpH);
+        }
+        return bounds;
+    }
+
 }

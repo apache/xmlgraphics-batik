@@ -299,7 +299,7 @@ public class ShapeNode extends AbstractGraphicsNode {
             if (shape == null) {
                 return null;
             }
-            geometryBounds = shape.getBounds2D();
+            geometryBounds = normalizeRectangle(shape.getBounds2D());
         }
         return geometryBounds;
     }
