@@ -304,7 +304,6 @@ public interface CSSConstants {
     String CSS_POINTER_VALUE = "pointer";
     String CSS_POWDERBLUE_VALUE = "powderblue";
     String CSS_PURPLE_VALUE = "purple";
-    String CSS_PURPLE_VALUE = "purple";
     String CSS_RED_VALUE = "red";
     String CSS_RESET_SIZE_VALUE = "reset-size";
     String CSS_RESET_VALUE = "reset";
