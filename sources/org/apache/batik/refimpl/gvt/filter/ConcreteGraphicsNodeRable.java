@@ -117,7 +117,15 @@ public class ConcreteGraphicsNodeRable
         if (usePrimitivePaint)
             return (Rectangle2D)(node.getPrimitiveBounds().clone());
 
-        return (Rectangle2D)(node.getBounds().clone());
+        // When not using Primitive paint we return out bounds in our
+        // parent's user space.  This makes sense since this is the
+        // space that we will draw our selves into (since paint unlike
+        // primitivePaint incorporates the transform from our user
+        // space to our parents user space).
+        AffineTransform at     = node.getTransform();
+        Rectangle2D     bounds = node.getBounds();
+        
+        return at.createTransformedShape(bounds).getBounds2D();
     }
 
     /**

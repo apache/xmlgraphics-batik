@@ -41,17 +41,17 @@ public class ConcretePadRable extends AbstractRable
         this.padMode = padMode;
     }
 
-      /**
-       * Returns the source to be affine.
-       */
+    /**
+     * Returns the source to be affine.
+     */
     public Filter getSource() {
         return (Filter)srcs.get(0);
     }
 
-      /**
-       * Sets the source to be affine.
-       * @param src image to affine.
-       */
+    /**
+     * Sets the source to be affine.
+     * @param src image to affine.
+     */
     public void setSource(Filter src) {
         super.init(src, null);
     }
@@ -60,35 +60,35 @@ public class ConcretePadRable extends AbstractRable
         return (Rectangle2D)padRect.clone();
     }
 
-      /**
-       * Set the current rectangle for padding.
-       * @param rect the new rectangle to use for pad.
-       */
+    /**
+     * Set the current rectangle for padding.
+     * @param rect the new rectangle to use for pad.
+     */
     public void setPadRect(Rectangle2D rect) {
         this.padRect = rect;
     }
 
-      /**
-       * Get the current rectangle for padding
-       * @returns Rectangle currently in use for pad.
-       */
+    /**
+     * Get the current rectangle for padding
+     * @returns Rectangle currently in use for pad.
+     */
     public Rectangle2D getPadRect() {
         return (Rectangle2D)padRect.clone();
     }
 
-      /**
-       * Set the current extension mode for pad
-       * @param mode the new pad mode
-       */
+    /**
+     * Set the current extension mode for pad
+     * @param mode the new pad mode
+     */
     public void setPadMode(PadMode padMode) {
         touch();
         this.padMode = padMode;
     }
 
-      /**
-       * Get the current extension mode for pad
-       * @returns Mode currently in use for pad
-       */
+    /**
+     * Get the current extension mode for pad
+     * @returns Mode currently in use for pad
+     */
     public PadMode getPadMode() {
         return padMode;
     }
@@ -110,6 +110,11 @@ public class ConcretePadRable extends AbstractRable
         Rectangle2D srect = src.getBounds2D();
         Rectangle2D rect  = getBounds2D();
         Rectangle2D arect = aoi.getBounds2D();
+        
+        // System.out.println("Rects Src:" + srect +
+        //                    "My: " + rect +
+        //                    "AOI: " + arect);
+
         Rectangle2D.intersect(arect, rect, arect);
         Rectangle2D.intersect(srect, arect, srect);
 
