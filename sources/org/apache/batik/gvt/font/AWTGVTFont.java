@@ -9,14 +9,18 @@
 package org.apache.batik.gvt.font;
 
 import java.awt.Font;
+
 import java.awt.font.FontRenderContext;
-import java.awt.font.LineMetrics;
 import java.awt.font.GlyphVector;
+import java.awt.font.LineMetrics;
 import java.awt.font.TextAttribute;
-import java.text.CharacterIterator;
-import java.util.Map;
-import java.util.HashMap;
+
 import java.awt.geom.AffineTransform;
+
+import java.text.CharacterIterator;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
@@ -32,7 +36,7 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
  * @author <a href="mailto:bella.robinson@cmis.csiro.au">Bella Robinson</a>
  * @version $Id$
  */
-public final class AWTGVTFont implements GVTFont {
+public class AWTGVTFont implements GVTFont {
 
     private Font awtFont;
     private Font tenPtFont;
@@ -116,17 +120,20 @@ public final class AWTGVTFont implements GVTFont {
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
                                             char[] chars) {
 
-        StringCharacterIterator sci = new StringCharacterIterator(new String(chars));
+        StringCharacterIterator sci = 
+	    new StringCharacterIterator(new String(chars));
 
         if (getSize() < 1) {
-            // Because of a bug with GlyphVectors created by fonts with
-            // sizes < 1pt, we need to use a 10pt font and then apply a scale
-            // factor to reduce it to its correct size.
-            // Have a look at AWTGVTGlyphVector.
-            return new AWTGVTGlyphVector(tenPtFont.createGlyphVector(frc, chars),
-                                         new AWTGVTFont(tenPtFont), getSize()/10f, sci);
-        }
-        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, chars), this, 1, sci);
+            // Because of a bug with GlyphVectors created by fonts with sizes <
+            // 1pt, we need to use a 10pt font and then apply a scale factor to
+            // reduce it to its correct size.  Have a look at AWTGVTGlyphVector.
+            return new AWTGVTGlyphVector
+		(tenPtFont.createGlyphVector(frc, chars),
+		 new AWTGVTFont(tenPtFont), getSize()/10f, sci);
+        } else {
+	    return new AWTGVTGlyphVector
+		(awtFont.createGlyphVector(frc, chars), this, 1, sci);
+	}
     }
 
     /**
@@ -139,21 +146,25 @@ public final class AWTGVTFont implements GVTFont {
         AWTGVTGlyphVector awtGlyphVector;
 
         if (getSize() < 1) {
-            // Because of a bug with GlyphVectors created by fonts with
-            // sizes < 1pt, we need to use a 10pt font and then apply a scale
-            // factor to reduce it to its correct size.
-            // Have a look at AWTGVTGlyphVector.
-            awtGlyphVector = new AWTGVTGlyphVector(tenPtFont.createGlyphVector(frc, ci),
-                                         new AWTGVTFont(tenPtFont), getSize()/10f, ci);
+            // Because of a bug with GlyphVectors created by fonts with sizes <
+            // 1pt, we need to use a 10pt font and then apply a scale factor to
+            // reduce it to its correct size.  Have a look at AWTGVTGlyphVector.
+            awtGlyphVector = new AWTGVTGlyphVector
+		(tenPtFont.createGlyphVector(frc, ci),
+		 new AWTGVTFont(tenPtFont), getSize()/10f,
+		 ci);
         } else {
-            awtGlyphVector = new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, ci), this, 1, ci);
+            awtGlyphVector = new AWTGVTGlyphVector
+		(awtFont.createGlyphVector(frc, ci), this, 1, ci);
         }
 
         if (ci instanceof AttributedCharacterIterator) {
             AttributedCharacterIterator aci = (AttributedCharacterIterator)ci;
             AttributedString as = new AttributedString(aci);
             if (ArabicTextHandler.containsArabic(as)) {
-                String substString = ArabicTextHandler.createSubstituteString(aci);
+                String substString = 
+		    ArabicTextHandler.createSubstituteString(aci);
+
                 return createGlyphVector(frc, substString);
             }
         }
@@ -165,17 +176,19 @@ public final class AWTGVTFont implements GVTFont {
      *  array and the specified FontRenderContext.
      */
     public GVTGlyphVector createGlyphVector(FontRenderContext frc,
-                                            int[] glyphCodes, CharacterIterator ci) {
+                                            int[] glyphCodes, 
+					    CharacterIterator ci) {
         if (getSize() < 1) {
-            // Because of a bug with GlyphVectors created by fonts with
-            // sizes < 1pt, we need to use a 10pt font and then apply a scale
-            // factor to reduce it to its correct size.
-            // Have a look at AWTGVTGlyphVector.
-            return new AWTGVTGlyphVector(tenPtFont.createGlyphVector(frc, glyphCodes),
-                                         new AWTGVTFont(tenPtFont), getSize()/10f, ci);
+            // Because of a bug with GlyphVectors created by fonts with sizes <
+            // 1pt, we need to use a 10pt font and then apply a scale factor to
+            // reduce it to its correct size.  Have a look at AWTGVTGlyphVector.
+            return new AWTGVTGlyphVector
+		(tenPtFont.createGlyphVector(frc, glyphCodes),
+		 new AWTGVTFont(tenPtFont), getSize()/10f, 
+		 ci);
         }
-        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, glyphCodes),
-                                     this, 1, ci);
+        return new AWTGVTGlyphVector
+	    (awtFont.createGlyphVector(frc, glyphCodes), this, 1, ci);
     }
 
     /**
@@ -187,14 +200,15 @@ public final class AWTGVTFont implements GVTFont {
         StringCharacterIterator sci = new StringCharacterIterator(str);
 
         if (getSize() < 1) {
-            // Because of a bug with GlyphVectors created by fonts with
-            // sizes < 1pt, we need to use a 10pt font and then apply a scale
-            // factor to reduce it to its correct size.
-            // Have a look at AWTGVTGlyphVector.
-            return new AWTGVTGlyphVector(tenPtFont.createGlyphVector(frc, str),
-                                         new AWTGVTFont(tenPtFont), getSize()/10f, sci);
+            // Because of a bug with GlyphVectors created by fonts with sizes <
+            // 1pt, we need to use a 10pt font and then apply a scale factor to
+            // reduce it to its correct size.  Have a look at AWTGVTGlyphVector.
+            return new AWTGVTGlyphVector
+		(tenPtFont.createGlyphVector(frc, str),
+		 new AWTGVTFont(tenPtFont), getSize()/10f, sci);
         }
-        return new AWTGVTGlyphVector(awtFont.createGlyphVector(frc, str), this, 1, sci);
+        return new AWTGVTGlyphVector
+	    (awtFont.createGlyphVector(frc, str), this, 1, sci);
     }
 
     /**
@@ -209,33 +223,41 @@ public final class AWTGVTFont implements GVTFont {
     /**
      *  Returns a LineMetrics object created with the specified arguments.
      */
-    public GVTLineMetrics getLineMetrics(char[] chars, int beginIndex, int limit,
+    public GVTLineMetrics getLineMetrics(char[] chars, 
+					 int beginIndex, 
+					 int limit,
                                          FontRenderContext frc) {
         if (getSize() < 1) {
-            // Because of a bug with LineMetrics created by fonts with
-            // sizes < 1pt, we need to use a 10pt font and then apply a scale
-            // factor to reduce the metrics to their correct size.
-            // Have a look at GVTLineMetrics.
-            return new GVTLineMetrics(tenPtFont.getLineMetrics(chars, beginIndex, limit, frc),
-                                      getSize()/10f);
+            // Because of a bug with LineMetrics created by fonts with sizes <
+            // 1pt, we need to use a 10pt font and then apply a scale factor to
+            // reduce the metrics to their correct size.  Have a look at
+            // GVTLineMetrics.
+            return new GVTLineMetrics
+		(tenPtFont.getLineMetrics(chars, beginIndex, limit, frc), 
+		 getSize()/10f);
         }
-        return new GVTLineMetrics(awtFont.getLineMetrics(chars, beginIndex, limit, frc));
+        return new GVTLineMetrics
+	    (awtFont.getLineMetrics(chars, beginIndex, limit, frc));
     }
 
     /**
      * Returns a GVTLineMetrics object created with the specified arguments.
      */
-    public GVTLineMetrics getLineMetrics(CharacterIterator ci, int beginIndex,
-                                         int limit, FontRenderContext frc) {
+    public GVTLineMetrics getLineMetrics(CharacterIterator ci, 
+					 int beginIndex,
+                                         int limit, 
+					 FontRenderContext frc) {
         if (getSize() < 1) {
-            // Because of a bug with LineMetrics created by fonts with
-            // sizes < 1pt, we need to use a 10pt font and then apply a scale
-            // factor to reduce the metrics to their correct size.
-            // Have a look at GVTLineMetrics.
-            return new GVTLineMetrics(tenPtFont.getLineMetrics(ci, beginIndex, limit, frc),
-                                      getSize()/10f);
+            // Because of a bug with LineMetrics created by fonts with sizes <
+            // 1pt, we need to use a 10pt font and then apply a scale factor to
+            // reduce the metrics to their correct size.  Have a look at
+            // GVTLineMetrics.
+            return new GVTLineMetrics
+		(tenPtFont.getLineMetrics(ci, beginIndex, limit, frc),
+		 getSize()/10f);
         }
-        return new GVTLineMetrics(awtFont.getLineMetrics(ci, beginIndex, limit, frc));
+        return new GVTLineMetrics
+	    (awtFont.getLineMetrics(ci, beginIndex, limit, frc));
     }
 
     /**
@@ -244,10 +266,10 @@ public final class AWTGVTFont implements GVTFont {
      */
     public GVTLineMetrics getLineMetrics(String str, FontRenderContext frc) {
         if (getSize() < 1) {
-            // Because of a bug with LineMetrics created by fonts with
-            // sizes < 1pt, we need to use a 10pt font and then apply a scale
-            // factor to reduce the metrics to their correct size.
-            // Have a look at GVTLineMetrics.
+            // Because of a bug with LineMetrics created by fonts with sizes <
+            // 1pt, we need to use a 10pt font and then apply a scale factor to
+            // reduce the metrics to their correct size.  Have a look at
+            // GVTLineMetrics.
             return new GVTLineMetrics(tenPtFont.getLineMetrics(str, frc),
                                       getSize()/10f);
         }
@@ -257,17 +279,21 @@ public final class AWTGVTFont implements GVTFont {
     /**
      * Returns a GVTLineMetrics object created with the specified arguments.
      */
-    public GVTLineMetrics getLineMetrics(String str, int beginIndex, int limit,
+    public GVTLineMetrics getLineMetrics(String str, 
+					 int beginIndex, 
+					 int limit,
                                          FontRenderContext frc) {
         if (getSize() < 1) {
-            // Because of a bug with LineMetrics created by fonts with
-            // sizes < 1pt, we need to use a 10pt font and then apply a scale
-            // factor to reduce the metrics to their correct size.
-            // Have a look at GVTLineMetrics.
-            return new GVTLineMetrics(tenPtFont.getLineMetrics(str, beginIndex, limit, frc),
-                                      getSize()/10f);
+            // Because of a bug with LineMetrics created by fonts with sizes <
+            // 1pt, we need to use a 10pt font and then apply a scale factor to
+            // reduce the metrics to their correct size.  Have a look at
+            // GVTLineMetrics.
+            return new GVTLineMetrics
+		(tenPtFont.getLineMetrics(str, beginIndex, limit, frc),
+		 getSize()/10f);
         }
-        return new GVTLineMetrics(awtFont.getLineMetrics(str, beginIndex, limit, frc));
+        return new GVTLineMetrics
+	    (awtFont.getLineMetrics(str, beginIndex, limit, frc));
     }
 
     /**

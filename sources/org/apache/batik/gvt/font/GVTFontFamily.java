@@ -23,7 +23,7 @@ public interface GVTFontFamily {
      *
      * @return The family name.
      */
-    public String getFamilyName();
+    String getFamilyName();
 
     /**
      * Derives a GVTFont object of the correct size.
@@ -32,6 +32,6 @@ public interface GVTFontFamily {
      * @param aci The character iterator that will be rendered using the derived
      * font.
      */
-    public GVTFont deriveFont(float size, AttributedCharacterIterator aci);
+    GVTFont deriveFont(float size, AttributedCharacterIterator aci);
 
 }

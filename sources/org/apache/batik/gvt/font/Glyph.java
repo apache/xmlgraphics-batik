@@ -247,18 +247,22 @@ public class Glyph {
      */
     public GVTGlyphMetrics getGlyphMetrics() {
         if (metrics == null) {
-            metrics = new GVTGlyphMetrics(getHorizAdvX(), getVertAdvY(),
-                                          getBounds(), GlyphMetrics.COMPONENT);
+            metrics = new GVTGlyphMetrics(getHorizAdvX(), 
+					  getVertAdvY(),
+                                          getBounds(), 
+					  GlyphMetrics.COMPONENT);
         }
         return metrics;
     }
 
 
     /**
-     * Returns the metics of this Glyph with the specified kerning value applied.
+     * Returns the metics of this Glyph with the specified kerning value
+     * applied.
      *
-     * @param kern The kerning value to apply when calculating the glyph metrics.
-     * @return The kerned glyph metics.
+     * @param kern The kerning value to apply when calculating the glyph
+     * metrics.  
+     * @return The kerned glyph metics
      */
     public GVTGlyphMetrics getGlyphMetrics(float hkern, float vkern) {
         return new GVTGlyphMetrics(getHorizAdvX() - (hkern * kernScale),
@@ -273,14 +277,18 @@ public class Glyph {
             return dShape.getBounds2D();
         }
         if (glyphChildrenNode != null && dShape == null) {
-            return glyphChildrenNode.getOutline(null).getBounds2D();
+            return glyphChildrenNode.getOutline().getBounds2D();
         }
+
         if (dShape != null && glyphChildrenNode != null) {
             Rectangle2D dBounds = dShape.getBounds2D();
-            Rectangle2D childrenBounds = glyphChildrenNode.getOutline(null).getBounds2D();
+            Rectangle2D childrenBounds = 
+		glyphChildrenNode.getOutline().getBounds2D();
+
             return dBounds.createUnion(childrenBounds);
-        }
-        return new Rectangle2D.Double(0,0,0,0);
+        } else {
+	    return new Rectangle2D.Double(0,0,0,0);
+	}
     }
 
 
@@ -293,13 +301,15 @@ public class Glyph {
      */
     public Shape getOutline() {
         if (outline == null) {
-            AffineTransform tr = AffineTransform.getTranslateInstance(position.getX(), position.getY());
+            AffineTransform tr = 
+		AffineTransform.getTranslateInstance(position.getX(), 
+						     position.getY());
             if (transform != null) {
                 tr.concatenate(transform);
             }
             Shape glyphChildrenOutline = null;
             if (glyphChildrenNode != null) {
-                glyphChildrenOutline = glyphChildrenNode.getOutline(null);
+                glyphChildrenOutline = glyphChildrenNode.getOutline();
             }
             GeneralPath glyphOutline = null;
             if (dShape != null && glyphChildrenOutline != null) {
@@ -325,9 +335,9 @@ public class Glyph {
      * @param context The current rendering context.
      */
     public void draw(Graphics2D graphics2D, GraphicsNodeRenderContext context) {
-        AffineTransform tr
-            = AffineTransform.getTranslateInstance(position.getX(),
-                                                   position.getY());
+        AffineTransform tr = 
+	    AffineTransform.getTranslateInstance(position.getX(),
+						 position.getY());
         if (transform != null) {
             tr.concatenate(transform);
         }

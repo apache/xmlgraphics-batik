@@ -149,14 +149,15 @@ public class ShapeNode extends AbstractGraphicsNode {
      *
      * @param p the specified Point2D in the user space
      */
-    public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
-        Rectangle2D b = getBounds(rc);
+    public boolean contains(Point2D p) {
+        Rectangle2D b = getBounds();
         if (b != null) {
             return (b.contains(p) &&
                     paintedArea != null &&
                     paintedArea.contains(p));
-        }
-        return false;
+        } else {
+	    return false;
+	}
     }
 
     /**
@@ -165,8 +166,8 @@ public class ShapeNode extends AbstractGraphicsNode {
      *
      * @param r the specified Rectangle2D in the user node space
      */
-    public boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc) {
-        Rectangle2D b = getBounds(rc);
+    public boolean intersects(Rectangle2D r) {
+        Rectangle2D b = getBounds();
         if (b != null) {
             return (b.intersects(r) &&
                     paintedArea != null &&
@@ -178,12 +179,12 @@ public class ShapeNode extends AbstractGraphicsNode {
     /**
      * Returns the bounds of the area covered by this node's primitive paint.
      */
-    public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
+    public Rectangle2D getPrimitiveBounds() {
         if (primitiveBounds == null) {
             if ((shape == null) || (shapePainter == null)) {
                 return null;
             }
-            paintedArea = shapePainter.getPaintedArea(rc);
+            paintedArea = shapePainter.getPaintedArea();
             primitiveBounds = paintedArea.getBounds2D();
 
             // Make sure we haven't been interrupted
@@ -201,7 +202,7 @@ public class ShapeNode extends AbstractGraphicsNode {
      * of its rendering attribute into account. i.e., exclusive of any clipping,
      * masking, filtering or stroking, for example.
      */
-    public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
+    public Rectangle2D getGeometryBounds(){
         if (geometryBounds == null) {
             if (shape == null) {
                 return null;
@@ -214,7 +215,7 @@ public class ShapeNode extends AbstractGraphicsNode {
     /**
      * Returns the outline of this node.
      */
-    public Shape getOutline(GraphicsNodeRenderContext rc) {
+    public Shape getOutline() {
         return shape;
     }
 }

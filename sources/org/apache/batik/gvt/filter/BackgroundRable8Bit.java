@@ -107,7 +107,7 @@ public class BackgroundRable8Bit
                 break;
 
             // System.out.println("GN: " + gn);
-            Rectangle2D cr2d = gn.getBounds(rc);
+            Rectangle2D cr2d = gn.getBounds();
             AffineTransform at = gn.getTransform();
             if (at != null)
                 cr2d = at.createTransformedShape(cr2d).getBounds2D();
@@ -154,7 +154,7 @@ public class BackgroundRable8Bit
         if (r2d == CompositeGraphicsNode.VIEWPORT) {
             // If we don't have a child then just use our bounds.
             if (child == null)
-                return gn.getPrimitiveBounds(rc);
+                return gn.getPrimitiveBounds();
 
             // gn must be composite so add all it's children's bounds
             // up to child.
@@ -180,7 +180,7 @@ public class BackgroundRable8Bit
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
             r2d = addBounds(cgn, child, rc, r2d);
         } else
-            r2d.add(gn.getPrimitiveBounds(rc));
+            r2d.add(gn.getPrimitiveBounds());
 
         return r2d;
     }
@@ -302,7 +302,7 @@ public class BackgroundRable8Bit
                 if (childGN == child)
                     break;
 
-                Rectangle2D cbounds = childGN.getBounds(rc);
+                Rectangle2D cbounds = childGN.getBounds();
                 // System.out.println("Child : " + childGN);
                 // System.out.println("Bounds: " + cbounds);
                 // System.out.println("      : " + aoi);

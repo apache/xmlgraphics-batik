@@ -18,7 +18,6 @@ import java.awt.font.LineMetrics;
  */
 public class GVTLineMetrics {
 
-
     protected float ascent;
     protected int baselineIndex;
     protected float[] baselineOffsets;
@@ -40,7 +39,6 @@ public class GVTLineMetrics {
      * be based upon.
      */
     public GVTLineMetrics(LineMetrics lineMetrics) {
-
         this.ascent = lineMetrics.getAscent();
         this.baselineIndex = lineMetrics.getBaselineIndex();
         this.baselineOffsets = lineMetrics.getBaselineOffsets();
@@ -66,7 +64,6 @@ public class GVTLineMetrics {
      * @param scaleFactor The scale factor to apply to all metrics.
      */
     public GVTLineMetrics(LineMetrics lineMetrics, float scaleFactor) {
-
         this.ascent = lineMetrics.getAscent() * scaleFactor;
         this.baselineIndex = lineMetrics.getBaselineIndex();
         this.baselineOffsets = lineMetrics.getBaselineOffsets();
@@ -74,10 +71,13 @@ public class GVTLineMetrics {
         this.height = lineMetrics.getHeight() * scaleFactor;
         this.leading = lineMetrics.getLeading();
         this.numChars = lineMetrics.getNumChars();
-        this.strikethroughOffset = lineMetrics.getStrikethroughOffset() * scaleFactor;
-        this.strikethroughThickness = lineMetrics.getStrikethroughThickness() * scaleFactor;
+        this.strikethroughOffset = 
+	    lineMetrics.getStrikethroughOffset() * scaleFactor;
+        this.strikethroughThickness = 
+	    lineMetrics.getStrikethroughThickness() * scaleFactor;
         this.underlineOffset = lineMetrics.getUnderlineOffset() * scaleFactor;
-        this.underlineThickness = lineMetrics.getUnderlineThickness() * scaleFactor;
+        this.underlineThickness = 
+	    lineMetrics.getUnderlineThickness() * scaleFactor;
         this.overlineOffset = -this.ascent;
         this.overlineThickness = this.underlineThickness;
     }
@@ -86,11 +86,18 @@ public class GVTLineMetrics {
     /**
      * Constructs a GVTLineMetrics object with the specified attributes.
      */
-    public GVTLineMetrics(float ascent, int baselineIndex, float[] baselineOffsets,
-                          float descent, float height, float leading, int numChars,
-                          float strikethroughOffset, float strikethroughThickness,
-                          float underlineOffset, float underlineThickness,
-                          float overlineOffset, float overlineThickness) {
+    public GVTLineMetrics(float ascent, 
+			  int baselineIndex, 
+			  float[] baselineOffsets,
+                          float descent, 
+			  float height, 
+			  float leading, int numChars,
+                          float strikethroughOffset, 
+			  float strikethroughThickness,
+                          float underlineOffset, 
+			  float underlineThickness,
+                          float overlineOffset, 
+			  float overlineThickness) {
 
         this.ascent = ascent;
         this.baselineIndex = baselineIndex;

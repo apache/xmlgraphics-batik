@@ -63,11 +63,10 @@ public class ProxyGraphicsNode extends AbstractGraphicsNode {
     /**
      * Returns the bounds of the area covered by this node's primitive paint.
      */
-    public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
+    public Rectangle2D getPrimitiveBounds() {
         if (source != null) {
-            return source.getBounds(rc);
+            return source.getBounds();
         } else {
-            //return new Rectangle(0, 0, 0, 0);
             return null;
         }
     }
@@ -77,22 +76,20 @@ public class ProxyGraphicsNode extends AbstractGraphicsNode {
      * of its rendering attribute into account. i.e., exclusive of any clipping,
      * masking, filtering or stroking, for example.
      */
-    public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc){
+    public Rectangle2D getGeometryBounds() {
         if (source != null) {
-            return source.getGeometryBounds(rc);
+            return source.getGeometryBounds();
         } else {
-            //return new Rectangle(0, 0, 0, 0);
             return null;
         }
     }
 
-
     /**
      * Returns the outline of this node.
      */
-    public Shape getOutline(GraphicsNodeRenderContext rc) {
+    public Shape getOutline() {
         if (source != null) {
-            return source.getOutline(rc);
+            return source.getOutline();
         } else {
             return null;
         }

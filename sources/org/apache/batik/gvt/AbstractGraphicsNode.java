@@ -366,9 +366,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         // Check if any painting is needed at all. Get the clip (in user space)
         // and see if it intersects with this node's bounds (in user space).
         boolean paintNeeded = true;
-        Rectangle2D bounds = getBounds(rc);
+        Rectangle2D bounds = getBounds();
         Shape g2dClip = g2d.getClip();
-        if(g2dClip != null){
+        if (g2dClip != null) {
             Rectangle2D clipBounds = g2dClip.getBounds2D();
             if(bounds != null && !bounds.intersects(clipBounds.getX(),
                                                     clipBounds.getY(),
@@ -768,15 +768,15 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * Returns the bounds of this node in user space. This includes primitive
      * paint, filtering, clipping and masking.
      */
-    public Rectangle2D getBounds(GraphicsNodeRenderContext rc){
+    public Rectangle2D getBounds(){
         // Get the primitive bounds
         // Rectangle2D bounds = null;
-        if(bounds == null){
+        if (bounds == null) {
             // The painted region, before cliping, masking and compositing is
             // either the area painted by the primitive paint or the area
             // painted by the filter.
             if(filter == null){
-                bounds = getPrimitiveBounds(rc);
+                bounds = getPrimitiveBounds();
             } else {
                 bounds = filter.getBounds2D();
             }
@@ -802,6 +802,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 invalidateGeometryCache();
             }
         }
+
         return bounds;
     }
 
@@ -812,28 +813,27 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
      */
-    public Rectangle2D getTransformedBounds(AffineTransform txf,
-                                            GraphicsNodeRenderContext rc){
+    public Rectangle2D getTransformedBounds(AffineTransform txf){
         AffineTransform t = txf;
-        if(transform != null){
+        if (transform != null) {
             t = new AffineTransform(txf);
             t.concatenate(transform);
         }
 
-        // The painted region, before cliping, masking and compositing
-        // is either the area painted by the primitive paint or the
-        // area painted by the filter.
+        // The painted region, before cliping, masking and compositing is either
+        // the area painted by the primitive paint or the area painted by the
+        // filter.
         Rectangle2D tBounds = null;
-        if(filter == null){
+        if (filter == null) {
 	    // Use txf, not t
-            tBounds = getTransformedPrimitiveBounds(txf, rc);
+            tBounds = getTransformedPrimitiveBounds(txf);
         } else {
             tBounds = t.createTransformedShape
-                (filter.getBounds2D()).getBounds2D();
+		(filter.getBounds2D()).getBounds2D();
         }
         // Factor in the clipping area, if any
-        if(tBounds != null){
-            if(clip != null) {
+        if (tBounds != null) {
+            if (clip != null) {
                 tBounds.intersect
 		    (tBounds,
 		     t.createTransformedShape(clip.getClipPath()).getBounds2D(),
@@ -848,6 +848,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 		     tBounds);
             }
         }
+
         return tBounds;
     }
 
@@ -858,14 +859,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
      */
-    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf, GraphicsNodeRenderContext rc) {
-
-        Rectangle2D tpBounds = getPrimitiveBounds(rc);
+    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf) {
+        Rectangle2D tpBounds = getPrimitiveBounds();
         if (tpBounds == null) {
             return null;
         }
         AffineTransform t = txf;
-        if(transform != null){
+        if (transform != null) {
             t = new AffineTransform(txf);
             t.concatenate(transform);
         }
@@ -878,14 +878,13 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * of its rendering attribute into account. i.e., exclusive of any clipping,
      * masking, filtering or stroking, for example.
      */
-    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf, GraphicsNodeRenderContext rc) {
-
-        Rectangle2D tpBounds = getGeometryBounds(rc);
+    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf) {
+        Rectangle2D tpBounds = getGeometryBounds();
         if (tpBounds == null) {
             return null;
         }
         AffineTransform t = txf;
-        if(transform != null){
+        if (transform != null) {
             t = new AffineTransform(txf);
             t.concatenate(transform);
         }
@@ -899,8 +898,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      *
      * @param p the specified Point2D in the user space
      */
-    public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
-        return getBounds(rc).contains(p);
+    public boolean contains(Point2D p) {
+        return getBounds().contains(p);
     }
 
     /**
@@ -909,8 +908,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      *
      * @param r the specified Rectangle2D in the user node space
      */
-    public boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc) {
-        return getBounds(rc).intersects(r);
+    public boolean intersects(Rectangle2D r) {
+        return getBounds().intersects(r);
     }
 
     /**
@@ -919,7 +918,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      *
      * @param p the specified Point2D in the user space
      */
-    public GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc) {
+    public GraphicsNode nodeHitAt(Point2D p) {
         if (hitDetector != null) {
             if (hitDetector.isHit(this, p)) {
                 return this;
@@ -927,7 +926,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 return null;
             }
         } else {
-            return (contains(p, rc) ? this : null);
+            return (contains(p) ? this : null);
         }
     }
 }

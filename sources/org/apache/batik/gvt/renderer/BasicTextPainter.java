@@ -50,7 +50,29 @@ import org.apache.batik.gvt.text.TextSpanLayout;
 public abstract class BasicTextPainter implements TextPainter {
 
     private static TextLayoutFactory textLayoutFactory =
-                               new ConcreteTextLayoutFactory();
+	new ConcreteTextLayoutFactory();
+
+    /**
+     * The font render context to use.
+     */
+    protected FontRenderContext fontRenderContext =
+	new FontRenderContext(new AffineTransform(), true, true);
+
+    /**
+     * Internal Cache.
+     */
+    protected Mark cachedMark = null;
+
+    /**
+     * Internal Cache.
+     */
+    protected AttributedCharacterIterator cachedACI = null;
+
+    /**
+     * Internal Cache.
+     */
+    protected TextHit cachedHit = null;
+
 
     protected TextLayoutFactory getTextLayoutFactory() {
         return textLayoutFactory;
@@ -63,13 +85,11 @@ public abstract class BasicTextPainter implements TextPainter {
      * The standard order of method calls for selection is:
      * selectAt(); [selectTo(),...], selectTo(); getSelection().
      */
-    public org.apache.batik.gvt.text.Mark selectAt(double x, double y,
+    public Mark selectAt(double x, 
+			 double y,
                          AttributedCharacterIterator aci,
-                         TextNode node,
-                         GraphicsNodeRenderContext context) {
-
-        org.apache.batik.gvt.text.Mark
-              newMark = hitTest(x, y, aci, node, context);
+                         TextNode node) {
+        Mark newMark = hitTest(x, y, aci, node);
         cachedHit = null;
         return newMark;
     }
@@ -81,15 +101,12 @@ public abstract class BasicTextPainter implements TextPainter {
      * The standard order of method calls for selection is:
      * selectAt(); [selectTo(),...], selectTo(); getSelection().
      */
-    public org.apache.batik.gvt.text.Mark selectTo(double x, double y,
-                            org.apache.batik.gvt.text.Mark beginMark,
-                            AttributedCharacterIterator aci,
-                            TextNode node,
-                            GraphicsNodeRenderContext context) {
-        org.apache.batik.gvt.text.Mark newMark =
-             hitTest(x, y, aci, node, context);
-
-        return newMark;
+    public Mark selectTo(double x, 
+			 double y,
+			 Mark beginMark,
+			 AttributedCharacterIterator aci,
+			 TextNode node) {
+        return hitTest(x, y, aci, node);
     }
 
     /**
@@ -97,143 +114,145 @@ public abstract class BasicTextPainter implements TextPainter {
      * AttributedCharacterIterator, and
      * return a Mark which encapsulates that selection action.
      */
-    public org.apache.batik.gvt.text.Mark selectAll(double x, double y,
-                            AttributedCharacterIterator aci,
-                            TextNode node,
-                            GraphicsNodeRenderContext context) {
-        org.apache.batik.gvt.text.Mark newMark =
-                              hitTest(x, y, aci, node, context);
-        return newMark;
+    public Mark selectAll(double x, 
+			  double y,
+			  AttributedCharacterIterator aci,
+			  TextNode node) {
+        return hitTest(x, y, aci, node);
     }
 
 
-    /*
-     * Get a Rectangle2D in userspace coords which encloses the textnode
+    /**
+     * Gets a Rectangle2D in userspace coords which encloses the textnode glyphs
+     * composed from an AttributedCharacterIterator.
+     *
+     * @param node the TextNode to measure
+     */
+     public Rectangle2D getBounds(TextNode node) {
+         return getBounds(node, false, false);
+     }
+
+    /**
+     * Gets a Rectangle2D in userspace coords which encloses the textnode glyphs
+     * composed from an AttributedCharacterIterator, inclusive of glyph
+     * decoration (underline, overline, strikethrough).
+     *
+     * @param node the TextNode to measure
+     */
+     public Rectangle2D getDecoratedBounds(TextNode node) {
+         return getBounds(node, true, false);
+     }
+
+    /**
+     * Gets a Rectangle2D in userspace coords which encloses the textnode glyphs
+     * (as-painted, inclusive of decoration and stroke, but exclusive of
+     * filters, etc.) composed from an AttributedCharacterIterator.
+     *
+     * @param node the TextNode to measure 
+     */
+     public Rectangle2D getPaintedBounds(TextNode node) {
+         return getBounds(node, true, true);
+     }
+
+    /**
+     * Gets a Shape in userspace coords which defines the textnode glyph
+     * outlines.
+     *
+     * @param node the TextNode to measure
+     */
+    public Shape getShape(TextNode node) {
+        return getOutline(node, false);
+    }
+    
+    /**
+     * Gets a Shape in userspace coords which defines the decorated textnode
+     * glyph outlines.
+     *
+     * @param node the TextNode to measure 
+     */
+    public Shape getDecoratedShape(TextNode node) {
+	return getOutline(node, true);
+    }
+
+    // ------------------------------------------------------------------------
+    // Abstract methods
+    // ------------------------------------------------------------------------
+
+    /**
+     * Gets a Rectangle2D in userspace coords which encloses the textnode
      * glyphs composed from an AttributedCharacterIterator.
+     *
      * @param node the TextNode to measure
-     * @param g2d the Graphics2D to use
-     * @param context rendering context.
-     */
-     public Rectangle2D getBounds(TextNode node,
-               FontRenderContext frc) {
-         return getBounds(node, frc, false, false);
-     }
-
-    /*
-     * Get a Rectangle2D in userspace coords which encloses the textnode
-     * glyphs composed from an AttributedCharacterIterator, inclusive of
-     * glyph decoration (underline, overline, strikethrough).
-     * @param node the TextNode to measure
-     * @param g2d the Graphics2D to use
-     * @param context rendering context.
-     */
-     public Rectangle2D getDecoratedBounds(TextNode node,
-               FontRenderContext frc) {
-         return getBounds(node, frc, true, false);
-     }
-
-    /*
-     * Get a Rectangle2D in userspace coords which encloses the
-     * textnode glyphs (as-painted, inclusive of decoration and stroke, but
-     * exclusive of filters, etc.) composed from an AttributedCharacterIterator.
-     * @param node the TextNode to measure
-     * @param g2d the Graphics2D to use
-     * @param context rendering context.
-     */
-     public Rectangle2D getPaintedBounds(TextNode node,
-               FontRenderContext frc) {
-         Rectangle2D r = getBounds(node, frc, true, true);
-         return r;
-     }
-
-    /*
-     * Get a Rectangle2D in userspace coords which encloses the textnode
-     * glyphs composed from an AttributedCharacterIterator.
-     * @param node the TextNode to measure
-     * @param g2d the Graphics2D to use
-     * @param context rendering context.
-     * @param includeDecoration whether to include text decoration
-     *            in bounds computation.
+     * @param includeDecoration whether to include text decoration in bounds
+     * computation.
      * @param includeStrokeWidth whether to include the effect of stroke width
-     *            in bounds computation.
+     * in bounds computation.  
      */
      protected abstract Rectangle2D getBounds(TextNode node,
-               FontRenderContext context,
-               boolean includeDecoration,
-               boolean includeStrokeWidth);
+					      boolean includeDecoration,
+					      boolean includeStrokeWidth);
 
-   /*
-    * Get a Shape in userspace coords which defines the textnode glyph outlines.
-    * @param node the TextNode to measure
-    * @param frc the font rendering context.
-    * @param includeDecoration whether to include text decoration
-    *            outlines.
-    */
-    protected abstract Shape getOutline(TextNode node, FontRenderContext frc,
-                                    boolean includeDecoration);
-   /*
-    * Get a Shape in userspace coords which defines the textnode glyph outlines.
-    * @param node the TextNode to measure
-    * @param frc the font rendering context.
-    */
-    public Shape getShape(TextNode node, FontRenderContext frc) {
-        return getOutline(node, frc, false);
-    }
+    /**
+     * Gets a Shape in userspace coords which defines the textnode glyph
+     * outlines.
+     *
+     * @param node the TextNode to measure
+     * @param includeDecoration whether to include text decoration outlines
+     */
+    protected abstract Shape getOutline(TextNode node, 
+					boolean includeDecoration);
 
-   /*
-    * Get a Shape in userspace coords which defines the
-    * decorated textnode glyph outlines.
-    * @param node the TextNode to measure
-    * @param frc the font rendering context.
-    */
-    public Shape getDecoratedShape(TextNode node, FontRenderContext frc) {
-          return getOutline(node, frc, true);
-    }
+    /**
+     * Gets a Shape in userspace coords which defines the stroked textnode glyph
+     * outlines.
+     *
+     * @param node the TextNode to measure
+     * @param includeDecoration whether to include text decoration outlines 
+     */
+    protected abstract Shape getStrokeOutline(TextNode node,
+					      boolean includeDecoration);
 
-   /*
-    * Get a Shape in userspace coords which defines the
-    * stroked textnode glyph outlines.
-    * @param node the TextNode to measure
-    * @param frc the font rendering context.
-    * @param includeDecoration whether to include text decoration
-    *            outlines.
-    */
-    protected abstract Shape getStrokeOutline(TextNode node, FontRenderContext frc,
-                                    boolean includeDecoration);
-
-    protected Mark cachedMark = null;
-    protected AttributedCharacterIterator cachedACI = null;
-    protected TextHit cachedHit = null;
+    /**
+     * Returns the mark for the specified parameters.
+     */
+    protected abstract Mark hitTest(double x, 
+				    double y, 
+				    AttributedCharacterIterator aci,
+				    TextNode node);
 
 
-    protected abstract org.apache.batik.gvt.text.Mark hitTest(
-                         double x, double y, AttributedCharacterIterator aci,
-                         TextNode node,
-                         GraphicsNodeRenderContext context);
+    // ------------------------------------------------------------------------
+    // Inner class - implementation of the Mark interface
+    // ------------------------------------------------------------------------
 
     /**
      * This TextPainter's implementation of the Mark interface.
      */
-    class Mark implements org.apache.batik.gvt.text.Mark {
-
+    protected static class BasicMark implements Mark {
+	
         private TextHit hit;
         private TextSpanLayout layout;
         private double x;
         private double y;
 
-        Mark(double x, double y, TextSpanLayout layout, TextHit hit) {
+	/**
+	 * Constructs a new Mark with the specified parameters.
+	 */
+        protected BasicMark(double x, 
+			    double y, 
+			    TextSpanLayout layout, 
+			    TextHit hit) {
             this.x = x;
             this.y = y;
             this.layout = layout;
             this.hit = hit;
         }
 
-
-        TextHit getHit() {
+        public TextHit getHit() {
             return hit;
         }
 
-        TextSpanLayout getLayout() {
+        public TextSpanLayout getLayout() {
             return layout;
         }
 
@@ -244,7 +263,6 @@ public abstract class BasicTextPainter implements TextPainter {
         public double getY() {
             return y;
         }
-
     }
 }
 

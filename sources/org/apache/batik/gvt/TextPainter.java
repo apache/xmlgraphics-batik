@@ -26,93 +26,71 @@ import org.apache.batik.gvt.text.Mark;
 public interface TextPainter {
 
     /**
-     * Paints the specified attributed character iterator using the
-     * specified Graphics2D and context and font context.
+     * Paints the specified attributed character iterator using the specified
+     * Graphics2D and context and font context.
+     *
      * @param node the TextNode to paint
      * @param g2d the Graphics2D to use
      * @param context the rendering context.
      */
-    void paint(TextNode node,
-               Graphics2D g2d,
-               GraphicsNodeRenderContext context);
+    void paint(TextNode node, 
+	       Graphics2D g2d, 
+	       GraphicsNodeRenderContext context);
 
     /**
      * Initiates a text selection on a particular AttributedCharacterIterator,
      * using the text/font metrics employed by this TextPainter instance.
-     * @param x the x coordinate, in the text layout's coordinate system,
-     *       of the selection event.
-     * @param y the y coordinate, in the text layout's coordinate system,
-     *       of the selection event.
-     * @param aci the AttributedCharacterIterator describing the text
-     * @param context the GraphicsNodeRenderContext to use when doing text layout.
-     * @return an instance of Mark which encapsulates the state necessary to
-     * implement hit testing and text selection.
      */
-    public Mark selectAt(double x, double y, AttributedCharacterIterator aci,
-                         TextNode node, GraphicsNodeRenderContext context);
+    Mark selectAt(double x, 
+		  double y, 
+		  AttributedCharacterIterator aci,
+		  TextNode node);
 
     /**
      * Continues a text selection on a particular AttributedCharacterIterator,
      * using the text/font metrics employed by this TextPainter instance.
-     * @param x the x coordinate, in the text layout's coordinate system,
-     *       of the selection event.
-     * @param y the y coordinate, in the text layout's coordinate system,
-     *       of the selection event.
-     * @param aci the AttributedCharacterIterator describing the text
-     * @param context the GraphicsNodeRenderContext to use when doing text layout.
-     * @return an instance of Mark which encapsulates the state necessary to
-     * implement hit testing and text selection.
      */
-    public Mark selectTo(double x, double y, Mark beginMark,
-                            AttributedCharacterIterator aci,
-                            TextNode node, GraphicsNodeRenderContext context);
+    Mark selectTo(double x, double y, Mark beginMark,
+		  AttributedCharacterIterator aci,
+		  TextNode node);
 
     /**
      * Select all of the text represented by an AttributedCharacterIterator,
      * using the text/font metrics employed by this TextPainter instance.
-     * @param x the x coordinate, in the text layout's coordinate system,
-     *       of the selection event.
-     * @param y the y coordinate, in the text layout's coordinate system,
-     *       of the selection event.
-     * @param aci the AttributedCharacterIterator describing the text
-     * @param context the GraphicsNodeRenderContext to use when doing text layout.
-     * @return an instance of Mark which encapsulates the state necessary to
-     * implement hit testing and text selection.
      */
-    public Mark selectAll(double x, double y,
-                            AttributedCharacterIterator aci,
-                            TextNode node, GraphicsNodeRenderContext context);
+    Mark selectAll(double x, double y,
+		   AttributedCharacterIterator aci,
+		   TextNode node);
 
 
     /**
      * Selects the first glyph in the text node.
      */
-    public Mark selectFirst(double x, double y,
-                            AttributedCharacterIterator aci,
-                            TextNode node,
-                            GraphicsNodeRenderContext context);
+    Mark selectFirst(double x, double y,
+		     AttributedCharacterIterator aci,
+		     TextNode node);
 
 
     /**
      * Selects the last glyph in the text node.
      */
-    public Mark selectLast(double x, double y,
-                            AttributedCharacterIterator aci,
-                            TextNode node,
-                            GraphicsNodeRenderContext context);
+    Mark selectLast(double x, double y,
+		    AttributedCharacterIterator aci,
+		    TextNode node);
 
     /*
      * Get an array of index pairs corresponding to the indices within an
      * AttributedCharacterIterator regions bounded by two Marks.
-     * Note that the instances of Mark passed to this function
-     * <em>must come</em>
-     * from the same TextPainter that generated them via selectAt() and
-     * selectTo(), since the TextPainter implementation may rely on hidden
-     * implementation details of its own Mark implementation.
+     *
+     * Note that the instances of Mark passed to this function <em>must
+     * come</em> from the same TextPainter that generated them via selectAt()
+     * and selectTo(), since the TextPainter implementation may rely on hidden
+     * implementation details of its own Mark implementation.  
      */
-    public int[] getSelected(AttributedCharacterIterator aci,
-                             Mark start, Mark finish);
-
+    int[] getSelected(AttributedCharacterIterator aci,
+		      Mark start, 
+		      Mark finish);
+    
 
     /*
      * Get a Shape in userspace coords which encloses the textnode
@@ -123,7 +101,7 @@ public interface TextPainter {
      * selectTo(), since the TextPainter implementation may rely on hidden
      * implementation details of its own Mark implementation.
      */
-     public Shape getHighlightShape(Mark beginMark, Mark endMark);
+    Shape getHighlightShape(Mark beginMark, Mark endMark);
 
     /*
      * Get a Shape in userspace coords which defines the textnode glyph outlines.
@@ -134,7 +112,7 @@ public interface TextPainter {
      * @param includeStroke whether to create the "stroke shape outlines"
      *            instead of glyph outlines.
      */
-     public Shape getShape(TextNode node, FontRenderContext frc);
+    Shape getShape(TextNode node);
 
     /*
      * Get a Shape in userspace coords which defines the textnode glyph outlines.
@@ -145,7 +123,7 @@ public interface TextPainter {
      * @param includeStroke whether to create the "stroke shape outlines"
      *            instead of glyph outlines.
      */
-     public Shape getDecoratedShape(TextNode node, FontRenderContext frc);
+    Shape getDecoratedShape(TextNode node);
 
     /*
      * Get a Rectangle2D in userspace coords which encloses the textnode
@@ -154,8 +132,7 @@ public interface TextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-     public Rectangle2D getBounds(TextNode node,
-               FontRenderContext frc);
+    Rectangle2D getBounds(TextNode node);
 
     /*
      * Get a Rectangle2D in userspace coords which encloses the textnode
@@ -165,8 +142,7 @@ public interface TextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-     public Rectangle2D getDecoratedBounds(TextNode node,
-               FontRenderContext frc);
+    Rectangle2D getDecoratedBounds(TextNode node);
 
     /*
      * Get a Rectangle2D in userspace coords which encloses the
@@ -176,8 +152,7 @@ public interface TextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-     public Rectangle2D getPaintedBounds(TextNode node,
-               FontRenderContext frc);
+    Rectangle2D getPaintedBounds(TextNode node);
 
 }
 

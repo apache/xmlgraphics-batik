@@ -276,7 +276,7 @@ public interface GraphicsNode {
      * Returns the bounds of this node in user space. This includes primitive
      * paint, filtering, clipping and masking.
      */
-    Rectangle2D getBounds(GraphicsNodeRenderContext rc);
+    Rectangle2D getBounds();
 
     /**
      * Returns the bounds of this node after applying the input transform
@@ -285,13 +285,12 @@ public interface GraphicsNode {
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
      */
-    Rectangle2D getTransformedBounds(AffineTransform txf, 
-				     GraphicsNodeRenderContext rc);
+    Rectangle2D getTransformedBounds(AffineTransform txf);
 
     /**
      * Returns the bounds of the area covered by this node's primitive paint.
      */
-    Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc);
+    Rectangle2D getPrimitiveBounds();
 
     /**
      * Returns the bounds of this node's primitivePaint after applying the input
@@ -300,15 +299,14 @@ public interface GraphicsNode {
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
      */
-    Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf, 
-                                              GraphicsNodeRenderContext rc);
+    Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf);
 
     /**
      * Returns the bounds of the area covered by this node, without taking any
      * of its rendering attribute into account. i.e., exclusive of any clipping,
      * masking, filtering or stroking, for example.
      */
-    Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc);
+    Rectangle2D getGeometryBounds();
 
     /**
      * Returns the bounds of the area covered by this node, without taking any
@@ -320,8 +318,7 @@ public interface GraphicsNode {
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
      */
-    Rectangle2D getTransformedGeometryBounds(AffineTransform txf, 
-                                             GraphicsNodeRenderContext rc);
+    Rectangle2D getTransformedGeometryBounds(AffineTransform txf);
 
     /**
      * Returns true if the specified Point2D is inside the boundary of this
@@ -329,7 +326,7 @@ public interface GraphicsNode {
      *
      * @param p the specified Point2D in the user space
      */
-    boolean contains(Point2D p, GraphicsNodeRenderContext rc);
+    boolean contains(Point2D p);
 
     /**
      * Returns true if the interior of this node intersects the interior of a
@@ -337,7 +334,7 @@ public interface GraphicsNode {
      *
      * @param r the specified Rectangle2D in the user node space
      */
-    boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc);
+    boolean intersects(Rectangle2D r);
 
     /**
      * Returns the GraphicsNode containing point p if this node or one of its
@@ -345,10 +342,10 @@ public interface GraphicsNode {
      *
      * @param p the specified Point2D in the user space
      */
-    GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc);
+    GraphicsNode nodeHitAt(Point2D p);
 
     /**
      * Returns the outline of this node.
      */
-    Shape getOutline(GraphicsNodeRenderContext rc);
+    Shape getOutline();
 }

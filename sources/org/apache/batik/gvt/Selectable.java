@@ -25,28 +25,28 @@ public interface Selectable {
      * Initializes the current selection to begin with the character at (x, y).
      * @return true if action resulted in change of selection.
      */
-    boolean selectAt(double x, double y, GraphicsNodeRenderContext rc);
+    boolean selectAt(double x, double y);
 
     /**
      * Extends the current selection to the character at (x, y)..
      * @return true if action resulted in change of selection.
      */
-    boolean selectTo(double x, double y, GraphicsNodeRenderContext rc);
+    boolean selectTo(double x, double y);
 
     /**
      * Selects the entire contents of the GraphicsNode at (x, y).
      * @return true if action resulted in change of selection.
      */
-    boolean selectAll(double x, double y, GraphicsNodeRenderContext rc);
+    boolean selectAll(double x, double y);
 
     /**
      * Get the current text selection.
      * @return an object containing the selected content.
      */
-    Object getSelection(GraphicsNodeRenderContext rc);
+    Object getSelection();
 
     /**
      * Return a shape in user coords which encloses the current selection.
      */
-    Shape getHighlightShape(GraphicsNodeRenderContext rc);
+    Shape getHighlightShape();
 }

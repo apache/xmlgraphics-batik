@@ -14,14 +14,18 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+
 import java.lang.reflect.Array;
+
 import java.util.EventListener;
 import java.util.EventObject;
+
 import javax.swing.event.EventListenerList;
+
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 
 /**
@@ -59,12 +63,6 @@ public class AWTEventDispatcher implements EventDispatcher,
     protected EventListenerList glisteners;
 
     /**
-     * The GraphicsNodeRenderContext which this event dispatcher uses for
-     * context-dependent dispatches (such as TextNode hit testing).
-     */
-    protected GraphicsNodeRenderContext nodeRenderContext;
-
-    /**
      * The lastest node which has been targeted by an event.
      */
     protected GraphicsNode lastHit;
@@ -88,11 +86,9 @@ public class AWTEventDispatcher implements EventDispatcher,
     private int nodeDecrementEventModifiers = InputEvent.SHIFT_MASK;
 
     /**
-     * Constructs a new event dispatcher with the specified graphic context.
-     * @param rc the graphic render context
+     * Constructs a new event dispatcher.
      */
-    public AWTEventDispatcher(GraphicsNodeRenderContext rc) {
-        this.nodeRenderContext = rc;
+    public AWTEventDispatcher() {
     }
 
     /**
@@ -368,7 +364,7 @@ public class AWTEventDispatcher implements EventDispatcher,
             p = baseTransform.transform(p, null);
         }
 
-        GraphicsNode node = root.nodeHitAt(p, nodeRenderContext);
+        GraphicsNode node = root.nodeHitAt(p);
         GraphicsNode relatedNode = null;
 
         if (isModalEvent(evt, node) && (lastHit != null)) {

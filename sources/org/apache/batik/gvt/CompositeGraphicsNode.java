@@ -231,22 +231,21 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     /**
      * Returns the bounds of the area covered by this node's primitive paint.
      */
-    public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
+    public Rectangle2D getPrimitiveBounds() {
         if (primitiveBounds == null) {
             int i=0;
             while (primitiveBounds == null && i < count) {
-                primitiveBounds = children[i++].getTransformedBounds
-                    (IDENTITY, rc);
+                primitiveBounds = children[i++].getTransformedBounds(IDENTITY);
             }
 
             Rectangle2D ctb = null;
             while (i < count) {
-                ctb = children[i++].getTransformedBounds(IDENTITY, rc);
+                ctb = children[i++].getTransformedBounds(IDENTITY);
                 if (ctb != null) {
                     if (primitiveBounds == null) {
                         // another thread has set the primitive bounds to null,
                         // need to recall this function
-                        return getPrimitiveBounds(rc);
+                        return getPrimitiveBounds();
                     } else {
                         primitiveBounds.add(ctb);
                     }
@@ -270,23 +269,22 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
      */
-    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf,
-                                                     GraphicsNodeRenderContext rc) {
+    public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf) {
         AffineTransform t = txf;
-        if(transform != null){
+        if (transform != null) {
             t = new AffineTransform(txf);
             t.concatenate(transform);
         }
-
+	
         int i = 0;
         Rectangle2D tpb = null;
-        while( tpb == null && i < count){
-            tpb = children[i++].getTransformedBounds(t, rc);
+        while (tpb == null && i < count) {
+            tpb = children[i++].getTransformedBounds(t);
         }
 
         Rectangle2D ctb = null;
-        while(i < count){
-            ctb = children[i++].getTransformedBounds(t, rc);
+        while (i < count) {
+            ctb = children[i++].getTransformedBounds(t);
             if(ctb != null){
                 tpb.add(ctb);
             }
@@ -300,29 +298,30 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * of its rendering attribute into account. i.e., exclusive of any clipping,
      * masking, filtering or stroking, for example.
      */
-    public Rectangle2D getGeometryBounds(GraphicsNodeRenderContext rc) {
-        if(geometryBounds == null){
+    public Rectangle2D getGeometryBounds() {
+        if (geometryBounds == null) {
             // System.out.println("geometryBounds are null");
             int i=0;
             while(geometryBounds == null && i < count){
-                geometryBounds
-                    = children[i++].getTransformedGeometryBounds (IDENTITY, rc);
+                geometryBounds = 
+		    children[i++].getTransformedGeometryBounds (IDENTITY);
             }
 
             Rectangle2D cgb = null;
-            while(i<count){
-                cgb = children[i++].getTransformedGeometryBounds(IDENTITY, rc);
-                if(cgb != null){
+            while (i<count) {
+                cgb = children[i++].getTransformedGeometryBounds(IDENTITY);
+                if (cgb != null) {
                     if (geometryBounds == null) {
                         // another thread has set the geometry bounds to null,
                         // need to recall this function
-                        return getGeometryBounds(rc);
+                        return getGeometryBounds();
                     } else {
                         geometryBounds.add(cgb);
                     }
                 }
             }
         }
+
         return geometryBounds;
     }
 
@@ -336,28 +335,27 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      * @param txf the affine transform with which this node's transform should
      *        be concatenated. Should not be null.
      */
-    public Rectangle2D getTransformedGeometryBounds
-        (AffineTransform txf, GraphicsNodeRenderContext rc) {
-
+    public Rectangle2D getTransformedGeometryBounds(AffineTransform txf) {
         AffineTransform t = txf;
-        if(transform != null){
+        if (transform != null) {
             t = new AffineTransform(txf);
             t.concatenate(transform);
         }
-
+	
         Rectangle2D gb = null;
         int i=0;
-        while(gb == null && i < count){
-            gb = children[i++].getTransformedGeometryBounds(t, rc);
+        while (gb == null && i < count) {
+            gb = children[i++].getTransformedGeometryBounds(t);
         }
-
+	
         Rectangle2D cgb = null;
-        while(i < count){
-            cgb = children[i++].getTransformedGeometryBounds(t, rc);
-            if(cgb != null){
+        while (i < count) {
+            cgb = children[i++].getTransformedGeometryBounds(t);
+            if (cgb != null) {
                 gb.add(cgb);
             }
         }
+
         return gb;
     }
 
@@ -367,8 +365,8 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      *
      * @param p the specified Point2D in the user space
      */
-    public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
-        if (count > 0 && getBounds(rc).contains(p)) {
+    public boolean contains(Point2D p) {
+        if (count > 0 && getBounds().contains(p)) {
             Point2D pt = null;
             Point2D cp = null; // Propagated to children
             for (int i=0; i < count; ++i) {
@@ -376,16 +374,15 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
                 if(t != null){
                     pt = t.transform(p, pt);
                     cp = pt;
-                }
-                else{
+                } else {
                     cp = p;
                 }
-
-                if (children[i].contains(cp, rc)) {
+                if (children[i].contains(cp)) {
                     return true;
                 }
             }
         }
+
         return false;
     }
 
@@ -396,12 +393,10 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      *
      * @param p the specified Point2D in the user space
      */
-    public GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc) {
-        Rectangle2D bounds = getBounds(rc);
+    public GraphicsNode nodeHitAt(Point2D p) {
+        Rectangle2D bounds = getBounds();
         if (count > 0 && bounds != null && bounds.contains(p)) {
-            //
             // Go backward because the children are in rendering order
-            //
             Point2D pt = null;
             Point2D cp = null; // Propagated to children
             for (int i=count-1; i >= 0; --i) {
@@ -409,27 +404,27 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
                 if(t != null){
                     pt = t.transform(p, pt);
                     cp = pt;
-                }
-                else{
+                } else {
                     cp = p;
                 }
-                GraphicsNode node = children[i].nodeHitAt(cp, rc);
+                GraphicsNode node = children[i].nodeHitAt(cp);
                 if (node != null) {
                     return node;
                 }
             }
         }
+
         return null;
     }
 
     /**
      * Returns the outline of this node.
      */
-    public Shape getOutline(GraphicsNodeRenderContext rc) {
+    public Shape getOutline() {
         if (outline == null) {
             outline = new GeneralPath();
             for (int i = 0; i < count; i++) {
-                Shape childOutline = children[i].getOutline(rc);
+                Shape childOutline = children[i].getOutline();
                 if (childOutline != null) {
                     AffineTransform tr = children[i].getTransform();
                     if (tr != null) {
@@ -440,6 +435,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
                 }
             }
         }
+
         return outline;
     }
 

@@ -109,11 +109,11 @@ public class MarkerShapePainter implements ShapePainter {
     /**
      * Returns the area painted by this shape painter.
      */
-    public Shape getPaintedArea(GraphicsNodeRenderContext rc){
+    public Shape getPaintedArea(){
 	 if (markerGroup == null) {
 	     buildMarkerGroup();
 	 }
-        return markerGroup.getBounds(rc);
+        return markerGroup.getBounds();
     }
 
     /**

@@ -45,7 +45,7 @@ public class ConcreteTextSelector implements Selector {
     private GraphicsNode currentNode = null;
     private int firstHit;
     private int lastHit;
-    private GraphicsNodeRenderContext renderContext;
+
     // XXX: below is used by our current "direct" approach to selection
     // highlighting.  It should probably be migrated to a
     // strategy that sends highlight requests directly to the Renderer.
@@ -53,8 +53,7 @@ public class ConcreteTextSelector implements Selector {
 
     private AffineTransform baseTransform = new AffineTransform();
 
-    public ConcreteTextSelector(GraphicsNodeRenderContext rc) {
-        renderContext = rc;
+    public ConcreteTextSelector() {
     }
 
     public void setGraphics2D(Graphics2D g2d) {
@@ -154,8 +153,7 @@ public class ConcreteTextSelector implements Selector {
             } else if (isSelectStartGesture(evt)) {
 
                 selectionNode = source;
-                ((Selectable) source).selectAt(p.getX(), p.getY(),
-                                                          renderContext);
+                ((Selectable) source).selectAt(p.getX(), p.getY());
                 dispatchSelectionEvent(
                         new SelectionEvent(null,
                                 SelectionEvent.SELECTION_STARTED,
@@ -165,12 +163,11 @@ public class ConcreteTextSelector implements Selector {
 
                 selectionNode = source;
 
-                ((Selectable) source).selectTo(p.getX(), p.getY(),
-                                                          renderContext);
+                ((Selectable) source).selectTo(p.getX(), p.getY());
 
                 Object oldSelection = getSelection();
                 Shape newShape =
-                    ((Selectable) source).getHighlightShape(renderContext);
+                    ((Selectable) source).getHighlightShape();
                 dispatchSelectionEvent(
                         new SelectionEvent(oldSelection,
                                 SelectionEvent.SELECTION_DONE,
@@ -182,11 +179,10 @@ public class ConcreteTextSelector implements Selector {
             if (isSelectContinueGesture(evt)) {
 
                 if (selectionNode == source) {
-                    boolean result = ((Selectable) source).selectTo(p.getX(), p.getY(),
-                                                        renderContext);
+                    boolean result = ((Selectable) source).selectTo(p.getX(), p.getY());
                     if (result) {
                         Shape newShape =
-                        ((Selectable) source).getHighlightShape(renderContext);
+                        ((Selectable) source).getHighlightShape();
 
                         dispatchSelectionEvent(
                             new SelectionEvent(null,
@@ -199,11 +195,10 @@ public class ConcreteTextSelector implements Selector {
 
                 selectionNode = source;
 
-                ((Selectable) source).selectAll(p.getX(), p.getY(),
-                                                        renderContext);
+                ((Selectable) source).selectAll(p.getX(), p.getY());
                 Object oldSelection = getSelection();
                 Shape newShape =
-                    ((Selectable) source).getHighlightShape(renderContext);
+                    ((Selectable) source).getHighlightShape();
                 dispatchSelectionEvent(
                         new SelectionEvent(oldSelection,
                                 SelectionEvent.SELECTION_DONE,
@@ -251,7 +246,7 @@ public class ConcreteTextSelector implements Selector {
     public Object getSelection() {
         Object value = null;
         if (selectionNode instanceof Selectable) {
-            value =  ((Selectable) selectionNode).getSelection(renderContext);
+            value =  ((Selectable) selectionNode).getSelection();
         }
         return value;
     }

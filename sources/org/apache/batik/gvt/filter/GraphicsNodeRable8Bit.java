@@ -151,8 +151,7 @@ public class GraphicsNodeRable8Bit
      */
     public Rectangle2D getBounds2D(){
         if (usePrimitivePaint){
-            Rectangle2D primitiveBounds 
-                = node.getPrimitiveBounds(getGraphicsNodeRenderContext());
+            Rectangle2D primitiveBounds = node.getPrimitiveBounds();
             if(primitiveBounds != null){
                 return (Rectangle2D)(primitiveBounds.clone());
             }
@@ -166,7 +165,7 @@ public class GraphicsNodeRable8Bit
         // space that we will draw our selves into (since paint unlike
         // primitivePaint incorporates the transform from our user
         // space to our parents user space).
-        Rectangle2D bounds = node.getBounds(getGraphicsNodeRenderContext());
+        Rectangle2D bounds = node.getBounds();
         if(bounds == null){
             return new Rectangle2D.Double(0, 0, 0, 0);
         }
