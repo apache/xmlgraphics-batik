@@ -23,7 +23,7 @@
 .testC15 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
 .testC16 {stroke:none;}
 .testC17 {fill:url(#testlinearGradient5);stroke:none;}
-.testC18 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:sRGB;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}
+.testC18 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}
 ]]>
     </style>
     <g>

@@ -9,7 +9,7 @@
       <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke:rgb(103,103,152);fill:rgb(103,103,152);}
 .testC2 {stroke:none;}
 .testC3 {fill:white;font-size:20;stroke:none;}
-.testC4 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:sRGB;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}
+.testC4 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}
 ]]>
     </style>
     <g>
