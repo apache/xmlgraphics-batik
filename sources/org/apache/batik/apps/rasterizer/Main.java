@@ -57,7 +57,7 @@ public class Main {
     }
 
     public static void main(String [] args) {
-        String mimeType = "image/jpg";
+        String mimeType = "image/png";
         String directory = null;
         List svgFiles = new LinkedList();
         int i=0;

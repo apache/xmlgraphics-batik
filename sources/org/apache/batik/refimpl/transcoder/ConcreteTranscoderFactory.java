@@ -26,6 +26,7 @@ public class ConcreteTranscoderFactory implements TranscoderFactory {
     static {
         transcoderMap.put("image/jpeg", JpegTranscoder.class);
         transcoderMap.put("image/jpg",  JpegTranscoder.class); // alias to jpeg
+        transcoderMap.put("image/png",  PngTranscoder.class);
     }
 
     private static TranscoderFactory singleton =
