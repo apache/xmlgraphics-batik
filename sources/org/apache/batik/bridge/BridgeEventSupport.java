@@ -18,8 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
 
-import org.apache.batik.dom.DocumentWrapper;
-import org.apache.batik.dom.events.EventWrapper;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
