@@ -46,7 +46,7 @@
         a client or on a server, and Batik can convert SVG content into
         other formats such as JPEG or PNG. Batik's goal is to make it easy
         for application developers to handle SVG content for various 
-        purposes, client-side or server-side, as illustrated in the following
+        purposes, client-side or server-side, as illustrated in the above
         diagram.
         </p>
     </answer>
@@ -294,10 +294,10 @@
         Authoring is one way of creating SVG content, and graphic authoring
         packages are useful for that purpose. However, there are many types
         of graphics which can be generated, such as stock quotes, statistical
-        data, etc... For these types of graphics, there are many ways to generate
+        data, etc. For these types of graphics, there are many ways to generate
         SVG content. For example, if your data (say stock information) is contained
         in an XML document, you could use XSLT to transform your XML data into
-        SVG. If your data comes from a data base and you retrieve that data
+        SVG. If your data comes from a database and you retrieve that data
         in a servlet on a Web server (e.g., using JDBC), you could use the 
         Java binding for the DOM API to generate an SVG document from the 
         data base data. You could also use Batik's SVG generator and use the
@@ -358,12 +358,12 @@
     <answer>
         <p>
         Being an XML grammar means SVG can leverage work done around XML, 
-        and SVG actually leverages other grammars such as XLink and SMIL
+        and SVG actually leverages other grammars such as XLink for linking and SMIL
         for the animation.
         </p>
         <p>
         Beyond the use and mix with other XML syntaxes, being an XML grammer
-        lets SVG benefit from the pletora of XML tools that make is so easy
+        lets SVG benefit from the pletora of XML tools that make it so easy
         to manipulate, generate, search and edit SVG files.
         </p>
     </answer>

@@ -40,10 +40,10 @@
             </p>
             <p>
             There are two sections: the first one shows the tests
-            passed by Batik and the second shows the tests that 
-            Batik does not pass (not yet, it will eventually).
-            In each section, tests have been seperated out in
-            static SVG content and dynamic SVG content.
+            Batik passes and the second shows the tests that 
+            Batik does not pass (althought it will eventually).
+            Each section lists
+            static and dynamic SVG tests separately.
             </p>
         </s1>
 
