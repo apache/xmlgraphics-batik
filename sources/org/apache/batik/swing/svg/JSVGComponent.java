@@ -20,9 +20,12 @@ import java.awt.Window;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentAdapter;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.NoninvertibleTransformException;
 
 import java.util.ArrayList;
@@ -69,6 +72,7 @@ import org.apache.batik.gvt.renderer.ImageRenderer;
 
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.JGVTComponent;
+import org.apache.batik.swing.gvt.JGVTComponentListener;
 
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.RunnableQueue;
@@ -309,6 +313,8 @@ public class JSVGComponent extends JGVTComponent {
      * The document state.
      */
     protected int documentState;
+
+    protected Dimension prevComponentSize;
 
     /**
      * Creates a new JSVGComponent.
@@ -640,15 +646,55 @@ public class JSVGComponent extends JGVTComponent {
         try {
             SVGSVGElement elt = svgDocument.getRootElement();
             Dimension d = getSize();
+            Dimension oldD = prevComponentSize;
+            prevComponentSize = d;
             if (d.width  < 1) d.width  = 1;
             if (d.height < 1) d.height = 1;
             AffineTransform at = ViewBox.getViewTransform
                 (fragmentIdentifier, elt, d.width, d.height);
             CanvasGraphicsNode cgn = getCanvasGraphicsNode();
-            if (!at.equals(cgn.getViewingTransform())) {
+            AffineTransform vt = cgn.getViewingTransform();
+            if (!at.equals(vt)) {
+                if (oldD == null)
+                    oldD = d;
+                // Here we map the old center of the component down to
+                // the user coodinate system with the old viewing
+                // transform and then back to the screen with the
+                // new viewing transform.  We then adjust the rendering
+                // transform so it lands in the same place.
+                Point2D pt = new Point2D.Float(oldD.width/2.0f, 
+                                               oldD.height/2.0f);
+                AffineTransform rendAT = getRenderingTransform();
+                if (rendAT != null) {
+                    try {
+                        AffineTransform invRendAT = rendAT.createInverse();
+                        pt = invRendAT.transform(pt, null);
+                    } catch (NoninvertibleTransformException e) { }
+                }
+                if (vt != null) {
+                    try {
+                        AffineTransform invVT = vt.createInverse();
+                        pt = invVT.transform(pt, null);
+                    } catch (NoninvertibleTransformException e) { }
+                }
+                if (at != null)
+                    pt = at.transform(pt, null);
+                if (rendAT != null)
+                    pt = rendAT.transform(pt, null);
+
+                // Now figure out how far we need to shift things
+                // to get the center point to line up again.
+                float dx = (float)((d.width/2.0f) -pt.getX());
+                float dy = (float)((d.height/2.0f)-pt.getY());
+                // Round the values to nearest integer.
+                dx = (int)((dx < 0)?(dx - .5):(dx + .5));
+                dy = (int)((dy < 0)?(dy - .5):(dy + .5));
+                if ((dx != 0) || (dy != 0)) {
+                    rendAT.preConcatenate
+                        (AffineTransform.getTranslateInstance(dx, dy));
+                    setRenderingTransform(rendAT, false);
+                }
                 cgn.setViewingTransform(at);
-                if (renderer != null)
-                    renderer.setTree(gvtRoot);
                 return true;
             }
         } catch (BridgeException e) {
@@ -815,6 +861,67 @@ public class JSVGComponent extends JGVTComponent {
     }
 
     /**
+     * The JGVTComponentListener.
+     */
+    protected JSVGComponentListener jsvgComponentListener = 
+        new JSVGComponentListener();
+
+    class JSVGComponentListener extends ComponentAdapter
+        implements JGVTComponentListener {
+        float prevScale = 0;
+        float prevTransX = 0;
+        float prevTransY = 0;
+
+        public void componentResized(ComponentEvent ce) {
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
+                        public void run() {
+                            try {
+                                updateManager.dispatchSVGResizeEvent();
+                            } catch (InterruptedException ie) {
+                            }
+                        }});
+            }
+        }
+
+        public void componentTransformChanged(ComponentEvent event) {
+            AffineTransform at = getRenderingTransform();
+
+            float currScale  = (float)Math.sqrt(at.getDeterminant());
+            float currTransX = (float)at.getTranslateX();
+            float currTransY = (float)at.getTranslateY();
+
+            final boolean dispatchZoom    = (currScale != prevScale);
+            final boolean dispatchScroll  = ((currTransX != prevTransX) ||
+                                             (currTransX != prevTransX));
+            if (updateManager != null && updateManager.isRunning()) {
+                updateManager.getUpdateRunnableQueue().invokeLater
+                    (new Runnable() {
+                        public void run() {
+                            try {
+                                if (dispatchZoom) 
+                                    updateManager.dispatchSVGZoomEvent();
+                                if (dispatchScroll)
+                                    updateManager.dispatchSVGScrollEvent();
+                            } catch (InterruptedException ie) {
+                            }
+                        }});
+            }
+            prevScale = currScale;
+            prevTransX = currTransX;
+            prevTransY = currTransY;
+        }
+
+        public void updateMatrix(AffineTransform at) {
+            prevScale  = (float)Math.sqrt(at.getDeterminant());
+            prevTransX = (float)at.getTranslateX();
+            prevTransY = (float)at.getTranslateY();
+        }
+    }
+
+
+    /**
      * Creates an instance of Listener.
      */
     protected Listener createListener() {
@@ -901,6 +1008,8 @@ public class JSVGComponent extends JGVTComponent {
          * The data of the event is initialized to the old document.
          */
         public void gvtBuildStarted(GVTTreeBuilderEvent e) {
+            removeJGVTComponentListener(jsvgComponentListener);
+            removeComponentListener(jsvgComponentListener);
         }
 
         /**
@@ -924,6 +1033,7 @@ public class JSVGComponent extends JGVTComponent {
                                     (int)dim.getHeight()));
             SVGSVGElement elt = svgDocument.getRootElement();
             Dimension d = getSize();
+            prevComponentSize = d;
             if (d.width  < 1) d.width  = 1;
             if (d.height < 1) d.height = 1;
             AffineTransform at = ViewBox.getViewTransform
@@ -932,6 +1042,9 @@ public class JSVGComponent extends JGVTComponent {
             cgn.setViewingTransform(at);
             initialTransform = new AffineTransform();
             setRenderingTransform(initialTransform, false);
+            jsvgComponentListener.updateMatrix(initialTransform);
+            addJGVTComponentListener(jsvgComponentListener);
+            addComponentListener(jsvgComponentListener);
             gvtRoot = null;
 
             if (isDynamicDocument && JSVGComponent.this.eventsEnabled) {

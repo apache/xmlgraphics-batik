@@ -457,6 +457,39 @@ public class BaseScriptingEnvironment {
     }
 
     /**
+     * Method to dispatch SVG Zoom event.
+     */
+    protected void dispatchSVGZoomEvent() {
+        dispatchSVGDocEvent("SVGZoom");
+    }
+
+    /**
+     * Method to dispatch SVG Scroll event.
+     */
+    protected void dispatchSVGScrollEvent() {
+        dispatchSVGDocEvent("SVGScroll");
+    }
+
+    /**
+     * Method to dispatch SVG Resize event.
+     */
+    protected void dispatchSVGResizeEvent() {
+        dispatchSVGDocEvent("SVGResize");
+    }
+
+    protected void dispatchSVGDocEvent(String eventType) {
+        SVGSVGElement root =
+            (SVGSVGElement)document.getDocumentElement();
+        // Event is dispatched on outermost SVG element.
+        EventTarget t = root;
+
+        DocumentEvent de = (DocumentEvent)document;
+        Event ev = de.createEvent("SVGEvents");
+        ev.initEvent(eventType, false, false);
+        t.dispatchEvent(ev);
+    }
+
+    /**
      * Handles the given exception.
      */
     protected void handleInterpreterException(InterpreterException ie) {
