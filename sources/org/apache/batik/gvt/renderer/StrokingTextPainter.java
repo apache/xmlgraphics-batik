@@ -442,11 +442,12 @@ public class StrokingTextPainter extends BasicTextPainter {
             GVTFont defaultFont = null;;
             int numSet=0;
             int firstUnset=start;
+            boolean firstUnsetSet;
             for (int i = 0; i < resolvedFontFamilies.size(); i++) {
                 // assign this font to all characters it can display if it has
                 // not already been assigned
                 int currentIndex = firstUnset;
-                firstUnset = -1;
+                firstUnsetSet = false;
                 aci.setIndex(currentIndex);
 
                 GVTFontFamily ff;
@@ -465,8 +466,10 @@ public class StrokingTextPainter extends BasicTextPainter {
                     }
 
                     if (displayUpToIndex <= currentIndex) {
-                        if (firstUnset == -1) 
+                        if (!firstUnsetSet) {
                             firstUnset = currentIndex;
+                            firstUnsetSet = true;
+                        }
                         // couldn't display the current char
                         currentIndex++;
                     } else {
