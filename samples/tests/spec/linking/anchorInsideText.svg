@@ -110,6 +110,7 @@ and
 <!-- ################################################## -->
 
 <use xlink:href="#Path1" />
+
 <a xlink:href="#black">
 <text x="50" y="300" fill="black">This is simple
 <textPath fill="crimson" xlink:href="#Path1" startOffset="0%"><a xlink:href="#crimson">text on a path
@@ -119,6 +120,9 @@ and
 </text>
 </a>
 
+
+<text x="50%" y="350" text-anchor="middle">Only the 
+<a xlink:href="#crimson"><tspan fill="crimson">crimson tspan</tspan></a> has an anchor</text>
 
 </g>
 
