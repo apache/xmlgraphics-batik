@@ -39,6 +39,9 @@ public class SVGValueFactoryMap
 	put(CSS_CLIP_RULE_PROPERTY,
             new ClipRuleFactory(p));
 
+	put(CSS_COLOR_PROFILE_PROPERTY,
+            new ColorProfileFactory(p));
+
 	put(CSS_COLOR_PROPERTY,
             new SVGColorFactory(p, CSS_COLOR_PROPERTY));
 
