@@ -111,8 +111,17 @@ public class SVGPath extends SVGGraphicObjectConverter {
 
         if (d.length() > 0)
             return d.toString().trim();
-        else
+        else {
+            // This is a degenerate case: there was no initial moveTo
+            // in the path and no data at all. However, this happens 
+            // in the Java 2D API (e.g., when clipping to a rectangle
+            // with negative height/width, the clip will be a GeneralPath
+            // with no data, which causes everything to be clipped)
+            // It is the responsibility of the users of SVGPath to detect
+            // instances where the converted element (see #toSVG above)
+            // returns null, which only happens for degenerate cases.
             return "";
+        }
     }
 
     /**

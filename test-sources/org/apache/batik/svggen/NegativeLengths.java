@@ -256,12 +256,12 @@ public class NegativeLengths implements Painter {
         g.translate(0, 40);
 
         // Clip
-        rect = new Rectangle(0, 30, 10, -30);
+        rect = new Rectangle(10, 30, 10, -30);
         g.setPaint(Color.gray);
         g.fill(rect);
         g.setPaint(Color.black);
         g.clip(rect);
-        g.drawString("Hello There", 0, 25);
+        g.drawString("Hello There", 10, 25);
     }
 }
 
