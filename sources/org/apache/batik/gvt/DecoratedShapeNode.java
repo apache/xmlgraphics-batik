@@ -452,45 +452,48 @@ public class DecoratedShapeNode extends ShapeNode {
                                    double[] moveTo){
         // Compute in slope, i.e., the slope of the segment
         // going into the current point
-        double inSlope = computeInSlope(prev, prevSegType, 
-                                        cur, curSegType, moveTo);
+        double[] inSlope = computeInSlope(prev, prevSegType, 
+                                          cur, curSegType, moveTo);
 
         // Compute out slope, i.e., the slope of the segment
         // going out of the current point
-        double outSlope = computeOutSlope(cur, curSegType, 
-                                          next, nextSegType, moveTo);
+        double[] outSlope = computeOutSlope(cur, curSegType, 
+                                            next, nextSegType, moveTo);
 
-        if(Double.isNaN(inSlope)){
+        if(inSlope == null){
             inSlope = outSlope;
         }
 
-        if(Double.isNaN(outSlope)){
+        if(outSlope == null){
             outSlope = inSlope;
         }
 
-        if(Double.isNaN(inSlope)){
+        if(inSlope == null){
             return 0;
         }
 
        
-        double rotationIn  = Math.atan(inSlope)*180./Math.PI;
-        double rotationOut = Math.atan(outSlope)*180./Math.PI;
+        double rotationIn  = Math.atan2(inSlope[1], inSlope[0])*180./Math.PI;
+        double rotationOut = Math.atan2(outSlope[1], outSlope[0])*180./Math.PI;
         double rotation = (rotationIn + rotationOut)/2;
 
         return rotation;
     }
 
-    private double computeInSlope(double[] prev,
-                                  int prevSegType,
-                                  double[] cur,
-                                  int curSegType,
-                                  double[] moveTo){
+    /**
+     * @return dx/dy for the in slope
+     */
+    private double[] computeInSlope(double[] prev,
+                                    int prevSegType,
+                                    double[] cur,
+                                    int curSegType,
+                                    double[] moveTo){
         // Compute point into which the slope runs
         Point2D curEndPoint = null;
         if(curSegType != PathIterator.SEG_CLOSE){
             curEndPoint = getSegmentTerminatingPoint(cur, curSegType);
             if(curEndPoint == null){
-                return Double.NaN;
+                return null;
             }
         }
         else{
@@ -499,6 +502,13 @@ public class DecoratedShapeNode extends ShapeNode {
 
         double dx = 0, dy = 0;
         switch(curSegType){
+        case PathIterator.SEG_QUADTO:
+            // If the current segment is a line, quad or cubic curve. 
+            // the slope is about equal to that of the
+            // line from the last control point and the curEndPoint
+            dx = curEndPoint.getX() - cur[0];
+            dy = curEndPoint.getY() - cur[1];
+            break;
         case PathIterator.SEG_LINETO:
         case PathIterator.SEG_CLOSE:
             //
@@ -509,7 +519,7 @@ public class DecoratedShapeNode extends ShapeNode {
             if(prevSegType != PathIterator.SEG_CLOSE){
                 prevEndPoint = getSegmentTerminatingPoint(prev, prevSegType);
                 if(prevEndPoint == null){
-                    return Double.NaN;
+                    return null;
                 }
             }
             else{
@@ -518,65 +528,36 @@ public class DecoratedShapeNode extends ShapeNode {
                 
             dx = curEndPoint.getX() - prevEndPoint.getX();
             dy = curEndPoint.getY() - prevEndPoint.getY();
-            if(dx > 0){
-                return dy / dx;
-            }
-            if(dy > 0){
-                return Double.POSITIVE_INFINITY;
-            }
-            if(dy < 0){
-                return Double.NEGATIVE_INFINITY;
-            }
-            return 0;
+            break;
         case PathIterator.SEG_CUBICTO:
             // If the current segment is a line, quad or cubic curve. 
             // the slope is about equal to that of the
             // line from the last control point and the curEndPoint
-            dx = curEndPoint.getX() - prev[4];
-            dy = curEndPoint.getY() - prev[5];
-            if(dx > 0){
-                return dy / dx;
-            }
-            if(dy > 0){
-                return Double.POSITIVE_INFINITY;
-            }
-            if(dy < 0){
-                return Double.NEGATIVE_INFINITY;
-            }
-            return 0;
-        case PathIterator.SEG_QUADTO:
-            // If the current segment is a line, quad or cubic curve. 
-            // the slope is about equal to that of the
-            // line from the last control point and the curEndPoint
-            dx = curEndPoint.getX() - prev[2];
-            dy = curEndPoint.getY() - prev[3];
-            if(dx > 0){
-                return dy / dx;
-            }
-            if(dy > 0){
-                return Double.POSITIVE_INFINITY;
-            }
-            if(dy < 0){
-                return Double.NEGATIVE_INFINITY;
-            }
-            return 0;
+            dx = curEndPoint.getX() - cur[2];
+            dy = curEndPoint.getY() - cur[3];
+            break;
         case PathIterator.SEG_MOVETO:
             // Cannot compute the slope
         default:
-            return Double.NaN;
+            return null;
         }
+
+        return new double[] { dx, dy };
     }
 
-    private double computeOutSlope(double[] cur,
-                                   int curSegType,
-                                   double[] next,
-                                   int nextSegType,
-                                   double[] moveTo){
+    /**
+     * @return dx/dy for the out slope
+     */
+    private double[] computeOutSlope(double[] cur,
+                                     int curSegType,
+                                     double[] next,
+                                     int nextSegType,
+                                     double[] moveTo){
         Point2D curEndPoint = null;
         if(curSegType != PathIterator.SEG_CLOSE){
             curEndPoint = getSegmentTerminatingPoint(cur, curSegType);
             if(curEndPoint == null){
-                return Double.NaN;
+                return null;
             }
         }
         else{
@@ -595,16 +576,7 @@ public class DecoratedShapeNode extends ShapeNode {
             //
             dx = moveTo[0] - curEndPoint.getX();
             dy = moveTo[1] - curEndPoint.getY();
-            if(dx != 0){
-                return dy / dx;
-            }
-            if(dy > 0){
-                return Double.POSITIVE_INFINITY;
-            }
-            if(dy < 0){
-                return Double.NEGATIVE_INFINITY;
-            }
-            return 0;
+            break;
         case PathIterator.SEG_CUBICTO:
         case PathIterator.SEG_LINETO:
         case PathIterator.SEG_QUADTO:
@@ -614,21 +586,14 @@ public class DecoratedShapeNode extends ShapeNode {
             // point
             dx = next[0] - curEndPoint.getX();
             dy = next[1] - curEndPoint.getY();
-            if(dx != 0){
-                return dy / dx;
-            }
-            if(dy > 0){
-                return Double.POSITIVE_INFINITY;
-            }
-            if(dy < 0){
-                return Double.NEGATIVE_INFINITY;
-            }
-            return 0;
+            break;
         case PathIterator.SEG_MOVETO:
             // Cannot compute the out slope
         default:
-            return Double.NaN;
+            return null;
         }
+
+        return new double[] { dx, dy };
     }
 
     /**
@@ -657,10 +622,6 @@ public class DecoratedShapeNode extends ShapeNode {
             txf.rotate(rotation*Math.PI/180., 
                        ref.getX(),
                        ref.getY());
-        }
-        else{
-            Exception e = new Exception();
-            e.printStackTrace();
         }
 
         return txf;
