@@ -31,14 +31,14 @@ public class XMLReflect implements XMLReflectConstants{
      */
     public static Object buildObject(Element element) throws Exception {
 
-        String className 
+        String className
             = element.getAttributeNS(null,
                                      XR_CLASS_ATTRIBUTE);
-        
+
         Class cl = Class.forName(className);
         Object[] argsArray = null;
         Class[]  argsClasses = null;
-        
+
         NodeList children = element.getChildNodes();
         if(children != null && children.getLength() > 0){
             int n = children.getLength();
@@ -54,22 +54,22 @@ public class XMLReflect implements XMLReflectConstants{
                     }
                 }
             }
-            
+
             if(args.size() > 0){
                 argsArray = new Object[args.size()];
                 args.copyInto(argsArray);
-                
+
                 argsClasses = new Class[args.size()];
-                
+
                 for(int i=0; i<args.size(); i++){
                     argsClasses[i] = argsArray[i].getClass();
                 }
             }
         }
-        
-        Constructor constructor 
+
+        Constructor constructor
             = getDeclaredConstructor(cl, argsClasses);
-        
+
         return configureObject(constructor.newInstance(argsArray),
                                element);
     }
@@ -90,15 +90,15 @@ public class XMLReflect implements XMLReflectConstants{
                     String tagName = childElement.getTagName().intern();
                     if(tagName == XR_PROPERTY_TAG){
                         Object arg = buildArgument(childElement);
-                        String propertyName 
+                        String propertyName
                             = childElement.getAttributeNS(null, XR_NAME_ATTRIBUTE);
                         setObjectProperty(obj, propertyName, arg);
                     }
                 }
             }
-            
+
         }
-        
+
         return obj;
     }
 
@@ -107,11 +107,11 @@ public class XMLReflect implements XMLReflectConstants{
      */
     public static void setObjectProperty(Object obj,
                                           String propertyName,
-                                          Object propertyValue) 
+                                          Object propertyValue)
         throws Exception {
         Class cl = obj.getClass();
-        Method m = cl.getDeclaredMethod("set" + propertyName,
-                                        new Class[]{propertyValue.getClass()});
+        Method m = cl.getMethod("set" + propertyName,
+                                new Class[]{propertyValue.getClass()});
 
         if(m != null){
             m.invoke(obj, new Object[]{propertyValue});
@@ -167,11 +167,11 @@ public class XMLReflect implements XMLReflectConstants{
             if(element.hasAttributeNS(null, XR_VALUE_ATTRIBUTE)){
                 String value = element.getAttributeNS(null,
                                                       XR_VALUE_ATTRIBUTE);
-                
-                
-                Constructor constructor 
+
+
+                Constructor constructor
                     = cl.getDeclaredConstructor(new Class[] { String.class });
-                
+
                 return constructor.newInstance(new Object[] {value});
             }
             else{
