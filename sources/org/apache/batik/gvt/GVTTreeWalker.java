@@ -30,23 +30,34 @@ public class GVTTreeWalker {
     /** The GVT root into which text is searched. */
     protected GraphicsNode gvtRoot;
 
+    /** The root of the subtree of the GVT which is traversed. */
+    protected GraphicsNode treeRoot;
+
     /** The current GraphicsNode. */
     protected GraphicsNode currentNode;
 
     /**
      * Constructs a new <tt>GVTTreeWalker</tt>.
      *
-     * @param gvtRoot the graphics node root
+     * @param treeRoot the top of the graphics node tree to search
      */
-    public GVTTreeWalker(GraphicsNode gvtRoot) {
-        this.gvtRoot = gvtRoot;
-        currentNode = gvtRoot;
+    public GVTTreeWalker(GraphicsNode treeRoot) {
+        this.gvtRoot     = treeRoot.getRoot();
+        this.treeRoot    = treeRoot;
+        this.currentNode = treeRoot;
     }
 
     /**
      * Returns the root graphics node.
      */
     public GraphicsNode getRoot() {
+        return treeRoot;
+    }
+
+    /**
+     * Returns the GVT root graphics node.
+     */
+    public GraphicsNode getGVTRoot() {
         return gvtRoot;
     }
 
@@ -54,8 +65,8 @@ public class GVTTreeWalker {
      * Sets the current GraphicsNode to the specified node.
      *
      * @param node the new current graphics node
-     * @exception IllegalArgumentException if the node is not part of the GVT Tree
-     *                                     this walker is dedicated to
+     * @exception IllegalArgumentException if the node is not part of
+     * the GVT Tree this walker is dedicated to
      */
     public void setCurrentGraphicsNode(GraphicsNode node) {
         if (node.getRoot() != gvtRoot) {
@@ -73,8 +84,9 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the previous <tt>GraphicsNode</tt>. If the current graphics node
-     * does not have a previous node, returns null and retains the current node.
+     * Returns the previous <tt>GraphicsNode</tt>. If the current
+     * graphics node does not have a previous node, returns null and
+     * retains the current node.
      */
     public GraphicsNode previousGraphicsNode() {
         GraphicsNode result = getPreviousGraphicsNode(currentNode);
@@ -85,8 +97,9 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the next <tt>GraphicsNode</tt>. If the current graphics node does
-     * not have a next node, returns null and retains the current node.
+     * Returns the next <tt>GraphicsNode</tt>. If the current graphics
+     * node does not have a next node, returns null and retains the
+     * current node.
      */
     public GraphicsNode nextGraphicsNode() {
         GraphicsNode result = getNextGraphicsNode(currentNode);
@@ -97,10 +110,14 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the parent of the current <tt>GraphicsNode</tt>. If the current
-     * graphics node has no parent, returns null and retains the current node.
+     * Returns the parent of the current <tt>GraphicsNode</tt>. If the
+     * current graphics node has no parent, returns null and retains
+     * the current node.
      */
     public GraphicsNode parentGraphicsNode() {
+        // Don't ascend above treeRoot.
+        if (currentNode == treeRoot) return null;
+
         GraphicsNode result = currentNode.getParent();
         if (result != null) {
             currentNode = result;
@@ -109,9 +126,9 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the next sibling of the current <tt>GraphicsNode</tt>. If the
-     * current graphics node does not have a next sibling, returns null and
-     * retains the current node.
+     * Returns the next sibling of the current
+     * <tt>GraphicsNode</tt>. If the current graphics node does not
+     * have a next sibling, returns null and retains the current node.
      */
     public GraphicsNode getNextSibling() {
         GraphicsNode result = getNextSibling(currentNode);
@@ -122,9 +139,10 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the next previous of the current <tt>GraphicsNode</tt>. If the
-     * current graphics node does not have a previous sibling, returns null and
-     * retains the current node.
+     * Returns the next previous of the current
+     * <tt>GraphicsNode</tt>. If the current graphics node does not
+     * have a previous sibling, returns null and retains the current
+     * node.
      */
     public GraphicsNode getPreviousSibling() {
         GraphicsNode result = getPreviousSibling(currentNode);
@@ -135,9 +153,9 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the first child of the current <tt>GraphicsNode</tt>. If the
-     * current graphics node does not have a first child, returns null and
-     * retains the current node.
+     * Returns the first child of the current
+     * <tt>GraphicsNode</tt>. If the current graphics node does not
+     * have a first child, returns null and retains the current node.
      */
     public GraphicsNode firstChild() {
         GraphicsNode result = getFirstChild(currentNode);
@@ -148,9 +166,9 @@ public class GVTTreeWalker {
     }
 
     /**
-     * Returns the last child of the current <tt>GraphicsNode</tt>. If the
-     * current graphics node does not have a last child, returns null and
-     * retains the current node.
+     * Returns the last child of the current <tt>GraphicsNode</tt>. If
+     * the current graphics node does not have a last child, returns
+     * null and retains the current node.
      */
     public GraphicsNode lastChild() {
         GraphicsNode result = getLastChild(currentNode);
@@ -160,10 +178,10 @@ public class GVTTreeWalker {
         return result;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
-    private GraphicsNode getNextGraphicsNode(GraphicsNode node) {
+    protected GraphicsNode getNextGraphicsNode(GraphicsNode node) {
         if (node == null) {
             return null;
         }
@@ -181,7 +199,7 @@ public class GVTTreeWalker {
 
         // Go to the first sibling of one of the ancestors
         n = node;
-        while ((n = n.getParent()) != null && n != gvtRoot) {
+        while ((n = n.getParent()) != null && n != treeRoot) {
             GraphicsNode t = getNextSibling(n);
             if (t != null) {
                 return t;
@@ -190,13 +208,13 @@ public class GVTTreeWalker {
         return null;
     }
 
-    private GraphicsNode getPreviousGraphicsNode(GraphicsNode node) {
+    protected GraphicsNode getPreviousGraphicsNode(GraphicsNode node) {
         if (node == null) {
             return null;
         }
 
         // The previous of root is null
-        if (node == gvtRoot) {
+        if (node == treeRoot) {
             return null;
         }
 
@@ -215,7 +233,7 @@ public class GVTTreeWalker {
         return n;
     }
 
-    private static GraphicsNode getLastChild(GraphicsNode node) {
+    protected static GraphicsNode getLastChild(GraphicsNode node) {
         if (!(node instanceof CompositeGraphicsNode)) {
             return null;
         }
@@ -231,7 +249,7 @@ public class GVTTreeWalker {
         }
     }
 
-    private static GraphicsNode getPreviousSibling(GraphicsNode node) {
+    protected static GraphicsNode getPreviousSibling(GraphicsNode node) {
         CompositeGraphicsNode parent = node.getParent();
         if (parent == null) {
             return null;
@@ -248,7 +266,7 @@ public class GVTTreeWalker {
         }
     }
 
-    private static GraphicsNode getFirstChild(GraphicsNode node) {
+    protected static GraphicsNode getFirstChild(GraphicsNode node) {
         if (!(node instanceof CompositeGraphicsNode)) {
             return null;
         }
@@ -264,7 +282,7 @@ public class GVTTreeWalker {
         }
     }
 
-    private static GraphicsNode getNextSibling(GraphicsNode node) {
+    protected static GraphicsNode getNextSibling(GraphicsNode node) {
         CompositeGraphicsNode parent = node.getParent();
         if (parent == null) {
             return null;
