@@ -201,6 +201,7 @@
 
     <testGroup id="tests.spec.shapes">
         <test id="samples/tests/spec/shapes/zero.svg" />
+        <test id="samples/tests/spec/shapes/emptyShape.svg" />
     </testGroup>
 
     <testGroup id="tests.spec.structure" name="tests structure" >
