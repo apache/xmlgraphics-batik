@@ -174,6 +174,8 @@ public class RhinoInterpreter implements Interpreter {
             if (!contexts.contains(ctx)) {
                 ctx.setWrapFactory(wrapFactory);
                 ctx.setSecurityController(securityController);
+                // This prevents a serious memory leak where
+                // all the SVG document state is preserved.
                 ctx.setCachingEnabled(false);
                 contexts.add(ctx);
 

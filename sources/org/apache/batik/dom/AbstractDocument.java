@@ -206,77 +206,82 @@ public abstract class AbstractDocument
      */
     public Node importNode(Node importedNode, boolean deep)
         throws DOMException {
+        /* TED: This is bad because it usually does not create the
+         * the proper subclass of Element for the document it is
+         * being imported into based on namespace/tag name.
+         */
+        /**
         if (importedNode instanceof AbstractNode) {
             AbstractNode an = (AbstractNode)importedNode;
             return (deep)
                 ? an.deepExport(an.cloneNode(false), this)
                 : an.export(an.cloneNode(false), this);
-        } else {
-            Node result;
-            switch (importedNode.getNodeType()) {
-            case ELEMENT_NODE:
-                Element e = createElementNS(importedNode.getNamespaceURI(),
-                                            importedNode.getNodeName());
-                result = e;
-                if (importedNode.hasAttributes()) {
-                    NamedNodeMap attr = importedNode.getAttributes();
-                    int len = attr.getLength();
-                    for (int i = 0; i < len; i++) {
-                        Attr a = (Attr)attr.item(i);
-                        if (a.getSpecified()) {
-                            e.setAttributeNodeNS((Attr)importNode(a, true));
-                        }
+        }
+        */
+
+        Node result;
+        switch (importedNode.getNodeType()) {
+        case ELEMENT_NODE:
+            Element e = createElementNS(importedNode.getNamespaceURI(),
+                                        importedNode.getNodeName());
+            result = e;
+            if (importedNode.hasAttributes()) {
+                NamedNodeMap attr = importedNode.getAttributes();
+                int len = attr.getLength();
+                for (int i = 0; i < len; i++) {
+                    Attr a = (Attr)attr.item(i);
+                    if (a.getSpecified()) {
+                        e.setAttributeNodeNS((Attr)importNode(a, true));
                     }
                 }
-                break;
-                
-            case ATTRIBUTE_NODE:
-                result = createAttributeNS(importedNode.getNamespaceURI(),
-                                           importedNode.getNodeName());
-                break;
-
-            case TEXT_NODE:
-                result = createTextNode(importedNode.getNodeValue());
-                deep = false;
-                break;
-
-            case CDATA_SECTION_NODE:
-                result = createCDATASection(importedNode.getNodeValue());
-                deep = false;
-                break;
-
-            case ENTITY_REFERENCE_NODE:
-                result = createEntityReference(importedNode.getNodeName());
-                break;
-
-            case PROCESSING_INSTRUCTION_NODE:
-                result = createProcessingInstruction
-                    (importedNode.getNodeName(),
-                     importedNode.getNodeValue());
-                deep = false;
-                break;
-
-            case COMMENT_NODE:
-                result = createComment(importedNode.getNodeValue());
-                deep = false;
-                break;
-
-            default:
-                throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
-                                         "import.node",
-                                         new Object[] {});
             }
-
-            if (deep) {
-                for (Node n = importedNode.getFirstChild();
-                     n != null;
-                     n = n.getNextSibling()) {
-                    result.appendChild(importNode(n, true));
-                }
-            }
-
-            return result;
+            break;
+            
+        case ATTRIBUTE_NODE:
+            result = createAttributeNS(importedNode.getNamespaceURI(),
+                                       importedNode.getNodeName());
+            break;
+            
+        case TEXT_NODE:
+            result = createTextNode(importedNode.getNodeValue());
+            deep = false;
+            break;
+            
+        case CDATA_SECTION_NODE:
+            result = createCDATASection(importedNode.getNodeValue());
+            deep = false;
+            break;
+            
+        case ENTITY_REFERENCE_NODE:
+            result = createEntityReference(importedNode.getNodeName());
+            break;
+            
+        case PROCESSING_INSTRUCTION_NODE:
+            result = createProcessingInstruction
+                (importedNode.getNodeName(),
+                 importedNode.getNodeValue());
+            deep = false;
+            break;
+            
+        case COMMENT_NODE:
+            result = createComment(importedNode.getNodeValue());
+            deep = false;
+            break;
+            
+        default:
+            throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
+                                     "import.node",
+                                     new Object[] {});
         }
+        
+        if (deep) {
+            for (Node n = importedNode.getFirstChild();
+                 n != null;
+                 n = n.getNextSibling()) {
+                result.appendChild(importNode(n, true));
+            }
+        }
+        return result;
     }
 
     /**

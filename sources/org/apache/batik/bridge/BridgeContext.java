@@ -988,6 +988,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         if (cssEngine != null) {
             cssEngine.removeCSSEngineListener(cssPropertiesChangedListener);
             cssEngine.dispose();
+            svgDocument.setCSSEngine(null);
         }
         if (focusManager != null) {
             focusManager.dispose();

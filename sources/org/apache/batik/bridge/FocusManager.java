@@ -96,6 +96,7 @@ public class FocusManager {
      * Removes all listeners attached to the document and that manage focus.
      */
     public void dispose() {
+        if (document == null) return;
         EventTarget target = (EventTarget)document;
         target.removeEventListener("click", mouseclickListener, true);
         target.removeEventListener("mouseover", mouseoverListener, true);

@@ -10,6 +10,8 @@ package org.apache.batik.dom.util;
 
 import org.w3c.dom.Element;
 
+import org.apache.batik.util.CleanerThread;
+
 /**
  * This class contains informations about a document.
  *
@@ -44,7 +46,9 @@ public class DocumentDescriptor {
      * Returns the number of elements in the document.
      */
     public int getNumberOfElements() {
-	return count;
+	synchronized (this) {
+            return count;
+        }
     }
     
     /**
@@ -52,14 +56,18 @@ public class DocumentDescriptor {
      * @return zero if the information is unknown.
      */
     public int getLocationLine(Element elt) {
-	int hash = elt.hashCode() & 0x7FFFFFFF;
-	int index = hash % table.length;
+        synchronized (this) {
+            int hash = elt.hashCode() & 0x7FFFFFFF;
+            int index = hash % table.length;
 	
-	for (Entry e = table[index]; e != null; e = e.next) {
-	    if ((e.hash == hash) && e.element.equals(elt)) {
-		return e.locationLine;
-	    }
-	}
+            for (Entry e = table[index]; e != null; e = e.next) {
+                if (e.hash != hash) 
+                    continue;
+                Object o = e.get();
+                if (o == elt) 
+                    return e.locationLine;
+            }
+        }
         return 0;
     }
     
@@ -67,24 +75,28 @@ public class DocumentDescriptor {
      * Sets the location in the source file of the end element.
      */
     public void setLocationLine(Element elt, int line) {
-	int hash  = elt.hashCode() & 0x7FFFFFFF;
-	int index = hash % table.length;
+        synchronized (this) {
+            int hash  = elt.hashCode() & 0x7FFFFFFF;
+            int index = hash % table.length;
 	
-	for (Entry e = table[index]; e != null; e = e.next) {
-	    if ((e.hash == hash) && e.element.equals(elt)) {
-		e.locationLine = line;
-	    }
-	}
+            for (Entry e = table[index]; e != null; e = e.next) {
+                if (e.hash != hash) 
+                    continue;
+                Object o = e.get();
+                if (o == elt)
+                    e.locationLine = line;
+            }
 	
-	// The key is not in the hash table
-        int len = table.length;
-	if (count++ >= (len * 3) >>> 2) {
-	    rehash();
-	    index = hash % table.length;
-	}
+            // The key is not in the hash table
+            int len = table.length;
+            if (count++ >= (len * 3) >>> 2) {
+                rehash();
+                index = hash % table.length;
+            }
 	
-	Entry e = new Entry(hash, elt, line, table[index]);
-	table[index] = e;
+            Entry e = new Entry(hash, elt, line, table[index]);
+            table[index] = e;
+        }
     }
 
     /**
@@ -107,19 +119,35 @@ public class DocumentDescriptor {
 	}
     }
 
+    protected void removeEntry(Entry e) {
+        synchronized (this) {
+            int hash = e.hash;
+            int index = hash % table.length;
+            Entry curr = table[index];
+            Entry prev = null;
+            while (curr != e) {
+                prev = curr;
+                curr = curr.next;
+            }
+            if (curr == null) return; // already remove???
+
+            if (prev == null)
+                // First entry.
+                table[index] = curr.next;
+            else 
+                prev.next = curr.next;
+            count--;
+        }
+    }
+
     /**
      * To manage collisions
      */
-    protected static class Entry {
+    protected class Entry extends CleanerThread.WeakReferenceCleared {
 	/**
 	 * The hash code
 	 */
 	public int hash;
-	
-	/**
-	 * The element
-	 */
-	public Element element;
 	
 	/**
 	 * The line number.
@@ -135,10 +163,14 @@ public class DocumentDescriptor {
 	 * Creates a new entry
 	 */
 	public Entry(int hash, Element element, int locationLine, Entry next) {
+            super(element);
 	    this.hash         = hash;
-	    this.element      = element;
 	    this.locationLine = locationLine;
 	    this.next         = next;
 	}
+
+        public void cleared() {
+            removeEntry(this);
+        }
     }
 }

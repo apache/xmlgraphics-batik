@@ -8,14 +8,22 @@
 
 package org.apache.batik.swing;
 
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.UpdateManager;
+import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.SVGContext;
+import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
 import org.apache.batik.test.MemoryLeakTest;
 
-import javax.swing.SwingUtilities;
-import javax.swing.JFrame;
 import java.io.File;
 import java.net.MalformedURLException;
+import javax.swing.SwingUtilities;
+import javax.swing.JFrame;
+
+import org.w3c.dom.Element;
+
 
 /**
  * One line Class Desc
@@ -37,6 +45,10 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
     JSVGCanvasHandler handler;
     JFrame theFrame;
     JSVGCanvas theCanvas;
+
+    public static String fmt(String key, Object []args) {
+        return TestMessages.formatMessage(key, args);
+    }
 
     public TestReport doSomething() throws Exception {
         handler = new JSVGCanvasHandler(this, this);
@@ -77,13 +89,27 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
     public void scriptDone() {
         synchronized (this) {
             done = true;
-            // The canvasUpdate will notify the handler that the
-            // canvas can be shut down.
+            handler.scriptDone();
+        }
+    }
+
+    public void registerElement(Element e, String desc) {
+        registerObjectDesc(e, desc);
+        UpdateManager um = theCanvas.getUpdateManager();
+        BridgeContext bc = um.getBridgeContext();
+        GraphicsNode gn = bc.getGraphicsNode(e);
+        if (gn != null)
+            registerObjectDesc(gn, desc+"_GN");
+        if (e instanceof SVGOMElement) {
+            SVGOMElement svge = (SVGOMElement)e;
+            SVGContext svgctx = svge.getSVGContext();
+            if (svgctx != null) 
+                registerObjectDesc(svgctx, desc+"_CTX");
         }
     }
 
     /* JSVGCanvasHandler.Delegate Interface */
-    public void canvasInit(JSVGCanvas canvas) {
+    public boolean canvasInit(JSVGCanvas canvas) {
         // System.err.println("In Init");
         theCanvas = canvas;
         theFrame  = handler.getFrame();
@@ -95,17 +121,19 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
         }
         registerObjectDesc(canvas, "JSVGCanvas");
         registerObjectDesc(handler.getFrame(), "JFrame");
+
+        return true;
     }
 
     public void canvasLoaded(JSVGCanvas canvas) {
         // System.err.println("Loaded");
-        registerObjectDesc(canvas.getSVGDocument(), "SVG Document");
+        registerObjectDesc(canvas.getSVGDocument(), "SVGDoc");
     }
 
     public void canvasRendered(JSVGCanvas canvas) {
         // System.err.println("Rendered");
-        registerObjectDesc(canvas.getGraphicsNode(), "Graphics Node Tree");
-        registerObjectDesc(canvas.getUpdateManager(), "Update Manager");
+        registerObjectDesc(canvas.getGraphicsNode(), "GVT");
+        registerObjectDesc(canvas.getUpdateManager(), "updateManager");
     }
 
     public boolean canvasUpdated(JSVGCanvas canvas) {

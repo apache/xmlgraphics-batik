@@ -33,8 +33,6 @@ public class NullURITest extends AbstractTest {
     public static final String ERROR_COULD_NOT_RENDER_NULL_URI
         = "error.could.not.render.null.uri";
 
-    public String testURI = "samples/anne.svg";
-
     public TestReport runImpl() throws Exception {
         final JFrame f = new JFrame();
         final JSVGCanvas canvas = new JSVGCanvas();

@@ -49,6 +49,7 @@ import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.gvt.CanvasGraphicsNode;
@@ -63,6 +64,8 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.w3c.dom.Document;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 import org.w3c.dom.svg.SVGDocument;
@@ -463,13 +466,98 @@ public class JSVGComponent extends JGVTComponent {
     }
 
     /**
-     * Sets the SVG document to display.
+     * Sets the Document to display.  If the document does not use
+     * Batik's SVG DOM Implemenation it will be cloned into that
+     * implementation.  In this case you should use 'getSVGDocument()'
+     * to get the actual DOM that is attached to the rendering interface.
+     */
+    public void setDocument(Document doc) {
+        if ((doc != null) && 
+            !(doc.getImplementation() instanceof SVGDOMImplementation)) {
+            DOMImplementation impl;
+            impl = SVGDOMImplementation.getDOMImplementation();
+            Document d = DOMUtilities.deepCloneDocument(doc, impl);
+            doc = d;
+        }
+        setSVGDocument((SVGDocument)doc);
+    }
+
+    /**
+     * Sets the SVGDocument to display.  If the document does not use
+     * Batik's SVG DOM Implemenation it will be cloned into that
+     * implementation.  In this case you should use 'getSVGDocument()'
+     * to get the actual DOM that is attached to the rendering
+     * interface.
      */
     public void setSVGDocument(SVGDocument doc) {
         stopProcessing();
-        if (!(doc.getImplementation() instanceof SVGDOMImplementation)) {
-            throw new IllegalArgumentException("Invalid DOM implementation.");
+
+        if ((doc != null) &&
+            !(doc.getImplementation() instanceof SVGDOMImplementation)) {
+            DOMImplementation impl;
+            impl = SVGDOMImplementation.getDOMImplementation();
+            Document d = DOMUtilities.deepCloneDocument(doc, impl);
+            doc = (SVGDocument)d;
         }
+
+        if (updateManager == null) {
+            // No update manager just install new document.
+            installSVGDocument(doc);
+        } else {
+            // We have to wait for the update manager to stop
+            // before we install the new document otherwise bad
+            // things can happen with the update manager.
+            final SVGDocument svgdoc = doc;
+            updateManager.addUpdateManagerListener
+                (new UpdateManagerListener () {
+                        UpdateManager um = updateManager;
+                        public void managerStopped(UpdateManagerEvent e) {
+                            // Remove ourselves from the old update manger,
+                            // and install the new document.
+                            um.removeUpdateManagerListener(this);
+                            EventQueue.invokeLater(new Runnable() {
+                                    public void run() {
+                                        installSVGDocument(svgdoc);
+                                    }
+                                });
+                        }
+                        // There really should be an updateManagerAdapter.
+                        public void managerStarted(UpdateManagerEvent e) { }
+                        public void managerSuspended(UpdateManagerEvent e) { }
+                        public void managerResumed(UpdateManagerEvent e) { }
+                        public void updateStarted(UpdateManagerEvent e) { }
+                        public void updateCompleted(UpdateManagerEvent e) { }
+                        public void updateFailed(UpdateManagerEvent e) { }
+                    });
+        }
+            
+    }
+
+    /**
+     * This does the real work of installing the SVG Document after
+     * the update manager from the previous document (if any) has been
+     * properly 'shut down'.
+     */
+    protected void installSVGDocument(SVGDocument doc) {
+        svgDocument = doc;
+
+        if (bridgeContext != null) {
+            bridgeContext.dispose();
+            bridgeContext = null;
+        }
+
+        releaseRenderingReferences();
+
+        if (doc == null) {
+            isDynamicDocument = false;
+            isInteractiveDocument = false;
+            disableInteractions = true;
+            initialTransform = new AffineTransform();
+            setRenderingTransform(initialTransform, false);
+            Dimension d = getSize();
+            repaint(0, 0, d.width, d.height);
+            return;
+        } 
 
         switch (documentState) {
         case ALWAYS_STATIC:
@@ -489,21 +577,15 @@ public class JSVGComponent extends JGVTComponent {
             if (isDynamicDocument)
                 isInteractiveDocument = true;
             else
-                isInteractiveDocument = BridgeContext.isInteractiveDocument(doc);
+                isInteractiveDocument = 
+                    BridgeContext.isInteractiveDocument(doc);
         }
-        // System.err.println("Dynamic:     " + isDynamicDocument);
-        // System.err.println("Interactive: " + isInteractiveDocument);
-
-        svgDocument = doc;
 
         Element root = doc.getDocumentElement();
         String znp = root.getAttributeNS
             (null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
         disableInteractions = !znp.equals(SVGConstants.SVG_MAGNIFY_VALUE);
 
-        if (bridgeContext != null) {
-            bridgeContext.dispose();
-        }
         bridgeContext = createBridgeContext();
         nextGVTTreeBuilder = new GVTTreeBuilder(doc, bridgeContext);
         nextGVTTreeBuilder.setPriority(Thread.MIN_PRIORITY);
@@ -514,7 +596,6 @@ public class JSVGComponent extends JGVTComponent {
                 ((GVTTreeBuilderListener)it.next());
         }
 
-        releaseRenderingReferences();
         initializeEventHandling();
 
         if (gvtTreeBuilder == null &&

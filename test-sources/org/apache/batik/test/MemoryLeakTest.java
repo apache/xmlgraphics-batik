@@ -8,8 +8,10 @@
 
 package org.apache.batik.test;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.batik.test.AbstractTest;
@@ -28,11 +30,14 @@ import org.apache.batik.util.CleanerThread;
  */
 public abstract class MemoryLeakTest  extends AbstractTest {
 
-    // I know that 60 seems _really_ high but it turns out
-    // That the GraphicsNodeTree was not being cleared when I
-    // tested with as high as 36.  So I would leave it at 60
-    // (why so large I don't know).
-    final static int NUM_GC=60;
+    // I know that 120 seems _really_ high but it turns out
+    // That the "GraphicsNodeTree" was not being cleared when I
+    // tested with as high as 60.  So I would leave it at 120
+    // (why so large I don't know) - it will bail if the all
+    // the objects of interest are collected sooner so the runtime
+    // is really only a concern for failures.
+    final static int NUM_GC=120;
+
     final static String ERROR_OBJS_NOT_CLEARED = 
         "MemoryLeakTest.message.error.objs.not.cleared";
 
@@ -46,61 +51,139 @@ public abstract class MemoryLeakTest  extends AbstractTest {
     public MemoryLeakTest() {
     }
     
-    Set objs = new HashSet();
+    Map objs = new HashMap();
+    List entries = new ArrayList();
 
     public void registerObject(Object o) {
         synchronized (objs) {
-            objs.add(new WeakRef(o));
+            String desc = o.toString();
+            objs.put(desc, new WeakRef(o, desc));
         }
     }
     public void registerObjectDesc(Object o, String desc) {
         synchronized (objs) {
-            objs.add(new WeakRef(o, desc));
+            objs.put(desc, new WeakRef(o, desc));
         }
     }
     
+    public boolean checkObject(String desc) {
+        String [] strs = new String[1];
+        strs[0] = desc;
+        return checkObjects(strs);
+    }
+
+    public boolean checkObjects(String [] descs) {
+        for (int i=0; i<NUM_GC; i++) {
+            System.gc();
+            boolean passed = true;
+            for (int j=0; j< descs.length; j++) {
+                String desc = descs[j];
+                WeakRef wr = (WeakRef)objs.get(desc);
+                if ((wr != null) && (wr.get() != null)) {
+                    passed = false;
+                    break;
+                }
+            }
+            if (passed) return true;
+        }
+
+        StringBuffer sb = new StringBuffer();
+        synchronized (objs) {
+            boolean passed = true;
+            for (int j=0; j< descs.length; j++) {
+                String desc = descs[j];
+                WeakRef wr = (WeakRef)objs.get(desc);
+                if ((wr == null) || (wr.get() == null)) continue;
+                if (!passed)
+                    sb.append(","); // Already put one obj out
+                passed = false;
+                sb.append("'");
+                sb.append(wr.getDesc());
+                sb.append("'");
+            }
+        }
+        
+        String objStr = sb.toString();
+        TestReport.Entry entry = new TestReport.Entry
+            (fmt(ERROR_DESCRIPTION, null),
+             fmt(ERROR_OBJS_NOT_CLEARED, new Object[]{objStr}));
+        entries.add(entry);
+
+        if (objStr.length() > 40) 
+            objStr = objStr.substring(0,40) + "..." ;
+        System.err.print(">>>>> Objects not cleared: " + objStr + "\n");
+        return false;
+    }
+
+    public boolean checkObjectsList(List descs) {
+        String [] strs = new String[descs.size()];
+        descs.toArray(strs);
+        return checkObjects(strs);
+    }
+
+    public boolean checkAllObjects() {
+        for (int i=0; i<NUM_GC; i++) {
+            System.gc();
+            synchronized (objs) {
+                boolean passed = true;
+                Iterator iter = objs.values().iterator();
+                while (iter.hasNext()) {
+                    WeakRef wr = (WeakRef)iter.next();
+                    Object o = wr.get();
+                    if (o != null) {
+                        passed = false;
+                        break;
+                    }
+                }
+                if (passed) return true;
+            }
+        }
+        
+        StringBuffer sb = new StringBuffer();
+        synchronized (objs) {
+            boolean passed = true;
+            Iterator iter = objs.values().iterator();
+            while (iter.hasNext()) {
+                WeakRef wr = (WeakRef)iter.next();
+                Object o = wr.get();
+                if (o == null) continue;
+                if (!passed)
+                    sb.append(",");
+                passed = false;
+                sb.append(wr.getDesc());
+            }
+            if (passed) return true;
+        }
+        
+        String objStr = sb.toString();
+
+        TestReport.Entry entry = new TestReport.Entry
+            (fmt(ERROR_DESCRIPTION, null),
+             fmt(ERROR_OBJS_NOT_CLEARED, new Object[]{objStr}));
+        entries.add(entry);
+
+        if (objStr.length() > 40) 
+            objStr = objStr.substring(0,40) + "..." ;
+        System.err.print(">>>>> Objects not cleared: " + objStr + "\n");
+        return false;
+    }
 
     public TestReport runImpl() throws Exception {
         TestReport ret = doSomething();
         if ((ret != null) && !ret.hasPassed())
             return ret;
 
-        for (int i=0; i<NUM_GC; i++) {
-            System.gc();
-        }
+        checkAllObjects();
 
-        StringBuffer sb = new StringBuffer();
-        int count = 0;
-        synchronized (objs) {
-            Iterator i = objs.iterator();
-            while (i.hasNext()) {
-                WeakRef wr = (WeakRef)i.next();
-                Object o = wr.get();
-                if (o == null) continue;
-                if (count != 0)
-                    sb.append(",");
-
-                sb.append(wr.getDesc());
-                count++;
-            }
-        }
-        
         DefaultTestReport report = new DefaultTestReport(this);
-        if (count == 0) {
+        if (entries.size() == 0) {
             report.setPassed(true);
             return report;
         }
-        String objStr = sb.toString();
-
         report.setErrorCode(ERROR_OBJS_NOT_CLEARED);
-        report.setDescription(new TestReport.Entry[] { 
-            new TestReport.Entry
-            (fmt(ERROR_DESCRIPTION, null),
-             fmt(ERROR_OBJS_NOT_CLEARED, new Object[]{objStr}))
-        });
-        if (objStr.length() > 40) 
-            objStr = objStr.substring(0,40) + "..." ;
-        System.err.print(">>>>> Objects not cleared: " + objStr + "\n");
+        report.setDescription
+            ((TestReport.Entry[])entries.toArray
+             (new TestReport.Entry[entries.size()]));
         report.setPassed(false);
         return report;
     }
@@ -122,7 +205,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
 
         public void cleared() {
             synchronized (objs) {
-                objs.remove(this);
+                objs.remove(desc);
             }
         }
         

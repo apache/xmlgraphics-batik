@@ -602,6 +602,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 (this, GraphicsNodeChangeEvent.CHANGE_STARTED);
         changeStartedEvent.setChangeSrc(changeSrc);
         fireGraphicsNodeChangeStarted(changeStartedEvent);
+        changeStartedEvent.setChangeSrc(null);
     }
 
     //
