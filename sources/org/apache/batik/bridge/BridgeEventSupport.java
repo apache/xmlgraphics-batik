@@ -67,6 +67,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * A class to attach listeners on the <code>Document</code> to
  * call pieces of script when necessary and to attach a listener
  * on the GVT root to propagate GVT events to the DOM.
+ *
  * @author <a href="mailto:cjolif@ilog.fr>Christophe Jolif</a>
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -88,188 +89,288 @@ class BridgeEventSupport implements SVGConstants {
                 dispatcher.addGraphicsNodeMouseListener(listener);
                 // add an unload listener on the SVGDocument to remove
                 // that listener for dispatching events
-                ((EventTarget)svgRoot).
-                    addEventListener("SVGUnload",
-                                     new GVTUnloadListener(dispatcher,
-                                                           listener),
-                                     false);
+                ((EventTarget)svgRoot).addEventListener
+                    ("SVGUnload",
+                     new GVTUnloadListener(dispatcher, listener),
+                     false);
             }
         }
     }
 
-    private static class GVTUnloadListener implements EventListener {
+    protected static class GVTUnloadListener implements EventListener {
+
         private EventDispatcher dispatcher;
         private Listener listener;
-        GVTUnloadListener(EventDispatcher dispatcher, Listener listener) {
+
+        public GVTUnloadListener(EventDispatcher dispatcher, 
+                                 Listener listener) {
             this.dispatcher = dispatcher;
             this.listener = listener;
         }
+
         public void handleEvent(Event evt) {
             dispatcher.removeGraphicsNodeMouseListener(listener);
             evt.getTarget().removeEventListener("SVGUnload", this, false);
         }
     }
 
-    private static class Listener
-        implements GraphicsNodeMouseListener {
+    /**
+     * A GraphicsNodeMouseListener that dispatch DOM events accordingly.
+     */
+    protected static class Listener implements GraphicsNodeMouseListener {
+        
         private BridgeContext context;
         private UserAgent ua;
-        private GraphicsNode lastTarget;
+        private Element lastTargetElement;
+
         public Listener(BridgeContext ctx, UserAgent u) {
             context = ctx;
             ua = u;
         }
+
         public void mouseClicked(GraphicsNodeMouseEvent evt) {
             dispatchMouseEvent("click", evt, true);
         }
+
         public void mousePressed(GraphicsNodeMouseEvent evt) {
             dispatchMouseEvent("mousedown", evt, true);
         }
+
         public void mouseReleased(GraphicsNodeMouseEvent evt) {
             dispatchMouseEvent("mouseup", evt, true);
         }
+
         public void mouseEntered(GraphicsNodeMouseEvent evt) {
             dispatchMouseEvent("mouseover", evt, true);
         }
+
         public void mouseExited(GraphicsNodeMouseEvent evt) {
             dispatchMouseEvent("mouseout", evt, true);
         }
+
         public void mouseDragged(GraphicsNodeMouseEvent evt) {
-            GraphicsNode node = evt.getRelatedNode();
-            GraphicsNodeMouseEvent evt2 = null;
-            if (lastTarget != node) {
-                if (lastTarget != null) {
-                    evt2 = new GraphicsNodeMouseEvent(lastTarget,
-                                                      evt.MOUSE_EXITED,
-                                                      evt.getWhen(),
-                                                      evt.getModifiers(),
-                                                      evt.getX(),
-                                                      evt.getY(),
-                                                      evt.getClickCount(),
-                                                      lastTarget);
-                    dispatchMouseEvent("mouseout",
-                                       evt2,
-                                       true);
-                }
-                if (node != null) {
-                    evt2 = new GraphicsNodeMouseEvent(node,
-                                                      evt.MOUSE_ENTERED,
-                                                      evt.getWhen(),
-                                                      evt.getModifiers(),
-                                                      evt.getX(),
-                                                      evt.getY(),
-                                                      evt.getClickCount(),
-                                                      lastTarget);
-                    dispatchMouseEvent("mouseover",
-                                       evt2,
-                                       true);
-                }
-            }
-            try {
-                if (node != null) {
-                    evt2 = new GraphicsNodeMouseEvent(node,
-                                                      evt.MOUSE_MOVED,
-                                                      evt.getWhen(),
-                                                      evt.getModifiers(),
-                                                      evt.getX(),
-                                                      evt.getY(),
-                                                      evt.getClickCount(),
-                                                      null);
-                    dispatchMouseEvent("mousemove",
-                                       evt2,
-                                       true);
-                }
-            } finally {
-                lastTarget = node;
-            }
-        }
-        public void mouseMoved(GraphicsNodeMouseEvent evt) {
             dispatchMouseEvent("mousemove", evt, false);
         }
 
-
-        private void dispatchMouseEvent(String eventType,
-                                        GraphicsNodeMouseEvent evt,
-                                        boolean cancelok) {
-            Point2D pos = evt.getPoint2D();
-            AffineTransform transform = ua.getTransform();
-            if (transform != null && !transform.isIdentity())
-                transform.transform(pos, pos);
-            Point screen = ua.getClientAreaLocationOnScreen();
-            screen.translate((int)Math.floor(pos.getX()),
-                             (int)Math.floor(pos.getY()));
-            // compute screen coordinates
+        public void mouseMoved(GraphicsNodeMouseEvent evt) {
+            Point clientXY = getClientMouseLocation(evt.getPoint2D());
             GraphicsNode node = evt.getGraphicsNode();
-            Element elmt = context.getElement(node);
-            if (elmt == null) // should not appeared if binding on
-                return;
+            Element targetElement = getEventTarget(node, clientXY);
+            if (lastTargetElement != targetElement) {
+                if (lastTargetElement != null) {
+                    dispatchMouseEvent("mouseout", 
+                                       lastTargetElement, // target
+                                       targetElement,     // relatedTarget
+                                       clientXY,
+                                       evt,
+                                       true);
+                }
+                if (targetElement != null) {
+                    dispatchMouseEvent("mouseover", 
+                                       targetElement,     // target
+                                       lastTargetElement, // relatedTarget
+                                       clientXY,
+                                       evt,
+                                       true);
+                }
+            }
+            dispatchMouseEvent("mousemove", 
+                               targetElement,     // target
+                               null,              // relatedTarget
+                               clientXY,
+                               evt,
+                               false);
+        }
 
-            // see whether or not the GraphicsNode is a TextNode
+        /**
+         * Dispatches a DOM MouseEvent according to the specified
+         * parameters.
+         *
+         * @param eventType the event type
+         * @param evt the GVT GraphicsNodeMouseEvent
+         * @param cancelable true means the event is cancelable
+         */
+        protected void dispatchMouseEvent(String eventType,
+                                          GraphicsNodeMouseEvent evt,
+                                          boolean cancelable) {
+            Point clientXY = getClientMouseLocation(evt.getPoint2D());
+            GraphicsNode node = evt.getGraphicsNode();
+            Element targetElement = getEventTarget(node, clientXY);
+            Element relatedElement = getRelatedElement(evt);
+            dispatchMouseEvent(eventType, 
+                               targetElement,
+                               relatedElement,
+                               clientXY, 
+                               evt, 
+                               cancelable);
+        }
+
+        /**
+         * Dispatches a DOM MouseEvent according to the specified
+         * parameters.
+         *
+         * @param eventType the event type
+         * @param targetElement the target of the event
+         * @param relatedElement the related target if any
+         * @param clientXY the mouse coordinates in the client space
+         * @param evt the GVT GraphicsNodeMouseEvent
+         * @param cancelable true means the event is cancelable
+         */
+        protected void dispatchMouseEvent(String eventType,
+                                          Element targetElement,
+                                          Element relatedElement,
+                                          Point clientXY,
+                                          GraphicsNodeMouseEvent evt,
+                                          boolean cancelable) {
+            if (targetElement == null) {
+                return;
+            }
+            /*
+            if (relatedElement != null) {
+                System.out.println
+                    ("dispatching "+eventType+
+                     " target:"+targetElement.getLocalName()+
+                     " relatedElement:"+relatedElement.getLocalName());
+            } else {
+                System.out.println
+                    ("dispatching "+eventType+
+                     " target:"+targetElement.getLocalName());
+
+            }*/
+
+            short button = getButton(evt);
+            Point screenXY = getScreenMouseLocation(clientXY);
+            // create the coresponding DOM MouseEvent
+            DocumentEvent d = (DocumentEvent)targetElement.getOwnerDocument();
+            MouseEvent mouseEvt = (MouseEvent)d.createEvent("MouseEvents");
+            mouseEvt.initMouseEvent(eventType, 
+                                    true, 
+                                    cancelable, 
+                                    null,
+                                    evt.getClickCount(),
+                                    screenXY.x, 
+                                    screenXY.y,
+                                    clientXY.x,
+                                    clientXY.y,
+                                    evt.isControlDown(), 
+                                    evt.isAltDown(),
+                                    evt.isShiftDown(), 
+                                    evt.isMetaDown(),
+                                    button, 
+                                    (EventTarget)relatedElement);
+
+            try {
+                ((EventTarget)targetElement).dispatchEvent(mouseEvt);
+            } catch (RuntimeException e) {
+                ua.displayError(e);
+            } finally {
+                lastTargetElement = targetElement;
+            }
+        }
+
+        /**
+         * Dispatches a DOM UIEvent according to the specified
+         * parameters.
+         *
+         * @param eventType the event type
+         * @param evt the GVT GraphicsNodeMouseEvent
+         * @param cancelable true means the event is cancelable
+         */
+        protected void dispatchUIEvent(String eventType,
+                                       GraphicsNodeMouseEvent evt,
+                                       boolean cancelable) {
+
+        }
+
+        /**
+         * Returns the related element according to the specified event.
+         *
+         * @param evt the GVT GraphicsNodeMouseEvent
+         */
+        protected Element getRelatedElement(GraphicsNodeMouseEvent evt) {
+            GraphicsNode relatedNode = evt.getRelatedNode();
+            Element relatedElement = null;
+            if (relatedNode != null) {
+                relatedElement = context.getElement(relatedNode);
+            }
+            return relatedElement;
+        }
+
+        /**
+         * Returns the mouse event button.
+         *
+         * @param evt the GVT GraphicsNodeMouseEvent
+         */
+        protected short getButton(GraphicsNodeMouseEvent evt) {
+            short button = 1;
+            if ((evt.BUTTON1_MASK & evt.getModifiers()) != 0) {
+                button = 0;
+            } else if ((evt.BUTTON3_MASK & evt.getModifiers()) != 0) {
+                button = 2;
+            }
+            return button;
+        }
+
+        /**
+         * Returns the client mouse coordinates using the specified
+         * mouse coordinates in the GVT Tree space.
+         *
+         * @param coords the mouse coordinates in the GVT tree space
+         */
+        protected Point getClientMouseLocation(Point2D coords) {
+            AffineTransform transform = ua.getTransform();
+            Point2D p = coords;
+            if (transform != null && !transform.isIdentity()) {
+                p = transform.transform(coords, null);
+            }
+            return new Point((int)Math.floor(coords.getX()),
+                             (int)Math.floor(coords.getY()));
+        }
+
+        /**
+         * Returns the mouse coordinates on the screen using the
+         * specified client mouse coordinates.
+         *
+         * @param coords the mouse coordinates in the client space
+         */
+        protected Point getScreenMouseLocation(Point coords) {
+            Point screen = new Point(ua.getClientAreaLocationOnScreen());
+            screen.translate(coords.x, coords.y);
+            return screen;
+        }
+
+        /**
+         * Returns the element that is the target of the specified
+         * event or null if any.
+         *
+         * @param node the graphics node that received the event
+         * @param coords the mouse coordinates in the GVT tree space
+         */
+        protected Element getEventTarget(GraphicsNode node, Point2D coords) {
+            Element target = context.getElement(node);
+            // Lookup inside the text element children to see if the target
+            // is a tspan or textPath
             if (node instanceof TextNode) {
-                // handle tspan or textPath if any
 		TextNode textNode = (TextNode)node;
 		List list = textNode.getTextRuns();
 		for (int i = 0 ; i < list.size(); i++) {
                     StrokingTextPainter.TextRun run =
                         (StrokingTextPainter.TextRun)list.get(i);
                     AttributedCharacterIterator aci = run.getACI();
-                    //printACI(aci);
                     TextSpanLayout layout = run.getLayout();
-                    float x = (float)pos.getX();
-                    float y = (float)pos.getY();
+                    float x = (float)coords.getX();
+                    float y = (float)coords.getY();
                     TextHit textHit = layout.hitTestChar(x, y);
                     if (textHit != null && layout.getBounds().contains(x, y)) {
                         Object delimiter = aci.getAttribute
                             (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
                         if (delimiter instanceof Element) {
-                            elmt = (Element)delimiter;
-                            break;
+                            return (Element)delimiter;
                         }
                     }
 		}
             }
-
-            EventTarget target = (EventTarget)elmt;
-            // <!> TODO dispatch it only if pointers-event property ask for
-            short button = 1;
-            if ((evt.BUTTON1_MASK & evt.getModifiers()) != 0)
-                button = 0;
-            else
-                if ((evt.BUTTON3_MASK & evt.getModifiers()) != 0)
-                    button = 2;
-            MouseEvent mevent = (MouseEvent)
-                // DOM Level 2 6.5 cast from Document to DocumentEvent is ok
-                ((DocumentEvent)elmt.getOwnerDocument()).createEvent("MouseEvents");
-            // deal with the related node/target
-            node = evt.getRelatedNode();
-            EventTarget relatedTarget =
-                (EventTarget)context.getElement(node);
-            mevent.initMouseEvent(eventType, true, cancelok, null,
-                                  evt.getClickCount(),
-                                  screen.x, screen.y,
-                                  (int)Math.floor(pos.getX()),
-                                  (int)Math.floor(pos.getY()),
-                                  evt.isControlDown(), evt.isAltDown(),
-                                  evt.isShiftDown(), evt.isMetaDown(),
-                                  button, relatedTarget);
-            try {
-                target.dispatchEvent(mevent);
-            } catch (RuntimeException e) {
-                // runtime exceptions may appear we need to display them...
-                ua.displayError(new Exception("scripting error in event handling: "+
-                                              e.getMessage()));
-            }
+            return (Element)target;
         }
     }
-    /*
-    public static void printACI(AttributedCharacterIterator aci) {
-        AttributedCharacterIterator newAci = (AttributedCharacterIterator)aci.clone();
-        newAci.first();
-        while (newAci.current() != AttributedCharacterIterator.DONE &&
-               newAci.getIndex() < newAci.getEndIndex()) {
-            System.out.print(newAci.current());
-            newAci.next();
-        }
-        System.out.println("\n---------------------------------------");
-        }*/
 }
