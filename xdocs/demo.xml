@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE document SYSTEM "./dtd/document-v10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+<document>
+    <header>
+        <title>Batik SVG Toolkit</title>
+        <subtitle>Demo of SVG Tools</subtitle>
+        <authors>
+            <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
+            <person name="Thierry Kormann" email="tkormann@apache.org"/>
+        </authors>
+    </header>
+
+    <body>
+        <s1 title="Demo of SVG Tools">
+        </s1>
+    </body>
+</document>

@@ -19,7 +19,7 @@
   <separator/>
   <page id="index"    label="Overview" source="index.xml"/>
   <page id="status"   label="Status" source="status.xml" />
-  <page id="screenshots"   label="Screenshots" source="svgviewerScreenShot.xml" />
+  <page id="demo"   label="Demo" source="demo.xml" />
   <separator/>
   <page id="license"  label="License" source="license.xml"/>
   <external href="dist" label="Download"/>
