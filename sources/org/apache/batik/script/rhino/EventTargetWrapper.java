@@ -8,25 +8,21 @@
 
 package org.apache.batik.script.rhino;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.JavaScriptException;
-import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.NativeJavaMethod;
+import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.WrappedException;
-
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-
-import org.apache.batik.script.Interpreter;
-import org.apache.batik.script.InterpreterException;
 
 /**
  * A class that wraps an <code>EventTarget</code> instance to expose

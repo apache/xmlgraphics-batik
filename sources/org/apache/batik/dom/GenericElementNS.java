@@ -8,7 +8,6 @@
 
 package org.apache.batik.dom;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 
 /**

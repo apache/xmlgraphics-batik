@@ -8,13 +8,13 @@
 
 package org.apache.batik.ext.awt.image.codec.tiff;
 
-import  org.apache.batik.ext.awt.image.codec.SeekableStream;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import org.apache.batik.ext.awt.image.codec.SeekableStream;
 
 /**
  * A class representing an Image File Directory (IFD) from a TIFF 6.0

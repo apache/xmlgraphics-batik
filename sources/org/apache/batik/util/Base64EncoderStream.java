@@ -8,9 +8,9 @@
 
 package org.apache.batik.util;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.IOException;
 
 /**
  * This class implements a Base64 Character encoder as specified in RFC1113.

@@ -9,7 +9,6 @@
 package org.apache.batik.util.gui.resource;
 
 import java.awt.Insets;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 

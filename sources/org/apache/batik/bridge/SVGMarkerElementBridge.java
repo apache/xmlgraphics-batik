@@ -14,23 +14,13 @@ import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.Value;
-
-import org.apache.batik.dom.svg.SVGOMDocument;
-
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.Marker;
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSValue;
-import org.w3c.dom.css.ViewCSS;
 
 /**
  * Bridge class for the &lt;marker> element.

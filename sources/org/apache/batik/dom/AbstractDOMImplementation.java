@@ -12,7 +12,6 @@ import java.io.Serializable;
 
 import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.util.HashTable;
-
 import org.w3c.dom.DOMImplementation;
 
 /**

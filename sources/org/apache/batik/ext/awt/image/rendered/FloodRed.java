@@ -8,20 +8,18 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.rendered.AbstractRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
-
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Paint;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
+
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * This implementation of RenderedImage will generate an infinate

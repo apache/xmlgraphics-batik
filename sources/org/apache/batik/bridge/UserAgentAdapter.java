@@ -13,7 +13,6 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -22,9 +21,7 @@ import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
-
 import org.w3c.dom.Element;
-
 import org.w3c.dom.svg.SVGAElement;
 
 /**

@@ -8,10 +8,8 @@
 
 package org.apache.batik.dom.svg;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGAnimatedTransformList;
-
 import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.svg.SVGAnimatedTransformList;
 
 /**
  * This class provides support for the SVGTransformable interface.

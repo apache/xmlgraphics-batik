@@ -9,10 +9,7 @@
 package org.apache.batik.gvt;
 
 import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Dimension2D;
 
 /**
  * A graphics node that represents an image described as a graphics node.

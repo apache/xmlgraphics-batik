@@ -9,19 +9,18 @@
 package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.awt.image.IndexColorModel;
-import java.awt.image.SampleModel;
-import java.awt.image.MultiPixelPackedSampleModel;
 import java.awt.image.DataBuffer;
+import java.awt.image.IndexColorModel;
+import java.awt.image.MultiPixelPackedSampleModel;
 import java.awt.image.Raster;
+import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
-import java.awt.Point;
-import java.util.Comparator;
-import java.util.Vector;
 import java.util.Iterator;
+import java.util.Vector;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 

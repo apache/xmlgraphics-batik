@@ -8,19 +8,14 @@
 
 package org.apache.batik.css.engine.value.css2;
 
-import org.apache.batik.util.CSSConstants;
-
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
-
 import org.apache.batik.css.engine.value.IdentifierManager;
 import org.apache.batik.css.engine.value.StringMap;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
-import org.apache.batik.css.engine.value.ValueManager;
-
-import org.w3c.dom.Element;
+import org.apache.batik.util.CSSConstants;
 
 /**
  * This class provides a manager for the 'font-stretch' property values.

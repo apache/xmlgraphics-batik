@@ -8,28 +8,11 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import java.awt.Point;
-import java.awt.Rectangle;
-
-import java.awt.Color;
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Transparency;
-
-import java.awt.color.ColorSpace;
-
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
-import java.awt.image.PixelInterleavedSampleModel;
-import java.awt.image.ComponentColorModel;
 import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.ColorSpaceHintKey;
-import org.apache.batik.ext.awt.image.renderable.FilterAsAlphaRable;
 
 /**
  * This strips out the source alpha channel into a one band image.

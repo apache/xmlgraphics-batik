@@ -9,11 +9,12 @@
 package org.apache.batik.svggen;
 
 import java.awt.image.BufferedImage;
-
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
-import com.sun.image.codec.jpeg.*;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * GenericImageHandler which caches JPEG images.

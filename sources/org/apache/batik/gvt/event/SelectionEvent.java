@@ -9,7 +9,6 @@
 package org.apache.batik.gvt.event;
 
 import java.awt.Shape;
-import java.util.EventObject;
 
 /**
  * An event which indicates that a selection is being made or has been made.

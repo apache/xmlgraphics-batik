@@ -8,9 +8,8 @@
 
 package org.apache.batik.gvt.font;
 
-import java.text.CharacterIterator;
 import java.awt.font.FontRenderContext;
-import java.awt.font.LineMetrics;
+import java.text.CharacterIterator;
 
 /**
  * An interface for all GVT font classes.

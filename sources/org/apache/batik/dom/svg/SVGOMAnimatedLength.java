@@ -8,16 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.parser.LengthParser;
-import org.apache.batik.parser.ParseException;
-import org.apache.batik.parser.UnitProcessor;
-
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
-
-import org.w3c.dom.svg.SVGAnimatedLength;
-import org.w3c.dom.svg.SVGLength;
 
 /**
  * This class provides an implementation of the {@link

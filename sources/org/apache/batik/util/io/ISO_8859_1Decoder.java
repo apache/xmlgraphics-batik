@@ -8,8 +8,8 @@
 
 package org.apache.batik.util.io;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This class represents an object which decodes ISO-8859-1 characters from

@@ -13,7 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.dom.AbstractDocument;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;

@@ -12,46 +12,30 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
-
 import java.util.jar.Manifest;
 
 import org.apache.batik.dom.svg.XMLBaseSupport;
-
-import org.apache.batik.dom.util.DOMUtilities;
-import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.util.XLinkSupport;
-
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.ScriptHandler;
-
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.ProcessingInstruction;
-
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-
-import org.w3c.dom.svg.SVGSVGElement;
 import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGSVGElement;
 
 /**
  * This class is the base class for SVG scripting.

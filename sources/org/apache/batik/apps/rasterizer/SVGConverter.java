@@ -8,27 +8,25 @@
 
 package org.apache.batik.apps.rasterizer;
 
+import java.awt.Color;
+import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-
-import java.awt.Color;
-import java.awt.geom.Rectangle2D;
-
-import java.util.HashMap;
-import java.util.Vector;
-import java.util.Map;
 
 /**
  * This application can be used to convert SVG images to raster images.

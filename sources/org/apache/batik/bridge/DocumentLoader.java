@@ -11,21 +11,12 @@ package org.apache.batik.bridge;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.batik.css.engine.CSSEngine;
-
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.apache.batik.dom.svg.SVGOMDocument;
-
 import org.apache.batik.dom.util.DocumentDescriptor;
-
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
-
-import org.xml.sax.SAXException;
 
 /**
  * This class is responsible on loading an SVG document and

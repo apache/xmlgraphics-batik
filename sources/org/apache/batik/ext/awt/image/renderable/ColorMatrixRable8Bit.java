@@ -11,7 +11,6 @@ package org.apache.batik.ext.awt.image.renderable;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.ColorMatrixRed;
 
 /**

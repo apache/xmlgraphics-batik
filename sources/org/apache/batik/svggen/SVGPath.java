@@ -8,10 +8,10 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.geom.*;
 import java.awt.Shape;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**

@@ -12,7 +12,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 
 import org.w3c.dom.DOMException;
-
 import org.w3c.dom.svg.SVGException;
 import org.w3c.dom.svg.SVGMatrix;
 

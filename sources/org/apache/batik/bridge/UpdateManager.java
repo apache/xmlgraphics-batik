@@ -9,11 +9,8 @@
 package org.apache.batik.bridge;
 
 import java.awt.Shape;
-
 import java.awt.geom.AffineTransform;
-
 import java.awt.image.BufferedImage;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -23,19 +20,12 @@ import java.util.List;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.UpdateTracker;
-
 import org.apache.batik.gvt.renderer.ImageRenderer;
-
 import org.apache.batik.util.RunnableQueue;
-
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.MutationEvent;
 
 /**
  * This class provides features to manage the update of an SVG document.

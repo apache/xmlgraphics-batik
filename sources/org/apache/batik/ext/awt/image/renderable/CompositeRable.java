@@ -9,7 +9,6 @@
 package org.apache.batik.ext.awt.image.renderable;
 
 import java.util.List;
-import java.awt.color.ColorSpace;
 
 import org.apache.batik.ext.awt.image.CompositeRule;
 

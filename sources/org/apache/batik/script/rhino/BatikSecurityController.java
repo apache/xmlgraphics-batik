@@ -8,17 +8,12 @@
 
 package org.apache.batik.script.rhino;
 
-import java.net.URL;
-import java.net.URLClassLoader;
-
-import org.apache.batik.util.BatikSecurityManager;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.GeneratedClassLoader;
 import org.mozilla.javascript.JavaScriptException;
-import org.mozilla.javascript.SecurityController;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.SecurityController;
 
 /**
  * This implementation of the Rhino <tt>SecurityController</tt> interface is

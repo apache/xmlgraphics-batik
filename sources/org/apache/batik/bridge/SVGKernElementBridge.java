@@ -8,11 +8,12 @@
 
 package org.apache.batik.bridge;
 
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import org.apache.batik.gvt.font.Kern;
 import org.apache.batik.gvt.font.UnicodeRange;
 import org.w3c.dom.Element;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
 /**
  * A base Bridge class for the kerning elements.

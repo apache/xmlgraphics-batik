@@ -17,18 +17,13 @@ import java.util.List;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
-
-import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
+import org.apache.batik.ext.awt.image.ConcreteComponentTransferFunction;
 import org.apache.batik.ext.awt.image.renderable.ComponentTransferRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.ConcreteComponentTransferFunction;
-
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.PatternPaint;
-
 import org.apache.batik.util.ParsedURL;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 

@@ -8,15 +8,14 @@
 
 package org.apache.batik.ext.awt.geom;
 
+import java.awt.Rectangle;
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.io.Serializable;
-
-import java.awt.Rectangle;
 
 /**
  * RectListManager is a class to manage a list of rectangular regions.

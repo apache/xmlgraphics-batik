@@ -8,18 +8,13 @@
 
 package org.apache.batik.parser;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
-
-import java.text.MessageFormat;
-
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import org.apache.batik.i18n.LocalizableSupport;
-
 import org.apache.batik.util.io.NormalizingReader;
 import org.apache.batik.util.io.StreamNormalizingReader;
 import org.apache.batik.util.io.StringNormalizingReader;

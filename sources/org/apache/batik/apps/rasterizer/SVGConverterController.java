@@ -9,9 +9,8 @@
 package org.apache.batik.apps.rasterizer;
 
 import java.io.File;
-
-import java.util.Vector;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.batik.transcoder.Transcoder;
 

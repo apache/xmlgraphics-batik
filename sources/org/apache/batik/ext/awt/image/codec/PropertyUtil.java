@@ -8,12 +8,8 @@
 
 package org.apache.batik.ext.awt.image.codec;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
 import java.util.MissingResourceException;
-import org.apache.batik.i18n.Localizable;
+
 import org.apache.batik.i18n.LocalizableSupport;
 
 public class PropertyUtil {

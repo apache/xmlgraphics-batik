@@ -8,13 +8,10 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.geom.*;
-import java.awt.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.awt.Composite;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.w3c.dom.Element;
 
 /**
  * Utility class that converts an custom Composite object into

@@ -8,14 +8,8 @@
 
 package org.apache.batik.util.io;
 
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.batik.util.EncodingUtilities;
 
 /**
  * This class represents a reader which normalizes the line break: \n,

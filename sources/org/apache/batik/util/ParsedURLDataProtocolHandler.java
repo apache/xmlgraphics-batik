@@ -9,10 +9,9 @@
 package org.apache.batik.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
-import java.net.URLDecoder;
 
 /**
  * Protocol Handler for the 'data' protocol.

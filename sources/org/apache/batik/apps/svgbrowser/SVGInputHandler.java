@@ -8,11 +8,8 @@
 
 package org.apache.batik.apps.svgbrowser;
 
-import javax.swing.filechooser.FileFilter;
-
 import java.io.File;
 
-import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.util.ParsedURL;
 
 /**

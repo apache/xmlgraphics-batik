@@ -8,21 +8,39 @@
 
 package org.apache.batik.svggen;
 
-import java.io.*;
-import java.lang.*;
-import java.util.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.Image;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.font.GlyphVector;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ImageObserver;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderableImage;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.text.AttributedCharacterIterator;
-import java.awt.*;
-import java.awt.image.*;
-import java.awt.font.*;
-import java.awt.geom.*;
-import java.awt.image.renderable.*;
 
-import org.w3c.dom.*;
-
-import org.apache.batik.util.XMLConstants;
 import org.apache.batik.ext.awt.g2d.AbstractGraphics2D;
 import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.apache.batik.util.XMLConstants;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
 
 /**
  * This implementation of the java.awt.Graphics2D abstract class

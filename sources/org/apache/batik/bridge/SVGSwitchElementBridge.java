@@ -8,11 +8,8 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.geom.Rectangle2D;
-
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGTests;

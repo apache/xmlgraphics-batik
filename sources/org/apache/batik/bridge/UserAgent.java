@@ -15,7 +15,6 @@ import java.awt.geom.Dimension2D;
 
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.util.ParsedURL;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
 

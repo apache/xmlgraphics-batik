@@ -8,17 +8,11 @@
 
 package org.apache.batik.gvt;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.PaintContext;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -32,7 +26,6 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.TileRable;
 import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
 import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
 
 /**
  * <tt>PaintContext</tt> for the <tt>ConcretePatterPaint</tt>

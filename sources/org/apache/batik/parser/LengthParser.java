@@ -9,7 +9,6 @@
 package org.apache.batik.parser;
 
 import java.io.IOException;
-import java.io.Reader;
 
 /**
  * This class implements an event-based parser for the SVG length

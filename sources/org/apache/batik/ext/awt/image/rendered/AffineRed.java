@@ -8,32 +8,25 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import org.apache.batik.ext.awt.image.PadMode;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Transparency;
-
-import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-
+import java.awt.Transparency;
 import java.awt.color.ColorSpace;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
-import java.awt.image.DirectColorModel;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
+import java.awt.image.DirectColorModel;
 import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 import java.awt.image.SampleModel;
-import java.awt.image.ColorModel;
-import java.awt.image.BufferedImage;
-import java.awt.image.AffineTransformOp;
+import java.awt.image.WritableRaster;
+
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * This is an implementation of an affine operation as a RenderedImage.

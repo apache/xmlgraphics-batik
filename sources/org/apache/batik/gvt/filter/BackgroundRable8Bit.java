@@ -8,35 +8,25 @@
 
 package org.apache.batik.gvt.filter;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
-import java.awt.image.BufferedImage;
 import java.awt.image.renderable.RenderContext;
-import java.awt.image.renderable.RenderableImage;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.CompositeRule;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.AbstractRable;
-import org.apache.batik.ext.awt.image.renderable.CompositeRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.CompositeRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
 * This implementation of RenderableImage will render its input

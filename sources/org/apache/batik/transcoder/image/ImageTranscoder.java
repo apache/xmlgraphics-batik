@@ -12,26 +12,20 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-
+import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
-import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
-
+import org.apache.batik.transcoder.SVGAbstractTranscoder;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
-import org.apache.batik.transcoder.SVGAbstractTranscoder;
-
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.PaintKey;
-
-
 import org.w3c.dom.Document;
 
 /**

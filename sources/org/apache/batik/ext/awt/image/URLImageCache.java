@@ -8,14 +8,9 @@
 
 package org.apache.batik.ext.awt.image;
 
-import java.util.Map;
-import java.util.HashMap;
-
-import java.lang.ref.SoftReference;
-
-import org.apache.batik.util.SoftReferenceCache;
-import org.apache.batik.util.ParsedURL;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.SoftReferenceCache;
 
 /**
  * This class manages a cache of soft references to Images that

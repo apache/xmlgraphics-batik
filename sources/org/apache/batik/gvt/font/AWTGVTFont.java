@@ -10,28 +10,20 @@ package org.apache.batik.gvt.font;
 
 import java.awt.Font;
 import java.awt.Shape;
-
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphMetrics;
 import java.awt.font.GlyphVector;
-import java.awt.font.LineMetrics;
 import java.awt.font.TextAttribute;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
+import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
-
+import java.text.StringCharacterIterator;
 import java.util.HashMap;
 import java.util.Map;
 
-import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
-import java.text.StringCharacterIterator;
-
 import org.apache.batik.gvt.text.ArabicTextHandler;
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
 
 /**

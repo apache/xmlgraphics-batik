@@ -10,35 +10,25 @@ package org.apache.batik.extension.svg;
 
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
-import java.net.URL;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Iterator;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGDocument;
-
-
-import org.apache.batik.bridge.CSSUtilities;
-import org.apache.batik.bridge.SVGImageElementBridge;
 import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.CSSUtilities;
+import org.apache.batik.bridge.SVGImageElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
-
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg.XMLBaseSupport;
-
 import org.apache.batik.dom.util.XLinkSupport;
-
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ImageNode;
-import org.apache.batik.gvt.CompositeGraphicsNode;
-
 import org.apache.batik.util.ParsedURL;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Bridge class for the &lt;multiImage> element.

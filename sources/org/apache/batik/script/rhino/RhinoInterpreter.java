@@ -10,37 +10,31 @@ package org.apache.batik.script.rhino;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Writer;
 import java.io.StringReader;
-
+import java.io.Writer;
 import java.net.URL;
-
-import java.security.AccessController;
 import java.security.AccessControlContext;
+import java.security.AccessController;
 import java.security.PrivilegedAction;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Vector;
 
-import org.w3c.dom.events.EventTarget;
-
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.Window;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
-import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeJavaPackage;
-import org.mozilla.javascript.SecurityController;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.WrappedException;
+import org.mozilla.javascript.SecurityController;
 import org.mozilla.javascript.WrapFactory;
+import org.mozilla.javascript.WrappedException;
+import org.w3c.dom.events.EventTarget;
 
 /**
  * A simple implementation of <code>Interpreter</code> interface to use

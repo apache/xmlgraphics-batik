@@ -8,7 +8,6 @@
 
 package org.apache.batik.bridge;
 
-import java.net.URL;
 
 /**
  * This implementation for the <tt>ScriptSecurity</tt> interface

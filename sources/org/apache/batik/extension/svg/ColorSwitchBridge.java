@@ -11,16 +11,14 @@ package org.apache.batik.extension.svg;
 import java.awt.Color;
 import java.awt.Paint;
 
-import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.AbstractSVGBridge;
+import org.apache.batik.bridge.Bridge;
+import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.PaintBridge;
 import org.apache.batik.bridge.SVGUtilities;
-import org.apache.batik.bridge.Bridge;
 import org.apache.batik.gvt.GraphicsNode;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGTests;
 
 /**
  * Bridge class for a regular polygon element.

@@ -9,10 +9,8 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.css.engine.CSSImportedElementRoot;
-
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractDocumentFragment;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 

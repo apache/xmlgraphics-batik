@@ -10,11 +10,8 @@ package org.apache.batik.util.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
 import java.awt.event.ActionListener;
-
 import java.net.URL;
-
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;

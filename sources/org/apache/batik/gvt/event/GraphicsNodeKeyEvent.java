@@ -8,8 +8,6 @@
 
 package org.apache.batik.gvt.event;
 
-import java.awt.event.KeyEvent;
-
 import org.apache.batik.gvt.GraphicsNode;
 
 /**

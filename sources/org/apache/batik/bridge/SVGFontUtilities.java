@@ -14,20 +14,14 @@ import java.util.Vector;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XMLBaseSupport;
-
 import org.apache.batik.dom.util.XLinkSupport;
-
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
-
 import org.apache.batik.util.SVGConstants;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.w3c.dom.svg.SVGDocument;
 
 /**
  * Utility class for SVG fonts.

@@ -8,23 +8,21 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
-import java.awt.Toolkit;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
-import java.awt.image.BufferedImage;
-
-import java.net.URL;
 import java.net.MalformedURLException;
-
+import java.net.URL;
 import java.util.HashMap;
 
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.renderable.DeferRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
-import org.apache.batik.ext.awt.image.renderable.DeferRable;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.util.ParsedURL;
 
 /**

@@ -8,29 +8,25 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderContext;
+import java.awt.image.renderable.RenderableImage;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 import java.util.Vector;
-import java.util.Iterator;
-
-import java.awt.Shape;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
-
-import java.awt.image.RenderedImage;
-
-import java.awt.image.renderable.RenderableImage;
-import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
+import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 
 /**
  * This is an abstract base class that takes care of most of the

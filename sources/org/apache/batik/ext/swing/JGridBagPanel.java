@@ -7,14 +7,13 @@
  *****************************************************************************/
 package org.apache.batik.ext.swing;
 
-import javax.swing.JPanel;
-import java.awt.LayoutManager;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.AWTError;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Insets;
+import java.awt.LayoutManager;
+
+import javax.swing.JPanel;
 
 /**
  * An implementation of JPanel that uses the GridBagLayout.

@@ -9,14 +9,9 @@
 package org.apache.batik.ext.awt.image.rendered;
 
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
 import java.awt.Point;
 import java.awt.Rectangle;
-
-import java.awt.Transparency;
 import java.awt.color.ColorSpace;
-
 import java.awt.image.BandCombineOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
@@ -26,6 +21,8 @@ import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
+
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 /**
  * This function will tranform an image from any colorspace into a

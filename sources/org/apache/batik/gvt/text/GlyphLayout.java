@@ -8,13 +8,12 @@
 
 package org.apache.batik.gvt.text;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.BasicStroke;
-import java.awt.Font;
-import java.awt.font.TextAttribute;
 import java.awt.font.FontRenderContext;
+import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
@@ -23,24 +22,19 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
-
 import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
-import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.text.TextSpanLayout;
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import org.apache.batik.gvt.text.TextHit;
-import org.apache.batik.gvt.font.GVTGlyphVector;
-import org.apache.batik.gvt.font.MultiGlyphVector;
+import org.apache.batik.gvt.font.AWTGVTFont;
 import org.apache.batik.gvt.font.AltGlyphHandler;
-import org.apache.batik.gvt.font.GVTLineMetrics;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTGlyphMetrics;
-import org.apache.batik.gvt.font.AWTGVTFont;
+import org.apache.batik.gvt.font.GVTGlyphVector;
+import org.apache.batik.gvt.font.GVTLineMetrics;
+import org.apache.batik.gvt.font.MultiGlyphVector;
 
 /**
  * Implementation of TextSpanLayout which uses java.awt.font.GlyphVector.

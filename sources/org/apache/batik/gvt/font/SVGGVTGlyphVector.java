@@ -8,22 +8,15 @@
 
 package org.apache.batik.gvt.font;
 
+import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphJustificationInfo;
-import java.awt.font.GlyphMetrics;
-import java.awt.font.GlyphVector;
-import java.awt.Shape;
-import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.Graphics2D;
 import java.text.AttributedCharacterIterator;
-import java.awt.Paint;
-import java.awt.Stroke;
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import java.text.AttributedCharacterIterator;
-import java.awt.font.TextAttribute;
 
 /**
  * A GVTGlyphVector class for SVG fonts.

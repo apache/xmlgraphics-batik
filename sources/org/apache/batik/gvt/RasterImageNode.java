@@ -9,13 +9,11 @@
 package org.apache.batik.gvt;
 
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.RenderedImage;
-import org.apache.batik.ext.awt.image.renderable.Filter;
+
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 
 /**
  * A graphics node that represents a raster image.

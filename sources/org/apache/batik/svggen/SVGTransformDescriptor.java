@@ -8,9 +8,10 @@
 
 package org.apache.batik.svggen;
 
-import java.util.*;
-
-import org.apache.batik.ext.awt.g2d.GraphicContext;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Describes an SVG transform

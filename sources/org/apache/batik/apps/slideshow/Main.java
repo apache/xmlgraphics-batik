@@ -8,44 +8,37 @@
 
 package org.apache.batik.apps.slideshow;
 
-import org.apache.batik.gvt.renderer.StaticRenderer;
-import org.apache.batik.gvt.GraphicsNode;
-
-import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.ViewBox;
-
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JWindow;
-import java.awt.image.BufferedImage;
+import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.Rectangle;
-import java.awt.Dimension;
-import java.awt.Color;
 import java.awt.Point;
-import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
-
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
-
-import java.io.File;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-
-import java.util.Vector;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Vector;
 
+import javax.swing.JComponent;
+import javax.swing.JWindow;
+
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.UserAgentAdapter;
+import org.apache.batik.bridge.ViewBox;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.renderer.StaticRenderer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;

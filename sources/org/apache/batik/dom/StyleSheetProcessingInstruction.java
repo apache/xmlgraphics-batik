@@ -10,7 +10,6 @@ package org.apache.batik.dom;
 
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.stylesheets.LinkStyle;

@@ -10,22 +10,17 @@ package org.apache.batik.gvt;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.GeneralPath;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.Vector;
-import javax.swing.event.EventListenerList;
-import org.apache.batik.gvt.event.GraphicsNodeEvent;
 
 /**
  * A CompositeGraphicsNode is a graphics node that can contain graphics nodes.

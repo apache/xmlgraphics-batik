@@ -8,21 +8,13 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.Paint;
 import java.awt.RenderingHints;
-import java.awt.Shape;
-
-import java.util.Map;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
-
-import org.apache.batik.gvt.CompositeShapePainter;
-import org.apache.batik.gvt.FillShapePainter;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
-
 import org.w3c.dom.Element;
 
 /**

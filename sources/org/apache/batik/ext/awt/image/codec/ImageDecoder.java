@@ -10,7 +10,6 @@ package org.apache.batik.ext.awt.image.codec;
 
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
-import java.io.InputStream;
 import java.io.IOException;
 
 /**

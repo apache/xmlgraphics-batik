@@ -8,15 +8,10 @@
 
 package org.apache.batik.gvt.text;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.text.CharacterIterator;
 import java.text.AttributedCharacterIterator;
-import java.text.StringCharacterIterator;
-import java.text.AttributedString;
+import java.text.CharacterIterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * AttributedCharacterSpanIterator

@@ -8,11 +8,6 @@
 
 package org.apache.batik.ext.awt.image;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-
-import java.awt.color.ColorSpace;
-
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
@@ -22,12 +17,12 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-
+import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.ComponentSampleModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
@@ -38,14 +33,13 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
-import java.awt.image.ComponentSampleModel;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.renderable.RenderableImage;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
-import org.apache.batik.ext.awt.image.PadMode;
-import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PaintRable;
 import org.apache.batik.ext.awt.image.rendered.AffineRed;
 import org.apache.batik.ext.awt.image.rendered.Any2LsRGBRed;
@@ -57,7 +51,6 @@ import org.apache.batik.ext.awt.image.rendered.MultiplyAlphaRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
-import org.apache.batik.ext.awt.image.SVGComposite;
 
 
 /**

@@ -8,7 +8,6 @@
 
 package org.apache.batik.gvt.font;
 
-import org.apache.batik.gvt.TextNode;
 import java.text.AttributedCharacterIterator;
 
 /**

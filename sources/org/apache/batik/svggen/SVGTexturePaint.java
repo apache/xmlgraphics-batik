@@ -10,15 +10,13 @@ package org.apache.batik.svggen;
 
 import java.awt.Graphics2D;
 import java.awt.TexturePaint;
-import java.awt.image.RenderedImage;
-import java.awt.image.BufferedImage;
 import java.awt.geom.Rectangle2D;
-import java.awt.Rectangle;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Utility class that converts a TexturePaint object into an

@@ -8,9 +8,10 @@
 
 package org.apache.batik.svggen;
 
-import java.util.*;
-
-import org.w3c.dom.Document;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract class with common utility methods used by subclasses

@@ -10,11 +10,8 @@ package org.apache.batik.svggen;
 
 import java.awt.Color;
 import java.awt.Paint;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
-
-import org.w3c.dom.*;
+import java.util.Map;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 

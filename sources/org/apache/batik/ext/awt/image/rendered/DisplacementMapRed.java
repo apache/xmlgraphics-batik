@@ -8,26 +8,17 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.PadMode;
-import org.apache.batik.ext.awt.image.rendered.AbstractRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
-
-import java.awt.RenderingHints;
 import java.awt.Rectangle;
-import java.awt.Point;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.Point2D;
+import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
-import java.awt.image.RasterOp;
-import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 
 import org.apache.batik.ext.awt.image.ARGBChannel;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.PadMode;
 
 
 /**

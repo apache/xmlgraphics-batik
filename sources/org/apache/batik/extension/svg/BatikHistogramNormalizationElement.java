@@ -8,10 +8,9 @@
 
 package org.apache.batik.extension.svg;
 
-import org.w3c.dom.Node;
-
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.extension.PrefixableStylableExtensionElement;
+import org.w3c.dom.Node;
 
 
 /**

@@ -8,9 +8,9 @@
 
 package org.apache.batik.dom.events;
 
-import org.apache.batik.dom.util.*;
-import org.w3c.dom.*;
-import org.w3c.dom.events.*;
+import org.apache.batik.dom.util.HashTable;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.events.Event;
 
 /**
  * This class implements the behavior of DocumentEvent.

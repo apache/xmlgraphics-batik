@@ -9,11 +9,12 @@
 package org.apache.batik.ext.awt.font;
 
 import java.awt.Shape;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.awt.font.GlyphVector;
 import java.awt.font.GlyphMetrics;
+import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
+
 import org.apache.batik.ext.awt.geom.PathLength;
 
 /**

@@ -8,18 +8,15 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.awt.geom.AffineTransform;
-import java.io.ByteArrayOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.w3c.dom.*;
-
-import org.apache.batik.util.Base64EncoderStream;
 import org.apache.batik.ext.awt.image.codec.ImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
+import org.apache.batik.util.Base64EncoderStream;
+import org.w3c.dom.Element;
 
 
 /**

@@ -8,7 +8,6 @@
 
 package org.apache.batik.ext.awt.image;
 
-import java.lang.Math;
 
 /**
  * This class defines the Discrete type transfer function for the

@@ -8,9 +8,9 @@
 
 package org.apache.batik.ext.awt;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.Paint;
+import java.awt.geom.AffineTransform;
 
 /** This is the superclass for Paints which use a multiple color
  * gradient to fill in their raster.  It provides storage for variables and

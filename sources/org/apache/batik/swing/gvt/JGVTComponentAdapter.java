@@ -8,7 +8,6 @@
 
 package org.apache.batik.swing.gvt;
 
-import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 public class JGVTComponentAdapter implements JGVTComponentListener {

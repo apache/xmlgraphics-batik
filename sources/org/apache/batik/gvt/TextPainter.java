@@ -10,9 +10,6 @@ package org.apache.batik.gvt;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.text.AttributedCharacterIterator;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.gvt.text.Mark;

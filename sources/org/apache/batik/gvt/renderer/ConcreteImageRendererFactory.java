@@ -8,17 +8,6 @@
 
 package org.apache.batik.gvt.renderer;
 
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.font.FontRenderContext;
-
-import org.apache.batik.gvt.TextPainter;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
-
-import org.apache.batik.gvt.renderer.Renderer;
-import org.apache.batik.gvt.renderer.RendererFactory;
-
-import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
 
 /**
  * This class provides a factory for renderers.

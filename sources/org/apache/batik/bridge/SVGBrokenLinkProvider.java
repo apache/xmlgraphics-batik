@@ -9,27 +9,18 @@
 package org.apache.batik.bridge;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.spi.DefaultBrokenLinkProvider;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-import org.apache.batik.gvt.renderer.StaticRenderer;
-import org.apache.batik.i18n.LocalizableSupport;
-
-import org.apache.batik.dom.util.DOMUtilities;
-
 import org.apache.batik.util.SVGConstants;
-
 import org.w3c.dom.Document;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
-
-import java.util.Map;
-import java.util.HashMap;
 /**
  * This interface is to be used to provide alternate ways of 
  * generating a placeholder image when the ImageTagRegistry

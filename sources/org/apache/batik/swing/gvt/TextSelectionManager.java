@@ -14,21 +14,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
-
 import java.awt.geom.AffineTransform;
 
-import java.util.List;
-
-import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.Selectable;
-
 import org.apache.batik.gvt.event.AWTEventDispatcher;
 import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
 import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.event.SelectionListener;
-
 import org.apache.batik.gvt.text.ConcreteTextSelector;
 import org.apache.batik.gvt.text.Mark;
 

@@ -8,10 +8,8 @@
 
 package org.apache.batik.util;
 
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.io.IOException;
-import java.io.EOFException;
+import java.io.InputStream;
 
 /**
  * This class implements a Base64 Character decoder as specified in RFC1113.

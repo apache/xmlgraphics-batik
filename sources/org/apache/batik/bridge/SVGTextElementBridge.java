@@ -8,64 +8,51 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.Color;
 import java.awt.Composite;
-import java.awt.GraphicsEnvironment;
 import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.GeneralPath;
-import java.io.StringReader;
-
 import java.text.AttributedCharacterIterator;
-import java.text.AttributedCharacterIterator.Attribute;
 import java.text.AttributedString;
-import java.text.CharacterIterator;
+import java.text.AttributedCharacterIterator.Attribute;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.CSSStylableElement;
-import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.SVGCSSEngine;
-import org.apache.batik.css.engine.value.ComputedValue;
+import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
-
 import org.apache.batik.dom.svg.SVGContext;
-import org.apache.batik.dom.svg.SVGTextContent;
-import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.dom.svg.SVGTextContent;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
+import org.apache.batik.gvt.font.GVTFontFamily;
+import org.apache.batik.gvt.font.GVTGlyphMetrics;
+import org.apache.batik.gvt.font.GVTGlyphVector;
+import org.apache.batik.gvt.renderer.StrokingTextPainter;
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.text.TextHit;
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextPath;
-import org.apache.batik.gvt.font.GVTFontFamily;
-import org.apache.batik.gvt.font.UnresolvedFontFamily;
-import org.apache.batik.gvt.renderer.StrokingTextPainter;
 import org.apache.batik.gvt.text.TextSpanLayout;
-import org.apache.batik.gvt.font.GVTGlyphVector;
-import org.apache.batik.gvt.font.GVTGlyphMetrics;
-
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.events.Event;

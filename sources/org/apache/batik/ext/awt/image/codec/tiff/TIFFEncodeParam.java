@@ -8,15 +8,12 @@
 
 package org.apache.batik.ext.awt.image.codec.tiff;
 
-import  org.apache.batik.ext.awt.image.codec.ImageEncodeParam;
-
-import java.awt.image.RenderedImage;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.zip.Deflater;
 
+import org.apache.batik.ext.awt.image.codec.ImageEncodeParam;
+
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * An instance of <code>ImageEncodeParam</code> for encoding images in 

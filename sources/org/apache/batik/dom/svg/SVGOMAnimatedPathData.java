@@ -10,7 +10,6 @@ package org.apache.batik.dom.svg;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
-
 import org.w3c.dom.svg.SVGAnimatedPathData;
 import org.w3c.dom.svg.SVGException;
 import org.w3c.dom.svg.SVGPathSegList;

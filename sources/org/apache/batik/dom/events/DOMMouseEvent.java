@@ -8,10 +8,9 @@
 
 package org.apache.batik.dom.events;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.views.AbstractView;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MouseEvent;
+import org.w3c.dom.views.AbstractView;
 
 /**
  * The MouseEvent class provides specific contextual information

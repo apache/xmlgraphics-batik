@@ -10,6 +10,7 @@ package org.apache.batik.svggen;
 
 import java.util.Iterator;
 import java.util.Map;
+
 import org.w3c.dom.Element;
 
 /**

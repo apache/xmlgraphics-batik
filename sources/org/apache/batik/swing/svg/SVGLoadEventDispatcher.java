@@ -9,19 +9,14 @@
 package org.apache.batik.swing.svg;
 
 import java.awt.EventQueue;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.UpdateManager;
-
 import org.apache.batik.gvt.GraphicsNode;
-
 import org.w3c.dom.svg.SVGDocument;
 
 /**

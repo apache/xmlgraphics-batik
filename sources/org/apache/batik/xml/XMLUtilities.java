@@ -9,9 +9,9 @@
 package org.apache.batik.xml;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.io.Reader;
 

@@ -8,8 +8,8 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Defines the interface for a set of SVG attributes and

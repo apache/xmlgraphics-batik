@@ -8,7 +8,10 @@
 
 package org.apache.batik.svggen;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Element;
 

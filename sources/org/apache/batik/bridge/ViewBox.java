@@ -9,17 +9,14 @@
 package org.apache.batik.bridge;
 
 import java.awt.geom.AffineTransform;
-import java.io.StringReader;
 import java.util.StringTokenizer;
 
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.FragmentIdentifierHandler;
 import org.apache.batik.parser.FragmentIdentifierParser;
 import org.apache.batik.parser.ParseException;
-import org.apache.batik.parser.PreserveAspectRatioHandler;
 import org.apache.batik.parser.PreserveAspectRatioParser;
 import org.apache.batik.util.SVGConstants;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

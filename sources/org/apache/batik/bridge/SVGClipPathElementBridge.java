@@ -18,10 +18,8 @@ import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-
-import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Bridge class for the &lt;clipPath> element.

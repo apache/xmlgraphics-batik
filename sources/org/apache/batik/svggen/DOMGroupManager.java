@@ -8,15 +8,13 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.util.*;
-import java.awt.font.*;
-
-import org.w3c.dom.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 import org.apache.batik.ext.awt.g2d.TransformStackElement;
+import org.w3c.dom.Element;
 
 /**
  * This class is used by the Graphics2D SVG Generator to manage

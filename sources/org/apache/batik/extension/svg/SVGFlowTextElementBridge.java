@@ -8,40 +8,35 @@
 
 package org.apache.batik.extension.svg;
 
+import java.awt.geom.Point2D;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.awt.font.TextAttribute;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.events.EventTarget;
-
 import org.apache.batik.bridge.Bridge;
-import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.SVGAElementBridge;
 import org.apache.batik.bridge.SVGTextElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.TextUtilities;
 import org.apache.batik.bridge.UnitProcessor;
 import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.SVGAElementBridge;
-
-import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.MarginInfo;
-import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.gvt.text.RegionInfo;
-
+import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.events.EventTarget;
 
 /**
  * Bridge class for the &lt;flowText> element.

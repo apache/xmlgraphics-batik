@@ -8,16 +8,14 @@
 
 package org.apache.batik.xml;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
-
 import java.util.Locale;
 import java.util.MissingResourceException;
 
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
-
 import org.apache.batik.util.io.NormalizingReader;
 import org.apache.batik.util.io.StreamNormalizingReader;
 import org.apache.batik.util.io.StringNormalizingReader;

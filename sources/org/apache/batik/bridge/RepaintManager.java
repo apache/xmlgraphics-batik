@@ -10,17 +10,12 @@ package org.apache.batik.bridge;
 
 import java.awt.Rectangle;
 import java.awt.Shape;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-
 import java.awt.image.BufferedImage;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.batik.gvt.UpdateTracker;
 
 import org.apache.batik.gvt.renderer.ImageRenderer;
 

@@ -8,8 +8,8 @@
 
 package org.apache.batik.ext.awt.image.codec;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
 
 /**

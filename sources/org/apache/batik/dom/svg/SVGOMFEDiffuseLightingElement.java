@@ -8,13 +8,8 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
 import org.apache.batik.dom.AbstractDocument;
-
 import org.w3c.dom.Node;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEDiffuseLightingElement;

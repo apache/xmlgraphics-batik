@@ -8,8 +8,8 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Defines the set of attributes from Exchange SVG that

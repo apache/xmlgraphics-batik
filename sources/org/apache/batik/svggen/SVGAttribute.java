@@ -8,8 +8,8 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents an SVG attribute and provides convenience

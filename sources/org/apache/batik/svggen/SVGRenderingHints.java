@@ -8,11 +8,7 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.geom.*;
-import java.awt.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.awt.RenderingHints;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 

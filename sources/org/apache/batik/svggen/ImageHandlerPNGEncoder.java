@@ -8,17 +8,15 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.awt.image.renderable.RenderableImage;
-import java.awt.geom.AffineTransform;
-import java.io.*;
-import java.net.*;
+import java.awt.Dimension;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import org.apache.batik.ext.awt.image.codec.ImageEncoder;
 import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
-
-import org.w3c.dom.*;
 
 /**
  * This implementation of the abstract AbstractImageHandlerEncoder

@@ -9,7 +9,6 @@
 package org.apache.batik.css.engine.value;
 
 import org.w3c.dom.DOMException;
-
 import org.w3c.dom.css.CSSValue;
 
 /**

@@ -12,12 +12,8 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
-import org.apache.batik.parser.ParseException;
-import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
-
 import org.w3c.dom.Element;
-
 import org.w3c.dom.events.MutationEvent;
 
 /**

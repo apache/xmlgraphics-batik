@@ -11,9 +11,8 @@ package org.apache.batik.dom.svg;
 import java.awt.geom.AffineTransform;
 
 import org.apache.batik.parser.ParseException;
-import org.apache.batik.parser.TransformListParser;
 import org.apache.batik.parser.TransformListHandler;
-
+import org.apache.batik.parser.TransformListParser;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGException;
 import org.w3c.dom.svg.SVGMatrix;

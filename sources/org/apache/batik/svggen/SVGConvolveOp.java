@@ -8,8 +8,10 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.image.*;
-import java.awt.*;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

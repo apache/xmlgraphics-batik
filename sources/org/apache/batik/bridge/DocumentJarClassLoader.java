@@ -8,21 +8,12 @@
 
 package org.apache.batik.bridge;
 
-import java.io.File;
-import java.io.FilePermission;
-
-import java.net.SocketPermission;
 import java.net.URL;
 import java.net.URLClassLoader;
-
-import java.security.AccessController;
-import java.security.Permission;
-import java.security.Policy;
-import java.security.SecureClassLoader;
 import java.security.CodeSource;
+import java.security.Permission;
 import java.security.PermissionCollection;
-import java.security.PrivilegedAction;
-
+import java.security.Policy;
 import java.util.Enumeration;
 
 /**

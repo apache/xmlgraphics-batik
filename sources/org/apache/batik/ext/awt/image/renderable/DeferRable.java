@@ -8,13 +8,13 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.Shape;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
-import java.util.Vector;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  * This class allows for the return of a proxy object quickly, while a

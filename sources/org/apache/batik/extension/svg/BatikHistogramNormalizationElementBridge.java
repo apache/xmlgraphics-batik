@@ -8,22 +8,19 @@
 
 package org.apache.batik.extension.svg;
 
-import org.w3c.dom.Element;
-
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
-import org.apache.batik.bridge.Bridge;
-import org.apache.batik.bridge.BridgeException;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.AbstractSVGFilterPrimitiveElementBridge;
-
-import org.apache.batik.gvt.GraphicsNode;
-
+import org.apache.batik.bridge.Bridge;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeException;
+import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.batik.gvt.GraphicsNode;
+import org.w3c.dom.Element;
 
 /**
  * Bridge class for a histogram normalization element.

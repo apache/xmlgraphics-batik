@@ -8,8 +8,6 @@
 
 package org.apache.batik.gvt.text;
 
-import org.apache.batik.gvt.TextNode;
-import java.awt.font.FontRenderContext;
 
 /**
  * Class that encapsulates information returned from hit testing

@@ -9,22 +9,16 @@
 package org.apache.batik.swing;
 
 import java.awt.Dimension;
-
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-
 import java.awt.geom.AffineTransform;
-
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -37,9 +31,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ToolTipManager;
 
 import org.apache.batik.bridge.UserAgent;
-
 import org.apache.batik.dom.svg.SVGDOMImplementation;
-
 import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
 import org.apache.batik.swing.gvt.AbstractResetTransformInteractor;
@@ -49,19 +41,15 @@ import org.apache.batik.swing.gvt.Interactor;
 import org.apache.batik.swing.svg.JSVGComponent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGUserAgent;
-
-import org.apache.batik.util.gui.JErrorPane;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
-
+import org.apache.batik.util.gui.JErrorPane;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-
 import org.w3c.dom.svg.SVGDocument;
 
 /**

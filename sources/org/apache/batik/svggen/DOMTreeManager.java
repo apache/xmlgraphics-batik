@@ -8,12 +8,17 @@
 
 package org.apache.batik.svggen;
 
-import java.util.*;
-import java.awt.font.*;
-
-import org.w3c.dom.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * This class is used by the SVGGraphics2D SVG Generator to manage

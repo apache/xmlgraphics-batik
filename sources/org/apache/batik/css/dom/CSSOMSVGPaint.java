@@ -10,14 +10,10 @@ package org.apache.batik.css.dom;
 
 import org.apache.batik.css.engine.value.FloatValue;
 import org.apache.batik.css.engine.value.Value;
-
 import org.apache.batik.css.engine.value.svg.ICCColor;
-
 import org.w3c.dom.DOMException;
-
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
-
 import org.w3c.dom.svg.SVGPaint;
 
 /**

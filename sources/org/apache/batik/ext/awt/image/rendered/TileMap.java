@@ -10,10 +10,10 @@ package org.apache.batik.ext.awt.image.rendered;
 
 import java.awt.Point;
 import java.awt.image.Raster;
-import java.util.HashMap;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
+import java.util.HashMap;
 
 public class TileMap implements TileStore {
     private static final boolean DEBUG = false;

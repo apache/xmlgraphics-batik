@@ -12,44 +12,32 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.awt.geom.NoninvertibleTransformException;
-
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-
 import java.awt.print.PrinterException;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-
 import java.net.MalformedURLException;
-
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -60,14 +48,10 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
-import java.util.zip.GZIPInputStream;
-
 import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -81,41 +65,29 @@ import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
-
 import javax.swing.filechooser.FileFilter;
-
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
-import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.DefaultExternalResourceSecurity;
-import org.apache.batik.bridge.EmbededScriptSecurity;
+import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.EmbededExternalResourceSecurity;
-import org.apache.batik.bridge.NoLoadScriptSecurity;
-import org.apache.batik.bridge.NoLoadExternalResourceSecurity;
-import org.apache.batik.bridge.RelaxedScriptSecurity;
+import org.apache.batik.bridge.EmbededScriptSecurity;
 import org.apache.batik.bridge.ExternalResourceSecurity;
+import org.apache.batik.bridge.NoLoadExternalResourceSecurity;
+import org.apache.batik.bridge.NoLoadScriptSecurity;
 import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
+import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
-
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
-
 import org.apache.batik.dom.svg.SVGOMDocument;
-
 import org.apache.batik.dom.util.HashTable;
-import org.apache.batik.dom.util.DOMUtilities;
-
-import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
-import org.apache.batik.swing.gvt.AbstractPanInteractor;
-import org.apache.batik.swing.gvt.AbstractRotateInteractor;
-import org.apache.batik.swing.gvt.AbstractZoomInteractor;
+import org.apache.batik.ext.swing.JAffineTransformChooser;
+import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.GVTTreeRendererListener;
-
-import org.apache.batik.swing.JSVGCanvas;
-
 import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.GVTTreeBuilderListener;
 import org.apache.batik.swing.svg.LinkActivationEvent;
@@ -126,51 +98,30 @@ import org.apache.batik.swing.svg.SVGFileFilter;
 import org.apache.batik.swing.svg.SVGLoadEventDispatcherEvent;
 import org.apache.batik.swing.svg.SVGLoadEventDispatcherListener;
 import org.apache.batik.swing.svg.SVGUserAgent;
-
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.TIFFTranscoder;
-
 import org.apache.batik.transcoder.print.PrintTranscoder;
-
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
-import org.apache.batik.util.MimeTypeConstants;
 import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.JErrorPane;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;
 import org.apache.batik.util.gui.URIChooser;
-import org.apache.batik.util.gui.UserStyleDialog;
-
 import org.apache.batik.util.gui.resource.ActionMap;
-import org.apache.batik.util.gui.resource.ButtonFactory;
 import org.apache.batik.util.gui.resource.JComponentModifier;
 import org.apache.batik.util.gui.resource.MenuFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
 import org.apache.batik.util.gui.resource.ResourceManager;
 import org.apache.batik.util.gui.resource.ToolBarFactory;
-
-import org.apache.batik.ext.swing.JAffineTransformChooser;
-
 import org.apache.batik.xml.XMLUtilities;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.ProcessingInstruction;
-
-import org.w3c.dom.stylesheets.DocumentStyle;
-import org.w3c.dom.stylesheets.StyleSheetList;
-
-import org.w3c.dom.css.CSSStyleSheet;
-
 import org.w3c.dom.css.ViewCSS;
-
 import org.w3c.dom.svg.SVGDocument;
 
 /**

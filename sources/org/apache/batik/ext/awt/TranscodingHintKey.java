@@ -9,7 +9,6 @@
 package org.apache.batik.ext.awt;
 
 import java.awt.RenderingHints;
-import java.awt.Shape;
 
 /**
  * TranscodingHint as to what the destination of the drawing is.

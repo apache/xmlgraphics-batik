@@ -11,13 +11,10 @@ package org.apache.batik.ext.awt.image.rendered;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Point;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBufferInt;
@@ -26,13 +23,8 @@ import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
-import java.awt.image.renderable.RenderContext;
-
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.rendered.TileGenerator;
-import org.apache.batik.ext.awt.image.rendered.TileStore;
-import org.apache.batik.ext.awt.image.rendered.TileCache;
 
 /**
  * This filter simply tiles its tile starting from the upper

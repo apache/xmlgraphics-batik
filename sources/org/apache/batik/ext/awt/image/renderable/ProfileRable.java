@@ -8,12 +8,11 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.ProfileRed;
 

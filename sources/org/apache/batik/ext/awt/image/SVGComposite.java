@@ -12,18 +12,13 @@ import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.CompositeContext;
 import java.awt.RenderingHints;
-
 import java.awt.color.ColorSpace;
 import java.awt.image.ColorModel;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.awt.image.BufferedImage;
-
-import java.awt.image.SinglePixelPackedSampleModel;
-import java.awt.image.PackedColorModel;
 import java.awt.image.DataBufferInt;
-
-import org.apache.batik.ext.awt.image.GraphicsUtil;
+import java.awt.image.PackedColorModel;
+import java.awt.image.Raster;
+import java.awt.image.SinglePixelPackedSampleModel;
+import java.awt.image.WritableRaster;
 
 /**
  * This provides an implementation of all the composite rules in SVG.

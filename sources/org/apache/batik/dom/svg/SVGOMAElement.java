@@ -11,10 +11,9 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
-
 import org.w3c.dom.Node;
-import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGAElement;
+import org.w3c.dom.svg.SVGAnimatedString;
 
 /**
  * This class implements {@link SVGAElement}.

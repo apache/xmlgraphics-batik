@@ -9,21 +9,20 @@
 package org.apache.batik.svggen;
 
 import java.awt.Font;
+import java.awt.Shape;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphMetrics;
+import java.awt.font.GlyphVector;
+import java.awt.font.LineMetrics;
+import java.awt.font.TextAttribute;
+import java.awt.geom.AffineTransform;
 import java.util.HashMap;
 import java.util.Map;
-import java.awt.font.TextAttribute;
-import java.awt.font.GlyphVector;
-import java.awt.font.GlyphMetrics;
-import java.awt.font.LineMetrics;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.AffineTransform;
-import java.awt.Shape;
 
+import org.apache.batik.ext.awt.g2d.GraphicContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import org.apache.batik.ext.awt.g2d.GraphicContext;
 
 /**
  * Utility class that converts a Font object into a set of SVG

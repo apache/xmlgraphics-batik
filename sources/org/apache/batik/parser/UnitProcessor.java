@@ -8,12 +8,6 @@
 
 package org.apache.batik.parser;
 
-import java.io.StringReader;
-
-import org.apache.batik.parser.LengthHandler;
-import org.apache.batik.parser.LengthParser;
-import org.apache.batik.parser.ParseException;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGLength;
 

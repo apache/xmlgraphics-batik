@@ -8,12 +8,11 @@
 
 package org.apache.batik.css.engine.value.css2;
 
-import org.apache.batik.util.CSSConstants;
-
 import org.apache.batik.css.engine.value.IdentifierManager;
 import org.apache.batik.css.engine.value.StringMap;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
+import org.apache.batik.util.CSSConstants;
 
 /**
  * This class provides a manager for the 'direction' property values.

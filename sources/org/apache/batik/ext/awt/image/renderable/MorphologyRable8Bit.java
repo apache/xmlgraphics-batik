@@ -8,20 +8,16 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import java.awt.Shape;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.Rectangle;
-
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
-
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 import java.awt.image.ColorModel;
+import java.awt.image.Raster;
+import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.PadMode;

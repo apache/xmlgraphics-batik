@@ -8,7 +8,10 @@
 
 package org.apache.batik.gvt;
 
-import org.apache.batik.gvt.event.*;
+import org.apache.batik.gvt.event.GraphicsNodeChangeListener;
+import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
+import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
+import org.apache.batik.gvt.event.SelectionListener;
 
 /**
  * Interface which allows selection of GraphicsNodes and their contents.

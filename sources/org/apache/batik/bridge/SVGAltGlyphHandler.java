@@ -8,14 +8,14 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.gvt.font.AltGlyphHandler;
-import org.apache.batik.gvt.font.GVTGlyphVector;
-import org.apache.batik.gvt.font.SVGGVTGlyphVector;
-import org.apache.batik.gvt.font.Glyph;
-import org.apache.batik.util.SVGConstants;
-
 import java.awt.font.FontRenderContext;
 import java.text.AttributedCharacterIterator;
+
+import org.apache.batik.gvt.font.AltGlyphHandler;
+import org.apache.batik.gvt.font.GVTGlyphVector;
+import org.apache.batik.gvt.font.Glyph;
+import org.apache.batik.gvt.font.SVGGVTGlyphVector;
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 
 /**

@@ -8,27 +8,22 @@
 
 package org.apache.batik.ext.awt.image.renderable;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.color.ColorSpace;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderContext;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.Iterator;
-
-import java.awt.color.ColorSpace;
-import java.awt.Composite;
-import java.awt.Shape;
-import java.awt.Rectangle;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.AffineTransform;
-
-import java.awt.image.RenderedImage;
-
-import java.awt.image.renderable.RenderContext;
 
 import org.apache.batik.ext.awt.image.CompositeRule;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.SVGComposite;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.CompositeRed;

@@ -15,23 +15,14 @@ import org.apache.batik.css.dom.CSSOMSVGColor;
 import org.apache.batik.css.dom.CSSOMSVGPaint;
 import org.apache.batik.css.dom.CSSOMSVGStyleDeclaration;
 import org.apache.batik.css.dom.CSSOMValue;
-
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
-import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.SVGCSSEngine;
-
-import org.apache.batik.css.engine.value.FloatValue;
-import org.apache.batik.css.engine.value.ListValue;
-import org.apache.batik.css.engine.value.StringValue;
+import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.Value;
-
-import org.apache.batik.css.engine.value.svg.ICCColor;
 import org.apache.batik.css.engine.value.svg.SVGColorManager;
 import org.apache.batik.css.engine.value.svg.SVGPaintManager;
-
 import org.apache.batik.dom.AbstractDocument;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;

@@ -9,6 +9,7 @@
 package org.apache.batik.transcoder.keys;
 
 import java.awt.Paint;
+
 import org.apache.batik.transcoder.TranscodingHints;
 
 /**

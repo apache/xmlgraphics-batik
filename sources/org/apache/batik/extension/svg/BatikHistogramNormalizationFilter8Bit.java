@@ -13,12 +13,10 @@ import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
 import java.awt.image.renderable.RenderContext;
 
+import org.apache.batik.ext.awt.image.LinearTransfer;
+import org.apache.batik.ext.awt.image.TransferFunction;
 import org.apache.batik.ext.awt.image.renderable.AbstractColorInterpolationRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.ext.awt.image.TransferFunction;
-import org.apache.batik.ext.awt.image.LinearTransfer;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.ComponentTransferRed;
 
 public class BatikHistogramNormalizationFilter8Bit

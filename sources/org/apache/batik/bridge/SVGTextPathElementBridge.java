@@ -8,16 +8,16 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PathParser;
-import org.apache.batik.dom.util.XLinkSupport;
 import org.w3c.dom.Element;
-import java.io.StringReader;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.Shape;
 
 /**
  * Bridge class for the &lt;textPath> element.

@@ -10,18 +10,14 @@ package org.apache.batik.apps.rasterizer;
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
-
 import java.io.File;
-
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
-import java.util.Iterator;
-import java.util.StringTokenizer;
-
 import org.apache.batik.transcoder.Transcoder;
-
 import org.apache.batik.util.ApplicationSecurityEnforcer;
 
 /**

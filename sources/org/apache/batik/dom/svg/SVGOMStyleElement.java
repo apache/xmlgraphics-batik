@@ -14,20 +14,13 @@ import java.net.URL;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.StyleSheet;
-
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
-
-import org.w3c.dom.css.DOMImplementationCSS;
-
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
-
 import org.w3c.dom.stylesheets.LinkStyle;
-
 import org.w3c.dom.svg.SVGStyleElement;
 
 /**

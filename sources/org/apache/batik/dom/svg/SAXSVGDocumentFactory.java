@@ -8,30 +8,22 @@
 
 package org.apache.batik.dom.svg;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import java.util.zip.GZIPInputStream;
-
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
-
-import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.MimeTypeConstants;
-
+import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.Document;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.svg.SVGDocument;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

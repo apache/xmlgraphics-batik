@@ -8,18 +8,14 @@
 
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.parser.PointsParser;
-import org.apache.batik.parser.PointsHandler;
 import org.apache.batik.parser.ParseException;
-
-import org.w3c.dom.Attr;
+import org.apache.batik.parser.PointsHandler;
+import org.apache.batik.parser.PointsParser;
 import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
-
 import org.w3c.dom.svg.SVGException;
 import org.w3c.dom.svg.SVGMatrix;
-import org.w3c.dom.svg.SVGPointList;
 import org.w3c.dom.svg.SVGPoint;
+import org.w3c.dom.svg.SVGPointList;
 
 
 

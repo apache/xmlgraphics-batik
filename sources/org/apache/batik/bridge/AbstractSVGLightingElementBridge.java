@@ -15,7 +15,6 @@ import org.apache.batik.ext.awt.image.DistantLight;
 import org.apache.batik.ext.awt.image.Light;
 import org.apache.batik.ext.awt.image.PointLight;
 import org.apache.batik.ext.awt.image.SpotLight;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 

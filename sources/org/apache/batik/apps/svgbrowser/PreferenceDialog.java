@@ -15,21 +15,17 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Rectangle;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
-
-import java.util.Map;
-import java.util.Hashtable;
+import java.awt.event.KeyEvent;
 import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.AbstractButton;
-import javax.swing.border.Border;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -43,13 +39,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
-
+import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.batik.ext.swing.JGridBagPanel;
 import org.apache.batik.ext.swing.GridBagConstants;
-
+import org.apache.batik.ext.swing.JGridBagPanel;
 import org.apache.batik.util.PreferenceManager;
 import org.apache.batik.util.gui.CSSMediaPanel;
 import org.apache.batik.util.gui.LanguageDialog;

@@ -8,21 +8,16 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
-import java.awt.image.BufferedImage;
-import java.awt.Graphics2D;
-import java.awt.Color;
-
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.codec.PNGRed;
 import org.apache.batik.ext.awt.image.codec.PNGDecodeParam;
-import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
+import org.apache.batik.ext.awt.image.codec.PNGRed;
+import org.apache.batik.ext.awt.image.renderable.DeferRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.RedRable;
-import org.apache.batik.ext.awt.image.renderable.DeferRable;
+import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.util.ParsedURL;
 
 public class PNGRegistryEntry 

@@ -8,13 +8,11 @@
 
 package org.apache.batik.script;
 
-import org.apache.batik.dom.svg.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.batik.dom.svg.SVGOMDocument;
 import org.w3c.dom.Document;
-import org.w3c.dom.svg.SVGDocument;
 
 /**
  * A class allowing to create/query an {@link

@@ -9,11 +9,11 @@
 package org.apache.batik.css.engine.sac;
 
 import org.w3c.css.sac.AttributeCondition;
+import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.CombinatorCondition;
 import org.w3c.css.sac.Condition;
 import org.w3c.css.sac.ConditionFactory;
 import org.w3c.css.sac.ContentCondition;
-import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.LangCondition;
 import org.w3c.css.sac.NegativeCondition;
 import org.w3c.css.sac.PositionalCondition;

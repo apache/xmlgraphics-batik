@@ -10,7 +10,6 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.util.SVGConstants;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAnimatedString;
 

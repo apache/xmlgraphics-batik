@@ -8,15 +8,6 @@
 
 package org.apache.batik.ext.awt.color;
 
-import java.awt.image.RenderedImage;
-
-import java.net.URL;
-
-import java.util.Map;
-import java.util.HashMap;
-
-import java.lang.ref.SoftReference;
-
 import org.apache.batik.util.SoftReferenceCache;
 
 /**

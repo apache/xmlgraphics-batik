@@ -8,10 +8,10 @@
 
 package org.apache.batik.gvt.text;
 
-import java.text.AttributedString;
 import java.text.AttributedCharacterIterator;
-import java.util.Map;
+import java.text.AttributedString;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**

@@ -16,7 +16,6 @@ import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 
 /**

@@ -11,35 +11,26 @@ package org.apache.batik.dom;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import java.lang.reflect.Method;
-
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.WeakHashMap;
 
 import org.apache.batik.dom.events.DocumentEventSupport;
-
 import org.apache.batik.dom.traversal.TraversalSupport;
-
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
-
 import org.apache.batik.util.SoftDoublyIndexedTable;
-
 import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
-
 import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;

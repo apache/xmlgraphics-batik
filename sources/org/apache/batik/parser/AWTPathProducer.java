@@ -12,6 +12,7 @@ import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.Reader;
+
 import org.apache.batik.ext.awt.geom.ExtendedGeneralPath;
 
 /**

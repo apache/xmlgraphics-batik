@@ -8,7 +8,6 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.util.ParsedURL;
 
 /**
  * This implementation does not allow any external resources to be 

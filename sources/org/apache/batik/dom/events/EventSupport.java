@@ -8,9 +8,11 @@
 
 package org.apache.batik.dom.events;
 
-import org.apache.batik.dom.util.*;
-import org.w3c.dom.*;
-import org.w3c.dom.events.*;
+import org.apache.batik.dom.util.HashTable;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventException;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
 
 /**
  * The class allows registration and removal of EventListeners on

@@ -14,17 +14,10 @@ import java.net.URL;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.StyleSheet;
-
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.StyleSheetFactory;
 import org.apache.batik.dom.StyleSheetProcessingInstruction;
-
 import org.apache.batik.dom.util.HashTable;
-
-import org.apache.batik.util.ParsedURL;
-
-import org.w3c.css.sac.InputSource;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 

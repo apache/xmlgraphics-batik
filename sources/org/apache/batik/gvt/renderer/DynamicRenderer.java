@@ -8,25 +8,24 @@
 
 package org.apache.batik.gvt.renderer;
 
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 import java.awt.image.SampleModel;
-
-import java.util.List;
+import java.awt.image.WritableRaster;
 import java.util.Iterator;
+import java.util.List;
 
+import org.apache.batik.ext.awt.geom.RectListManager;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
-import org.apache.batik.ext.awt.image.PadMode;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.geom.RectListManager;
 
 /**
  * Simple implementation of the Renderer that supports dynamic updates.

@@ -8,15 +8,10 @@
 
 package org.apache.batik.extension.svg;
 
-import java.awt.Rectangle;
-import java.awt.image.DataBufferByte;
-import java.awt.image.PixelInterleavedSampleModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
-import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.rendered.AbstractRed;
-import org.apache.batik.ext.awt.image.rendered.Any2LumRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 
 /**

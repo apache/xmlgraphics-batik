@@ -11,18 +11,15 @@ package org.apache.batik.transcoder.svg2svg;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.batik.transcoder.ErrorHandler;
 import org.apache.batik.transcoder.TranscoderException;
-
+import org.apache.batik.util.SVGConstants;
 import org.apache.batik.xml.LexicalUnits;
 import org.apache.batik.xml.XMLException;
 import org.apache.batik.xml.XMLScanner;
-
-import org.apache.batik.util.SVGConstants;
 
 /**
  * This class represents an SVG source files pretty-printer.

@@ -8,27 +8,18 @@
 
 package org.apache.batik.gvt;
 
-import java.awt.BasicStroke;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Shape;
-
-import java.awt.font.FontRenderContext;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
-
 import java.util.List;
 
 import org.apache.batik.gvt.renderer.StrokingTextPainter;
-
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.text.TextHit;
 import org.apache.batik.gvt.text.TextSpanLayout;

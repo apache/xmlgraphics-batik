@@ -8,9 +8,8 @@
 
 package org.apache.batik.parser;
 
-import java.io.IOException;
 import java.io.Reader;
-import java.util.Locale;
+
 import org.apache.batik.i18n.Localizable;
 
 /**

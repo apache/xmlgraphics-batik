@@ -9,12 +9,7 @@
 package org.apache.batik.gvt.font;
 
 import java.awt.Shape;
-
-import java.awt.font.GlyphMetrics;
-import java.awt.font.GlyphVector;
-
 import java.awt.geom.Rectangle2D;
-
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 

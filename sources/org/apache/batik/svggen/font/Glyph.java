@@ -8,8 +8,8 @@
 
 package org.apache.batik.svggen.font;
 
-import org.apache.batik.svggen.font.table.GlyphDescription;
 import org.apache.batik.svggen.font.table.GlyfDescript;
+import org.apache.batik.svggen.font.table.GlyphDescription;
 
 /**
  * An individual glyph within a font.

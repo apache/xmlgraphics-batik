@@ -8,10 +8,9 @@
 
 package org.apache.batik.ext.awt.image.spi;
 
-import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
 import java.util.Hashtable;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;

@@ -9,28 +9,18 @@
 package org.apache.batik.gvt.font;
 
 import java.awt.Graphics2D;
-import java.awt.Paint;
 import java.awt.Shape;
-import java.awt.Stroke;
-
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphJustificationInfo;
-import java.awt.font.GlyphMetrics;
-import java.awt.font.GlyphVector;
-import java.awt.font.TextAttribute;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import java.text.AttributedCharacterIterator;
-import java.text.CharacterIterator;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
-
-import java.util.List;
-import java.util.Iterator;
 
 public class MultiGlyphVector implements GVTGlyphVector {
 

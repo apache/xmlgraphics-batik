@@ -8,8 +8,8 @@
 
 package org.apache.batik.ext.awt.image.rendered;
 
-import java.util.Vector;
 import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * This class is responsible for breaking up a block of tiles into

@@ -8,33 +8,21 @@
 
 package org.apache.batik.gvt.filter;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderContext;
 
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.rendered.CachableRed;
-import org.apache.batik.gvt.filter.Mask;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.ext.awt.image.PadMode;
+import org.apache.batik.ext.awt.image.renderable.AbstractRable;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.FilterAsAlphaRable;
 import org.apache.batik.ext.awt.image.renderable.PadRable;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.AbstractRable;
-import org.apache.batik.ext.awt.image.renderable.FilterAsAlphaRable;
-import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
+import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.MultiplyAlphaRed;
-
-import java.awt.Shape;
-
-import java.awt.RenderingHints;
-
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Rectangle2D;
-
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
-import java.awt.image.RenderedImage;
-
-import java.awt.image.renderable.RenderContext;
+import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
  * MaskRable implementation

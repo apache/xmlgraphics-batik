@@ -9,9 +9,8 @@
 package org.apache.batik.script.rhino;
 
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.WrapFactory;
 import org.mozilla.javascript.Scriptable;
-
+import org.mozilla.javascript.WrapFactory;
 import org.w3c.dom.events.EventTarget;
 
 /**

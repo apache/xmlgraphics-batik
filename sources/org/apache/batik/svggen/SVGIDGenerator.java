@@ -8,8 +8,8 @@
 
 package org.apache.batik.svggen;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Generates id for an arbitrary number of prefix

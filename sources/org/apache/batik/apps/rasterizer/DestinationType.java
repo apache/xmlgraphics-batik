@@ -9,8 +9,8 @@
 package org.apache.batik.apps.rasterizer;
 
 import org.apache.batik.transcoder.Transcoder;
-import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.TIFFTranscoder;
 
 /**
