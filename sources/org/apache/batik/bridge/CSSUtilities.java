@@ -225,20 +225,24 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
             return null;
         }
         Map hints = new HashMap();
-        switch(s.charAt(9)) {
-        case 'S': // optimizeSpeed
+        switch(s.charAt(8)) {
+        case 's': // optimizeSpeed
             hints.put(RenderingHints.KEY_RENDERING,
                       RenderingHints.VALUE_RENDER_SPEED);
             hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,
                       RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            hints.put(RenderingHints.KEY_ANTIALIASING,
+                      RenderingHints.VALUE_ANTIALIAS_OFF);
             hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
                       RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
             break;
-        case 'L': // optimizeLegibility
+        case 'l': // optimizeLegibility
             hints.put(RenderingHints.KEY_RENDERING,
                       RenderingHints.VALUE_RENDER_QUALITY);
             hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,
                       RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            hints.put(RenderingHints.KEY_ANTIALIASING,
+                      RenderingHints.VALUE_ANTIALIAS_ON);
             hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
                       RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
             break;
@@ -247,6 +251,8 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
                       RenderingHints.VALUE_RENDER_QUALITY);
             hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,
                       RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+            hints.put(RenderingHints.KEY_ANTIALIASING,
+                      RenderingHints.VALUE_ANTIALIAS_DEFAULT);
             hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
                       RenderingHints.VALUE_FRACTIONALMETRICS_ON);
             break;
