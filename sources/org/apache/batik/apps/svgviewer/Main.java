@@ -150,11 +150,10 @@ public class Main implements ViewerFrame.Application {
             mainFrame.loadDocument
                 (Main.class.getResource("resources/usage.svg").toString());
             try {
-                mainFrame.getLoadingThread().join();
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
             }
             mainFrame.setFixedSize(false);
-            mainFrame.setVisible(true);
         }
     }
 
