@@ -258,11 +258,11 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
                 g2d.setComposite(AlphaComposite.SrcOver);
                 g2d.setPaint(bgcolor);
                 g2d.fillRect(0, 0, w, h);
-                g2d.dispose();
             }
             if (rend != null) { // might be null if the svg document is empty
                 g2d.drawRenderedImage(rend, new AffineTransform());
             }
+            g2d.dispose();
             rend = null; // We're done with it...
             writeImage(dest, output);
         } catch (Exception ex) {
