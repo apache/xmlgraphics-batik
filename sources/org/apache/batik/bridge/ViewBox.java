@@ -69,6 +69,10 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
             Document document = e.getOwnerDocument();
             attrDefElement = document.getElementById(vh.id);
         }
+        if (attrDefElement == null) {
+            throw new BridgeException(e, ERR_URI_MALFORMED,
+                                      new Object[] {ref});
+        }
         // if the referenced element is not a view, the attribute values to use
         // are those defined on the enclosed svg element
         if (!(attrDefElement.getNamespaceURI().equals(SVG_NAMESPACE_URI)
