@@ -17,12 +17,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
---><!--      ======================================================================      -->
-<!--      Modification of a x attributes                                        -->
-<!--                                                                                  -->
-<!--      @author nicolas.socheleau@bitflash.com                                      -->
-<!--      @version $Id$      -->
-<!--      ======================================================================      -->
+-->
+<!-- ================================================================      -->
+<!-- Modification of a x attributes                                        -->
+<!--                                                                       -->
+<!-- @author nicolas.socheleau@bitflash.com                                -->
+<!-- @version $Id$ -->
+<!-- ================================================================      -->
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css"      ?>
 
 <svg width="450" viewBox="0 0 450 500" height="500" id="body">

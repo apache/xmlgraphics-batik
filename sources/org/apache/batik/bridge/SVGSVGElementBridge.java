@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.batik.dom.svg.SVGSVGContext;
+import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -529,7 +530,6 @@ public class SVGSVGElementBridge
                 }
             } else {
                 if (curr == end) break;
-
                 // Otherwise check this node for intersection more
                 // carefully and if it still intersects add it.
                 if (SVGConstants.SVG_NAMESPACE_URI.equals(nsURI) &&
@@ -547,47 +547,18 @@ public class SVGSVGElementBridge
                             ret.add(curr);
                     }
                 } else if (gn instanceof TextNode) {
-                    TextNode tn = (TextNode)gn;
-                    List list = tn.getTextRuns();
-                    Set elems = new HashSet();
-                    for (int i = 0 ; i < list.size(); i++) {
-                        StrokingTextPainter.TextRun run;
-                        run = (StrokingTextPainter.TextRun)list.get(i);
-                        TextSpanLayout layout = run.getLayout();
-                        AttributedCharacterIterator aci = run.getACI();
-                        aci.first();
-                        Element elem = (Element)aci.getAttribute
-                            (TEXT_COMPOUND_DELIMITER);
-                        if (elem == null) continue;
-                        if (elems.contains(elem)) continue;
-                        
-                        Rectangle2D glBounds = layout.getBounds2D();
-                        if (glBounds != null)
-                            glBounds = at.createTransformedShape
-                                (glBounds).getBounds2D();
+                    SVGOMElement svgElem = (SVGOMElement)curr;
+                    SVGTextElementBridge txtBridge;
+                    txtBridge = (SVGTextElementBridge)svgElem.getSVGContext();
+                    Set elems = txtBridge.getTextIntersectionSet(at, rect);
 
-                        if (!rect.intersects(glBounds))
-                            continue;
-
-                        GVTGlyphVector gv = layout.getGlyphVector();
-                        for (int g = 0; g < gv.getNumGlyphs(); g++) {
-                            Shape gBounds = gv.getGlyphLogicalBounds(g);
-                            if (gBounds != null)
-                                gBounds = at.createTransformedShape
-                                    (gBounds).getBounds2D();
-
-                            if (gBounds.intersects(rect)) {
-                                elems.add(elem);
-                                break;
-                            }
-                        }
-                    }
+                    // filter elems based on who is before end as
+                    // children of curr, if needed.
                     if ((ancestors != null) && ancestors.contains(curr))
-                        // filter elems based on who is before end as
-                        // children of curr.
                         filterChildren(curr, end, elems, ret);
                     else
                         ret.addAll(elems);
+
                 } else {
                     ret.add(curr);
                 }
@@ -696,48 +667,24 @@ public class SVGSVGElementBridge
                 if (curr == end) break;
                 if (SVGConstants.SVG_NAMESPACE_URI.equals(nsURI) &&
                     SVGConstants.SVG_USE_TAG.equals(tag)) {
-                    // This really isn't right we need to 
+                    // FIXX: This really isn't right we need to 
                     // Add the proxy children.
                     if (rect.contains(gnBounds))
                         ret.add(curr);
                 } else if (gn instanceof TextNode) {
                     // If gnBounds is contained in rect then just add
                     // all the children
-                    if (rect.contains(gnBounds)) 
-                        addAllChildren(curr, ancestors, ret);
-                    else {
-                        Set elems = new HashSet();
-                        TextNode tn = (TextNode)gn;
-                        List list = tn.getTextRuns();
-                        for (int i = 0 ; i < list.size(); i++) {
-                            StrokingTextPainter.TextRun run;
-                            run = (StrokingTextPainter.TextRun)list.get(i);
-                            TextSpanLayout layout = run.getLayout();
-                            AttributedCharacterIterator aci = run.getACI();
-                            aci.first();
-                            Element elem = (Element)aci.getAttribute
-                                (TEXT_COMPOUND_DELIMITER);
-                            if (elem == null) continue;
-                            if (elems.contains(elem)) continue;
-                        
-                            Rectangle2D glBounds = layout.getBounds2D();
-                            if (glBounds != null)
-                                glBounds = at.createTransformedShape
-                                    (glBounds).getBounds2D();
-
-                            if (rect.contains(glBounds)) {
-                                elems.add(elem);
-                                continue;
-                            }
-                        }
-
+                    SVGOMElement svgElem = (SVGOMElement)curr;
+                    SVGTextElementBridge txtBridge;
+                    txtBridge = (SVGTextElementBridge)svgElem.getSVGContext();
+                    Set elems = txtBridge.getTextEnclosureSet(at, rect);
+                    
+                    // filter elems based on who is before end as
+                    // children of curr if needed.
                     if ((ancestors != null) && ancestors.contains(curr))
-                        // filter elems based on who is before end as
-                        // children of curr.
                         filterChildren(curr, end, elems, ret);
                     else
                         ret.addAll(elems);
-                    }
                 } else if (rect.contains(gnBounds)) {
                     // shape nodes
                     ret.add(curr);
@@ -750,8 +697,6 @@ public class SVGSVGElementBridge
     }
 
     public boolean checkIntersection (Element element, SVGRect svgRect ) {
-        GraphicsNode gn    = ctx.getGraphicsNode(element);
-        if (gn == null) return false;
 
         GraphicsNode svgGN = ctx.getGraphicsNode(e);
         if (svgGN == null) return false; // not in tree?
@@ -760,14 +705,32 @@ public class SVGSVGElementBridge
             (svgRect.getX(),     svgRect.getY(), 
              svgRect.getWidth(), svgRect.getHeight());
         AffineTransform ati = svgGN.getGlobalTransform();
+
         try {
             ati = ati.createInverse();
         } catch (NoninvertibleTransformException e) {  }
 
+        SVGContext svgctx = null;
+        if (element instanceof SVGOMElement) {
+            svgctx  = ((SVGOMElement)element).getSVGContext();
+            if ((svgctx instanceof SVGTextElementBridge) ||
+                (svgctx instanceof 
+                 SVGTextElementBridge.AbstractTextChildSVGContext)) {
+                return SVGTextElementBridge.getTextIntersection
+                    (ctx, element, ati, rect, true);
+            }
+        }
+
+        Rectangle2D gnBounds = null;
+        GraphicsNode gn    = ctx.getGraphicsNode(element);
+        if (gn != null)
+            gnBounds = gn.getSensitiveBounds();
+
+        if (gnBounds == null) return false;
+
+
         AffineTransform at = gn.getGlobalTransform();
         at.preConcatenate(ati);
-        Rectangle2D gnBounds = gn.getSensitiveBounds();
-        if (gnBounds == null) return false;
 
         gnBounds = at.createTransformedShape(gnBounds).getBounds2D();
         if (!rect.intersects(gnBounds))
@@ -790,7 +753,27 @@ public class SVGSVGElementBridge
 
     public boolean checkEnclosure (Element element, SVGRect svgRect ) {
         GraphicsNode gn    = ctx.getGraphicsNode(element);
-        if (gn == null) return false;
+        Rectangle2D gnBounds = null;
+        SVGContext svgctx = null;
+        if (element instanceof SVGOMElement) {
+            svgctx  = ((SVGOMElement)element).getSVGContext();
+            if ((svgctx instanceof SVGTextElementBridge) ||
+                (svgctx instanceof 
+                 SVGTextElementBridge.AbstractTextChildSVGContext)) {
+                gnBounds = SVGTextElementBridge.getTextBounds
+                    (ctx, element, true);
+                Element p = (Element)element.getParentNode();
+                // Get GN for text children so we can get transform.
+                while ((p != null) && (gn == null)) {
+                    gn = ctx.getGraphicsNode(p);
+                    p = (Element)p.getParentNode();
+                }
+            } else if (gn != null) 
+                gnBounds = gn.getSensitiveBounds();
+        } else if (gn != null) 
+            gnBounds = gn.getSensitiveBounds();
+
+        if (gnBounds == null) return false;
 
         GraphicsNode svgGN = ctx.getGraphicsNode(e);
         if (svgGN == null) return false; // not in tree?
@@ -806,31 +789,9 @@ public class SVGSVGElementBridge
         AffineTransform at = gn.getGlobalTransform();
         at.preConcatenate(ati);
 
-        Rectangle2D gnBounds = gn.getSensitiveBounds();
-        if (gnBounds == null) return false;
-
         gnBounds = at.createTransformedShape(gnBounds).getBounds2D();
 
         return rect.contains(gnBounds);
-    }
-
-    public boolean addAllChildren(Element curr, Set ancestors, List ret) {
-        if (!(curr instanceof SVGOMElement) ||
-            (((SVGOMElement)curr).getSVGContext() == null) )
-            return ancestors.contains(curr);
-
-        Node child = curr.getFirstChild();
-        
-        while (child != null) {
-            child = child.getNextSibling();
-            if ((child instanceof Element) &&
-                addAllChildren((Element)child, ancestors, ret))
-                return true;
-            child = child.getNextSibling();
-        }
-        if (ancestors.contains(curr)) return true;
-        ret.add(curr);
-        return false;
     }
 
     public boolean filterChildren(Element curr, Element end,
