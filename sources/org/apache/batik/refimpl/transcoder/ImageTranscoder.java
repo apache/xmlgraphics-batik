@@ -38,7 +38,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$
  */
 public abstract class ImageTranscoder extends AbstractTranscoder {
-    protected abstract BufferedImage createImage(int w, int h);
+    public abstract BufferedImage createImage(int w, int h);
 
     public void transcodeToStream(Document document, OutputStream ostream)
             throws TranscoderException {
@@ -92,7 +92,7 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
      * @param ostream the output stream where to write the image
      * @param IOException if an IO error occured
      */
-    protected abstract void writeImage(BufferedImage img, OutputStream ostream)
+    public abstract void writeImage(BufferedImage img, OutputStream ostream)
             throws IOException;
 
 }

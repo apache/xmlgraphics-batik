@@ -33,14 +33,15 @@ public class PngTranscoder extends ImageTranscoder {
     }
 
 
-    protected BufferedImage createImage(int w, int h){
+    public BufferedImage createImage(int w, int h){
         return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
     }
 
-    protected void writeImage(BufferedImage img, OutputStream ostream)
+    public void writeImage(BufferedImage img, OutputStream ostream)
             throws IOException {
-        // PNGEncodeParam params = PNGEncodeParam.getDefaultEncodeParam(img);
-        PNGImageEncoder pngEncoder = new PNGImageEncoder(ostream, null);
+        PNGEncodeParam.RGB params = (PNGEncodeParam.RGB)PNGEncodeParam.getDefaultEncodeParam(img);
+        params.setBackgroundRGB(new int[] { 255, 255, 255 });
+        PNGImageEncoder pngEncoder = new PNGImageEncoder(ostream, params);
         // params.setQuality(1f, true);
         pngEncoder.encode(img);
     }
