@@ -82,11 +82,20 @@
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/GraphicObjects.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/GraphicObjects.svg" />
     </test>
+
     <test class="org.apache.batik.svggen.SVGAccuracyTest">
         <arg class="org.apache.batik.svggen.Lookup" />
-	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Lookup.svg"/>
+	    <arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Lookup.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/Lookup.svg" />
     </test>
+
+    <test class="org.apache.batik.svggen.SVGAccuracyTest">
+        <arg class="org.apache.batik.svggen.NegativeLengths" />
+	    <arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/NegativeLengths.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/NegativeLengths.svg" />
+    </test>
+
+
     <test class="org.apache.batik.svggen.SVGAccuracyTest">
         <arg class="org.apache.batik.svggen.Paints" />
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/Paints.svg"/>
@@ -187,11 +196,19 @@
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextGraphicObjects.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ContextGraphicObjects.svg" />
     </test>
+
     <test class="org.apache.batik.svggen.GeneratorContext">
         <arg class="org.apache.batik.svggen.Lookup" />
-	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextLookup.svg"/>
+	    <arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextLookup.svg"/>
         <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ContextLookup.svg" />
     </test>
+
+    <test class="org.apache.batik.svggen.GeneratorContext">
+        <arg class="org.apache.batik.svggen.NegativeLengths" />
+	    <arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextNegativeLengths.svg"/>
+        <property name="SaveSVG" class="java.io.File" value="test-references/org/apache/batik/svggen/candidate-ref/ContextNegativeLengths.svg" />
+    </test>
+
     <test class="org.apache.batik.svggen.GeneratorContext">
         <arg class="org.apache.batik.svggen.Paints" />
 	<arg class="java.net.URL" value="file:test-references/org/apache/batik/svggen/ContextPaints.svg"/>
