@@ -24,7 +24,7 @@
     .planet {
       text-anchor:middle;
       font-family: Helvetica;
-      font-size: 12pt;
+      font-size: 12;
     }
   ]]>
   </style>
@@ -197,13 +197,13 @@
       </g>
     </g>
     <g id="legend" style="font-family:Helvetica">
-      <text x="50%" y="50" style="font-size:24pt; text-anchor:middle; fill:white">Size of the Sun</text>
-      <g style="font-size:12pt; text-anchor:middle; fill:white">
+      <text x="50%" y="50" style="font-size:24; text-anchor:middle; fill:white">Size of the Sun</text>
+      <g style="font-size:12; text-anchor:middle; fill:white">
         <text x="50%" y="100">You could line up all of the planets along the</text>
         <text x="50%" y="114">Sun's 1,392,000 kilometer equator three times and still have room left</text>
         <text x="50%" y="128">for 1 Saturn, 4 Earths, and a Mercury.</text>
       </g>
-      <g style="font-size:12pt; text-anchor:end; fill:black">
+      <g style="font-size:12; text-anchor:end; fill:black">
         <text x="144" y="250">One time...</text>
         <text x="257" y="250">Two times...</text>
         <text x="370" y="250">3 times...</text>

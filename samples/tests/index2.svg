@@ -28,13 +28,13 @@
       }
       text.title {
           stroke-width: 3;
-          font-size: 52pt;
+          font-size: 52;
           text-anchor: middle;
     	  font-family: SunSansCondensed-Heavy;
       }
       text.previous {
 	  stroke-width: 1;
-          font-size: 32pt;
+          font-size: 32;
           text-anchor: start;
           text-decoration: underline;
       }
@@ -46,7 +46,7 @@
       }
       text.link {
           fill: white;
-          font-size: 18pt;
+          font-size: 18;
           font-family: SunSansCondensed-Heavy;
       }
   ]]>
