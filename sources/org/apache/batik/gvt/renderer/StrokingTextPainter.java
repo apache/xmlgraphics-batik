@@ -80,6 +80,22 @@ public class StrokingTextPainter extends BasicTextPainter {
         AttributedCharacterIterator.Attribute BIDI_LEVEL
         = GVTAttributedCharacterIterator.TextAttribute.BIDI_LEVEL;
 
+    public static final 
+        AttributedCharacterIterator.Attribute XPOS
+        = GVTAttributedCharacterIterator.TextAttribute.X;
+
+    public static final 
+        AttributedCharacterIterator.Attribute YPOS
+        = GVTAttributedCharacterIterator.TextAttribute.Y;
+
+    public static final 
+        AttributedCharacterIterator.Attribute TEXTPATH
+        = GVTAttributedCharacterIterator.TextAttribute.TEXTPATH;
+
+    public static final 
+        AttributedCharacterIterator.Attribute ANCHOR_TYPE
+        = GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE;
+
     static Set extendedAtts = new HashSet();
 
     static {
@@ -200,53 +216,81 @@ public class StrokingTextPainter extends BasicTextPainter {
         (AttributedCharacterIterator aci) {
 
         List aciVector = new ArrayList();
-        aci.first();
-
-        while (aci.current() != CharacterIterator.DONE) {
-
-            int chunkStartIndex = aci.getIndex();
-            boolean inChunk = true;
-            boolean isChunkStart = true;
+        int chunkStartIndex = aci.getBeginIndex();
+        while (aci.setIndex(chunkStartIndex) != CharacterIterator.DONE) {
             TextPath prevTextPath = null;
+            for (int start=chunkStartIndex, end=0; 
+                 aci.setIndex(start) != CharacterIterator.DONE; start=end) {
 
-            while (inChunk) {
-                int start = aci.getRunStart(TEXT_COMPOUND_DELIMITER);
-                int end = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
-                
-                // Go to start of compound.
-                aci.setIndex(start);
-                Float runX = (Float) aci.getAttribute
-                    (GVTAttributedCharacterIterator.TextAttribute.X);
-                Float runY = (Float) aci.getAttribute
-                    (GVTAttributedCharacterIterator.TextAttribute.Y);
-                TextPath textPath = (TextPath) aci.getAttribute
-                    (GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
+                TextPath textPath = (TextPath) aci.getAttribute(TEXTPATH);
 
-                inChunk = (   (isChunkStart)
-                           || (   (runX == null || runX.isNaN())
-                               && (runY == null || runY.isNaN())));
+                if (start != chunkStartIndex) {
+                    // If we aren't the first composite in a chunck see
+                    // if we need to form a new TextChunk...
+                    Float runX = (Float) aci.getAttribute(XPOS);
+                    Float runY = (Float) aci.getAttribute(YPOS);
 
-                // do additional check for the start of a textPath
-                if (prevTextPath == null && textPath != null && !isChunkStart)
-                    inChunk = false;
+                    // Check if we have an absolute location
+                    if (  ((runX != null) && !runX.isNaN())
+                        ||((runY != null) && !runY.isNaN()))
+                        break; // If so end of chunk...
 
-                if (inChunk) {
-                    prevTextPath = textPath;
-                    aci.setIndex(end);
-                    if (aci.current() == CharacterIterator.DONE) break;
+                    // do additional check for the start of a textPath
+                    if ((prevTextPath == null) && (textPath != null))
+                        break;  // If so end of chunk.
                 }
-                isChunkStart = false;
+
+                prevTextPath = textPath;
+
+                // find end of compound.
+                end   = aci.getRunLimit(TEXT_COMPOUND_DELIMITER);
+
+                if (start != chunkStartIndex)
+                    // If we aren't starting a new chunk then we know
+                    // we don't have any absolute positioning so there
+                    // is no reason to consider spliting the chunk further.
+                    continue;
+                
+                // We are starting a new chunk
+                // So check if we need to split it further...
+                TextNode.Anchor anchor;
+                anchor = (TextNode.Anchor) aci.getAttribute(ANCHOR_TYPE);
+                if (anchor == TextNode.Anchor.START)
+                    continue;
+
+                // We need to check if we have a list of X's & Y's if
+                // so we need to create TextChunk ACI's for each char
+                // (technically we have to do this for
+                // text-anchor:start as well but since that is the
+                // default layout it doesn't matter in that case.
+                Float runX = (Float) aci.getAttribute(XPOS);
+                Float runY = (Float) aci.getAttribute(YPOS);
+                if (((runX == null) || runX.isNaN()) &&
+                    ((runY == null) || runY.isNaN()))
+                    // No absolute positioning in this compound so continue.
+                    continue;
+
+                // Splitting the compound into one char chunks until
+                // we run out of Xs.
+                for (int i=start+1; i< end; i++) {
+                    aci.setIndex(i);
+                    runX = (Float) aci.getAttribute(XPOS);
+                    runY = (Float) aci.getAttribute(YPOS);
+                    if (((runX == null) || runX.isNaN()) &&
+                        ((runY == null) || runY.isNaN()))
+                        break;
+                    aciVector.add 
+                        (new AttributedCharacterSpanIterator(aci, i-1, i));
+                    chunkStartIndex = i;
+                }
             }
 
             // found the end of a text chunck
             int chunkEndIndex = aci.getIndex();
-            AttributedCharacterIterator chunkACI =
-                new AttributedCharacterSpanIterator
-                    (aci, chunkStartIndex, chunkEndIndex);
-            // need to setIndex because creating the new ACI,
-            // looses the current index.
-            aci.setIndex(chunkEndIndex);
-            aciVector.add(chunkACI);
+            aciVector.add(new AttributedCharacterSpanIterator
+                (aci, chunkStartIndex, chunkEndIndex));
+
+            chunkStartIndex = chunkEndIndex;
         }
 
         // copy the text chunks into an array
@@ -292,14 +336,10 @@ public class StrokingTextPainter extends BasicTextPainter {
             runaci = new AttributedCharacterSpanIterator(aci, start, end);
             runaci.first();
 
-            Float runX = (Float) runaci.getAttribute
-                (GVTAttributedCharacterIterator.TextAttribute.X);
+            Float runX = (Float) runaci.getAttribute(XPOS);
+            Float runY = (Float) runaci.getAttribute(YPOS);
 
-            Float runY = (Float) runaci.getAttribute
-                (GVTAttributedCharacterIterator.TextAttribute.Y);
-
-            TextPath textPath =  (TextPath) runaci.getAttribute
-                (GVTAttributedCharacterIterator.TextAttribute.TEXTPATH);
+            TextPath textPath =  (TextPath) runaci.getAttribute(TEXTPATH);
 		
             Point2D offset;
             if (textPath == null) {
@@ -310,9 +350,9 @@ public class StrokingTextPainter extends BasicTextPainter {
                         ((float)prevTextPathAdvance.getX(),
                          (float)prevTextPathAdvance.getY());
                 } else {
-                    offset = new Point2D.Float(
-                                               (float) (location.getX()+advance.getX()),
-                                               (float) (location.getY()+advance.getY()));
+                    offset = new Point2D.Float
+                        ((float) (location.getX()+advance.getX()),
+                         (float) (location.getY()+advance.getY()));
                 }
             } else {
                 // is on a text path so ignore the text node's location
