@@ -479,6 +479,23 @@ public class BaseScriptingEnvironment {
         }
 
         /**
+         * Gets data from the given URI.
+         * @param uri The URI where the data is located.
+         * @param h A handler called when the data is available.
+         */
+        public void getURL(String uri, GetURLHandler h) {
+        }
+
+        /**
+         * Gets data from the given URI.
+         * @param uri The URI where the data is located.
+         * @param h A handler called when the data is available.
+         * @param enc The character encoding of the data.
+         */
+        public void getURL(String uri, GetURLHandler h, String enc) {
+        }
+
+        /**
          * Displays an alert dialog box.
          */
         public void alert(String message) {

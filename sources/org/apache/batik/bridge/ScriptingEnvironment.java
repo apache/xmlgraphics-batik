@@ -8,7 +8,13 @@
 
 package org.apache.batik.bridge;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
+
+import java.net.URL;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,6 +27,8 @@ import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 
+import org.apache.batik.util.EncodingUtilities;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -617,6 +625,60 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             }
             return result;
         }
+
+        /**
+         * Implements {@link
+         * org.apache.batik.script.Window#getURL(String,GetURLHandler)}.
+         */
+        public void getURL(String uri, GetURLHandler h) {
+            getURL(uri, h, "UTF8");
+        }
+
+        /**
+         * Implements {@link
+         * org.apache.batik.script.Window#getURL(String,GetURLHandler,String)}.
+         */
+        public void getURL(final String uri,
+                           final GetURLHandler h,
+                           final String enc) {
+            Thread t = new Thread() {
+                    public void run() {
+                        try {
+                            URL burl;
+                            burl = ((SVGOMDocument)document).getURLObject();
+                            final ParsedURL purl = new ParsedURL(burl, uri);
+                            String e = EncodingUtilities.javaEncoding(enc);
+                            e = (e == null) ? enc : e;
+                            Reader r =
+                                new InputStreamReader(purl.openStream(), e);
+                            r = new BufferedReader(r);
+                            final StringWriter sw = new StringWriter();
+                            int read;
+                            char[] buf = new char[4096];
+                            while ((read = r.read(buf, 0, buf.length)) != -1) {
+                                sw.write(buf, 0, read);
+                            }
+
+                            updateRunnableQueue.invokeLater(new Runnable() {
+                                    public void run() {
+                                        h.getURLDone(true,
+                                                     purl.getContentType(),
+                                                     sw.toString());
+                                    }
+                                });
+                        } catch (Exception e) {
+                            updateRunnableQueue.invokeLater(new Runnable() {
+                                    public void run() {
+                                        h.getURLDone(false, "", "");
+                                    }
+                                });
+                        }
+                    }
+                };
+            t.setPriority(Thread.MIN_PRIORITY);
+            t.start();
+        }
+
 
         /**
          * Displays an alert dialog box.

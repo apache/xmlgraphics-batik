@@ -73,6 +73,35 @@ public interface Window {
     DocumentFragment parseXML(String text, Document doc);
 
     /**
+     * Gets data from the given URI.
+     * @param uri The URI where the data is located.
+     * @param h A handler called when the data is available.
+     */
+    void getURL(String uri, GetURLHandler h);
+
+    /**
+     * Gets data from the given URI.
+     * @param uri The URI where the data is located.
+     * @param h A handler called when the data is available.
+     * @param enc The character encoding of the data.
+     */
+    void getURL(String uri, GetURLHandler h, String enc);
+
+    /**
+     * To handle the completion of a 'getURL()' call.
+     */
+    public interface GetURLHandler {
+        
+        /**
+         * Called when 'getURL()' returns.
+         * @param success Whether the data was successfully retreived.
+         * @param mime The data MIME type.
+         * @param content The data.
+         */
+        void getURLDone(boolean success, String mime, String content);
+    }
+
+    /**
      * Displays an alert dialog box.
      */
     void alert(String message);

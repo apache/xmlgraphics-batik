@@ -296,6 +296,28 @@ public class RhinoInterpreter implements Interpreter {
     }
 
     /**
+     * To be used by <code>WindowWrapper</code>.
+     */
+    void callHandler(Function handler,
+                     ArgumentsBuilder ab)
+        throws JavaScriptException {
+        Context ctx = Context.enter();
+        ctx.setWrapHandler(wrapHandler);
+        try {
+            handler.call(ctx, globalObject, globalObject, ab.buildArguments());
+        } finally {
+            Context.exit();
+        }
+    }
+
+    /**
+     * To build an argument list.
+     */
+    public interface ArgumentsBuilder { 
+        Object[] buildArguments();
+    }
+
+    /**
      * Build the wrapper for objects implement <code>EventTarget</code>.
      */
     Scriptable buildEventTargetWrapper(EventTarget obj) {
