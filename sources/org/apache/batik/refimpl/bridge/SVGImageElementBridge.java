@@ -253,34 +253,34 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
             = new DefaultUnitProcessorContext(ctx, cssDecl);
 
         // parse the x attribute, (default is 0)
-        String s = svgElement.getAttributeNS(null, ATTR_X);
+        String s = svgElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
         float x = 0;
         if (s.length() != 0) {
             x = SVGUtilities.svgToUserSpace(svgElement,
-                                            ATTR_X, s,
+                                            SVG_X_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.HORIZONTAL_LENGTH);
         }
 
         // parse the x attribute, (default is 0)
-        s = svgElement.getAttributeNS(null, ATTR_Y);
+        s = svgElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
         float y = 0;
         if (s.length() != 0) {
             y = SVGUtilities.svgToUserSpace(svgElement,
-                                            ATTR_Y, s,
+                                            SVG_Y_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.VERTICAL_LENGTH);
         }
 
         // parse the width attribute, (required and must be positive)
-        s = svgElement.getAttributeNS(null, ATTR_WIDTH);
+        s = svgElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         float w;
         if (s.length() == 0) {
             throw new MissingAttributeException(
                 Messages.formatMessage("image.width.required", null));
         } else {
             w = SVGUtilities.svgToUserSpace(svgElement,
-                                            ATTR_WIDTH, s,
+                                            SVG_WIDTH_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.HORIZONTAL_LENGTH);
             if (w < 0) {
@@ -290,14 +290,14 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         }
 
         // parse the height attribute, (required and must be positive)
-        s = svgElement.getAttributeNS(null, ATTR_HEIGHT);
+        s = svgElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         float h;
         if (s.length() == 0) {
             throw new MissingAttributeException(
                 Messages.formatMessage("image.height.required", null));
         } else {
             h = SVGUtilities.svgToUserSpace(svgElement,
-                                            ATTR_HEIGHT, s,
+                                            SVG_HEIGHT_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.VERTICAL_LENGTH);
             if (h < 0) {

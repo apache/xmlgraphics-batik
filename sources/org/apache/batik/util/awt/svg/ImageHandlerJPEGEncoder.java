@@ -99,7 +99,7 @@ public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder{
 
         ImageHandler imageHandler = new ImageHandlerJPEGEncoder(imageDir, urlRoot);
         Document domFactory = TestUtil.getDocumentPrototype();
-        Element imageElement = domFactory.createElement(SVGSyntax.TAG_IMAGE);
+        Element imageElement = domFactory.createElement(SVGSyntax.SVG_IMAGE_TAG);
 
         BufferedImage testImage = new BufferedImage(60, 40, BufferedImage.TYPE_INT_ARGB);
         java.awt.Graphics2D g = testImage.createGraphics();

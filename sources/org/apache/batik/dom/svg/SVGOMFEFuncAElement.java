@@ -42,7 +42,7 @@ public class SVGOMFEFuncAElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_FUNC_A;
+        return SVG_FE_FUNC_A_TAG;
     }
 
     /**

@@ -87,11 +87,20 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * @return The content of the attribute.
      */
     public String getNodeValue() throws DOMException {
-	String result = "";
-	for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
-	    result += n.getNodeValue();
-	}
-	return result;
+        Node first = getFirstChild();
+        if (first == null) {
+            return "";
+        }
+        Node n = first.getNextSibling();
+        if (n == null) {
+            return first.getNodeValue();
+        }
+	StringBuffer result = new StringBuffer(first.getNodeValue());
+	do {
+	    result.append(n.getNodeValue());
+            n = n.getNextSibling();
+	} while (n != null);
+	return result.toString();
     }
 
     /**

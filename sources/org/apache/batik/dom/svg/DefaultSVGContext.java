@@ -35,16 +35,6 @@ public class DefaultSVGContext
     protected float pixelToMM;
 
     /**
-     * The viewport width.
-     */
-    protected float viewportWidth;
-
-    /**
-     * The viewport height.
-     */
-    protected float viewportHeight;
-
-    /**
      * Returns the parser factory.
      */
     public ParserFactory getParserFactory() {

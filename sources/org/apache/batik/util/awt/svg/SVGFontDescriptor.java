@@ -53,10 +53,10 @@ public class SVGFontDescriptor implements SVGDescriptor, SVGSyntax {
         if(attrMap == null)
             attrMap = new Hashtable();
 
-        attrMap.put(ATTR_FONT_SIZE, fontSize);
-        attrMap.put(ATTR_FONT_WEIGHT, fontWeight);
-        attrMap.put(ATTR_FONT_STYLE, fontStyle);
-        attrMap.put(ATTR_FONT_FAMILY, fontFamily);
+        attrMap.put(SVG_FONT_SIZE_ATTRIBUTE, fontSize);
+        attrMap.put(SVG_FONT_WEIGHT_ATTRIBUTE, fontWeight);
+        attrMap.put(SVG_FONT_STYLE_ATTRIBUTE, fontStyle);
+        attrMap.put(SVG_FONT_FAMILY_ATTRIBUTE, fontFamily);
 
         return attrMap;
     }

@@ -91,7 +91,7 @@ public class SVGOMFEPointLightElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_POINT_LIGHT;
+        return SVG_FE_POINT_LIGHT_TAG;
     }
 
     /**
@@ -102,7 +102,7 @@ public class SVGOMFEPointLightElement
 	SVGAnimatedNumber result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedNumber)xReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_X,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_X_ATTRIBUTE,
                                              X_DEFAULT_VALUE_PRODUCER);
 	    xReference = new WeakReference(result);
 	}
@@ -117,7 +117,7 @@ public class SVGOMFEPointLightElement
 	SVGAnimatedNumber result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedNumber)yReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_Y,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_Y_ATTRIBUTE,
                                              Y_DEFAULT_VALUE_PRODUCER);
 	    yReference = new WeakReference(result);
 	}
@@ -132,7 +132,7 @@ public class SVGOMFEPointLightElement
 	SVGAnimatedNumber result;
 	if (zReference == null ||
 	    (result = (SVGAnimatedNumber)zReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_Z,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_Z_ATTRIBUTE,
                                              Z_DEFAULT_VALUE_PRODUCER);
 	    zReference = new WeakReference(result);
 	}

@@ -8,6 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAnimatedInteger;
@@ -35,14 +36,23 @@ public class SVGOMAnimatedInteger implements SVGAnimatedInteger {
     protected String attributeName;
 
     /**
+     * The default value producer.
+     */
+    protected DefaultAttributeValueProducer defaultValueProducer;
+
+    /**
      * Creates a new SVGAnimatedInteger object.
      * @param elt The associated element.
+     * @param nsURI The associated element namespace URI.
      * @param attr The associated attribute name.
+     * @param def The default value producer.
      */
-    public SVGOMAnimatedInteger(Element elt, String nsURI, String attr) {
+    public SVGOMAnimatedInteger(Element elt, String nsURI, String attr,
+                                DefaultAttributeValueProducer def) {
 	element = elt;
 	attributeNsURI = nsURI;
 	attributeName = attr;
+        defaultValueProducer = def;
     }
 
     /**
@@ -50,8 +60,13 @@ public class SVGOMAnimatedInteger implements SVGAnimatedInteger {
      * org.w3c.dom.svg.SVGAnimatedInteger#getBaseVal()}.
      */
     public int getBaseVal() {
-	return Integer.parseInt(element.getAttributeNS(attributeNsURI,
-                                                       attributeName));
+        Attr a = element.getAttributeNodeNS(attributeNsURI, attributeName);
+        if (a != null) {
+            return Integer.parseInt(a.getValue());
+        } else if (defaultValueProducer != null) {
+            return Integer.parseInt(defaultValueProducer.getDefaultAttributeValue());
+        }
+        return 0;
     }
 
     /**

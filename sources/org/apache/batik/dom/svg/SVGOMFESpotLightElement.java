@@ -171,7 +171,7 @@ public class SVGOMFESpotLightElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_SPOT_LIGHT;
+        return SVG_FE_SPOT_LIGHT_TAG;
     }
 
     /**
@@ -182,7 +182,7 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedNumber)xReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_X,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_X_ATTRIBUTE,
                                              X_DEFAULT_VALUE_PRODUCER);
 	    xReference = new WeakReference(result);
 	}
@@ -197,7 +197,7 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedNumber)yReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_Y,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_Y_ATTRIBUTE,
                                              Y_DEFAULT_VALUE_PRODUCER);
 	    yReference = new WeakReference(result);
 	}
@@ -212,7 +212,7 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (zReference == null ||
 	    (result = (SVGAnimatedNumber)zReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_Z,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_Z_ATTRIBUTE,
                                              Z_DEFAULT_VALUE_PRODUCER);
 	    zReference = new WeakReference(result);
 	}
@@ -227,7 +227,7 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (pointsAtXReference == null ||
 	    (result = (SVGAnimatedNumber)pointsAtXReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_POINTS_AT_X,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_POINTS_AT_X_ATTRIBUTE,
                                              POINTS_AT_X_DEFAULT_VALUE_PRODUCER);
 	    pointsAtXReference = new WeakReference(result);
 	}
@@ -242,7 +242,7 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (pointsAtYReference == null ||
 	    (result = (SVGAnimatedNumber)pointsAtYReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_POINTS_AT_Y,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_POINTS_AT_Y_ATTRIBUTE,
                                              POINTS_AT_Y_DEFAULT_VALUE_PRODUCER);
 	    pointsAtYReference = new WeakReference(result);
 	}
@@ -257,7 +257,7 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (pointsAtZReference == null ||
 	    (result = (SVGAnimatedNumber)pointsAtZReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_POINTS_AT_Z,
+	    result = new SVGOMAnimatedNumber(this, null, SVG_POINTS_AT_Z_ATTRIBUTE,
                                              POINTS_AT_Z_DEFAULT_VALUE_PRODUCER);
 	    pointsAtZReference = new WeakReference(result);
 	}
@@ -272,7 +272,8 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (specularExponentReference == null ||
 	    (result = (SVGAnimatedNumber)specularExponentReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_SPECULAR_EXPONENT,
+	    result = new SVGOMAnimatedNumber(this, null,
+                                             SVG_SPECULAR_EXPONENT_ATTRIBUTE,
                                              SPECULAR_EXPONENT_DEFAULT_VALUE_PRODUCER);
 	    specularExponentReference = new WeakReference(result);
 	}
@@ -287,7 +288,8 @@ public class SVGOMFESpotLightElement
 	SVGAnimatedNumber result;
 	if (limitingConeAngleReference == null ||
 	    (result = (SVGAnimatedNumber)limitingConeAngleReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_LIMITING_CONE_ANGLE,
+	    result = new SVGOMAnimatedNumber(this, null,
+                                             SVG_LIMITING_CONE_ANGLE_ATTRIBUTE,
                                              LIMITING_CONE_ANGLE_DEFAULT_VALUE_PRODUCER);
 	    limitingConeAngleReference = new WeakReference(result);
 	}

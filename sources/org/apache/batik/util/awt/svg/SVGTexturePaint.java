@@ -31,7 +31,8 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGTexturePaint extends AbstractSVGConverter{
-    public static final String ERROR_IMAGE_HANDLER_NULL = "imageHandler should not be null";
+    public static final String ERROR_IMAGE_HANDLER_NULL =
+        "imageHandler should not be null";
 
     /**
      * Used to populate image Element attributes
@@ -85,19 +86,19 @@ public class SVGTexturePaint extends AbstractSVGConverter{
             //
             // First, set the pattern anchor
             //
-            patternDef.setAttribute(ATTR_X,
+            patternDef.setAttribute(SVG_X_ATTRIBUTE,
                                     doubleString(anchorRect.getX()));
-            patternDef.setAttribute(ATTR_Y,
+            patternDef.setAttribute(SVG_Y_ATTRIBUTE,
                                     doubleString(anchorRect.getY()));
-            patternDef.setAttribute(ATTR_WIDTH,
+            patternDef.setAttribute(SVG_WIDTH_ATTRIBUTE,
                                     doubleString(anchorRect.getWidth()));
-            patternDef.setAttribute(ATTR_HEIGHT,
+            patternDef.setAttribute(SVG_HEIGHT_ATTRIBUTE,
                                     doubleString(anchorRect.getHeight()));
 
             //
             // Now, add an image element for the image
             //
-            Element imageElement = domFactory.createElement(TAG_IMAGE);
+            Element imageElement = domFactory.createElement(SVG_IMAGE_TAG);
             imageHandler.handleImage((RenderedImage)texture.getImage(), imageElement);
             patternDef.appendChild(imageElement);
 
@@ -130,7 +131,7 @@ public class SVGTexturePaint extends AbstractSVGConverter{
         TexturePaint paint = new TexturePaint(buf, new Rectangle(0, 0, 200, 200));
 
         SVGTexturePaint converter = new SVGTexturePaint(domFactory, new DefaultImageHandler());
-        Element group = domFactory.createElement(TAG_G);
+        Element group = domFactory.createElement(SVG_G_TAG);
         Element defs = domFactory.createElement(SVG_DEFS_TAG);
 
         SVGPaintDescriptor patternDesc = converter.toSVG(paint);
@@ -141,8 +142,8 @@ public class SVGTexturePaint extends AbstractSVGConverter{
         }
 
         Element rect = domFactory.createElement(TAG_RECT);
-        rect.setAttribute(ATTR_FILL, patternDesc.getPaintValue());
-        rect.setAttribute(ATTR_FILL_OPACITY, patternDesc.getOpacityValue());
+        rect.setAttribute(SVG_FILL_ATTRIBUTE, patternDesc.getPaintValue());
+        rect.setAttribute(SVG_FILL_OPACITY_ATTRIBUTE, patternDesc.getOpacityValue());
 
         group.appendChild(defs);
         group.appendChild(rect);

@@ -27,25 +27,48 @@ import org.w3c.dom.svg.SVGImageElement;
 public class SVGOMImageElement
     extends    SVGURIReferenceGraphicsElement
     implements SVGImageElement {
+
+    /**
+     * The DefaultAttributeValueProducer for x.
+     */
+    protected final static DefaultAttributeValueProducer
+        X_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_IMAGE_X;
+                }
+            };
+    
+    /**
+     * The DefaultAttributeValueProducer for y.
+     */
+    protected final static DefaultAttributeValueProducer
+        Y_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_IMAGE_Y;
+                }
+            };
+    
     /**
      * The reference to the x attribute.
      */
-    protected WeakReference xReference;
+    protected transient WeakReference xReference;
 
     /**
      * The reference to the y attribute.
      */
-    protected WeakReference yReference;
+    protected transient WeakReference yReference;
 
     /**
      * The reference to the width attribute.
      */
-    protected WeakReference widthReference;
+    protected transient WeakReference widthReference;
 
     /**
      * The reference to the height attribute.
      */
-    protected WeakReference heightReference;
+    protected transient WeakReference heightReference;
 
     /**
      * Creates a new SVGOMImageElement object.
@@ -66,7 +89,7 @@ public class SVGOMImageElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "image";
+        return SVG_IMAGE_TAG;
     }
 
     /**
@@ -76,7 +99,8 @@ public class SVGOMImageElement
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE,
+                                             X_DEFAULT_VALUE_PRODUCER);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -89,7 +113,8 @@ public class SVGOMImageElement
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE,
+                                             Y_DEFAULT_VALUE_PRODUCER);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -103,7 +128,7 @@ public class SVGOMImageElement
 	SVGAnimatedLength result;
 	if (widthReference == null ||
 	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "width", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
 	    widthReference = new WeakReference(result);
 	}
 	return result;
@@ -117,7 +142,7 @@ public class SVGOMImageElement
 	SVGAnimatedLength result;
 	if (heightReference == null ||
 	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "height", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
 	    heightReference = new WeakReference(result);
 	}
 	return result;

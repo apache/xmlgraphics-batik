@@ -27,25 +27,26 @@ import org.w3c.dom.svg.SVGUseElement;
 public class SVGOMUseElement
     extends    SVGURIReferenceGraphicsElement
     implements SVGUseElement {
+
     /**
      * The reference to the x attribute.
      */
-    protected WeakReference xReference;
+    protected transient WeakReference xReference;
 
     /**
      * The reference to the y attribute.
      */
-    protected WeakReference yReference;
+    protected transient WeakReference yReference;
 
     /**
      * The reference to the width attribute.
      */
-    protected WeakReference widthReference;
+    protected transient WeakReference widthReference;
 
     /**
      * The reference to the height attribute.
      */
-    protected WeakReference heightReference;
+    protected transient WeakReference heightReference;
 
     /**
      * Creates a new SVGOMUseElement object.
@@ -66,7 +67,7 @@ public class SVGOMUseElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "use";
+        return SVG_USE_TAG;
     }
 
     /**
@@ -76,7 +77,7 @@ public class SVGOMUseElement
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -89,7 +90,7 @@ public class SVGOMUseElement
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -102,7 +103,7 @@ public class SVGOMUseElement
 	SVGAnimatedLength result;
 	if (widthReference == null ||
 	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "width", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
 	    widthReference = new WeakReference(result);
 	}
 	return result;
@@ -116,7 +117,7 @@ public class SVGOMUseElement
 	SVGAnimatedLength result;
 	if (heightReference == null ||
 	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "height", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
 	    heightReference = new WeakReference(result);
 	}
 	return result;

@@ -31,7 +31,7 @@ public class SVGOMFEMergeNodeElement
     /**
      * The reference to the in attribute.
      */
-    protected WeakReference inReference;
+    protected transient WeakReference inReference;
 
     /**
      * Creates a new SVGOMFEMergeNodeElement object.
@@ -52,7 +52,7 @@ public class SVGOMFEMergeNodeElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_MERGE_NODE;
+        return SVG_FE_MERGE_NODE_TAG;
     }
 
     /**

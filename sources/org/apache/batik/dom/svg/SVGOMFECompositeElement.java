@@ -30,6 +30,17 @@ public class SVGOMFECompositeElement
     implements SVGFECompositeElement {
 
     /**
+     * The DefaultAttributeValueProducer for operator.
+     */
+    protected final static DefaultAttributeValueProducer
+        OPERATOR_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_COMPOSITE_OPERATOR;
+                }
+            };
+
+    /**
      * The DefaultAttributeValueProducer for k1.
      */
     protected final static DefaultAttributeValueProducer K1_DEFAULT_VALUE_PRODUCER =
@@ -80,6 +91,11 @@ public class SVGOMFECompositeElement
     protected transient WeakReference in2Reference;
 
     /**
+     * The reference to the operator attribute.
+     */
+    protected transient WeakReference operatorReference;
+
+    /**
      * The reference to the k1 attribute.
      */
     protected transient WeakReference k1Reference;
@@ -107,6 +123,37 @@ public class SVGOMFECompositeElement
         Map values = new HashMap(2);
         values.put(SVG_OPERATOR_ATTRIBUTE, SVG_OVER_VALUE);
         attributeValues.put(null, values);
+    }
+
+    // The enumeration maps
+    protected final static Map STRING_TO_SHORT_OPERATOR = new HashMap(9);
+    protected final static Map SHORT_TO_STRING_OPERATOR = new HashMap(9);
+    static {
+        STRING_TO_SHORT_OPERATOR.put(SVG_OVER_VALUE,
+                                     SVGOMAnimatedEnumeration.createShort((short)1));
+        STRING_TO_SHORT_OPERATOR.put(SVG_IN_VALUE,
+                                     SVGOMAnimatedEnumeration.createShort((short)2));
+        STRING_TO_SHORT_OPERATOR.put(SVG_OUT_VALUE,
+                                     SVGOMAnimatedEnumeration.createShort((short)3));
+        STRING_TO_SHORT_OPERATOR.put(SVG_ATOP_VALUE,
+                                     SVGOMAnimatedEnumeration.createShort((short)4));
+        STRING_TO_SHORT_OPERATOR.put(SVG_XOR_VALUE,
+                                     SVGOMAnimatedEnumeration.createShort((short)5));
+        STRING_TO_SHORT_OPERATOR.put(SVG_ARITHMETIC_VALUE,
+                                     SVGOMAnimatedEnumeration.createShort((short)6));
+
+        SHORT_TO_STRING_OPERATOR.put(SVGOMAnimatedEnumeration.createShort((short)1),
+                                     SVG_OVER_VALUE);
+        SHORT_TO_STRING_OPERATOR.put(SVGOMAnimatedEnumeration.createShort((short)2),
+                                     SVG_IN_VALUE);
+        SHORT_TO_STRING_OPERATOR.put(SVGOMAnimatedEnumeration.createShort((short)3),
+                                     SVG_OUT_VALUE);
+        SHORT_TO_STRING_OPERATOR.put(SVGOMAnimatedEnumeration.createShort((short)4),
+                                     SVG_ATOP_VALUE);
+        SHORT_TO_STRING_OPERATOR.put(SVGOMAnimatedEnumeration.createShort((short)5),
+                                     SVG_XOR_VALUE);
+        SHORT_TO_STRING_OPERATOR.put(SVGOMAnimatedEnumeration.createShort((short)6),
+                                     SVG_ARITHMETIC_VALUE);
     }
 
     /**
@@ -164,7 +211,17 @@ public class SVGOMFECompositeElement
      * SVGFECompositeElement#getOperator()}.
      */
     public SVGAnimatedEnumeration getOperator() {
-        throw new RuntimeException(" !!! SVGFECompositeElement#getOperator()");
+        SVGAnimatedEnumeration result;
+        if (operatorReference == null ||
+            (result = (SVGAnimatedEnumeration)operatorReference.get()) == null) {
+            result = new SVGOMAnimatedEnumeration(this, null,
+                                                  SVG_OPERATOR_ATTRIBUTE,
+                                                  STRING_TO_SHORT_OPERATOR,
+                                                  SHORT_TO_STRING_OPERATOR,
+                                                  OPERATOR_DEFAULT_VALUE_PRODUCER);
+            operatorReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**

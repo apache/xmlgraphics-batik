@@ -112,10 +112,11 @@ public class SVGOMAnimatedEnumeration
             if (s != null) {
                 return s.shortValue();
             }
-            return 0; // Unknown
+        } else if (defaultValueProducer != null) {
+            String s = defaultValueProducer.getDefaultAttributeValue();
+            return ((Short)stringShortMap.get(s)).shortValue();
         }
-        String s = defaultValueProducer.getDefaultAttributeValue();
-        return ((Short)stringShortMap.get(s)).shortValue();
+        return 0; // Unknown
     }
 
     /**

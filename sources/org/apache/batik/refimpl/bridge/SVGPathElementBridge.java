@@ -52,7 +52,7 @@ public class SVGPathElementBridge extends SVGShapeElementBridge {
             : PathIterator.WIND_EVEN_ODD;
 
         // parse the d attribute, (required)
-        String d = elt.getAttributeNS(null, ATTR_D);
+        String d = elt.getAttributeNS(null, SVG_D_ATTRIBUTE);
         if (d.length() == 0) {
             throw new MissingAttributeException(
                 Messages.formatMessage("path.d.required", null));

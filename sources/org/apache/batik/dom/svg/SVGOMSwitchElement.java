@@ -43,7 +43,7 @@ public class SVGOMSwitchElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "switch";
+        return SVG_SWITCH_TAG;
     }
 
     /**

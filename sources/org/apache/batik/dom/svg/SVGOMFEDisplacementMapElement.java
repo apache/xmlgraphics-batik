@@ -57,14 +57,59 @@ public class SVGOMFEDisplacementMapElement
     protected transient WeakReference scaleReference;
 
     /**
+     * The reference to the xChannelSelector attribute.
+     */
+    protected transient WeakReference xChannelSelectorReference;
+
+    /**
+     * The reference to the yChannelSelector attribute.
+     */
+    protected transient WeakReference yChannelSelectorReference;
+
+    /**
      * The attribute-value map map.
      */
     protected static Map attributeValues = new HashMap(2);
     static {
         Map values = new HashMap(3);
-        values.put("xChannelSelector",  "A");
-        values.put("yChannelSelector",  "A");
+        values.put(SVG_X_CHANNEL_SELECTOR_ATTRIBUTE, SVG_A_VALUE);
+        values.put(SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE, SVG_A_VALUE);
         attributeValues.put(null, values);
+    }
+
+    // The enumeration maps
+    protected final static Map STRING_TO_SHORT_X_CHANNEL_SELECTOR = new HashMap(6);
+    protected final static Map SHORT_TO_STRING_X_CHANNEL_SELECTOR = new HashMap(6);
+    protected final static Map STRING_TO_SHORT_Y_CHANNEL_SELECTOR =
+        STRING_TO_SHORT_X_CHANNEL_SELECTOR;
+    protected final static Map SHORT_TO_STRING_Y_CHANNEL_SELECTOR =
+        SHORT_TO_STRING_X_CHANNEL_SELECTOR;
+    static {
+        STRING_TO_SHORT_X_CHANNEL_SELECTOR.put
+            (SVG_R_VALUE,
+             SVGOMAnimatedEnumeration.createShort((short)1));
+        STRING_TO_SHORT_X_CHANNEL_SELECTOR.put
+            (SVG_G_VALUE,
+             SVGOMAnimatedEnumeration.createShort((short)2));
+        STRING_TO_SHORT_X_CHANNEL_SELECTOR.put
+            (SVG_B_VALUE,
+             SVGOMAnimatedEnumeration.createShort((short)3));
+        STRING_TO_SHORT_X_CHANNEL_SELECTOR.put
+            (SVG_A_VALUE,
+             SVGOMAnimatedEnumeration.createShort((short)4));
+
+        SHORT_TO_STRING_X_CHANNEL_SELECTOR.put
+            (SVGOMAnimatedEnumeration.createShort((short)1),
+             SVG_A_VALUE);
+        SHORT_TO_STRING_X_CHANNEL_SELECTOR.put
+            (SVGOMAnimatedEnumeration.createShort((short)2),
+             SVG_R_VALUE);
+        SHORT_TO_STRING_X_CHANNEL_SELECTOR.put
+            (SVGOMAnimatedEnumeration.createShort((short)3),
+             SVG_G_VALUE);
+        SHORT_TO_STRING_X_CHANNEL_SELECTOR.put
+            (SVGOMAnimatedEnumeration.createShort((short)4),
+             SVG_B_VALUE);
     }
 
     /**
@@ -87,7 +132,7 @@ public class SVGOMFEDisplacementMapElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_DISPLACEMENT_MAP;
+        return SVG_FE_DISPLACEMENT_MAP_TAG;
     }
 
     /**
@@ -138,7 +183,17 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getXChannelSelector()}.
      */
     public SVGAnimatedEnumeration getXChannelSelector() {
-        throw new RuntimeException(" !!! SVGFEDisplacementMapElement#getXChannelSelector()");
+        SVGAnimatedEnumeration result;
+        if (xChannelSelectorReference == null ||
+            (result = (SVGAnimatedEnumeration)xChannelSelectorReference.get()) == null) {
+            result = new SVGOMAnimatedEnumeration(this, null,
+                                                  SVG_X_CHANNEL_SELECTOR_ATTRIBUTE,
+                                                  STRING_TO_SHORT_X_CHANNEL_SELECTOR,
+                                                  SHORT_TO_STRING_X_CHANNEL_SELECTOR,
+                                                  null);
+            xChannelSelectorReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -146,7 +201,17 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getYChannelSelector()}.
      */
     public SVGAnimatedEnumeration getYChannelSelector() {
-        throw new RuntimeException(" !!! SVGFEDisplacementMapElement#getYChannelSelector()");
+        SVGAnimatedEnumeration result;
+        if (yChannelSelectorReference == null ||
+            (result = (SVGAnimatedEnumeration)yChannelSelectorReference.get()) == null) {
+            result = new SVGOMAnimatedEnumeration(this, null,
+                                                  SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE,
+                                                  STRING_TO_SHORT_Y_CHANNEL_SELECTOR,
+                                                  SHORT_TO_STRING_Y_CHANNEL_SELECTOR,
+                                                  null);
+            yChannelSelectorReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**

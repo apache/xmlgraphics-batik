@@ -53,7 +53,7 @@ public class SVGClipDescriptor implements SVGDescriptor, SVGSyntax{
         if(attrMap == null)
             attrMap = new Hashtable();
 
-        attrMap.put(ATTR_CLIP_PATH, clipPathValue);
+        attrMap.put(SVG_CLIP_PATH_ATTRIBUTE, clipPathValue);
 
         return attrMap;
     }

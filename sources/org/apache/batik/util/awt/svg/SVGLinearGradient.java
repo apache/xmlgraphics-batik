@@ -155,7 +155,7 @@ public class SVGLinearGradient extends AbstractSVGConverter{
 
         SVGLinearGradient converter = new SVGLinearGradient(domFactory);
 
-        Element group = domFactory.createElement(TAG_G);
+        Element group = domFactory.createElement(SVG_G_TAG);
         Element defs = domFactory.createElement(SVG_DEFS_TAG);
 
         SVGPaintDescriptor gradientDesc = converter.toSVG(gradient);
@@ -167,8 +167,8 @@ public class SVGLinearGradient extends AbstractSVGConverter{
         }
 
         Element rect = domFactory.createElement(TAG_RECT);
-        rect.setAttribute(ATTR_FILL, gradientDesc.getPaintValue());
-        rect.setAttribute(ATTR_FILL_OPACITY, gradientDesc.getOpacityValue());
+        rect.setAttribute(SVG_FILL_ATTRIBUTE, gradientDesc.getPaintValue());
+        rect.setAttribute(SVG_FILL_OPACITY_ATTRIBUTE, gradientDesc.getOpacityValue());
 
         group.appendChild(defs);
         group.appendChild(rect);

@@ -83,7 +83,7 @@ public class DefaultUnitProcessorContext
         if (svg == null) {
             return (float)context.getViewportWidth();
         }
-        String s = svg.getAttributeNS(null, ATTR_WIDTH);
+        String s = svg.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         LengthParser p = getParserFactory().createLengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);
@@ -103,7 +103,7 @@ public class DefaultUnitProcessorContext
         if (svg == null) {
             return (float)context.getViewportHeight();
         }
-        String s = svg.getAttributeNS(null, ATTR_HEIGHT);
+        String s = svg.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         LengthParser p = getParserFactory().createLengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);

@@ -119,21 +119,21 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         result.setTransform(at);
 
         // parse the x attribute, (default is 0)
-        String s = element.getAttributeNS(null, ATTR_X);
+        String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
         float x = 0;
         if (s.length() != 0) {
             x = SVGUtilities.svgToUserSpace(element,
-                                            ATTR_X, s,
+                                            SVG_X_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.HORIZONTAL_LENGTH);
         }
 
         // parse the y attribute, (default is 0)
-        s = element.getAttributeNS(null, ATTR_Y);
+        s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
         float y = 0;
         if (s.length() != 0) {
             y = SVGUtilities.svgToUserSpace(element,
-                                            ATTR_Y, s,
+                                            SVG_Y_ATTRIBUTE, s,
                                             uctx,
                                             UnitProcessor.VERTICAL_LENGTH);
         }

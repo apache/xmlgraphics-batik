@@ -45,7 +45,7 @@ public class SVGOMLength
     /**
      * The unit type.
      */
-    protected short unitType;
+    protected short unitType = SVG_LENGTHTYPE_NUMBER;
 
     /**
      * The associated attribute modifier.
@@ -56,6 +56,11 @@ public class SVGOMLength
      * This length direction.
      */
     protected short direction; // default is UnitProcessor.OTHER_LENGTH
+
+    /**
+     * Whether or not the current change is due to an internal change.
+     */
+    protected boolean internalChange;
 
     /**
      * Sets the associated attribute modifier.
@@ -77,7 +82,9 @@ public class SVGOMLength
      * @param newValue The new Attr node.
      */
     public void valueChanged(Attr oldValue, Attr newValue) {
-	parseLength(newValue.getValue());
+	if (!internalChange) {
+            parseLength(newValue.getValue());
+        }
     }
 
     /**
@@ -114,6 +121,7 @@ public class SVGOMLength
                                                     ctx);
             }
         } catch (RuntimeException e) {
+            e.printStackTrace();
             throw new DOMException(DOMException.INVALID_STATE_ERR,
                                    e.getMessage());
         }
@@ -165,10 +173,11 @@ public class SVGOMLength
      */
     public void setValueInSpecifiedUnits(float value)
 	throws DOMException {
-	if (modificationHandler == null) {
-	    parseLength(value + UNITS[unitType]);
-	} else {
+        valueInSpecifiedUnits = value;
+	if (modificationHandler != null) {
+            internalChange = true;
 	    modificationHandler.valueChanged(this, value + UNITS[unitType]);
+            internalChange = false;
 	}
     }
 
@@ -198,7 +207,14 @@ public class SVGOMLength
      */
     public void newValueSpecifiedUnits(short unitType,
                                        float valueInSpecifiedUnits) {
-	setValueAsString(valueInSpecifiedUnits + UNITS[unitType]);
+        this.unitType = unitType;
+        this.valueInSpecifiedUnits = valueInSpecifiedUnits;
+        if (modificationHandler != null) {
+            internalChange = true;
+            modificationHandler.valueChanged(this,
+                                             valueInSpecifiedUnits + UNITS[unitType]);
+            internalChange = false;
+        }
     }
 
     /**

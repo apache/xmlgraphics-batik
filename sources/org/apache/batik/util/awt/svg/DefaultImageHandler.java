@@ -32,8 +32,8 @@ public class DefaultImageHandler implements ImageHandler{
         //
         // First, set the image width and height
         //
-        imageElement.setAttribute(ATTR_WIDTH, "" + image.getWidth(null));
-        imageElement.setAttribute(ATTR_HEIGHT, "" + image.getHeight(null));
+        imageElement.setAttribute(SVG_WIDTH_ATTRIBUTE, "" + image.getWidth(null));
+        imageElement.setAttribute(SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight(null));
 
         //
         // Now, set the href
@@ -49,8 +49,8 @@ public class DefaultImageHandler implements ImageHandler{
         //
         // First, set the image width and height
         //
-        imageElement.setAttribute(ATTR_WIDTH, "" + image.getWidth());
-        imageElement.setAttribute(ATTR_HEIGHT, "" + image.getHeight());
+        imageElement.setAttribute(SVG_WIDTH_ATTRIBUTE, "" + image.getWidth());
+        imageElement.setAttribute(SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight());
 
         //
         // Now, set the href
@@ -66,8 +66,8 @@ public class DefaultImageHandler implements ImageHandler{
         //
         // First, set the image width and height
         //
-        imageElement.setAttribute(ATTR_WIDTH, "" + image.getWidth());
-        imageElement.setAttribute(ATTR_HEIGHT, "" + image.getHeight());
+        imageElement.setAttribute(SVG_WIDTH_ATTRIBUTE, "" + image.getWidth());
+        imageElement.setAttribute(SVG_HEIGHT_ATTRIBUTE, "" + image.getHeight());
 
         //
         // Now, set the href

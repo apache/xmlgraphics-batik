@@ -9,6 +9,8 @@
 package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.batik.css.ElementNonCSSPresentationalHints;
 import org.apache.batik.css.ExtendedElementCSSInlineStyle;
@@ -49,24 +51,75 @@ public class SVGOMFilterElement
 	       ElementNonCSSPresentationalHints {
 
     /**
+     * The DefaultAttributeValueProducer for filterUnits.
+     */
+    protected final static DefaultAttributeValueProducer
+        FILTER_UNITS_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FILTER_FILTER_UNITS;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for primitiveUnits.
+     */
+    protected final static DefaultAttributeValueProducer
+        PRIMITIVE_UNITS_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FILTER_PRIMITIVE_UNITS;
+                }
+            };
+
+    /**
      * The reference to the x attribute.
      */
-    protected WeakReference xReference;
+    protected transient WeakReference xReference;
 
     /**
      * The reference to the y attribute.
      */
-    protected WeakReference yReference;
+    protected transient WeakReference yReference;
 
     /**
      * The reference to the width attribute.
      */
-    protected WeakReference widthReference;
+    protected transient WeakReference widthReference;
 
     /**
      * The reference to the height attribute.
      */
-    protected WeakReference heightReference;
+    protected transient WeakReference heightReference;
+
+    /**
+     * The reference to the filterUnits attribute.
+     */
+    protected transient WeakReference filterUnitsReference;
+
+    /**
+     * The reference to the primitiveUnits attribute.
+     */
+    protected transient WeakReference primitiveUnitsReference;
+
+    // The enumeration maps.
+    protected final static Map STRING_TO_SHORT_FILTER_UNITS = new HashMap(5);
+    protected final static Map SHORT_TO_STRING_FILTER_UNITS = new HashMap(5);
+    protected final static Map STRING_TO_SHORT_PRIMITIVE_UNITS =
+        STRING_TO_SHORT_FILTER_UNITS;
+    protected final static Map SHORT_TO_STRING_PRIMITIVE_UNITS =
+        SHORT_TO_STRING_FILTER_UNITS;
+    static {
+        STRING_TO_SHORT_FILTER_UNITS.put(SVG_USER_SPACE_ON_USE_VALUE,
+                                         SVGOMAnimatedEnumeration.createShort((short)1));
+        STRING_TO_SHORT_FILTER_UNITS.put(SVG_OBJECT_BOUNDING_BOX_VALUE,
+                                         SVGOMAnimatedEnumeration.createShort((short)2));
+
+        SHORT_TO_STRING_FILTER_UNITS.put(SVGOMAnimatedEnumeration.createShort((short)1),
+                                         SVG_USER_SPACE_ON_USE_VALUE);
+        SHORT_TO_STRING_FILTER_UNITS.put(SVGOMAnimatedEnumeration.createShort((short)2),
+                                         SVG_OBJECT_BOUNDING_BOX_VALUE);
+    }
 
     /**
      * Creates a new SVGOMFilterElement object.
@@ -87,7 +140,7 @@ public class SVGOMFilterElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FILTER;
+        return SVG_FILTER_TAG;
     }
 
     /**
@@ -95,7 +148,17 @@ public class SVGOMFilterElement
      * org.w3c.dom.svg.SVGFilterElement#getFilterUnits()}.
      */
     public SVGAnimatedEnumeration getFilterUnits() {
-	throw new RuntimeException(" !!! TODO: SVGOMFilterElement.getFilterUnits()");
+        SVGAnimatedEnumeration result;
+        if (filterUnitsReference == null ||
+            (result = (SVGAnimatedEnumeration)filterUnitsReference.get()) == null) {
+            result = new SVGOMAnimatedEnumeration(this, null,
+                                                  SVG_FILTER_UNITS_ATTRIBUTE,
+                                                  STRING_TO_SHORT_FILTER_UNITS,
+                                                  SHORT_TO_STRING_FILTER_UNITS,
+                                                  FILTER_UNITS_DEFAULT_VALUE_PRODUCER);
+            filterUnitsReference = new WeakReference(result);
+        }
+        return result;
     }
  
     /**
@@ -103,7 +166,17 @@ public class SVGOMFilterElement
      * org.w3c.dom.svg.SVGFilterElement#getPrimitiveUnits()}.
      */
     public SVGAnimatedEnumeration getPrimitiveUnits() {
-	throw new RuntimeException(" !!! TODO: SVGOMFilterElement.getPrimitiveUnits()");
+        SVGAnimatedEnumeration result;
+        if (primitiveUnitsReference == null ||
+            (result = (SVGAnimatedEnumeration)primitiveUnitsReference.get()) == null) {
+            result = new SVGOMAnimatedEnumeration(this, null,
+                                                  SVG_PRIMITIVE_UNITS_ATTRIBUTE,
+                                                  STRING_TO_SHORT_PRIMITIVE_UNITS,
+                                                  SHORT_TO_STRING_PRIMITIVE_UNITS,
+                                                PRIMITIVE_UNITS_DEFAULT_VALUE_PRODUCER);
+            primitiveUnitsReference = new WeakReference(result);
+        }
+        return result;
     } 
 
     /**
@@ -113,7 +186,7 @@ public class SVGOMFilterElement
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -126,7 +199,7 @@ public class SVGOMFilterElement
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y", null);
+	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
 	    yReference = new WeakReference(result);
 	}
 	return result;

@@ -36,7 +36,7 @@ public class SVGOMFEFloodElement
     /**
      * The reference to the in attribute.
      */
-    protected WeakReference inReference;
+    protected transient WeakReference inReference;
 
     /**
      * Creates a new SVGOMFEFloodElement object.
@@ -58,7 +58,7 @@ public class SVGOMFEFloodElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_FLOOD;
+        return SVG_FE_FLOOD_TAG;
     }
 
     /**

@@ -12,6 +12,7 @@ import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.image.BufferedImage;
@@ -90,12 +91,15 @@ public abstract class ImageTranscoder extends AbstractTranscoder {
         renderer.setTransform(t);
         renderer.setTree(gvtRoot);
         try {
-            renderer.repaint(new Rectangle(0, 0, w, h));
+            Shape s = t.createInverse().createTransformedShape(new Rectangle(0, 0, w, h));
+            renderer.repaint(s);
             // save the offscreen image
             writeImage(img, ostream);
         } catch (IOException ex) {
             throw new TranscoderException(ex.getMessage(), ex);
         } catch (InterruptedException ex) {
+            throw new TranscoderException(ex.getMessage(), ex);
+        } catch (Exception ex) {
             throw new TranscoderException(ex.getMessage(), ex);
         }
     }

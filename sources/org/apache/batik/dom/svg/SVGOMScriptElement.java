@@ -47,7 +47,7 @@ public class SVGOMScriptElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "script";
+        return SVG_SCRIPT_TAG;
     }
 
     /**

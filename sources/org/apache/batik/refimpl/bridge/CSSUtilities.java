@@ -210,7 +210,7 @@ public class CSSUtilities implements SVGConstants {
              = ctx.getViewCSS().getComputedStyle(clipedElement, null);
 
          CSSPrimitiveValue clipValue =
-             (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_CLIP_PATH);
+             (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_CLIP_PATH_PROPERTY);
 
          switch(clipValue.getPrimitiveType()){
          case CSSPrimitiveValue.CSS_IDENT:
@@ -269,7 +269,7 @@ public class CSSUtilities implements SVGConstants {
              = ctx.getViewCSS().getComputedStyle(maskedElement, null);
 
          CSSPrimitiveValue maskValue
-             = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_MASK);
+             = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_MASK_PROPERTY);
 
          switch(maskValue.getPrimitiveType()){
          case CSSPrimitiveValue.CSS_IDENT:
@@ -795,7 +795,7 @@ public class CSSUtilities implements SVGConstants {
             = ctx.getViewCSS().getComputedStyle(element, null);
 
         CSSPrimitiveValue filterValue
-            = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_FILTER);
+            = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FILTER_PROPERTY);
 
         switch(filterValue.getPrimitiveType()){
         case CSSPrimitiveValue.CSS_IDENT:

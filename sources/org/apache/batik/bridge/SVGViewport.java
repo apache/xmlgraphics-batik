@@ -41,7 +41,7 @@ public class SVGViewport implements Viewport, SVGConstants {
      * Returns the width of this <tt>SVGSVGElement</tt>.
      */
     public float getWidth() {
-        String s = svgSvgElement.getAttributeNS(null, ATTR_WIDTH);
+        String s = svgSvgElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         LengthParser p = uctx.getParserFactory().createLengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);
@@ -57,7 +57,7 @@ public class SVGViewport implements Viewport, SVGConstants {
      * Returns the height of this viewport.
      */
     public float getHeight() {
-        String s = svgSvgElement.getAttributeNS(null, ATTR_HEIGHT);
+        String s = svgSvgElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
         LengthParser p = uctx.getParserFactory().createLengthParser();
         UnitProcessor.UnitResolver ur = new UnitProcessor.UnitResolver();
         p.setLengthHandler(ur);

@@ -89,40 +89,40 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, SVG_FE_COMPOSITE_TAG,
                   new SVGFeCompositeElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_DISPLACEMENT_MAP,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_DISPLACEMENT_MAP_TAG,
                   new SVGFeDisplacementMapElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_FLOOD,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_FLOOD_TAG,
                   new SVGFeFloodElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_GAUSSIAN_BLUR,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_GAUSSIAN_BLUR_TAG,
                   new SVGFeGaussianBlurElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_IMAGE,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_IMAGE_TAG,
                   new SVGFeImageElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_MERGE,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_MERGE_TAG,
                   new SVGFeMergeElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_MORPHOLOGY,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_MORPHOLOGY_TAG,
                   new SVGFeMorphologyElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_OFFSET,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_OFFSET_TAG,
                   new SVGFeOffsetElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_TILE,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_TILE_TAG,
                   new SVGFeTileElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_TURBULENCE,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_TURBULENCE_TAG,
                   new SVGFeTurbulenceElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FILTER,
+        putBridge(SVG_NAMESPACE_URI, SVG_FILTER_TAG,
                   new SVGFilterElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_G,
+        putBridge(SVG_NAMESPACE_URI, SVG_G_TAG,
                   new SVGGElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_IMAGE,
+        putBridge(SVG_NAMESPACE_URI, SVG_IMAGE_TAG,
                   new SVGImageElementBridge());
 
         putBridge(SVG_NAMESPACE_URI, TAG_LINE,
@@ -131,7 +131,7 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, TAG_LINEAR_GRADIENT,
                   new SVGLinearGradientBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_MASK,
+        putBridge(SVG_NAMESPACE_URI, SVG_MASK_TAG,
                   new SVGMaskElementBridge());
 
         putBridge(SVG_NAMESPACE_URI, TAG_PATH,
@@ -155,13 +155,13 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, TAG_SVG,
                   new SVGSVGElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_SWITCH,
+        putBridge(SVG_NAMESPACE_URI, SVG_SWITCH_TAG,
                   new SVGSwitchElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_TEXT,
+        putBridge(SVG_NAMESPACE_URI, SVG_TEXT_TAG,
                   new SVGTextElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_USE,
+        putBridge(SVG_NAMESPACE_URI, SVG_USE_TAG,
                   new SVGUseElementBridge());
     }
 

@@ -26,12 +26,22 @@ import org.w3c.dom.svg.SVGFEGaussianBlurElement;
  */
 public class SVGOMFEGaussianBlurElement
     extends    SVGOMFilterPrimitiveStandardAttributes
-    implements SVGFEGaussianBlurElement
-{
+    implements SVGFEGaussianBlurElement {
+
     /**
      * The reference to the in attribute.
      */
-    protected WeakReference inReference;
+    protected transient WeakReference inReference;
+
+    /**
+     * The reference to the stdDeviation x attribute.
+     */
+    protected transient WeakReference stdDeviationXReference;
+
+    /**
+     * The reference to the stdDeviation y attribute.
+     */
+    protected transient WeakReference stdDeviationYReference;
 
     /**
      * Creates a new SVGOMFEGaussianBlurElement object.
@@ -52,7 +62,7 @@ public class SVGOMFEGaussianBlurElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_FE_GAUSSIAN_BLUR;
+        return SVG_FE_GAUSSIAN_BLUR_TAG;
     }
 
     /**

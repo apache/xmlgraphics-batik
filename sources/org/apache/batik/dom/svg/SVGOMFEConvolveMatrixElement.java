@@ -34,9 +34,30 @@ public class SVGOMFEConvolveMatrixElement
     implements SVGFEConvolveMatrixElement {
 
     /**
+     * The DefaultAttributeValueProducer for edgeMode.
+     */
+    protected final static DefaultAttributeValueProducer
+        EDGE_MODE_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_CONVOLVE_MATRIX_EDGE_MODE;
+                }
+            };
+
+    /**
      * The reference to the in attribute.
      */
     protected transient WeakReference inReference;
+
+    /**
+     * The reference to the edgeMode attribute.
+     */
+    protected transient WeakReference edgeModeReference;
+
+    /**
+     * The reference to the kernelMatrix attribute.
+     */
+    protected transient WeakReference kernelMatrixReference;
 
     /**
      * The reference to the orderX attribute.
@@ -89,8 +110,27 @@ public class SVGOMFEConvolveMatrixElement
     protected static Map attributeValues = new HashMap(3);
     static {
         Map values = new HashMap(2);
-        values.put("edgeMode",  "duplicate");
+        values.put(SVG_EDGE_MODE_ATTRIBUTE, SVG_DUPLICATE_VALUE);
         attributeValues.put(null, values);
+    }
+
+    // The enumeration maps.
+    protected final static Map STRING_TO_SHORT_EDGE_MODE = new HashMap(5);
+    protected final static Map SHORT_TO_STRING_EDGE_MODE = new HashMap(5);
+    static {
+        STRING_TO_SHORT_EDGE_MODE.put(SVG_DUPLICATE_VALUE,
+                                      SVGOMAnimatedEnumeration.createShort((short)1));
+        STRING_TO_SHORT_EDGE_MODE.put(SVG_WRAP_VALUE,
+                                      SVGOMAnimatedEnumeration.createShort((short)2));
+        STRING_TO_SHORT_EDGE_MODE.put(SVG_NONE_VALUE,
+                                      SVGOMAnimatedEnumeration.createShort((short)3));
+
+        SHORT_TO_STRING_EDGE_MODE.put(SVGOMAnimatedEnumeration.createShort((short)1),
+                                      SVG_DUPLICATE_VALUE);
+        SHORT_TO_STRING_EDGE_MODE.put(SVGOMAnimatedEnumeration.createShort((short)2),
+                                      SVG_WRAP_VALUE);
+        SHORT_TO_STRING_EDGE_MODE.put(SVGOMAnimatedEnumeration.createShort((short)3),
+                                      SVG_NONE_VALUE);
     }
 
     /**
@@ -112,7 +152,7 @@ public class SVGOMFEConvolveMatrixElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "feConvolveMatrix";
+        return SVG_FE_CONVOLVE_MATRIX_TAG;
     }
 
     /**
@@ -134,7 +174,17 @@ public class SVGOMFEConvolveMatrixElement
      * SVGFEConvolveMatrixElement#getEdgeMode()}.
      */
     public SVGAnimatedEnumeration getEdgeMode() {
-        throw new RuntimeException(" !!! SVGFEConvolveMatrixElement#getEdgeMode()");
+        SVGAnimatedEnumeration result;
+        if (edgeModeReference == null ||
+            (result = (SVGAnimatedEnumeration)edgeModeReference.get()) == null) {
+            result = new SVGOMAnimatedEnumeration(this, null,
+                                                  SVG_EDGE_MODE_ATTRIBUTE,
+                                                  STRING_TO_SHORT_EDGE_MODE,
+                                                  SHORT_TO_STRING_EDGE_MODE,
+                                                  EDGE_MODE_DEFAULT_VALUE_PRODUCER);
+            edgeModeReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -142,7 +192,15 @@ public class SVGOMFEConvolveMatrixElement
      * SVGFEConvolveMatrixElement#getKernelMatrix()}.
      */
     public SVGAnimatedNumberList getKernelMatrix() {
-        throw new RuntimeException(" !!! SVGFEConvolveMatrixElement#getKernelMatrix()");
+        SVGAnimatedNumberList result;
+        if (kernelMatrixReference == null ||
+            (result = (SVGOMAnimatedNumberList)kernelMatrixReference.get()) == null) {
+            result = new SVGOMAnimatedNumberList(this, null,
+                                                 SVG_KERNEL_MATRIX_ATTRIBUTE,
+                                                 null);
+            kernelMatrixReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -153,7 +211,7 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedInteger result;
 	if (orderXReference == null ||
 	    (result = (SVGAnimatedInteger)orderXReference.get()) == null) {
-	    result = new SVGOMAnimatedInteger(this, null, ATTR_ORDER_X);
+	    result = new SVGOMAnimatedInteger(this, null, SVG_ORDER_X_ATTRIBUTE, null);
 	    orderXReference = new WeakReference(result);
 	}
 	return result;
@@ -167,7 +225,7 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedInteger result;
 	if (orderYReference == null ||
 	    (result = (SVGAnimatedInteger)orderYReference.get()) == null) {
-	    result = new SVGOMAnimatedInteger(this, null, ATTR_ORDER_Y);
+	    result = new SVGOMAnimatedInteger(this, null, SVG_ORDER_Y_ATTRIBUTE, null);
 	    orderYReference = new WeakReference(result);
 	}
 	return result;
@@ -181,7 +239,7 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedInteger result;
 	if (targetXReference == null ||
 	    (result = (SVGAnimatedInteger)targetXReference.get()) == null) {
-	    result = new SVGOMAnimatedInteger(this, null, ATTR_TARGET_X);
+	    result = new SVGOMAnimatedInteger(this, null, SVG_TARGET_X_ATTRIBUTE, null);
 	    targetXReference = new WeakReference(result);
 	}
 	return result;
@@ -195,7 +253,7 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedInteger result;
 	if (targetYReference == null ||
 	    (result = (SVGAnimatedInteger)targetYReference.get()) == null) {
-	    result = new SVGOMAnimatedInteger(this, null, ATTR_TARGET_Y);
+	    result = new SVGOMAnimatedInteger(this, null, SVG_TARGET_Y_ATTRIBUTE, null);
 	    targetYReference = new WeakReference(result);
 	}
 	return result;
@@ -209,7 +267,7 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedNumber result;
 	if (divisorReference == null ||
 	    (result = (SVGAnimatedNumber)divisorReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_DIVISOR, null);
+	    result = new SVGOMAnimatedNumber(this, null, SVG_DIVISOR_ATTRIBUTE, null);
 	    divisorReference = new WeakReference(result);
 	}
 	return result;
@@ -223,7 +281,7 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedNumber result;
 	if (biasReference == null ||
 	    (result = (SVGAnimatedNumber)biasReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_BIAS, null);
+	    result = new SVGOMAnimatedNumber(this, null, SVG_BIAS_ATTRIBUTE, null);
 	    biasReference = new WeakReference(result);
 	}
 	return result;
@@ -237,8 +295,9 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedLength result;
 	if (kernelUnitLengthXReference == null ||
 	    (result = (SVGAnimatedLength)kernelUnitLengthXReference.get()) == null) {
-	    result = new SVGOMAnimatedLength
-                (this, null, ATTR_KERNEL_UNIT_LENGTH_X, null);
+	    result = new SVGOMAnimatedLength(this, null,
+                                             SVG_KERNEL_UNIT_LENGTH_X_ATTRIBUTE,
+                                             null);
 	    kernelUnitLengthXReference = new WeakReference(result);
 	}
 	return result;
@@ -252,8 +311,9 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedLength result;
 	if (kernelUnitLengthYReference == null ||
 	    (result = (SVGAnimatedLength)kernelUnitLengthYReference.get()) == null) {
-	    result = new SVGOMAnimatedLength
-                (this, null, ATTR_KERNEL_UNIT_LENGTH_Y, null);
+	    result = new SVGOMAnimatedLength(this, null,
+                                             SVG_KERNEL_UNIT_LENGTH_Y_ATTRIBUTE,
+                                             null);
 	    kernelUnitLengthYReference = new WeakReference(result);
 	}
 	return result;
@@ -266,9 +326,8 @@ public class SVGOMFEConvolveMatrixElement
     public SVGAnimatedBoolean getPreserveAlpha() {
 	SVGAnimatedBoolean result;
 	if (preserveAlphaReference == null ||
-	    (result = (SVGAnimatedBoolean)preserveAlphaReference.get()) ==
-            null) {
-	    result = new SVGOMAnimatedBoolean(this, null, ATTR_PRESERVE_ALPHA);
+	    (result = (SVGAnimatedBoolean)preserveAlphaReference.get()) == null) {
+	    result = new SVGOMAnimatedBoolean(this, null, SVG_PRESERVE_ALPHA_ATTRIBUTE);
 	    preserveAlphaReference = new WeakReference(result);
 	}
 	return result;

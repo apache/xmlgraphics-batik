@@ -85,17 +85,17 @@ public class SVGFeOffsetElementBridge implements FilterPrimitiveBridge,
                          bridgeContext.getGraphicsNodeRenderContext();
 
         // parse the dx attribute
-        String dxAttr = filterElement.getAttributeNS(null, ATTR_DX);
+        String dxAttr = filterElement.getAttributeNS(null, SVG_DX_ATTRIBUTE);
         float dx = 0; // default is 0
         if (dxAttr.length() != 0) {
-            dx = SVGUtilities.convertSVGNumber(ATTR_DX, dxAttr);
+            dx = SVGUtilities.convertSVGNumber(SVG_DX_ATTRIBUTE, dxAttr);
         }
 
         // parse the dy attribute
-        String dyAttr = filterElement.getAttributeNS(null, ATTR_DY);
+        String dyAttr = filterElement.getAttributeNS(null, SVG_DY_ATTRIBUTE);
         float dy = 0; // default is 0
         if (dyAttr.length() != 0) {
-            dy = SVGUtilities.convertSVGNumber(ATTR_DY, dyAttr);
+            dy = SVGUtilities.convertSVGNumber(SVG_DY_ATTRIBUTE, dyAttr);
         }
 
         AffineTransform offsetTransform =

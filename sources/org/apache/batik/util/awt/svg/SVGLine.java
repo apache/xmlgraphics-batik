@@ -50,7 +50,7 @@ public class SVGLine extends SVGGraphicObjectConverter{
 
         Document domFactory = TestUtil.getDocumentPrototype();
         SVGLine converter = new SVGLine(domFactory);
-        Element group = domFactory.createElement(TAG_G);
+        Element group = domFactory.createElement(SVG_G_TAG);
         for(int i=0; i<lines.length; i++)
             group.appendChild(converter.toSVG(lines[i]));
 

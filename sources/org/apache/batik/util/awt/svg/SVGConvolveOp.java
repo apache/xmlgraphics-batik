@@ -71,11 +71,14 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
             // SVG filter
             //
             Kernel kernel = convolveOp.getKernel();
-            Element filterDef = domFactory.createElement(TAG_FILTER);
-            Element feConvolveMatrixDef = domFactory.createElement(TAG_FE_CONVOLVE_MATRIX);
+            Element filterDef = domFactory.createElement(SVG_FILTER_TAG);
+            Element feConvolveMatrixDef =
+                domFactory.createElement(SVG_FE_CONVOLVE_MATRIX_TAG);
 
             // Convert the kernel size
-            feConvolveMatrixDef.setAttribute(ATTR_ORDER, kernel.getWidth() + SPACE +  kernel.getHeight());
+            feConvolveMatrixDef.setAttribute(ATTR_ORDER,
+                                             kernel.getWidth() + SPACE +
+                                             kernel.getHeight());
 
             // Convert the kernel values
             StringBuffer kernelMatrixBuf = new StringBuffer();
@@ -85,16 +88,19 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
                 kernelMatrixBuf.append(SPACE);
             }
 
-            feConvolveMatrixDef.setAttribute(ATTR_KERNEL_MATRIX, kernelMatrixBuf.toString().trim());
+            feConvolveMatrixDef.setAttribute(SVG_KERNEL_MATRIX_ATTRIBUTE,
+                                             kernelMatrixBuf.toString().trim());
 
             filterDef.appendChild(feConvolveMatrixDef);
             filterDef.setAttribute(ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_FE_CONVOLVE_MATRIX));
 
             // Convert the edge mode
             if(convolveOp.getEdgeCondition() == ConvolveOp.EDGE_NO_OP)
-                feConvolveMatrixDef.setAttribute(ATTR_EDGE_MODE, VALUE_EDGE_DUPLICATE);
+                feConvolveMatrixDef.setAttribute(SVG_EDGE_MODE_ATTRIBUTE,
+                                                 SVG_DUPLICATE_VALUE);
             else
-                feConvolveMatrixDef.setAttribute(ATTR_EDGE_MODE, VALUE_EDGE_NONE);
+                feConvolveMatrixDef.setAttribute(SVG_EDGE_MODE_ATTRIBUTE,
+                                                 SVG_NONE_VALUE);
 
             //
             // Create a filter descriptor
@@ -131,22 +137,22 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
 
         SVGConvolveOp converter = new SVGConvolveOp(domFactory);
 
-        Element group = domFactory.createElement(TAG_G);
+        Element group = domFactory.createElement(SVG_G_TAG);
         Element defs = domFactory.createElement(SVG_DEFS_TAG);
-        Element rectGroupOne = domFactory.createElement(TAG_G);
-        Element rectGroupTwo = domFactory.createElement(TAG_G);
+        Element rectGroupOne = domFactory.createElement(SVG_G_TAG);
+        Element rectGroupTwo = domFactory.createElement(SVG_G_TAG);
 
         for(int i=0; i<convolveOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(convolveOps[i]);
             Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttribute(ATTR_FILTER, filterDesc.getFilterValue());
+            rect.setAttribute(SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupOne.appendChild(rect);
         }
 
         for(int i=0; i<convolveOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(convolveOps[i]);
             Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttribute(ATTR_FILTER, filterDesc.getFilterValue());
+            rect.setAttribute(SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupTwo.appendChild(rect);
         }
 

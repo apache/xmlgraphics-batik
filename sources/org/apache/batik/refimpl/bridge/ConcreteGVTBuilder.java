@@ -180,7 +180,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                 buildComposite(ctx,
                                (CompositeGraphicsNode)childGVTNode,
                                e.getFirstChild());
-            } else if (TAG_USE.equals(e.getLocalName())) {
+            } else if (SVG_USE_TAG.equals(e.getLocalName())) {
                 URIResolver ur;
                 ur = new URIResolver((SVGDocument)e.getOwnerDocument(),
                                  ctx.getDocumentLoader());
@@ -220,22 +220,22 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                                                attr.getName(),
                                                attr.getValue());
                         }
-                        tmp.setAttributeNS(null, ATTR_WIDTH, "100%");
-                        tmp.setAttributeNS(null, ATTR_HEIGHT, "100%");
+                        tmp.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "100%");
+                        tmp.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "100%");
                         inst = tmp;
                     }
 
                     ((HiddenChildElement)inst).setParentElement(e);
                     if (inst instanceof SVGSVGElement) {
-                        if (e.hasAttributeNS(null, ATTR_WIDTH)) {
-                            inst.setAttributeNS(null, ATTR_WIDTH,
+                        if (e.hasAttributeNS(null, SVG_WIDTH_ATTRIBUTE)) {
+                            inst.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
                                                 e.getAttributeNS(null,
-                                                                 ATTR_WIDTH));
+                                                                 SVG_WIDTH_ATTRIBUTE));
                         }
-                        if (e.hasAttributeNS(null, ATTR_HEIGHT)) {
-                            inst.setAttributeNS(null, ATTR_HEIGHT,
+                        if (e.hasAttributeNS(null, SVG_HEIGHT_ATTRIBUTE)) {
+                            inst.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
                                                 e.getAttributeNS(null,
-                                                                 ATTR_HEIGHT));
+                                                                 SVG_HEIGHT_ATTRIBUTE));
                     }
                     }
 
@@ -255,7 +255,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            } else if (TAG_SWITCH.equals(e.getLocalName())) {
+            } else if (SVG_SWITCH_TAG.equals(e.getLocalName())) {
                 for (Node n = e.getFirstChild();
                      n != null;
                      n = n.getNextSibling()) {

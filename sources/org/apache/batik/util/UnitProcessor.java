@@ -124,7 +124,7 @@ public abstract class UnitProcessor {
         case SVGLength.SVG_LENGTHTYPE_CM:
             return (v * f / 10);
         case SVGLength.SVG_LENGTHTYPE_IN:
-            return (v / f * 25.4f);
+            return (v * f / 25.4f);
         case SVGLength.SVG_LENGTHTYPE_PT:
             return (v * (72 * f) / 25.4f);
         case SVGLength.SVG_LENGTHTYPE_PC:

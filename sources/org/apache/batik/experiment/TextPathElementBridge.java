@@ -368,7 +368,7 @@ public class TextPathElementBridge implements GraphicsNodeBridge, SVGConstants {
 
             if (pathElement != null) {
 
-                String d = pathElement.getAttributeNS(null, ATTR_D);
+                String d = pathElement.getAttributeNS(null, SVG_D_ATTRIBUTE);
                 try {
 
                     // add the transform for the path as well

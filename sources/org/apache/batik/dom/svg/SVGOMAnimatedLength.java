@@ -78,7 +78,7 @@ public class SVGOMAnimatedLength
 	    Attr a = element.getAttributeNodeNS(attributeNsURI, attributeName);
 	    if (a != null) {
 		baseVal.valueChanged(null, a);
-	    } else {
+	    } else if (defaultValueProducer != null) {
                 baseVal.parseLength(defaultValueProducer.getDefaultAttributeValue());
             }
 	}

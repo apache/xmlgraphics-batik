@@ -214,7 +214,7 @@ public class DOMTreeManager implements SVGSyntax{
         }
 
         // Create top level group node
-        topLevelGroup = domFactory.createElement(TAG_G);
+        topLevelGroup = domFactory.createElement(SVG_G_TAG);
 
         // Build new converters
         if(recycleConverters){
@@ -231,7 +231,7 @@ public class DOMTreeManager implements SVGSyntax{
         if(topLevelGroup == null)
             throw new IllegalArgumentException(ERROR_TOP_LEVEL_GROUP_NULL);
 
-        if(!TAG_G.equalsIgnoreCase(topLevelGroup.getTagName()))
+        if(!SVG_G_TAG.equalsIgnoreCase(topLevelGroup.getTagName()))
             throw new IllegalArgumentException(ERROR_TOP_LEVEL_GROUP_NOT_G);
 
         recycleTopLevelGroup(false);
@@ -247,7 +247,7 @@ public class DOMTreeManager implements SVGSyntax{
 
         // Enable background if required by AlphaComposite convertion
         if(gcConverter.getCompositeConverter().getAlphaCompositeConverter().requiresBackgroundAccess())
-            svg.setAttribute(ATTR_ENABLE_BACKGROUND, VALUE_NEW);
+            svg.setAttribute(SVG_ENABLE_BACKGROUND_ATTRIBUTE, VALUE_NEW);
 
         Comment generatorComment = domFactory.createComment(GENERATOR_COMMENT);
         svg.appendChild(generatorComment);
@@ -415,8 +415,8 @@ public class DOMTreeManager implements SVGSyntax{
         Element path = domFactory.createElement(TAG_PATH);
         Element polygon = domFactory.createElement(TAG_POLYGON);
 
-        rect.setAttribute(ATTR_FILL, VALUE_NONE);
-        polygon.setAttribute(ATTR_STROKE, VALUE_NONE);
+        rect.setAttribute(SVG_FILL_ATTRIBUTE, SVG_NONE_VALUE);
+        polygon.setAttribute(ATTR_STROKE, SVG_NONE_VALUE);
 
         domGroupManager.addElement(rect);
 

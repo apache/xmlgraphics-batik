@@ -20,17 +20,17 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
-import org.w3c.dom.svg.SVGFEDiffuseLightingElement;
+import org.w3c.dom.svg.SVGFESpecularLightingElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEDiffuseLightingElement}.
+ * This class implements {@link org.w3c.dom.svg.SVGFESpecularLightingElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGOMFEDiffuseLightingElement
+public class SVGOMFESpecularLightingElement
     extends    SVGOMFilterPrimitiveStandardAttributes
-    implements SVGFEDiffuseLightingElement,
+    implements SVGFESpecularLightingElement,
                OverrideStyleElement,
 	       ExtendedElementCSSInlineStyle,
 	       ElementNonCSSPresentationalHints {
@@ -42,18 +42,29 @@ public class SVGOMFEDiffuseLightingElement
         SURFACE_SCALE_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_DIFFUSE_LIGHTING_SURFACE_SCALE;
+                    return SVG_DEFAULT_VALUE_FE_SPECULAR_LIGHTING_SURFACE_SCALE;
                 }
             };
 
     /**
-     * The DefaultAttributeValueProducer for diffuseConstant.
+     * The DefaultAttributeValueProducer for specularConstant.
      */
     protected final static DefaultAttributeValueProducer
-        DIFFUSE_CONSTANT_DEFAULT_VALUE_PRODUCER =
+        SPECULAR_CONSTANT_DEFAULT_VALUE_PRODUCER =
         new DefaultAttributeValueProducer() {
                 public String getDefaultAttributeValue() {
-                    return SVG_DEFAULT_VALUE_FE_DIFFUSE_LIGHTING_DIFFUSE_CONSTANT;
+                    return SVG_DEFAULT_VALUE_FE_SPECULAR_LIGHTING_SPECULAR_CONSTANT;
+                }
+            };
+
+    /**
+     * The DefaultAttributeValueProducer for specularExponent.
+     */
+    protected final static DefaultAttributeValueProducer
+        SPECULAR_EXPONENT_DEFAULT_VALUE_PRODUCER =
+        new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return SVG_DEFAULT_VALUE_FE_SPECULAR_LIGHTING_SPECULAR_EXPONENT;
                 }
             };
 
@@ -68,22 +79,27 @@ public class SVGOMFEDiffuseLightingElement
     protected transient WeakReference surfaceScaleReference;
 
     /**
-     * The reference to the diffuseConstant attribute.
+     * The reference to the specularConstant attribute.
      */
-    protected transient WeakReference diffuseConstantReference;
+    protected transient WeakReference specularConstantReference;
 
     /**
-     * Creates a new SVGOMFEDiffuseLightingElement object.
+     * The reference to the specularExponent attribute.
      */
-    protected SVGOMFEDiffuseLightingElement() {
+    protected transient WeakReference specularExponentReference;
+
+    /**
+     * Creates a new SVGOMFESpecularLightingElement object.
+     */
+    protected SVGOMFESpecularLightingElement() {
     }
 
     /**
-     * Creates a new SVGOMFEDiffuseLightingElement object.
+     * Creates a new SVGOMFESpecularLightingElement object.
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    public SVGOMFEDiffuseLightingElement(String prefix,
+    public SVGOMFESpecularLightingElement(String prefix,
                                          AbstractDocument owner) {
         super(prefix, owner);
     }
@@ -92,12 +108,12 @@ public class SVGOMFEDiffuseLightingElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return SVG_FE_DIFFUSE_LIGHTING_TAG;
+        return SVG_FE_SPECULAR_LIGHTING_TAG;
     }
 
     /**
      * <b>DOM</b>: Implements {@link
-     * SVGFEDiffuseLightingElement#getIn1()}.
+     * SVGFESpecularLightingElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
 	SVGAnimatedString result;
@@ -111,7 +127,7 @@ public class SVGOMFEDiffuseLightingElement
     
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEDiffuseLightingElement#getSurfaceScale()}.
+     * org.w3c.dom.svg.SVGFESpecularLightingElement#getSurfaceScale()}.
      */
     public SVGAnimatedNumber getSurfaceScale() {
 	SVGAnimatedNumber result;
@@ -126,15 +142,30 @@ public class SVGOMFEDiffuseLightingElement
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEDiffuseLightingElement#getDiffuseConstant()}.
+     * org.w3c.dom.svg.SVGFESpecularLightingElement#getSpecularConstant()}.
      */
-    public SVGAnimatedNumber getDiffuseConstant() {
+    public SVGAnimatedNumber getSpecularConstant() {
 	SVGAnimatedNumber result;
-	if (diffuseConstantReference == null ||
-	    (result = (SVGAnimatedNumber)diffuseConstantReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, SVG_DIFFUSE_CONSTANT_ATTRIBUTE,
-                                             DIFFUSE_CONSTANT_DEFAULT_VALUE_PRODUCER);
-	    diffuseConstantReference = new WeakReference(result);
+	if (specularConstantReference == null ||
+	    (result = (SVGAnimatedNumber)specularConstantReference.get()) == null) {
+	    result = new SVGOMAnimatedNumber(this, null, SVG_SPECULAR_CONSTANT_ATTRIBUTE,
+                                             SPECULAR_CONSTANT_DEFAULT_VALUE_PRODUCER);
+	    specularConstantReference = new WeakReference(result);
+	}
+	return result;
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.svg.SVGFESpecularLightingElement#getSpecularExponent()}.
+     */
+    public SVGAnimatedNumber getSpecularExponent() {
+	SVGAnimatedNumber result;
+	if (specularExponentReference == null ||
+	    (result = (SVGAnimatedNumber)specularExponentReference.get()) == null) {
+	    result = new SVGOMAnimatedNumber(this, null, SVG_SPECULAR_EXPONENT_ATTRIBUTE,
+                                             SPECULAR_EXPONENT_DEFAULT_VALUE_PRODUCER);
+	    specularExponentReference = new WeakReference(result);
 	}
 	return result;
     }
@@ -220,6 +251,6 @@ public class SVGOMFEDiffuseLightingElement
      * Returns a new uninitialized instance of this object's class.
      */
     protected Node newNode() {
-        return new SVGOMFEDiffuseLightingElement();
+        return new SVGOMFESpecularLightingElement();
     }
 }

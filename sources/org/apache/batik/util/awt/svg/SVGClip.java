@@ -29,7 +29,8 @@ public class SVGClip extends AbstractSVGConverter{
     /**
      * Descriptor to use where there is no clip on an element
      */
-    public static final SVGClipDescriptor NO_CLIP = new SVGClipDescriptor(VALUE_NONE, null);
+    public static final SVGClipDescriptor NO_CLIP =
+        new SVGClipDescriptor(SVG_NONE_VALUE, null);
 
     /**
      * Used to convert clip object to SVG elements
@@ -182,25 +183,25 @@ public class SVGClip extends AbstractSVGConverter{
         Document domFactory = TestUtil.getDocumentPrototype();
         SVGClip converter = new SVGClip(domFactory);
 
-        Element topLevelGroup = domFactory.createElement(TAG_G);
+        Element topLevelGroup = domFactory.createElement(SVG_G_TAG);
         Element defs = domFactory.createElement(SVG_DEFS_TAG);
 
-        Element groupOne = domFactory.createElement(TAG_G);
+        Element groupOne = domFactory.createElement(SVG_G_TAG);
         for(int i=0; i<clips.length; i++){
             Element rect = domFactory.createElement(TAG_RECT);
             rect.setAttribute(ATTR_ID, clips[i].getClass().getName());
-            rect.setAttribute(ATTR_CLIP_PATH, (String)converter.toSVG(clips[i]).getAttributeMap(null).get(ATTR_CLIP_PATH));
+            rect.setAttribute(SVG_CLIP_PATH_ATTRIBUTE, (String)converter.toSVG(clips[i]).getAttributeMap(null).get(SVG_CLIP_PATH_ATTRIBUTE));
             groupOne.appendChild(rect);
         }
 
         // Elements in groupTwo should have the same clip reference as
         // corresponding elements in groupOne, as the clip definition
         // has already be done and put in clipDefsMap.
-        Element groupTwo = domFactory.createElement(TAG_G);
+        Element groupTwo = domFactory.createElement(SVG_G_TAG);
         for(int i=0; i<clips.length; i++){
             Element rect = domFactory.createElement(TAG_RECT);
             rect.setAttribute(ATTR_ID, clips[i].getClass().getName());
-            rect.setAttribute(ATTR_CLIP_PATH, (String)converter.toSVG(clips[i]).getAttributeMap(null).get(ATTR_CLIP_PATH));
+            rect.setAttribute(SVG_CLIP_PATH_ATTRIBUTE, (String)converter.toSVG(clips[i]).getAttributeMap(null).get(SVG_CLIP_PATH_ATTRIBUTE));
             groupTwo.appendChild(rect);
         }
 

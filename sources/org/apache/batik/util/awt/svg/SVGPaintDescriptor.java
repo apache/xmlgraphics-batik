@@ -56,9 +56,9 @@ public class SVGPaintDescriptor implements SVGDescriptor, SVGSyntax{
         if(attrMap == null)
             attrMap = new Hashtable();
 
-        attrMap.put(ATTR_FILL, paintValue);
+        attrMap.put(SVG_FILL_ATTRIBUTE, paintValue);
         attrMap.put(ATTR_STROKE, paintValue);
-        attrMap.put(ATTR_FILL_OPACITY, opacityValue);
+        attrMap.put(SVG_FILL_OPACITY_ATTRIBUTE, opacityValue);
         attrMap.put(ATTR_STROKE_OPACITY, opacityValue);
 
         return attrMap;

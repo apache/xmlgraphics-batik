@@ -402,10 +402,10 @@ class XmlWriter implements SVGConstants {
 
         Element root = domFactory.createElement(TAG_SVG);
         Element genericDefs = domFactory.createElement(SVG_DEFS_TAG);
-        Element topLevelGroup = domFactory.createElement(TAG_G);
+        Element topLevelGroup = domFactory.createElement(SVG_G_TAG);
         Element topLevelDefs = domFactory.createElement(SVG_DEFS_TAG);
-        Element groupA = domFactory.createElement(TAG_G);
-        Element groupB = domFactory.createElement(TAG_G);
+        Element groupA = domFactory.createElement(SVG_G_TAG);
+        Element groupB = domFactory.createElement(SVG_G_TAG);
         Comment comment = domFactory.createComment("This is the topLevelGroup comment");
 
         topLevelGroup.appendChild(comment);
