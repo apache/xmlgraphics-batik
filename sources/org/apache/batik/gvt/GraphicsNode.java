@@ -340,7 +340,11 @@ public interface GraphicsNode {
     Shape getOutline(GraphicsNodeRenderContext rc);
 
     /**
+     * Returns a deep clone of this graphics node.
      *
+     * <b>Warning</b>: All attributes of this graphics node are shared
+     * between the original node and its copy. This method does not
+     * perform any synchronization.
      */
     GraphicsNode renderingClone();
 
