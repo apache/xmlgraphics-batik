@@ -22,7 +22,9 @@ import java.awt.Paint;
 import java.awt.Stroke;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.text.ArabicTextHandler;
 import java.text.AttributedCharacterIterator;
+import java.text.CharacterIterator;
 import java.awt.font.TextAttribute;
 
 /**
@@ -35,6 +37,7 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
 
     private final GlyphVector awtGlyphVector;
     private final AWTGVTFont gvtFont;
+    private CharacterIterator ci;
 
     private Point2D[] glyphPositions;
     private Point2D[] defaultGlyphPositions;
@@ -54,11 +57,24 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
     /**
      * Creates and new AWTGVTGlyphVector from the specified GlyphVector
      * and AWTGVTFont objects.
+     *
+     * @param glyphVector The glyph vector that this one will be based upon.
+     * @param font The font that is creating this glyph vector.
+     * @param scaleFactor The scale factor to apply to the glyph vector.
+     * IMPORTANT: This is only required because the GlyphVector class doesn't
+     * handle font sizes less than 1 correctly. By using the scale factor we
+     * can use a GlyphVector created by a larger font and then scale it down to
+     * the correct size.
+     * @param ci The character string that this glyph vector represents.
      */
-    public AWTGVTGlyphVector(GlyphVector glyphVector, AWTGVTFont font, float scaleFactor) {
-        awtGlyphVector = glyphVector;
-        gvtFont = font;
+    public AWTGVTGlyphVector(GlyphVector glyphVector, AWTGVTFont font,
+                             float scaleFactor, CharacterIterator ci) {
+
+        this.awtGlyphVector = glyphVector;
+        this.gvtFont = font;
         this.scaleFactor = scaleFactor;
+        this.ci = ci;
+
         int numGlyphs = glyphVector.getNumGlyphs();
         outline = null;
         logicalBounds = null;
@@ -123,12 +139,20 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
         return glyphLogicalBounds[glyphIndex];
     }
 
-
+    /**
+     * Calculates the logical bounds for each glyph. The logical bounds are
+     * what is used for highlighting the glyphs when selected.
+     */
     private void computeGlyphLogicalBounds() {
 
         GVTLineMetrics lineMetrics = gvtFont.getLineMetrics("By", awtGlyphVector.getFontRenderContext());
         float ascent = lineMetrics.getAscent() * scaleFactor;
         float descent = lineMetrics.getDescent() * scaleFactor;
+        Shape[] tempLogicalBounds = new Shape[getNumGlyphs()];
+        boolean[] rotated = new boolean[getNumGlyphs()];
+
+        double maxWidth = -1;
+        double maxHeight = -1;
 
         for (int i = 0; i < getNumGlyphs(); i++) {
 
@@ -143,33 +167,125 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
                     float glyphX = (float)(getGlyphPosition(i).getX());
                     float glyphY =  (float)getGlyphPosition(i).getY() - ascent;
                     float glyphWidth = glyphMetrics.getHorizontalAdvance();
-                    if (i < getNumGlyphs()-1) {
-                        float nextY = (float)getGlyphPosition(i+1).getY() - ascent;
-                        if (glyphY == nextY) {
-                            float nextX = (float)getGlyphPosition(i+1).getX();
-                            glyphWidth = Math.max(glyphWidth, nextX - glyphX);
-                        }
-                    }
-                    float glyphHeight = ascent + descent;
+                    float glyphHeight = glyphMetrics.getVerticalAdvance();
 
-                    glyphLogicalBounds[i] = new Rectangle2D.Double(glyphX, glyphY,
-                                                     glyphWidth, glyphHeight);
+                    tempLogicalBounds[i] = new Rectangle2D.Double(glyphX, glyphY,
+                                                                  glyphWidth, glyphHeight);
+                    if (glyphWidth > maxWidth) maxWidth = glyphWidth;
+                    if (glyphHeight > maxHeight) maxHeight = glyphHeight;
+                    rotated[i] = false;
 
-                } else {  // the glyph is transformed so just return the neat bounds
+                } else {  // the glyph is transformed
 
                     Shape glyphOutline = awtGlyphVector.getGlyphOutline(i);
                     Rectangle2D glyphBounds = glyphOutline.getBounds2D();
 
+                    // store three corner points so we can determine whether the glyph is rotated
+                    Point2D p1 = new Point2D.Double(glyphBounds.getMinX(), glyphBounds.getMinY());
+                    Point2D p2 = new Point2D.Double(glyphBounds.getMaxX(), glyphBounds.getMinY());
+                    Point2D p3 = new Point2D.Double(glyphBounds.getMinX(), glyphBounds.getMaxY());
+
                     AffineTransform tr = AffineTransform.getTranslateInstance(getGlyphPosition(i).getX(),
-                                                                          getGlyphPosition(i).getY());
+                                                                              getGlyphPosition(i).getY());
                     tr.concatenate(glyphTransform);
                     tr.scale(scaleFactor, scaleFactor);
-                    glyphLogicalBounds[i] = tr.createTransformedShape(glyphBounds);
+                    tempLogicalBounds[i] = tr.createTransformedShape(glyphBounds);
+
+                    Point2D tp1 = new Point2D.Double();
+                    Point2D tp2 = new Point2D.Double();
+                    Point2D tp3 = new Point2D.Double();
+                    tr.transform(p1, tp1);
+                    tr.transform(p2, tp2);
+                    tr.transform(p3, tp3);
+
+                    if ((Math.abs(tp1.getX() - tp2.getX()) < 0.001
+                            || Math.abs(tp1.getX() - tp3.getX()) < 0.001)
+                            && (Math.abs(tp1.getY() - tp2.getY()) < 0.001
+                            || Math.abs(tp1.getY() - tp3.getY()) < 0.001)) {
+                            rotated[i] = false;
+                    } else {
+                            rotated[i] = true;
+                    }
+                    if (glyphBounds.isEmpty()) {
+                        if (i > 0) {
+                            // can't tell if rotated or not, make it the same as the
+                            // previous glyph
+                            rotated[i] = rotated[i-1];
+                        } else {
+                            rotated[i] = true;
+                        }
+                    }
+
+                    Rectangle2D rectBounds = tempLogicalBounds[i].getBounds2D();
+                    if (rectBounds.getWidth() > maxWidth) maxWidth = rectBounds.getWidth();
+                    if (rectBounds.getHeight() > maxHeight) maxHeight = rectBounds.getHeight();
                 }
             } else {
                 // the glyph is not drawn
-                glyphLogicalBounds[i] = null;
+                tempLogicalBounds[i] = null;
             }
+        }
+
+        // if appropriate, join adjacent glyph logical bounds
+        GeneralPath logicalBoundsPath = new GeneralPath();
+        for (int i = 0; i < getNumGlyphs(); i++) {
+            if (tempLogicalBounds[i] != null) {
+                logicalBoundsPath.append(tempLogicalBounds[i], false);
+            }
+        }
+        Rectangle2D fullBounds = logicalBoundsPath.getBounds2D();
+
+        if (fullBounds.getHeight() < maxHeight*1.5) {
+            // make all glyphs tops and bottoms the same as the full bounds
+            for (int i = 0; i < getNumGlyphs(); i++) {
+                // first make sure that the glyph logical bounds are not rotated
+                if (!rotated[i] && tempLogicalBounds[i] != null) {
+                    Rectangle2D glyphBounds = tempLogicalBounds[i].getBounds2D();
+                    double x = glyphBounds.getMinX();
+                    double width = glyphBounds.getWidth();
+                    if (i < getNumGlyphs()-1 && tempLogicalBounds[i+1] != null) {
+                        // make this glyph extend to the start of the next one
+                        Rectangle2D nextGlyphBounds = tempLogicalBounds[i+1].getBounds2D();
+                        if (nextGlyphBounds.getX() > x) { // going left to right
+                            width = nextGlyphBounds.getX() - x;
+                        } else {
+                            double newGlyphX = nextGlyphBounds.getX() + nextGlyphBounds.getWidth();
+                            width += (x - newGlyphX);
+                            x = newGlyphX;
+                        }
+                    }
+                    tempLogicalBounds[i] = new Rectangle2D.Double(x, fullBounds.getMinY(),
+                                                                  width, fullBounds.getHeight());
+                }
+            }
+        }
+        if (fullBounds.getWidth() < maxWidth*1.5) {
+            // make all glyphs left and right edges the same as the full bounds
+            for (int i = 0; i < getNumGlyphs(); i++) {
+                // first make sure that the glyph logical bounds are not rotated
+                if (!rotated[i] && tempLogicalBounds[i] != null) {
+                    Rectangle2D glyphBounds = tempLogicalBounds[i].getBounds2D();
+                    double y = glyphBounds.getMinY();
+                    double height = glyphBounds.getHeight();
+                    if (i < getNumGlyphs()-1 && tempLogicalBounds[i+1] != null) {
+                        // make this glyph extend to the start of the next one
+                        Rectangle2D nextGlyphBounds = tempLogicalBounds[i+1].getBounds2D();
+                        if (nextGlyphBounds.getY() > y) { // going top to bottom
+                            height = nextGlyphBounds.getY() - y;
+                        } else {
+                            double newGlyphY = nextGlyphBounds.getY() + nextGlyphBounds.getHeight();
+                            height += (y - newGlyphY);
+                            y = newGlyphY;
+                        }
+                    }
+                    tempLogicalBounds[i] = new Rectangle2D.Double(fullBounds.getMinX(), y,
+                                                                  fullBounds.getWidth(), height);
+                }
+            }
+        }
+
+        for (int i = 0; i < getNumGlyphs(); i++) {
+            glyphLogicalBounds[i] = tempLogicalBounds[i];
         }
 
     }
@@ -203,7 +319,6 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
 
             AffineTransform tr = AffineTransform.getTranslateInstance(getGlyphPosition(glyphIndex).getX(),
                                                                       getGlyphPosition(glyphIndex).getY());
-
             AffineTransform glyphTransform = getGlyphTransform(glyphIndex);
             if (glyphTransform != null) {
                 tr.concatenate(glyphTransform);
@@ -344,15 +459,24 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
         awtGlyphVector.performDefaultLayout();
         outline = null;
         logicalBounds = null;
+        float shiftLeft = 0;
         for (int i = 0; i < getNumGlyphs(); i++) {
             Point2D glyphPos = awtGlyphVector.getGlyphPosition(i);
-            glyphPositions[i] = new Point2D.Float((float)(glyphPos.getX() * scaleFactor),
+            glyphPositions[i] = new Point2D.Float((float)((glyphPos.getX()-shiftLeft) * scaleFactor),
                                                   (float)(glyphPos.getY() * scaleFactor));
             defaultGlyphPositions[i] = glyphPositions[i];
             glyphTransforms[i] = null;
             glyphVisualBounds[i] = null;
             glyphLogicalBounds[i] = null;
             glyphOutlines[i] = null;
+
+            // if c is a transparent arabic char then need to shift the following
+            // glyphs left so that the current glyph is overwritten
+            char c = ci.setIndex(i + ci.getBeginIndex());
+            if (ArabicTextHandler.arabicCharTransparent(c)) {
+                GlyphMetrics gm = awtGlyphVector.getGlyphMetrics(i);
+                shiftLeft = gm.getAdvance();
+            }
         }
     }
 
@@ -406,7 +530,16 @@ public final class AWTGVTGlyphVector implements GVTGlyphVector {
         if (endGlyphIndex > getNumGlyphs()-1) {
             endGlyphIndex = getNumGlyphs()-1;
         }
-        return endGlyphIndex - startGlyphIndex + 1;
+        int charCount = 0;
+        for (int i = ci.getBeginIndex() + startGlyphIndex; i <= ci.getBeginIndex() + endGlyphIndex; i++) {
+            char c = ci.setIndex(i);
+            if (ArabicTextHandler.isLigature(c)) {
+                charCount += ArabicTextHandler.getNumChars(c);
+            } else {
+                charCount++;
+            }
+        }
+        return charCount;
     }
 
 
