@@ -31,7 +31,7 @@ public abstract class AbstractParser implements Parser {
      * The default resource bundle base name.
      */
     public final static String BUNDLE_CLASSNAME =
-	"org.apache.batik.parser.resources.Messages";
+	"org.apache.batik.refimpl.parser.resources.Messages";
 
     /**
      * The error handler.

@@ -844,6 +844,7 @@ public class ConcretePathParser
 	    case 0x9:
 	    case 0xD:
 	    case 0xA:
+	    case 'm': case 'M':
 	    case 'c': case 'C':
 	    case 's': case 'S':
 	    case 'q': case 'Q':

@@ -252,6 +252,10 @@ public class ViewerFrame
         uriChooser = new URIChooser(this, new URIChooserOKAction());
         uriChooser.setFileFilter(new SVGFileFilter());
 
+        // Create the SVG canvas.
+        canvas = new JSVGCanvas();
+        //canvas.setSVGUserAgent(this);
+
         listeners.put(OPEN_ACTION,        new OpenAction());
         listeners.put(OPEN_PAGE_ACTION,   new OpenPageAction());
         listeners.put(NEW_WINDOW_ACTION,  new NewWindowAction());
@@ -302,9 +306,6 @@ public class ViewerFrame
         statusBar = new StatusBar();
         getContentPane().add("South", statusBar);
 
-        // Create the SVG canvas.
-        canvas = new JSVGCanvas();
-        //canvas.setSVGUserAgent(this);
         panel.add("Center", canvas);
         panel.revalidate();
         panel.repaint();
@@ -328,6 +329,29 @@ public class ViewerFrame
                     statusBar.setHeight(dim.height);
                 }
             });
+    }
+
+    /**
+     * Tells the viewer whether or not it must be set to the size
+     * of the loaded documents.
+     */
+    public void setFixedSize(boolean b) {
+        fixedSize = b;
+        // !!! TODO
+    }
+
+    /**
+     * Returns the fixedSize field value.
+     */
+    public boolean isFixedSize() {
+        return fixedSize;
+    }
+
+    /**
+     * Returns the current loading thread if one.
+     */
+    public Thread getLoadingThread() {
+        return thread;
     }
 
     // UserAgent ///////////////////////////////////////////////////
@@ -389,7 +413,11 @@ public class ViewerFrame
      * @throws MissingListenerException if the action is not found
      */
     public Action getAction(String key) throws MissingListenerException {
-        return (Action)listeners.get(key);
+        Action result = (Action)listeners.get(key);
+        if (result == null) {
+            result = canvas.getAction(key);
+        }
+        return result;
     }
 
     /**
@@ -761,6 +789,8 @@ public class ViewerFrame
 
                 statusBar.setMainMessage(resources.getString
                                          ("Document.creating"));
+
+                canvas.setSVGDocument(null);
 
                 // Set the panel preferred size.
                 SVGSVGElement elt = doc.getRootElement();
