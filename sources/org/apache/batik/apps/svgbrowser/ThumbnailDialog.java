@@ -8,11 +8,18 @@
 
 package org.apache.batik.apps.svgbrowser;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Rectangle2D;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -31,6 +38,7 @@ import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.JGVTComponent;
+import org.apache.batik.swing.gvt.Overlay;
 
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
@@ -79,6 +87,9 @@ public class ThumbnailDialog extends JDialog {
     /** A flag bit that indicates a document has been loaded. */
     protected boolean documentChanged;
 
+    /** The overlay used to display the area of interest. */
+    protected AreaOfInterestOverlay overlay;
+
     /**
      * Constructs a new <tt>ThumbnailDialog</tt> for the specified canvas.
      *
@@ -96,6 +107,8 @@ public class ThumbnailDialog extends JDialog {
 
         // create the thumbnail
         svgThumbnailCanvas = new JGVTComponent();
+        overlay = new AreaOfInterestOverlay();
+        svgThumbnailCanvas.getOverlays().add(overlay);
         svgThumbnailCanvas.setPreferredSize(new Dimension(150, 150));
         svgThumbnailCanvas.addComponentListener(new ThumbnailComponentListener());
         getContentPane().add(svgThumbnailCanvas, BorderLayout.CENTER);
@@ -107,6 +120,10 @@ public class ThumbnailDialog extends JDialog {
     protected void updateThumbnailGraphicsNode() {
         svgThumbnailCanvas.setGraphicsNode(svgCanvas.getGraphicsNode());
         updateThumbnailRenderingTransform();
+        if (svgCanvas.getSVGDocument() != null) {
+            overlay.updateAreaOfInterest();
+            svgThumbnailCanvas.repaint();
+        }
     }
 
     /**
@@ -153,6 +170,8 @@ public class ThumbnailDialog extends JDialog {
                 updateThumbnailGraphicsNode();
                 documentChanged = false;
             }
+            overlay.updateAreaOfInterest();
+            svgThumbnailCanvas.repaint();
         }
 
         public void gvtRenderingCancelled(GVTTreeRendererEvent e) {
@@ -185,6 +204,39 @@ public class ThumbnailDialog extends JDialog {
 
         public void componentResized(ComponentEvent e) {
             updateThumbnailRenderingTransform();
+        }
+    }
+
+    /**
+     * An overlay that represents the current area of interest.
+     */
+    protected class AreaOfInterestOverlay implements Overlay {
+
+        protected Shape s;
+
+        public void updateAreaOfInterest() {
+            Dimension dim = svgCanvas.getSize();
+            s = new Rectangle2D.Float(0, 0, dim.width, dim.height);
+            try {
+                AffineTransform at
+                    = svgCanvas.getRenderingTransform().createInverse();
+
+                at.preConcatenate(svgThumbnailCanvas.getRenderingTransform());
+                s = at.createTransformedShape(s);
+            } catch (NoninvertibleTransformException ex) {
+                s = null;
+            }
+        }
+
+        public void paint(Graphics g) {
+            if (s != null) {
+                Graphics2D g2d = (Graphics2D)g;
+                g2d.setColor(new Color(255, 255, 255, 128));
+                g2d.fill(s);
+                g2d.setColor(Color.black);
+                g2d.setStroke(new BasicStroke());
+                g2d.draw(s);
+            }
         }
     }
 }
