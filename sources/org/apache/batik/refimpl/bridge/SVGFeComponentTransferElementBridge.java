@@ -11,25 +11,23 @@ package org.apache.batik.refimpl.bridge;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
-import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterRegion;
+import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.ComponentTransferFunction;
 import org.apache.batik.gvt.filter.ComponentTransferRable;
+import org.apache.batik.gvt.filter.Filter;
+import org.apache.batik.gvt.filter.FilterRegion;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
+import org.apache.batik.refimpl.gvt.filter.ConcreteComponentTransferFunction;
+import org.apache.batik.refimpl.gvt.filter.ConcreteComponentTransferRable;
+import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
-
-import org.apache.batik.refimpl.gvt.filter.ConcreteComponentTransferRable;
-import org.apache.batik.refimpl.gvt.filter.ConcreteComponentTransferFunction;
-import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
-import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -46,7 +44,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                                                             SVGConstants{
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter 
+     * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
      *
      * @param filteredNode the node to which the filter will be attached.
@@ -54,9 +52,9 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
      * @param filterElement DOM element that represents a filter abstraction
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained 
+     * @param filterRegion the filter area defined for the filter chained
      *        the new node will be part of.
-     * @param filterMap a map where the mediator can map a name to the 
+     * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
@@ -69,7 +67,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                          FilterRegion filterRegion,
                          Map filterMap){
         Filter filter = null;
-        
+
         //
         // First, extract source
         //
@@ -100,55 +98,55 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
             // Should never, ever, ever happen
             throw new Error();
         }
-        
+
         if(in != null){
             FilterRegion defaultRegion = new FilterSourceRegion(in);
 
             // Get unit. Comes from parent node.
             Node parentNode = filterElement.getParentNode();
             String units = VALUE_USER_SPACE_ON_USE;
-            if((parentNode != null) 
+            if((parentNode != null)
                &&
                (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
                 units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
             }
-            
+
             //
-            // Now, extraact filter region 
+            // Now, extraact filter region
             //
             CSSStyleDeclaration cssDecl
-                = bridgeContext.getViewCSS().getComputedStyle(filterElement, 
+                = bridgeContext.getViewCSS().getComputedStyle(filterElement,
                                                               null);
-            
+
             UnitProcessor.Context uctx
                 = new DefaultUnitProcessorContext(bridgeContext,
                                                   cssDecl);
-            
-            final FilterRegion blurArea 
+
+            final FilterRegion blurArea
                 = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                             filteredElement,
                                                             defaultRegion,
                                                             units,
                                                             filteredNode,
                                                             uctx);
-            
+
             //
             // Now, extract the various transfer functions. They
             // are defined in the filterElement's children. Functions
-            // are ordered as follow: r, g, b, a. We start by the 
+            // are ordered as follow: r, g, b, a. We start by the
             // last child.
             //
             NodeList children = filterElement.getChildNodes();
             int nChildren = children.getLength();
             int curChild = nChildren - 1;
-            
+
             ComponentTransferFunction alphaFunction = null;
             ComponentTransferFunction redFunction = null;
             ComponentTransferFunction greenFunction = null;
             ComponentTransferFunction blueFunction = null;
 
             if(curChild >= 0){
-                alphaFunction 
+                alphaFunction
                     = createComponentTransferFunction(filterElement,
                                                       children.item(curChild),
                                                       TAG_FE_FUNC_A);
@@ -158,7 +156,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
             }
 
             if(curChild >= 0){
-                blueFunction 
+                blueFunction
                     = createComponentTransferFunction(filterElement,
                                                       children.item(curChild),
                                                       TAG_FE_FUNC_B);
@@ -168,7 +166,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
             }
 
             if(curChild >= 0){
-                greenFunction 
+                greenFunction
                     = createComponentTransferFunction(filterElement,
                                                       children.item(curChild),
                                                       TAG_FE_FUNC_G);
@@ -176,15 +174,15 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                     curChild--;
                 }
             }
-            
+
             if(curChild >= 0){
-                redFunction 
+                redFunction
                     = createComponentTransferFunction(filterElement,
                                                       children.item(curChild),
                                                       TAG_FE_FUNC_R);
             }
-                    
-            
+
+
             filter = new ConcreteComponentTransferRable(in,
                                                         alphaFunction,
                                                         redFunction,
@@ -192,25 +190,25 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                                                         blueFunction);
 
             Filter mapFilter = filter;
-            
-            mapFilter = new ConcretePadRable(filter, 
+
+            mapFilter = new ConcretePadRable(filter,
                                              blurArea.getRegion(),
                                              PadMode.ZERO_PAD){
                     public Rectangle2D getBounds2D(){
                         setPadRect(blurArea.getRegion());
                         return super.getBounds2D();
                     }
-                    
+
                     public java.awt.image.RenderedImage createRendering(java.awt.image.renderable.RenderContext rc){
                         setPadRect(blurArea.getRegion());
                         return super.createRendering(rc);
                     }
                 };
-            
+
 
             // Get result attribute and update map
-            String result 
-                = filterElement.getAttributeNS(null, 
+            String result
+                = filterElement.getAttributeNS(null,
                                                ATTR_RESULT);
             if((result != null) && (result.trim().length() > 0)){
                 // The filter will be added to the filter map. Before
@@ -227,7 +225,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
      * Creates a ComponentTransferFunction corresponding to the
      * input tag (i.e., feFuncXX, where XX can be A, R, G or B).
      */
-    private static ComponentTransferFunction 
+    private static ComponentTransferFunction
         createComponentTransferFunction(Element filterElement,
                                         Node node,
                                         String tag){
@@ -242,7 +240,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                 //
                 String typeStr = elt.getAttributeNS(null, ATTR_TYPE);
                 int type = convertType(typeStr);
-                
+
                 switch(type){
                 case ComponentTransferFunction.IDENTITY:
                     txfFunc = ConcreteComponentTransferFunction.getIdentityTransfer();
@@ -289,7 +287,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                 default:
                     throw new IllegalArgumentException();
                 }
-                
+
             }
         }
         return txfFunc;
@@ -318,7 +316,7 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
     }
 
     /**
-     * Converts an feFuncXX type attribute into a 
+     * Converts an feFuncXX type attribute into a
      * ComponentTransferFunction type constant
      */
     private static int convertType(String value){
@@ -375,23 +373,14 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
 
         return type;
     }
-    
+
 
     /**
      * Update the <tt>Filter</tt> object to reflect the current
      * configuration in the <tt>Element</tt> that models the filter.
-     *
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents the filter abstraction
-     * @param filterNode image that implements the filter abstraction and whose
-     *        state should be updated to reflect the filterElement's current
-     *        state.
      */
-    public void update(BridgeContext bridgeContext,
-                       Element filterElement,
-                       Filter filter,
-                       Map filterMap){
-        throw new Error("Not implemented yet");
+    public void update(BridgeMutationEvent evt) {
+        // <!> FIXME : TODO
     }
 
 }

@@ -15,4 +15,5 @@ package org.apache.batik.bridge;
  * @version $Id$
  */
 public interface Bridge {
+
 }
