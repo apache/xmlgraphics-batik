@@ -119,7 +119,8 @@ public class AWTTransformProducer implements TransformListHandler {
      */
     public void skewX(float skx) throws ParseException {
         affineTransform.concatenate
-            (AffineTransform.getShearInstance(Math.PI * skx / 180, 0));
+            (AffineTransform.getShearInstance(Math.tan(Math.PI * skx / 180),
+                                              0));
     }
 
     /**
@@ -127,7 +128,8 @@ public class AWTTransformProducer implements TransformListHandler {
      */
     public void skewY(float sky) throws ParseException {
         affineTransform.concatenate
-            (AffineTransform.getShearInstance(0, Math.PI * sky / 180));
+            (AffineTransform.getShearInstance(0,
+                                              Math.tan(Math.PI * sky / 180)));
     }
 
     /**
