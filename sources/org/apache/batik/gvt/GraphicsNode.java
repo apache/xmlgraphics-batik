@@ -112,7 +112,7 @@ public interface GraphicsNode {
      *
      * @param key the key of the hint to be set
      * @param value the value indicating preferences for the specified
-     * hint category.  
+     * hint category.
      */
     void setRenderingHint(RenderingHints.Key key, Object value);
 
@@ -199,7 +199,7 @@ public interface GraphicsNode {
      * Adds the specified graphics node mouse listener to receive graphics node
      * mouse events from this node.
      *
-     * @param l the graphics node mouse listener to add 
+     * @param l the graphics node mouse listener to add
      */
     void addGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
 
@@ -207,7 +207,7 @@ public interface GraphicsNode {
      * Removes the specified graphics node mouse listener so that it no longer
      * receives graphics node mouse events from this node.
      *
-     * @param l the graphics node mouse listener to remove 
+     * @param l the graphics node mouse listener to remove
      */
     void removeGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
 
@@ -215,7 +215,7 @@ public interface GraphicsNode {
      * Adds the specified graphics node key listener to receive graphics node
      * key events from this node.
      *
-     * @param l the graphics node key listener to add 
+     * @param l the graphics node key listener to add
      */
     void addGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
 
@@ -223,7 +223,7 @@ public interface GraphicsNode {
      * Removes the specified graphics node key listener so that it no longer
      * receives graphics node key events from this node.
      *
-     * @param l the graphics node key listener to remove 
+     * @param l the graphics node key listener to remove
      */
     void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l);
 
@@ -257,7 +257,7 @@ public interface GraphicsNode {
      * Returns an array of listeners that were added to this node and of the
      * specified type.
      *
-     * @param listenerType the type of the listeners to return 
+     * @param listenerType the type of the listeners to return
      */
     EventListener [] getListeners(Class listenerType);
 
@@ -272,7 +272,7 @@ public interface GraphicsNode {
 
     /**
      * Returns the root of the GVT tree or null if the node is not part of a GVT
-     * tree.  
+     * tree.
      */
     RootGraphicsNode getRoot();
 
@@ -356,4 +356,10 @@ public interface GraphicsNode {
      * Returns the outline of this node.
      */
     Shape getOutline();
+
+    /**
+     * Returns the transformed outline of this node.
+     */
+    Shape getTransformedOutline();
+
 }

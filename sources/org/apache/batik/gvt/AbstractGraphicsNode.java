@@ -241,7 +241,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      *
      * @param key the key of the hint to be set
      * @param value the value indicating preferences for the specified
-     * hint category.  
+     * hint category.
      */
     public void setRenderingHint(RenderingHints.Key key, Object value) {
         if (this.hints == null) {
@@ -479,7 +479,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Returns true of an offscreen buffer is needed to render this node, false
-     * otherwise.  
+     * otherwise.
      */
     protected boolean isOffscreenBufferNeeded() {
         return ((filter != null) ||
@@ -555,7 +555,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * Adds the specified graphics node mouse listener to receive graphics node
      * mouse events from this node.
      *
-     * @param l the graphics node mouse listener to add 
+     * @param l the graphics node mouse listener to add
      */
     public void addGraphicsNodeMouseListener(GraphicsNodeMouseListener l) {
         if (listeners == null) {
@@ -568,7 +568,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * Removes the specified graphics node mouse listener so that it no longer
      * receives graphics node mouse events from this node.
      *
-     * @param l the graphics node mouse listener to remove 
+     * @param l the graphics node mouse listener to remove
      */
     public void removeGraphicsNodeMouseListener(GraphicsNodeMouseListener l) {
         if (listeners != null) {
@@ -580,7 +580,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * Adds the specified graphics node key listener to receive graphics node
      * key events from this node.
      *
-     * @param l the graphics node key listener to add 
+     * @param l the graphics node key listener to add
      */
     public void addGraphicsNodeKeyListener(GraphicsNodeKeyListener l) {
         if (listeners == null) {
@@ -593,7 +593,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * Removes the specified graphics node key listener so that it no longer
      * receives graphics node key events from this node.
      *
-     * @param l the graphics node key listener to remove 
+     * @param l the graphics node key listener to remove
      */
     public void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l) {
         if (listeners != null) {
@@ -709,7 +709,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * Returns an array of listeners that were added to this node and of the
      * specified type.
      *
-     * @param listenerType the type of the listeners to return 
+     * @param listenerType the type of the listeners to return
      */
     public EventListener [] getListeners(Class listenerType) {
         return listeners.getListeners(listenerType);
@@ -738,7 +738,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Returns the root of the GVT tree or null if the node is not part of a GVT
-     * tree.  
+     * tree.
      */
     public RootGraphicsNode getRoot() {
         return root;
@@ -839,27 +839,27 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         // filter.
         Rectangle2D tBounds = null;
         if (filter == null) {
-	    // Use txf, not t
+            // Use txf, not t
             tBounds = getTransformedPrimitiveBounds(txf);
         } else {
             tBounds = t.createTransformedShape
-		(filter.getBounds2D()).getBounds2D();
+                (filter.getBounds2D()).getBounds2D();
         }
         // Factor in the clipping area, if any
         if (tBounds != null) {
             if (clip != null) {
                 tBounds.intersect
-		    (tBounds,
-		     t.createTransformedShape(clip.getClipPath()).getBounds2D(),
-		     tBounds);
+                    (tBounds,
+                     t.createTransformedShape(clip.getClipPath()).getBounds2D(),
+                     tBounds);
             }
 
             // Factor in the mask, if any
             if(mask != null) {
                 tBounds.intersect
-		    (tBounds,
-		     t.createTransformedShape(mask.getBounds2D()).getBounds2D(),
-		     tBounds);
+                    (tBounds,
+                     t.createTransformedShape(mask.getBounds2D()).getBounds2D(),
+                     tBounds);
             }
         }
 
@@ -924,6 +924,17 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      */
     public boolean intersects(Rectangle2D r) {
         return getBounds().intersects(r);
+    }
+
+    /**
+     * Returns the transformed outline of this node.
+     */
+    public Shape getTransformedOutline() {
+        if (transform != null) {
+            return transform.createTransformedShape(getOutline());
+        } else {
+            return getOutline();
+        }
     }
 
     /**

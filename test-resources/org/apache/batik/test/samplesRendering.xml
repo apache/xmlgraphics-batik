@@ -246,6 +246,8 @@
         <test id="samples/tests/spec/text/textStyles.svg" />
         <test id="samples/tests/spec/text/verticalText.svg" />
         <test id="samples/tests/spec/text/verticalTextOnPath.svg" />
+        <test id="samples/tests/spec/text/textPosition.svg" />
+        <test id="samples/tests/spec/text/textPosition2.svg" />
     </testGroup>
 
 </testSuite>
