@@ -135,6 +135,9 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     public boolean contains(Point2D p) {
+        if (count == 0) {
+            return false;
+        }
         if (getBounds().contains(p)) {
             for (int i=0; i < count; ++i) {
                 AffineTransform t = children[i].getTransform();
@@ -156,6 +159,9 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     public GraphicsNode nodeHitAt(Point2D p) {
+        if (count == 0) {
+            return null;
+        }
         if (getBounds().contains(p)) {
             //
             // Go backward because the children are in rendering order
@@ -178,6 +184,18 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
             }
         }
         return null;
+    }
+
+    protected Rectangle2D getGlobalBounds() {
+        if (count == 0) {
+            return null;
+        }
+        Rectangle2D r = getBounds();
+        if (r == null) {
+            return null;
+        } else {
+            return getGlobalTransform().createTransformedShape(r).getBounds();
+        }
     }
 
     public Rectangle2D getPrimitiveBounds() {

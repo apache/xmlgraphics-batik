@@ -205,19 +205,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
     }
 
-    protected Rectangle2D getGlobalBounds() {
-        if (root == null) {
-            // <!> FIXME : remove this when we can ask getBounds on composite
-            return null;
-        }
-        Rectangle2D r = getBounds();
-        if (r == null) {
-            return null;
-        } else {
-            return getGlobalTransform().createTransformedShape(r).getBounds();
-        }
-    }
-
     //
     // Properties methods
     //
@@ -233,12 +220,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setTransform(AffineTransform newTransform) {
-        Rectangle2D oldBounds = getGlobalBounds();
+        //Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
         AffineTransform oldTransform = transform;
         this.transform = newTransform;
         firePropertyChange("transform", oldTransform, newTransform);
-        fireGraphicsNodePaintListener(oldBounds);
+        //fireGraphicsNodePaintListener(oldBounds);
     }
 
     public AffineTransform getTransform() {
@@ -258,12 +245,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setComposite(Composite newComposite) {
-        Rectangle2D oldBounds = getGlobalBounds();
+        //Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
         Composite oldComposite = composite;
         this.composite = newComposite;
         firePropertyChange("composite", oldComposite, newComposite);
-        fireGraphicsNodePaintListener(oldBounds);
+        //fireGraphicsNodePaintListener(oldBounds);
     }
 
     public Composite getComposite() {
@@ -271,11 +258,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setVisible(boolean isVisible) {
-        Rectangle2D oldBounds = getGlobalBounds();
+        //Rectangle2D oldBounds = getGlobalBounds();
         boolean oldIsVisible = this.isVisible;
         this.isVisible = isVisible;
         firePropertyChange("visible", oldIsVisible, isVisible);
-        fireGraphicsNodePaintListener(oldBounds);
+        //fireGraphicsNodePaintListener(oldBounds);
     }
 
     public boolean isVisible() {
@@ -283,12 +270,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setClip(Clip newClipper) {
-        Rectangle2D oldBounds = getGlobalBounds();
+        //Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
         Clip oldClip = clip;
         this.clip = newClipper;
         firePropertyChange("clippingArea", oldClip, newClipper);
-        fireGraphicsNodePaintListener(oldBounds);
+        //fireGraphicsNodePaintListener(oldBounds);
     }
 
     public Clip getClip() {
@@ -320,12 +307,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setMask(Mask newMask) {
-        Rectangle2D oldBounds = getGlobalBounds();
+        //Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
         Mask oldMask = mask;
         this.mask = newMask;
         firePropertyChange("mask", oldMask, newMask);
-        fireGraphicsNodePaintListener(oldBounds);
+        //fireGraphicsNodePaintListener(oldBounds);
     }
 
     public Mask getMask() {
@@ -333,12 +320,12 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setFilter(Filter newFilter) {
-        Rectangle2D oldBounds = getGlobalBounds();
+        //Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
         Filter oldFilter = filter;
         this.filter = newFilter;
         firePropertyChange("filter", oldFilter, newFilter);
-        fireGraphicsNodePaintListener(oldBounds);
+        //fireGraphicsNodePaintListener(oldBounds);
     }
 
     public Filter getFilter() {
@@ -681,6 +668,15 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             ((AbstractGraphicsNode) parent).invalidateGeometryCache();
         }
         bounds = null;
+    }
+
+    protected Rectangle2D getGlobalBounds() {
+        Rectangle2D r = getBounds();
+        if (r == null) {
+            return null;
+        } else {
+            return getGlobalTransform().createTransformedShape(r).getBounds();
+        }
     }
 
     /**
