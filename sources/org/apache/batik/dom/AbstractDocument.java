@@ -194,7 +194,9 @@ public abstract class AbstractDocument
 	if (e == null) {
 	    return EMPTY_NODE_LIST;
 	}
-	return e.getElementsByTagName(tagname);
+	Nodes result = new Nodes();
+	getElementsByTagName(e, tagname, result);
+	return result;
     }
 
     /**
@@ -219,7 +221,9 @@ public abstract class AbstractDocument
 	if (e == null) {
 	    return EMPTY_NODE_LIST;
 	}
-	return e.getElementsByTagNameNS(namespaceURI, localName);
+	Nodes result = new Nodes();
+	getElementsByTagNameNS(e, namespaceURI, localName, result);
+	return result;
     }
 
     /**

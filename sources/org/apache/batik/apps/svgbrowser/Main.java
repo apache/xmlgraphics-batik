@@ -89,6 +89,11 @@ public class Main implements Application {
         (Main.class.getResource(resources.getString("Frame.icon")));
 
     /**
+     * The preference manager.
+     */
+    protected XMLPreferenceManager preferenceManager;
+
+    /**
      * The arguments.
      */
     protected String[] arguments;
@@ -119,6 +124,34 @@ public class Main implements Application {
         arguments = args;
         CSSDocumentHandler.setParserClassName
         (resources.getString(CSS_PARSER_CLASS_NAME_KEY));
+
+        Map defaults = new HashMap(11);
+
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_LANGUAGES,
+                     Locale.getDefault().getLanguage());
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_SHOW_RENDERING,
+                     Boolean.FALSE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_AUTO_ADJUST_WINDOW,
+                     Boolean.TRUE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING,
+                     Boolean.TRUE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_SHOW_DEBUG_TRACE,
+                     Boolean.FALSE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_PROXY_HOST,
+                     "");
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_PROXY_PORT,
+                     "");
+
+        try {
+            preferenceManager = new XMLPreferenceManager("preferences.xml",
+                                                         defaults);
+            String dir = System.getProperty("user.home");
+            File f = new File(dir, ".batik");
+            f.mkdir();
+            preferenceManager.setPreferenceDirectory(f.getCanonicalPath());
+            preferenceManager.load();
+        } catch (Exception e) {
+        }
     }
 
     /**
@@ -287,6 +320,7 @@ public class Main implements Application {
         mainFrame.setTitle(resources.getString("Frame.title"));
         mainFrame.show();
         viewerFrames.add(mainFrame);
+        setPreferences(mainFrame);
         return mainFrame;
     }
 
@@ -332,64 +366,42 @@ public class Main implements Application {
      */
     public void showPreferenceDialog(JSVGViewerFrame f) {
         if (preferenceDialog == null) {
-            Map defaults = new HashMap(11);
-
-            defaults.put(PreferenceDialog.PREFERENCE_KEY_LANGUAGES,
-                         Locale.getDefault().getLanguage());
-            defaults.put(PreferenceDialog.PREFERENCE_KEY_SHOW_RENDERING,
-                         Boolean.FALSE);
-            defaults.put(PreferenceDialog.PREFERENCE_KEY_AUTO_ADJUST_WINDOW,
-                         Boolean.TRUE);
-            defaults.put(PreferenceDialog.PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING,
-                         Boolean.TRUE);
-            defaults.put(PreferenceDialog.PREFERENCE_KEY_SHOW_DEBUG_TRACE,
-                         Boolean.FALSE);
-            defaults.put(PreferenceDialog.PREFERENCE_KEY_PROXY_HOST,
-                         "");
-            defaults.put(PreferenceDialog.PREFERENCE_KEY_PROXY_PORT,
-                         "");
-
-            XMLPreferenceManager manager;
-            manager = new XMLPreferenceManager("batik-preferences.xml", defaults);
-            try {
-                manager.load();
-                setPreferences(manager);
-            } catch (Exception e) {
-            }
-            preferenceDialog = new PreferenceDialog(manager);
+            preferenceDialog = new PreferenceDialog(preferenceManager);
         }
         if (preferenceDialog.showDialog() == PreferenceDialog.OK_OPTION) {
-            PreferenceManager manager = preferenceDialog.getPreferenceManager();
             try {
-                manager.save();
-                setPreferences(manager);
+                preferenceManager.save();
+                setPreferences();
             } catch (Exception e) {
             }
         }
     }
 
-    private void setPreferences(PreferenceManager manager) {
+    private void setPreferences() {
         Iterator it = viewerFrames.iterator();
         while (it.hasNext()) {
-            JSVGViewerFrame vf = (JSVGViewerFrame)it.next();
-            boolean db = manager.getBoolean
-                (PreferenceDialog.PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING);
-            vf.getJSVGCanvas().setDoubleBufferedRendering(db);
-            boolean sr = manager.getBoolean
-                (PreferenceDialog.PREFERENCE_KEY_SHOW_RENDERING);
-            vf.getJSVGCanvas().setProgressivePaint(sr);
-            boolean d = manager.getBoolean
-                (PreferenceDialog.PREFERENCE_KEY_SHOW_DEBUG_TRACE);
-            vf.setDebug(d);
-            boolean aa = manager.getBoolean
-                (PreferenceDialog.PREFERENCE_KEY_AUTO_ADJUST_WINDOW);
-            vf.setAutoAdjust(aa);
+            setPreferences((JSVGViewerFrame)it.next());
         }
 
-        System.setProperty("proxyHost", manager.getString
+        System.setProperty("proxyHost", preferenceManager.getString
                            (PreferenceDialog.PREFERENCE_KEY_PROXY_HOST));
-        System.setProperty("proxyPort", manager.getString
+        System.setProperty("proxyPort", preferenceManager.getString
                            (PreferenceDialog.PREFERENCE_KEY_PROXY_PORT));
+    }
+
+    private void setPreferences(JSVGViewerFrame vf) {
+        boolean db = preferenceManager.getBoolean
+            (PreferenceDialog.PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING);
+        vf.getJSVGCanvas().setDoubleBufferedRendering(db);
+        boolean sr = preferenceManager.getBoolean
+            (PreferenceDialog.PREFERENCE_KEY_SHOW_RENDERING);
+        vf.getJSVGCanvas().setProgressivePaint(sr);
+        boolean d = preferenceManager.getBoolean
+            (PreferenceDialog.PREFERENCE_KEY_SHOW_DEBUG_TRACE);
+        vf.setDebug(d);
+        boolean aa = preferenceManager.getBoolean
+            (PreferenceDialog.PREFERENCE_KEY_AUTO_ADJUST_WINDOW);
+        vf.setAutoAdjust(aa);
     }
 
     /**

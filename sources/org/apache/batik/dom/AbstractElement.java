@@ -189,7 +189,10 @@ public abstract class AbstractElement
 	    return EMPTY_NODE_LIST;
 	}
 	Nodes result = new Nodes();
-	getElementsByTagName(this, name, result);
+        while (n != null) {
+            getElementsByTagName(n, name, result);
+            n = n.getNextSibling();
+        }
 	return result;
     }
 
@@ -294,7 +297,10 @@ public abstract class AbstractElement
 	    return EMPTY_NODE_LIST;
 	}
 	Nodes result = new Nodes();
-	getElementsByTagNameNS(this, namespaceURI, localName, result);
+        while (n != null) {
+            getElementsByTagNameNS(n, namespaceURI, localName, result);
+            n = n.getNextSibling();
+        }
 	return result;
     }
 
@@ -303,59 +309,6 @@ public abstract class AbstractElement
      */
     protected NamedNodeMap createAttributes() {
 	return new NamedNodeHashMap();
-    }
-
-    /**
-     * An auxiliary method of getElementsByTagName.
-     */
-    protected static void getElementsByTagName(Node node, String name,
-                                               Nodes list) {
-	if (node.getNodeType() == ELEMENT_NODE) {
-	    if (name.equals("*") || name.equals(node.getNodeName())) {
-		list.append(node);
-	    }
-	}
-	for (Node n = node.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-	    getElementsByTagName(n, name, list);
-	}
-    }
-
-    /**
-     * An auxiliary method for getElementsByTagNameNS.
-     */
-    protected static void getElementsByTagNameNS(Node   node,
-						 String ns,
-						 String name,
-						 Nodes  list) {
-	if (node.getNodeType() == ELEMENT_NODE) {
-	    if (stringMatches(ns, node.getNamespaceURI()) &&
-		(name.equals("*") || name.equals(node.getLocalName()))) {
-		list.append(node);
-	    }
-	}
-	for (Node n = node.getFirstChild();
-             n != null;
-             n = n.getNextSibling()) {
-	    getElementsByTagNameNS(n, ns, name, list);
-	}
-    }
-
-    /**
-     * String matching for getElementsByTagNameNS function.
-     */
-    private static boolean stringMatches(String s1, String s2) {
-	if (s1 == null && s2 == null) {
-	    return true;
-	}
-	if (s1 == null || s2 == null) {
-	    return false;
-	}
-	if (s1.equals("*")) {
-	    return true;
-	}
-	return s1.equals(s2);
     }
 
     /**
