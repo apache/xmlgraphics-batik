@@ -586,7 +586,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
     /**
      * The pixel to millimeter conversion factor key.
      * @deprecated As of Batik Version 1.5b3
-     * @see #KEY_MM_PER_PIXEL
+     * @see #KEY_PIXEL_UNIT_TO_MILLIMETER
      *
      * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
      * <TR>
