@@ -50,6 +50,11 @@ class XmlWriter implements SVGConstants {
     static private final String TAG_START = "</";
     static private final String SPACE = " ";
 
+    static private final char[] SPACES = 
+    { ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+      ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ' };
+    static private final int    SPACES_LEN = SPACES.length;
+
     static {
         String  temp;
         try { temp = System.getProperty ("line.separator", "\n"); }
@@ -58,8 +63,9 @@ class XmlWriter implements SVGConstants {
     }
 
     static class IndentWriter extends Writer {
-        private Writer proxied;
-        private int indentLevel;
+        protected Writer proxied;
+        protected int    indentLevel;
+        protected int    column;
 
         public IndentWriter(Writer proxied){
             if (proxied == null)
@@ -80,32 +86,45 @@ class XmlWriter implements SVGConstants {
             proxied.write(EOL);
             int temp = indentLevel;
             while(temp > 0){
-                proxied.write(' ');
-                temp--;
+                if (temp > SPACES_LEN) {
+                    proxied.write(SPACES, 0, SPACES_LEN);
+                    temp -= SPACES_LEN;
+                } else {
+                    proxied.write(SPACES, 0, temp);
+                    break;
+                }
             }
+            column = indentLevel;
         }
 
         public Writer getProxied(){
             return proxied;
         }
 
+        public int getColumn() { return column; }
+
         public void write(int c) throws IOException {
+            column++;
             proxied.write(c);
         }
 
         public void write(char cbuf[]) throws IOException {
+            column+=cbuf.length;
             proxied.write(cbuf);
         }
 
         public void write(char cbuf[], int off, int len) throws IOException{
+            column+=len;
             proxied.write(cbuf, off, len);
         }
 
         public void write(String str) throws IOException {
+            column+=str.length();
             proxied.write(str);
         }
 
         public void write(String str, int off, int len) throws IOException {
+            column+=len;
             proxied.write(str, off, len);
         }
 
@@ -114,11 +133,13 @@ class XmlWriter implements SVGConstants {
         }
 
         public void close() throws IOException{
+            column = -1;
             proxied.close();
         }
     }
 
-    private static void writeXml(Attr attr, IndentWriter out) throws IOException{
+    private static void writeXml(Attr attr, IndentWriter out) 
+        throws IOException{
         String name = attr.getName();
         out.write (name);
         out.write ("=\"");
@@ -131,18 +152,44 @@ class XmlWriter implements SVGConstants {
      */
     private static void writeChildrenXml(Attr attr, IndentWriter out)
         throws IOException {
-        String value = attr.getValue();
-        for (int i = 0; i < value.length (); i++) {
-            int c = value.charAt (i);
+        char data[] = attr.getValue().toCharArray();
+        if (data == null) return;
+
+        int         length = data.length;
+        int         start=0, last=0;
+        while (last < length) {
+            char c = data[last];
             switch (c) {
-            case '<':  out.write ("&lt;"); continue;
-            case '>':  out.write ("&gt;"); continue;
-            case '&':  out.write ("&amp;"); continue;
-            case '\'': out.write ("&apos;"); continue;
-            case '"':  out.write ("&quot;"); continue;
-            default:   out.write (c); continue;
+            case '<':
+                out.write (data, start, last - start);
+                start = last + 1;
+                out.write ("&lt;"); 
+                break;
+            case '>':  
+                out.write (data, start, last - start);
+                start = last + 1;
+                out.write ("&gt;"); 
+                break;
+            case '&':  
+                out.write (data, start, last - start);
+                start = last + 1;
+                out.write ("&amp;"); 
+                break;
+            case '\'': 
+                out.write (data, start, last - start);
+                start = last + 1;
+                out.write ("&apos;"); 
+                break;
+            case '"':  
+                out.write (data, start, last - start);
+                start = last + 1;
+                out.write ("&quot;"); 
+                break;
+            default:
             }
+            last++;
         }
+        out.write (data, start, last - start);
     }
 
     /**
@@ -152,45 +199,70 @@ class XmlWriter implements SVGConstants {
      */
     private static void writeXml(Comment comment, IndentWriter out)
         throws IOException {
-        char data[] = comment.getData().toCharArray();
-        out.write ("<!--");
-        if (data != null) {
-            boolean     sawDash = false;
-            int         length = data.length;
 
-            // "--" illegal in comments, expand it
-            for (int i = 0; i < length; i++) {
-                if (data [i] == '-') {
-                    if (sawDash)
-                        out.write (' ');
-                    else {
-                        sawDash = true;
-                        out.write ('-');
-                        continue;
-                    }
-                }
-                sawDash = false;
-                out.write (data [i]);
-            }
-            if (data [data.length - 1] == '-')
-                out.write (' ');
+        char data[] = comment.getData().toCharArray();
+
+        if (data == null) {
+            out.write("<!---->");
+            return;
         }
+
+        out.write ("<!--");
+        boolean     sawDash = false;
+        int         length = data.length;
+        int         start=0, last=0;
+        
+        // "--" illegal in comments, insert a space.
+        while (last < length) {
+            char c = data[last];
+            if (c == '-') {
+                if (sawDash) {
+                    out.write (data, start, last - start);
+                    start = last;
+                    out.write (' ');
+                }
+                sawDash = true;
+            } else {
+                sawDash = false;
+            }
+            last++;
+        }
+        out.write (data, start, last - start);
+        if (sawDash)
+            out.write (' ');
         out.write ("-->");
     }
 
-    private static void writeXml(Text text, IndentWriter out)
+    private static void writeXml(Text text, IndentWriter out) 
+        throws IOException {
+        writeXml(text, out, false);
+    }
+
+    private static void writeXml(Text text, IndentWriter out, boolean trimWS)
         throws IOException {
         char data[] = text.getData().toCharArray();
-        int     start = 0, last = 0;
 
         // XXX saw this once -- being paranoid
         if (data == null)
             { System.err.println ("Null text data??"); return; }
 
-        while (last < data.length) {
+        int length = data.length;
+        int start = 0, last = 0;
+        if (trimWS) {
+            while (last < length) {
+                char c = data[last];
+                switch (c) {
+                case ' ': case '\t': case '\n': case '\r': last++; continue;
+                default: break;
+                }
+                break;
+            }
+            start = last;
+        }
+         
+        while (last < length) {
             char c = data [last];
 
-            //
             // escape markup delimiters only ... and do bulk
             // writes wherever possible, for best performance
             //
@@ -199,18 +271,41 @@ class XmlWriter implements SVGConstants {
             // doing it very generally helps simple parsers
             // that may not be quite correct.
             //
-            if (c == '<') {                     // not legal in char data
+            switch(c) {
+            case ' ': case '\t': case '\n': case '\r':
+                if (trimWS) {
+                    int wsStart = last; last++;
+                    while (last < length) {
+                        switch(data[last]) {
+                        case ' ': case '\t': case '\n': case '\r': 
+                            last++; continue;
+                        default: break;
+                        }
+                        break;
+                    }
+                    if (last == length) {
+                        out.write(data, start, wsStart-start);
+                        return;
+                    } else {
+                        continue;
+                    }
+                }
+                break;
+            case '<':                     // not legal in char data
                 out.write (data, start, last - start);
                 start = last + 1;
                 out.write ("&lt;");
-            } else if (c == '>') {              // see above
+                break;
+            case '>':                     // see above
                 out.write (data, start, last - start);
                 start = last + 1;
                 out.write ("&gt;");
-            } else if (c == '&') {              // not legal in char data
+                break;
+            case '&':                    // not legal in char data
                 out.write (data, start, last - start);
                 start = last + 1;
                 out.write ("&amp;");
+                break;
             }
             last++;
         }
@@ -220,22 +315,32 @@ class XmlWriter implements SVGConstants {
     private static void writeXml(CDATASection cdataSection, IndentWriter out)
         throws IOException {
         char[] data = cdataSection.getData().toCharArray();
+        if (data == null) {
+            out.write ("<![CDATA[]]>");
+            return;
+        }
+
         out.write ("<![CDATA[");
-        for (int i = 0; i < data.length; i++) {
-            char c = data [i];
+        int length = data.length;
+        int  start = 0, last = 0;
+        while (last < length) {
+            char c = data [last];
 
             // embedded "]]>" needs to be split into adjacent
             // CDATA blocks ... can be split at either point
             if (c == ']') {
-                if ((i + 2) < data.length
-                    && data [i + 1] == ']'
-                    && data [i + 2] == '>') {
+                if (((last + 2) < data.length) && 
+                    (data [last + 1] == ']')   &&
+                    (data [last + 2] == '>')) {
+                    out.write (data, start, last - start);
+                    start = last + 1;
                     out.write ("]]]]><![CDATA[>");
                     continue;
                 }
             }
-            out.write (c);
+            last++;
         }
+        out.write (data, start, last - start);
         out.write ("]]>");
     }
 

@@ -187,11 +187,12 @@ public class UpdateManager  {
                                 (updateTracker);
                         }
 
-                        repaintManager =
-                            new RepaintManager(r);
+                        repaintManager = new RepaintManager(r);
 
-                        fireEvent(startedDispatcher,
-                                  new UpdateManagerEvent(this, null, null));
+                        // Send the UpdateManagerStarted event.
+                        UpdateManagerEvent ev = new UpdateManagerEvent
+                            (UpdateManager.this, null, null);
+                        fireEvent(startedDispatcher, ev);
                         started = true;
                     }
                 }
@@ -321,8 +322,9 @@ public class UpdateManager  {
                         bridgeContext.dispose();
 
                         // Send the UpdateManagerStopped event.
-                        fireEvent(stoppedDispatcher,
-                                  new UpdateManagerEvent(this, null, null));
+                        UpdateManagerEvent ev = new UpdateManagerEvent
+                            (UpdateManager.this, null, null);
+                        fireEvent(stoppedDispatcher, ev);
                     }
                 }
             });
@@ -377,21 +379,26 @@ public class UpdateManager  {
     protected void updateRendering(List areas, 
                                    boolean clearPaintingTransform) {
         try {
-            fireEvent(updateStartedDispatcher,new UpdateManagerEvent
-                      (this, repaintManager.getOffScreen(), null));
+            UpdateManagerEvent ev = new UpdateManagerEvent
+                (this, repaintManager.getOffScreen(), null);
+            fireEvent(updateStartedDispatcher, ev);
 
             Collection c = repaintManager.updateRendering(areas);
             List l = new ArrayList(c);
-            fireEvent(updateCompletedDispatcher,new UpdateManagerEvent
-                      (this, repaintManager.getOffScreen(), l,
-                       clearPaintingTransform));
+
+            ev = new UpdateManagerEvent
+                (this, repaintManager.getOffScreen(), 
+                 l, clearPaintingTransform);
+            fireEvent(updateCompletedDispatcher, ev);
         } catch (ThreadDeath td) {
-            fireEvent(updateFailedDispatcher,
-                      new UpdateManagerEvent(this, null, null));
+            UpdateManagerEvent ev = new UpdateManagerEvent
+                (this, null, null);
+            fireEvent(updateFailedDispatcher, ev);
             throw td;
         } catch (Throwable t) {
-            fireEvent(updateFailedDispatcher,
-                      new UpdateManagerEvent(this, null, null));
+            UpdateManagerEvent ev = new UpdateManagerEvent
+                (this, null, null);
+            fireEvent(updateFailedDispatcher, ev);
         }
     }
 
@@ -571,8 +578,9 @@ public class UpdateManager  {
         public void executionSuspended(RunnableQueue rq) {
             if (suspendCalled) {
                 running = false;
-                fireEvent(suspendedDispatcher, 
-                          new UpdateManagerEvent(this, null, null));
+                UpdateManagerEvent ev = new UpdateManagerEvent
+                    (this, null, null);
+                fireEvent(suspendedDispatcher, ev);
             }
         }
         
@@ -582,10 +590,11 @@ public class UpdateManager  {
         public void executionResumed(RunnableQueue rq) {
             if (suspendCalled && !running) {
                 running = true;
-                
                 suspendCalled = false;
-                fireEvent(resumedDispatcher, 
-                          new UpdateManagerEvent(this, null, null));
+
+                UpdateManagerEvent ev = new UpdateManagerEvent
+                    (this, null, null);
+                fireEvent(resumedDispatcher, ev);
             }
         }
     }

@@ -67,6 +67,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -125,6 +126,8 @@ import org.apache.batik.transcoder.image.TIFFTranscoder;
 import org.apache.batik.transcoder.print.PrintTranscoder;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.JErrorPane;
 import org.apache.batik.util.gui.LocationBar;
@@ -159,6 +162,14 @@ public class JSVGViewerFrame
                GVTTreeRendererListener,
                LinkActivationListener,
                UpdateManagerListener {
+
+    static private String EOL;
+    static {
+        String  temp;
+        try { temp = System.getProperty ("line.separator", "\n"); }
+        catch (SecurityException e) { temp = "\n"; }
+        EOL = temp;
+    }
 
     /**
      * Kind of ugly, but we need to know if we are running before
@@ -1254,23 +1265,32 @@ public class JSVGViewerFrame
                 return;
 
             final File f = fileChooser.getSelectedFile();
+
+            SVGOptionPanel sop;
+            sop = SVGOptionPanel.showDialog(JSVGViewerFrame.this);
+            
+            final boolean useXMLBase  = sop.getUseXMLBase();
+            final boolean prettyPrint = sop.getPrettyPrint();
+            sop = null;
+
             final SVGDocument svgDoc = svgCanvas.getSVGDocument();
             if (svgDoc == null) return;
             
             statusBar.setMessage(resources.getString("Message.saveAs"));
             currentSavePath = f;
-            Writer w = null;
+            OutputStreamWriter w = null;
             try { 
                 OutputStream tos = null;
                 tos = new FileOutputStream(f);
                 tos = new BufferedOutputStream(tos);
-                w = new OutputStreamWriter(tos);
+                w = new OutputStreamWriter(tos, "utf-8");
             } catch (Exception ex) { 
                 userAgent.displayError(ex); 
                 return;
             }
 
-            final Writer writer  = w;
+            final OutputStreamWriter writer  = w;
+            
             final Runnable doneRun = new Runnable() {
                     public void run() {
                         String doneStr = resources.getString("Message.done");
@@ -1280,8 +1300,48 @@ public class JSVGViewerFrame
             Runnable r = new Runnable() {
                     public void run() {
                         try {
-                            DOMUtilities.writeDocument(svgDoc, writer);
+                            // Write standard XML header.
+                            writer.write 
+                                ("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+                                writer.write (EOL);
+
+                            Node fc = svgDoc.getFirstChild();
+                            if (fc.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
+                                // Not DT node in Document, so 
+                                // provide Document Type dec.
+                                writer.write ("<!DOCTYPE svg PUBLIC '");
+                                writer.write (SVGConstants.SVG_PUBLIC_ID);
+                                writer.write ("' '");
+                                writer.write (SVGConstants.SVG_SYSTEM_ID);
+                                writer.write ("'>");
+                                writer.write (EOL);
+                                writer.write (EOL);
+                            }
+                            Element root = svgDoc.getRootElement();
+                            boolean doXMLBase = useXMLBase;
+                            if (root.hasAttributeNS
+                                (XMLConstants.XML_NAMESPACE_URI, "base"))
+                                doXMLBase = false;
+
+                            if (doXMLBase) {
+                                root.setAttributeNS
+                                    (XMLConstants.XML_NAMESPACE_URI, 
+                                     "xml:base",
+                                     svgDoc.getURL());
+                            }
+
+                            // if (prettyPrint) {
+                            // } else {
+                                DOMUtilities.writeDocument(svgDoc, writer);
+                                // }
+
                             writer.close();
+
+                            if (doXMLBase)
+                                root.removeAttributeNS
+                                    (XMLConstants.XML_NAMESPACE_URI, 
+                                     "xml:base");
+
                             if (EventQueue.isDispatchThread()) {
                                 doneRun.run();
                             } else {
