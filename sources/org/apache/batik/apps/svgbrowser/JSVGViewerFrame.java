@@ -595,6 +595,7 @@ public class JSVGViewerFrame
             dlg.setSize(dlg.getPreferredSize()); // Work around pack() bug on some platforms
             dlg.setLocationRelativeTo(JSVGViewerFrame.this);
             dlg.show();
+            dlg.toFront();
         }
     }
 
