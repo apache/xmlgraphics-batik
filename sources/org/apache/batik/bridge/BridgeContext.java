@@ -173,10 +173,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      */
     private static InterpreterPool sharedPool = new InterpreterPool();
 
-    //static int total;
-    //static int alive;
-    //int number;
-
     /**
      * Constructs a new bridge context.
      * @param userAgent the user agent
@@ -212,25 +208,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         this.documentLoader = documentLoader;
         documentLoader.setBridgeContext(this);
         registerSVGBridges(this);
-
-        // start debug leak
-        /*
-        total++;
-        alive++;
-        number = total;
-        System.out.println("--- Create BridgeContext #"+number+" alive: "+alive);
-        // end debug leak
-        */
     }
-
-    /* start debug leak
-    protected void finalize() throws Throwable {
-        super.finalize();
-        alive--;
-        System.out.println("--- BridgeContext #"+number+" goes to GC. left: "+alive);
-    }
-    // end debug leak
-    */
 
     /**
      * Initializes the given document.
