@@ -1,0 +1,79 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     id="body" width="450" height="500" viewBox="0 0 450 500">
+
+   <title>Text on Path with trailing &lt;tspan></title>
+
+   <text class="title" x="50%" y="40"
+    >Text on Path with trailing &lt;tspan></text>
+
+   <rect fill="black" stroke="black" x="30" y="50" width="390" height="20"/>
+   <rect fill="white" stroke="black" x="30" y="70" width="390" height="120"/>
+   <text x="40" y="64" fill="white" font-size="14"
+    >Text with embedded textPath and multiple trailing tspan</text>
+
+   <rect fill="black" stroke="black" x="30" y="195" width="390" height="20"/>
+   <rect fill="white" stroke="black" x="30" y="215" width="390" height="120"/>
+   <text x="40" y="209" fill="white" font-size="14"
+    >textPath has startOffset="10%"</text>
+
+   <rect fill="black" stroke="black" x="30" y="340" width="390" height="20"/>
+   <rect fill="white" stroke="black" x="30" y="360" width="390" height="120"/>
+   <text x="40" y="354" fill="white" font-size="14"
+    >textPath with startOffset and text-anchor</text>
+
+   <g transform="translate(40, 185)" >
+      <path id="path" style="fill:none; stroke:blue;" 
+            d="M100 0 c0 -125 140 -125 140 0"/>
+      
+      <text x="10" y="0" fill="black">This is simple<textPath 
+          fill="crimson" xlink:href="#path" startOffset="0%"
+          >text on a path<tspan fill="orange" dy="-10"
+          >with nested</tspan><tspan fill="green" dy="10"
+          > tspan</tspan></textPath
+          > xxx <tspan fill="blue" dx="10"
+          >all with </tspan> different links.</text>
+  </g>
+
+
+   <g transform="translate(40, 330)" >
+      <path id="path" style="fill:none; stroke:blue;" 
+            d="M100 0 c0 -125 140 -125 140 0"/>
+      
+      <text x="10" y="0" fill="black">This is simple<textPath 
+          fill="crimson" xlink:href="#path" startOffset="10%"
+          >text on a path<tspan fill="orange" dy="-10"
+          >with nested</tspan><tspan fill="green" dy="10"
+          > tspan</tspan></textPath
+          > xxx <tspan fill="blue" dx="10"
+          >all with </tspan> different links.</text>
+  </g>
+
+   <g transform="translate(40, 475)" >
+      <path id="path" style="fill:none; stroke:blue;" 
+            d="M100 0 c0 -125 140 -125 140 0"/>
+      
+      <text x="10" y="0" fill="black">This is simple<textPath 
+          fill="crimson" xlink:href="#path" 
+          startOffset="75%" text-anchor="middle"
+          >text on a path<tspan fill="orange" dy="-10"
+          >with nested</tspan><tspan fill="green" dy="10"
+          > tspan</tspan></textPath
+          > xxx <tspan fill="blue" dx="10"
+          >all with </tspan> different links.</text>
+  </g>
+</svg>

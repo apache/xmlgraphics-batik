@@ -603,8 +603,11 @@ public class StrokingTextPainter extends BasicTextPainter {
         if (aci.current() == CharacterIterator.DONE) 
             return null;
 
-        Point2D  advance      = new Point2D.Float(0,0);
-        boolean  isChunkStart = true;
+        // we now lay all aci's out at 0,0 then move them
+        // when we adjust the chunk offsets.
+        Point2D.Float offset        = new Point2D.Float(0,0);
+        Point2D.Float advance       = new Point2D.Float(0,0);
+        boolean isChunkStart  = true;
         TextSpanLayout layout = null;
         do {
             int start = aci.getRunStart(extendedAtts);
@@ -618,10 +621,6 @@ public class StrokingTextPainter extends BasicTextPainter {
                 subCharMap[i] = charMap[i+start-begin];
             }
 
-            Point2D.Float offset;
-            offset = new Point2D.Float((float)advance.getX(),
-                                       (float)advance.getY());
-
             layout = getTextLayoutFactory().createTextLayout
                 (runaci, subCharMap, offset, fontRenderContext);
             textRuns.add(new TextRun(layout, runaci, isChunkStart));
@@ -630,9 +629,9 @@ public class StrokingTextPainter extends BasicTextPainter {
 
             Point2D layoutAdvance = layout.getAdvance2D();
             // System.out.println("layoutAdv: " + layoutAdvance);
-            advance = new Point2D.Float
-                ((float) (advance.getX()+layoutAdvance.getX()),
-                 (float) (advance.getY()+layoutAdvance.getY()));
+            advance.x +=  (float)layoutAdvance.getX();
+            advance.y +=  (float)layoutAdvance.getY();
+
             ++endChunk;
             if (aci.setIndex(end) == CharacterIterator.DONE) break;
             isChunkStart = false;
@@ -766,42 +765,38 @@ public class StrokingTextPainter extends BasicTextPainter {
         Float runY = (Float) runaci.getAttribute(YPOS);
         TextPath textPath =  (TextPath) runaci.getAttribute(TEXTPATH);
 
+        // The point that the next peice of normal text should be
+        // layed out from, only used for normal text not text on a path.
         float absX = (float)location.getX();
         float absY = (float)location.getY();
-        float advX = 0;
-        float advY = 0;
+        // TextPath Shift used to account for startOffset.
         float tpShiftX = 0;
         float tpShiftY = 0;
-        float shiftX = 0;
-        float shiftY = 0;
 
-        if (textPath == null) {
-            // Of course X and Y override all that...
-            if ((runX != null) && (!runX.isNaN()))
-                absX = runX.floatValue();
-
-            if ((runY != null) && (!runY.isNaN()))
-                absY = runY.floatValue();
-        } else {
-            absX = 0;
-            absY = 0;
-            // Only use the x or y in writing direction...
-            if (vertical) {
-                if ((runY != null) && (!runY.isNaN())) {
-                    absY = runY.floatValue();
-                    tpShiftY = absY;
-                }
-            } else {
-                if ((runX != null) && (!runX.isNaN())) {
-                    absX = runX.floatValue();
-                    tpShiftX = absX;
-                }
-            }
+        // Of course X and Y override that...
+        if ((runX != null) && (!runX.isNaN())) {
+            absX = runX.floatValue();
+            tpShiftX = absX;
         }
-        // System.out.println("ABS: [" + absX + "," + absY + "]");
 
-        float retX = absX;
-        float retY = absY;
+        if ((runY != null) && (!runY.isNaN())) {
+            absY = runY.floatValue();
+            tpShiftY = absY;
+        }
+
+        // Factor in text-anchor in writing direction.
+        // Ignore tpShift in non-writing direction.
+        if (vertical) {
+            absY     += dy;
+            tpShiftY += dy;
+            tpShiftX  = 0;
+        } else {
+            absX     += dx;
+            tpShiftX += dx;
+            tpShiftY  = 0;
+        }
+
+        // System.out.println("ABS: [" + absX + "," + absY + "]");
         for (int n=chunk.begin; n<chunk.end; ++n) {
             r = (TextRun) textRuns.get(n);
             layout = r.getLayout();
@@ -809,56 +804,25 @@ public class StrokingTextPainter extends BasicTextPainter {
             runaci.first();
             textPath =  (TextPath) runaci.getAttribute(TEXTPATH);
 
-            Point2D offset = layout.getOffset();
-            // System.out.println("Offset1: " + offset);
-            // System.out.println("Shift: [" + shiftX + "," + shiftY + "]");
-            if (textPath != null) {
-                // For text path use relative values.
-                absX = tpShiftX;
-                absY = tpShiftY;
-
-                shiftX = 0;
-                shiftY = 0;
-            }
-            if (layout.isVertical()) {
-                float adj = (float)((offset.getY()-shiftY)*yScale);
-                offset = new Point2D.Float((float)absX,
-                                           (float)absY+adj+dy);
-            } else {
-                float adj = (float)((offset.getX()-shiftX)*xScale);
-                offset = new Point2D.Float((float)absX+adj+dx,
-                                           (float)absY);
-            }
-            // System.out.println("Offset2: " + offset);
-            layout.setOffset(offset);
-
             if (textPath == null) {
+                layout.setOffset(new Point2D.Float(absX, absY));
+
                 Point2D ladv = layout.getAdvance2D();
-                retX = (float)(offset.getX()+ladv.getX());
-                retY = (float)(offset.getY()+ladv.getY());
-                if (vertical)
-                    absX += ladv.getX();
-                else
-                    absY += ladv.getY();
+                absX += ladv.getX();
+                absY += ladv.getY();
             } else {
+                layout.setOffset(new Point2D.Float(tpShiftX, tpShiftY));
+
                 Point2D ladv = layout.getAdvance2D();
-                advX += (float)ladv.getX();
-                advY += (float)ladv.getY();
-                shiftX = advX;
-                shiftY = advY;
-                if (vertical)
-                    tpShiftX += (float)ladv.getX();
-                else
-                    tpShiftY += (float)ladv.getY();
+                tpShiftX += (float)ladv.getX();
+                tpShiftY += (float)ladv.getY();
 
                 ladv = layout.getTextPathAdvance();
                 absX = (float)ladv.getX();
                 absY = (float)ladv.getY();
-                retX = absX;
-                retY = absY;
             }
         }
-        return new Point2D.Float(retX, retY);
+        return new Point2D.Float(absX, absY);
     }
 
     /**
