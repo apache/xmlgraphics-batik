@@ -24,6 +24,7 @@ import java.awt.image.WritableRaster;
 import java.awt.image.SampleModel;
 import java.util.Map;
 import java.util.Hashtable;
+import java.lang.ref.SoftReference;
 
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -32,6 +33,7 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.SoftReferenceCache;
 
 import org.w3c.dom.Element;
 
@@ -110,6 +112,11 @@ public class CursorManager implements SVGConstants {
     protected BridgeContext ctx;
 
     /**
+     * Cache used to hold references to cursors
+     */
+    protected CursorCache cursorCache = new CursorCache();
+
+    /**
      * Constructor
      *
      * @param BridgeContext ctx, the BridgeContext associated to this CursorManager
@@ -165,7 +172,7 @@ public class CursorManager implements SVGConstants {
         CursorDescriptor desc = new CursorDescriptor(purl, x, y);
 
         // Check if there is a cursor in the cache for this url
-        Cursor cachedCursor = getCachedCursor(desc);
+        Cursor cachedCursor = cursorCache.getCursor(desc);
 
         if (cachedCursor != null) {
             return cachedCursor;
@@ -252,7 +259,7 @@ public class CursorManager implements SVGConstants {
                                           (int)Math.round(y)),
                                 purl.toString());
 
-        addCursorToCache(desc, c);
+        cursorCache.putCursor(desc, c);
         return c;        
     }
 
@@ -274,23 +281,15 @@ public class CursorManager implements SVGConstants {
     }
 
     /**
-     * Checks if the cursor referencing the input image and
-     * with the given hot spot is in the cache
+     * Simple inner class which holds the information describing
+     * a cursor, i.e., the image it points to and the hot spot point
+     * coordinates.
      */
-    protected Cursor getCachedCursor(CursorDescriptor desc) {
-        return null;
-    }
-
-    /**
-     * Puts the input Cursor in the cache
-     */
-    protected void addCursorToCache(CursorDescriptor desc, Cursor c) {
-    }
-
     static class CursorDescriptor {
         ParsedURL purl;
         float x;
         float y;
+        String desc;
 
         public CursorDescriptor(ParsedURL purl,
                                 float x, float y) {
@@ -298,8 +297,13 @@ public class CursorManager implements SVGConstants {
                 throw new IllegalArgumentException();
             }
 
+            this.purl = purl;
             this.x = x;
             this.y = y;
+
+            // Desc is used for hascode as well as for toString()
+            this.desc = this.getClass().getName() + 
+                "\n\t:[" + this.purl + "]\n\t:[" + x + "]:[" + y + "]";
         }
 
         public boolean equals(Object obj) {
@@ -310,12 +314,46 @@ public class CursorManager implements SVGConstants {
             }
 
             CursorDescriptor desc = (CursorDescriptor)obj;
-            return 
-                (this.purl.equals(desc.purl)
+            boolean isEqual =  
+                this.purl.equals(desc.purl)
                  &&
                  this.x == desc.x
                  &&
-                 this.y == desc.y);
+                 this.y == desc.y;
+                 
+            // System.out.println("isEqual : " + isEqual);
+            // (new Exception()).printStackTrace();
+            return isEqual;
+        }
+
+        public String toString() {
+            return this.desc;
+        }
+
+        public int hashCode() {
+            return desc.hashCode();
         }
     }
+
+    /**
+     * Simple extension of the SoftReferenceCache that 
+     * offers typed interface (Kind of needed as SoftReferenceCache
+     * mostly has protected methods).
+     */
+    static class CursorCache extends SoftReferenceCache {
+        public CursorCache() {
+        }
+
+        public Cursor getCursor(CursorDescriptor desc) {
+            return (Cursor)requestImpl(desc);
+        }
+
+        public void putCursor(CursorDescriptor desc, 
+                              Cursor cursor) {
+            putImpl(desc, cursor);
+        }
+    }
+
+
+
 }
