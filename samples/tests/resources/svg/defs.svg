@@ -97,7 +97,7 @@
 
 	<circle id="extE1" cx="25" cy="25" r="20" style="fill:url(#extGrad1)" />
 
-	<circle id="extE2" cx="25" cy="25" r="20" style="fill:url(useStylingURI.svg#grad1)" />
+	<circle id="extE2" cx="25" cy="25" r="20" style="fill:url(../../spec/structure/useStylingURI.svg#grad1)" />
 </g>
 
 

@@ -709,7 +709,7 @@ public abstract class UnitProcessor {
                                           ctx);
             default:
                 return v / cssToUserSpace(fontSize.getFloatValue(type),
-                                          type,
+                                          CSSPrimitiveValue.CSS_NUMBER,
                                           d,
                                           ctx);
         }
@@ -735,7 +735,7 @@ public abstract class UnitProcessor {
                                           ctx);
             default:
                 return v * cssToUserSpace(fontSize.getFloatValue(type),
-                                          type,
+                                          CSSPrimitiveValue.CSS_NUMBER,
                                           d,
                                           ctx);
         }
@@ -763,7 +763,7 @@ public abstract class UnitProcessor {
                 break;
             default:
                 fontSizeVal = cssToUserSpace(fontSize.getFloatValue(type),
-                                             type,
+					     CSSPrimitiveValue.CSS_NUMBER,
                                              d,
                                              ctx);
         }
@@ -793,7 +793,7 @@ public abstract class UnitProcessor {
                 break;
             default:
                 fontSizeVal = cssToUserSpace(fontSize.getFloatValue(type),
-                                             type,
+					     CSSPrimitiveValue.CSS_NUMBER,
                                              d,
                                              ctx);
         }
