@@ -137,14 +137,24 @@ public class StaticRenderer implements Renderer {
      * @param offScreen image where the Renderer should do its rendering
      */
     public void setOffScreen(BufferedImage offScreen){
-        if(offScreen == null)
+        if(offScreen == null) {
             throw new IllegalArgumentException(ILLEGAL_ARGUMENT_NULL_OFFSCREEN);
+        }
         if((offScreen.getWidth() <= 0) || (offScreen.getHeight() <= 0) )
             throw new IllegalArgumentException(
                 ILLEGAL_ARGUMENT_ZERO_WIDTH_OR_HEIGHT +
                 " : offScreen.getWidth() = " + offScreen.getWidth() +
                 " / offScreen.getHeight() = " + offScreen.getHeight() );
         this.offScreen = offScreen;
+    }
+
+    /**
+     * Disposes all resources of this renderer.
+     */
+    public void dispose() {
+        offScreen = null;
+        treeRoot = null;
+        nodeRenderContext = null;
     }
 
     /**

@@ -66,14 +66,25 @@ public class DynamicRenderer extends StaticRenderer {
         RootGraphicsNode root = (RootGraphicsNode) this.treeRoot;
         if (repaintHandler != null && root != null) {
             //root.removeGlobalPropertyChangeListener(updateListener);
-            root.removeGraphicsNodePaintListener(updateListener);
+            //root.removeGraphicsNodePaintListener(updateListener);
         }
         root = (RootGraphicsNode) newTreeRoot;
         super.setTree(root);
         //root.addGlobalPropertyChangeListener(updateListener);
         if (repaintHandler != null) {
-            root.addGraphicsNodePaintListener(updateListener);
+            //root.addGraphicsNodePaintListener(updateListener);
         }
+    }
+
+    /**
+     * Disposes all resources of this renderer.
+     */
+    public void dispose() {
+        if (treeRoot != null && repaintHandler != null) {
+            RootGraphicsNode root = (RootGraphicsNode) this.treeRoot;
+            root.removeGraphicsNodePaintListener(updateListener);
+        }
+        super.dispose();
     }
 
     /**
