@@ -26,6 +26,7 @@ import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.ListValue;
+import org.apache.batik.css.engine.value.StringValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
 
@@ -217,6 +218,42 @@ public abstract class CSSUtilities
             : MultipleGradientPaint.SRGB;
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    // 'cursor'
+    /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns the cursor string corresponding to the input element's
+     * cursor property
+     *
+     * @param e the element
+     */
+    public static String
+        convertCursor(Element e) {
+        Value cursorValue 
+            = CSSUtilities.getComputedStyle(e, 
+                                            SVGCSSEngine.CURSOR_INDEX);
+        String cursorStr = SVGConstants.SVG_AUTO_VALUE;
+        
+        if (cursorValue != null) {
+            if (cursorValue instanceof StringValue) {
+                // Single Value : should be one of the predefined cursors or 
+                // 'inherit'
+                cursorStr = cursorValue.getStringValue();
+            } else if (cursorValue instanceof ListValue) {
+                // We do not handle custom cursors yet
+                ListValue l = (ListValue)cursorValue;
+                int nValues = l.getLength();
+                if (nValues > 0) {
+                    cursorStr = l.item(nValues-1).getStringValue();
+                }
+            }
+        } 
+
+        return cursorStr;
+    }
+
+       
     ////////////////////////////////////////////////////////////////////////
     // 'color-rendering', 'text-rendering', 'image-rendering',
     // 'shape-rendering'

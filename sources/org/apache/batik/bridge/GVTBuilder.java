@@ -84,6 +84,9 @@ public class GVTBuilder implements SVGConstants {
             throw ex; // re-throw the udpated exception
         }
 
+        // For cursor handling
+        ctx.addUIEventListeners(document);
+
         // <!> FIXME: TO BE REMOVED
         if (ctx.isDynamic()) {
             // register GVT listeners for AWT event support

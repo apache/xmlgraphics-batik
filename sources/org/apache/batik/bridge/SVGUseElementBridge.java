@@ -28,6 +28,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.ViewCSS;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -214,6 +217,52 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      */
     public boolean isComposite() {
         return false;
+    }
+
+    /**
+     * Builds using the specified BridgeContext and element, the
+     * specified graphics node.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @param node the graphics node to build
+     */
+    public void buildGraphicsNode(BridgeContext ctx,
+                                  Element e,
+                                  GraphicsNode node) {
+
+        super.buildGraphicsNode(ctx, e, node);
+
+        EventTarget target = (EventTarget)e;
+
+        EventListener l = new CursorMouseOverListener(ctx.getUserAgent());
+        target.addEventListener(SVG_EVENT_MOUSEOVER, l, false);
+        ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, l, false);
+
+    }
+
+    /**
+     * To handle a mouseover on an anchor and set the cursor.
+     */
+    public static class CursorMouseOverListener implements EventListener {
+
+        protected UserAgent userAgent;
+
+        public CursorMouseOverListener(UserAgent ua) {
+            userAgent = ua;
+        }
+
+        public void handleEvent(Event evt) {
+            //
+            // Only modify the cursor if the current target's (i.e., the <use>) cursor 
+            // property is *not* 'auto'.
+            //
+            String cursorStr = CSSUtilities.convertCursor((Element)evt.getCurrentTarget());
+            
+            if (!SVG_AUTO_VALUE.equalsIgnoreCase(cursorStr)) {
+                userAgent.setSVGCursor(CursorManager.getCursor(cursorStr));
+            }
+        }
     }
 
     // BridgeUpdateHandler implementation //////////////////////////////////

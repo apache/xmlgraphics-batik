@@ -52,15 +52,17 @@ public class RhinoClassLoader extends URLClassLoader {
     /**
      * Constructor.
      * @param documentURL the URL from which to load classes and resources 
+     * @param parent the parent class loader for delegation 
      */
-    public RhinoClassLoader(URL documentURL){
-        super(documentURL != null ? new URL[]{documentURL} : new URL[]{});
+    public RhinoClassLoader(URL documentURL, ClassLoader parent){
+        super(documentURL != null ? new URL[]{documentURL} : new URL[]{},
+              parent);
         // super(new URL[]{});
         this.documentURL = documentURL;
         if (documentURL != null){
             codeSource = new CodeSource(documentURL, null);
         }
-         
+        
         //
         // Create the Rhino ProtectionDomain
         // and AccessControlContext

@@ -740,14 +740,6 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                     target.addEventListener(SVG_EVENT_CLICK, l, false);
                     ctx.storeEventListener(target, SVG_EVENT_CLICK, l, false);
                     
-                    l = new SVGAElementBridge.CursorMouseOverListener(ua);
-                    target.addEventListener(SVG_EVENT_MOUSEOVER, l, false);
-                    ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, l, false);
-
-                    l = new SVGAElementBridge.CursorMouseOutListener(ua);
-                    target.addEventListener(SVG_EVENT_MOUSEOUT, l, false);
-                    ctx.storeEventListener(target, SVG_EVENT_MOUSEOUT, l, false);
-
                     fillAttributedStringBuffer(ctx,
                                                nodeElement,
                                                false,

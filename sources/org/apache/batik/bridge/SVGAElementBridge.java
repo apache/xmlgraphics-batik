@@ -15,6 +15,7 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
@@ -122,14 +123,40 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         public void handleEvent(Event evt) {
+            //
+            // Only modify the cursor if the target's cursor property is 
+            // 'auto'. Note that we do not need to check the value of 
+            // anchor element as the target's cursor value is resulting
+            // from the CSS cascade which has accounted for inheritance.
+            // This means that our behavior is to set the cursor to a 
+            // hand cursor for any content on which the cursor property is
+            // 'auto' inside an anchor element. If, for example, the 
+            // content was:
+            // <a cusor="wait">
+            //    <g cursor="auto">
+            //       <rect />
+            //    </g>
+            // </a>
+            //
+            // The cursor on the inside rect will be set to the hand cursor and
+            // not the wait cursor
+            //
+            String cursorStr = CSSUtilities.convertCursor((Element)evt.getTarget());
+            
+            if (SVG_AUTO_VALUE.equalsIgnoreCase(cursorStr)) {
+                // The target's cursor value is 'auto': use the hand cursor
+                userAgent.setSVGCursor(CursorManager.ANCHOR_CURSOR);
+            }
+            
+            // 
+            // In all cases, display the href in the userAgent
+            //
+
             SVGAElement elt = (SVGAElement)evt.getCurrentTarget();
-            Cursor cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
-            userAgent.setSVGCursor(cursor);
             if (elt != null) {
                 String href = XLinkSupport.getXLinkHref(elt);
                 userAgent.displayMessage(href);
             }
-            evt.stopPropagation();
         }
     }
 
@@ -145,11 +172,15 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         public void handleEvent(Event evt) {
+            // No need to set the cursor on out events: this is taken care of
+            // by the BridgeContext
+            
+            // Hide the href in the userAgent
             SVGAElement elt = (SVGAElement)evt.getCurrentTarget();
-            Cursor cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-            userAgent.setSVGCursor(cursor);
-            userAgent.displayMessage("");
-            evt.stopPropagation();
+            if (elt != null) {
+                String href = XLinkSupport.getXLinkHref(elt);
+                userAgent.displayMessage("");
+            }
         }
     }
 }

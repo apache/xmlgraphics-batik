@@ -379,6 +379,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
         SVGSVGElement svgElement = imgDocument.getRootElement();
         GraphicsNode node = ctx.getGVTBuilder().build(ctx, svgElement);
+        ctx.addUIEventListeners(imgDocument);
+
         // HACK: remove the clip set by the SVGSVGElement as the overflow
         // and clip properties must be ignored. The clip will be set later
         // using the overflow and clip of the <image> element.
