@@ -130,6 +130,9 @@ public class SVGOMDocument
         factories.put(SVG_CLIP_PATH_TAG,
                       new ClipPathElementFactory());
 
+        factories.put(SVG_COLOR_PROFILE_TAG,
+                      new ColorProfileElementFactory());
+
         factories.put(SVG_DEFS_TAG,
                       new DefsElementFactory());
 
@@ -780,6 +783,22 @@ public class SVGOMDocument
             return new SVGOMClipPathElement(prefix, SVGOMDocument.this);
         }
     }
+
+    /**
+     * To create a 'color-profile' element.
+     */
+    protected class ColorProfileElementFactory implements ElementFactory {
+        public ColorProfileElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMToBeImplementedElement(prefix,
+                                                   SVGOMDocument.this,
+                                                   SVG_COLOR_PROFILE_TAG);
+        }
+    }
+
 
     /**
      * To create a 'defs' element.
