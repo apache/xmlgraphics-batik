@@ -25,7 +25,7 @@ import org.apache.batik.ext.awt.image.Light;
  * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
  * @version $Id$
  */
-public interface DiffuseLightingRable extends Filter {
+public interface DiffuseLightingRable extends FilterColorInterpolation {
     /**
      * Returns the source to be filtered
      */

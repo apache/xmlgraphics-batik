@@ -59,12 +59,19 @@ public class SpecularLightingRed extends AbstractTiledRed{
      */
     private Rectangle litRegion;
 
+    /**
+     * true if calculations should be performed in linear sRGB
+     */
+    private boolean linear;
+     
+
     public SpecularLightingRed(double ks,
                                double specularExponent,
                                Light light,
                                BumpMap bumpMap,
                                Rectangle litRegion,
-                               double scaleX, double scaleY){
+                               double scaleX, double scaleY,
+                               boolean linear) {
         this.ks = ks;
         this.specularExponent = specularExponent;
         this.light = light;
@@ -72,8 +79,14 @@ public class SpecularLightingRed extends AbstractTiledRed{
         this.litRegion = litRegion;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+        this.linear = linear;
 
-        ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;
+        ColorModel cm;
+        if (linear)
+            cm = GraphicsUtil.Linear_sRGB_Unpre;
+        else
+            cm = GraphicsUtil.sRGB_Unpre;
+
         int tw = litRegion.width;
         int th = litRegion.height;
         int defSz = AbstractTiledRed.getDefaultTileSize();
@@ -95,8 +108,8 @@ public class SpecularLightingRed extends AbstractTiledRed{
         final double scaleX = this.scaleX;
         final double scaleY = this.scaleY;
 
-        final double[] lightColor = light.getColor();
-        
+        final double[] lightColor = light.getColor(linear);
+
         final int w = wr.getWidth();
         final int h = wr.getHeight();
         final int minX = wr.getMinX();

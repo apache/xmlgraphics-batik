@@ -111,7 +111,7 @@ public class SVGFeImageElementBridge
         URIResolver resolver = new URIResolver(svgDoc, loader);
         try {
             Element refElement = null;
-            Node n = resolver.getNode(purl.toString());
+            Node n = resolver.getNode(purl.toString(), filterElement);
             if (n.getNodeType() == n.DOCUMENT_NODE) {
                 refElement = ((SVGDocument)n).getRootElement();
             } else if (n.getNodeType() == Node.ELEMENT_NODE) {

@@ -119,7 +119,7 @@ public class SVGUseElementBridge extends AbstractSVGBridge
 
         // compute URIs and style sheets for external reference
         if (!isLocal) {
-            CSSUtilities.computeStyleAndURIs(refElement, localRefElement);
+            CSSUtilities.computeStyleAndURIs(refElement, localRefElement, uri);
         }
 
         GVTBuilder builder = ctx.getGVTBuilder();

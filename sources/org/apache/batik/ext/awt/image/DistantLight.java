@@ -17,7 +17,7 @@ import java.awt.Color;
  * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
  * @version $Id$
  */
-public class DistantLight implements Light {
+public class DistantLight extends AbstractLight {
     /**
      * The azimuth of the distant light, i.e., the angle of the light vector
      * on the (X, Y) plane
@@ -36,11 +36,6 @@ public class DistantLight implements Light {
     private double Lx, Ly, Lz;
 
     /**
-     * Light color
-     */
-    private double[] color;
-
-    /**
      * @return the DistantLight's azimuth
      */
     public double getAzimuth(){
@@ -54,33 +49,15 @@ public class DistantLight implements Light {
         return elevation;
     }
 
-    /**
-     * @return the light's color
-     */
-    public double[] getColor(){
-        return color;
-    }
-
     public DistantLight(double azimuth, double elevation, Color color){
+        super(color);
+
         this.azimuth = azimuth;
         this.elevation = elevation;
-        setColor(color);
 
         Lx = Math.cos(Math.PI*azimuth/180.)*Math.cos(Math.PI*elevation/180.);
         Ly = Math.sin(Math.PI*azimuth/180.)*Math.cos(Math.PI*elevation/180.);
         Lz = Math.sin(Math.PI*elevation/180);
-    }
-
-    /**
-     * Sets the new light color
-     */
-    public void setColor(Color newColor){
-        double[] color = new double[3];
-        color[0] = newColor.getRed()/255.;
-        color[1] = newColor.getGreen()/255.;
-        color[2] = newColor.getBlue()/255.;
-
-        this.color = color;
     }
 
     /**
@@ -97,38 +74,11 @@ public class DistantLight implements Light {
      * @param y y-axis coordinate where the light should be computed
      * @param L array of length 3 where the result is stored
      */
-    public void getLight(final double x, final double y, final double z, final double L[]){
+    public void getLight(final double x, final double y, final double z, 
+                         final double L[]){
         L[0] = Lx;
         L[1] = Ly;
         L[2] = Lz;
-    }
-
-    /**
-     * Returns a light map, starting in (x, y) with dx, dy increments, a given
-     * width and height, and z elevations stored in the fourth component on the 
-     * N array.
-     *
-     * @param x x-axis coordinate where the light should be computed
-     * @param y y-axis coordinate where the light should be computed
-     * @param dx delta x for computing light vectors in user space
-     * @param dy delta y for computing light vectors in user space
-     * @param width number of samples to compute on the x axis
-     * @param height number of samples to compute on the y axis
-     * @param z array containing the z elevation for all the points
-     */
-    public double[][][] getLightMap(double x, double y, 
-                                  final double dx, final double dy,
-                                  final int width, final int height,
-                                  final double[][][] z)
-    {
-        double[][][] L = new double[height][][];
-
-        for(int i=0; i<height; i++){
-            L[i] = getLightRow(x, y, dx, width, z[i], null);
-            y += dy;
-        }
-
-        return L;
     }
 
     /**
@@ -154,10 +104,14 @@ public class DistantLight implements Light {
         double [][] ret = lightRow;
 
         if (ret == null) {
+            // If we are allocating then use the same light vector for
+            // all entries.
             ret = new double[width][];
 
             double[] CL = new double[3];
-            getLight(0, 0, 0, CL);
+            CL[0]=Lx;
+            CL[1]=Ly;
+            CL[2]=Lz;
 
             for(int i=0; i<width; i++){
                 ret[i] = CL;

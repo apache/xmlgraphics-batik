@@ -123,8 +123,10 @@ public class ParsedURLData {
         String file = "";
         if (path != null) 
             file = path;
-        if (ref != null)
-            file += "#" + ref;
+
+        // System.out.println("File: " + file);
+        // if (ref != null)
+        //     file += "#" + ref;
 
         if (port == -1)
             return new URL(protocol, host, file);
