@@ -18,11 +18,11 @@
   <page id="status"   label="Status" source="status.xml" />
   <separator/>
   <page id="license"  label="License" source="license.xml"/>
-<!--
-<separator/>
-  <page id="whoAreWe" label="Who are we?" source="whoAreWe.xml" />
--->
   <faqs id="faqs" label="FAQ" source="faq.xml"/>
   <changes id="changes" label="Changes" source="changes.xml"/>
   <todo id="todo" label="Todo" source="todo.xml"/>
+
+  <separator/>
+  <page id="whoAreWe" label="Who We Are" source="whoAreWe.xml" />
+
 </book>
