@@ -605,7 +605,8 @@ public class JSVGViewerFrame
                         statusBar.setYPosition(e.getY());
                     } else {
                         try {
-                            AffineTransform at = svgCanvas.getRenderingTransform();
+                            AffineTransform at;
+                            at = svgCanvas.getViewBoxTransform();
                             if (at != null) {
                                 at = at.createInverse();
                                 Point2D p2d =
@@ -630,7 +631,8 @@ public class JSVGViewerFrame
                         statusBar.setHeight(dim.height);
                     } else {
                         try {
-                            AffineTransform at = svgCanvas.getRenderingTransform();
+                            AffineTransform at;
+                            at = svgCanvas.getViewBoxTransform();
                             if (at != null) {
                                 at = at.createInverse();
                                 Point2D o =
@@ -659,7 +661,8 @@ public class JSVGViewerFrame
                         statusBar.setHeight(dim.height);
                     } else {
                         try {
-                            AffineTransform at = svgCanvas.getRenderingTransform();
+                            AffineTransform at;
+                            at = svgCanvas.getViewBoxTransform();
                             if (at != null) {
                                 at = at.createInverse();
                                 Point2D o =
