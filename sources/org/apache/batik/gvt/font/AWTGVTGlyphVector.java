@@ -369,12 +369,43 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             if (glyphTransform != null) {
                 tr.concatenate(glyphTransform);
             }
+	    //
+	    // <!> HACK
+	    //
+	    // GlyphVector.getGlyphOutline behavior changes between 1.3 and 1.4
+	    //
+	    // I've looked at this problem a bit more and the incorrect glyph
+	    // positioning in Batik is definitely due to the change in
+	    // behavior of GlyphVector.getGlyphOutline(glyphIndex). It used to
+	    // return the outline of the glyph at position 0,0 which meant
+	    // that we had to translate it to the actual glyph position before
+	    // drawing it. Now, it returns the outline which has already been
+	    // positioned.
+	    //
+	    // -- Bella
+	    //
+
+	    if (isJDK1_4OrGreater()) {
+		Point2D glyphPos = awtGlyphVector.getGlyphPosition(glyphIndex);
+		tr.translate(-glyphPos.getX(), -glyphPos.getY());
+	    }
 
             tr.scale(scaleFactor, scaleFactor);
             glyphOutlines[glyphIndex] = tr.createTransformedShape(glyphOutline);
         }
 
         return glyphOutlines[glyphIndex];
+    }
+
+    private static final boolean is1_4OrGreater;
+
+    static {
+	String s = System.getProperty("java.version");
+	is1_4OrGreater = ("1.4".compareTo(s) < 0);
+    }
+
+    private static boolean isJDK1_4OrGreater() {
+	return is1_4OrGreater;
     }
 
     /**
