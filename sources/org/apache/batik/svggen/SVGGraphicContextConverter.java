@@ -34,7 +34,7 @@ public class SVGGraphicContextConverter implements SVGSyntax {
     private static final int GRAPHIC_CONTEXT_CONVERTER_COUNT = 6;
 
     private String leafOnlyAttributes[] = {
-        ATTR_OPACITY,
+        SVG_OPACITY_ATTRIBUTE,
         SVG_FILTER_ATTRIBUTE,
         SVG_CLIP_PATH_ATTRIBUTE
     };

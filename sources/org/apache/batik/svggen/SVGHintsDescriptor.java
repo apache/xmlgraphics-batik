@@ -59,9 +59,9 @@ public class SVGHintsDescriptor implements SVGDescriptor, SVGSyntax {
 
         attrMap.put(SVG_COLOR_INTERPOLATION_ATTRIBUTE, colorInterpolation);
         attrMap.put(SVG_COLOR_RENDERING_ATTRIBUTE, colorRendering);
-        attrMap.put(ATTR_TEXT_RENDERING, textRendering);
-        attrMap.put(ATTR_SHAPE_RENDERING, shapeRendering);
-        attrMap.put(ATTR_IMAGE_RENDERING, imageRendering);
+        attrMap.put(SVG_TEXT_RENDERING_ATTRIBUTE, textRendering);
+        attrMap.put(SVG_SHAPE_RENDERING_ATTRIBUTE, shapeRendering);
+        attrMap.put(SVG_IMAGE_RENDERING_ATTRIBUTE, imageRendering);
 
         return attrMap;
     }

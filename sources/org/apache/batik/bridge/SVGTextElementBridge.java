@@ -858,10 +858,10 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         }
 
         // Kerning
-        s = element.getAttributeNS(null, ATTR_KERNING);
+        s = element.getAttributeNS(null, SVG_KERNING_ATTRIBUTE);
         if (s.length() != 0) {
             f = UnitProcessor.svgHorizontalLengthToUserSpace
-                (s, ATTR_KERNING, uctx);
+                (s, SVG_KERNING_ATTRIBUTE, uctx);
 
             // XXX: Assuming horizontal length units is wrong,
             // layout might be vertical!
@@ -874,10 +874,10 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
         }
 
         // textLength
-        s = element.getAttributeNS(null, SVGConstants.ATTR_TEXT_LENGTH);
+        s = element.getAttributeNS(null, SVG_TEXT_LENGTH_ATTRIBUTE);
         if (s.length() != 0) {
             f = UnitProcessor.svgHorizontalLengthToUserSpace
-                (s, ATTR_TEXT_LENGTH, uctx);
+                (s, SVG_TEXT_LENGTH_ATTRIBUTE, uctx);
 
             // XXX: Assuming horizontal length units is wrong,
             // layout might be vertical!
@@ -885,7 +885,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge,
             result.put(GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH,
                        new Float(f));
             // lengthAdjust
-            s = element.getAttributeNS(null, SVGConstants.ATTR_LENGTH_ADJUST);
+            s = element.getAttributeNS(null, SVG_LENGTH_ADJUST_ATTRIBUTE);
 
             if (s.length() < 10) {
                 result.put(GVTAttributedCharacterIterator.

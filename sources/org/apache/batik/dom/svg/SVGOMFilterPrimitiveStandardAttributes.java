@@ -71,69 +71,69 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
      * org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes#getX()}.
      */
     public SVGAnimatedLength getX() {
-	SVGAnimatedLength result;
-	if (xReference == null ||
-	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
-	    xReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (xReference == null ||
+            (result = (SVGAnimatedLength)xReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
+            xReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes#getY()}.
      */
     public SVGAnimatedLength getY() {
-	SVGAnimatedLength result;
-	if (yReference == null ||
-	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
-	    yReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (yReference == null ||
+            (result = (SVGAnimatedLength)yReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
+            yReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-	SVGAnimatedLength result;
-	if (widthReference == null ||
-	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
-	    widthReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (widthReference == null ||
+            (result = (SVGAnimatedLength)widthReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE, null);
+            widthReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-	SVGAnimatedLength result;
-	if (heightReference == null ||
-	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
-	    heightReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (heightReference == null ||
+            (result = (SVGAnimatedLength)heightReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE, null);
+            heightReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFilterPrimitiveStandardAttributes#getResult()}.
      */
     public SVGAnimatedString getResult() {
-	SVGAnimatedString result;
-	if (resultReference == null ||
-	    (result = (SVGAnimatedString)resultReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, ATTR_RESULT);
-	    resultReference = new WeakReference(result);
-	}
-	return result;
-    } 
-  
+        SVGAnimatedString result;
+        if (resultReference == null ||
+            (result = (SVGAnimatedString)resultReference.get()) == null) {
+            result = new SVGOMAnimatedString(this, null, SVG_RESULT_ATTRIBUTE);
+            resultReference = new WeakReference(result);
+        }
+        return result;
+    }
+
 }

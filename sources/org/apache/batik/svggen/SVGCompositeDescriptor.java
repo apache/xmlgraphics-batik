@@ -56,7 +56,7 @@ public class SVGCompositeDescriptor implements SVGDescriptor, SVGSyntax{
         if(attrMap == null)
             attrMap = new Hashtable();
 
-        attrMap.put(ATTR_OPACITY, opacityValue);
+        attrMap.put(SVG_OPACITY_ATTRIBUTE, opacityValue);
         attrMap.put(SVG_FILTER_ATTRIBUTE, filterValue);
 
         return attrMap;

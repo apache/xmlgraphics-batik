@@ -17,6 +17,9 @@ package org.apache.batik.util;
  */
 public interface SVGConstants extends CSSConstants {
 
+    String TAG_TEXT_PATH = "textPath";
+    String ATTR_ID = "id";
+
     /////////////////////////////////////////////////////////////////////////
     // SVG general
     /////////////////////////////////////////////////////////////////////////
@@ -239,105 +242,68 @@ public interface SVGConstants extends CSSConstants {
     // SVG attribute value
     /////////////////////////////////////////////////////////////////////////
 
+    String SVG_ARITHMETIC_VALUE = "arithmetic";
+    String SVG_ATOP_VALUE = "atop";
+    String SVG_A_VALUE = "A";
     String SVG_BACKGROUND_ALPHA_VALUE = "BackgroundAlpha";
     String SVG_BACKGROUND_IMAGE_VALUE = "BackgroundImage";
+    String SVG_B_VALUE = "B";
+    String SVG_DARKEN_VALUE = "darken";
     String SVG_DILATE_VALUE = "dilate";
+    String SVG_DISCRETE_VALUE = "discrete";
+    String SVG_DUPLICATE_VALUE = "duplicate";
     String SVG_ERODE_VALUE = "erode";
     String SVG_FALSE_VALUE = "false";
     String SVG_FILL_PAINT_VALUE = "FillPaint";
+    String SVG_FRACTAL_NOISE_VALUE = "fractalNoise";
+    String SVG_GAMMA_VALUE = "gamma";
+    String SVG_G_VALUE = "G";
+    String SVG_HUE_ROTATE_VALUE = "hueRotate";
+    String SVG_IDENTITY_VALUE = "identity";
+    String SVG_IN_VALUE = "in";
+    String SVG_LIGHTEN_VALUE = "lighten";
+    String SVG_LINEAR_VALUE = "linear";
+    String SVG_LUMINANCE_TO_ALPHA_VALUE = "luminanceToAlpha";
+    String SVG_MATRIX_VALUE = "matrix";
+    String SVG_MULTIPLY_VALUE = "multiply";
+    String SVG_NONE_VALUE = "none";
+    String SVG_NORMAL_VALUE = "normal";
+    String SVG_NO_STITCH_VALUE = "noStitch";
+    String SVG_OBJECT_BOUNDING_BOX_VALUE = "objectBoundingBox";
+    String SVG_OUT_VALUE = "out";
+    String SVG_OVER_VALUE = "over";
+    String SVG_R_VALUE = "R";
+    String SVG_SATURATE_VALUE = "saturate";
+    String SVG_SCREEN_VALUE = "screen";
     String SVG_SOURCE_ALPHA_VALUE = "SourceAlpha";
     String SVG_SOURCE_GRAPHIC_VALUE = "SourceGraphic";
+    String SVG_STITCH_VALUE = "stitch";
     String SVG_STROKE_PAINT_VALUE = "StrokePaint";
+    String SVG_STROKE_WIDTH_VALUE = "strokeWidth";
+    String SVG_TABLE_VALUE = "table";
     String SVG_TRUE_VALUE = "true";
+    String SVG_TURBULENCE_VALUE = "turbulence";
+    String SVG_USER_SPACE_ON_USE_VALUE = "userSpaceOnUse";
+    String SVG_WRAP_VALUE = "wrap";
+    String SVG_XOR_VALUE = "xor";
 
-
-
-
-    // custom tag
-    String TAG_TEXT_PATH = "textPath";
-
-    //
-    // Attribute names
-    //
-
-    String ATTR_FX = "fx";
-    String ATTR_FY = "fy";
-    String ATTR_GRADIENT_TRANSFORM = "gradientTransform";
-    String ATTR_GRADIENT_UNITS = "gradientUnits";
-    String ATTR_HREF = "href";
-    String ATTR_ID = "id";
-    String ATTR_IMAGE_RENDERING = CSS_IMAGE_RENDERING_PROPERTY;
-    String ATTR_KERNING = "kerning";
-    String ATTR_LENGTH_ADJUST = "lengthAdjust";
-    String ATTR_LIGHT_COLOR = "lightColor";
-    String ATTR_MASK = CSS_MASK_PROPERTY;
-    String ATTR_MASK_CONTENT_UNITS = "maskContentUnits";
-    String ATTR_MEDIA = "media";
-    String ATTR_METHOD = "method";
-    String ATTR_OPACITY = CSS_OPACITY_PROPERTY;
-    String ATTR_PATTERN_CONTENT_UNITS = "patternContentUnits";
-    String ATTR_PATTERN_TRANSFORM = "patternTransform";
-    String ATTR_PATTERN_UNITS = "patternUnits";
-    String ATTR_POINTS = "points";
-    String ATTR_PRESERVE_ASPECT_RATIO = "preserveAspectRatio";
-    String ATTR_RADIUS = "radius";
-    String ATTR_RESULT = "result";
-    String ATTR_RESULT_SCALE = "resultScale";
-    String ATTR_SCALE = "scale";
-    String ATTR_SHAPE_RENDERING = CSS_SHAPE_RENDERING_PROPERTY;
-    String ATTR_SPACE = "space";
-    String ATTR_SPACING = "spacing";
-    String ATTR_SPREAD_METHOD = "spreadMethod";
-    String ATTR_START_OFFSET = "startOffset";
-    String ATTR_STD_DEVIATION = "stdDeviation";
-    String ATTR_STOP_COLOR = "stop-color";
-    String ATTR_STOP_OPACITY = CSS_STOP_OPACITY_PROPERTY;
-    String ATTR_STROKE = CSS_STROKE_PROPERTY;
-    String ATTR_STROKE_DASHARRAY = CSS_STROKE_DASHARRAY_PROPERTY;
-    String ATTR_STROKE_DASHOFFSET = CSS_STROKE_DASHOFFSET_PROPERTY;
-    String ATTR_STROKE_LINECAP = CSS_STROKE_LINECAP_PROPERTY;
-    String ATTR_STROKE_LINEJOIN = CSS_STROKE_LINEJOIN_PROPERTY;
-    String ATTR_STROKE_MITERLIMIT = CSS_STROKE_MITERLIMIT_PROPERTY;
-    String ATTR_STROKE_OPACITY = CSS_STROKE_OPACITY_PROPERTY;
-    String ATTR_STROKE_WIDTH = CSS_STROKE_WIDTH_PROPERTY;
-    String ATTR_STYLE = "style";
-    String ATTR_TABLE = "table";
-    String ATTR_TEXT_ANCHOR = CSS_TEXT_ANCHOR_PROPERTY;
-    String ATTR_TEXT_LENGTH = "textLength";
-    String ATTR_TEXT_RENDERING = CSS_TEXT_RENDERING_PROPERTY;
-    String ATTR_TITLE = "title";
-    String ATTR_TRANSFORM = "transform";
-    String ATTR_VIEW_BOX = "viewBox";
-    String ATTR_X1 = "x1";
-    String ATTR_X2 = "x2";
-    String ATTR_Y1 = "y1";
-    String ATTR_Y2 = "y2";
-
-    //
-    // Attribute values
-    //
-    String SVG_A_VALUE = "A";
-    String SVG_ARITHMETIC_VALUE = "arithmetic";
+    String VALUE_ADJUST_SPACING = "spacing";
+    String VALUE_ADJUST_SPACINGANDGLYPHS = "spacingAndGlyphs";
     String VALUE_ALIGN = "align";
-    String SVG_ATOP_VALUE = "atop";
     String VALUE_AUTO = "auto";
-    String SVG_B_VALUE = "B";
     String VALUE_BACKGROUND_IMAGE = "BackgroundImage";
     String VALUE_COMPOSITE = "composite";
     String VALUE_CRISP_EDGES = "crispEdges";
-    String SVG_DARKEN_VALUE = "darken";
     String VALUE_DIGIT_ONE = "1";
     String VALUE_DILATE = "dilate";
-    String SVG_DISCRETE_VALUE = "discrete";
-    String SVG_DUPLICATE_VALUE = "duplicate";
     String VALUE_END = "end";
     String VALUE_ERODE = "erode";
     String VALUE_EVEN_ODD = "evenodd";
     String VALUE_EXACT = "exact";
     String VALUE_FLOOD = "flood";
-    String VALUE_FONT_WEIGHT_BOLD = "bold";
-    String VALUE_FONT_WEIGHT_BOLDER = "bolder";
-    String VALUE_FONT_WEIGHT_LIGHTER = "lighter";
+    String VALUE_FONT_STYLE_ITALIC = "italic";
+    String VALUE_FONT_STYLE_NORMAL = "normal";
+    String VALUE_FONT_STYLE_OBLIQUE = "oblique";
     String VALUE_FONT_WEIGHT_100 = "100";
     String VALUE_FONT_WEIGHT_200 = "200";
     String VALUE_FONT_WEIGHT_300 = "300";
@@ -347,73 +313,44 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_FONT_WEIGHT_700 = "700";
     String VALUE_FONT_WEIGHT_800 = "800";
     String VALUE_FONT_WEIGHT_900 = "900";
+    String VALUE_FONT_WEIGHT_BOLD = "bold";
+    String VALUE_FONT_WEIGHT_BOLDER = "bolder";
+    String VALUE_FONT_WEIGHT_LIGHTER = "lighter";
     String VALUE_FONT_WEIGHT_NORMAL = "normal";
-    String VALUE_FONT_STYLE_NORMAL = "normal";
-    String VALUE_FONT_STYLE_ITALIC = "italic";
-    String VALUE_FONT_STYLE_OBLIQUE = "oblique";
-    String SVG_FRACTAL_NOISE_VALUE = "fractalNoise";
-    String SVG_G_VALUE = "G";
-    String SVG_GAMMA_VALUE = "gamma";
     String VALUE_GEOMETRIC_PRECISION = "geometricPrecision";
-    String SVG_HUE_ROTATE_VALUE = "hueRotate";
     String VALUE_HUNDRED_PERCENT = "100%";
-    String SVG_IN_VALUE = "in";
-    String SVG_IDENTITY_VALUE = "identity";
-    String SVG_LIGHTEN_VALUE = "lighten";
+    String VALUE_LINEAR_RGB = "linearRGB";
     String VALUE_LINE_CAP_BUTT = "butt";
-    String VALUE_LINE_CAP_SQUARE = "square";
     String VALUE_LINE_CAP_ROUND = "round";
-    String VALUE_LINE_JOIN_ROUND = "round";
+    String VALUE_LINE_CAP_SQUARE = "square";
     String VALUE_LINE_JOIN_BEVEL = "bevel";
     String VALUE_LINE_JOIN_MITER = "miter";
-    String SVG_LINEAR_VALUE = "linear";
-    String VALUE_LINEAR_RGB = "linearRGB";
-    String SVG_LUMINANCE_TO_ALPHA_VALUE = "luminanceToAlpha";
-    String SVG_MATRIX_VALUE = "matrix";
+    String VALUE_LINE_JOIN_ROUND = "round";
     String VALUE_MIDDLE = "middle";
-    String SVG_MULTIPLY_VALUE = "multiply";
     String VALUE_NEW = "new";
     String VALUE_NINETY = "90";
-    String SVG_NORMAL_VALUE = "normal";
-    String SVG_NO_STITCH_VALUE = "noStitch";
     String VALUE_NON_ZERO = "nonzero";
-    String SVG_NONE_VALUE = "none";
-    String SVG_OBJECT_BOUNDING_BOX_VALUE = "objectBoundingBox";
     String VALUE_ONE = "1";
     String VALUE_OPAQUE = "1";
     String VALUE_OPTIMIZE_LEGIBILITY = "optimizeLegibility";
     String VALUE_OPTIMIZE_QUALITY = "optimizeQuality";
     String VALUE_OPTIMIZE_SPEED = "optimizeSpeed";
-    String SVG_OUT_VALUE = "out";
-    String SVG_OVER_VALUE = "over";
     String VALUE_PAD = "pad";
     String VALUE_PRESERVE = "preserve";
-    String SVG_R_VALUE = "R";
     String VALUE_REFLECT = "reflect";
-    String VALUE_REPEAT = "repeat";
-    String SVG_SATURATE_VALUE = "saturate";
-    String SVG_SCREEN_VALUE = "screen";
-    String VALUE_ADJUST_SPACING = "spacing";
-    String VALUE_ADJUST_SPACINGANDGLYPHS = "spacingAndGlyphs";
+    String VALUE_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC_VALUE = "absolute-colorimetric";
     String VALUE_RENDERING_INTENT_AUTO_VALUE = "auto";
     String VALUE_RENDERING_INTENT_PERCEPTUAL_VALUE = "perceptual";
     String VALUE_RENDERING_INTENT_RELATIVE_COLORIMETRIC_VALUE = "relative-colorimetric";
     String VALUE_RENDERING_INTENT_SATURATION_VALUE = "saturation";
-    String VALUE_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC_VALUE = "absolute-colorimetric";
+    String VALUE_REPEAT = "repeat";
     String VALUE_SOURCE_GRAPHIC = "SourceGraphic";
     String VALUE_SRGB = "sRGB";
     String VALUE_START = "start";
-    String SVG_STITCH_VALUE = "stitch";
     String VALUE_STRETCH = "stretch";
-    String SVG_STROKE_WIDTH_VALUE = "strokeWidth";
-    String SVG_TABLE_VALUE = "table";
-    String SVG_TURBULENCE_VALUE = "turbulence";
     String VALUE_TYPE_LINEAR = "linear";
     String VALUE_TYPE_TABLE = "table";
-    String SVG_USER_SPACE_ON_USE_VALUE = "userSpaceOnUse";
     String VALUE_USER_SPACE = "userSpace";
-    String SVG_WRAP_VALUE = "wrap";
-    String SVG_XOR_VALUE = "xor";
     String VALUE_ZERO = "0";
     String VALUE_ZERO_PERCENT = "0%";
 
@@ -522,30 +459,4 @@ public interface SVGConstants extends CSSConstants {
     String DEFAULT_VALUE_PATTERN_Y = "0%";
     String DEFAULT_VALUE_PATTERN_WIDTH = null; // required
     String DEFAULT_VALUE_PATTERN_HEIGHT = null; // required
-
-    /**
-     * Default values for attributes
-     */
-    //String VALUE_FILTER_X_DEFAULT = "-10%";
-    //String VALUE_FILTER_Y_DEFAULT = "-10%";
-    //String VALUE_FILTER_WIDTH_DEFAULT = "120%";
-    //String VALUE_FILTER_HEIGHT_DEFAULT = "120%";
-    //String VALUE_MASK_X_DEFAULT = "-10%";
-    //String VALUE_MASK_Y_DEFAULT = "-10%";
-    //String VALUE_MASK_WIDTH_DEFAULT = "120%";
-    //String VALUE_MASK_HEIGHT_DEFAULT = "120%";
-    //String VALUE_PATTERN_X_DEFAULT = "0%";
-    //String VALUE_PATTERN_Y_DEFAULT = "0%";
-    //String VALUE_PATTERN_WIDTH_DEFAULT = "100%";
-    //String VALUE_PATTERN_HEIGHT_DEFAULT = "100%";
-    //float   DEFAULT_VALUE_BASE_FREQUENCY = 0.001f;
-    //float   DEFAULT_VALUE_DX = 0f;
-    //float   DEFAULT_VALUE_DY = 0f;
-    //boolean DEFAULT_VALUE_FE_TURBULENCE_TYPE = false;
-    //String  DEFAULT_VALUE_FILL_RULE = VALUE_NON_ZERO;
-    //int     DEFAULT_VALUE_NUM_OCTAVES = 1;
-    //int     DEFAULT_VALUE_SEED = 0;
-    //boolean DEFAULT_VALUE_STITCH_TILES = false;
-    //String  DEFAULT_VALUE_TEXT_ANCHOR = VALUE_START;
-
 }

@@ -36,21 +36,21 @@ public class SVGStylingAttributes implements SVGSyntax{
         attrSet.add(SVG_FONT_SIZE_ATTRIBUTE);
         attrSet.add(SVG_FONT_WEIGHT_ATTRIBUTE);
         attrSet.add(SVG_FONT_STYLE_ATTRIBUTE);
-        attrSet.add(ATTR_IMAGE_RENDERING);
-        attrSet.add(ATTR_MASK);
-        attrSet.add(ATTR_OPACITY);
-        attrSet.add(ATTR_SHAPE_RENDERING);
-        attrSet.add(ATTR_STOP_COLOR);
-        attrSet.add(ATTR_STOP_OPACITY);
-        attrSet.add(ATTR_STROKE);
-        attrSet.add(ATTR_STROKE_OPACITY);
-        attrSet.add(ATTR_STROKE_DASHARRAY);
-        attrSet.add(ATTR_STROKE_DASHOFFSET);
-        attrSet.add(ATTR_STROKE_LINECAP);
-        attrSet.add(ATTR_STROKE_LINEJOIN);
-        attrSet.add(ATTR_STROKE_MITERLIMIT);
-        attrSet.add(ATTR_STROKE_WIDTH);
-        attrSet.add(ATTR_TEXT_RENDERING);
+        attrSet.add(SVG_IMAGE_RENDERING_ATTRIBUTE);
+        attrSet.add(SVG_MASK_ATTRIBUTE);
+        attrSet.add(SVG_OPACITY_ATTRIBUTE);
+        attrSet.add(SVG_SHAPE_RENDERING_ATTRIBUTE);
+        attrSet.add(SVG_STOP_COLOR_ATTRIBUTE);
+        attrSet.add(SVG_STOP_OPACITY_ATTRIBUTE);
+        attrSet.add(SVG_STROKE_ATTRIBUTE);
+        attrSet.add(SVG_STROKE_OPACITY_ATTRIBUTE);
+        attrSet.add(SVG_STROKE_DASHARRAY_ATTRIBUTE);
+        attrSet.add(SVG_STROKE_DASHOFFSET_ATTRIBUTE);
+        attrSet.add(SVG_STROKE_LINECAP_ATTRIBUTE);
+        attrSet.add(SVG_STROKE_LINEJOIN_ATTRIBUTE);
+        attrSet.add(SVG_STROKE_MITERLIMIT_ATTRIBUTE);
+        attrSet.add(SVG_STROKE_WIDTH_ATTRIBUTE);
+        attrSet.add(SVG_TEXT_RENDERING_ATTRIBUTE);
     }
 
     /**

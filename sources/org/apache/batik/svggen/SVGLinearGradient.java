@@ -70,7 +70,7 @@ public class SVGLinearGradient extends AbstractSVGConverter {
             Element gradientDef =
                 domFactory.createElementNS(SVG_NAMESPACE_URI,
                                            SVG_LINEAR_GRADIENT_TAG);
-            gradientDef.setAttributeNS(null, ATTR_GRADIENT_UNITS,
+            gradientDef.setAttributeNS(null, SVG_GRADIENT_UNITS_ATTRIBUTE,
                                        SVG_USER_SPACE_ON_USE_VALUE);
 
             //
@@ -78,13 +78,13 @@ public class SVGLinearGradient extends AbstractSVGConverter {
             //
             Point2D p1 = gradient.getPoint1();
             Point2D p2 = gradient.getPoint2();
-            gradientDef.setAttributeNS(null, ATTR_X1,
+            gradientDef.setAttributeNS(null, SVG_X1_ATTRIBUTE,
                                        "" + doubleString(p1.getX()));
-            gradientDef.setAttributeNS(null, ATTR_Y1,
+            gradientDef.setAttributeNS(null, SVG_Y1_ATTRIBUTE,
                                        "" + doubleString(p1.getY()));
-            gradientDef.setAttributeNS(null, ATTR_X2,
+            gradientDef.setAttributeNS(null, SVG_X2_ATTRIBUTE,
                                        "" + doubleString(p2.getX()));
-            gradientDef.setAttributeNS(null, ATTR_Y2,
+            gradientDef.setAttributeNS(null, SVG_Y2_ATTRIBUTE,
                                        "" + doubleString(p2.getY()));
 
             //
@@ -93,7 +93,8 @@ public class SVGLinearGradient extends AbstractSVGConverter {
             String spreadMethod = VALUE_PAD;
             if(gradient.isCyclic())
                 spreadMethod = VALUE_REFLECT;
-            gradientDef.setAttributeNS(null, ATTR_SPREAD_METHOD, spreadMethod);
+            gradientDef.setAttributeNS
+                (null, SVG_SPREAD_METHOD_ATTRIBUTE, spreadMethod);
 
             //
             // First gradient stop
@@ -104,9 +105,9 @@ public class SVGLinearGradient extends AbstractSVGConverter {
                                       VALUE_ZERO_PERCENT);
 
             SVGPaintDescriptor colorDesc = SVGColor.toSVG(gradient.getColor1());
-            gradientStop.setAttributeNS(null, ATTR_STOP_COLOR,
+            gradientStop.setAttributeNS(null, SVG_STOP_COLOR_ATTRIBUTE,
                                       colorDesc.getPaintValue());
-            gradientStop.setAttributeNS(null, ATTR_STOP_OPACITY,
+            gradientStop.setAttributeNS(null, SVG_STOP_OPACITY_ATTRIBUTE,
                                       colorDesc.getOpacityValue());
 
             gradientDef.appendChild(gradientStop);
@@ -120,10 +121,10 @@ public class SVGLinearGradient extends AbstractSVGConverter {
                                       VALUE_HUNDRED_PERCENT);
 
             colorDesc = SVGColor.toSVG(gradient.getColor2());
-            gradientStop.setAttributeNS(null, ATTR_STOP_COLOR,
-                                      colorDesc.getPaintValue());
-            gradientStop.setAttributeNS(null, ATTR_STOP_OPACITY,
-                                      colorDesc.getOpacityValue());
+            gradientStop.setAttributeNS(null, SVG_STOP_COLOR_ATTRIBUTE,
+                                        colorDesc.getPaintValue());
+            gradientStop.setAttributeNS(null, SVG_STOP_OPACITY_ATTRIBUTE,
+                                        colorDesc.getOpacityValue());
 
             gradientDef.appendChild(gradientStop);
 

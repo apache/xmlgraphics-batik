@@ -62,12 +62,12 @@ public class SVGStrokeDescriptor implements SVGDescriptor, SVGSyntax{
         if(attrMap == null)
             attrMap = new Hashtable();
 
-        attrMap.put(ATTR_STROKE_WIDTH, strokeWidth);
-        attrMap.put(ATTR_STROKE_LINECAP, capStyle);
-        attrMap.put(ATTR_STROKE_LINEJOIN, joinStyle);
-        attrMap.put(ATTR_STROKE_MITERLIMIT, miterLimit);
-        attrMap.put(ATTR_STROKE_DASHARRAY, dashArray);
-        attrMap.put(ATTR_STROKE_DASHOFFSET, dashOffset);
+        attrMap.put(SVG_STROKE_WIDTH_ATTRIBUTE, strokeWidth);
+        attrMap.put(SVG_STROKE_LINECAP_ATTRIBUTE, capStyle);
+        attrMap.put(SVG_STROKE_LINEJOIN_ATTRIBUTE, joinStyle);
+        attrMap.put(SVG_STROKE_MITERLIMIT_ATTRIBUTE, miterLimit);
+        attrMap.put(SVG_STROKE_DASHARRAY_ATTRIBUTE, dashArray);
+        attrMap.put(SVG_STROKE_DASHOFFSET_ATTRIBUTE, dashOffset);
 
         return attrMap;
     }

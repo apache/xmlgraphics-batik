@@ -32,7 +32,7 @@ import org.w3c.dom.svg.SVGStyleElement;
 public class SVGOMStyleElement
     extends    SVGOMElement
     implements SVGStyleElement,
-	       LinkStyle {
+               LinkStyle {
 
     /**
      * The attribute-value map map.
@@ -40,7 +40,7 @@ public class SVGOMStyleElement
     protected static Map attributeValues = new HashMap(3);
     static {
         Map values = new HashMap(2);
-        values.put(ATTR_SPACE, VALUE_PRESERVE);
+        values.put(SVG_SPACE_ATTRIBUTE, VALUE_PRESERVE);
         attributeValues.put(XMLSupport.XML_NAMESPACE_URI, values);
     }
 
@@ -79,9 +79,9 @@ public class SVGOMStyleElement
     public StyleSheet getSheet() {
         if (sheet == null) {
             // Create the stylesheet
-	    if (!getType().equals("text/css")) {
+            if (!getType().equals("text/css")) {
                 return null;
-	    }
+            }
 
             DOMImplementationCSS impl;
             impl = (DOMImplementationCSS)getOwnerDocument().
@@ -90,11 +90,11 @@ public class SVGOMStyleElement
             ss = (CSSOMStyleSheet)impl.createCSSStyleSheet(getTitle(),
                                                            getMedia());
 
-	    StringBuffer sb = new StringBuffer();
+            StringBuffer sb = new StringBuffer();
             for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
-		sb.append(n.getNodeValue());
+                sb.append(n.getNodeValue());
             }
-	    CSSDocumentHandler.parseRules(ss, sb.toString());
+            CSSDocumentHandler.parseRules(ss, sb.toString());
             sheet = ss;
         }
         return sheet;
@@ -105,7 +105,7 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#getXMLspace()}.
      */
     public String getXMLspace() {
-	return XMLSupport.getXMLSpace(this);
+        return XMLSupport.getXMLSpace(this);
     }
 
     /**
@@ -113,7 +113,7 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#setXMLspace(String)}.
      */
     public void setXMLspace(String xmlspace) throws DOMException {
-	XMLSupport.setXMLSpace(this, xmlspace);
+        XMLSupport.setXMLSpace(this, xmlspace);
     }
 
     /**
@@ -121,15 +121,15 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#getType()}.
      */
     public String getType() {
-	return getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
+        return getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGStyleElement#setType(String)}.
      */
     public void setType(String type) throws DOMException {
-	setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
+        setAttributeNS(null, SVG_TYPE_ATTRIBUTE, type);
     }
 
     /**
@@ -137,15 +137,15 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#getMedia()}.
      */
     public String getMedia() {
-	return getAttribute(ATTR_MEDIA);
+        return getAttribute(SVG_MEDIA_ATTRIBUTE);
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGStyleElement#setMedia(String)}.
      */
     public void setMedia(String media) throws DOMException {
-	setAttribute(ATTR_MEDIA, media);
+        setAttribute(SVG_MEDIA_ATTRIBUTE, media);
     }
 
     /**
@@ -153,15 +153,15 @@ public class SVGOMStyleElement
      * org.w3c.dom.svg.SVGStyleElement#getTitle()}.
      */
     public String getTitle() {
-	return getAttribute(ATTR_TITLE);
+        return getAttribute(SVG_TITLE_ATTRIBUTE);
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGStyleElement#setTitle(String)}.
      */
     public void setTitle(String title) throws DOMException {
-	setAttribute(ATTR_TITLE, title);
+        setAttribute(SVG_TITLE_ATTRIBUTE, title);
     }
 
     /**

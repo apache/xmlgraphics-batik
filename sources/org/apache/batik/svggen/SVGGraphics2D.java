@@ -939,7 +939,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                 AbstractSVGConverter.doubleString(x));
             text.setAttributeNS(null, SVG_Y_ATTRIBUTE,
                                 AbstractSVGConverter.doubleString(y));
-            text.setAttributeNS(null, ATTR_STROKE, SVG_NONE_VALUE);
+            text.setAttributeNS(null, SVG_STROKE_ATTRIBUTE, SVG_NONE_VALUE);
             text.appendChild(getDOMFactory().createTextNode(s));
             domGroupManager.addElement(text);
         } else {
@@ -995,7 +995,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     public void fill(Shape s){
         Element svgShape = shapeConverter.toSVG(s);
         if(svgShape != null){
-            svgShape.setAttributeNS(null, ATTR_STROKE, SVG_NONE_VALUE);
+            svgShape.setAttributeNS(null, SVG_STROKE_ATTRIBUTE, SVG_NONE_VALUE);
             domGroupManager.addElement(svgShape);
         }
     }

@@ -32,13 +32,13 @@ public class SVGURIReferenceSupport implements SVGConstants {
      * To implement {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
     public SVGAnimatedString getHref(Element elt) {
-	SVGAnimatedString result;
-	if (hrefReference == null ||
-	    (result = (SVGAnimatedString)hrefReference.get()) == null) {
-	    result = new SVGOMAnimatedString
-                (elt, XLinkSupport.XLINK_NAMESPACE_URI, ATTR_HREF);
-	    hrefReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedString result;
+        if (hrefReference == null ||
+            (result = (SVGAnimatedString)hrefReference.get()) == null) {
+            result = new SVGOMAnimatedString
+                (elt, XLinkSupport.XLINK_NAMESPACE_URI, SVG_HREF_ATTRIBUTE);
+            hrefReference = new WeakReference(result);
+        }
+        return result;
     }
 }
