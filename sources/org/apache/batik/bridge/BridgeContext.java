@@ -40,8 +40,8 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterPool;
-import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.Service;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -88,11 +88,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected Map interpreterMap = new HashMap(7);
 
     /**
-     * A hash map of all the font families already matched. This is
+     * A Map of all the font families already matched. This is
      * to reduce the number of instances of GVTFontFamilies and to
      * hopefully reduce the time taken to search for a matching SVG font.
      */
-    private HashMap fontFamilyMap;
+    private Map fontFamilyMap;
 
     /**
      * The viewports.
@@ -232,63 +232,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     // end debug leak
     */
 
-    // properties ////////////////////////////////////
-
-    /**
-     * Sets the text painter that will be used by text nodes. This attributes
-     * might be used by bridges (especially SVGTextElementBridge) to set the
-     * text painter of each TextNode.
-     *
-     * @param textPainter the text painter for text nodes 
-     */
-    public void setTextPainter(TextPainter textPainter) {
-	this.textPainter = textPainter;
-    }
-
-    /**
-     * Returns the document this bridge context is dedicated to.
-     */
-    public Document getDocument() {
-        return document;
-    }
-
-    /**
-     * Returns the map of font families
-     */
-    public HashMap getFontFamilyMap(){
-        if (fontFamilyMap == null){
-            fontFamilyMap = new HashMap();
-        }
-
-        return fontFamilyMap;
-    }
-
-    /**
-     * Returns the text painter that will be used be text nodes.
-     */
-    public TextPainter getTextPainter() {
-	return textPainter;
-    }
-
-    /**
-     * Returns the user agent of this bridge context.
-     */
-    public UserAgent getUserAgent() {
-        return userAgent;
-    }
-
-    /**
-     * Sets the document this bridge context is dedicated to, to the
-     * specified document.
-     * @param document the document
-     */
-    protected void setDocument(Document document) {
-        if (this.document != document){
-            fontFamilyMap = null;
-        }
-        this.document = document;
-    }
-
     /**
      * Initializes the given document.
      */
@@ -315,19 +258,77 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
     }
 
+    // properties ////////////////////////////////////////////////////////////
+
+    /**
+     * Sets the text painter that will be used by text nodes. This attributes
+     * might be used by bridges (especially SVGTextElementBridge) to set the
+     * text painter of each TextNode.
+     *
+     * @param textPainter the text painter for text nodes 
+     */
+    public void setTextPainter(TextPainter textPainter) {
+	this.textPainter = textPainter;
+    }
+
+    /**
+     * Returns the text painter that will be used be text nodes.
+     */
+    public TextPainter getTextPainter() {
+	return textPainter;
+    }
+
+    /**
+     * Returns the document this bridge context is dedicated to.
+     */
+    public Document getDocument() {
+        return document;
+    }
+
+    /**
+     * Sets the document this bridge context is dedicated to, to the
+     * specified document.
+     * @param document the document
+     */
+    protected void setDocument(Document document) {
+        if (this.document != document){
+            fontFamilyMap = null;
+        }
+        this.document = document;
+    }
+
+    /**
+     * Returns the map of font families
+     */
+    public Map getFontFamilyMap(){
+        if (fontFamilyMap == null){
+            fontFamilyMap = new HashMap();
+        }
+        return fontFamilyMap;
+    }
+
+    /**
+     * Sets the map of font families to the specified value.
+     *
+     *@param fontFamilyMap the map of font families
+     */
+    protected void setFontFamilyMap(Map fontFamilyMap) {
+        this.fontFamilyMap = fontFamilyMap;
+    }
+
+    /**
+     * Returns the user agent of this bridge context.
+     */
+    public UserAgent getUserAgent() {
+        return userAgent;
+    }
+
     /**
      * Sets the user agent to the specified user agent.
      * @param userAgent the user agent
      */
     protected void setUserAgent(UserAgent userAgent) {
         this.userAgent = userAgent;
-    }
-
-    /**
-     * Sets the GVT builder that uses this context.
-     */
-    protected void setGVTBuilder(GVTBuilder gvtBuilder) {
-        this.gvtBuilder = gvtBuilder;
     }
 
     /**
@@ -338,10 +339,26 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
+     * Sets the GVT builder that uses this context.
+     */
+    protected void setGVTBuilder(GVTBuilder gvtBuilder) {
+        this.gvtBuilder = gvtBuilder;
+    }
+
+    /**
      * Returns the interpreter pool used to handle scripts.
      */
     public InterpreterPool getInterpreterPool() {
         return interpreterPool;
+    }
+
+    /**
+     * Sets the interpreter pool used to handle scripts to the
+     * specified interpreter pool.
+     * @param interpreterPool the interpreter pool
+     */
+    protected void setInterpreterPool(InterpreterPool interpreterPool) {
+        this.interpreterPool = interpreterPool;
     }
 
     /**
@@ -362,15 +379,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     }
 
     /**
-     * Sets the interpreter pool used to handle scripts to the
-     * specified interpreter pool.
-     * @param interpreterPool the interpreter pool
-     */
-    protected void setInterpreterPool(InterpreterPool interpreterPool) {
-        this.interpreterPool = interpreterPool;
-    }
-
-    /**
      * Returns the document loader used to load external documents.
      */
     public DocumentLoader getDocumentLoader() {
@@ -385,7 +393,56 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         this.documentLoader = newDocumentLoader;
     }
 
-    // convenient methods
+    /**
+     * Returns the actual size of the document or null if the document
+     * has not been built yet.
+     */
+    public Dimension2D getDocumentSize() {
+        return documentSize;
+    }
+
+    /**
+     * Sets the size of the document to the specified dimension.
+     *
+     * @param d the actual size of the SVG document
+     */
+    protected void setDocumentSize(Dimension2D d) {
+        this.documentSize = d;
+    }
+
+    /**
+     * Returns true if the document is dynamic, false otherwise.
+     */
+    public boolean isDynamic() {
+        return dynamic;
+    }
+
+    /**
+     * Sets the document as a dynamic document. Call this method
+     * before the build phase (ie. before <tt>gvtBuilder.build(...)</tt>)
+     * otherwise, that will have no effect.
+     *
+     *@param b the document state
+     */
+    public void setDynamic(boolean b) {
+        dynamic = b;
+    }
+
+    /**
+     * Returns the update manager, if the bridge supports dynamic features.
+     */
+    public UpdateManager getUpdateManager() {
+        return updateManager;
+    }
+
+    /**
+     * Sets the update manager.
+     */
+    protected void setUpdateManager(UpdateManager um) {
+        updateManager = um;
+    }
+
+    // reference management //////////////////////////////////////////////////
 
     /**
      * Returns the element referenced by the specified element by the
@@ -419,27 +476,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
     }
 
-    // methods to access to the current state of the bridge context
-
-    /**
-     * Returns the actual size of the document or null if the document
-     * has not been built yet.
-     */
-    public Dimension2D getDocumentSize() {
-        return documentSize;
-    }
-
-    /**
-     * Sets the size of the document to the specified dimension.
-     *
-     * @param d the actual size of the SVG document
-     */
-    protected void setDocumentSize(Dimension2D d) {
-        this.documentSize = d;
-    }
+    // Viewport //////////////////////////////////////////////////////////////
 
     /**
      * Returns the viewport of the specified element.
+     *
      * @param e the element interested in its viewport
      */
     public Viewport getViewport(Element e) {
@@ -468,7 +509,8 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
     /**
      * Starts a new viewport from the specified element.
-     * @param e the element that starts the viewport
+     *
+     * @param e the element that defines a new viewport
      * @param viewport the viewport of the element
      */
     public void openViewport(Element e, Viewport viewport) {
@@ -491,41 +533,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
     }
 
-    /**
-     * Returns true if the bridge should support dynamic SVG content,
-     * false otherwise.
-     */
-    public boolean isDynamic() {
-        return dynamic;
-    }
-
-    /**
-     * Sets the dynamic mode.
-     */
-    public void setDynamic(boolean b) {
-        dynamic = b;
-    }
-
-    /**
-     * Returns the update manager, if the bridge supports dynamic features.
-     */
-    public UpdateManager getUpdateManager() {
-        return updateManager;
-    }
-
-    /**
-     * Sets the update manager.
-     */
-    protected void setUpdateManager(UpdateManager um) {
-        updateManager = um;
-    }
-
-    // binding methods
+    // Bindings //////////////////////////////////////////////////////////////
 
     /**
      * Binds the specified GraphicsNode to the specified Element. This method
      * automatically bind the graphics node to the element and the element to
      * the graphics node.
+     *
      * @param element the element to bind to the specified graphics node
      * @param node the graphics node to bind to the specified element
      */
@@ -540,6 +554,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
     /**
      * Removes the binding of the specified Element.
+     *
      * @param element the element to unbind
      */
     public void unbind(Element element) {
@@ -579,7 +594,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
     }
 
-    // bridge support
+    // Bridge management /////////////////////////////////////////////////////
  
     /**
      * Returns the bridge associated with the specified element.
@@ -653,7 +668,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * @param bridge the bridge that manages the element
      */
     public void putBridge(String namespaceURI, String localName, Bridge bridge) {
-        // debug
+        // start assert
         if (!(namespaceURI.equals(bridge.getNamespaceURI())
               && localName.equals(bridge.getLocalName()))) {
             throw new Error("Invalid Bridge: "+
@@ -661,7 +676,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                             localName+"/"+bridge.getLocalName()+" "+
                             bridge.getClass());
         }
-
+        // end assert
         if (namespaceURIMap == null) {
             namespaceURIMap = new HashMap();
         }
@@ -708,11 +723,26 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
     }
 
-    // dynamic support /////////////////////////////////////////////////////////
+    // dynamic support ////////////////////////////////////////////////////////
 
+    /**
+     * The DOM EventListener to receive 'DOMAttrModified' event.
+     */
     protected EventListener domAttrModifiedEventListener;
+
+    /**
+     * The DOM EventListener to receive 'DOMNodeInserted' event.
+     */
     protected EventListener domNodeInsertedEventListener;
+
+    /**
+     * The DOM EventListener to receive 'DOMNodeRemoved' event.
+     */
     protected EventListener domNodeRemovedEventListener;
+
+    /**
+     * The CSSEngine listener to receive CSSEngineEvent.
+     */
     protected CSSEngineListener cssPropertiesChangedListener;
 
     /**
@@ -861,7 +891,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Returns a lighter font-weight.
      */
     public float getLighterFontWeight(float f) {
-        // !!! TODO: delegates to the UserAgent.
+        // <!> FIXME: delegates to the UserAgent.
         switch ((int)f) {
         case 100: return 100;
         case 200: return 100;
@@ -881,7 +911,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Returns a bolder font-weight.
      */
     public float getBolderFontWeight(float f) {
-        // !!! TODO: delegates to the UserAgent.
+        // <!> FIXME: delegates to the UserAgent.
         switch ((int)f) {
         case 100: return 600;
         case 200: return 600;
@@ -908,7 +938,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * Returns the medium font size.
      */
     public float getMediumFontSize() {
-        // !!! TODO: delegates to the UserAgent.
+        // <!> FIXME: delegates to the UserAgent.
         return 9f * 25.4f / (72f * getPixelToMillimeters());
     }
 
@@ -928,9 +958,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         return getViewport(elt).getHeight();
     }
 
-    // bridge extensions support
+    // bridge extensions support //////////////////////////////////////////////
 
-   /**
+    protected static List extensions = null;
+
+    /**
      * Registers the bridges to handle SVG 1.0 elements.
      *
      * @param ctx the bridge context to initialize
@@ -938,15 +970,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public static void registerSVGBridges(BridgeContext ctx) {
         UserAgent ua = ctx.getUserAgent();
         Iterator iter = getBridgeExtensions().iterator();
-
         while(iter.hasNext()) {
             BridgeExtension be = (BridgeExtension)iter.next();
             be.registerTags(ctx);
             ua.registerExtension(be);
         }
     }
-
-    static List extensions = null;
 
     /**
      * Returns the extensions supported by this bridge context.

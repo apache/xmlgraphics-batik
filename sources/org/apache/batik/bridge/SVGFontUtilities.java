@@ -8,22 +8,26 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.util.SVGConstants;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
+
+import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
-import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg.XMLBaseSupport;
+
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.w3c.dom.svg.SVGDocument;
-import java.util.HashMap;
-import java.util.Vector;
-import java.util.StringTokenizer;
 
 /**
  * Utility class for SVG fonts.
@@ -64,7 +68,7 @@ public abstract class SVGFontUtilities implements SVGConstants {
 
         // check fontFamilyMap to see if we have already created an
         // FontFamily that matches
-        HashMap fontFamilyMap = ctx.getFontFamilyMap();
+        Map fontFamilyMap = ctx.getFontFamilyMap();
         GVTFontFamily fontFamily =
             (GVTFontFamily)fontFamilyMap.get(fontKeyName);
         if (fontFamily != null) {
