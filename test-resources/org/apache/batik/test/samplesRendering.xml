@@ -176,10 +176,10 @@
     <!-- Samples tests files                                                     -->
     <!-- ======================================================================= -->
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
-        <arg class="java.net.URL" value="file:samples/tests/bboxOnText.svg.svg" />
-        <arg class="java.net.URL" value="file:test-references/samples/tests/bboxOnText.svg.png" />
-        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/bboxOnText.svg.png" />
-        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/bboxOnText.svg.png" />
+        <arg class="java.net.URL" value="file:samples/tests/bboxOnText.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/bboxOnText.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/bboxOnText.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/bboxOnText.png" />
     </test>
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
