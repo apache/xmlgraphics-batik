@@ -1087,6 +1087,22 @@ To display the available targets type:
     </java>
   </target>
 
+  <target name="regard.manual"
+          depends="compiletest, testdirs, testjars"
+          description="Runs test suite whose file or uri is passed as an input">
+    <java fork="yes"
+          classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
+      <classpath>
+        <pathelement location="${dest}" />
+        <path refid="libs-classpath"/>
+        <path refid="libs-build-classpath"/>
+        <pathelement location="resources" />
+        <pathelement location="test-resources" />
+      </classpath>
+      <arg line="test-resources/org/apache/batik/test/regardManual.xml ${args}"/>
+    </java>
+  </target>
+
   <target name="showpainter"
           depends="compiletest, testdirs"
           description="Runs test suite whose file or uri is passed as an input">

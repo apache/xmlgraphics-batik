@@ -1,0 +1,44 @@
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- @author vincent.hardy@eng.sun.com                                         -->
+<!-- @version $Id$ -->
+<!-- ========================================================================= -->
+<testSuite id="samplesRendering" name="samples and samples/test Rendering" class="org.apache.batik.test.svg.SamplesRenderingTest">
+
+    <!-- ======================================================================= -->
+    <!-- Samples tests files                                                     -->
+    <!-- ======================================================================= -->
+
+
+
+    <testGroup id="tests.spec.interactivity" name="Interactivity Tests"
+               class="org.apache.batik.test.svg.JSVGRenderingAccuracyTest">
+        <test id="samples/tests/spec/interactivity/cursor.svg" />
+        <test id="samples/tests/spec/interactivity/focus.svg" />
+        <test id="samples/tests/spec/interactivity/keyEvents.svg" >
+            <property name="Validating" class="java.lang.Boolean" value="false" />
+        </test>
+    </testGroup>
+
+
+    <testGroup id="tests.spec.scripting" name="Interactive Scripting Tests"
+               class="org.apache.batik.test.svg.JSVGRenderingAccuracyTest">
+        <test id="samples/tests/spec/scripting/bug12933.svg" />
+        <test id="samples/tests/spec/scripting/filterPatternUpdate.svg" />
+        <test id="samples/tests/spec/scripting/gradientsUpdate.svg" />
+        <test id="samples/tests/spec/scripting/imageUpdate.svg" />
+        <test id="samples/tests/spec/scripting/markerUpdate.svg" />
+        <test id="samples/tests/spec/scripting/maskClipUpdate.svg" />
+        <!-- <test id="samples/tests/spec/scripting/removeLast.svg" /> -->
+        <test id="samples/tests/spec/scripting/svg.svg" />
+        <test id="samples/tests/spec/scripting/svg2.svg" />
+    </testGroup>
+
+</testSuite>
