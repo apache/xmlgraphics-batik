@@ -15,6 +15,7 @@ import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.NativeJavaMethod;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
+import org.mozilla.javascript.WrappedException;
 
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
@@ -43,9 +44,12 @@ class EventTargetWrapper extends NativeJavaObject {
         public void handleEvent(Event evt) {
             try {
                 interpreter.callHandler(function, evt);
-            } catch (InterpreterException e) {
-                e.printStackTrace();
-                // <!> TODO: report correctly the error
+            } catch (JavaScriptException e) {
+                // the only simple solution is to forward it as a
+                // RuntimeException to be catch by event dispatching
+                // in BridgetEventSupport.java
+                // another solution will to give UserAgent to interpreters
+                throw new WrappedException(e);
             }
         }
     }

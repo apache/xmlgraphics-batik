@@ -24,8 +24,7 @@ import org.w3c.dom.events.EventTarget;
 class EventTargetWrapHandler implements WrapHandler {
     private RhinoInterpreter interpreter;
 
-    public EventTargetWrapHandler(RhinoInterpreter interp)
-    {
+    public EventTargetWrapHandler(RhinoInterpreter interp) {
         interpreter = interp;
     }
 
