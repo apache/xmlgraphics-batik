@@ -217,7 +217,7 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
             gn.remove(node);
             disposeTree(e);
 
-            handleElementAdded(gn, (Element)e.getParentNode(), e);
+            handleElementAdded(gn, e.getParentNode(), e);
         }
     }
 
