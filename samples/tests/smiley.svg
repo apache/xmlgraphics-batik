@@ -1,0 +1,76 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Alternate stylesheets                                                     -->
+<!--                                                                           -->
+<!-- @author tkormann@ilog.fr                                                  -->
+<!-- @version $Id$ -->
+<!-- ========================================================================= -->
+
+<?xml-stylesheet type="text/css" href="default.css" ?>
+
+<?xml-stylesheet type="text/css" title="Smiling" href="smiling.css" alternate="yes" ?>
+<?xml-stylesheet type="text/css" title="Basic Sad" href="basicsad.css" alternate="yes" ?>
+<?xml-stylesheet type="text/css" title="Wow!" href="wow.css" alternate="yes" ?>
+<?xml-stylesheet type="text/css" title="Grim" href="grim.css" alternate="yes" ?>
+<?xml-stylesheet type="text/css" title="Oups" href="oups.css" alternate="yes" ?>
+
+<svg width="450" height="500" viewBox="0 0 450 500">
+<title>Alternate stylesheets</title>
+
+<style type="text/css"><![CDATA[
+
+.title {
+  font-family: Arial, Helvetica; 
+  font-size: 16;
+  text-anchor: middle;
+}
+
+.legend {
+  font-family: Arial, Helvetica; 
+  font-size: 10;
+  text-anchor: middle;
+}
+
+]]> 
+
+</style>
+
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= -->
+    <g id="testContent">
+    <text x="225" y="50" class="title">Alternate Stylesheets</text>
+
+<text x="20" y="80" style="font-size:12; text-anchor:start">
+<tspan>Choose your alternate stylesheet using the 'View->Use Stylesheet'</tspan>
+<tspan x="20" y="100"> submenu items.</tspan>
+</text>
+
+<circle cx="50%" cy="50%" r="25%" style="fill:gold; stroke:orange; stroke-width:4"/>
+<g style="font-size:128; text-anchor:middle; fill:black; stroke:none" >
+    <text class="smiling" x="50%" y="56%">:-)</text>
+    <text class="basicsad" x="50%" y="56%">:-(</text>
+    <text class="wow" x="50%" y="56%">:-o</text> 
+    <text class="grim" x="50%" y="56%">:-|</text>
+    <text class="oups" x="50%" y="56%">:-*</text>
+</g>
+
+    </g>
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="../batikLogo.svg#Batik_Tag_Box" />
+    
+</svg>
