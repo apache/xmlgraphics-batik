@@ -153,6 +153,30 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     }
 
     /**
+     * Dispatches an "SVGZoom" event to the document.
+     */
+    public void dispatchSVGZoomEvent()
+        throws InterruptedException {
+        scriptingEnvironment.dispatchSVGZoomEvent();
+    }
+
+    /**
+     * Dispatches an "SVGZoom" event to the document.
+     */
+    public void dispatchSVGScrollEvent()
+        throws InterruptedException {
+        scriptingEnvironment.dispatchSVGScrollEvent();
+    }
+
+    /**
+     * Dispatches an "SVGZoom" event to the document.
+     */
+    public void dispatchSVGResizeEvent()
+        throws InterruptedException {
+        scriptingEnvironment.dispatchSVGResizeEvent();
+    }
+
+    /**
      * Finishes the UpdateManager initialization.
      */
     public void manageUpdates(final ImageRenderer r) {

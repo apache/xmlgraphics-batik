@@ -141,6 +141,11 @@ public class JGVTComponent extends JComponent {
     protected List overlays = new LinkedList();
 
     /**
+     * The JGVTComponentListener list.
+     */
+    protected List jgvtListeners = null;
+
+    /**
      * The event dispatcher.
      */
     protected AWTEventDispatcher eventDispatcher;
@@ -232,6 +237,18 @@ public class JGVTComponent extends JComponent {
      */
     public BufferedImage getOffScreen() {
         return image;
+    }
+
+
+    public void addJGVTComponentListener(JGVTComponentListener listener) {
+        if (jgvtListeners == null)
+            jgvtListeners = new LinkedList();
+        jgvtListeners.add(listener);
+    }
+
+    public void removeJGVTComponentListener(JGVTComponentListener listener) {
+        if (jgvtListeners == null) return;
+        jgvtListeners.remove(listener);
     }
 
     /**
@@ -500,6 +517,16 @@ public class JGVTComponent extends JComponent {
                 handleException(e);
             }
         }
+        if (jgvtListeners != null) {
+            Iterator iter = jgvtListeners.iterator();
+            ComponentEvent ce = new ComponentEvent
+                (this, JGVTComponentListener.COMPONENT_TRANSFORM_CHANGED);
+            while (iter.hasNext()) {
+                JGVTComponentListener l = (JGVTComponentListener)iter.next();
+                l.componentTransformChanged(ce);
+            }
+        }
+
         if (performRedraw)
             scheduleGVTRendering();
     }

@@ -187,10 +187,36 @@ public class AbstractZoomInteractor extends InteractorAdapter {
         xCurrent = e.getX();
         yCurrent = e.getY();
 
-        markerTop    = new Line2D.Float(xStart, yStart, xCurrent,  yStart);
-        markerLeft   = new Line2D.Float(xStart, yStart, xStart, yCurrent);
-        markerBottom = new Line2D.Float(xStart, yCurrent,  xCurrent,  yCurrent);
-        markerRight  = new Line2D.Float(xCurrent,  yCurrent,  xCurrent,  yStart);
+        // Constrain rectangle to window's Aspect Ratio.
+        float xMin, yMin, width, height;
+        if (xStart < xCurrent) {
+            xMin = xStart;
+            width = xCurrent - xStart;
+        } else {
+            xMin = xCurrent;
+            width = xStart - xCurrent;
+        }
+        if (yStart < yCurrent) {
+            yMin = yStart;
+            height = yCurrent - yStart;
+        } else {
+            yMin = yCurrent;
+            height = yStart - yCurrent;
+        }
+        Dimension d = c.getSize();
+        float compAR = d.width/(float)d.height;
+        if (compAR > width/height) {
+            width = compAR*height;
+        } else {
+            height = width/compAR;
+        }
+
+        markerTop    = new Line2D.Float(xMin, yMin, xMin+width,  yMin);
+        markerLeft   = new Line2D.Float(xMin, yMin, xMin, yMin+height);
+        markerBottom = new Line2D.Float(xMin, yMin+height,  
+                                        xMin+width,  yMin+height);
+        markerRight  = new Line2D.Float(xMin+width,  yMin,  
+                                        xMin+width,  yMin+height);
 
         overlay.paint(c.getGraphics());
     }
