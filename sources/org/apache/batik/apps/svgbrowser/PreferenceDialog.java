@@ -23,9 +23,12 @@ import java.awt.event.KeyAdapter;
 
 import java.util.Map;
 import java.util.Hashtable;
+import java.util.Enumeration;
 
+import javax.swing.AbstractButton;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -34,6 +37,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -134,12 +138,6 @@ public class PreferenceDialog extends JDialog
     public static final String LABEL_LOAD_ECMASCRIPT
         = "PreferenceDialog.label.load.ecmascript";
 
-    public static final String LABEL_CONSTRAIN_SCRIPT_ORIGIN
-        = "PreferenceDialog.label.constrain.script.origin";
-
-    public static final String LABEL_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN
-        = "PreferenceDialog.label.constrain.external.resource.origin";
-
     public static final String LABEL_HOST
         = "PreferenceDialog.label.host";
 
@@ -148,6 +146,27 @@ public class PreferenceDialog extends JDialog
 
     public static final String LABEL_OK
         = "PreferenceDialog.label.ok";
+
+    public static final String LABEL_LOAD_SCRIPTS
+        = "PreferenceDialog.label.load.scripts";
+
+    public static final String LABEL_ORIGIN_ANY
+        = "PreferenceDialog.label.origin.any";
+
+    public static final String LABEL_ORIGIN_DOCUMENT
+        = "PreferenceDialog.label.origin.document";
+
+    public static final String LABEL_ORIGIN_EMBED
+        = "PreferenceDialog.label.origin.embed";
+
+    public static final String LABEL_ORIGIN_NONE
+        = "PreferenceDialog.label.origin.none";
+
+    public static final String LABEL_SCRIPT_ORIGIN
+        = "PreferenceDialog.label.script.origin";
+
+    public static final String LABEL_RESOURCE_ORIGIN
+        = "PreferenceDialog.label.resource.origin";
 
     public static final String LABEL_CANCEL
         = "PreferenceDialog.label.cancel";
@@ -220,11 +239,11 @@ public class PreferenceDialog extends JDialog
     public static final String PREFERENCE_KEY_LOAD_JAVA
         = "preference.key.load.java.script";
 
-    public static final String PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN
-        = "preference.key.constrain.script.origin";
+    public static final String PREFERENCE_KEY_ALLOWED_SCRIPT_ORIGIN
+        = "preference.key.allowed.script.origin";
 
-    public static final String PREFERENCE_KEY_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN
-        = "preference.key.constrain.external.resource.origin";
+    public static final String PREFERENCE_KEY_ALLOWED_EXTERNAL_RESOURCE_ORIGIN
+        = "preference.key.allowed.external.resource.origin";
 
     /**
      * <tt>PreferenceManager</tt> used to store and retrieve
@@ -265,9 +284,9 @@ public class PreferenceDialog extends JDialog
 
     protected JCheckBox loadEcmascript;
 
-    protected JCheckBox constrainScriptOrigin;
+    protected ButtonGroup scriptOriginGroup;
 
-    protected JCheckBox constrainExternalResourceOrigin;
+    protected ButtonGroup resourceOriginGroup;
 
     protected JTextField host, port;
 
@@ -333,8 +352,34 @@ public class PreferenceDialog extends JDialog
         enforceSecureScripting.setSelected(model.getBoolean(PREFERENCE_KEY_ENFORCE_SECURE_SCRIPTING));
         loadJava.setSelected(model.getBoolean(PREFERENCE_KEY_LOAD_JAVA));
         loadEcmascript.setSelected(model.getBoolean(PREFERENCE_KEY_LOAD_ECMASCRIPT));
-        constrainScriptOrigin.setSelected(model.getBoolean(PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN));
-        constrainExternalResourceOrigin.setSelected(model.getBoolean(PREFERENCE_KEY_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN));
+
+        String allowedScriptOrigin = "" + model.getInteger(PREFERENCE_KEY_ALLOWED_SCRIPT_ORIGIN);
+        if (allowedScriptOrigin == null || "".equals(allowedScriptOrigin)) {
+            allowedScriptOrigin = "" + ResourceOrigin.NONE;
+        }
+
+        Enumeration e = scriptOriginGroup.getElements();
+        while (e.hasMoreElements()) {
+            AbstractButton ab = (AbstractButton)e.nextElement();
+            String ac = ab.getActionCommand();
+            if (allowedScriptOrigin.equals(ac)) {
+                ab.setSelected(true);
+            }
+        }
+
+        String allowedResourceOrigin = "" + model.getInteger(PREFERENCE_KEY_ALLOWED_EXTERNAL_RESOURCE_ORIGIN);
+        if (allowedResourceOrigin == null || "".equals(allowedResourceOrigin)) {
+            allowedResourceOrigin = "" + ResourceOrigin.NONE;
+        }
+
+        e = resourceOriginGroup.getElements();
+        while (e.hasMoreElements()) {
+            AbstractButton ab = (AbstractButton)e.nextElement();
+            String ac = ab.getActionCommand();
+            if (allowedResourceOrigin.equals(ac)) {
+                ab.setSelected(true);
+            }
+        }
 
         showRendering.setEnabled
             (!model.getBoolean(PREFERENCE_KEY_ENABLE_DOUBLE_BUFFERING));
@@ -381,11 +426,10 @@ public class PreferenceDialog extends JDialog
                          loadJava.isSelected());
         model.setBoolean(PREFERENCE_KEY_LOAD_ECMASCRIPT,
                          loadEcmascript.isSelected());
-        model.setBoolean(PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN,
-                         constrainScriptOrigin.isSelected());
-        model.setBoolean(PREFERENCE_KEY_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN,
-                         constrainExternalResourceOrigin.isSelected());
-
+        model.setInteger(PREFERENCE_KEY_ALLOWED_SCRIPT_ORIGIN,
+                         (new Integer(scriptOriginGroup.getSelection().getActionCommand())).intValue());
+        model.setInteger(PREFERENCE_KEY_ALLOWED_EXTERNAL_RESOURCE_ORIGIN,
+                         (new Integer(resourceOriginGroup.getSelection().getActionCommand())).intValue());
         model.setString(PREFERENCE_KEY_PROXY_HOST,
                         host.getText());
         model.setString(PREFERENCE_KEY_PROXY_PORT,
@@ -575,23 +619,71 @@ public class PreferenceDialog extends JDialog
         loadEcmascript
             = new JCheckBox(Resources.getString(LABEL_LOAD_ECMASCRIPT));
 
-        constrainScriptOrigin
-            = new JCheckBox(Resources.getString(LABEL_CONSTRAIN_SCRIPT_ORIGIN));
+        JPanel loadScriptPanel = new JPanel();
+        loadScriptPanel.add(loadJava);
+        loadScriptPanel.add(loadEcmascript);
 
-        constrainExternalResourceOrigin
-            = new JCheckBox(Resources.getString(LABEL_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN));
+        JPanel scriptOriginPanel = new JPanel();
 
-        p.add(showRendering,    0, 0, 1, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(autoAdjustWindow, 0, 1, 1, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(enableDoubleBuffering, 0, 2, 1, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(showDebugTrace,   0, 3, 1, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(selectionXorMode,   0, 4, 1, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(isXMLParserValidating,   0, 5, 1, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(enforceSecureScripting, 0, 6, 1, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(loadJava, 0, 7, 1, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(loadEcmascript, 0, 8, 1, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(constrainScriptOrigin, 0, 9, 1, 1, WEST, HORIZONTAL, 1, 0);
-        p.add(constrainExternalResourceOrigin, 0, 10, 1, 1, WEST, HORIZONTAL, 1, 0);
+        scriptOriginGroup = new ButtonGroup();
+        JRadioButton rb = null;
+
+        rb = new JRadioButton(Resources.getString(LABEL_ORIGIN_ANY));
+        rb.setActionCommand("" + ResourceOrigin.ANY);
+        scriptOriginGroup.add(rb);
+        scriptOriginPanel.add(rb);
+
+        rb = new JRadioButton(Resources.getString(LABEL_ORIGIN_DOCUMENT));
+        rb.setActionCommand("" + ResourceOrigin.DOCUMENT);
+        scriptOriginGroup.add(rb);
+        scriptOriginPanel.add(rb);
+
+        rb = new JRadioButton(Resources.getString(LABEL_ORIGIN_EMBED));
+        rb.setActionCommand("" + ResourceOrigin.EMBEDED);
+        scriptOriginGroup.add(rb);
+        scriptOriginPanel.add(rb);
+
+        rb = new JRadioButton(Resources.getString(LABEL_ORIGIN_NONE));
+        rb.setActionCommand("" + ResourceOrigin.NONE);
+        scriptOriginGroup.add(rb);
+        scriptOriginPanel.add(rb);
+
+        JPanel resourceOriginPanel = new JPanel();
+        resourceOriginGroup = new ButtonGroup();
+
+        rb = new JRadioButton(Resources.getString(LABEL_ORIGIN_ANY));
+        rb.setActionCommand("" + ResourceOrigin.ANY);
+        resourceOriginGroup.add(rb);
+        resourceOriginPanel.add(rb);
+
+        rb = new JRadioButton(Resources.getString(LABEL_ORIGIN_DOCUMENT));
+        rb.setActionCommand("" + ResourceOrigin.DOCUMENT);
+        resourceOriginGroup.add(rb);
+        resourceOriginPanel.add(rb);
+
+        rb = new JRadioButton(Resources.getString(LABEL_ORIGIN_EMBED));
+        rb.setActionCommand("" + ResourceOrigin.EMBEDED);
+        resourceOriginGroup.add(rb);
+        resourceOriginPanel.add(rb);
+
+        rb = new JRadioButton(Resources.getString(LABEL_ORIGIN_NONE));
+        rb.setActionCommand("" + ResourceOrigin.NONE);
+        resourceOriginGroup.add(rb);
+        resourceOriginPanel.add(rb);
+
+        p.add(showRendering,    0, 0, 2, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(autoAdjustWindow, 0, 1, 2, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(enableDoubleBuffering, 0, 2, 2, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(showDebugTrace,   0, 3, 2, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(selectionXorMode,   0, 4, 2, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(isXMLParserValidating,   0, 5, 2, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(enforceSecureScripting, 0, 6, 2, 1, WEST, HORIZONTAL, 1, 0);
+        p.add(new JLabel(Resources.getString(LABEL_LOAD_SCRIPTS)), 0, 7, 1, 1, WEST, NONE, 0, 0);
+        p.add(loadScriptPanel, 1, 7, 1, 1, WEST, NONE, 1, 0);
+        p.add(new JLabel(Resources.getString(LABEL_SCRIPT_ORIGIN)), 0, 8, 1, 1, WEST, NONE, 0, 0);
+        p.add(scriptOriginPanel, 1, 8, 1, 1, WEST, NONE, 1, 0);
+        p.add(new JLabel(Resources.getString(LABEL_RESOURCE_ORIGIN)), 0, 10, 1, 1, WEST, NONE, 0, 0);
+        p.add(resourceOriginPanel, 1, 10, 1, 1, WEST, NONE, 1, 0);
 
         p.setBorder(BorderFactory.createCompoundBorder
                     (BorderFactory.createTitledBorder

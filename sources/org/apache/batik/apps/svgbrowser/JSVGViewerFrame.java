@@ -46,6 +46,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -58,6 +59,7 @@ import java.util.ResourceBundle;
 import java.util.zip.GZIPInputStream;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -81,7 +83,10 @@ import javax.swing.text.PlainDocument;
 
 import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.DefaultExternalResourceSecurity;
+import org.apache.batik.bridge.EmbededScriptSecurity;
+import org.apache.batik.bridge.EmbededExternalResourceSecurity;
 import org.apache.batik.bridge.NoLoadScriptSecurity;
+import org.apache.batik.bridge.NoLoadExternalResourceSecurity;
 import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.ExternalResourceSecurity;
 import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
@@ -2180,14 +2185,21 @@ public class JSVGViewerFrame
             if (!application.canLoadScriptType(scriptType)) {
                 return new NoLoadScriptSecurity(scriptType);
             } else {
-                if (application.constrainScriptOrigin()) {
-                    return new DefaultScriptSecurity(scriptType, 
-                                                     scriptURL, 
-                                                     docURL);
-                } else {
-                    return new RelaxedScriptSecurity(scriptType, 
+                switch(application.getAllowedScriptOrigin()) {
+                case ResourceOrigin.ANY:
+                    return new RelaxedScriptSecurity(scriptType,
                                                      scriptURL,
                                                      docURL);
+                case ResourceOrigin.DOCUMENT:
+                    return new DefaultScriptSecurity(scriptType,
+                                                     scriptURL,
+                                                     docURL);
+                case ResourceOrigin.EMBEDED:
+                    return new EmbededScriptSecurity(scriptType,
+                                                     scriptURL,
+                                                     docURL);
+                default:
+                    return new NoLoadScriptSecurity(scriptType);
                 }
             }
         }
@@ -2214,11 +2226,12 @@ public class JSVGViewerFrame
                                     ParsedURL scriptURL,
                                     ParsedURL docURL) throws SecurityException {
             ScriptSecurity s = getScriptSecurity(scriptType,
-                                                 scriptURL,
-                                                 docURL);
+                                                     scriptURL,
+                                                     docURL);
+
             if (s != null) {
                 s.checkLoadScript();
-            }
+            } 
         }
 
         /**
@@ -2235,12 +2248,17 @@ public class JSVGViewerFrame
         public ExternalResourceSecurity 
             getExternalResourceSecurity(ParsedURL resourceURL,
                                         ParsedURL docURL){
-            if (application.constrainExternalResourceOrigin()) {
-                return new DefaultExternalResourceSecurity(resourceURL, 
-                                                           docURL);
-            } else {
+            switch(application.getAllowedExternalResourceOrigin()) {
+            case ResourceOrigin.ANY:
                 return new RelaxedExternalResourceSecurity(resourceURL,
                                                            docURL);
+            case ResourceOrigin.DOCUMENT:
+                return new DefaultExternalResourceSecurity(resourceURL,
+                                                           docURL);
+            case ResourceOrigin.EMBEDED:
+                return new EmbededExternalResourceSecurity(resourceURL);
+            default:
+                return new NoLoadExternalResourceSecurity();
             }
         }
 
@@ -2270,7 +2288,6 @@ public class JSVGViewerFrame
                 s.checkLoadExternalResource();
             }
         }
-        
     }
 
     /**

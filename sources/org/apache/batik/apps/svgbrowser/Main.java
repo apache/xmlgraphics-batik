@@ -185,10 +185,10 @@ public class Main implements Application {
                      Boolean.TRUE);
         defaults.put(PreferenceDialog.PREFERENCE_KEY_LOAD_ECMASCRIPT,
                      Boolean.TRUE);
-        defaults.put(PreferenceDialog.PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN,
-                     Boolean.TRUE);
-        defaults.put(PreferenceDialog.PREFERENCE_KEY_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN,
-                     Boolean.FALSE);
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_ALLOWED_SCRIPT_ORIGIN,
+                     new Integer(ResourceOrigin.DOCUMENT));
+        defaults.put(PreferenceDialog.PREFERENCE_KEY_ALLOWED_EXTERNAL_RESOURCE_ORIGIN,
+                     new Integer(ResourceOrigin.ANY));
 	
         securityEnforcer 
             = new ApplicationSecurityEnforcer(this.getClass(),
@@ -582,20 +582,26 @@ public class Main implements Application {
     }
 
     /**
-     * Returns true if the script origin should be constrained
-     * to be the same as the corresponding document's origin.
+     * Returns the allowed origins for scripts.
+     * @see ResourceOrigin
      */
-    public boolean constrainScriptOrigin(){
-            return preferenceManager.getBoolean
-                (PreferenceDialog.PREFERENCE_KEY_CONSTRAIN_SCRIPT_ORIGIN);
+    public int getAllowedScriptOrigin() {
+        int ret = preferenceManager.getInteger
+            (PreferenceDialog.PREFERENCE_KEY_ALLOWED_SCRIPT_ORIGIN);
+
+        return ret;
     }
 
     /**
-     * Returns true if the external resource's origin should be 
-     * constrained to be the same as the corresponding document's origin
+     * Returns the allowed origins for external
+     * resources. 
+     * @see ResourceOrigin.
      */
-    public boolean constrainExternalResourceOrigin() {
-            return preferenceManager.getBoolean
-                (PreferenceDialog.PREFERENCE_KEY_CONSTRAIN_EXTERNAL_RESOURCE_ORIGIN);
+    public int getAllowedExternalResourceOrigin() {
+        int ret = preferenceManager.getInteger
+            (PreferenceDialog.PREFERENCE_KEY_ALLOWED_EXTERNAL_RESOURCE_ORIGIN);
+
+        return ret;
     }
+
 }

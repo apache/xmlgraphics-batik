@@ -391,8 +391,7 @@ public class ExternalResourcesTest extends AbstractTest {
         public ExternalResourceSecurity 
             getExternalResourceSecurity(ParsedURL resourcePURL,
                                         ParsedURL docPURL){
-            return new NoLoadExternalResourceSecurity(resourcePURL,
-                                                      docPURL);
+            return new NoLoadExternalResourceSecurity();
             
         }
 

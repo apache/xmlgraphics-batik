@@ -2074,6 +2074,7 @@ public class JSVGComponent extends JGVTComponent {
                 Query q = new Query();
                 invokeAndWait(q);
                 if (q.se != null) {
+                    q.se.fillInStackTrace();
                     throw q.se;
                 }
             }

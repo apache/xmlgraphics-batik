@@ -245,12 +245,14 @@ public class SelfContainedSVGOnLoadTest extends AbstractTest {
             scriptEnvironment.loadScripts();
             scriptEnvironment.dispatchSVGLoadEvent();
         } catch (BridgeException e){
+            e.printStackTrace();
             report.setErrorCode(ERROR_WHILE_PROCESSING_SVG_DOCUMENT);
             report.addDescriptionEntry(ENTRY_KEY_ERROR_DESCRIPTION,
                                        e.getMessage());
             report.setPassed(false);
             return report;
         } catch(Exception e){
+            e.printStackTrace();
             report.setErrorCode(ERROR_WHILE_PROCESSING_SVG_DOCUMENT);
             report.addDescriptionEntry(ENTRY_KEY_ERROR_DESCRIPTION,
                                        e.getMessage());
