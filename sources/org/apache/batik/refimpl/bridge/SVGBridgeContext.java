@@ -63,6 +63,9 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, TAG_SVG,
                   new SVGSVGElementBridge());
 
+        putBridge(SVG_NAMESPACE_URI, TAG_SWITCH,
+                  new SVGSwitchElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, TAG_TEXT,
                   new SVGTextElementBridge());
     }

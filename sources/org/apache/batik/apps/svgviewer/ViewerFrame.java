@@ -73,6 +73,7 @@ import org.apache.batik.util.SVGFileFilter;
 import org.apache.batik.util.SVGUtilities;
 
 import org.apache.batik.util.gui.DOMViewer;
+import org.apache.batik.util.gui.LanguageChangeHandler;
 import org.apache.batik.util.gui.LanguageDialog;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;
@@ -99,7 +100,8 @@ import org.w3c.dom.svg.SVGSVGElement;
 public class ViewerFrame
     extends    JFrame
     implements ActionMap,
-               UserAgent {
+               UserAgent,
+               LanguageChangeHandler {
     // The actions names.
     public final static String OPEN_ACTION        = "OpenAction";
     public final static String OPEN_PAGE_ACTION   = "OpenPageAction";
@@ -233,9 +235,19 @@ public class ViewerFrame
     protected boolean isRunning;
 
     /**
-     * Is the windows has a fixed size?
+     * Has the windows a fixed size?
      */
     protected boolean fixedSize;
+
+    /**
+     * The user languages.
+     */
+    protected String userLanguages = "en";
+
+    /**
+     * The user style sheet URI.
+     */
+    protected String userStyleSheetURI;
 
     /**
      * Creates a new ViewerFrame object.
@@ -260,8 +272,7 @@ public class ViewerFrame
         uriChooser.setFileFilter(new SVGFileFilter());
 
         // Create the SVG canvas.
-        canvas = new JSVGCanvas();
-        //canvas.setSVGUserAgent(this);
+        canvas = new JSVGCanvas(this);
 
         listeners.put(OPEN_ACTION,        new OpenAction());
         listeners.put(OPEN_PAGE_ACTION,   new OpenPageAction());
@@ -316,6 +327,7 @@ public class ViewerFrame
 
         // Create the language dialog
         languageDialog = new LanguageDialog(this);
+        languageDialog.setLanguageChangeHandler(this);
 
         panel.add("Center", canvas);
         panel.revalidate();
@@ -365,6 +377,13 @@ public class ViewerFrame
         return thread;
     }
 
+    /**
+     * Called when the language settings change.
+     */
+    public void languageChanged(String lang) {
+        userLanguages = lang;
+    }
+
     // UserAgent ///////////////////////////////////////////////////
 
     /**
@@ -387,6 +406,21 @@ public class ViewerFrame
      */
     public float getPixelToMM() {
         return 0.33f;
+    }
+
+    /**
+     * Returns the language settings.
+     */
+    public String getLanguages() {
+        return userLanguages;
+    }
+
+    /**
+     * Returns the user stylesheet uri.
+     * @return null if no user style sheet was specified.
+     */
+    public String getUserStyleSheetURI() {
+        return userStyleSheetURI;
     }
 
     /**
@@ -699,7 +733,7 @@ public class ViewerFrame
             Dimension ld = languageDialog.getSize();
             languageDialog.setLocation(fr.x + (fr.width  - ld.width) / 2,
                                        fr.y + (fr.height - ld.height) / 2);
-            //languageDialog.setLanguages(userLanguages);
+            languageDialog.setLanguages(userLanguages);
             languageDialog.show();
         }
     }

@@ -117,18 +117,22 @@ public class SVGOMDocument
         factories.put(TAG_DEFS,             new DefsElementFactory());
         factories.put(TAG_DESC,             new DescElementFactory());
         factories.put(TAG_ELLIPSE,          new EllipseElementFactory());
-        factories.put(TAG_FE_BLEND,              new FeBlendElementFactory());
-        factories.put(TAG_FE_COLOR_MATRIX,       new FeColorMatrixElementFactory());
-        factories.put(TAG_FE_COMPONENT_TRANSFER, new FeComponentTransferElementFactory());
-        factories.put(TAG_FE_DIFFUSE_LIGHTING,   new FeDiffuseLightingElementFactory());
-        factories.put(TAG_FE_DISPLACEMENT_MAP,   new FeDisplacementMapElementFactory());
+        factories.put(TAG_FE_BLEND,         new FeBlendElementFactory());
+        factories.put(TAG_FE_COLOR_MATRIX,  new FeColorMatrixElementFactory());
+        factories.put(TAG_FE_COMPONENT_TRANSFER,
+                      new FeComponentTransferElementFactory());
+        factories.put(TAG_FE_DIFFUSE_LIGHTING,
+                      new FeDiffuseLightingElementFactory());
+        factories.put(TAG_FE_DISPLACEMENT_MAP,
+                      new FeDisplacementMapElementFactory());
         factories.put(TAG_FE_FLOOD,         new FeFloodElementFactory());
         factories.put(TAG_FE_GAUSSIAN_BLUR, new FeGaussianBlurElementFactory());
         factories.put(TAG_FE_IMAGE,         new FeImageElementFactory());
         factories.put(TAG_FE_MERGE,         new FeMergeElementFactory());
         factories.put(TAG_FE_MORPHOLOGY,    new FeMorphologyElementFactory());
         factories.put(TAG_FE_OFFSET,        new FeOffsetElementFactory());
-        factories.put(TAG_FE_SPECULAR_LIGHTING,  new FeSpecularLightingElementFactory());
+        factories.put(TAG_FE_SPECULAR_LIGHTING,
+                      new FeSpecularLightingElementFactory());
         factories.put(TAG_FE_TILE,          new FeTileElementFactory());
         factories.put(TAG_FE_TURBULENCE,    new FeTurbulenceElementFactory());
         factories.put(TAG_FILTER,           new FilterElementFactory());
@@ -637,7 +641,8 @@ public class SVGOMDocument
     /**
      * To create a 'feComponentTransfer' element.
      */
-    protected class FeComponentTransferElementFactory implements ElementFactory {
+    protected class FeComponentTransferElementFactory
+        implements ElementFactory {
         /**
          * Creates an instance of the associated element type.
          */

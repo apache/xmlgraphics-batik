@@ -50,7 +50,8 @@ public class SVGGElementBridge implements GraphicsNodeBridge, SVGConstants {
         Document document = element.getOwnerDocument();
         ViewCSS viewCSS = (ViewCSS) ((DocumentView) document).getDefaultView();
         CSSStyleDeclaration decl = viewCSS.getComputedStyle(element, null);
-        CSSPrimitiveValue val = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
+        CSSPrimitiveValue val =
+            (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
         Composite composite = CSSUtilities.convertOpacityToComposite(val);
         gn.setComposite(composite);
 

@@ -19,6 +19,8 @@ import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.bridge.Bridge;
 
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.SVGUtilities;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,6 +28,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.EventListener;
+import org.w3c.dom.svg.SVGTests;
 
 /**
  * This class is responsible for creating the GVT tree from
@@ -37,7 +40,7 @@ import org.w3c.dom.events.EventListener;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class ConcreteGVTBuilder implements GVTBuilder {
+public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
     /**
      * Builds a GVT tree using the specified context and SVG document.
      * @param ctx the context to use
@@ -59,9 +62,10 @@ public class ConcreteGVTBuilder implements GVTBuilder {
         GraphicsNode treeRoot;
         treeRoot = graphicsNodeBridge.createGraphicsNode(ctx, svgRoot);
 
-        if(graphicsNodeBridge.isContainer()){
-            buildComposite(ctx, (CompositeGraphicsNode)treeRoot, svgRoot);
-        }
+        buildComposite(ctx,
+                       (CompositeGraphicsNode)treeRoot,
+                       svgRoot.getFirstChild());
+
         // Adds the Listener on Attr Modified event.
         ((EventTarget)svgRoot).
             addEventListener("DOMAttrModified",
@@ -90,30 +94,53 @@ public class ConcreteGVTBuilder implements GVTBuilder {
     /**
      * Creates GraphicsNode from the children of the input SVGElement and
      * appends them to the input CompositeGraphicsNode.
-     * TODO: Limited implementation. Only handles groups and rectangles
-     * partially.
      */
-    private final void buildComposite(BridgeContext ctx,
-                                      CompositeGraphicsNode composite,
-                                      Element svgElement){
-        List gvtChildList = composite.getChildren();
-
-        for (Node child = svgElement.getFirstChild();
+    protected void buildComposite(BridgeContext ctx,
+                                  CompositeGraphicsNode composite,
+                                  Node first){
+        for (Node child = first;
              child != null;
              child = child.getNextSibling()) {
             if (child.getNodeType() == Node.ELEMENT_NODE) {
-                Bridge bridge = ctx.getBridge((Element)child);
-                if (bridge != null) {
-                    GraphicsNodeBridge gnb = (GraphicsNodeBridge)bridge;
-                    GraphicsNode childGVTNode
-                        = gnb.createGraphicsNode(ctx, (Element)child);
+                buildGraphicsNode(ctx, composite, (Element)child);
+            }
+        }
+    }
+
+    /**
+     * Build a single node.
+     */
+    protected void buildGraphicsNode(BridgeContext ctx,
+                                     CompositeGraphicsNode composite,
+                                     Element e) {
+        List gvtChildList = composite.getChildren();
+
+        Bridge bridge = ctx.getBridge(e);
+        if (bridge != null) {
+            GraphicsNodeBridge gnb = (GraphicsNodeBridge)bridge;
+            GraphicsNode childGVTNode
+                = gnb.createGraphicsNode(ctx, e);
                     
-                    if (childGVTNode != null) {
-                        gvtChildList.add(childGVTNode);
-                        if (gnb.isContainer()) {
-                            buildComposite(ctx,
-                                           (CompositeGraphicsNode)childGVTNode,
-                                           (Element)child);
+            gvtChildList.add(childGVTNode);
+            if (gnb.isContainer()) {
+                buildComposite(ctx,
+                               (CompositeGraphicsNode)childGVTNode,
+                               e.getFirstChild());
+            } else if (e.getLocalName().equals(TAG_SWITCH)) {
+                for (Node n = e.getFirstChild();
+                     n != null;
+                     n = n.getNextSibling()) {
+                    if (n.getNodeType() == Node.ELEMENT_NODE) {
+                        if (n instanceof SVGTests) {
+                            if (SVGUtilities.matchUserAgent
+                                ((Element)n,
+                                 ctx.getUserAgent())) {
+                                buildGraphicsNode
+                                    (ctx,
+                                     (CompositeGraphicsNode)childGVTNode,
+                                     (Element)n);
+                                break;
+                            }
                         }
                     }
                 }
