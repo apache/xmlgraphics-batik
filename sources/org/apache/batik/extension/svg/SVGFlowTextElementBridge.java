@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.events.EventTarget;
 
 import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeException;
@@ -29,6 +30,9 @@ import org.apache.batik.bridge.SVGTextElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.TextUtilities;
 import org.apache.batik.bridge.UnitProcessor;
+import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.SVGAElementBridge;
+
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.TextNode;
@@ -454,12 +458,13 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
 
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
-                if (n.getNamespaceURI() != getNamespaceURI()) {
+                // System.out.println("Element: " + n);
+                if ((n.getNamespaceURI() != getNamespaceURI()) &&
+                    (n.getNamespaceURI() != SVG_NAMESPACE_URI)) {
                     break;
                 }
                 
                 nodeElement = (Element)n;
-
                 String ln = n.getLocalName();
                 if (ln.equals(BATIK_EXT_FLOW_LINE_TAG)) {
                     fillAttributedStringBuffer(ctx, nodeElement, 
@@ -468,10 +473,30 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
                     //                    " - '" +  asb + "'");
                     lnLocs.add(new Integer(asb.length()));
                 } else if (ln.equals(BATIK_EXT_FLOW_SPAN_TAG) ||
-                    ln.equals(SVG_ALT_GLYPH_TAG) ||
-                    ln.equals(SVG_A_TAG)) {
+                           ln.equals(SVG_ALT_GLYPH_TAG)) {
                     fillAttributedStringBuffer(ctx, nodeElement,
                                                false, asb, lnLocs);
+                } else if (ln.equals(SVG_A_TAG)) {
+                    EventTarget target = (EventTarget)nodeElement;
+                    UserAgent ua = ctx.getUserAgent();
+                    target.addEventListener
+                        (SVG_EVENT_CLICK, 
+                         new SVGAElementBridge.AnchorListener(ua),
+                         false);
+                    
+                    target.addEventListener
+                        (SVG_EVENT_MOUSEOVER,
+                         new SVGAElementBridge.CursorMouseOverListener(ua),
+                         false);
+                    
+                    target.addEventListener
+                        (SVG_EVENT_MOUSEOUT,
+                         new SVGAElementBridge.CursorMouseOutListener(ua),
+                         false);
+                    fillAttributedStringBuffer(ctx,
+                                               nodeElement,
+                                               false,
+                                               asb, lnLocs);
                 } else if (ln.equals(SVG_TREF_TAG)) {
                     String uriStr = XLinkSupport.getXLinkHref((Element)n);
                     Element ref = ctx.getReferencedElement((Element)n, uriStr);
@@ -485,7 +510,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
                         Map m = getAttributeMap(ctx, nodeElement, null);
                         asb.append(s, m);
                     }
-                }
+                } 
                 break;
                 
             case Node.TEXT_NODE:
