@@ -507,25 +507,26 @@ public abstract class AbstractElement
      */
     public class NamedNodeHashMap implements NamedNodeMap, Serializable {
 
-	/**
-	 * The place where the nodes in the anonymous namespace are stored.
-	 */
-	protected HashTable table = new HashTable(3);
+        /**
+         * The initial capacity
+         */
+        protected final static int INITIAL_CAPACITY = 3;
 
-	/**
-	 * The place where the the nodes that use namespaces are stored.
-	 */
-	protected HashTable tableNS;
-
-	/**
-	 * The current namespace URI.
-	 */
-	public String namespaceURI;
-
+        /**
+         * The underlying array
+         */
+        protected Entry[] table;
+	    
+        /**
+         * The number of entries
+         */
+        protected int count;
+	    
 	/**
 	 * Creates a new NamedNodeHashMap object.
 	 */
 	public NamedNodeHashMap() {
+            table = new Entry[INITIAL_CAPACITY];
 	}
 
 	/**
@@ -536,7 +537,7 @@ public abstract class AbstractElement
 	    if (name == null) {
 		return null;
 	    }
-	    return (Node)table.get(name);
+	    return get(null, name);
 	}
 
 	/**
@@ -549,7 +550,7 @@ public abstract class AbstractElement
 	    }
 	    checkNode(arg);
 
-	    return setNamedItem(arg.getNodeName(), arg);
+	    return setNamedItem(null, arg.getNodeName(), arg);
 	}
 
 	/**
@@ -557,64 +558,37 @@ public abstract class AbstractElement
 	 * org.w3c.dom.NamedNodeMap#removeNamedItem(String)}.
 	 */
 	public Node removeNamedItem(String name) throws DOMException {
-	    if (isReadonly()) {
-		throw createDOMException
-                    (DOMException.NO_MODIFICATION_ALLOWED_ERR,
-                     "readonly.node.map",
-                     new Object[] {});
-	    }
-	    if (name == null) {
-		throw createDOMException(DOMException.NOT_FOUND_ERR,
-					 "attribute.missing",
-					 new Object[] { "" });
-	    }
-	    AbstractAttr n = (AbstractAttr)table.remove(name);
-	    if (n == null) {
-		throw createDOMException(DOMException.NOT_FOUND_ERR,
-					 "attribute.missing",
-					 new Object[] { name });
-	    }
-	    n.setOwnerElement(null);
-	    
-	    // Mutation event
-	    fireDOMAttrModifiedEvent(name, n.getNodeValue(), "");
-	    return n;
+	    return removeNamedItemNS(null, name);
 	}
 
 	/**
 	 * <b>DOM</b>: Implements {@link org.w3c.dom.NamedNodeMap#item(int)}.
 	 */
 	public Node item(int index) {
-	    int i = table.size();
-	    if (index < i) {
-		return (Node)table.item(index);
-	    }
-	    index -= i;
-	    if (tableNS != null) {
-		for (int k = 0; k < tableNS.size(); k++) {
-		    NamedNodeHashMap hm = (NamedNodeHashMap)tableNS.item(k);
-		    i = hm.getLength();
-		    if (index < i) {
-			return (Node)hm.item(index);
-		    }
-		    index -= i;
-		}
-	    }
-	    return null;
+            if (index < 0 || index >= count) {
+                return null;
+            }
+            int j = 0;
+            for (int i = 0; i < table.length; i++) {
+                Entry e = table[i];
+                if (e == null) {
+                    continue;
+                }
+                do {
+                    if (j++ == index) {
+                        return e.value;
+                    }
+                    e = e.next;
+                } while (e != null);
+            }
+            return null;
 	}
 
 	/**
 	 * <b>DOM</b>: Implements {@link org.w3c.dom.NamedNodeMap#getLength()}.
 	 */
 	public int getLength() {
-	    int result = table.size();
-	    if (tableNS != null) {
-		for (int i = 0; i < tableNS.size(); i++) {
-		    NamedNodeHashMap hm = (NamedNodeHashMap)tableNS.item(i);
-		    result += hm.getLength();
-		}
-	    }
-	    return result;
+            return count;
 	}
 
 	/**
@@ -622,18 +596,7 @@ public abstract class AbstractElement
 	 * org.w3c.dom.NamedNodeMap#getNamedItemNS(String,String)}.
 	 */
 	public Node getNamedItemNS(String namespaceURI, String localName) {
-	    if (namespaceURI == null) {
-		return getNamedItem(localName);
-	    }
-	    if (tableNS == null) {
-		return null;
-	    }
-	    NamedNodeHashMap attr;
-            attr = (NamedNodeHashMap)tableNS.get(namespaceURI);
-	    if (attr == null) {
-		return null;
-	    }
-	    return attr.getNamedItem(localName);
+            return get(namespaceURI, localName);
 	}
 
 	/**
@@ -645,20 +608,10 @@ public abstract class AbstractElement
 		return null;
 	    }
 	    String nsURI = arg.getNamespaceURI();
-	    if (nsURI == null) {
-		return setNamedItem(arg);
-	    }
-	    checkNode(arg);
-
-	    if (tableNS == null) {
-		tableNS = new HashTable(3);
-	    }
-	    NamedNodeHashMap attr = (NamedNodeHashMap)tableNS.get(nsURI);
-	    if (attr == null) {
-		tableNS.put(nsURI, attr = new NamedNodeHashMap());
-		attr.namespaceURI = nsURI;
-	    }
-	    return attr.setNamedItem(arg.getLocalName(), arg);
+            return setNamedItem(nsURI,
+                                (nsURI == null) 
+                                ? arg.getNodeName()
+                                : arg.getLocalName(), arg);
 	}
 
 	/**
@@ -667,36 +620,36 @@ public abstract class AbstractElement
 	 */
 	public Node removeNamedItemNS(String namespaceURI, String localName)
 	    throws DOMException {
-	    if (namespaceURI == null) {
-		return removeNamedItem(localName);
-	    }
 	    if (isReadonly()) {
 		throw createDOMException
                     (DOMException.NO_MODIFICATION_ALLOWED_ERR,
                      "readonly.node.map",
                      new Object[] {});
 	    }
-	    if (localName == null || tableNS == null) {
+	    if (localName == null) {
+		throw createDOMException(DOMException.NOT_FOUND_ERR,
+					 "attribute.missing",
+					 new Object[] { "" });
+	    }
+	    AbstractAttr n = (AbstractAttr)remove(namespaceURI, localName);
+	    if (n == null) {
 		throw createDOMException(DOMException.NOT_FOUND_ERR,
 					 "attribute.missing",
 					 new Object[] { localName });
 	    }
-	    NamedNodeHashMap attr;
-            attr = (NamedNodeHashMap)tableNS.get(namespaceURI);
-	    if (attr == null) {
-		throw createDOMException(DOMException.NOT_FOUND_ERR,
-					 "attribute.missing",
-					 new Object[] { localName });
-	    }
-	    return attr.removeNamedItem(localName);
+	    n.setOwnerElement(null);
+	    
+	    // Mutation event
+	    fireDOMAttrModifiedEvent(n.getNodeName(), n.getNodeValue(), "");
+	    return n;
 	}
 
 	/**
 	 * Adds a node to the map.
  	 */
-	public Node setNamedItem(String name, Node arg)  throws DOMException {
+	public Node setNamedItem(String ns, String name, Node arg)  throws DOMException {
 	    ((AbstractAttr)arg).setOwnerElement(AbstractElement.this);
-	    AbstractAttr result = (AbstractAttr)table.put(name, arg);
+	    AbstractAttr result = (AbstractAttr)put(ns, name, arg);
 
 	    if (result != null) {
 		result.setOwnerElement(null);
@@ -736,6 +689,103 @@ public abstract class AbstractElement
 	    }
 	}
 
+        /**
+         * Gets the value of a variable
+         * @return the value or null
+         */
+        protected Node get(String ns, String nm) {
+            int hash  = hashCode(ns, nm) & 0x7FFFFFFF;
+            int index = hash % table.length;
+	
+            for (Entry e = table[index]; e != null; e = e.next) {
+                if ((e.hash == hash) && e.match(ns, nm)) {
+                    return e.value;
+                }
+            }
+            return null;
+        }
+    
+        /**
+         * Sets a new value for the given variable
+         * @return the old value or null
+         */
+        protected Node put(String ns, String nm, Node value) {
+            int hash  = hashCode(ns, nm) & 0x7FFFFFFF;
+            int index = hash % table.length;
+	
+            for (Entry e = table[index]; e != null; e = e.next) {
+                if ((e.hash == hash) && e.match(ns, nm)) {
+                    Node old = e.value;
+                    e.value = value;
+                    return old;
+                }
+            }
+	
+            // The key is not in the hash table
+            int len = table.length;
+            if (count++ >= (len * 3) >>> 2) {
+                rehash();
+                index = hash % table.length;
+            }
+            
+            Entry e = new Entry(hash, ns, nm, value, table[index]);
+            table[index] = e;
+            return null;
+        }
+
+        /**
+         * Removes an entry from the table.
+         * @return the value or null.
+         */
+        protected Node remove(String ns, String nm) {
+            int hash  = hashCode(ns, nm) & 0x7FFFFFFF;
+            int index = hash % table.length;
+	
+            Entry p = null;
+            for (Entry e = table[index]; e != null; e = e.next) {
+                if ((e.hash == hash) && e.match(ns, nm)) {
+                    Node result = e.value;
+                    if (p == null) {
+                        table[index] = e.next;
+                    } else {
+                        p.next = e.next;
+                    }
+                    count--;
+                    return result;
+                }
+                p = e;
+            }
+            return null;
+        }
+
+        /**
+         * Rehash the table
+         */
+        protected void rehash () {
+            Entry[] oldTable = table;
+	
+            table = new Entry[oldTable.length * 2 + 1];
+	
+            for (int i = oldTable.length-1; i >= 0; i--) {
+                for (Entry old = oldTable[i]; old != null;) {
+                    Entry e = old;
+                    old = old.next;
+                    
+                    int index = e.hash % table.length;
+                    e.next = table[index];
+                    table[index] = e;
+                }
+            }
+        }
+
+        /**
+         * Computes a hash code corresponding to the given strings. 
+         */
+        protected int hashCode(String ns, String nm) {
+            int result = (ns == null) ? 0 : ns.hashCode();
+            return result ^ nm.hashCode();
+        }
+
         // Serialization ///////////////////////////////////////////////////
 
         // A standard write is enough.
@@ -755,4 +805,61 @@ public abstract class AbstractElement
             }
         }
     }
+
+    /**
+     * To manage collisions in the attributes map.
+     */
+    protected static class Entry implements Serializable {
+
+        /**
+         * The hash code
+         */
+        public int hash;
+	
+        /**
+         * The namespace URI
+         */
+        public String namespaceURI;
+	
+        /**
+         * The node name.
+         */
+        public String name;
+        
+        /**
+         * The value
+         */
+        public Node value;
+	
+        /**
+         * The next entry
+         */
+        public Entry next;
+	
+        /**
+         * Creates a new entry
+         */
+        public Entry(int hash, String ns, String nm, Node value, Entry next) {
+            this.hash = hash;
+            this.namespaceURI = ns;
+            this.name = nm;
+            this.value = value;
+            this.next = next;
+        }
+        
+        /**
+         * Whether this entry match the given keys.
+         */
+        public boolean match(String ns, String nm) {
+            if (namespaceURI != null) {
+                if (!namespaceURI.equals(ns)) {
+                    return false;
+                }
+            } else if (ns != null) {
+                return false;
+            }
+            return name.equals(nm);
+        }
+    }
+
 }

@@ -397,11 +397,11 @@ public abstract class SVGOMElement
 	/**
 	 * Adds a node to the map.
  	 */
-	public Node setNamedItem(String name, Node arg)  throws DOMException {
-	    Attr result = (Attr)super.setNamedItem(name, arg);
+	public Node setNamedItem(String ns, String name, Node arg)  throws DOMException {
+	    Attr result = (Attr)super.setNamedItem(ns, name, arg);
 
 	    if (liveAttributeValues != null) {
-		HashMap hm = (HashMap)liveAttributeValues.get(namespaceURI);
+		HashMap hm = (HashMap)liveAttributeValues.get(ns);
 		if (hm != null) {
 		    WeakReference wr = (WeakReference)hm.get(name);
 		    LiveAttributeValue lav;
@@ -423,53 +423,40 @@ public abstract class SVGOMElement
 							     (String)name);
 	    attr.setValue((String)value);
 	    ((AbstractAttr)attr).setSpecified(false);
-	    if (nsURI == null) {
-		setNamedItem(name, attr);
-	    } else {
-		if (tableNS == null) {
-		    tableNS = new HashTable();
-		}
-		NamedNodeHashMap attrs = (NamedNodeHashMap)tableNS.get(nsURI);
-		if (attrs == null) {
-		    tableNS.put(nsURI, attrs = new NamedNodeHashMap());
-		    attrs.namespaceURI = nsURI;
-		}
-		attrs.setNamedItem(attr.getLocalName(), attr);
-	    }
+            setNamedItemNS(attr);
 	}
 
-        /**
-         * <b>DOM</b>: Implements {@link
-         * org.w3c.dom.NamedNodeMap#removeNamedItem(String)}.
-         */
-        public Node removeNamedItem(String name) throws DOMException {
-            if (isReadonly()) {
+ 	/**
+	 * <b>DOM</b>: Implements {@link
+	 * org.w3c.dom.NamedNodeMap#removeNamedItemNS(String,String)}.
+	 */
+	public Node removeNamedItemNS(String namespaceURI, String localName)
+	    throws DOMException {
+	    if (isReadonly()) {
 		throw createDOMException
                     (DOMException.NO_MODIFICATION_ALLOWED_ERR,
                      "readonly.node.map",
                      new Object[] {});
-            }
-            if (name == null) {
-		throw createDOMException
-                    (DOMException.NOT_FOUND_ERR,
-                     "attribute.missing",
-                     new Object[] { "" });
-            }
-            AbstractAttr n = (AbstractAttr)table.remove(name);
-            if (n == null) {
+	    }
+	    if (localName == null) {
 		throw createDOMException(DOMException.NOT_FOUND_ERR,
 					 "attribute.missing",
-					 new Object[] { name });
-            }
-            n.setOwnerElement(null);
-            
+					 new Object[] { "" });
+	    }
+	    AbstractAttr n = (AbstractAttr)remove(namespaceURI, localName);
+	    if (n == null) {
+		throw createDOMException(DOMException.NOT_FOUND_ERR,
+					 "attribute.missing",
+					 new Object[] { localName });
+	    }
+	    n.setOwnerElement(null);
+	    
             // Reset the attribute to its default value
-            if (!resetAttribute(this.namespaceURI, name)) {
+            if (!resetAttribute(namespaceURI, localName)) {
                 // Mutation event
-                SVGOMElement.this.fireDOMAttrModifiedEvent
-                    (name, n.getNodeValue(), "");
+                fireDOMAttrModifiedEvent(n.getNodeName(), n.getNodeValue(), "");
             }
-	    return n;
+            return n;
 	}
     }
 }
