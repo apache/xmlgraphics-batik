@@ -15,53 +15,27 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.apache.batik.refimpl.transcoder.BatikHints;
-
 /**
- * The <tt>TranscodingHints</tt> class contains transcoding hints that
- * can be used by <tt>Transcoder</tt> class.
+ * The <tt>TranscodingHints</tt> class defines a way to pass
+ * transcoding parameters or options to any transcoders.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public class TranscodingHints implements Map, Cloneable {
 
-    /**
-     * Background color key.
-     */
-    public static final Key KEY_BACKGROUND =
-        BatikHints.KEY_BACKGROUND;
-
-    /**
-     * The XML parser classname key.
-     */
-    public static final Key KEY_XML_PARSER_CLASSNAME =
-        BatikHints.KEY_XML_PARSER_CLASSNAME;
-
-    /**
-     * The default viewport.
-     */
-    public static final Key KEY_DEFAULT_VIEWPORT =
-        BatikHints.KEY_DEFAULT_VIEWPORT;
-
-    /**
-     * The <tt>GVTBuilder</tt> implementation to use.
-     */
-    public static final Key KEY_GVT_BUILDER =
-        BatikHints.KEY_GVT_BUILDER;
-
     /** The transcoding hints. */
-    HashMap hintMap = new HashMap(7);
+    private HashMap hintMap = new HashMap(7);
 
     /**
-     * Constructs a new empty object.
+     * Constructs a new empty <tt>TranscodingHints</tt>.
      */
     public TranscodingHints() {
     }
 
     /**
-     * Constructs a new object with keys and values initialized from
-     * the specified Map object (which may be null).
+     * Constructs a new <tt>TranscodingHints</tt> with keys and values
+     * initialized from the specified Map object (which may be null).
      *
      * @param init a map of key/value pairs to initialize the hints
      *          or null if the object should be empty
@@ -73,7 +47,8 @@ public class TranscodingHints implements Map, Cloneable {
     }
 
     /**
-     * Constructs a new object with the specified key/value pair.
+     * Constructs a new <tt>TranscodingHints</tt> with the specified
+     * key/value pair.
      *
      * @param key the key of the particular hint property
      * @param value the value of the hint property specified with
@@ -265,13 +240,73 @@ public class TranscodingHints implements Map, Cloneable {
 
     /**
      * Defines the base type of all keys used to control various
-     * aspects of the trancoding operations.
+     * aspects of the transcoding operations. Instances of this class
+     * are immutable and unique which means that tests for matches can
+     * be made using the == operator instead of the more expensive
+     * equals() method.
      */
     public abstract static class Key {
 
+        private static Map identitymap = new HashMap(17);
+
+        private String getIdentity() {
+            return "Instance("+privatekey+") of "+getClass().getName();
+        }
+
+        private synchronized static void recordIdentity(Key k) {
+            Object identity = k.getIdentity();
+            if (identitymap.containsKey(identity)) {
+                throw new IllegalArgumentException(identity+
+                                                   " already registered");
+            }
+            identitymap.put(identity, k);
+        }
+
+        private int privatekey;
+
         /**
-         * Returns true if the specified object is a valid value for this key.
+         * Construcst a key using the indicated private key.  Each
+         * subclass of Key maintains its own unique domain of integer
+         * keys. No two objects with the same integer key and of the
+         * same specific subclass can be constructed.  An exception
+         * will be thrown if an attempt is made to construct another
+         * object of a given class with the same integer key as a
+         * pre-existing instance of that subclass of Key.
+         */
+        protected Key(int privatekey) {
+            this.privatekey = privatekey;
+            recordIdentity(this);
+        }
+
+        /**
+         * Returns true if the specified object is a valid value for
+         * this key, false otherwise.
          */
         public abstract boolean isCompatibleValue(Object val);
+
+        /**
+         * Returns the private integer key that the subclass
+         * instantiated this Key with.
+         */
+        protected final int intKey() {
+            return privatekey;
+        }
+
+        /**
+         * The hash code for all Key objects will be the same as the
+         * system identity code of the object as defined by the
+         * System.identityHashCode() method.
+         */
+        public final int hashCode() {
+            return System.identityHashCode(this);
+        }
+
+        /**
+         * The equals method for all Key objects will return the same
+         * result as the equality operator '=='.
+         */
+        public final boolean equals(Object o) {
+            return this == o;
+        }
     }
 }

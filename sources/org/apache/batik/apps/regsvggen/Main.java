@@ -453,7 +453,7 @@ public class Main {
 
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        
+
         g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
                                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
@@ -494,7 +494,7 @@ public class Main {
 
         // Second, create an instance of the generator and paint to it
 
-        ImageHandler imageHandler 
+        ImageHandler imageHandler
             = new ImageHandlerPNGEncoder(REGSVGGEN_DIRECTORY_NAME +
                                          FILE_SEPARATOR +
                                          REGSVGGEN_NEW_DIRECTORY_NAME,
@@ -788,10 +788,12 @@ public class Main {
             InputSource isource = new InputSource(inputURI);
             OutputStream ostream =
                 new BufferedOutputStream(new FileOutputStream(output));
-            transcoder.transcodeToStream(isource, ostream);
+            ((ImageTranscoder)transcoder).transcodeToStream(isource, ostream);
             ostream.flush();
             ostream.close();
         } catch(IOException ex) {
+            error("while writing "+inputURI+" to "+output+"\n"+ex.getMessage());
+        } catch(Exception ex) {
             error("while writing "+inputURI+" to "+output+"\n"+ex.getMessage());
         }
     }

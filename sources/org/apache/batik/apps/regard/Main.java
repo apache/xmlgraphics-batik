@@ -34,6 +34,7 @@ import org.apache.batik.refimpl.transcoder.ConcreteTranscoderFactory;
 import org.apache.batik.refimpl.transcoder.ImageTranscoder;
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderFactory;
+import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.util.awt.image.ImageLoader;
 import org.xml.sax.InputSource;
 
@@ -332,8 +333,8 @@ public class Main {
                 content += s;
                 break;
             }
-            
-            ImageTranscoder transcoder 
+
+            ImageTranscoder transcoder
                 = (ImageTranscoder)getTranscoder();
             BufferedImage bfDiff = transcoder.createImage(2*bfRef.getWidth(), 2*bfRef.getHeight());
 
@@ -473,10 +474,12 @@ public class Main {
             InputSource isource = new InputSource(inputURI);
             OutputStream ostream =
                 new BufferedOutputStream(new FileOutputStream(output));
-            transcoder.transcodeToStream(isource, ostream);
+            ((ImageTranscoder)transcoder).transcodeToStream(isource, ostream);
             ostream.flush();
             ostream.close();
         } catch(IOException ex) {
+            error("while writing "+inputURI+" to "+output+"\n"+ex.getMessage());
+        } catch(TranscoderException ex) {
             error("while writing "+inputURI+" to "+output+"\n"+ex.getMessage());
         }
     }

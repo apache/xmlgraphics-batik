@@ -20,9 +20,13 @@ import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.refimpl.bridge.ConcreteGVTBuilder;
 import org.apache.batik.transcoder.Transcoder;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.ErrorHandler;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -42,15 +46,20 @@ public abstract class AbstractTranscoder implements Transcoder {
     protected TranscodingHints hints = new TranscodingHints();
 
     public AbstractTranscoder() {
-        hints.put(TranscodingHints.KEY_XML_PARSER_CLASSNAME,
+        hints.put(BatikHints.KEY_XML_PARSER_CLASSNAME,
                   "org.apache.crimson.parser.XMLReaderImpl");
-        hints.put(TranscodingHints.KEY_GVT_BUILDER,
+        hints.put(BatikHints.KEY_GVT_BUILDER,
                   new org.apache.batik.refimpl.bridge.ConcreteGVTBuilder());
-        hints.put(TranscodingHints.KEY_DEFAULT_VIEWPORT,
+        hints.put(BatikHints.KEY_DEFAULT_VIEWPORT,
                   new Viewport() {
             public float getWidth() { return 640f; }
             public float getHeight() { return 480f; }
         });
+    }
+
+    public void transcode(TranscoderInput input, TranscoderOutput output)
+            throws TranscoderException {
+        throw new Error();
     }
 
     /**
@@ -69,6 +78,9 @@ public abstract class AbstractTranscoder implements Transcoder {
         }
     }
 
+    public abstract void transcodeToStream(Document document, OutputStream ostream)
+            throws TranscoderException;
+
     public TranscodingHints getTranscodingHints() {
         return new TranscodingHints(hints);
     }
@@ -82,30 +94,47 @@ public abstract class AbstractTranscoder implements Transcoder {
     }
 
     /**
+     * Sets the error handler this transcoder may use to report
+     * warnings and errors.
+     * @param handler to ErrorHandler to use
+     */
+    public void setErrorHandler(ErrorHandler handler) {
+        throw new Error();
+    }
+
+    /**
+     * Returns the error handler this transcoder uses to report
+     * warnings and errors, or null if any.
+     */
+    public ErrorHandler getErrorHandler() {
+        throw new Error();
+    }
+
+    /**
      * Returns the GVTBuilder to use.
      */
     protected GVTBuilder getGVTBuilder() {
-        return (GVTBuilder) hints.get(TranscodingHints.KEY_GVT_BUILDER);
+        return (GVTBuilder) hints.get(BatikHints.KEY_GVT_BUILDER);
     }
 
     /**
      * Returns the default Viewport to use.
      */
     protected Viewport getDefaultViewport() {
-        return (Viewport) hints.get(TranscodingHints.KEY_DEFAULT_VIEWPORT);
+        return (Viewport) hints.get(BatikHints.KEY_DEFAULT_VIEWPORT);
     }
 
     /**
      * Returns the Paint used to fill the background.
      */
     protected Paint getBackgroundPaint() {
-        return (Paint) hints.get(TranscodingHints.KEY_BACKGROUND);
+        return (Paint) hints.get(BatikHints.KEY_BACKGROUND);
     }
 
     /**
      * Returns the classname of the XML parser to use.
      */
     protected String getParserClassName() {
-        return (String) hints.get(TranscodingHints.KEY_XML_PARSER_CLASSNAME);
+        return (String) hints.get(BatikHints.KEY_XML_PARSER_CLASSNAME);
     }
 }

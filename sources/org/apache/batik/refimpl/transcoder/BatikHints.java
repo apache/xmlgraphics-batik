@@ -19,28 +19,28 @@ import org.apache.batik.transcoder.TranscodingHints;
 public class BatikHints {
 
     public static final TranscodingHints.Key KEY_XML_PARSER_CLASSNAME =
-            new TranscodingHints.Key() {
+            new TranscodingHints.Key(0) {
         public boolean isCompatibleValue(Object v) {
             return (v instanceof String);
         }
     };
 
     public static final TranscodingHints.Key KEY_BACKGROUND =
-            new TranscodingHints.Key() {
+            new TranscodingHints.Key(1) {
         public boolean isCompatibleValue(Object v) {
             return (v instanceof java.awt.Paint);
         }
     };
 
     public static final TranscodingHints.Key KEY_GVT_BUILDER =
-            new TranscodingHints.Key() {
+            new TranscodingHints.Key(2) {
         public boolean isCompatibleValue(Object v) {
             return (v instanceof org.apache.batik.bridge.GVTBuilder);
         }
     };
 
     public static final TranscodingHints.Key KEY_DEFAULT_VIEWPORT =
-            new TranscodingHints.Key() {
+            new TranscodingHints.Key(3) {
         public boolean isCompatibleValue(Object v) {
             return (v instanceof org.apache.batik.bridge.Viewport);
         }
