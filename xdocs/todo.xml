@@ -29,7 +29,6 @@
         <person name="Christophe Jolif" email="cjolif@ilog.fr" id="CJ" />
         <person name="Thierry Kormann" email="Thierry.Kormann@sophia.inria.fr" id="TK" />
         <person name="Emmanuel Tissandier" email="tissandi@ilog.fr" id="ET" />
-        <!-- add the developers here using ID as IDREF (make sure they are unique) -->
     </devs>
 
     <actions priority="high">
