@@ -84,11 +84,6 @@ public class EnableBackgroundFactory
 	    for (int i = 0; i < 4; i++) {
 		lu = lu.getNextLexicalUnit();
                 if (lu == null){
-                    // No viewport box for BG.
-                    if (i == 0) {
-                        return (ImmutableValue)v;
-                    }
-                    // Partial viewport box...
                     throw CSSDOMExceptionFactory.createDOMException
                         (DOMException.INVALID_ACCESS_ERR,
                          "unexpected.end.of.list", null);
