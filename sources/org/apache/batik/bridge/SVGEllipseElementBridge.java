@@ -87,6 +87,7 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
         }
 	// A value of zero disables rendering of the element
 	if (rx == 0) {
+            shapeNode.setShape(null);
 	    return;
 	}
 
@@ -102,6 +103,7 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
         }
 	// A value of zero disables rendering of the element
 	if (ry == 0) {
+            shapeNode.setShape(null);
 	    return;
 	}
 
@@ -121,9 +123,6 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
             attrName.equals(SVG_RY_ATTRIBUTE)) {
 
             buildShape(ctx, e, (ShapeNode)node);
-            if (((ShapeNode)node).getShape() == null) {
-                // <!> FIXME: disable the rendering
-            }
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }

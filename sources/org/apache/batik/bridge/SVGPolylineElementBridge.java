@@ -90,9 +90,6 @@ public class SVGPolylineElementBridge extends SVGDecoratedShapeElementBridge {
         String attrName = evt.getAttrName();
         if (attrName.equals(SVG_POINTS_ATTRIBUTE)) {
             buildShape(ctx, e, (ShapeNode)node);
-            if (((ShapeNode)node).getShape() == null) {
-                // <!> FIXME: disable the rendering
-            }
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }
