@@ -39,8 +39,7 @@ public class GraphicsNodeChangeEvent extends GraphicsNodeEvent {
      */
     public static final int CHANGE_COMPLETED = CHANGE_FIRST+1;
 
-    protected Rectangle2D from;
-    protected Rectangle2D to;
+    protected GraphicsNode changeSource;
 
     /**
      * Constructs a new graphics node event with the specified source and ID.
@@ -50,9 +49,6 @@ public class GraphicsNodeChangeEvent extends GraphicsNodeEvent {
     public GraphicsNodeChangeEvent(GraphicsNode source, int id) {
         super(source, id);
     }
-    public void setFrom(Rectangle2D from) { this.from = from; }
-    public void setTo  (Rectangle2D to)   { this.to = to; }
-
-    public Rectangle2D getFrom() { return from; }
-    public Rectangle2D getTo()   { return to; }
+    public void setChangeSrc(GraphicsNode gn) { this.changeSource = gn; }
+    public GraphicsNode getChangeSrc() { return changeSource; }
 }
