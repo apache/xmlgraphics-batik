@@ -2816,15 +2816,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         int visible = 0;
         int k = 0;
         StrokingTextPainter.TextRun run = null;
-
+        
         for( k = startIndex ; (visible < (charnum+1)) ; k++ ){
-
-            for( int l = 0 ; l < list.size() && (visible < (charnum+1)) ; l++ ){
+            if (k > aci.getEndIndex()) return null;
+            for( int l = 0 ; l < list.size() && (visible < (charnum+1)) ; l++){
                 run = (StrokingTextPainter.TextRun)list.get(l);
 
                 TextSpanLayout layout = run.getLayout();
 
-                if ( layout.hasCharacterIndex(k) ){
+                if ( layout.hasCharacterIndex(k) ) {
                     if ( layout.isOnATextPath() ){
                         
                         GVTGlyphVector vector = layout.getGlyphVector();

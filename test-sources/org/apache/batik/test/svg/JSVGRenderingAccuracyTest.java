@@ -99,17 +99,21 @@ public class JSVGRenderingAccuracyTest extends SamplesRenderingTest
     public JSVGRenderingAccuracyTest(){
     }
 
-    URL srcURL;
-    FileOutputStream fos;
-    TestReport failReport = null;
-    boolean done;
-    JSVGCanvasHandler handler = null;
+    protected URL srcURL;
+    protected FileOutputStream fos;
+    protected TestReport failReport = null;
+    protected boolean done;
+    protected JSVGCanvasHandler handler = null;
+
+    public JSVGCanvasHandler createCanvasHandler() {
+        return new JSVGCanvasHandler(this, this);
+    }
 
     public TestReport encode(URL srcURL, FileOutputStream fos) {
         this.srcURL = srcURL;
         this.fos    = fos;
 
-        handler = new JSVGCanvasHandler(this, this);
+        handler = createCanvasHandler();
         done = false;
         handler.runCanvas(srcURL.toString());
 

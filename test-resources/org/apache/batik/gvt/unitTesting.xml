@@ -59,17 +59,17 @@
     <!--                         Text Selection Tests                       -->
     <!-- ================================================================== -->
 
-    <test id="ts.latin" class="org.apache.batik.gvt.TextSelectionTest">
+    <test id="text.selection.latin" 
+    class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select most of the latin entry -->
         <arg class="java.lang.String"  
              value="samples/tests/spec/text/textBiDi.svg" />
         <arg class="java.lang.String"  value="latin" />
         <arg class="java.lang.Integer" value="0" />
         <arg class="java.lang.Integer" value="20" />
-        <arg class="java.lang.String"  value="ts.latin.txt" />
     </test>
 
-    <test id="ts.latin-ext" 
+    <test id="text.selection.latin-ext" 
           class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select most of the latin-extended entry -->
         <arg class="java.lang.String"  
@@ -77,50 +77,49 @@
         <arg class="java.lang.String"  value="latin-extended" />
         <arg class="java.lang.Integer" value="0" />
         <arg class="java.lang.Integer" value="15" />
-        <arg class="java.lang.String"  value="ts.latin-ext.txt" />
     </test>
 
-    <test id="ts.cyrillic" class="org.apache.batik.gvt.TextSelectionTest">
+    <test id="text.selection.cyrillic" 
+    class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select most of the cyrillic entry -->
         <arg class="java.lang.String"  
              value="samples/tests/spec/text/textBiDi.svg" />
         <arg class="java.lang.String"  value="cyrillic" />
         <arg class="java.lang.Integer" value="4" />
         <arg class="java.lang.Integer" value="24" />
-        <arg class="java.lang.String"  value="ts.cyrillic.txt" />
     </test>
 
-    <test id="ts.greek" class="org.apache.batik.gvt.TextSelectionTest">
+    <test id="text.selection.greek" 
+    class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select most of the greek entry -->
         <arg class="java.lang.String"  
              value="samples/tests/spec/text/textBiDi.svg" />
         <arg class="java.lang.String"  value="greek" />
         <arg class="java.lang.Integer" value="0" />
         <arg class="java.lang.Integer" value="35" />
-        <arg class="java.lang.String"  value="ts.greek.txt" />
     </test>
 
-    <test id="ts.hebrew" class="org.apache.batik.gvt.TextSelectionTest">
+    <test id="text.selection.hebrew" 
+    class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select just the hebrew part of entry -->
         <arg class="java.lang.String"  
              value="samples/tests/spec/text/textBiDi.svg" />
         <arg class="java.lang.String"  value="hebrew" />
         <arg class="java.lang.Integer" value="10" />
         <arg class="java.lang.Integer" value="20" />
-        <arg class="java.lang.String"  value="ts.hebrew.txt" />
     </test>
 
-    <test id="ts.arabic" class="org.apache.batik.gvt.TextSelectionTest">
+    <test id="text.selection.arabic" 
+    class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select most of the arabic entry -->
         <arg class="java.lang.String"  
              value="samples/tests/spec/text/textBiDi.svg" />
         <arg class="java.lang.String"  value="arabic" />
         <arg class="java.lang.Integer" value="5" />
         <arg class="java.lang.Integer" value="40" />
-        <arg class="java.lang.String"  value="ts.arabic.txt" />
     </test>
 
-    <test id="ts.svgpath.middle50" 
+    <test id="text.selection.svgpath.middle50" 
           class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select most of the arabic entry -->
         <arg class="java.lang.String"  
@@ -128,10 +127,9 @@
         <arg class="java.lang.String"  value="middle50" />
         <arg class="java.lang.Integer" value="1" />
         <arg class="java.lang.Integer" value="13" />
-        <arg class="java.lang.String"  value="ts.svgpath.middle50.txt" />
     </test>
 
-    <test id="ts.svgpath.start35" 
+    <test id="text.selection.svgpath.start35" 
           class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select most of the arabic entry -->
         <arg class="java.lang.String"  
@@ -139,10 +137,9 @@
         <arg class="java.lang.String"  value="start35" />
         <arg class="java.lang.Integer" value="0" />
         <arg class="java.lang.Integer" value="13" />
-        <arg class="java.lang.String"  value="ts.svgpath.start35.txt" />
     </test>
 
-    <test id="ts.vertpath.supersub" 
+    <test id="text.selection.vertpath.supersub" 
           class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select most of the arabic entry -->
         <arg class="java.lang.String"  
@@ -150,10 +147,9 @@
         <arg class="java.lang.String"  value="supersub" />
         <arg class="java.lang.Integer" value="3" />
         <arg class="java.lang.Integer" value="18" />
-        <arg class="java.lang.String"  value="ts.vertpath.supersub.txt" />
     </test>
 
-    <test id="ts.vertpath.beforeafter" 
+    <test id="text.selection.vertpath.beforeafter" 
           class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select most of the arabic entry -->
         <arg class="java.lang.String"  
@@ -161,10 +157,9 @@
         <arg class="java.lang.String"  value="beforeafter" />
         <arg class="java.lang.Integer" value="0" />
         <arg class="java.lang.Integer" value="28" />
-        <arg class="java.lang.String"  value="ts.vertpath.beforeafter.txt" />
     </test>
 
-    <test id="ts.vertpath.negpos" 
+    <test id="text.selection.vertpath.negpos" 
           class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select most of the arabic entry -->
         <arg class="java.lang.String"  
@@ -172,10 +167,9 @@
         <arg class="java.lang.String"  value="negpos" />
         <arg class="java.lang.Integer" value="3" />
         <arg class="java.lang.Integer" value="17" />
-        <arg class="java.lang.String"  value="ts.vertpath.negpos.txt" />
     </test>
 
-    <test id="ts.vert.orient0" 
+    <test id="text.selection.vert.orient0" 
           class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select vertical text with orientation 0 -->
         <arg class="java.lang.String"  
@@ -183,10 +177,9 @@
         <arg class="java.lang.String"  value="orient0" />
         <arg class="java.lang.Integer" value="3" />
         <arg class="java.lang.Integer" value="18" />
-        <arg class="java.lang.String"  value="ts.vert.orient0.txt" />
     </test>
 
-    <test id="ts.vert.orient90" 
+    <test id="text.selection.vert.orient90" 
           class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select vertical text with orientation 90 -->
         <arg class="java.lang.String"  
@@ -194,10 +187,9 @@
         <arg class="java.lang.String"  value="orient90" />
         <arg class="java.lang.Integer" value="3" />
         <arg class="java.lang.Integer" value="18" />
-        <arg class="java.lang.String"  value="ts.vert.orient90.txt" />
     </test>
 
-    <test id="ts.vert.orient180" 
+    <test id="text.selection.vert.orient180" 
           class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select vertical text with orientation 180 -->
         <arg class="java.lang.String"  
@@ -205,10 +197,9 @@
         <arg class="java.lang.String"  value="orient180" />
         <arg class="java.lang.Integer" value="3" />
         <arg class="java.lang.Integer" value="18" />
-        <arg class="java.lang.String"  value="ts.vert.orient180.txt" />
     </test>
 
-    <test id="ts.vert.orient270" 
+    <test id="text.selection.vert.orient270" 
           class="org.apache.batik.gvt.TextSelectionTest">
         <!-- Select vertical text with orientation 270 -->
         <arg class="java.lang.String"  
@@ -216,6 +207,5 @@
         <arg class="java.lang.String"  value="orient270" />
         <arg class="java.lang.Integer" value="3" />
         <arg class="java.lang.Integer" value="18" />
-        <arg class="java.lang.String"  value="ts.vert.orient270.txt" />
     </test>
 </testSuite>
