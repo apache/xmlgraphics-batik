@@ -254,6 +254,15 @@ public class SVGConverterTest extends DefaultTestSuite {
         addTest(t);
         t.setId("OperationTest.Bug4888");
 
+        t = new OperationTest(){
+                protected void configure(SVGConverter c){
+                    c.setDestinationType(DestinationType.PDF);
+                    c.setSources(new String[]{"samples/anne.svg"});
+                }
+            };
+        addTest(t);
+        t.setId("Operationtest.PDFTranscoding");
+        
         ///////////////////////////////////////////////////////////////////////
         // Add configuration error test. These tests check that the expected
         // error gets reported for a given mis-configuration
@@ -291,14 +300,6 @@ public class SVGConverterTest extends DefaultTestSuite {
         addTest(t);
         t.setId("ConfigErrorTest.ERROR_CANNOT_USE_DST_FILE");
 
-        t = new ConfigErrorTest(SVGConverter.ERROR_CANNOT_ACCESS_TRANSCODER){
-                protected void configure(SVGConverter c){
-                    c.setDestinationType(DestinationType.PDF);
-                }
-            };
-        addTest(t);
-        t.setId("ConfigErrorTest.ERROR_CANNOT_ACCESS_TRANCODER");
-        
         t = new ConfigErrorTest(SVGConverter.ERROR_SOURCE_SAME_AS_DESTINATION){
                 protected void configure(SVGConverter c){
                     c.setSources(new String[]{ "samples/anne.svg" });
