@@ -150,6 +150,7 @@ public class Main implements Application {
             f.mkdir();
             preferenceManager.setPreferenceDirectory(f.getCanonicalPath());
             preferenceManager.load();
+            setPreferences();
         } catch (Exception e) {
         }
     }
