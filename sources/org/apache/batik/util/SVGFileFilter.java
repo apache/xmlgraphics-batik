@@ -16,42 +16,32 @@ import javax.swing.filechooser.FileFilter;
  * with extention '.svg' or '.svgz'.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
- * @version $Id$ 
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
+ * @version $Id$
  */
-public class SVGFileFilter extends FileFilter{
+public class SVGFileFilter extends FileFilter {
     /**
      * Returns true if <tt>f</tt> is an SVG file
      */
-    public boolean accept(File f){
+    public boolean accept(File f) {
         boolean accept = false;
         String fileName = null;
-        if(f != null){
-            if( f.isDirectory() ){
+        if (f != null) {
+            if (f.isDirectory()) {
                 accept = true;
-            }
-            else{
+            } else {
                 fileName = f.getPath().toLowerCase();
-                
-                if(fileName != null 
-                   && 
-                   (
-                    (fileName.endsWith(".svg"))
-                    ||
-                    (fileName.endsWith(".svgz"))
-                    )
-                   ){
+                if (fileName.endsWith(".svg") || fileName.endsWith(".svgz"))
                     accept = true;
-                }
             }
         }
-
         return accept;
     }
 
     /**
      * Returns the file description
      */
-    public String getDescription(){
+    public String getDescription() {
         return ".svg, .svgz";
     }
 }
