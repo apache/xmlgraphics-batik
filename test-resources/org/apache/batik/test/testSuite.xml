@@ -1,23 +1,37 @@
 <testSuite name="regard">
-    <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" />
+		<!-- ======================================= -->
+		<!-- XMLTestReportProcessor is not fully     -->
+		<!-- functional yet.                         -->
+		<!-- ======================================= -->
+		<!-- <testReportProcessor class="org.apache.batik.test.xml.XMLTestReportProcessor" /> -->
 
+		<!-- ======================================= -->
+		<!-- Enter the email address and mail server -->
+		<!-- to use.                                 -->
+		<!-- ======================================= -->
     <testReportProcessor class="org.apache.batik.test.TestReportMailer">
-        <arg class="java.lang.String" value="vhardy@eng.sun.com" />
-        <arg class="java.lang.String" value="vhardy@eng.sun.com" />
-        <arg class="java.lang.String" value="jurassic.eng.sun.com" />
+        <arg class="java.lang.String" value="someone@somewhere.com" />
+        <arg class="java.lang.String" value="someoneElse@somewhereElse.com" />
+        <arg class="java.lang.String" value="mailServer@myprovider.com" />
     </testReportProcessor>
 
+		<!-- ========================================================================== -->
     <!-- Validates that the SVGRenderingAccuracyTest class is operating as expected -->
+		<!-- ========================================================================== -->
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTestValidator" />
 
+		
+		<!-- ========================================================================== -->
+		<!-- The following tests correspond to what regard used to do.                  -->
+		<!-- ========================================================================== -->
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
-        <arg class="java.net.URL" value="file:samples/anne.svg" />
-        <arg class="java.net.URL" value="file:samples/anne.png" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/anne.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/solaris/anne.png" />
     </test>
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
-        <arg class="java.net.URL" value="file:samples/batikFX.svg" />
-        <arg class="java.net.URL" value="file:samples/batikFX.png" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/samples/batikFX.svg" />
+        <arg class="java.net.URL" value="http://xml.apache.org/websrc/index.cgi/~checkout~/xml-batik/test-references/samples/solaris/batikFX.png" />
     </test>
 
 </testSuite>
