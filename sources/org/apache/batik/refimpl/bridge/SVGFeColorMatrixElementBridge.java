@@ -124,11 +124,17 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
             colorMatrix = ConcreteColorMatrixRable.buildMatrix(matrix);
             break;
         case ColorMatrixRable.TYPE_SATURATE:
-            float s = CSSUtilities.convertRatio(valuesStr);
+            float s = 1;
+            if (valuesStr.length() > 0) {
+                s = CSSUtilities.convertRatio(valuesStr);
+            }
             colorMatrix = ConcreteColorMatrixRable.buildSaturate(s);
             break;
         case ColorMatrixRable.TYPE_HUE_ROTATE:
-            float a = (float) (convertFloatValue(valuesStr) * Math.PI/180);
+            float a = 0; // default is 0
+            if (valuesStr.length() > 0) {
+                a = (float) (SVGUtilities.convertSVGNumber(ATTR_VALUES, valuesStr) * Math.PI/180);
+            }
             colorMatrix = ConcreteColorMatrixRable.buildHueRotate(a);
             break;
         case ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA:
@@ -168,23 +174,24 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
                                        new Object[] { value }));
         }
         int i = 0;
-        while(st.hasMoreTokens()){
-            String v = st.nextToken();
-            matrix[i/5][i%5] = convertFloatValue(v);
-            i++;
+        String v = "";
+        try {
+            while(st.hasMoreTokens()){
+                v = st.nextToken();
+                matrix[i/5][i%5] = Float.parseFloat(v);
+                i++;
+            }
+        } catch (NumberFormatException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feColorMatrix.value.invalid",
+                                       new Object[] { v }));
+
         }
 
         for(i=0; i<4; i++){
             matrix[i][4] *= 255;
         }
         return matrix;
-    }
-
-    /**
-     * Converts a float value
-     */
-    private static float convertFloatValue(String value){
-        return Float.parseFloat(value);
     }
 
     /**

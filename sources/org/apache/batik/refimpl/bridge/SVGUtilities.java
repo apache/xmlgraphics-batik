@@ -540,17 +540,40 @@ public class SVGUtilities implements SVGConstants {
     }
 
     /**
-     * Parses an SVG integer
+     * Parses an SVG integer.
+     *
+     * @param attrName the attribute that has the specified value
+     * @param numStr the integer value to parse
+     * @exception IllegalAttributeValueException if intStr is not a parsable
+     *                                           integer
      */
-    public static int convertSVGInteger(String intStr){
-        return Integer.parseInt(intStr);
+    public static int convertSVGInteger(String attrName, String intStr){
+        try {
+            return Integer.parseInt(intStr);
+        } catch (NumberFormatException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("integer.invalid",
+                                       new Object[] {intStr, attrName}));
+        }
     }
 
     /**
      * Parses an SVG number
+     *
+     * @param attrName the attribute that has the specified value
+     * @param numStr the float value to parse
+     * @exception IllegalAttributeValueException if intStr is not a parsable
+     *                                           float
      */
-    public static float convertSVGNumber(String numStr){
-        return Float.parseFloat(numStr);
+    public static float convertSVGNumber(String attrName, String numStr){
+        try {
+            return Float.parseFloat(numStr);
+        } catch (NumberFormatException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("float.invalid",
+                                       new Object[] {numStr, attrName}));
+
+        }
     }
 
     // ------------------------------------------------------------------------

@@ -82,14 +82,14 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
         String dxAttr = filterElement.getAttributeNS(null, ATTR_DX);
         float dx = 0; // default is 0
         if (dxAttr.length() != 0) {
-            dx = SVGUtilities.convertSVGNumber(dxAttr);
+            dx = SVGUtilities.convertSVGNumber(ATTR_DX, dxAttr);
         }
 
         // parse the dy attribute
         String dyAttr = filterElement.getAttributeNS(null, ATTR_DY);
         float dy = 0; // default is 0
         if (dyAttr.length() != 0) {
-            dy = SVGUtilities.convertSVGNumber(dyAttr);
+            dy = SVGUtilities.convertSVGNumber(ATTR_DY, dyAttr);
         }
 
         AffineTransform offsetTransform =

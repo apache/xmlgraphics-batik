@@ -215,38 +215,69 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
                     break;
                 case ComponentTransferFunction.TABLE:
                     {
-                        String tableValuesStr = elt.getAttributeNS(null, ATTR_TABLE_VALUES);
-                        float tableValues[] = convertTableValues(tableValuesStr);
-                        txfFunc = ConcreteComponentTransferFunction.getTableTransfer(tableValues);
+                        String tableValuesStr =
+                            elt.getAttributeNS(null, ATTR_TABLE_VALUES);
+                        if (tableValuesStr.length() == 0) { // default is IDENTITY
+                            txfFunc =
+                                ConcreteComponentTransferFunction.getIdentityTransfer();
+                        } else {
+                            float tableValues[] =
+                                convertTableValues(tableValuesStr);
+
+                            txfFunc = ConcreteComponentTransferFunction.getTableTransfer(tableValues);
+                        }
                     }
                     break;
                 case ComponentTransferFunction.DISCRETE:
                     {
-                        String tableValuesStr = elt.getAttributeNS(null, ATTR_TABLE_VALUES);
-                        float tableValues[] = convertTableValues(tableValuesStr);
-                        txfFunc = ConcreteComponentTransferFunction.getDiscreteTransfer(tableValues);
+                        String tableValuesStr =
+                            elt.getAttributeNS(null, ATTR_TABLE_VALUES);
+                        if (tableValuesStr.length() == 0) { // default is IDENTITY
+                            txfFunc =
+                                ConcreteComponentTransferFunction.getIdentityTransfer();
+                        } else {
+                            float tableValues[] =
+                                convertTableValues(tableValuesStr);
+
+                            txfFunc = ConcreteComponentTransferFunction.getDiscreteTransfer(tableValues);
+                        }
                     }
                     break;
                 case ComponentTransferFunction.LINEAR:
                     {
                         String slopeStr = elt.getAttributeNS(null, ATTR_SLOPE);
-                        float slope = 1;
+                        float slope = 1; // default is 1
                         if(slopeStr.length() > 0){
-                            slope = convertFloatValue(slopeStr);
+                            slope = SVGUtilities.convertSVGNumber(ATTR_SLOPE, slopeStr);
                         }
                         String interceptStr = elt.getAttributeNS(null, ATTR_INTERCEPT);
-                        float intercept = convertFloatValue(interceptStr);
+                        float intercept = 0; // default is 0
+                        if (interceptStr.length() > 0) {
+                            intercept = SVGUtilities.convertSVGNumber(ATTR_INTERCEPT, interceptStr);
+                        }
                         txfFunc = ConcreteComponentTransferFunction.getLinearTransfer(slope, intercept);
                     }
                     break;
                 case ComponentTransferFunction.GAMMA:
                     {
                         String amplitudeStr = elt.getAttributeNS(null, ATTR_AMPLITUDE);
-                        float amplitude = convertFloatValue(amplitudeStr);
+                        float amplitude = 1; // default is 1
+                        if (amplitudeStr.length() > 0) {
+                            amplitude = SVGUtilities.convertSVGNumber(ATTR_AMPLITUDE, amplitudeStr);
+                        }
+
                         String exponentStr = elt.getAttributeNS(null, ATTR_EXPONENT);
-                        float exponent = convertFloatValue(exponentStr);
+                        float exponent = 1; // default is 1
+                        if (exponentStr.length() > 0) {
+                            exponent = SVGUtilities.convertSVGNumber(ATTR_EXPONENT, exponentStr);
+                        }
+
                         String offsetStr = elt.getAttributeNS(null, ATTR_OFFSET);
-                        float offset = convertFloatValue(offsetStr);
+                        float offset = 0; // default is 0
+                        if (offsetStr.length() > 0) {
+                            offset = SVGUtilities.convertSVGNumber(ATTR_OFFSET, offsetStr);
+                        }
+
                         txfFunc = ConcreteComponentTransferFunction.getGammaTransfer(amplitude,
                                                                                      exponent,
                                                                                      offset);
@@ -269,19 +300,18 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
         StringTokenizer st = new StringTokenizer(value, " ,");
         float tableValues[] = new float[st.countTokens()];
         int i = 0;
-        while(st.hasMoreTokens()){
-            String v = st.nextToken();
-            tableValues[i++] = convertFloatValue(v);
+        String v = "";
+        try {
+            while(st.hasMoreTokens()){
+                v = st.nextToken();
+                tableValues[i++] = Float.parseFloat(v);
+            }
+        } catch(NumberFormatException ex) {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage("feComponentTransfer.value.invalid",
+                                       new Object[] { v }));
         }
-
         return tableValues;
-    }
-
-    /**
-     * Converts a float value
-     */
-    private static float convertFloatValue(String value){
-        return Float.parseFloat(value);
     }
 
     /**

@@ -73,9 +73,9 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
         // Extract standard deviation
         //
         String scaleStr = filterElement.getAttributeNS(null, ATTR_SCALE);
-        double scale = 0;
+        double scale = 0; // default is 0
         if (scaleStr.length() != 0) {
-            scale = Float.parseFloat(scaleStr);
+            scale = SVGUtilities.convertSVGNumber(ATTR_SCALE, scaleStr);
         }
 
         String xChannelSelectorStr

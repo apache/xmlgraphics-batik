@@ -92,14 +92,15 @@ public class SVGFeTurbulenceElementBridge implements FilterBridge,
             filterElement.getAttributeNS(null, ATTR_NUM_OCTAVES);
         int numOctaves = 1; // default is 1
         if (numOctavesAttr.length() != 0) {
-            numOctaves = SVGUtilities.convertSVGInteger(numOctavesAttr);
+            numOctaves = SVGUtilities.convertSVGInteger(ATTR_NUM_OCTAVES,
+                                                        numOctavesAttr);
         }
 
         // parse the seed attribute
         String seedAttr = filterElement.getAttributeNS(null, ATTR_SEED);
         int seed = 0;
         if (seedAttr.length() != 0) {
-            seed = (int) SVGUtilities.convertSVGNumber(seedAttr);
+            seed = (int) SVGUtilities.convertSVGNumber(ATTR_SEED, seedAttr);
         }
 
         // parse the stitchTiles attribute
