@@ -5,7 +5,8 @@
  * version 1.1, a copy of which has been included with this distribution in  *
  * the LICENSE file.                                                         *
  *****************************************************************************/
-package org.apache.batik.util.svg;
+
+package org.apache.batik.util;
 
 import java.io.OutputStream;
 import java.io.InputStream;
@@ -15,19 +16,19 @@ import java.io.EOFException;
 
 /**
  * This class implements a Base64 Character decoder as specified in RFC1113.
- * Unlike some other encoding schemes there is nothing in this encoding that 
+ * Unlike some other encoding schemes there is nothing in this encoding that
  * tells the decoder where a buffer starts or stops, so to use it you will need
  * to isolate your encoded data into a single chunk and then feed them
  * this decoder. The simplest way to do that is to read all of the encoded
  * data into a string and then use:
  * <pre>
- *	byte	mydata[];
- *	Base64Decoder base64 = new Base64Decoder();
+ *      byte    mydata[];
+ *      Base64Decoder base64 = new Base64Decoder();
  *
- *	mydata = base64.decodeBuffer(bufferString);
+ *      mydata = base64.decodeBuffer(bufferString);
  * </pre>
- * This will decode the String in <i>bufferString</i> and give you an array 
- * of bytes in the array <i>myData</i>. 
+ * This will decode the String in <i>bufferString</i> and give you an array
+ * of bytes in the array <i>myData</i>.
  *
  * On errors, this class throws a IOException with the following detail
  * strings:
@@ -37,15 +38,15 @@ import java.io.EOFException;
  * </pre>
  *
  * @author <a href="vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @author	Chuck McManis
+ * @author      Chuck McManis
  * @version $Id$
  *
- * @see		CharacterEncoder
- * @see		Base64Decoder
+ * @see         CharacterEncoder
+ * @see         Base64Decoder
  */
 
 public class Base64Decoder extends CharacterDecoder {
-	
+
     /** This class has 3 bytes per atom */
     int bytesPerAtom() {
         return (3);
@@ -78,8 +79,8 @@ public class Base64Decoder extends CharacterDecoder {
      * Decode one Base64 atom into 1, 2, or 3 bytes of data.
      */
     void decodeAtom(InputStream inStream, OutputStream outStream, int l) throws EOFException, IOException{
-        int	i;
-        byte	a = -1, b = -1, c = -1, d = -1;
+        int     i;
+        byte    a = -1, b = -1, c = -1, d = -1;
         StringBuffer s = new StringBuffer(4);
 
         decode_buffer[0] = (byte) inStream.read();
@@ -114,11 +115,11 @@ public class Base64Decoder extends CharacterDecoder {
         if ((l == 2) && (decode_buffer[3] != '=')) {
             throw new IOException("Base64Decoder: Bad Padding byte (2).");
         }
-        if ((l == 1) && 
+        if ((l == 1) &&
             ((decode_buffer[2] != '=') || (decode_buffer[3] != '='))) {
             throw new IOException("Base64Decoder: Bad Padding byte (1).");
         }
-	
+
         for (i = 0; i < 4; i++) s.append((char) decode_buffer[i]);
         switch (l) {
         case 1:
@@ -143,7 +144,7 @@ public class Base64Decoder extends CharacterDecoder {
      */
     void decodeLineSuffix(InputStream inStream, OutputStream outStream) throws EOFException, IOException{
         int c;
-	 
+
         while (true) {
             c = inStream.read();
             if (c == -1) {

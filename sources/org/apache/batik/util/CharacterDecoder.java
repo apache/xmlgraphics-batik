@@ -5,7 +5,8 @@
  * version 1.1, a copy of which has been included with this distribution in  *
  * the LICENSE file.                                                         *
  *****************************************************************************/
-package org.apache.batik.util.svg;
+
+package org.apache.batik.util;
 
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,15 +20,15 @@ import java.io.EOFException;
  * A character decoder is an algorithim for transforming 8 bit
  * binary data that has been encoded into text by a character
  * encoder, back into original binary form.
- * 
- * The character encoders, in general, have been structured 
+ *
+ * The character encoders, in general, have been structured
  * around a central theme that binary data can be encoded into
  * text that has the form:
  *
  * <pre>
- *	[Buffer Prefix]
- *	[Line Prefix][encoded data atoms][Line Suffix]
- *	[Buffer Suffix]
+ *      [Buffer Prefix]
+ *      [Line Prefix][encoded data atoms][Line Suffix]
+ *      [Buffer Suffix]
  * </pre>
  *
  * Of course in the simplest encoding schemes, the buffer has no
@@ -35,14 +36,14 @@ import java.io.EOFException;
  * between the text in an 'atom' and the binary data itself.
  *
  * In the CharacterEncoder and CharacterDecoder classes, one complete
- * chunk of data is referred to as a <i>buffer</i>. Encoded buffers 
- * are all text, and decoded buffers (sometimes just referred to as 
+ * chunk of data is referred to as a <i>buffer</i>. Encoded buffers
+ * are all text, and decoded buffers (sometimes just referred to as
  * buffers) are binary octets.
  *
  * To create a custom decoder, you must, at a minimum,  overide three
  * abstract methods in this class.
  * <DL>
- * <DD>bytesPerAtom which tells the decoder how many bytes to 
+ * <DD>bytesPerAtom which tells the decoder how many bytes to
  * expect from decodeAtom
  * <DD>decodeAtom which decodes the bytes sent to it as text.
  * <DD>bytesPerLine which tells the encoder the maximum number of
@@ -52,18 +53,18 @@ import java.io.EOFException;
  * In general, the character decoders return error in the form of an
  * IOException. The syntax of the detail string is
  * <pre>
- *	DecoderClassName: Error message.
+ *      DecoderClassName: Error message.
  * </pre>
  *
- * Several useful decoders have already been written and are 
+ * Several useful decoders have already been written and are
  * referenced in the See Also list below.
  *
  * @author <a href="maito:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @author	Chuck McManis
+ * @author      Chuck McManis
  * @version $Id$
  *
- * @see		CharacterEncoder
- * @see		Base64Decoder
+ * @see         CharacterEncoder
+ * @see         Base64Decoder
  */
 
 public abstract class CharacterDecoder {
@@ -94,7 +95,7 @@ public abstract class CharacterDecoder {
      * This method post processes the line, if there are error detection
      * or correction codes in a line, they are generally processed by
      * this method. The simplest version of this method looks for the
-     * (newline) character. 
+     * (newline) character.
      */
     abstract void decodeLineSuffix(InputStream aStream, OutputStream bStream) throws EOFException, IOException;
 
@@ -113,7 +114,7 @@ public abstract class CharacterDecoder {
      * @exception EOFException The input stream is unexpectedly out of data
      */
     public void decodeBuffer(InputStream aStream, OutputStream bStream) throws IOException{
-        int	i;
+        int     i;
 
         decodeBufferPrefix(aStream, bStream);
         while (true) {
@@ -146,7 +147,7 @@ public abstract class CharacterDecoder {
     public byte[] decodeBuffer(String inputString) throws IOException{
         ByteArrayInputStream inStream;
         ByteArrayOutputStream outStream;
-		
+
         byte[] inputBuffer = inputString.getBytes();
         inStream = new ByteArrayInputStream(inputBuffer);
         outStream = new ByteArrayOutputStream();

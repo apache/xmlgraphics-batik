@@ -5,7 +5,8 @@
  * version 1.1, a copy of which has been included with this distribution in  *
  * the LICENSE file.                                                         *
  *****************************************************************************/
-package org.apache.batik.util.svg;
+
+package org.apache.batik.util;
 
 import java.io.OutputStream;
 import java.io.InputStream;
@@ -21,15 +22,15 @@ import java.io.IOException;
  * of encoded text and end with the last line of encoded text.
  *
  * @author <a href="vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @author	Chuck McManis
+ * @author      Chuck McManis
  * @version $Id$
  *
- * @see		CharacterEncoder
- * @see		Base64Decoder
+ * @see         CharacterEncoder
+ * @see         Base64Decoder
  */
 
 public class Base64Encoder extends CharacterEncoder {
-	
+
     /** this class encodes three bytes per atom. */
     int bytesPerAtom() {
         return (3);
@@ -53,7 +54,7 @@ public class Base64Encoder extends CharacterEncoder {
         '4','5','6','7','8','9','+','/'  // 7
     };
 
-    /** 
+    /**
      * enocodeAtom - Take three bytes of input and encode it as 4
      * printable characters. Note that if the length in len is less
      * than three is encodes either one or two '=' signs to indicate
