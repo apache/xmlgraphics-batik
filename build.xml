@@ -866,6 +866,7 @@ To display the available targets type:
         <path refid="libs-classpath"/>
         <pathelement location="resources" />
       </classpath>
+<!--      <jvmarg value="-Djava.awt.headless=true"/>  -->
       <arg line="${args}"/>
     </java>
   </target>

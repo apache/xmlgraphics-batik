@@ -84,7 +84,8 @@ public class SVGFilterElementBridge extends AbstractSVGBridge
         filterChain.setFilterResolutionX((int)filterRes[0]);
         filterChain.setFilterResolutionY((int)filterRes[1]);
 
-        // create a map for filter nodes to advertise themselves as named source
+        // Create a map for filter nodes to advertise themselves as
+        // named source
         Map filterNodeMap = new HashMap(11);
         filterNodeMap.put(SVG_SOURCE_GRAPHIC_VALUE, sourceGraphic);
 

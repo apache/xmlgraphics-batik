@@ -14,6 +14,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderContext;
 import java.util.Vector;
+import java.util.Map;
 
 /**
  * This class allows for the return of a proxy object quickly, while a
@@ -27,8 +28,9 @@ import java.util.Vector;
  */
 
 public class DeferRable implements Filter {
-    Filter src;
-
+    Filter      src;
+    Rectangle2D bounds;
+    Map         props;
     /**
      * Constructor takes nothing
      */
@@ -63,7 +65,19 @@ public class DeferRable implements Filter {
     public synchronized void setSource(Filter src) {
         // Only let them set Source once.
         if (this.src != null) return;
-        this.src = src;
+        this.src    = src;
+        this.bounds = src.getBounds2D();
+        notifyAll();
+    }
+
+    public synchronized void setBounds(Rectangle2D bounds) {
+        if (this.bounds != null) return;
+        this.bounds = bounds;
+        notifyAll();
+    }
+
+    public synchronized void setProperties(Map props) {
+        this.props = props;
         notifyAll();
     }
 
@@ -87,7 +101,20 @@ public class DeferRable implements Filter {
      * it will block until we have a real source.
      */
     public Rectangle2D getBounds2D() {
-        return getSource().getBounds2D();
+        synchronized(this) {
+            while ((src == null) && (bounds == null))  {
+                try {
+                    // Wait for someone to set bounds.
+                    wait();
+                }
+                catch(InterruptedException ie) { 
+                    // Loop around again see if src is set now...
+                }
+            }
+        }
+        if (src != null)
+            return src.getBounds2D();
+        return bounds;
     }
 
     public float getMinX() {
@@ -107,14 +134,37 @@ public class DeferRable implements Filter {
      * Forward the call (blocking until source is set if need be).
      */
     public Object getProperty(String name) {
-        return getSource().getProperty(name);
+        synchronized (this) {
+            while ((src == null) && (props == null)) {
+                try {
+                    // Wait for someone to set src | props
+                    wait();
+                } catch(InterruptedException ie) { }
+            }
+        }
+        if (src != null)
+            return src.getProperty(name);
+        return props.get(name);
     }
 
     /**
      * Forward the call (blocking until source is set if need be).
      */
     public String [] getPropertyNames() {
-        return getSource().getPropertyNames();
+        synchronized (this) {
+            while ((src == null) && (props == null)) {
+                try {
+                    // Wait for someone to set src | props
+                    wait();
+                } catch(InterruptedException ie) { }
+            }
+        }
+        if (src != null)
+            return src.getPropertyNames();
+
+        String [] ret = new String[props.size()];
+        props.keySet().toArray(ret);
+        return ret;
     }
 
     /**
