@@ -735,9 +735,12 @@ public class DecoratedShapeNode extends ShapeNode {
     public Rectangle2D getPrimitiveBounds(GraphicsNodeRenderContext rc) {
         if (dPrimitiveBounds == null) {
             Rectangle2D shapePrimitiveBounds = super.getPrimitiveBounds(rc);
-            Rectangle2D markerGroupBounds = markerGroup.getBounds(rc);
             dPrimitiveBounds = (Rectangle2D)shapePrimitiveBounds.clone();
-            dPrimitiveBounds.add(markerGroupBounds);
+            Rectangle2D markerGroupBounds = null;
+            if(markerGroup.getChildren().size() > 0){
+                markerGroupBounds = markerGroup.getBounds(rc);
+                dPrimitiveBounds.add(markerGroupBounds);
+            }
         }
         return dPrimitiveBounds;
     }
@@ -756,11 +759,9 @@ public class DecoratedShapeNode extends ShapeNode {
         if (dGeometryBounds == null) {
             Rectangle2D shapeGeometryBounds = super.getGeometryBounds(rc);
             Rectangle2D markerGroupGeometryBounds = null;
-            if(markerGroup.getChildren().size() > 0){
-                    markerGroupGeometryBounds = markerGroup.getGeometryBounds(rc);
-            }
             dGeometryBounds  = (Rectangle2D)shapeGeometryBounds.clone();
-            if(markerGroupGeometryBounds != null){
+            if(markerGroup.getChildren().size() > 0){
+                markerGroupGeometryBounds = markerGroup.getGeometryBounds(rc);
                 dGeometryBounds.add(markerGroupGeometryBounds);
             }
         }
