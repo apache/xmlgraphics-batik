@@ -71,9 +71,9 @@ public class TIFFTranscoder extends ImageTranscoder {
 
         TIFFEncodeParam params = new TIFFEncodeParam();
 
-        float pixToMM = userAgent.getPixelToMM();
-        // Pixs in 100 Meters
-        int numPix      = (int)((1000*100)/pixToMM+0.5); 
+        float PixSzMM = userAgent.getPixelUnitToMillimeter();
+        // num Pixs in 100 Meters
+        int numPix      = (int)(((1000*100)/PixSzMM)+0.5); 
         int denom       = 100*100;  // Centimeters per 100 Meters;
         long [] rational = {(long)numPix, (long)denom};
         TIFFField [] fields = {

@@ -620,7 +620,8 @@ public class Main implements SVGConverterController {
                                       throw new IllegalArgumentException();
                                   }
 
-                                  c.setPixelToMillimeter((2.54f/optionValue)*10);
+                                  c.setPixelUnitToMillimeter
+                                      ((2.54f/optionValue)*10);
                               }
 
                               public String getOptionDescription(){

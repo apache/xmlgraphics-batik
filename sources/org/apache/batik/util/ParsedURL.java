@@ -435,15 +435,21 @@ public class ParsedURL {
         return data.openStreamRaw(userAgent, mimeTypes);
     }
 
+    public boolean sameFile(ParsedURL other) {
+        return data.sameFile(other.data);
+    }
+
+
     /**
      * Parse out the protocol from a url string. Used internally to
      * select the proper handler, all other parsing is done by
      * the selected protocol handler.
      */
     protected static String getProtocol(String urlStr) {
+        if (urlStr == null) return null;
+
         int idx = urlStr.indexOf(':');
-        if (idx == -1) 
-            return null;
+        if (idx == -1) return null;
 
         // May have a protocol spec...
         String protocol = urlStr.substring(0, idx).toLowerCase();
@@ -454,7 +460,6 @@ public class ParsedURL {
 
         return protocol;
     }
-
     
     /**
      * Factory method to construct an appropriate subclass of  ParsedURLData

@@ -37,9 +37,16 @@ public interface CSSContext {
     float getBolderFontWeight(float f);
 
     /**
-     * Returns the pixel to millimeters conversion factor.
+     * Returns the size of a px CSS unit in millimeters.
      */
-    float getPixelToMillimeters();
+    float getPixelUnitToMillimeter();
+
+    /**
+     * Returns the size of a px CSS unit in millimeters.
+     * This will be removed after next release.
+     * @see #getPixelUnitToMillimeter();
+     */
+    float getPixelToMillimeter();
 
     /**
      * Returns the medium font size.

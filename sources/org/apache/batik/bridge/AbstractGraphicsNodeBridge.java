@@ -51,7 +51,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
                BridgeUpdateHandler, 
                GraphicsNodeBridge, 
                ErrorConstants {
-
+    
     /**
      * The element that has been handled by this bridge.
      */
@@ -268,10 +268,20 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     // SVGContext implementation ///////////////////////////////////////////
 
     /**
-     * Return the pixel to millimeters factor.
+     * Returns the size of a px CSS unit in millimeters.
+     */
+    public float getPixelUnitToMillimeter() {
+        return ctx.getUserAgent().getPixelUnitToMillimeter();
+    }
+
+    /**
+     * Returns the size of a px CSS unit in millimeters.
+     * This will be removed after next release.
+     * @see #getPixelUnitToMillimeter();
      */
     public float getPixelToMM() {
-        return ctx.getUserAgent().getPixelToMM();
+        return getPixelUnitToMillimeter();
+            
     }
 
     /**

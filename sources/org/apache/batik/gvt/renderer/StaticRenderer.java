@@ -504,7 +504,17 @@ public class StaticRenderer implements ImageRenderer {
         }
 
         rootCR = renderGNR();
-        if (rootCR == null) return;
+        if (rootCR == null) {
+            // No image to display so clear everything out...
+            workingRaster = null;
+            workingOffScreen = null;
+            workingBaseRaster = null;
+            
+            currentOffScreen = null;
+            currentBaseRaster = null;
+            currentRaster = null;
+            return;
+        }
 
         SampleModel sm = rootCR.getSampleModel();
         int         w  = offScreenWidth;

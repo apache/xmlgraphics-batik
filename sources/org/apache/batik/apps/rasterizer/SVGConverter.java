@@ -77,7 +77,7 @@ import java.net.MalformedURLException;
  * be converted.</li>
  * <li>userStylesheet: defines the user stylesheet to apply to SVG documents 
  * in addition to other stylesheets referenced by or embedded in the SVG documents.</li>
- * <li>pixelToMillimeter: defines the size of a pixel when processing the SVG documents.</li>
+ * <li>pixelUnitToMillimeter: defines the size of a pixel in millimeters to use when processing the SVG documents.</li>
  * </ul>
  *
  * @version $Id$
@@ -213,8 +213,8 @@ public class SVGConverter {
     /** User stylesheet */
     protected String userStylesheet = null;
 
-    /** Pixel to Millimeter */
-    protected float pixelToMillimeter = -1f;
+    /** Millimeters Per Pixel */
+    protected float pixelUnitToMillimeter = -1f;
 
     /** Validation flag */
     protected boolean validate = false;
@@ -365,17 +365,17 @@ public class SVGConverter {
     }
 
     /**
-     * Sets the pixel to millimeter conversion constant. A negative
+     * Sets the millimeters per pixel constant. A negative
      * value will cause the default value 
-     * (see {@link org.apache.batik.bridge.UserAgent#getPixelToMM})
+     * (see {@link org.apache.batik.bridge.UserAgent#getPixelUnitToMillimeter})
      * to be used.
      */
-    public void setPixelToMillimeter(float pixelToMillimeter){
-        this.pixelToMillimeter = pixelToMillimeter;
+    public void setPixelUnitToMillimeter(float pixelUnitToMillimeter){
+        this.pixelUnitToMillimeter = pixelUnitToMillimeter;
     }
 
-    public float getPixelToMillimeter(){
-        return pixelToMillimeter;
+    public float getPixelUnitToMillimeter(){
+        return pixelUnitToMillimeter;
     }
 
     /**
@@ -775,9 +775,10 @@ public class SVGConverter {
             map.put(ImageTranscoder.KEY_LANGUAGE, language);
         }
 
-        // Sets the pixel to millimeter ratio
-        if (pixelToMillimeter > 0){
-            map.put(ImageTranscoder.KEY_PIXEL_TO_MM, new Float(pixelToMillimeter));
+        // Sets the millimeters per pixel
+        if (pixelUnitToMillimeter > 0){
+            map.put(ImageTranscoder.KEY_PIXEL_UNIT_TO_MILLIMETER, 
+                    new Float(pixelUnitToMillimeter));
         }
 
         // Set validation

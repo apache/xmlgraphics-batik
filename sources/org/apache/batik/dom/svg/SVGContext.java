@@ -20,7 +20,14 @@ import java.awt.geom.Rectangle2D;
 public interface SVGContext {
 
     /**
-     * Return the pixel to millimeters factor.
+     * Returns the size of a px CSS unit in millimeters.
+     */
+    float getPixelUnitToMillimeter();
+
+    /**
+     * Returns the size of a px CSS unit in millimeters.
+     * This will be removed after next release.
+     * @see #getPixelUnitToMillimeter();
      */
     float getPixelToMM();
 

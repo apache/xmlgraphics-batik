@@ -14,13 +14,12 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 
-import java.net.URL;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.batik.gvt.event.EventDispatcher;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 
@@ -36,7 +35,8 @@ import org.w3c.dom.svg.SVGAElement;
  * @version $Id$
  */
 public class UserAgentAdapter implements UserAgent {
-    protected Set FEATURES = new HashSet();
+    protected Set FEATURES   = new HashSet();
+    protected Set extensions = new HashSet();
 
     public UserAgentAdapter() {
     };
@@ -103,11 +103,44 @@ public class UserAgentAdapter implements UserAgent {
     }
 
     /**
-     * Returns the pixel to millimeter conversion factor 0.26458333 (96dpi)
+     * Returns the size of a px CSS unit in millimeters.
      */
-    public float getPixelToMM() {
+    public float getPixelUnitToMillimeter() {
         return 0.26458333333333333333333333333333f; // 96dpi
     }
+
+    /**
+     * Returns the size of a px CSS unit in millimeters.
+     * This will be removed after next release.
+     * @see #getPixelUnitToMillimeter();
+     */
+    public float getPixelToMM() {
+        return getPixelUnitToMillimeter();
+            
+    }
+
+    /** 
+     * Returns the  medium font size. 
+     */
+    public float getMediumFontSize() {
+        // <!> FIXME: Should that 72 be 96?
+        return 9f * 25.4f / (72f * getPixelUnitToMillimeter());
+    }
+
+    /**
+     * Returns a lighter font-weight.
+     */
+    public float getLighterFontWeight(float f) { 
+        return getStandardLighterFontWeight(f);
+    }
+
+    /**
+     * Returns a bolder font-weight.
+     */
+    public float getBolderFontWeight(float f) {
+        return getStandardBolderFontWeight(f);
+    }
+
 
     /**
      * Returns the user language "en" (english).
@@ -195,8 +228,6 @@ public class UserAgentAdapter implements UserAgent {
         return FEATURES.contains(s);
     }
 
-    protected Set extensions = new HashSet();
-
     /**
      * Tells whether the given extension is supported by this
      * user agent.
@@ -239,12 +270,54 @@ public class UserAgentAdapter implements UserAgent {
      * @param docURL url for the document into which the 
      *        script was found.
      */
-    public ScriptSecurity getScriptSecurity(String scriptType,
-                                            URL scriptURL,
-                                            URL docURL){
-        return new DefaultScriptSecurity(scriptType, scriptURL, docURL);
+    public ScriptSecurity getScriptSecurity(String    scriptType,
+                                            ParsedURL scriptPURL,
+                                            ParsedURL docPURL){
+        return new DefaultScriptSecurity(scriptType, scriptPURL, docPURL);
     }
     
+
+    /**
+     * Returns a lighter font-weight.
+     */
+    public static float getStandardLighterFontWeight(float f) {
+        // Round f to nearest 100...
+        int weight = ((int)((f+50)/100))*100;
+        switch (weight) {
+        case 100: return 100;
+        case 200: return 100;
+        case 300: return 200;
+        case 400: return 300;
+        case 500: return 400;
+        case 600: return 400;
+        case 700: return 400;
+        case 800: return 400;
+        case 900: return 400;
+        default:
+            throw new IllegalArgumentException("Bad Font Weight: " + f);
+        }
+    }
+
+    /**
+     * Returns a bolder font-weight.
+     */
+    public static float getStandardBolderFontWeight(float f) {
+        // Round f to nearest 100...
+        int weight = ((int)((f+50)/100))*100;
+        switch (weight) {
+        case 100: return 600;
+        case 200: return 600;
+        case 300: return 600;
+        case 400: return 600;
+        case 500: return 600;
+        case 600: return 700;
+        case 700: return 800;
+        case 800: return 900;
+        case 900: return 900;
+        default:
+            throw new IllegalArgumentException("Bad Font Weight: " + f);
+        }
+    }
 
 }
 

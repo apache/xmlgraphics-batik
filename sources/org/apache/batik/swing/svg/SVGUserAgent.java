@@ -8,11 +8,10 @@
 
 package org.apache.batik.swing.svg;
 
-import java.net.URL;
-
 import org.w3c.dom.Element;
 
 import org.apache.batik.bridge.ScriptSecurity;
+import org.apache.batik.util.ParsedURL;
 
 /**
  * This interface must be implemented to provide client services to
@@ -60,9 +59,31 @@ public interface SVGUserAgent {
     boolean showConfirm(String message);
 
     /**
-     * Returns a customized the pixel to mm factor.
+     * Returns the size of a px CSS unit in millimeters.
+     */
+    float getPixelUnitToMillimeter();
+
+    /**
+     * Returns the size of a px CSS unit in millimeters.
+     * This will be removed after next release.
+     * @see #getPixelUnitToMillimeter();
      */
     float getPixelToMM();
+
+    /** 
+     * Returns the  medium font size. 
+     */
+    float getMediumFontSize();
+
+    /**
+     * Returns a lighter font-weight.
+     */
+    float getLighterFontWeight(float f);
+
+    /**
+     * Returns a bolder font-weight.
+     */
+    float getBolderFontWeight(float f);
 
     /**
      * Returns the language settings.
@@ -132,8 +153,8 @@ public interface SVGUserAgent {
      * @param docURL url for the document into which the 
      *        script was found.
      */
-    ScriptSecurity getScriptSecurity(final String scriptType,
-                                     final URL scriptURL,
-                                     final URL docURL);
+    ScriptSecurity getScriptSecurity(String scriptType,
+                                     ParsedURL scriptURL,
+                                     ParsedURL docURL);
         
 }

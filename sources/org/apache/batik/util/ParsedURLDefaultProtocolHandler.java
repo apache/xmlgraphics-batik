@@ -78,6 +78,8 @@ public class ParsedURLDefaultProtocolHandler
 
         ParsedURLData ret = constructParsedURLData();
 
+        if (urlStr == null) return ret;
+
         int pidx=0, idx;
         int len = urlStr.length();
         String prefix = urlStr;

@@ -23,9 +23,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.NoninvertibleTransformException;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,6 +64,7 @@ import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.JGVTComponent;
 
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -413,17 +411,13 @@ public class JSVGComponent extends JGVTComponent {
     public void loadSVGDocument(String url) {
         stopProcessing();
 
-        URL oldURI = null;
+        String oldURI = null;
         if (svgDocument != null) {
-            oldURI = ((SVGOMDocument)svgDocument).getURLObject();
+            oldURI = svgDocument.getURL();
         }
-        URL newURI = null;
-        try {
-            newURI = new URL(oldURI, url);
-        } catch (MalformedURLException e) {
-            userAgent.displayError(e);
-            return;
-        }
+        ParsedURL newURI = null;
+        newURI = new ParsedURL(oldURI, url);
+
         url = newURI.toString();
         fragmentIdentifier = newURI.getRef();
 
@@ -1660,16 +1654,74 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         /**
-         * Returns the pixel to mm factor.
+         * Returns the size of a px CSS unit in millimeters.
          */
-        public float getPixelToMM() {
+        public float getPixelUnitToMillimeter() {
             if (EventQueue.isDispatchThread()) {
-                return userAgent.getPixelToMM();
+                return userAgent.getPixelUnitToMillimeter();
             } else {
                 class Query implements Runnable {
                     float result;
                     public void run() {
-                        result = userAgent.getPixelToMM();
+                        result = userAgent.getPixelUnitToMillimeter();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        /**
+         * Returns the size of a px CSS unit in millimeters.
+         * This will be removed after next release.
+         * @see #getPixelUnitToMillimeter();
+         */
+        public float getPixelToMM() { return getPixelUnitToMillimeter(); }
+
+
+        public float getMediumFontSize() {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getMediumFontSize();
+            } else {
+                class Query implements Runnable {
+                    float result;
+                    public void run() {
+                        result = userAgent.getMediumFontSize();
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        public float getLighterFontWeight(float f) {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getLighterFontWeight(f);
+            } else {
+                final float ff = f;
+                class Query implements Runnable {
+                    float result;
+                    public void run() {
+                        result = userAgent.getLighterFontWeight(ff);
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+                return q.result;
+            }
+        }
+
+        public float getBolderFontWeight(float f) {
+            if (EventQueue.isDispatchThread()) {
+                return userAgent.getBolderFontWeight(f);
+            } else {
+                final float ff = f;
+                class Query implements Runnable {
+                    float result;
+                    public void run() {
+                        result = userAgent.getBolderFontWeight(ff);
                     }
                 }
                 Query q = new Query();
@@ -1954,20 +2006,21 @@ public class JSVGComponent extends JGVTComponent {
          * @param docURL url for the document into which the 
          *        script was found.
          */
-        public ScriptSecurity getScriptSecurity(final String scriptType,
-                                                final URL scriptURL,
-                                                final URL docURL){
+        public ScriptSecurity getScriptSecurity(String scriptType,
+                                                ParsedURL scriptPURL,
+                                                ParsedURL docPURL){
             if (EventQueue.isDispatchThread()) {
                 return userAgent.getScriptSecurity(scriptType,
-                                                   scriptURL,
-                                                   docURL);
+                                                   scriptPURL,
+                                                   docPURL);
             } else {
+                final String st = scriptType;
+                final ParsedURL sPURL= scriptPURL;
+                final ParsedURL dPURL= docPURL;
                 class Query implements Runnable {
                     ScriptSecurity result;
                     public void run() {
-                        result = userAgent.getScriptSecurity(scriptType,
-                                                             scriptURL,
-                                                             docURL);
+                        result = userAgent.getScriptSecurity(st, sPURL, dPURL);
                     }
                 }
                 Query q = new Query();
@@ -2084,13 +2137,79 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         /**
-         * Returns the pixel to mm factor.
+         * Returns the size of a px CSS unit in millimeters.
          */
-        public float getPixelToMM() {
+        public float getPixelUnitToMillimeter() {
             if (svgUserAgent != null) {
-                return svgUserAgent.getPixelToMM();
+                return svgUserAgent.getPixelUnitToMillimeter();
             }
             return 0.264583333333333333333f; // 96 dpi
+        }
+
+        /**
+         * Returns the size of a px CSS unit in millimeters.
+         * This will be removed after next release.
+         * @see #getPixelUnitToMillimeter();
+         */
+        public float getPixelToMM() { return getPixelUnitToMillimeter(); }
+
+        /** 
+         * Returns the  medium font size. 
+         */
+        public float getMediumFontSize() {
+            if (svgUserAgent != null) {
+                return svgUserAgent.getMediumFontSize();
+            }
+            // <!> FIXME: Should that 72 be 96?
+            return 9f * 25.4f / (72f * getPixelUnitToMillimeter());
+        }
+
+        /**
+         * Returns a lighter font-weight.
+         */
+        public float getLighterFontWeight(float f) {
+            if (svgUserAgent != null) {
+                return svgUserAgent.getLighterFontWeight(f);
+            }
+            // Round f to nearest 100...
+            int weight = ((int)((f+50)/100))*100;
+            switch (weight) {
+            case 100: return 100;
+            case 200: return 100;
+            case 300: return 200;
+            case 400: return 300;
+            case 500: return 400;
+            case 600: return 400;
+            case 700: return 400;
+            case 800: return 400;
+            case 900: return 400;
+            default:
+                throw new IllegalArgumentException("Bad Font Weight: " + f);
+            }
+        }
+
+        /**
+         * Returns a bolder font-weight.
+         */
+        public float getBolderFontWeight(float f) {
+            if (svgUserAgent != null) {
+                return svgUserAgent.getBolderFontWeight(f);
+            }
+            // Round f to nearest 100...
+            int weight = ((int)((f+50)/100))*100;
+            switch (weight) {
+            case 100: return 600;
+            case 200: return 600;
+            case 300: return 600;
+            case 400: return 600;
+            case 500: return 600;
+            case 600: return 700;
+            case 700: return 800;
+            case 800: return 900;
+            case 900: return 900;
+            default:
+                throw new IllegalArgumentException("Bad Font Weight: " + f);
+            }
         }
 
         /**
@@ -2124,22 +2243,14 @@ public class JSVGComponent extends JGVTComponent {
             if (show.equals("new")) {
                 fireLinkActivatedEvent(elt, href);
                 if (svgUserAgent != null) {
-                    URL oldURI = ((SVGOMDocument)svgDocument).getURLObject();
-                    URL newURI = null;
-                    try {
-			// if the anchor element is in an external resource
-			if (elt.getOwnerDocument() != svgDocument) {
-			    SVGOMDocument doc = 
-				(SVGOMDocument)elt.getOwnerDocument();
-			    href = new URL(doc.getURLObject(), href).
-                                toString();
-			}
-                        newURI = new URL(oldURI, href);
-                    } catch (MalformedURLException e) {
-                        userAgent.displayError(e);
-                        return;
+                    String oldURI = svgDocument.getURL();
+                    ParsedURL newURI = null;
+                    // if the anchor element is in an external resource
+                    if (elt.getOwnerDocument() != svgDocument) {
+                        SVGDocument doc = (SVGDocument)elt.getOwnerDocument();
+                        href = new ParsedURL(doc.getURL(), href).toString();
                     }
-
+                    newURI = new ParsedURL(oldURI, href);
                     href = newURI.toString();
                     svgUserAgent.openLink(href, true);
                 } else {
@@ -2150,20 +2261,14 @@ public class JSVGComponent extends JGVTComponent {
 
             // Avoid reloading if possible.
             if (svgDocument != null) {
-                URL oldURI = ((SVGOMDocument)svgDocument).getURLObject();
-                URL newURI = null;
-                try {
-		    // if the anchor element is in an external resource
-		    if (elt.getOwnerDocument() != svgDocument) {
-			SVGOMDocument doc = 
-			    (SVGOMDocument)elt.getOwnerDocument();
-			href = new URL(doc.getURLObject(), href).toString();
-		    }
-                    newURI = new URL(oldURI, href);
-                } catch (MalformedURLException e) {
-                    displayError(e);
-                    return;
+                // if the anchor element is in an external resource
+                if (elt.getOwnerDocument() != svgDocument) {
+                    SVGDocument doc = (SVGDocument)elt.getOwnerDocument();
+                    href = new ParsedURL(doc.getURL(), href).toString();
                 }
+                ParsedURL oldURI = new ParsedURL(svgDocument.getURL());
+                ParsedURL newURI = new ParsedURL(oldURI, href);
+
                 String s = newURI.getRef();
                 if (newURI.sameFile(oldURI)) {
                     if ((fragmentIdentifier == null && s != null) ||
@@ -2327,8 +2432,8 @@ public class JSVGComponent extends JGVTComponent {
          *        script was found.
          */
         public ScriptSecurity getScriptSecurity(String scriptType,
-                                                URL scriptURL,
-                                                URL docURL){
+                                                ParsedURL scriptURL,
+                                                ParsedURL docURL){
             if (svgUserAgent != null){
                 return svgUserAgent.getScriptSecurity(scriptType,
                                                       scriptURL,

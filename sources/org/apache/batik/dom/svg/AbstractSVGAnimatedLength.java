@@ -324,10 +324,21 @@ public abstract class AbstractSVGAnimatedLength
             }
 
             /**
-             * Returns the pixel to mm factor.
+             * Returns the size of a px CSS unit in millimeters.
+             */
+            public float getPixelUnitToMillimeter() {
+                SVGContext ctx = ((SVGOMElement)element).getSVGContext();
+                return ctx.getPixelUnitToMillimeter();
+            }
+
+            /**
+             * Returns the size of a px CSS unit in millimeters.
+             * This will be removed after next release.
+             * @see #getPixelUnitToMillimeter();
              */
             public float getPixelToMM() {
-                return ((SVGOMElement)element).getSVGContext().getPixelToMM();
+                return getPixelUnitToMillimeter();
+            
             }
 
             /**
