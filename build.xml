@@ -120,7 +120,6 @@ To display the available targets type:
       <include name="stylebook*.jar"/>
       <include name="xalan*.jar"/>
       <include name="xerces*.jar"/>
-      <include name="mail*.jar"/>
     </fileset>
   </path>
 
@@ -196,8 +195,6 @@ To display the available targets type:
         <exclude name="xml-${project}/${project}-${version}.zip" />
         <exclude name="xml-${project}/${project}-docs-${version}.zip" />
         <exclude name="xml-${project}/classes/**" />
-        <exclude name="xml-${project}/lib/build/mail.jar" />
-        <exclude name="xml-${project}/lib/build/activation.jar" />
         <exclude name="xml-${project}/test-references/**" />
         <exclude name="xml-${project}/${build}/**" />
     </zip>
