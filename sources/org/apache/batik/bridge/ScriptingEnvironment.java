@@ -113,12 +113,12 @@ public class ScriptingEnvironment {
                     return parameters;
                 }
                 public Object call(Object[] args) {
-                    pauseScript(((Long)args[1]).longValue());
                     Object[] fargs = new Object[args.length - 2];
                     for (int i = 0; i < fargs.length; i++) {
                         fargs[i] = args[i + 2];
                     }
-                    runFunction((String)args[0], fargs, lang);
+                    runFunction((String)args[0], fargs, lang,
+                                ((Long)args[1]).longValue());
                     return null;
                 }
             };
@@ -134,8 +134,11 @@ public class ScriptingEnvironment {
     /**
      * Runs a function.
      */
-    public void runFunction(String function, Object[] args, String lang) {
-        new FunctionCallThread(function, args, lang).start();
+    public void runFunction(String function,
+                            Object[] args,
+                            String lang,
+                            long delay) {
+        new FunctionCallThread(function, args, lang, delay).start();
     }
 
     /**
@@ -250,7 +253,11 @@ public class ScriptingEnvironment {
          */
         public void run() {
             if (interpreter != null) {
-                beginScript();
+                try {
+                    beginScript();
+                } catch (StopScriptException e) {
+                    return;
+                }
 
                 try {
                     interpreter.evaluate(getScript());
@@ -262,11 +269,10 @@ public class ScriptingEnvironment {
                     if (userAgent != null) {
                         userAgent.displayError((ex != null) ? ex : ie);
                     }
-                } finally {
-                    try {
-                        endScript();
-                    } catch (StopScriptException e) {
-                    }
+                }
+                try {
+                    endScript();
+                } catch (StopScriptException e) {
                 }
             }
         }
@@ -284,14 +290,33 @@ public class ScriptingEnvironment {
     protected class FunctionCallThread extends ScriptingThread {
         protected String function;
         protected Object[] arguments;
+        protected long delay;
 
         /**
          * Creates a new FunctionCallThread.
          */
-        public FunctionCallThread(String fname, Object[] args, String lang) {
+        public FunctionCallThread(String fname,
+                                  Object[] args,
+                                  String lang,
+                                  long delay) {
             super(lang);
             function = fname;
             arguments = args;
+            this.delay = delay;
+        }
+
+        /**
+         * The main method.
+         */
+        public void run() {
+            if (delay > 0) {
+                try {
+                    sleep(delay);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+            super.run();
         }
 
         /**
