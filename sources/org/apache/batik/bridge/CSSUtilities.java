@@ -65,7 +65,6 @@ import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
 import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -73,9 +72,7 @@ import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.util.CSSConstants;
-import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
@@ -904,7 +901,6 @@ public abstract class CSSUtilities
                                            Element localRefElement,
                                            String  uri) {
 	// Pull fragement id off first...
-        int len = uri.length();
         int idx = uri.indexOf('#');
         if (idx != -1)
             uri = uri.substring(0,idx);

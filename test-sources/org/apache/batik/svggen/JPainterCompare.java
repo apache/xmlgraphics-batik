@@ -50,30 +50,24 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import java.net.URL;
-import java.net.MalformedURLException;
-
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 
-import org.apache.batik.util.SVGConstants;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.swing.JSVGCanvas;
-import org.apache.batik.swing.svg.SVGDocumentLoaderListener;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
-
-import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMImplementation;
+import org.apache.batik.util.SVGConstants;
 
 /**
  * Simple component which displays, side by side, the drawing

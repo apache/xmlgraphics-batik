@@ -522,7 +522,7 @@ public abstract class CSSEngine {
         for (Node n = node.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-            if (n.getNodeType() == n.ELEMENT_NODE) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
                 disposeStyleMaps(n);
             }
             Node c = getImportedChild(n);
@@ -1102,7 +1102,7 @@ public abstract class CSSEngine {
         // Load the imported sheets.
         int len = ss.getSize();
         for (int i = 0; i < len; i++) {
-            Rule r = (Rule)ss.getRule(i);
+            Rule r = ss.getRule(i);
             if (r.getType() != ImportRule.TYPE) {
                 // @import rules must be the first rules.
                 break;
@@ -1191,7 +1191,6 @@ public abstract class CSSEngine {
                             short origin) {
         sortRules(rules, elt, pseudo);
         int rlen = rules.size();
-        int props = getNumberOfProperties();
 
         if (origin == StyleMap.AUTHOR_ORIGIN) {
             for (int r = 0; r < rlen; r++) {
@@ -1451,7 +1450,6 @@ public abstract class CSSEngine {
             int len = styleDeclaration.size();
             for (int i=0; i<len; i++) {
                 int idx = styleDeclaration.getIndex(i);
-                String pname = getPropertyName(idx);
                 sm.putValue(idx, styleDeclaration.getValue(i));
                 sm.putImportant(idx, styleDeclaration.getPriority(i));
                 // Not sure on this..

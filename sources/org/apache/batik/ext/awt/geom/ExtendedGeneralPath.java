@@ -670,7 +670,7 @@ public class ExtendedGeneralPath implements ExtendedShape, Cloneable {
             case SEG_ARCTO:  valsIdx+=7; break;
             }
         }
-    };
+    }
 
     /**
      * Delegates to the enclosed <code>GeneralPath</code>.

@@ -97,7 +97,7 @@ public class GammaTransfer implements TransferFunction {
      */
     private void buildLutData(){
         lutData = new byte [256];
-        int i, j, v;
+        int j, v;
         for (j=0; j<=255; j++){
             v = (int)Math.round(255*(amplitude*Math.pow(j/255f, exponent)+offset));
             if(v > 255){

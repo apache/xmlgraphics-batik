@@ -50,14 +50,11 @@
 
 package org.apache.batik.test.svg;
 
-import org.apache.batik.util.XMLConstants;
-import org.apache.batik.util.SVGConstants;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
-import java.net.URL;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
 
 
 /**

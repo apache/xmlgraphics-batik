@@ -183,7 +183,7 @@ public class GlyfCompositeComp {
      * @return The transformed x-coordinate
      */
     public int scaleX(int x, int y) {
-        return (int)((double) x * xscale + (double) y * scale10);
+        return Math.round((float)(x * xscale + y * scale10));
     }
 
     /**
@@ -193,6 +193,6 @@ public class GlyfCompositeComp {
      * @return The transformed y-coordinate
      */
     public int scaleY(int x, int y) {
-        return (int)((double) x * scale01 + (double) y * yscale);
+        return Math.round((float)(x * scale01 + y * yscale));
     }
 }

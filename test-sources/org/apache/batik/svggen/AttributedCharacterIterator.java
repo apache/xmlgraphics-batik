@@ -50,10 +50,12 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.font.*;
-import java.text.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.font.TextAttribute;
+import java.text.AttributedString;
+
 
 /**
  * This test validates the convertion of Java 2D AffineTransform into SVG
@@ -67,8 +69,6 @@ public class AttributedCharacterIterator implements Painter {
     public void paint(Graphics2D g) {
         String fontName = "Arial";
         int fontSize = 15;
-
-        FontRenderContext frc = new FontRenderContext(null, true, true);
 
         String text = "Attributed Strings are fun !";
         AttributedString styledText = new AttributedString(text);

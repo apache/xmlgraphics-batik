@@ -270,7 +270,8 @@ public class SelfContainedSVGOnLoadTestValidator extends DefaultTestSuite {
                         TestReport r = reportError(ERROR_UNEXPECTED_DESCRIPTION_ENTRY);
                         if (key != null){
                             r.addDescriptionEntry(ENTRY_KEY, key);
-                            r.addDescriptionEntry(ENTRY_EXPECTED_KEY, t.ENTRY_KEY_NUMBER_OF_TEST_RESULT_ELEMENTS);
+                            r.addDescriptionEntry(ENTRY_EXPECTED_KEY, 
+                              SelfContainedSVGOnLoadTest.ENTRY_KEY_NUMBER_OF_TEST_RESULT_ELEMENTS);
                         }
                         return r;
                     }

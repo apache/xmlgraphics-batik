@@ -50,7 +50,6 @@
 
 package org.apache.batik.util;
 
-import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 

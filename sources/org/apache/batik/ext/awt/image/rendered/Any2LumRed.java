@@ -123,9 +123,8 @@ public class Any2LumRed extends AbstractRed {
             // Divide out alpha if we have it.  We need to do this since
             // the color convert may not be a linear operation which may 
             // lead to out of range values.
-            ColorModel srcBICM = srcCM;
             if (srcCM.hasAlpha())
-                srcBICM = GraphicsUtil.coerceData(srcWr, srcCM, false);
+                GraphicsUtil.coerceData(srcWr, srcCM, false);
 
             BufferedImage srcBI, dstBI;
             srcBI = new BufferedImage(srcCM, 

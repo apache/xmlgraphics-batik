@@ -135,5 +135,5 @@ public class ShapeExtender implements ExtendedShape {
         public void next() {
             pi.next();
         }
-    };
+    }
 }

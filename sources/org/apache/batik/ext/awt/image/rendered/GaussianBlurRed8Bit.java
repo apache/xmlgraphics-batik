@@ -138,8 +138,8 @@ public class GaussianBlurRed8Bit extends AbstractRed {
              src.getTileGridYOffset()+yinset, null);
 
         boolean highQuality = ((hints != null) &&
-                               hints.VALUE_RENDER_QUALITY.equals
-                               (hints.get(hints.KEY_RENDERING)));
+                               RenderingHints.VALUE_RENDER_QUALITY.equals
+                               (hints.get(RenderingHints.KEY_RENDERING)));
 
         // System.out.println("StdDev: " + stdDevX + "x" + stdDevY);
         if ((xinset != 0) && ((stdDevX < 2) || highQuality))
@@ -183,8 +183,8 @@ public class GaussianBlurRed8Bit extends AbstractRed {
      */ 
     public static int surroundPixels(double stdDev, RenderingHints hints) {
         boolean highQuality = ((hints != null) &&
-                               hints.VALUE_RENDER_QUALITY.equals
-                               (hints.get(hints.KEY_RENDERING)));
+                               RenderingHints.VALUE_RENDER_QUALITY.equals
+                               (hints.get(RenderingHints.KEY_RENDERING)));
 
         if ((stdDev < 2) || highQuality) {
             // Start with 1/2 the zero box enery.   
@@ -254,7 +254,6 @@ public class GaussianBlurRed8Bit extends AbstractRed {
         // System.out.println("SrcReq: " + r);
 
         ColorModel srcCM = src.getColorModel();
-        ColorModel dstCM = getColorModel();
 
         WritableRaster tmpR1=null, tmpR2=null;
 

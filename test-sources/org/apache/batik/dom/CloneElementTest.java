@@ -50,15 +50,19 @@
 
 package org.apache.batik.dom;
 
-import org.w3c.dom.*;
+import java.io.File;
+import java.net.URL;
 
-import java.io.*;
-import java.net.*;
-import org.apache.batik.dom.*;
-import org.apache.batik.dom.util.*;
-import org.apache.batik.util.*;
+import org.apache.batik.dom.util.SAXDocumentFactory;
+import org.apache.batik.test.AbstractTest;
+import org.apache.batik.test.DefaultTestReport;
+import org.apache.batik.test.TestReport;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
-import org.apache.batik.test.*;
 
 /**
  * This class tests the non-deep cloneNode method for elements.

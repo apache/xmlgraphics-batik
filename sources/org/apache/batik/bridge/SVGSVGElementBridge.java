@@ -64,7 +64,6 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGSVGElement;
 
 /**

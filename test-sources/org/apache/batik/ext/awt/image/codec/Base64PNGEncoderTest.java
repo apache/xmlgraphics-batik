@@ -50,12 +50,14 @@
 
 package org.apache.batik.ext.awt.image.codec;
 
-import org.apache.batik.test.*;
-import org.apache.batik.util.*;
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.apache.batik.util.Base64DecodeStream;
+import org.apache.batik.util.Base64EncoderStream;
+
 
 /**
  * This test validates the PNGEncoder operation when combined with

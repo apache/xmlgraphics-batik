@@ -681,8 +681,8 @@ public class JSVGCanvas extends JSVGComponent {
             int mods = ie.getModifiers();
             return
                 ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & ie.BUTTON1_MASK) != 0 &&
-                (mods & ie.CTRL_MASK) != 0;
+                (mods & InputEvent.BUTTON1_MASK) != 0 &&
+                (mods & InputEvent.CTRL_MASK) != 0;
         }
     };
 
@@ -696,8 +696,8 @@ public class JSVGCanvas extends JSVGComponent {
             int mods = ie.getModifiers();
             return
                 ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & ie.BUTTON3_MASK) != 0 &&
-                (mods & ie.SHIFT_MASK) != 0;
+                (mods & InputEvent.BUTTON3_MASK) != 0 &&
+                (mods & InputEvent.SHIFT_MASK) != 0;
         }
     };
 
@@ -710,8 +710,8 @@ public class JSVGCanvas extends JSVGComponent {
             int mods = ie.getModifiers();
             return
                 ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & ie.BUTTON1_MASK) != 0 &&
-                (mods & ie.SHIFT_MASK) != 0;
+                (mods & InputEvent.BUTTON1_MASK) != 0 &&
+                (mods & InputEvent.SHIFT_MASK) != 0;
         }
     };
 
@@ -724,8 +724,8 @@ public class JSVGCanvas extends JSVGComponent {
             int mods = ie.getModifiers();
             return
                 ie.getID() == MouseEvent.MOUSE_PRESSED &&
-                (mods & ie.BUTTON3_MASK) != 0 &&
-                (mods & ie.CTRL_MASK) != 0;
+                (mods & InputEvent.BUTTON3_MASK) != 0 &&
+                (mods & InputEvent.CTRL_MASK) != 0;
         }
     };
 
@@ -739,9 +739,9 @@ public class JSVGCanvas extends JSVGComponent {
             int mods = ie.getModifiers();
             return
                 ie.getID() == MouseEvent.MOUSE_CLICKED &&
-                (mods & ie.BUTTON3_MASK) != 0 &&
-                (mods & ie.SHIFT_MASK) != 0 &&
-                (mods & ie.CTRL_MASK) != 0;
+                (mods & InputEvent.BUTTON3_MASK) != 0 &&
+                (mods & InputEvent.SHIFT_MASK) != 0 &&
+                (mods & InputEvent.CTRL_MASK) != 0;
         }
     };
 
@@ -896,7 +896,7 @@ public class JSVGCanvas extends JSVGComponent {
                 if (!localName.equals(n.getLocalName())){
                     continue;
                 }
-                if (n.getNodeType() == n.ELEMENT_NODE) {
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
                     return (Element)n;
                 }
             }
@@ -1019,7 +1019,6 @@ public class JSVGCanvas extends JSVGComponent {
         }
 
         public void handleEvent(Event evt){
-            final String tt = toolTip;
             EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         setToolTipText(toolTip);

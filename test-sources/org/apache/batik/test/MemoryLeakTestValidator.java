@@ -86,7 +86,7 @@ public class MemoryLeakTestValidator extends MemoryLeakTest {
     
     public static class Pair {
         Pair myMate;
-        public Pair() { };
+        public Pair() { }
         public void mate(Pair p) {
             this.myMate = p;
             p.myMate    = this;
@@ -100,4 +100,4 @@ public class MemoryLeakTestValidator extends MemoryLeakTest {
         }
     }
 
-};
+}

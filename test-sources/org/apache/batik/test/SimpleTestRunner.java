@@ -50,11 +50,6 @@
 
 package org.apache.batik.test;
 
-import javax.swing.JFrame;
-import javax.swing.JButton;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * Simple GUI tool to run a <tt>Test</tt>. This tool takes
  * a class name parameter as an input and provides a GUI to 

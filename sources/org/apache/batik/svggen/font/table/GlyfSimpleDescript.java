@@ -71,7 +71,7 @@ public class GlyfSimpleDescript extends GlyfDescript {
         // Simple glyph description
         endPtsOfContours = new int[numberOfContours];
         for (int i = 0; i < numberOfContours; i++) {
-            endPtsOfContours[i] = (int)(bais.read()<<8 | bais.read());
+            endPtsOfContours[i] = (bais.read()<<8 | bais.read());
         }
 
         // The last end point index reveals the total number of points
@@ -80,7 +80,7 @@ public class GlyfSimpleDescript extends GlyfDescript {
         xCoordinates = new short[count];
         yCoordinates = new short[count];
 
-        int instructionCount = (int)(bais.read()<<8 | bais.read());
+        int instructionCount = (bais.read()<<8 | bais.read());
         readInstructions(bais, instructionCount);
         readFlags(count, bais);
         readCoords(count, bais);

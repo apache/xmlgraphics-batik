@@ -79,12 +79,13 @@ public class LocaTable implements Table {
         if (shortEntries) {
             factor = 2;
             for (int i = 0; i <= numGlyphs; i++) {
-                offsets[i] = (int)(bais.read()<<8 | bais.read());
+                offsets[i] = (bais.read()<<8 | bais.read());
             }
         } else {
             factor = 1;
             for (int i = 0; i <= numGlyphs; i++) {
-                offsets[i] = (int)(bais.read()<<24 | bais.read()<<16 | bais.read()<<8 | bais.read());
+                offsets[i] = (bais.read()<<24 | bais.read()<<16 | 
+                              bais.read()<< 8 | bais.read());
             }
         }
         buf = null;

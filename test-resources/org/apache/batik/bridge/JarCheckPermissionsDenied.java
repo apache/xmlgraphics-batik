@@ -50,14 +50,6 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.script.ScriptHandler;
-import org.apache.batik.script.Window;
-
-import org.apache.batik.dom.svg.SVGOMDocument;
-
-import org.w3c.dom.*;
-import org.w3c.dom.events.*;
-
 import java.awt.AWTPermission;
 import java.io.FilePermission;
 import java.io.SerializablePermission;
@@ -67,11 +59,21 @@ import java.net.SocketPermission;
 import java.net.URL;
 import java.security.AllPermission;
 import java.security.Permission;
-import java.security.SecurityPermission;
 import java.sql.SQLPermission;
 import java.util.PropertyPermission;
 import java.util.Vector;
+
 import javax.sound.sampled.AudioPermission;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.script.ScriptHandler;
+import org.apache.batik.script.Window;
 
 /**
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
@@ -302,4 +304,3 @@ public class JarCheckPermissionsDenied implements ScriptHandler {
                 } }, false);        
     }
 }
-

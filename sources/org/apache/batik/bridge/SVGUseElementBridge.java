@@ -421,7 +421,6 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         if (attrName.equals(SVG_X_ATTRIBUTE) ||
             attrName.equals(SVG_Y_ATTRIBUTE) ||
             attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
-            String s = evt.getNewValue();
             node.setTransform(computeTransform(e, ctx));
             handleGeometryChanged();
         } else if (( XLinkSupport.XLINK_NAMESPACE_URI.equals

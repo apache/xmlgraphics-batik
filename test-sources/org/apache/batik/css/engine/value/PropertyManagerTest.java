@@ -50,24 +50,20 @@
 
 package org.apache.batik.css.engine.value;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import java.util.StringTokenizer;
 
+import org.w3c.css.sac.LexicalUnit;
+
+import org.apache.batik.css.engine.value.svg.MarkerManager;
+import org.apache.batik.css.engine.value.svg.OpacityManager;
+import org.apache.batik.css.engine.value.svg.SVGColorManager;
+import org.apache.batik.css.engine.value.svg.SVGPaintManager;
+import org.apache.batik.css.engine.value.svg.SpacingManager;
+import org.apache.batik.css.parser.Parser;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
-
-import org.apache.batik.css.parser.Parser;
-import org.w3c.css.sac.LexicalUnit;
-
-import org.apache.batik.css.engine.value.css2.*;
-import org.apache.batik.css.engine.value.svg.*;
-
 import org.apache.batik.util.CSSConstants;
-
-import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
  * The class to test the CSS properties's manager.

@@ -118,7 +118,7 @@ public class RemoveAttributeTest extends AbstractTest {
             e.removeAttribute(targetAttr);
         } catch (DOMException ex) {
             DefaultTestReport report = new DefaultTestReport(this);
-            report.setErrorCode(report.ERROR_TEST_FAILED);
+            report.setErrorCode(TestReport.ERROR_TEST_FAILED);
             report.addDescriptionEntry("exception.message",
                                        ex.getMessage());
             report.setPassed(false);

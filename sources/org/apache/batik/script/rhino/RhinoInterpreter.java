@@ -62,7 +62,6 @@ import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
-import java.util.Vector;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -118,7 +117,7 @@ public class RhinoInterpreter implements Interpreter {
             this.str = str;
             this.script = script;
         }
-    };
+    }
 
     /**
      * store last 32 precompiled objects.
@@ -394,8 +393,7 @@ public class RhinoInterpreter implements Interpreter {
      * @param object the Java object
      */
     public void bindObject(String name, Object object) {
-        Context ctx = enterContext();
-        
+        enterContext();
         try {
             if (name.equals(BIND_NAME_WINDOW) && object instanceof Window) {
                 window = (Window)object;
@@ -476,7 +474,7 @@ public class RhinoInterpreter implements Interpreter {
                     String methodName,
                     ArgumentsBuilder ab)
         throws JavaScriptException {
-        Context ctx = enterContext();
+        enterContext();
         try {
             ScriptableObject.callMethod(obj, methodName, ab.buildArguments());
         } finally {

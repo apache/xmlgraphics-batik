@@ -447,7 +447,6 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         for (int i = 0 ; i < list.size(); i++) {
             StrokingTextPainter.TextRun run =
                 (StrokingTextPainter.TextRun)list.get(i);
-            AttributedCharacterIterator aci = run.getACI();
             TextSpanLayout layout = run.getLayout();
             float x = (float)p.getX();
             float y = (float)p.getY();

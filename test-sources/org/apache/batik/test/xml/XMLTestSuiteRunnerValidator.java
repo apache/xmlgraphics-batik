@@ -55,7 +55,6 @@ import java.io.File;
 import java.net.URL;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -67,7 +66,6 @@ import org.w3c.dom.Document;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.DefaultTestSuite;
 import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.Test;
 import org.apache.batik.test.TestReport;
 import org.apache.batik.test.TestSuiteReport;
 
@@ -210,7 +208,7 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
             int nArgs = st.countTokens();
             args = new String[nArgs];
             for(int i=0; i<nArgs; i++){
-                args[i] = (String)st.nextToken();
+                args[i] = st.nextToken();
             }
 
             ids = new HashSet();

@@ -107,7 +107,7 @@ public class URIResolver {
         Node n = getNode(uri, ref);
         if (n == null) {
             return null;
-        } else if (n.getNodeType() == n.DOCUMENT_NODE) {
+        } else if (n.getNodeType() == Node.DOCUMENT_NODE) {
             throw new IllegalArgumentException();
         } else {
             return (Element)n;

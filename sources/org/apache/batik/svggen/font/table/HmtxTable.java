@@ -92,7 +92,8 @@ public class HmtxTable implements Table {
         hMetrics = new int[numberOfHMetrics];
         ByteArrayInputStream bais = new ByteArrayInputStream(buf);
         for (int i = 0; i < numberOfHMetrics; i++) {
-            hMetrics[i] = (int)(bais.read()<<24 | bais.read()<<16 | bais.read()<<8 | bais.read());
+            hMetrics[i] = (bais.read()<<24 | bais.read()<<16 | 
+                           bais.read()<< 8 | bais.read());
         }
         if (lsbCount > 0) {
             leftSideBearing = new short[lsbCount];

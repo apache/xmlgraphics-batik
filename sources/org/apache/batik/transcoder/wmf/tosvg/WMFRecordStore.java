@@ -112,15 +112,15 @@ public class WMFRecordStore implements WMFConstants{
         int dwIsAldus = readInt( is );
         if ( dwIsAldus == WMFConstants.META_ALDUS_APM ) {
             // Read the aldus placeable header.
-            int   key = dwIsAldus;
-            short hmf = readShort( is );
-            short left = readShort( is );
-            short top = readShort( is );
-            short right = readShort( is );
-            short  bottom = readShort( is );
-            short inch = readShort( is );
-            int   reserved = readInt( is );
-            short checksum = readShort( is );
+            /* int   key      = dwIsAldus; */
+            /* short hmf      = */ readShort( is );
+            /* short left     = */ readShort( is );
+            /* short top      = */ readShort( is );
+            /* short right    = */ readShort( is );
+            /* short  bottom  = */ readShort( is );
+            /* short inch     = */ readShort( is );
+            /* int   reserved = */ readInt  ( is );
+            /* short checksum = */ readShort( is );
         }
         else {
             System.out.println( "Unable to read file, it is not a Aldus Placable Metafile" );
@@ -128,19 +128,17 @@ public class WMFRecordStore implements WMFConstants{
             return false;
         }
 
-        int mtType = readShort( is );
-        int mtHeaderSize = readShort( is );
-        int mtVersion = readShort( is );
-        int mtSize = readInt( is );
-        int mtNoObjects = readShort( is );
-        int mtMaxRecord = readInt( is );
-        int mtNoParameters = readShort( is );
+        /* int mtType         = */ readShort( is );
+        /* int mtHeaderSize   = */ readShort( is );
+        /* int mtVersion      = */ readShort( is );
+        /* int mtSize         = */ readInt  ( is );
+        int mtNoObjects       =    readShort( is );
+        /* int mtMaxRecord    = */ readInt  ( is );
+        /* int mtNoParameters = */ readShort( is );
 
 
         short functionId = 1;
         int recSize = 0;
-        short recData;
-
 
         numRecords = 0;
 
@@ -163,7 +161,7 @@ public class WMFRecordStore implements WMFConstants{
             case WMFConstants.META_DRAWTEXT:
                 {
                     for ( int i = 0; i < recSize; i++ )
-                        recData = readShort( is );
+                        readShort( is );
                     numRecords--;
                 }
                 break;
@@ -218,23 +216,22 @@ public class WMFRecordStore implements WMFConstants{
             case WMFConstants.META_CREATEFONTINDIRECT:
                 {
                     int lfHeight = readShort( is );
-                    int lfWidth = readShort( is );
-                    int lfEscapement = readShort( is );
-                    int lfOrientation = readShort( is );
+                    /* int lfWidth       = */ readShort( is );
+                    /* int lfEscapement  = */ readShort( is );
+                    /* int lfOrientation = */ readShort( is );
                     int lfWeight = readShort( is );
 
                     int lfItalic = is.readByte();
-                    int lfUnderline = is.readByte();
-                    int lfStrikeOut = is.readByte();
-                    int lfCharSet = is.readByte();
-                    int lfOutPrecision = is.readByte();
-                    int lfClipPrecision = is.readByte();
-                    int lfQuality = is.readByte();
-                    int lfPitchAndFamily = is.readByte();
+                    /* int lfUnderline      = */ is.readByte();
+                    /* int lfStrikeOut      = */ is.readByte();
+                    /* int lfCharSet        = */ is.readByte();
+                    /* int lfOutPrecision   = */ is.readByte();
+                    /* int lfClipPrecision  = */ is.readByte();
+                    /* int lfQuality        = */ is.readByte();
+                    /* int lfPitchAndFamily = */ is.readByte();
 
                     int len = (2*(recSize-9));//13));
                     byte lfFaceName[] = new byte[ len ];
-                    byte ch;
                     for ( int i = 0; i < len; i++ )
                         lfFaceName[ i ] = is.readByte();
 
@@ -283,7 +280,7 @@ public class WMFRecordStore implements WMFConstants{
                     int red = colorref & 0xff;
                     int green = ( colorref & 0xff00 ) >> 8;
                     int blue = ( colorref & 0xff0000 ) >> 16;
-                    int flags = ( colorref & 0x3000000 ) >> 24;
+                    // int flags = ( colorref & 0x3000000 ) >> 24;
                     mr.AddElement( new Integer( red ));
                     mr.AddElement( new Integer( green ));
                     mr.AddElement( new Integer( blue ));
@@ -304,14 +301,14 @@ public class WMFRecordStore implements WMFConstants{
                     Integer style = new Integer( readShort( is ));
                     mr.AddElement( style );
 
-                    int width = readShort( is );
-                    int colorref =  readInt( is );
-                    int height = readShort( is );
+                    int width     =    readShort( is );
+                    int colorref  =    readInt  ( is );
+                    /* int height = */ readShort( is );
 
-                    int red = colorref & 0xff;
+                    int red   =   colorref & 0xff;
                     int green = ( colorref & 0xff00 ) >> 8;
-                    int blue = ( colorref & 0xff0000 ) >> 16;
-                    int flags = ( colorref & 0x3000000 ) >> 24;
+                    int blue  = ( colorref & 0xff0000 ) >> 16;
+                    // int flags = ( colorref & 0x3000000 ) >> 24;
                     mr.AddElement( new Integer( red ));
                     mr.AddElement( new Integer( green ));
                     mr.AddElement( new Integer( blue ));
@@ -333,7 +330,7 @@ public class WMFRecordStore implements WMFConstants{
                     int red = colorref & 0xff;
                     int green = ( colorref & 0xff00 ) >> 8;
                     int blue = ( colorref & 0xff0000 ) >> 16;
-                    int flags = ( colorref & 0x3000000 ) >> 24;
+                    // int flags = ( colorref & 0x3000000 ) >> 24;
                     mr.AddElement( new Integer( red ));
                     mr.AddElement( new Integer( green ));
                     mr.AddElement( new Integer( blue ));
@@ -372,7 +369,6 @@ public class WMFRecordStore implements WMFConstants{
                     for ( int i = 0; i < count; i++ )
                         mr.AddElement( new Integer( pts[ i ] ));
 
-                    int offset = count+1;
                     for ( int i = 0; i < count; i++ ) {
                         for ( int j = 0; j < pts[ i ]; j++ ) {
                             mr.AddElement( new Integer( readShort( is )));

@@ -83,7 +83,7 @@ public abstract class SwingSVGPrettyPrint implements SVGSyntax {
         if ((cmp instanceof JComboBox) || (cmp instanceof JScrollBar)) {
             // This is a work around unresolved issue with JComboBox
             // and JScrollBar
-            printHack((JComponent)cmp, svgGen);
+            printHack(cmp, svgGen);
             return;
         }
 
@@ -211,9 +211,6 @@ public abstract class SwingSVGPrettyPrint implements SVGSyntax {
                 } else {
                     cr = comp.getBounds();
                 }
-
-                Rectangle clip = svgGen.getClipBounds();
-                Rectangle bounds = comp.getBounds(); // new Rectangle(cr);
 
                 boolean hitClip =
                     svgGen.hitClip(cr.x, cr.y, cr.width, cr.height);

@@ -439,8 +439,8 @@ public class CursorManager implements SVGConstants, ErrorConstants {
         //
         Cursor c = Toolkit.getDefaultToolkit()
             .createCustomCursor(img, 
-                                new Point((int)Math.round(hotSpot.x),
-                                          (int)Math.round(hotSpot.y)),
+                                new Point(Math.round(hotSpot.x),
+                                          Math.round(hotSpot.y)),
                                 purl.toString());
 
         cursorCache.putCursor(desc, c);
@@ -460,13 +460,13 @@ public class CursorManager implements SVGConstants, ErrorConstants {
         Dimension cursorSize = null;
 
         // Try to load as an SVG Document
-        DocumentLoader loader = (DocumentLoader)ctx.getDocumentLoader();
+        DocumentLoader loader = ctx.getDocumentLoader();
         SVGDocument svgDoc = (SVGDocument)cursorElement.getOwnerDocument();
         URIResolver resolver = new URIResolver(svgDoc, loader);
         try {
             Element rootElement = null;
             Node n = resolver.getNode(uriStr, cursorElement);
-            if (n.getNodeType() == n.DOCUMENT_NODE) {
+            if (n.getNodeType() == Node.DOCUMENT_NODE) {
                 rootElement = ((SVGDocument)n).getRootElement();
             } else {
                 throw new BridgeException 
@@ -499,7 +499,7 @@ public class CursorManager implements SVGConstants, ErrorConstants {
 
             cursorSize 
                 = Toolkit.getDefaultToolkit().getBestCursorSize
-                ((int)Math.round(width), (int)Math.round(height));
+                (Math.round(width), Math.round(height));
             
             // Handle the viewBox transform
             AffineTransform at 

@@ -80,7 +80,7 @@ public class GlyfCompositeDescript extends GlyfDescript {
 
         // Are there hinting intructions to read?
         if ((comp.getFlags() & GlyfCompositeComp.WE_HAVE_INSTRUCTIONS) != 0) {
-            readInstructions(bais, (int)(bais.read()<<8 | bais.read()));
+            readInstructions(bais, (bais.read()<<8 | bais.read()));
         }
     }
 
@@ -111,7 +111,7 @@ public class GlyfCompositeDescript extends GlyfDescript {
             int y = gd.getYCoordinate(n);
             short x1 = (short) c.scaleX(x, y);
             x1 += c.getXTranslate();
-            return (short) x1;
+            return x1;
         }
         return 0;
     }
@@ -125,7 +125,7 @@ public class GlyfCompositeDescript extends GlyfDescript {
             int y = gd.getYCoordinate(n);
             short y1 = (short) c.scaleY(x, y);
             y1 += c.getYTranslate();
-            return (short) y1;
+            return y1;
         }
         return 0;
     }

@@ -50,35 +50,18 @@
 
 package org.apache.batik.svggen;
 
-import org.apache.batik.svggen.SVGGeneratorContext.GraphicContextDefaults;
-
 import java.awt.Dimension;
 import java.awt.Font;
-
-import java.net.URL;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.io.PrintWriter;
 
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.DefaultTestReport;
-import org.apache.batik.test.TestReport;
-
-import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.dom.GenericDOMImplementation;
-import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.SVGGeneratorContext.GraphicContextDefaults;
+import org.apache.batik.test.AbstractTest;
+import org.apache.batik.test.TestReport;
+import org.apache.batik.util.SVGConstants;
 
 /**
  * This test validates that the SVGGraphics2D generates the same result 

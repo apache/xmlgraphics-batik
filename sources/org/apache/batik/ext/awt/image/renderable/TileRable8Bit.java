@@ -386,9 +386,6 @@ public class TileRable8Bit
      * 
      */
     public RenderedImage createTile(RenderContext rc){
-        // Rendered result
-        RenderedImage result = null;
-
         AffineTransform usr2dev = rc.getTransform();
 
         // Hints

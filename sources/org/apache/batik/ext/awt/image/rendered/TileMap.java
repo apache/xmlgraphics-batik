@@ -75,7 +75,7 @@ public class TileMap implements TileStore {
                 if (tm != null)
                     tm.rasters.remove(pt);
             }
-        };
+        }
 
         TileMapLRUMember(TileMap parent, Point pt, Raster ras) {
             super(ras);

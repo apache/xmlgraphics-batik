@@ -346,7 +346,7 @@ public class MarkerShapePainter implements ShapePainter {
         }
 
         segType = iter.currentSegment(coords);
-        if (segType != iter.SEG_MOVETO) {
+        if (segType != ExtendedPathIterator.SEG_MOVETO) {
             return null;
         }
         iter.next();
@@ -366,7 +366,7 @@ public class MarkerShapePainter implements ShapePainter {
                     next[0] = coords[0];
                     next[1] = coords[1];
                 }
-                rotation = computeRotation((double[])null, 0,  // no previous seg.
+                rotation = computeRotation(null, 0,  // no previous seg.
                                            coords, segType,    // segment ending on start point
                                            next, nextSegType); // segment out of start point
                 
@@ -406,7 +406,7 @@ public class MarkerShapePainter implements ShapePainter {
         double moveTo[] = new double[2];
         int segType = 0;
         segType = iter.currentSegment(coords);
-        if (segType != iter.SEG_MOVETO) {
+        if (segType != ExtendedPathIterator.SEG_MOVETO) {
             return null;
         }
         nPoints++;

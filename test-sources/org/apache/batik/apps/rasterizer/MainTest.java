@@ -51,16 +51,16 @@
 package org.apache.batik.apps.rasterizer;
 
 
-import org.apache.batik.test.*;
-import org.apache.batik.test.util.ImageCompareTest;
-import org.apache.batik.transcoder.Transcoder;
-import org.apache.batik.transcoder.image.ImageTranscoder;
-import org.apache.batik.transcoder.image.JPEGTranscoder;
+import java.awt.Color;
+import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.io.*;
-import java.util.*;
+import org.apache.batik.test.AbstractTest;
+import org.apache.batik.test.DefaultTestSuite;
+import org.apache.batik.test.Test;
+import org.apache.batik.test.TestReport;
 
 /**
  * Validates the operation of the <tt>Main</tt> class.

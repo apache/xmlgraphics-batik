@@ -189,4 +189,4 @@ public class SrcManager extends IdentifierManager {
     protected StringMap getIdentifiers() {
         return values;
     }
-};
+}

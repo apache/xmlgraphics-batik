@@ -142,7 +142,7 @@ public class LRUCache {
 	}
 
 	public synchronized void remove(LRUObj obj) {
-		LRUNode nde = (LRUNode)obj.lruGet();
+		LRUNode nde = obj.lruGet();
 		if (nde == null) return;
 		used.remove(nde);
 		nde.setObj(null);
@@ -150,13 +150,13 @@ public class LRUCache {
 	}
 
 	public synchronized void touch(LRUObj obj) {
-		LRUNode nde = (LRUNode)obj.lruGet();
+		LRUNode nde = obj.lruGet();
 		if (nde == null) return;
 		used.touch(nde);
 	}
 
 	public synchronized void add(LRUObj obj) {
-		LRUNode nde = (LRUNode)obj.lruGet();
+		LRUNode nde = obj.lruGet();
 
 		// already linked in...
 		if (nde != null) {

@@ -101,7 +101,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
      */
     public boolean isCompatibleURL(ParsedURL purl) {
         try {
-            URL url = new URL(purl.toString());
+            new URL(purl.toString());
         } catch (MalformedURLException mue) {
             // No sense in trying it if we can't build a URL out of it.
             return false;

@@ -278,7 +278,6 @@ class XmlWriter implements SVGConstants {
 
         NamedNodeMap attributes = element.getAttributes();
         if (attributes != null){
-            StringBuffer styleAttrBuffer = new StringBuffer();
             int nAttr = attributes.getLength();
             for(int i=0; i<nAttr; i++){
                 Attr attr = (Attr)attributes.item(i);
@@ -311,16 +310,12 @@ class XmlWriter implements SVGConstants {
 
         int length = children.getLength();
         int     oldIndent = 0;
-        boolean preserve = true;
-        boolean pureText = true;
-
         oldIndent = out.getIndentLevel();
         try {
             out.setIndentLevel(oldIndent + 2);
             for(int i = 0; i < length; i++) {
                 if(children.item(i).getNodeType () != Node.TEXT_NODE) {
                     out.printIndent ();
-                    pureText = false;
                 }
                 writeXml(children.item(i), out);
             }

@@ -110,7 +110,6 @@ public class WMFPainter {
         Color         frgdColor;
         Color         bkgdColor;
         Font          font = null;
-        int           lastObjectIdx;
         int           vpX, vpY, vpW, vpH;
         Stack         dcStack = new Stack();
 
@@ -181,10 +180,10 @@ public class WMFPainter {
                     {
                         int objIndex = 0;
                         try {
-                            objIndex = (int)mr.ElementAt( 5 ).intValue();
+                            objIndex = mr.ElementAt( 5 ).intValue();
                         }
                         catch ( Exception e ) {}
-                        int penStyle = (int)mr.ElementAt( 0 ).intValue();
+                        int penStyle = mr.ElementAt( 0 ).intValue();
                         Color newClr;
                         if ( penStyle == 5 ) {
                             newClr = new Color( 255, 255, 255 );
@@ -192,9 +191,9 @@ public class WMFPainter {
                             addObjectAt( currentStore, NULL_PEN, newClr, objIndex );
                         }
                         else {
-                            newClr = new Color( (int)mr.ElementAt( 1 ).intValue(),
-                                                (int)mr.ElementAt( 2 ).intValue(),
-                                                (int)mr.ElementAt( 3 ).intValue());
+                            newClr = new Color( mr.ElementAt( 1 ).intValue(),
+                                                mr.ElementAt( 2 ).intValue(),
+                                                mr.ElementAt( 3 ).intValue());
                             addObjectAt( currentStore, PEN, newClr, objIndex );
                         }
                         penWidth = mr.ElementAt( 4 ).intValue();
@@ -205,15 +204,16 @@ public class WMFPainter {
                     {
                         int objIndex = 0;
                         try {
-                            objIndex = (int)mr.ElementAt( 5 ).intValue();
+                            objIndex = mr.ElementAt( 5 ).intValue();
                         }
                         catch ( Exception e ) {}
-                        int brushStyle = (int)mr.ElementAt( 0 ).intValue();
+                        int brushStyle = mr.ElementAt( 0 ).intValue();
                         if ( brushStyle == 0 ) {
-                            addObjectAt( currentStore, BRUSH, new Color( (int)mr.ElementAt( 1 ).intValue(),
-                                                                         (int)mr.ElementAt( 2 ).intValue(),
-                                                                         (int)mr.ElementAt( 3 ).intValue()),
-                                         objIndex );
+                            addObjectAt(currentStore, BRUSH, 
+                                        new Color(mr.ElementAt( 1 ).intValue(),
+                                                  mr.ElementAt( 2 ).intValue(),
+                                                  mr.ElementAt( 3 ).intValue()),
+                                        objIndex );
                         }
                         else
                             addObjectAt( currentStore, NULL_BRUSH, new Color( 0,0,0 ), objIndex );
@@ -222,16 +222,16 @@ public class WMFPainter {
 
                 case WMFConstants.META_CREATEFONTINDIRECT:
                     {
-                        int style =( (int)mr.ElementAt( 1 ).intValue() > 0 ? Font.ITALIC : Font.PLAIN );
-                        style |=   ( (int)mr.ElementAt( 2 ).intValue() > 400 ? Font.BOLD : Font.PLAIN );
+                        int style =(mr.ElementAt( 1 ).intValue() > 0 ? Font.ITALIC : Font.PLAIN );
+                        style |=   (mr.ElementAt( 2 ).intValue() > 400 ? Font.BOLD : Font.PLAIN );
 
                         int size = (int)( scaleY * ( mr.ElementAt( 0 ).intValue()));
                         String face = ((StringRecord)mr).text;
                         if ( size < 0 )
-                            size = (int)((double)size * -1.3 );
+                            size = (int)(size * -1.3 );
                         int objIndex = 0;
                         try {
-                            objIndex = (int)mr.ElementAt( 3 ).intValue();
+                            objIndex = mr.ElementAt( 3 ).intValue();
                         }
                         catch ( Exception e ) {}
                         fontHeight = size;
@@ -462,15 +462,15 @@ public class WMFPainter {
                     break;
 
                 case WMFConstants.META_SETTEXTCOLOR:
-                    frgdColor = new Color( (int)mr.ElementAt( 0 ).intValue(),
-                                           (int)mr.ElementAt( 1 ).intValue(),
-                                           (int)mr.ElementAt( 2 ).intValue());
+                    frgdColor = new Color(mr.ElementAt( 0 ).intValue(),
+                                          mr.ElementAt( 1 ).intValue(),
+                                          mr.ElementAt( 2 ).intValue());
                     break;
 
                 case WMFConstants.META_SETBKCOLOR:
-                    bkgdColor = new Color( (int)mr.ElementAt( 0 ).intValue(),
-                                           (int)mr.ElementAt( 1 ).intValue(),
-                                           (int)mr.ElementAt( 2 ).intValue());
+                    bkgdColor = new Color(mr.ElementAt( 0 ).intValue(),
+                                          mr.ElementAt( 1 ).intValue(),
+                                          mr.ElementAt( 2 ).intValue());
                     break;
 
                 case WMFConstants.META_EXTTEXTOUT:
@@ -497,7 +497,6 @@ public class WMFPainter {
 
                             if (( fontAngle != 0 ) || sr.text.startsWith("Sono una scala verticale di prevalenza") ) {
                                 AffineTransform at = new AffineTransform();
-                                float width = (float)layout.getBounds().getWidth();
                                 float height = (float)layout.getBounds().getHeight();
 
                                 AffineTransform textAt = new AffineTransform();

@@ -103,4 +103,4 @@ public class FontFaceRule implements Rule {
         sb.append(" }\n");
         return sb.toString();
     }
-};
+}

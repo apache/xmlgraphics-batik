@@ -80,8 +80,7 @@ public class SVGAnimatedPointsSupport {
                                              SVGConstants.SVG_POINTS_ATTRIBUTE,
                                              POINTS_DEFAULT_VALUE);
             e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_POINTS_ATTRIBUTE, 
-                                    (LiveAttributeValue)result);
+                                    SVGConstants.SVG_POINTS_ATTRIBUTE, result);
         }
         return result.getPoints();
     }
@@ -100,8 +99,7 @@ public class SVGAnimatedPointsSupport {
                                              SVGConstants.SVG_POINTS_ATTRIBUTE,
                                              POINTS_DEFAULT_VALUE);
             e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_POINTS_ATTRIBUTE, 
-                                    (LiveAttributeValue)result);
+                                    SVGConstants.SVG_POINTS_ATTRIBUTE, result);
         }
         return result.getAnimatedPoints();
     }

@@ -53,8 +53,6 @@ package org.apache.batik.dom.svg;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 
-import org.w3c.dom.DOMException;
-
 /**
  * This class provides the interface for the SVGTextContentElement
  * for the bridge to implement.

@@ -373,8 +373,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
             if (matched) {
 
                 // ligature matches, now check that the arabic forms are ok
-                char lastChar =
-                    aci.setIndex(currentIndex + glyphUnicode.length() - 1);
+                aci.setIndex(currentIndex + glyphUnicode.length() - 1);
                 Integer lastForm = (Integer)aci.getAttribute(
                     GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM);
 
@@ -504,7 +503,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
         char c = iter.setIndex(start);
         int currentIndex = start;
 
-        while (c != iter.DONE && currentIndex < limit) {
+        while (c != CharacterIterator.DONE && currentIndex < limit) {
 
             boolean foundMatchingGlyph = false;
 
@@ -601,7 +600,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
 
         Vector glyphs = new Vector();
         char c = ci.first();
-        while (c != ci.DONE) {
+        while (c != CharacterIterator.DONE) {
             boolean foundMatchingGlyph = false;
             for (int i = 0; i < glyphUnicodes.length; i++) {
                 if (glyphUnicodes[i].indexOf(c) == 0 &&

@@ -50,11 +50,6 @@
 
 package org.apache.batik.test;
 
-import java.io.StringWriter;
-import java.io.PrintWriter;
-
-import java.util.Vector;
-
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;

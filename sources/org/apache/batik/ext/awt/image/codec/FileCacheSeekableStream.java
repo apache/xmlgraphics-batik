@@ -132,7 +132,7 @@ public final class FileCacheSeekableStream extends SeekableStream {
         while (len > 0) {
             // Copy a buffer's worth of data from the source to the cache
             // bufLen will always fit into an int so this is safe
-            int nbytes = stream.read(buf, 0, (int)Math.min(len, (long)bufLen));
+            int nbytes = stream.read(buf, 0, (int)Math.min(len, bufLen));
             if (nbytes == -1) {
                 foundEOF = true;
                 return length;
@@ -268,7 +268,7 @@ public final class FileCacheSeekableStream extends SeekableStream {
         long pos = readUntil(pointer + len);
 
         // len will always fit into an int so this is safe
-        len = (int)Math.min((long)len, pos - pointer);
+        len = (int)Math.min(len, pos - pointer);
         if (len > 0) {
             cache.seek(pointer);
             cache.readFully(b, off, len);

@@ -105,7 +105,7 @@ public class MediaRule extends StyleSheet implements Rule {
         }
         sb.append(" {\n");
         for (int i = 0; i < size; i++) {
-            sb.append(((Rule)rules[i]).toString(eng));
+            sb.append(rules[i].toString(eng));
         }
         sb.append("}\n");
         return sb.toString();

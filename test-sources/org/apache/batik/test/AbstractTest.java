@@ -222,13 +222,16 @@ public abstract class AbstractTest implements Test {
                 
                 TestReport.Entry[] entries = new TestReport.Entry[]{
                     new TestReport.Entry
-                        (Messages.formatMessage(report.ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_CLASS, null),
+                        (Messages.formatMessage
+                         (TestReport.ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_CLASS, null),
                          e.getClass().getName()),
                     new TestReport.Entry
-                        (Messages.formatMessage(report.ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_MESSAGE, null),
+                        (Messages.formatMessage
+                         (TestReport.ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_MESSAGE, null),
                          e.getMessage()),
                     new TestReport.Entry
-                        (Messages.formatMessage(report.ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_STACK_TRACE, null),
+                        (Messages.formatMessage
+                         (TestReport.ENTRY_KEY_INTERNAL_TEST_FAILURE_EXCEPTION_STACK_TRACE, null),
                          trace.toString())
                         };
 
@@ -374,13 +377,16 @@ public abstract class AbstractTest implements Test {
                 
         TestReport.Entry[] entries = new TestReport.Entry[]{
             new TestReport.Entry
-                (Messages.formatMessage(report.ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_CLASS, null),
+                (Messages.formatMessage
+                 (TestReport.ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_CLASS, null),
                  e.getClass().getName()),
             new TestReport.Entry
-                (Messages.formatMessage(report.ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_MESSAGE, null),
+                (Messages.formatMessage
+                 (TestReport.ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_MESSAGE, null),
                  e.getMessage()),
             new TestReport.Entry
-                (Messages.formatMessage(report.ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_STACK_TRACE, null),
+                (Messages.formatMessage
+                 (TestReport.ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_STACK_TRACE, null),
                  trace.toString())
                 };
         report.setDescription(entries);

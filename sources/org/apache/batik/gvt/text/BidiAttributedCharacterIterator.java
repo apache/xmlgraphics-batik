@@ -100,8 +100,6 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
 
          // Ideally we would do a 'quick' check on chars and
          // attributes to decide if we really need to do bidi or not.
-        boolean needsBIDI = true;
-
         if (false) {
             // Believe it or not this is much slower than the else case
             // but the two are exactly equivilent (including the stripping

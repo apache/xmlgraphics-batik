@@ -113,4 +113,4 @@ public class SetSVGDocumentTest extends JSVGRenderingAccuracyTest {
     public boolean canvasUpdated(JSVGCanvas canvas) {
         return true;
     }
-};
+}

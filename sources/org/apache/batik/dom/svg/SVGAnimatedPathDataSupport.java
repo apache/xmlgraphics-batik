@@ -79,9 +79,7 @@ public class SVGAnimatedPathDataSupport {
             result = new SVGOMAnimatedPathData(e, null,
                                                SVGConstants.SVG_D_ATTRIBUTE,
                                                D_DEFAULT_VALUE);
-            e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_D_ATTRIBUTE, 
-                                    (LiveAttributeValue)result);
+            e.putLiveAttributeValue(null, SVGConstants.SVG_D_ATTRIBUTE,result);
         }
         return result.getPathSegList();
     }
@@ -100,8 +98,7 @@ public class SVGAnimatedPathDataSupport {
                                                SVGConstants.SVG_D_ATTRIBUTE,
                                                D_DEFAULT_VALUE);
             e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_D_ATTRIBUTE, 
-                                    (LiveAttributeValue)result);
+                                    SVGConstants.SVG_D_ATTRIBUTE, result);
         }
         return result.getNormalizedPathSegList();
     }
@@ -118,8 +115,7 @@ public class SVGAnimatedPathDataSupport {
                                                SVGConstants.SVG_D_ATTRIBUTE,
                                                D_DEFAULT_VALUE);
             e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_D_ATTRIBUTE, 
-                                    (LiveAttributeValue)result);
+                                    SVGConstants.SVG_D_ATTRIBUTE, result);
         }
         return result.getAnimatedPathSegList();
     }
@@ -138,8 +134,7 @@ public class SVGAnimatedPathDataSupport {
                                                SVGConstants.SVG_D_ATTRIBUTE,
                                                D_DEFAULT_VALUE);
             e.putLiveAttributeValue(null,
-                                    SVGConstants.SVG_D_ATTRIBUTE, 
-                                    (LiveAttributeValue)result);
+                                    SVGConstants.SVG_D_ATTRIBUTE,result);
         }
         return result.getAnimatedNormalizedPathSegList();
     }

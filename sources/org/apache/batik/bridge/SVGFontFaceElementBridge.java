@@ -268,7 +268,7 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
 
         // overline-position
         String overlinePosStr = fontFaceElement.getAttributeNS
-            (null, this.SVG_OVERLINE_POSITION_ATTRIBUTE);
+            (null, SVG_OVERLINE_POSITION_ATTRIBUTE);
          if (overlinePosStr.length() == 0) {
             overlinePosStr = String.valueOf(ascent);
         }
@@ -324,7 +324,7 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         for (Node n = fontFaceElement.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-            if ((n.getNodeType() == n.ELEMENT_NODE) &&
+            if ((n.getNodeType() == Node.ELEMENT_NODE) &&
                 n.getNamespaceURI().equals(SVG_NAMESPACE_URI) &&
                 n.getLocalName().equals(SVG_FONT_FACE_SRC_TAG)) {
                     ffsrc = (Element)n;
@@ -340,7 +340,7 @@ public class SVGFontFaceElementBridge extends AbstractSVGBridge
         for (Node n = ffsrc.getFirstChild();
              n != null;
              n = n.getNextSibling()) {
-            if ((n.getNodeType() != n.ELEMENT_NODE) ||
+            if ((n.getNodeType() != Node.ELEMENT_NODE) ||
                 !n.getNamespaceURI().equals(SVG_NAMESPACE_URI))
                 continue;
 

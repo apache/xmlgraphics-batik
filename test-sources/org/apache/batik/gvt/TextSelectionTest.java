@@ -50,41 +50,32 @@
 
 package org.apache.batik.gvt;
 
+import java.awt.Shape;
+import java.awt.geom.PathIterator;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
+
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.UserAgentAdapter;
+import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
-
 import org.apache.batik.util.Base64Test;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.text.Mark;
-import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.GVTBuilder;
-
-import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.Element;
-
-import java.awt.Shape;
-import java.awt.geom.PathIterator;
-
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PipedOutputStream;
-import java.io.PipedInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.PrintWriter;
-import java.io.PrintStream;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 
 /**
@@ -238,7 +229,6 @@ public class TextSelectionTest extends AbstractTest {
         DefaultTestReport report = new DefaultTestReport(this);
 
         SVGDocument  svgDoc;
-        GraphicsNode gvtRoot;
         BridgeContext  ctx;
         try {
             UserAgent      userAgent = new UserAgentAdapter();
@@ -248,7 +238,7 @@ public class TextSelectionTest extends AbstractTest {
             ctx     = new BridgeContext(userAgent, loader);
             ctx.setDynamic(true);
             svgDoc  = (SVGDocument)loader.loadDocument(svg.toString());
-            gvtRoot = builder.build(ctx, svgDoc);
+            builder.build(ctx, svgDoc);
         } catch(Exception e) {
             StringWriter trace = new StringWriter();
             e.printStackTrace(new PrintWriter(trace));
@@ -316,8 +306,6 @@ public class TextSelectionTest extends AbstractTest {
             return report;
         }
 
-        boolean usingVar = false;
-        boolean usingRef = false;
         InputStream refIS = null;
         try {
             refIS = var.openStream();

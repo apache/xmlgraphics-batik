@@ -464,7 +464,7 @@ public class RectListManager implements Collection {
             i=xChange;
             while (rlm.rects[i].x < rects[j].x) {
                 i++;
-                if (i == rlm.size) break;;
+                if (i == rlm.size) break;
             }
             if (i == rlm.size) {
                 ret = true;

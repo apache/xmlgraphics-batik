@@ -58,25 +58,11 @@ import java.awt.geom.Rectangle2D;
 import java.lang.ref.SoftReference;
 
 import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.CSSUtilities;
-import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.SVGBrokenLinkProvider;
-import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.bridge.ViewBox;
-import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.gvt.AbstractGraphicsNode;
-import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.RasterImageNode;
-import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.svg.SVGSVGElement;
 
 /**
  * RasterRable This is used to wrap a Rendered Image back into the

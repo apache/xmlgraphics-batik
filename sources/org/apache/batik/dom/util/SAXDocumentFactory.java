@@ -158,7 +158,7 @@ public class SAXDocumentFactory
         public Node createNode(Document doc) { 
             return doc.createProcessingInstruction(target, data);
         }
-    };
+    }
 
     static class CommentInfo implements PreInfo {
         public String comment;
@@ -168,7 +168,7 @@ public class SAXDocumentFactory
         public Node createNode(Document doc) { 
             return doc.createComment(comment);
         }
-    };
+    }
 
     static class CDataInfo implements PreInfo {
         public String cdata;
@@ -178,7 +178,7 @@ public class SAXDocumentFactory
         public Node createNode(Document doc) { 
             return doc.createCDATASection(cdata);
         }
-    };
+    }
 
     static class TextInfo implements PreInfo {
         public String text;
@@ -188,7 +188,7 @@ public class SAXDocumentFactory
         public Node createNode(Document doc) { 
             return doc.createTextNode(text);
         }
-    };
+    }
 
     /**
      * Various elements encountered prior to real document root element.

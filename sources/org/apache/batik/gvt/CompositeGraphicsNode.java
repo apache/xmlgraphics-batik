@@ -699,7 +699,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         // Insert the node to the children list
         ensureCapacity(count+1);  // Increments modCount!!
         System.arraycopy(children, index, children, index+1, count-index);
-        children[index] = (GraphicsNode) node;
+        children[index] = node;
         count++;
         // Set parent of the graphics node
         ((AbstractGraphicsNode) node).setParent(this);

@@ -50,14 +50,18 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.io.*;
-import org.apache.batik.svggen.*;
-import org.apache.batik.transcoder.image.*;
-import org.apache.batik.transcoder.*;
-import org.apache.batik.dom.svg.*;
-import org.w3c.dom.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 
+import java.io.StringWriter;
+import java.io.Writer;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 

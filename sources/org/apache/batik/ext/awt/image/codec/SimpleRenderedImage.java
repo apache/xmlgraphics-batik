@@ -488,7 +488,6 @@ public abstract class SimpleRenderedImage implements RenderedImage {
             for (int j = startY; j <= endY; j++) {
                 for (int i = startX; i <= endX; i++) {
                     tile = getTile(i, j);
-                    Rectangle tileRect = tile.getBounds();
                     Rectangle intersectRect =
                         bounds.intersection(tile.getBounds());
                     Raster liveRaster = tile.createChild(intersectRect.x,
@@ -545,7 +544,6 @@ public abstract class SimpleRenderedImage implements RenderedImage {
         for (int j = startY; j <= endY; j++) {
             for (int i = startX; i <= endX; i++) {
                 tile = getTile(i, j);
-                Rectangle tileRect = tile.getBounds();
                 Rectangle intersectRect =
                     bounds.intersection(tile.getBounds());
                 Raster liveRaster = tile.createChild(intersectRect.x,

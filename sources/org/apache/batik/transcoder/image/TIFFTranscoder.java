@@ -117,7 +117,7 @@ public class TIFFTranscoder extends ImageTranscoder {
         // num Pixs in 100 Meters
         int numPix      = (int)(((1000*100)/PixSzMM)+0.5); 
         int denom       = 100*100;  // Centimeters per 100 Meters;
-        long [] rational = {(long)numPix, (long)denom};
+        long [] rational = {numPix, denom};
         TIFFField [] fields = {
             new TIFFField(TIFFImageDecoder.TIFF_RESOLUTION_UNIT, 
                           TIFFField.TIFF_SHORT, 1, 

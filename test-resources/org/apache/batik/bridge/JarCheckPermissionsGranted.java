@@ -50,14 +50,6 @@
 
 package org.apache.batik.bridge;
 
-import org.apache.batik.script.ScriptHandler;
-import org.apache.batik.script.Window;
-
-import org.apache.batik.dom.svg.SVGOMDocument;
-
-import org.w3c.dom.*;
-import org.w3c.dom.events.*;
-
 import java.awt.AWTPermission;
 import java.io.FilePermission;
 import java.io.SerializablePermission;
@@ -67,11 +59,21 @@ import java.net.SocketPermission;
 import java.net.URL;
 import java.security.AllPermission;
 import java.security.Permission;
-import java.security.SecurityPermission;
 import java.sql.SQLPermission;
 import java.util.PropertyPermission;
 import java.util.Vector;
+
 import javax.sound.sampled.AudioPermission;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.script.ScriptHandler;
+import org.apache.batik.script.Window;
 
 /**
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
@@ -181,8 +183,6 @@ public class JarCheckPermissionsGranted implements ScriptHandler {
      * @param win An object which represents the current viewer.
      */
     public void run(final Document document, final Window win){
-        int nGrantedTmp = 0;
-
         //
         // If the document is loaded over the network, check that the
         // class has permission to access the server
@@ -204,19 +204,15 @@ public class JarCheckPermissionsGranted implements ScriptHandler {
             permissions[1][1] = new SocketPermission(docHost, "connect");
             permissions[2][0] = "SocketPermission resolve " + docHost;
             permissions[2][1] = new SocketPermission(docHost, "resolve");
-            nGrantedTmp = 3;
         } else {
             permissions = basePermissions;
         }
-
-        final int nGranted = nGrantedTmp;
 
         EventTarget root = (EventTarget)document.getDocumentElement();
         root.addEventListener("SVGLoad", new EventListener() {
                 public void handleEvent(Event evt){
                     SecurityManager sm = System.getSecurityManager();
                     int successCnt = 0;
-                    Vector unexpectedGrants = new Vector();
                     Vector unexpectedDenial = new Vector();
                     int unexpectedDenialCnt = 0;
                     int unexpectedGrantsCnt = 0;
@@ -270,4 +266,3 @@ public class JarCheckPermissionsGranted implements ScriptHandler {
                 } }, false);        
     }
 }
-

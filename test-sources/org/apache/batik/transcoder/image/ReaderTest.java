@@ -50,17 +50,12 @@
 
 package org.apache.batik.transcoder.image;
 
-import java.awt.image.BufferedImage;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
 import java.net.URL;
 
-import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
 
 /**
  * Test the ImageTranscoder input with a Reader.

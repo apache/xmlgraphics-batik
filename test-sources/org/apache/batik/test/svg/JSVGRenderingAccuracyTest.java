@@ -200,5 +200,5 @@ public class JSVGRenderingAccuracyTest extends SamplesRenderingTest
         bi.copyData(ret.getRaster());
         return ret;
     }
-};
+}
 

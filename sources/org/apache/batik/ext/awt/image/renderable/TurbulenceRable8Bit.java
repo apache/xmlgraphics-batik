@@ -172,7 +172,7 @@ public class TurbulenceRable8Bit
      */
     public void setTurbulenceRegion(Rectangle2D turbulenceRegion) {
         touch();
-        this.region = region;
+        this.region = turbulenceRegion;
     }
 
     /**

@@ -52,7 +52,6 @@ package org.apache.batik.swing.gvt;
 
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;

@@ -139,7 +139,7 @@ public class ForwardSeekableStream extends SeekableStream {
 
     /** Returns the current position in the stream (bytes read). */
     public final long getFilePointer() {
-        return (long)pointer;
+        return pointer;
     }
 
     /**

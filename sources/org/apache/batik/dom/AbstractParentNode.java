@@ -400,7 +400,7 @@ public abstract class AbstractParentNode extends AbstractNode {
 				 null,   // prevValueArg
 				 null,   // newValueArg
 				 null,   // attrNameArg
-                                 ev.MODIFICATION);
+                                 MutationEvent.MODIFICATION);
 	    dispatchEvent(ev);
 	}
     }
@@ -420,7 +420,7 @@ public abstract class AbstractParentNode extends AbstractNode {
 				 null,   // prevValueArg
 				 null,   // newValueArg
 				 null,   // attrNameArg
-                                 ev.ADDITION);
+                                 MutationEvent.ADDITION);
 	    AbstractNode n = (AbstractNode)node;
 	    n.dispatchEvent(ev);
 	    n.fireDOMNodeInsertedIntoDocumentEvent();
@@ -442,7 +442,7 @@ public abstract class AbstractParentNode extends AbstractNode {
 				 null,   // prevValueArg
 				 null,   // newValueArg
 				 null,   // attrNameArg
-                                 ev.REMOVAL);
+                                 MutationEvent.REMOVAL);
 	    AbstractNode n = (AbstractNode)node;
 	    n.dispatchEvent(ev);
 	    n.fireDOMNodeRemovedFromDocumentEvent();

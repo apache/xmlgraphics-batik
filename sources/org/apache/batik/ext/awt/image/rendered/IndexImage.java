@@ -177,10 +177,6 @@ public class IndexImage{
             int c0Sh4    = (2-c0)*4;
             int c1Sh4    = (2-c1)*4;
 
-            int splitSh8 = (2-splitChannel)*8;
-            int c0Sh8    = (2-c0)*8;
-            int c1Sh8    = (2-c1)*8;
-
             int half = count/2;
             // Each entry is the number of pixels that have that value
             // in the split channel within the cube (so pixels
@@ -345,9 +341,9 @@ public class IndexImage{
                                 ((igrn >= minG) && (igrn <= maxG))&&
                                 ((iblu >= minB) && (iblu <= maxB))) {
                                 weight = (c.count/(float)this.count);
-                                red += ((float)ired)*weight;
-                                grn += ((float)igrn)*weight;
-                                blu += ((float)iblu)*weight;
+                                red += (ired*weight);
+                                grn += (igrn*weight);
+                                blu += (iblu*weight);
                             }
                         }
                     }

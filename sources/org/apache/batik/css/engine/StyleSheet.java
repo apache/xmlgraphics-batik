@@ -188,7 +188,7 @@ public class StyleSheet {
     public String toString(CSSEngine eng) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < size; i++) {
-            sb.append(((Rule)rules[i]).toString(eng));
+            sb.append(rules[i].toString(eng));
         }
         return sb.toString();
     }

@@ -50,34 +50,27 @@
 
 package org.apache.batik.ext.awt.geom;
 
+import java.awt.Rectangle;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
-
 import org.apache.batik.util.Base64Test;
-import org.apache.batik.ext.awt.geom.RectListManager;
-
-import java.awt.Rectangle;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.PrintWriter;
-import java.io.PrintStream;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import java.util.Iterator;
-import java.util.StringTokenizer;
-import java.util.Map;
-import java.util.HashMap;
 
 
 
@@ -340,8 +333,6 @@ public class RectListManagerTest extends AbstractTest {
             return report;
         }
 
-        boolean usingVar = false;
-        boolean usingRef = false;
         InputStream refIS = null;
         try {
             refIS = var.openStream();

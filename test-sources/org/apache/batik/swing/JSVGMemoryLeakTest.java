@@ -50,22 +50,22 @@
 
 package org.apache.batik.swing;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.UpdateManager;
-import org.apache.batik.dom.svg.SVGOMElement;
-import org.apache.batik.dom.svg.SVGContext;
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.test.DefaultTestReport;
-import org.apache.batik.test.TestReport;
-import org.apache.batik.test.MemoryLeakTest;
-
-import java.awt.Container;
 import java.io.File;
 import java.net.MalformedURLException;
-import javax.swing.SwingUtilities;
+
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.w3c.dom.Element;
+
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.UpdateManager;
+import org.apache.batik.dom.svg.SVGContext;
+import org.apache.batik.dom.svg.SVGOMElement;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.test.DefaultTestReport;
+import org.apache.batik.test.MemoryLeakTest;
+import org.apache.batik.test.TestReport;
 
 /**
  * One line Class Desc
@@ -197,4 +197,4 @@ public class JSVGMemoryLeakTest extends MemoryLeakTest
             failReport = report;
         }
     }
-};
+}

@@ -51,43 +51,32 @@
 package org.apache.batik.test.svg;
 
 import java.io.File;
-import java.io.IOException;
-
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.w3c.dom.Document;
 
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
-
+import org.apache.batik.bridge.DefaultExternalResourceSecurity;
+import org.apache.batik.bridge.DefaultScriptSecurity;
+import org.apache.batik.bridge.EmbededExternalResourceSecurity;
+import org.apache.batik.bridge.EmbededScriptSecurity;
+import org.apache.batik.bridge.ExternalResourceSecurity;
 import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.NoLoadExternalResourceSecurity;
+import org.apache.batik.bridge.NoLoadScriptSecurity;
+import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
+import org.apache.batik.bridge.RelaxedScriptSecurity;
+import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.bridge.ExternalResourceSecurity;
-import org.apache.batik.bridge.ScriptSecurity;
-import org.apache.batik.bridge.NoLoadExternalResourceSecurity;
-import org.apache.batik.bridge.EmbededExternalResourceSecurity;
-import org.apache.batik.bridge.DefaultExternalResourceSecurity;
-import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
-import org.apache.batik.bridge.NoLoadScriptSecurity;
-import org.apache.batik.bridge.EmbededScriptSecurity;
-import org.apache.batik.bridge.DefaultScriptSecurity;
-import org.apache.batik.bridge.RelaxedScriptSecurity;
-import org.apache.batik.test.AbstractTest;
-import org.apache.batik.test.DefaultTestReport;
-import org.apache.batik.test.TestReport;
-
-import org.apache.batik.util.XMLResourceDescriptor;
-import org.apache.batik.util.ParsedURL;
-
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
+import org.apache.batik.test.AbstractTest;
+import org.apache.batik.test.TestReport;
+import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.XMLResourceDescriptor;
 
 /**
  * This test takes an SVG file as an input. It processes the input SVG
@@ -430,4 +419,3 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
     }
 
 }
-

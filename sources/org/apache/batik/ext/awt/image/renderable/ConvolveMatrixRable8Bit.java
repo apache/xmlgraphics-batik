@@ -99,7 +99,7 @@ public class ConvolveMatrixRable8Bit
     PadMode edgeMode;
     float [] kernelUnitLength = new float[2];
 
-    boolean preserveAlpha = false;;
+    boolean preserveAlpha = false;
 
     public ConvolveMatrixRable8Bit(Filter source) {
         super(source);

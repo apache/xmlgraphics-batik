@@ -53,7 +53,6 @@ package org.apache.batik.bridge;
 import java.awt.Cursor;
 
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.Event;
@@ -212,7 +211,6 @@ public class SVGAElementBridge extends SVGGElementBridge {
             // Hide the href in the userAgent
             SVGAElement elt = (SVGAElement)evt.getCurrentTarget();
             if (elt != null) {
-                String href = XLinkSupport.getXLinkHref(elt);
                 userAgent.displayMessage("");
             }
         }

@@ -108,7 +108,7 @@ public class CompositeRable8Bit
        */
     public void setCompositeRule(CompositeRule cr) {
         touch();
-        this.rule = rule;
+        this.rule =  cr;
     }
 
       /**

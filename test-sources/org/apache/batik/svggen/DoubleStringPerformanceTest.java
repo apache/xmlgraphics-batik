@@ -50,13 +50,11 @@
 
 package org.apache.batik.svggen;
 
-import org.apache.batik.test.PerformanceTest;
-
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-
-import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMImplementation;
+
+import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.test.PerformanceTest;
 
 /**
  * This test checks that there is no performance degradation in the 

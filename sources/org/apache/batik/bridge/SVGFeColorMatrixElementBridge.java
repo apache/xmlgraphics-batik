@@ -216,17 +216,14 @@ public class SVGFeColorMatrixElementBridge
      */
     protected static float convertValuesToSaturate(Element filterElement) {
         String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
-        int length = s.length();
-        if (s.length() == 0) {
+        if (s.length() == 0)
             return 1; // default is 1
-        } else {
-            try {
-                return SVGUtilities.convertSVGNumber(s);
-            } catch (NumberFormatException ex) {
-                throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object [] {SVG_VALUES_ATTRIBUTE, s});
-            }
+        try {
+            return SVGUtilities.convertSVGNumber(s);
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object [] {SVG_VALUES_ATTRIBUTE, s});
         }
     }
 
@@ -238,17 +235,14 @@ public class SVGFeColorMatrixElementBridge
      */
     protected static float convertValuesToHueRotate(Element filterElement) {
         String s = filterElement.getAttributeNS(null, SVG_VALUES_ATTRIBUTE);
-        int length = s.length();
-        if (s.length() == 0) {
+        if (s.length() == 0)
             return 0; // default is 0
-        } else {
-            try {
-                return (float)(SVGUtilities.convertSVGNumber(s)*Math.PI)/180f;
-            } catch (NumberFormatException ex) {
-                throw new BridgeException
-                    (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                     new Object [] {SVG_VALUES_ATTRIBUTE, s});
-            }
+        try {
+            return (float)(SVGUtilities.convertSVGNumber(s)*Math.PI)/180f;
+        } catch (NumberFormatException ex) {
+            throw new BridgeException
+                (filterElement, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                 new Object [] {SVG_VALUES_ATTRIBUTE, s});
         }
     }
 
@@ -259,7 +253,6 @@ public class SVGFeColorMatrixElementBridge
      */
     protected static int convertType(Element filterElement) {
         String s = filterElement.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
-        int length = s.length();
         if (s.length() == 0) {
             return ColorMatrixRable.TYPE_MATRIX;
         }

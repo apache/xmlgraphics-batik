@@ -142,8 +142,6 @@ public final class BumpMap {
         final int scanStride = sppsm.getScanlineStride();
         final int scanStridePP = scanStride + 1;
         final int scanStrideMM = scanStride - 1;
-        int a = 0;
-        int i=0, j=0;
         double prpc=0, prcc=0, prnc=0;
         double crpc=0, crcc=0, crnc=0;
         double nrpc=0, nrcc=0, nrnc=0;

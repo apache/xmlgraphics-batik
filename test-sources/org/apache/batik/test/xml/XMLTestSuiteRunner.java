@@ -57,9 +57,6 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.MalformedURLException;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -76,7 +73,6 @@ import org.apache.batik.test.TestFilter;
 import org.apache.batik.test.TestException;
 import org.apache.batik.test.TestReportProcessor;
 
-import org.xml.sax.InputSource;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;

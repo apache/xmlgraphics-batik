@@ -95,7 +95,6 @@ public class TIFFRegistryEntry
 
         final DeferRable  dr  = new DeferRable();
         final InputStream is  = inIS;
-        final boolean     raw = needRawData;
         final String      errCode;
         final Object []   errParam;
         if (origURL != null) {

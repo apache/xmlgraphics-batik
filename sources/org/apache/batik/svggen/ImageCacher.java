@@ -366,7 +366,11 @@ public abstract class ImageCacher implements SVGSyntax, ErrorConstants {
                 byte[] candidateBytes =
                         ((ByteArrayOutputStream) o2).toByteArray();
                 
-                int bytesRead = imageStream.read(imageBytes);
+                int bytesRead = 0;
+                while (bytesRead != imageLen) {
+                    bytesRead += imageStream.read
+                      (imageBytes, bytesRead, imageLen-bytesRead);
+                }
                             
                 match = Arrays.equals(imageBytes, candidateBytes);
             } catch(IOException e) {

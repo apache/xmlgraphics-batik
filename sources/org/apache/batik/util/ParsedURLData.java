@@ -305,7 +305,7 @@ public class ParsedURLData {
      */
     public boolean complete() {
         try {
-            URL url = buildURL();
+            buildURL();
         } catch (MalformedURLException mue) {
             return false;
         }

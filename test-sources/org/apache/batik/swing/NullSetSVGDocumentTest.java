@@ -51,19 +51,13 @@
 package org.apache.batik.swing;
 
 import java.awt.EventQueue;
-import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
-import org.apache.batik.dom.GenericDOMImplementation;
+import org.w3c.dom.svg.SVGDocument;
+
 import org.apache.batik.test.DefaultTestReport;
 import org.apache.batik.test.TestReport;
-import org.apache.batik.test.svg.JSVGRenderingAccuracyTest;
-import org.apache.batik.util.SVGConstants;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGDocument;
 
 /**
  * Test setDocument on JSVGComponent with non-Batik SVGOMDocument.
@@ -179,4 +173,4 @@ public class NullSetSVGDocumentTest extends JSVGMemoryLeakTest {
             return;
         }
     }
-};
+}

@@ -87,7 +87,7 @@ public class TestErrorConditionException extends Exception {
         if(errorCode != null){
             report.setErrorCode(errorCode);
         } else {
-            report.setErrorCode(report.ERROR_TEST_FAILED);
+            report.setErrorCode(TestReport.ERROR_TEST_FAILED);
         }
 
         report.setPassed(false);
@@ -103,7 +103,8 @@ public class TestErrorConditionException extends Exception {
         StringWriter trace = new StringWriter();
         printStackTrace(new PrintWriter(trace));
         
-        report.addDescriptionEntry(report.ENTRY_KEY_ERROR_CONDITION_STACK_TRACE,
-                                   trace.toString());
+        report.addDescriptionEntry
+          (TestReport.ENTRY_KEY_ERROR_CONDITION_STACK_TRACE,
+           trace.toString());
     }
 }

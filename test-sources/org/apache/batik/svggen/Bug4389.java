@@ -50,9 +50,8 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import javax.swing.ImageIcon;
 
 /**

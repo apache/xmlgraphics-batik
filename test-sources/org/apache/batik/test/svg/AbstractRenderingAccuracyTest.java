@@ -651,7 +651,6 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
                               InputStream newStream)
         throws IOException{
         int b, nb;
-        boolean accurate;
         do {
             b = refStream.read();
             nb = newStream.read();
@@ -712,8 +711,6 @@ public abstract class AbstractRenderingAccuracyTest extends AbstractTest {
 
         int w=ref.getWidth();
         int h=ref.getHeight();
-        int nb = ref.getSampleModel().getNumBands();
-
         int y, i,val;
         int [] refPix = null;
         int [] genPix = null;

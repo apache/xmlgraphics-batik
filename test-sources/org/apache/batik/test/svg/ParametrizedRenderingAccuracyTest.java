@@ -52,12 +52,6 @@ package org.apache.batik.test.svg;
 
 import java.io.File;
 
-import org.apache.batik.dom.svg.SVGOMDocument;
-
-import org.apache.batik.test.AbstractTest;
-
-import org.w3c.dom.Document;
-
 /**
  * Base class for tests which take an additional parameter in addition
  * to the SVG file.

@@ -281,4 +281,4 @@ public class GVTFontFace implements SVGConstants {
     public float getOverlineThickness() {
         return overlineThickness;
     }
-};
+}

@@ -50,10 +50,7 @@
 
 package org.apache.batik.svggen;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
-import javax.swing.ImageIcon;
+import java.awt.Graphics2D;
 
 /**
  * This test validates that transforms are collapsed when they

@@ -128,7 +128,7 @@ public class SetAttributeTest extends AbstractTest {
             return reportSuccess();
         }
         DefaultTestReport report = new DefaultTestReport(this);
-        report.setErrorCode(report.ERROR_TEST_FAILED);
+        report.setErrorCode(TestReport.ERROR_TEST_FAILED);
         report.setPassed(false);
         return report;
     }

@@ -85,7 +85,7 @@ public class SVGTransformableSupport {
                                                     TRANSFORM_DEFAULT_VALUE);
             elt.putLiveAttributeValue(null,
                                       SVGConstants.SVG_TRANSFORM_ATTRIBUTE, 
-                                      (LiveAttributeValue)result);
+                                      result);
         }
         return result;
 
