@@ -25,21 +25,16 @@
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
     <g id="testContent">
-     <text x="225" y="30" class="title">
-       Image element references an SVG file
-     </text>
+        <text x="225" y="30" class="title">
+        Image element references an SVG file
+        </text>
 
-      <g transform="translate(20 50)">
-      <rect x="10" y="10" width="180" height="180" style="fill:#eeeeee;"/>
-      <rect x="220" y="10" width="180" height="180" style="fill:#eeeeee"/>
-      <rect x="10" y="220" width="180" height="180" style="fill:#eeeeee"/>
-      <rect x="220" y="220" width="180" height="180" style="fill:#eeeeee"/>
-
-      <image xlink:href="feColorMatrix.svg" x="10" y="10" width="180" height="180" viewBox="0 0 450 500"/>
-      <image xlink:href="feComponentTransfer.svg" x="220" y="10" width="180" height="180" viewBox="0 0 450 500"/>
-      <image xlink:href="feComponentTransfer2.svg" x="10" y="220" width="180" height="180" viewBox="0 0 450 500"/>
-      <image xlink:href="index.svg" x="220" y="220" width="180" height="180" viewBox="0 0 450 500"/>
-      </g>
+        <g transform="translate(0, 50)">
+            <image xlink:href="svg.svg" x="75" y="10" width="300" height="193.45" 
+                   viewBox="0 0 210 170" preserveAspectRatio="xMidYMin meet"/>
+            <image xlink:href="png.png" x="75" y="195" width="300" height="100" />
+            <image xlink:href="jpeg.jpg" x="75" y="320" width="300" height="100" />
+        </g>
     </g>
 
     <!-- ============================================================= -->
