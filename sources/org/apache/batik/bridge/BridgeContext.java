@@ -73,7 +73,7 @@ public class BridgeContext implements ErrorConstants {
      * to reduce the number of instances of GVTFontFamilies and to
      * hopefully reduce the time taken to search for a matching SVG font.
      */
-    private static HashMap fontFamilyMap;
+    private HashMap fontFamilyMap;
 
     /**
      * The viewports.
