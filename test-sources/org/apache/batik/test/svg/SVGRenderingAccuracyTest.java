@@ -210,6 +210,7 @@ public class SVGRenderingAccuracyTest implements Test{
             tmpFile = File.createTempFile(TEMP_FILE_PREFIX,
                                           TEMP_FILE_SUFFIX,
                                           null);
+            tmpFile.deleteOnExit();
         }catch(IOException e){
             report.setErrorCode(ERROR_CANNOT_CREATE_TEMP_FILE);
             report.setDescription(new TestReport.Entry[] { 
