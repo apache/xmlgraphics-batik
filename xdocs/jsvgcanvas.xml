@@ -39,9 +39,16 @@ mecanism used to track all events that occured while displaying or manipulating
 an SVG document.
 
 </p>
+
+    <ul>
+      <li><link href="#creatingJSVGCanvas">Creating a JSVGCanvas</link></li>
+      <li><link href="#eventhandling">Event Handling</link></li>
+      <li><link href="#interactor">Interactor</link></li>
+    </ul>
 </s1>
 
 <!-- ##################################################################### -->
+<anchor id="creatingJSVGCanvas"/>
 <s1 title="Creating a JSVGCanvas">
 
 <p>
@@ -168,11 +175,12 @@ public class SVGApplication {
 </s1>
 
 <!-- ##################################################################### -->
+<anchor id="eventhandling"/>
 <s1 title="Event Handling">
 
 <p>
 
-Each time you set a URI or a SVG DOM tree to the JSVGCanvas (using the
+Each time you set a URI or an SVG DOM tree to the JSVGCanvas (using the
 <code>setURI</code> or <code>setSVGDocument</code> method), the specified
 document is first parsed (in case of a URI), built, rendered and optionally
 updated. The proper way to be notified of those different phases is to
@@ -208,7 +216,7 @@ tree will then be used to render the document.
 
 This listener provides a set of methods that can be used to track
 <code>SVGLoadEventDispatcherEvent</code> events. It describes the
-DOM 'SVGLoad' event dispatch phase.<br/>
+DOM <code>SVGLoad</code> event dispatch phase.<br/>
 This event is triggered only in dynamic documents.
 <br /><br />
 </dd>
@@ -250,7 +258,9 @@ creation of new listener implementation.
 
 <p>
 
-For static documents, you can assume that the JSVGCanvas has completed its job (parsing, building and rendering) when the <code>gvtRenderingCompleted</code> method call is called, following a setURI or a setSVGDocument method call.<br/>
+For static documents, you can assume that the JSVGCanvas has completed its job (parsing, building and rendering)
+when the <code>gvtRenderingCompleted</code> method call is called, following a <code>setURI</code> or a <code>setSVGDocument</code> method call.
+<br/>
 In case of dynamic documents, the end of the computations (parsing, building,
 SVGLoad dispatch, initial rendering and updates) is marked by a call to the
 <code>updateManagerStopped</code> method.
@@ -259,6 +269,7 @@ SVGLoad dispatch, initial rendering and updates) is marked by a call to the
 </s1>
 
 <!-- ##################################################################### -->
+<anchor id="interactor"/>
 <s1 title="Interactor">
 
 <p>

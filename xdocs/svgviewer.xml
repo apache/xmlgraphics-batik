@@ -45,8 +45,8 @@
         <s1 title="Downloading the browser">
 
             <p>Refer to the <link href="dist">download area</link> to find out how to 
-            download Batik. Remember that you can get either the developer distribution
-            or the binary distribution.</p>
+            download Batik. Remember that you can get either the <link href="install.html#distributions">source distribution</link>
+            or the <link href="install.html#distributions">binary distribution</link>.</p>
             <p>Refer to the <link href="install.html">installation page</link> for instructions
             on how to install the Batik download on your system.</p>
         </s1>
@@ -55,18 +55,21 @@
         <s1 title="Starting the browser">
             <p>The method for starting the browser depends on the distribution of Batik
             that you chose to download. The following describes how to start the browser
-            for each distribution</p>
+            for each distribution(<link href="install.html#distributions">binary distribution</link> and 
+        <link href="install.html#distributions">source distribution</link>)</p>
 
+	    <anchor id="startingBinaryDistribution"/>
             <s2 title="Starting the browser for the binary distribution">
 
-                <p>If you downloaded the binary distribution of Batik, you should have
-                gotten a file called <em>batik-1.1.zip</em>, which, when expanded, 
-                created a <em>batik-svgbrowser.jar</em> file. To start the browser, 
+                <p>If you downloaded the <link href="install.html#distributions">binary distribution</link> 
+                of Batik, you should have
+                gotten a file called <code>batik-1.5beta3.zip</code>, which, when expanded, 
+                created a <code>batik-svgbrowser.jar</code> file. To start the browser, 
                 type the following on the command line:</p>
                 <p><em>cd &lt;installationDirectory&gt;</em></p>
-                <p><em>java -jar batik-svgbrowser.jar</em></p>
+                <p><code>java -jar batik-svgbrowser.jar</code></p>
                 <p>You can pass options to the command line:</p>
-                <p><em>java -jar batik-svgbrowser.jar [-font-size &lt;fontSize&gt;] [svgURL]*</em></p>
+                <p><code>java -jar batik-svgbrowser.jar </code><em>[</em> <code>-font-size </code><em>&lt;fontSize&gt;] [svgURL]*</em></p>
                 <p>Where:</p>
                     <ul>
                         <li><em>-font-size &lt;fontSize&gt;</em> will make the browser use small fonts in the GUI.</li>
@@ -74,46 +77,47 @@
                     </ul>
                 <p>For example:</p>
                 <ul>
-                    <li><em>java -jar batik-svgbrowser.jar -font-size 10</em> starts the browser with small fonts.</li>
-                    <li><em>java -jar batik-svgbrowser.jar -font-size 10 samples/batikLogo.svg</em> starts the browser with 
-                        the batikLogo.svg file open (and small fonts,
-                        because of -font-size)</li>
+                    <li><code>java -jar batik-svgbrowser.jar -font-size 10</code> starts the browser with small fonts.</li>
+                    <li><code>java -jar batik-svgbrowser.jar -font-size 10 samples/batikLogo.svg</code> starts the browser with 
+                        the <code>batikLogo.svg</code> file open and small fonts,
+                        because of <code>-font-size</code></li>
                 </ul>
             </s2>
 
-            <s2 title="Starting the browser for the developer distribution">
+            <s2 title="Starting the browser for the source distribution">
 
-                <p>If you downloaded the developer distrubution of Batik, you should have gotten
-                a zip file that expanded into an xml-batik directory. In that directory, you
+                <p>If you downloaded the <link href="install.html#distributions">source distribution</link>
+                of Batik, you should have gotten
+                a zip file batik-src-1.5beta3 that expanded into a directory called <code>xml-batik</code>. In that directory, you
                 can find build scripts for the platform you are running on. For example, there is 
-                a build.bat script for users of the Windows platform and there is a build.sh script
+                a <code>build.bat</code> script for users of the Windows platform and there is a <code>build.sh</code> script
                 for UNIX users.</p>
                 <p>To start the browser you should:</p><ul>
-                    <li>Make sure the xml-batik directory is in your PATH environment variable</li>
-                    <li>Make sure the ANT_HOME environment variable is set to the xml-batik directory</li>
-                    <li>Make sure that your JAVA_HOME environment variable is set to your JDK installation 
+                    <li>Make sure the <code>xml-batik</code> directory is in your <code>PATH</code> environment variable</li>
+                    <li>Make sure the <code>ANT_HOME</code> environment variable is set to the <code>xml-batik</code> directory</li>
+                    <li>Make sure that your <code>JAVA_HOME</code> environment variable is set to your JDK installation 
                         directory</li>
-                    <li>Open a command line window and go to the xml-batik directory where the Batik
+                    <li>Open a command line window and go to the <code>xml-batik</code> directory where the Batik
                         distribution was expanded</li>
-                    <li><strong>UNIX users</strong>. If you have not done so already, make the build.sh script
-                        executable:<br />
-                        <em>chmod +x build.sh</em></li>
                     <li>At the command prompt, type: <br />
-                        <strong>Windows: </strong><em>build svgbrowser</em><br />
-                        <strong>UNIX: </strong><em>build.sh svgbrowser</em><br />
+                        <strong>Windows: </strong><code>build svgbrowser</code><br />
+                        <strong>UNIX: </strong><code>build.sh svgbrowser</code><br />
                         This will start the browser</li>
                 </ul>
                 <p>You can pass options to the browser as follows:</p>
-                <p><strong>Windows: </strong><em>build svgbrowser [-font-size &lt;fontSize&gt;] [svgURL]*</em></p>
-                <p><strong>UNIX: </strong><em>build.sh svgbrowser [-font-size &lt;fontSize&gt;] [svgURL]*</em></p>
-                <p>Refer to "Starting the browser for the binary distribution" for an explanation of these
-                options. Note that the number of files which can be opened on Windows, from the command line is 
+                <p><strong>Windows: </strong><code>build svgbrowser </code><em>[</em><code>-font-size</code><em> &lt;fontSize&gt;] [svgURL]*</em></p>
+                <p><strong>UNIX: </strong><code>build.sh svgbrowser</code><em> [</em><code>-font-size</code><em> &lt;fontSize&gt;] [svgURL]*</em></p>
+                <p>Refer to <link href="#startingBinaryDistribution">"Starting the browser for the binary distribution"</link> for an explanation of these
+                options.</p>
+               <p><strong>Note:</strong> that the number of files which can be opened on Windows, from the command line is 
                 limited because batch files take at most 9 parameters.</p>
             </s2>
 
             <s2 title="SVG browser screen shot">
-                <p>The following image shows the result of starting the browser, in the binary or 
-                developer distribution, with the <code>-font-size 10 samples/batikFX.svg</code> options.</p>
+                <p>The following image shows the result of starting the browser, in the 
+                <link href="install.html#distributions">binary distribution</link> or 
+                <link href="install.html#distributions">source distribution</link>, 
+                with the <code>-font-size 10 samples/batikFX.svg</code> options.</p>
                 <figure src="images/svgviewerDefaultRegular.jpg" alt="Batik Browser"/>
                 
             </s2>
@@ -133,9 +137,9 @@
             <anchor id="localFile" />
             <s2 title="Opening a local SVG file">
 
-            <p>In situations where you have an SVG file locally on the machine where you are running the
-            Batik SVG browser, you can use the "File-&gt;Open File" menu item to open that file, or use
-            the "Ctrl-F" key accelerator. Doing so brings up a file choser that lets you select the file
+            <p>In situations where you want to open SVG files locally on the machine where you are running the
+            Batik SVG browser, you can use <strong>"File-&gt;Open File"</strong> menu item to open that file, or use
+            the <strong>"Ctrl-F"</strong> key accelerator. Doing so brings up a file choser that lets you select the file
             you want to view.</p>
 
             <figure src="images/svgviewerFileOpen.gif" alt="File Open in SVG Browser"/>
@@ -146,8 +150,8 @@
             <s2 title="Opening an SVG file from the Web">
 
             <p>There are many situations where the SVG content you want to view is not local to the machine
-            where the browser is running. In that case, you can use the "File-&gt;Open Page" menu item, or use
-            the "Ctrl-O" key accelerator to open that page. Doing so brings up a dialog box where you 
+            where the Batik SVG browser is running. In that case, you can use the <strong>"File-&gt;Open Location"</strong> menu item, or use
+            the "<strong>Ctrl-A"</strong> key accelerator to open that page. Doing so brings up a dialog box where you 
             can type in the URL for the file you want to view.</p>
 
             <figure src="images/svgviewerOpenPage.gif" alt="Open Page in SVG Browser"/>
@@ -155,10 +159,10 @@
             </s2>
 
             <anchor id="locationBar" />
-            <s2 title="Using the location text field to view an SVG file">
+            <s2 title="Using the location bar text field to view an SVG file">
 
             <p>When you know the URL of the document you want to view, you can enter it directly in 
-            the location bar text field at the top of the SVG browser, the same way you can enter a
+            the location bar text field at the top of the Batik SVG browser, the same way you can enter a
             URL in an HTML browser</p>
 
             <figure src="images/svgviewerLocationBar.gif" alt="Location Bar in SVG Browser"/>
@@ -169,18 +173,18 @@
 
             <p>As with HTML content, it is common to navigate back and forth between SVG files (remember that
             SVG files contain hyperlinks, just like HTML does) and, as described later in this document,
-            it is possible to zoom into SVG documents, pan and rotate.</p>
+            it is possible to <link href="#zoomInOut">zoom</link> into SVG documents, <link href="#panning">pan</link> and <link href="#rotating">rotate</link>.</p>
             <figure src="images/svgviewerBrowsing.gif" alt="Browsing SVG files" />
-            <p>The Batik browser offers multiple features to help you browse SVG files:</p>
+            <p>The Batik SVG browser offers multiple features to help you browse SVG files:</p>
             <ul>
-                <li><strong>Navigating between files</strong>. The "Go-&gt;Back" menu item (or the Ctrl-left arrow
-                keyboard acceleration) and the "Go-&gt;Forward" (or the Ctrl-right arrow keyboard acceleration)
+                <li><strong>Navigating between files</strong>. The "<strong>Go-&gt;Back</strong>" menu item (or the <strong>Ctrl-left arrow</strong>
+                keyboard acceleration) and the <strong>"Go-&gt;Forward"</strong> (or the <strong>Ctrl-right arrow</strong> keyboard acceleration)
                 let you move to the previous and next visited SVG documents</li>
-                <li><strong>History</strong>. The "Go" menu also contains a list of the visited SVG documents,
+                <li><strong>History</strong>. The "<strong>Go</strong>" menu also contains a list of the visited SVG documents,
                 which gives you a way to randomly access any document you have already visited.</li>
-                <li><strong>Navigation between views</strong>. The "View-&gt;Previous Transform" menu item (Ctrl-L) 
-                and the "View-&gt;Next Transform" menu item (Ctrl-N) let you go to the previous or next view
-                you have had of a document. This is useful when, for example, you pan or rotate and document
+                <li><strong>Navigation between views</strong>. The "<strong>"View-&gt;Previous Transform</strong>" menu item (<strong>Ctrl-k</strong>) 
+                and the "<strong>View-&gt;Next Transform</strong>" menu item (<strong>Ctrl-L</strong>) let you go to the previous or next view
+                you have had of a document. This is useful when, for example, you <link href="#panning">pan</link> or <link href="#rotating">rotate</link> and document
                 and want to go back to any previous view you had of the document (i.e., before you panned or
                 rotated it).</li>
             </ul>
@@ -191,45 +195,46 @@
 
             <figure src="images/svgviewerMultipleFiles.gif" alt="Viewing multiple files" />
             <p>The Batik SVG Browser can display multiple files simultaneously in different windows. To view a
-            new file in a separate window, simply select the "File-&gt; Create New Window" menu item or use
-            the Ctrl-N keyboard accelerator.</p>
+            new file in a separate window, simply select the "<strong>File-&gt; Create New Window</strong>" menu item or use
+            the <strong>Ctrl-N</strong> keyboard accelerator.</p>
         </s2>
 
+	<anchor id="reloading"/>
         <s2 title="Reloading an SVG document">
 
             <p>When working on an SVG document, you may want the browser to reprocess a document that you 
-            have modified. The "File-&gt; Reload Document" menu item or the Ctrl-R keyboard accelerator will cause the 
+            have modified. The "<strong>File-&gt; Reload Document</strong>" menu item or the <strong>Ctrl-R</strong> keyboard accelerator will cause the 
             document to be reprocessed by the browser.</p>
         </s2>
         </s1>
 
         <anchor id="exportAndPrint" />
         <s1 title="Exporting and Printing SVG documents">
-            <p>The "File-&gt;Print" menu will print the currently displayed SVG document when selected.</p>
-            <p>The "File-&gt;Export As" menu offers the option to export the currently displayed SVG document
-            to various raster formats. Currently, the browser supports the PNG, JPEG and TIFF formats.</p>
+            <p>The "<strong>File-&gt;Print</strong>" menu item or <strong>File-P</strong> will print the currently displayed SVG document when selected.</p>
+            <p>The "<strong>File-&gt;Export As</strong>" menu offers the option to export the currently displayed SVG document
+            to various raster formats. Currently, the browser supports the PNG, JPEG and Tiff formats.</p>
         </s1>
 
         <anchor id="inspectingSVGSourceContent" />
         <s1 title="Inspecting the SVG Source">
         
         <p>The browser offers two ways to inspect the source of an
-        SVG document: viewing the plain source or viewing the 
-        document tree. Both are explained hereafter.</p>
+        SVG document: <link href="#viewingSource">viewing the plain source</link> or <link href="#viewingTree">viewing the 
+        document tree</link>. Both are explained hereafter.</p>
+        
         <anchor id="viewingSource" />
         <s2 title="Viewing the source">
-
             <figure src="images/svgviewerViewSource.gif" alt="Viewing the source code" />
             <p>When the browser displays an SVG file, you can select
-            the "View-&gt; View Source..." menu item or use the Ctrl-U keyboard accelerator to view the 
+            the "<strong>View-&gt; View Source...</strong>" menu item or use the <strong>Ctrl-U</strong> keyboard accelerator to view the 
             source code.</p>
         </s2>
 
         <anchor id="viewingTree" />
         <s2 title="Viewing the document tree">
             <figure src="images/svgviewerViewTree.gif" alt="Viewing the document tree" />
-            <p>When the browser displays an SVG file, you can select the "View-&gt; DOM Viewer..."
-            menu item or use the Ctrl-T keyboard accelerator to open a dialog that shows the SVG
+            <p>When the browser displays an SVG file, you can select the "<strong>View-&gt; DOM Viewer...</strong>"
+            menu item or use the <strong>Ctrl-D</strong> keyboard accelerator to open a dialog that shows the SVG
             document in the form of a tree. The dialog lets you navigate the tree, select individual
             elements, such as a path element, and view the attributes and CSS values that apply to
             these elements.</p>
@@ -239,7 +244,7 @@
         <anchor id="configuring"/>
         <s1 title="Configuring the SVG Browser">
 
-        <p>The "Edit->Preferences" menu brings up the dialog box shown in the following
+        <p>The "<strong>Edit->Preferences</strong>" menu item or <strong>Edit-G</strong>brings up the dialog box shown in the following
         figure.</p>
         <figure src="images/svgviewerPreferences.gif" alt="Configuring the SVG Browser" />
         
@@ -253,20 +258,20 @@
             figure. That panel lets you select your languages. The user language can 
             be used in SVG documents to choose between alternate contents. For example, 
             open the samples/moonPhases.svg example. Then, change the user language to 
-            french and reload the document (Ctrl-R). You will see that the text is now
-            displayed in french. You can do the same with Japanese and the text will be
+            french and <link href="#reloading">reload</link> the document (<strong>Ctrl-R</strong>). 
+            You will see that the text is now displayed in french. You can do the same with Japanese and the text will be
             shown in Japanes.</li>
             <li><strong>Browser Options Panel</strong>. This panel lets you choose some
             optional behaviors:
                 <ul>
-                    <li>Show Rendering. When on, the browser will update the canvas
+                    <li><strong>Show Rendering</strong>. When on, the browser will update the canvas
                     while processing an SVG document. This turns on progressive rendering.</li>
-                    <li>Auto Adjust Window. When on, the browser window is resized to fit
+                    <li><strong>Auto Adjust Window</strong>. When on, the browser window is resized to fit
                     any newly loaded document</li>
-                    <li>Enable Double Buffering. When on, the browser uses additional
+                    <li><strong>Enable Double Buffering</strong>. When on, the browser uses additional
                     memory resources which improves the quality of effects such as zooming
                     and panning.</li>
-                    <li>Show debug traces. When on, so debug messages will be printed to 
+                    <li><strong>Show debug traces</strong>. When on, so debug messages will be printed to 
                     the standard output. This is only for developers.</li>
                 </ul>
             </li>
@@ -293,15 +298,15 @@
             <s2 title="Zooming in and out">
                 <p>There are several methods to zoom in or out an SVG Document:</p>
                 <ul>
-                    <li>You can select the "View -&gt; Zoom In/Out" menu item</li>
-                    <li>You can click on the "Zoom In/Out" tool bar button (the ones that show a magnifying glass
-                        with a "+/-" signs)</li>
-                    <li>You can use the "Ctrl+I" and "Ctrl+O" keyboard acceleration</li>
-                    <li>If the mouse is over the document in the display area, you can press the Ctrl key
-                    then click the left mouse button and drag to select the area of interest in the document.
+                    <li>You can select the <strong>View -&gt; Zoom In</strong> or <strong>View -&gt; Zoom Out</strong> menu item</li>
+                    <li>You can <strong>click</strong> on the "<strong>Zoom In/Out</strong>" tool bar button (the ones that show a magnifying glass
+                        with a "<strong>+/-</strong>" signs)</li>
+                    <li>You can use the "<strong>Ctrl+I</strong>" and "<strong>Ctrl+O</strong>" keyboard acceleration</li>
+                    <li>If the mouse is over the document in the display area, you can press the <strong>Ctrl key</strong>
+                    then <strong>click the left mouse button and drag</strong> to select the area of interest in the document.
                     This can only be used to zoom into a document.</li>
-                    <li>If the mouse is over the document in the display area, you can press the Shift key
-                    then click the right mouse button and drag it. This is called the 'real time' zoom 
+                    <li>If the mouse is over the document in the display area, you can press the <strong>Shift key</strong>
+                    then <strong>click the right mouse button and drag</strong> it. This is called the '<em>real time</em>' zoom 
                     and can be used both for zooming in and out.</li>
                 </ul>        
 
@@ -312,15 +317,15 @@
             
             <anchor id="panning" />
             <s2 title="Panning a document">
-                <p>Some documents are too big to fit into the browser, especially when you zoom in with a
+                <p>Some documents are too big to fit into the browser, especially when you <link href="#zoomInOut">zoom</link> in with a
                 large zoom factor. In these circumstances, it is usefull to be able to 'move around' the 
                 document and pan to view different parts of the documents. Again, there are multiple ways
                 to do this:</p>
                 <ul>
-                    <li>With the mouse cursor over the SVG document, press the Shift key and then
-                    click and drag the left mouse button to a new location. When you release the 
+                    <li>With the mouse cursor over the SVG document, <strong>press the Shift key</strong> and then
+                    <strong>click and drag the left mouse button</strong> to a new location. When you release the 
                     mouse, the document will be translated to the new mouse location.</li>
-                    <li>If you have the thumbnail open, you can select the marker showing the current
+                    <li>If you have the <link href="#thumbnail">thumbnail</link> open, you can select the marker showing the current
                     area of interest and move it to the desired location</li>
                 </ul>
                 <figure src="images/svgviewerPan.gif" alt="Panning in an SVG document" />
@@ -329,8 +334,8 @@
             <anchor id="rotating" />
             <s2 title="Rotating a document">
                 <p>It is sometimes useful to be able to rotate a document (maps for example). You can
-                do this in the Batik browser by first pressing the Ctrl key and then clicking and dragging
-                the right mouse button to a new location. The browser will dynamically rotate the image
+                do this in the Batik browser by first pressing the <strong>Ctrl key</strong> and then <strong>clicking and dragging
+                the right mouse button</strong> to a new location. The browser will dynamically rotate the image
                 as you move your cursor. When you are satisfied with that angle, you can release
                 the mouse button and the document will be displayed with that new angle.
                 </p>
@@ -341,8 +346,9 @@
 
                 <p>While the mouse and keyboard interactions give interactive way to navigate an
                 SVG document, it is sometimes desirable to be able to define precisely the 
-                amount of zoom, pan or rotation desired. The Transform dialog, available through
-                the "View-&gt;Transform" (Ctrl-S) menu offers that feature.</p> 
+                amount of <link href="#zoomInOut">zoom</link>, <link href="#panning">pan</link> or 
+                <link href="#rotating">rotation</link> desired. The Transform dialog, available through
+                the "<strong>View-&gt;Transform</strong>" (<strong>Ctrl-E</strong>) menu offers that feature.</p> 
             </s2>
 
             <anchor id="thumbnail" />
@@ -350,11 +356,11 @@
                 <p>Panning in the document window can be difficult after you have zoomed into a document
                 because you cannot see the whole document. Panning on large documents (or with a large
                 zoom factor) is made easy by the thumbnail that you can bring up through the
-                "View -&gt; Thumbnail" menu item or Ctrl-Y keyboard acceleration. The 
+                "<strong>View -&gt; Thumbnail</strong>" menu item or <strong>Ctrl-Y</strong> keyboard acceleration. The 
                 thumbnail shows a rectangular marker that represents the "Area of Interest", i.e., the 
                 region currently displayed in the window (the visible portion of the document). You
-                can drag that little marker with the left mouse button and drag it to another area
-                of interest to view a different portion of the document in the main window.</p>
+                can <strong>drag out a rectangular marker with the left mouse button pushed down</strong> to select a new area
+                of interest which will then be shown in the main window.</p>
                 <figure src="images/svgviewerThumbnail.gif" alt="SVG Browser Thumbnail" />
             </s2>
         </s1>

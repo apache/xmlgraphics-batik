@@ -280,7 +280,7 @@
                         FilterPrimitiveBridge</link></dt> 
                     <dd>
                     Constructs an element in the filter chain applied
-                    to a SVG graphics node.  
+                    to an SVG graphics node.  
                     <br/> 
                     <em>Example tags:</em> feBlend, feCompose, ...<br/>
                     <em>Example Extensions:</em> BatikHistogramNormalizationElementBridge

@@ -37,7 +37,7 @@
         </ul>            
         <p>
             The SVG Pretty-printer is a utility that can format SVG files.
-            The tool format a SVG document according to the arguments passed
+            The tool format an SVG document according to the arguments passed
             on the command-line.
         </p>
 
@@ -48,8 +48,8 @@
 
             <p>Refer to the <link href="install.html">install page</link> and the
             <link href="dist">download area</link> to find out what to download and how to 
-            download it. Remember that you can get either the developer distribution
-            or the binary distribution.</p>
+            download it. Remember that you can get either the <link href="install.html#distributions">source distribution</link>
+            or the <link href="install.html#distributions">binary distribution</link>.</p>
         </s1>
 
         <anchor id="using" />
@@ -61,61 +61,58 @@
             <anchor id="usingBinary" />
             <s2 title="Using the binary distribution" >
 
-                <p>If you downloaded the binary distribution of Batik, you should have
-                gotten a file called <em>batik-1.1.zip</em>, and, after expanding that
-                file, a JAR (Java ARchive) file called <em>batik-svgpp.jar</em>. 
+                <p>If you downloaded the <link href="install.html#distributions">binary distribution</link> of Batik, you should have
+                a file called <code>batik-1.5beta3.zip</code>, and, after expanding that
+                file, a JAR (Java ARchive) file called <code>batik-svgpp.jar</code>. 
                 To start the pretty-printer, open a console, go to the directory where you 
-                expanded the distribution (and where batik-svgpp.jar is located) and
+                expanded the distribution (and where <code>batik-svgpp.jar</code>. is located) and
                 simply type the following at the command prompt :</p>
-                <p><em>java -jar batik-svgpp.jar [@options] [@files]</em></p>
+                <p><code>java -jar batik-svgpp.jar </code><em>[@options] [@files]</em></p>
                 <p>For example, if you type:</p>
-                <p><em>java -jar batik-svgpp.jar samples/batikFX.svg</em></p>
+                <p><code>java -jar batik-svgpp.jar samples/batikFX.svg</code></p>
                 <p>you will see the indented document on the standard output.</p>
 
                 <p>You can pass options to the command line:</p>
                     <ul>
-                        <li><em>-newline &lt;cr | cr-lf | lf&gt;</em> lets you select the  newline character(s) generated in the printed document. The default is 'lf' (unix style newline).</li>
-                        <li><em>-tab-width &lt;number&gt;</em> lets you select the tabulation width. The default value is 4.</li>
-                        <li><em>-doc-width &lt;number&gt;</em> lets you select the document preferred number of columns. The default value is 80.</li>
-                        <li><em>-no-format</em> lets you preserve the current indentation. This option is useful to perform doctype or newline substitutions.</li>
-                        <li><em>-xml-decl &lt;string&gt;</em> lets you set the XML declaration.</li>
-                        <li><em>-doctype &lt;change | remove&gt;</em> lets you change or remove the doctype of the document.</li>
-                        <li><em>-public-id &lt;string&gt;</em> lets you specify a public id to use when writing the document. This option is ignored unless '-doctype change' is specified.</li>
-                        <li><em>-system-id &lt;string&gt;</em> lets you specify a system id to use when writing the document. This option is ignored unless '-doctype change' is specified.</li>
+                        <li><code>-newline</code> <em>&lt;cr | cr-lf | lf&gt;</em> lets you select the  newline character(s) generated in the printed document. The default is 'lf' (unix style newline).</li>
+                        <li><code>-tab-width</code> <em>&lt;number&gt;</em> lets you select the tabulation width. The default value is 4.</li>
+                        <li><code>-doc-width</code> <em>&lt;number&gt;</em> lets you select the document preferred number of columns. The default value is 80.</li>
+                        <li><code>-no-format</code> lets you preserve the current indentation. This option is useful to perform doctype or newline substitutions.</li>
+                        <li><code>-xml-decl</code> <em>&lt;string&gt;</em> lets you set the XML declaration.</li>
+                        <li><code>-doctype</code> <em>&lt;change | remove&gt;</em> lets you change or remove the doctype of the document.</li>
+                        <li><code>-public-id</code> <em>&lt;string&gt;</em> lets you specify a public id to use when writing the document. This option is ignored unless '-doctype change' is specified.</li>
+                        <li><code>-system-id</code> <em>&lt;string&gt;</em> lets you specify a system id to use when writing the document. This option is ignored unless '-doctype change' is specified.</li>
                     </ul>
                 <p>For example:</p>
                 <ul>
-                    <li><em>java -jar batik-svgpp.jar -tab-width 2 -newline cr-lf src.svg dest.svg</em> will format 'src.svg' and write it to 'dest.svg' using a tabulation width of 2 and dos-style newlines.</li>
-                    <li><em>java -jar batik-svgpp.jar -no-format -doctype change -public-id "-//W3C//DTD SVG 20000802//EN" -system-id "http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd" src.svg dest.svg</em> will format 'src.svg' and write it to 'dest.svg', unchanged except the doctype external id which will be replaced by the specified one.</li>
+                    <li><code>java -jar batik-svgpp.jar -tab-width 2 -newline cr-lf src.svg dest.svg</code> will format 'src.svg' and write it to 'dest.svg' using a tabulation width of 2 and dos-style newlines.</li>
+                    <li><code>java -jar batik-svgpp.jar -no-format -doctype change -public-id "-//W3C//DTD SVG 20000802//EN" -system-id "http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd" src.svg dest.svg</code> will format 'src.svg' and write it to 'dest.svg', unchanged except the doctype external id which will be replaced by the specified one.</li>
                 </ul>
             </s2>
 
-            <s2 title="Using the developer distribution">
+            <s2 title="Using the source distribution">
             
-                <p>If you downloaded the developer distribution of Batik, you 
-                got a zip or tar file that expanded into an xml-batik directory. In that directory, you
+                <p>If you downloaded the <link href="installing.html#distributions">source distribution</link> of Batik, you 
+                got a zip or tar file that expanded into a directory called <code>xml-batik</code>. In that directory, you
                 can find build scripts for the platform you are running on. For example, there is 
-                a build.bat script for users of the Windows platform and there is a build.sh script
+                a <code>build.bat</code> script for users of the Windows platform and there is a <code>build.sh</code> script
                 for UNIX users.</p>
                 <p>To start the pretty-printer you should:</p><ul>
-                    <li>Make sure the xml-batik directory is in your PATH environment variable</li>
-                    <li>Make sure the ANT_HOME environment variable is set to the xml-batik directory</li>
-                    <li>Make sure that your JAVA_HOME environment variable is set to your JDK installation 
+                    <li>Make sure the <code>xml-batik</code> directory is in your PATH environment variable</li>
+                    <li>Make sure the <code>ANT_HOME</code> environment variable is set to the xml-batik directory</li>
+                    <li>Make sure that your <code>JAVA_HOME</code> environment variable is set to your JDK installation 
                         directory</li>
-                    <li>Open a command line window and go to the xml-batik directory where the Batik
+                    <li>Open a command line window and go to the <code>xml-batik</code> directory where the Batik
                         distribution was expanded</li>
-                    <li><strong>UNIX users</strong>. If you have not done so already, make the build.sh script
-                        executable:<br />
-                        <em>chmod +x build.sh</em></li>
                     <li>At the command prompt, type: <br />
-                        <strong>Windows: </strong><em>build svgpp</em>.<br />
-                        <strong>UNIX: </strong><em>build.sh svgpp</em>.<br />
+                        <strong>Windows: </strong><code>build svgpp</code>.<br />
+                        <strong>UNIX: </strong><code>build.sh svgpp</code>.<br />
                         This will printout a
                         help message for the pretty-printer</li>
                 </ul>
                 <p>You can pass options to the rasterizer as follows:</p>
-                <p><strong>Windows: </strong><em>build svgpp [@options] [@files]</em></p>
-                <p><strong>UNIX: </strong><em>build.sh svgpp [@options] [@files]</em></p>
+                <p><strong>Windows: </strong><code>build svgpp </code><em>[@options] [@files]</em></p>
+                <p><strong>UNIX: </strong><code>build.sh svgpp </code><em>[@options] [@files]</em></p>
                 <p>Refer to <link href="#usingBinary">"Using the binary distribution" </link>for an explanation of these
                 options</p>
             </s2>

@@ -36,11 +36,25 @@
     define -- and thus all transcoders have in common. Next, it
     describes how to use the image transcoder API (package
     <code>org.apache.batik.transcoder.image</code>) which lets you
-    rasterize an SVG document fragment to a raster image such as JPEG
-    or PNG.
+    rasterize an SVG document fragment to a raster image such as JPEG,
+    PNG or Tiff.
   </p>
+  
+  		<ul>
+                  <li><link href="#transcoderAPI">The Transcoder API</link></li>
+                  <li><link href="#howtousetranscoderAPI">How to Use the Image Transcoder API</link></li>
+                  <ul>
+                  	<li><link href="#createImage">Creating an Image</link></li>
+                  	<li><link href="#definSizeOfImage">Defining the Size of the Image</link></li>
+                  	<li><link href="#selectAreaOfIntrest">Selecting an Area of Interest</link></li>
+                  	<li><link href="#otherTransHints">Other Transcoding Hints</link></li>
+                  	<li><link href="#genImagefromSVGDOM">Generating an Image from an SVG DOM Tree</link></li>
+                  </ul>
+            </ul>
+            
 </s1>
 
+<anchor id="transcoderAPI"/>
 <s1 title="The Transcoder API">
 <p>
 The <code>org.apache.batik.transcoder</code> package defines 5 major classes:
@@ -103,21 +117,23 @@ instead of stack trace.
 </s1>
 
 <!-- ##################################################################### -->
+<anchor id="howousetranscoderAPI"/>
 <s1 title="How to Use the Image Transcoder API">
 <p>
 The <code>org.apache.batik.transcoder.image</code> package provides an
-easy way to transcode an SVG document to a raster image such as JPEG or
-PNG. Additional raster image formats can be added by subclassing the
+easy way to transcode an SVG document to a raster image such as JPEG,
+PNG or Tiff. Additional raster image formats can be added by subclassing the
 <code>ImageTranscoder</code> and implementing the
 <code>writeImage</code> method. Although, in next sections, the
 examples will use the JPEG transcoder, the PNG transcoder works the
 same way.
 </p>
 
+<anchor id="createImage"/>
 <s2 title="Creating an Image">
 <p>
 The following example, using the <code>JPEGTranscoder</code> shows how to
-trasnform a SVG document to a JPEG image.
+trasnform an SVG document to a JPEG image.
 </p>
 <source>
 SaveAsJpeg.java
@@ -171,13 +187,13 @@ document or the background color.
 <strong>Try this:</strong>
 </p>
 <ol>
-<li>Compile and run the program: SaveAsJPEG.java. You will need a SVG document.<br />
+<li>Compile and run the program: SaveAsJPEG.java. You will need an SVG document.<br />
 <code>% java SaveAsJPEG &lt;filename>.svg</code></li>
 <li>Take a look at: out.jpg</li>
 </ol>
 </s2>
 
-
+<anchor id="definSizeOfImage"/>
 <s2 title="Defining the Size of the Image">
 <p>
 By adding the following line of code to the previous example, you will
@@ -198,6 +214,7 @@ the transcoder will preserve the apsect ratio of the SVG document.
 </p>
 </s2>
 
+<anchor id="selectAreaOfIntrest"/>
 <s2 title="Selecting an Area of Interest">
 <p>
 The image transcoder lets you specify an area of interest (ie. a part
@@ -205,7 +222,7 @@ of the SVG document). The key <code>KEY_AOI</code> enables to select
 the region of the SVG document to render. The value of this key must
 be a <code>java.awt.Rectangle</code> specified in pixels and described
 in the SVG document's space. The following example shows how you can
-split a SVG document into 4 tiles.
+split an SVG document into 4 tiles.
 </p>
 <source>
 SaveAsJPEGTiles.java
@@ -282,6 +299,7 @@ image size.
 </ol>
 </s2>
 
+<anchor id="otherTransHints"/>
 <s2 title="Other Transcoding Hints">
 <p>
 
@@ -383,10 +401,10 @@ trans.addTranscodingHint(ImageTranscoder.KEY_BACKGROUND_COLOR, Color.white);
 
 </s2>
 
-
-<s2 title="Generating an Image from a SVG DOM Tree">
+<anchor id="genImagefromSVGDOM"/>
+<s2 title="Generating an Image from an SVG DOM Tree">
 <p>
-The following code creates and saves a SVG DOM tree.
+The following code creates and saves an SVG DOM tree.
 </p>
 <source>
 DOMRasterizer.java
@@ -455,12 +473,12 @@ public class DOMRasterizer {
 This code is divided into two distinct parts. 
 </p>
 <dl>
-<dt>Creating a SVG DOM tree</dt>
+<dt>Creating an SVG DOM tree</dt>
 <dd>
 <br />See the <code>createDocument</code> method<br /> Three steps are
 required at this time. The first one consists on getting the Batik SVG
 DOM implementation (via the SVGDOMImplementation class). Then, you can
-create a <code>org.w3c.dom.Document</code> (which is a SVG Document by
+create a <code>org.w3c.dom.Document</code> (which is an SVG Document by
 the way) by invoking the <code>createDocument</code> method with the
 svg namespace URI and the "svg" document element. At last, you can get
 the document element and start building your DOM tree.  <br /><br />
@@ -468,7 +486,7 @@ the document element and start building your DOM tree.  <br /><br />
 <dt>Rasterizing your DOM</dt>
 <dd>
 <br />See the <code>save</code> method<br /> Similar to the previous
-examples, you can transcode a SVG document to a raster image by
+examples, you can transcode an SVG document to a raster image by
 creating a <code>TranscoderInput</code> with this time, the SVG Document.
 <br /><br />
 </dd>

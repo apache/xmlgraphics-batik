@@ -53,22 +53,22 @@
             and download one or more ZIP file containing the distribution of your choice. Here are
             the various components you will find in the download area and their intended use:</p>
             <ul>
-                <li><strong>batik-</strong><em>version</em><strong>.zip</strong> (e.g., <em>batik-1.1.zip.</em>)
-                contains a binary distribution 
-                of Batik with executable JAR files that let you get started with Batik easily. This 
+                <li><strong>batik-</strong><em>version</em><strong>.zip</strong> (e.g., <code>batik-1.1.zip.</code>)
+                The <em>binary distribution</em> contains a compiled executable JAR files that let you get started with Batik easily. This 
                 is the recommended distribution if you want to look at Batik's features, or you want to
                 experiment with SVG and see the fun things you can do with Batik. The binary distribution 
                 comes with a set of sample SVG files.</li>
 
                 <li><strong>batik-src-</strong><em>version</em><strong>.zip</strong> 
-                (e.g.,  <em>batik-src-1.1.zip.</em>)contains a complete 
+                (e.g.,  <code>batik-src-1.1.zip.</code>)The <em>source distribution</em> contains a complete 
                 snapshot of the Batik source code, documentation, regression tools and utilities as
                 well as the script for building Batik. That distribution is a snapshot of 
                 the CVS repository. This is the recommended distribution for developers who want 
                 to dive into the code and understand how Batik can be integrated in 
                 their applications or how Batik can be extended. </li>
 
-                <li><strong>batik-docs-</strong><em>version</em><strong>.zip</strong>. That file contains a copy of 
+                <li><strong>batik-docs-</strong><em>version</em><strong>.zip</strong>
+                The <em>documentation bundle</em> contains a copy of 
                 the Javadoc for the Batik source code.</li>
             </ul>
 
@@ -81,7 +81,7 @@
                 <li>Select the directory where he/she wants to download the distribution</li>
                 <li>Download the desired distribution from the <link href="dist">download area</link></li>
                 <li>Open a console and go to the directory where the distribution was downloaded.</li>
-                <li>Unpack the distribution with Java's JAR utility:<br />
+                <li>Unpack the distribution with Java's JAR utility:<br></br>
                     <code>jar xvf &lt;distribution&gt;</code><br />
                     For example, if you have downloaded batik-1.1.zip into /home/IamHere, type the
                     following at the command prompt:<br />
@@ -102,7 +102,7 @@
         <anchor id="optionalComponents" />
         <s1 title="Optional Components">
 	    <p>
-	    By default, Batik developer distribution comes with the <link href="http://www.mozilla.org/rhino">Mozilla Rhino</link> JavaScript Engine. 
+	    By default, Batik source distribution comes with the <link href="http://www.mozilla.org/rhino">Mozilla Rhino</link> JavaScript Engine (<code>js.jar</code>). 
 	    </p>
 	    <p>
 	    To enable other scripting languages support, you will only need to install

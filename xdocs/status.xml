@@ -183,7 +183,7 @@
 
         </table>
         
-
+        <anchor id="DynamicTest" />
         <p><strong>Dynamic Tests Passed by Batik</strong></p>
         <table>
 	    <tr><td>linking-outBound-BE-01.svg</td><td>linking-xlinkAttr-BE-02.svg</td><td>linking-inBound-BE-03.svg</td></tr>

@@ -26,54 +26,87 @@
 
     <body>
         <s1 title="Batik Overview">
-        <figure src="images/splash.png" alt="Batik release 1.1" />
+        <figure src="images/splash.png" alt="Batik release 1.5beta2" />
 
         <p>
-        Batik is a Java(tm) technology based toolkit for applications that want 
+        Batik is a Java(tm) technology based toolkit for applications or applets that want 
         to use images in the <link href="http://www.w3.org/TR/SVG/">Scalable Vector
         Graphics (SVG)</link> format for various purposes, such as
         viewing, generation or manipulation.
         </p>
-
+	 <ul>
+		<li><link href="#BatikApplications">Applications of Batik</link></li>
+		<li><link href="#SVGSpecification">The SVG Specification</link></li>
+		<li><link href="#BatikStatus">What is Batik's Implementation Status?</link></li>
+            		<li><link href="#DownloadBatik">Downloading the Batik distribution (source and binary)</link></li>
+		<li><link href="#projectAndProductExamples">Examples of projects and products using Batik</link></li>
+	</ul>
         <p>
-        The project's ambition is to give developers a set of core 
-        modules which can be used together or individually to support 
-        specific SVG solutions. Examples of modules are the SVG parsers, the SVG 
-        generator and the SVG DOM implementation. Another ambition for 
-        the Batik project is to make it highly extensible (for 
-        example, Batik allows the developer to handle custom SVG 
+        The project's ambition is to give developers a set of 
+        <link href="architecture.html#coreComponents">core 
+        modules</link> which can be used together or individually to support 
+        specific SVG solutions. Examples of 
+        <link href="architecture.html">modules</link>
+        are the 
+        <link href="architecture.html#lowLevelComponents">SVG Parser</link>, 
+        the <link href="svggen.html">SVG Generator</link> and 
+        the <link href="domapi.html">SVG DOM</link>. Another ambition for 
+        the Batik project is to make it highly 
+        <link href="extendingBatik.html">extensible</link> 
+        (for example, Batik allows the developer to handle custom SVG 
         tags). Even though the goal of the project is to provide a 
         set of core modules, one of the deliverables is a full fledged 
-        SVG browser implementation which validates the various modules 
-        and their inter-operability. 
+        <link href="svgviewer.html">SVG browser</link> implementation 
+        which validates the various modules and their inter-operability. 
         </p>
 
         </s1>
 
+        <anchor id="BatikApplications" />
         <s1 title="Applications of Batik">
         <p><img src="images/batikUses.jpg" alt="Batik use cases" />
         With Batik, you can manipulate SVG documents anywhere Java is
-        available. You can also use the various Batik modules to
-        generate, manipulate, transcode and search SVG images in your 
-        applications.
+        available. You can also use the various 
+        <link href="architecture.html">Batik modules</link> to
+        <link href="svggen.html">generate</link>, 
+        <link href="domapi.html">manipulate</link>, 
+        <link href="rasterizerTutorial.html">transcode</link> and search SVG 
+        images in your applications or applets.
         </p>
         <p>
-        Batik makes it easy for Java based applications to deal with SVG
-        content. For example, using Batik's SVG generator, a Java application
-        can very easily export its graphics in the SVG format. Using 
-        Batik's SVG processor and SVG Viewing component, an application can very easily
-        integrate SVG viewing capabilities. Another possibility is to
-        use Batik's modules to convert SVG to various formats, such as 
-        raster images (JPEG or PNG).
+        Batik makes it easy for Java based applications or applets to 
+        deal with SVG content. For example, using Batik's 
+        <link href="svggen.html">SVG generator module</link>, 
+        a Java application or applets can very easily export its
+        graphics into the SVG format. Using Batik's SVG processor and
+        SVG Viewing component, an application or applet can very
+        easily integrate SVG viewing capabilities.  Another
+        possibility is to use Batik's modules to convert SVG to
+        various formats, such as raster images (JPEG,PNG or Tiff).
         </p>
         <p>
-        Batik provides core components for handling and processing SVG
-        files. See <link href="#projectAndProductExamples">examples of projects and
+        Batik provides <link href="architecture.html">core modules</link> 
+        for handling and processing SVG files. See 
+        <link href="#projectAndProductExamples">examples of projects and
         products using Batik</link> for real-life example of how Batik is
         already integrated in projects and products.
         </p>
+        <p>
+        Batik provides building blocks that developers can assemble in
+        various ways in their Java technology applications or applets
+        to generate, parse, view or convert SVG contents.  Batik can
+        also be used to generate SVG on a client or on a server, and
+        Batik can <link href="svgrasterizer.html">convert SVG
+        content</link> convert SVG content into other formats such as
+        JPEG, PNG or Tiff or other formats (<link
+        href="rasterizerTutorial.html">transcoder API</link>).
+        Batik's goal is to make it easy for developers to handle SVG
+        content for various purposes, client-side or server-side, as
+        illustrated in the diagram.
+        </p>
          </s1>
 
+        <anchor id="SVGSpecification" />
         <s1 title="The SVG Specification">
         <p>
         Scalable Vector Graphics, SVG, is a <link href="http://www.w3.org">W3C</link>
@@ -82,15 +115,22 @@
         effects (shadows, lighting effects, etc...), scripting and animation.
         </p>
         <p>
-        The SVG specification can be found on the 
-        <link href="http://www.w3.org/TR/SVG/">W3C site</link>. Batik 1.1 is conformant
-        with the final recommendation of September 4th, 2001.</p>
+        The <link href="http://www.w3.org/TR/SVG/">SVG specification</link> states:</p>
+        <p>This specification defines the features and syntax for Scalable Vector Graphics (SVG).
+	SVG is a language for describing two-dimensional graphics in XML [<link href="http://www.w3.org/TR/REC-xml">XML10</link>]. SVG allows for three types 
+	of graphic objects: vector graphic shapes (e.g., paths consisting of straight lines and curves), 
+	images and text. Graphical objects can be grouped, styled, transformed and composited into previously 
+	rendered objects. The feature set includes nested transformations, clipping paths, alpha masks, 
+	filter effects and template objects.</p>
+	<p>SVG drawings can be interactive and dynamic. Animations can be defined and triggered either declaratively
+	(i.e., by embedding SVG animation elements in SVG content) or via scripting.</p>
          </s1>
 
+        <anchor id="BatikStatus" />
         <s1 title="Batik's Implementation Status">
         <p>
-        The latest stable revision of Batik provides a complete support for all the static SVG features.
-        Work on supporting dynamic SVG features such as scripting and animation is under way and 
+        The latest stable revision of Batik provides a complete support for all the <link href="status.html#beSuiteStatus">static SVG features.</link>
+        Work on supporting <link href="status.html#DynamicTest">dynamic SVG features</link> such as scripting and animation is under way and 
         this work is available from the <link href="http://cvs.apache.org/viewcvs.cgi/xml-batik/">CVS repository</link>
         or from beta <link href="http://xml.apache.org/batik/dist">downloads</link>.
         </p>
@@ -102,10 +142,12 @@
         </p>
         </s1>
  
+        <anchor id="DownloadBatik" />
         <s1 title="Download Batik">
         <p>
-        You can get the Batik distribution (source and binary) on the 
-        <link href="dist">download page</link>.
+        You can get the Batik distribution (<link href="install.html#distributions">source</link> 
+        and <link href="install.html#distributions">binary</link>) on the 
+        <link href="http://xml.apache.org/batik/dist/">download page</link>.
         </p>
         <note>
         All other libraries needed by Batik are included in the distribution.
@@ -135,7 +177,7 @@
         <li><link href="http://burma.free.fr">eDoc</link>, a page layout software, is using the Batik SVG generator to export pages to SVG</li>
         <li><link href="http://www.isacat.net/2002/svolgo/index.htm">Svolgo</link>,a Graph Visualisation/Transformation Framework for the
                 Semantic Web Cross-model transformation, node and arc diagrams, representation in SVG. This project uses Batik's SVG DOM implementation.</li>
-        <li><link href="www.throneworld.com/lords/gms/dev.html">Lords Map</link>, a program to allow players and visitors to view the current map
+        <li><link href="http://www.throneworld.com/lords/gms/dev.html">Lords Map</link>, a program to allow players and visitors to view the current map
                 of varoius campaigns. Lord Map uses Batik's SVG DOM and SVG Generator.</li>
         </ul>
         </s1>

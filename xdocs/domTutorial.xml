@@ -31,13 +31,23 @@
 The <link href="http://www.w3.org/dom/">Document Object Model</link> (DOM)
 is an API for XML documents. It defines the logical structure of documents and
 the way a document is accessed and manipulated. This paper shows how to create
-a SVG document using the DOM API.
+an SVG document using the DOM API.
 
 </p>
+
+            <ul>
+            	<li><link href="#gettingStarted">Getting started</link></li>
+                <li><link href="#creating">Creating a Document</link></li>
+                <li><link href="#buildsvgdoc">Building an SVG Document</link></li>
+                <li><link href="#createdocfromsvgfile">Creating a Document from an SVG file</link></li>
+                <li><link href="#rendering">Rendering an SVG DOM</link></li>
+                
+            </ul>
 </s1>
 
 
 <!-- ##################################################################### -->
+<anchor id="gettingStarted"/>
 <s1 title="Getting started">
 <p>
 The DOM API defines an interface called <code>DOMImplementation</code> which
@@ -70,16 +80,17 @@ relying on proprietary code anymore and ready to use the DOM API.
 </s1>
 
 <!-- ##################################################################### -->
+<anchor id="creating"/>
 <s1 title="Creating a Document">
 
 <p>
 Using the <code>DOMImplementation</code>, you are now able to create a
-<code>Document</code>. The following example illustrates how to create a SVG
+<code>Document</code>. The following example illustrates how to create an SVG
 document. Note that the Batik's Document Object Model implementation can be
-used to represent either a SVG document fragment or any kind of XML
+used to represent either an SVG document fragment or any kind of XML
 document. The following code shows how to get a concrete <code>Document</code>
 object using a <code>DOMImplementation</code>. Note that by choosing the
-namespace URI and the local name of the root element of SVG, we are creating a
+namespace URI and the local name of the root element of SVG, we are creating an
 SVG document.
 </p>
 
@@ -95,7 +106,7 @@ String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
 </source>
 
 <p>
-As we have created a SVG <code>Document</code>, we can cast this document to an
+As we have created an SVG <code>Document</code>, we can cast this document to an
 <code>SVGDocument</code> (defined in the <code>org.w3c.dom.svg</code> package)
 if needed.
 </p>
@@ -104,12 +115,13 @@ if needed.
 
 
 <!-- ##################################################################### -->
-<s1 title="Building a SVG Document">
+<anchor id="buildsvgdoc"/>
+<s1 title="Building an SVG Document">
 
 <p>
 Finally, using the <code>Document</code> object, we are now able to
 construct SVG content. Note that the document created before supports both
-generic XML and SVG. Though the DOM implementation of Batik is a SVG DOM
+generic XML and SVG. Though the DOM implementation of Batik is an SVG DOM
 implementation, the SVG part is not fully implemented yet so only the DOM Level
 2 core functions should be used. The following example shows how to create a red
 rectangle located at (10, 20), with a size of (100, 50) placed in a (400, 450)
@@ -157,13 +169,14 @@ The example given has the following equivalent SVG.
 </s1>
 
 <!-- ##################################################################### -->
-<s1 title="Creating a Document from a SVG file">
+<anchor id="createdocfromsvgfile"/>
+<s1 title="Creating a Document from an SVG file">
 
-<p> With Batik, you can also create a SVG DOM tree from a URI, an
+<p> With Batik, you can also create an SVG DOM tree from a URI, an
 <code>InputStream</code>, or a <code>Reader</code> - using the
 <code>SAXSVGDocumentFactory</code>. The following example illustrates how to
-create a SVG document. Note that the Batik's Document Object Model
-implementation can be used to represent either a SVG document fragment or any
+create an SVG document. Note that the Batik's Document Object Model
+implementation can be used to represent either an SVG document fragment or any
 kind of XML document. The following code shows how to get a concrete
 <code>Document</code> object using the <code>SAXSVGDocumentFactory</code>.
 </p>
@@ -187,7 +200,7 @@ try {
 </source>
 
 <p>
-As we have created a SVG <code>Document</code>, we can cast this document to an
+As we have created an SVG <code>Document</code>, we can cast this document to an
 <code>SVGDocument</code> (defined in the <code>org.w3c.dom.svg</code> package)
 if needed.
 </p>
@@ -195,28 +208,29 @@ if needed.
 </s1>
 
 <!-- ##################################################################### -->
-<s1 title="Rendering a SVG DOM">
+<anchor id="rendering"/>
+<s1 title="Rendering an SVG DOM">
 
 <p>
-Batik provides several ways to use a SVG DOM tree. Two modules can be
+Batik provides several ways to use an SVG DOM tree. Two modules can be
 immediately used to render your SVG document.
 </p>
 <dl>
 <dt>JSVGCanvas</dt>
 <dd>
 The <code>JSVGCanvas</code> is a swing component that can display SVG
-document. A SVG document can be specified using a URI or a SVG DOM tree (using
+document. A SVG document can be specified using a URI or an SVG DOM tree (using
 the <code>setSVGDocument</code> method). For futher informations about the
-<code>JSVGCanvas</code>, see the JSVGCanvas tutorial.
+<code>JSVGCanvas</code>, see the <link href="svgcanvas.html">JSVGCanvas</link> tutorial.
 </dd>
 <dt>ImageTranscoder</dt>
 <dd>
 The <code>ImageTranscoder</code> is a transcoder which can take a URI, an
-InputStream or a SVG DOM tree and produces a raster image (such JPEG or
-PNG). By creating a <code>TranscoderInput</code> with the SVG DOM tree, you will
+InputStream or an SVG DOM tree and produces a raster image (such JPEG, PNG or Tiff).
+By creating a <code>TranscoderInput</code> with the SVG DOM tree, you will
 be able to transform your SVG content to a raster image. For futher
-informations, see the <link href="rasterizerTutorial.html">Transcoder
-tutorial</link>.
+informations, see the <link href="rasterizerTutorial.html">Transcoder</link>
+tutorial.
 </dd>
 </dl>
 

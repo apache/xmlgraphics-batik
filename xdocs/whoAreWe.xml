@@ -30,6 +30,7 @@
       </p>
       </s1>
 
+      <anchor id="BatikCommitters" />
       <s1 title="Batik Committers">
       <p>
       This section lists all the Batik committers.
@@ -174,13 +175,14 @@ as a software engineer for Bull.</em>
         </p>        
       </s1>
 
+      <anchor id="BatikContributors" />
       <s1 title="Batik Contributors">
       <p>
       The following people have contributed to Batik:
       </p>
         <ul>
           <li><link href="mailto:carnold@houston.rr.com">Curt Arnold</link> - Contributed many bug reports and fixes</li>
-          <li><link href="mailto:r_diblasi@hotmail.com">Robert DiBlasi</link> - Contributed a lot of feedback on the 
+          <li><link href="mailto:r_diblasi@hotmail.com">Robert A. DiBlasi</link> - Contributed a lot of feedback on the 
             Batik documentation and suggestions on how to improve it</li>
           <li><link href="mailto:Paul_Evenblij@nl.compuware.com">Paul Evenblij</link> - Contributed an improvement to 
             the way images are handled by the SVGGraphics2D component. Also contributed bug fixes on the SVGGraphics2D
