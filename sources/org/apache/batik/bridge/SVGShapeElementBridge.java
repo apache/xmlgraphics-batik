@@ -179,7 +179,7 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
      * This flag bit indicates if a new shape painter has already been created.
      * Avoid creating one ShapePainter per CSS property change
      */
-    private boolean hasNewShapePainter;
+    protected boolean hasNewShapePainter;
 
     /**
      * Invoked when CSS properties have changed on an element.

@@ -128,6 +128,7 @@ public abstract class ImageTranscoder extends SVGAbstractTranscoder {
         // paint the SVG document using the bridge package
         // create the appropriate renderer
         ImageRendererFactory rendFactory = new ConcreteImageRendererFactory();
+        // ImageRenderer renderer = rendFactory.createDynamicImageRenderer();
         ImageRenderer renderer = rendFactory.createStaticImageRenderer();
         renderer.updateOffScreen(w, h);
         renderer.setTransform(curTxf);

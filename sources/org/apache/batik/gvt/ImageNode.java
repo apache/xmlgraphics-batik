@@ -109,7 +109,8 @@ public class ImageNode extends CompositeGraphicsNode {
      * @param p the specified Point2D in the user space
      */
     public GraphicsNode nodeHitAt(Point2D p) {
-        return (contains(p) ? super.nodeHitAt(p) : null);
+        // Used to return super.nodeHitAt(p);
+        return (contains(p) ? this : null);
     }
 
     //
