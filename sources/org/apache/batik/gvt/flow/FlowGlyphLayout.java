@@ -385,6 +385,7 @@ public class FlowGlyphLayout extends GlyphLayout {
         int []wordGlyphGroupsCounts = new int [words];
         for (int i=0; i<numGlyphs; i++) {
             int cWord = glyphWords[i];
+            // System.err.println("CW: " + cWord);
             int [] wgs = wordGlyphs[cWord];
             if (wgs == null) {
                 wgs = wordGlyphs[cWord] 
@@ -408,6 +409,7 @@ public class FlowGlyphLayout extends GlyphLayout {
 
         for (int i=0; i<words; i++) {
             int cnt = wordGlyphGroupsCounts[i];
+            // System.err.println("WGGC: " + cnt);
             GlyphGroupInfo []wordGlyphGroups = new GlyphGroupInfo[cnt];
             if (cnt == 1) {
                 int [] glyphs = wordGlyphs[i];
@@ -418,21 +420,21 @@ public class FlowGlyphLayout extends GlyphLayout {
                      glyphPos, advAdj, lastAdvAdj, space);
             } else {
                 int glyphGroup = 0;
-                int []wordGlyph = wordGlyphs[i]; 
-                int prev = wordGlyph[0];
-                int start = 0;
-                for (int j=1; j<wordGlyph.length; j++) {
-                    if (prev+1 != wordGlyph[j]) {
-                        int end = j-1;
+                int []glyphs = wordGlyphs[i]; 
+                int prev = glyphs[0];
+                int start = prev;
+                for (int j=1; j<glyphs.length; j++) {
+                    if (prev+1 != glyphs[j]) {
+                        int end = glyphs[j-1];
                         wordGlyphGroups[glyphGroup] = new GlyphGroupInfo
                             (gv, start, end, hide, hideLast[end], 
                              glyphPos, advAdj, lastAdvAdj, space);
-                        start = j;
+                        start = glyphs[j];
                         glyphGroup++;
                     }
-                    prev = wordGlyph[j];
+                    prev = glyphs[j];
                 }
-                int end = wordGlyph.length-1;
+                int end = glyphs[glyphs.length-1];
                 wordGlyphGroups[glyphGroup] = new GlyphGroupInfo
                     (gv, start, end, hide, hideLast[end], 
                      glyphPos, advAdj, lastAdvAdj, space);
