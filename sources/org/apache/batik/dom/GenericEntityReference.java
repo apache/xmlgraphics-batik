@@ -8,6 +8,8 @@
 
 package org.apache.batik.dom;
 
+import org.w3c.dom.Node;
+
 /**
  * This class implements the {@link org.w3c.dom.EntityReference} interface.
  *
@@ -23,7 +25,7 @@ public class GenericEntityReference extends AbstractEntityReference {
     /**
      * Creates a new EntityReference object.
      */
-    public GenericEntityReference() {
+    protected GenericEntityReference() {
     }
 
     /**
@@ -45,5 +47,12 @@ public class GenericEntityReference extends AbstractEntityReference {
      */
     public void setReadonly(boolean v) {
 	readonly = v;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new GenericEntityReference();
     }
 }

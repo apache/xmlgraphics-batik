@@ -39,34 +39,34 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
                               UnitProcessor.Context uctx) {
 
         // parse the cx attribute, (default is 0)
-        String s = svgElement.getAttributeNS(null, ATTR_CX);
+        String s = svgElement.getAttributeNS(null, SVG_CX_ATTRIBUTE);
         float cx = 0;
         if (s.length() != 0) {
             cx = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_CX, s,
+                                             SVG_CX_ATTRIBUTE, s,
                                              uctx,
                                              UnitProcessor.HORIZONTAL_LENGTH);
         }
 
         // parse the cy attribute, (default is 0)
-        s = svgElement.getAttributeNS(null, ATTR_CY);
+        s = svgElement.getAttributeNS(null, SVG_CY_ATTRIBUTE);
         float cy = 0;
         if (s.length() != 0) {
             cy = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_CY, s,
+                                             SVG_CY_ATTRIBUTE, s,
                                              uctx,
                                              UnitProcessor.VERTICAL_LENGTH);
         }
 
         // parse the rx attribute, (required and must be positive)
-        s = svgElement.getAttributeNS(null, ATTR_RX);
+        s = svgElement.getAttributeNS(null, SVG_RX_ATTRIBUTE);
         float rx;
         if (s.length() == 0) {
             throw new MissingAttributeException(
                 Messages.formatMessage("ellipse.rx.required", null));
         } else {
             rx = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_RX, s,
+                                             SVG_RX_ATTRIBUTE, s,
                                              uctx,
                                              UnitProcessor.HORIZONTAL_LENGTH);
             if (rx < 0) {
@@ -76,14 +76,14 @@ public class SVGEllipseElementBridge extends SVGShapeElementBridge {
         }
 
         // parse the ry attribute, (required and must be positive)
-        s = svgElement.getAttributeNS(null, ATTR_RY);
+        s = svgElement.getAttributeNS(null, SVG_RY_ATTRIBUTE);
         float ry;
         if (s.length() == 0) {
             throw new MissingAttributeException(
                 Messages.formatMessage("ellipse.ry.required", null));
         } else {
             ry = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_RY, s,
+                                             SVG_RY_ATTRIBUTE, s,
                                              uctx,
                                              UnitProcessor.VERTICAL_LENGTH);
             if (ry < 0) {

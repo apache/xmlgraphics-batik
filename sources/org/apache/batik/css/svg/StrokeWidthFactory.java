@@ -39,36 +39,4 @@ public class StrokeWidthFactory extends AbstractLengthFactory {
 	return SVGValueConstants.CSS_STROKE_WIDTH_PROPERTY;
     }
     
-    /**
-     * Creates a value from a lexical unit.
-     */
-    public ImmutableValue createValue(LexicalUnit lu) throws DOMException {
-	switch (lu.getLexicalUnitType()) {
-	case LexicalUnit.SAC_INTEGER:
-	    return createFloatValue(CSSPrimitiveValue.CSS_NUMBER,
-				    lu.getIntegerValue());
-	case LexicalUnit.SAC_REAL:
-	    return createFloatValue(CSSPrimitiveValue.CSS_NUMBER,
-				    lu.getFloatValue());
-	default:
-	    return super.createValue(lu);
-	}
-    }
-
-    /**
-     * Creates and returns a new float value.
-     * @param unitType  A unit code as defined above. The unit code can only 
-     *   be a float unit type
-     * @param floatValue  The new float value. 
-     */
-    public ImmutableValue createFloatValue(short unitType, float floatValue)
-	throws DOMException {
-	switch (unitType) {
-	case CSSPrimitiveValue.CSS_NUMBER:
-	    return new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER,
-                                      floatValue);
-	default:
-	    return super.createFloatValue(unitType, floatValue);
-	}	
-    }
 }

@@ -132,7 +132,7 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
         SVGConvolveOp converter = new SVGConvolveOp(domFactory);
 
         Element group = domFactory.createElement(TAG_G);
-        Element defs = domFactory.createElement(TAG_DEFS);
+        Element defs = domFactory.createElement(SVG_DEFS_TAG);
         Element rectGroupOne = domFactory.createElement(TAG_G);
         Element rectGroupTwo = domFactory.createElement(TAG_G);
 

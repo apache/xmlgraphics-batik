@@ -9,13 +9,16 @@
 package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
+
 import org.apache.batik.css.ElementNonCSSPresentationalHints;
 import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
+
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
@@ -68,7 +71,7 @@ public class SVGOMFilterElement
     /**
      * Creates a new SVGOMFilterElement object.
      */
-    public SVGOMFilterElement() {
+    protected SVGOMFilterElement() {
     }
 
     /**
@@ -110,7 +113,7 @@ public class SVGOMFilterElement
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x");
+	    result = new SVGOMAnimatedLength(this, null, "x", null);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -123,7 +126,7 @@ public class SVGOMFilterElement
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y");
+	    result = new SVGOMAnimatedLength(this, null, "y", null);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -137,7 +140,7 @@ public class SVGOMFilterElement
 	SVGAnimatedLength result;
 	if (widthReference == null ||
 	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "width");
+	    result = new SVGOMAnimatedLength(this, null, "width", null);
 	    widthReference = new WeakReference(result);
 	}
 	return result;
@@ -151,7 +154,7 @@ public class SVGOMFilterElement
 	SVGAnimatedLength result;
 	if (heightReference == null ||
 	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "height");
+	    result = new SVGOMAnimatedLength(this, null, "height", null);
 	    heightReference = new WeakReference(result);
 	}
 	return result;
@@ -450,5 +453,12 @@ public class SVGOMFilterElement
      */
     public void setXMLspace(String space) {
         XMLSupport.setXMLSpace(this, space);
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFilterElement();
     }
 }

@@ -23,7 +23,8 @@ import org.w3c.dom.svg.SVGLength;
  */
 public class SVGOMAnimatedLength
     implements SVGAnimatedLength,
-	       AttributeModifier {
+	       ModificationHandler {
+
     /**
      * The element this length is attached to.
      */
@@ -40,6 +41,11 @@ public class SVGOMAnimatedLength
     protected String attributeName;
 
     /**
+     * The default value producer.
+     */
+    protected DefaultAttributeValueProducer defaultValueProducer;
+
+    /**
      * The baseVal attribute.
      */
     protected SVGOMLength baseVal;
@@ -49,18 +55,14 @@ public class SVGOMAnimatedLength
      * @param elt The owner element.
      * @param nsURI The associated attribute namespace URI.
      * @param attr The associated attribute name.
+     * @param def The default value producer.
      */
-    public SVGOMAnimatedLength(SVGOMElement elt, String nsURI, String attr) {
+    public SVGOMAnimatedLength(SVGOMElement elt, String nsURI, String attr,
+                               DefaultAttributeValueProducer def) {
 	element = elt;
 	attributeNsURI = nsURI;
 	attributeName = attr;
-    }
-
-    /**
-     * Returns the associated element.
-     */
-    public SVGElement getSVGElement() {
-        return element;
+        defaultValueProducer = def;
     }
 
     /**
@@ -72,11 +74,13 @@ public class SVGOMAnimatedLength
 	    baseVal = new SVGOMLength();
 	    element.putLiveAttributeValue(attributeNsURI, attributeName,
                                           baseVal);
-	    baseVal.setAttributeModifier(this);
+	    baseVal.setModificationHandler(this);
 	    Attr a = element.getAttributeNodeNS(attributeNsURI, attributeName);
 	    if (a != null) {
 		baseVal.valueChanged(null, a);
-	    }
+	    } else {
+                baseVal.parseLength(defaultValueProducer.getDefaultAttributeValue());
+            }
 	}
 	return baseVal;
     }
@@ -90,9 +94,16 @@ public class SVGOMAnimatedLength
     }
 
     /**
-     * Implements {@link AttributeModifier#setAttributeValue(String)}.
+     * Returns the associated element.
      */
-    public void setAttributeValue(String value) {
+    public SVGElement getSVGElement() {
+        return element;
+    }
+
+    /**
+     * Implements {@link ModificationHandler#valueChanged(String)}.
+     */
+    public void valueChanged(String value) {
 	element.setAttributeNS(attributeNsURI, attributeName, value);
     }
 

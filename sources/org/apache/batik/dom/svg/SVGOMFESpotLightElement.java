@@ -11,6 +11,8 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGFESpotLightElement;
 
@@ -67,7 +69,7 @@ public class SVGOMFESpotLightElement
     /**
      * Creates a new SVGOMFESpotLightElement object.
      */
-    public SVGOMFESpotLightElement() {
+    protected SVGOMFESpotLightElement() {
     }
 
     /**
@@ -203,4 +205,10 @@ public class SVGOMFESpotLightElement
 	return result;
     }
 
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFESpotLightElement();
+    }
 }

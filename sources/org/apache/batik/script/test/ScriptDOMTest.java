@@ -46,7 +46,7 @@ public class ScriptDOMTest {
             System.err.println("*** Can't find a text/ecmascript interpret ***");
         } else {
             System.out.println("+++ Testing the text/ecmascript interpreter DOM access +++");
-            SVGOMDocument doc = new SVGOMDocument();
+            SVGOMDocument doc = new SVGOMDocument(null, SVGDOMImplementation.getDOMImplementation());
             Element svgelmt = new SVGOMSVGElement("svg", doc);
             doc.appendChild(svgelmt);
             SVGElement elmt = new SVGOMGElement("svg", doc);
@@ -89,7 +89,7 @@ public class ScriptDOMTest {
             System.err.println("*** Can't find a text/python interpret ***");
         } else {
             System.out.println("+++ Testing the text/python interpreter DOM access +++");
-            SVGOMDocument doc = new SVGOMDocument();
+            SVGOMDocument doc = new SVGOMDocument(null, SVGDOMImplementation.getDOMImplementation());
             Element svgelmt = new SVGOMSVGElement("svg", doc);
             doc.appendChild(svgelmt);
             SVGElement elmt = new SVGOMGElement("svg", doc);
@@ -132,7 +132,7 @@ public class ScriptDOMTest {
             System.err.println("*** Can't find a text/tcl interpret ***");
         } else {
             System.out.println("+++ Testing the text/tcl interpreter DOM access +++");
-            SVGOMDocument doc = new SVGOMDocument();
+            SVGOMDocument doc = new SVGOMDocument(null, SVGDOMImplementation.getDOMImplementation());
             Element svgelmt = new SVGOMSVGElement("svg", doc);
             doc.appendChild(svgelmt);
             SVGElement elmt = new SVGOMGElement("svg", doc);

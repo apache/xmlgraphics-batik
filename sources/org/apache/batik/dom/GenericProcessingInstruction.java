@@ -33,7 +33,7 @@ public class GenericProcessingInstruction
     /**
      * Creates a new ProcessingInstruction object.
      */
-    public GenericProcessingInstruction() {
+    protected GenericProcessingInstruction() {
     }
 
     /**
@@ -124,5 +124,12 @@ public class GenericProcessingInstruction
 	p = (GenericProcessingInstruction)super.deepCopyInto(n);
 	p.setTarget(getTarget());
 	return p;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new GenericProcessingInstruction();
     }
 }

@@ -10,6 +10,7 @@ package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGEllipseElement;
 
@@ -22,30 +23,31 @@ import org.w3c.dom.svg.SVGEllipseElement;
 public class SVGOMEllipseElement
     extends    SVGGraphicsElement
     implements SVGEllipseElement {
+
     /**
      * The reference to the cx attribute.
      */
-    protected WeakReference cxReference;
+    protected transient WeakReference cxReference;
 
     /**
      * The reference to the cy attribute.
      */
-    protected WeakReference cyReference;
+    protected transient WeakReference cyReference;
 
     /**
      * The reference to the rx attribute.
      */
-    protected WeakReference rxReference;
+    protected transient WeakReference rxReference;
 
     /**
      * The reference to the ry attribute.
      */
-    protected WeakReference ryReference;
+    protected transient WeakReference ryReference;
 
     /**
      * Creates a new SVGOMEllipseElement object.
      */
-    public SVGOMEllipseElement() {
+    protected SVGOMEllipseElement() {
     }
 
     /**
@@ -61,7 +63,7 @@ public class SVGOMEllipseElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "ellipse";
+        return SVG_ELLIPSE_TAG;
     }
 
     /**
@@ -72,7 +74,13 @@ public class SVGOMEllipseElement
 	SVGAnimatedLength result;
 	if (cxReference == null ||
 	    (result = (SVGAnimatedLength)cxReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "cx");
+            DefaultAttributeValueProducer davp;
+            davp = new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return DEFAULT_VALUE_ELLIPSE_CX;
+                }
+            };
+	    result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE, davp);
 	    cxReference = new WeakReference(result);
 	}
 	return result;
@@ -86,7 +94,13 @@ public class SVGOMEllipseElement
 	SVGAnimatedLength result;
 	if (cyReference == null ||
 	    (result = (SVGAnimatedLength)cyReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "cy");
+            DefaultAttributeValueProducer davp;
+            davp = new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return DEFAULT_VALUE_ELLIPSE_CY;
+                }
+            };
+	    result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE, davp);
 	    cyReference = new WeakReference(result);
 	}
 	return result;
@@ -100,7 +114,7 @@ public class SVGOMEllipseElement
 	SVGAnimatedLength result;
 	if (rxReference == null ||
 	    (result = (SVGAnimatedLength)rxReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "rx");
+	    result = new SVGOMAnimatedLength(this, null, SVG_RX_ATTRIBUTE, null);
 	    rxReference = new WeakReference(result);
 	}
 	return result;
@@ -114,9 +128,16 @@ public class SVGOMEllipseElement
 	SVGAnimatedLength result;
 	if (ryReference == null ||
 	    (result = (SVGAnimatedLength)ryReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "ry");
+	    result = new SVGOMAnimatedLength(this, null, SVG_RY_ATTRIBUTE, null);
 	    ryReference = new WeakReference(result);
 	}
 	return result;
     } 
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMEllipseElement();
+    }
 }

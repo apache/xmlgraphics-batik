@@ -19,4 +19,15 @@ import org.apache.batik.css.value.CommonCSSContext;
  */
 
 public interface SVGCSSContext extends CommonCSSContext {
+
+    /**
+     * Returns the width of the viewport.
+     */
+    float getViewportWidth();
+
+    /**
+     * Returns the height of the viewport.
+     */
+    float getViewportHeight();
+
 }

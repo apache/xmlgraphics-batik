@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedInteger;
@@ -31,6 +32,7 @@ import org.w3c.dom.svg.SVGFEConvolveMatrixElement;
 public class SVGOMFEConvolveMatrixElement
     extends    SVGOMFilterPrimitiveStandardAttributes
     implements SVGFEConvolveMatrixElement {
+
     /**
      * The reference to the in attribute.
      */
@@ -94,7 +96,7 @@ public class SVGOMFEConvolveMatrixElement
     /**
      * Creates a new SVGOMFEConvolveMatrixElement object.
      */
-    public SVGOMFEConvolveMatrixElement() {
+    protected SVGOMFEConvolveMatrixElement() {
     }
 
     /**
@@ -121,7 +123,7 @@ public class SVGOMFEConvolveMatrixElement
 	SVGAnimatedString result;
 	if (inReference == null ||
 	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, ATTR_IN);
+	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
 	    inReference = new WeakReference(result);
 	}
 	return result;
@@ -234,10 +236,9 @@ public class SVGOMFEConvolveMatrixElement
     public SVGAnimatedLength getKernelUnitLengthX() {
 	SVGAnimatedLength result;
 	if (kernelUnitLengthXReference == null ||
-	    (result = (SVGAnimatedLength)kernelUnitLengthXReference.get()) ==
-            null) {
+	    (result = (SVGAnimatedLength)kernelUnitLengthXReference.get()) == null) {
 	    result = new SVGOMAnimatedLength
-                (this, null, ATTR_KERNEL_UNIT_LENGTH_X);
+                (this, null, ATTR_KERNEL_UNIT_LENGTH_X, null);
 	    kernelUnitLengthXReference = new WeakReference(result);
 	}
 	return result;
@@ -250,10 +251,9 @@ public class SVGOMFEConvolveMatrixElement
     public SVGAnimatedLength getKernelUnitLengthY() {
 	SVGAnimatedLength result;
 	if (kernelUnitLengthYReference == null ||
-	    (result = (SVGAnimatedLength)kernelUnitLengthYReference.get()) ==
-            null) {
+	    (result = (SVGAnimatedLength)kernelUnitLengthYReference.get()) == null) {
 	    result = new SVGOMAnimatedLength
-                (this, null, ATTR_KERNEL_UNIT_LENGTH_Y);
+                (this, null, ATTR_KERNEL_UNIT_LENGTH_Y, null);
 	    kernelUnitLengthYReference = new WeakReference(result);
 	}
 	return result;
@@ -280,5 +280,12 @@ public class SVGOMFEConvolveMatrixElement
      */
     protected Map getDefaultAttributeValues() {
         return attributeValues;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFEConvolveMatrixElement();
     }
 }

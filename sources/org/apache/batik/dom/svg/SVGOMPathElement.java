@@ -10,6 +10,8 @@ package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGPathSegList;
@@ -44,10 +46,11 @@ import org.w3c.dom.svg.SVGPoint;
 public class SVGOMPathElement
     extends    SVGGraphicsElement
     implements SVGPathElement {
+
     /**
      * Creates a new SVGOMPathElement object.
      */
-    public SVGOMPathElement() {
+    protected SVGOMPathElement() {
     }
 
     /**
@@ -302,4 +305,10 @@ public class SVGOMPathElement
         throw new RuntimeException(" !!! SVGOMPathElement#createSVGPathSegArcRel()");
     }
 
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMPathElement();
+    }
 }

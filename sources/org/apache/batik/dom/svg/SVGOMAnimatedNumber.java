@@ -37,6 +37,7 @@ public class SVGOMAnimatedNumber implements SVGAnimatedNumber {
     /**
      * Creates a new SVGAnimatedNumber object.
      * @param elt The associated element.
+     * @param nsURI The associated element namespace URI.
      * @param attr The associated attribute name.
      */
     public SVGOMAnimatedNumber(Element elt, String nsURI, String attr) {
@@ -56,7 +57,7 @@ public class SVGOMAnimatedNumber implements SVGAnimatedNumber {
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGAnimatedNumber#getBaseVal()}.
+     * org.w3c.dom.svg.SVGAnimatedNumber#setBaseVal(float)}.
      */
     public void setBaseVal(float baseVal) throws DOMException {
 	element.setAttributeNS(attributeNsURI, attributeName,

@@ -39,7 +39,7 @@ public class GenericDocument
     /**
      * Creates a new uninitialized document.
      */
-    public GenericDocument() {
+    protected GenericDocument() {
     }
 
     /**
@@ -205,5 +205,12 @@ public class GenericDocument
                                      qualifiedName.intern(),
                                      this);
         }
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new GenericDocument();
     }
 }

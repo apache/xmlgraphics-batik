@@ -9,6 +9,8 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGMetadataElement;
 
 /**
@@ -23,7 +25,7 @@ public class SVGOMMetadataElement
     /**
      * Creates a new SVGOMMetadataElement object.
      */
-    public SVGOMMetadataElement() {
+    protected SVGOMMetadataElement() {
     }
 
     /**
@@ -41,5 +43,12 @@ public class SVGOMMetadataElement
      */
     public String getLocalName() {
         return TAG_METADATA;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMMetadataElement();
     }
 }

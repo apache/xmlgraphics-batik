@@ -122,7 +122,7 @@ public class SVGFeTurbulenceElementBridge implements FilterPrimitiveBridge,
 
         // parse the type attribute
         String feTurbulenceTypeAttr =
-            filterElement.getAttributeNS(null, ATTR_TYPE);
+            filterElement.getAttributeNS(null, SVG_TYPE_ATTRIBUTE);
 
         boolean feTurbulenceType;
         if (feTurbulenceTypeAttr.length() == 0) {

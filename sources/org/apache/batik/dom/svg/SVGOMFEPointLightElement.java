@@ -11,6 +11,8 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGFEPointLightElement;
 
@@ -42,7 +44,7 @@ public class SVGOMFEPointLightElement
     /**
      * Creates a new SVGOMFEPointLightElement object.
      */
-    public SVGOMFEPointLightElement() {
+    protected SVGOMFEPointLightElement() {
     }
 
     /**
@@ -102,5 +104,12 @@ public class SVGOMFEPointLightElement
 	    zReference = new WeakReference(result);
 	}
 	return result;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFEPointLightElement();
     }
 }

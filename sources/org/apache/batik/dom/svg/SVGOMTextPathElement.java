@@ -11,6 +11,7 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedLengthList;
@@ -33,7 +34,7 @@ public class SVGOMTextPathElement
     /**
      * Creates a new SVGOMTextPathElement object.
      */
-    public SVGOMTextPathElement() {
+    protected SVGOMTextPathElement() {
     }
 
     /**
@@ -279,5 +280,12 @@ public class SVGOMTextPathElement
     public void selectSubString(int charnum, int nchars)
         throws DOMException {
         throw new RuntimeException(" !!! SVGOMTextElement.getSubStringLength()");
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMTextPathElement();
     }
 }

@@ -65,22 +65,22 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         }
 
         // Register the standard bridges
-        putBridge(SVG_NAMESPACE_URI, TAG_A,
+        putBridge(SVG_NAMESPACE_URI, SVG_A_TAG,
                   new SVGAElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_CIRCLE,
+        putBridge(SVG_NAMESPACE_URI, SVG_CIRCLE_TAG,
                   new SVGCircleElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_CLIP_PATH,
+        putBridge(SVG_NAMESPACE_URI, SVG_CLIP_PATH_TAG,
                   new SVGClipPathElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_ELLIPSE,
+        putBridge(SVG_NAMESPACE_URI, SVG_ELLIPSE_TAG,
                   new SVGEllipseElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_BLEND,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_BLEND_TAG,
                   new SVGFeBlendElementBridge());
 
-        putBridge(SVG_NAMESPACE_URI, TAG_FE_COLOR_MATRIX,
+        putBridge(SVG_NAMESPACE_URI, SVG_FE_COLOR_MATRIX_TAG,
                   new SVGFeColorMatrixElementBridge());
 
         putBridge(SVG_NAMESPACE_URI, TAG_FE_COMPONENT_TRANSFER,

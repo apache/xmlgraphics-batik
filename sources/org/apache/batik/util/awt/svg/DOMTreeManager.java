@@ -271,7 +271,7 @@ public class DOMTreeManager implements SVGSyntax{
      *         definitions
      */
     public Element getGenericDefinitions(){
-        Element genericDefs = domFactory.createElement(TAG_DEFS);
+        Element genericDefs = domFactory.createElement(SVG_DEFS_TAG);
         Iterator iter = genericDefSet.iterator();
         while(iter.hasNext()){
             genericDefs.appendChild((Element)iter.next());
@@ -351,12 +351,12 @@ public class DOMTreeManager implements SVGSyntax{
             if(defSet.size() > 0){
                 Element defElement = null;
 
-                NodeList defsElements = topLevelGroup.getElementsByTagName(TAG_DEFS);
+                NodeList defsElements = topLevelGroup.getElementsByTagName(SVG_DEFS_TAG);
                 if(defsElements.getLength() > 0)
                     defElement = (Element)defsElements.item(0);
 
                 if(defElement == null){
-                    defElement = domFactory.createElement(TAG_DEFS);
+                    defElement = domFactory.createElement(SVG_DEFS_TAG);
                     defElement.setAttribute(ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_DEFS));
                     if(topLevelGroup.getChildNodes().getLength() > 0)
                         topLevelGroup.insertBefore(defElement, topLevelGroup.getFirstChild());
@@ -410,8 +410,8 @@ public class DOMTreeManager implements SVGSyntax{
         //
 
         Element rect = domFactory.createElement(TAG_RECT);
-        Element ellipse = domFactory.createElement(TAG_ELLIPSE);
-        Element circle = domFactory.createElement(TAG_CIRCLE);
+        Element ellipse = domFactory.createElement(SVG_ELLIPSE_TAG);
+        Element circle = domFactory.createElement(SVG_CIRCLE_TAG);
         Element path = domFactory.createElement(TAG_PATH);
         Element polygon = domFactory.createElement(TAG_POLYGON);
 

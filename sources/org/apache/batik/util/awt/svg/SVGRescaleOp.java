@@ -109,9 +109,9 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
             if(offsets.length == 1){
                 String slope = doubleString(scaleFactors[0]);
                 String intercept = doubleString(offsets[0]);
-                feFuncR.setAttribute(ATTR_TYPE, type);
-                feFuncG.setAttribute(ATTR_TYPE, type);
-                feFuncB.setAttribute(ATTR_TYPE, type);
+                feFuncR.setAttribute(SVG_TYPE_ATTRIBUTE, type);
+                feFuncG.setAttribute(SVG_TYPE_ATTRIBUTE, type);
+                feFuncB.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                 feFuncR.setAttribute(ATTR_SLOPE, slope);
                 feFuncG.setAttribute(ATTR_SLOPE, slope);
                 feFuncB.setAttribute(ATTR_SLOPE, slope);
@@ -120,9 +120,9 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
                 feFuncB.setAttribute(ATTR_INTERCEPT, intercept);
             }
             else if(offsets.length >= 3){
-                feFuncR.setAttribute(ATTR_TYPE, type);
-                feFuncG.setAttribute(ATTR_TYPE, type);
-                feFuncB.setAttribute(ATTR_TYPE, type);
+                feFuncR.setAttribute(SVG_TYPE_ATTRIBUTE, type);
+                feFuncG.setAttribute(SVG_TYPE_ATTRIBUTE, type);
+                feFuncB.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                 feFuncR.setAttribute(ATTR_SLOPE, doubleString(scaleFactors[0]));
                 feFuncG.setAttribute(ATTR_SLOPE, doubleString(scaleFactors[1]));
                 feFuncB.setAttribute(ATTR_SLOPE, doubleString(scaleFactors[2]));
@@ -132,7 +132,7 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
 
                 if(offsets.length == 4){
                     feFuncA = domFactory.createElement(TAG_FE_FUNC_A);
-                    feFuncA.setAttribute(ATTR_TYPE, type);
+                    feFuncA.setAttribute(SVG_TYPE_ATTRIBUTE, type);
                     feFuncA.setAttribute(ATTR_SLOPE, doubleString(scaleFactors[3]));
                     feFuncA.setAttribute(ATTR_INTERCEPT, doubleString(offsets[3]));
                 }
@@ -180,7 +180,7 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter{
         SVGRescaleOp converter = new SVGRescaleOp(domFactory);
 
         Element group = domFactory.createElement(TAG_G);
-        Element defs = domFactory.createElement(TAG_DEFS);
+        Element defs = domFactory.createElement(SVG_DEFS_TAG);
         Element rectGroupOne = domFactory.createElement(TAG_G);
         Element rectGroupTwo = domFactory.createElement(TAG_G);
 

@@ -11,6 +11,7 @@ package org.apache.batik.dom.svg;
 import java.lang.ref.WeakReference;
 
 import org.apache.batik.dom.AbstractDocument;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGFEDistantLightElement;
 
@@ -37,7 +38,7 @@ public class SVGOMFEDistantLightElement
     /**
      * Creates a new SVGOMFEDistantLightElement object.
      */
-    public SVGOMFEDistantLightElement() {
+    protected SVGOMFEDistantLightElement() {
     }
 
     /**
@@ -83,5 +84,12 @@ public class SVGOMFEDistantLightElement
 	    elevationReference = new WeakReference(result);
 	}
 	return result;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFEDistantLightElement();
     }
 }

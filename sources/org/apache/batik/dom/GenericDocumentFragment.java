@@ -8,6 +8,8 @@
 
 package org.apache.batik.dom;
 
+import org.w3c.dom.Node;
+
 /**
  * This class implements {@link org.w3c.dom.DocumentFragment} interface.
  *
@@ -23,7 +25,7 @@ public class GenericDocumentFragment extends AbstractDocumentFragment {
     /**
      * Creates a new DocumentFragment object.
      */
-    public GenericDocumentFragment() {
+    protected GenericDocumentFragment() {
     }
 
     /**
@@ -45,5 +47,12 @@ public class GenericDocumentFragment extends AbstractDocumentFragment {
      */
     public void setReadonly(boolean v) {
 	readonly = v;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new GenericDocumentFragment();
     }
 }

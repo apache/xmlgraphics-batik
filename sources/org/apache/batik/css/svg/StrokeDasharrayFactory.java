@@ -100,7 +100,7 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
     /**
      * To manage number values.
      */
-    protected static class NumberFactory extends AbstractLengthFactory {
+    protected static class NumberFactory extends AbstractValueFactory {
 	/**
 	 * Creates a new NumberFactory object.
 	 */
@@ -127,7 +127,10 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
 		return new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER,
 					  lu.getFloatValue());
 	    default:
-		return super.createValue(lu);
+                throw CSSDOMExceptionFactory.createDOMException
+                    (DOMException.INVALID_ACCESS_ERR,
+                     "invalid.lexical.unit",
+                     new Object[] { new Integer(lu.getLexicalUnitType()) });
 	    }
 	}
 
@@ -145,7 +148,10 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
 		return new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER,
                                           floatValue);
 	    default:
-		return super.createFloatValue(unitType, floatValue);
+                throw CSSDOMExceptionFactory.createDOMException
+                    (DOMException.INVALID_ACCESS_ERR,
+                     "invalid.unit.type",
+                     new Object[] { new Integer(unitType) });
 	    }	
 	}
     }

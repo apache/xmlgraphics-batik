@@ -12,6 +12,7 @@ import java.lang.ref.WeakReference;
 
 import org.apache.batik.dom.AbstractDocument;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGLinearGradientElement;
 
@@ -48,7 +49,7 @@ public class SVGOMLinearGradientElement
     /**
      * Creates a new SVGOMLinearGradientElement object.
      */
-    public SVGOMLinearGradientElement() {
+    protected SVGOMLinearGradientElement() {
     }
 
     /**
@@ -75,7 +76,7 @@ public class SVGOMLinearGradientElement
 	SVGAnimatedLength result;
 	if (x1Reference == null ||
 	    (result = (SVGAnimatedLength)x1Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_X1);
+	    result = new SVGOMAnimatedLength(this, null, ATTR_X1, null);
 	    x1Reference = new WeakReference(result);
 	}
 	return result;
@@ -89,7 +90,7 @@ public class SVGOMLinearGradientElement
 	SVGAnimatedLength result;
 	if (y1Reference == null ||
 	    (result = (SVGAnimatedLength)y1Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_Y1);
+	    result = new SVGOMAnimatedLength(this, null, ATTR_Y1, null);
 	    y1Reference = new WeakReference(result);
 	}
 	return result;
@@ -103,7 +104,7 @@ public class SVGOMLinearGradientElement
 	SVGAnimatedLength result;
 	if (x2Reference == null ||
 	    (result = (SVGAnimatedLength)x2Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_X2);
+	    result = new SVGOMAnimatedLength(this, null, ATTR_X2, null);
 	    x2Reference = new WeakReference(result);
 	}
 	return result;
@@ -117,9 +118,16 @@ public class SVGOMLinearGradientElement
 	SVGAnimatedLength result;
 	if (y2Reference == null ||
 	    (result = (SVGAnimatedLength)y2Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_Y2);
+	    result = new SVGOMAnimatedLength(this, null, ATTR_Y2, null);
 	    y2Reference = new WeakReference(result);
 	}
 	return result;
     } 
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMLinearGradientElement();
+    }
 }

@@ -12,6 +12,7 @@ import java.lang.ref.WeakReference;
 
 import org.apache.batik.dom.AbstractDocument;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGRadialGradientElement;
 
@@ -53,7 +54,7 @@ public class SVGOMRadialGradientElement
     /**
      * Creates a new SVGOMRadialGradientElement object.
      */
-    public SVGOMRadialGradientElement() {
+    protected SVGOMRadialGradientElement() {
     }
 
     /**
@@ -80,7 +81,7 @@ public class SVGOMRadialGradientElement
 	SVGAnimatedLength result;
 	if (cxReference == null ||
 	    (result = (SVGAnimatedLength)cxReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_CX);
+	    result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE, null);
 	    cxReference = new WeakReference(result);
 	}
 	return result;
@@ -94,7 +95,7 @@ public class SVGOMRadialGradientElement
 	SVGAnimatedLength result;
 	if (cyReference == null ||
 	    (result = (SVGAnimatedLength)cyReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_CY);
+	    result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE, null);
 	    cyReference = new WeakReference(result);
 	}
 	return result;
@@ -108,7 +109,7 @@ public class SVGOMRadialGradientElement
 	SVGAnimatedLength result;
 	if (rReference == null ||
 	    (result = (SVGAnimatedLength)rReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_R);
+	    result = new SVGOMAnimatedLength(this, null, SVG_R_ATTRIBUTE, null);
 	    rReference = new WeakReference(result);
 	}
 	return result;
@@ -122,7 +123,7 @@ public class SVGOMRadialGradientElement
 	SVGAnimatedLength result;
 	if (fxReference == null ||
 	    (result = (SVGAnimatedLength)fxReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_FX);
+	    result = new SVGOMAnimatedLength(this, null, ATTR_FX, null);
 	    fxReference = new WeakReference(result);
 	}
 	return result;
@@ -136,9 +137,16 @@ public class SVGOMRadialGradientElement
 	SVGAnimatedLength result;
 	if (fyReference == null ||
 	    (result = (SVGAnimatedLength)fyReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_FY);
+	    result = new SVGOMAnimatedLength(this, null, ATTR_FY, null);
 	    fyReference = new WeakReference(result);
 	}
 	return result;
     } 
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMRadialGradientElement();
+    }
 }

@@ -93,7 +93,7 @@ public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
                                            new Object[] {elt.getLocalName()}));
             }
 
-            String inAttr = elt.getAttributeNS(null, ATTR_IN);
+            String inAttr = elt.getAttributeNS(null, SVG_IN_ATTRIBUTE);
             Filter tmp = CSSUtilities.getFilterSource(filteredNode,
                                                       inAttr,
                                                       bridgeContext,

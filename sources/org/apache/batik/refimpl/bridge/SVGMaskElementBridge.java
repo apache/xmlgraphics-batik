@@ -78,7 +78,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
         String maskContentUnits
             = maskElement.getAttributeNS(null, ATTR_MASK_CONTENT_UNITS);
         if(maskContentUnits.length() == 0){
-            maskContentUnits = VALUE_USER_SPACE_ON_USE;
+            maskContentUnits = SVG_USER_SPACE_ON_USE_VALUE;
         }
         int maskContentUnitsType;
         try {
@@ -88,7 +88,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("mask.maskContentUnits.invalid",
                                        new Object[] {maskContentUnits,
-                                                     ATTR_CLIP_PATH_UNITS}));
+                                                     ATTR_MASK_CONTENT_UNITS}));
         }
 
         Viewport oldViewport = bridgeContext.getCurrentViewport();

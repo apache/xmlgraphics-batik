@@ -9,6 +9,8 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGGElement;
 
 /**
@@ -23,7 +25,7 @@ public class SVGOMGElement
     /**
      * Creates a new SVGOMGElement object.
      */
-    public SVGOMGElement() {
+    protected SVGOMGElement() {
     }
 
     /**
@@ -41,5 +43,12 @@ public class SVGOMGElement
      */
     public String getLocalName() {
         return "g";
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMGElement();
     }
 }

@@ -10,6 +10,7 @@ package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGFEFuncGElement;
 
 /**
@@ -20,12 +21,12 @@ import org.w3c.dom.svg.SVGFEFuncGElement;
  */
 public class SVGOMFEFuncGElement
     extends    SVGOMComponentTransferFunctionElement
-    implements SVGFEFuncGElement
-{
+    implements SVGFEFuncGElement {
+
     /**
      * Creates a new Element object.
      */
-    public SVGOMFEFuncGElement() {
+    protected SVGOMFEFuncGElement() {
     }
 
     /**
@@ -42,5 +43,12 @@ public class SVGOMFEFuncGElement
      */
     public String getLocalName() {
         return TAG_FE_FUNC_G;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFEFuncGElement();
     }
 }

@@ -1235,9 +1235,18 @@ public class ViewerFrame
         public void processDocumentEvent(DocumentEvent e) {
             if (e.classid == DocumentEvent.LOADING) {
                 if (e.type == DocumentLoadingEvent.DONE) {
-                    DefaultSVGContext dc = new DefaultSVGContext();
+                    DefaultSVGContext dc = new DefaultSVGContext() {
+                            public float getPixelToMM() {
+                                return ViewerFrame.this.getPixelToMM();
+                            }
+                            public float getViewportWidth() {
+                                return (float)canvas.getSize().getWidth();
+                            }
+                            public float getViewportHeight() {
+                                return (float)canvas.getSize().getHeight();
+                            }
+                        };
                     SVGOMDocument doc = (SVGOMDocument)e.getValue();
-                    dc.setUserAgent(ViewerFrame.this);
                     doc.setSVGContext(dc);
                     canvas.setSVGDocument(doc);
                 }
@@ -1306,9 +1315,18 @@ public class ViewerFrame
             break;
         case (DocumentLoadingEvent.LOADED):
             // New doc has been loaded, prepare for new view
-            DefaultSVGContext dc = new DefaultSVGContext();
+            DefaultSVGContext dc = new DefaultSVGContext() {
+                    public float getPixelToMM() {
+                        return ViewerFrame.this.getPixelToMM();
+                    }
+                    public float getViewportWidth() {
+                        return (float)canvas.getSize().getWidth();
+                    }
+                    public float getViewportHeight() {
+                        return (float)canvas.getSize().getHeight();
+                    }
+                };
             SVGOMDocument doc = (SVGOMDocument) e.getValue();
-            dc.setUserAgent(ViewerFrame.this);
             dc.setUserStyleSheetURI(userStyleSheetURI);
             doc.setSVGContext(dc);
             domViewer.setDocument(doc, (ViewCSS)doc.getDocumentElement());

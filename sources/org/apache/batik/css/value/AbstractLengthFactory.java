@@ -67,8 +67,8 @@ public abstract class AbstractLengthFactory extends AbstractValueFactory {
 	case LexicalUnit.SAC_REAL:
 	    return createFloatValue(CSSPrimitiveValue.CSS_NUMBER,
 				    lu.getFloatValue());
-	case LexicalUnit.SAC_DIMENSION:
-	    return createFloatValue(CSSPrimitiveValue.CSS_DIMENSION,
+	case LexicalUnit.SAC_PERCENTAGE:
+	    return createFloatValue(CSSPrimitiveValue.CSS_PERCENTAGE,
 				    lu.getFloatValue());
 	}
 	throw CSSDOMExceptionFactory.createDOMException

@@ -98,12 +98,12 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
         }
 
         // parse the rx attribute (must be positive if any)
-        s = svgElement.getAttributeNS(null, ATTR_RX);
+        s = svgElement.getAttributeNS(null, SVG_RX_ATTRIBUTE);
         boolean rxs = s.length() != 0;
         float rx = 0;
         if (s.length() != 0) {
             rx = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_RX, s,
+                                             SVG_RX_ATTRIBUTE, s,
                                              uctx,
                                              UnitProcessor.HORIZONTAL_LENGTH);
             if (rx < 0) {
@@ -114,12 +114,12 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
         rx = (rx > w / 2) ? w / 2 : rx;
 
         // parse the ry attribute (must be positive if any)
-        s = svgElement.getAttributeNS(null, ATTR_RY);
+        s = svgElement.getAttributeNS(null, SVG_RY_ATTRIBUTE);
         boolean rys = s.length() != 0;
         float ry = 0;
         if (s.length() != 0) {
             ry = SVGUtilities.svgToUserSpace(svgElement,
-                                             ATTR_RY, s,
+                                             SVG_RY_ATTRIBUTE, s,
                                              uctx,
                                              UnitProcessor.VERTICAL_LENGTH);
             if (ry < 0) {

@@ -272,20 +272,7 @@ public abstract class AbstractNode
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#cloneNode(boolean)}.
      */
     public Node cloneNode(boolean deep) {
-        String message = null;
-        try {
-            Node n = (Node)getClass().newInstance();
-            return (deep) ? deepCopyInto(n) : copyInto(n);
-        } catch (IllegalAccessException e) {
-            message = e.getMessage();
-        } catch (InstantiationException e) {
-            message = e.getMessage();
-        }
-        throw createDOMException(DOMException.INVALID_STATE_ERR,
-                                 "cloning.error",
-                                 new Object[] { new Integer(getNodeType()),
-                                                getNodeName(),
-                                                message });
+        return (deep) ? deepCopyInto(newNode()) : copyInto(newNode());
     }
 
     /**
@@ -300,8 +287,7 @@ public abstract class AbstractNode
      * org.w3c.dom.Node#isSupported(String,String)}.
      */
     public boolean isSupported(String feature, String version) {
-        return getCurrentDocument().getImplementation().hasFeature(feature,
-                                                                   version);
+        return getCurrentDocument().getImplementation().hasFeature(feature, version);
     }
 
     /**
@@ -375,8 +361,8 @@ public abstract class AbstractNode
      * Creates an exception with the appropriate error message.
      */
     public DOMException createDOMException(short    type,
-                                              String   key,
-                                              Object[] args) {
+                                           String   key,
+                                           Object[] args) {
         try {
             return new DOMException
                 (type, getCurrentDocument().formatMessage(key, args));
@@ -505,6 +491,11 @@ public abstract class AbstractNode
     protected AbstractDocument getCurrentDocument() {
         return ownerDocument;
     }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected abstract Node newNode();
 
     /**
      * Exports this node to the given document.

@@ -20,4 +20,41 @@ public class DefaultSVGCSSContext
     extends    DefaultCommonCSSContext
     implements SVGCSSContext {
 
+    /**
+     * The viewport width.
+     */
+    protected float viewportWidth;
+
+    /**
+     * The viewport height.
+     */
+    protected float viewportHeight;
+
+    /**
+     * Returns the width of the viewport.
+     */
+    public float getViewportWidth() {
+        return viewportWidth;
+    }
+
+    /**
+     * Sets the width of the viewport.
+     */
+    public void setViewportWidth(float f) {
+        viewportWidth = f;
+    }
+
+    /**
+     * Returns the height of the viewport.
+     */
+    public float getViewportHeight() {
+        return viewportHeight;
+    }
+
+    /**
+     * Sets the height of the viewport.
+     */
+    public void setViewportHeight(float f) {
+        viewportHeight = f;
+    }
 }

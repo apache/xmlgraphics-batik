@@ -9,6 +9,8 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGSwitchElement;
 
 /**
@@ -20,10 +22,11 @@ import org.w3c.dom.svg.SVGSwitchElement;
 public class SVGOMSwitchElement
     extends    SVGGraphicsElement
     implements SVGSwitchElement {
+
     /**
      * Creates a new SVGOMSwitchElement object.
      */
-    public SVGOMSwitchElement() {
+    protected SVGOMSwitchElement() {
     }
 
     /**
@@ -41,5 +44,12 @@ public class SVGOMSwitchElement
      */
     public String getLocalName() {
         return "switch";
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMSwitchElement();
     }
 }

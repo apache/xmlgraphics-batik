@@ -11,6 +11,7 @@ package org.apache.batik.dom.svg;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGTRefElement;
 
@@ -23,10 +24,11 @@ import org.w3c.dom.svg.SVGTRefElement;
 public class SVGOMTRefElement
     extends    SVGOMTextPositioningElement
     implements SVGTRefElement {
+
     /**
      * Creates a new SVGOMTRefElement object.
      */
-    public SVGOMTRefElement() {
+    protected SVGOMTRefElement() {
     }
 
     /**
@@ -179,5 +181,12 @@ public class SVGOMTRefElement
      */
     public void setXlinkHref(String str) {
         XLinkSupport.setXLinkHref(this, str);
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMTRefElement();
     }
 }

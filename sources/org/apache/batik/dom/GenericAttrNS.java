@@ -9,6 +9,7 @@
 package org.apache.batik.dom;
 
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
 
 /**
  * This class implements the {@link org.w3c.dom.Attr} interface with
@@ -26,7 +27,7 @@ public class GenericAttrNS extends AbstractAttrNS {
     /**
      * Creates a new Attr object.
      */
-    public GenericAttrNS() {
+    protected GenericAttrNS() {
     }
 
     /**
@@ -67,5 +68,12 @@ public class GenericAttrNS extends AbstractAttrNS {
      */
     public void setReadonly(boolean v) {
 	readonly = v;
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new GenericAttrNS();
     }
 }

@@ -87,23 +87,23 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         // parse the gradientUnits attribute, (default is 'objectBoundingBox')
         String units = paintElement.getAttributeNS(null, ATTR_GRADIENT_UNITS);
         if(units.length() == 0){
-            units = VALUE_OBJECT_BOUNDING_BOX;
+            units = SVG_OBJECT_BOUNDING_BOX_VALUE;
         }
 
         // parse the cx attribute, (default is 50%)
-        String cx = paintElement.getAttributeNS(null, ATTR_CX);
+        String cx = paintElement.getAttributeNS(null, SVG_CX_ATTRIBUTE);
         if(cx.length() == 0){
             cx = "50%";
         }
 
         // parse the cy attribute, (default is 50%)
-        String cy = paintElement.getAttributeNS(null, ATTR_CY);
+        String cy = paintElement.getAttributeNS(null, SVG_CY_ATTRIBUTE);
         if(cy.length() == 0){
             cy = "50%";
         }
 
         // parse the r attribute, (default is 50%)
-        String r = paintElement.getAttributeNS(null, ATTR_R);
+        String r = paintElement.getAttributeNS(null, SVG_R_ATTRIBUTE);
         if(r.length() == 0){
             r = "50%";
         }
@@ -132,8 +132,8 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
 
         Point2D c
             = SVGUtilities.convertGradientPoint(paintedElement,
-                                                ATTR_CX, cx,
-                                                ATTR_CY, cy,
+                                                SVG_CX_ATTRIBUTE, cx,
+                                                SVG_CY_ATTRIBUTE, cy,
                                                 unitsType, uctx);
         Point2D f
             = SVGUtilities.convertGradientPoint(paintedElement,
@@ -142,7 +142,7 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
                                                 unitsType, uctx);
         float radius
             = SVGUtilities.convertGradientLength(paintedElement,
-                                                 ATTR_R, r,
+                                                 SVG_R_ATTRIBUTE, r,
                                                  unitsType, uctx);
 
         // parse the 'spreadMethod' attribute, (default is PAD)

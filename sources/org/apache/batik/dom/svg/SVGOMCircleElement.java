@@ -10,6 +10,7 @@ package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGCircleElement;
 
@@ -25,22 +26,22 @@ public class SVGOMCircleElement
     /**
      * The reference to the cx attribute.
      */
-    protected WeakReference cxReference;
+    protected transient WeakReference cxReference;
 
     /**
      * The reference to the cy attribute.
      */
-    protected WeakReference cyReference;
+    protected transient WeakReference cyReference;
 
     /**
      * The reference to the r attribute.
      */
-    protected WeakReference rReference;
+    protected transient WeakReference rReference;
 
     /**
      * Creates a new SVGOMCircleElement object.
      */
-    public SVGOMCircleElement() {
+    protected SVGOMCircleElement() {
     }
 
     /**
@@ -56,7 +57,7 @@ public class SVGOMCircleElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "circle";
+        return SVG_CIRCLE_TAG;
     }
 
     /**
@@ -66,7 +67,13 @@ public class SVGOMCircleElement
 	SVGAnimatedLength result;
 	if (cxReference == null ||
 	    (result = (SVGAnimatedLength)cxReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "cx");
+            DefaultAttributeValueProducer davp;
+            davp = new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return DEFAULT_VALUE_CIRCLE_CX;
+                }
+            };
+	    result = new SVGOMAnimatedLength(this, null, SVG_CX_ATTRIBUTE, davp);
 	    cxReference = new WeakReference(result);
 	}
 	return result;
@@ -79,7 +86,13 @@ public class SVGOMCircleElement
 	SVGAnimatedLength result;
 	if (cyReference == null ||
 	    (result = (SVGAnimatedLength)cyReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "cy");
+            DefaultAttributeValueProducer davp;
+            davp = new DefaultAttributeValueProducer() {
+                public String getDefaultAttributeValue() {
+                    return DEFAULT_VALUE_CIRCLE_CY;
+                }
+            };
+	    result = new SVGOMAnimatedLength(this, null, SVG_CY_ATTRIBUTE, davp);
 	    cyReference = new WeakReference(result);
 	}
 	return result;
@@ -92,9 +105,16 @@ public class SVGOMCircleElement
 	SVGAnimatedLength result;
 	if (rReference == null ||
 	    (result = (SVGAnimatedLength)rReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "r");
+	    result = new SVGOMAnimatedLength(this, null, SVG_R_ATTRIBUTE, null);
 	    rReference = new WeakReference(result);
 	}
 	return result;
     } 
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMCircleElement();
+    }
 }

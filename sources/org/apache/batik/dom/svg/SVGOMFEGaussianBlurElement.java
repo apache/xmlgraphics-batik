@@ -9,7 +9,10 @@
 package org.apache.batik.dom.svg;
 
 import java.lang.ref.WeakReference;
+
 import org.apache.batik.dom.AbstractDocument;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGAnimatedString;
@@ -33,7 +36,7 @@ public class SVGOMFEGaussianBlurElement
     /**
      * Creates a new SVGOMFEGaussianBlurElement object.
      */
-    public SVGOMFEGaussianBlurElement() {
+    protected SVGOMFEGaussianBlurElement() {
     }
 
     /**
@@ -60,7 +63,7 @@ public class SVGOMFEGaussianBlurElement
 	SVGAnimatedString result;
 	if (inReference == null ||
 	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, ATTR_IN);
+	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
 	    inReference = new WeakReference(result);
 	}
 	return result;
@@ -88,5 +91,12 @@ public class SVGOMFEGaussianBlurElement
      */
     public void setStdDeviation (float devX, float devY) {
         throw new RuntimeException(" !!! SVGFEGaussianBlurElement#setStdDeviation()");
+    }
+
+    /**
+     * Returns a new uninitialized instance of this object's class.
+     */
+    protected Node newNode() {
+        return new SVGOMFEGaussianBlurElement();
     }
 }

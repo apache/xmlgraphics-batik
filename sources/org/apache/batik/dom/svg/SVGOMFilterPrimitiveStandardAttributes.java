@@ -74,7 +74,7 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
 	SVGAnimatedLength result;
 	if (xReference == null ||
 	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_X);
+	    result = new SVGOMAnimatedLength(this, null, ATTR_X, null);
 	    xReference = new WeakReference(result);
 	}
 	return result;
@@ -88,7 +88,7 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
 	SVGAnimatedLength result;
 	if (yReference == null ||
 	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_Y);
+	    result = new SVGOMAnimatedLength(this, null, ATTR_Y, null);
 	    yReference = new WeakReference(result);
 	}
 	return result;
@@ -102,7 +102,7 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
 	SVGAnimatedLength result;
 	if (widthReference == null ||
 	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_WIDTH);
+	    result = new SVGOMAnimatedLength(this, null, ATTR_WIDTH, null);
 	    widthReference = new WeakReference(result);
 	}
 	return result;
@@ -116,7 +116,7 @@ public abstract class SVGOMFilterPrimitiveStandardAttributes
 	SVGAnimatedLength result;
 	if (heightReference == null ||
 	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, ATTR_HEIGHT);
+	    result = new SVGOMAnimatedLength(this, null, ATTR_HEIGHT, null);
 	    heightReference = new WeakReference(result);
 	}
 	return result;

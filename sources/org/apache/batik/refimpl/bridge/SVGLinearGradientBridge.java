@@ -86,7 +86,7 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         // parse the gradientUnits attribute, (default is 'objectBoundingBox')
         String units = paintElement.getAttributeNS(null, ATTR_GRADIENT_UNITS);
         if(units.length() == 0){
-            units = VALUE_OBJECT_BOUNDING_BOX;
+            units = SVG_OBJECT_BOUNDING_BOX_VALUE;
         }
 
         // parse the x1 attribute, (default is 0%)
