@@ -51,14 +51,17 @@ public class SVGPolylineElementBridge extends SVGDecoratedShapeElementBridge {
                 pp.setPointsHandler(app);
                 pp.parse(new StringReader(s));
             } catch (ParseException ex) {
-                throw new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                                      new Object[] {SVG_POINTS_ATTRIBUTE});
+                BridgeException bex
+                    = new BridgeException(e, ERR_ATTRIBUTE_VALUE_MALFORMED,
+                                          new Object[] {SVG_POINTS_ATTRIBUTE});
+                bex.setGraphicsNode(shapeNode);
+                throw bex;
             } finally {
                 shapeNode.setShape(app.getShape());
             }
         } else {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
-                                  new Object[] {SVG_POINTS_ATTRIBUTE});
+                                      new Object[] {SVG_POINTS_ATTRIBUTE});
         }
     }
 }
