@@ -65,6 +65,7 @@ import org.apache.batik.dom.svg.SVGDocumentLoader;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.GraphicsNodeTreeIterator;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.Selector;
@@ -80,7 +81,6 @@ import org.apache.batik.gvt.renderer.RendererFactory;
 import org.apache.batik.bridge.BufferedDocumentLoader;
 import org.apache.batik.bridge.ConcreteGVTBuilder;
 import org.apache.batik.bridge.DefaultUserAgent;
-import org.apache.batik.bridge.SVGBridgeContext;
 import org.apache.batik.bridge.SVGUtilities;
 
 import org.apache.batik.gvt.text.ConcreteTextSelector;
@@ -467,12 +467,10 @@ public class JSVGCanvas
                 public void run() {
                     GraphicsNode root = null;
                     try {
-                        BridgeContext bridgeContext = createBridgeContext(doc);
-                        bridgeContext.setViewCSS(
-                           (ViewCSS)((SVGOMDocument)doc).getDefaultView());
-                        bridgeContext.setGraphicsNodeRenderContext(
-                                       getRendererFactory().getRenderContext());
-                        bridgeContext.setGVTBuilder(builder);
+                        BridgeContext bridgeContext =
+                            createBridgeContext(doc);
+                        //bridgeContext.setGraphicsNodeRenderContext(getRendererFactory().getRenderContext());
+                        bridgeContext.setGVTBuilder(builder); // FIXME Should be removed
                         long t1 = System.currentTimeMillis();
                         if (Thread.currentThread().isInterrupted()) {
                             throw new InterruptedException();
@@ -669,18 +667,16 @@ public class JSVGCanvas
      * Creates a new bridge context.
      */
     protected BridgeContext createBridgeContext(SVGDocument doc) {
-        BridgeContext result = new SVGBridgeContext();
+        GraphicsNodeRenderContext rc = getRendererFactory().getRenderContext();
+        BridgeContext result = new BridgeContext(doc, userAgent, rc);
         result.setDocumentLoader
             (new BufferedDocumentLoader
              (new SVGDocumentLoader(userAgent.getXMLParserClassName())));
-        result.setUserAgent(userAgent);
-        result.setGraphicsNodeRableFactory
-            (new ConcreteGraphicsNodeRableFactory());
-        result.setGraphicsNodeRenderContext(
-                                       getRendererFactory().getRenderContext());
-        ((SVGBridgeContext)result).setInterpreterPool
-            (new ConcreteInterpreterPool(doc));
-        result.setCurrentViewport(new UserAgentViewport(userAgent));
+        //result.setUserAgent(userAgent);
+        //result.setGraphicsNodeRableFactory(new ConcreteGraphicsNodeRableFactory());
+        //result.setGraphicsNodeRenderContext(getRendererFactory().getRenderContext());
+        //((BridgeContext)result).setInterpreterPool(new ConcreteInterpreterPool(doc));
+        //result.setViewport(new UserAgentViewport(userAgent));
         return result;
     }
 
@@ -1099,7 +1095,7 @@ public class JSVGCanvas
     public AffineTransform getTransform() {
         return transform;
     }
-    
+
     /**
      * Applies the given transform to the canvas.
      */

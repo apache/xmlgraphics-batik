@@ -62,7 +62,7 @@ public class SVGLinearGradient extends AbstractSVGConverter{
         SVGPaintDescriptor gradientDesc = (SVGPaintDescriptor)descMap.get(gradient);
 
         if(gradientDesc == null){
-            Element gradientDef = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_LINEAR_GRADIENT);
+            Element gradientDef = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_LINEAR_GRADIENT_TAG);
             gradientDef.setAttributeNS(null, ATTR_GRADIENT_UNITS,
                                      SVG_USER_SPACE_ON_USE_VALUE);
 
@@ -166,7 +166,7 @@ public class SVGLinearGradient extends AbstractSVGConverter{
             defs.appendChild(linearGradientDef);
         }
 
-        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
         rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, gradientDesc.getPaintValue());
         rect.setAttributeNS(null, SVG_FILL_OPACITY_ATTRIBUTE, gradientDesc.getOpacityValue());
 

@@ -99,7 +99,7 @@ public class SVGClip extends AbstractSVGConverter{
 
     /**
      * In the following method, an clipping Shape is converted to
-     * an SVG clipPath. 
+     * an SVG clipPath.
      *
      * @param clip path to convert to an SVG clipPath
      *        element
@@ -188,7 +188,7 @@ public class SVGClip extends AbstractSVGConverter{
 
         Element groupOne = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<clips.length; i++){
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
             rect.setAttributeNS(null, ATTR_ID, clips[i].getClass().getName());
             rect.setAttributeNS(null, SVG_CLIP_PATH_ATTRIBUTE, (String)converter.toSVG(clips[i]).getAttributeMap(null).get(SVG_CLIP_PATH_ATTRIBUTE));
             groupOne.appendChild(rect);
@@ -199,7 +199,7 @@ public class SVGClip extends AbstractSVGConverter{
         // has already be done and put in clipDefsMap.
         Element groupTwo = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<clips.length; i++){
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
             rect.setAttributeNS(null, ATTR_ID, clips[i].getClass().getName());
             rect.setAttributeNS(null, SVG_CLIP_PATH_ATTRIBUTE, (String)converter.toSVG(clips[i]).getAttributeMap(null).get(SVG_CLIP_PATH_ATTRIBUTE));
             groupTwo.appendChild(rect);

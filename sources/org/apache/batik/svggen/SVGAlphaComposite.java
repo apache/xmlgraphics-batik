@@ -330,7 +330,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
 
         for(int i=0; i<composites.length; i++){
             SVGCompositeDescriptor compositeDesc = converter.toSVG(composites[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
             rect.setAttributeNS(null, ATTR_OPACITY, compositeDesc.getOpacityValue());
             if(compositeDesc.getDef() != null)
                 rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, compositeDesc.getFilterValue());

@@ -243,7 +243,7 @@ public class DOMTreeManager implements SVGSyntax{
      * the topLevelGroup.
      */
     public Element getRoot(){
-        Element svg = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_SVG);
+        Element svg = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_SVG_TAG);
 
         // Enable background if required by AlphaComposite convertion
         if(gcConverter.getCompositeConverter().getAlphaCompositeConverter().requiresBackgroundAccess())
@@ -409,11 +409,16 @@ public class DOMTreeManager implements SVGSyntax{
         // + Add a polygon: should be under a new group
         //
 
-        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
-        Element ellipse = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_ELLIPSE_TAG);
-        Element circle = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_CIRCLE_TAG);
-        Element path = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_PATH);
-        Element polygon = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_POLYGON);
+        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                  SVG_RECT_TAG);
+        Element ellipse = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                     SVG_ELLIPSE_TAG);
+        Element circle = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                    SVG_CIRCLE_TAG);
+        Element path = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                  SVG_PATH_TAG);
+        Element polygon = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                     SVG_POLYGON_TAG);
 
         rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, SVG_NONE_VALUE);
         polygon.setAttributeNS(null, ATTR_STROKE, SVG_NONE_VALUE);

@@ -9,7 +9,7 @@
 package org.apache.batik.experiment;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.bridge.SVGBridgeContext;
+import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.util.SVGConstants;
 
 /**
@@ -38,8 +38,8 @@ public class Experiments {
         SVGOMDocument.registerCustomElementFactory(EXPERIMENT_NAMESPACE_URI,
                                                    SVGConstants.TAG_TEXT_PATH,
                                                    new TextPathElementFactory());
-        SVGBridgeContext.registerGlobalBridge(EXPERIMENT_NAMESPACE_URI,
-                                              SVGConstants.TAG_TEXT_PATH,
-                                              new TextPathElementBridge());
+        BridgeContext.registerGlobalBridge(EXPERIMENT_NAMESPACE_URI,
+                                           SVGConstants.TAG_TEXT_PATH,
+                                           new TextPathElementBridge());
     }
 }

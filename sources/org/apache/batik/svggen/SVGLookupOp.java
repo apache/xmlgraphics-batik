@@ -34,29 +34,29 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
     public static final String ERROR_ILLEGAL_BUFFERED_IMAGE_LOOKUP_OP =
         "BufferedImage LookupOp should have 1, 3 or 4 lookup arrays";
 
-	/**
-	 * Gamma for linear to sRGB convertion
-	 */
-	private static final double GAMMA = 1./2.4;
+        /**
+         * Gamma for linear to sRGB convertion
+         */
+        private static final double GAMMA = 1./2.4;
 
-	/**
-	 * Lookup table for linear to sRGB value 
+        /**
+         * Lookup table for linear to sRGB value
      * forward and backward mapping
-	 */
-	private static final int linearToSRGBLut[] = new int[256];
-	private static final int sRGBToLinear[] = new int[256];
+         */
+        private static final int linearToSRGBLut[] = new int[256];
+        private static final int sRGBToLinear[] = new int[256];
 
-	static{
-		for(int i=0; i<256; i++){
+        static{
+                for(int i=0; i<256; i++){
             // linear to sRGB
-			float value = i/255f;
-			if(value <= 0.0031308){
-				value *= 12.92f;
+                        float value = i/255f;
+                        if(value <= 0.0031308){
+                                value *= 12.92f;
             }
-			else{
-				value = 1.055f * ((float) Math.pow(value, GAMMA)) - 0.055f;
+                        else{
+                                value = 1.055f * ((float) Math.pow(value, GAMMA)) - 0.055f;
             }
-			linearToSRGBLut[i] = Math.round(value*255);
+                        linearToSRGBLut[i] = Math.round(value*255);
 
             // sRGB to linear
             value = i/255f;
@@ -66,10 +66,10 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
             else{
                 value = (float)Math.pow((value + 0.055f)/1.055f, 1/GAMMA);
             }
-            
-			sRGBToLinear[i] = Math.round(value*255);
-		}	
-	}
+
+                        sRGBToLinear[i] = Math.round(value*255);
+                }
+        }
 
     /**
      * @param domFactory used to build Elements
@@ -330,14 +330,14 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
 
         for(int i=0; i<lookupOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(lookupOps[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
             rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupOne.appendChild(rect);
         }
 
         for(int i=0; i<lookupOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(lookupOps[i]);
-            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+            Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
             rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupTwo.appendChild(rect);
         }

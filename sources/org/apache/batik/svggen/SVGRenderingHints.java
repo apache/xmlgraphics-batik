@@ -238,7 +238,7 @@ public class SVGRenderingHints extends AbstractSVGConverter{
             Element testGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
             testGroup.setAttributeNS(null, ATTR_ID, testName);
             for(int i=0; i<hints.length; i++){
-                Element testRect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+                Element testRect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
                 Map attrMap = converter.toSVG(hints[i]).getAttributeMap(null);
                 Iterator attrIter = attrMap.keySet().iterator();
                 while(attrIter.hasNext()){

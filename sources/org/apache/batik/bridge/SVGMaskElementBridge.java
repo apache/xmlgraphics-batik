@@ -97,9 +97,9 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
                                                      ATTR_MASK_CONTENT_UNITS}));
         }
 
-        Viewport oldViewport = bridgeContext.getCurrentViewport();
+        Viewport oldViewport = bridgeContext.getViewport();
         if(maskContentUnitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
-            bridgeContext.setCurrentViewport(new ObjectBoundingBoxViewport());
+            bridgeContext.setViewport(new ObjectBoundingBoxViewport());
         }
 
         GVTBuilder builder = bridgeContext.getGVTBuilder();
@@ -129,7 +129,7 @@ public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
             maskNodeContent.getChildren().add(gn);
         }
         // restore the viewport
-        bridgeContext.setCurrentViewport(oldViewport);
+        bridgeContext.setViewport(oldViewport);
         if (!hasChildren) {
             return null; // no mask defined
         }

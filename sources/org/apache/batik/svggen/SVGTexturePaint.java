@@ -80,7 +80,8 @@ public class SVGTexturePaint extends AbstractSVGConverter{
 
         if(patternDesc == null){
             Rectangle2D anchorRect = texture.getAnchorRect();
-            Element patternDef = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_PATTERN);
+            Element patternDef = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                            SVG_PATTERN_TAG);
             patternDef.setAttributeNS(null, ATTR_PATTERN_UNITS,
                                     SVG_USER_SPACE_ON_USE_VALUE);
 
@@ -97,7 +98,7 @@ public class SVGTexturePaint extends AbstractSVGConverter{
                                     doubleString(anchorRect.getHeight()));
 
             //
-            // Now, add an image element for the image. 
+            // Now, add an image element for the image.
             //
             BufferedImage textureImage = (BufferedImage)texture.getImage();
             Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
@@ -105,9 +106,9 @@ public class SVGTexturePaint extends AbstractSVGConverter{
             //
             // Rescale the image to fit the anchor rectangle
             //
-            if(textureImage.getWidth() > 0 && 
+            if(textureImage.getWidth() > 0 &&
                textureImage.getHeight() > 0){
-                
+
                 // Rescale only if necessary
                 if(textureImage.getWidth() != anchorRect.getWidth() ||
                    textureImage.getHeight() != anchorRect.getHeight()){
@@ -117,7 +118,7 @@ public class SVGTexturePaint extends AbstractSVGConverter{
                        anchorRect.getHeight() > 0){
                         double scaleX = anchorRect.getWidth()/textureImage.getWidth();
                         double scaleY = anchorRect.getHeight()/textureImage.getHeight();
-                        BufferedImage newImage 
+                        BufferedImage newImage
                             = new BufferedImage((int)(scaleX*textureImage.getWidth()),
                                                 (int)(scaleY*textureImage.getHeight()),
                                                 BufferedImage.TYPE_INT_ARGB);
@@ -131,7 +132,7 @@ public class SVGTexturePaint extends AbstractSVGConverter{
                     }
                 }
             }
-                        
+
             imageHandler.handleImage((RenderedImage)textureImage, imageElement);
             patternDef.appendChild(imageElement);
 
@@ -174,7 +175,7 @@ public class SVGTexturePaint extends AbstractSVGConverter{
             defs.appendChild(patternDef);
         }
 
-        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_RECT);
+        Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
         rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, patternDesc.getPaintValue());
         rect.setAttributeNS(null, SVG_FILL_OPACITY_ATTRIBUTE, patternDesc.getOpacityValue());
 

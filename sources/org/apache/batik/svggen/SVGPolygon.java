@@ -34,7 +34,8 @@ public class SVGPolygon extends SVGGraphicObjectConverter{
      */
     public Element toSVG(Polygon polygon){
 
-        Element svgPolygon = domFactory.createElementNS(SVG_NAMESPACE_URI, TAG_POLYGON);
+        Element svgPolygon = domFactory.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_POLYGON_TAG);
         StringBuffer points = new StringBuffer(" ");
         PathIterator pi = polygon.getPathIterator(null);
         float seg[] = new float[6];

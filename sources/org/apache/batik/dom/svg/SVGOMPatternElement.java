@@ -42,9 +42,9 @@ public class SVGOMPatternElement
     extends    SVGOMElement
     implements SVGPatternElement,
                OverrideStyleElement,
-	       ExtendedElementCSSInlineStyle,
-	       ElementNonCSSPresentationalHints {
-    
+               ExtendedElementCSSInlineStyle,
+               ElementNonCSSPresentationalHints {
+
     /**
      * The reference to the x attribute.
      */
@@ -85,7 +85,7 @@ public class SVGOMPatternElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_PATTERN;
+        return SVG_PATTERN_TAG;
     }
 
     /**
@@ -93,7 +93,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGPatternElement#getPatternTransform()}.
      */
     public SVGAnimatedTransformList getPatternTransform() {
-	throw new RuntimeException(" !!! TODO: SVGOMPatternElement.getPatternTransform()");
+        throw new RuntimeException(" !!! TODO: SVGOMPatternElement.getPatternTransform()");
     }
 
     /**
@@ -101,62 +101,62 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGPatternElement#getPatternUnits()}.
      */
     public SVGAnimatedEnumeration getPatternUnits() {
-	throw new RuntimeException(" !!! TODO: SVGOMPatternElement.getPatternUnits()");
+        throw new RuntimeException(" !!! TODO: SVGOMPatternElement.getPatternUnits()");
     }
- 
+
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGPatternElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-	SVGAnimatedLength result;
-	if (xReference == null ||
-	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x", null);
-	    xReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (xReference == null ||
+            (result = (SVGAnimatedLength)xReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, "x", null);
+            xReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGPatternElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-	SVGAnimatedLength result;
-	if (yReference == null ||
-	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y", null);
-	    yReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (yReference == null ||
+            (result = (SVGAnimatedLength)yReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, "y", null);
+            yReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGPatternElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-	SVGAnimatedLength result;
-	if (widthReference == null ||
-	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "width", null);
-	    widthReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (widthReference == null ||
+            (result = (SVGAnimatedLength)widthReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, "width", null);
+            widthReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGPatternElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-	SVGAnimatedLength result;
-	if (heightReference == null ||
-	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "height", null);
-	    heightReference = new WeakReference(result);
-	}
-	return result;
-    } 
+        SVGAnimatedLength result;
+        if (heightReference == null ||
+            (result = (SVGAnimatedLength)heightReference.get()) == null) {
+            result = new SVGOMAnimatedLength(this, null, "height", null);
+            heightReference = new WeakReference(result);
+        }
+        return result;
+    }
 
     // XLink support //////////////////////////////////////////////////////
 
@@ -169,10 +169,10 @@ public class SVGOMPatternElement
      * Returns uriReferenceSupport different from null.
      */
     protected final SVGURIReferenceSupport getSVGURIReferenceSupport() {
-	if (uriReferenceSupport == null) {
-	    uriReferenceSupport = new SVGURIReferenceSupport();
-	}
-	return uriReferenceSupport;
+        if (uriReferenceSupport == null) {
+            uriReferenceSupport = new SVGURIReferenceSupport();
+        }
+        return uriReferenceSupport;
     }
 
     /**
@@ -300,7 +300,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-	throw new RuntimeException(" !!! TODO: SVGOMSVGElement.getViewBox()");
+        throw new RuntimeException(" !!! TODO: SVGOMSVGElement.getViewBox()");
     }
 
     /**
@@ -308,8 +308,8 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGFitToViewBox#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
-	throw new RuntimeException
-	    (" !!! TODO: SVGOMSVGElement.getPreserveAspectRatio()");
+        throw new RuntimeException
+            (" !!! TODO: SVGOMSVGElement.getPreserveAspectRatio()");
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
@@ -324,12 +324,12 @@ public class SVGOMPatternElement
      * Returns testsSupport different from null.
      */
     protected final SVGExternalResourcesRequiredSupport
-	getExternalResourcesRequiredSupport() {
-	if (externalResourcesRequiredSupport == null) {
-	    externalResourcesRequiredSupport =
+        getExternalResourcesRequiredSupport() {
+        if (externalResourcesRequiredSupport == null) {
+            externalResourcesRequiredSupport =
                 new SVGExternalResourcesRequiredSupport();
-	}
-	return externalResourcesRequiredSupport;
+        }
+        return externalResourcesRequiredSupport;
     }
 
     /**
@@ -337,12 +337,12 @@ public class SVGOMPatternElement
      * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return getExternalResourcesRequiredSupport().
+        return getExternalResourcesRequiredSupport().
             getExternalResourcesRequired(this);
     }
 
     // SVGLangSpace support //////////////////////////////////////////////////
-    
+
     /**
      * <b>DOM</b>: Returns the xml:lang attribute value.
      */
@@ -356,7 +356,7 @@ public class SVGOMPatternElement
     public void setXMLlang(String lang) {
         XMLSupport.setXMLLang(this, lang);
     }
-    
+
     /**
      * <b>DOM</b>: Returns the xml:space attribute value.
      */
@@ -382,10 +382,10 @@ public class SVGOMPatternElement
      * Returns testsSupport different from null.
      */
     protected final SVGTestsSupport getTestsSupport() {
-	if (testsSupport == null) {
-	    testsSupport = new SVGTestsSupport();
-	}
-	return testsSupport;
+        if (testsSupport == null) {
+            testsSupport = new SVGTestsSupport();
+        }
+        return testsSupport;
     }
 
     /**
@@ -393,7 +393,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
-	return getTestsSupport().getRequiredFeatures(this);
+        return getTestsSupport().getRequiredFeatures(this);
     }
 
     /**
@@ -401,7 +401,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
-	return getTestsSupport().getRequiredExtensions(this);
+        return getTestsSupport().getRequiredExtensions(this);
     }
 
     /**
@@ -409,7 +409,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
-	return getTestsSupport().getSystemLanguage(this);
+        return getTestsSupport().getSystemLanguage(this);
     }
 
     /**
@@ -417,7 +417,7 @@ public class SVGOMPatternElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-	return getTestsSupport().hasExtension(extension, this);
+        return getTestsSupport().hasExtension(extension, this);
     }
 
     // ElementNonCSSPresentationalHints ////////////////////////////////////
@@ -427,7 +427,7 @@ public class SVGOMPatternElement
      * CSS rules. The result can be null.
      */
     public CSSStyleDeclaration getNonCSSPresentationalHints() {
-	return ElementNonCSSPresentationalHintsSupport.
+        return ElementNonCSSPresentationalHintsSupport.
             getNonCSSPresentationalHints(this);
     }
 
@@ -442,10 +442,10 @@ public class SVGOMPatternElement
      * Returns stylableSupport different from null.
      */
     protected final SVGStylableSupport getStylableSupport() {
-	if (stylableSupport == null) {
-	    stylableSupport = new SVGStylableSupport();
-	}
-	return stylableSupport;
+        if (stylableSupport == null) {
+            stylableSupport = new SVGStylableSupport();
+        }
+        return stylableSupport;
     }
 
     /**
@@ -486,15 +486,15 @@ public class SVGOMPatternElement
      * OverrideStyleElement#hasOverrideStyle(String)}.
      */
     public boolean hasOverrideStyle(String pseudoElt) {
-	return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }    
+        return getStylableSupport().hasOverrideStyle(pseudoElt);
+    }
 
     /**
      * Implements {@link
      * OverrideStyleElement#getOverrideStyle(String)}.
      */
     public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return getStylableSupport().getOverrideStyle(pseudoElt, this);
+        return getStylableSupport().getOverrideStyle(pseudoElt, this);
     }
 
     /**
