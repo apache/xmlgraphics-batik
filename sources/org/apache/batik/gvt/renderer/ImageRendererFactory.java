@@ -8,20 +8,17 @@
 
 package org.apache.batik.gvt.renderer;
 
-import org.apache.batik.gvt.renderer.Renderer;
-import org.apache.batik.gvt.renderer.RendererFactory;
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 /**
- * This class is a factory for DynamicRenderers.
+ * Interface for a factory of ImageRenderers
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class DynamicRendererFactory extends StaticRendererFactory {
+public interface ImageRendererFactory extends RendererFactory{
     /**
      * Creates a new renderer.
      */
-    public ImageRenderer createImageRenderer() {
-        return new DynamicRenderer(getRenderContext());
-    }
+    ImageRenderer createImageRenderer();
 }
