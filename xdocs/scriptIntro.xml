@@ -90,42 +90,35 @@
 	  midiChannel.programChange(0)
 
           function down(evt) {
-		target = evt.currentTarget
+		target = evt.target.parentElement
 		midiChannel.noteOn(target.id, 64)
 	        lastId = target.id
           }
 
           function drag(evt) {
 		if (lastId != -1) {
-		  target = evt.currentTarget
+		  target = evt.target.parentElement
 		  midiChannel.noteOn(target.id, 64)
 		  lastId = target.id
 		}
           }
       &lt;/script&gt;
-      &lt;rect id="blank" x="0" y="0" width="10" height="60"/&gt;
-      &lt;rect id="black" x="0" y="0" width="6" height="33"/&gt;
+      &lt;rect onmousedown="down(evt)" onmouseover="drag(evt)" 
+               id="blank" x="0" y="0" width="10" height="60"/&gt;
+      &lt;rect onmousedown="down(evt)" onmouseover="drag(evt)" 
+               id="black" x="0" y="0" width="6" height="33"/&gt;
     &lt;/defs&gt;
     &lt;g&gt;
-      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="24" 
-          xlink:href="#blank"/&gt;
-      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="26" x="10" 
-          xlink:href="#blank"/&gt;
-      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="25" x="7" 
-          xlink:href="#black"/&gt;
-      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="28" x="20" 
-          xlink:href="#blank"/&gt;
-      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="27" x="17" 
-          xlink:href="#black"/&gt;
+      &lt;use id="24" xlink:href="#blank"/&gt;
+      &lt;use id="26" x="10" xlink:href="#blank"/&gt;
+      &lt;use id="25" x="7"  xlink:href="#black"/&gt;
+      &lt;use id="28" x="20" xlink:href="#blank"/&gt;
+      &lt;use id="27" x="17" xlink:href="#black"/&gt;
       &lt;!-- some other keys as in batikMusic.svg from the distribution --&gt;
-      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="93" x="400" 
-          xlink:href="#blank"/&gt;
-      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="92" x="397" 
-          xlink:href="#black"/&gt;
-      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="95" x="410" 
-          xlink:href="#blank"/&gt;
-      &lt;use onmousedown="down(evt)" onmouseover="drag(evt)" id="94" x="407" 
-          xlink:href="#black"/&gt;
+      &lt;use id="93" x="400" xlink:href="#blank"/&gt;
+      &lt;use id="92" x="397" xlink:href="#black"/&gt;
+      &lt;use id="95" x="410" xlink:href="#blank"/&gt;
+      &lt;use id="94" x="407" xlink:href="#black"/&gt;
     &lt;/g&gt;
 &lt;/svg&gt;</source>
         <p>
@@ -142,8 +135,8 @@
 	</p>
 	<p>
 	When the user presses the mouse down on a piano key, the <code>down</code> function is called,
-	it gets the SVG element corresponding to the key on which the event listener as been registered
-	(<code>evt.currentTarget</code>) and plays the note corresponding to that key by retrieving it
+	it gets the SVG element corresponding to the key on which the mouse button has been pressed
+	and plays the note corresponding to that key by retrieving it
 	from the ID set on the element (<code>target.id</code>).
 	A similar job is done in the <code>drag</code> function.
 	</p>
