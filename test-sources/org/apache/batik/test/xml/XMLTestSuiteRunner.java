@@ -115,9 +115,6 @@ public class XMLTestSuiteRunner implements XTSConstants{
                     if(tagName == XTS_TEST_REPORT_PROCESSOR_TAG){
                         processors.addElement(buildProcessor(childElement));
                     }
-                    else{
-                        System.out.println("tagName : " + tagName + " is different from : " + XTS_TEST_REPORT_PROCESSOR_TAG);
-                    }
                 }
             }
         }
