@@ -361,6 +361,8 @@ public class JSVGComponent extends JGVTComponent {
 
     protected SVGUpdateOverlay updateOverlay; // = new SVGUpdateOverlay(20, 4);
 
+    protected boolean recenterOnResize = true;
+
     /**
      * Creates a new JSVGComponent.
      */
@@ -392,6 +394,22 @@ public class JSVGComponent extends JGVTComponent {
 
     public void dispose() {
         setSVGDocument(null);
+    }
+
+    /**
+     * Indicates if the canvas should recenter the content after
+     * the canvas is resized.  If true it will try and keep the
+     * point that was at the center at the center after resize.
+     * Otherwise the upper left corner will be kept at the same point.
+     */
+    public boolean getRecenterOnResize() { 
+        return recenterOnResize;
+    }
+    /**
+     * Returns sate of the recenter on resize flag.
+     */
+    public void setRecenterOnResize(boolean recenterOnResize) { 
+        this.recenterOnResize = recenterOnResize;
     }
 
     /**
@@ -889,7 +907,9 @@ public class JSVGComponent extends JGVTComponent {
                 return ((oldD.width != d.width) || (oldD.height != d.height));
             }
 
-            
+            if (!recenterOnResize) 
+                return true;
+
             // Here we map the old center of the component down to
             // the user coodinate system with the old viewing
             // transform and then back to the screen with the
@@ -1365,14 +1385,10 @@ public class JSVGComponent extends JGVTComponent {
             }
 
             GraphicsNode gn = e.getGVTRoot();
-            Dimension2D dim = bridgeContext.getDocumentSize();
-            if (gn == null || dim == null) {
+            if (gn == null) {
                 JSVGComponent.this.image = null;
                 repaint();
             } else {
-                Dimension d= new Dimension((int)dim.getWidth(),
-                                           (int)dim.getHeight());
-                JSVGComponent.this.setMySize(d);
                 JSVGComponent.this.setGraphicsNode(gn, false);
                 computeRenderingTransform();
             }
@@ -1479,8 +1495,7 @@ public class JSVGComponent extends JGVTComponent {
             }
 
             GraphicsNode gn = e.getGVTRoot();
-            Dimension2D dim = bridgeContext.getDocumentSize();
-            if (gn == null || dim == null) {
+            if (gn == null) {
                 JSVGComponent.this.image = null;
                 repaint();
             } else {

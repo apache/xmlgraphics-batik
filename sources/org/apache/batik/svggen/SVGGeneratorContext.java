@@ -437,9 +437,9 @@ public class SVGGeneratorContext implements ErrorConstants {
      */
     final public void setPrecision(int precision) {
         if (precision < 0) {
-            precision = 0;
+            this.precision = 0;
         } else if (precision > 12) {
-            precision = 12;
+            this.precision = 12;
         } else {
             this.precision = precision;
         }
