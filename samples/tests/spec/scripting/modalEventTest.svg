@@ -1,0 +1,101 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- Simple test to validate that events are properly dispatched. This      -->
+<!-- test shows a problem we had due to isModalEvent.                       -->
+<!-- For example: mousedown on red circle, move out of circle, mouseup.     -->
+<!-- This sequence should not trigger the circle's mouseup handler.         -->
+<!--                                                                        -->
+<!-- @author vincent.hardy@sun.com                                          -->
+<!-- @version $Id$                                                          -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     id="body" width="450" height="500" viewBox="0 0 450 500">
+
+    <title>Remove/Insert event handler test</title>
+
+    <text x="50%" y="45" class="title">remove/insert event handler test</text>
+
+    <script type="text/ecmascript"><![CDATA[
+
+    var svgNamespaceURI = "http://www.w3.org/2000/svg";
+
+function onMouseDown(id) {
+    // First, turn mouse control green
+    var ctrl = document.getElementById("mouseDownCtrl");
+    ctrl.setAttribute("fill", "rgb(0,255,0)");
+}
+
+function onMouseUp(id) {
+    // First, turn mouse control green
+    var ctrl = document.getElementById("mouseUpCtrl");
+    ctrl.setAttribute("fill", "rgb(0,255,0)");
+}
+
+function clear() {
+    var ctrl = document.getElementById("mouseDownCtrl");
+    ctrl.setAttribute("fill", "gray");
+    ctrl = document.getElementById("mouseUpCtrl");
+    ctrl.setAttribute("fill", "gray");
+}
+
+
+    ]]></script>
+
+    <defs>    
+        <rect id="button" x="-30" y="-15" width="60" height="20" />
+    </defs>
+
+    <style type="text/css"><![CDATA[
+        use.button {
+            fill: #eeeeee;
+            stroke: black;
+        }
+
+        text.button {
+            fill: black;
+            stroke: none;
+            text-anchor: middle;
+        }
+    ]]></style>
+
+    <g id="originalGroup" transform="translate(225,250)">
+        <g id="target" onmousedown="onMouseDown('target')" onmouseup="onMouseUp(evt)"  >
+            <circle cx="0" cy="0" r="30" fill="crimson" />
+	</g>    
+    </g>
+
+    <g id="insertionPointGroup" transform="translate(225,250) scale(2)">
+    </g>
+
+    <g transform="translate(150, 350)">
+        <circle id="mouseDownCtrl" r="10" stroke="black" fill="gray" />
+        <text class="legend" y="20">mousedown</text>
+    </g>
+
+    <g transform="translate(300, 350)">
+        <circle id="mouseUpCtrl" r="10" stroke="black" fill="gray" />
+        <text class="legend" y="20" >mouseup</text>
+    </g>
+
+    <g transform="translate(225,450)">
+        <a onclick="clear()">
+            <use class="button" xlink:href="#button" />
+            <text class="button">Clear</text>
+        </a>
+    </g>
+</svg>

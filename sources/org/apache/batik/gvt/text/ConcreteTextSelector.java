@@ -255,9 +255,7 @@ public class ConcreteTextSelector implements Selector {
     }
 
     private boolean isSelectStartGesture(GraphicsNodeEvent evt) {
-        return ((evt.getID() == GraphicsNodeMouseEvent.MOUSE_PRESSED)
-          || ( isMouseButton1Down(evt) &&
-             (evt.getID() == GraphicsNodeMouseEvent.MOUSE_ENTERED) ));
+        return (evt.getID() == GraphicsNodeMouseEvent.MOUSE_PRESSED);
     }
 
     private boolean isSelectEndGesture(GraphicsNodeEvent evt) {
