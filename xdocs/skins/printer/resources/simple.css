@@ -1,0 +1,66 @@
+body {
+	background: white fixed no-repeat left top; 
+	color: black; 
+	font-family: sans-serif; 
+	margin: 2em 1em 2em 1em;
+}
+
+h1.title {
+	text-align: center;
+	color: #005a9c;
+	font: 160% sans-serif;
+}
+
+h1 {
+	text-align: left;
+	color: #005a9c;
+	font: 140% sans-serif;
+}
+
+h2 {
+	text-align: left;
+	color: #005a9c;
+	font: 120% sans-serif italic;
+}
+
+h3 {
+	text-align: left;
+	color: #005a9c;
+	font: 110% sans-serif bold;
+}
+
+h4 {
+	text-align: left;
+	color: #005a9c;
+	font: 100% sans-serif bold italic;
+}
+
+#s1
+#s2
+#s3
+#s4
+
+p {
+    padding: 10px 10px 10px 10px;
+    margin: 10px 20px 10px 20px;
+    text-align: justify;
+}
+
+p.note {
+    font-style: italic;
+}
+
+p.legal {
+	text-align: center;
+    font: 80% sans-serif;
+}
+
+pre {
+	font-family: monospace;
+    margin: 20px 80px 20px 20px;
+}
+
+a:link { color: #005a9c }
+a:visited { color: #a00000 }
+a:active { color: #00a000 }
+a:hover { background: #ffa }
