@@ -54,6 +54,7 @@ import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSValueList;
 import org.w3c.dom.css.RGBColor;
 
+import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 
 /**
@@ -76,12 +77,11 @@ public class CSSUtilities implements SVGConstants {
     public static Composite convertOpacityToComposite(CSSPrimitiveValue val) {
         float opacity = convertOpacity(val);
         Composite composite = null;
-        if(opacity > 0) {
-            if(opacity < 1){
+        if (opacity > 0) {
+            if (opacity < 1) {
                 composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
                                                        opacity);
-            }
-            else{
+            } else {
                 composite = AlphaComposite.SrcOver;
             }
         }
@@ -135,8 +135,8 @@ public class CSSUtilities implements SVGConstants {
       * element's <tt>clip</tt> attribute.
       */
     public static Clip convertClipPath(Element clipedElement,
-                                        GraphicsNode gn,
-                                        BridgeContext ctx) {
+                                       GraphicsNode gn,
+                                       BridgeContext ctx) {
          CSSStyleDeclaration decl
              = ctx.getViewCSS().getComputedStyle(clipedElement, null);
 
@@ -158,26 +158,25 @@ public class CSSUtilities implements SVGConstants {
                              clipValue.getPrimitiveType());
          }
 
-         // <!> FIXME : Bad way to compute URI
-         // nothing referenced.
-         if(uriString == null){
+         if (uriString == null) {
              return null;
          }
 
-         // Can't make sense of reference
-         if(!uriString.startsWith("#")){
-             return null;
+         URIResolver ur;
+         ur = new URIResolver((SVGDocument)clipedElement.getOwnerDocument(),
+                              ctx.getDocumentLoader());
+            
+         Element clipPathElement = null;
+         try {
+             clipPathElement = ur.importElement(uriString, false);
+         } catch (Exception ex) {
+             ex.printStackTrace();
          }
-
-         uriString = uriString.substring(1); // Drop the hash.
-         // end of FIXME
-
-         Element clipPathElement;
-         clipPathElement =
-             clipedElement.getOwnerDocument().getElementById(uriString);
 
          // Cannot access referenced mask
          if(clipPathElement == null){
+             System.out.println("Could not find : " + uriString +
+                                " in document");
              return null;
          }
 
@@ -223,22 +222,20 @@ public class CSSUtilities implements SVGConstants {
                              maskValue.getPrimitiveType());
          }
 
-         // <!> FIXME : Bad way to compute URI
-         // nothing referenced.
-         if(uriString == null){
+         if (uriString == null) {
              return null;
          }
 
-         // Can't make sense of reference
-         if(!uriString.startsWith("#")){
-             return null;
+         URIResolver ur;
+         ur = new URIResolver((SVGDocument)maskedElement.getOwnerDocument(),
+                              ctx.getDocumentLoader());
+            
+         Element maskElement = null;
+         try {
+             maskElement = ur.importElement(uriString, false);
+         } catch (Exception ex) {
+             ex.printStackTrace();
          }
-
-         uriString = uriString.substring(1); // Drop the hash.
-         // end of FIXME
-
-         Element maskElement;
-         maskElement = maskedElement.getOwnerDocument().getElementById(uriString);
 
          // Cannot access referenced mask
          if(maskElement == null){
@@ -312,7 +309,8 @@ public class CSSUtilities implements SVGConstants {
                                                    uctx);
         Paint paint = convertStrokeToPaint(svgElement, node, ctx, decl, uctx);
 
-        StrokeShapePainter painter = ctx.getGVTFactory().createStrokeShapePainter();
+        StrokeShapePainter painter =
+            ctx.getGVTFactory().createStrokeShapePainter();
         painter.setStroke(stroke);
         painter.setPaint(paint);
         return painter;
@@ -340,8 +338,9 @@ public class CSSUtilities implements SVGConstants {
             Color c = convertColor(v.getRGBColorValue(), opacity);
             return c;
         case CSSPrimitiveValue.CSS_URI:
-            Paint uriPaint = convertURIStrokeToPaint(element, node, ctx,
-                                                     decl, uctx, v.getStringValue());
+            Paint uriPaint =
+                convertURIStrokeToPaint(element, node, ctx,
+                                        decl, uctx, v.getStringValue());
             return uriPaint;
         }
 
@@ -352,15 +351,16 @@ public class CSSUtilities implements SVGConstants {
      * Returns a Stoke object that corresponds to the various
      * stroke attributes in the input element
      */
-    public static BasicStroke convertStrokeToBasicStroke(
-                                                         SVGElement svgElement,
-                                                         BridgeContext ctx,
-                                                         CSSStyleDeclaration decl,
-                                                         UnitProcessor.Context uctx) {
+    public static BasicStroke convertStrokeToBasicStroke
+        (SVGElement svgElement,
+         BridgeContext ctx,
+         CSSStyleDeclaration decl,
+         UnitProcessor.Context uctx) {
         GVTFactory f = ctx.getGVTFactory();
 
         // resolve the java.awt.Stroke of the StrokeShapePainter
-        CSSPrimitiveValue v = (CSSPrimitiveValue) decl.getPropertyCSSValue(STROKE_WIDTH_PROPERTY);
+        CSSPrimitiveValue v =
+            (CSSPrimitiveValue) decl.getPropertyCSSValue(STROKE_WIDTH_PROPERTY);
         short type = v.getPrimitiveType();
         // 'stroke-width'
         float width
@@ -485,28 +485,34 @@ public class CSSUtilities implements SVGConstants {
                                               CSSStyleDeclaration decl,
                                               UnitProcessor.Context uctx,
                                               String fillUri){
-        if(fillUri.startsWith("#")){
-            fillUri = fillUri.substring(1);
-        }
-
         //
         // First, get a PaintBridge for the referenced value
         //
-        Document doc = svgElement.getOwnerDocument();
-        Element paintElement = doc.getElementById(fillUri);
+        URIResolver ur;
+        ur = new URIResolver((SVGDocument)svgElement.getOwnerDocument(),
+                             ctx.getDocumentLoader());
+            
+        Element paintElement = null;
+        try {
+            paintElement = ur.importElement(fillUri, false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         Paint paint = null;
-        if(paintElement != null){
+        if (paintElement != null) {
             PaintBridge paintBridge = (PaintBridge)ctx.getBridge(paintElement);
 
             //
             // Now, use bridge to convert paint
             //
             if(paintBridge != null){
-                paint = paintBridge.createFillPaint(ctx, node, svgElement, paintElement);
+                paint = paintBridge.createFillPaint(ctx, node, svgElement,
+                                                    paintElement);
             }
-        }
-        else{
-            System.out.println("Could not find a paint definition for : " + fillUri);
+        } else {
+            System.out.println("Could not find a paint definition for : " +
+                               fillUri);
         }
 
         return paint;
@@ -521,16 +527,21 @@ public class CSSUtilities implements SVGConstants {
                                                 CSSStyleDeclaration decl,
                                                 UnitProcessor.Context uctx,
                                                 String strokeUri){
-        if(strokeUri.startsWith("#")){
-            strokeUri = strokeUri.substring(1);
-        }
-
         //
         // First, get a PaintBridge for the referenced value
         //
+        URIResolver ur;
+        ur = new URIResolver((SVGDocument)svgElement.getOwnerDocument(),
+                             ctx.getDocumentLoader());
+            
+        Element paintElement = null;
+        try {
+            paintElement = ur.importElement(strokeUri, false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         Paint paint = null;
-        Document doc = svgElement.getOwnerDocument();
-        Element paintElement = doc.getElementById(strokeUri);
         if(paintElement != null){
             PaintBridge paintBridge = (PaintBridge)ctx.getBridge(paintElement);
 
@@ -538,7 +549,8 @@ public class CSSUtilities implements SVGConstants {
             // Now, use bridge to convert paint
             //
             if(paintBridge != null){
-                paint = paintBridge.createStrokePaint(ctx, node, svgElement, paintElement);
+                paint = paintBridge.createStrokePaint(ctx, node, svgElement,
+                                                      paintElement);
             }
         }
 
@@ -568,7 +580,7 @@ public class CSSUtilities implements SVGConstants {
             return c;
         case CSSPrimitiveValue.CSS_URI:
             Paint uriPaint = convertURIFillToPaint(element, node, ctx,
-                                                   decl, uctx, v.getStringValue());
+                                              decl, uctx, v.getStringValue());
 
             return uriPaint;
         }
@@ -588,7 +600,7 @@ public class CSSUtilities implements SVGConstants {
             decl.getPropertyCSSValue(FLOOD_OPACITY_PROPERTY);
         float opacity = convertOpacity(vv);
 
-        System.out.println("Flood color: " + v.getCssText());
+        //System.out.println("Flood color: " + v.getCssText());
         return convertColor(v.getRGBColorValue(), opacity);
     }
 
@@ -793,27 +805,32 @@ public class CSSUtilities implements SVGConstants {
         Filter filter = null;
 
         if(uriString != null){
-            if(uriString.startsWith("#")){
-                uriString = uriString.substring(1);
-                Element filterElement
-                    = element.getOwnerDocument().getElementById(uriString);
-                if(filterElement != null){
-                    FilterBridge filterBridge
-                        = (FilterBridge)ctx.getBridge(filterElement);
-
-                    if(filterBridge != null){
-                        filter = filterBridge.create(node,
-                                                     ctx,
-                                                     filterElement,
-                                                     element,
-                                                     null,   // in
-                                                     null,   // filterRegion
-                                                     null);  // filterMap
-                    }
-                } else {
-                    System.out.println("Could not find : " + uriString +
-                                       " in document");
+            URIResolver ur;
+            ur = new URIResolver((SVGDocument)element.getOwnerDocument(),
+                                 ctx.getDocumentLoader());
+            
+            Element filterElement = null;
+            try {
+                filterElement = ur.importElement(uriString, false);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            if (filterElement != null) {
+                FilterBridge filterBridge
+                    = (FilterBridge)ctx.getBridge(filterElement);
+                
+                if(filterBridge != null){
+                    filter = filterBridge.create(node,
+                                                 ctx,
+                                                 filterElement,
+                                                 element,
+                                                 null,   // in
+                                                 null,   // filterRegion
+                                                 null);  // filterMap
                 }
+            } else {
+                System.out.println("Could not find : " + uriString +
+                                   " in document");
             }
         }
 
@@ -826,9 +843,9 @@ public class CSSUtilities implements SVGConstants {
                                          Element       filteredElement,
                                          Filter        in,
                                          Map           filterMap) {
-        System.out.println("In: " + in);
+        //System.out.println("In: " + in);
         int inValue = SVGUtilities.parseInAttribute(inAttr);
-        System.out.println("InVal: " + inValue);
+        //System.out.println("InVal: " + inValue);
         switch (inValue) {
         case SVGUtilities.EMPTY:
             return in;
@@ -914,4 +931,3 @@ public class CSSUtilities implements SVGConstants {
         return Float.parseFloat(v)/d;
     }
 }
-

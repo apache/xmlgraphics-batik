@@ -136,8 +136,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
         if (ve == null) {
             return null;
         }
-        if (ve.getValue() == null ||
-            ve.getValue() == ImmutableInherit.INSTANCE) {
+        if (ve.getValue() == null) {
             CSSStyleDeclaration sd;
             sd = viewCSS.getComputedStyle(parentElement, null);
             CSSOMReadOnlyValue v =

@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.batik.css.sac.ExtendedSelector;
+import org.apache.batik.css.value.ImmutableInherit;
 import org.apache.batik.css.value.RelativeValueResolver;
 import org.w3c.css.sac.SelectorList;
 import org.w3c.dom.Element;
@@ -200,6 +201,11 @@ public abstract class AbstractViewCSS implements ViewCSS {
                 (!rvr.isInheritedProperty() ||
                  HiddenChildElementSupport.getParentElement(e) == null)) {
                 val = rvr.getDefaultValue();
+            } else if (val != null &&
+                       (val.getImmutableValue() ==
+                        ImmutableInherit.INSTANCE) &&
+                       HiddenChildElementSupport.getParentElement(e) != null) {
+                val = null;
             }
             rd.setPropertyCSSValue(prop, val, "",
                              CSSOMReadOnlyStyleDeclaration.USER_AGENT_ORIGIN);
