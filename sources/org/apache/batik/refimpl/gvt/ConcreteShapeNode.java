@@ -38,19 +38,19 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     protected ShapePainter shapePainter;
 
     /**
-     * Primitive bounds
+     * Cache: Primitive bounds
      */
-    protected Rectangle2D primitiveBounds;
+    private Rectangle2D primitiveBounds;
 
     /**
-     * Geometry bounds
+     * Cache: Geometry bounds
      */
-    protected Rectangle2D geometryBounds;
+    private Rectangle2D geometryBounds;
 
     /**
-     * The painted area.
+     * Cache: The painted area.
      */
-    protected Shape paintedArea;
+    private Shape paintedArea;
 
     /**
      * Constructs a new empty shape node.
@@ -62,10 +62,7 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     //
 
     public void setShape(Shape newShape) {
-        // invalidate cached values
-        primitiveBounds = null;
-        bounds = null;
-        // do setShape
+        invalidateGeometryCache();
         Shape oldShape = shape;
         this.shape = newShape;
         firePropertyChange("shape", oldShape, newShape);
@@ -76,10 +73,7 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     }
 
     public void setShapePainter(ShapePainter newShapePainter) {
-        // invalidate cached values
-        primitiveBounds = null;
-        bounds = null;
-        // do setShapePainter
+        invalidateGeometryCache();
         ShapePainter oldShapePainter = shapePainter;
         this.shapePainter = newShapePainter;
         firePropertyChange("shapePainter",
@@ -105,29 +99,32 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     }
 
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        if (shapePainter == null) {
-            return;
+        if (shapePainter != null) {
+            shapePainter.paint(shape, g2d, rc);
         }
-        // Paint the shape
-        shapePainter.paint(shape, g2d, rc);
     }
 
     //
     // Geometric methods
     //
 
+    protected void invalidateGeometryCache() {
+        super.invalidateGeometryCache();
+        primitiveBounds = null;
+        geometryBounds = null;
+        paintedArea = null;
+    }
+
     public boolean contains(Point2D p) {
         return (getBounds().contains(p) && getOutline().contains(p));
     }
-
 
     public Rectangle2D getPrimitiveBounds() {
         if (primitiveBounds == null) {
             if (shapePainter == null) {
                 return null;
             }
-            paintedArea = shapePainter.getPaintedArea(shape);
-            primitiveBounds = paintedArea.getBounds2D();
+            primitiveBounds = getOutline().getBounds2D();
         }
         return primitiveBounds;
 
@@ -137,17 +134,15 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         if (geometryBounds == null) {
             geometryBounds = shape.getBounds();
         }
-
         return geometryBounds;
     }
 
     public Shape getOutline() {
-        if (primitiveBounds == null) {
+        if (paintedArea == null) {
             if(shapePainter == null) {
                 return null;
             }
             paintedArea = shapePainter.getPaintedArea(shape);
-            primitiveBounds = paintedArea.getBounds2D();
         }
         return paintedArea;
     }

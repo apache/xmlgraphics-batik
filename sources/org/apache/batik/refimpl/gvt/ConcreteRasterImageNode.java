@@ -38,7 +38,7 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
     /**
      * The Bounds of this image node.
      */
-    protected Rectangle2D bounds;
+    protected Rectangle2D imageBounds;
 
     public static AffineTransform IDENTITY = new AffineTransform();
 
@@ -52,6 +52,7 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
     //
 
     public void setImage(Filter newImage) {
+        invalidateGeometryCache();
         Filter oldImage = image;
         this.image = newImage;
         firePropertyChange("image", oldImage, newImage);
@@ -61,14 +62,15 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
         return image;
     }
 
-    public void setBounds(Rectangle2D newBounds) {
-        Rectangle2D oldBounds = this.bounds;
-        this.bounds = newBounds;
-        firePropertyChange("bounds", oldBounds, newBounds);
+    public void setImageBounds(Rectangle2D newImageBounds) {
+        invalidateGeometryCache();
+        Rectangle2D oldImageBounds = this.imageBounds;
+        this.imageBounds = newImageBounds;
+        firePropertyChange("imageBounds", oldImageBounds, newImageBounds);
     }
 
-    public Rectangle2D getBounds() {
-        return (Rectangle2D)bounds.clone();
+    public Rectangle2D getImageBounds() {
+        return (Rectangle2D) imageBounds.clone();
     }
 
     //
@@ -85,8 +87,8 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
 
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
         if ((image == null)||
-            (bounds.getWidth()  == 0) ||
-            (bounds.getHeight() == 0)) {
+            (imageBounds.getWidth()  == 0) ||
+            (imageBounds.getHeight() == 0)) {
             return;
         }
 
@@ -97,11 +99,11 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
         float tx0 = image.getMinX();
         float ty0 = image.getMinY();
 
-        float sx  = (float)(bounds.getWidth() /image.getWidth());
-        float sy  = (float)(bounds.getHeight()/image.getHeight());
+        float sx  = (float)(imageBounds.getWidth() /image.getWidth());
+        float sy  = (float)(imageBounds.getHeight()/image.getHeight());
 
-        float tx1 = (float)bounds.getX();
-        float ty1 = (float)bounds.getY();
+        float tx1 = (float)imageBounds.getX();
+        float ty1 = (float)imageBounds.getY();
 
         // Make the affine go from our src Img's coord system to
         // the device coord system, including scaling to our bounds.
@@ -116,7 +118,7 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
 
         Shape aoi = g2d.getClip();
         if(aoi == null) {
-            aoi = getBounds();
+            aoi = getImageBounds();
         }
 
         Shape newAOI = usr2src.createTransformedShape(aoi);
@@ -141,14 +143,14 @@ public class ConcreteRasterImageNode extends AbstractGraphicsNode
     //
 
     public Rectangle2D getPrimitiveBounds() {
-        return (Rectangle2D)bounds.clone();
+        return (Rectangle2D) imageBounds.clone();
     }
 
     public Rectangle2D getGeometryBounds() {
-        return getPrimitiveBounds();
+        return (Rectangle2D) imageBounds.clone();
     }
 
     public Shape getOutline() {
-        return getPrimitiveBounds();
+        return (Rectangle2D) imageBounds.clone();
     }
 }

@@ -145,7 +145,7 @@ public class StaticRenderer implements Renderer {
      */
     public void repaint(Shape area){
         // First, set the Area Of Interest in the renderContext
-        //        nodeRenderContext.setTransform(usr2dev);
+        nodeRenderContext.setTransform(usr2dev);
         nodeRenderContext.setAreaOfInterest(area);
 
         // Now, paint into offscreen image
@@ -177,10 +177,9 @@ public class StaticRenderer implements Renderer {
         if(usr2dev == null) {
             usr2dev = new AffineTransform();
         }
-        //this.usr2dev = usr2dev;
+        this.usr2dev = usr2dev;
         // Update the RenderContext in the nodeRenderContext
-        nodeRenderContext.setTransform(usr2dev);
-
+        //nodeRenderContext.setTransform(usr2dev);
     }
 
     /**
