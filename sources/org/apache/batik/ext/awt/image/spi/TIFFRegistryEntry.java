@@ -16,8 +16,9 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.ext.awt.image.codec.PNGRed;
-import org.apache.batik.ext.awt.image.codec.PNGDecodeParam;
+import org.apache.batik.ext.awt.image.codec.SeekableStream;
+import org.apache.batik.ext.awt.image.codec.tiff.TIFFImage;
+import org.apache.batik.ext.awt.image.codec.tiff.TIFFDecodeParam;
 import org.apache.batik.ext.awt.image.rendered.Any2sRGBRed;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -25,14 +26,19 @@ import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.ext.awt.image.renderable.DeferRable;
 import org.apache.batik.util.ParsedURL;
 
-public class PNGRegistryEntry 
+public class TIFFRegistryEntry 
     extends MagicNumberRegistryEntry {
 
+    static final byte [] sig1 = {(byte)0x49, (byte)0x49, 42,  0};
+    static final byte [] sig2 = {(byte)0x4D, (byte)0x4D,  0, 42};
 
-    static final byte [] signature = {(byte)0x89, 80, 78, 71, 13, 10, 26, 10};
+    static MagicNumberRegistryEntry.MagicNumber [] magicNumbers = {
+        new MagicNumberRegistryEntry.MagicNumber(0, sig1),
+        new MagicNumberRegistryEntry.MagicNumber(0, sig2) };
 
-    public PNGRegistryEntry() {
-        super("PNG", "png", 0, signature);
+
+    public TIFFRegistryEntry() {
+        super("TIFF", "tiff", magicNumbers);
     }
 
     /**
@@ -55,26 +61,20 @@ public class PNGRegistryEntry
         final Object []   errParam;
         if (origURL != null) {
             errCode  = ERR_URL_FORMAT_UNREADABLE;
-            errParam = new Object[] {"PNG", origURL};
+            errParam = new Object[] {"TIFF", origURL};
         } else {
             errCode  = ERR_STREAM_FORMAT_UNREADABLE;
-            errParam = new Object[] {"PNG"};
+            errParam = new Object[] {"TIFF"};
         }
 
         Thread t = new Thread() {
                 public void run() {
                     Filter filt;
                     try {
-                        PNGDecodeParam param = new PNGDecodeParam();
-                        param.setExpandPalette(true);
-                        
-                        if (raw) 
-                            param.setPerformGammaCorrection(false);
-                        else {
-                            param.setPerformGammaCorrection(true);
-                            param.setDisplayExponent(2.4f); // sRGB gamma
-                        }
-                        CachableRed cr = new PNGRed(is, param);
+                        TIFFDecodeParam param = new TIFFDecodeParam();
+                        SeekableStream ss = 
+                            SeekableStream.wrapInputStream(is, true);
+                        CachableRed cr = new TIFFImage(ss, param, 0);
                         cr = new Any2sRGBRed(cr);
                         filt = new RedRable(cr);
                     } catch (IOException ioe) {

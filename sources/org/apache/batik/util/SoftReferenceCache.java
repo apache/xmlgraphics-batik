@@ -211,6 +211,7 @@ public class SoftReferenceCache {
                     }
                 }
             };
+        cleanup.setDaemon(true);
         cleanup.start();
     }
 

@@ -201,6 +201,15 @@ public class Any2sRGBRed extends AbstractRed {
             Raster         srcRas = src.getData(wr.getBounds());
             WritableRaster srcWr  = (WritableRaster)srcRas;
 
+            ColorModel dstCM = getColorModel();
+
+            if (srcCM.getColorSpace() == dstCM.getColorSpace()) {
+                // No transform needed, just reformat data...
+                // System.out.println("Bypassing");
+                GraphicsUtil.copyData(srcRas, wr);
+                return wr;
+            }
+
             // Divide out alpha if we have it.  We need to do this since
             // the color convert may not be a linear operation which may 
             // lead to out of range values.
@@ -214,49 +223,18 @@ public class Any2sRGBRed extends AbstractRed {
                                       false, 
                                       null);
 
-            ColorModel dstCM = getColorModel();
-            if (!dstCM.hasAlpha()) {
-                // No alpha ao we don't have to work around the bug
-                // in the color convert op.
-                dstBI = new BufferedImage
-                    (dstCM, wr.createWritableTranslatedChild(0,0),
-                     dstCM.isAlphaPremultiplied(), null);
-            } else {
-                // All this nonsense is to work around the fact that
-                // the Color convert op doesn't properly copy the
-                // Alpha from src to dst.
-                SinglePixelPackedSampleModel dstSM;
-                dstSM = (SinglePixelPackedSampleModel)wr.getSampleModel();
-                int [] masks = dstSM.getBitMasks();
-                SampleModel dstSMNoA = new SinglePixelPackedSampleModel
-                    (dstSM.getDataType(), dstSM.getWidth(), dstSM.getHeight(), 
-                     dstSM.getScanlineStride(), 
-                     new int[] {masks[0], masks[1], masks[2]});
-                ColorModel dstCMNoA = GraphicsUtil.sRGB;
+            // System.out.println("src: " + srcBI.getWidth() + "x" + 
+            //                    srcBI.getHeight());
 
-                WritableRaster dstWr;
-                dstWr = Raster.createWritableRaster(dstSMNoA,
-                                                    wr.getDataBuffer(),
-                                                    new Point(0,0));
-                dstWr = dstWr.createWritableChild
-                    (wr.getMinX()-wr.getSampleModelTranslateX(),
-                     wr.getMinY()-wr.getSampleModelTranslateY(),
-                     wr.getWidth(), wr.getHeight(),
-                     0, 0, null);
+            ColorConvertOp op = new ColorConvertOp(dstCM.getColorSpace(), 
+                                                   null);
+            dstBI = op.filter(srcBI, null);
+
+            // System.out.println("After filter:");
+            
+            for (int i=0; i<dstCM.getColorSpace().getNumComponents(); i++)
+                copyBand(dstBI.getRaster(), i, wr,    i);
                 
-                dstBI = new BufferedImage(dstCMNoA, dstWr, false, null);
-            }
-
-            /*
-             * System.out.println("src: " + srcBI.getWidth() + "x" + 
-             *                    srcBI.getHeight());
-             * System.out.println("dst: " + dstBI.getWidth() + "x" + 
-             *                    dstBI.getHeight());
-             */
-
-            ColorConvertOp op = new ColorConvertOp(null);
-            op.filter(srcBI, dstBI);
-
             if (dstCM.hasAlpha())
                 copyBand(srcWr, srcSM.getNumBands()-1,
                          wr,    getSampleModel().getNumBands()-1);

@@ -213,6 +213,7 @@ public class ImageTagRegistry implements ErrorConstants {
         registry = new ImageTagRegistry();
 
         registry.register(new PNGRegistryEntry());
+        registry.register(new TIFFRegistryEntry());
         registry.register(new JPEGRegistryEntry());
         registry.register(new JDKRegistryEntry());
 

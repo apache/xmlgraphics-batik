@@ -151,6 +151,7 @@ public class TileMap implements TileStore {
                     }
                 }
             };
+        cleanup.setDaemon(true);
         cleanup.start();
     }
 

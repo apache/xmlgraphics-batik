@@ -9,29 +9,37 @@
 package org.apache.batik.transcoder.image;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
+import java.awt.image.PixelInterleavedSampleModel;
+import java.awt.image.RenderedImage;
+import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.resources.Messages;
-import org.apache.batik.ext.awt.image.codec.PNGEncodeParam;
-import org.apache.batik.ext.awt.image.codec.PNGImageEncoder;
+import org.apache.batik.ext.awt.image.codec.tiff.TIFFEncodeParam;
+import org.apache.batik.ext.awt.image.codec.tiff.TIFFImageEncoder;
+import org.apache.batik.ext.awt.image.rendered.FormatRed;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+
 
 /**
- * This class is an <tt>ImageTranscoder</tt> that produces a PNG image.
+ * This class is an <tt>ImageTranscoder</tt> that produces a TIFF image.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class PNGTranscoder extends ImageTranscoder {
+public class TIFFTranscoder extends ImageTranscoder {
 
     /**
-     * Constructs a new transcoder that produces png images.
+     * Constructs a new transcoder that produces tiff images.
      */
-    public PNGTranscoder() { }
+    public TIFFTranscoder() { }
 
     /**
      * Creates a new ARGB image with the specified dimension.
@@ -54,13 +62,9 @@ public class PNGTranscoder extends ImageTranscoder {
         OutputStream ostream = output.getOutputStream();
         if (ostream == null) {
             throw new TranscoderException(
-                Messages.formatMessage("png.badoutput", null));
+                Messages.formatMessage("tiff.badoutput", null));
         }
-        PNGEncodeParam.RGB params =
-            (PNGEncodeParam.RGB)PNGEncodeParam.getDefaultEncodeParam(img);
-        params.setBackgroundRGB(new int [] { 255, 255, 255 });
-        // We are using sRGB (gamma 2.4).
-        params.setGamma(2.4f);
+        TIFFEncodeParam params = new TIFFEncodeParam();
 
         //
         // This is a trick so that viewers which do not support
@@ -69,7 +73,9 @@ public class PNGTranscoder extends ImageTranscoder {
         //
         int w = img.getWidth(), h = img.getHeight();
         DataBufferInt biDB = (DataBufferInt)img.getRaster().getDataBuffer();
-        int scanStride = ((SinglePixelPackedSampleModel)img.getSampleModel()).getScanlineStride();
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)img.getSampleModel();
+        int scanStride = sppsm.getScanlineStride();
         int dbOffset = biDB.getOffset();
         int pixels[] = biDB.getBankData()[0];
         int p = dbOffset;
@@ -94,8 +100,17 @@ public class PNGTranscoder extends ImageTranscoder {
             p += adjust;
         }
         try {
-            PNGImageEncoder pngEncoder = new PNGImageEncoder(ostream, params);
-            pngEncoder.encode(img);
+            TIFFImageEncoder tiffEncoder = 
+                new TIFFImageEncoder(ostream, params);
+            int bands = sppsm.getNumBands();
+            int [] off = new int[bands];
+            for (int i=0; i<bands; i++)
+                off[i] = i;
+            SampleModel sm = new PixelInterleavedSampleModel
+                (DataBuffer.TYPE_BYTE, w, h, bands, w*bands, off);
+            
+            RenderedImage rimg = new FormatRed(GraphicsUtil.wrap(img), sm);
+            tiffEncoder.encode(rimg);
         } catch (IOException ex) {
             throw new TranscoderException(ex);
         }
