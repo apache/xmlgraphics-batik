@@ -14,7 +14,8 @@ import org.apache.batik.test.TestReport;
 
 import java.io.StringWriter;
 import java.io.PrintWriter;
-
+import java.io.InputStream;
+import java.io.IOException;
 /**
  * This test validates that the ParsedURL class properly parses and
  * cascades URLs.
@@ -22,7 +23,7 @@ import java.io.PrintWriter;
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
-public class ParsedURLTest extends AbstractTest {
+public class ParsedURLDataTest extends AbstractTest {
     /**
      * Error when unable to parse URL
      * {0} = 'Base URL' or NULL
@@ -44,27 +45,14 @@ public class ParsedURLTest extends AbstractTest {
         = "ParsedURLTest.entry.key.error.description";
 
     protected String base = null;
-    protected String sub  = null;
     protected String ref  = null;
     /**
      * Constructor
      * @param url The url to parse
      * @param ref The expected result.
      */
-    public ParsedURLTest(String url, String ref ){
+    public ParsedURLDataTest(String url, String ref ){
         this.base = url;
-        this.ref  = ref;
-    }
-
-    /**
-     * Constructor
-     * @param base The base url to parse
-     * @param sub The sub url (relative to base).
-     * @param ref The expected result.
-     */
-    public ParsedURLTest(String base, String sub, String ref){
-        this.base = base;
-        this.sub  = sub;
         this.ref  = ref;
     }
 
@@ -83,12 +71,9 @@ public class ParsedURLTest extends AbstractTest {
         DefaultTestReport report
             = new DefaultTestReport(this);
 
-        ParsedURL url;
+        ParsedURL purl;
         try {
-            url = new ParsedURL(base);
-            if (sub != null) {
-                url  = new ParsedURL(url, sub);
-            }
+            purl  = new ParsedURL(base);
         } catch(Exception e) {
             StringWriter trace = new StringWriter();
             e.printStackTrace(new PrintWriter(trace));
@@ -98,15 +83,37 @@ public class ParsedURLTest extends AbstractTest {
                     (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
                      Messages.formatMessage
                      (ERROR_CANNOT_PARSE_URL,
-                      new String[]{base, 
-                                   (sub == null) ? "null" : sub,
+                      new String[]{"null", 
+                                   base,
                                    trace.toString()}))
                     });
             report.setPassed(false);
             return report;
         }
 
-        if (ref.equals(url.toString())) {
+        byte[] data = new byte[5];
+        int num = 0;
+        try {
+            InputStream is = purl.openStream();
+            num = is.read(data);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        StringBuffer sb = new StringBuffer();
+        for (int i=0; i<num; i++) {
+            int val = ((int)data[i])&0xFF;
+            if (val < 16) {
+                sb.append("0");
+            }
+            sb.append(Integer.toHexString(val) + " ");
+        }
+        
+        String info = ( "CT: " + purl.getContentType() + 
+                       " CE: " + purl.getContentEncoding() + 
+                       " DATA: " + sb +
+                       "URL: " + purl);
+
+        if (ref.equals(info)) {
             report.setPassed(true);
             return report;
         }
@@ -116,7 +123,7 @@ public class ParsedURLTest extends AbstractTest {
           new TestReport.Entry
             (Messages.formatMessage(ENTRY_KEY_ERROR_DESCRIPTION, null),
              Messages.formatMessage
-             (ERROR_WRONG_RESULT, new String[]{url.toString(), ref }))
+             (ERROR_WRONG_RESULT, new String[]{info, ref }))
             });
         report.setPassed(false);
         return report;

@@ -330,7 +330,7 @@ public class ParsedURL {
      * for some protocols.
      */
     public String getContentType() {
-        return data.getContentType();
+        return data.getContentType(userAgent);
     }
 
     /**
@@ -338,7 +338,7 @@ public class ParsedURL {
      * for some protocols.
      */
     public String getContentEncoding() {
-        return data.getContentEncoding();
+        return data.getContentEncoding(userAgent);
     }
 
     /**

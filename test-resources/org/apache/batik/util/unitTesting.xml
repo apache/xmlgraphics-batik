@@ -305,4 +305,52 @@
              value="jar:file:dir/file.jar!/b/a/t/i/k/new.svg#bar" />
     </test>
 
+    <test id="ParsedURLData.1" class="org.apache.batik.util.ParsedURLDataTest">
+        <!-- Test basic image base 64 data -->
+        <arg class="java.lang.String" 
+             value="data:image/png;base64,R0lGODdhMAAw" />
+        <arg class="java.lang.String" 
+             value="CT: image/png CE: base64 DATA: 47 49 46 38 37 URL: data:image/png;base64,R0lGODdhMAAw" />
+    </test>
+
+    <test id="ParsedURLData.2" class="org.apache.batik.util.ParsedURLDataTest">
+        <!-- Test text encoded as base 64 data -->
+        <arg class="java.lang.String" 
+             value="data:text/plain;charset=US-ASCII;base64,R0lGODdhMAAw" />
+        <arg class="java.lang.String" 
+             value="CT: text/plain;charset=US-ASCII CE: base64 DATA: 47 49 46 38 37 URL: data:text/plain;charset=US-ASCII;base64,R0lGODdhMAAw" />
+    </test>
+
+    <test id="ParsedURLData.3" class="org.apache.batik.util.ParsedURLDataTest">
+        <!-- Test basic image base 64 data -->
+        <arg class="java.lang.String" 
+             value="data:image/gif;base64,R0lGODdhMAAw" />
+        <arg class="java.lang.String" 
+             value="CT: image/gif CE: base64 DATA: 47 49 46 38 37 URL: data:image/gif;base64,R0lGODdhMAAw" />
+    </test>
+
+    <test id="ParsedURLData.4" class="org.apache.batik.util.ParsedURLDataTest">
+        <!-- Test text using octect encoding. -->
+        <arg class="java.lang.String" 
+             value="data:text/plain;charset=iso-8859-7,%be%fb%be" />
+        <arg class="java.lang.String" 
+             value="CT: text/plain;charset=iso-8859-7 CE: null DATA: be fb be URL: data:text/plain;charset=iso-8859-7,%be%fb%be" />
+    </test>
+
+    <test id="ParsedURLData.5" class="org.apache.batik.util.ParsedURLDataTest">
+        <!-- Test Minimalest data url -->
+        <arg class="java.lang.String" 
+             value="data:,A%20brief%20note" />
+        <arg class="java.lang.String" 
+             value="CT: null CE: null DATA: 2c 41 20 62 72 URL: data:,,A%20brief%20note" />
+    </test>
+
+    <test id="ParsedURLData.6" class="org.apache.batik.util.ParsedURLDataTest">
+        <!-- Test tricky data url -->
+        <arg class="java.lang.String" 
+             value="data:;=;,A%20brief%20note" />
+        <arg class="java.lang.String" 
+             value="CT: ;= CE:  DATA: 41 20 62 72 69 URL: data:;=;,A%20brief%20note" />
+    </test>
+
 </testSuite>
