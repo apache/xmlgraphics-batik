@@ -1,0 +1,4 @@
+Manifest-Version: $Id$
+Main-Class: org.apache.batik.apps.ttf2svg.Main
+Class-Path: lib/batik-svggen.jar \
+            lib/batik-util.jar

@@ -126,9 +126,11 @@ To display the available targets type:
     <echo message="   svgbrowser    --> runs the SVG browser"/>
     <echo message="   svgrasterizer --> runs the SVG rasterizer"/>
     <echo message="   svgpp         --> runs the SVG pretty-printer"/>
-    <echo message="   ttf2svg       --> converts selected glyphs from a True Type Font file to the SVG Font format"/>
+    <echo message="   ttf2svg       --> converts selected glyphs from a True Type"/>
+    <echo message="                     Font file to the SVG Font format"/>
     <echo message="   regard        --> runs the regard regression utility"/>
-    <echo message="   runtestsuite  --> runs a TestSuite, given an XML test suite document" />
+    <echo message="   runtestsuite  --> runs a TestSuite, given an XML test suite"/>
+    <echo message="                     document"/>
     <echo message="   javadoc       --> generates the API documentation"/>
     <echo message="   site          --> generates the site documentation"/>
     <echo message="   sitedoc       --> generates the site documentation without"/>
@@ -269,7 +271,8 @@ To display the available targets type:
                                svg-pp-jar,
                                svggen-jar,
                                svg-browser-jar,
-                               rasterizer-jar">
+                               rasterizer-jar,
+                               ttf2svg-jar">
     <copy todir="${build}/lib">
       <fileset dir="${lib}">
         <include name="*.jar"/>
@@ -281,10 +284,10 @@ To display the available targets type:
   <!-- All batik in a single jar (dependencies: none) -->
   <target name="all-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-all.jar">
-      <fileset dir="${dest}">
+      <fileset dir="${dest}" excludes="**/CVS">
         <include name="**"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="**"/>
       </fileset>
     </jar>
@@ -313,7 +316,7 @@ To display the available targets type:
         <include name="${package-prefix}/util/*.class"/>
         <include name="${package-prefix}/xml/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/bridge/**"/>
         <include name="${package-prefix}/css/**"/>
         <include name="${package-prefix}/dom/**"/>
@@ -349,7 +352,7 @@ To display the available targets type:
         <include name="${package-prefix}/util/resources/*.class"/>
         <include name="${package-prefix}/util/svg/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/util/resources/**"/>
         <include name="${package-prefix}/util/svg/resources/**"/>
       </fileset>
@@ -362,16 +365,24 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-awt-util.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/ext/awt/**/*.class"/>
+        <include name="${package-prefix}/ext/swing/**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+        <include name="${package-prefix}/ext/awt/image/**"/>
+        <include name="${package-prefix}/ext/swing/**"/>
       </fileset>
     </jar>
   </target>
 
 
-  <!-- SVGGraphics2D (dependencies: util) -->
+  <!-- SVGGraphics2D (dependencies: util, awt-util) -->
   <target name="svggen-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-svggen.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/svggen/**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
+        <include name="${package-prefix}/svggen/font/resources/**"/>
       </fileset>
     </jar>
   </target>
@@ -383,7 +394,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/util/gui/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/util/gui/**/resources/**"/>
       </fileset>
     </jar>
@@ -399,7 +410,7 @@ To display the available targets type:
         <include name="${package-prefix}/dom/traversal/*.class"/>
         <include name="${package-prefix}/dom/util/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/dom/resources/*"/>
         <include name="${package-prefix}/dom/events/resources/**"/>
         <include name="${package-prefix}/dom/traversal/resources/**"/>
@@ -419,7 +430,7 @@ To display the available targets type:
         <include name="${package-prefix}/css/sac/*.class"/>
         <include name="${package-prefix}/css/value/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/css/resources/**"/>
         <include name="${package-prefix}/css/event/resources/**"/>
         <include name="${package-prefix}/css/parser/resources/**"/>
@@ -436,7 +447,7 @@ To display the available targets type:
         <include name="${package-prefix}/dom/svg/*.class"/>
         <include name="${package-prefix}/css/svg/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/dom/svg/resources/**"/>
         <include name="${package-prefix}/css/svg/resources/**"/>
       </fileset>
@@ -450,7 +461,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/gvt/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/gvt/**/resources/*"/>
       </fileset>
     </jar>
@@ -463,7 +474,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/parser/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/parser/**/resources/*"/>
       </fileset>
     </jar>
@@ -476,7 +487,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/script/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/script/**/resources/*"/>
       </fileset>
     </jar>
@@ -489,7 +500,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/transcoder/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/transcoder/**/resources/*"/>
       </fileset>
     </jar>
@@ -502,7 +513,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/xml/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/xml/**/resources/*"/>
       </fileset>
     </jar>
@@ -516,7 +527,7 @@ To display the available targets type:
         <include name="${package-prefix}/bridge/**/*.class"/>
         <include name="${package-prefix}/swing/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/bridge/**/resources/*"/>
         <include name="${package-prefix}/swing/**/resources/*"/>
       </fileset>
@@ -530,7 +541,7 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/svgpp/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/apps/svgpp/**/resources/**"/>
       </fileset>
     </jar>
@@ -544,7 +555,7 @@ To display the available targets type:
         <include name="${package-prefix}/apps/svgbrowser/**/*.class"/>
         <include name="${package-prefix}/experiment/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/apps/svgbrowser/**/resources/**"/>
       </fileset>
     </jar>
@@ -558,8 +569,18 @@ To display the available targets type:
       <fileset dir="${dest}">
         <include name="${package-prefix}/apps/rasterizer/**/*.class"/>
       </fileset>
-      <fileset dir="${resources}">
+      <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/apps/rasterizer/**/resources/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <!-- batik-ttf2svg.jar (dependencies: all) -->
+  <target name="ttf2svg-jar" depends="compile, prepare-build">
+    <jar manifest="${src}/${project}-ttf2svg.mf"
+         jarfile="${build}/${project}-ttf2svg.jar">
+      <fileset dir="${dest}">
+        <include name="${package-prefix}/apps/ttf2svg/**/*.class"/>
       </fileset>
     </jar>
   </target>
