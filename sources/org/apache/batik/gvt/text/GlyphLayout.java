@@ -15,10 +15,11 @@ import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.awt.font.FontRenderContext;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 
@@ -253,9 +254,15 @@ public class GlyphLayout implements TextSpanLayout {
             beginCharIndex = endCharIndex;
             endCharIndex = temp;
         }
-        Shape shape = null;
+        GeneralPath shape = null;
         int currentChar = aci.getBeginIndex();
         int numGlyphs = getGlyphCount();
+
+        Point2D.Float [] topPts = new Point2D.Float[2*numGlyphs];
+        Point2D.Float [] botPts = new Point2D.Float[2*numGlyphs];
+
+        int ptIdx = 0;
+
         for (int i = 0; i < numGlyphs; i++) {
             aci.setIndex(currentChar);
             int glyphCharIndex = ((Integer)aci.getAttribute(
@@ -263,17 +270,83 @@ public class GlyphLayout implements TextSpanLayout {
             if (glyphCharIndex >= beginCharIndex && glyphCharIndex <= endCharIndex) {
                 Shape gbounds = gv.getGlyphLogicalBounds(i);
                 if (gbounds != null) {
-                    if (shape == null) {
-                        shape = new GeneralPath(gbounds);
+                    // We got something...
+                    if (shape == null)
+                        shape = new GeneralPath();
+
+                    // We are pretty dumb here we assume that we always
+                    // get back polygons with four sides to them if
+                    // isn't met we are SOL.
+                    float [] pts = new float[6];
+                    int count = 0;
+                    int type = -1;
+
+                    PathIterator pi = gbounds.getPathIterator(null);
+                    while (!pi.isDone()) {
+                        type = pi.currentSegment(pts);
+                        if ((type == PathIterator.SEG_MOVETO) ||
+                            (type == PathIterator.SEG_LINETO)) {
+                            // LINETO or MOVETO
+                            if (count > 4) break; // too many lines...
+                            if (count == 4) {
+                                // make sure we are just closing it..
+                                if ((topPts[ptIdx].x != pts[0]) ||
+                                    (topPts[ptIdx].y != pts[1]))
+                                    break;
+                            } else {
+                                Point2D.Float pt;
+                                pt = new Point2D.Float(pts[0], pts[1]);
+                                switch (count) {
+                                case 0: topPts[ptIdx]   = pt; break;
+                                case 1: topPts[ptIdx+1] = pt; break;
+                                case 2: botPts[ptIdx+1] = pt; break;
+                                case 3: botPts[ptIdx]   = pt; break;
+                                }
+                            }
+                        } else if (type == PathIterator.SEG_CLOSE) {
+                                // Close in the wrong spot?
+                            if ((count < 4) || (count > 5)) break;
+                        } else {
+                            // QUADTO or CUBETO
+                            break;
+                        }
+
+                        count++;
+                        pi.next();
+                    }
+                    if (pi.isDone()) {
+                        // Sucessfully Expressed as a quadralateral...
+                        if ((topPts[ptIdx].x != topPts[ptIdx+1].x) ||
+                            (topPts[ptIdx].y != topPts[ptIdx+1].y))
+                            // box isn't empty so use it's points...
+                            ptIdx += 2;
                     } else {
-                        ((GeneralPath) shape).append(gbounds, false);
+                        // System.out.println("Type: " + type +
+                        //                    " count: " + count);
+                        shape.moveTo(topPts[0].x, topPts[0].y);
+                        for (int j=1; j<ptIdx; j++) 
+                            shape.lineTo(topPts[j].x, topPts[j].y);
+                        for (int j=ptIdx-1; j>=0; j--) 
+                            shape.lineTo(botPts[j].x, botPts[j].y);
+                        shape.closePath();
+                        ptIdx = 0;
+                        shape.append(gbounds, false);
                     }
                 }
             }
             currentChar += getCharacterCount(i, i);
         }
-        if (transform != null && shape != null) {
-            shape = transform.createTransformedShape(shape);
+        if (ptIdx != 0) {
+            shape.moveTo(topPts[0].x, topPts[0].y);
+            for (int i=1; i<ptIdx; i++) 
+                shape.lineTo(topPts[i].x, topPts[i].y);
+            for (int i=ptIdx-1; i>=0; i--) 
+                shape.lineTo(botPts[i].x, botPts[i].y);
+            shape.closePath();
+        }
+
+        if (transform != null) {
+            return transform.createTransformedShape(shape);
         }
         return shape;
     }
