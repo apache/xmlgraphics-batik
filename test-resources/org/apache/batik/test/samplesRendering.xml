@@ -579,6 +579,12 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/text-rendering.png" />
     </test>
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/text-rendering2.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/text-rendering2.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/text-rendering2.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/text-rendering2.png" />
+    </test>
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/textBiDi.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/textBiDi.png" />
         <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/textBiDi.png" />
