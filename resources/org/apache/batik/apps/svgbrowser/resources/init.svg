@@ -10,12 +10,6 @@
 <svg width="100" height="100" viewBox="0 0 100 100">
 
     <defs>
-        <pattern id="backgroundPattern" patternUnits="userSpaceOnUse"
-                 x="0" y="0" width="20" height="10" style="overflow:hidden">
-            <rect x="0" y="0" width="10" height="10" fill="rgb(110, 200, 255)" fill-opacity=".5" />
-            <rect x="0" y="-5" width="8" height="20" fill="none" stroke="rgb(204, 102, 53)" stroke-width="1"/>
-        </pattern>
-
         <g id="batik">
 		<path id="Batik_B" d="M50.037,12.141l0.463,3.236c0,1.465-0.039,2.484-0.115,3.063s-0.344,1.213-0.803,1.906l-1.834,3.234l-2.521,3.814c4.395,6.24,7.326,10.824,8.791,13.75l3.008,6.355l1.967,6.701c0.848,3.16,1.271,6.279,1.271,9.361
 			c0,5.008-0.869,9.57-2.604,13.691s-4.145,7.453-7.229,9.996c-3.086,2.543-6.998,4.449-11.74,5.719s-9.543,1.906-14.4,1.906c-3.855,0-7.096-0.27-9.717-0.809c-3.238-0.461-5.688-1.193-7.346-2.195c-1.658-1-3.123-2.195-4.395-3.582
@@ -33,7 +27,12 @@
         <filter id="innerShadow" filterRes="500" x="-.2" y="0">
             <feGaussianBlur stdDeviation="3 4" in="SourceAlpha"/>
             <feOffset dx="-10" dy="15" result="offsetShadow"/>
-            <feComposite in2="SourceGraphic" in="offsetShadow" operator="out" />
+            <feSpecularLighting in="offsetShadow" surfaceScale="-3" 
+                specularConstant="1" specularExponent="20" 
+                lighting-color="white"  result="light" kernelUnitLength="1" >
+                <feDistantLight azimuth="45" elevation="60" />
+	    </feSpecularLighting>
+            <feComposite in2="SourceGraphic" in="light" operator="out" />
         </filter>
 
 
@@ -61,7 +60,6 @@
     <g fill="rgb(255, 255, 20)">
         <circle cx="50" cy="50" r="50"/>
     </g>
-    <rect x="0" y="0" width="100%" height="100%" style="overflow:hidden; fill:url(#backgroundPattern)" />
 
     <g filter="url(#innerShadow)" opacity=".5">
         <use xlink:href="#Outer_Ellipse" fill-opacity="1"/>
