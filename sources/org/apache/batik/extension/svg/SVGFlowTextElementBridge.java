@@ -345,7 +345,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             Element e = (Element)n;
 
             String ln = n.getLocalName();
-            if (ln.equals(BATIK_EXT_FLOW_REGION_TAG)) {
+            if (ln.equals(BATIK_EXT_FLOW_LAYOUT_TAG)) {
                 return gatherRects(ctx, e);
             }
         }
@@ -361,7 +361,7 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             Element e = (Element)n;
 
             String ln = n.getLocalName();
-            if (ln.equals(BATIK_EXT_REGION_TAG)) {
+            if (ln.equals(BATIK_EXT_FLOW_REGION_TAG)) {
                 UnitProcessor.Context uctx;
                 uctx = UnitProcessor.createContext(ctx, e);
                 Rectangle2D r2d = buildRect(uctx, e);
