@@ -226,9 +226,7 @@ public class ShapeNode extends AbstractGraphicsNode {
             if (b == null || !b.contains(p))
                 return false;
 
-            Shape s = getSensitiveArea();
-            if (s == null)  return false;
-            return s.contains(p);
+            return inSensitiveArea(p);
         }
         case NONE:
         default:
@@ -273,6 +271,56 @@ public class ShapeNode extends AbstractGraphicsNode {
             }
         }
         return primitiveBounds;
+    }
+
+    public boolean inSensitiveArea(Point2D pt) {
+        if (shapePainter == null)
+            return false;
+
+        // <!> NOT REALLY NICE CODE BUT NO OTHER WAY
+        ShapePainter strokeShapePainter = null;
+        ShapePainter fillShapePainter = null;
+        if (shapePainter instanceof StrokeShapePainter) {
+            strokeShapePainter = shapePainter;
+        } else if (shapePainter instanceof FillShapePainter) {
+            fillShapePainter = shapePainter;
+        } else if (shapePainter instanceof CompositeShapePainter) {
+            CompositeShapePainter cp = (CompositeShapePainter)shapePainter;
+
+            for (int i=0; i < cp.getShapePainterCount(); ++i) {
+                ShapePainter sp = cp.getShapePainter(i);
+                if (sp instanceof StrokeShapePainter) {
+                    strokeShapePainter = sp;
+                } else if (sp instanceof FillShapePainter) {
+                    fillShapePainter = sp;
+                }
+            }
+        } else {
+            return false; // Don't know what we have...
+        }
+
+        switch(pointerEventType) {
+        case VISIBLE_PAINTED:
+        case PAINTED:
+            return shapePainter.inPaintedArea(pt);
+        case VISIBLE:
+        case ALL:
+            return shapePainter.inSensitiveArea(pt);
+        case VISIBLE_FILL:
+        case FILL:
+            if (fillShapePainter != null)
+                return fillShapePainter.inSensitiveArea(pt);
+            break;
+        case VISIBLE_STROKE:
+        case STROKE:
+            if (strokeShapePainter != null)
+                return strokeShapePainter.inSensitiveArea(pt);
+            break;
+        case NONE:
+        default:
+            // nothing to tdo
+        }
+        return false;
     }
 
     /**

@@ -54,6 +54,7 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Point2D;
 
 /**
  * A shape painter that can be used to fill a shape.
@@ -128,6 +129,16 @@ public class FillShapePainter implements ShapePainter {
     }
 
     /**
+     * Returns true if pt is in the area painted by this shape painter
+     */
+    public boolean inPaintedArea(Point2D pt){
+        if ((paint == null) || (shape == null))
+            return  false;
+
+        return shape.contains(pt);
+    }
+
+    /**
      * Returns the area covered by this shape painter (even if not painted).
      * 
      */
@@ -143,6 +154,15 @@ public class FillShapePainter implements ShapePainter {
         if (shape == null)
             return  null;
         return shape.getBounds2D();
+    }
+
+    /**
+     * Returns true if pt is in the area painted by this shape painter
+     */
+    public boolean inSensitiveArea(Point2D pt){
+        if (shape == null)
+            return  false;
+        return shape.contains(pt);
     }
 
     /**

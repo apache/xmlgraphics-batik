@@ -170,12 +170,21 @@ public class MarkerShapePainter implements ShapePainter {
      * Returns the bounds of the area painted by this shape painter
      */
     public Rectangle2D getPaintedBounds2D(){
-        Shape shape = getPaintedArea();
-        if (shape != null){
-            return shape.getBounds2D();
-        } else {
-            return null;
-        }
+	 if (markerGroup == null) {
+	     buildMarkerGroup();
+	 }
+         return markerGroup.getPrimitiveBounds();
+    }
+
+    /**
+     * Returns true if pt is in the area painted by this shape painter
+     */
+    public boolean inPaintedArea(Point2D pt){
+	 if (markerGroup == null) {
+	     buildMarkerGroup();
+	 }
+         GraphicsNode gn = markerGroup.nodeHitAt(pt);
+         return (gn != null);
     }
 
     /**
@@ -189,6 +198,13 @@ public class MarkerShapePainter implements ShapePainter {
      * (even if not painted). This is always null for Markers.
      */
     public Rectangle2D getSensitiveBounds2D() { return null; }
+
+    /**
+     * Returns true if pt is in the sensitive area.
+     * This is always false for Markers.
+     */
+    public boolean inSensitiveArea(Point2D pt) { return false; }
+
 
     /**
      * Sets the Shape this shape painter is associated with.
