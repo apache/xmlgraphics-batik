@@ -1,242 +1,449 @@
-<!--                                                             -->
-<!--         Ant project file for the Batik project              -->
-<!--         ______________________________________              -->
-<!--                                                             -->
-<!--                          by                                 -->
-<!--                                                             -->
-<!--           Stephane Hillion and Thierry Kormann              -->
-<!--                                                             -->
-
-<project default="build" basedir=".">
-  <!-- The main target: build the distribution -->
-  <target name="build" depends="compile, javadoc"/>
+<!-- ===========================================================================
 
 
-  <!-- Help on usage -->
-  <target name="usage">
-    <echo message=""/>
-    <echo message=""/>
-    <echo message="${project} build file"/>
-    <echo message="-------------------------------------------------------------"/>
-    <echo message=""/>
-    <echo message=" available targets are:"/>
-    <echo message=""/>
-    <echo message="   compile      --> compiles the source code"/>
-    <echo message="   javadoc      --> generates the API documentation"/>
-    <echo message="   clean        --> cleans up the directory"/>
-    <echo message=""/>
-    <echo message=" See the comments inside the build.xml file for more details."/>
-    <echo message="-------------------------------------------------------------"/>
-    <echo message=""/>
-    <echo message=""/>
-  </target>
+                       * ========================== *
+                       |  Apache Batik Build System |
+                       * ========================== *
 
-  <!-- Initialization target -->
+
+Installing the build tools
+==========================
+
+The Batik build system is based on Apache Ant, which is a Java building tool
+originally developed for the Tomcat project but now used in many other
+Apache projects and extended by many developers.
+
+Ant is a little but very handy tool that uses a build file written in XML
+(this file) as building instructions. For more information refer to
+"http://jakarta.apache.org/ant/".
+
+To make things easier for you, the distribution contains a precompiled
+version of Ant and the build scripts take care of running it.
+
+The only thing that you have to make sure, is the "JAVA_HOME" environment
+property should be set to match the JVM you want to use. 
+
+That's all you have to do to be ready to go.
+
+
+Building instructions
+=====================
+
+Ok, let's build the baby. First, make sure your current working directory is
+where this very file is located. Then type
+
+  ./build.sh (unix)
+  .\build.bat (win32)
+
+if everything is right and all the required packages are visible, this action
+will generate a file called "batik.jar" in the "./build/batik" directory.
+Note, that if you do further development, compilation time is reduced since
+Ant is able of detecting which files have changed and to recompile them at need.
+
+Also, you'll note that reusing a single JVM instance for each task, increases
+tremendously the performance of the whole build system, compared to other
+tools (i.e. make or shell scripts) where a new JVM is started for each task.
+
+
+Building on another directory
+=============================
+
+Sometimes you might want to build on an external directory to keep the 
+distribution clean: no worries, this is just an environment property away.
+Suppose you want to use the "../build" directory instead, you simply tipe
+
+ [unix]  ./build.sh  -Dbuild.root=../build
+ [win32] .\build.bat -Dbuild.root=..\build
+
+By using the -Dxxx=yyy argument, you are setting environments in the JVM: Ant
+is designed to give higher priority to system environments to allow you to
+modify _any_ <property> that you can find in the building instructions below,
+so it's just a matter of understanding what property you want to change
+and you don't have to touch this file (which you shouldn't need to do).
+
+
+Build targets
+=============
+
+The build system is not only responsible of code compilation,
+but is also responsible for creating the HTML documentation, javadocs,
+distributions and web site. In fact, the file you have here is _exactly_ what
+is used by project maintainers to take care of everything in this project, 
+no less and no more.
+
+To know more about the available targets take a look at this file, which is
+pretty self-explanatory or type
+
+ [unix]  ./build.sh  -projecthelp
+ [win32] .\build.bat -projecthelp
+ 
+and concentrate on the target descriptions that start with a star '*': these
+are the one you should call, the others are internal targets that are called
+by the main ones.
+
+                              Happy hacking from the Apache Batik Dev Team :)
+
+============================================================================ -->
+
+<project default="package" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization targets                                              -->
+  <!-- =================================================================== -->
+
+  <path id="classpath">
+    <fileset dir="./lib">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
   <target name="init">
     <tstamp/>
-    <property name="project"       value="batik"/>
-    <property name="version"       value="1.0b1"/>
-    <property name="jdoc"          value="docs/javadoc"/>
-    <property name="src"           value="sources"/>
-    <property name="dest"          value="classes"/>
-    <property name="res"           value="resources"/>
-    <property name="class-prefix"  value="org.apache.${project}"/>
-    <property name="source-prefix" value="org/apache/${project}"/>
-    <property name="packages"      value="
-		      ${class-prefix}.apps.svgviewer,
-		      ${class-prefix}.bridge,
-		      ${class-prefix}.css,
-		      ${class-prefix}.css.event,
-		      ${class-prefix}.css.sac,
-		      ${class-prefix}.css.svg,
-		      ${class-prefix}.css.value,
-		      ${class-prefix}.dom,
-		      ${class-prefix}.dom.events,
-		      ${class-prefix}.dom.svg,
-		      ${class-prefix}.dom.util,
-		      ${class-prefix}.gvt,
-		      ${class-prefix}.gvt.event,
-		      ${class-prefix}.gvt.filter,
-		      ${class-prefix}.gvt.renderer,
-		      ${class-prefix}.gvt.text,
-		      ${class-prefix}.i18n,
-		      ${class-prefix}.parser,
-		      ${class-prefix}.parser.style,
-		      ${class-prefix}.script,
-		      ${class-prefix}.script.test,
-		      ${class-prefix}.transcoder,
-		      ${class-prefix}.util,
-		      ${class-prefix}.util.gui.resource,
-		      ${class-prefix}.util.gui"/>
-    <property name="packages-ext"  value="
-			org.w3c.css.sac,
-			org.w3c.css.sac.helpers,
-			org.w3c.dom,
-			org.w3c.dom.css,
-			org.w3c.dom.events,
-			org.w3c.dom.smil,
-			org.w3c.dom.stylesheets,
-			org.w3c.dom.svg,
-			org.w3c.dom.views,
-			org.xml.sax,
-			org.xml.sax.ext,
-			org.xml.sax.helpers"/>
-    <property name="packages-refimpl" value="
-			  ${class-prefix}.refimpl.bridge,
-			  ${class-prefix}.refimpl.gvt,
-			  ${class-prefix}.refimpl.gvt.event,
-			  ${class-prefix}.refimpl.gvt.filter,
-			  ${class-prefix}.refimpl.gvt.renderer,
-			  ${class-prefix}.refimpl.gvt.text,
-			  ${class-prefix}.refimpl.parser,
-			  ${class-prefix}.refimpl.script,
-			  ${class-prefix}.refimpl.script.jacl,
-			  ${class-prefix}.refimpl.script.jpython,
-			  ${class-prefix}.refimpl.script.rhino,
-			  ${class-prefix}.refimpl.transcoder,
-			  ${class-prefix}.refimpl.util"/>
-    <property name="packages-all"  value="${packages}, 
-                                          ${packages-refimpl},
-			                  ${packages-ext}"/>
-    <mkdir dir="dist/${project}${version}"/>
+    <property name="fullname" value="Apache Batik"/>
+    <property name="Name"     value="Batik"/>
+    <property name="name"     value="batik"/>
+    <property name="version"  value="1.0b1"/>
+    <property name="year"     value="2000"/>
+
+    <echo message="------------------- ${fullname} ${version} [${year}] ----------------"/>
+
+    <property name="debug"          value="on"/>
+    <property name="optimize"       value="off"/>
+    <property name="deprecation"    value="off"/>
+    <property name="build.compiler" value="classic"/>
+    <property name="target.vm"      value="1.2"/>
+
+    <property name="src.dir"       value="./sources"/>
+    <property name="lib.dir"       value="./lib"/>
+    <property name="docs.dir"      value="./xdocs"/>
+    <property name="dtd.dir"       value="./xdocs/dtd"/>
+    <property name="skins.dir"     value="./xdocs/skins"/>
+    <property name="images.dir"    value="./xdocs/images"/>
+    <property name="resource.dir"  value="./resources"/>
+    <property name="samples.dir"   value="./samples"/>
+    <property name="package.dir"   value="org/apache/${name}"/>
+    <property name="package.class" value="org.apache.${name}"/>
+
+    <property name="browser.skin"  value="${skins.dir}/xml.apache.org/"/>
+    <property name="printer.skin"  value="${skins.dir}/printer/"/>
+    <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
+
+    <property name="build.root"     value="./build"/>
+    <property name="build.dir"      value="${build.root}/${name}"/>
+    <property name="build.src"      value="${build.dir}/source"/>
+    <property name="build.dest"     value="${build.dir}/classes"/>
+    <property name="build.docs"     value="${build.dir}/docs"/>
+    <property name="build.docs.printer" value="${build.dir}/printer-docs"/>
+    <property name="build.javadocs" value="${build.dir}/javadocs"/>
+
+    <property name="dist.root"   value="./dist"/>
+    <property name="dist.dir"    value="${dist.root}/${name}-${version}"/>
+    <property name="dist.target" value="${dist.root}"/>
+
+    <property name="site" value="../xml-site/targets/${name}"/>
+    
+    <filter token="name"    value="${fullname}"/>
+    <filter token="year"    value="${year}"/>
+    <filter token="version" value="${version}"/>
+    <filter token="date"    value="${TODAY}"/>
+    <filter token="log"     value="true"/>
+    <filter token="verbose" value="true"/>
+
+    <!-- FIXME (SM): here you can use the available task to set up properties
+                    that trigger inclusion if you need to add or remove code
+                    base on some parameters. uncomment the things you need
+                    or add your own.
+                    
+    <available property="servlet.present" classname="javax.servlet.http.HttpServlet">
+      <classpath refid="classpath"/>
+    </available>
+    <available property="php.present" classname="net.php.servlet">
+      <classpath refid="classpath"/>
+    </available>
+    <available property="xt.present" classname="com.jclark.xsl.sax.XMLProcessorImpl">
+      <classpath refid="classpath"/>
+    </available>
+    <available property="svg.present" classname="org.csiro.svg.dom.SVGDocumentImpl">
+      <classpath refid="classpath"/>
+    </available>
+    <available property="rhino.present" classname="org.mozilla.javascript.tools.jsc.Main">
+      <classpath refid="classpath"/>
+    </available>
+    <available property="jstyle.present" classname="jstyle.JSFormatter">
+      <classpath refid="classpath"/>
+    </available>
+    <available property="fop.present" classname="org.apache.fop.apps.Driver">
+      <classpath refid="classpath"/>
+    </available>
+    <available property="jpeg.present" classname="com.sun.image.codec.jpeg.JPEGCodec">
+      <classpath refid="classpath"/>
+    </available>
+    <available property="jai.present" classname="com.sun.media.jai.codec.ImageCodec">
+      <classpath refid="classpath"/>
+    </available>
+    
+ -->
+     
   </target>
 
-
-  <!-- Compiles the source files to the ${dest} directory -->
-  <target name="compile" depends="init">
-    <mkdir dir="${dest}"/>
-    <javac classpath="lib/js.jar:lib/jpython.jar:lib/jacl.jar:lib/tcljava.jar"
-           srcdir="${src}"
-           destdir="${dest}"
-           includes="**/*.java"/>
+  <target name="prepare" depends="init">
+    <mkdir dir="${build.dir}"/>
   </target>
 
-  <!-- Cleans the files generated by a compilation -->
-  <target name="clean-compile" depends="init">
-      <deltree dir="${dest}"/>
+  <target name="prepare-src" depends="prepare">
+    <mkdir dir="${build.src}"/>
+    <mkdir dir="${build.dest}"/>
+    <copy todir="${build.src}" filtering="on">
+      <fileset dir="${src.dir}"/>
+    </copy>    
   </target>
 
-  <!-- Generates the javadoc for all the source files -->
-  <target name="javadoc">
-    <mkdir dir="${jdoc}"/>
-    <javadoc packagenames="${packages-all}"
-             sourcepath="${src}"
-             destdir="${jdoc}"
-             author="false"
-             version="false"/>
+  <!-- =================================================================== -->
+  <!-- Compilation                                                         -->
+  <!-- =================================================================== -->
+  <target name="compile" depends="prepare-src" description="Compiles the source code">
+    <copy todir="${build.dest}">
+      <fileset dir="${build.src}">
+        <include name="**/Manifest.mf"/>
+        <!-- FIXME (SM) include/exclude any file you need -->
+      </fileset>
+    </copy>
+
+    <javac srcdir="${build.src}"
+           destdir="${build.dest}"
+           debug="${debug}"
+           optimize="${optimize}"
+           deprecation="${deprecation}"
+           target="${target.vm}">
+      <classpath refid="classpath"/>
+      <exclude name="**/*.html"/>
+    <!-- FIXME (SM): here is where you can avoid compiling things if
+                     the classes are not available during compilation.
+                     This is extremely useful to allow people to compile
+                     their own stuff without having the people to download
+                     every single jar file
+      <exclude name="**/CocoonServlet*.java" unless="servlet.present"/>
+      <exclude name="**/XT*.java"            unless="xt.present"/>
+      <exclude name="**/SVG*.java"           unless="svg.present"/>
+      <exclude name="**/Javascript*"         unless="rhino.present"/>
+      <exclude name="**/Jstyle*"             unless="jstyle.present"/>
+      <exclude name="**/FOP*"                unless="fop.present"/>
+      <exclude name="**/Php*"                unless="php.present"/>
+      <exclude name="**/JPEGEncoder*.java"   unless="jpeg.present"/>
+      <exclude name="**/PNGEncoder*.java"    unless="png.present"/>
+      <exclude name="**/JAI*.java"           unless="jai.present"/>
+    -->
+    </javac>
   </target>
 
-  <!-- Cleans the files generated by javadoc -->
-  <target name="clean-javadoc" depends="init">
-      <deltree dir="${jdoc}"/>
+  <!-- =================================================================== -->
+  <!-- Packaging                                                           -->
+  <!-- =================================================================== -->
+  <target name="package" 
+          depends="package-int, package-refimpl, package-res, package-dom, package-ext, package-util, package-viewer" 
+          description="Generates the jar packages">
   </target>
 
-  <!-- Creates the jar file that contains the interfaces -->
-  <target name="jar-int" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-int.jar"
-         basedir="${dest}"
-         includes="org/apache/${project}/bridge/**,
-                   org/apache/${project}/gvt/**,
-                   org/apache/${project}/parser/**,
-                   org/apache/${project}/script/**,
-                   org/apache/${project}/i18n/**"/>
+  <target name="package-int" depends="compile">
+    <jar jarfile="${build.dir}/${name}-int.jar">
+      <fileset dir="${build.dest}">
+        <include name="${package.dir}/bridge/**"/>
+        <include name="${package.dir}/gvt/**"/>
+        <include name="${package.dir}/parser/**"/>
+        <include name="${package.dir}/script/**"/>
+        <include name="${package.dir}/i18n/**"/>
+      </fileset>
+    </jar>
   </target>
 
-  <!-- Cleans the files generated by jar-${project} -->
-  <target name="clean-jar-int" depends="init">
-      <delete file="dist/${project}${version}/${project}-int.jar"/>
+  <target name="package-refimpl" depends="compile">
+    <jar jarfile="${build.dir}/${name}-refimpl.jar">
+      <fileset dir="${build.dest}">
+        <include name="${package.dir}/refimpl/**"/>
+      </fileset>
+    </jar>
   </target>
 
-  <!-- Creates the jar file that contains the reference implementation -->
-  <target name="jar-refimpl" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-refimpl.jar"
-         basedir="${dest}"
-         includes="org/apache/${project}/refimpl/**"/>
+  <target name="package-res" depends="compile">
+    <jar jarfile="${build.dir}/${name}-res.jar">
+      <fileset dir="${resource.dir}"/>
+    </jar>
   </target>
 
-  <!-- Cleans the files generated by jar-${project} -->
-  <target name="clean-jar-refimpl" depends="init">
-      <delete file="dist/${project}${version}/${project}-refimpl.jar"/>
+  <target name="package-dom" depends="compile">
+    <jar jarfile="${build.dir}/${name}-dom.jar">
+      <fileset dir="${build.dest}">
+        <include name="${package.dir}/dom/**"/>
+        <include name="${package.dir}/css/**"/>
+      </fileset>
+    </jar>
   </target>
 
-  <!-- Creates the jar file that contains the resources -->
-  <target name="jar-res" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-res.jar"
-         basedir="resources"
-         includes="**"/>
+  <target name="package-ext" depends="compile">
+    <jar jarfile="${build.dir}/${name}-ext.jar">
+      <fileset dir="${build.dest}">
+        <include name="org/w3c/**"/>
+        <include name="org/xml/**"/>
+      </fileset>
+    </jar>
   </target>
 
-  <!-- Cleans the files generated by jar-res -->
-  <target name="clean-jar-res" depends="init">
-      <delete file="dist/${project}${version}/${project}-res.jar"/>
+  <target name="package-util" depends="compile">
+    <jar jarfile="${build.dir}/${name}-util.jar">
+      <fileset dir="${build.dest}">
+        <include name="${package.dir}/util/**"/>
+      </fileset>
+    </jar>
   </target>
 
-  <!-- Creates the jar file that contains the DOM classes -->
-  <target name="jar-dom" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-dom.jar"
-         basedir="${dest}"
-         includes="org/apache/${project}/dom/**, org/apache/${project}/css/**"/>
+  <target name="package-viewer" depends="compile">
+    <jar jarfile="${build.dir}/${name}-viewer.jar">
+      <fileset dir="${build.dest}">
+        <include name="${package.dir}/apps/svgviewer/**"/>
+      </fileset>
+    </jar>
   </target>
 
-  <!-- Cleans the files generated by jar-dom -->
-  <target name="clean-jar-dom" depends="init">
-      <delete file="dist/${project}${version}/${project}-dom.jar"/>
+  <!-- =================================================================== -->
+  <!-- Document Generation                                                 -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="prepare" description="Generates the documentation">
+    <mkdir dir="${build.docs}"/>
+    <copy file="${docs.dir}/docs-book.xml" tofile="${docs.dir}/book.xml" filtering="on"/>
+    <java classname="${doc.generator}" fork="yes">
+      <classpath refid="classpath"/>
+      <arg line="targetDirectory=${build.docs} ${docs.dir}/book.xml ${browser.skin}"/>
+    </java>
   </target>
 
-  <!-- Creates the jar file that contains the external classes -->
-  <target name="jar-ext" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-ext.jar"
-         basedir="${dest}"
-         includes="org/w3c/**, org/xml/**"/>
+  <target name="printer-docs" depends="prepare" description="Generates printer-friendly documentation">
+    <mkdir dir="${build.docs.printer}"/>
+    <copy file="${docs.dir}/docs-book.xml" tofile="${docs.dir}/book.xml" filtering="on"/>
+    <java classname="${doc.generator}" fork="yes">
+      <classpath refid="classpath"/>
+      <arg line="targetDirectory=${build.docs.printer} ${docs.dir}/book.xml ${printer.skin}"/>
+    </java>
   </target>
 
-  <!-- Cleans the files generated by jar-w3c -->
-  <target name="clean-jar-w3c" depends="init">
-      <delete file="dist/${project}${version}/${project}-w3c.jar"/>
+  <target name="site" depends="prepare" description="Generates the web site (for site maintainers only)">
+    <mkdir dir="${site}"/>
+    <copy file="${docs.dir}/site-book.xml" tofile="${docs.dir}/book.xml" filtering="on"/>
+    <java classname="${doc.generator}" fork="yes">
+      <classpath refid="classpath"/>
+      <arg line="targetDirectory=${site} ${docs.dir}/book.xml ${browser.skin}"/>
+    </java>
   </target>
 
-  <!-- Creates the jar file that contains the utility classes -->
-  <target name="jar-util" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-util.jar"
-         basedir="${dest}"
-         includes="org/apache/${project}/util/**"/>
+  <target name="javadocs" depends="prepare-src" description="Generates the API documentation">
+    <mkdir dir="${build.javadocs}"/>
+    <javadoc packagenames="${package.class}.*"
+             sourcepath="${build.src}"
+             destdir="${build.javadocs}"
+             author="true"
+             version="true"
+             use="false"
+             noindex="true"
+             windowtitle="${Name} API"
+             doctitle="${Name}"
+             bottom="Copyright &#169; ${year} Apache Software Foundation. All Rights Reserved."
+             stylesheetfile="${resource.dir}/javadoc.css">
+      <classpath refid="classpath"/>
+    </javadoc>
   </target>
 
-  <!-- Cleans the files generated by jar-util -->
-  <target name="clean-jar-util" depends="init">
-      <delete file="dist/${project}${version}/${project}-util.jar"/>
+  <!-- =================================================================== -->
+  <!-- Distribution Creation                                               -->
+  <!-- =================================================================== -->
+  <target name="dist" depends="package, docs, javadocs" description="Prepares the distribution">
+    <mkdir dir="${dist.dir}"/>
+    <mkdir dir="${dist.dir}/lib"/>
+    <mkdir dir="${dist.dir}/docs"/>
+    <mkdir dir="${dist.dir}/docs/api"/>
+    <mkdir dir="${dist.dir}/src"/>
+
+    <copy todir="${dist.dir}/lib">
+      <fileset dir="${build.dir}">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${lib.dir}">
+        <exclude name="ant*"/>
+        <exclude name="xerces*"/>
+        <exclude name="xalan*"/>
+        <exclude name="stylebook*"/>
+        <exclude name="jaxp*"/>
+      </fileset>
+    </copy>
+    <copy todir="${dist.dir}/src">
+      <fileset dir="${build.src}"/>
+    </copy>
+    <copy todir="${dist.dir}/docs">
+      <fileset dir="${build.docs}"/>
+    </copy>
+    <copy todir="${dist.dir}/docs/api">
+      <fileset dir="${build.javadocs}"/>
+    </copy>
+    <copy todir="${dist.dir}/samples">
+      <fileset dir="${samples.dir}"/>
+    </copy>
+    <copy todir="${dist.dir}/xdocs">
+      <fileset dir="${docs.dir}"/>
+    </copy>
+    <copy todir="${dist.dir}/xdocs/skins">
+      <fileset dir="${skins.dir}"/>
+    </copy>
+
+    <copy todir="${dist.dir}" filtering="on">
+     <fileset dir=".">
+      <include name="README"/>
+      <include name="LICENSE"/>
+      <include name="*.sh"/>
+      <include name="*.bat"/>
+     </fileset>
+    </copy>
+
+    <chmod perm="+x" file="${dist.dir}/build.sh"/>
+    <fixcrlf srcdir="${dist.dir}" includes="build.sh"  cr="remove"/>
+    <fixcrlf srcdir="${dist.dir}" includes="build.bat" cr="add"/>
   </target>
 
-  <!-- Creates the jar file to lauch the viewer -->
-  <target name="jar-viewer" depends="compile">
-    <jar jarfile="dist/${project}${version}/${project}-viewer.jar"
-         basedir="${dest}"
-         includes="org/apache/${project}/apps/svgviewer/**"
-         manifest="dist/manifests/${project}-viewer.mf"/>
+  <target name="dist-zip" depends="dist" description="Generates the distribution as a .zip file">
+    <zip zipfile="${dist.target}/${Name}-${version}.zip" basedir="${dist.dir}" includes="**"/>
   </target>
 
-  <!-- Cleans the files generated by jar-viewer -->
-  <target name="clean-jar-viewer" depends="init">
-      <delete file="dist/${project}${version}/${project}-viewer.jar"/>
+  <target name="dist-tgz" depends="dist" description="Generates the distribution as a .tar.gz file">
+    <tar tarfile="${dist.target}/${Name}-${version}.tar" basedir="${dist.root}" includes="**"/>
+    <gzip zipfile="${dist.target}/${Name}-${version}.tar.gz" src="${dist.target}/${Name}-${version}.tar"/>
   </target>
 
-  <target name="jars" depends="jar-viewer,
-                               jar-dom,
-                               jar-res,
-                               jar-refimpl,
-                               jar-int,
-                               jar-util,
-                               jar-ext">
-    <copyfile src="lib/crimson.jar"
-              dest="dist/${project}${version}/crimson.jar"/>
+  <!-- =================================================================== -->
+  <!-- Cleaning                                                            -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init" description="Cleans the build directories">
+    <delete dir="${build.dir}"/>
   </target>
 
-  <!-- Cleans the files generated by jars -->
-  <target name="clean-jars" depends="init">
-      <deltree dir="dist/${project}${version}"/>
+  <target name="distclean" depends="clean" description="Cleans everything to the original state">
+    <delete dir="${build.root}"/>
+    <delete file="${dist.target}/${Name}-${version}.tar.gz"/>
+    <delete file="${dist.target}/${Name}-${version}.tar"/>
+    <delete file="${dist.target}/${Name}-${version}.zip"/>
+    <delete dir="${dist.root}"/>
   </target>
 
-  <!-- Cleans everything -->
-  <target name="clean" depends="clean-compile, clean-jars, clean-javadoc"/>
+  <!-- =================================================================== -->
+  <!-- Executions                                                          -->
+  <!-- =================================================================== -->
+  <target name="run" depends="package" description="Run the program after the build">
+    <java classname="${package.class}.apps.svgviewer.Main" fork="yes">
+      <classpath>
+        <path refid="classpath"/>
+        <fileset dir="${build.dir}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </java>
+  </target>
 
 </project>
+
+<!-- End of file -->
