@@ -41,80 +41,80 @@
   <text class="title" x="50%" y="40">SVG Reference</text>
 
     <g transform="translate(30, 80)">
-        <a xlink:href="ATransform.svg" xlink:show="new">
-            <text class="link" y="1em">ATransform.svg</text>
+        <a xlink:href="ContextATransform.svg" xlink:show="new">
+            <text class="link" y="1em">ContextATransform.svg</text>
         </a>
 
-        <a xlink:href="BEExample.svg" xlink:show="new">
-            <text class="link" y="2.5em">BEExample.svg</text>
+        <a xlink:href="ContextBEExample.svg" xlink:show="new">
+            <text class="link" y="2.5em">ContextBEExample.svg</text>
         </a>
 
-        <a xlink:href="BStroke.svg" xlink:show="new">
-            <text class="link" y="4em">BStroke.svg</text>
+        <a xlink:href="ContextBStroke.svg" xlink:show="new">
+            <text class="link" y="4em">ContextBStroke.svg</text>
         </a>
 
-        <a xlink:href="BasicShapes.svg" xlink:show="new">
-            <text class="link" y="5.5em">BasicShapes.svg</text>
+        <a xlink:href="ContextBasicShapes.svg" xlink:show="new">
+            <text class="link" y="5.5em">ContextBasicShapes.svg</text>
         </a>
 
-        <a xlink:href="BasicShapes2.svg" xlink:show="new">
-            <text class="link" y="7em">BasicShapes2.svg</text>
+        <a xlink:href="ContextBasicShapes2.svg" xlink:show="new">
+            <text class="link" y="7em">ContextBasicShapes2.svg</text>
         </a>
 
-        <a xlink:href="Clip.svg" xlink:show="new">
-            <text class="link" y="8.5em">Clip.svg</text>
+        <a xlink:href="ContextClip.svg" xlink:show="new">
+            <text class="link" y="8.5em">ContextClip.svg</text>
         </a>
 
-        <a xlink:href="Color1.svg" xlink:show="new">
-            <text class="link" y="10em">Color1.svg</text>
+        <a xlink:href="ContextColor1.svg" xlink:show="new">
+            <text class="link" y="10em">ContextColor1.svg</text>
         </a>
 
-        <a xlink:href="Color2.svg" xlink:show="new">
-            <text class="link" y="11.5em">Color2.svg</text>
+        <a xlink:href="ContextColor2.svg" xlink:show="new">
+            <text class="link" y="11.5em">ContextColor2.svg</text>
         </a>
 
-        <a xlink:href="Font1.svg" xlink:show="new">
-            <text class="link" y="13em">Font1.svg</text>
+        <a xlink:href="ContextFont1.svg" xlink:show="new">
+            <text class="link" y="13em">ContextFont1.svg</text>
         </a>
 
-        <a xlink:href="Font2.svg" xlink:show="new">
-            <text class="link" y="14.5em">Font2.svg</text>
+        <a xlink:href="ContextFont2.svg" xlink:show="new">
+            <text class="link" y="14.5em">ContextFont2.svg</text>
         </a>
 
-        <a xlink:href="GVector.svg" xlink:show="new">
-            <text class="link" y="16em">GVector.svg</text>
+        <a xlink:href="ContextGVector.svg" xlink:show="new">
+            <text class="link" y="16em">ContextGVector.svg</text>
         </a>
 
-        <a xlink:href="Gradient.svg" xlink:show="new">
-            <text class="link" y="17.5em">Gradient.svg</text>
+        <a xlink:href="ContextGradient.svg" xlink:show="new">
+            <text class="link" y="17.5em">ContextGradient.svg</text>
         </a>
 
-        <a xlink:href="GraphicObjects.svg" xlink:show="new">
-            <text class="link" y="19em">GraphicObjects.svg</text>
+        <a xlink:href="ContextGraphicObjects.svg" xlink:show="new">
+            <text class="link" y="19em">ContextGraphicObjects.svg</text>
         </a>
 
-        <a xlink:href="Lookup.svg" xlink:show="new">
-            <text class="link" y="20.5em">Lookup.svg</text>
+        <a xlink:href="ContextLookup.svg" xlink:show="new">
+            <text class="link" y="20.5em">ContextLookup.svg</text>
         </a>
 
-        <a xlink:href="Paints.svg" xlink:show="new">
-            <text class="link" y="22em">Paints.svg</text>
+        <a xlink:href="ContextPaints.svg" xlink:show="new">
+            <text class="link" y="22em">ContextPaints.svg</text>
         </a>
 
-        <a xlink:href="RHints.svg" xlink:show="new">
-            <text class="link" y="23.5em">RHints.svg</text>
+        <a xlink:href="ContextRHints.svg" xlink:show="new">
+            <text class="link" y="23.5em">ContextRHints.svg</text>
         </a>
 
-        <a xlink:href="Rescale.svg" xlink:show="new">
-            <text class="link" y="25em">Rescale.svg</text>
+        <a xlink:href="ContextRescale.svg" xlink:show="new">
+            <text class="link" y="25em">ContextRescale.svg</text>
         </a>
 
-        <a xlink:href="ShearTest.svg" xlink:show="new">
-            <text class="link" y="26.5em">ShearTest.svg</text>
+        <a xlink:href="ContextShearTest.svg" xlink:show="new">
+            <text class="link" y="26.5em">ContextShearTest.svg</text>
         </a>
 
-        <a xlink:href="Texture.svg" xlink:show="new">
-            <text class="link" y="28em">Texture.svg</text>
+        <a xlink:href="ContextTexture.svg" xlink:show="new">
+            <text class="link" y="28em">ContextTexture.svg</text>
         </a>
     </g>
 </svg>
