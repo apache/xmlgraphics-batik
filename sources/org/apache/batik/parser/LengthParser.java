@@ -93,14 +93,11 @@ public class LengthParser extends AbstractParser {
                 current = -1;
                 break;
             }
-            current = buffer[position++];
             column++;
+            current = buffer[position++];
         }
 
         m1: switch (current) {
-        case 10:
-            line++;
-            column = 1;
         default:
             reportError("character.unexpected",
                         new Object[] { new Integer(current) });
@@ -115,16 +112,13 @@ public class LengthParser extends AbstractParser {
                 if (position == count && !fillBuffer()) {
                     current = -1;
                 } else {
-                    current = buffer[position++];
                     column++;
+                    current = buffer[position++];
                 }
                 switch (current) {
                 case '1': case '2': case '3': case '4': 
                 case '5': case '6': case '7': case '8': case '9': 
                     break l;
-                case 10:
-                    line++;
-                    column = 1;
                 default:
                     break m1;
                 case '0':
@@ -144,13 +138,10 @@ public class LengthParser extends AbstractParser {
                 if (position == count && !fillBuffer()) {
                     current = -1;
                 } else {
-                    current = buffer[position++];
                     column++;
+                    current = buffer[position++];
                 }
                 switch (current) {
-                case 10:
-                    line++;
-                    column = 1;
                 default:
                     break l;
                 case '0': case '1': case '2': case '3': case '4': 
@@ -163,13 +154,10 @@ public class LengthParser extends AbstractParser {
             if (position == count && !fillBuffer()) {
                 current = -1;
             } else {
-                current = buffer[position++];
                 column++;
+                current = buffer[position++];
             }
             m2: switch (current) {
-            case 10:
-                line++;
-                column = 1;
             default:
             case 'e': case 'E':
                 if (!mantRead) {
@@ -185,17 +173,14 @@ public class LengthParser extends AbstractParser {
                         if (position == count && !fillBuffer()) {
                             current = -1;
                         } else {
-                            current = buffer[position++];
                             column++;
+                            current = buffer[position++];
                         }
                         expAdj--;
                         switch (current) {
                         case '1': case '2': case '3': case '4': 
                         case '5': case '6': case '7': case '8': case '9': 
                             break l;
-                        case 10:
-                            line++;
-                            column = 1;
                         default:
                             break m2;
                         case '0':
@@ -213,13 +198,10 @@ public class LengthParser extends AbstractParser {
                     if (position == count && !fillBuffer()) {
                         current = -1;
                     } else {
-                        current = buffer[position++];
                         column++;
+                        current = buffer[position++];
                     }
                     switch (current) {
-                    case 10:
-                        line++;
-                        column = 1;
                     default:
                         break l;
                     case '0': case '1': case '2': case '3': case '4': 
@@ -237,13 +219,10 @@ public class LengthParser extends AbstractParser {
             if (position == count && !fillBuffer()) {
                 current = -1;
             } else {
-                current = buffer[position++];
                 column++;
+                current = buffer[position++];
             }
             switch (current) {
-            case 10:
-                line++;
-                column = 1;
             default:
                 reportError("character.unexpected",
                             new Object[] { new Integer(current) });
@@ -270,13 +249,10 @@ public class LengthParser extends AbstractParser {
                 if (position == count && !fillBuffer()) {
                     current = -1;
                 } else {
-                    current = buffer[position++];
                     column++;
+                    current = buffer[position++];
                 }
                 switch (current) {
-                case 10:
-                    line++;
-                    column = 1;
                 default:
                     reportError("character.unexpected",
                                 new Object[] { new Integer(current) });
@@ -294,16 +270,13 @@ public class LengthParser extends AbstractParser {
                     if (position == count && !fillBuffer()) {
                         current = -1;
                     } else {
-                        current = buffer[position++];
                         column++;
+                        current = buffer[position++];
                     }
                     switch (current) {
                     case '1': case '2': case '3': case '4': 
                     case '5': case '6': case '7': case '8': case '9': 
                         break l;
-                    case 10:
-                        line++;
-                        column = 1;
                     default:
                         break en;
                     case '0':
@@ -320,13 +293,10 @@ public class LengthParser extends AbstractParser {
                     if (position == count && !fillBuffer()) {
                         current = -1;
                     } else {
-                        current = buffer[position++];
                         column++;
+                        current = buffer[position++];
                     }
                     switch (current) {
-                    case 10:
-                        line++;
-                        column = 1;
                     default:
                         break l;
                     case '0': case '1': case '2': case '3': case '4': 

@@ -336,7 +336,7 @@
     </test>
 
     <test id="transformParser10" class="org.apache.batik.parser.TransformListParserTest">
-        <arg class="java.lang.String" value="scale(1),skewX(2) translate(3,4)" />
+        <arg class="java.lang.String" value="scale(1) , skewX(2) translate(3,4)" />
         <arg class="java.lang.String" value="scale(1.0) skewX(2.0) translate(3.0, 4.0)"/>
     </test>
 
