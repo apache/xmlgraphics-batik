@@ -310,6 +310,10 @@ public abstract class AbstractDocument
             deep = false;
             break;
             
+        case DOCUMENT_FRAGMENT_NODE:
+            result = createDocumentFragment();
+            break;
+
         default:
             throw createDOMException(DOMException.NOT_SUPPORTED_ERR,
                                      "import.node",
