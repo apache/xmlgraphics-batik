@@ -65,6 +65,7 @@ import org.apache.batik.refimpl.bridge.SVGBridgeContext;
 import org.apache.batik.refimpl.gvt.ConcreteGVTFactory;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteGraphicsNodeRableFactory;
+import org.apache.batik.refimpl.gvt.renderer.DynamicRenderer;
 import org.apache.batik.refimpl.gvt.renderer.DynamicRendererFactory;
 
 import org.apache.batik.refimpl.parser.ParserFactory;
@@ -96,7 +97,8 @@ import org.w3c.dom.events.MutationEvent;
  */
 public class JSVGCanvas
     extends    JComponent
-    implements ActionMap {
+    implements ActionMap,
+               DynamicRenderer.RepaintHandler {
     // The actions names.
     public final static String UNZOOM_ACTION = "UnzoomAction";
     public final static String ZOOM_IN_ACTION = "ZoomInAction";
@@ -171,17 +173,17 @@ public class JSVGCanvas
     protected UserAgent userAgent;
 
     /**
-     * The tranform to apply to the graphics object.
+     * The transform to apply to the graphics object.
      */
     protected AffineTransform transform = new AffineTransform();
 
     /**
-     * The tranform representing the pan tranlate.
+     * The transform representing the pan tranlate.
      */
     protected AffineTransform panTransform;
 
     /**
-     * The tranform representing the rotation.
+     * The transform representing the rotation.
      */
     protected AffineTransform rotateTransform;
 
@@ -324,6 +326,17 @@ public class JSVGCanvas
     }
 
     /**
+     * Notifies that the specified area of interest need to be repainted.
+     * @param aoi the area of interest to repaint
+     */
+    public void notifyRepaintedRegion(Shape aoi) {
+        renderer.repaint(aoi);
+        Rectangle2D r = transform.createTransformedShape(aoi).getBounds();
+        repaint((int)r.getX()-1, (int)r.getY()-1,
+                (int)r.getWidth()+2, (int)r.getHeight()+2);
+    }
+
+    /**
      * To listener to the DOM mutation events.
      */
     protected class MutationListener implements EventListener {
@@ -343,9 +356,7 @@ public class JSVGCanvas
             GraphicsNodeBridge bridge;
             bridge = (GraphicsNodeBridge)bridgeContext.getBridge(target);
 
-            System.out.println("XXXXXXXXXXXX");
             bridge.update(bme);
-            System.out.println("YYYYYYYYYYYY");
         }
     }
 
@@ -405,7 +416,7 @@ public class JSVGCanvas
    /**
     * @return the area of interest displayed in the viewer, in usr space.
     */
-    protected Shape getAreaOfInterest(Rectangle devAOI){
+    protected Shape getAreaOfInterest(Shape devAOI){
         AffineTransform dev2usr = null;
         try {
             dev2usr = transform.createInverse();
@@ -444,6 +455,7 @@ public class JSVGCanvas
         updateBuffer(w, h);
         if (repaint) {
             renderer = rendererFactory.createRenderer(buffer);
+            ((DynamicRenderer)renderer).setRepaintHandler(this);
             renderer.setTransform(transform);
         }
         if (renderer != null && gvtRoot != null &&
@@ -932,7 +944,9 @@ public class JSVGCanvas
     /**
      * This class represents the thumbnail canvas.
      */
-    protected class ThumbnailCanvas extends JComponent {
+    protected class ThumbnailCanvas
+        extends    JComponent
+        implements DynamicRenderer.RepaintHandler {
         /**
          * The current offscreen buffer.
          */
@@ -1013,6 +1027,7 @@ public class JSVGCanvas
             updateBuffer(w, h);
             if (repaint) {
                 renderer = rendererFactory.createRenderer(offscreenBuffer);
+                ((DynamicRenderer)renderer).setRepaintHandler(this);
                 renderer.setTransform(transform);
             }
             if (renderer != null && gvtRoot != null &&
@@ -1105,9 +1120,20 @@ public class JSVGCanvas
         }
 
         /**
+         * Notifies that the specified area of interest need to be repainted.
+         * @param aoi the area of interest to repaint
+         */
+        public void notifyRepaintedRegion(Shape aoi) {
+            renderer.repaint(aoi);
+            Rectangle2D r = transform.createTransformedShape(aoi).getBounds();
+            repaint((int)r.getX()-1, (int)r.getY()-1,
+                    (int)r.getWidth()+2, (int)r.getHeight()+2);
+        }
+
+        /**
          * @return the area of interest displayed in the viewer, in usr space.
          */
-        protected Shape getAreaOfInterest(Rectangle devAOI){
+        protected Shape getAreaOfInterest(Shape devAOI){
             AffineTransform dev2usr = null;
             try {
                 dev2usr = transform.createInverse();
