@@ -83,6 +83,8 @@ To display the available targets type:
     <property name="site-skin"       value="${skins}/xml.apache.org/"/>
     <property name="print-skin"      value="${skins}/printer/"/>
 
+    <property name="test-reports"    value="test-reports" />
+
     <available property="rhino.present" classname="org.mozilla.javascript.Context">
       <classpath refid="libs-classpath"/>
     </available>
@@ -125,7 +127,7 @@ To display the available targets type:
     <echo message="   svgrasterizer --> runs the SVG rasterizer"/>
     <echo message="   svgpp         --> runs the SVG pretty-printer"/>
     <echo message="   regard        --> runs the regard regression utility"/>
-    <echo message="   runtest       --> runs a Test, given a class name as an input" />
+    <echo message="   runtestsuite  --> runs a TestSuite, given an XML test suite document" />
     <echo message="   javadoc       --> generates the API documentation"/>
     <echo message="   site          --> generates the site documentation"/>
     <echo message="   sitedoc       --> generates the site documentation without"/>
@@ -587,26 +589,13 @@ To display the available targets type:
     </java>
   </target>
 
-  <target name="runtest"
-          depends="compiletest"
-          description="Runs test whose class name is passed as an input">
-    <java fork="yes"
-          classname="${class-prefix}.test.SimpleTestRunner">
-      <classpath>
-        <pathelement location="${dest}" />
-        <path refid="libs-classpath"/>
-        <pathelement location="resources" />
-        <pathelement location="test-resources" />
-      </classpath>
-      <arg line="${args}"/>
-    </java>
-  </target>
-
   <target name="runtestsuite"
           depends="compiletest"
           description="Runs test suite whose file or uri is passed as an input">
+    <mkdir dir="${test-reports}"/>
     <java fork="yes"
-          classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
+          classname="${class-prefix}.test.xml.XMLTestSuiteRunner"
+          jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
