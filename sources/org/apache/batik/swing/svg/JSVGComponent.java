@@ -2446,29 +2446,35 @@ public class JSVGComponent extends JGVTComponent {
                 return;
             }
 
+            // Always use anchor element's document for base URI,
+            // for when it comes from an external resource.
+            ParsedURL newURI = new ParsedURL
+                (((SVGDocument)elt.getOwnerDocument()).getURL(), href);
+
+            // replace href with a fully resolved URI.
+            href = newURI.toString();
+
             // Avoid reloading if possible.
             if (svgDocument != null) {
 
-                // if the anchor element is in an external resource
-                if (elt.getOwnerDocument() != svgDocument) {
-                    SVGDocument doc = (SVGDocument)elt.getOwnerDocument();
-                    href = new ParsedURL(doc.getURL(), href).toString();
-                }
                 ParsedURL oldURI = new ParsedURL(svgDocument.getURL());
-                ParsedURL newURI = new ParsedURL(oldURI, href);
-
-                String s = newURI.getRef();
+                // Check if they reference the same file.
                 if (newURI.sameFile(oldURI)) {
-                    if ((fragmentIdentifier == null && s != null) ||
-                        (s == null && fragmentIdentifier != null) ||
-                        (s != null && !s.equals(fragmentIdentifier))) {
+                    // They do, see if it's a new Fragment Ident.
+                    String s = newURI.getRef();
+                    if ((fragmentIdentifier != s) &&
+                        ((s == null) || (!s.equals(fragmentIdentifier)))) {
+                        // It is, so update rendering transform.
                         fragmentIdentifier = s;
                         computeRenderingTransform();
                     }
-                    fireLinkActivatedEvent(elt, newURI.toString());
+                    // Let every one know the link fired (but don't
+                    // load doc, it's already loaded.).
+                    fireLinkActivatedEvent(elt, href);
                     return;
                 }
             }
+                
             fireLinkActivatedEvent(elt, href);
             if (svgUserAgent != null) {
                 svgUserAgent.openLink(href, false);

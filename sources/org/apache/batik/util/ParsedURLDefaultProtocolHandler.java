@@ -68,14 +68,14 @@ public class ParsedURLDefaultProtocolHandler
     public ParsedURLData parseURL(String urlStr) {
         try {
             URL url = new URL(urlStr);
-            // System.out.println("System Parse: " + urlStr);
+            // System.err.println("System Parse: " + urlStr);
             return constructParsedURLData(url);
         } catch (MalformedURLException mue) {
             // Built in URL wouldn't take it...
         }
 
         // new Exception("Custom Parse: " + urlStr).printStackTrace();
-        // System.out.println("Custom Parse: " + urlStr);
+        // System.err.println("Custom Parse: " + urlStr);
 
         ParsedURLData ret = constructParsedURLData();
 
@@ -222,7 +222,7 @@ public class ParsedURLDefaultProtocolHandler
         if (urlStr.length() == 0) 
             return baseURL.data;
 
-        // System.out.println("Base: " + baseURL + "\n" +
+        // System.err.println("Base: " + baseURL + "\n" +
         //                    "Sub:  " + urlStr);
 
         int idx;
@@ -291,8 +291,8 @@ public class ParsedURLDefaultProtocolHandler
         else
             path = path.substring(0,idx+1);
         
-        // System.out.println("Base Path: " + path);
-        // System.out.println("Base PortStr: " + baseURL.getPortStr());
+        // System.err.println("Base Path: " + path);
+        // System.err.println("Base PortStr: " + baseURL.getPortStr());
         return parseURL(baseURL.getPortStr() + path + urlStr);
     }
 }
