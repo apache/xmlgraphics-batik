@@ -25,6 +25,7 @@ import java.awt.font.TextAttribute;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -119,8 +120,10 @@ public class StatusBar extends JPanel {
         p.add("East", zoom);
 
         p = new JPanel(new BorderLayout(0, 0));
-        message = new MessageArea();
-        message.setForeground(zoom.getForeground());
+        HashMap map = new HashMap(2);
+        map.put(TextAttribute.FAMILY, "default");
+        map.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+        message = new MessageArea(map);
         message.setBorder(bb);
         p.add(message);
         add(p);
@@ -217,33 +220,45 @@ public class StatusBar extends JPanel {
         }
     }
 
-    public class MessageArea extends JComponent {
+    public class MessageArea extends JLabel {
 
         String text = "";
         TextLayout layout;
         FontRenderContext frc;
-        HashMap textAttMap;
+        Map textAttMap;
+        Font font;
 
-        public MessageArea() {
+        public MessageArea(Map textAttMap) {
             super();
-            textAttMap = new HashMap(2);
-            textAttMap.put(TextAttribute.SIZE, new Float(12f));
-            textAttMap.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+            this.textAttMap = textAttMap;
+            this.font = (Font)javax.swing.UIManager.get("Label.font");
             frc = new FontRenderContext(new AffineTransform(), true, true);
         }
 
         public void setText(String s) {
             text = s;
             if (s.length() > 0) {
-                layout = new TextLayout(text, textAttMap, frc);
+                int canDisplay = font.canDisplayUpTo(text);
+
+                // XXX: may be a bug in canDisplayUpTo, it tends to
+                // return "19" for most i18n strings!  Also, it
+                // fails to return "-1" as advertised, for ASCII-only
+                // strings on Solaris!  However the following code
+                // works for most cases, and fails harmlessly otherwise.
+
+                if ((canDisplay == text.length()) || (canDisplay == -1)) {
+                    layout = new TextLayout(text, font, frc);
+                } else {
+                    layout = new TextLayout(text, textAttMap, frc);
+                }
             } else {
                 layout = null;
             }
             repaint();
         }
 
-        public void paint(Graphics g) {
-            super.paint(g);
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
             Insets insets = getInsets();
             g.setColor(getForeground());
             if (layout != null)  {
