@@ -8,6 +8,8 @@
 
 package org.apache.batik.swing.svg;
 
+import org.w3c.dom.Element;
+
 /**
  * This interface must be implemented to provide client services to
  * a JSVGComponent.
@@ -66,4 +68,13 @@ public interface SVGUserAgent {
      * user agent.
      */
     boolean supportExtension(String s);
+
+    /**
+     * Notifies the UserAgent that the input element 
+     * has been found in the document. This is sometimes
+     * called, for example, to handle &lt;a&gt; or
+     * &lt;title&gt; elements in a UserAgent-dependant
+     * way.
+     */
+    void handleElement(Element elt, Object data);
 }

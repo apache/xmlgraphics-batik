@@ -126,6 +126,8 @@ import org.apache.batik.ext.swing.JAffineTransformChooser;
 
 import org.apache.batik.xml.XMLUtilities;
 
+import org.w3c.dom.Element;
+
 import org.w3c.dom.css.ViewCSS;
 
 import org.w3c.dom.svg.SVGDocument;
@@ -1684,6 +1686,9 @@ public class JSVGViewerFrame
          */
         public boolean supportExtension(String s) {
             return false;
+        }
+
+        public void handleElement(Element elt, Object data){
         }
     }
 }

@@ -63,17 +63,18 @@ public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
 
         EventTarget target = (EventTarget)e;
 
-        target.addEventListener("click",
+        target.addEventListener(SVG_EVENT_CLICK,
                                 new AnchorListener(ctx.getUserAgent()),
                                 false);
 
-        target.addEventListener("mouseover",
+        target.addEventListener(SVG_EVENT_MOUSEOVER,
                                 new CursorMouseOverListener(ctx.getUserAgent()),
                                 false);
 
-        target.addEventListener("mouseout",
+        target.addEventListener(SVG_EVENT_MOUSEOUT,
                                 new CursorMouseOutListener(ctx.getUserAgent()),
-                                false);    }
+                                false);    
+    }
 
     /**
      * Returns true as the &lt;a> element is a container.

@@ -961,6 +961,20 @@ public class JSVGComponent extends JGVTComponent {
             while (i.hasNext())
                 extensions.put(i.next(), ext);
         }
+
+
+        /**
+         * Notifies the UserAgent that the input element 
+         * has been found in the document. This is sometimes
+         * called, for example, to handle &lt;a&gt; or
+         * &lt;title&gt; elements in a UserAgent-dependant
+         * way.
+         */
+        public void handleElement(Element elt, Object data) {
+            if (svgUserAgent != null) {
+                svgUserAgent.handleElement(elt, data);
+            }
+        }
     }
 
     protected final static Set FEATURES = new HashSet();

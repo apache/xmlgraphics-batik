@@ -12,12 +12,17 @@ import java.awt.Dimension;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import java.util.List;
+
+import javax.swing.ToolTipManager;
+
+import org.apache.batik.bridge.UserAgent;
 
 import org.apache.batik.swing.gvt.Interactor;
 import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
@@ -27,6 +32,16 @@ import org.apache.batik.swing.gvt.AbstractRotateInteractor;
 import org.apache.batik.swing.gvt.AbstractZoomInteractor;
 import org.apache.batik.swing.svg.JSVGComponent;
 import org.apache.batik.swing.svg.SVGUserAgent;
+
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
 
 /**
  * This class represents a general-purpose swing SVG component. The
@@ -359,4 +374,255 @@ public class JSVGCanvas extends JSVGComponent {
         loadSVGDocument(uri);
         pcs.firePropertyChange("URI", oldValue, uri);
     }
+    
+    /**
+     * Creates a UserAgent.
+     */
+    protected UserAgent createUserAgent() {
+        return new CanvasUserAgent();
+    }
+
+    /**
+     * Helper class. Simply keeps track of the last known mouse
+     * position over the canvas.
+     */
+    protected class LocationListener extends MouseMotionAdapter {
+        protected int lastX, lastY;
+        public void mouseMoved(MouseEvent evt){
+            lastX = evt.getX();
+            lastY = evt.getY();
+        }
+        
+        public int getLastX(){ return lastX; }
+        public int getLastY(){ return lastY; }
+    }
+
+    /**
+     * Keeps track of the last known mouse position over the canvas.
+     * This is used for displaying tooltips at the right location.
+     */
+    protected LocationListener locationListener = null;
+
+    /**
+     * The <tt>CanvasUserAgent</tt> only adds tooltips to the behavior
+     * of the default <tt>BridgeUserAgent</tt>.<br />
+     * A tooltip will be displayed wheneven the mouse lingers over
+     * an element which has a &lt;title&gt; or a &lt;desc&gt; child
+     * element.
+     */
+    protected class CanvasUserAgent extends BridgeUserAgent implements XMLConstants{
+        final String TOOLTIP_TITLE_ONLY = "JSVGCanvas.CanvasUserAgent.ToolTip.titleOnly";
+        final String TOOLTIP_DESC_ONLY  = "JSVGCanvas.CanvasUserAgent.ToolTip.titleOnly";
+        final String TOOLTIP_TITLE_AND_TEXT = "JSVGCanvas.CanvasUserAgent.ToolTip.titleAndDesc";
+
+        /**
+         * The handleElement method builds a tool tip from the
+         * content of a &lt;title&gt; element, a &lt;desc&gt;
+         * element or both. <br/>
+         * Because these elements can appear in any order, here 
+         * is the algorithm used to build the tool tip:<br />
+         * <ul>
+         * <li>If a &lt;title&gt; is passed to <tt>handleElement</tt>
+         *     the method checks if there is a &gt;desc&gt; peer. If there
+         *     is one, nothing is done. If there in none, the tool tip
+         *     is set to the value of the &lt;title&gt; element content.</li>
+         * <li>If a &lt;desc&gt; is passed to <tt>handleElement</tt> 
+         *     the method checks if there is a &lt;title&gt; peer. If there
+         *     is one, the content of that peer is pre-pended to the
+         *     content of the &lt;desc&gt; element.</li>
+         * </ul>
+         */
+        public void handleElement(Element elt, Object data){
+            super.handleElement(elt, data);
+            
+            if (elt.getNamespaceURI().equals(SVGConstants.SVG_NAMESPACE_URI)) {
+                if (elt.getLocalName().equals(SVGConstants.SVG_TITLE_TAG)) {
+                    //
+                    // If there is a <desc> peer, do nothing as the tooltip
+                    // will be handled when handleElement is invoked for 
+                    // the <desc> peer.
+                    //
+                    if (hasPeerWithTag(elt, 
+                                       SVGConstants.SVG_NAMESPACE_URI, 
+                                       SVGConstants.SVG_DESC_TAG)){
+                        return;
+                    }
+
+                    elt.normalize();
+                    String toolTip = elt.getFirstChild().getNodeValue();
+                    toolTip = Messages.formatMessage(TOOLTIP_TITLE_ONLY,
+                                                     new Object[]{toFormattedHTML(toolTip)});
+                                            
+                    setToolTip((Element)(elt.getParentNode()), toolTip);
+                }
+                else if (elt.getLocalName().equals(SVGConstants.SVG_DESC_TAG)) {
+                    //
+                    // If there is a <title> peer, prepend its content to 
+                    // the content of the <desc> element.
+                    //
+                    elt.normalize();
+                    String toolTip = elt.getFirstChild().getNodeValue();
+
+                    Element titlePeer = getPeerWithTag(elt,
+                                                       SVGConstants.SVG_NAMESPACE_URI,
+                                                       SVGConstants.SVG_TITLE_TAG);
+
+                    if (titlePeer != null) {
+                        titlePeer.normalize();
+                        toolTip = Messages.formatMessage
+                            (TOOLTIP_TITLE_AND_TEXT,
+                             new Object[]{toFormattedHTML(titlePeer.getFirstChild().getNodeValue()),
+                                          toFormattedHTML(toolTip)});
+                    }
+                    else{
+                        toolTip = Messages.formatMessage(TOOLTIP_DESC_ONLY,
+                                                         new Object[]{toFormattedHTML(toolTip)});
+                    }
+
+                    setToolTip((Element)(elt.getParentNode()), toolTip);
+                }
+            }
+        }
+
+        /**
+         * Converts line breaks to HTML breaks and encodes 
+         * special entities.
+         * Poor way of replacing '<', '>', '"', '&' and '''
+         * in attribute values.
+         */
+        public String toFormattedHTML(String str){
+            StringBuffer sb = new StringBuffer(str);
+            replace(sb, XML_CHAR_AMP, XML_ENTITY_AMP);
+            replace(sb, XML_CHAR_LT, XML_ENTITY_LT);
+            replace(sb, XML_CHAR_GT, XML_ENTITY_GT);
+            replace(sb, XML_CHAR_QUOT, XML_ENTITY_QUOT);
+            replace(sb, XML_CHAR_APOS, XML_ENTITY_APOS);
+            replace(sb, '\n', "<br>");
+            return sb.toString();
+        }
+        
+        protected void replace(StringBuffer s, 
+                               char c, 
+                               String r){
+            String v = s.toString() + 1;
+            int i = v.length();
+            
+            while( (i=v.lastIndexOf(c, --i)) != -1 ){
+                s.deleteCharAt(i);
+                s.insert(i, r);
+            }
+        }
+
+        /**
+         * Checks if there is a peer element of a given type.
+         * This returns the first occurence of the given type
+         * or null if none is found.
+         */
+        public Element getPeerWithTag(Element elt,
+                                      String nameSpaceURI,
+                                      String localName){
+            Element p = (Element)elt.getParentNode();
+            if (p == null) {
+                return null;
+            }
+            
+            for (Node n=p.getFirstChild(); n!=null; n=n.getNextSibling()){
+                if (!nameSpaceURI.equals(n.getNamespaceURI())){
+                    continue;
+                }
+                
+                if (!localName.equals(n.getLocalName())){
+                    continue;
+                }
+                
+                if (n.getNodeType() == n.ELEMENT_NODE) {
+                    return (Element)n;
+                }
+            }
+
+            return null;
+        }
+        
+        /**
+         * Returns a boolean defining whether or not there is a
+         * peer of <tt>elt</tt> with the given qualified tag.
+         */
+        public boolean hasPeerWithTag(Element elt,
+                                      String nameSpaceURI,
+                                      String localName){
+            if (getPeerWithTag(elt, nameSpaceURI, localName) == null){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        
+        /**
+         * Sets the tool tip on the input element.
+         */
+        public void setToolTip(Element elt, String toolTip){
+            EventTarget target = (EventTarget)elt;
+            
+            elt.normalize();
+            
+            // On mouseover, set the tooltip to the title value
+            target.addEventListener(SVGConstants.SVG_EVENT_MOUSEOVER, 
+                                    new ToolTipModifier(toolTip),
+                                    false);
+            
+            // On mouseout, remove the tooltip
+            target.addEventListener(SVGConstants.SVG_EVENT_MOUSEOUT,
+                                    new ToolTipModifier(null),
+                                    false);
+            
+            if (locationListener == null){
+                locationListener = new LocationListener();
+                addMouseMotionListener(locationListener);
+            }
+        }
+    }
+
+    /**
+     * Sets a specific tooltip on the JSVGCanvas when a given event
+     * occurs. This listener is used in the handleElement method
+     * to set, remove or modify the JSVGCanvas tooltip on mouseover
+     * and on mouseout.<br/>
+     * Because we are on a single <tt>JComponent</tt> we trigger an
+     * artificial <tt>MouseEvent</tt> when the toolTip is set to 
+     * a non-null value, so as to make sure it will show after the 
+     * <tt>ToolTipManager</tt>'s default delay.
+     *
+     */
+    protected class ToolTipModifier implements EventListener {
+        /**
+         * Value of the toolTip
+         */
+        protected String toolTip;
+
+        /**
+         * @param toolTip value to which the JSVGCanvas should be 
+         *        set when the event occurs.
+         */
+        public ToolTipModifier(String toolTip){
+            this.toolTip = toolTip;
+        }
+
+        public void handleEvent(Event evt){
+            setToolTipText(toolTip);
+
+            if(toolTip != null){
+                MouseEvent e = new MouseEvent(JSVGCanvas.this,
+                                              MouseEvent.MOUSE_ENTERED,
+                                              System.currentTimeMillis(),
+                                              0,
+                                              locationListener.getLastX(),
+                                              locationListener.getLastY(),
+                                              0,
+                                              false);
+                ToolTipManager.sharedInstance().mouseEntered(e);
+            }
+        }
+    }
+
 }

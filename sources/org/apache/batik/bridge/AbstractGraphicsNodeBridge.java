@@ -96,6 +96,8 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
             ctx.bind(e, node);
             BridgeEventSupport.addDOMListener(ctx, e);
         }
+
+        SVGUtilities.bridgeChildren(ctx, e);
     }
 
     /**
