@@ -67,4 +67,20 @@ public class InterpreterException extends Exception {
     public Exception getException() {
         return embedded;
     }
+
+    /**
+     * Returns the message of this exception. If an error message has
+     * been specified, returns that one. Otherwise, return the error message
+     * of enclosed exception or null if any.
+     */
+    public String getMessage() {
+        String msg = super.getMessage();
+        if (msg != null) {
+            return msg;
+        } else if (embedded != null) {
+            return embedded.getMessage();
+        } else {
+            return null;
+        }
+    }
 }
