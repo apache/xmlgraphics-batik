@@ -34,7 +34,7 @@ public class BufferedDocumentLoader implements DocumentLoader {
     /**
      * The maximum number of cachable nodes.
      */
-    public static final int MAX_CACHED_NODE_COUNT = 10000;
+    public static final int MAX_CACHED_NODE_COUNT = 2000;
 
     /**
      * The enclosed document loader used to load the document when needed.
@@ -112,10 +112,8 @@ public class BufferedDocumentLoader implements DocumentLoader {
         return document;
     }
 
-    /**
-     * Removes all cached documents.
-     */
-    public void clear() {
+    public void dispose() {
+        System.out.println("*** CACHE *** dispose");
         documentMap.clear();
         documentList.clear();
     }

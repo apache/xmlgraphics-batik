@@ -44,4 +44,8 @@ public class SVGDocumentLoader implements DocumentLoader {
     public Document loadDocument(String uri) throws DOMException, SAXException, InterruptedException {
         return documentFactory.createDocument(uri, new InputSource(uri));
     }
+
+    public void dispose() {
+        // Nothing to do
+    }
 }

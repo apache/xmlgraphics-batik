@@ -688,7 +688,7 @@ public class SVGUtilities implements SVGConstants {
             units = unitsDefault;
         }
 
-        System.out.println("units : " + units);
+        //System.out.println("units : " + units);
         if(VALUE_OBJECT_BOUNDING_BOX.equals(units)){
             //
             // Values are in 'objectBoundingBox' units

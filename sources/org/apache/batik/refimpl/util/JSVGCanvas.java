@@ -354,6 +354,7 @@ public class JSVGCanvas
                     bridgeContext.setGVTBuilder(builder);
                     long t1 = System.currentTimeMillis();
                     root = builder.build(bridgeContext, document);
+                    bridgeContext.getDocumentLoader().dispose();
                     long t2 = System.currentTimeMillis();
 
                     System.out.println("---- GVT tree construction ---- " +
