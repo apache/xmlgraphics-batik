@@ -70,6 +70,9 @@ import org.apache.batik.ext.awt.image.SVGComposite;
  */
 public class GraphicsUtil {
 
+    public static boolean useMacOSXHacks = 
+	("Mac OS X".equals(System.getProperty("os.name")));
+
     public static AffineTransform IDENTITY = new AffineTransform();
 
     /**
@@ -283,7 +286,11 @@ public class GraphicsUtil {
             // System.out.println("Starting Draw: " + cr);
             long startTime = System.currentTimeMillis();
 
-            if (false) {
+            if (useMacOSXHacks) {
+		// We use this code path on MacOSX since the tile
+		// drawing code below sometimes dies for no real
+		// reason this seems to behave better.
+
                 // org.ImageDisplay.showImage("foo: ", cr);
                 // This can be significantly faster but can also
                 // require much more memory.

@@ -288,6 +288,7 @@ public class FindDialog extends JDialog implements ActionMap {
 	    gn = walker.nextGraphicsNode();
 	    while (gn != null && 
 		   ((currentIndex = match(gn, text, currentIndex)) < 0)) {
+		currentIndex = 0;
 		gn = walker.nextGraphicsNode();
 	    }
 	}
@@ -295,13 +296,12 @@ public class FindDialog extends JDialog implements ActionMap {
     }
 
     /**
-     * Returns the index inside the specified TextNode of the specified text, or
-     * -1 if not found.
+     * Returns the index inside the specified TextNode of the
+     * specified text, or -1 if not found.
      *
      * @param node the graphics node to check
      * @param text the text use to match 
-     * @param index the index from which to start
-     */
+     * @param index the index from which to start */
     protected int match(GraphicsNode node, String text, int index) {
         if (!(node instanceof TextNode)
             || !node.isVisible()
@@ -326,15 +326,22 @@ public class FindDialog extends JDialog implements ActionMap {
         }
 	TextNode textNode = (TextNode)gn;
 	// mark the selection of the substring found
-	String text = textNode.getText();
+	String text    = textNode.getText();
 	String pattern = search.getText();
+        if (!caseSensitive.isSelected()) {
+            text    = text.toLowerCase();
+            pattern = pattern.toLowerCase();
+        }
+	int end = text.indexOf(pattern, currentIndex);
+
 	AttributedCharacterIterator aci = 
 	    textNode.getAttributedCharacterIterator();
 	aci.first();
-	for (int i=0; i < text.indexOf(pattern, currentIndex); ++i) {
+	for (int i=0; i < end; ++i) {
 	    aci.next();
 	}
 	Mark startMark = textNode.getMarkerForChar(aci.getIndex(), true);
+	
 	for (int i = 0; i < pattern.length()-1; ++i) {
 	    aci.next();
 	}

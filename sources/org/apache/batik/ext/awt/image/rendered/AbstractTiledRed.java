@@ -13,7 +13,9 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 import java.util.Map;
 import java.util.List;
 import java.awt.Rectangle;
+import java.awt.Point;
 
+import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.awt.image.SampleModel;
@@ -380,33 +382,7 @@ public abstract class AbstractTiledRed
                 (insideTx0, insideTy0, xtiles, ytiles, occupied,
                  0, 0, xtiles, ytiles);
             // System.out.println("Starting Splits");
-            TileBlock [] blocks = block.getBestSplit();
-
-            // System.out.println("Starting Computation: " + this);
-            if (blocks != null)
-                // System.out.println("Ending Splits: " + blocks.length);
-
-                for (int i=0; i<blocks.length; i++) {
-                    TileBlock curr = blocks[i];
-                    
-                    // System.out.println("Block " + i + ":\n" + curr);
-
-                    int xloc = curr.getXLoc()*tileWidth +tileGridXOff;
-                    int yloc = curr.getYLoc()*tileHeight+tileGridYOff;
-                    Rectangle tb = new Rectangle(xloc, yloc,
-                                                 curr.getWidth()*tileWidth,
-                                                 curr.getHeight()*tileHeight);
-                    tb = tb.intersection(bounds);
-
-                    WritableRaster child = 
-                        wr.createWritableChild(tb.x, tb.y, tb.width, tb.height,
-                                               tb.x, tb.y, null);
-                    // System.out.println("Computing : " + child);
-                    genRect(child);
-
-                    if (Thread.currentThread().isInterrupted())
-                        return;
-                }
+	    drawBlock(block, wr);
             // Exception e= new Exception("Foo");
             // e.printStackTrace();
         }
@@ -508,5 +484,90 @@ public abstract class AbstractTiledRed
             }
     }
 
+    protected void drawBlock(TileBlock block, WritableRaster wr) {
+	TileBlock [] blocks = block.getBestSplit();
+	if (blocks == null)
+	    return;
+
+	if (GraphicsUtil.useMacOSXHacks) 
+	    // Mac OS X doesn't properly handle child rasters that
+	    // only reference part of the parent.  In particular it
+	    // appears to draw as if the childs X & Y were located at
+	    // the parents upper left corner.
+	    drawBlockAndCopy(blocks, wr);
+	else
+	    drawBlockInPlace(blocks, wr);
+    }
+
+    protected void drawBlockAndCopy(TileBlock []blocks, WritableRaster wr) {
+	if (blocks.length == 1) {
+	    TileBlock curr = blocks[0];
+	    int xloc = curr.getXLoc()*tileWidth +tileGridXOff;
+	    int yloc = curr.getYLoc()*tileHeight+tileGridYOff;
+	    if ((xloc == wr.getMinX()) &&
+		(yloc == wr.getMinY())) {
+		// Safe to draw in place...
+		drawBlockInPlace(blocks, wr);
+		return;
+	    }
+	}
+
+	int maxSz=0;
+	for (int i=0; i<blocks.length; i++) {
+	    int sz = ((blocks[i].getWidth() *tileWidth)*
+		      (blocks[i].getHeight()*tileHeight));
+	    if (sz > maxSz) maxSz=sz;
+	}
+	DataBufferInt dbi = new DataBufferInt(maxSz);
+	int [] masks = { 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000 };
+	boolean use_INT_PACK = GraphicsUtil.is_INT_PACK_Data
+	    (wr.getSampleModel(), false);
+
+	for (int i=0; i<blocks.length; i++) {
+	    TileBlock curr = blocks[i];
+	    int xloc = curr.getXLoc()*tileWidth +tileGridXOff;
+	    int yloc = curr.getYLoc()*tileHeight+tileGridYOff;
+	    Rectangle tb = new Rectangle(xloc, yloc,
+					 curr.getWidth()*tileWidth,
+					 curr.getHeight()*tileHeight);
+	    tb = tb.intersection(bounds);
+	    Point loc = new Point(tb.x, tb.y);
+	    WritableRaster child = Raster.createPackedRaster
+		(dbi, tb.width, tb.height, tb.width, masks, loc);
+	    genRect(child);
+	    if (use_INT_PACK) GraphicsUtil.copyData_INT_PACK(child, wr);
+	    else              GraphicsUtil.copyData_FALLBACK(child, wr);
+
+	    if (Thread.currentThread().isInterrupted())
+		return;
+	}
+    }
+
+
+    protected void drawBlockInPlace(TileBlock [] blocks, WritableRaster wr) {
+	// System.out.println("Ending Splits: " + blocks.length);
+
+	for (int i=0; i<blocks.length; i++) {
+	    TileBlock curr = blocks[i];
+                    
+	    // System.out.println("Block " + i + ":\n" + curr);
+
+	    int xloc = curr.getXLoc()*tileWidth +tileGridXOff;
+	    int yloc = curr.getYLoc()*tileHeight+tileGridYOff;
+	    Rectangle tb = new Rectangle(xloc, yloc,
+					 curr.getWidth()*tileWidth,
+					 curr.getHeight()*tileHeight);
+	    tb = tb.intersection(bounds);
+
+	    WritableRaster child = 
+		wr.createWritableChild(tb.x, tb.y, tb.width, tb.height,
+				       tb.x, tb.y, null);
+	    // System.out.println("Computing : " + child);
+	    genRect(child);
+
+	    if (Thread.currentThread().isInterrupted())
+		return;
+	}
+    }
 }
 
