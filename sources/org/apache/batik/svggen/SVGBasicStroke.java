@@ -157,7 +157,7 @@ public class SVGBasicStroke extends AbstractSVGConverter{
             while(iter.hasNext()){
                 String attrName = (String)iter.next();
                 String attrValue = (String)attrMap.get(attrName);
-                rectElement.setAttribute(attrName, attrValue);
+                rectElement.setAttributeNS(SVG_NAMESPACE_URI, attrName, attrValue);
             }
             rectGroup.appendChild(rectElement);
         }

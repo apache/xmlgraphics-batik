@@ -131,7 +131,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
                 // Process the filter value
                 StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
                 filterAttrBuf.append(SIGN_POUND);
-                filterAttrBuf.append(filterDef.getAttribute(ATTR_ID));
+                filterAttrBuf.append(filterDef.getAttributeNS(SVG_NAMESPACE_URI, ATTR_ID));
                 filterAttrBuf.append(URL_SUFFIX);
 
                 filterValue = filterAttrBuf.toString();
@@ -222,32 +222,32 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
         }
 
         Element compositeFilter = domFactory.createElement(SVG_FILTER_TAG);
-        compositeFilter.setAttribute(ATTR_ID, id);
-        compositeFilter.setAttribute(SVG_FILTER_UNITS_ATTRIBUTE,
+        compositeFilter.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, id);
+        compositeFilter.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_UNITS_ATTRIBUTE,
                                      SVG_OBJECT_BOUNDING_BOX_VALUE);
-        compositeFilter.setAttribute(SVG_X_ATTRIBUTE, VALUE_ZERO_PERCENT);
-        compositeFilter.setAttribute(SVG_Y_ATTRIBUTE, VALUE_ZERO_PERCENT);
-        compositeFilter.setAttribute(SVG_WIDTH_ATTRIBUTE, VALUE_HUNDRED_PERCENT);
-        compositeFilter.setAttribute(SVG_HEIGHT_ATTRIBUTE, VALUE_HUNDRED_PERCENT);
+        compositeFilter.setAttributeNS(SVG_NAMESPACE_URI, SVG_X_ATTRIBUTE, VALUE_ZERO_PERCENT);
+        compositeFilter.setAttributeNS(SVG_NAMESPACE_URI, SVG_Y_ATTRIBUTE, VALUE_ZERO_PERCENT);
+        compositeFilter.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, VALUE_HUNDRED_PERCENT);
+        compositeFilter.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, VALUE_HUNDRED_PERCENT);
 
         Element feComposite = domFactory.createElement(SVG_FE_COMPOSITE_TAG);
-        feComposite.setAttribute(SVG_OPERATOR_ATTRIBUTE, operator);
-        feComposite.setAttribute(SVG_IN_ATTRIBUTE, input1);
-        feComposite.setAttribute(SVG_IN2_ATTRIBUTE, input2);
-        feComposite.setAttribute(SVG_K2_ATTRIBUTE, k2);
-        feComposite.setAttribute(ATTR_RESULT, VALUE_COMPOSITE);
+        feComposite.setAttributeNS(SVG_NAMESPACE_URI, SVG_OPERATOR_ATTRIBUTE, operator);
+        feComposite.setAttributeNS(SVG_NAMESPACE_URI, SVG_IN_ATTRIBUTE, input1);
+        feComposite.setAttributeNS(SVG_NAMESPACE_URI, SVG_IN2_ATTRIBUTE, input2);
+        feComposite.setAttributeNS(SVG_NAMESPACE_URI, SVG_K2_ATTRIBUTE, k2);
+        feComposite.setAttributeNS(SVG_NAMESPACE_URI, ATTR_RESULT, VALUE_COMPOSITE);
 
         Element feFlood = domFactory.createElement(SVG_FE_FLOOD_TAG);
-        feFlood.setAttribute(SVG_FLOOD_COLOR_ATTRIBUTE, "white");
-        feFlood.setAttribute(SVG_FLOOD_OPACITY_ATTRIBUTE, "1");
-        feFlood.setAttribute(ATTR_RESULT, VALUE_FLOOD);
+        feFlood.setAttributeNS(SVG_NAMESPACE_URI, SVG_FLOOD_COLOR_ATTRIBUTE, "white");
+        feFlood.setAttributeNS(SVG_NAMESPACE_URI, SVG_FLOOD_OPACITY_ATTRIBUTE, "1");
+        feFlood.setAttributeNS(SVG_NAMESPACE_URI, ATTR_RESULT, VALUE_FLOOD);
 
 
         Element feMerge = domFactory.createElement(SVG_FE_MERGE_TAG);
         Element feMergeNodeFlood = domFactory.createElement(SVG_FE_MERGE_NODE_TAG);
-        feMergeNodeFlood.setAttribute(SVG_IN_ATTRIBUTE, VALUE_FLOOD);
+        feMergeNodeFlood.setAttributeNS(SVG_NAMESPACE_URI, SVG_IN_ATTRIBUTE, VALUE_FLOOD);
         Element feMergeNodeComposite = domFactory.createElement(SVG_FE_MERGE_NODE_TAG);
-        feMergeNodeComposite.setAttribute(SVG_IN_ATTRIBUTE, VALUE_COMPOSITE);
+        feMergeNodeComposite.setAttributeNS(SVG_NAMESPACE_URI, SVG_IN_ATTRIBUTE, VALUE_COMPOSITE);
 
         feMerge.appendChild(feMergeNodeFlood);
         feMerge.appendChild(feMergeNodeComposite);
@@ -283,11 +283,11 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
         SVGAlphaComposite converter = new SVGAlphaComposite(domFactory);
 
         Element groupOne = domFactory.createElement(SVG_G_TAG);
-        groupOne.setAttribute(ATTR_ID, "groupOne");
+        groupOne.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, "groupOne");
         buildTestGroup(groupOne, composites, converter);
 
         Element groupTwo = domFactory.createElement(SVG_G_TAG);
-        groupTwo.setAttribute(ATTR_ID, "group2");
+        groupTwo.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, "group2");
         buildTestGroup(groupTwo, composites, converter);
 
         Element defs = domFactory.createElement(SVG_DEFS_TAG);
@@ -298,12 +298,12 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
         }
 
         Element groupThree = domFactory.createElement(SVG_G_TAG);
-        groupThree.setAttribute(ATTR_ID, "groupThree");
+        groupThree.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, "groupThree");
         SVGAlphaComposite newConverter = new SVGAlphaComposite(domFactory);
         buildTestGroup(groupThree, new AlphaComposite[]{ ac.SrcIn, ac.DstOut },
         newConverter);
         Element newDefs = domFactory.createElement(SVG_DEFS_TAG);
-        newDefs.setAttribute(ATTR_ID, "alphaCompositeSubset");
+        newDefs.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, "alphaCompositeSubset");
         Iterator newIter = newConverter.getDefinitionSet().iterator();
         while(newIter.hasNext()){
             Element filter = (Element)newIter.next();
@@ -331,9 +331,9 @@ public class SVGAlphaComposite extends AbstractSVGConverter{
         for(int i=0; i<composites.length; i++){
             SVGCompositeDescriptor compositeDesc = converter.toSVG(composites[i]);
             Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttribute(ATTR_OPACITY, compositeDesc.getOpacityValue());
+            rect.setAttributeNS(SVG_NAMESPACE_URI, ATTR_OPACITY, compositeDesc.getOpacityValue());
             if(compositeDesc.getDef() != null)
-                rect.setAttribute(SVG_FILTER_ATTRIBUTE, compositeDesc.getFilterValue());
+                rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE, compositeDesc.getFilterValue());
             group.appendChild(rect);
         }
     }

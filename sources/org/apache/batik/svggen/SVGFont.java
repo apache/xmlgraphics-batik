@@ -122,7 +122,7 @@ public class SVGFont extends AbstractSVGConverter{
      * @return description of attribute values that describe the font
      */
     public static SVGFontDescriptor toSVG(Font font){
-        String fontSize = "" + font.getSize() + "pt";
+        String fontSize = "" + font.getSize();
         String fontWeight = weightToSVG(font);
         String fontStyle = styleToSVG(font);
         String fontFamilyStr = font.getFamily();
@@ -259,11 +259,11 @@ public class SVGFont extends AbstractSVGConverter{
             while(iter.hasNext()){
                 String attrName = (String)iter.next();
                 String attrValue = (String)attrMap.get(attrName);
-                textElement.setAttribute(attrName, attrValue);
+                textElement.setAttributeNS(SVG_NAMESPACE_URI, attrName, attrValue);
             }
-            textElement.setAttribute(SVG_FONT_SIZE_ATTRIBUTE, "30");
-            textElement.setAttribute(SVG_X_ATTRIBUTE, "30");
-            textElement.setAttribute(SVG_Y_ATTRIBUTE, "" + (40*(i+1)));
+            textElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_FONT_SIZE_ATTRIBUTE, "30");
+            textElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_X_ATTRIBUTE, "30");
+            textElement.setAttributeNS(SVG_NAMESPACE_URI, SVG_Y_ATTRIBUTE, "" + (40*(i+1)));
             textElement.appendChild(domFactory.createTextNode(font.getFamily()));
             group.appendChild(textElement);
         }

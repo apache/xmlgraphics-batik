@@ -99,25 +99,25 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
             String type = VALUE_TYPE_TABLE;
 
             if(lookupTables.length == 1){
-                feFuncR.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                feFuncG.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                feFuncB.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                feFuncR.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
-                feFuncG.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
-                feFuncB.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
+                feFuncR.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
+                feFuncG.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
+                feFuncB.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
+                feFuncR.setAttributeNS(SVG_NAMESPACE_URI, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
+                feFuncG.setAttributeNS(SVG_NAMESPACE_URI, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
+                feFuncB.setAttributeNS(SVG_NAMESPACE_URI, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
             }
             else if(lookupTables.length >= 3){
-                feFuncR.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                feFuncG.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                feFuncB.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                feFuncR.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
-                feFuncG.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[1]);
-                feFuncB.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[2]);
+                feFuncR.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
+                feFuncG.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
+                feFuncB.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
+                feFuncR.setAttributeNS(SVG_NAMESPACE_URI, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[0]);
+                feFuncG.setAttributeNS(SVG_NAMESPACE_URI, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[1]);
+                feFuncB.setAttributeNS(SVG_NAMESPACE_URI, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[2]);
 
                 if(lookupTables.length == 4){
                     feFuncA = domFactory.createElement(SVG_FE_FUNC_A_TAG);
-                    feFuncA.setAttribute(SVG_TYPE_ATTRIBUTE, type);
-                    feFuncA.setAttribute(SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[3]);
+                    feFuncA.setAttributeNS(SVG_NAMESPACE_URI, SVG_TYPE_ATTRIBUTE, type);
+                    feFuncA.setAttributeNS(SVG_NAMESPACE_URI, SVG_TABLE_VALUES_ATTRIBUTE, lookupTables[3]);
                 }
             }
 
@@ -128,7 +128,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
                 feComponentTransferDef.appendChild(feFuncA);
 
             filterDef.appendChild(feComponentTransferDef);
-            filterDef.setAttribute(ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_FE_COMPONENT_TRANSFER));
+            filterDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_FE_COMPONENT_TRANSFER));
 
             //
             // Create a filter descriptor
@@ -137,7 +137,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
             // Process filter attribute
             StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
             filterAttrBuf.append(SIGN_POUND);
-            filterAttrBuf.append(filterDef.getAttribute(ATTR_ID));
+            filterAttrBuf.append(filterDef.getAttributeNS(SVG_NAMESPACE_URI, ATTR_ID));
             filterAttrBuf.append(URL_SUFFIX);
 
             filterDesc = new SVGFilterDescriptor(filterAttrBuf.toString(), filterDef);
@@ -292,14 +292,14 @@ public class SVGLookupOp extends AbstractSVGFilterConverter{
         for(int i=0; i<lookupOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(lookupOps[i]);
             Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttribute(SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
+            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupOne.appendChild(rect);
         }
 
         for(int i=0; i<lookupOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(lookupOps[i]);
             Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttribute(SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
+            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupTwo.appendChild(rect);
         }
 

@@ -109,7 +109,7 @@ public class ImageHandlerPNGEncoder extends AbstractImageHandlerEncoder{
         g.dispose();
 
         imageHandler.handleImage((RenderedImage)testImage, imageElement);
-        System.out.println("Generated xlink:href is : " + imageElement.getAttribute(SVGSyntax.ATTR_HREF));
+        System.out.println("Generated xlink:href is : " + imageElement.getAttributeNS(SVG_NAMESPACE_URI, SVGSyntax.ATTR_HREF));
         System.exit(0);
     }
 }

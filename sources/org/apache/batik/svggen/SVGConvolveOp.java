@@ -76,7 +76,7 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
                 domFactory.createElement(SVG_FE_CONVOLVE_MATRIX_TAG);
 
             // Convert the kernel size
-            feConvolveMatrixDef.setAttribute(SVG_ORDER_ATTRIBUTE,
+            feConvolveMatrixDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_ORDER_ATTRIBUTE,
                                              kernel.getWidth() + SPACE +
                                              kernel.getHeight());
 
@@ -88,18 +88,18 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
                 kernelMatrixBuf.append(SPACE);
             }
 
-            feConvolveMatrixDef.setAttribute(SVG_KERNEL_MATRIX_ATTRIBUTE,
+            feConvolveMatrixDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_KERNEL_MATRIX_ATTRIBUTE,
                                              kernelMatrixBuf.toString().trim());
 
             filterDef.appendChild(feConvolveMatrixDef);
-            filterDef.setAttribute(ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_FE_CONVOLVE_MATRIX));
+            filterDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_FE_CONVOLVE_MATRIX));
 
             // Convert the edge mode
             if(convolveOp.getEdgeCondition() == ConvolveOp.EDGE_NO_OP)
-                feConvolveMatrixDef.setAttribute(SVG_EDGE_MODE_ATTRIBUTE,
+                feConvolveMatrixDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_EDGE_MODE_ATTRIBUTE,
                                                  SVG_DUPLICATE_VALUE);
             else
-                feConvolveMatrixDef.setAttribute(SVG_EDGE_MODE_ATTRIBUTE,
+                feConvolveMatrixDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_EDGE_MODE_ATTRIBUTE,
                                                  SVG_NONE_VALUE);
 
             //
@@ -109,7 +109,7 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
             // Process filter attribute
             StringBuffer filterAttrBuf = new StringBuffer(URL_PREFIX);
             filterAttrBuf.append(SIGN_POUND);
-            filterAttrBuf.append(filterDef.getAttribute(ATTR_ID));
+            filterAttrBuf.append(filterDef.getAttributeNS(SVG_NAMESPACE_URI, ATTR_ID));
             filterAttrBuf.append(URL_SUFFIX);
 
             filterDesc = new SVGFilterDescriptor(filterAttrBuf.toString(), filterDef);
@@ -145,14 +145,14 @@ public class SVGConvolveOp extends AbstractSVGFilterConverter{
         for(int i=0; i<convolveOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(convolveOps[i]);
             Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttribute(SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
+            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupOne.appendChild(rect);
         }
 
         for(int i=0; i<convolveOps.length; i++){
             SVGFilterDescriptor filterDesc = converter.toSVG(convolveOps[i]);
             Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttribute(SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
+            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILTER_ATTRIBUTE, filterDesc.getFilterValue());
             rectGroupTwo.appendChild(rect);
         }
 

@@ -199,7 +199,7 @@ public class DOMGroupManager implements SVGSyntax{
     private void setTransform(Element element, TransformStackElement transformStack[]){
         String transform = domTreeManager.gcConverter.toSVG(transformStack).trim();
         if(transform.length() > 0)
-            element.setAttribute(ATTR_TRANSFORM, transform);
+            element.setAttributeNS(SVG_NAMESPACE_URI, ATTR_TRANSFORM, transform);
     }
 
     /**
@@ -212,8 +212,8 @@ public class DOMGroupManager implements SVGSyntax{
         Iterator iter = attrMap.keySet().iterator();
         while(iter.hasNext()){
             String attrName = (String)iter.next();
-            if(element.getAttribute(attrName).length() == 0)
-                element.setAttribute(attrName, (String)attrMap.get(attrName));
+            if(element.getAttributeNS(SVG_NAMESPACE_URI, attrName).length() == 0)
+                element.setAttributeNS(SVG_NAMESPACE_URI, attrName, (String)attrMap.get(attrName));
         }
     }
 
@@ -321,8 +321,8 @@ public class DOMGroupManager implements SVGSyntax{
                 Element path = domFactory.createElement(TAG_PATH);
                 Element polygon = domFactory.createElement(TAG_POLYGON);
 
-                rect.setAttribute(ATTR_FILL, VALUE_NONE);
-                polygon.setAttribute(ATTR_STROKE, VALUE_NONE);
+                rect.setAttributeNS(SVG_NAMESPACE_URI, ATTR_FILL, VALUE_NONE);
+                polygon.setAttributeNS(SVG_NAMESPACE_URI, ATTR_STROKE, VALUE_NONE);
 
                 domTreeManager.addElement(rect);
 

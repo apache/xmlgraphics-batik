@@ -247,7 +247,7 @@ public class DOMTreeManager implements SVGSyntax{
 
         // Enable background if required by AlphaComposite convertion
         if(gcConverter.getCompositeConverter().getAlphaCompositeConverter().requiresBackgroundAccess())
-            svg.setAttribute(SVG_ENABLE_BACKGROUND_ATTRIBUTE, VALUE_NEW);
+            svg.setAttributeNS(SVG_NAMESPACE_URI, SVG_ENABLE_BACKGROUND_ATTRIBUTE, VALUE_NEW);
 
         Comment generatorComment = domFactory.createComment(GENERATOR_COMMENT);
         svg.appendChild(generatorComment);
@@ -257,7 +257,7 @@ public class DOMTreeManager implements SVGSyntax{
         Iterator iter = groupDefaults.keySet().iterator();
         while(iter.hasNext()){
             String attrName = (String)iter.next();
-            svg.setAttribute(attrName, (String)groupDefaults.get(attrName));
+            svg.setAttributeNS(SVG_NAMESPACE_URI, attrName, (String)groupDefaults.get(attrName));
         }
 
         svg.appendChild(getGenericDefinitions());
@@ -277,7 +277,7 @@ public class DOMTreeManager implements SVGSyntax{
             genericDefs.appendChild((Element)iter.next());
         }
 
-        genericDefs.setAttribute(ATTR_ID, ID_PREFIX_GENERIC_DEFS);
+        genericDefs.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, ID_PREFIX_GENERIC_DEFS);
         return genericDefs;
     }
 
@@ -357,7 +357,7 @@ public class DOMTreeManager implements SVGSyntax{
 
                 if(defElement == null){
                     defElement = domFactory.createElement(SVG_DEFS_TAG);
-                    defElement.setAttribute(ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_DEFS));
+                    defElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID, SVGIDGenerator.generateID(ID_PREFIX_DEFS));
                     if(topLevelGroup.getChildNodes().getLength() > 0)
                         topLevelGroup.insertBefore(defElement, topLevelGroup.getFirstChild());
                     else
@@ -415,8 +415,8 @@ public class DOMTreeManager implements SVGSyntax{
         Element path = domFactory.createElement(TAG_PATH);
         Element polygon = domFactory.createElement(TAG_POLYGON);
 
-        rect.setAttribute(SVG_FILL_ATTRIBUTE, SVG_NONE_VALUE);
-        polygon.setAttribute(ATTR_STROKE, SVG_NONE_VALUE);
+        rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_ATTRIBUTE, SVG_NONE_VALUE);
+        polygon.setAttributeNS(SVG_NAMESPACE_URI, ATTR_STROKE, SVG_NONE_VALUE);
 
         domGroupManager.addElement(rect);
 

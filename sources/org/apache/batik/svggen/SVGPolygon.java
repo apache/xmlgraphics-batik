@@ -60,7 +60,7 @@ public class SVGPolygon extends SVGGraphicObjectConverter{
             pi.next();
         } // while !isDone
 
-        svgPolygon.setAttribute(ATTR_POINTS, points.substring(0, points.length() - 1));
+        svgPolygon.setAttributeNS(SVG_NAMESPACE_URI, ATTR_POINTS, points.substring(0, points.length() - 1));
 
         return svgPolygon;
     }

@@ -42,8 +42,8 @@ public class SVGRectangle extends SVGGraphicObjectConverter{
      */
     public Element toSVG(RoundRectangle2D rect){
         Element svgRect = toSVG((RectangularShape)rect);
-        svgRect.setAttribute(SVG_RX_ATTRIBUTE, doubleString(rect.getArcWidth()/2));
-        svgRect.setAttribute(SVG_RY_ATTRIBUTE, doubleString(rect.getArcHeight()/2));
+        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_RX_ATTRIBUTE, doubleString(rect.getArcWidth()/2));
+        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_RY_ATTRIBUTE, doubleString(rect.getArcHeight()/2));
         return svgRect;
     }
 
@@ -53,10 +53,10 @@ public class SVGRectangle extends SVGGraphicObjectConverter{
      */
     private Element toSVG(RectangularShape rect){
         Element svgRect = domFactory.createElement(TAG_RECT);
-        svgRect.setAttribute(SVG_X_ATTRIBUTE, doubleString(rect.getX()));
-        svgRect.setAttribute(SVG_Y_ATTRIBUTE, doubleString(rect.getY()));
-        svgRect.setAttribute(SVG_WIDTH_ATTRIBUTE, doubleString(rect.getWidth()));
-        svgRect.setAttribute(SVG_HEIGHT_ATTRIBUTE, doubleString(rect.getHeight()));
+        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_X_ATTRIBUTE, doubleString(rect.getX()));
+        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_Y_ATTRIBUTE, doubleString(rect.getY()));
+        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE, doubleString(rect.getWidth()));
+        svgRect.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE, doubleString(rect.getHeight()));
 
         return svgRect;
     }

@@ -141,7 +141,7 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler{
         encodeImage(buf, imageFile);
 
         // Update HREF
-        imageElement.setAttribute(ATTR_HREF, urlRoot + "/" + imageFile.getName());
+        imageElement.setAttributeNS(SVG_NAMESPACE_URI, ATTR_HREF, urlRoot + "/" + imageFile.getName());
     }
 
     /**

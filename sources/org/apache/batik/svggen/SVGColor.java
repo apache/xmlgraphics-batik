@@ -149,8 +149,8 @@ public class SVGColor extends AbstractSVGConverter{
         for(int i=0; i<testColors.length; i++){
             SVGPaintDescriptor paintDesc = toSVG(testColors[i]);
             Element rect = domFactory.createElement(TAG_RECT);
-            rect.setAttribute(SVG_FILL_ATTRIBUTE, paintDesc.getPaintValue());
-            rect.setAttribute(SVG_FILL_OPACITY_ATTRIBUTE, paintDesc.getOpacityValue());
+            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_ATTRIBUTE, paintDesc.getPaintValue());
+            rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_OPACITY_ATTRIBUTE, paintDesc.getOpacityValue());
             group.appendChild(rect);
         }
 

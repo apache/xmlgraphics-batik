@@ -19,7 +19,7 @@ import javax.swing.*;
  * @author             Vincent Hardy
  * @version            1.1, May 2nd, 2000. Added 
  */
-public abstract class SwingSVGPrettyPrint{
+public abstract class SwingSVGPrettyPrint implements SVGSyntax{
 	/**
 	 * @param cmp Swing component to be converted to SVG
 	 * @param svgGen SVGraphics2D to use to paint Swing components
@@ -54,7 +54,7 @@ public abstract class SwingSVGPrettyPrint{
 
 		// Now, structure DOM tree to reflect this component's structure
 		Element cmpGroup = g.getTopLevelGroup();
-		cmpGroup.setAttribute("id", SVGIDGenerator.generateID(cmp.getClass().getName()));
+		cmpGroup.setAttributeNS(SVG_NAMESPACE_URI, "id", SVGIDGenerator.generateID(cmp.getClass().getName()));
 
 		topLevelGroup.appendChild(cmpGroup);
 		svgGen.setTopLevelGroup(topLevelGroup);
@@ -86,7 +86,7 @@ public abstract class SwingSVGPrettyPrint{
 
 		// Now, structure DOM tree to reflect this component's structure
 		Element cmpGroup = g.getTopLevelGroup();
-		cmpGroup.setAttribute("id", SVGIDGenerator.generateID(cmp.getClass().getName()));
+		cmpGroup.setAttributeNS(SVG_NAMESPACE_URI, "id", SVGIDGenerator.generateID(cmp.getClass().getName()));
 
 		topLevelGroup.appendChild(cmpGroup);
 		svgGen.setTopLevelGroup(topLevelGroup);

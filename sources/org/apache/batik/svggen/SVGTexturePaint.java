@@ -80,19 +80,19 @@ public class SVGTexturePaint extends AbstractSVGConverter{
         if(patternDesc == null){
             Rectangle2D anchorRect = texture.getAnchorRect();
             Element patternDef = domFactory.createElement(TAG_PATTERN);
-            patternDef.setAttribute(ATTR_PATTERN_UNITS,
+            patternDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_PATTERN_UNITS,
                                     SVG_USER_SPACE_ON_USE_VALUE);
 
             //
             // First, set the pattern anchor
             //
-            patternDef.setAttribute(SVG_X_ATTRIBUTE,
+            patternDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_X_ATTRIBUTE,
                                     doubleString(anchorRect.getX()));
-            patternDef.setAttribute(SVG_Y_ATTRIBUTE,
+            patternDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_Y_ATTRIBUTE,
                                     doubleString(anchorRect.getY()));
-            patternDef.setAttribute(SVG_WIDTH_ATTRIBUTE,
+            patternDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_WIDTH_ATTRIBUTE,
                                     doubleString(anchorRect.getWidth()));
-            patternDef.setAttribute(SVG_HEIGHT_ATTRIBUTE,
+            patternDef.setAttributeNS(SVG_NAMESPACE_URI, SVG_HEIGHT_ATTRIBUTE,
                                     doubleString(anchorRect.getHeight()));
 
             //
@@ -102,12 +102,12 @@ public class SVGTexturePaint extends AbstractSVGConverter{
             imageHandler.handleImage((RenderedImage)texture.getImage(), imageElement);
             patternDef.appendChild(imageElement);
 
-            patternDef.setAttribute(ATTR_ID,
+            patternDef.setAttributeNS(SVG_NAMESPACE_URI, ATTR_ID,
                                     SVGIDGenerator.generateID(ID_PREFIX_PATTERN));
 
             StringBuffer patternAttrBuf = new StringBuffer(URL_PREFIX);
             patternAttrBuf.append(SIGN_POUND);
-            patternAttrBuf.append(patternDef.getAttribute(ATTR_ID));
+            patternAttrBuf.append(patternDef.getAttributeNS(SVG_NAMESPACE_URI, ATTR_ID));
             patternAttrBuf.append(URL_SUFFIX);
 
             patternDesc = new SVGPaintDescriptor(patternAttrBuf.toString(),
@@ -142,8 +142,8 @@ public class SVGTexturePaint extends AbstractSVGConverter{
         }
 
         Element rect = domFactory.createElement(TAG_RECT);
-        rect.setAttribute(SVG_FILL_ATTRIBUTE, patternDesc.getPaintValue());
-        rect.setAttribute(SVG_FILL_OPACITY_ATTRIBUTE, patternDesc.getOpacityValue());
+        rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_ATTRIBUTE, patternDesc.getPaintValue());
+        rect.setAttributeNS(SVG_NAMESPACE_URI, SVG_FILL_OPACITY_ATTRIBUTE, patternDesc.getOpacityValue());
 
         group.appendChild(defs);
         group.appendChild(rect);
