@@ -124,11 +124,19 @@ public class BridgeException extends RuntimeException {
      * Returns the error message according to the error code and parameters.
      */
     public String getMessage() {
-        String uri = ((SVGDocument)e.getOwnerDocument()).getURL();
+        String uri;
+        String lname = "<Unknown Element>";
+        SVGDocument doc = null;
+        if (e != null) {
+            doc = (SVGDocument)e.getOwnerDocument();
+            lname = e.getLocalName();
+        }
+        if (doc == null)  uri = "<Unknown Document>";
+        else              uri = doc.getURL();
         Object [] fullparams = new Object[params.length+3];
         fullparams[0] = uri;
         fullparams[1] = new Integer(line);
-        fullparams[2] = e.getLocalName();
+        fullparams[2] = lname;
         for (int i=0; i < params.length; ++i) {
             fullparams[i+3] = params[i];
         }

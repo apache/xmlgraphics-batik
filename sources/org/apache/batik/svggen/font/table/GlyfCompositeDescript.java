@@ -65,7 +65,8 @@ public class GlyfCompositeDescript extends GlyfDescript {
 
     private Vector components = new Vector();
 
-    public GlyfCompositeDescript(GlyfTable parentTable, ByteArrayInputStream bais) {
+    public GlyfCompositeDescript(GlyfTable parentTable, 
+                                 ByteArrayInputStream bais) {
         super(parentTable, (short) -1, bais);
         
         // Get all of the composite components
@@ -73,9 +74,15 @@ public class GlyfCompositeDescript extends GlyfDescript {
         int firstIndex = 0;
         int firstContour = 0;
         do {
-            components.addElement(comp = new GlyfCompositeComp(firstIndex, firstContour, bais));
-            firstIndex += parentTable.getDescription(comp.getGlyphIndex()).getPointCount();
-            firstContour += parentTable.getDescription(comp.getGlyphIndex()).getContourCount();
+            comp = new GlyfCompositeComp(firstIndex, firstContour, bais);
+            components.addElement(comp);
+
+            GlyphDescription desc;
+            desc = parentTable.getDescription(comp.getGlyphIndex());
+            if (desc != null) {
+                firstIndex   += desc.getPointCount();
+                firstContour += desc.getContourCount();
+            }
         } while ((comp.getFlags() & GlyfCompositeComp.MORE_COMPONENTS) != 0);
 
         // Are there hinting intructions to read?

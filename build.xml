@@ -1086,6 +1086,7 @@ To display the available targets type:
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
 <!--      <jvmarg value="-Xrunhprof:format=b" /> -->
 <!--      <jvmarg value="-Xrunhprof:net=localhost:7001,format=b" /> -->
+      <jvmarg value="-Xmx512m"/>  <jvmarg value="-Xms64m"/>
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
