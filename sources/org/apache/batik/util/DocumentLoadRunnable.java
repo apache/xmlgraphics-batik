@@ -295,6 +295,7 @@ public class DocumentLoadRunnable implements Runnable, DocumentEventSource {
             fireAsyncDocumentEvent(new DocumentLoadingEvent(
                         DocumentLoadingEvent.LOAD_FAILED, null), false);
         } catch (SAXException e) {
+            System.out.println("Malformed XML document: " +e.getMessage());
             fireAsyncDocumentEvent(new DocumentLoadingEvent(
                         DocumentLoadingEvent.LOAD_FAILED, null), false);
         } catch (Exception e) {
