@@ -204,7 +204,7 @@ public class BasicTextPainter implements TextPainter {
             Error("This Mark was not instantiated by this TextPainter class!");
         }
 
-        Shape shape = null;
+        Shape highlightShape = null;
         TextLayout layout = null;
         if (begin != null) {
             layout = begin.getLayout();
@@ -231,7 +231,7 @@ public class BasicTextPainter implements TextPainter {
             if (firsthit < 0) {
                 firsthit = 0;
             }
-            shape = layout.getLogicalHighlightShape(
+            highlightShape = layout.getLogicalHighlightShape(
                                     firsthit,
                                     lasthit,
                                     layout.getBounds());
@@ -245,10 +245,11 @@ public class BasicTextPainter implements TextPainter {
             }
             AffineTransform t =
                     AffineTransform.getTranslateInstance(tx, ty);
-            shape = t.createTransformedShape(shape);
+            highlightShape = t.createTransformedShape(highlightShape);
         }
-        return shape;
+        return highlightShape;
     }
+
 
     /*
      * Get a Rectangle2D in userspace coords which encloses the textnode
@@ -258,6 +259,48 @@ public class BasicTextPainter implements TextPainter {
      * @param context rendering context.
      */
      public Rectangle2D getBounds(TextNode node,
+               FontRenderContext frc) {
+         return getBounds(node, frc, false, false);
+     }
+
+    /*
+     * Get a Rectangle2D in userspace coords which encloses the textnode
+     * glyphs composed from an AttributedCharacterIterator, inclusive of
+     * glyph decoration (underline, overline, strikethrough).
+     * @param node the TextNode to measure
+     * @param g2d the Graphics2D to use
+     * @param context rendering context.
+     */
+     public Rectangle2D getDecoratedBounds(TextNode node,
+               FontRenderContext frc) {
+         return getBounds(node, frc, true, false);
+     }
+
+    /*
+     * Get a Rectangle2D in userspace coords which encloses the
+     * textnode glyphs (as-painted, inclusive of decoration and stroke, but
+     * exclusive of filters, etc.) composed from an AttributedCharacterIterator.
+     * @param node the TextNode to measure
+     * @param g2d the Graphics2D to use
+     * @param context rendering context.
+     */
+     public Rectangle2D getPaintedBounds(TextNode node,
+               FontRenderContext frc) {
+         return getBounds(node, frc, true, true);
+     }
+
+    /*
+     * Get a Rectangle2D in userspace coords which encloses the textnode
+     * glyphs composed from an AttributedCharacterIterator.
+     * @param node the TextNode to measure
+     * @param g2d the Graphics2D to use
+     * @param context rendering context.
+     * @param includeDecoration whether to include text decoration
+     *            in bounds computation.
+     * @param includeStrokeWidth whether to include the effect of stroke width
+     *            in bounds computation.
+     */
+     protected Rectangle2D getBounds(TextNode node,
                FontRenderContext context,
                boolean includeDecoration,
                boolean includeStrokeWidth) {
@@ -288,10 +331,11 @@ public class BasicTextPainter implements TextPainter {
                               (float) layoutBounds.getHeight());
 
          if (includeDecoration) {
+
+             double decorationThickness = getDecorationThickness(aci, layout);
+
              if (aci.getAttribute(GVTAttributedCharacterIterator.
                                         TextAttribute.UNDERLINE) != null) {
-                 // TODO: check WEIGHT attribute and adjust thickness
-                 double decorationThickness = layout.getAscent()/12f;
                  double y =
                     layout.getDescent()/2 + decorationThickness/2f;
                  bounds.setRect(bounds.getX(), bounds.getY(),
@@ -300,8 +344,7 @@ public class BasicTextPainter implements TextPainter {
 
              if (aci.getAttribute(GVTAttributedCharacterIterator.
                                      TextAttribute.OVERLINE) != null) {
-                 // TODO: check WEIGHT attribute and adjust thickness
-                 double decorationThickness = layout.getAscent()/12f;
+
                  double dy =
                       layout.getAscent()*0.1 + decorationThickness/2f;
                  bounds.setRect(bounds.getX(), bounds.getY(),
@@ -326,6 +369,10 @@ public class BasicTextPainter implements TextPainter {
          return bounds;
 
      }
+
+   private Shape shape = null;
+
+   private Shape decoratedShape = null;
 
    /*
     * Get a Shape in userspace coords which defines the textnode glyph outlines.
@@ -357,7 +404,7 @@ public class BasicTextPainter implements TextPainter {
         AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
         outline = layout.getOutline(t);
 
-        if (includeDecoration) {
+        /*        if (includeDecoration) {
             if (!(outline instanceof GeneralPath)) {
                 outline = new GeneralPath(outline);
             }
@@ -371,9 +418,34 @@ public class BasicTextPainter implements TextPainter {
                                      TextAttribute.OVERLINE) != null) {
                 ((GeneralPath) outline).append(getOverlineShape(aci, layout, location), false);
             }
-        }
-
+            } */
+        System.out.println("Getting outline: "+outline.getBounds());
         return outline;
+    }
+
+   /*
+    * Get a Shape in userspace coords which defines the textnode glyph outlines.
+    * @param node the TextNode to measure
+    * @param frc the font rendering context.
+    */
+    public Shape getShape(TextNode node, FontRenderContext frc) {
+        if (shape == null) {
+            shape = getOutline(node, frc, false);
+        }
+        return shape;
+    }
+
+   /*
+    * Get a Shape in userspace coords which defines the
+    * decorated textnode glyph outlines.
+    * @param node the TextNode to measure
+    * @param frc the font rendering context.
+    */
+    public Shape getDecoratedShape(TextNode node, FontRenderContext frc) {
+        if (decoratedShape == null) {
+            decoratedShape = getOutline(node, frc, true);
+        }
+        return decoratedShape;
     }
 
    /*

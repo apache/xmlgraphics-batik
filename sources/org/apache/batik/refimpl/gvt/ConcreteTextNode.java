@@ -137,8 +137,8 @@ public class ConcreteTextNode
 
         if (primitiveBounds == null) {
             if (aci != null) {
-                primitiveBounds = rc.getTextPainter().getBounds(this,
-                                       rc.getFontRenderContext(), true, true);
+                primitiveBounds = rc.getTextPainter().getPaintedBounds(this,
+                                       rc.getFontRenderContext());
             } else {
                 // Don't cache if ACI is null
                 return new Rectangle2D.Float(0, 0, 0, 0);
@@ -156,7 +156,7 @@ public class ConcreteTextNode
         if (geometryBounds == null){
             if (aci != null) {
                 geometryBounds = rc.getTextPainter().getBounds(this,
-                                      rc.getFontRenderContext(), false, false);
+                                      rc.getFontRenderContext());
             } else {
                 // Don't cache if ACI is null
                 return new Rectangle2D.Float(0, 0, 0, 0);
@@ -180,7 +180,11 @@ public class ConcreteTextNode
 
         Shape outline;
         if (aci != null) {
-            outline = rc.getTextPainter().getOutline(this, rc.getFontRenderContext(), true);
+            /* outline = rc.getTextPainter().getDecoratedShape(this, rc.getFontRenderContext()); */
+
+            // XXX: getDecoratedShape not working yet, will fix later !
+
+            outline = ((org.apache.batik.refimpl.gvt.renderer.BasicTextPainter) rc.getTextPainter()).getOutline(this, rc.getFontRenderContext(), true);
         } else {
             outline = new Rectangle2D.Float(0, 0, 0, 0);
         }
@@ -269,16 +273,16 @@ public class ConcreteTextNode
      * @return a Shape which encloses the current text selection.
      */
     public Shape getHighlightShape(GraphicsNodeRenderContext rc) {
-        Shape shape;
-        shape =
+        Shape highlightShape;
+        highlightShape =
             rc.getTextPainter().getHighlightShape(beginMark,
                                                   endMark,
                                                   location,
                                                   anchor);
 
         AffineTransform t = getGlobalTransform();
-        shape = t.createTransformedShape(shape);
-        return shape;
+        highlightShape = t.createTransformedShape(highlightShape);
+        return highlightShape;
     }
 
     //

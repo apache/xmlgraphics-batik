@@ -114,6 +114,7 @@ public interface TextPainter {
      public Shape getHighlightShape(Mark beginMark, Mark endMark,
                                     Point2D location,
                                     TextNode.Anchor anchor);
+
     /*
      * Get a Shape in userspace coords which defines the textnode glyph outlines.
      * @param node the TextNode to measure
@@ -123,8 +124,18 @@ public interface TextPainter {
      * @param includeStroke whether to create the "stroke shape outlines"
      *            instead of glyph outlines.
      */
-     public Shape getOutline(TextNode node, FontRenderContext frc,
-                                    boolean includeDecoration);
+     public Shape getShape(TextNode node, FontRenderContext frc);
+
+    /*
+     * Get a Shape in userspace coords which defines the textnode glyph outlines.
+     * @param node the TextNode to measure
+     * @param frc the font rendering context.
+     * @param includeDecoration whether to include text decoration
+     *            outlines.
+     * @param includeStroke whether to create the "stroke shape outlines"
+     *            instead of glyph outlines.
+     */
+     public Shape getDecoratedShape(TextNode node, FontRenderContext frc);
 
     /*
      * Get a Rectangle2D in userspace coords which encloses the textnode
@@ -132,14 +143,30 @@ public interface TextPainter {
      * @param node the TextNode to measure
      * @param g2d the Graphics2D to use
      * @param context rendering context.
-     * @param includeDecoration whether to include text decoration
-     *            in bounds computation.
-     * @param includeStroke whether to include the effect of stroke width
-     *            in bounds computation.
      */
      public Rectangle2D getBounds(TextNode node,
-               FontRenderContext frc,
-               boolean includeDecoration,
-               boolean includeStroke);
+               FontRenderContext frc);
+
+    /*
+     * Get a Rectangle2D in userspace coords which encloses the textnode
+     * glyphs composed from an AttributedCharacterIterator, inclusive of
+     * glyph decoration (underline, overline, strikethrough).
+     * @param node the TextNode to measure
+     * @param g2d the Graphics2D to use
+     * @param context rendering context.
+     */
+     public Rectangle2D getDecoratedBounds(TextNode node,
+               FontRenderContext frc);
+
+    /*
+     * Get a Rectangle2D in userspace coords which encloses the
+     * textnode glyphs (as-painted, inclusive of decoration and stroke, but
+     * exclusive of filters, etc.) composed from an AttributedCharacterIterator.
+     * @param node the TextNode to measure
+     * @param g2d the Graphics2D to use
+     * @param context rendering context.
+     */
+     public Rectangle2D getPaintedBounds(TextNode node,
+               FontRenderContext frc);
 
 }
