@@ -233,7 +233,7 @@ public class SVGGeneratorContext implements ErrorConstants {
      * Returns <code>true</code> if we should generate SVG Fonts for
      * texts.
      */
-    final public boolean isEmbededFontsEnabled() {
+    final public boolean isEmbeddedFontsOn() {
         return svgFont;
     }
 
@@ -241,7 +241,7 @@ public class SVGGeneratorContext implements ErrorConstants {
      * Sets if we should generate SVG Fonts for texts. Default value
      * is <code>false</code>.
      */
-    final public void setEmbededFontsEnabled(boolean svgFont) {
+    final public void setEmbeddedFontsOn(boolean svgFont) {
         this.svgFont = svgFont;
     }
 }
