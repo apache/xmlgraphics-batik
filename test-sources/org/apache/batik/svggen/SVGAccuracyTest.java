@@ -8,6 +8,8 @@
 
 package org.apache.batik.svggen;
 
+import java.awt.Dimension;
+
 import java.net.URL;
 
 import java.io.BufferedInputStream;
@@ -80,6 +82,12 @@ public class SVGAccuracyTest extends AbstractTest
         = "SVGAccuracyTest.entry.key.error.description";
 
     /**
+     * Canvas size for all tests
+     */
+    public static final Dimension CANVAS_SIZE 
+        = new Dimension(300, 400);
+
+    /**
      * Painter which performs an arbitrary rendering
      * sequence.
      */
@@ -126,6 +134,7 @@ public class SVGAccuracyTest extends AbstractTest
             = new DefaultTestReport(this);
 
         SVGGraphics2D g2d = buildSVGGraphics2D();
+        g2d.setSVGCanvasSize(CANVAS_SIZE);
 
         //
         // Generate SVG content

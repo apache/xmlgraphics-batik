@@ -161,16 +161,23 @@ public class XMLReflect implements XMLReflectConstants{
             String classAttr = element.getAttributeNS(null,
                                                       XR_CLASS_ATTRIBUTE);
 
-            String value = element.getAttributeNS(null,
-                                                  XR_VALUE_ATTRIBUTE);
-            
             // String based argument
             Class cl = Class.forName(classAttr);
-            
-            Constructor constructor 
-                = cl.getDeclaredConstructor(new Class[] { String.class });
-            
-            return constructor.newInstance(new Object[] {value});
+
+            if(element.hasAttributeNS(null, XR_VALUE_ATTRIBUTE)){
+                String value = element.getAttributeNS(null,
+                                                      XR_VALUE_ATTRIBUTE);
+                
+                
+                Constructor constructor 
+                    = cl.getDeclaredConstructor(new Class[] { String.class });
+                
+                return constructor.newInstance(new Object[] {value});
+            }
+            else{
+                // Default constructor
+                return cl.newInstance();
+            }
         }
         else{
             return buildObject(element);
