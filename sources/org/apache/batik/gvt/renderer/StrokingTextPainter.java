@@ -1000,7 +1000,6 @@ public class StrokingTextPainter extends BasicTextPainter {
      */
     private void paintTextRuns(List textRuns, 
                                Graphics2D g2d) {
-
         for (int i = 0; i < textRuns.size(); i++) {
             TextRun textRun = (TextRun)textRuns.get(i);
             AttributedCharacterIterator runaci = textRun.getACI();
