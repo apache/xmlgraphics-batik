@@ -21,7 +21,8 @@
         <authors>
             <person name="Sheng Pei" email="spei@cs.uiowa.edu"/>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
-	    <person name="Christophe Jolif" email="cjolif@ilog.fr"/>
+	        <person name="Christophe Jolif" email="cjolif@ilog.fr"/>
+            <person name="Paul Evenblij" email="paul_evenblij@compuware.com"/>
         </authors>
     </header>
 
@@ -214,6 +215,78 @@ SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(myFactory);
 ctx.setEmbeddedFontsOn(true);
 SVGGraphics2D g2d = new SVGGraphics2D(ctx);
   </source>
+
+  </s2>
+
+  <s2 title="Customizing the way images are stored">
+  <p>
+        Every time you call one of the <code>drawImage</code> methods provided by the <code>Graphics2D</code> class,
+        a standard representation of your image is created in a location which can be reached from the generated SVG
+        file. For instance, a base64 encoding is created and embedded in the SVG file by default. Alternatively, you
+        can choose to have your images written to separate files in a predefined directory, in one of the two raster
+        formats required by the SVG specification, JPEG or PNG.
+  </p>
+  <p>
+        You can change the default behavior by explicitly providing the image handler to be used by the SVG generator.
+        Once again, you use the SVGGeneratorContext for this. In the example below, all images are converted to PNG
+        format and written to directory "res/images".
+  </p>
+  <source>
+
+SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(myFactory);
+ImageHandler ihandler = new ImageHandlerPNGEncoder("res/images", null);
+ctx.setImageHandler(ihandler);
+SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
+  </source>
+  <p>
+        Using the default image handlers results in a new copy of the image data being written to the SVG file or an
+        external file, for every single <code>drawImage</code> call. If you use the same images over and over again,
+        then this may result in an SVG file containing a lot of redundant data. At the price of a slight performance
+        penalty during initial generation of the SVG DOM tree, you can choose to have your image data reused. For this
+        you use a specialized image handler, as shown below.
+  </p>
+  <source>
+
+SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(myFactory);
+
+// Reuse our embedded base64-encoded image data
+GenericImageHandler ihandler = new CachedImageHandlerBase64Encoder();
+ctx.setGenericImageHandler(ihandler);
+
+SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
+  </source>
+  <p>
+        With the caching image handlers, it is even possible to reuse the same copy of your image data across
+        several different SVG documents. Just keep a reference to the image handler, and pass it to the
+        <code>CachedImageSVGGraphics2D</code> instance used for generating the SVG DOM tree. The following
+        simplified example shows how different SVG trees might be created by separate SVG generators,
+        efficiently storing any common images just once.
+  </p>
+  <source>
+  
+class MySVGGenerator {
+    // the image handler will write all images files to "res/images"
+    private static ImageHandler ihandler =
+        new CachedImageHandlerPNGEncoder("res/images", null);
+    
+    public void generateSVG(JPanel myCanvas, OutputStream outStream) {
+        DOMImplementation domImpl =
+            GenericDOMImplementation.getDOMImplementation();
+        Document myFactory = domImpl.createDocument(null, "svg", null);
+        SVGGeneratorContext ctx =
+            SVGGeneratorContext.createDefault(myFactory);
+        ctx.setGenericImageHandler(ihandler);
+            
+        SVGGraphics2D svgGenerator =
+            new SVGGraphics2D(ctx, false);
+
+        // create the SVG DOM tree
+        myCanvas.paintComponent(svgGenerator);
+        
+        Writer out = new OutputStreamWriter(outStream, "UTF-8");
+        svgGenerator.stream(out, true);
+    }
+}  </source>
 
   </s2>
 
