@@ -55,7 +55,7 @@ import org.apache.batik.gvt.renderer.ImageRendererFactory;
  * @version $Id$
  */
 public class JGVTComponent extends JComponent {
-    
+
     /**
      * The listener.
      */
@@ -165,12 +165,12 @@ public class JGVTComponent extends JComponent {
 
     /**
      * Whether to suspend interactions.
-     */ 
+     */
     protected boolean suspendInteractions;
 
     /**
      * Whether to inconditionally disable interactions.
-     */ 
+     */
     protected boolean disableInteractions;
 
     /**
@@ -456,7 +456,7 @@ public class JGVTComponent extends JComponent {
             gvtTreeRenderer.addGVTTreeRendererListener
                 ((GVTTreeRendererListener)it.next());
         }
-        
+
         // Disable the dispatch during the rendering
         // to avoid concurrent access to the GVT tree.
         if (eventDispatcher != null) {
@@ -588,7 +588,7 @@ public class JGVTComponent extends JComponent {
                 suspendInteractions = false;
             }
         }
-        
+
         /**
          * Called when a rendering was completed.
          */
@@ -611,14 +611,14 @@ public class JGVTComponent extends JComponent {
                 eventDispatcher.setRootNode(gvtRoot);
             }
         }
-        
+
         /**
          * Called when a rendering was cancelled.
          */
         public void gvtRenderingCancelled(GVTTreeRendererEvent e) {
             renderingStopped();
         }
-        
+
         /**
          * Called when a rendering failed.
          */
@@ -659,7 +659,7 @@ public class JGVTComponent extends JComponent {
                 deselectInteractor();
             }
         }
-        
+
         /**
          * Invoked when a key has been pressed.
          */
@@ -687,7 +687,7 @@ public class JGVTComponent extends JComponent {
         }
 
         // MouseListener ///////////////////////////////////////////////////////
-        
+
         /**
          * Invoked when the mouse has been clicked on a component.
          */
@@ -756,7 +756,7 @@ public class JGVTComponent extends JComponent {
         // MouseMotionListener /////////////////////////////////////////////////
 
         /**
-         * Invoked when a mouse button is pressed on a component and then 
+         * Invoked when a mouse button is pressed on a component and then
          * dragged.  Mouse drag events will continue to be delivered to
          * the component where the first originated until the mouse button is
          * released (regardless of whether the mouse position is within the

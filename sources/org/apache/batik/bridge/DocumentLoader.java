@@ -11,8 +11,10 @@ package org.apache.batik.bridge;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
+import org.apache.batik.dom.svg.SVGOMDocument;
 
 import org.apache.batik.dom.util.DocumentDescriptor;
 
@@ -47,16 +49,23 @@ public class DocumentLoader {
     protected HashMap cacheMap = new HashMap();
 
     /**
+     * The user agent.
+     */
+    protected UserAgent userAgent;
+
+    /**
      * Constructs a new <tt>DocumentLoader</tt>.
      */
     protected DocumentLoader() { }
 
     /**
      * Constructs a new <tt>DocumentLoader</tt> with the specified XML parser.
-     * @param parser The SAX2 parser classname.
+     * @param userAgent the user agent to use
      */
-    public DocumentLoader(String parser) {
-        documentFactory = new SAXSVGDocumentFactory(parser, true);
+    public DocumentLoader(UserAgent userAgent) {
+        this.userAgent = userAgent;
+        documentFactory = new SAXSVGDocumentFactory
+            (userAgent.getXMLParserClassName(), true);
     }
 
     /**
@@ -74,6 +83,10 @@ public class DocumentLoader {
             //System.out.println("loading: "+uri);
             // load the document
             Document document = documentFactory.createDocument(uri);
+            DefaultSVGContext ctx
+                = (DefaultSVGContext)((SVGOMDocument)document).getSVGContext();
+            ctx.setUserStyleSheetURI(userAgent.getUserStyleSheetURI());
+
             DocumentDescriptor desc = documentFactory.getDocumentDescriptor();
             state = new DocumentState(uri, document, desc);
             cacheMap.put(uri, state);
