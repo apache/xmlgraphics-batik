@@ -47,8 +47,11 @@
         <text transform="translate(70 200)rotate(-90)">horizontal &lt;line></text>
         <text transform="translate(70 350)rotate(-90)">vertical &lt;Line></text>
 </g>
+<g style="stroke-width:6">
         <line x1="185" y1="195" x2="265" y2="195" style="stroke:url(#grad)" />
         <line x1="220" y1="285" x2="220" y2="405" style="stroke:url(#grad)"/>
+</g>
+
     </g>
 
     <!-- ============================================================= -->
