@@ -32,7 +32,7 @@
      function runTest() {
          var result = document.getElementById("testResult");
          result.setAttributeNS(null, "result", "failed");
-         
+
          var r1 = document.getElementById("r1")
          if (r1 == null){
           result.setAttributeNS(null, "errorCode", "cannot.find.test.element");
@@ -41,6 +41,16 @@
           entry.setAttributeNS(null, "value", "r1");
           result.appendChild(entry);
           return;
+         }
+
+         if (r1.getBBox().width != 100) {
+           result.setAttributeNS(null, "errorCode", "invalid.r1.bbox.width");
+           var entry = document.createElementNS(testNS,
+                                                "errorDescriptionEntry");
+           entry.setAttributeNS(null, "id", "r1.width.value.found");
+           entry.setAttributeNS(null, "value", r1.getBBox().width);
+           result.appendChild(entry);
+           return;
          }
 
          var r2 = document.getElementById("r2")
@@ -53,44 +63,32 @@
           return;
          }
 
-         var r3 = document.getElementById("r3")
-         if (r3 == null){
+         if (r2.getBBox().width != 100) {
+           result.setAttributeNS(null, "errorCode", "invalid.r2.bbox.width");
+           var entry = document.createElementNS(testNS,
+                                                "errorDescriptionEntry");
+           entry.setAttributeNS(null, "id", "r2.width.value.found");
+           entry.setAttributeNS(null, "value", r2.getBBox().width);
+           result.appendChild(entry);
+           return;
+         }
+
+         var g1 = document.getElementById("g1")
+         if (g1 == null){
           result.setAttributeNS(null, "errorCode", "cannot.find.test.element");
           var entry = document.createElementNS(testNS, "errorDescriptionEntry");
           entry.setAttributeNS(null, "id", "missing.element.id");
-          entry.setAttributeNS(null, "value", "r3");
+          entry.setAttributeNS(null, "value", "g1");
           result.appendChild(entry);
           return;
          }
 
-         if (r1.width.baseVal.value != 20) {
-           result.setAttributeNS(null, "errorCode", "invalid.r1.width");
+         if (g1.getBBox().width != 120) {
+           result.setAttributeNS(null, "errorCode", "invalid.g1.bbox.width");
            var entry = document.createElementNS(testNS,
                                                 "errorDescriptionEntry");
-           entry.setAttributeNS(null, "id", "r1.value.found");
-           entry.setAttributeNS(null, "value", r1.width.baseVal.value);
-           result.appendChild(entry);
-           return;
-         }
-
-         if (r2.width.baseVal.value > 20.00001 ||
-             r2.width.baseVal.value < 19.99999) {
-           result.setAttributeNS(null, "errorCode", "invalid.r2.width");
-           var entry = document.createElementNS(testNS,
-                                                "errorDescriptionEntry");
-           entry.setAttributeNS(null, "id", "r2.value.found");
-           entry.setAttributeNS(null, "value", r2.width.baseVal.value);
-           result.appendChild(entry);
-           return;
-         }
-
-         if (r3.width.baseVal.value > 20.00001 ||
-             r3.width.baseVal.value < 19.99999) {
-           result.setAttributeNS(null, "errorCode", "invalid.r3.width");
-           var entry = document.createElementNS(testNS,
-                                                "errorDescriptionEntry");
-           entry.setAttributeNS(null, "id", "r3.value.found");
-           entry.setAttributeNS(null, "value", r3.width.baseVal.value);
+           entry.setAttributeNS(null, "id", "g1.width.value.found");
+           entry.setAttributeNS(null, "value", g1.getBBox().width);
            result.appendChild(entry);
            return;
          }
@@ -99,10 +97,8 @@
      }
   ]]></script>
 
-  <g>
-     <rect id="r1" x="0" y="10" width="20" height="80"/>
-     <rect id="r2" x="6.66%" y="2%" width="4.4444444444%" height="16%"/>
-     <rect id="r3" x="15.87mm" y="2.645mm" width="5.2916666666mm"
-                   height="21.16mm"/>
+  <g id="g1">
+     <rect id="r1" x="0" y="0" width="100" height="100"/>
+     <rect id="r2" x="20" y="20" width="100" height="100"/>
   </g>
 </svg>

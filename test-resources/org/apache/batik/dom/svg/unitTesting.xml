@@ -39,6 +39,7 @@
     <testGroup id="basic" name="Basic SVG DOM Testing"
                class="org.apache.batik.dom.svg.EcmaScriptSVGDOMTest">
         <test id="lengthTest"/>
+        <test id="locatableTest"/>
     </testGroup>
 
 </testSuite>
