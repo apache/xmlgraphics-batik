@@ -363,7 +363,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     }
 
     /**
-     * Returns the display transform.
+     * Sets the display transform.
      */
     public void setScreenTransform(AffineTransform at) {
         ctx.getUserAgent().setTransform(at);

@@ -32,9 +32,11 @@ import java.text.AttributedString;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.WeakHashMap;
@@ -1759,7 +1761,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * Implementation of <ode>SVGContext</code> for
      * the children of &lt;text&gt;
      */
-    protected abstract class AbstractTextChildSVGContext 
+    public abstract class AbstractTextChildSVGContext 
         implements SVGContext {
 
         /** Bridge Context */
@@ -1783,6 +1785,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             this.textBridge = parent;
             this.e = e;
         }
+
+        public SVGTextElementBridge getTextBridge() { return textBridge; }
         
         /**
          * Returns the size of a px CSS unit in millimeters.
@@ -2667,4 +2671,229 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return layout.getComputedOrientationAngle(characterIndex);
         }
     }
+
+
+    public Set getTextIntersectionSet(AffineTransform at,
+                                       Rectangle2D rect) {
+        TextNode tn  = (TextNode)node;
+        List list = tn.getTextRuns();
+        Set elems = new HashSet();
+        for (int i = 0 ; i < list.size(); i++) {
+            StrokingTextPainter.TextRun run;
+            run = (StrokingTextPainter.TextRun)list.get(i);
+            TextSpanLayout layout = run.getLayout();
+            AttributedCharacterIterator aci = run.getACI();
+            aci.first();
+            Element elem = (Element)aci.getAttribute(TEXT_COMPOUND_DELIMITER);
+
+            if (elem == null) continue;
+            if (elems.contains(elem)) continue;
+            if (!isTextSensitive(elem))   continue;
+
+            Rectangle2D glBounds = layout.getBounds2D();
+            if (glBounds != null)
+                glBounds = at.createTransformedShape(glBounds).getBounds2D();
+
+            if (!rect.intersects(glBounds))
+                continue;
+
+            GVTGlyphVector gv = layout.getGlyphVector();
+            for (int g = 0; g < gv.getNumGlyphs(); g++) {
+                Shape gBounds = gv.getGlyphLogicalBounds(g);
+                if (gBounds != null)
+                    gBounds = at.createTransformedShape
+                        (gBounds).getBounds2D();
+
+                if (gBounds.intersects(rect)) {
+                    elems.add(elem);
+                    break;
+                }
+            }
+        }
+        return elems;
+    }
+
+    public Set getTextEnclosureSet(AffineTransform at,
+                                    Rectangle2D rect) {
+        TextNode tn = (TextNode)node;
+
+        Set elems = new HashSet();
+        Set reject = new HashSet();
+        List list = tn.getTextRuns();
+        for (int i = 0 ; i < list.size(); i++) {
+            StrokingTextPainter.TextRun run;
+            run = (StrokingTextPainter.TextRun)list.get(i);
+            TextSpanLayout layout = run.getLayout();
+            AttributedCharacterIterator aci = run.getACI();
+            aci.first();
+            Element elem = (Element)aci.getAttribute(TEXT_COMPOUND_DELIMITER);
+
+            if (elem == null) continue;
+            if (reject.contains(elem)) continue;
+            if (!isTextSensitive(elem)) {
+                reject.add(elem);
+                continue;
+            }
+                        
+            Rectangle2D glBounds = layout.getBounds2D();
+            if (glBounds != null)
+                glBounds = at.createTransformedShape
+                    (glBounds).getBounds2D();
+
+            if (rect.contains(glBounds)) {
+                elems.add(elem);
+            } else {
+                reject.add(elem);
+                elems.remove(elem);
+            }
+        }
+
+        return elems;
+    }
+
+    public static boolean getTextIntersection(BridgeContext ctx,
+                                              Element elem,
+                                              AffineTransform ati,
+                                              Rectangle2D rect,
+                                              boolean checkSensitivity) {
+        SVGContext svgCtx = null;
+        if (elem instanceof SVGOMElement) 
+            svgCtx  = ((SVGOMElement)elem).getSVGContext();
+        if (svgCtx == null) return false;
+
+        SVGTextElementBridge txtBridge = null;
+        if (svgCtx instanceof SVGTextElementBridge) 
+            txtBridge = (SVGTextElementBridge)svgCtx;
+        else if (svgCtx instanceof AbstractTextChildSVGContext) {
+            AbstractTextChildSVGContext childCtx;
+            childCtx = (AbstractTextChildSVGContext)svgCtx;
+            txtBridge = childCtx.getTextBridge();
+        }
+        if (txtBridge == null) return false;
+
+        TextNode tn      = (TextNode)txtBridge.node;
+        Element  txtElem = txtBridge.e;
+
+        AffineTransform at = tn.getGlobalTransform();
+        at.preConcatenate(ati);
+
+        Rectangle2D tnRect;
+        tnRect = tn.getBounds();
+        tnRect = at.createTransformedShape(tnRect).getBounds2D();
+        if (!rect.intersects(tnRect)) return false;
+
+        List list = tn.getTextRuns();
+        for (int i = 0 ; i < list.size(); i++) {
+            StrokingTextPainter.TextRun run;
+            run = (StrokingTextPainter.TextRun)list.get(i);
+            TextSpanLayout layout = run.getLayout();
+            AttributedCharacterIterator aci = run.getACI();
+            aci.first();
+            Element runElem = (Element)aci.getAttribute
+                (TEXT_COMPOUND_DELIMITER);
+            if (runElem == null) continue;
+
+            // Only consider runElem if it is sensitive.
+            if (checkSensitivity && !isTextSensitive(runElem)) continue;
+
+            Element p = runElem;
+            while ((p != null) && (p != txtElem) && (p != elem)) {
+                p = (Element)p.getParentNode();
+            }
+            if (p != elem) continue;
+
+            // runElem is a child of elem so check it out.
+            Rectangle2D glBounds = layout.getBounds2D();
+            if (glBounds == null) continue;
+            glBounds = at.createTransformedShape(glBounds).getBounds2D();
+            if (!rect.intersects(glBounds)) continue;
+            
+            GVTGlyphVector gv = layout.getGlyphVector();
+            for (int g = 0; g < gv.getNumGlyphs(); g++) {
+                Shape gBounds = gv.getGlyphLogicalBounds(g);
+                if (gBounds != null)
+                    gBounds = at.createTransformedShape
+                        (gBounds).getBounds2D();
+
+                if (gBounds.intersects(rect))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public static Rectangle2D getTextBounds(BridgeContext ctx, Element elem,
+                                            boolean checkSensitivity) {
+        SVGContext svgCtx = null;
+        if (elem instanceof SVGOMElement) 
+            svgCtx  = ((SVGOMElement)elem).getSVGContext();
+        if (svgCtx == null) return null;
+
+        SVGTextElementBridge txtBridge = null;
+        if (svgCtx instanceof SVGTextElementBridge) 
+            txtBridge = (SVGTextElementBridge)svgCtx;
+        else if (svgCtx instanceof AbstractTextChildSVGContext) {
+            AbstractTextChildSVGContext childCtx;
+            childCtx = (AbstractTextChildSVGContext)svgCtx;
+            txtBridge = childCtx.getTextBridge();
+        }
+        if (txtBridge == null) return null;
+
+        TextNode tn      = (TextNode)txtBridge.node;
+        Element  txtElem = txtBridge.e;
+
+        Rectangle2D ret = null;
+        List list = tn.getTextRuns();
+        if (list == null) return null;
+        for (int i = 0 ; i < list.size(); i++) {
+            StrokingTextPainter.TextRun run;
+            run = (StrokingTextPainter.TextRun)list.get(i);
+            TextSpanLayout layout = run.getLayout();
+            AttributedCharacterIterator aci = run.getACI();
+            aci.first();
+            Element runElem = (Element)aci.getAttribute
+                (TEXT_COMPOUND_DELIMITER);
+            if (runElem == null) continue;
+
+            // Only consider runElem if it is sensitive.
+            if (checkSensitivity && !isTextSensitive(runElem)) continue;
+
+            Element p = runElem;
+            while ((p != null) && (p != txtElem) && (p != elem)) {
+                p = (Element)p.getParentNode();
+            }
+            if (p != elem) continue;
+
+            // runElem is a child of elem so include it's bounds.
+            Rectangle2D glBounds = layout.getBounds2D();
+            if (glBounds != null) {
+                if (ret == null) ret = (Rectangle2D)glBounds.clone();
+                else             ret.add(glBounds);
+            }
+        }
+        return ret;
+    }
+         
+
+    public static boolean isTextSensitive(Element e) {
+        int     ptrEvts = CSSUtilities.convertPointerEvents(e);
+        switch (ptrEvts) {
+        case GraphicsNode.VISIBLE_PAINTED:
+        case GraphicsNode.VISIBLE_FILL:
+        case GraphicsNode.VISIBLE_STROKE:
+        case GraphicsNode.VISIBLE:
+            return CSSUtilities.convertVisibility(e);
+        case GraphicsNode.PAINTED:
+        case GraphicsNode.FILL:
+        case GraphicsNode.STROKE:
+        case GraphicsNode.ALL:
+            return true;
+        case GraphicsNode.NONE:
+        default:
+            return false;
+        }
+    }
+
+
+    
 }

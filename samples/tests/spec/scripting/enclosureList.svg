@@ -21,7 +21,7 @@
 -->
 
 <!-- ====================================================================== -->
-<!-- Testing the getIntersectionList interface on the svg:svg element.      -->
+<!-- Testing the getEnclosureList interface on the svg:svg element.      -->
 <!--                                                                        -->
 <!-- @author deweese@apache.org                                             -->
 <!-- @version $Id$ -->
@@ -30,7 +30,9 @@
 <?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500"
-  onload="testIntersection()">
+  onload="testEnclosure()"
+  xmlns="http://www.w3.org/2000/svg" 
+  xmlns:xlink="http://www.w3.org/1999/xlink" >
   <title>Test of getEnclosureList interface</title>
   <text x="50%" y="45" class="title">Test of getEnclosureList interface</text>
 
@@ -72,7 +74,7 @@
            elem.setAttribute(attr, val2);
     }
    
-    function testIntersection() {
+    function testEnclosure() {
       var root = document.getRootElement();
       var rect = root.createSVGRect();
       setRect(rect, 25, 70, 100, 100);
@@ -107,14 +109,28 @@
       makeRect(tb5, rect, "crimson");
 
 
-      var ts = root.getElementById("ts");
-      setRect(rect, 225, 200, 20, 50);
+      var ts = root.getElementById("ts1");
+      setRect(rect, 208, 202, 23, 25);
+      doCheck(root, rect, null, "stroke", "blue");
+      makeRect(root, rect, "blue");
+
+      setRect(rect, 225, 204, 20, 25);
       doCheck(root, rect, ts, "fill", "orange");
       doCheck(root, rect, null, "text-decoration", "underline");
       makeRect(root, rect, "orange");
-      setRect(rect, 255, 200, 2, 50);
-      doCheck(root, rect, ts, "stroke", "crimson");
+
+      setRect(rect, 237, 202, 40, 25);
+      doCheck(root, rect, null, "stroke", "crimson");
       makeRect(root, rect, "crimson");
+
+      setRect(rect, 15, 420, 135, 47);
+      doCheck(root, rect, null, "text-decoration", "overline");
+      makeRect(root, rect, "black");
+
+      setRect(rect, 310, 420, 120, 47);
+      doCheck(root, rect, null, "text-decoration", "line-through");
+      makeRect(root, rect, "black");
+
 
       var tb6   = root.getElementById("testblock6");
       var tb6_m = root.getElementById("tb6-middle");
@@ -395,9 +411,19 @@
    </g>
 
    <text x="225" y="220" text-anchor="middle" font-size="15"
-    >This <tspan id="ts" font-weight="bold">is <tspan font-style="italic"
-    >a</tspan> test </tspan><tspan x="225" y="240" text-anchor="middle"
-    >of text intersection</tspan></text>
+    >This <tspan id="ts1" font-weight="bold">is <tspan font-style="italic"
+    >a</tspan> test </tspan><tspan x="225" dy="20" text-anchor="middle"
+    >of text encolsure!!!</tspan></text>
+
+   <text x="85" y="440" text-anchor="middle" font-size="15"
+    >This <tspan id="ts2" font-weight="bold">is <tspan font-style="italic"
+    >a</tspan> test </tspan><tspan x="85" dy="20" text-anchor="middle"
+    >of text encolsure!!!</tspan></text>
+
+   <text x="365" y="440" text-anchor="middle" font-size="15"
+    >This <tspan id="ts3" font-weight="bold">is <tspan font-style="italic"
+    >a</tspan> test </tspan><tspan x="365" dy="20" text-anchor="middle"
+    >of text encolsure!!!!</tspan></text>
   </g>
 </svg>
 
