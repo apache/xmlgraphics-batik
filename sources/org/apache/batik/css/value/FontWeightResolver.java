@@ -96,11 +96,15 @@ public class FontWeightResolver implements RelativeValueResolver {
                 CSSOMReadOnlyValue prop;
                 prop = (CSSOMReadOnlyValue)sd.getPropertyCSSValue(getPropertyName());
                 im = prop.getImmutableValue();
-                float f = im.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
-                val = new CSSOMReadOnlyValue
-                    ((b)
-                     ? createFontWeight(context.getBolderFontWeight(f))
-                     : createFontWeight(context.getLighterFontWeight(f)));
+                if (im.getPrimitiveType() == CSSPrimitiveValue.CSS_IDENT) {
+                    val = new CSSOMReadOnlyValue(im);
+                } else {
+                    float f = im.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
+                    val = new CSSOMReadOnlyValue
+                        ((b)
+                         ? createFontWeight(context.getBolderFontWeight(f))
+                         : createFontWeight(context.getLighterFontWeight(f)));
+                }
             }
             styleDeclaration.setPropertyCSSValue(getPropertyName(),
                                                  val,

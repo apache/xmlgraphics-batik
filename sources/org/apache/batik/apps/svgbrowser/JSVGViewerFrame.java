@@ -586,7 +586,33 @@ public class JSVGViewerFrame
     public class NewWindowAction extends AbstractAction {
         public NewWindowAction() {}
         public void actionPerformed(ActionEvent e) {
-            application.createAndShowJSVGViewerFrame();
+            JSVGViewerFrame vf = application.createAndShowJSVGViewerFrame();
+            
+            // Copy the current settings to the new window.
+            vf.autoAdjust = autoAdjust;
+            AutoAdjustAction aaa;
+            aaa = (AutoAdjustAction)vf.listeners.get(AUTO_ADJUST_ACTION);
+            aaa.menuItem.setSelected(autoAdjust);
+
+            vf.debug = debug;
+            ShowDebugAction sda;
+            sda = (ShowDebugAction)vf.listeners.get(SHOW_DEBUG_ACTION);
+            sda.menuItem.setSelected(debug);
+
+            vf.svgCanvas.setProgressivePaint(svgCanvas.getProgressivePaint());
+            ShowRenderingAction sra;
+            sra = (ShowRenderingAction)vf.listeners.get(SHOW_RENDERING_ACTION);
+            sra.menuItem.setSelected(svgCanvas.getProgressivePaint());
+
+            vf.svgCanvas.setDoubleBufferedRendering
+                (svgCanvas.getDoubleBufferedRendering());
+            vf.showRenderingAction.update(!svgCanvas.getDoubleBufferedRendering());
+            DoubleBufferAction dba;
+            dba = (DoubleBufferAction)vf.listeners.get(DOUBLE_BUFFER_ACTION);
+            dba.menuItem.setSelected(svgCanvas.getDoubleBufferedRendering());
+
+            vf.userLanguages = userLanguages;
+            vf.userStyleSheetURI = userStyleSheetURI;
         }
     }
 
@@ -966,33 +992,54 @@ public class JSVGViewerFrame
     /**
      * To enable the double buffering.
      */
-    public class DoubleBufferAction extends AbstractAction {
+    public class DoubleBufferAction
+        extends AbstractAction
+        implements JComponentModifier {
+        public JCheckBoxMenuItem menuItem;
         public DoubleBufferAction() {}
         public void actionPerformed(ActionEvent e) {
-            boolean b = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+            boolean b = menuItem.isSelected();
             showRenderingAction.update(!b);
             svgCanvas.setDoubleBufferedRendering(b);
+        }
+
+        public void addJComponent(JComponent c) {
+            menuItem = (JCheckBoxMenuItem)c;
         }
     }
 
     /**
      * To adjust the window size on load.
      */
-    public class AutoAdjustAction extends AbstractAction {
+    public class AutoAdjustAction
+        extends AbstractAction
+        implements JComponentModifier {
+        public JCheckBoxMenuItem menuItem;
         public AutoAdjustAction() {}
         public void actionPerformed(ActionEvent e) {
-            autoAdjust = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+            autoAdjust = menuItem.isSelected();
+        }
+
+        public void addJComponent(JComponent c) {
+            menuItem = (JCheckBoxMenuItem)c;
         }
     }
 
     /**
      * To enable the debug traces.
      */
-    public class ShowDebugAction extends AbstractAction {
+    public class ShowDebugAction
+        extends AbstractAction
+        implements JComponentModifier {
+        public JCheckBoxMenuItem menuItem;
         public ShowDebugAction() {}
         public void actionPerformed(ActionEvent e) {
-            debug = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+            debug = menuItem.isSelected();
             time = System.currentTimeMillis();
+        }
+
+        public void addJComponent(JComponent c) {
+            menuItem = (JCheckBoxMenuItem)c;
         }
     }
 
@@ -1002,23 +1049,18 @@ public class JSVGViewerFrame
     public class ShowRenderingAction
         extends AbstractAction
         implements JComponentModifier {
-        java.util.List components = new LinkedList();
+        public JCheckBoxMenuItem menuItem;
         public ShowRenderingAction() {}
         public void actionPerformed(ActionEvent e) {
-            svgCanvas.setProgressivePaint
-                (((JCheckBoxMenuItem)e.getSource()).isSelected());
+            svgCanvas.setProgressivePaint(menuItem.isSelected());
         }
 
         public void addJComponent(JComponent c) {
-            components.add(c);
-            c.setEnabled(true);
+            menuItem = (JCheckBoxMenuItem)c;
         }
 
         public void update(boolean enabled) {
-            Iterator it = components.iterator();
-            while (it.hasNext()) {
-                ((JComponent)it.next()).setEnabled(enabled);
-            }
+            menuItem.setEnabled(enabled);
         }
     }
 
@@ -1056,6 +1098,9 @@ public class JSVGViewerFrame
                 Dimension sd = styleSheetDialog.getSize();
                 styleSheetDialog.setLocation(fr.x + (fr.width  - sd.width) / 2,
                                              fr.y + (fr.height - sd.height) / 2);
+                if (userStyleSheetURI != null) {
+                    styleSheetDialog.setPath(userStyleSheetURI);
+                }
             }
             if (styleSheetDialog.showDialog() == UserStyleDialog.OK_OPTION) {
                 userStyleSheetURI = styleSheetDialog.getPath();
