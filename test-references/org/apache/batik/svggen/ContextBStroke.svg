@@ -6,30 +6,30 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;}
 .testC2 {stroke:none;}
 .testC3 {stroke-width:2;fill:none;}
 .testC4 {stroke-width:4;fill:none;}
 .testC5 {stroke-width:8;fill:none;}
 .testC6 {stroke-width:16;fill:none;}
-.testC7 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke-width:16;}
+.testC7 {text-rendering:optimizeLegibility;stroke-width:16;}
 .testC8 {stroke:none;}
 .testC9 {stroke-linejoin:bevel;stroke-width:15;stroke-linecap:butt;fill:none;}
 .testC10 {stroke-linejoin:bevel;stroke-width:15;fill:none;}
 .testC11 {stroke-linejoin:bevel;stroke-width:15;stroke-linecap:round;fill:none;}
-.testC12 {stroke-linejoin:bevel;shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke-width:15;stroke-linecap:round;}
+.testC12 {stroke-linejoin:bevel;text-rendering:optimizeLegibility;stroke-width:15;stroke-linecap:round;}
 .testC13 {stroke:none;}
 .testC14 {stroke-width:10;stroke-linecap:square;fill:none;}
 .testC15 {stroke-linejoin:miter;stroke-width:10;stroke-linecap:square;fill:none;}
 .testC16 {stroke-linejoin:round;stroke-width:10;stroke-linecap:square;fill:none;}
-.testC17 {stroke-linejoin:round;shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke-width:10;}
+.testC17 {stroke-linejoin:round;text-rendering:optimizeLegibility;stroke-width:10;}
 .testC18 {stroke:none;}
 .testC19 {stroke-linejoin:miter;stroke-width:6;stroke-miterlimit:1;fill:none;}
 .testC20 {stroke-linejoin:miter;stroke-width:6;stroke-miterlimit:2;fill:none;}
 .testC21 {stroke-linejoin:miter;stroke-width:6;fill:none;}
-.testC22 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke-width:6;}
+.testC22 {text-rendering:optimizeLegibility;stroke-width:6;}
 .testC23 {stroke:none;}
-.testC24 {stroke-linejoin:bevel;shape-rendering:geometricPrecision;stroke-dasharray:6,6;text-rendering:optimizeLegibility;stroke-width:8;stroke-miterlimit:8;stroke-linecap:butt;}
+.testC24 {stroke-linejoin:bevel;stroke-dasharray:6,6;text-rendering:optimizeLegibility;stroke-width:8;stroke-miterlimit:8;stroke-linecap:butt;}
 .testC25 {fill:none;}
 .testC26 {stroke-dasharray:10,4;fill:none;}
 .testC27 {stroke-dasharray:4,4,10,4;fill:none;}

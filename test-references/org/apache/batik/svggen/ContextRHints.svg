@@ -6,16 +6,16 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;}
 .testC2 {stroke:none;}
 .testC3 {shape-rendering:crispEdges;font-family:'Impact';stroke:none;font-size:25;}
 .testC4 {shape-rendering:crispEdges;text-rendering:optimizeSpeed;font-family:'Impact';font-size:25;}
 .testC5 {stroke:none;}
-.testC6 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC6 {text-rendering:optimizeLegibility;}
 .testC7 {stroke:none;}
 .testC8 {shape-rendering:crispEdges;stroke:none;}
 .testC9 {stroke:none;}
-.testC10 {image-rendering:optimizeSpeed;shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC10 {image-rendering:optimizeSpeed;text-rendering:optimizeLegibility;}
 .testC11 {stroke:none;}
 .testC12 {}
 .testC13 {image-rendering:optimizeQuality;}

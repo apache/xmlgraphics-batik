@@ -6,20 +6,20 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;}
 .testC2 {stroke:none;}
 .testC3 {stroke:none;}
 .testC4 {stroke:none;}
 .testC5 {stroke:none;}
 .testC6 {stroke:none;}
 .testC7 {stroke:none;}
-.testC8 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC8 {text-rendering:optimizeLegibility;}
 .testC9 {stroke:none;}
 .testC10 {stroke:none;}
-.testC11 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC11 {text-rendering:optimizeLegibility;}
 .testC12 {stroke:none;}
 .testC13 {stroke:none;}
-.testC14 {fill-opacity:0.501960813999176;shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;stroke-opacity:0.501960813999176;stroke:rgb(0,0,0);fill:rgb(0,0,0);}
+.testC14 {fill-opacity:0.501960813999176;text-rendering:optimizeLegibility;stroke-opacity:0.501960813999176;stroke:rgb(0,0,0);fill:rgb(0,0,0);}
 .testC15 {stroke:none;}
 .testC16 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}
 ]]>

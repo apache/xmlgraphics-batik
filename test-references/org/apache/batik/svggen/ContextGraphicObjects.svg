@@ -6,7 +6,7 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;font-family:'Times New Roman';font-size:20;}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;font-family:'Times New Roman';font-size:20;}
 .testC2 {stroke:none;}
 .testC3 {fill:rgb(176,22,40);stroke:none;}
 .testC4 {fill:rgb(208,170,119);stroke:none;}

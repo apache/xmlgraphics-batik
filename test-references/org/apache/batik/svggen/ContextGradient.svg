@@ -6,21 +6,21 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;}
 .testC2 {stroke:none;}
 .testC3 {fill:url(#testlinearGradient1);stroke:none;}
 .testC4 {fill:none;}
-.testC5 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC5 {text-rendering:optimizeLegibility;}
 .testC6 {fill:none;}
-.testC7 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC7 {text-rendering:optimizeLegibility;}
 .testC8 {stroke:none;}
 .testC9 {fill:url(#testlinearGradient2);stroke:none;}
 .testC10 {fill:url(#testlinearGradient3);stroke:none;}
 .testC11 {fill:none;}
-.testC12 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC12 {text-rendering:optimizeLegibility;}
 .testC13 {stroke:none;}
 .testC14 {fill:url(#testlinearGradient4);stroke:none;}
-.testC15 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC15 {text-rendering:optimizeLegibility;}
 .testC16 {stroke:none;}
 .testC17 {fill:url(#testlinearGradient5);stroke:none;}
 .testC18 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}

@@ -22,7 +22,7 @@
         <path d="M200 50 C200 77.6142578125 155.2284698486328 100 100 100 C44.77152633666992 100 0 77.6142578125 0 50 C0 22.3857421875 44.77152633666992 0 100 0 C155.2284698486328 0 200 22.3857421875 200 50 Z" />
       </clipPath>
     </defs>
-    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision">
+    <g text-rendering="optimizeLegibility">
       <image x="0" y="0" clip-path="url(#clipPath1)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
@@ -34,7 +34,7 @@ MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" height="50" preserveAspectRatio="none" />
     </g>
-    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,140)">
+    <g text-rendering="optimizeLegibility" transform="translate(0,140)">
       <text xml:space="preserve" x="110" y="15" stroke="none">Clip set to upper right quarter</text>
       <text xml:space="preserve" x="110" y="30" stroke="none">after .5 scale</text>
       <image x="0" y="0" transform="scale(0.5,0.5)" clip-path="url(#clipPath2)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
@@ -42,14 +42,14 @@ MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" height="50" preserveAspectRatio="none" />
     </g>
-    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,210)">
+    <g text-rendering="optimizeLegibility" transform="translate(0,210)">
       <text xml:space="preserve" x="110" y="25" stroke="none">Non-Rectagular clip</text>
       <image x="0" y="0" clip-path="url(#clipPath3)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
 MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" height="50" preserveAspectRatio="none" />
     </g>
-    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,280)">
+    <g text-rendering="optimizeLegibility" transform="translate(0,280)">
       <text xml:space="preserve" x="110" y="15" stroke="none">Non-Rectagular clip after</text>
       <text xml:space="preserve" x="110" y="30" stroke="none">.5 scale</text>
       <image x="0" y="0" transform="scale(0.5,0.5)" clip-path="url(#clipPath4)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA
@@ -57,7 +57,7 @@ MAgEwTOk/5ZNC3kKzlYgw/2sdCZWE486ESxYsGDBgiVYsGDBggVLsGDBggULlmDB
 ggUL1vZu+7JaFixYsGDBEixYsGDBgiVYsGDBggVLsGDBggULlr57aAcDZaydo60A
 AAAASUVORK5CYII=" height="50" preserveAspectRatio="none" />
     </g>
-    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,350)">
+    <g text-rendering="optimizeLegibility" transform="translate(0,350)">
       <text xml:space="preserve" x="110" y="15" stroke="none">Non-Rectagular clip before</text>
       <text xml:space="preserve" x="110" y="30" stroke="none">.5 scale</text>
       <image x="0" y="0" transform="scale(0.5,0.5)" clip-path="url(#clipPath5)" width="100" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAIAAAAlV+npAAAAYklEQVR42u3ZwQkA

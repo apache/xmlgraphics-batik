@@ -6,23 +6,23 @@
   <defs id="genericDefs" />
   <g>
     <style type="text/css" xml:space="preserve">
-      <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+      <![CDATA[.testC1 {text-rendering:optimizeLegibility;}
 .testC2 {clip-path:url(#testclipPath1);}
 .testC3 {stroke:none;}
 .testC4 {stroke:none;}
 .testC5 {clip-path:url(#testclipPath2);}
-.testC6 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC6 {text-rendering:optimizeLegibility;}
 .testC7 {stroke:none;}
 .testC8 {stroke:none;}
 .testC9 {clip-path:url(#testclipPath2);}
-.testC10 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC10 {text-rendering:optimizeLegibility;}
 .testC11 {stroke:none;}
 .testC12 {clip-path:url(#testclipPath3);}
-.testC13 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC13 {text-rendering:optimizeLegibility;}
 .testC14 {stroke:none;}
 .testC15 {stroke:none;}
 .testC16 {clip-path:url(#testclipPath4);}
-.testC17 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
+.testC17 {text-rendering:optimizeLegibility;}
 .testC18 {stroke:none;}
 .testC19 {stroke:none;}
 .testC20 {clip-path:url(#testclipPath5);}
