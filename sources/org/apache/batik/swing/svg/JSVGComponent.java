@@ -371,8 +371,8 @@ public class JSVGComponent extends JGVTComponent {
         if (eventsEnabled && svgDocument != null && updateManager != null) {
             updateManager.dispatchSVGUnLoad();
             updateManager = null;
-            updateManagerStopped = false;
         }
+        updateManagerStopped = false;
 
         svgDocument = doc;
 
