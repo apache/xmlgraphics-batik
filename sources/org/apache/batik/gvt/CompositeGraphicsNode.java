@@ -255,7 +255,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             // Make sure we haven't been interrupted
             if (Thread.currentThread().isInterrupted()) {
                 // The Thread has been interrupted.
-		// Invalidate any cached values and proceed.
+                // Invalidate any cached values and proceed.
                 invalidateGeometryCache();
             }
         }
@@ -263,19 +263,18 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
     }
 
     /**
-     * Returns the bounds of this node's primitivePaint after applying the input
-     * transform (if any), concatenated with this node's transform (if any).
+     * Returns the bounds of this node's primitivePaint after applying
+     * the input transform (if any), concatenated with this node's
+     * transform (if any).
      *
      * @param txf the affine transform with which this node's transform should
-     *        be concatenated. Should not be null.
-     */
+     *        be concatenated. Should not be null.  */
     public Rectangle2D getTransformedPrimitiveBounds(AffineTransform txf) {
         AffineTransform t = txf;
         if (transform != null) {
             t = new AffineTransform(txf);
             t.concatenate(transform);
         }
-	
         int i = 0;
         Rectangle2D tpb = null;
         while (tpb == null && i < count) {

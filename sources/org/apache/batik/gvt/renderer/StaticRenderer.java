@@ -149,11 +149,9 @@ public class StaticRenderer implements ImageRenderer {
         rootCR      = null;
 
         workingOffScreen = null;
-        workingBaseRaster = null;
         workingRaster = null;
 
         currentOffScreen = null;
-        currentBaseRaster = null;
         currentRaster = null;
 
         // renderingHints = new RenderingHints(defaultRenderingHints);
@@ -176,11 +174,9 @@ public class StaticRenderer implements ImageRenderer {
         rootCR     = null;
 
         workingOffScreen = null;
-        workingBaseRaster = null;
         workingRaster = null;
 
         currentOffScreen = null;
-        currentBaseRaster = null;
         currentRaster = null;
     }
 
@@ -200,6 +196,9 @@ public class StaticRenderer implements ImageRenderer {
      *        the identity transform will be set.
      */
     public void setTransform(AffineTransform usr2dev){
+        if (this.usr2dev.equals(usr2dev))
+            return;
+
         if(usr2dev == null)
             this.usr2dev = new AffineTransform();
         else
@@ -234,6 +233,9 @@ public class StaticRenderer implements ImageRenderer {
      * @param isDoubleBuffered the new value for double buffering
      */
     public void setDoubleBuffered(boolean isDoubleBuffered){
+        if (this.isDoubleBuffered == isDoubleBuffered)
+            return;
+
         this.isDoubleBuffered = isDoubleBuffered;
         if (isDoubleBuffered) {
             // Now double buffering, so make sure they can't see work buffers.
@@ -293,9 +295,13 @@ public class StaticRenderer implements ImageRenderer {
      */
     public void clearOffScreen() {
 
+        // No need to clear in double buffer case people will
+        // only see it when it is done...
+        if (isDoubleBuffered) 
+            return;
+
         WritableRaster syncRaster;
         ColorModel     cm;
-
         updateWorkingBuffers();
         if ((rootCR == null)           ||
             (workingBaseRaster == null))
@@ -427,6 +433,7 @@ public class StaticRenderer implements ImageRenderer {
         r = (Rectangle)r.clone();
         r.x -= Math.round((float)usr2dev.getTranslateX());
         r.y -= Math.round((float)usr2dev.getTranslateY());
+        // System.out.println("Flushing Rect:" + r);
         tcr.flushCache(r);
     }
 
@@ -484,15 +491,8 @@ public class StaticRenderer implements ImageRenderer {
             rootCR = null;
         }
 
-        if (rootCR == null) {
-            workingBaseRaster = null;
-            workingRaster     = null;
-            workingOffScreen  = null;
-
-            rootCR = renderGNR();
-
-            if (rootCR == null) return;
-        }
+        rootCR = renderGNR();
+        if (rootCR == null) return;
 
         SampleModel sm = rootCR.getSampleModel();
         int         w  = offScreenWidth;

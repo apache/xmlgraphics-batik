@@ -76,7 +76,8 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             Rectangle2D srcNRgn = gn.getBounds();
             AffineTransform nat = gn.getTransform();
             nodeBounds.put(gnWRef, srcNRgn); // remember the new bounds...
-
+            // System.out.println("Old: " + srcORgn);
+            // System.out.println("New: " + srcNRgn);
             Shape oRgn = srcORgn;
             Shape nRgn = srcNRgn;
 

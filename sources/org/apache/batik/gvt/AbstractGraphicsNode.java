@@ -127,6 +127,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected WeakReference graphicsNodeRable;
 
     /**
+     * The GraphicsNodeRable for this node with all filtering applied
+     */
+    protected WeakReference enableBackgroundGraphicsNodeRable;
+
+    /**
      * A Weak Reference to this.
      */
     protected WeakReference weakRef;
@@ -393,14 +398,14 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     public Filter getEnableBackgroundGraphicsNodeRable
         (boolean createIfNeeded) {
         GraphicsNodeRable ret = null;
-        if (graphicsNodeRable != null) {
-            ret = (GraphicsNodeRable)graphicsNodeRable.get();
+        if (enableBackgroundGraphicsNodeRable != null) {
+            ret = (GraphicsNodeRable)enableBackgroundGraphicsNodeRable.get();
             if (ret != null) return ret;
         }
         if (createIfNeeded) {
             ret = new GraphicsNodeRable8Bit(this);
             ret.setUsePrimitivePaint(false);
-            graphicsNodeRable = new WeakReference(ret);
+            enableBackgroundGraphicsNodeRable = new WeakReference(ret);
         }
         return ret;
     }
@@ -880,6 +885,20 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             ((AbstractGraphicsNode) parent).invalidateGeometryCache();
         }
         bounds = null;
+
+        if (graphicsNodeRable != null) {
+            GraphicsNodeRable8Bit gnr;
+            gnr = (GraphicsNodeRable8Bit)graphicsNodeRable.get();
+            if (gnr != null)
+                gnr.clearCache();
+        }
+
+        if (enableBackgroundGraphicsNodeRable != null) {
+            GraphicsNodeRable8Bit gnr =
+                (GraphicsNodeRable8Bit)enableBackgroundGraphicsNodeRable.get();
+            if (gnr != null)
+                gnr.clearCache();
+        }
     }
 
     /**

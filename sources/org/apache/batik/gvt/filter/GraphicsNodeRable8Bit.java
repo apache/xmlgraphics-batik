@@ -97,6 +97,15 @@ public class GraphicsNodeRable8Bit
     }
 
     /**
+     * Clear any cached Red.
+     */
+    public void clearCache() {
+        cachedRed     = null;
+        cachedUsr2dev = null;
+        cachedGn2dev  = null;
+    }
+
+    /**
      * @param node The GraphicsNode this image should represent
      */
     public GraphicsNodeRable8Bit(GraphicsNode node){
