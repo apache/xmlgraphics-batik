@@ -12,11 +12,15 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
 import java.text.AttributedCharacterIterator;
+import java.text.CharacterIterator;
+
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.Mark;
@@ -52,9 +56,28 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     private Rectangle2D primitiveBounds;
 
     /**
+     * The text of this <tt>TextNode</tt>.
+     */
+    protected String text;
+
+    /**
      * Constructs a new empty <tt>TextNode</tt>.
      */
     public TextNode() {}
+
+    /**
+     * Returns the text of this <tt>TextNode</tt> as a string.
+     */
+    public String getText() {
+        if (text == null) {
+            StringBuffer buf = new StringBuffer(aci.getEndIndex());
+            for (char c=aci.first(); c != CharacterIterator.DONE; c=aci.next()) {
+                buf.append(c);
+            }
+            text = buf.toString();
+        }
+        return text;
+    }
 
     /**
      * Sets the location of this raster text node.
@@ -81,6 +104,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
                                                newAci) {
         invalidateGeometryCache();
         this.aci = newAci;
+        text = null;
     }
 
     /**
