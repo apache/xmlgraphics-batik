@@ -500,6 +500,12 @@ public class JSVGViewerFrame
         locationBar.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 String s = locationBar.getText().trim();
+                int i = s.indexOf("#");
+                String t = "";
+                if (i != -1) {
+                    t = s.substring(i + 1);
+                    s = s.substring(0, i);
+                }
                 if (!s.equals("")) {
                     File f = new File(s);
                     if (f.exists()) {
@@ -515,13 +521,18 @@ public class JSVGViewerFrame
                     if (s != null) {
                         if (svgDocument != null) {
                             try {
-                                URL docURL = ((SVGOMDocument)svgDocument).getURLObject();
+                                SVGOMDocument doc = (SVGOMDocument)svgDocument;
+                                URL docURL = doc.getURLObject();
                                 URL url = new URL(docURL, s);
-                                if (docURL.equals(url)) {
+                                String fi = svgCanvas.getFragmentIdentifier();
+                                if (docURL.equals(url) && t.equals(fi)) {
                                     return;
                                 }
                             } catch (MalformedURLException ex) {
                             }
+                        }
+                        if (t.length() != 0) {
+                            s += "#" + t;
                         }
                         locationBar.setText(s);
                         locationBar.addToHistory(s);
@@ -1285,6 +1296,11 @@ public class JSVGViewerFrame
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
         String s = ((SVGOMDocument)svgDocument).getURLObject().toString();
+        String t = svgCanvas.getFragmentIdentifier();
+        if (t != null) {
+            s += "#" + t;
+        }
+
         locationBar.setText(s);
         if (title == null) {
             title = getTitle();

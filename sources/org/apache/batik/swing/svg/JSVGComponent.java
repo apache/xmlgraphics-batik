@@ -112,7 +112,7 @@ public class JSVGComponent extends JGVTComponent {
     /**
      * The current document fragment identifier.
      */
-    protected String documentFragment;
+    protected String fragmentIdentifier;
 
     /**
      * Creates a new JSVGComponent.
@@ -163,27 +163,31 @@ public class JSVGComponent extends JGVTComponent {
     public void loadSVGDocument(String url) {
         stopProcessing();
 
+        URL oldURI = null;
         if (svgDocument != null) {
-            URL oldURI = ((SVGOMDocument)svgDocument).getURLObject();
-            URL newURI = null;
-            try {
-                newURI = new URL(oldURI, url);
-            } catch (MalformedURLException e) {
-                userAgent.displayError(e);
-                return;
-            }
+            oldURI = ((SVGOMDocument)svgDocument).getURLObject();
+        }
+        URL newURI = null;
+        try {
+            newURI = new URL(oldURI, url);
+        } catch (MalformedURLException e) {
+            userAgent.displayError(e);
+            return;
+        }
+        url = newURI.toString();
+        String s = newURI.getRef();
 
-            url = newURI.toString();
-            String s = newURI.getRef();
+        if (svgDocument != null) {
             if (newURI.sameFile(oldURI) &&
-                ((documentFragment == null && s != null) ||
-                 (s == null && documentFragment != null) ||
-                 (s != null && !s.equals(documentFragment)))) {
-                documentFragment = s;
+                ((fragmentIdentifier == null && s != null) ||
+                 (s == null && fragmentIdentifier != null) ||
+                 (s != null && !s.equals(fragmentIdentifier)))) {
+                fragmentIdentifier = s;
                 computeRenderingTransform();
                 return;
             }
         }
+        fragmentIdentifier = s;
 
         loader = new DocumentLoader(userAgent.getXMLParserClassName());
         documentLoader = new SVGDocumentLoader(url, loader);
@@ -240,6 +244,13 @@ public class JSVGComponent extends JGVTComponent {
     }
 
     /**
+     * Returns the current's document fragment identifier.
+     */
+    public String getFragmentIdentifier() {
+        return fragmentIdentifier;
+    }
+
+    /**
      * Creates a new bridge context.
      */
     protected BridgeContext createBridgeContext() {
@@ -256,7 +267,7 @@ public class JSVGComponent extends JGVTComponent {
             SVGSVGElement elt = svgDocument.getRootElement();
             Dimension d = getSize();
             setRenderingTransform(ViewBox.getViewTransform
-                                  (documentFragment, elt, d.width, d.height));
+                                  (fragmentIdentifier, elt, d.width, d.height));
             initialTransform = renderingTransform;
         }
     }

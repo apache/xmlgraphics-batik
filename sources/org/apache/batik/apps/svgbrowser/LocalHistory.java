@@ -132,6 +132,9 @@ public class LocalHistory {
      * Reloads the current document.
      */
     public void reload() {
+        if (currentURI < 0) {
+            currentURI = 0;
+        }
         currentURI--;
         svgCanvas.loadSVGDocument((String)visitedURIs.get(currentURI + 1));
     }
