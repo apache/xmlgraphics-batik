@@ -18,8 +18,6 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.StringTokenizer;
 
-import org.apache.batik.css.sac.CSSOMConditionFactory;
-import org.apache.batik.css.sac.CSSOMSelectorFactory;
 import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.EncodingUtilities;
 import org.apache.batik.util.ParsedURL;
@@ -74,17 +72,20 @@ public class Parser implements ExtendedParser, Localizable {
     /**
      * The document handler.
      */
-    protected DocumentHandler documentHandler = DefaultDocumentHandler.INSTANCE;
+    protected DocumentHandler documentHandler =
+        DefaultDocumentHandler.INSTANCE;
 
     /**
      * The selector factory.
      */
-    protected SelectorFactory selectorFactory = CSSOMSelectorFactory.INSTANCE;
+    protected SelectorFactory selectorFactory =
+        DefaultSelectorFactory.INSTANCE;
 
     /**
      * The condition factory.
      */
-    protected ConditionFactory conditionFactory = CSSOMConditionFactory.INSTANCE;
+    protected ConditionFactory conditionFactory =
+        DefaultConditionFactory.INSTANCE;
 
     /**
      * The error handler.

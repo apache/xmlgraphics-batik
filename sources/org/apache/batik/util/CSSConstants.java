@@ -60,6 +60,7 @@ public interface CSSConstants {
     String CSS_KERNING_PROPERTY = "kerning";
     String CSS_LETTER_SPACING_PROPERTY = "letter-spacing";
     String CSS_LIGHTING_COLOR_PROPERTY = "lighting-color";
+    String CSS_LINE_HEIGHT_PROPERTY = "line-height";
     String CSS_MARKER_PROPERTY = "marker";
     String CSS_MARKER_END_PROPERTY = "marker-end";
     String CSS_MARKER_MID_PROPERTY = "marker-mid";
