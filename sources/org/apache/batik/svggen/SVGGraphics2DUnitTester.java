@@ -818,11 +818,12 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         throws Exception {
         Document domFactory = getDocumentPrototype();
         Element group = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        SVGFont converter = new SVGFont();
+        SVGFont converter = new SVGFont(getContext(domFactory));
+        GraphicContext gc = new GraphicContext(new AffineTransform());
 
         for(int i=0; i<fonts.length; i++){
             Font font = fonts[i];
-            Map attrMap = converter.toSVG(font).getAttributeMap(null);
+            Map attrMap = converter.toSVG(font, gc.getFontRenderContext()).getAttributeMap(null);
             Element textElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_TEXT_TAG);
             Iterator iter = attrMap.keySet().iterator();
             while(iter.hasNext()){
