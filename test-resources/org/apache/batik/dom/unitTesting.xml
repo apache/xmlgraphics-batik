@@ -142,4 +142,8 @@
         <arg class="java.lang.String" value="elt4" />
     </test>
 
+    <!-- ========================================================================== -->
+    <!-- DOMUtilities character escaping test                                       -->
+    <!-- ========================================================================== -->
+    <test id="DOMUtilities.character.escaping" class="org.apache.batik.dom.DOMUtilitiesCharacterEscaping" />
 </testSuite>
