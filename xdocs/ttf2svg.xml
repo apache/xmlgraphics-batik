@@ -25,6 +25,9 @@
 
     <body>
         <s1 title="Introduction">
+
+        <!-- <figure src="images/ttf2svgBanner.jpg" alt="Batik SVG Rasterizer" /> -->
+
             <p>The True Type Font to SVG (<code>ttf2svg</code>) application lets you convert
             some character ranges from the True Type Font format to the SVG Font format.</p>
             <p>This page describes:</p>

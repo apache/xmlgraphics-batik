@@ -147,13 +147,13 @@
 
                 <p>
                 The key class for building the DOM tree is the
-                SVGOMDocument class.  When an instance of this class
+                <code>SVGOMDocument</code> class.  When an instance of this class
                 is constructed it searches for instances of the
                 <code>org.apache.batik.dom.svg.DomExtension</code>
                 Service Provider interface.  It then calls the
                 'registerTags' method with it's self for each one.
                 This method typically calls
-                registerCustomElementFactory for each tag that it
+                <code>registerCustomElementFactory</code> for each tag that it
                 wishes to handle.
                 </p>
 
@@ -163,19 +163,19 @@
                 To this end Batik provides a class you can extend:
                 <code>org.apache.batik.extension.PrefixableStylableExtensionElement</code>.
                 If you derive off this class you are only required to
-                implement three methods: getLocalName,
-                getNamespaceURI, and newNode (plus constructors).  If
-                all you are want is proper style support then you are
+                implement three methods: <code>getLocalName</code>,
+                <code>getNamespaceURI</code>, and <code>newNode</code> (plus constructors).  If
+                all you want is proper style support then you are
                 done implementing your elements at this point.
                 </p>
 
                 <p>
-                The distribution comes with two good examples
+                The distribution comes with two examples
                 <code>org.apache.batik.extension.svg.BatikStarElement</code>,
                 and
                 <code>org.apache.batik.extension.svg.BatikRegularPolygonElement</code>.
-                These also include the required DomExtension instance to
-                register the elements with the SVGOMDocument.
+                These examples also include the required <code>DomExtension</code> instance to
+                register the elements with the <code>SVGOMDocument</code>.
                 </p>
             </s2>
 
@@ -195,7 +195,7 @@
     
                 <p>
                 The key class for managing this link is the
-                BridgeContext class.  This class maintains an
+                <code>BridgeContext</code> class.  This class maintains an
                 association between a tag name with namespace and a
                 particular bridge instance that will handle it.  The
                 work of constructing the proper entities in the GVT
@@ -205,13 +205,13 @@
 
                 <p>
                 New associations can be added by subclasses of the
-                BridgeExtension Service Provider Interface.  This
+                <code>BridgeExtension</code> Service Provider Interface.  This
                 interface has a number of methods that provide
                 information about the particular extension being
                 registered (including contact information, and the
                 list of implemented extensions).  It also has a
                 'registerTags' method which is responsible for
-                registering the bridge instances with a BridgeContext.
+                registering the bridge instances with a <code>BridgeContext</code>.
                 The built in bridges are bundled with a
                 BridgeExtension as well as the two example extension
                 tags (in <code>org.apache.batik.extension.svg</code>),
@@ -219,7 +219,7 @@
                 </p>
     
                 <p>
-                The Bridge interface it's self is very simple. It only
+                The <code>Bridge</code> interface itself is very simple. It only
                 includes methods to get the namespace and local name
                 of the tag the bridge is responsible for.  This
                 interface is then extended for each of the major
@@ -300,9 +300,9 @@
                 <p>
                 Extension writers are free to work with any of the
                 above bridges, however the three most common are
-                likely to be the GraphicsNodeBridge, the
-                FilterPrimitiveBridge, and the PaintBridge.  Each of
-                these interfaces has several extremely useful
+                likely to be the <code>GraphicsNodeBridge</code>, the
+                <code>FilterPrimitiveBridge</code>, and the <code>PaintBridge</code>.  
+                Each of these interfaces has several extremely useful
                 subclasses that handle much of the common behavior
                 among elements.
                 </p>
@@ -320,9 +320,9 @@
                 <s3 title="GraphicsNodeBridge">
                     <p>
                     The graphics node bridge is oriented around
-                    constructing a new GraphicsNode in the GVT tree.
-                    The GraphicsNode is the basic element that makes
-                    up the GVT tree.  Each GraphicsNode has a 'paint'
+                    constructing a new <code>GraphicsNode</code> in the GVT tree.
+                    The <code>GraphicsNode</code> is the basic element that makes
+                    up the GVT tree.  Each <code>GraphicsNode</code> has a <code>paint</code>
                     method that is responsible for painting the object
                     (including considering clipping, masking,
                     filtering, and opacity for the node).
@@ -347,7 +347,7 @@
                     filled or stroked shape the easiest way is to
                     subclass either of the following classes.  In this
                     case you are essentially only responsible for
-                    constructing a standard java Shape object to
+                    constructing a standard java <code>Shape</code> object to
                     describe the desired area to operate on:
                     </p>
                     <dl>
@@ -394,35 +394,35 @@
 
                 <p>
                 The majority of classes for part of Batik are present
-                in the batik.ext.awt.image.* package hierarchy which
+                in the <code>batik.ext.awt.image.*</code> package hierarchy which
                 contains a set of generally useful extensions to the
                 core JDK classes and methods.
                 </p>
 
                 <p>
-                Note that the FilterPrimitiveBridge is invoked once
-                for each reference to the filter tag that the filter
+                Note that the <code>FilterPrimitiveBridge</code> is invoked once
+                for each reference to the <code>&lt;filter&gt;</code> tag that the filter
                 primitive is part of.  So if a filter effect is used a
-                half dozen times the createFilter method will be
+                half dozen times the <code>createFilter</code> method will be
                 called a half dozen times, even though the tag may
                 only appear once in the file. This means that it is
                 safe for the Filters returned to be 'fixed' for a
-                particular GraphicsNode being filtered.
+                particular <code>GraphicsNode</code> being filtered.
                 </p>
 
                 <p>
                 You will notice that Batik uses extended versions of
-                the standard Renderable and Rendered image classes to
-                provide additional information about surround
+                the standard <code>Renderable</code> and <code>Rendered</code> 
+                image classes to provide additional information about surround
                 requirements for operations as well as a few
                 convenience methods.  These interfaces are called:
                 <code>java.ext.awt.image.renderable.Filter</code> and
                 <code>java.ext.awt.image.rendered.CacheableRed</code>.
                 Batik contains simple wrapper classes that can take
-                the default JDK Renderable and Rendered Image
+                the default JDK <code>Renderable</code> and <code>Rendered</code> Image
                 interfaces.  Within the code base the convention 'Red'
-                for classes implementing RenderedImage, and 'Rable'
-                for classes implementing RenderableImage is commonly
+                for classes implementing <code>RenderedImage</code>, and 'Rable'
+                for classes implementing <code>RenderableImage</code> is commonly
                 used ('Red' is to be pronounced like the color, and
                 'Rable' is to be pronounced like 'horrible' with a
                 silent 'h').
@@ -430,8 +430,8 @@
 
                 <p>
                 The <code>FilterPrimitiveBridge</code> really has only
-                one method right now: createFilter that must construct
-                an instance of Filter to perform the required
+                one method right now: <code>createFilter</code> that must construct
+                an instance of <code>Filter</code> to perform the required
                 operation.  This is still a fairly complex task given
                 the general need to support accessing the various
                 standard sources of image data.  To this end there is
@@ -450,10 +450,9 @@
                 <code>ext.awt.image.renderable.AbstractRable</code>,
                 <code>ext.awt.image.rendered.AbstractRed</code>, and
                 <code>ext.awt.image.rendered.AbstractTiledRed</code>.
-                The TiledRed ties into the Batik tile cache (only use
-                this as your base class if you know what you are
-                doing, as you are generally more likely to cause the
-                tile cache to thrash than improve performance).
+                <code>TiledRed</code> ties into the Batik tile cache 
+                (use this with caution as it is a complex area of 
+                the Batik code and that code may be inadvertently broken).
                 </p>
 
                 <p>
@@ -467,14 +466,14 @@
                 <anchor id="paintBridge"/>
                 <s3 title="PaintBridge">
                 <p>
-                The PaintBridge constructs an instance of the
+                The <code>PaintBridge</code> constructs an instance of the
                 <code>java.awt.Paint</code> to be used to fill or stroke
                 shapes/text (part of the paint server architecture of
                 SVG).
                 </p>
 
                 <p>
-                Like the filter primitive bridge the paint bridge is
+                Like the filter primitive bridge the <code>PaintBridge</code> is
                 invoked for each reference to the paint.  This makes
                 it possible to customize the Paint returned for the
                 particular element to be painted.
@@ -496,7 +495,7 @@
                 </p> 
 
                 <p>
-                The existing gradient Paint implementations are in
+                The existing gradient paint implementations are in
                 <code>ext.awt</code>, the pattern implementation is in
                 <code>gvt</code> since it requires access to gvt
                 internals.
@@ -512,26 +511,26 @@
             When Batik encounters an 'image' element and it determines
             the element does not reference an SVG file. It defers the
             loading of the referenced image to
-            org.apache.batik.ext.awt.image.spi.ImageTagRegistry.  This
-            class maintains a list of RegistryEntries, generally one
+            <code>org.apache.batik.ext.awt.image.spi.ImageTagRegistry</code>.  This
+            class maintains a list of <code>RegistryEntries</code>, generally one
             for each format.
             </p>
     
             <p>
             Since the formats supported natively by Batik are also
-            implemented through this mechanism. The JPEGRegistryEntry
-            and PNGRegistryEntry should be used as good references for
+            implemented through this mechanism. The <code>JPEGRegistryEntry</code>
+            and <code>PNGRegistryEntry</code> should be used as good references for
             extensions.
             </p>
             <s2 title="RegistryEntry">
                 <p>
-                There are currently two flavors of RegistryEntry:
+                There are currently two flavors of <code>RegistryEntry</code>:
                 </p>
         
                 <dl>
                    <dt>URLRegistryEntry</dt>
                    <dd>
-                   These take a ParsedURL and try to decide if the URL
+                   These take a <code>ParsedURL</code> and try to decide if the URL
                    is intended for them.  This group is mostly
                    intended to handle alternate network protocols.  It
                    can also be useful for interfacing with libraries
@@ -540,7 +539,7 @@
         
                    <dt>StreamRegistryEntry</dt>
                    <dd>
-                   These work with a markable InputStream. This is the
+                   These work with a markable <code>InputStream</code>. This is the
                    preferred form of registry entry as it generally
                    avoids opening a potentially expensive connection
                    multiple times, instead it opens the stream once
@@ -553,7 +552,7 @@
             <s2 title="Helper classes">
                 <p> 
                 There exists quite a number of classes to assist in
-                implementing a RegistryEntry.  It is strongly
+                implementing a <code>RegistryEntry</code>.  It is strongly
                 recommended that you review these classes and make use
                 of them where appropriate.  They will likely save you
                 time and improve the integration with Batik.
@@ -562,7 +561,7 @@
                    <dt>MagicNumberRegistryEntry</dt>
                    <dd>
                     An abstract class that can handle the
-                   isCompatibleStream method for formats that make use
+                   <code>isCompatibleStream</code> method for formats that make use
                    of "magic numbers".  Magic numbers are a well known
                    sequence of bytes at a well known offset in the
                    file.
@@ -570,10 +569,10 @@
         
                    <dt>RedRable</dt>
                    <dd>
-                   This takes any java.awt.image.RenderedImage and
-                   wraps it into a 'Filter' (Batik's subclass of
+                   This takes any <code>java.awt.image.RenderedImage</code> and
+                   wraps it into a <code>Filter</code> (Batik's subclass of
                    RenderableImage).  This is extremely useful for
-                   'single resolution' file formats.  
+                   <em>single resolution</em> file formats.  
                    </dd>
         
                    <dt>DeferRable</dt>
@@ -613,7 +612,7 @@
             </p>
             
             <p>
-            ParsedURL offers a few advantages over the JDK's URL class.
+            <code>ParsedURL</code> offers a few advantages over the JDK's URL class.
             First, it is designed to make minimal use of exceptions, so it
             is possible to use it to parse a malformed URL and get "the
             good parts".  Second, it is extensible, so support for new
@@ -626,7 +625,7 @@
             
             <p>
             The service class is
-            org.apache.batik.util.ParsedURLProtocolHandler.  This
+            <code>org.apache.batik.util.ParsedURLProtocolHandler</code>.  This
             interface consists of three methods, one returns the protocol
             to be handled, one is for parsing an absolute URL string and
             one is for parsing relative URL strings. Both the parsing
@@ -635,7 +634,7 @@
             </p>
             
             <p>
-            The ParsedURLData class holds all the data and implements the
+            The <code>ParsedURLData</code> class holds all the data and implements the
             all the stream handling commands for the ParsedURL class.
             This allows ProtocolHandlers to return custom subclasses for
             particular protocols.

@@ -26,6 +26,8 @@
     <body>
         <s1 title="Introduction">
 
+        <!-- <figure src="images/svgppBanner.jpg" alt="Batik SVG Rasterizer" /> -->
+
         <p>
         This page describes the features of the SVG Pretty-printer utility that
         comes with the Batik distribution. It discusses the following:</p>

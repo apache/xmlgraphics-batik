@@ -42,8 +42,8 @@
     <!-- Sample Applications Documentation -->
     <!-- ================================= -->
     <page id="toolsAndApps"       label="Tools and Apps"           source="demo.xml" />
-    <page id="svgrasterizer"      label="Rasterizer"               source="svgrasterizer.xml" />
     <page id="svgviewer"          label="Browser"                  source="svgviewer.xml"/>
+    <page id="svgrasterizer"      label="Rasterizer"               source="svgrasterizer.xml" />
     <page id="ttf2svg"            label="Font Converter"           source="ttf2svg.xml"/>
     <page id="svgpp"              label="Pretty-printer"           source="svgpp.xml" />
 
