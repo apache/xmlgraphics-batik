@@ -101,12 +101,21 @@ public abstract class AbstractViewCSS implements ViewCSS {
      */
     public CSSStyleDeclaration getComputedStyle(Element elt,
                                                 String pseudoElt) {
+	return getComputedStyleInternal(elt, pseudoElt);
+    }
+ 
+    /**
+     * Internal version of getComputedStyle().
+     */
+    public CSSOMReadOnlyStyleDeclaration getComputedStyleInternal(Element elt,
+                                                                  String pseudoElt) {
 	Map m = (Map)styles.get(elt);
 	if (m == null) {
 	    styles.put(elt, m = new HashMap(11));
 	}
         pseudoElt = (pseudoElt == null) ? "" : pseudoElt;
-        CSSStyleDeclaration result = (CSSStyleDeclaration)m.get(pseudoElt);
+        CSSOMReadOnlyStyleDeclaration result =
+            (CSSOMReadOnlyStyleDeclaration)m.get(pseudoElt);
 	
         if (result == null) {
             result = computeStyle(elt, pseudoElt);
@@ -162,7 +171,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
     /**
      * Computes the cascaded style for the given element and pseudo element.
      */
-    public CSSStyleDeclaration computeStyle(Element elt,
+    public CSSOMReadOnlyStyleDeclaration computeStyle(Element elt,
                                             String pseudoElt) {
         CSSOMReadOnlyStyleDeclaration result;
         result = new CSSOMReadOnlyStyleDeclaration(this, elt);
