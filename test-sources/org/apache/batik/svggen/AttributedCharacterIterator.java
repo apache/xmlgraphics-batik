@@ -114,12 +114,13 @@ public class AttributedCharacterIterator implements Painter {
         styledText.addAttribute(TextAttribute.BACKGROUND, new Color(70, 107, 132), 23, 28);
 
         java.text.AttributedCharacterIterator iter = styledText.getIterator();
-        TextLayout layout = new TextLayout(iter, frc);
+        /*TextLayout layout = new TextLayout(iter, frc);
 
         Rectangle bounds = layout.getBounds().getBounds();
         bounds.width += 50;
         bounds.height += 50;
 
-        layout.draw(g, 25, layout.getAscent() + 25);
+        layout.draw(g, 25, layout.getAscent() + 25);*/
+        g.drawString(iter, 10, 100);
     }
 }
