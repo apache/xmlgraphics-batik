@@ -60,6 +60,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.text.TextPaintInfo;
+
 /**
  * A GVTGlyphVector class for SVG fonts.
  *
@@ -67,6 +70,9 @@ import java.text.AttributedCharacterIterator;
  * @version $Id$
  */
 public final class SVGGVTGlyphVector implements GVTGlyphVector {
+
+    public static final AttributedCharacterIterator.Attribute PAINT_INFO 
+        = GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
     private GVTFont           font;
     private Glyph[]           glyphs;
@@ -77,6 +83,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
     private Shape[]           glyphLogicalBounds;
     private boolean[]         glyphVisible;
     private Point2D           endPos;
+    private TextPaintInfo     cacheTPI;
 
     /**
      * Constructs an SVGGVTGlyphVector.
@@ -592,7 +599,10 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
      */
     public Rectangle2D getBounds2D(AttributedCharacterIterator aci) {
         // System.out.println("GlyphVector.getBounds2D Called: " + this);
-        if (bounds2D != null) 
+        aci.first();
+        TextPaintInfo tpi = (TextPaintInfo)aci.getAttribute(PAINT_INFO);
+        if ((bounds2D != null) &&
+            TextPaintInfo.equivilent(tpi, cacheTPI))
             return bounds2D;
 
         Rectangle2D b=null;
@@ -610,6 +620,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         if ( bounds2D == null ){
             bounds2D = new Rectangle2D.Float();
         }
+        cacheTPI = tpi;
         return bounds2D;
     }
 

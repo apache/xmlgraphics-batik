@@ -84,6 +84,7 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.text.TextHit;
 import org.apache.batik.gvt.text.TextPath;
+import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextSpanLayout;
 
 
@@ -100,6 +101,10 @@ import org.apache.batik.gvt.text.TextSpanLayout;
  * @version $Id$
  */
 public class StrokingTextPainter extends BasicTextPainter {
+
+    public static final 
+        AttributedCharacterIterator.Attribute PAINT_INFO =
+        GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
     public static final 
         AttributedCharacterIterator.Attribute FLOW_REGIONS =
@@ -924,36 +929,36 @@ public class StrokingTextPainter extends BasicTextPainter {
             TextRun textRun = (TextRun)textRuns.get(i);
             AttributedCharacterIterator runaci = textRun.getACI();
             runaci.first();
-
-            Composite opacity = (Composite)
-                  runaci.getAttribute(GVTAttributedCharacterIterator.
-                                              TextAttribute.OPACITY);
-            if (opacity != null) {
-                g2d.setComposite(opacity);
+            
+            TextPaintInfo tpi = (TextPaintInfo)runaci.getAttribute(PAINT_INFO);
+            if ((tpi != null) && (tpi.composite != null)) {
+                g2d.setComposite(tpi.composite);
             }
 
-            Paint paint = null;
-            Stroke stroke = null;
-            Paint strokePaint = null;
-            switch (decorationType) {
+            Paint  paint       = null;
+            Stroke stroke      = null;
+            Paint  strokePaint = null;
+            if (tpi != null) {
+                switch (decorationType) {
                 case TextSpanLayout.DECORATION_UNDERLINE :
-                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
-                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
-                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
+                    paint       = tpi.underlinePaint;
+                    stroke      = tpi.underlineStroke;
+                    strokePaint = tpi.underlineStrokePaint;
                     break;
                 case TextSpanLayout.DECORATION_OVERLINE :
-                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_PAINT);
-                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE);
-                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE_PAINT);
+                    paint       = tpi.overlinePaint;
+                    stroke      = tpi.overlineStroke;
+                    strokePaint = tpi.overlineStrokePaint;
                     break;
                 case TextSpanLayout.DECORATION_STRIKETHROUGH :
-                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_PAINT);
-                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE);
-                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE_PAINT);
+                    paint       = tpi.strikethroughPaint;
+                    stroke      = tpi.strikethroughStroke;
+                    strokePaint = tpi.strikethroughStrokePaint;
                     break;
                 default:
                     // should never get here
                     return;
+                }
             }
 
             if (textRun.isFirstRunInChunk()) {
@@ -1046,11 +1051,9 @@ public class StrokingTextPainter extends BasicTextPainter {
             AttributedCharacterIterator runaci = textRun.getACI();
             runaci.first();
 
-            Composite opacity = (Composite)
-                  runaci.getAttribute(GVTAttributedCharacterIterator.
-                                              TextAttribute.OPACITY);
-            if (opacity != null) {
-                g2d.setComposite(opacity);
+            TextPaintInfo tpi = (TextPaintInfo)runaci.getAttribute(PAINT_INFO);
+            if ((tpi != null) && (tpi.composite != null)) {
+                g2d.setComposite(tpi.composite);
             }
             textRun.getLayout().draw(g2d);
         }
@@ -1129,13 +1132,15 @@ public class StrokingTextPainter extends BasicTextPainter {
      * glyphs including stroke etc.
      */
      public Rectangle2D getBounds2D(TextNode node) {
-        AttributedCharacterIterator aci = node.getAttributedCharacterIterator();
+        AttributedCharacterIterator aci;
+        aci = node.getAttributedCharacterIterator();
 
         // get the list of text runs
         List textRuns = getTextRuns(node, aci);
 
         Rectangle2D bounds = null;
-        // for each text run, get its stroke outline and append it to the overall outline
+        // for each text run, get its stroke outline and append it to
+        // the overall outline
         for (int i = 0; i < textRuns.size(); ++i) {
             TextRun textRun = (TextRun)textRuns.get(i);
             AttributedCharacterIterator textRunACI = textRun.getACI();
@@ -1209,25 +1214,28 @@ public class StrokingTextPainter extends BasicTextPainter {
             Paint paint = null;
             Stroke stroke = null;
             Paint strokePaint = null;
-            switch (decorationType) {
+            TextPaintInfo tpi = (TextPaintInfo)runaci.getAttribute(PAINT_INFO);
+            if (tpi != null) {
+                switch (decorationType) {
                 case TextSpanLayout.DECORATION_UNDERLINE :
-                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
-                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
-                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
+                    paint       = tpi.underlinePaint;
+                    stroke      = tpi.underlineStroke;
+                    strokePaint = tpi.underlineStrokePaint;
                     break;
                 case TextSpanLayout.DECORATION_OVERLINE :
-                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_PAINT);
-                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE);
-                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE_PAINT);
+                    paint       = tpi.overlinePaint;
+                    stroke      = tpi.overlineStroke;
+                    strokePaint = tpi.overlineStrokePaint;
                     break;
                 case TextSpanLayout.DECORATION_STRIKETHROUGH :
-                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_PAINT);
-                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE);
-                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE_PAINT);
+                    paint       = tpi.strikethroughPaint;
+                    stroke      = tpi.strikethroughStroke;
+                    strokePaint = tpi.strikethroughStrokePaint;
                     break;
                 default:
                     // should never get here
                     return null;
+                }
             }
 
             if (textRun.isFirstRunInChunk()) {
@@ -1328,25 +1336,28 @@ public class StrokingTextPainter extends BasicTextPainter {
             Paint paint = null;
             Stroke stroke = null;
             Paint strokePaint = null;
-            switch (decorationType) {
+            TextPaintInfo tpi = (TextPaintInfo)runaci.getAttribute(PAINT_INFO);
+            if (tpi != null) {
+                switch (decorationType) {
                 case TextSpanLayout.DECORATION_UNDERLINE :
-                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_PAINT);
-                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE);
-                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_STROKE_PAINT);
+                    paint       = tpi.underlinePaint;
+                    stroke      = tpi.underlineStroke;
+                    strokePaint = tpi.underlineStrokePaint;
                     break;
                 case TextSpanLayout.DECORATION_OVERLINE :
-                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_PAINT);
-                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE);
-                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.OVERLINE_STROKE_PAINT);
+                    paint       = tpi.overlinePaint;
+                    stroke      = tpi.overlineStroke;
+                    strokePaint = tpi.overlineStrokePaint;
                     break;
                 case TextSpanLayout.DECORATION_STRIKETHROUGH :
-                    paint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_PAINT);
-                    stroke = (Stroke) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE);
-                    strokePaint = (Paint) runaci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_STROKE_PAINT);
+                    paint       = tpi.strikethroughPaint;
+                    stroke      = tpi.strikethroughStroke;
+                    strokePaint = tpi.strikethroughStrokePaint;
                     break;
                 default:
                     // should never get here
                     return null;
+                }
             }
 
             if (textRun.isFirstRunInChunk()) {

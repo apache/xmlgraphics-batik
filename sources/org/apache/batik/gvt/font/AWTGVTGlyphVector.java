@@ -69,6 +69,7 @@ import java.text.CharacterIterator;
 
 import org.apache.batik.gvt.text.ArabicTextHandler;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.text.TextPaintInfo;
 
 /**
  * This is a wrapper class for a java.awt.font.GlyphVector instance.
@@ -77,6 +78,9 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
  * @version $Id$
  */
 public class AWTGVTGlyphVector implements GVTGlyphVector {
+
+    public static final AttributedCharacterIterator.Attribute PAINT_INFO 
+        = GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
     private GlyphVector awtGlyphVector;
     private AWTGVTFont gvtFont;
@@ -103,6 +107,7 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
     private float scaleFactor;
     private float ascent;
     private float descent;
+    private TextPaintInfo cacheTPI;
 
     /**
      * Creates and new AWTGVTGlyphVector from the specified GlyphVector and
@@ -193,24 +198,27 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
      * Returns a tight bounds on the GylphVector including stroking.
      */
     public Rectangle2D getBounds2D(AttributedCharacterIterator aci) {
-        if (bounds2D != null)
+        aci.first();
+        TextPaintInfo tpi = (TextPaintInfo)aci.getAttribute(PAINT_INFO);
+        if ((bounds2D != null) &&
+            TextPaintInfo.equivilent(tpi, cacheTPI))
             return bounds2D;
 
+        if (tpi == null) {
+            bounds2D = new Rectangle2D.Float();
+            return bounds2D;
+        }
+        cacheTPI = new TextPaintInfo(tpi);
         Shape outline = null;
-
-        aci.first();
-        Paint fillP = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
-        if (fillP != null) {
+        if (tpi.fillPaint != null) {
             outline = getOutline();
             bounds2D = outline.getBounds2D();
         }
         
         // check if we need to include the 
         // outline of this glyph
-        Stroke stroke = (Stroke) aci.getAttribute
-            (GVTAttributedCharacterIterator.TextAttribute.STROKE);
-        Paint paint = (Paint) aci.getAttribute
-            (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+        Stroke stroke = tpi.strokeStroke;
+        Paint  paint  = tpi.strokePaint;
         if ((stroke != null) && (paint != null)) {
             if (outline == null)
                 outline = getOutline();
@@ -221,6 +229,8 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
             else 
                 bounds2D = bounds2D.createUnion(strokeBounds);
         }
+        if (bounds2D == null)
+            bounds2D = new Rectangle2D.Float();
 
         return bounds2D;
     }
@@ -810,11 +820,13 @@ public class AWTGVTGlyphVector implements GVTGlyphVector {
         int numGlyphs = getNumGlyphs();
 
         aci.first();
-        Paint fillPaint = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
-        Stroke stroke = (Stroke) aci.getAttribute
-            (GVTAttributedCharacterIterator.TextAttribute.STROKE);
-        Paint strokePaint = (Paint) aci.getAttribute
-            (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
+        TextPaintInfo tpi = (TextPaintInfo)aci.getAttribute
+            (GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO);
+        if (tpi == null) return;
+        Paint  fillPaint   = tpi.fillPaint;
+        Stroke stroke      = tpi.strokeStroke;
+        Paint  strokePaint = tpi.strokePaint;
+
         if ((fillPaint == null) && ((strokePaint == null) ||
                                     (stroke == null)))
             return;

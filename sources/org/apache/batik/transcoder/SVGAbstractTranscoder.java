@@ -206,7 +206,8 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         if ((document != null) &&
             !(document.getImplementation() instanceof SVGDOMImplementation)) {
             DOMImplementation impl;
-            impl = SVGDOMImplementation.getDOMImplementation();
+            impl = (DOMImplementation)hints.get(KEY_DOM_IMPLEMENTATION);
+            // impl = ExtensibleSVGDOMImplementation.getDOMImplementation();
             document = DOMUtilities.deepCloneDocument(document, impl);
             if (uri != null) {
                 try { 

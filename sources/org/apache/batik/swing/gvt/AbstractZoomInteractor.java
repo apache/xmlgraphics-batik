@@ -154,6 +154,8 @@ public class AbstractZoomInteractor extends InteractorAdapter {
 
         xStart = e.getX();
         yStart = e.getY();
+        JGVTComponent c = (JGVTComponent)e.getSource();
+        c.getOverlays().add(overlay);
     }
 
     /**
@@ -162,6 +164,7 @@ public class AbstractZoomInteractor extends InteractorAdapter {
     public void mouseReleased(MouseEvent e) {
         finished = true;
         JGVTComponent c = (JGVTComponent)e.getSource();
+        c.getOverlays().remove(overlay);
         overlay.paint(c.getGraphics());
 
         xCurrent = e.getX();
@@ -205,6 +208,7 @@ public class AbstractZoomInteractor extends InteractorAdapter {
     public void mouseExited(MouseEvent e) {
         finished = true;
         JGVTComponent c = (JGVTComponent)e.getSource();
+        c.getOverlays().remove(overlay);
         overlay.paint(c.getGraphics());
     }
 

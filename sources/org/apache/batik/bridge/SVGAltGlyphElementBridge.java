@@ -60,6 +60,7 @@ import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.text.TextPaintInfo;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -73,6 +74,9 @@ import org.w3c.dom.NodeList;
  */
 public class SVGAltGlyphElementBridge extends AbstractSVGBridge
                                       implements ErrorConstants {
+
+    public static final AttributedCharacterIterator.Attribute PAINT_INFO
+        = GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
     /**
      * Constructs a new bridge for the &lt;altGlyph> element.
@@ -374,14 +378,9 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             = (SVGGlyphElementBridge)ctx.getBridge(localGlyphElement);
 
         aci.first();
-        Paint fillPaint = (Paint)aci.getAttribute(TextAttribute.FOREGROUND);
-        Paint strokePaint = (Paint)aci.getAttribute(
-            GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT);
-        Stroke stroke = (Stroke)aci.getAttribute(
-            GVTAttributedCharacterIterator.TextAttribute.STROKE);
+        TextPaintInfo tpi = (TextPaintInfo)aci.getAttribute(PAINT_INFO);
 
         return glyphBridge.createGlyph(ctx, localGlyphElement, altGlyphElement,
-                                      -1, fontSize, fontFace,
-                                      fillPaint, strokePaint, stroke);
+                                       -1, fontSize, fontFace, tpi);
     }
 }

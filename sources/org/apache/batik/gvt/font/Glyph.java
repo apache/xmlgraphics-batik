@@ -63,6 +63,7 @@ import java.util.Vector;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.text.ArabicTextHandler;
+import org.apache.batik.gvt.text.TextPaintInfo;
 
 
 /**
@@ -92,9 +93,8 @@ public class Glyph {
     private Shape outline; // cache the glyph outline
     private Rectangle2D bounds; // cache the glyph bounds
 
-    private Paint fillPaint;
-    private Paint strokePaint;
-    private Stroke stroke;
+    private TextPaintInfo tpi;
+    private TextPaintInfo cacheTPI;
     private Shape dShape;
     private GraphicsNode glyphChildrenNode;
 
@@ -106,7 +106,7 @@ public class Glyph {
                  String orientation, String arabicForm, String lang,
                  Point2D horizOrigin, Point2D vertOrigin, float horizAdvX,
                  float vertAdvY, int glyphCode, float kernScale,
-                 Paint fillPaint, Paint strokePaint, Stroke stroke,
+                 TextPaintInfo tpi,
                  Shape dShape, GraphicsNode glyphChildrenNode) {
 
         if (unicode == null) {
@@ -144,9 +144,7 @@ public class Glyph {
         this.bounds = null;
 
 
-        this.fillPaint = fillPaint;
-        this.strokePaint = strokePaint;
-        this.stroke = stroke;
+        this.tpi = tpi;
         this.dShape = dShape;
         this.glyphChildrenNode = glyphChildrenNode;
     }
@@ -328,7 +326,9 @@ public class Glyph {
     }
 
     public Rectangle2D getBounds2D() {
-        if (bounds != null) 
+        // Check if the TextPaintInfo has changed...
+        if ((bounds != null) &&
+            TextPaintInfo.equivilent(tpi, cacheTPI))
             return bounds;
 
         AffineTransform tr = 
@@ -339,12 +339,12 @@ public class Glyph {
         }
 
         Rectangle2D bounds = null;
-        if (dShape != null) {
-            if (fillPaint != null) 
+        if ((dShape != null) && (tpi != null)) {
+            if (tpi.fillPaint != null) 
                 bounds = tr.createTransformedShape(dShape).getBounds2D();
 
-            if ((stroke != null) && (strokePaint != null)) {
-                Shape s = stroke.createStrokedShape(dShape);
+            if ((tpi.strokeStroke != null) && (tpi.strokePaint != null)) {
+                Shape s = tpi.strokeStroke.createStrokedShape(dShape);
                 Rectangle2D r = tr.createTransformedShape(s).getBounds2D();
                 if (bounds == null) bounds = r;
                 else                bounds = r.createUnion(bounds);
@@ -360,6 +360,7 @@ public class Glyph {
             bounds = new Rectangle2D.Double
                 (position.getX(), position.getY(), 0, 0);
 
+        cacheTPI = new TextPaintInfo(tpi);
         return bounds;
     }
 
@@ -413,17 +414,17 @@ public class Glyph {
         }
 
         // paint the dShape first
-        if (dShape != null) {
+        if ((dShape != null) && (tpi != null)) {
             Shape tShape = tr.createTransformedShape(dShape);
-            if (fillPaint != null) {
-                graphics2D.setPaint(fillPaint);
+            if (tpi.fillPaint != null) {
+                graphics2D.setPaint(tpi.fillPaint);
                 graphics2D.fill(tShape);
             }
 
             // check if we need to draw the outline of this glyph
-            if (stroke != null && strokePaint != null) {
-                graphics2D.setStroke(stroke);
-                graphics2D.setPaint(strokePaint);
+            if (tpi.strokeStroke != null && tpi.strokePaint != null) {
+                graphics2D.setStroke(tpi.strokeStroke);
+                graphics2D.setPaint(tpi.strokePaint);
                 graphics2D.draw(tShape);
             }
         }

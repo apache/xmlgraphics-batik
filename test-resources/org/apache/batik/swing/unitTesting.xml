@@ -63,11 +63,11 @@
   <test id="NullURITest" 
         class="org.apache.batik.swing.NullURITest" />
 
-  <test id="SetSVGDocumentTest" 
-        class="org.apache.batik.swing.SetSVGDocumentTest" />
-
   <test id="NullSetSVGDocumentTest" 
         class="org.apache.batik.swing.NullSetSVGDocumentTest" />
+
+  <test id="SetSVGDocumentTest" 
+        class="org.apache.batik.swing.SetSVGDocumentTest" />
 
   <testGroup id="swing.interrupt" 
              class="org.apache.batik.swing.JSVGInterruptTest">

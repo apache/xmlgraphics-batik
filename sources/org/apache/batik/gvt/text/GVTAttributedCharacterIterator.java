@@ -284,69 +284,9 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         public final static TextAttribute ROTATION =
                                           new TextAttribute("ROTATION");
 
-        /** Overall opacity of rendered text.*/
-        public final static TextAttribute OPACITY =
-                                          new TextAttribute("OPACITY");
-
-        /** Stroke used to paint character outline.*/
-        public final static TextAttribute STROKE =
-                                          new TextAttribute("STROKE");
-
-        /** Paint used to stroke character outline */
-        public final static TextAttribute STROKE_PAINT =
-                                          new TextAttribute("STROKE_PAINT");
-
-        /** Underline flag for character.*/
-        public final static TextAttribute UNDERLINE =
-                                          new TextAttribute("UNDERLINE");
-
-        /** Stroke used to paint character underline.*/
-        public final static TextAttribute UNDERLINE_STROKE =
-                                      new TextAttribute("UNDERLINE_STROKE");
-
-        /** Paint used to fill character underline.*/
-        public final static TextAttribute UNDERLINE_PAINT =
-                                      new TextAttribute("UNDERLINE_PAINT");
-
-        /** Paint used to stroke character outline for underline.*/
-        public final static TextAttribute UNDERLINE_STROKE_PAINT =
-                                  new TextAttribute("UNDERLINE_STROKE_PAINT");
-
-
-        /** Overline flag for character.*/
-        public final static TextAttribute OVERLINE =
-                                      new TextAttribute("OVERLINE");
-
-
-        /** Stroke used to paint character overline.*/
-        public final static TextAttribute OVERLINE_STROKE =
-                                      new TextAttribute("OVERLINE_STROKE");
-
-        /** Paint used to fill character overline.*/
-        public final static TextAttribute OVERLINE_PAINT =
-                                      new TextAttribute("OVERLINE_PAINT");
-
-        /** Paint used to stroke character outline for overline.*/
-        public final static TextAttribute OVERLINE_STROKE_PAINT =
-                                  new TextAttribute("OVERLINE_STROKE_PAINT");
-
-
-        /** Flag indicating that chars are to be "struck through" */
-        public final static TextAttribute STRIKETHROUGH =
-                                          new TextAttribute("STRIKETHROUGH");
-
-        /** Stroke used to paint character strikethrough.*/
-        public final static TextAttribute STRIKETHROUGH_STROKE =
-                                      new TextAttribute("STRIKETHROUGH_STROKE");
-
-        /** Paint used to fill character strikethrough.*/
-        public final static TextAttribute STRIKETHROUGH_PAINT =
-                                      new TextAttribute("STRIKETHROUGH_PAINT");
-
-        /** Paint used to stroke character outline for strikethrough.*/
-        public final static TextAttribute STRIKETHROUGH_STROKE_PAINT =
-                                  new TextAttribute("STRIKETHROUGH_STROKE_PAINT");
-
+        /** All the paint attributes for the text.*/
+        public final static TextAttribute PAINT_INFO =
+                                          new TextAttribute("PAINT_INFO");
 
         /** Author-expected width for bounding box containing
          *  all text string glyphs.

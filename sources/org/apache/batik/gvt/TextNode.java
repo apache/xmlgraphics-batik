@@ -62,8 +62,10 @@ import java.util.List;
 
 import org.apache.batik.gvt.renderer.StrokingTextPainter;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.text.TextHit;
+import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextSpanLayout;
 
 /**
@@ -73,6 +75,10 @@ import org.apache.batik.gvt.text.TextSpanLayout;
  * @version $Id$
  */
 public class TextNode extends AbstractGraphicsNode implements Selectable {
+
+    public static final 
+        AttributedCharacterIterator.Attribute PAINT_INFO =
+        GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
     /**
      * Location of this text node (inherited, independent of explicit
@@ -207,13 +213,22 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
         return location;
     }
 
+    public void swapTextPaintInfo(TextPaintInfo newInfo, 
+                                  TextPaintInfo oldInfo) {
+        fireGraphicsNodeChangeStarted();
+        invalidateGeometryCache();
+        oldInfo.set(newInfo);
+        fireGraphicsNodeChangeCompleted();
+    }
+                                  
+
     /**
      * Sets the attributed character iterator of this text node.
      *
      * @param newAci the new attributed character iterator
      */
-    public void setAttributedCharacterIterator(AttributedCharacterIterator
-                                               newAci) {
+    public void setAttributedCharacterIterator
+        (AttributedCharacterIterator newAci) {
         fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.aci = newAci;
