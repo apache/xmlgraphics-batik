@@ -735,18 +735,18 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#getURL(String,GetURLHandler)}.
+         * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.GetURLHandler)}.
          */
-        public void getURL(String uri, GetURLHandler h) {
+        public void getURL(String uri, org.apache.batik.script.Window.GetURLHandler h) {
             getURL(uri, h, "UTF8");
         }
 
         /**
          * Implements {@link
-         * org.apache.batik.script.Window#getURL(String,GetURLHandler,String)}.
+         * org.apache.batik.script.Window#getURL(String,org.apache.batik.script.Window.GetURLHandler,String)}.
          */
         public void getURL(final String uri,
-                           final GetURLHandler h,
+                           final org.apache.batik.script.Window.GetURLHandler h,
                            final String enc) {
             Thread t = new Thread() {
                     public void run() {

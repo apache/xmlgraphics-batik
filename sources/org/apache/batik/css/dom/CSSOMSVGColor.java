@@ -93,7 +93,7 @@ public class CSSOMSVGColor
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.CSSValue#setCssText(String)}.
+     * org.w3c.dom.css.CSSValue#setCssText(String)}.
      */
     public void setCssText(String cssText) throws DOMException {
 	if (handler == null) {
@@ -107,7 +107,7 @@ public class CSSOMSVGColor
 
     /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.CSSValue#getCssValueType()}.
+     * org.w3c.dom.css.CSSValue#getCssValueType()}.
      */
     public short getCssValueType() {
         return CSS_CUSTOM;
@@ -231,7 +231,7 @@ public class CSSOMSVGColor
     // SVGICCColor //////////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link SVGICCColor.getColorProfile()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGICCColor#getColorProfile()}.
      */
     public String getColorProfile() {
         if (getColorType() != SVG_COLORTYPE_RGBCOLOR_ICCCOLOR) {

@@ -99,7 +99,7 @@ public interface Application {
      * Returns the allowed origins for external
      * resources. 
      *
-     * @see ResourceOrigin.
+     * @see ResourceOrigin
      */
     int getAllowedExternalResourceOrigin();
 

@@ -65,7 +65,7 @@ public class AttributedCharacterSpanIterator implements
      * Get the value of the named attribute for the current
      *     character.
      */
-    public Object getAttribute(Attribute attribute) {
+    public Object getAttribute(AttributedCharacterIterator.Attribute attribute) {
         return aci.getAttribute(attribute);
     }
 

@@ -46,7 +46,7 @@ public class MarkerShorthandManager
      * Implements {@link ShorthandManager#setValues(CSSEngine,ShorthandManager.PropertyHandler,LexicalUnit,boolean)}.
      */
     public void setValues(CSSEngine eng,
-                          PropertyHandler ph,
+                          ShorthandManager.PropertyHandler ph,
                           LexicalUnit lu,
                           boolean imp)
         throws DOMException {

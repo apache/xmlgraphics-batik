@@ -779,7 +779,7 @@ public class Main implements Application {
     /**
      * Returns the allowed origins for external
      * resources. 
-     * @see ResourceOrigin.
+     * @see ResourceOrigin
      */
     public int getAllowedExternalResourceOrigin() {
         int ret = preferenceManager.getInteger
