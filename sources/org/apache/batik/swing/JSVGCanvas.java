@@ -10,15 +10,19 @@ package org.apache.batik.swing;
 
 import java.awt.Dimension;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import java.util.List;
+
 import org.apache.batik.swing.gvt.Interactor;
 import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
+import org.apache.batik.swing.gvt.AbstractResetTransformInteractor;
 import org.apache.batik.swing.gvt.AbstractRotateInteractor;
 import org.apache.batik.swing.gvt.AbstractZoomInteractor;
 import org.apache.batik.swing.svg.JSVGComponent;
@@ -35,7 +39,7 @@ public class JSVGCanvas extends JSVGComponent {
 
     /**
      * An interactor to perform a zoom.
-     * <p>Bind: BUTTON1 + CTRL Key</p>
+     * <p>Binding: BUTTON1 + CTRL Key</p>
      */
     protected Interactor zoomInteractor = new AbstractZoomInteractor() {
         public boolean startInteraction(InputEvent ie) {
@@ -49,7 +53,7 @@ public class JSVGCanvas extends JSVGComponent {
 
     /**
      * An interactor to perform a realtime zoom.
-     * <p>Bind: BUTTON3 + SHIFT Key</p>
+     * <p>Binding: BUTTON3 + SHIFT Key</p>
      */
     protected Interactor imageZoomInteractor
         = new AbstractImageZoomInteractor() {
@@ -64,7 +68,7 @@ public class JSVGCanvas extends JSVGComponent {
 
     /**
      * An interactor to perform a translation.
-     * <p>Bind: BUTTON1 + SHIFT Key</p>
+     * <p>Binding: BUTTON1 + SHIFT Key</p>
      */
     protected Interactor panInteractor = new AbstractPanInteractor() {
         public boolean startInteraction(InputEvent ie) {
@@ -78,7 +82,7 @@ public class JSVGCanvas extends JSVGComponent {
 
     /**
      * An interactor to perform a rotation.
-     * <p>Bind: BUTTON3 + CTRL Key</p>
+     * <p>Binding: BUTTON3 + CTRL Key</p>
      */
     protected Interactor rotateInteractor = new AbstractRotateInteractor() {
         public boolean startInteraction(InputEvent ie) {
@@ -91,28 +95,52 @@ public class JSVGCanvas extends JSVGComponent {
     };
 
     /**
-     * This flag bit indicates whether or not the zoom interactor is
-     * enable. True means the zoom interactor is functional.
+     * An interactor to reset the rendering transform.
+     * <p>Binding: CTRL+T</p>
      */
-    private boolean isZoomInteractorEnable = false;
+    protected Interactor resetTransformInteractor =
+        new AbstractResetTransformInteractor() {
+        public boolean startInteraction(InputEvent ie) {
+            int mods = ie.getModifiers();
+            if (ie.getID() != KeyEvent.KEY_PRESSED) {
+                return false;
+            }
+            int key = ((KeyEvent)ie).getKeyCode();
+            return
+                key == KeyEvent.VK_T &&
+                (mods & ie.CTRL_MASK) != 0;
+        }
+    };
+
+    /**
+     * This flag bit indicates whether or not the zoom interactor is
+     * enabled. True means the zoom interactor is functional.
+     */
+    private boolean isZoomInteractorEnabled = true;
 
     /**
      * This flag bit indicates whether or not the image zoom interactor is
-     * enable. True means the image zoom interactor is functional.
+     * enabled. True means the image zoom interactor is functional.
      */
-    private boolean isImageZoomInteractorEnable = false;
+    private boolean isImageZoomInteractorEnabled = true;
 
     /**
      * This flag bit indicates whether or not the pan interactor is
-     * enable. True means the pan interactor is functional.
+     * enabled. True means the pan interactor is functional.
      */
-    private boolean isPanInteractorEnable = false;
+    private boolean isPanInteractorEnabled = true;
 
     /**
      * This flag bit indicates whether or not the rotate interactor is
-     * enable. True means the rotate interactor is functional.
+     * enabled. True means the rotate interactor is functional.
      */
-    private boolean isRotateInteractorEnable = false;
+    private boolean isRotateInteractorEnabled = true;
+
+    /**
+     * This flag bit indicates whether or not the reset transform interactor is
+     * enabled. True means the reset transform interactor is functional.
+     */
+    private boolean isResetTransformInteractorEnabled = true;
 
     /**
      * The <tt>PropertyChangeSupport</tt> used to fire
@@ -129,7 +157,7 @@ public class JSVGCanvas extends JSVGComponent {
      * Creates a new JSVGCanvas.
      */
     public JSVGCanvas() {
-        this(null, false, false);
+        this(null, true, true);
     }
 
     /**
@@ -144,6 +172,13 @@ public class JSVGCanvas extends JSVGComponent {
         super(ua, eventsEnabled, selectableText);
         setPreferredSize(new Dimension(200, 200));
         setMinimumSize(new Dimension(100, 100));
+
+        List intl = getInteractors();
+        intl.add(zoomInteractor);
+        intl.add(imageZoomInteractor);
+        intl.add(panInteractor);
+        intl.add(rotateInteractor);
+        intl.add(resetTransformInteractor);
     }
 
     /**
@@ -189,18 +224,18 @@ public class JSVGCanvas extends JSVGComponent {
     }
 
     /**
-     * Determines whether zoom interactor is enabled or not.
+     * Determines whether the zoom interactor is enabled or not.
      */
     public void setEnableZoomInteractor(boolean b) {
-        if (isZoomInteractorEnable != b) {
-            boolean oldValue = isZoomInteractorEnable;
-            isZoomInteractorEnable = b;
-            if (isZoomInteractorEnable) {
+        if (isZoomInteractorEnabled != b) {
+            boolean oldValue = isZoomInteractorEnabled;
+            isZoomInteractorEnabled = b;
+            if (isZoomInteractorEnabled) {
                 getInteractors().add(zoomInteractor);
             } else {
                 getInteractors().remove(zoomInteractor);
             }
-            pcs.firePropertyChange("setEnableZoomInteractor", oldValue, b);
+            pcs.firePropertyChange("enableZoomInteractor", oldValue, b);
         }
     }
 
@@ -208,22 +243,22 @@ public class JSVGCanvas extends JSVGComponent {
      * Returns true if the zoom interactor is enabled, false otherwise.
      */
     public boolean getEnableZoomInteractor() {
-        return isZoomInteractorEnable;
+        return isZoomInteractorEnabled;
     }
 
     /**
-     * Determines whether image zoom interactor is enabled or not.
+     * Determines whether the image zoom interactor is enabled or not.
      */
     public void setEnableImageZoomInteractor(boolean b) {
-        if (isImageZoomInteractorEnable != b) {
-            boolean oldValue = isImageZoomInteractorEnable;
-            isImageZoomInteractorEnable = b;
-            if (isImageZoomInteractorEnable) {
+        if (isImageZoomInteractorEnabled != b) {
+            boolean oldValue = isImageZoomInteractorEnabled;
+            isImageZoomInteractorEnabled = b;
+            if (isImageZoomInteractorEnabled) {
                 getInteractors().add(imageZoomInteractor);
             } else {
                 getInteractors().remove(imageZoomInteractor);
             }
-            pcs.firePropertyChange("setEnableImageZoomInteractor", oldValue, b);
+            pcs.firePropertyChange("enableImageZoomInteractor", oldValue, b);
         }
     }
 
@@ -231,22 +266,22 @@ public class JSVGCanvas extends JSVGComponent {
      * Returns true if the image zoom interactor is enabled, false otherwise.
      */
     public boolean getEnableImageZoomInteractor() {
-        return isImageZoomInteractorEnable;
+        return isImageZoomInteractorEnabled;
     }
 
     /**
-     * Determines whether pan interactor is enabled or not.
+     * Determines whether the pan interactor is enabled or not.
      */
     public void setEnablePanInteractor(boolean b) {
-        if (isPanInteractorEnable != b) {
-            boolean oldValue = isPanInteractorEnable;
-            isPanInteractorEnable = b;
-            if (isPanInteractorEnable) {
+        if (isPanInteractorEnabled != b) {
+            boolean oldValue = isPanInteractorEnabled;
+            isPanInteractorEnabled = b;
+            if (isPanInteractorEnabled) {
                 getInteractors().add(panInteractor);
             } else {
                 getInteractors().remove(panInteractor);
             }
-            pcs.firePropertyChange("setEnablePanInteractor", oldValue, b);
+            pcs.firePropertyChange("enablePanInteractor", oldValue, b);
         }
     }
 
@@ -254,22 +289,22 @@ public class JSVGCanvas extends JSVGComponent {
      * Returns true if the pan interactor is enabled, false otherwise.
      */
     public boolean getEnablePanInteractor() {
-        return isPanInteractorEnable;
+        return isPanInteractorEnabled;
     }
 
     /**
-     * Determines whether rotate interactor is enabled or not.
+     * Determines whether the rotate interactor is enabled or not.
      */
     public void setEnableRotateInteractor(boolean b) {
-        if (isRotateInteractorEnable != b) {
-            boolean oldValue = isRotateInteractorEnable;
-            isRotateInteractorEnable = b;
-            if (isRotateInteractorEnable) {
+        if (isRotateInteractorEnabled != b) {
+            boolean oldValue = isRotateInteractorEnabled;
+            isRotateInteractorEnabled = b;
+            if (isRotateInteractorEnabled) {
                 getInteractors().add(rotateInteractor);
             } else {
                 getInteractors().remove(rotateInteractor);
             }
-            pcs.firePropertyChange("setEnableRotateInteractor", oldValue, b);
+            pcs.firePropertyChange("enableRotateInteractor", oldValue, b);
         }
     }
 
@@ -277,7 +312,30 @@ public class JSVGCanvas extends JSVGComponent {
      * Returns true if the rotate interactor is enabled, false otherwise.
      */
     public boolean getEnableRotateInteractor() {
-        return isRotateInteractorEnable;
+        return isRotateInteractorEnabled;
+    }
+
+    /**
+     * Determines whether the reset transform interactor is enabled or not.
+     */
+    public void setEnableResetTransformInteractor(boolean b) {
+        if (isResetTransformInteractorEnabled != b) {
+            boolean oldValue = isResetTransformInteractorEnabled;
+            isResetTransformInteractorEnabled = b;
+            if (isResetTransformInteractorEnabled) {
+                getInteractors().add(resetTransformInteractor);
+            } else {
+                getInteractors().remove(resetTransformInteractor);
+            }
+            pcs.firePropertyChange("enableResetTransformInteractor", oldValue, b);
+        }
+    }
+
+    /**
+     * Returns true if the reset transform interactor is enabled, false otherwise.
+     */
+    public boolean getEnableResetTransformInteractor() {
+        return isRotateInteractorEnabled;
     }
 
     /**

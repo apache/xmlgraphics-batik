@@ -311,11 +311,6 @@ public class JSVGViewerFrame
     protected String userStyleSheetURI;
 
     /**
-     * The initial transform applied to the document.
-     */
-    protected AffineTransform initialTransform;
-
-    /**
      * The initial frame title.
      */
     protected String title;
@@ -549,11 +544,6 @@ public class JSVGViewerFrame
             }
         });
 
-        // Interactors initialization ///////////////////////////////////////
-        svgCanvas.setEnableZoomInteractor(true);
-        svgCanvas.setEnableImageZoomInteractor(true);
-        svgCanvas.setEnablePanInteractor(true);
-        svgCanvas.setEnableRotateInteractor(true);
     }
 
     /**
@@ -991,9 +981,7 @@ public class JSVGViewerFrame
         public ResetTransformAction() {}
         public void actionPerformed(ActionEvent e) {
             svgCanvas.setFragmentIdentifier(null);
-            if (initialTransform != null) {
-                svgCanvas.setRenderingTransform(initialTransform);
-            }
+            svgCanvas.resetRenderingTransform();
         }
     }
 
@@ -1337,7 +1325,6 @@ public class JSVGViewerFrame
                 domViewer = null;
             }
         }
-        initialTransform = null;
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
         String s = ((SVGOMDocument)svgDocument).getURLObject().toString();
@@ -1495,9 +1482,7 @@ public class JSVGViewerFrame
         }
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.done"));
-        if (initialTransform == null) {
-            initialTransform = svgCanvas.getRenderingTransform();
-        }
+
         stopAction.update(false);
         svgCanvas.setCursor(DEFAULT_CURSOR);
 
