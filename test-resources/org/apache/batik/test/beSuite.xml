@@ -1,0 +1,713 @@
+<testSuite name="SVG Basic Effectivity Test Suite">
+    <!-- ======================================= -->
+    <!-- Enter the email address and mail server -->
+    <!-- to use.                                 -->
+    <!-- ======================================= -->
+    <testReportProcessor class="org.apache.batik.test.TestReportMailer">
+        <arg class="java.lang.String" value="vhardy@eng.sun.com" />
+        <arg class="java.lang.String" value="vhardy@eng.sun.com,vincent.hardy@eng.sun.com" />
+        <arg class="java.lang.String" value="jurassic.eng.sun.com" />
+    </testReportProcessor>
+
+    <!-- =================================================================== -->
+    <!-- Rendering                                                           -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/rendering-orderGr-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/rendering-orderGr-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/rendering-text-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/rendering-text-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/rendering-shape-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/rendering-shape-BE-03.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Structure                                                           -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/structure-empty-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/structure-empty-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/structure-nested-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/structure-nested-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/structure-basicG-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/structure-basicG-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/structure-defs-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/structure-defs-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/structure-symbol-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/structure-symbol-BE-05.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/structure-image-BE-06.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/structure-image-BE-06.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/structure-switch-BE-07.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/structure-switch-BE-07.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/structure-lang-BE-08.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/structure-lang-BE-08.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/structure-allElem-BE-09.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/structure-allElem-BE-09.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/structure-extRef-BE-10.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/structure-extRef-BE-10.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Style                                                               -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/style-selector-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/style-selector-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/style-selector-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/style-selector-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/style-selector-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/style-selector-BE-03.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Coordinates & Transforms                                            -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/coords-units-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/coords-units-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/coords-transforms-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/coords-transforms-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/coords-viewBox-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/coords-viewBox-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/coords-unitsProc-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/coords-unitsProc-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/coords-unitsProc-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/coords-unitsProc-BE-05.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Path                                                                -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/path-lines-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/path-lines-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/path-curves-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/path-curves-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/path-curves-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/path-curves-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/path-curves-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/path-curves-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/shapes-rect-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/shapes-rect-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/shapes-ellipse-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/shapes-ellipse-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/shapes-circle-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/shapes-circle-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/shapes-line-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/shapes-line-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/shapes-polygon-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/shapes-polygon-BE-05.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/shapes-polyline-BE-06.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/shapes-polyline-BE-06.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Text                                                                -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-text-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-text-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-tspan-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-tspan-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-textOnPath-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-textOnPath-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-tref-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-tref-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-textAnchor-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-textAnchor-BE-05.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-whiteSpace-BE-06.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-whiteSpace-BE-06.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-altGlyph-BE-07.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-altGlyph-BE-07.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-i18N-BE-09.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-i18N-BE-09.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-alignment-BE-10.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-alignment-BE-10.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-alignment-BE-11.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-alignment-BE-11.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-decoration-BE-12.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-decoration-BE-12.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-selection-BE-13.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-selection-BE-13.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-spacing-BE-14.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-spacing-BE-14.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-font-BE-15.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-font-BE-15.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-font-BE-16.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-font-BE-16.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-textLength-BE-17.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-textLength-BE-17.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/text-extTref-BE-18.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/text-extTref-BE-18.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Paint                                                               -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/paint-fill-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/paint-fill-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/paint-stroke-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/paint-stroke-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/paint-markers-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/paint-markers-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/paint-markers-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/paint-markers-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/paint-colIntProp-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/paint-colIntProp-BE-05.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/paint-inherit-BE-06.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/paint-inherit-BE-06.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Color                                                               -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/color-datatypes-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/color-datatypes-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/color-property-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/color-property-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/color-colorProf-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/color-colorProf-BE-03.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Gradient & Patterns                                                 -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/gradPatt-linearGr-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/gradPatt-linearGr-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/gradPatt-linearGr-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/gradPatt-linearGr-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/gradPatt-linearGr-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/gradPatt-linearGr-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/gradPatt-radialGr-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/gradPatt-radialGr-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/gradPatt-radialGr-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/gradPatt-radialGr-BE-05.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/gradPatt-stop-BE-06.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/gradPatt-stop-BE-06.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/gradPatt-pattern-BE-07.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/gradPatt-pattern-BE-07.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/gradPatt-referenc-BE-08.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/gradPatt-referenc-BE-08.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/gradPatt-transfrm-BE-09.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/gradPatt-transfrm-BE-09.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/gradPatt-stop-BE-10.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/gradPatt-stop-BE-10.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Cliping and masking                                                 -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/masking-clipPath-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/masking-clipPath-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/masking-clipPath-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/masking-clipPath-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/masking-clipRule-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/masking-clipRule-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/masking-groupOpac-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/masking-groupOpac-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/masking-mask-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/masking-mask-BE-05.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/masking-mask-BE-06.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/masking-mask-BE-06.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/masking-property-BE-07.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/masking-property-BE-07.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/masking-clipPath-BE-08.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/masking-clipPath-BE-08.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/masking-vportClip-BE-09.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/masking-vportClip-BE-09.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Filters                                                             -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-many-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-many-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-blend-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-blend-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-colorMtrx-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-colorMtrx-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-transfer-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-transfer-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-composite-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-composite-BE-05.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-convolve-BE-06.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-convolve-BE-06.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-diffuseLt-BE-07.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-diffuseLt-BE-07.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-specularLt-BE-08.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-specularLt-BE-08.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-lights-BE-09.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-lights-BE-09.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-morph-BE-10.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-morph-BE-10.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-turb-BE-11.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-turb-BE-11.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-blur-BE-12.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-blur-BE-12.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-feImage-BE-13.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-feImage-BE-13.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-feTile-BE-14.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-feTile-BE-14.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-fldMrgOff-BE-15.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-fldMrgOff-BE-15.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/filters-dispMap-BE-16.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/filters-dispMap-BE-16.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Interactive SVG                                                     -->
+    <!-- =================================================================== -->
+    <!--
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/interact-zoomPan-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/interact-zoomPan-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/interact-zoomPan-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/interact-zoomPan-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/interact-bubble-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/interact-bubble-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/interact-pEvents-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/interact-pEvents-BE-05.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/interact-pEvents-BE-06.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/interact-pEvents-BE-06.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/interact-onload-BE-07.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/interact-onload-BE-07.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/interact-cursor-BE-08.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/interact-cursor-BE-08.png" />
+    </test>
+    -->
+
+    <!-- =================================================================== -->
+    <!-- Linking                                                             -->
+    <!-- =================================================================== -->
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/linking-outBound-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/linking-outBound-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/linking-xlinkAttr-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/linking-xlinkAttr-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/linking-inBound-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/linking-inBound-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/linking-view-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/linking-view-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/linking-view-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/linking-view-BE-05.png" />
+    </test>
+
+    <!-- =================================================================== -->
+    <!-- Scripting                                                           -->
+    <!-- =================================================================== -->
+    <!--
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/script-eventDom-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/script-eventDom-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/script-uiEvents-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/script-uiEvents-BE-02.png" />
+    </test>
+    -->
+
+    <!-- =================================================================== -->
+    <!-- Animation                                                           -->
+    <!-- =================================================================== -->
+    <!--
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-overall-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-overall-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-href-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-href-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-targElt-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-targElt-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-targAtt-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-targAtt-BE-04.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-timing-BE-05.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-timing-BE-05.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-values-BE-06.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-values-BE-06.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-values-BE-07.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-values-BE-07.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-values-BE-08.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-values-BE-08.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-add-BE-09.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-add-BE-09.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-inherit-BE-10.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-inherit-BE-10.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-motion-BE-11.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-motion-BE-11.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-motion-BE-12.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-motion-BE-12.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/animation-extRef-BE-13.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/animation-extRef-BE-13.png" />
+    </test>
+    -->
+
+    <!-- =================================================================== -->
+    <!-- Fonts                                                               -->
+    <!-- =================================================================== -->    
+    <!--
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/fonts-fontElement-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/fonts-fontElement-BE-01.png" />
+    </test>
+    -->
+    <!-- =================================================================== -->
+    <!-- Metadata                                                            -->
+    <!-- =================================================================== -->
+    <!--
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/metadata-sample-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/metadata-sample-BE-01.png" />
+    </test>
+    -->
+
+    <!-- =================================================================== -->
+    <!-- Multiple namespaces                                                 -->
+    <!-- =================================================================== -->
+    <!--
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/extend-multiNS-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/extend-multiNS-BE-01.png" />
+    </test>
+    -->
+
+    <!-- =================================================================== -->
+    <!-- DOM                                                                 -->
+    <!-- =================================================================== -->
+    <!--
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/dom-core-BE-01.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/dom-core-BE-01.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/dom-svg-BE-02.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/dom-svg-BE-02.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/dom-featureString-BE-03.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/dom-featureString-BE-03.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:../../wg/betests/cvs/svg/be-suite/dom-eventListener-BE-04.svg" />
+        <arg class="java.net.URL" value="file:test-references/svgbe/win/dom-eventListener-BE-04.png" />
+    </test>
+    -->
+
+
+</testSuite>
