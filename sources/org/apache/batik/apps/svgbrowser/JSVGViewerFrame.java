@@ -340,6 +340,11 @@ public class JSVGViewerFrame
     public JSVGViewerFrame(Application app) {
         application = app;
 
+        String s = Locale.getDefault().getLanguage();
+        if (!userLanguages.equals(s)) {
+            userLanguages = s + "," + userLanguages;
+        }
+
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 application.closeJSVGViewerFrame(JSVGViewerFrame.this);
