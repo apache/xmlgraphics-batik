@@ -170,7 +170,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * - The scripting lock is taken. Is is released by a call to
      *   manageUpdates().
      */
-    public void dispatchSVGLoadEvent() throws InterruptedException {
+    public synchronized void dispatchSVGLoadEvent()
+        throws InterruptedException {
         // Locking avoid execution of scripts scheduled by calls
         // to the setTimeout() function.
         // The lock is be released by a call to manageUpdates().
@@ -188,27 +189,30 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     public void manageUpdates(final ImageRenderer r) {
         updateRunnableQueue.invokeLater(new Runnable() {
                 public void run() {
-                    startingTime = System.currentTimeMillis();
+                    synchronized (UpdateManager.this) {
+                        startingTime = System.currentTimeMillis();
 
-                    running = true;
-                    renderer = r;
+                        running = true;
+                        renderer = r;
         
-                    updateTracker = new UpdateTracker();
-                    RootGraphicsNode root = graphicsNode.getRoot();
-                    if (root != null){
-                        root.addTreeGraphicsNodeChangeListener(updateTracker);
-                    }
+                        updateTracker = new UpdateTracker();
+                        RootGraphicsNode root = graphicsNode.getRoot();
+                        if (root != null){
+                            root.addTreeGraphicsNodeChangeListener
+                                (updateTracker);
+                        }
 
-                    repaintManager =
-                        new RepaintManager(UpdateManager.this, renderer);
-                    repaintRateManager =
-                        new RepaintRateManager(UpdateManager.this);
-                    repaintRateManager.start();
-                    
-                    scriptingEnvironment.getScriptingLock().unlock();
-                    
-                    fireManagerStartedEvent();
-                    started = true;
+                        repaintManager =
+                            new RepaintManager(UpdateManager.this, renderer);
+                        repaintRateManager =
+                            new RepaintRateManager(UpdateManager.this);
+                        repaintRateManager.start();
+                        
+                        scriptingEnvironment.getScriptingLock().unlock();
+                        
+                        fireManagerStartedEvent();
+                        started = true;
+                    }
                 }
             });
     }
@@ -277,7 +281,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     /**
      * Suspends the update manager.
      */
-    public void suspend() {
+    public synchronized void suspend() {
         if (running) {
             suspendCalled = true;
             updateRunnableQueue.suspendExecution(false);
@@ -287,7 +291,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     /**
      * Resumes the update manager.
      */
-    public void resume() {
+    public synchronized void resume() {
         if (!running) {
             updateRunnableQueue.resumeExecution();
         }
@@ -296,7 +300,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     /**
      * Interrupts the manager tasks.
      */
-    public void interrupt() {
+    public synchronized void interrupt() {
         if (updateRunnableQueue.getThread() != null) {
             if (started) {
                 dispatchSVGUnLoadEvent();
@@ -304,11 +308,13 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                 resume();
                 updateRunnableQueue.invokeLater(new Runnable() {
                         public void run() {
-                            if (repaintRateManager != null) {
-                                repaintRateManager.interrupt();
+                            synchronized (UpdateManager.this) {
+                                if (repaintManager != null) {
+                                    repaintRateManager.interrupt();
+                                }
+                                scriptingEnvironment.interruptScripts();
+                                updateRunnableQueue.getThread().interrupt();
                             }
-                            scriptingEnvironment.interruptScripts();
-                            updateRunnableQueue.getThread().interrupt();
                         }
                     });
             }
@@ -328,17 +334,19 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         resume();
         updateRunnableQueue.invokeLater(new Runnable() {
                 public void run() {
-                    Event evt =
-                        ((DocumentEvent)document).createEvent("SVGEvents");
-                    evt.initEvent("SVGUnload", false, false);
-                    ((EventTarget)(document.getDocumentElement())).
-                        dispatchEvent(evt);
-                    running = false;
+                    synchronized (UpdateManager.this) {
+                        Event evt =
+                            ((DocumentEvent)document).createEvent("SVGEvents");
+                        evt.initEvent("SVGUnload", false, false);
+                        ((EventTarget)(document.getDocumentElement())).
+                            dispatchEvent(evt);
+                        running = false;
                     
-                    repaintRateManager.interrupt();
-                    scriptingEnvironment.interruptScripts();
-                    updateRunnableQueue.getThread().interrupt();
-                    fireManagerStoppedEvent();
+                        repaintRateManager.interrupt();
+                        scriptingEnvironment.interruptScripts();
+                        updateRunnableQueue.getThread().interrupt();
+                        fireManagerStoppedEvent();
+                    }
                 }
             });
     }

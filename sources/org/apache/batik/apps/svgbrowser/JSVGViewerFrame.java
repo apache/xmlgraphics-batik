@@ -1496,7 +1496,7 @@ public class JSVGViewerFrame
      */
     public void documentLoadingStarted(SVGDocumentLoaderEvent e) {
         if (debug) {
-            System.out.println("Load started...");
+            System.out.println("Document load started...");
             time = System.currentTimeMillis();
         }
         statusBar.setMainMessage(resources.getString("Message.documentLoad"));
@@ -1509,7 +1509,7 @@ public class JSVGViewerFrame
      */
     public void documentLoadingCompleted(SVGDocumentLoaderEvent e) {
         if (debug) {
-            System.out.print("Load completed in ");
+            System.out.print("Document load completed in ");
             System.out.println((System.currentTimeMillis() - time) + " ms");
         }
         svgDocument = e.getSVGDocument();
@@ -1568,7 +1568,7 @@ public class JSVGViewerFrame
      */
     public void documentLoadingCancelled(SVGDocumentLoaderEvent e) {
         if (debug) {
-            System.out.println("Load cancelled");
+            System.out.println("Document load cancelled");
         }
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.documentCancelled"));
@@ -1581,7 +1581,7 @@ public class JSVGViewerFrame
      */
     public void documentLoadingFailed(SVGDocumentLoaderEvent e) {
         if (debug) {
-            System.out.println("Load failed");
+            System.out.println("Document load failed");
         }
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.documentFailed"));
@@ -1597,7 +1597,7 @@ public class JSVGViewerFrame
      */
     public void gvtBuildStarted(GVTTreeBuilderEvent e) {
         if (debug) {
-            System.out.println("Build started...");
+            System.out.println("GVT build started...");
             time = System.currentTimeMillis();
         }
         statusBar.setMainMessage(resources.getString("Message.treeBuild"));
@@ -1610,7 +1610,7 @@ public class JSVGViewerFrame
      */
     public void gvtBuildCompleted(GVTTreeBuilderEvent e) {
         if (debug) {
-            System.out.print("Build completed in ");
+            System.out.print("GVT build completed in ");
             System.out.println((System.currentTimeMillis() - time) + " ms");
         }
         if (findDialog != null) {
@@ -1635,7 +1635,7 @@ public class JSVGViewerFrame
      */
     public void gvtBuildCancelled(GVTTreeBuilderEvent e) {
         if (debug) {
-            System.out.println("Build cancelled");
+            System.out.println("GVT build cancelled");
         }
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.treeCancelled"));
@@ -1650,7 +1650,7 @@ public class JSVGViewerFrame
      */
     public void gvtBuildFailed(GVTTreeBuilderEvent e) {
         if (debug) {
-            System.out.println("Build failed");
+            System.out.println("GVT build failed");
         }
         statusBar.setMainMessage("");
         statusBar.setMessage(resources.getString("Message.treeFailed"));
@@ -1670,11 +1670,11 @@ public class JSVGViewerFrame
      */
     public void svgLoadEventDispatchStarted(SVGLoadEventDispatcherEvent e) {
         if (debug) {
-            System.out.println("onload dispatch started...");
+            System.out.println("Onload dispatch started...");
             time = System.currentTimeMillis();
         }
         stopAction.update(true);
-        statusBar.setMainMessage("Message.onload");
+        statusBar.setMainMessage(resources.getString("Message.onload"));
     }
 
     /**
@@ -1682,7 +1682,7 @@ public class JSVGViewerFrame
      */
     public void svgLoadEventDispatchCompleted(SVGLoadEventDispatcherEvent e) {
         if (debug) {
-            System.out.print("onload dispatch completed in ");
+            System.out.print("Onload dispatch completed in ");
             System.out.println((System.currentTimeMillis() - time) + " ms");
         }
         stopAction.update(false);
@@ -1695,7 +1695,7 @@ public class JSVGViewerFrame
      */
     public void svgLoadEventDispatchCancelled(SVGLoadEventDispatcherEvent e) {
         if (debug) {
-            System.out.println("onload dispatch cancelled.");
+            System.out.println("Onload dispatch cancelled.");
         }
         stopAction.update(false);
         statusBar.setMainMessage("");
@@ -1707,7 +1707,7 @@ public class JSVGViewerFrame
      */
     public void svgLoadEventDispatchFailed(SVGLoadEventDispatcherEvent e) {
         if (debug) {
-            System.out.println("onload dispatch failed.");
+            System.out.println("Onload dispatch failed.");
         }
         stopAction.update(false);
         statusBar.setMainMessage("");
@@ -1721,7 +1721,7 @@ public class JSVGViewerFrame
      */
     public void gvtRenderingPrepare(GVTTreeRendererEvent e) {
         if (debug) {
-            System.out.println("Rendering preparation...");
+            System.out.println("GVT rendering preparation...");
             time = System.currentTimeMillis();
         }
         stopAction.update(true);
@@ -1734,10 +1734,10 @@ public class JSVGViewerFrame
      */
     public void gvtRenderingStarted(GVTTreeRendererEvent e) {
         if (debug) {
-            System.out.print("Rendering prepared in ");
+            System.out.print("GVT rendering prepared in ");
             System.out.println((System.currentTimeMillis() - time) + " ms");
             time = System.currentTimeMillis();
-            System.out.println("Rendering started...");
+            System.out.println("GVT rendering started...");
         }
         // Do nothing
     }
@@ -1747,7 +1747,7 @@ public class JSVGViewerFrame
      */
     public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
         if (debug) {
-            System.out.print("Rendering completed in ");
+            System.out.print("GVT rendering completed in ");
             System.out.println((System.currentTimeMillis() - time) + " ms");
         }
         statusBar.setMainMessage("");
@@ -1767,7 +1767,7 @@ public class JSVGViewerFrame
      */
     public void gvtRenderingCancelled(GVTTreeRendererEvent e) {
         if (debug) {
-            System.out.println("Rendering cancelled");
+            System.out.println("GVT rendering cancelled");
         }
         statusBar.setMainMessage("");
         if (!svgCanvas.isDynamic()) {
@@ -1781,7 +1781,7 @@ public class JSVGViewerFrame
      */
     public void gvtRenderingFailed(GVTTreeRendererEvent e) {
         if (debug) {
-            System.out.println("Rendering failed");
+            System.out.println("GVT rendering failed");
         }
         statusBar.setMainMessage("");
         if (!svgCanvas.isDynamic()) {
@@ -1826,7 +1826,7 @@ public class JSVGViewerFrame
      */
     public void managerStarted(UpdateManagerEvent e) {
         if (debug) {
-            System.out.println("Manager Started");
+            System.out.println("Update manager started...");
         }
         managerStopped = false;
         playAction.update(false);
@@ -1839,7 +1839,7 @@ public class JSVGViewerFrame
      */
     public void managerSuspended(UpdateManagerEvent e) {
         if (debug) {
-            System.out.println("Manager Suspended");
+            System.out.println("Update manager suspended");
         }
         playAction.update(true);
         pauseAction.update(false);
@@ -1850,7 +1850,7 @@ public class JSVGViewerFrame
      */
     public void managerResumed(UpdateManagerEvent e) {
         if (debug) {
-            System.out.println("Manager Resumed");
+            System.out.println("Update manager resumed");
         }
         playAction.update(false);
         pauseAction.update(true);
@@ -1861,7 +1861,7 @@ public class JSVGViewerFrame
      */
     public void managerStopped(UpdateManagerEvent e) {
         if (debug) {
-            System.out.println("Manager Stopped");
+            System.out.println("Update Manager Stopped");
         }
         managerStopped = true;
         playAction.update(false);
