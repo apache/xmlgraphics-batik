@@ -30,7 +30,7 @@
 MOKVZWKgAIxqHhma8Schhv//RwNsVDNFmgGllgMlNsNEOAAAAABJRU5ErkJggg==" xlink:type="simple" xlink:actuate="onRequest" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="replace" />
         </pattern>
         <font horiz-adv-x="75.0" id="testfont1">
-          <font-face ascent="117.23633" descent="73.87695" units-per-em="100" font-family="Lucida Sans" font-style="normal" font-weight="normal" />
+          <font-face ascent="78.125" descent="21.875" units-per-em="100" font-family="Lucida Sans" font-style="normal" font-weight="normal" />
           <missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM15.625 3.125 L59.375 3.125 L59.375 59.375 L15.625 59.375 L15.625 3.125 Z" />
           <glyph unicode="k" horiz-adv-x="58.447266" d="M9.625 0 L9.625 77.09375 L19.234375 77.09375 L19.234375 27.296875 L41.703125 53.03125 L52.046875 53.03125 L30.609375 28.265625 L56.5 0 L44.1875 0 L19.234375 27.203125 L19.234375 0 L9.625 0 Z" />
           <glyph unicode="c" horiz-adv-x="51.220703" d="M46.4375 1.609375 Q37.109375 -1.203125 30.328125 -1.203125 Q19.578125 -1.203125 12.5 6.75 Q5.421875 14.703125 5.421875 26.8125 Q5.421875 39.75 12.4296875 46.9765625 Q19.4375 54.203125 31.984375 54.203125 Q38.1875 54.203125 45.84375 52.484375 L45.84375 44.4375 Q37.703125 46.828125 32.5625 46.828125 Q25.203125 46.828125 20.734375 41.2890625 Q16.265625 35.75 16.265625 26.515625 Q16.265625 17.578125 20.8515625 12.0625 Q25.4375 6.546875 32.859375 6.546875 Q39.453125 6.546875 46.4375 9.90625 L46.4375 1.609375 Z" />

@@ -16,7 +16,7 @@
     <g>
       <defs id="testdefs1">
         <font horiz-adv-x="75.0" id="testfont1">
-          <font-face ascent="117.23633" descent="73.87695" units-per-em="100" font-family="Lucida Sans" font-style="normal" font-weight="normal" />
+          <font-face ascent="78.125" descent="21.875" units-per-em="100" font-family="Lucida Sans" font-style="normal" font-weight="normal" />
           <missing-glyph horiz-adv-x="75.0" d="M12.5 0 L12.5 62.5 L62.5 62.5 L62.5 0 L12.5 0 ZM15.625 3.125 L59.375 3.125 L59.375 59.375 L15.625 59.375 L15.625 3.125 Z" />
           <glyph unicode="." horiz-adv-x="31.640625" d="M9.765625 0 L9.765625 12.0625 L21.828125 12.0625 L21.828125 0 L9.765625 0 Z" />
           <glyph unicode="r" horiz-adv-x="40.91797" d="M9.625 0 L9.625 53.03125 L19.234375 53.03125 L19.234375 43.0625 Q24.953125 54.203125 35.84375 54.203125 Q37.3125 54.203125 38.921875 53.953125 L38.921875 44.96875 Q36.421875 45.796875 34.515625 45.796875 Q25.390625 45.796875 19.234375 34.96875 L19.234375 0 L9.625 0 Z" />
