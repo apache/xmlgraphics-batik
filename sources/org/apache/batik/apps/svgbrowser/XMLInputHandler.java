@@ -32,14 +32,16 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.stylesheets.StyleSheet;
 
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
@@ -182,6 +184,10 @@ public class XMLInputHandler implements SquiggleInputHandler {
             = tFactory.newTransformer
             (new StreamSource(parsedXSLStyleSheetURI.toString()));
 
+        // Set the URIResolver to properly handle document() and xsl:include
+        transformer.setURIResolver
+            (new DocumentURIResolver(parsedXSLStyleSheetURI.toString()));
+
         // Now, apply the transformation to the input document.
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
         String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
@@ -192,7 +198,8 @@ public class XMLInputHandler implements SquiggleInputHandler {
         //     but this was the only solution found to be able to 
         //     generate content in the proper namespaces.
         //
-        // SVGOMDocument outDoc = (SVGOMDocument)impl.createDocument(svgNS, "svg", null);
+        // SVGOMDocument outDoc = 
+        //   (SVGOMDocument)impl.createDocument(svgNS, "svg", null);
         // outDoc.setURLObject(new URL(uri));
         // transformer.transform
         //     (new DOMSource(inDoc),
@@ -213,6 +220,10 @@ public class XMLInputHandler implements SquiggleInputHandler {
             outDoc = f.createDocument(uri, 
                                       new StringReader(sw.toString()));
         } catch (Exception e) {
+            System.err.println("======================================");
+            System.err.println(sw.toString());
+            System.err.println("======================================");
+            
             throw new IllegalArgumentException
                 (Resources.getString(ERROR_RESULT_GENERATED_EXCEPTION));
         }
@@ -301,4 +312,25 @@ public class XMLInputHandler implements SquiggleInputHandler {
         return null;
     }
 
+    /**
+     * Implements the URIResolver interface so that relative urls used in 
+     * transformations are resolved properly.
+     */
+    public class DocumentURIResolver implements URIResolver {
+        String documentURI;
+
+        public DocumentURIResolver(String documentURI) {
+            this.documentURI = documentURI;
+        }
+
+        public Source resolve(String href, String base) {
+            if (base == null || "".equals(base)) {
+                base = documentURI;
+            }
+
+            ParsedURL purl = new ParsedURL(base, href);
+
+            return new StreamSource(purl.toString());
+        }
+    }
 }
