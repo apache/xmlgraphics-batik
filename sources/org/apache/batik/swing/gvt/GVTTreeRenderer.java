@@ -277,26 +277,34 @@ public class GVTTreeRenderer extends Thread {
      * Fires a GVTTreeRendererEvent when failed.
      */
     protected void fireFailedEvent() {
-        final Object[] dll = listeners.toArray();
+        int count=10;
+        while(--count != 0) {
+            try {
+                final Object[] dll = listeners.toArray();
 
-        if (dll.length > 0) {
-            final GVTTreeRendererEvent ev =
-                new GVTTreeRendererEvent(this, null);
+                if (dll.length > 0) {
+                    final GVTTreeRendererEvent ev =
+                        new GVTTreeRendererEvent(this, null);
 
-            if (EventQueue.isDispatchThread()) {
-                for (int i = 0; i < dll.length; i++) {
-                    ((GVTTreeRendererListener)dll[i]).gvtRenderingFailed(ev);
-                }
-            } else {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
+                    if (EventQueue.isDispatchThread()) {
                         for (int i = 0; i < dll.length; i++) {
-                            ((GVTTreeRendererListener)dll[i]).
-                                gvtRenderingFailed(ev);
+                            ((GVTTreeRendererListener)dll[i]).gvtRenderingFailed(ev);
                         }
+                    } else {
+                        EventQueue.invokeLater(new Runnable() {
+                                public void run() {
+                                    for (int i = 0; i < dll.length; i++) {
+                                        ((GVTTreeRendererListener)dll[i]).
+                                            gvtRenderingFailed(ev);
+                                    }
+                                }
+                            });
                     }
-                });
+                }
+            } catch (Throwable t) {
+                continue;
             }
+            return;
         }
     }
 }
