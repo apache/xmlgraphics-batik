@@ -22,23 +22,23 @@ RKiAkQETMDEQCQZQIcjdGJ75/39oegYAdDoFDw5zppEAAAAASUVORK5CYIL8
 " />
       </pattern>
     </defs>
-    <g fill="url(#pattern1)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="translate(0,20)" stroke="url(#pattern1)">
+    <g fill="url(#pattern1)" text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="translate(0,20)" stroke="url(#pattern1)">
       <rect width="80" x="0" height="80" y="0" stroke="none" />
       <rect x="0" y="0" transform="translate(150,0) matrix(1,0,0.5,1,0,0)" width="80" height="80" stroke="none" />
     </g>
-    <g text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,0,20)">
+    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,0,20)">
       <text x="10" y="100" stroke="none">Anchor matches texture image
       </text>
       <rect x="0" y="0" transform="translate(0,120)" fill="url(#pattern2)" width="80" height="80" stroke="none" />
       <rect x="0" y="0" transform="translate(150,120) matrix(1,0,0.5,1,0,0)" fill="url(#pattern2)" width="80" height="80" stroke="none" />
     </g>
-    <g text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,0,140)">
+    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,0,140)">
       <text x="10" y="100" stroke="none">Anchor offset to texture image center
       </text>
       <rect x="0" y="0" transform="translate(0,120)" fill="url(#pattern3)" width="80" height="80" stroke="none" />
       <rect x="0" y="0" transform="translate(150,120) matrix(1,0,0.5,1,0,0)" fill="url(#pattern3)" width="80" height="80" stroke="none" />
     </g>
-    <g text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,0,260)">
+    <g text-rendering="optimizeLegibility" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,0,260)">
       <text x="10" y="100" stroke="none">Anchor half the size of texture
       </text>
     </g>
