@@ -12,9 +12,17 @@ import java.awt.Paint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.batik.bridge.resources.Messages;
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.CompositeGraphicsNode;
@@ -28,7 +36,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
+import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
+import org.xml.sax.SAXException;
 
 /**
  * This class bridges an SVG <tt>pattern</tt> element with
@@ -69,6 +79,62 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         return createPaint(ctx, paintedNode, paintedElement, paintElement);
     }
 
+    protected static List extractPatternChildren(Element patternElement,
+                                                 BridgeContext ctx) {
+        GVTBuilder builder = ctx.getGVTBuilder();
+        Element e = patternElement;
+        List refs = new LinkedList();
+        List children = new ArrayList();
+        DocumentLoader loader = ctx.getDocumentLoader();
+        for (;;) {
+            for(Node node=e.getFirstChild();
+                    node != null;
+                    node = node.getNextSibling()) {
+                // check if the node is a valid Element
+                if (node.getNodeType() != node.ELEMENT_NODE) {
+                    continue;
+                }
+                Element child = (Element)node;
+                GraphicsNode patternNode = builder.build(ctx, child) ;
+                // check if a GVT node has been created
+                if (patternNode == null) {
+                    continue; // skip element as <pattern> can contain <defs>...
+                }
+                children.add(patternNode);
+            }
+            if (children.size() > 0) {
+                return children; // exit if children found
+            }
+            String uriStr = XLinkSupport.getXLinkHref(e);
+            if (uriStr.length() == 0) {
+                return children; // exit if no more xlink:href
+            }
+            SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
+            URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
+            try {
+                URL url = new URL(baseURL, uriStr);
+                Iterator iter = refs.iterator();
+                while (iter.hasNext()) {
+                    URL urlTmp = (URL)iter.next();
+                    if (urlTmp.sameFile(url) &&
+                            urlTmp.getRef().equals(url.getRef())) {
+                        throw new IllegalAttributeValueException(
+                            "circular reference on "+e);
+                    }
+                }
+                URIResolver resolver = new URIResolver(svgDoc, loader);
+                e = resolver.getElement(url.toString());
+                refs.add(url);
+            } catch(MalformedURLException ex) {
+                throw new IllegalAttributeValueException("bad url on "+uriStr);
+            } catch(SAXException ex) {
+                throw new IllegalAttributeValueException("bad document on "+uriStr);
+            } catch(IOException ex) {
+                throw new IllegalAttributeValueException("I/O error on "+uriStr);
+            }
+        }
+    }
+
     protected Paint createPaint(BridgeContext ctx,
                                 GraphicsNode paintedNode,
                                 Element paintedElement,
@@ -76,12 +142,14 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
         GraphicsNodeRenderContext rc =
                          ctx.getGraphicsNodeRenderContext();
-
-        Viewport oldViewport = ctx.getViewport();
+        DocumentLoader loader = ctx.getDocumentLoader();
 
         // parse the patternContentUnits attribute
         String patternContentUnits
-            = paintElement.getAttributeNS(null, ATTR_PATTERN_CONTENT_UNITS);
+            = SVGUtilities.getChainableAttributeNS(paintElement,
+                                                   null,
+                                                   ATTR_PATTERN_CONTENT_UNITS,
+                                                   loader);
 
         if(patternContentUnits.length() == 0){
             patternContentUnits = SVG_USER_SPACE_ON_USE_VALUE;
@@ -96,38 +164,15 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                                   ATTR_PATTERN_CONTENT_UNITS}));
         }
 
-        if (unitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
-            ctx.setViewport(new ObjectBoundingBoxViewport());
-        }
-
-        // Build pattern content
-        GVTBuilder builder = ctx.getGVTBuilder();
-
-        CompositeGraphicsNode patternContentNode = new CompositeGraphicsNode();
-
-        // build the GVT tree that represents the pattern
-        boolean hasChildren = false;
-        for(Node node=paintElement.getFirstChild();
-                 node != null;
-                 node = node.getNextSibling()) {
-
-            // check if the node is a valid Element
-            if (node.getNodeType() != node.ELEMENT_NODE) {
-                continue;
-            }
-            Element child = (Element) node;
-            GraphicsNode patternNode = builder.build(ctx, child) ;
-            // check if a GVT node has been created
-            if (patternNode == null) {
-                continue; // skip element as <pattern> can contain <defs>...
-            }
-            hasChildren = true;
-            patternContentNode.getChildren().add(patternNode);
-        }
-        // restore the viewport
-        ctx.setViewport(oldViewport);
-        if (!hasChildren) {
+        List children = extractPatternChildren(paintElement, ctx);
+        if (children.size() == 0) {
             return null; // no pattern defined
+        }
+        // Build pattern content
+        CompositeGraphicsNode patternContentNode = new CompositeGraphicsNode();
+        Iterator iter = children.iterator();
+        while (iter.hasNext()) {
+            patternContentNode.getChildren().add((GraphicsNode)iter.next());
         }
 
         // Get the patternTransfrom
@@ -170,7 +215,10 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
         boolean hasViewBox = false;
         // viewBox -> patterRegion (viewport)
         AffineTransform preserveAspectRatioTransform = null;
-        String viewBoxAttr = paintElement.getAttributeNS(null, ATTR_VIEW_BOX);
+        String viewBoxAttr = SVGUtilities.getChainableAttributeNS(paintElement,
+                                                                  null,
+                                                                  ATTR_VIEW_BOX,
+                                                                  loader);
         Rectangle2D viewBox = null;
         if (viewBoxAttr.length() > 0) {
             preserveAspectRatioTransform
