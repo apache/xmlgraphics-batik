@@ -106,7 +106,7 @@ class BridgeEventSupport {
         "repeatEvent"
     };
 
-    protected BridgeEventSupport() {}
+    private BridgeEventSupport() {}
 
     /**
      * Creates and add a listener on the element to call script
@@ -190,23 +190,16 @@ class BridgeEventSupport {
                      n = n.getNextSibling()) {
                     script.append(n.getNodeValue());
                 }
-                // Interpret the script in a thread.
-                Thread t = new Thread() {
-                        public void run() {
-                            setPriority(Thread.MIN_PRIORITY);
-                            try {
-                                interpret.evaluate
-                                    (new StringReader(script.toString()));
-                            } catch (IOException io) {
+                try {
+                    interpret.evaluate
+                        (new StringReader(script.toString()));
+                } catch (IOException io) {
                                 // will never appeared we don't use a file
-                            } catch (InterpreterException e) {
-                                if (ua != null)
-                                    ua.displayError("scripting error: " + 
-                                                    e.getMessage());
-                            }
-                        }
-                    };
-                ua.runThread(t);
+                } catch (InterpreterException e) {
+                    if (ua != null)
+                        ua.displayError("scripting error: " +
+                                        e.getMessage());
+                }
             } else
                 if (ua != null)
                     ua.displayError("unknown language: "+language);
@@ -304,21 +297,15 @@ class BridgeEventSupport {
 
         public void handleEvent(Event evt) {
             interpreter.bindObject(EVENT_NAME, evt);
-            Thread t = new Thread() {
-                    public void run() {
-                        setPriority(Thread.MIN_PRIORITY);
-                        try {
-                            interpreter.evaluate(new StringReader(script));
-                        } catch (IOException io) {
-                            // will never appeared we don't use a file
-                        } catch (InterpreterException e) {
-                            if (ua != null)
-                                ua.displayError("scripting error: " +
-                                                e.getMessage());
-                        }
-                    }
-                };
-            ua.runThread(t);
+            try {
+                interpreter.evaluate(new StringReader(script));
+            } catch (IOException io) {
+                // will never appeared we don't use a file
+            } catch (InterpreterException e) {
+                if (ua != null)
+                    ua.displayError("scripting error: " +
+                                    e.getMessage());
+            }
         }
     }
 }
