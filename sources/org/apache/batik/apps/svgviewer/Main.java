@@ -69,6 +69,7 @@ public class Main implements ViewerFrame.Application {
             for (int i = 0; i < t.length; i++) {
                 t[i] = args[i + 1];
             }
+            args = t;
         }
 
         CSSDocumentHandler.setParserClassName
