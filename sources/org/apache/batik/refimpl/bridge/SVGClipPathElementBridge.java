@@ -107,17 +107,15 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 if(node != null){
                     CSSStyleDeclaration childDecl
                         = bridgeContext.getViewCSS().getComputedStyle((Element)child, null);
-                    GeneralPath outline =
-                        new GeneralPath(new TransformedShape(node.getOutline(), ats));
+                    Shape outline = new TransformedShape(node.getOutline(), ats);
                     // set the clip-rule
                     CSSPrimitiveValue v;
                     v = (CSSPrimitiveValue)childDecl.getPropertyCSSValue(CLIP_RULE_PROPERTY);
                     int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
                         ? GeneralPath.WIND_NON_ZERO
                         : GeneralPath.WIND_EVEN_ODD;
-                    outline.setWindingRule(wr);
 
-                    ClipSource clipSource = new ClipSource(outline);
+                    ClipSource clipSource = new ClipSource(outline, wr);
                     // compute clip-path on the child
                     ShapeNode outlineNode =
                         bridgeContext.getGVTFactory().createShapeNode();
@@ -178,12 +176,18 @@ class ClipSource implements Shape {
     private List addList = new LinkedList();
     private List subtractList = new LinkedList();
     private Shape source;
+    private int clipRule = PathIterator.WIND_NON_ZERO;
 
     public ClipSource() {
     }
 
     public ClipSource(Shape shape) {
         this.source = shape;
+    }
+
+    public ClipSource(Shape shape, int clipRule) {
+        this.source = shape;
+        this.clipRule = clipRule;
     }
 
     public void add(ClipSource area) {
@@ -198,7 +202,10 @@ class ClipSource implements Shape {
         if (resolvedArea == null) {
             Area area;
             if (source != null) {
-                area = new Area(source);
+                GeneralPath path = new GeneralPath(source);
+                path.setWindingRule(clipRule);
+                area = new Area(path);
+
             } else {
                 area = new Area();
             }
