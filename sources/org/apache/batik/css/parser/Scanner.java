@@ -539,7 +539,7 @@ public class Scanner {
                 default:
                     if (!ScannerUtilities.isCSSIdentifierStartCharacter
                         ((char)current)) {
-                        throw new ParseException("character",
+                        throw new ParseException("identifier.character",
                                                  reader.getLine(),
                                                  reader.getColumn());
                     }
@@ -805,7 +805,7 @@ public class Scanner {
                     return;
                 }
                 nextChar();
-                throw new ParseException("character",
+                throw new ParseException("identifier.character",
                                          reader.getLine(),
                                          reader.getColumn());
             }
