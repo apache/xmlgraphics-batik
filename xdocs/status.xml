@@ -27,10 +27,141 @@
     <body>
         <s1 title="Introduction">
             <p>
-            This page shows Batik's implementation status with 
+            This page provides information about Batik's implementation status. 
+            The first section provides numbers about the SVG code: source
+            files, lines of code, binary size, etc... The second section
+            gives the status of the Batik viewing component with 
             regards to the Scalable Vector Graphics Basic Effectivity
             test suite, commonly refered to as the SVG BE Test suite.
             </p>
+        </s1>
+
+        <s1 title="Batik numbers">
+            <p>The following numbers are as of November 7th 2001</p>
+
+            <p>Modules Binay size</p>
+            <table>
+                <tr>
+                    <td>Java API, AWT and Swing Extensions (batik-awt-util.jar, 
+                        org.apache.batik.ext.awt and org.apache.batik.ext.swing)</td>
+                    <td>474,644</td>
+                </tr>
+                <tr>
+                    <td>Bridge module (batik-bridge.jar,
+                    org.apache.batik.bridge)</td>
+                    <td>296,397</td>
+                </tr>
+                <tr>
+                    <td>SVG DOM support (batik-svg-dom.jar,
+                    org.apache.batik.dom.svg org.apache.batik.css.svg)</td>
+                    <td>281,565</td>
+                </tr>
+                <tr>
+                    <td>SVG Generator (includes SVG font converter)</td>
+                    <td>280,599</td>
+                </tr>
+                <tr>
+                    <td>CSS 2 support (batik-css.jar,
+                    org.apache.batik.css)</td>
+                    <td>197,540</td>
+                </tr>
+                <tr>
+                    <td>GVT  (batik-gvt.jar,
+                    org.apache.batik.gvt)</td>
+                    <td>172,415</td>
+                </tr>
+                <tr>
+                    <td>User interface utilities (batik-gui-util.jar,
+                    org.apache.batik.dom)</td>
+                    <td>186,958</td>
+                </tr>
+                <tr>
+                    <td>W3C and XML APIs (batik-ext.jar, org.w3c and org.ext)</td>
+                    <td>141,699</td>
+                </tr>
+                <tr>
+                    <td>Transcoder module (batik-transcoder.jar,
+                    org.apache.batik.transcoder)</td>
+                    <td>101,346</td>
+                </tr>
+                <tr>
+                    <td>Utilities (batik-util.jar, org.apache.batik.util and org.apache.batik.i18n)</td>
+                    <td>73,569</td>
+                </tr>
+                <tr>
+                    <td>Micro Parsers  (batik-parser.jar,
+                    org.apache.batik.parser)</td>
+                    <td>61,308</td>
+                </tr>
+                <tr>
+                    <td>XML Parsing utilities (batik-xml.jar,
+                    org.apache.batik.xml)</td>
+                    <td>28,877</td>
+                </tr>
+                <tr>
+                    <td>Sample extensions (batik-extensions.jar,
+                    org.apache.batik.extension)</td>
+                    <td>27,487</td>
+                </tr>
+                <tr>
+                    <td>Scripting engines infrastructure  (batik-script.jar,
+                    org.apache.batik.script)</td>
+                    <td>16,469</td>
+                </tr>
+            </table>
+
+            <p>External packages</p>
+
+            <table>
+                <tr>
+                    <td>ECMA Script Engine (js.jar)</td>
+                    <td>483,294</td>
+                </tr>
+
+                <tr>
+                    <td>Parser (crimson-parser.jar)</td>
+                    <td>74,901</td>
+                </tr>
+
+            </table>
+
+            <p>Lines of code</p>
+
+            <p>The following numbers include comments and empty lines. To check the 
+            numbers: find . -name '*.java' | xargs cat | wc -l.</p>
+            <table>
+                <tr>
+                    <td>Number of source lines overall</td>
+                    <td>227824 (100%)</td>
+                </tr>
+                <tr>
+                    <td>Number of source lines, W3C DOM Binding</td>
+                    <td>8497 (3.7%) (org.xml) 12426 (5.4%) (org.w3c)</td>
+                </tr>
+                <tr>
+                    <td>Number of Batik specific source lines</td>
+                    <td>206901 (90.1%)</td>
+                </tr>
+            </table>
+
+            <p>Source Files</p>
+            <table>
+                <tr>
+                    <td>Number of source files overall</td>
+                    <td>1410 (100%)</td>
+                </tr>
+                <tr>
+                    <td>Number of source files, W3C DOM Binding</td>
+                    <td>278 (19.7%)</td>
+                </tr>
+                <tr>
+                    <td>Number of Batik specific source files</td>
+                    <td>1132 (80.3%)</td>
+                </tr>
+            </table>
+        </s1>
+
+        <s1 title="SVG Basic Effectivity Test Suite">
             <p>
             The <link href="http://www.w3.org/Graphics/SVG/Test/">SVG BE Test suite</link> is developed by the W3C SVG working
             group to allow implementation to check their level of
@@ -51,6 +182,10 @@
            <p>
             Dynamic ratings : passed: 5, not passed 28 (Total: 5/33)
            </p>
+
+            <p><em>Note</em> that the Batik tests goes beyond the SVG Working Group BE test suite
+            and that the <link href="test.html">Batik test suite infrastructure</link> contains
+            several hundreds of tests in addition to the BE test suite.</p>
         </s1>
 
         <s1 title="Tests Passed by Batik">
@@ -59,418 +194,325 @@
             <!-- ############################################################## -->
 	    <tr>
 	      <td >color-datatypes-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >color-property-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >color-colorProf-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
             <!-- ############################################################## -->
 	    <tr>
 	      <td >coords-transforms-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >coords-units-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >coords-unitsProc-BE-05.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >coords-viewBox-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
             <!-- ############################################################## -->
 	    <tr>
 	      <td >filters-convolve-BE-06.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-diffuseLt-BE-07.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-lights-BE-09.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-many-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-specularLt-BE-08.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >filters-blend-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-blur-BE-12.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-dispMap-BE-16.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-feImage-BE-13.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-feTile-BE-14.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-fldMrgOff-BE-15.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-morph-BE-10.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-transfer-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-turb-BE-11.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >filters-colorMtrx-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >filters-composite-BE-05.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >masking-mask-BE-05.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >masking-mask-BE-06.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >masking-property-BE-07.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
             <!-- ############################################################## -->
 	    <tr>
 	      <td >gradPatt-linearGr-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >gradPatt-linearGr-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >gradPatt-linearGr-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >gradPatt-pattern-BE-07.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >gradPatt-radialGr-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >gradPatt-radialGr-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >gradPatt-referenc-BE-08.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >gradPatt-stop-BE-06.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >gradPatt-stop-BE-10.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >gradPatt-transfrm-BE-09.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
             <!-- ############################################################## -->
 	    <tr>
 	      <td >masking-clipPath-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >masking-clipPath-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >masking-clipPath-BE-08.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
             <tr>
 	      <td >masking-clipRule-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >masking-groupOpac-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >masking-vportClip-BE-09.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
             <!-- ############################################################## -->
 	    <tr>
 	      <td >paint-colIntProp-BE-05.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >paint-inherit-BE-06.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >paint-stroke-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >paint-fill-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >paint-markers-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >paint-markers-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
             <!-- ############################################################## -->
 	    <tr>
 	      <td >path-curves-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >path-curves-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >path-curves-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >path-lines-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
             <!-- ############################################################## -->
 	    <tr>
 	      <td >rendering-orderGr-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >rendering-shape-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >rendering-text-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
             <!-- ############################################################## -->
 	    <tr>
 	      <td >shapes-circle-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >shapes-ellipse-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >shapes-line-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >shapes-polygon-BE-05.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >shapes-polyline-BE-06.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >shapes-rect-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
             <!-- ############################################################## -->
 	    <tr>
 	      <td >structure-allElem-BE-09.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >structure-basicG-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >structure-defs-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >structure-empty-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >structure-extRef-BE-10.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >structure-image-BE-06.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >structure-lang-BE-08.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >structure-nested-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >structure-switch-BE-07.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >structure-symbol-BE-05.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
             <!-- ############################################################## -->
 	    <tr>
 	      <td >style-selector-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >style-selector-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >style-selector-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-text-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-tspan-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-textOnPath-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-tref-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-textAnchor-BE-05.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-whiteSpace-BE-06.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-altGlyph-BE-07.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-i18n-BE-09.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-alignment-BE-10.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-alignment-BE-11.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-selection-BE-13.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >text-spacing-BE-14.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-font-BE-15.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-font-BE-16.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-textLength-BE-17.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-extTref-BE-18.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 
 	    <tr>
 	      <td >fonts-fontElement-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >metadata-sample-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >text-decoration-BE-12.svg</td>
-	      <td >Issue with underline inheritance.</td>
 	    </tr>
 
         </table>
@@ -480,23 +522,18 @@
         <table>
 	    <tr>
 	      <td >linking-outBound-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >linking-xlinkAttr-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >linking-inBound-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >linking-view-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >linking-view-BE-05.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
         </table>
@@ -511,116 +548,88 @@
         <table>
 	    <tr>
 	      <td >extend-multiNS-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 
 	    <tr>
 	      <td >animation-add-BE-09.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-href-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-inherit-BE-10.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-motion-BE-11.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-motion-BE-12.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-overall-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-targAtt-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-targElt-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-timing-BE-05.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-values-BE-06.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-values-BE-07.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >animation-values-BE-08.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >dom-core-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >dom-eventListener-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >dom-featureString-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >dom-svg-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >interact-bubble-BE-04-targ.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >interact-bubble-BE-04.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >interact-cursor-BE-08.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >interact-onload-BE-07.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >interact-pEvents-BE-05.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >interact-pEvents-BE-06.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >interact-zoomPan-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >interact-zoomPan-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >interact-zoomPan-BE-03.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >script-eventDom-BE-01.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
 	      <td >script-uiEvents-BE-02.svg</td>
-	      <td >&nbsp;</td>
 	    </tr>
         </table>
         </s2>
