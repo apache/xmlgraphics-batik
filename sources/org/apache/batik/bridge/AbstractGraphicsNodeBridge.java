@@ -183,12 +183,23 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     }
 
     /**
+     * Disposes this BridgeUpdateHandler and releases all resources.
+     */
+    public void dispose() {
+        SVGOMElement elt = (SVGOMElement)e;
+        elt.setSVGContext(null);
+        ctx.unbind(e);
+    }
+
+
+    /**
      * Disposes all resources related to the specified node and its subtree
      */
-    protected void disposeTree(Node node) {
+    static void disposeTree(Node node) {
         if (node instanceof SVGOMElement) {
-            ((SVGOMElement)node).setSVGContext(null);
-            ctx.unbind((Element)node);
+            SVGOMElement elt = (SVGOMElement)node;
+            BridgeUpdateHandler h = (BridgeUpdateHandler)elt.getSVGContext();
+            h.dispose();
         }
         for (Node n = node.getFirstChild(); n != null; n = n.getNextSibling()) {
             disposeTree(n);
@@ -247,7 +258,9 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * stroke-width and filter effects).
      */
     public Rectangle2D getBBox() {
-        return node.getTransformedPrimitiveBounds(null);
+        AffineTransform ctm = node.getGlobalTransform();
+        Rectangle2D bounds = node.getPrimitiveBounds();
+        return ctm.createTransformedShape(bounds).getBounds2D();
     }
 
     /**
@@ -256,6 +269,23 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * the viewport coordinate system for the nearestViewportElement.
      */
     public AffineTransform getCTM() {
-        throw new Error("Not yet implemented");
+        GraphicsNode gn = node;
+        AffineTransform ctm = new AffineTransform();
+        Element elt = e;
+        while (elt != null) {
+            AffineTransform gnT = gn.getTransform();
+            if (gnT != null) {
+                ctm.preConcatenate(gnT);
+            }
+            if (elt.getNamespaceURI().equals(SVG_NAMESPACE_URI) &&
+                (elt.getLocalName().equals(SVG_SVG_TAG) ||
+                 elt.getLocalName().equals(SVG_SYMBOL_TAG))) {
+                return ctm;
+            } else {
+                elt = (Element)elt.getParentNode();
+                gn = gn.getParent();
+            }
+        }
+        return null;
     }
 }

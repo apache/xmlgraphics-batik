@@ -40,4 +40,8 @@ public interface BridgeUpdateHandler {
      */
     void handleCSSEngineEvent(CSSEngineEvent evt);
 
+    /**
+     * Disposes this BridgeUpdateHandler and releases all resources.
+     */
+    void dispose();
 }
