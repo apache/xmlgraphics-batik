@@ -107,21 +107,19 @@ public class DiffuseLightingRed extends AbstractRed{
         double NL = 0;
 
         // final double[] L = new double[3];
-        double[] N;
         final double[][][] NA = bumpMap.getNormalArray(minX, minY, w, h);
-
         if(!light.isConstant()){
-            double[] L;
-            final double[][][] LA = light.getLightMap(x, y, scaleX, scaleY, w, h, NA);
+            final double[][] LA = new double[w][3];
 
             for(i=0; i<h; i++){
+                final double [][] NR = NA[i];
+                light.getLightRow(x, y+i*scaleY, scaleX, w, NR, LA);
                 for(j=0; j<w; j++){
                     // Get Normal 
-                    N = NA[i][j];
+                    final double [] N = NR[j];
                     
                     // Get Light Vector
-                    // light.getLight(x, y, N[3], L);
-                    L = LA[i][j];
+                    final double [] L = LA[j];
                     
                     NL = 255.*kd*(N[0]*L[0] + N[1]*L[1] + N[2]*L[2]);
                     
@@ -147,24 +145,21 @@ public class DiffuseLightingRed extends AbstractRed{
                                    |
                                    b);
                     
-                    x += scaleX;
                 }
                 p += adjust;
-                x = scaleX*minX;
-                y += scaleY;
             }
         }
         else{
             // System.out.println(">>>>>>>> Processing constant light ...");
-            final double[] L = new double[3];
-
             // Constant light
+            final double[] L = new double[3];
             light.getLight(0, 0, 0, L);
 
             for(i=0; i<h; i++){
+                final double [][] NR = NA[i];
                 for(j=0; j<w; j++){
                     // Get Normal 
-                    N = NA[i][j];
+                    final double[] N = NR[j];
                     
                     NL = 255.*kd*(N[0]*L[0] + N[1]*L[1] + N[2]*L[2]);
                     
@@ -189,12 +184,8 @@ public class DiffuseLightingRed extends AbstractRed{
                                    g << 8
                                    |
                                    b);
-                    
-                    x += scaleX;
                 }
                 p += adjust;
-                x = scaleX*minX;
-                y += scaleY;
             }
         }
         

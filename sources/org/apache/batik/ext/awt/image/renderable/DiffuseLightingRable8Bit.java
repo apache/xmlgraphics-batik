@@ -142,6 +142,8 @@ public class DiffuseLightingRable8Bit
         this.kd = kd;
     }
 
+    static final boolean SCALE_RESULT=true;
+
     public RenderedImage createRendering(RenderContext rc){
         Rectangle2D aoi = rc.getAreaOfInterest().getBounds2D();
         if(aoi == null){
@@ -184,6 +186,10 @@ public class DiffuseLightingRable8Bit
             return null;
         }
         
+        if (SCALE_RESULT) {
+            scaleX = 1;
+            scaleY = 1;
+        }
         AffineTransform scale =
             AffineTransform.getScaleInstance(scaleX, scaleY);
 

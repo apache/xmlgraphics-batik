@@ -121,17 +121,60 @@ public class DistantLight implements Light {
                                   final int width, final int height,
                                   final double[][][] z)
     {
-        double[][][] L = new double[height][width][];
-        double[] CL = new double[3];
-        getLight(0, 0, 0, CL);
+        double[][][] L = new double[height][][];
 
         for(int i=0; i<height; i++){
-            for(int j=0; j<width; j++){
-                L[i][j] = CL;
-            }
+            L[i] = getLightRow(x, y, dx, width, z[i], null);
+            y += dy;
         }
 
         return L;
+    }
+
+    /**
+     * Returns a row of the light map, starting at (x, y) with dx
+     * increments, a given width, and z elevations stored in the
+     * fourth component on the N array.
+     *
+     * @param x x-axis coordinate where the light should be computed
+     * @param y y-axis coordinate where the light should be computed
+     * @param dx delta x for computing light vectors in user space
+     * @param width number of samples to compute on the x axis
+     * @param z array containing the z elevation for all the points
+     * @param lightRwo array to store the light info to, if null it will
+     *                 be allocated for you and returned.
+     *
+     * @return an array width columns where each element
+     *         is an array of three components representing the x, y and z
+     *         components of the light vector.  */
+    public double[][] getLightRow(double x, double y, 
+                                  final double dx, final int width,
+                                  final double[][] z,
+                                  final double[][] lightRow) {
+        double [][] ret = lightRow;
+
+        if (ret == null) {
+            ret = new double[width][];
+
+            double[] CL = new double[3];
+            getLight(0, 0, 0, CL);
+
+            for(int i=0; i<width; i++){
+                ret[i] = CL;
+            }
+        } else {
+            final double lx = Lx;
+            final double ly = Ly;
+            final double lz = Lz;
+
+            for(int i=0; i<width; i++){
+                ret[i][0] = lx;
+                ret[i][1] = ly;
+                ret[i][2] = lz;
+            }
+        }
+
+        return ret;
     }
 }
 

@@ -148,7 +148,11 @@ public class GraphicsUtil {
         }
     
         ColorSpace g2dCS = getDestinationColorSpace(g2d);
-        if ((g2dCS != null) && (g2dCS != srcCM.getColorSpace())) {
+        if (g2dCS == null)
+            // Assume device is sRGB
+            g2dCS = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+
+        if (g2dCS != srcCM.getColorSpace()) {
             // System.out.println("srcCS: " + srcCM.getColorSpace());
             // System.out.println("g2dCS: " + g2dCS);
             // System.out.println("sRGB: " +
@@ -249,12 +253,16 @@ public class GraphicsUtil {
             srcCM = cr.getColorModel();
             ColorModel g2dCM = getDestinationColorModel(g2d);
             ColorModel drawCM = srcCM;
-            if ((g2dCM != null) &&
-                ((drawCM.hasAlpha()) && (g2dCM.hasAlpha()))) {
-                if (drawCM.isAlphaPremultiplied() !=
-                    g2dCM .isAlphaPremultiplied())
-                    drawCM = coerceColorModel(drawCM,
-                                              g2dCM.isAlphaPremultiplied());
+            if (g2dCM == null) {
+                // If we can't find out about our device assume
+                // it's not premultiplied (Just because this
+                // seems to work for us!).
+                drawCM = coerceColorModel(drawCM, false);
+            } else if (drawCM.hasAlpha() && g2dCM.hasAlpha() &&
+                       (drawCM.isAlphaPremultiplied() !=
+                        g2dCM .isAlphaPremultiplied())) {
+                drawCM = coerceColorModel(drawCM,
+                                          g2dCM.isAlphaPremultiplied());
             }
 
             SampleModel srcSM = cr.getSampleModel();
@@ -454,7 +462,7 @@ public class GraphicsUtil {
     }
 
 
-    public final static boolean WARN_DESTINATION = false;
+    public final static boolean WARN_DESTINATION = true;
 
     public static BufferedImage getDestination(Graphics2D g2d) {
         Object o = g2d.getRenderingHint

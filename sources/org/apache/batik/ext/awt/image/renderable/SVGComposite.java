@@ -227,6 +227,85 @@ public class SVGComposite
         }
     }
 
+    /*
+    public static class OverCompositeContext_INT_PACK 
+        extends AlphaPreCompositeContext {
+        OverCompositeContext(ColorModel srcCM, ColorModel dstCM) {
+            super(srcCM, dstCM);
+        }
+
+        public void precompose(Raster src, Raster dstIn, 
+                               WritableRaster dstOut) {
+
+            SinglePixelPackedSampleModel srcSPPSM;
+            srcSPPSM = (SinglePixelPackedSampleModel)src.getSampleModel();
+
+            final int     srcScanStride = srcSPPSM.getScanlineStride();
+            DataBufferInt srcDB         = (DataBufferInt)src.getDataBuffer();
+            final int []  srcPixels     = srcDB.getBankData()[0];
+            final int     srcBase =
+                (srcDB.getOffset() +
+                 srcSPPSM.getOffset(x0-src.getSampleModelTranslateX(),
+                                    y0-src.getSampleModelTranslateY()));
+
+
+            SinglePixelPackedSampleModel dstInSPPSM;
+            dstInSPPSM = (SinglePixelPackedSampleModel)dstIn.getSampleModel();
+
+            final int     dstInScanStride = dstInSPPSM.getScanlineStride();
+            DataBufferInt dstInDB         = (DataBufferInt)dstIn.getDataBuffer();
+            final int []  dstInPixels     = dstInDB.getBankData()[0];
+            final int     dstInBase =
+                (dstInDB.getOffset() +
+                 dstInSPPSM.getOffset(x0-dstIn.getSampleModelTranslateX(),
+                                    y0-dstIn.getSampleModelTranslateY()));
+
+            SinglePixelPackedSampleModel dstOutSPPSM;
+            dstOutSPPSM = (SinglePixelPackedSampleModel)dstOut.getSampleModel();
+
+            final int     dstOutScanStride = dstOutSPPSM.getScanlineStride();
+            DataBufferInt dstOutDB         = (DataBufferInt)dstOut.getDataBuffer();
+            final int []  dstOutPixels     = dstOutDB.getBankData()[0];
+            final int     dstOutBase =
+                (dstOutDB.getOffset() +
+                 dstOutSPPSM.getOffset(x0-dstOut.getSampleModelTranslateX(),
+                                    y0-dstOut.getSampleModelTranslateY()));
+
+            int [] srcPix = null;
+            int [] dstOutPix = null;
+
+            int x=dstOut.getMinX();
+            int w=dstOut.getWidth();
+
+            int y0=dstOut.getMinY();
+            int y1=y0 + dstOut.getHeight();
+
+            final int norm = (1<<24)/255;
+            final int pt5  = (1<<23);
+
+            for (int y = y0; y<y1; y++) {
+                srcPix = src.getPixels  (x, y, w, 1, srcPix);
+                dstPix = dstIn.getPixels(x, y, w, 1, dstPix);
+                int sp  = 0;
+                int end = w*4;
+                while(sp<end) {
+                    final int dstM = (255-srcPix[sp+3])*norm;
+                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
+                    ++sp;
+                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
+                    ++sp;
+                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
+                    ++sp;
+                    dstPix[sp] = srcPix[sp] + ((dstPix[sp]*dstM +pt5)>>>24);
+                    ++sp;
+                }
+                dstOut.setPixels(x, y, w, 1, dstPix);
+            }
+
+        }
+    }
+    /**/
+
     public static class InCompositeContext 
         extends AlphaPreCompositeContext {
         InCompositeContext(ColorModel srcCM, ColorModel dstCM) {
