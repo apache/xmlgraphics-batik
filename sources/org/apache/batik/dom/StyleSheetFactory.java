@@ -8,6 +8,7 @@
 
 package org.apache.batik.dom;
 
+import org.apache.batik.dom.util.HashTable;
 import org.w3c.dom.Node;
 import org.w3c.dom.stylesheets.StyleSheet;
 
@@ -23,5 +24,5 @@ public interface StyleSheetFactory {
      * processing instruction or return null when it is not possible
      * to create the given stylesheet.
      */
-    StyleSheet createStyleSheet(Node node, String data);
+    StyleSheet createStyleSheet(Node node, HashTable pseudoAttrs);
 }

@@ -425,6 +425,24 @@ public class SVGOMDocument
         }
     }
 
+    /**
+     * Enables the alternate stylesheet with the given title.
+     */
+    public void enableAlternateStyleSheet(String title) {
+        getStyleSheets();
+        for (int i = 0; i < styleSheets.getLength(); i++) {
+            StyleSheet ss = (StyleSheet)styleSheets.item(i);
+            Node on = ss.getOwnerNode();
+            if (on instanceof StyleSheetProcessingInstruction) {
+                StyleSheetProcessingInstruction sspi;
+                sspi = (StyleSheetProcessingInstruction)on;
+                if ("yes".equals(sspi.getPseudoAttributes().get("alternate"))) {
+                    ss.setDisabled(!title.equals(ss.getTitle()));
+                }
+            }
+        }
+    }
+
     // DocumentView ///////////////////////////////////////////////////////////
 
     /**

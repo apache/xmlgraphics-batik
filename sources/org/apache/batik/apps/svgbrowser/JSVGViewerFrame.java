@@ -143,6 +143,10 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.stylesheets.DocumentStyle;
 import org.w3c.dom.stylesheets.StyleSheetList;
  
+import org.w3c.dom.traversal.DocumentTraversal;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.TreeWalker;
+
 import org.w3c.dom.css.CSSStyleSheet;
 
 import org.w3c.dom.css.ViewCSS;
@@ -1184,56 +1188,38 @@ public class JSVGViewerFrame
 
         protected void update() {
             Iterator it = components.iterator();
-            if (it.hasNext()) {
-
+            SVGDocument doc = svgCanvas.getSVGDocument();
+            while (it.hasNext()) {
                 JComponent stylesheetMenu = (JComponent)it.next();
                 stylesheetMenu.removeAll();
                 stylesheetMenu.setEnabled(false);
 
-                SVGDocument doc = svgCanvas.getSVGDocument();
-                NodeList children = doc.getChildNodes();
                 ButtonGroup buttonGroup = new ButtonGroup();
-                HashTable stylesheetTitles = new HashTable();
+                TreeWalker tw;
+                tw = ((DocumentTraversal)doc).createTreeWalker
+                    (doc,
+                     NodeFilter.SHOW_PROCESSING_INSTRUCTION,
+                     null,
+                     true);
 
-                // !!! The traversal should be recursive
-                for (int ix=0; ix < children.getLength(); ix++) {
-                    Node n = children.item(ix);
-                    if (n.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE &&
-                        n instanceof StyleSheetProcessingInstruction) {
-
-                        String data = ((ProcessingInstruction)n).getData();
-
-                        HashTable attrs = new HashTable();
-                        attrs.put("alternate", "no");
-
-                        DOMUtilities.parseStyleSheetPIData(data, attrs);
+                for (Node n = tw.nextNode(); n != null; n = tw.nextNode()) {
+                    if (n instanceof StyleSheetProcessingInstruction) {
+                        StyleSheetProcessingInstruction sspi;
+                        sspi = (StyleSheetProcessingInstruction)n;
+                        HashTable attrs = sspi.getPseudoAttributes();
                         final String title = (String)attrs.get("title");
-
-                        // If no title is specified, then the stylesheet should
-                        // always be applied
-                        
-                        // If the title has already been found, then it is part
-                        // of a group, and no new menu option is needed
-                        if (title != null && stylesheetTitles.get(title) == null)  {
-                            stylesheetTitles.put(title, title);
-
+                        String alt = (String)attrs.get("alternate");
+                        if (title != null && "yes".equals(alt)) {
                             JRadioButtonMenuItem button;
                             button = new JRadioButtonMenuItem(title);
-                            if (((String)attrs.get("alternate")).equals("no")) {
-                                button.setSelected(true);
-                            }
+                            
                             button.addActionListener
                                 (new java.awt.event.ActionListener() {
-                                    public void actionPerformed (ActionEvent e) {
-                                        SVGDocument doc = svgCanvas.getSVGDocument();
-                                        StyleSheetList l;
-                                        l = ((DocumentStyle)doc).getStyleSheets();
-                                        for (int i = 0; i < l.getLength(); i++) {
-                                            CSSStyleSheet ss;
-                                            ss = (CSSStyleSheet)l.item(i);
-                                            ss.setDisabled(!title.equals(ss.getTitle()));
-                                        }
-                                        ((SVGOMDocument)doc).clearViewCSS();
+                                    public void actionPerformed(ActionEvent e) {
+                                        SVGOMDocument doc;
+                                        doc = (SVGOMDocument)svgCanvas.getSVGDocument();
+                                        doc.enableAlternateStyleSheet(title);
+                                        doc.clearViewCSS();
                                         svgCanvas.setSVGDocument(doc);
                                     }
                                 });

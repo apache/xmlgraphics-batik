@@ -411,11 +411,11 @@ public class Main implements Application {
      * Returns the user languages.
      */
     public String getLanguages() {
-        if (preferenceDialog == null) {
-            return Locale.getDefault().getLanguage();
-        }
-        return preferenceDialog.getPreferenceManager().getString
+        String s = preferenceManager.getString
             (PreferenceDialog.PREFERENCE_KEY_LANGUAGES);
+        return (s == null)
+            ? Locale.getDefault().getLanguage()
+            : s;
     }
 
     /**
@@ -423,10 +423,7 @@ public class Main implements Application {
      * @return null if no user style sheet was specified.
      */
     public String getUserStyleSheetURI() {
-        if (preferenceDialog == null) {
-            return null;
-        }
-        return preferenceDialog.getPreferenceManager().getString
+        return preferenceManager.getString
             (PreferenceDialog.PREFERENCE_KEY_USER_STYLESHEET);
     }
 
@@ -435,10 +432,8 @@ public class Main implements Application {
      * @return empty string if no CSS media was specified.
      */
     public String getMedia() {
-        if (preferenceDialog == null) {
-            return "";
-        }
-        return preferenceDialog.getPreferenceManager().getString
+        String s = preferenceManager.getString
             (PreferenceDialog.PREFERENCE_KEY_CSS_MEDIA);
+        return (s == null) ? "screen" : s;
     }
 }
