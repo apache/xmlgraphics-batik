@@ -47,7 +47,23 @@
         <xsl:choose>
         <xsl:when test="$childrenTestsCount &gt; 0 or @status='failed'">
             <tr bgcolor="#cccccc">
-                <td colspan="2"><b><xsl:value-of select="$prefix" /><xsl:value-of select="@testName" /></b></td>
+                <td colspan="2">
+                    <table bgcolor="#cccccc" vspace="0" hspace="0" cellspacing="0" cellpadding="0" border="0" width="100%">
+                        <tr bgcolor="#cccccc">     
+                            <td width="4%">
+                                <xsl:attribute name="bgcolor">
+                                  <xsl:choose>
+                                     <xsl:when test="@status='failed'">red</xsl:when>
+                                     <xsl:when test="@status='passed'">green</xsl:when>
+                                  </xsl:choose>
+                                </xsl:attribute>&#160;
+                            </td>
+                            <td width="96%">
+                                <b>&#160;<xsl:value-of select="$prefix" /><xsl:value-of select="@testName" /></b>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
             </tr>
             <tr bgcolor="white">
                 <td colspan="2">

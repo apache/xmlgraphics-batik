@@ -57,8 +57,37 @@ public class SVGGeneratorTests extends DefaultTestSuite {
     /**
      * @param name of the <tt>Painter</tt> class
      */
-    public SVGGeneratorTests(Painter painter){
-        super();
+    public SVGGeneratorTests(){
+    }
+
+    /**
+     * The id should be the Painter's class name
+     * prefixed with the package name defined in
+     * getPackageName
+     */
+    public void setId(String id){
+        String clName = getPackageName() + "." + id;
+        Class cl = null;
+
+        try{
+            cl = Class.forName(clName);
+        }catch(ClassNotFoundException e){
+            throw new IllegalArgumentException(clName);
+        }
+        
+        Object o = null;
+
+        try {
+            o = cl.newInstance();
+        }catch(Exception e){
+            throw new IllegalArgumentException(clName);
+        }
+
+        if(!(o instanceof Painter)){
+            throw new IllegalArgumentException(clName);
+        }
+
+        Painter painter = (Painter)o;
 
         addTest(makeSVGAccuracyTest(painter));
         addTest(makeGeneratorContext(painter));
@@ -66,6 +95,10 @@ public class SVGGeneratorTests extends DefaultTestSuite {
         addTest(makeSVGRenderingAccuracyTest(painter, CUSTOM_CONTEXT_GENERATION_PREFIX));
         addTest(makeImageCompareTest(painter, PLAIN_GENERATION_PREFIX, 
                                      CUSTOM_CONTEXT_GENERATION_PREFIX));
+    }
+
+    protected String getPackageName(){
+        return "org.apache.batik.svggen";
     }
 
     private Test makeImageCompareTest(Painter painter,
