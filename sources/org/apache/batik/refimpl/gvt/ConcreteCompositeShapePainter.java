@@ -10,7 +10,6 @@ package org.apache.batik.refimpl.gvt;
 
 import java.awt.Shape;
 import java.awt.Graphics2D;
-import java.awt.geom.GeneralPath;
 import java.awt.geom.Area;
 
 import java.util.List;
@@ -67,10 +66,10 @@ public class ConcreteCompositeShapePainter implements CompositeShapePainter {
     public Shape getPaintedArea(Shape shape){
         // <!> FIX ME: Use of GeneralPath is a work around Area problems.
         //
-        GeneralPath paintedArea = new GeneralPath();
+        Area paintedArea = new Area();
         if (painters != null) {
             for (int i=0; i < count; ++i) {
-                paintedArea.append(painters[i].getPaintedArea(shape), false);
+                paintedArea.add(new Area(painters[i].getPaintedArea(shape)));
             }
         }
         return paintedArea;
