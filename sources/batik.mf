@@ -18,7 +18,7 @@ Class-Path: lib/batik-ext.jar \
             batik-svgbrowser.jar \
             batik-rasterizer.jar \
             batik-pp.jar \
-            lib/crimson.jar \
+            lib/crimson-parser.jar \
             lib/js.jar \
             lib/xalan-1.2.1.jar \
             lib/xerces-1.2.1.jar
