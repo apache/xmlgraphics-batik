@@ -132,6 +132,7 @@
         <li><link href="http://www.elixirtech.com/ElixirReport">ElixirTech's ElixirReport</link> uses 
         Batik for charting and for its SVG component.</li>
         <li><link href="http://lagoon.sourceforge.net/">Lagoon</link>, an XML-based framework for web site maintenance, uses the Batik SVG Rasterizer to render SVG as bitmap graphics for web publishing</li>
+        <li><link href="http://burma.free.fr">eDoc</link>, a page layout software, is using the Batik SVG generator to export pages to SVG</li>
         </ul>
         </s1>
     </body>
