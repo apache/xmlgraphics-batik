@@ -43,6 +43,9 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
  *     - test, id="A1" <br />
  *     - test, id="A2" <br />
  *     - test, id="duplicateId" <br />
+ *     - testGroup, id="AG" <br />
+ *          - test, id="AG1" <br />
+ *          - test, id="AG2" <br />
  *
  * and: <br />
  * - testSuite, id="B" <br />
@@ -94,11 +97,13 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
      * - 1 target test: "all.B.B3". A single test-report should be produced
      *   for B3. <br />
      * - 1 target test-suite: "all.A". A test-report with
-     *   "A1", "A2" and "duplicatedId" should be produced.<br />
+     *   "A1", "A2", "duplicatedId", "AG", "AG.AG1" and "AG.AG2" should be produced.<br />
      * - 1 target test-suite and 2 tests: "all.B and 
      *   all.A.A1 and all.A.A2. A test-report for "all.B.B1", "all.B.B2", 
      *   "all.B.B3", "all.B.duplicatedId", "all.A.A1" and "all.A.A2" 
      *   should be produced. <br />
+     * - 1 target testGroup: "AG". A test-report with
+     *   "A.AG", "A.AG.AG1" and "A.AG.AG2" should be produced.<br />
      * <br />
      * In addition, the following test with non-qualified ids: <br />
      * - 1 target test id: "duplicatedId" should be produced and
@@ -108,22 +113,31 @@ public class XMLTestSuiteRunnerValidator extends DefaultTestSuite {
         Object config[][] = {
             {"", new String[]{"all", 
                               "all.A", "all.A.A1", "all.A.A2", "all.A.duplicatedId", "all.A.duplicatedId.1", "all.A.duplicatedId.2",
+                              "all.A.AG", "all.A.AG.AG1", "all.A.AG.AG2",
                               "all.B", "all.B.B1", "all.B.B2", "all.B.B3", "all.B.duplicatedId"}},
 
             {"all.B.B3", new String[] {"all", "all.B", "all.B.B3"}},
 
             {"all.A", new String[] {"all",
-                                    "all.A", "all.A.A1", "all.A.A2", "all.A.duplicatedId", "all.A.duplicatedId.1", "all.A.duplicatedId.2"}},
+                                    "all.A", "all.A.A1", "all.A.A2", "all.A.duplicatedId", "all.A.duplicatedId.1", "all.A.duplicatedId.2",
+                                    "all.A.AG", "all.A.AG.AG1", "all.A.AG.AG2"}},
 
             {"all.B all.A.A1 all.A.A2", 
              new String[] {"all",
                            "all.B", "all.B.B1", "all.B.B2", "all.B.B3", "all.B.duplicatedId",
                            "all.A", "all.A.A1", "all.A.A2"}},
 
-            {"duplicatedId", new String[] {"all",
-                                           "all.A", "all.A.duplicatedId", "all.A.duplicatedId.1", "all.A.duplicatedId.2",
-                                           "all.B", "all.B.duplicatedId"}}    
-                                           };
+            {"duplicatedId", 
+             new String[] {"all",
+                           "all.A", "all.A.duplicatedId", "all.A.duplicatedId.1", "all.A.duplicatedId.2",
+                           "all.B", "all.B.duplicatedId"}}, 
+
+            {"AG",
+             new String[] {"all",
+                           "all.A",
+                           "all.A.AG",
+                           "all.A.AG.AG1", "all.A.AG.AG2"}}
+        };
 
         for(int i=0; i<config.length; i++){
             addTest(new XMLTestSuiteRunnerTest(config[i]));

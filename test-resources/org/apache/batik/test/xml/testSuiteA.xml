@@ -14,4 +14,8 @@
     <test id="A1" class="org.apache.batik.test.xml.DummyValidTest" />
     <test id="A2" class="org.apache.batik.test.xml.DummyValidTest" />
     <test id="duplicatedId" class="org.apache.batik.test.xml.DummyValidTestSuite" />
+    <testGroup id="AG" name="AG Test Group">
+        <test id="AG1" class="org.apache.batik.test.xml.DummyValidTest" />
+        <test id="AG2" class="org.apache.batik.test.xml.DummyValidTest" />
+    </testGroup>
 </testSuite>
