@@ -13,7 +13,7 @@
   modules which can be used together or individually to
   support specific SVG solutions. Examples of modules are
   an SVG parser, an SVG generator and an SVG DOM
-  implementations. Another ambition of the Batik project is to
+  implementation. Another ambition of the Batik project is to
   make it highly extensible (for example, Batik allows the
   developer to handle custom SVG tags). Even though the
   goal of the project is to provide a set of core modules, one

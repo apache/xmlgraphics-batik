@@ -14,7 +14,7 @@ For more information refer to "http://jakarta.apache.org/ant/".
 
 The distribution contains a precompiled version of Ant.
 
-The only thing that you have to make sure, is the "JAVA_HOME" environment
+The only thing that you have to make sure, is that the "JAVA_HOME" environment
 property should be set to match the JVM you want to use. 
 
 If you are going to be doing development you may want to create a file

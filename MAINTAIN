@@ -3,7 +3,7 @@
                          -------------------------
                      
 This document introduces newcomers to the management and maintenance of 
-java project hosted under xml.apache.org.
+the Batik project hosted under xml.apache.org (http://xml.apache.org/batik).
 
 Each project is required to use Ant as build tool and to be coherent with the
 rest of the build systems of the other projects, so that nightly builds and
@@ -78,7 +78,7 @@ For creating a distribution the following steps must be done:
 Site Creation
 -------------
 
-For creation the web site, the following steps must be done:
+For creating the web site, the following steps must be done:
 
 [Note: due to JVM font-rendering problems, this is best done on a windows machine]
 
@@ -91,3 +91,4 @@ For creation the web site, the following steps must be done:
  6) execute "cvs update"
  
 [NOTE: you must have commit access on xml-site to be able to do this]
+
