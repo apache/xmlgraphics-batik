@@ -9,6 +9,7 @@
 package org.apache.batik.apps.rasterizer;
 
 import org.apache.batik.test.*;
+import org.apache.batik.test.util.ImageCompareTest;
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
@@ -287,7 +288,25 @@ public class SVGConverterTest extends DefaultTestSuite {
         addTest(t);
         t.setId("ConfigErrorTest(SVGConverter.ERROR_WHILE_RASTERIZING_FILE");
         
-        
+        //
+        // Test that files are created as expected and are producing the 
+        // expected result.
+        //
+
+        // Plain file
+        t = new ConverterOutputTest("samples/anne.svg",  // File to convert
+                                    "test-reports/anne.png", // Output
+                                    "test-references/samples/anne.png"); // reference
+        addTest(t);
+        t.setId("OutputTest.plain");
+
+        // File with reference
+        t = new ConverterOutputTest("samples/anne.svg#svgView(viewBox(0,0,100,200))",  // File to convert
+                                    "test-reports/anne.png", // Output
+                                    "test-references/samples/anneViewBox1.png"); // reference
+        addTest(t);
+        t.setId("OutputTest.reference");
+
     }
 }
 
@@ -915,5 +934,40 @@ class ConfigErrorTest extends AbstractTest implements SVGConverterController{
     public void onSourceTranscodingSuccess(SVGConverterSource source,
                                            File dest){
         System.out.println(" ... SUCCESS");
+    }
+}
+
+/**
+ * This test checks that a file is indeed created and that it is identical to
+ * an expected reference.
+ */
+class ConverterOutputTest extends AbstractTest {
+    String svgSource;
+    String pngDest;
+    String pngRef;
+
+    public ConverterOutputTest(String svgSource,
+                      String pngDest,
+                      String pngRef){
+        this.svgSource = svgSource;
+        this.pngDest = pngDest;
+        this.pngRef = pngRef;
+    }
+
+    public TestReport runImpl() throws Exception {
+        SVGConverter c = new SVGConverter();
+        System.out.println("Converting : " + svgSource);
+        c.setSourcesStrings(new String[]{svgSource});
+        c.setDstFile(new File(pngDest));
+
+        c.setDestinationType(DestinationType.PNG);
+        
+        c.execute();
+
+        ImageCompareTest t = new ImageCompareTest(pngDest,
+                                                  pngRef);
+        TestReport r = t.run();
+        (new File(pngDest)).delete();
+        return r;
     }
 }
