@@ -826,8 +826,49 @@ public class GlyphLayout implements TextSpanLayout {
         float x = (float) prevPos.getX();
         float y = (float) prevPos.getY();
         try {
-        if ((numGlyphs > 1) &&
-                            (doWordSpacing || doLetterSpacing || !autoKern)) {
+        // do letter spacing first
+        if ((numGlyphs > 1) && (doLetterSpacing || !autoKern)) {
+            for (int i=1; i<numGlyphs; ++i) {
+                Point2D gpos = gv.getGlyphPosition(i);
+                dx = (float)gpos.getX()-(float)prevPos.getX();
+                dy = (float)gpos.getY()-(float)prevPos.getY();
+                GlyphMetrics gm = gv.getGlyphMetrics(i);
+                if (autoKern) {
+                    if (isVertical()) dy += letterSpacingVal;
+                    else dx += letterSpacingVal;
+                } else {
+                    // apply explicit kerning adjustments,
+                    // discarding any auto-kern dx values
+                    if (isVertical()) {
+                        dy = (float)
+                        gv.getGlyphMetrics(i-1).getBounds2D().getWidth()+
+                              kernVal + letterSpacingVal;
+                    } else {
+                        dx = (float)
+                        gv.getGlyphMetrics(i-1).getBounds2D().getWidth()+
+                              kernVal + letterSpacingVal;
+                    }
+                }
+                x += dx;
+                y += dy;
+                newPositions[i] = new Point2D.Float(x, y);
+                prevPos = gpos;
+            }
+            for (int i=1; i<numGlyphs; ++i) { // assign the new positions
+                if (newPositions[i] != null) {
+                    gv.setGlyphPosition(i, newPositions[i]);
+                }
+            }
+        }
+
+        // do word spacing
+        dx = 0f;
+        dy = 0f;
+        prevPos = gv.getGlyphPosition(0);
+        x = (float) prevPos.getX();
+        y = (float) prevPos.getY();
+
+        if ((numGlyphs > 1) && (doWordSpacing)) {
             for (int i=1; i<numGlyphs; ++i) {
                 Point2D gpos = gv.getGlyphPosition(i);
                 dx = (float)gpos.getX()-(float)prevPos.getX();
@@ -837,6 +878,7 @@ public class GlyphLayout implements TextSpanLayout {
                 int beginWS = i;
                 int endWS = i;
                 GlyphMetrics gm = gv.getGlyphMetrics(i);
+
                 // BUG: gm.isWhitespace() fails for latin SPACE glyph!
                 while ((gm.getBounds2D().getWidth()<0.01d) ||
                                                        gm.isWhitespace()) {
@@ -850,44 +892,26 @@ public class GlyphLayout implements TextSpanLayout {
                     gpos = gv.getGlyphPosition(i);
                     gm = gv.getGlyphMetrics(i);
                 }
-                // then apply wordSpacing
-                if ( inWS ) {
-                    if (doWordSpacing) {
-                        int nWS = endWS-beginWS;
-                        float px = (float) prevPos.getX();
-                        float py = (float) prevPos.getY();
-                        dx = (float) (gpos.getX() - px)/(nWS+1);
-                        dy = (float) (gpos.getY() - py)/(nWS+1);
-                        if (isVertical()) {
-                            dy += (float) wordSpacing.floatValue()/(nWS+1);
-                        } else {
-                            dx += (float) wordSpacing.floatValue()/(nWS+1);
-                        }
-                        for (int j=beginWS; j<=endWS; ++j) {
-                            x += dx;
-                            y += dy;
-                            newPositions[j] = new Point2D.Float(x, y);
-                        }
+
+                if ( inWS ) {  // apply wordSpacing
+                    int nWS = endWS-beginWS;
+                    float px = (float) prevPos.getX();
+                    float py = (float) prevPos.getY();
+                    dx = (float) (gpos.getX() - px)/(nWS+1);
+                    dy = (float) (gpos.getY() - py)/(nWS+1);
+                    if (isVertical()) {
+                        dy += (float) wordSpacing.floatValue()/(nWS+1);
+                    } else {
+                        dx += (float) wordSpacing.floatValue()/(nWS+1);
+                    }
+                    for (int j=beginWS; j<=endWS; ++j) {
+                        x += dx;
+                        y += dy;
+                        newPositions[j] = new Point2D.Float(x, y);
                     }
                 } else {
                     dx = (float) (gpos.getX()-prevPos.getX());
                     dy = (float) (gpos.getY()-prevPos.getY());
-                    if (autoKern) {
-                        if (isVertical()) dy += letterSpacingVal;
-                        else dx += letterSpacingVal;
-                    } else {
-                        // apply explicit kerning adjustments,
-                        // discarding any auto-kern dx values
-                        if (isVertical()) {
-                            dy = (float)
-                              gv.getGlyphMetrics(i-1).getBounds2D().getWidth()+
-                              kernVal + letterSpacingVal;
-                        } else {
-                            dx = (float)
-                              gv.getGlyphMetrics(i-1).getBounds2D().getWidth()+
-                              kernVal + letterSpacingVal;
-                        }
-                    }
                     x += dx;
                     y += dy;
                     newPositions[i] = new Point2D.Float(x, y);
@@ -895,9 +919,12 @@ public class GlyphLayout implements TextSpanLayout {
                 prevPos = gpos;
             }
             for (int i=1; i<numGlyphs; ++i) { // assign the new positions
-                gv.setGlyphPosition(i, newPositions[i]);
+                if (newPositions[i] != null) {
+                    gv.setGlyphPosition(i, newPositions[i]);
+                }
             }
         }
+
         if (isVertical()) {
             dx = 0f;
             dy = (float)
