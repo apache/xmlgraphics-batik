@@ -22,7 +22,7 @@ import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.svg.SVGAnimatedPreserveAspectRatio;
 
 /**
- *
+ * Support for the 'preserveAspectRatio' interface on the SVG element.
  * @author  Tonny Kohar
  */
 public class SVGPreserveAspectRatioSupport {

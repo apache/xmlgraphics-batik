@@ -115,8 +115,16 @@ public class StyleDeclaration {
             indexes    = newidx;
             priorities = newprio;
         }
-        values[count]     = v;
-        indexes[count]    = idx;
+        for (int i = 0; i < count; i++) {
+            if (indexes[i] == idx) {
+                // Replace existing property values...
+                values    [i] = v;
+                priorities[i] = prio;
+                return;
+            }
+        }
+        values    [count] = v;
+        indexes   [count] = idx;
         priorities[count] = prio;
         count++;
     }
