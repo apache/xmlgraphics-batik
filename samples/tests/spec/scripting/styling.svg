@@ -47,6 +47,11 @@
     .checkbox > rect { fill: white; stroke: black; stroke-width: 1; }
     .checkbox[selected=true] > path { visibility: visible;}
     .checkbox[selected=false] > path { visibility: hidden; }
+
+    .a { fill: red; }
+    .b { fill: orange; }
+    rect.a + .b { fill: blue; }
+
     ]]></style>
 
   <script type="text/ecmascript"><![CDATA[
@@ -88,6 +93,7 @@
        }
     }
 
+
     function regardStart() {
       var e;
       removeTarget(document.getElementById("rm1"))
@@ -101,6 +107,8 @@
       document.getElementById("test5").setAttribute("id", "foo");
       regardTestInstance.scriptDone();
       toggleSelected(document.getElementById("cb"));
+
+      document.getElementById("a").setAttribute("class", "");
     }
   ]]></script>
 
@@ -136,9 +144,17 @@
   </g>
 
   <g id="cb" class="checkbox" selected="true" transform="translate(10, 225)"
-     onclick="toggleSelected(evt)">
+     onclick="toggleSelectedEvt(evt)">
     <rect width="15" height="15" fill="white" stroke="black"/>
     <path d="M3,3 L12,12 M12,3 L3,12"/>
   </g>
 
+  <g fill="white" stroke="black">
+    <rect id="a" class="a" x="10"  y="275" width="100" height="50"
+      onclick="setAttributeEvt(evt, 'class', '')"/>
+    <rect id="b" class="b" x="150" y="275" width="100" height="50"/>
+    <g/>
+    <text x="25" y="300" pointer-events="none" 
+      style="fill: black; stroke: none">Click Me</text>
+  </g>
 </svg>
