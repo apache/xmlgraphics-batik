@@ -26,7 +26,9 @@ public interface BridgeExtension {
 
     /**
      * This should return the list of extensions implemented
-     * by this BridgeExtension.
+     * by this BridgeExtension, these are added to the list of
+     * requiredExtensions that the User Agent supports for purposes
+     * of the 'switch' element in SVG.
      * @return An iterator containing strings one for each implemented
      *         extension.
      */
