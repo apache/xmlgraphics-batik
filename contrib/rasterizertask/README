@@ -1,0 +1,18 @@
+#
+# Author  : Henri Ruini
+# Version : $Id$
+#
+
+Content of this directory
+=========================
+
+This directory contains rasterizer task for Ant. Th task can be used to 
+convert SVG files to raster format. This has been contributed by 
+Henri Ruini (ruini@iki.fi).
+
+The <sources> directory contains source code for the task. To compile the code 
+you need to compile Batik first and then compile the task by typing
+.\build.bat compile
+in this directory. Type 
+.\build.bat help
+to display other available targets. These commands work only in Windows.
