@@ -22,6 +22,8 @@ public interface GraphicsNodeBridge extends Bridge {
 
     /**
      * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     * This is called before children have been added to the
+     * returned GraphicsNode (obviously since you construct and return it).
      *
      * @param ctx the bridge context to use
      * @param e the element that describes the graphics node to build
@@ -31,7 +33,10 @@ public interface GraphicsNodeBridge extends Bridge {
 
     /**
      * Builds using the specified BridgeContext and element, the
-     * specified graphics node.
+     * specified graphics node.  This is called after all the children
+     * of the node have been constructed and added, so it is safe to
+     * do work that depends on being able to see your children nodes
+     * in this method.
      *
      * @param ctx the bridge context to use
      * @param e the element that describes the graphics node to build
