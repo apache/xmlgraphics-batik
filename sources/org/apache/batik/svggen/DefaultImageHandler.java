@@ -26,28 +26,21 @@ import org.apache.batik.dom.util.XLinkSupport;
  * @see             org.apache.batik.svggen.SVGGraphics2D
  */
 public class DefaultImageHandler implements ImageHandler {
-    private static final String ERROR_CONTEXT_NULL =
+    static final String ERROR_CONTEXT_NULL =
         "generatorContext should not be null";
-
-    /**
-     * The context in which the image handler will have to work.
-     */
-    protected SVGGeneratorContext generatorContext;
 
     /**
      * Build a <code>DefaultImageHandler</code>.
      */
-    public DefaultImageHandler(SVGGeneratorContext generatorContext) {
-        if (generatorContext == null)
-            throw new IllegalArgumentException(ERROR_CONTEXT_NULL);
-        this.generatorContext = generatorContext;
+    public DefaultImageHandler() {
     }
 
     /**
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    public void handleImage(Image image, Element imageElement) {
+    public void handleImage(Image image, Element imageElement,
+                            SVGGeneratorContext generatorContext) {
         //
         // First, set the image width and height
         //
@@ -59,14 +52,15 @@ public class DefaultImageHandler implements ImageHandler {
         //
         // Now, set the href
         //
-        handleHREF(image, imageElement);
+        handleHREF(image, imageElement, generatorContext);
     }
 
     /**
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    public void handleImage(RenderedImage image, Element imageElement){
+    public void handleImage(RenderedImage image, Element imageElement,
+                            SVGGeneratorContext generatorContext) {
         //
         // First, set the image width and height
         //
@@ -78,14 +72,15 @@ public class DefaultImageHandler implements ImageHandler {
         //
         // Now, set the href
         //
-        handleHREF(image, imageElement);
+        handleHREF(image, imageElement, generatorContext);
     }
 
     /**
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    public void handleImage(RenderableImage image, Element imageElement){
+    public void handleImage(RenderableImage image, Element imageElement,
+                            SVGGeneratorContext generatorContext) {
         //
         // First, set the image width and height
         //
@@ -97,14 +92,15 @@ public class DefaultImageHandler implements ImageHandler {
         //
         // Now, set the href
         //
-        handleHREF(image, imageElement);
+        handleHREF(image, imageElement, generatorContext);
     }
 
     /**
      * This template method should set the xlink:href attribute on the input
      * Element parameter
      */
-    protected void handleHREF(Image image, Element imageElement) {
+    protected void handleHREF(Image image, Element imageElement,
+                              SVGGeneratorContext generatorContext) {
         // Simply write a placeholder
         imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
                                     ATTR_XLINK_HREF, image.toString());
@@ -114,9 +110,8 @@ public class DefaultImageHandler implements ImageHandler {
      * This template method should set the xlink:href attribute on the input
      * Element parameter
      */
-    protected void handleHREF(RenderedImage image, Element imageElement){
-        // System.out.println("********************************************");
-        // System.out.println("Setting HREF attribute....");
+    protected void handleHREF(RenderedImage image, Element imageElement,
+                              SVGGeneratorContext generatorContext) {
         // Simply write a placeholder
         imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
                                     ATTR_XLINK_HREF, image.toString());
@@ -126,7 +121,8 @@ public class DefaultImageHandler implements ImageHandler {
      * This template method should set the xlink:href attribute on the input
      * Element parameter
      */
-    protected void handleHREF(RenderableImage image, Element imageElement){
+    protected void handleHREF(RenderableImage image, Element imageElement,
+                              SVGGeneratorContext generatorContext) {
         // Simply write a placeholder
         imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
                                     ATTR_XLINK_HREF, image.toString());

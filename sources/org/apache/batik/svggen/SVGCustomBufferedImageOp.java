@@ -58,7 +58,7 @@ public class SVGCustomBufferedImageOp extends AbstractSVGFilterConverter {
             // to do the convertion
             filterDesc =
                 generatorContext.extensionHandler.
-                handleFilter(filter, filterRect, generatorContext.domFactory);
+                handleFilter(filter, filterRect, generatorContext);
 
             if (filterDesc != null) {
                 Element def = filterDesc.getDef();

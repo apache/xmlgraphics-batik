@@ -29,31 +29,32 @@ import org.w3c.dom.Document;
 public interface ExtensionHandler {
     /**
      * @param paint Custom Paint to be converted to SVG
-     * @param domFactory allows the handler to build DOM objects as needed.
+     * @param generatorContext allows the handler to build DOM objects as needed.
      * @return an SVGPaintDescriptor
      */
-    public SVGPaintDescriptor handlePaint(Paint paint, Document domFactory);
+    public SVGPaintDescriptor handlePaint(Paint paint,
+                                          SVGGeneratorContext geneartorContext);
 
     /**
      * @param composite Custom Composite to be converted to SVG.
-     * @param domFactory allows the handler to build DOM objects as needed.
+     * @param generatorContext allows the handler to build DOM objects as needed.
      * @return an SVGCompositeDescriptor which contains a valid SVG filter,
      * or null if the composite cannot be handled
      *
      */
     public SVGCompositeDescriptor handleComposite(Composite composite,
-                                                  Document domFactory);
+                                                  SVGGeneratorContext generatorContext);
 
-    /**
+/**
      * @param filter Custom filter to be converted to SVG.
      * @param filterRect Rectangle, in device space, that defines the area
      *        to which filtering applies. May be null, meaning that the
      *        area is undefined.
-     * @param domFactory allows the handler to build DOM objects as needed.
+     * @param generatorContext allows the handler to build DOM objects as needed.
      * @return an SVGFilterDescriptor which contains a valid SVG filter,
      * or null if the composite cannot be handled
      */
     public SVGFilterDescriptor handleFilter(BufferedImageOp filter,
                                             Rectangle filterRect,
-                                            Document domFactory);
+                                            SVGGeneratorContext generatorContext);
 }

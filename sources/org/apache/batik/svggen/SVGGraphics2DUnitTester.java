@@ -288,10 +288,11 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
            Document domFactory = getDocumentPrototype();
            ImageHandler imageHandler =
-               new ImageHandlerBase64Encoder(getContext(domFactory));
+               new ImageHandlerBase64Encoder();
            Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVGSyntax.SVG_IMAGE_TAG);
 
-           imageHandler.handleImage((RenderedImage)buf, imageElement);
+           imageHandler.handleImage((RenderedImage)buf, imageElement,
+                                    getContext(domFactory));
 
            System.out.println("<?xml version=\"1.0\" standalone=\"no\"?>");
            System.out.println("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20000802//EN\"");
@@ -316,9 +317,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
         Document domFactory = getDocumentPrototype();
         ImageHandler imageHandler =
-            new ImageHandlerJPEGEncoder(getContext(domFactory),
-                                        imageDir,
-                                        urlRoot);
+            new ImageHandlerJPEGEncoder(imageDir,urlRoot);
         Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVGSyntax.SVG_IMAGE_TAG);
 
         BufferedImage testImage = new BufferedImage(60, 40, BufferedImage.TYPE_INT_ARGB);
@@ -331,7 +330,8 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         g.fillRect(40, 0, 60, 40);
         g.dispose();
 
-        imageHandler.handleImage((RenderedImage)testImage, imageElement);
+        imageHandler.handleImage((RenderedImage)testImage, imageElement,
+                                 getContext(domFactory));
         System.out.println("Generated xlink:href is : " + imageElement.getAttributeNS(null, SVGSyntax.ATTR_XLINK_HREF));
     }
 
@@ -347,9 +347,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
         Document domFactory = getDocumentPrototype();
         ImageHandler imageHandler =
-            new ImageHandlerPNGEncoder(getContext(domFactory),
-                                       imageDir,
-                                       urlRoot);
+            new ImageHandlerPNGEncoder(imageDir, urlRoot);
         Element imageElement = domFactory.createElementNS(SVG_NAMESPACE_URI, SVGSyntax.SVG_IMAGE_TAG);
 
         BufferedImage testImage = new BufferedImage(60, 40, BufferedImage.TYPE_INT_ARGB);
@@ -360,7 +358,8 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         g.fillRect(40, 0, 60, 40);
         g.dispose();
 
-        imageHandler.handleImage((RenderedImage)testImage, imageElement);
+        imageHandler.handleImage((RenderedImage)testImage, imageElement,
+                                 getContext(domFactory));
         System.out.println("Generated xlink:href is : " + imageElement.getAttributeNS(null, SVGSyntax.ATTR_XLINK_HREF));
     }
 

@@ -490,7 +490,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                   Integer.toString(img.getWidth(null)));
         imageElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE,
                                   Integer.toString(img.getHeight(null)));
-        getImageHandler().handleImage(img, imageElement);
+        getImageHandler().handleImage(img, imageElement, generatorCtx);
         domGroupManager.addElement(imageElement);
         return true;
     }
@@ -534,7 +534,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                              ImageObserver observer){
         Element imageElement =
             getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-        getImageHandler().handleImage(img, imageElement);
+        getImageHandler().handleImage(img, imageElement, generatorCtx);
         imageElement.setAttributeNS(null, SVG_X_ATTRIBUTE, Integer.toString(x));
         imageElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, Integer.toString(y));
         imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE,
@@ -748,7 +748,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
                 Element imageElement =
                 getDOMFactory().
                 createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-                getImageHandler().handleImage((Image)img, imageElement);
+                getImageHandler().handleImage((Image)img, imageElement,
+                generatorCtx);
                 imageElement.setAttributeNS(null, SVG_X_ATTRIBUTE,
                 Integer.toString(x));
                 imageElement.setAttributeNS(null, SVG_Y_ATTRIBUTE,
@@ -810,7 +811,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                   AffineTransform xform) {
         Element image =
             getDOMFactory().createElementNS(SVG_NAMESPACE_URI, SVG_IMAGE_TAG);
-        getImageHandler().handleImage(img, image);
+        getImageHandler().handleImage(img, image, generatorCtx);
         image.setAttributeNS(null, SVG_X_ATTRIBUTE,
                              Integer.toString(img.getMinX()));
         image.setAttributeNS(null, SVG_Y_ATTRIBUTE,
@@ -877,7 +878,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
                                     AffineTransform xform){
         Element image = getDOMFactory().createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_IMAGE_TAG);
-        getImageHandler().handleImage(img, image);
+        getImageHandler().handleImage(img, image, generatorCtx);
         image.setAttributeNS(null, SVG_X_ATTRIBUTE,
                            AbstractSVGConverter.doubleString(img.getMinX()));
         image.setAttributeNS(null, SVG_Y_ATTRIBUTE,

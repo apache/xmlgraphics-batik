@@ -33,16 +33,14 @@ import org.w3c.dom.*;
  */
 public class ImageHandlerJPEGEncoder extends AbstractImageHandlerEncoder {
     /**
-     * @param generatorContext the context.
      * @param imageDir directory where this handler should generate images.
      *        If null, an IllegalArgumentException is thrown.
      * @param urlRoot root for the urls that point to images created by this
      *        image handler. If null, then the url corresponding to imageDir
      *        is used.
      */
-    public ImageHandlerJPEGEncoder(SVGGeneratorContext generatorContext,
-                                   String imageDir, String urlRoot) {
-        super(generatorContext, imageDir, urlRoot);
+    public ImageHandlerJPEGEncoder(String imageDir, String urlRoot) {
+        super(imageDir, urlRoot);
     }
 
     /**

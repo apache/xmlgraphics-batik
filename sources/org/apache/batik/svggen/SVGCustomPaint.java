@@ -66,7 +66,7 @@ public class SVGCustomPaint extends AbstractSVGConverter {
             paintDesc =
                 generatorContext.extensionHandler.
                 handlePaint(paint,
-                            generatorContext.domFactory);
+                            generatorContext);
 
             if (paintDesc != null) {
                 Element def = paintDesc.getDef();

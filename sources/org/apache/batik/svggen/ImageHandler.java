@@ -26,22 +26,25 @@ import org.w3c.dom.Element;
  * @version $Id$
  * @see             org.apache.batik.svggen.SVGGraphics2D
  */
-public interface ImageHandler extends SVGSyntax{
+public interface ImageHandler extends SVGSyntax {
     /**
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    public void handleImage(Image image, Element imageElement);
+    public void handleImage(Image image, Element imageElement,
+                            SVGGeneratorContext generatorContext);
 
     /**
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    public void handleImage(RenderedImage image, Element imageElement);
+    public void handleImage(RenderedImage image, Element imageElement,
+                            SVGGeneratorContext generatorContext);
 
     /**
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    public void handleImage(RenderableImage image, Element imageElement);
+    public void handleImage(RenderableImage image, Element imageElement,
+                            SVGGeneratorContext generatorContext);
 }

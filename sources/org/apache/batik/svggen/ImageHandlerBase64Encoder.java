@@ -40,16 +40,17 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
     /**
      * Build an <code>ImageHandlerBase64Encoder</code> instance.
      */
-    public ImageHandlerBase64Encoder(SVGGeneratorContext generatorContext) {
-        super(generatorContext);
+    public ImageHandlerBase64Encoder() {
+        super();
     }
 
     /**
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    protected void handleHREF(Image image, Element imageElement) {
-        if(image == null){
+    protected void handleHREF(Image image, Element imageElement,
+                              SVGGeneratorContext generatorContext) {
+        if (image == null) {
             throw new IllegalArgumentException();
         }
 
@@ -58,12 +59,11 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
 
         if(width==0 || height==0){
             handleEmptyImage(imageElement);
-        }
-        else{
-            if(image instanceof RenderedImage){
-                handleHREF((RenderedImage)image, imageElement);
-            }
-            else{
+        } else{
+            if(image instanceof RenderedImage) {
+                handleHREF((RenderedImage)image, imageElement,
+                           generatorContext);
+            } else {
                 BufferedImage buf =
                     new BufferedImage(width, height,
                                       BufferedImage.TYPE_INT_ARGB);
@@ -71,7 +71,8 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
                 Graphics2D g = buf.createGraphics();
                 g.drawImage(image, 0, 0, null);
                 g.dispose();
-                handleHREF((RenderedImage)buf, imageElement);
+                handleHREF((RenderedImage)buf, imageElement,
+                           generatorContext);
             }
         }
     }
@@ -80,21 +81,21 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
      * The handler should set the xlink:href tag and the width and
      * height attributes.
      */
-    protected void handleHREF(RenderableImage image, Element imageElement){
-        if(image == null){
+    protected void handleHREF(RenderableImage image, Element imageElement,
+                              SVGGeneratorContext generatorContext) {
+        if (image == null){
             throw new IllegalArgumentException();
         }
 
         RenderedImage r = image.createDefaultRendering();
-        if(r == null){
+        if (r == null) {
             handleEmptyImage(imageElement);
-        }
-        else{
-            handleHREF(r, imageElement);
+        } else {
+            handleHREF(r, imageElement, generatorContext);
         }
     }
 
-    protected void handleEmptyImage(Element imageElement){
+    protected void handleEmptyImage(Element imageElement) {
         imageElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI,
                                     ATTR_XLINK_HREF, DATA_PROTOCOL_PNG_PREFIX);
         imageElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "0");
@@ -107,7 +108,8 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
      * resulting encoded data is used to set the url on the
      * input imageElement, using the data: protocol.
      */
-    protected void handleHREF(RenderedImage image, Element imageElement){
+    protected void handleHREF(RenderedImage image, Element imageElement,
+                              SVGGeneratorContext generatorContext) {
         //
         // First, encode the input image in PNG
         //
@@ -119,10 +121,10 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
         Base64Encoder b64Encoder = new Base64Encoder();
         ByteArrayInputStream is = new ByteArrayInputStream(pngBytes);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try{
+        try {
             b64Encoder.encodeBuffer(new ByteArrayInputStream(pngBytes),
                                     os);
-        }catch(IOException e){
+        } catch(IOException e) {
             // Should not happen because we are doing in-memory processing
             throw new Error();
         }
@@ -145,7 +147,7 @@ public class ImageHandlerBase64Encoder extends DefaultImageHandler {
             os.flush();
             os.close();
             return os.toByteArray();
-        }catch(IOException e){
+        } catch(IOException e) {
             // We are doing in-memory processing. This should not happen.
             throw new Error();
         }

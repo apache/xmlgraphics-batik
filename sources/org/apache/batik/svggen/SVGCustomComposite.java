@@ -66,7 +66,7 @@ public class SVGCustomComposite extends AbstractSVGConverter {
             SVGCompositeDescriptor desc =
                 generatorContext.
                 extensionHandler.handleComposite(composite,
-                                                 generatorContext.domFactory);
+                                                 generatorContext);
 
             if (desc != null) {
                 Element def = desc.getDef();
