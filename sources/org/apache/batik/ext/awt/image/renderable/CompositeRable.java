@@ -20,7 +20,7 @@ import org.apache.batik.ext.awt.image.CompositeRule;
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
-public interface CompositeRable extends Filter {
+public interface CompositeRable extends FilterColorInterp {
       /**
        * The sources to be composited togeather.
        * @param srcs The list of images to be composited by the composite rule.
@@ -38,17 +38,4 @@ public interface CompositeRable extends Filter {
        * @return Composite rule currently in use.
        */
     public CompositeRule getCompositeRule();
-
-      /**
-       * Set the colorspace to perform compositing in
-       * @param cs ColorSpace to use.
-       */
-    public void setCompositeColorSpace(ColorSpace cs);
-
-      /**
-       * Get the colorspace to that compositing will be performed in
-       * @return ColorSpace for compositing.
-       */
-    public ColorSpace getCompositeColorSpace();
-
 }
