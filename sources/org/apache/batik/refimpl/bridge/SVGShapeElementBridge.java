@@ -54,7 +54,8 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         node.setShape(createShape(ctx, svgElement, cssDecl, uctx));
         // Initialize the style properties
         ShapePainter painter
-            = CSSUtilities.convertStrokeAndFill(svgElement, ctx, cssDecl, uctx);
+            = CSSUtilities.convertStrokeAndFill(svgElement, node,
+                                                ctx, cssDecl, uctx);
         node.setShapePainter(painter);
         // Initialize the transform
         AffineTransform at = AWTTransformProducer.createAffineTransform
@@ -63,8 +64,10 @@ public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
         node.setTransform(at);
 
         // Set node composite
-        CSSPrimitiveValue opacityVal = (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
-        Composite composite = CSSUtilities.convertOpacityToComposite(opacityVal);
+        CSSPrimitiveValue opacityVal =
+            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
+        Composite composite =
+            CSSUtilities.convertOpacityToComposite(opacityVal);
         node.setComposite(composite);
 
         // Set node filter

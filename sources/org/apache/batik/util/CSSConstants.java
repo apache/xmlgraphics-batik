@@ -32,6 +32,8 @@ public interface CSSConstants {
     String FONT_STYLE_PROPERTY = "font-style";
     String FONT_WEIGHT_PROPERTY = "font-weight";
 
+    String STOP_COLOR_PROPERTY = "stop-color";
+    String STOP_OPACITY_PROPERTY = "stop-opacity";
     String STROKE_DASHARRAY_PROPERTY = "stroke-dasharray";
     String STROKE_DASHOFFSET_PROPERTY = "stroke-dashoffset";
     String STROKE_PROPERTY = "stroke";
