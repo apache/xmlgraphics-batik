@@ -35,6 +35,7 @@
         <test id="samples/logoTexture.svg" />
         <test id="samples/mapSpain.svg" />
         <test id="samples/mapWaadt.svg" />
+        <test id="samples/mathMetal.svg" />
         <test id="samples/moonPhases.svg" />
         <test id="samples/sizeOfSun.svg" />
         <test id="samples/sunRise.svg" />
