@@ -20,115 +20,139 @@
 <svg width="450" height="500">
   <style type="text/css"><![CDATA[
     text.headfoot {
-      fill:          LavenderBlush;
-      stroke:        DarkViolet;
+      font-family:   'SunSansCondensed-Demi';
+      fill:          black;
+      stroke:        none;
       stroke-width:  2;
       font-weight:   bold;
     }
     text.title {
       font-size:     40;
       text-anchor:   middle;
+      stroke:        none;
     }
     text.next {
       font-size:       30;
       text-anchor:     end;
-      text-decoration: underline;
     }
     text.link {
-      fill:            blue;
+      fill:            rgb(103, 103, 153);
       font-size:       16;
-      font-family:     serif;
+      font-family:     'SunSansCondensed-Normal';
+      text-decoration: underline;
+      text-anchor:     middle;
+    }
+
+    text.link2 {
+      fill:            black;
+      font-size:       16;
+      font-family:     'SunSansCondensed-Normal';
       text-decoration: underline;
       text-anchor:     middle;
     }
   ]]>
   </style>
 
-  <rect x="5" y="5" width="440" height="50" style="fill:Lavender"/>
+    <defs>
+        <linearGradient id="nextGradient" x1="0" y1="0" x2="100%" y2="0">
+            <stop offset="0" stop-color="black" />
+            <stop offset="1" stop-color="rgb(203, 203, 255)" />
+        </linearGradient>
+
+        <linearGradient id="titleGradient" x1="0" y1="0" x2="100%" y2="0">
+            <stop offset="0" stop-color="black" />
+            <stop offset=".25" stop-color="rgb(203, 203, 255)" />
+            <stop offset=".5" stop-color="white" />
+            <stop offset=".75" stop-color="rgb(203, 203, 255)" />
+            <stop offset="1" stop-color="black" />
+        </linearGradient>
+    </defs>
+
+  <rect x="5" y="5" width="440" height="50" style="fill:url(#titleGradient)"/>
   <text class="title headfoot" x="50%" y="40">Test Files 1</text>
 
-  <rect x="5" y="60" width="440" height="30" style="fill:MistyRose"/>
+  <rect x="5" y="60" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
   <a xlink:href="colors.svg" xlink:show="new">
-    <text class="link" x="50%" y="80">
+    <text class="link2" x="50%" y="80">
       SVG Color Identifiers (color.svg)
     </text>
   </a>
 
-  <rect x="5" y="95" width="440" height="30" style="fill:LightGoldenRodYellow"/>
+  <rect x="5" y="95" width="440" height="30" style="fill:rgb(203, 203, 255)"/>
   <a xlink:href="turbulence.svg" xlink:show="new">
     <text class="link" x="50%" y="115">
       feTurbulence Effect (turbulence.svg)
     </text>
   </a>
 
-  <rect x="5" y="130" width="440" height="30" style="fill:MistyRose"/>
+  <rect x="5" y="130" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
   <a xlink:href="colorMatrix.svg" xlink:show="new">
-    <text class="link" x="50%" y="150">
+    <text class="link2" x="50%" y="150">
       feColorMatrix Effect (colorMatrix.svg)
     </text>
   </a>
 
   <rect x="5" y="165" width="440" height="30"
-        style="fill:LightGoldenRodYellow"/>
+        style="fill:rgb(203, 203, 255)"/>
   <a xlink:href="componentTransfer.svg" xlink:show="new">
     <text class="link" x="50%" y="185">
       feComponentTransfer Effect (componentTransfer.svg)
     </text>
   </a>
 
-  <rect x="5" y="200" width="440" height="30" style="fill:MistyRose"/>
+  <rect x="5" y="200" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
   <a xlink:href="componentTransfer2.svg" xlink:show="new">
-    <text class="link" x="50%" y="220">
+    <text class="link2" x="50%" y="220">
       feComponentTransfer Effect (componentTransfer2.svg)
     </text>
   </a>
 
   <rect x="5" y="235" width="440" height="30"
-        style="fill:LightGoldenRodYellow"/>
+        style="fill:rgb(203, 203, 255)"/>
   <a xlink:href="events_GVTtoDOM.svg" xlink:show="new">
     <text class="link" x="50%" y="255">
       Scripting &amp; Events (events_GVTtoDOM.svg)
     </text>
   </a>
 
-  <rect x="5" y="270" width="440" height="30" style="fill:MistyRose"/>
+  <rect x="5" y="270" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
   <a xlink:href="events_transform.svg" xlink:show="new">
-    <text class="link" x="50%" y="290">
+    <text class="link2" x="50%" y="290">
       Scripting &amp; Events (events_transform.svg)
     </text>
   </a>
 
   <rect x="5" y="305" width="440" height="30"
-        style="fill:LightGoldenRodYellow"/>
+        style="fill:rgb(203, 203, 255)"/>
   <a xlink:href="filterRegions.svg" xlink:show="new">
     <text class="link" x="50%" y="325">
       Filter Regions (filterRegions.svg)
     </text>
   </a>
 
-  <rect x="5" y="340" width="440" height="30" style="fill:MistyRose"/>
+  <rect x="5" y="340" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
   <a xlink:href="clip.svg" xlink:show="new">
-    <text class="link" x="50%" y="360">
+    <text class="link2" x="50%" y="360">
       Clipping (clip.svg)
     </text>
   </a>
 
   <rect x="5" y="375" width="440" height="30"
-        style="fill:LightGoldenRodYellow"/>
+        style="fill:rgb(203, 203, 255)"/>
   <a xlink:href="mask.svg" xlink:show="new">
     <text class="link" x="50%" y="395">
       Masking (mask.svg)
     </text>
   </a>
 
-  <rect x="5" y="410" width="440" height="30" style="fill:MistyRose"/>
+  <rect x="5" y="410" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
   <a xlink:href="opacity.svg" xlink:show="new">
-    <text class="link" x="50%" y="430">
+    <text class="link2" x="50%" y="430">
       Group Opacity (opacity.svg)
     </text>
   </a>
 
-  <rect x="5" y="445" width="440" height="50" style="fill:Lavender"/>
+  <rect x="5" y="445" width="440" height="50" style="fill:url(#nextGradient)"/>
   <a xlink:href="index2.svg">
     <text class="next headfoot" x="420" y="480">Next</text>
   </a>

@@ -11,93 +11,189 @@
 <!-- ========================================================================= -->
 
 <!-- ========================================================================= -->
-<!-- Opacity test. Apply 'stroke-opacity' 'fill-opacity' and 'opacity'         -->
+<!-- Test description here                                                     -->
 <!--                                                                           -->
-<!-- @author Thierry.Kormann@sophia.inria.fr                                   -->
+<!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$     -->
 <!-- ========================================================================= -->
 
 <?xml-stylesheet type="text/css" href="test.css" ?>
 
 <svg width="450" height="500" viewBox="0 0 450 500">
-<title>Opacity: stroke-opacity, fill-opacity, opacity </title>
+<title>Filter Effect: feComponentTransfer</title>
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
-
     <g id="testContent">
 
+<g>
   <text x="225" y="50" class="title">
-    Opacity : stroke-opacity, fill-opacity and opacity
+    Filter Effect: feComponentTransfer
   </text>
-  <g class="legend">
+  <g transform="translate(30, 62.5)">
     <defs>
-     <g id="elem">
-       <rect x="-45" y="-45" width="90" height="90" 
-             style="fill-opacity:1; stroke-opacity:1; opacity:1; fill:orange"/>
-       <circle cx="0" cy="0" r="35" 
-             style="fill: yellow; stroke: black; stroke-width: 8;"/>
-     </g>
+
+      <filter id="turbSource" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+      </filter>
+
+      <filter id="linearRed" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feComponentTransfer filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" >
+            <feFuncR type="linear" slope="1" intercept="0" />
+            <feFuncG type="linear" slope="0" intercept="0" />
+            <feFuncB type="linear" slope="0" intercept="0" />
+            <feFuncA type="linear" slope="0" intercept="1" />
+        </feComponentTransfer>
+      </filter>
+
+      <filter id="linearGreen" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feComponentTransfer filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" >
+            <feFuncR type="linear" slope="0" intercept="0" />
+            <feFuncG type="linear" slope="1" intercept="0" />
+            <feFuncB type="linear" slope="0" intercept="0" />
+            <feFuncA type="linear" slope="0" intercept="1" />
+        </feComponentTransfer>
+      </filter>
+
+      <filter id="linearBlue" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feComponentTransfer filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" >
+            <feFuncR type="linear" slope="0" intercept="0" />
+            <feFuncG type="linear" slope="0" intercept="0" />
+            <feFuncB type="linear" slope="1" intercept="0" />
+            <feFuncA type="linear" slope="0" intercept="1" />
+        </feComponentTransfer>
+      </filter>
+
+      <filter id="linearAlpha" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feComponentTransfer filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" >
+            <feFuncR type="linear" slope="0" intercept="0" />
+            <feFuncG type="linear" slope="0" intercept="0" />
+            <feFuncB type="linear" slope="0" intercept="0" />
+            <feFuncA type="linear" slope="1" intercept="0" />
+        </feComponentTransfer>
+      </filter>
+
+      <filter id="linearFiftyPercentGray" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feComponentTransfer filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" >
+            <feFuncR type="linear" slope="0" intercept=".5" />
+            <feFuncG type="linear" slope="0" intercept=".5" />
+            <feFuncB type="linear" slope="0" intercept=".5" />
+            <feFuncA type="linear" slope="0" intercept="1" />
+        </feComponentTransfer>
+      </filter>
+
+      <filter id="linearBrighten" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feComponentTransfer filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" >
+            <feFuncR type="linear" slope="1.5" intercept="0" />
+            <feFuncG type="linear" slope="1.5" intercept="0" />
+            <feFuncB type="linear" slope="1.5" intercept="0" />
+            <feFuncA type="linear" slope="1" intercept="0" />
+        </feComponentTransfer>
+      </filter>
+
+      <filter id="linearDarken" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feComponentTransfer filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" >
+            <feFuncR type="linear" slope=".5" intercept="0" />
+            <feFuncG type="linear" slope=".5" intercept="0" />
+            <feFuncB type="linear" slope=".5" intercept="0" />
+            <feFuncA type="linear" slope="1" intercept="1" />
+        </feComponentTransfer>
+      </filter>
+
+      <filter id="linearOffsetDarken" filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2"/>
+        <feComponentTransfer filterUnits="objectBoundingBox" 
+              x="0%" y="0%" width="100%" height="100%" >
+            <feFuncR type="linear" slope=".5" intercept="-.1" />
+            <feFuncG type="linear" slope=".5" intercept="-.1" />
+            <feFuncB type="linear" slope=".5" intercept="-.1" />
+            <feFuncA type="linear" slope="1" intercept="1" />
+        </feComponentTransfer>
+      </filter>
+
     </defs>
-    <g transform="translate(75 130)">
-      <use xlink:href="#elem" 
-           style="stroke-opacity:1; fill-opacity:1"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:1</text>
-    </g>
-    <g transform="translate(175 130)">
-      <use xlink:href="#elem"
-           style="stroke-opacity:1; fill-opacity:.5"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
-    </g>
-    <g transform="translate(275 130)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:1"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:1</text>
-    </g>
-    <g transform="translate(375 130)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:.5"/>
-      <text x="0" y="60">opacity:1</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
+
+ <g class="legend">
+    <g id="reference_Group">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#turbSource)" />
+        <text x="75" y="117">Reference Image</text>
     </g>
 
-    <g transform="translate(75 330)" >
-    <use xlink:href="#elem"
-         style="stroke-opacity:1; fill-opacity:1; opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:1</text>
+    <g id="linearRed_Group" transform="translate(120, 0)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#linearRed)" />
+        <text x="75" y="117">type=linear</text>
+        <text x="75" y="129">Red channel. Alpha 1.</text>
     </g>
-    <g transform="translate(175 330)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:1; fill-opacity:.5 opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:1</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
+
+    <g id="linearGreen_Group" transform="translate(240, 0)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#linearGreen)" />
+        <text x="75" y="117">type=linear</text>
+        <text x="75" y="129">Red channel. Alpha 1.</text>
     </g>
-    <g transform="translate(275 330)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:1 opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:1</text>
+
+    <g id="linearBlue_Group" transform="translate(0, 120)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#linearBlue)" />
+        <text x="75" y="117">type=linear</text>
+        <text x="75" y="129">Blue channel. Alpha 1.</text>
     </g>
-    <g transform="translate(375 330)">
-    <use xlink:href="#elem"
-         style="stroke-opacity:.5; fill-opacity:.5 opacity:.5;"/>
-      <text x="0" y="60">opacity:0.5</text>
-      <text x="0" y="70">stroke-opacity:0.5</text>
-      <text x="0" y="80">fill-opacity:0.5</text>
+
+    <g id="linearAlpha_Group" transform="translate(120, 120)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#linearAlpha)" />
+        <text x="75" y="117">type=linear</text>
+        <text x="75" y="129">Alpha Channel.</text>
     </g>
+
+    <g id="linearFiftyPercentGray_Group" transform="translate(240, 120)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#linearFiftyPercentGray)" />
+        <text x="75" y="117">type=linear</text>
+        <text x="75" y="129">50% gray</text>
+    </g>
+
+    <g id="linearBrighten_Group" transform="translate(0, 240)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#linearBrighten)" />
+        <text x="75" y="117">type=linear</text>
+        <text x="75" y="129">Brighten</text>
+    </g>
+
+    <g id="linearDarken_Group" transform="translate(120, 240)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#linearDarken)" />
+        <text x="75" y="117">type=linear</text>
+        <text x="75" y="129">Darken</text>
+    </g>
+
+    <g id="linearOffsetDarken_Group" transform="translate(240, 240)">
+        <rect x="25" y="25" width="100" height="75" style="filter:url(#linearOffsetDarken)" />
+        <text x="75" y="117">type=linear</text>
+        <text x="75" y="129">Offset</text>
+    </g>
+</g>
 
   </g>
+
+</g>
 
     </g>
 
