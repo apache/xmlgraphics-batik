@@ -17,6 +17,8 @@
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
 
+<?xml-stylesheet type="text/css" href="../style/useStylesheet.css" ?>
+
 <svg width="450" height="500" viewBox="0 0 450 500">
 
 <text x="225" y="50" class="title">Not a test - only contains definitions</text>
@@ -310,6 +312,64 @@
 	</g>
 </g>
 
+
+<!-- ###################################################################### -->
+<!-- useStylesheet.svg -->
+<!-- ###################################################################### -->
+
+<g id="tree5">
+	<!-- ### decoration ### -->
+	<line x1="100" y1="0" x2="0" y2="75" style="stroke:black; fill:none" />
+	<line x1="100" y1="0" x2="100" y2="75" style="stroke:black; fill:none" />
+	<line x1="100" y1="0" x2="200" y2="75" style="stroke:black; fill:none" />
+	<circle cx="100" cy="0" r="25" style="fill:#eee;" />
+	<text x="100" y="6" style="fill:black; text-anchor:middle; font-size:18">&lt;g></text>
+
+	<!-- ### color inherited inside this document  ###-->
+	<g class="colorOrangeStylesheet">
+		<circle cx="0" cy="75" r="25" />
+		<text x="0" y="115" style="text-anchor:middle; fill:black; stroke:none;">local</text>
+	</g>
+
+	<!-- ### color inherited from the use element  ###-->
+	<g>
+		<circle cx="100" cy="75" r="25" />
+		<text x="100" y="115" style="text-anchor:middle; fill:black; stroke:none;">inherited</text>
+	</g>
+
+	<!-- ### color defined on the circle  ###-->
+	<g>
+		<circle cx="200" cy="75" r="25" class="colorClassStylesheet"/>
+		<text x="200" y="115" style="text-anchor:middle; fill:black; stroke:none;">explicit</text>
+	</g>
+</g>
+
+<g id="tree6">
+	<!-- ### decoration ### -->
+	<line x1="100" y1="0" x2="0" y2="75" style="stroke:black; fill:none" />
+	<line x1="100" y1="0" x2="100" y2="75" style="stroke:black; fill:none" />
+	<line x1="100" y1="0" x2="200" y2="75" style="stroke:black; fill:none" />
+	<circle cx="100" cy="0" r="25" style="fill:#eee;" />
+	<text x="100" y="6" style="fill:black; text-anchor:middle; font-size:18">&lt;g></text>
+
+	<!-- ### gradient inherited inside this document ###-->
+	<g class="gradClassStylesheet">
+		<circle cx="0" cy="75" r="25" />
+		<text x="0" y="115" style="text-anchor:middle; fill:black; stroke:none;">local</text>
+	</g>
+
+	<!-- ### gradient inherited from the use element ###-->
+	<g>
+		<circle cx="100" cy="75" r="25" />
+		<text x="100" y="115" style="text-anchor:middle; fill:black; stroke:none;">inherited</text>
+	</g>
+
+	<!-- ### pattern defined on the circle ###-->
+	<g>
+		<circle cx="200" cy="75" r="25" class="pattClassStylesheet" />
+		<text x="200" y="115" style="text-anchor:middle; fill:black; stroke:none;">explicit</text>
+	</g>
+</g>
 
 </defs>
 
