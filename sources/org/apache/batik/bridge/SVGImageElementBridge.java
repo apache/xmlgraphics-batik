@@ -59,6 +59,8 @@ import org.w3c.dom.events.MutationEvent;
  */
 public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
+    protected SVGDocument imgDocument;
+
     /**
      * Constructs a new bridge for the &lt;image> element.
      */
@@ -112,7 +114,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         try {
             Node n = resolver.getNode(uriStr, e);
             if (n.getNodeType() == n.DOCUMENT_NODE) {
-                SVGDocument imgDocument = (SVGDocument)n;
+                imgDocument = (SVGDocument)n;
                 node = createSVGImageNode(ctx, e, imgDocument);
             }
         } catch (BridgeException ex) {
@@ -206,8 +208,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 	    Rectangle2D	bounds = getImageBounds(ctx, e);
 	    GraphicsNode imageNode = ((ImageNode)node).getImage();
 	    float [] vb = null;
-
-	    if (((ImageNode)node).getImage() instanceof RasterImageNode) {
+	    if (imageNode instanceof RasterImageNode) {
                 //Raster image
 		Rectangle2D imgBounds = 
                     ((RasterImageNode)imageNode).getImageBounds();
@@ -220,43 +221,19 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 		vb[2] = (float)imgBounds.getWidth(); // width
 		vb[3] = (float)imgBounds.getHeight(); // height
 	    } else {
-                // svg image need the viewbox of the embedded
-		String uriStr = XLinkSupport.getXLinkHref(e);
-                if ( uriStr == null || uriStr.length() == 0 ){
-                    throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
-                                              new Object[] {"xlink:href"});
-                }
-		// try to load the image as an svg document
-		SVGDocument svgDoc = (SVGDocument)e.getOwnerDocument();
-		// try to load an SVG document
-		DocumentLoader loader = ctx.getDocumentLoader();
-		URIResolver resolver = new URIResolver(svgDoc, loader);
-		SVGDocument imgDocument = null;
-		try {
-		    Node n = resolver.getNode(uriStr, e);
-		    if (n.getNodeType() == n.DOCUMENT_NODE) {
-			imgDocument = (SVGDocument)n;
-		    }
-		} catch (BridgeException ex) {
-		    throw ex;
-		} catch (Exception ex) {
-		    /* Nothing to do */
-		}
 		if (imgDocument != null) {
 		    Element svgElement = imgDocument.getRootElement();
-		    String viewBox =
-			svgElement.getAttributeNS(null, SVG_VIEW_BOX_ATTRIBUTE);
+		    String viewBox = svgElement.getAttributeNS
+                        (null, SVG_VIEW_BOX_ATTRIBUTE);
 		    vb = ViewBox.parseViewBoxAttribute(e, viewBox);
-		} else {
-		    imageNode = null;
-		}
-	    }
-	    if (imageNode != null) {
-		// handles the 'preserveAspectRatio', 'overflow' and
-		// 'clip' and sets the appropriate AffineTransform to
-		// the image node
-		initializeViewport(ctx, e, imageNode, vb, bounds);
-	    }
+                }
+            }
+            if (imageNode != null) {
+                // handles the 'preserveAspectRatio', 'overflow' and
+                // 'clip' and sets the appropriate AffineTransform to
+                // the image node
+                initializeViewport(ctx, e, imageNode, vb, bounds);
+            }
 	} else {
 	    super.handleDOMAttrModifiedEvent(evt);
 	}
