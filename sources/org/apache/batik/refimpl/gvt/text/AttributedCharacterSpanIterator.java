@@ -1,0 +1,231 @@
+/*****************************************************************************
+ * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
+ *****************************************************************************/
+
+package org.apache.batik.gvt.text.refimpl;
+
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.text.CharacterIterator;
+import java.text.AttributedCharacterIterator;
+import java.text.StringCharacterIterator;
+import java.text.AttributedString;
+
+/**
+ * AttributedCharacterSpanIterator
+ *
+ * Used to provide ACI functionality to a "substring" of an AttributedString.
+ * In this way a TextLayout can be created which only uses a substring of
+ * AttributedString.
+ *
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @version $Id$
+ */
+
+public class AttributedCharacterSpanIterator implements 
+                                   AttributedCharacterIterator {
+
+    private AttributedCharacterIterator aci; 
+    private int begin;
+    private int end;
+
+    /**
+     * Construct a AttributedCharacterSpanIterator from a subinterval of
+     * an existing AttributedCharacterIterator.
+     * @param aci The source AttributedCharacterIterator  
+     * @param start the first index of the subinterval
+     * @param stop the index of the first character after the subinterval
+     */
+    public AttributedCharacterSpanIterator(AttributedCharacterIterator aci, int start, int stop) {
+        end = Math.min(aci.getEndIndex(), stop);
+        begin = Math.max(aci.getBeginIndex(), start);
+        aci.setIndex(begin); 
+    }
+
+
+    //From java.text.AttributedCharacterIterator
+
+    /**
+     * Get the keys of all attributes defined on the iterator's text range.
+     */
+    public Set getAllAttributeKeys() {
+        return aci.getAllAttributeKeys();
+        // FIXME: not if there are atts outside the substring!
+    }
+
+    /**
+     * Get the value of the named attribute for the current
+     *     character.
+     */
+    public Object getAttribute(AttributedCharacterIterator.Attribute attribute) {
+        return aci.getAttribute(attribute);
+    }
+
+    /**
+     * Returns a map with the attributes defined on the current
+     * character.
+     */
+    public Map getAttributes() {
+        return aci.getAttributes();
+    }
+
+    /**
+     * Get the index of the first character following the
+     *     run with respect to all attributes containing the current
+     *     character.
+     */
+    public int getRunLimit() {
+        return Math.min(aci.getRunLimit(), end);
+    }
+
+    /**
+     * Get the index of the first character following the
+     *      run with respect to the given attribute containing the current
+     *      character.
+     */
+    public int getRunLimit(AttributedCharacterIterator.Attribute attribute) {
+        return Math.min(aci.getRunLimit(attribute), end);
+    }
+
+    /**
+     * Get the index of the first character following the
+     *     run with respect to the given attributes containing the current
+     *     character.
+     */
+    public int getRunLimit(Set attributes) {
+        return Math.min(aci.getRunLimit(attributes), end);
+    }
+
+    /**
+     * Get the index of the first character of the run with
+     *    respect to all attributes containing the current character.
+     */
+    public int getRunStart() {
+        return Math.max(aci.getRunStart(), begin);
+    }
+
+    /**
+     * Get the index of the first character of the run with
+     *      respect to the given attribute containing the current character.
+     * @param attribute The attribute for whose appearance the first offset 
+     *      is requested.
+     */
+    public int getRunStart(AttributedCharacterIterator.Attribute attribute) {
+        return Math.max(aci.getRunStart(attribute), begin);
+    }
+
+    /**
+     * Get the index of the first character of the run with
+     *      respect to the given attributes containing the current character.
+     * @param attributes the Set of attributes which begins at the returned index.
+     */
+    public int getRunStart(Set attributes) {
+        return Math.max(aci.getRunStart(attributes), begin);
+    }
+
+    //From CharacterIterator
+
+//    /**
+//     * Create a copy of this iterator
+//     */
+    public Object clone() {
+        return new AttributedCharacterSpanIterator(
+                      (AttributedCharacterIterator) aci.clone(), begin, end);
+    }
+
+    /**
+     * Get the character at the current position (as returned
+     *      by getIndex()).
+     * <br><b>Specified by:</b> java.text.CharacterIterator.
+     */
+    public char current() {
+        return aci.current();
+    }
+
+    /**
+     * Sets the position to getBeginIndex().
+     * @return the character at the start index of the text.
+     * <br><b>Specified by:</b> java.text.CharacterIterator.
+     */
+    public char first() {
+        return aci.setIndex(begin);
+    }
+
+    /**
+     * Get the start index of the text.
+     * <br><b>Specified by:</b> java.text.CharacterIterator.
+     */
+    public int getBeginIndex() {
+        return begin;
+    }
+
+    /**
+     * Get the end index of the text.
+     * <br><b>Specified by:</b> java.text.CharacterIterator.
+     */
+    public int getEndIndex() {
+        return end;
+    }
+
+    /**
+     * Get the current index.
+     * <br><b>Specified by:</b> java.text.CharacterIterator.
+     */
+    public int getIndex() {
+        return aci.getIndex();
+    }
+
+    /**
+     * Sets the position to getEndIndex()-1 (getEndIndex() if
+     * the text is empty) and returns the character at that position.
+     * <br><b>Specified by:</b> java.text.CharacterIterator.
+     */
+    public char last() {
+        return setIndex(end-1);
+    }
+
+    /**
+     * Increments the iterator's index by one, returning the next character.
+     * @return the character at the new index.
+     * <br><b>Specified by:</b> java.text.CharacterIterator.
+     */
+    public char next() {
+        if (getIndex() < end ) {
+            return aci.next();
+        } else {
+            return CharacterIterator.DONE;
+        }
+    }
+
+    /**
+     * Decrements the iterator's index by one and returns
+     * the character at the new index.
+     * <br><b>Specified by:</b> java.text.CharacterIterator.
+     */
+    public char previous() {
+        if (getIndex() > begin) {
+            return aci.previous();
+        } else {
+            return aci.current();
+        }
+    }
+
+    /**
+     * Sets the position to the specified position in the text.
+     * @param position The new (current) index into the text.
+     * @return the character at new index <em>position</em>.
+     * <br><b>Specified by:</b> java.text.CharacterIterator.
+     */
+    public char setIndex(int position) {
+        int ndx = Math.min(end, position);
+        ndx = Math.max(position, begin);
+        return aci.setIndex(ndx); 
+    }
+}

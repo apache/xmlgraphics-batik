@@ -1,0 +1,257 @@
+/*****************************************************************************
+ * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the Apache Software License *
+ * version 1.1, a copy of which has been included with this distribution in  *
+ * the LICENSE file.                                                         *
+ *****************************************************************************/
+
+package org.apache.batik.util;
+
+/**
+ * Define SVG constants, such as tag names, attribute names and URI
+ *
+ * @author <a href="vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @version $Id$
+ */
+public interface SVGConstants extends CSSConstants {
+    String SVG_PUBLIC_ID =
+        "-//W3C//DTD SVG 20000802//EN";
+    String SVG_SYSTEM_ID =
+        "http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd";
+    String SVG_NAMESPACE_URI =
+        "http://www.w3.org/2000/svg";
+
+    /**
+     * Tags
+     */
+    String TAG_CIRCLE = "circle";
+    String TAG_CLIP_PATH = "clipPath";
+    String TAG_DEFS = "defs";
+    String TAG_DESC = "desc";
+    String TAG_ELLIPSE = "ellipse";
+    String TAG_FE_COLOR_MATRIX = "feColorMatrix";
+    String TAG_FE_COMPONENT_TRANSFER =
+        "feComponentTransfer";
+    String TAG_FE_COMPOSITE = "feComposite";
+    String TAG_FE_CONVOLVE_MATRIX = "feConvolveMatrix";
+    String TAG_FE_DIFFUSE_LIGHTING = "feDiffuseLighting";
+    String TAG_FE_DISTANT_LIGHT = "feDistantLight";
+    String TAG_FE_FLOOD = "feFlood";
+    String TAG_FE_FUNC_A = "feFuncA";
+    String TAG_FE_FUNC_B = "feFuncB";
+    String TAG_FE_FUNC_G = "feFuncG";
+    String TAG_FE_FUNC_R = "feFuncR";
+    String TAG_FE_GAUSSIAN_BLUR = "feGaussianBlur";
+    String TAG_FE_IMAGE = "feImage";
+    String TAG_FE_MERGE = "feMerge";
+    String TAG_FE_MERGE_NODE = "feMergeNode";
+    String TAG_FE_SPECULAR_LIGHTING = "feSpecularLighting";
+    String TAG_FE_SPOT_LIGHT = "feSpotLight";
+    String TAG_FE_TILE = "feTile";
+    String TAG_FILTER = "filter";
+    String TAG_G = "g";
+    String TAG_IMAGE = "image";
+    String TAG_LINE = "line";
+    String TAG_LINEAR_GRADIENT = "linearGradient";
+    String TAG_MASK = "mask";
+    String TAG_PATH = "path";
+    String TAG_PATTERN = "pattern";
+    String TAG_POLYGON = "polygon";
+    String TAG_POLYLINE = "polyline";
+    String TAG_RADIAL_GRADIENT = "radialGradient";
+    String TAG_RECT = "rect";
+    String TAG_STOP = "stop";
+    String TAG_TEXT = "text";
+    String TAG_TITLE = "title";
+    String TAG_SVG = "svg";
+
+    /**
+     * Attribute names
+     */
+    String ATTR_AZIMUTH = "azimuth";
+    String ATTR_CLIP_PATH = "clip-path";
+    String ATTR_CLIP_PATH_UNITS = "clipPathUnits";
+    String ATTR_COLOR_INTERPOLATION =
+        "color-interpolation";
+    String ATTR_COLOR_RENDERING = "color-rendering";
+    String ATTR_CX = "cx";
+    String ATTR_CY = "cy";
+    String ATTR_D = "d";
+    String ATTR_DIFFUSE_CONSTANT = "diffuseConstant";
+    String ATTR_EDGE_MODE = "edgemode";
+    String ATTR_ELEVATION = "elevation";
+    String ATTR_ENABLE_BACKGROUND = "enable-background";
+    String ATTR_FILL = "fill";
+    String ATTR_FILL_OPACITY = "fill-opacity";
+    String ATTR_FILL_RULE = "fill-rule";
+    String ATTR_FILTER = "filter";
+    String ATTR_FILTER_RES = "filterRes";
+    String ATTR_FILTER_UNITS = "filterUnits";
+    String ATTR_FLOOD_COLOR = "flood-color";
+    String ATTR_FLOOD_OPACITY = "flood-opacity";
+    String ATTR_FONT_FAMILY = "font-family";
+    String ATTR_FONT_SIZE = "font-size";
+    String ATTR_FONT_WEIGHT = "font-weight";
+    String ATTR_FONT_STYLE = "font-style";
+    String ATTR_FX = "fx";
+    String ATTR_FY = "fy";
+    String ATTR_GRADIENT_TRANSFORM = "gradientTransform";
+    String ATTR_GRADIENT_UNITS = "gradientUnits";
+    String ATTR_HEIGHT = "height";
+    String ATTR_HREF = "xlink:href";
+    String ATTR_ID = "id";
+    String ATTR_IMAGE_RENDERING = "image-rendering";
+    String ATTR_IN = "in";
+    String ATTR_IN2 = "in2";
+    String ATTR_INTERCEPT = "intercept";
+    String ATTR_K1 = "k1";
+    String ATTR_K2 = "k2";
+    String ATTR_K3 = "k3";
+    String ATTR_K4 = "k4";
+    String ATTR_KERNEL_MATRIX = "kernelMatrix";
+    String ATTR_LIGHT_COLOR = "lightColor";
+    String ATTR_MASK = "mask";
+    String ATTR_OFFSET = "offset";
+    String ATTR_OPACITY = "opacity";
+    String ATTR_OPERATOR = "operator";
+    String ATTR_ORDER = "order";
+    String ATTR_PATTERN_UNITS = "patternUnits";
+    String ATTR_POINTS_AT_X = "pointsAtX";
+    String ATTR_POINTS_AT_Y = "pointsAtY";
+    String ATTR_POINTS_AT_Z = "pointsAtZ";
+    String ATTR_POINTS = "points";
+    String ATTR_PRESERVE_ASPECT_RATIO = "preserveAspectRatio";
+    String ATTR_R = "r";
+    String ATTR_RESULT = "result";
+    String ATTR_RESULT_SCALE = "resultScale";
+    String ATTR_RX = "rx";
+    String ATTR_RY = "ry";
+    String ATTR_SHAPE_RENDERING = "shape-rendering";
+    String ATTR_SLOPE = "slope";
+    String ATTR_SPECULAR_CONSTANT = "specularConstant";
+    String ATTR_SPECULAR_EXPONENT = "specularExponent";
+    String ATTR_SPREAD_METHOD = "spreadMethod";
+    String ATTR_STD_DEVIATION = "stdDeviation";
+    String ATTR_STOP_COLOR = "stop-color";
+    String ATTR_STOP_OPACITY = "stop-opacity";
+    String ATTR_STROKE = "stroke";
+    String ATTR_STROKE_OPACITY = "stroke-opacity";
+    String ATTR_STROKE_DASH_ARRAY = "stroke-dasharray";
+    String ATTR_STROKE_DASH_OFFSET = "stroke-dashoffset";
+    String ATTR_STROKE_LINE_CAP = "stroke-linecap";
+    String ATTR_STROKE_LINE_JOIN = "stroke-linejoin";
+    String ATTR_STROKE_MITER_LIMIT = "stroke-miterlimit";
+    String ATTR_STROKE_WIDTH = "stroke-width";
+    String ATTR_STYLE = "style";
+    String ATTR_SURFACE_SCALE = "surfaceScale";
+    String ATTR_TABLE = "table";
+    String ATTR_TABLE_VALUES = "tableValues";
+    String ATTR_TEXT_ANCHOR = "text-anchor";
+    String ATTR_TEXT_RENDERING = "text-rendering";
+    String ATTR_TRANSFORM = "transform";
+    String ATTR_TYPE = "type";
+    String ATTR_VALUES = "values";
+    String ATTR_VIEW_BOX = "viewBox";
+    String ATTR_X = "x";
+    String ATTR_X1 = "x1";
+    String ATTR_X2 = "x2";
+    String ATTR_Y = "y";
+    String ATTR_Y1 = "y1";
+    String ATTR_Y2 = "y2";
+    String ATTR_WIDTH = "width";
+    String ATTR_Z = "z";
+
+    /**
+     * Attribute values
+     */
+    String VALUE_ARITHMETIC = "arithmetic";
+    String VALUE_AUTO = "auto";
+    String VALUE_BACKGROUND_IMAGE = "BackgroundImage";
+    String VALUE_COMPOSITE = "composite";
+    String VALUE_CRISP_EDGES = "crispEdges";
+    String VALUE_DIGIT_ONE = "1";
+    String VALUE_EDGE_DUPLICATE = "duplicate";
+    String VALUE_EDGE_NONE = "none";
+    String VALUE_END = "end";
+    String VALUE_EVEN_ODD = "evenodd";
+    String VALUE_FLOOD = "flood";
+    String VALUE_FONT_WEIGHT_BOLD = "bold";
+    String VALUE_FONT_WEIGHT_BOLDER = "bolder";
+    String VALUE_FONT_WEIGHT_LIGHTER = "lighter";
+    String VALUE_FONT_WEIGHT_100 = "100";
+    String VALUE_FONT_WEIGHT_200 = "200";
+    String VALUE_FONT_WEIGHT_300 = "300";
+    String VALUE_FONT_WEIGHT_400 = "400";
+    String VALUE_FONT_WEIGHT_500 = "500";
+    String VALUE_FONT_WEIGHT_600 = "600";
+    String VALUE_FONT_WEIGHT_700 = "700";  
+    String VALUE_FONT_WEIGHT_800 = "800";
+    String VALUE_FONT_WEIGHT_900 = "900";
+    String VALUE_FONT_WEIGHT_NORMAL = "normal";
+    String VALUE_FONT_STYLE_NORMAL = "normal";
+    String VALUE_FONT_STYLE_ITALIC = "italic";
+    String VALUE_FONT_STYLE_OBLIQUE = "oblique";
+    String VALUE_GEOMETRIC_PRECISION = "geometricPrecision";
+    String VALUE_HUNDRED_PERCENT = "100%";
+    String VALUE_IN = "in";
+    String VALUE_LINE_CAP_BUTT = "butt";
+    String VALUE_LINE_CAP_SQUARE = "square";
+    String VALUE_LINE_CAP_ROUND = "round";
+    String VALUE_LINE_JOIN_ROUND = "round";
+    String VALUE_LINE_JOIN_BEVEL = "bevel";
+    String VALUE_LINE_JOIN_MITER = "miter";
+    String VALUE_LINEAR_RGB = "linearRGB";
+    String VALUE_LUMINANCE_TO_ALPHA = "luminanceToAlpha";
+    String VALUE_MATRIX = "matrix";
+    String VALUE_MIDDLE = "middle";
+    String VALUE_NEW = "new";
+    String VALUE_NINETY = "90";
+    String VALUE_NON_ZERO = "nonzero";
+    String VALUE_NONE = "none";
+    String VALUE_OBJECT_BOUNDING_BOX = "objectBoundingBox";
+    String VALUE_ONE = "1";
+    String VALUE_OPAQUE = "1";
+    String VALUE_OPTIMIZE_QUALITY = "optimizeQuality";
+    String VALUE_OPTIMIZE_SPEED = "optimizeSpeed";
+    String VALUE_OUT = "out";
+    String VALUE_OVER = "over";
+    String VALUE_PAD = "pad";
+    String VALUE_PRESERVE = "preserve";
+    String VALUE_REFLECT = "reflect";
+    String VALUE_SOURCE_GRAPHIC = "SourceGraphic";
+    String VALUE_SRGB = "sRGB";
+    String VALUE_START = "start";
+    String VALUE_TYPE_LINEAR = "linear";
+    String VALUE_TYPE_TABLE = "table";
+    String VALUE_USER_SPACE_ON_USE = "userSpaceOnUse";
+    String VALUE_USER_SPACE = "userSpace";
+    String VALUE_ZERO = "0";
+    String VALUE_ZERO_PERCENT = "0%";
+
+    /**
+     * Transform constants
+     */
+    String TRANSFORM_TRANSLATE = "translate";
+    String TRANSFORM_ROTATE = "rotate";
+    String TRANSFORM_SCALE = "scale";
+    String TRANSFORM_SKEWX = "skewX";
+    String TRANSFORM_SKEWY = "skewY";
+    String TRANSFORM_MATRIX = "matrix";
+    
+    /**
+     * Path constants
+     */
+    String PATH_CLOSE = "Z ";
+    String PATH_CUBIC_TO = "C ";
+    String PATH_MOVE = "M ";
+    String PATH_LINE_TO = "L ";
+    String PATH_QUAD_TO = "Q ";
+
+    /**
+     * Default values for attributes
+     */
+    String DEFAULT_VALUE_FILL_RULE = VALUE_NON_ZERO;
+    String DEFAULT_VALUE_TEXT_ANCHOR = VALUE_START;
+
+}
