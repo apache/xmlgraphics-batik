@@ -60,7 +60,7 @@
             <s2 title="Starting the browser for the binary distribution">
 
                 <p>If you downloaded the binary distribution of Batik, you should have
-                gotten a file called <em>batik-1.0.zip</em>, which, when expanded, 
+                gotten a file called <em>batik-1.1.zip</em>, which, when expanded, 
                 created a <em>batik-svgbrowser.jar</em> file. To start the browser, 
                 type the following on the command line:</p>
                 <p><em>cd &lt;installationDirectory&gt;</em></p>
