@@ -234,9 +234,9 @@ public class SaveAsJPEGTiles {
                      String outputFilename,
                      Rectangle aoi) throws Exception {
         <strong>trans.addTranscodingHint(JPEGTranscoder.KEY_WIDTH,
-                                 new Integer(aoi.width));</strong>
+                                 new Float(aoi.width));</strong>
         <strong>trans.addTranscodingHint(JPEGTranscoder.KEY_HEIGHT,
-                                 new Integer(aoi.height));</strong>
+                                 new Float(aoi.height));</strong>
         <strong>trans.addTranscodingHint(JPEGTranscoder.KEY_AOI, aoi);</strong>
         String svgURI = new File(inputFilename).toURL().toString();
         TranscoderInput input = new TranscoderInput(svgURI);

@@ -105,6 +105,9 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                 root.getChildren().add(treeRoot);
             }
         }
+        // inform the document loader that the specified document is
+        // no more in progress
+        ctx.getDocumentLoader().dispose(svgDocument);
         return root;
     }
 
