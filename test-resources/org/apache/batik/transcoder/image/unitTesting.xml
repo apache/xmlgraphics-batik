@@ -409,6 +409,32 @@
 </testGroup>
 
 <!-- ================================================================== -->
+<!-- KEY_DEFAULT_FONT_FAMILY                                            -->
+<!-- ================================================================== -->
+
+<testGroup id="transcoder.image.hints.fontFamily" class="org.apache.batik.transcoder.image.DefaultFontFamilyTest">
+
+<test id="transcoder.image.hints.defaultFontFamily.Arial">
+	<arg class="java.lang.String" value="samples/tests/spec/styling/defaultFontFamily.svg" />
+	<arg class="java.lang.String" value="test-references/samples/tests/spec/styling/defaultFontFamilyArial.png" />
+	<arg class="java.lang.String" value="Arial" />
+</test>
+
+<test id="transcoder.image.hints.defaultFontFamily.Times">
+	<arg class="java.lang.String" value="samples/tests/spec/styling/defaultFontFamily.svg" />
+	<arg class="java.lang.String" value="test-references/samples/tests/spec/styling/defaultFontFamilyTimes.png" />
+	<arg class="java.lang.String" value="Times" />
+</test>
+
+<test id="trancoder.image.hints.defaultFontFamily.TotoTimes">
+	<arg class="java.lang.String" value="samples/tests/spec/styling/defaultFontFamily.svg" />
+	<arg class="java.lang.String" value="test-references/samples/tests/spec/styling/defaultFontFamilyTimes.png" />
+	<arg class="java.lang.String" value="toto, Times" />
+</test>
+
+</testGroup>
+
+<!-- ================================================================== -->
 <!-- KEY_ALTERNATE_STYLESHEET                                           -->
 <!-- ================================================================== -->
 

@@ -248,6 +248,30 @@ public class MainTest extends DefaultTestSuite {
         addTest(t);
         t.setId("MainConfigTest.cssMedia");
 
+
+        t = new MainConfigTest("-font-family Arial, Comic Sans MS"){
+                public TestReport validate(SVGConverter c){
+                    String fontFamily = c.getDefaultFontFamily();
+                    String eFontFamily = "Arial, Comic Sans MS";
+                    if(eFontFamily.equals(fontFamily)){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-font-family", eFontFamily, fontFamily);
+                    }
+                }
+
+                String[] makeArgsArray(String args) {
+                    return new String[] {"-font-family",
+                                        "Arial, Comic Sans MS"};
+                }
+            };
+
+        addTest(t);
+        t.setId("MainConfigTest.fontFamily");
+
+
+
+
         t = new MainConfigTest("-cssAlternate myAlternateStylesheet"){
                 public TestReport validate(SVGConverter c){
                     String alternate = c.getAlternateStylesheet();
@@ -415,6 +439,10 @@ public class MainTest extends DefaultTestSuite {
         t = new MainConfigErrorTest("-cssMedia", "hello.svg -cssMedia");
         addTest(t);
         t.setId("MainConfigErrorTest.mediaType");
+
+        t = new MainConfigErrorTest("-font-family", "hello.svg -font-family");
+        addTest(t);
+        t.setId("MainConfigErrorTest.font-family");
 
         t = new MainConfigErrorTest("-cssAlternate", "hello.svg -cssAlternate");
         addTest(t);

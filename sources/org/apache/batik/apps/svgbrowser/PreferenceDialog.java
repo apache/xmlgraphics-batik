@@ -242,6 +242,9 @@ public class PreferenceDialog extends JDialog
     public static final String PREFERENCE_KEY_CSS_MEDIA
         = "preference.key.cssmedia";
 
+    public static final String PREFERENCE_KEY_DEFAULT_FONT_FAMILY
+        = "preference.key.default.font.family";
+
     public static final String PREFERENCE_KEY_PROXY_PORT
         = "preference.key.proxy.port";
 

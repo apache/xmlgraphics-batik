@@ -125,6 +125,16 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_MEDIA");
 
         t = new HintsConfigTest(new Object[][]{
+            {ImageTranscoder.KEY_DEFAULT_FONT_FAMILY, "Times"}}){
+                protected void deltaConfigure(SVGConverter c){
+                    c.setDefaultFontFamily("Times");
+                }
+            };
+
+        addTest(t);
+        t.setId("HintsConfigTest.KEY_DEFAULT_FONT_FAMILY");
+
+        t = new HintsConfigTest(new Object[][]{
             {ImageTranscoder.KEY_ALTERNATE_STYLESHEET, "myStyleSheet"}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setAlternateStylesheet("myStyleSheet");

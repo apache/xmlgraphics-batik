@@ -66,6 +66,12 @@ public interface Application {
     String getUserStyleSheetURI();
 
     /**
+     * Returns the default value for the CSS
+     * "font-family" property
+     */
+    String getDefaultFontFamily();
+
+    /**
      * Returns the CSS media to use.
      * @return empty string if no CSS media was specified.
      */
