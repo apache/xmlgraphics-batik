@@ -275,7 +275,7 @@ public class StrokingTextPainter extends BasicTextPainter {
             }
 
             // create a list of fonts of the correct size
-            Float fontSizeFloat = (Float)as.getIterator().getAttribute(TextAttribute.SIZE);
+            Float fontSizeFloat = (Float)runaci.getAttributes().get(TextAttribute.SIZE);
             float fontSize = 12;
             if (fontSizeFloat != null) {
                 fontSize = fontSizeFloat.floatValue();
@@ -337,8 +337,16 @@ public class StrokingTextPainter extends BasicTextPainter {
             // assign the first font to any chars haven't alreay been assigned
             for (int i = 0; i < runaciLength; i++) {
                 if (!fontAssigned[i]) {
-                    as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT,
-                                   gvtFonts.get(0), start+i, start+i+1);
+                    GVTFontFamily fontFamily = FontFamilyResolver.getFamilyThatCanDisplay(runaci.setIndex(start+i));
+                    if (fontFamily != null) {
+                        GVTFont font = fontFamily.deriveFont(fontSize, runaci);
+                        as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT,
+                                   font, start+i, start+i+1);
+                    } else {
+                        // no available fonts can display it, just use the first font in the list
+                        as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT,
+                                        gvtFonts.get(0), start+i, start+i+1);
+                    }
                 }
             }
             if (aci.setIndex(end) == aci.DONE) {
@@ -1023,7 +1031,3 @@ public class StrokingTextPainter extends BasicTextPainter {
 
     }
 }
-
-
-
-

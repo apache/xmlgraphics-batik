@@ -168,5 +168,7 @@ public class SVGBridgeExtension implements BridgeExtension {
 
         ctx.putBridge(new SVGAltGlyphElementBridge());
 
+        ctx.putBridge(new SVGTextPathElementBridge());
+
     }
 }
