@@ -556,6 +556,9 @@ public class JSVGCanvas
      */
     public void notifyRepaintedRegion(Shape oldAoi, Shape newAoi,
                                                     Renderer renderer) {
+
+        // XXX: this is not threaded yet, so it will block AWT!
+
         clearBuffer(oldAoi);
         clearBuffer(newAoi);
         try {
@@ -934,6 +937,9 @@ public class JSVGCanvas
         if (globalBuffer == null ||
             globalBuffer.getWidth() < w ||
             globalBuffer.getHeight() < h) {
+            if (globalBuffer != null) {
+                globalBuffer.flush();
+            }
             globalBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
             buffer = globalBuffer;
             bufferNeedsRendering = true;
@@ -1051,6 +1057,10 @@ public class JSVGCanvas
                         if (timer != null) {
                             timer.interrupt();
                         }
+                        // always de-register as a listener, to avoid
+                        // memory leak
+                        renderer.dispose();
+                        renderer = null;
                     }
                 }
             }
@@ -1522,10 +1532,16 @@ public class JSVGCanvas
     protected class ThumbnailCanvas
         extends    JComponent
         implements DynamicRenderer.RepaintHandler {
+
         /**
-         * The current offscreen buffer.
+         * The offscreen buffer.
          */
         protected BufferedImage offscreenBuffer;
+
+        /**
+         * The currently visible offscreen sub-buffer.
+         */
+        protected BufferedImage buffer;
 
         /**
          * The tranform to apply to the graphics object.
@@ -1595,13 +1611,13 @@ public class JSVGCanvas
 
             if (repaintThread != null) {
                 Graphics2D g2d = (Graphics2D)g;
-                g2d.drawImage(offscreenBuffer, null, 0, 0);
+                g2d.drawImage(buffer, null, 0, 0);
                 return;
             }
 
             updateBuffer(w, h);
             if (bufferNeedsRendering) {
-                renderer = rendererFactory.createRenderer(offscreenBuffer);
+                renderer = rendererFactory.createRenderer(buffer);
                 ((DynamicRenderer)renderer).setRepaintHandler(this);
                 renderer.setTransform(transform);
             }
@@ -1653,7 +1669,7 @@ public class JSVGCanvas
          * Clears the offscreen buffer.
          */
         protected void clearBuffer(int w, int h) {
-            Graphics2D g = offscreenBuffer.createGraphics();
+            Graphics2D g = buffer.createGraphics();
             g.setComposite(AlphaComposite.SrcOver);
             g.setClip(0, 0, w, h);
             g.setPaint(Color.white);
@@ -1664,7 +1680,7 @@ public class JSVGCanvas
          * Clears the offscreen buffer.
          */
         protected void clearBuffer(Shape aoi) {
-            Graphics2D g = offscreenBuffer.createGraphics();
+            Graphics2D g = buffer.createGraphics();
             g.setComposite(AlphaComposite.SrcOver);
             g.setClip(aoi.getBounds());
             g.setPaint(Color.white);
@@ -1680,12 +1696,16 @@ public class JSVGCanvas
             if (offscreenBuffer == null ||
                 offscreenBuffer.getWidth() < w ||
                 offscreenBuffer.getHeight() < h) {
+                if (offscreenBuffer != null) {
+                    offscreenBuffer.flush();
+                }
                 offscreenBuffer =
                     new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+                buffer = offscreenBuffer;
                 bufferNeedsRendering = true;
-            } else if (offscreenBuffer.getWidth() != w ||
-                       offscreenBuffer.getHeight() != h) {
-                offscreenBuffer = offscreenBuffer.getSubimage(0, 0, w, h);
+            } else if (buffer.getWidth() != w ||
+                       buffer.getHeight() != h) {
+                buffer = offscreenBuffer.getSubimage(0, 0, w, h);
                 bufferNeedsRendering = true;
             }
         }

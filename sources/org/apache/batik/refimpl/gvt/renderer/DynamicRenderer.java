@@ -54,7 +54,7 @@ public class DynamicRenderer extends StaticRenderer {
      * @param offScreen the offscreen buffer to use
      * @param rc the GraphicsNodeRenderContext to use
      */
-    public DynamicRenderer(BufferedImage offScreen, 
+    public DynamicRenderer(BufferedImage offScreen,
                                   GraphicsNodeRenderContext rc) {
         super(offScreen, rc);
     }
@@ -65,14 +65,14 @@ public class DynamicRenderer extends StaticRenderer {
         }
         RootGraphicsNode root = (RootGraphicsNode) this.treeRoot;
         if (repaintHandler != null && root != null) {
-            //root.removeGlobalPropertyChangeListener(updateListener);
-            //root.removeGraphicsNodePaintListener(updateListener);
+            root.removeGlobalPropertyChangeListener(updateListener);
+            root.removeGraphicsNodePaintListener(updateListener);
         }
         root = (RootGraphicsNode) newTreeRoot;
         super.setTree(root);
-        //root.addGlobalPropertyChangeListener(updateListener);
+        root.addGlobalPropertyChangeListener(updateListener);
         if (repaintHandler != null) {
-            //root.addGraphicsNodePaintListener(updateListener);
+            root.addGraphicsNodePaintListener(updateListener);
         }
     }
 
@@ -83,6 +83,7 @@ public class DynamicRenderer extends StaticRenderer {
         if (treeRoot != null && repaintHandler != null) {
             RootGraphicsNode root = (RootGraphicsNode) this.treeRoot;
             root.removeGraphicsNodePaintListener(updateListener);
+            root.removeGlobalPropertyChangeListener(updateListener);
         }
         super.dispose();
     }
