@@ -18,6 +18,8 @@ import org.apache.batik.parser.PathParser;
 
 import org.w3c.dom.Element;
 
+import org.w3c.dom.events.MutationEvent;
+
 /**
  * Bridge class for the &lt;path> element.
  *
@@ -36,6 +38,13 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
      */
     public String getLocalName() {
         return SVG_PATH_TAG;
+    }
+
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new SVGPathElementBridge();
     }
 
     /**
@@ -70,6 +79,28 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
         } else {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {SVG_D_ATTRIBUTE});
+        }
+    }
+
+    // dynamic support
+
+    /**
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
+     */
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        if (evt.getAttrName().equals(SVG_D_ATTRIBUTE)) {
+
+            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            fireBridgeUpdateStarting(be);
+            buildShape(ctx, e, (ShapeNode)node);
+            if (((ShapeNode)node).getShape() == null) {
+                // <!> FIXME: disable the rendering
+            }
+            fireBridgeUpdateCompleted(be);
+        } else {
+            super.handleDOMAttrModifiedEvent(evt);
         }
     }
 }

@@ -24,10 +24,12 @@ import java.util.Map;
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
+import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterPool;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
 
@@ -50,9 +52,21 @@ import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
 public class BridgeContext implements ErrorConstants {
 
     /**
+     * The document is bridge context is dedicated to.
+     */
+    protected Document document;
+
+    /**
      * The GVT builder that might be used to create a GVT subtree.
      */
     protected GVTBuilder gvtBuilder;
+
+    /**
+     * The interpreter cache per document.
+     * key is the language -
+     * value is a Interpreter
+     */
+    protected Map interpreterMap = new HashMap(7);
 
     /**
      * The viewports.
@@ -84,20 +98,6 @@ public class BridgeContext implements ErrorConstants {
      * value is a SVG Element.
      */
     protected HashMap nodeElementMap;
-
-    /**
-     * Binding Map:
-     * key is style Element -
-     * value is a list of styleReference
-     */
-    protected HashMap elementStyleAttMap;
-
-    /**
-     * Binding Map:
-     * key is GraphicsNode -
-     * value is list of StyleElement.
-     */
-    protected HashMap nodeStyleMap;
 
     /**
      * Bridge Map:
@@ -183,9 +183,7 @@ public class BridgeContext implements ErrorConstants {
         registerSVGBridges(this);
     }
 
-    /////////////////////////////////////////////////////////////////////////
     // properties
-    /////////////////////////////////////////////////////////////////////////
 
     /**
      * Sets the text painter that will be used by text nodes. This attributes
@@ -196,6 +194,13 @@ public class BridgeContext implements ErrorConstants {
      */
     public void setTextPainter(TextPainter textPainter) {
 	this.textPainter = textPainter;
+    }
+
+    /**
+     * Returns the document this bridge context is dedicated to.
+     */
+    public Document getDocument() {
+        return document;
     }
 
     /**
@@ -210,6 +215,15 @@ public class BridgeContext implements ErrorConstants {
      */
     public UserAgent getUserAgent() {
         return userAgent;
+    }
+
+    /**
+     * Sets the document this bridge context is dedicated to, to the
+     * specified document.
+     * @param document the document
+     */
+    protected void setDocument(Document document) {
+        this.document = document;
     }
 
     /**
@@ -242,6 +256,23 @@ public class BridgeContext implements ErrorConstants {
     }
 
     /**
+     * Returns a Interpreter for the specified language.
+     *
+     * @param language the scripting language
+     */
+    public Interpreter getInterpreter(String language) {
+        if (document == null) {
+            throw new RuntimeException("Unknown document");
+        }
+        Interpreter interpreter = (Interpreter)interpreterMap.get(language);
+        if (interpreter == null) {
+            interpreter = interpreterPool.createInterpreter(document, language);
+            interpreterMap.put(language, interpreter);
+        }
+        return interpreter;
+    }
+
+    /**
      * Sets the interpreter pool used to handle scripts to the
      * specified interpreter pool.
      * @param interpreterPool the interpreter pool
@@ -265,9 +296,7 @@ public class BridgeContext implements ErrorConstants {
         this.documentLoader = newDocumentLoader;
     }
 
-    /////////////////////////////////////////////////////////////////////////
     // convenient methods
-    /////////////////////////////////////////////////////////////////////////
 
     /**
      * Returns the element referenced by the specified element by the
@@ -301,9 +330,7 @@ public class BridgeContext implements ErrorConstants {
         }
     }
 
-    /////////////////////////////////////////////////////////////////////////
     // methods to access to the current state of the bridge context
-    /////////////////////////////////////////////////////////////////////////
 
     /**
      * Returns the actual size of the document or null if the document
@@ -327,12 +354,9 @@ public class BridgeContext implements ErrorConstants {
      * @param e the element interested in its viewport
      */
     public Viewport getViewport(Element e) {
-        if (viewportStack != null) { // building time
-            if (viewportStack.size() > 0) {
-                return (Viewport)viewportStack.get(0);
-            } else {
-                return (Viewport)viewportMap.get(userAgent);
-            }
+        if (viewportStack != null) {
+            // building time
+            return (Viewport)viewportStack.get(0);
         } else {
             // search the first parent which has defined a viewport
             e = HiddenChildElementSupport.getParentElement(e);
@@ -354,6 +378,9 @@ public class BridgeContext implements ErrorConstants {
      */
     public void openViewport(Element e, Viewport viewport) {
         viewportMap.put(e, viewport);
+        if (viewportStack == null) {
+            viewportStack = new LinkedList();
+        }
         viewportStack.add(0, viewport);
     }
 
@@ -364,6 +391,9 @@ public class BridgeContext implements ErrorConstants {
     public void closeViewport(Element e) {
         viewportMap.remove(e);
         viewportStack.remove(0);
+        if (viewportStack.size() == 0) {
+            viewportStack = null;
+        }
     }
 
     /**
@@ -395,9 +425,7 @@ public class BridgeContext implements ErrorConstants {
         updateManager = um;
     }
 
-    /////////////////////////////////////////////////////////////////////////
     // binding methods
-    /////////////////////////////////////////////////////////////////////////
 
     /**
      * Binds the specified GraphicsNode to the specified Element. This method
@@ -416,11 +444,7 @@ public class BridgeContext implements ErrorConstants {
     }
 
     /**
-     * Removes the binding of the specified Element. This method
-     * unbinds the specified element to its associated graphics node,
-     * remove the binding from the graphics node to the specified
-     * element, and all the style references associated to the
-     * specified element are also removed.
+     * Removes the binding of the specified Element.
      * @param element the element to unbind
      */
     public void unbind(Element element) {
@@ -430,13 +454,12 @@ public class BridgeContext implements ErrorConstants {
         GraphicsNode node = (GraphicsNode)elementNodeMap.get(element);
         elementNodeMap.remove(element);
         nodeElementMap.remove(node);
-        // Removes all styles bound to this GraphicsNode
-        removeStyleReferences(node);
     }
 
     /**
      * Returns the GraphicsNode associated to the specified Element or
      * null if any.
+     *
      * @param element the element associated to the graphics node to return
      */
     public GraphicsNode getGraphicsNode(Element element) {
@@ -450,6 +473,7 @@ public class BridgeContext implements ErrorConstants {
     /**
      * Returns the Element associated to the specified GraphicsNode or
      * null if any.
+     *
      * @param node the graphics node associated to the element to return
      */
     public Element getElement(GraphicsNode node) {
@@ -460,109 +484,8 @@ public class BridgeContext implements ErrorConstants {
         }
     }
 
-    /**
-     * Binds a style element to a style reference.
-     * Several style reference can be bound to the same style element.
-     * @param element the element
-     * @param reference the style reference
-     */
-    public void bind(Element element, StyleReference reference) {
-        if (elementStyleAttMap == null) {
-            elementStyleAttMap = new HashMap();
-        }
-        LinkedList list = (LinkedList)elementStyleAttMap.get(element);
-        if (list == null) {
-            list = new LinkedList();
-            elementStyleAttMap.put(element, list);
-        }
-        list.add(reference);
-        if (nodeStyleMap == null)
-            nodeStyleMap = new HashMap();
-
-        GraphicsNode node = reference.getGraphicsNode();
-        list = (LinkedList)nodeStyleMap.get(node);
-        if (list == null) {
-            list = new LinkedList();
-            nodeStyleMap.put(node, list);
-        }
-        list.add(element);
-    }
-
-    /**
-     * Returns an enumeration of all style refence for the specified
-     * style element.
-     * @param element the element
-     */
-    public List getStyleReferenceList(Element element) {
-        if (elementStyleAttMap == null) {
-            return Collections.EMPTY_LIST;
-        } else {
-            LinkedList list = (LinkedList)elementStyleAttMap.get(element);
-            if (list != null) {
-                return list;
-            } else {
-                return Collections.EMPTY_LIST;
-            }
-        }
-    }
-
-    /**
-     * Removes all bindings between a style Element and the specified
-     * GraphicsNode.
-     * @param node the graphics node
-     */
-    private void removeStyleReferences(GraphicsNode node){
-        // Get the list of style Elements used by this node
-        if (nodeStyleMap == null) {
-            return;
-        }
-        List styles = (List)nodeStyleMap.get(node);
-        if (styles != null) {
-            nodeStyleMap.remove(node);
-        }
-        for (Iterator it = styles.iterator(); it.hasNext();){
-            Element style = (Element)it.next();
-            removeStyleReference(node, style);
-        }
-    }
-
-    /**
-     * Removes all StyleReference corresponding to the specified GraphicsNode.
-     * @param node the graphics node
-     * @param style the style element
-     */
-    private void removeStyleReference(GraphicsNode node, Element style){
-        if (elementStyleAttMap == null) {
-            return;
-        }
-        LinkedList list = (LinkedList)elementStyleAttMap.get(style);
-        List removed = null;
-        if (list == null) {
-            return;
-        }
-        for (Iterator it = list.iterator(); it.hasNext();){
-            StyleReference styleRef = (StyleReference)it.next();
-            if (styleRef.getGraphicsNode()==node) {
-                if (removed == null) {
-                    removed = new LinkedList();
-                }
-                removed.add(styleRef);
-            }
-        }
-        if (removed != null) {
-            for (Iterator it = removed.iterator(); it.hasNext();) {
-                list.remove(it.next());
-            }
-        }
-        if (list.size() == 0) {
-            elementStyleAttMap.remove(style);
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     // bridge support
-    /////////////////////////////////////////////////////////////////////////
-
+ 
     /**
      * Returns the bridge associated with the specified element.
      * @param element the element
@@ -578,7 +501,12 @@ public class BridgeContext implements ErrorConstants {
         if (localNameMap == null) {
             return null;
         }
-        return (Bridge)localNameMap.get(localName);
+        Bridge bridge = (Bridge)localNameMap.get(localName);
+        if (dynamic) {
+            return bridge == null ? null : bridge.getInstance();
+        } else {
+            return bridge;
+        }
     }
 
     /**
@@ -587,13 +515,17 @@ public class BridgeContext implements ErrorConstants {
      * @param localName element's local name
      *
      */
-    public Bridge getBridge(String namespaceURI,
-                            String localName){
+    public Bridge getBridge(String namespaceURI, String localName) {
         HashMap localNameMap = (HashMap) namespaceURIMap.get(namespaceURI);
         if (localNameMap == null) {
             return null;
         }
-        return (Bridge)localNameMap.get(localName);
+        Bridge bridge = (Bridge)localNameMap.get(localName);
+        if (dynamic) {
+            return bridge == null ? null : bridge.getInstance();
+        } else {
+            return bridge;
+        }
     }
 
     /**
@@ -603,8 +535,7 @@ public class BridgeContext implements ErrorConstants {
      * @param localName the local name
      * @param bridge the bridge that manages the element
      */
-    public void putBridge(String namespaceURI, String localName,
-                          Bridge bridge) {
+    public void putBridge(String namespaceURI, String localName, Bridge bridge) {
         // debug
         if (!(namespaceURI.equals(bridge.getNamespaceURI())
               && localName.equals(bridge.getLocalName()))) {
@@ -629,17 +560,17 @@ public class BridgeContext implements ErrorConstants {
     /**
      * Associates the specified <tt>Bridge</tt> object with it's 
      * namespace URI and local name.
+     *
      * @param bridge the bridge that manages the element
      */
     public void putBridge(Bridge bridge) {
-        putBridge(bridge.getNamespaceURI(),
-                  bridge.getLocalName(),
-                  bridge);
+        putBridge(bridge.getNamespaceURI(), bridge.getLocalName(), bridge);
     }
 
     /**
      * Removes the <tt>Bridge</tt> object associated to the specified
      * namespace URI and local name.
+     *
      * @param namespaceURI the namespace URI
      * @param localName the local name
      */
@@ -662,6 +593,7 @@ public class BridgeContext implements ErrorConstants {
 
    /**
      * Registers the bridges to handle SVG 1.0 elements.
+     *
      * @param ctx the bridge context to initialize
      */
     public static void registerSVGBridges(BridgeContext ctx) {
@@ -677,10 +609,13 @@ public class BridgeContext implements ErrorConstants {
 
     static List extensions = null;
 
+    /**
+     * Returns the extensions supported by this bridge context.
+     */
     public synchronized static List getBridgeExtensions() {
-        if (extensions != null)
+        if (extensions != null) {
             return extensions;
-
+        }
         extensions = new LinkedList();
         extensions.add(new SVGBridgeExtension());
 
@@ -704,7 +639,6 @@ public class BridgeContext implements ErrorConstants {
             }
         }
         return extensions;
-    }
-        
+    }        
  }
 

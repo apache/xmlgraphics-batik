@@ -18,6 +18,8 @@ import org.apache.batik.parser.PointsParser;
 
 import org.w3c.dom.Element;
 
+import org.w3c.dom.events.MutationEvent;
+
 /**
  * Bridge class for the &lt;polyline> element.
  *
@@ -36,6 +38,13 @@ public class SVGPolylineElementBridge extends SVGDecoratedShapeElementBridge {
      */
     public String getLocalName() {
         return SVG_POLYLINE_TAG;
+    }
+
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new SVGPolylineElementBridge();
     }
 
     /**
@@ -69,6 +78,28 @@ public class SVGPolylineElementBridge extends SVGDecoratedShapeElementBridge {
         } else {
             throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
                                       new Object[] {SVG_POINTS_ATTRIBUTE});
+        }
+    }
+
+    // dynamic support
+
+    /**
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
+     */
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        if (evt.getAttrName().equals(SVG_POINTS_ATTRIBUTE)) {
+
+            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            fireBridgeUpdateStarting(be);
+            buildShape(ctx, e, (ShapeNode)node);
+            if (((ShapeNode)node).getShape() == null) {
+                // <!> FIXME: disable the rendering
+            }
+            fireBridgeUpdateCompleted(be);
+        } else {
+            super.handleDOMAttrModifiedEvent(evt);
         }
     }
 }

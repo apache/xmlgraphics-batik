@@ -18,9 +18,6 @@ import org.apache.batik.gvt.ShapeNode;
 
 import org.w3c.dom.Element;
 
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -41,6 +38,13 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
      */
     public String getLocalName() {
         return SVG_RECT_TAG;
+    }
+
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new SVGRectElementBridge();
     }
 
     /**
@@ -148,106 +152,30 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
         shapeNode.setShape(shape);
     }
 
+    // dynamic support
+
     /**
-     * Extension of the <tt>SVGRectElementBridge</tt> that can 
-     * handle updates in the corresponding <tt>&lt;rect&gt;</tt>
-     * element.
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
      */
-    public static class Dynamic extends SVGRectElementBridge 
-        implements DynamicBridge, EventListener{
-        private BridgeContext ctx;
-        private BridgeUpdateHandler handler;
-        private int handlerKey;
-        private ShapeNode node;
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        if (evt.getAttrName().equals(SVG_X_ATTRIBUTE) ||
+            evt.getAttrName().equals(SVG_Y_ATTRIBUTE) ||
+            evt.getAttrName().equals(SVG_WIDTH_ATTRIBUTE) ||
+            evt.getAttrName().equals(SVG_HEIGHT_ATTRIBUTE) ||
+            evt.getAttrName().equals(SVG_RX_ATTRIBUTE) ||
+            evt.getAttrName().equals(SVG_RY_ATTRIBUTE)) {
 
-        public Bridge getInstance(){
-            return new SVGRectElementBridge();
-        }
-
-        /**
-         * Creates a graphics node using the specified BridgeContext and
-         * for the specified element.
-         *
-         * @param ctx the bridge context to use
-         * @param e the element that describes the graphics node to build
-         * @return a graphics node that represents the specified element
-         */
-        public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
-            // System.out.println("Calling createGraphicsNode");
-            ((EventTarget)e).addEventListener("DOMAttrModified",
-                                              this,
-                                              false);
-            node = (ShapeNode)super.createGraphicsNode(ctx, e);
-            this.ctx = ctx;
-            return node;
-        }
-
-        /**
-         *
-         */
-        public void handleEvent(Event evt){
-            
             BridgeUpdateEvent be = new BridgeUpdateEvent();
-            be.setHandlerKey(handlerKey);
-
-            // Notify handler if any.
-            if(handler != null){
-                handler.bridgeUpdateStarting(be);
+            fireBridgeUpdateStarting(be);
+            buildShape(ctx, e, (ShapeNode)node);
+            if (((ShapeNode)node).getShape() == null) {
+                // <!> FIXME: disable the rendering
             }
-
-            Rectangle2D r = (Rectangle2D)node.getShape();
-            // System.out.println("Old r: " + r);
-
-            MutationEvent mevt = (MutationEvent)evt;
-            if (mevt.getAttrName().equals("x")){
-                r.setRect(Float.parseFloat(((MutationEvent)evt).getNewValue()),
-                          r.getY(),
-                          r.getWidth(),
-                          r.getHeight());
-            } else if (mevt.getAttrName().equals("y")){
-                r.setRect(r.getX(),
-                          Float.parseFloat(((MutationEvent)evt).getNewValue()),
-                          r.getWidth(),
-                          r.getHeight());
-
-            } else if (mevt.getAttrName().equals("width")){
-                r.setRect(r.getX(),
-                          r.getY(),
-                          Float.parseFloat(((MutationEvent)evt).getNewValue()),
-                          r.getHeight());
-
-            }else if (mevt.getAttrName().equals("height")){
-                r.setRect(r.getX(),
-                          r.getY(),
-                          r.getWidth(),
-                          Float.parseFloat(((MutationEvent)evt).getNewValue()));
-
-            }
-            // System.out.println("New r: " + r);
-
-            node.setShape(r);
-
-            if(handler != null){
-                handler.bridgeUpdateCompleted(be);
-            }
+            fireBridgeUpdateCompleted(be);
+        } else {
+            super.handleDOMAttrModifiedEvent(evt);
         }
-
-        /**
-         * 
-         */
-        public BridgeUpdateHandler getBridgeUpdateHandler(){
-            return handler;
-        }
-        
-        /**
-         * 
-         */
-        public void setBridgeUpdateHandler(BridgeUpdateHandler handler,
-                                           int handlerKey){
-            System.out.println("SVGRectElementBridge.Dynamic, I have been called: " + handler );
-            this.handler = handler;
-            this.handlerKey = handlerKey;
-        }
-        
     }
 }

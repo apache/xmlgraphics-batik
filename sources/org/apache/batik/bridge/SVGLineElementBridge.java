@@ -15,6 +15,8 @@ import org.apache.batik.gvt.ShapeNode;
 
 import org.w3c.dom.Element;
 
+import org.w3c.dom.events.MutationEvent;
+
 /**
  * Bridge class for the &lt;line> element.
  *
@@ -33,6 +35,13 @@ public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
      */
     public String getLocalName() {
         return SVG_LINE_TAG;
+    }
+
+    /**
+     * Returns a new instance of this bridge.
+     */
+    public Bridge getInstance() {
+        return new SVGLineElementBridge();
     }
 
     /**
@@ -82,5 +91,30 @@ public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
         }
 
         shapeNode.setShape(new Line2D.Float(x1, y1, x2, y2));
+    }
+
+    // dynamic support
+
+    /**
+     * Handles DOMAttrModified events.
+     *
+     * @param evt the DOM mutation event
+     */
+    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        if (evt.getAttrName().equals(SVG_X1_ATTRIBUTE) ||
+            evt.getAttrName().equals(SVG_Y1_ATTRIBUTE) ||
+            evt.getAttrName().equals(SVG_X2_ATTRIBUTE) ||
+            evt.getAttrName().equals(SVG_Y2_ATTRIBUTE)) {
+
+            BridgeUpdateEvent be = new BridgeUpdateEvent();
+            fireBridgeUpdateStarting(be);
+            buildShape(ctx, e, (ShapeNode)node);
+            if (((ShapeNode)node).getShape() == null) {
+                // <!> FIXME: disable the rendering
+            }
+            fireBridgeUpdateCompleted(be);
+        } else {
+            super.handleDOMAttrModifiedEvent(evt);
+        }
     }
 }

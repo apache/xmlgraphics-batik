@@ -10,7 +10,8 @@ package org.apache.batik.bridge;
 
 /**
  * A tagging interface that all bridges must implement. A bridge is
- * responsible on creating an appropriate object according to an Element.
+ * responsible on creating and maintaining an appropriate object
+ * according to an Element.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -28,5 +29,25 @@ public interface Bridge {
      * to.
      */
     String getLocalName();
+
+    /**
+     * Returns a new instance of this bridge.
+     */
+    Bridge getInstance();
+
+    /**
+     * Returns the handler that is called each time this bridge
+     * updates its GVT product.
+     */
+    BridgeUpdateHandler getBridgeUpdateHandler();
+
+    /**
+     * Sets the handler that is used to track each update of this
+     * bridge's GVT product.
+     *
+     * @param handler the handler to call
+     * @param handlerKey a private key the handler might use when it registers
+     */
+    void setBridgeUpdateHandler(BridgeUpdateHandler handler, int handlerKey);
 
 }

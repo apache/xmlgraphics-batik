@@ -225,6 +225,7 @@ public class ScriptingEnvironment {
      * To run a piece of script.
      */
     protected abstract class ScriptingThread extends Thread {
+
         protected UserAgent userAgent;
         protected Interpreter interpreter;
 
@@ -235,7 +236,7 @@ public class ScriptingEnvironment {
             BridgeContext bc = updateManager.getBridgeContext();
             userAgent = bc.getUserAgent();
             Document doc = updateManager.getDocument();
-            interpreter = bc.getInterpreterPool().getInterpreter(doc, lang);
+            interpreter = bc.getInterpreter(lang);
             if (interpreter == null) {
                 if (userAgent != null) {
                     userAgent.displayError
