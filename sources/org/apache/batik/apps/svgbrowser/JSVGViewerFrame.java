@@ -73,6 +73,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 
+import javax.swing.filechooser.FileFilter;
+
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
@@ -858,6 +860,7 @@ public class JSVGViewerFrame
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
                 (JFileChooser.FILES_ONLY);
+            fileChooser.addChoosableFileFilter(new ImageFileFilter(".jpg"));
 
             int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
@@ -911,6 +914,7 @@ public class JSVGViewerFrame
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
                 (JFileChooser.FILES_ONLY);
+            fileChooser.addChoosableFileFilter(new ImageFileFilter(".png"));
 
             int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
@@ -962,6 +966,7 @@ public class JSVGViewerFrame
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
                 (JFileChooser.FILES_ONLY);
+            fileChooser.addChoosableFileFilter(new ImageFileFilter(".tiff"));
 
             int choice = fileChooser.showSaveDialog(JSVGViewerFrame.this);
             if (choice == JFileChooser.APPROVE_OPTION) {
@@ -1691,4 +1696,45 @@ public class JSVGViewerFrame
         public void handleElement(Element elt, Object data){
         }
     }
+
+    /**
+     * A FileFilter used when exporting the SVG document as an image.
+     */
+    protected static class ImageFileFilter extends FileFilter {
+
+	/** The extension of the image filename. */
+	protected String extension;
+
+	public ImageFileFilter(String extension) {
+	    this.extension = extension;
+	}
+
+	/**
+	 * Returns true if <tt>f</tt> is a file with the correct extension,
+	 * false otherwise.
+	 */
+	public boolean accept(File f) {
+	    boolean accept = false;
+	    String fileName = null;
+	    if (f != null) {
+		if (f.isDirectory()) {
+		    accept = true;
+		} else {
+		    fileName = f.getPath().toLowerCase();
+		    if (fileName.endsWith(extension)) {
+			accept = true;
+		    }
+		}
+	    }
+	    return accept;
+	}
+	
+	/**
+	 * Returns the file description
+	 */
+	public String getDescription() {
+	    return extension;
+	}
+    }
+
 }
