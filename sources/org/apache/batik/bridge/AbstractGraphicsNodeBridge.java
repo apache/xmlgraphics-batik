@@ -200,8 +200,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     /**
      * The listener class for 'DOMAttrModified' event.
      */
-    protected class DOMAttrModifiedEventListener
-        implements UnwrappedEventListener {
+    protected class DOMAttrModifiedEventListener implements EventListener {
 
         /**
          * Handles 'DOMAttrModfied' events and deleguates to the

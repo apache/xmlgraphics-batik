@@ -367,7 +367,7 @@ public class ScriptingEnvironment {
             elt.getAttributeNS(null, SVGConstants.SVG_ONLOAD_ATTRIBUTE);
         EventListener l = null;
         if (s.length() > 0) {
-            l = new UnwrappedEventListener() {
+            l = new EventListener() {
                     public void handleEvent(Event evt) {
                         try {
                             interp.bindObject(EVENT_NAME, evt);
@@ -400,7 +400,7 @@ public class ScriptingEnvironment {
     /**
      * To wrap an event listener.
      */
-    protected class EventListenerWrapper implements UnwrappedEventListener {
+    protected class EventListenerWrapper implements EventListener {
 
         /**
          * The wrapped event listener.

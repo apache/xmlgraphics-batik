@@ -190,8 +190,7 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     /**
      * The listener class for 'DOMNodeInserted' event.
      */
-    protected class DOMNodeInsertedEventListener
-        implements UnwrappedEventListener {
+    protected class DOMNodeInsertedEventListener implements EventListener {
 
         /**
          * Handles 'DOMNodeInserted' events and deleguates to the
@@ -211,8 +210,7 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
     /**
      * The listener class for 'DOMNodeRemoved' event.
      */
-    protected class DOMNodeRemovedEventListener
-        implements UnwrappedEventListener {
+    protected class DOMNodeRemovedEventListener implements EventListener {
 
         /**
          * Handles 'DOMNodeRemoved' events and deleguates to the
