@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.test;
+package org.apache.batik.test.svg;
 
 import org.apache.batik.test.xml.XMLTestReportProcessor;
 

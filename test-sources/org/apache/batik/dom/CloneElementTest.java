@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.dom.svg;
+package org.apache.batik.dom;
 
 import org.w3c.dom.*;
 

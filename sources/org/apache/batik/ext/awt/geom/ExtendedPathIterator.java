@@ -12,7 +12,7 @@ import java.awt.geom.PathIterator;
 
 /**
  * The <code>ExtendedPathIterator</code> class represents a geometric
- * path constructed from straight lines, quadratic and cubic (Bézier)
+ * path constructed from straight lines, quadratic and cubic (Bezier)
  * curves and elliptical arcs.  This interface is identical to that of
  * PathIterator except it can return SEG_ARCTO from currentSegment,
  * also the array of values passed to currentSegment must be of length
