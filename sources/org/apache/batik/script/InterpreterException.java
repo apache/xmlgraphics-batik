@@ -10,7 +10,7 @@ package org.apache.batik.script;
 
 /**
  * An exception that will be thrown when a problem is encountered in the
- * script by the <code>Interpreter</code> interface implementation.
+ * script by an <code>Interpreter</code> interface implementation.
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */

@@ -8,7 +8,6 @@
 
 package org.apache.batik.script;
 
-import org.apache.batik.script.*;
 import org.w3c.dom.Document;
 import java.util.HashMap;
 
