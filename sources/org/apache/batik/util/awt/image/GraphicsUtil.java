@@ -336,6 +336,104 @@ public class GraphicsUtil {
         return new ConcreteRenderedImageCachableRed(ri);
     }
 
+    protected static void copyData_INT_PACK(Raster src, WritableRaster dst) {
+        // System.out.println("Fast copyData");
+        int x0 = dst.getMinX();
+        if (x0 < src.getMinX()) x0 = src.getMinX();
+
+        int y0 = dst.getMinY();
+        if (y0 < src.getMinY()) y0 = src.getMinY();
+
+        int x1 = dst.getMinX()+dst.getWidth()-1;
+        if (x1 > src.getMinX()+src.getWidth()-1) 
+            x1 = src.getMinX()+src.getWidth()-1;
+
+        int y1 = dst.getMinY()+dst.getHeight()-1;
+        if (y1 > src.getMinY()+src.getHeight()-1) 
+            y1 = src.getMinY()+src.getHeight()-1;
+
+        int width  = x1-x0+1;
+        int height = y1-y0+1;
+
+        SinglePixelPackedSampleModel srcSPPSM;
+        srcSPPSM = (SinglePixelPackedSampleModel)src.getSampleModel();
+
+        final int     srcScanStride = srcSPPSM.getScanlineStride();
+        DataBufferInt srcDB         = (DataBufferInt)src.getDataBuffer();
+        final int []  srcPixels     = srcDB.getBankData()[0];
+        final int     srcBase = 
+            (srcDB.getOffset() + 
+             srcSPPSM.getOffset(x0-src.getSampleModelTranslateX(), 
+                                y0-src.getSampleModelTranslateY()));
+
+
+        SinglePixelPackedSampleModel dstSPPSM;
+        dstSPPSM = (SinglePixelPackedSampleModel)dst.getSampleModel();
+
+        final int     dstScanStride = dstSPPSM.getScanlineStride();
+        DataBufferInt dstDB         = (DataBufferInt)dst.getDataBuffer();
+        final int []  dstPixels     = dstDB.getBankData()[0];
+        final int     dstBase = 
+            (dstDB.getOffset() + 
+             dstSPPSM.getOffset(x0-dst.getSampleModelTranslateX(), 
+                                y0-dst.getSampleModelTranslateY()));
+        
+        if ((srcScanStride == dstScanStride) &&
+            (srcScanStride == width)) {
+            // System.out.println("VERY Fast copyData");
+            
+            System.arraycopy(srcPixels, srcBase, dstPixels, dstBase,
+                             width*height);
+        } else if (width > 20) {
+            int srcSP = srcBase;
+            int dstSP = dstBase;
+            for (int y=0; y<height; y++) {
+                System.arraycopy(srcPixels, srcSP, dstPixels, dstSP, width);
+                srcSP += srcScanStride;
+                dstSP += dstScanStride;
+            }
+        } else {
+            for (int y=0; y<height; y++) {
+                int srcSP = srcBase+y*srcScanStride;
+                int dstSP = dstBase+y*dstScanStride;
+                for (int x=0; x<width; x++) 
+                    dstPixels[dstSP++] = srcPixels[srcSP++];
+            }
+        }
+    }
+
+    public static void copyData(Raster src, WritableRaster dst) {
+        if (is_INT_PACK_Data(src.getSampleModel(), false) &&
+            is_INT_PACK_Data(dst.getSampleModel(), false)) {
+            copyData_INT_PACK(src, dst);
+            return;
+        }
+        System.out.println("Slow copyData");
+
+        int x0 = dst.getMinX();
+        if (x0 < src.getMinX()) x0 = src.getMinX();
+
+        int y0 = dst.getMinY();
+        if (y0 < src.getMinY()) y0 = src.getMinY();
+
+        int x1 = dst.getMinX()+dst.getWidth()-1;
+        if (x1 > src.getMinX()+src.getWidth()-1) 
+            x1 = src.getMinX()+src.getWidth()-1;
+
+        int y1 = dst.getMinY()+dst.getHeight()-1;
+        if (y1 > src.getMinY()+src.getHeight()-1) 
+            y1 = src.getMinY()+src.getHeight()-1;
+
+        int width  = x1-x0+1;
+        int height = y1-y0+1;
+
+        Object data = null;
+
+        for (int y = y0; y <= y1 ; y++)  {
+            data = src.getDataElements(x0,y,width,1,data);
+            dst.setDataElements(x0,y,width,1,data);
+        }
+    }
 
     public static WritableRaster copyRaster(Raster ras) {
         return copyRaster(ras, ras.getMinX(), ras.getMinY());
@@ -438,15 +536,19 @@ public class GraphicsUtil {
 
         // System.out.println("CoerceData: " + cm.isAlphaPremultiplied() + 
         //                    " Out: " + newAlphaPreMult);
+        if (cm.hasAlpha()== false)
+            // Nothing to do no alpha channel
+            return cm;
 
         if (cm.isAlphaPremultiplied() == newAlphaPreMult)
+            // nothing to do alpha state matches...
             return cm;
 
         int [] pixel = null;
         int    bands = wr.getNumBands();
         float  norm;
         if (newAlphaPreMult) {
-            if (is_INT_PACK_Data(wr.getSampleModel()))
+            if (is_INT_PACK_Data(wr.getSampleModel(), true))
                 mult_INT_PACK_Data(wr);
             else {
                 norm = 1/255;
@@ -463,7 +565,7 @@ public class GraphicsUtil {
                     }
             }
         } else {
-            if (is_INT_PACK_Data(wr.getSampleModel()))
+            if (is_INT_PACK_Data(wr.getSampleModel(), true))
                 divide_INT_PACK_Data(wr);
             else {
                 for (int y=0; y<wr.getHeight(); y++)
@@ -652,7 +754,8 @@ public class GraphicsUtil {
         }
     }
 
-    protected static boolean is_INT_PACK_Data(SampleModel sm) {
+    public static boolean is_INT_PACK_Data(SampleModel sm, 
+                                           boolean requireAlpha) {
           // Check ColorModel is of type DirectColorModel
         if(!(sm instanceof SinglePixelPackedSampleModel)) return false;
 
@@ -663,10 +766,16 @@ public class GraphicsUtil {
         sppsm = (SinglePixelPackedSampleModel)sm;
 
         int [] masks = sppsm.getBitMasks();
+        if (masks.length == 3) {
+            if (requireAlpha) return false;
+        } else if (masks.length != 4)
+            return false;
+
         if(masks[0] != 0x00ff0000) return false;
         if(masks[1] != 0x0000ff00) return false;
         if(masks[2] != 0x000000ff) return false;
-        if(masks[3] != 0xff000000) return false;
+        if ((masks.length == 4) && 
+            (masks[3] != 0xff000000)) return false;
  
         return true;
    }
@@ -694,13 +803,16 @@ public class GraphicsUtil {
             while (sp < end) {
                 int pixel = pixels[sp];
                 int a = pixel>>>24;
-                if ((a>0) && (a<255)) {
+                if (a<=0) {
+                    pixels[sp] = 0x00FFFFFF;
+                }
+                else if (a<255) {
                     int aFP = (0x00FF0000/a);
                     pixels[sp] = 
                         ((a << 24) |
-                         (((((pixel&0xFF0000)>>16)*aFP))    &0xFF0000) |
-                         (((((pixel&0x00FF00)>>8) *aFP)>>8 )&0x00FF00) |
-                         (((((pixel&0x0000FF))    *aFP)>>16)&0x0000FF));
+                         (((((pixel&0xFF0000)>>16)*aFP)&0xFF0000)    ) |
+                         (((((pixel&0x00FF00)>>8) *aFP)&0xFF0000)>>8 ) |
+                         (((((pixel&0x0000FF))    *aFP)&0xFF0000)>>16));
                 }
                 sp++;
             }

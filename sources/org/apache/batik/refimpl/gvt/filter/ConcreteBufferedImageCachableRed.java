@@ -9,6 +9,7 @@
 package org.apache.batik.refimpl.gvt.filter;
 
 import org.apache.batik.gvt.filter.CachableRed;
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 import java.awt.Rectangle;
 
@@ -89,16 +90,31 @@ public class ConcreteBufferedImageCachableRed extends AbstractRed {
     }
 
     public WritableRaster copyData(WritableRaster wr) {
-        BufferedImage dest;
-        dest = new BufferedImage(bi.getColorModel(), 
-                                 wr.createWritableTranslatedChild(0,0), 
-                                 bi.getColorModel().isAlphaPremultiplied(), 
-                                 null);
-        java.awt.Graphics2D g2d = dest.createGraphics();
-        g2d.drawImage(bi, null, getMinX()-wr.getMinX(), 
-                      getMinY()-wr.getMinY());
-        g2d.dispose();
+        WritableRaster wr2 = wr.createWritableTranslatedChild
+            (wr.getMinX()-getMinX(),
+             wr.getMinY()-getMinY());
+
+        GraphicsUtil.copyData(bi.getRaster(), wr2);
+
+        /* This was the original code. This is _bad_ since it causes a
+         * multiply and divide of the alpha channel to do the draw
+         * operation.  I believe that at some point I switched to
+         * drawImage in order to avoid some issues with
+         * BufferedImage's copyData implementation but I can't
+         * reproduce them now. Anyway I'm now using GraphicsUtil which
+         * should generally be as fast if not faster...
+         */
+        /*
+          BufferedImage dest;
+         dest = new BufferedImage(bi.getColorModel(), 
+                                  wr.createWritableTranslatedChild(0,0), 
+                                  bi.getColorModel().isAlphaPremultiplied(), 
+                                  null);
+         java.awt.Graphics2D g2d = dest.createGraphics();
+         g2d.drawImage(bi, null, getMinX()-wr.getMinX(), 
+                       getMinY()-wr.getMinY());
+         g2d.dispose(); 
+         */
         return wr;
     }
-
 }

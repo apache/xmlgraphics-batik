@@ -52,8 +52,9 @@ public class LinearTransfer implements TransferFunction {
     private void buildLutData(){
         lutData = new byte [256];
         int j, value;
+        float scaledInt = (intercept*255f)+0.5f;
         for (j=0; j<=255; j++){
-            value = (int)(slope*j+intercept);
+            value = (int)(slope*j+scaledInt);
             if(value < 0){
                 value = 0;
             }

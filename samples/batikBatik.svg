@@ -22,14 +22,29 @@
         <filter id="tableRedOrangeTint" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
             <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="1"/>
+
+            <feComponentTransfer>
+              <feFuncR type="gamma" amplitude="1" exponent=".42" offset="0" />
+              <feFuncG type="gamma" amplitude="1" exponent=".42" offset="0" />
+              <feFuncB type="gamma" amplitude="1" exponent=".42" offset="0" />
+            </feComponentTransfer>
+
             <feColorMatrix type="luminanceToAlpha" />
-            <feColorMatrix type="matrix" values="0 0 0 -1 1    0 0 0 -1 1    0 0 0 -1 1   0 0 0 0 1" />
+            <feColorMatrix type="matrix" values="0 0 0 -1 1    
+                                                 0 0 0 -1 1    
+                                                 0 0 0 -1 1   
+                                                 0 0 0  0 1" />
             <feComponentTransfer filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%" >
-                <feFuncR type="table" tableValues="1 1   .95  .85  .6 .4" />
-                <feFuncG type="table" tableValues="1 1  .75  .55  .3 .3" />
-                <feFuncB type="table" tableValues="1  .4  0  0   0 0" />
+                <feFuncR type="table" tableValues="1 1.0 0.95 0.85 0.6 0.4" />
+                <feFuncG type="table" tableValues="1 1.0 0.75 0.55 0.3 0.3" />
+                <feFuncB type="table" tableValues="1 0.4 0    0    0   0" />
                 <feFuncA type="linear" slope="1" intercept="0"/>
+            </feComponentTransfer>
+            <feComponentTransfer>
+              <feFuncR type="gamma" amplitude="1" exponent="2.4" offset="0" />
+              <feFuncG type="gamma" amplitude="1" exponent="2.4" offset="0" />
+              <feFuncB type="gamma" amplitude="1" exponent="2.4" offset="0" />
             </feComponentTransfer>
             <feComposite operator="in" in2="SourceGraphic" />
         </filter>
@@ -37,6 +52,11 @@
         <filter id="tableBlueAquaTint" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
             <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="2"/>
+            <feComponentTransfer>
+              <feFuncR type="gamma" amplitude="1" exponent=".42" offset="0" />
+              <feFuncG type="gamma" amplitude="1" exponent=".42" offset="0" />
+              <feFuncB type="gamma" amplitude="1" exponent=".42" offset="0" />
+            </feComponentTransfer>
             <feColorMatrix type="luminanceToAlpha" />
             <feColorMatrix type="matrix" values="0 0 0 -1 1    0 0 0 -1 1    0 0 0 -1 1   0 0 0 0 1" />
             <feComponentTransfer filterUnits="objectBoundingBox" 
@@ -46,10 +66,20 @@
                 <feFuncB type="table" tableValues="1 .9 .8 .6 .5 .2" />
                 <feFuncA type="linear" slope="1" intercept=".1" />
             </feComponentTransfer>
+            <feComponentTransfer>
+              <feFuncR type="gamma" amplitude="1" exponent="2.4" offset="0" />
+              <feFuncG type="gamma" amplitude="1" exponent="2.4" offset="0" />
+              <feFuncB type="gamma" amplitude="1" exponent="2.4" offset="0" />
+            </feComponentTransfer>
         </filter>
         <filter id="tableBlueVioletTint" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
             <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="2"/>
+            <feComponentTransfer>
+              <feFuncR type="gamma" amplitude="1" exponent=".42" offset="0" />
+              <feFuncG type="gamma" amplitude="1" exponent=".42" offset="0" />
+              <feFuncB type="gamma" amplitude="1" exponent=".42" offset="0" />
+            </feComponentTransfer>
             <feColorMatrix type="luminanceToAlpha" />
             <feColorMatrix type="matrix" values="0 0 0 -1 1    0 0 0 -1 1    0 0 0 -1 1   0 0 0 0 1" />
             <feComponentTransfer filterUnits="objectBoundingBox" 
@@ -59,11 +89,21 @@
                 <feFuncB type="table" tableValues=".1 .2   .6  .8  .7 .7" />
                 <feFuncA type="linear" slope="1" intercept="0" />
             </feComponentTransfer>
+            <feComponentTransfer>
+              <feFuncR type="gamma" amplitude="1" exponent="2.4" offset="0" />
+              <feFuncG type="gamma" amplitude="1" exponent="2.4" offset="0" />
+              <feFuncB type="gamma" amplitude="1" exponent="2.4" offset="0" />
+            </feComponentTransfer>
             <feComposite operator="in" in2="SourceGraphic" />
         </filter>
         <filter id="tableGreenTint" filterUnits="objectBoundingBox" 
               x="0%" y="0%" width="100%" height="100%">
             <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="1"/>
+            <feComponentTransfer>
+              <feFuncR type="gamma" amplitude="1" exponent=".42" offset="0" />
+              <feFuncG type="gamma" amplitude="1" exponent=".42" offset="0" />
+              <feFuncB type="gamma" amplitude="1" exponent=".42" offset="0" />
+            </feComponentTransfer>
             <feColorMatrix type="luminanceToAlpha" />
             <feColorMatrix type="matrix" values="0 0 0 -1 1    0 0 0 -1 1    0 0 0 -1 1   0 0 0 0 1" />
             <feComponentTransfer filterUnits="objectBoundingBox" 
@@ -72,6 +112,11 @@
                 <feFuncG type="table" tableValues=".4 .4  .4  .6  .5 .3" />
                 <feFuncB type="table" tableValues="0.1 .2   .3  .4  .4 .2" />
                 <feFuncA type="linear" slope="1" intercept="0" />
+            </feComponentTransfer>
+            <feComponentTransfer>
+              <feFuncR type="gamma" amplitude="1" exponent="2.4" offset="0" />
+              <feFuncG type="gamma" amplitude="1" exponent="2.4" offset="0" />
+              <feFuncB type="gamma" amplitude="1" exponent="2.4" offset="0" />
             </feComponentTransfer>
         </filter>
 

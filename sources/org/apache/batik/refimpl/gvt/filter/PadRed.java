@@ -10,6 +10,7 @@ package org.apache.batik.refimpl.gvt.filter;
 
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.CachableRed;
+import org.apache.batik.util.awt.image.GraphicsUtil;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -20,9 +21,12 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.awt.image.SampleModel;
+import java.awt.image.SinglePixelPackedSampleModel;
 
 
 /**
@@ -74,9 +78,9 @@ public class PadRed extends AbstractRed {
         Rectangle srcR = src.getBounds();
         Rectangle wrR  = wr.getBounds();
 
-        Rectangle r = wrR.intersection(srcR);
-
-        if(!r.isEmpty()){
+        if (wrR.intersects(srcR)) {
+            Rectangle r = wrR.intersection(srcR);
+        
             // Limit the raster I send to my source to his rect.
             WritableRaster srcWR;
             srcWR = wr.createWritableChild(r.x, r.y, r.width, r.height,
@@ -95,36 +99,85 @@ public class PadRed extends AbstractRed {
         return wr;
     }
 
-    protected void handleZero(WritableRaster wr) {
-        // NOTE: I'm ignoring the pad mode here. I really need
-        //       to check what the mode is and pad out the edges
-        //       of wr.  For now I just zero them...
-        BufferedImage bi;
-        bi = new BufferedImage(getColorModel(), 
-                               wr.createWritableTranslatedChild(0,0),
-                               getColorModel().isAlphaPremultiplied(),
-                               null);
+    protected static class ZeroRecter {
+        WritableRaster wr;
+        int bands;
+        public ZeroRecter(WritableRaster wr) {
+            this.wr = wr;
+            this.bands = wr.getSampleModel().getNumBands();
+        }
+        public void zeroRect(Rectangle r) {
+            int [] zeros = new int[r.width*bands];
+            for (int y=0; y<r.height; y++) {
+                wr.setPixels(r.x, r.y+y, r.width, 1, zeros);
+            }
+        }
 
-        Graphics2D g2d = bi.createGraphics();
-        // Make sure we draw with our hints.
-        if (hints != null) g2d.setRenderingHints(hints);
-        // Overwrite whatever is there.
-        g2d.setComposite(AlphaComposite.Src);
-        // Fully transparent black.
-        g2d.setColor(new Color(0,0,0,0));
-                           
+        public static ZeroRecter getZeroRecter(WritableRaster wr) {
+            if (GraphicsUtil.is_INT_PACK_Data(wr.getSampleModel(), false))
+                return new ZeroRecter_INT_PACK(wr);
+            else
+                return new ZeroRecter(wr);
+        }
+
+    }
+
+    protected static class ZeroRecter_INT_PACK extends ZeroRecter {
+        final int base;
+        final int scanStride;
+        final int pixels[];
+
+        public ZeroRecter_INT_PACK(WritableRaster wr) {
+            super(wr);
+
+            SinglePixelPackedSampleModel sppsm;
+            sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
+
+            scanStride = sppsm.getScanlineStride();
+            DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
+            base = (db.getOffset() + 
+                    sppsm.getOffset(0-wr.getSampleModelTranslateX(), 
+                                    0-wr.getSampleModelTranslateY()));
+
+            pixels = db.getBankData()[0];
+        }
+
+        public void zeroRect(Rectangle r) {
+            final int rbase = base+r.x + r.y*scanStride;
+
+            if ((r.width > 10) && (r.height>5)) {
+                // Longer runs use arraycopy...
+                int [] zeros = new int[r.width];
+
+                // Access the pixel data array
+                for (int y=0; y<r.height; y++) {
+                    int sp = rbase + y*scanStride;
+                    System.arraycopy(zeros, 0, pixels, sp, zeros.length);
+                }
+            } else {
+                // Small runs quicker to avoid func call.
+                for (int y=0; y<r.height; y++) {
+                    int sp = rbase + y*scanStride;
+                    final int end = sp + r.width;
+                    while (sp < end)
+                        pixels[sp++] = 0;
+                }
+            }
+        }
+    }
+
+    protected void handleZero(WritableRaster wr) {
         // Get my source.
         CachableRed src  = (CachableRed)getSources().get(0);
         Rectangle   srcR = src.getBounds();
         Rectangle   wrR  = wr.getBounds();
 
-        int x      = wrR.x;
-        int y      = wrR.y;
-        int width  = wrR.width;
-        int height = wrR.height;
+        ZeroRecter zr = ZeroRecter.getZeroRecter(wr);
 
-        // Position x, y at the topleft of the bufferedImage...
-        g2d.translate(-x, -y);
+        // area rect (covers the area left to handle).
+        Rectangle ar = new Rectangle(wrR.x, wrR.y, wrR.width, wrR.height);
+        // draw rect (used for calls to zeroRect);
+        Rectangle dr = new Rectangle(wrR.x, wrR.y, wrR.width, wrR.height);
 
         // We split the edge drawing up into four parts.
         //
@@ -142,66 +195,89 @@ public class PadRed extends AbstractRed {
         //  We update our x,y, width, height as we go along so
         //  we 'forget' about the parts we have already painted...
 
-
         // Draw #1
         if (DEBUG) {
             System.out.println("WrR: " + wrR + " srcR: " + srcR);
-            g2d.setColor(new Color(255,0,0,128));
+            // g2d.setColor(new Color(255,0,0,128));
         }
-        if (x < srcR.x) {
-            int w = srcR.x-x;
-            if (w > width) w=width;
-            g2d.fillRect(x, y, w, height);
-            x+=w;
-            width-=w;
+        if (ar.x < srcR.x) {
+            int w = srcR.x-ar.x;
+            if (w > ar.width) w=ar.width;
+            // g2d.fillRect(x, y, w, height);
+            dr.width = w;
+            zr.zeroRect(dr);
+
+            ar.x+=w;
+            ar.width-=w;
         }
 
         // Draw #2
         if (DEBUG) {
             System.out.println("WrR: [" + 
-                               x + "," + y + "," + width + "," + height + 
+                               ar.x + "," + ar.y + "," + 
+                               ar.width + "," + ar.height + 
                                "] s rcR: " + srcR);
-            g2d.setColor(new Color(0,0,255,128));
+            // g2d.setColor(new Color(0,0,255,128));
         }
-        if (y < srcR.y) {
-            int h = srcR.y-y;
-            if (h > height) h=height;
-            g2d.fillRect(x, y, width, h);
-            y+=h;
-            height-=h;
+        if (ar.y < srcR.y) {
+            int h = srcR.y-ar.y;
+            if (h > ar.height) h=ar.height;
+            // g2d.fillRect(x, y, width, h);
+            dr.x      = ar.x;
+            dr.y      = ar.y;
+            dr.width  = ar.width;
+            dr.height = h;
+            zr.zeroRect(dr);
+
+            ar.y     +=h;
+            ar.height-=h;
         }
 
         // Draw #3
         if (DEBUG) {
             System.out.println("WrR: [" + 
-                               x + "," + y + "," + width + "," + height + 
+                               ar.x + "," + ar.y + "," + 
+                               ar.width + "," + ar.height + 
                                "] srcR: " + srcR);
-            g2d.setColor(new Color(0,255,0,128));
+            // g2d.setColor(new Color(0,255,0,128));
         }
-        if (y+height > srcR.y+srcR.height) {
-            int h = (y+height) - (srcR.y+srcR.height);
-            if (h > height) h=height;
+        if (ar.y+ar.height > srcR.y+srcR.height) {
+            int h = (ar.y+ar.height) - (srcR.y+srcR.height);
+            if (h > ar.height) h=ar.height;
 
-            int y0 = y+height-h; // the +/-1 cancel (?)
+            int y0 = ar.y+ar.height-h; // the +/-1 cancel (?)
 
-            g2d.fillRect(x, y0, width, h);
-            height-=h;
+            // g2d.fillRect(x, y0, width, h);
+            dr.x      = ar.x;
+            dr.y      = y0;
+            dr.width  = ar.width;
+            dr.height = h;
+            zr.zeroRect(dr);
+
+            ar.height -= h;
         }
 
         // Draw #4
         if (DEBUG) {
             System.out.println("WrR: [" + 
-                               x + "," + y + "," + width + "," + height + 
+                               ar.x + "," + ar.y + "," + 
+                               ar.width + "," + ar.height + 
                                "] srcR: " + srcR);
-            g2d.setColor(new Color(255,255,0,128));
+            // g2d.setColor(new Color(255,255,0,128));
         }
-        if (x+width > srcR.x+srcR.width) {
-            int w = (x+width) - (srcR.x+srcR.width);
-            if (w > width) w=width;
-            int x0 = x+width-w; // the +/-1 cancel (?)
+        if (ar.x+ar.width > srcR.x+srcR.width) {
+            int w = (ar.x+ar.width) - (srcR.x+srcR.width);
+            if (w > ar.width) w=ar.width;
+            int x0 = ar.x+ar.width-w; // the +/-1 cancel (?)
 
-            g2d.fillRect(x0, y, w, height);
-            width-=w;
+            // g2d.fillRect(x0, y, w, height);
+            dr.x      = x0;
+            dr.y      = ar.y;
+            dr.width  = w;
+            dr.height = ar.height;
+            zr.zeroRect(dr);
+            
+            ar.width-=w;
         }
     }
 
@@ -217,7 +293,11 @@ public class PadRed extends AbstractRed {
         int width  = wrR.width;
         int height = wrR.height;
 
-        Rectangle   r    = wrR.intersection(srcR);
+        Rectangle   r;
+        if (wrR.intersects(srcR))
+            r = wrR.intersection(srcR);
+        else
+            r = new Rectangle(0,0,0,0);
 
         // We split the edge drawing up into four parts.
         //

@@ -148,10 +148,10 @@ public class MultiplyAlphaRed extends AbstractRed {
                     int a = ((int)alpPixels[ap++])&0xFF;
                     final int pix = srcPixels[sp];
                     srcPixels[sp] = 
-                        ((((((pix>>>24)     ) *a)<<16)&0xFF000000) |
-                         (((((pix>>>16)&0xFF) *a)<<8 )&0x00FF0000) |
-                         (((((pix>>> 8)&0xFF) *a)    )&0x0000FF00) |
-                         (((((pix     )&0xFF) *a)>>8 )&0x000000FF));
+                        ((((((pix>>>24)     ) *a)&0xFF00)<<16) |
+                         (((((pix>>>16)&0xFF) *a)&0xFF00)<<8 ) |
+                         (((((pix>>> 8)&0xFF) *a)&0xFF00)    ) |
+                         (((((pix     )&0xFF) *a)&0xFF00)>>8 ));
                     sp++;
                 }
             }

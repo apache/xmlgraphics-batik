@@ -272,9 +272,6 @@ public class ConcreteGaussianBlurRable
         if(srcIndex != 0)
             outputRgn = null;
         else {
-            // Intersect with output region
-            outputRgn = outputRgn.createIntersection(getBounds2D());
-
             // There is only one source in GaussianBlur
             float dX = (float)(stdDeviationX*GaussianBlurOp.DSQRT2PI);
             float dY = (float)(stdDeviationY*GaussianBlurOp.DSQRT2PI);
@@ -285,6 +282,12 @@ public class ConcreteGaussianBlurRable
                              (float)(outputRgn.getMinY()  -radY),
                              (float)(outputRgn.getWidth() +2*radX),
                              (float)(outputRgn.getHeight()+2*radY));
+
+            Rectangle2D bounds = getBounds2D();
+            if (outputRgn.intersects(bounds) == false)
+                return new Rectangle2D.Float();
+            // Intersect with output region
+            outputRgn = outputRgn.createIntersection(bounds);
         }
 
         return outputRgn;
@@ -314,9 +317,11 @@ public class ConcreteGaussianBlurRable
                              (float)(inputRgn.getWidth() +2*radX),
                              (float)(inputRgn.getHeight()+2*radY));
 
-            // There is only one source in GaussianBlur
-            // Intersect with output region
-            dirtyRegion = inputRgn.createIntersection(getBounds2D());
+            Rectangle2D bounds = getBounds2D();
+            if (inputRgn.intersects(bounds) == false)
+                return new Rectangle2D.Float();
+            // Intersect with input region
+            dirtyRegion = inputRgn.createIntersection(bounds);
         }
 
         return dirtyRegion;

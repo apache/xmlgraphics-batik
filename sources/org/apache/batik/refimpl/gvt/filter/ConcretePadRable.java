@@ -114,8 +114,12 @@ public class ConcretePadRable extends AbstractRable
         // System.out.println("Rects Src:" + srect +
         //                    "My: " + rect +
         //                    "AOI: " + arect);
-
+        if (arect.intersects(rect) == false)
+            return null;
         Rectangle2D.intersect(arect, rect, arect);
+
+        if (arect.intersects(srect) == false)
+            return null;
         Rectangle2D.intersect(srect, arect, srect);
 
         if((srect.getWidth()  <= 0) ||
@@ -136,7 +140,6 @@ public class ConcretePadRable extends AbstractRable
             
         // System.out.println("Pad rect : " + arect);
         // Use arect (my bounds intersect area of interest)
-            
         cr = new PadRed(cr, arect.getBounds(), padMode, rh);
         return cr;
     }
@@ -149,8 +152,14 @@ public class ConcretePadRable extends AbstractRable
         // our bounds and his bounds (remember our bounds may be
         // tighter than his in one or both directions).
         Rectangle2D srect = getSource().getBounds2D();
+        if (srect.intersects(outputRgn) == false)
+            return new Rectangle2D.Float();
         Rectangle2D.intersect(srect, outputRgn, srect);
-        Rectangle2D.intersect(srect, getBounds2D(), srect);
+
+        Rectangle2D bounds = getBounds2D();
+        if (srect.intersects(bounds) == false)
+            return new Rectangle2D.Float();
+        Rectangle2D.intersect(srect, bounds, srect);
         return srect;
     }
 
@@ -159,9 +168,12 @@ public class ConcretePadRable extends AbstractRable
             throw new IndexOutOfBoundsException("Affine only has one input");
 
         inputRgn = (Rectangle2D)inputRgn.clone();
+        Rectangle2D bounds = getBounds2D();
         // Changes in the input region don't propogate outside our
         // bounds.
-        Rectangle2D.intersect(inputRgn, getBounds2D(), inputRgn);
+        if (inputRgn.intersects(bounds) == false)
+            return new Rectangle2D.Float();
+        Rectangle2D.intersect(inputRgn, bounds, inputRgn);
         return inputRgn;
     }
 

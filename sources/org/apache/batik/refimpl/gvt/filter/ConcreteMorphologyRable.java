@@ -259,20 +259,10 @@ public class ConcreteMorphologyRable
      * coordinate system for the source indicated by srcIndex.
      */
     public Shape getDependencyRegion(int srcIndex, Rectangle2D outputRgn){
-        // For Morphology, the output is equal to the input. Therefore,
-        // the dependency region is the intersection of the outputRgn
-        // with the source.
         // NOTE: This needs to grow the region!!!
         //       Morphology actually needs a larger area of input than
         //       it outputs.
-        Rectangle2D dependencyRegion = null;
-        if(srcIndex == 0){
-            // There is only one source in GaussianBlur
-            // Intersect with output region
-            dependencyRegion = outputRgn.createIntersection(getBounds2D());
-        }
-
-        return dependencyRegion;
+        return super.getDependencyRegion(srcIndex, outputRgn);
     }
 
     /**
@@ -287,20 +277,10 @@ public class ConcreteMorphologyRable
      *  this is in the user coordinate system of this node.
      */
     public Shape getDirtyRegion(int srcIndex, Rectangle2D inputRgn){
-        // For Morphology, the output is equal to the input. Therefore
-        // the dependency region is the intersection of the inputRgn
-        // with the source.
         // NOTE: This needs to grow the region!!!
         //       Changes in the input region affect a larger area of
         //       output than the input.
-        Rectangle2D dirtyRegion = null;
-        if(srcIndex == 0){
-            // There is only one source in Morphology
-            // Intersect with output region
-            dirtyRegion = inputRgn.createIntersection(getBounds2D());
-        }
-
-        return dirtyRegion;
+        return super.getDirtyRegion(srcIndex, inputRgn);
     }
 
 }
