@@ -31,14 +31,6 @@ public class ConcreteImageNode extends AbstractGraphicsNode
      * The graphics node that represents this image node.
      */
     protected GraphicsNode image;
-    /**
-     * The location of this image node.
-     */
-    protected Point2D location;
-    /**
-     * The size of this image node.
-     */
-    protected Dimension2D size;
 
     /**
      * Constructs a new empty image node.
@@ -59,26 +51,6 @@ public class ConcreteImageNode extends AbstractGraphicsNode
         return image;
     }
 
-    public void setLocation(Point2D newLocation) {
-        Point2D oldLocation = location;
-        this.location = newLocation;
-        firePropertyChange("location", oldLocation, newLocation);
-    }
-
-    public Point2D getLocation() {
-        return (Point2D) location.clone();
-    }
-
-    public void setSize(Dimension2D newSize) {
-        Dimension2D oldSize = size;
-        this.size = newSize;
-        firePropertyChange("size", oldSize, newSize);
-    }
-
-    public Dimension2D getSize() {
-        return (Dimension2D) size.clone();
-    }
-
     //
     // Drawing methods
     //
@@ -93,7 +65,9 @@ public class ConcreteImageNode extends AbstractGraphicsNode
     }
 
     public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
-        // <!> FIXME : TODO
+        if (image != null) {
+            image.primitivePaint(g2d, rc);
+        }
     }
 
     //
@@ -101,17 +75,26 @@ public class ConcreteImageNode extends AbstractGraphicsNode
     //
 
     public Rectangle2D getPrimitiveBounds() {
-        // <!> FIXME : TODO
-        return null;
+        if (image == null) {
+            return null;
+        } else {
+            return image.getPrimitiveBounds();
+        }
     }
 
     public Shape getOutline() {
-        // <!> FIXME : TODO
-        return null;
+        if (image == null) {
+            return null;
+        } else {
+            return image.getOutline();
+        }
     }
 
     public Rectangle2D getGeometryBounds(){
-        // <!> FIXME : TODO
-        return null;
+        if (image == null) {
+            return null;
+        } else {
+            return image.getGeometryBounds();
+        }
     }
 }

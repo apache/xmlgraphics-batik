@@ -54,6 +54,7 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 
 import org.apache.batik.dom.svg.SVGDocumentLoader;
+import org.apache.batik.dom.svg.SVGOMDocument;
 
 import org.apache.batik.gvt.GraphicsNode;
 
@@ -350,7 +351,7 @@ public class JSVGCanvas
                 public void run() {
                     GraphicsNode root;
                     BridgeContext bridgeContext = createBridgeContext(doc);
-                    bridgeContext.setViewCSS((ViewCSS)doc.getDocumentElement());
+                    bridgeContext.setViewCSS((ViewCSS)((SVGOMDocument)doc).getDefaultView());
                     bridgeContext.setGVTBuilder(builder);
                     long t1 = System.currentTimeMillis();
                     root = builder.build(bridgeContext, document);
