@@ -36,40 +36,40 @@ public class SVGLineElementBridge extends SVGShapeElementBridge {
         String s = svgElement.getAttributeNS(null, ATTR_X1);
         float x1 = 0;
         if (s.length() != 0) {
-            x1 = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.HORIZONTAL_LENGTH,
-                                              uctx);
+            x1 = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_X1, s,
+                                             uctx,
+                                             UnitProcessor.HORIZONTAL_LENGTH);
         }
 
         // parse the y1 attribute, (default is 0)
         s = svgElement.getAttributeNS(null, ATTR_Y1);
         float y1 = 0;
         if (s.length() != 0) {
-            y1 = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.VERTICAL_LENGTH,
-                                              uctx);
+            y1 = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_Y1, s,
+                                             uctx,
+                                             UnitProcessor.VERTICAL_LENGTH);
         }
 
         // parse the x2 attribute, (default is 0)
         s = svgElement.getAttributeNS(null, ATTR_X2);
         float x2 = 0;
         if (s.length() != 0) {
-            x2 = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.HORIZONTAL_LENGTH,
-                                              uctx);
+            x2 = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_X2, s,
+                                             uctx,
+                                             UnitProcessor.HORIZONTAL_LENGTH);
         }
 
         // parse the y2 attribute, (default is 0)
         s = svgElement.getAttributeNS(null, ATTR_Y2);
         float y2 = 0;
         if (s.length() != 0) {
-            y2 = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.VERTICAL_LENGTH,
-                                              uctx);
+            y2 = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_Y2, s,
+                                             uctx,
+                                             UnitProcessor.VERTICAL_LENGTH);
         }
 
         return new Line2D.Float(x1, y1, x2, y2);

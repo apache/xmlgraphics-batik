@@ -247,20 +247,20 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         String s = svgElement.getAttributeNS(null, ATTR_X);
         float x = 0;
         if (s.length() != 0) {
-            x = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.HORIZONTAL_LENGTH,
-                                             uctx);
+            x = SVGUtilities.svgToUserSpace(svgElement,
+                                            ATTR_X, s,
+                                            uctx,
+                                            UnitProcessor.HORIZONTAL_LENGTH);
         }
 
         // parse the x attribute, (default is 0)
         s = svgElement.getAttributeNS(null, ATTR_Y);
         float y = 0;
         if (s.length() != 0) {
-            y = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.VERTICAL_LENGTH,
-                                             uctx);
+            y = SVGUtilities.svgToUserSpace(svgElement,
+                                            ATTR_Y, s,
+                                            uctx,
+                                            UnitProcessor.VERTICAL_LENGTH);
         }
 
         // parse the width attribute, (required and must be positive)
@@ -270,10 +270,10 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
             throw new MissingAttributeException(
                 Messages.formatMessage("image.width.required", null));
         } else {
-            w = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.HORIZONTAL_LENGTH,
-                                             uctx);
+            w = SVGUtilities.svgToUserSpace(svgElement,
+                                            ATTR_WIDTH, s,
+                                            uctx,
+                                            UnitProcessor.HORIZONTAL_LENGTH);
             if (w < 0) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("image.width.negative", null));
@@ -287,10 +287,10 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
             throw new MissingAttributeException(
                 Messages.formatMessage("image.height.required", null));
         } else {
-            h = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.VERTICAL_LENGTH,
-                                             uctx);
+            h = SVGUtilities.svgToUserSpace(svgElement,
+                                            ATTR_HEIGHT, s,
+                                            uctx,
+                                            UnitProcessor.VERTICAL_LENGTH);
             if (h < 0) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("image.height.negative", null));

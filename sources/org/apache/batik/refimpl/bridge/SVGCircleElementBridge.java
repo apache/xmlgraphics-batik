@@ -41,20 +41,20 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
         String s = svgElement.getAttributeNS(null, ATTR_CX);
         float cx = 0;
         if (s.length() != 0) {
-            cx = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.HORIZONTAL_LENGTH,
-                                              uctx);
+            cx = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_CX, s,
+                                             uctx,
+                                             UnitProcessor.HORIZONTAL_LENGTH);
         }
 
         // parse the cy attribute, (default is 0)
         s = svgElement.getAttributeNS(null, ATTR_CY);
         float cy = 0;
         if (s.length() != 0) {
-            cy = UnitProcessor.svgToUserSpace(s,
-                                              svgElement,
-                                              UnitProcessor.VERTICAL_LENGTH,
-                                              uctx);
+            cy = SVGUtilities.svgToUserSpace(svgElement,
+                                             ATTR_CY, s,
+                                             uctx,
+                                             UnitProcessor.VERTICAL_LENGTH);
         }
 
         // parse the r attribute, (required and must be positive)
@@ -64,10 +64,10 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
             throw new MissingAttributeException(
                 Messages.formatMessage("circle.r.required", null));
         } else {
-            r = UnitProcessor.svgToUserSpace(s,
-                                             svgElement,
-                                             UnitProcessor.OTHER_LENGTH,
-                                             uctx);
+            r = SVGUtilities.svgToUserSpace(svgElement,
+                                            ATTR_R, s,
+                                            uctx,
+                                            UnitProcessor.OTHER_LENGTH);
             if (r < 0) {
                 throw new IllegalAttributeValueException(
                     Messages.formatMessage("circle.r.negative", null));

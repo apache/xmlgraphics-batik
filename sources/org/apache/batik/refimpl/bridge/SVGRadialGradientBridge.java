@@ -117,17 +117,20 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             fy = cy;
         }
 
-        SVGElement svgPaintedElement = (SVGElement) paintedElement;
-
         Point2D c
-            = SVGUtilities.convertPoint(svgPaintedElement, cx, cy,
-                                        units, paintedNode, uctx);
+            = SVGUtilities.convertGradientPoint(paintedElement,
+                                                ATTR_CX, cx,
+                                                ATTR_CY, cy,
+                                                units, uctx);
         Point2D f
-            = SVGUtilities.convertPoint(svgPaintedElement, fx, fy,
-                                        units, paintedNode, uctx);
+            = SVGUtilities.convertGradientPoint(paintedElement,
+                                                ATTR_FX, fx,
+                                                ATTR_FY, fy,
+                                                units, uctx);
         float radius
-            = SVGUtilities.convertLength((SVGElement)paintedElement, r,
-                                         units, paintedNode, uctx);
+            = SVGUtilities.convertGradientLength(paintedElement,
+                                                 ATTR_R, r,
+                                                 units, uctx);
 
         // parse the 'spreadMethod' attribute, (default is PAD)
         String spreadMethod =
@@ -135,42 +138,43 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
         if (spreadMethod.length() == 0) {
             spreadMethod = VALUE_PAD;
         }
+
         RadialGradientPaint.CycleMethodEnum cycleMethod =
             convertSpreadMethod(spreadMethod);
 
-        //
         // Extract gradient transform
-        //
         AffineTransform at = AWTTransformProducer.createAffineTransform
-            (new StringReader(paintElement.getAttributeNS(null, ATTR_GRADIENT_TRANSFORM)),
-             ctx.getParserFactory());
+            (new StringReader(paintElement.getAttributeNS(null,
+                             ATTR_GRADIENT_TRANSFORM)), ctx.getParserFactory());
 
-        at = SVGUtilities.convertAffineTransform(at,
-                                                 paintedNode,
-                                                 units);
+        at = SVGUtilities.convertAffineTransform(at, paintedNode, units);
 
-        //
         // Extract stop colors and intervals
-        //
         Vector stopVector = extractGradientStops(paintElement, ctx);
+
         // if no stop, fill is 'none'
         if (stopVector.size() == 0) {
             return null;
         }
+
         // if one stop, the fill is just one color
         if (stopVector.size() == 1) {
             return ((GradientStop) stopVector.get(0)).stopColor;
         }
-        //
+
+        // Radius check : A value of zero will cause the area to be painted as
+        // a single color using the color and opacity of the last gradient stop.
+        if (radius == 0) {
+            return ((GradientStop) stopVector.lastElement()).stopColor;
+        }
+
         // Convert the stop offsets to intervals
-        //
         int nStops = stopVector.size();
         float curOffset = 0;
         if (nStops > 0) {
             GradientStop stop = (GradientStop)stopVector.elementAt(0);
             curOffset = stop.offset;
         }
-
         for (int i=1; i<nStops; i++) {
             GradientStop stop = (GradientStop)stopVector.elementAt(i);
             if(stop.offset < curOffset){
@@ -179,21 +183,18 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
             curOffset = stop.offset;
         }
 
-        //
         // Extract the color interpolation property
-        //
-        CSSPrimitiveValue colorInterpolation
-            = (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
+        CSSPrimitiveValue colorInterpolation =
+            (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
 
-        RadialGradientPaint.ColorSpaceEnum colorSpace
-            = RadialGradientPaint.SRGB;
+        RadialGradientPaint.ColorSpaceEnum colorSpace =
+            RadialGradientPaint.SRGB;
+
         if(LINEAR_RGB.equals(colorInterpolation.getStringValue())){
             colorSpace = RadialGradientPaint.LINEAR_RGB;
         }
 
-        //
         // Build Paint
-        //
         Paint paint = null;
         if (nStops > 0) {
             Color colors[] = new Color[nStops];
@@ -202,9 +203,6 @@ public class SVGRadialGradientBridge extends SVGGradientBridge
                 GradientStop stop = (GradientStop)stopVector.elementAt(i);
                 colors[i] = stop.stopColor;
                 offsets[i] = stop.offset;
-                // System.out.println("offset[" + i + "] = " + offsets[i]);
-                // System.out.println("colors[" + i + "] = " +
-                //                   Integer.toHexString(colors[i].getRGB()));
             }
 
             paint = new RadialGradientPaint(c, radius, f, offsets, colors,

@@ -60,20 +60,20 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
             s = svgElement.getAttributeNS(null, ATTR_X);
             x = 0;
             if (s.length() != 0) {
-                x = UnitProcessor.svgToUserSpace(s,
-                                                 svgElement,
-                                                UnitProcessor.HORIZONTAL_LENGTH,
-                                                 uctx);
+               x = SVGUtilities.svgToUserSpace(svgElement,
+                                               ATTR_X, s,
+                                               uctx,
+                                               UnitProcessor.HORIZONTAL_LENGTH);
             }
 
             // parse the y attribute, (default is 0)
             s = svgElement.getAttributeNS(null, ATTR_Y);
             y = 0;
             if (s.length() != 0) {
-                y = UnitProcessor.svgToUserSpace(s,
-                                                 svgElement,
-                                                 UnitProcessor.VERTICAL_LENGTH,
-                                                 uctx);
+                y = SVGUtilities.svgToUserSpace(svgElement,
+                                                ATTR_Y, s,
+                                                uctx,
+                                                UnitProcessor.VERTICAL_LENGTH);
             }
         } else {
             x = 0;
@@ -85,20 +85,20 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
         if (s.length() == 0) {
             s = "100%";
         }
-        w = UnitProcessor.svgToUserSpace(s,
-                                         svgElement,
-                                         UnitProcessor.HORIZONTAL_LENGTH,
-                                         uctx);
+        w = SVGUtilities.svgToUserSpace(svgElement,
+                                        ATTR_WIDTH, s,
+                                        uctx,
+                                        UnitProcessor.HORIZONTAL_LENGTH);
 
         // parse the height attribute (default is 100%)
         s = svgElement.getAttributeNS(null, ATTR_HEIGHT);
         if (s.length() == 0) {
             s = "100%";
         }
-        h = UnitProcessor.svgToUserSpace(s,
-                                         svgElement,
-                                         UnitProcessor.VERTICAL_LENGTH,
-                                         uctx);
+        h = SVGUtilities.svgToUserSpace(svgElement,
+                                        ATTR_HEIGHT, s,
+                                        uctx,
+                                        UnitProcessor.VERTICAL_LENGTH);
 
         // parse the tranform attribute
         AffineTransform at;
