@@ -75,9 +75,6 @@ public class SVGPolygonElementBridge extends SVGDecoratedShapeElementBridge {
             } finally {
                 shapeNode.setShape(app.getShape());
             }
-        } else {
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {SVG_POINTS_ATTRIBUTE});
         }
     }
 
