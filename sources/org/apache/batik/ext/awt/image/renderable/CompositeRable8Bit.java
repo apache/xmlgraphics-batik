@@ -13,6 +13,8 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 import java.util.List;
 import java.util.Iterator;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.color.ColorSpace;
 import java.awt.Composite;
 import java.awt.CompositeContext;
@@ -137,13 +139,19 @@ public class CompositeRable8Bit
             Rectangle2D.intersect(r, aoiR, r);
         }
 
+        // This BufferedImage must be unpremultiplied or else when we
+        // go to draw things get loopy.  If you want to try backing
+        // this out check if the rendering problem persists by
+        // bringing up samples/tests/feComposite.svg and rotating a
+        // few degrees.  The zoom in/out and pan around a bit, it
+        // ussually dies fairly quickly.
         BufferedImage bi;
         if (csIsLinear)
             bi = GraphicsUtil.makeLinearBufferedImage
-            (r.width, r.height, true);
+            (r.width, r.height, false);
         else
             bi = new BufferedImage(r.width, r.height, 
-                                   BufferedImage.TYPE_INT_ARGB_PRE);
+                                   BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g2d = bi.createGraphics();
 
@@ -232,10 +240,49 @@ public class CompositeRable8Bit
 
             // Get our sources image...
             RenderedImage ri = filt.createRendering(rc);
-            // No output image keep going
-            // FIXX: Should we do something different for IN/OUT/ARITH???
+
             if (ri == null)
-                continue;
+                // Blank image...
+                switch (rule.getRule()) {
+                case CompositeRule.RULE_IN:
+                    // For Mode IN One blank image kills all output
+                    // (including any "future" images to be drawn).
+                    return null;
+
+                case CompositeRule.RULE_ARITHMETIC: {
+                    BufferedImage blank;
+                    if (csIsLinear)
+                        blank = GraphicsUtil.makeLinearBufferedImage
+                            (r.width, r.height, true);
+                    else
+                        blank = new BufferedImage
+                            (r.width, r.height, 
+                             BufferedImage.TYPE_INT_ARGB_PRE);
+                    ri = new BufferedImageCachableRed(blank, r.x, r.y);
+                }
+                break;
+
+                case CompositeRule.RULE_OUT:
+                    {
+                        // For mode OUT blank image clears output 
+                        // up to this point.
+                        g2d.setComposite(AlphaComposite.Clear);
+                        g2d.setColor(new Color(0, 0, 0, 0));
+                        g2d.fillRect(r.x, r.y, r.width, r.height);
+                        g2d.setComposite(comp);
+                    }
+                    first = false;
+                    continue;
+
+                default:
+                    // All other cases we simple pretend the image
+                    // didn't exist (fully transparent image has no
+                    // affect).
+                    first = false;
+                    continue;
+            }
+                
+
             CachableRed cr;
             cr = GraphicsUtil.wrap(ri);
 

@@ -347,11 +347,11 @@ public abstract class AbstractRed implements CachableRed {
         // structure of the tile grid in general.
 
         x0 = bounds.x-tileGridXOff; // left edge in tile coords;
-        if (x0 > 0) minTileX = (x0+tileWidth-1)/tileWidth;
+        if (x0 > 0) minTileX = x0/tileWidth;
         else        minTileX = -(((-x0)+tileWidth-1)/tileWidth);
 
         y0 = bounds.y-tileGridYOff; // top edge in tile coords;
-        if (y0 > 0) minTileY = (y0+tileHeight-1)/tileHeight;
+        if (y0 > 0) minTileY = y0/tileHeight;
         else        minTileY = -(((-y0)+tileHeight-1)/tileHeight);
 
 
