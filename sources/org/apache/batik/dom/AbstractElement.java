@@ -72,15 +72,13 @@ public abstract class AbstractElement
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#hasAttributes()}.
-     * @return true.
      */
     public boolean hasAttributes() {
-	return true;
+	return attributes != null && attributes.getLength() != 0;
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getAttributes()}.
-     * @return {@link #attributes}.
      */
     public NamedNodeMap getAttributes() {
 	return (attributes == null)
