@@ -152,6 +152,12 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
             } catch (NoninvertibleTransformException ex) {}
         }
 
+        // 'enable-background'
+        Rectangle2D r = CSSUtilities.convertEnableBackground(e, uctx);
+        if (r != null) {
+            gn.setBackgroundEnable(r);
+        }
+
         ctx.openViewport
             (e, new SVGSVGElementViewport((SVGSVGElement)e,
                                           actualWidth,
