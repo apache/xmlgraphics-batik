@@ -10,6 +10,7 @@ package org.apache.batik.swing;
 
 import java.awt.Dimension;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -1000,19 +1001,25 @@ public class JSVGCanvas extends JSVGComponent {
         }
 
         public void handleEvent(Event evt){
-            setToolTipText(toolTip);
+            final String tt = toolTip;
+            EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        setToolTipText(toolTip);
 
-            if (toolTip != null) {
-                MouseEvent e = new MouseEvent(JSVGCanvas.this,
-                                              MouseEvent.MOUSE_ENTERED,
-                                              System.currentTimeMillis(),
-                                              0,
-                                              locationListener.getLastX(),
-                                              locationListener.getLastY(),
-                                              0,
-                                              false);
-                ToolTipManager.sharedInstance().mouseEntered(e);
-            }
+                        if (toolTip != null) {
+                            MouseEvent e = new MouseEvent
+                                (JSVGCanvas.this,
+                                 MouseEvent.MOUSE_ENTERED,
+                                 System.currentTimeMillis(),
+                                 0,
+                                 locationListener.getLastX(),
+                                 locationListener.getLastY(),
+                                 0,
+                                 false);
+                            ToolTipManager.sharedInstance().mouseEntered(e);
+                        }
+                    }
+                });
         }
     }
 }
