@@ -11,6 +11,8 @@ package org.apache.batik.util;
 import java.util.Map;
 import java.util.HashMap;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 
 /**
@@ -149,9 +151,68 @@ public class SoftReferenceCache {
      */
     protected final synchronized void putImpl(Object key, Object object) {
         if (map.containsKey(key)) {
-            SoftReference ref = new SoftReference(object);
+            SoftReference ref = new SoftReference(object, queue);
             map.put(key, ref);
+            synchronized (refMap) {
+                refMap.put(ref, new Info(key, this));
+            }
             this.notifyAll();
         }
     }
+
+    static class Info {
+        Object key;
+        SoftReference cacheRef;
+        public Info(Object key,
+                    SoftReferenceCache cache) {
+            this.key = key;
+            this.cacheRef = new SoftReference(cache);
+        }
+
+        public Object getKey() { return key; }
+
+        public SoftReferenceCache getCache() { 
+            return (SoftReferenceCache)cacheRef.get(); 
+        }
+    }
+
+    private static HashMap        refMap = new HashMap();
+    private static ReferenceQueue queue = new ReferenceQueue();
+    private static Thread cleanup;
+
+    static {
+        cleanup = new Thread() {
+                public void run() {
+                    while(true) {
+                        Reference ref;
+                        try {
+                            ref = queue.remove();
+                        } catch (InterruptedException ie) {
+                            continue;
+                        }
+
+                        Object o;
+                        synchronized (refMap) {
+                            o = refMap.remove(ref);
+                        }
+
+                        // System.out.println("Cleaning: " + o);
+                        if (o == null) continue;
+                        Info info = (Info)o;
+                        SoftReferenceCache cache = info.getCache();
+                        if (cache == null) continue;
+                        synchronized (cache) {
+                            o = cache.map.remove(info.getKey());
+                            if (ref != o)
+                                // Must not have been ours put it back...
+                                // Can happen if a clear is done.
+                                cache.map.put(info.getKey(), o);
+                        }
+                    }
+                }
+            };
+        cleanup.start();
+    }
+
+
 }
