@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<!DOCTYPE document SYSTEM "./dtd/document-v10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- author stephane@hillion.org                                               -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+<document>
+    <header>
+        <title>Who Are We?</title>
+        <subtitle>Batik People</subtitle>
+        <authors>
+            <person name="Stephane Hillion" email="stephane@hillion.org"/>
+        </authors>
+    </header>
+
+    <body>
+      <s1 title="Introduction">
+      <p>
+      This page contains informations about the current Batik developers and
+      the features they are working on at the moment.
+      </p>
+      </s1>
+
+      <s1 title="Batik Commiters">
+      <p>
+      The following people have a commit access to the CVS repository:
+      </p>
+        <dl>
+          <dt>JD</dt><dd><link href="mailto:James.Davidson@eng.sun.com">James Davidson</link> (Sun)</dd>
+          <dt>TD</dt><dd><link href="mailto:Thomas.DeWeese@Kodak.com">Thomas De Weese</link> (Kodak)</dd>
+          <dt>BH</dt><dd><link href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</link> (Sun)</dd>
+          <dt>VH</dt><dd><link href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</link> (Sun)</dd>
+          <dt>SH</dt><dd><link href="mailto:hillion@apache.org">Stephane Hillion</link> (INRIA)</dd>
+          <dt>DJ</dt><dd><link href="mailto:dean.jackson@cmis.csiro.au">Dean Jackson</link> (CSIRO)</dd>
+          <dt>CJ</dt><dd><link href="mailto:cjolif@ilog.fr">Christophe Jolif</link> (Ilog)</dd>
+          <dt>TK</dt><dd><link href="mailto:tkormann@apache.org">Thierry Kormann</link> (Koala/Dyade/Bull)</dd>
+          <dt>SM</dt><dd><link href="mailto:stefano@apache.org">Stefano Mazzocchi</link> (ASF)</dd>
+          <dt>ET</dt><dd><link href="mailto:tissandi@ilog.fr">Emmanuel Tissandier</link> (Ilog)</dd>
+        </dl>
+      </s1>
+
+      <s1 title="Areas of Expertise">
+        <p>
+        The following table summarizes the areas of expertise of each commiter. It allows better
+        coordination of both internal and external development efforts.
+        </p>
+
+        <table>
+          <tr>
+            <th/><th>JD</th><th>TD</th><th>BH</th><th>VH</th><th>SH</th>
+                 <th>DJ</th><th>CJ</th><th>TK</th><th>SM</th><th>ET</th>
+          </tr>
+          <tr>
+            <td>Apache Contacts</td><td>X</td><td/><td/><td/><td/>
+                               <td/><td/><td/><td>X</td><td/>
+          </tr>
+          <tr>
+            <td>Animation</td><td/><td/><td/><td/><td/>
+                              <td/><td/><td/><td/><td/>
+          </tr>
+          <tr>
+            <td>Bridge</td><td/><td/><td/><td>X</td><td>X</td>
+                           <td/><td>X</td><td>X</td><td/><td>X</td>
+          </tr>
+          <tr>
+            <td>CSS Engine</td><td/><td/><td/><td/><td>X</td>
+                               <td/><td/><td/><td/><td/>
+          </tr>
+          <tr>
+            <td>Documentation</td><td/><td/><td/><td>X</td><td>X</td>
+                                  <td/><td/><td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td>DOM Level 2</td><td/><td/><td/><td/><td>X</td>
+                                <td/><td/><td/><td/><td/>
+          </tr>
+          <tr>
+            <td>SVG DOM</td><td/><td/><td/><td/><td>X</td>
+                            <td/><td/><td/><td/><td/>
+          </tr>
+          <tr>
+            <td>GVT core</td><td/><td/><td/><td>X</td><td/>
+                             <td/><td/><td>X</td><td/><td>X</td>
+          </tr>
+          <tr>
+            <td>GVT filters</td><td/><td>X</td><td/><td>X</td><td/>
+                               <td>X</td><td/><td/><td/><td/>
+          </tr>
+          <tr>
+            <td>GVT renderer</td><td/><td>X</td><td/><td>X</td><td/>
+                                 <td/><td/><td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td>GVT text</td><td/><td/><td>X</td><td/><td/>
+                             <td>X</td><td/><td/><td/><td/>
+          </tr>
+          <tr>
+            <td>Micro Parsers</td><td/><td/><td/><td/><td>X</td>
+                                  <td/><td/><td/><td/><td/>
+          </tr>
+          <tr>
+            <td>Scripting</td><td/><td/><td/><td/><td/>
+                              <td/><td>X</td><td/><td/><td/>
+          </tr>
+          <tr>
+            <td>Transcoder</td><td/><td/><td>X</td><td/><td/>
+                            <td/><td/><td>X</td><td/><td/>
+          </tr>
+          <tr>
+            <td>Viewer</td><td/><td/><td/><td/><td>X</td>
+                            <td/><td/><td/><td/><td/>
+          </tr>
+        </table>
+      </s1>
+    </body>
+</document>
