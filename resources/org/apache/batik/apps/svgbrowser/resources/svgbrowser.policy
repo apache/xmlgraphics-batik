@@ -11,6 +11,7 @@ grant codeBase "${squiggle.dev.base}/lib/crimson-parser.jar" {
 
 grant codeBase "${squiggle.dev.base}/lib/js.jar" {
   permission java.lang.RuntimePermission "createClassLoader";
+  permission java.net.SocketPermission "*", "listen, connect, resolve, accept";
 };
 
 

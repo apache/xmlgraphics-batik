@@ -12,44 +12,55 @@ import java.io.Reader;
 import java.io.Writer;
 import java.io.IOException;
 
+import org.w3c.dom.Document;
+
 /**
  * An hight level interface that represents an interpreter engine of
  * a particular scripting language.
+ *
  * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
 public interface Interpreter extends org.apache.batik.i18n.Localizable {
     /**
      * This method should evaluate a piece of script.
+     *
      * @param scriptreader a <code>java.io.Reader</code> on the piece of script
      * @return if no exception is thrown during the call, should return the
      * value of the last expression evaluated in the script
      */
     public Object evaluate(Reader scriptreader)
         throws InterpreterException, IOException;
+
     /**
      * This method should evaluate a piece of script using a <code>String</code>
      * instead of a <code>Reader</code>. This usually allows do easily do some
      * caching.
+     *
      * @param script the piece of script
      * @return if no exception is thrown during the call, should return the
      * value of the last expression evaluated in the script
      */
     public Object evaluate(String script)
         throws InterpreterException;
+
     /**
      * This method should register a particular Java <code>Object</code> in
      * the environment of the interpreter.
+     *
      * @param name the name of the script object to create
      * @param object the Java object
      */
     public void bindObject(String name, Object object);
+
     /**
      * This method should change the output <code>Writer</code> that will be
      * used when output function of the scripting langage is used.
+     *
      * @param output the new out <code>Writer</code>.
      */
     public void setOut(Writer output);
+
     /**
      * This method can dispose resources used by the interpreter when it is
      * no longer used. Be careful, you SHOULD NOT use this interpreter instance
