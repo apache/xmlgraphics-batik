@@ -329,10 +329,10 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
             // UI listeners
             if (elt.hasAttributeNS(null, "onfocusin")) {
-                target.addEventListener("focusin", focusinListener, false);
+                target.addEventListener("DOMFocusIn", focusinListener, false);
             }
             if (elt.hasAttributeNS(null, "onfocusout")) {
-                target.addEventListener("focusout", focusoutListener, false);
+                target.addEventListener("DOMFocusOut", focusoutListener, false);
             }
             if (elt.hasAttributeNS(null, "onactivate")) {
                 target.addEventListener("activate", activateListener, false);
@@ -408,8 +408,8 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
             }
 
             // UI listeners
-            target.removeEventListener("focusin", focusinListener, false);
-            target.removeEventListener("focusout", focusoutListener, false);
+            target.removeEventListener("DOMFocusIn", focusinListener, false);
+            target.removeEventListener("DOMFocusOut", focusoutListener, false);
             target.removeEventListener("activate", activateListener, false);
             target.removeEventListener("click", clickListener, false);
             target.removeEventListener("mousedown", mousedownListener, false);
