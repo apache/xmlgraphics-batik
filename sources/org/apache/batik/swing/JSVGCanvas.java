@@ -35,13 +35,14 @@ import javax.swing.ToolTipManager;
 
 import org.apache.batik.bridge.UserAgent;
 
-import org.apache.batik.swing.gvt.Interactor;
 import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
 import org.apache.batik.swing.gvt.AbstractResetTransformInteractor;
 import org.apache.batik.swing.gvt.AbstractRotateInteractor;
 import org.apache.batik.swing.gvt.AbstractZoomInteractor;
+import org.apache.batik.swing.gvt.Interactor;
 import org.apache.batik.swing.svg.JSVGComponent;
+import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.swing.svg.SVGUserAgent;
 
 import org.apache.batik.util.SVGConstants;
@@ -467,6 +468,27 @@ public class JSVGCanvas extends JSVGComponent {
         return new CanvasUserAgent();
     }
 
+    /**
+     * Creates an instance of Listener.
+     */
+    protected Listener createListener() {
+        return new CanvasSVGListener();
+    }
+
+    /**
+     * To hide the listener methods. This class just reset the tooltip.
+     */
+    protected class CanvasSVGListener extends JSVGComponent.SVGListener {
+
+        /**
+         * Called when the loading of a document was started.
+         */
+        public void documentLoadingStarted(SVGDocumentLoaderEvent e) {
+	    JSVGCanvas.this.setToolTipText(null);
+        }
+
+    }
+
     // ----------------------------------------------------------------------
     // Actions
     // ----------------------------------------------------------------------
@@ -719,25 +741,38 @@ public class JSVGCanvas extends JSVGComponent {
                     // If there is a <desc> peer, do nothing as the tooltip will
                     // be handled when handleElement is invoked for the <desc>
                     // peer.
-                    if (hasPeerWithTag(elt, 
-                                       SVGConstants.SVG_NAMESPACE_URI, 
-                                       SVGConstants.SVG_DESC_TAG)){
+                    if (hasPeerWithTag
+			(elt, 
+			 SVGConstants.SVG_NAMESPACE_URI, 
+			 SVGConstants.SVG_DESC_TAG)){
                         return;
                     }
 		    
                     elt.normalize();
+		    if (elt.getFirstChild() == null) {
+			return;
+		    }
                     String toolTip = elt.getFirstChild().getNodeValue();
+		    if (toolTip == null || toolTip.length() == 0) {
+			return;
+		    }
                     toolTip = Messages.formatMessage
 			(TOOLTIP_TITLE_ONLY, 
 			 new Object[]{toFormattedHTML(toolTip)});
                                             
                     setToolTip((Element)(elt.getParentNode()), toolTip);
-                }
-                else if (elt.getLocalName().equals(SVGConstants.SVG_DESC_TAG)) {
+                } else if (elt.getLocalName().equals
+			   (SVGConstants.SVG_DESC_TAG)) {
                     // If there is a <title> peer, prepend its content to the
                     // content of the <desc> element.
                     elt.normalize();
+		    if (elt.getFirstChild() == null) {
+			return;
+		    }
                     String toolTip = elt.getFirstChild().getNodeValue();
+		    if (toolTip == null || toolTip.length() == 0) {
+			return;
+		    }
 
                     Element titlePeer = 
 			getPeerWithTag(elt,
