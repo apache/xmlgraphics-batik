@@ -12,7 +12,6 @@ import java.io.StringReader;
 
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.parser.LengthParser;
-import org.apache.batik.util.UnitProcessor;
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.css.CSSPrimitiveValue;
