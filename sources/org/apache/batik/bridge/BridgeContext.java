@@ -142,7 +142,7 @@ public class BridgeContext implements ErrorConstants {
         this(userAgent,
              rc,
              sharedPool,
-             new DocumentLoader(userAgent.getXMLParserClassName()));
+             new DocumentLoader(userAgent));
     }
 
     /**

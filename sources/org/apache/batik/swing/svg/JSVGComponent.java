@@ -35,7 +35,6 @@ import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.bridge.UserAgent;
 
-import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 
@@ -193,7 +192,7 @@ public class JSVGComponent extends JGVTComponent {
         url = newURI.toString();
         fragmentIdentifier = newURI.getRef();
 
-        loader = new DocumentLoader(userAgent.getXMLParserClassName());
+        loader = new DocumentLoader(userAgent);
         nextDocumentLoader = new SVGDocumentLoader(url, loader);
         nextDocumentLoader.setPriority(Thread.MIN_PRIORITY);
 
@@ -236,9 +235,6 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         svgDocument = doc;
-
-        DefaultSVGContext ctx = (DefaultSVGContext)((SVGOMDocument)doc).getSVGContext();
-        ctx.setUserStyleSheetURI(userAgent.getUserStyleSheetURI());
 
         Element root = doc.getDocumentElement();
         String znp = root.getAttributeNS(null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
@@ -300,7 +296,7 @@ public class JSVGComponent extends JGVTComponent {
      */
     protected BridgeContext createBridgeContext() {
         if (loader == null) {
-            loader = new DocumentLoader(userAgent.getXMLParserClassName());
+            loader = new DocumentLoader(userAgent);
         }
         return new BridgeContext(userAgent,
                                  rendererFactory.getRenderContext(),
@@ -567,7 +563,7 @@ public class JSVGComponent extends JGVTComponent {
                 return;
             }
         }
-        
+
         /**
          * Called when a rendering failed.
          */
