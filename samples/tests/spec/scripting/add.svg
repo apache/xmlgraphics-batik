@@ -1,0 +1,74 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<!-- ====================================================================== -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.     -->
+<!--                                                                        -->
+<!-- This software is published under the terms of the Apache Software      -->
+<!-- License version 1.1, a copy of which has been included with this       -->
+<!-- distribution in the LICENSE file.                                      -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- append child test                                                      -->
+<!--                                                                        -->
+<!-- @author tkormann@ilog.fr                                               -->
+<!-- @version $Id$ -->
+<!-- ====================================================================== -->
+
+<?xml-stylesheet type="text/css" href="../../resources/style/test.css" ?>  
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     id="body" width="450" height="500" viewBox="0 0 450 500">
+
+    <title>appendChild test 'onload'</title>
+
+    <text x="50%" y="45" class="title">appendChild test 'onload'</text>
+
+    <script type="text/ecmascript">
+
+    var svgNamespaceURI = "http://www.w3.org/2000/svg";
+
+    function build(evt) {
+        var g = evt.target;
+        var document = g.ownerDocument;
+        var e;
+
+        e = createElement(document, 200, 100, "fill:crimson");
+        g.appendChild(e);
+
+        e = createElement(document, 250, 100, "fill:orange");
+        g.appendChild(e);
+
+        e = createElement(document, 150, 100, "fill:gold");
+        g.insertBefore(e, g.firstChild);
+
+        var ee = createElement(document, 100, 100, "fill:#eee");
+        g.insertBefore(ee, e);
+    }
+
+    function createElement(g, x, y, style) {
+        var e = document.createElementNS(svgNamespaceURI, "rect");
+        e.setAttribute("x", x);
+        e.setAttribute("y", y);
+        e.setAttribute("width", 100);
+        e.setAttribute("height", 100);
+        e.setAttribute("style", style);
+        return e;
+    }
+
+    </script>
+
+    <g onload="build(evt)" id="test-content">
+    </g>
+        <text x="225" y="220" style="text-anchor:middle">constructed using 'onload'</text>
+    <g>
+       <rect x="100" y="300" width="100" height="100" style="fill:#eee"/>
+       <rect x="150" y="300" width="100" height="100" style="fill:gold"/>
+       <rect x="200" y="300" width="100" height="100" style="fill:crimson"/>
+       <rect x="250" y="300" width="100" height="100" style="fill:orange"/>
+    </g>
+        <text x="225" y="420" style="text-anchor:middle">reference</text>
+</svg>
