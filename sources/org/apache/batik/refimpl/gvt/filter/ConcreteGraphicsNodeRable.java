@@ -35,34 +35,37 @@ import org.apache.batik.gvt.filter.GraphicsNodeRable;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
+public class ConcreteGraphicsNodeRable 
+    extends    AbstractRable 
+    implements GraphicsNodeRable {
+
     /**
-     * IDENTITY Transform. Used when the node transform is null
+     * Should GraphicsNodeRable call primitivePaint or Paint.
      */
-    static private final AffineTransform IDENTITY = new AffineTransform();
+    private boolean usePrimitivePaint = true;
+
+    /**
+     * Returns true if this Rable get's it's contents by calling
+     * primitivePaint on the associated <tt>GraphicsNode</tt> or
+     * false if it uses paint.
+     */
+    public boolean getUsePrimitivePaint() {
+        return usePrimitivePaint;
+    }
+
+    /**
+     * Set to true if this Rable should get it's contents by calling
+     * primitivePaint on the associated <tt>GraphicsNode</tt> or false
+     * if it should use paint.  
+     */
+    public void setUsePrimitivePaint(boolean usePrimitivePaint) {
+        this.usePrimitivePaint = usePrimitivePaint;
+    }
 
     /**
      * GraphicsNode this image can render
      */
     private GraphicsNode node;
-
-    /**
-     * Area covered by this image
-     */
-    private Rectangle2D.Float imageRect;
-
-    /**
-     * Time stamp
-     */
-    private long stamp = 0;
-
-    /**
-     * Returns the current modification timestamp on this Renderable
-     * node.  This value will change whenever cached output data becomes
-     * invalid.
-     * @return Current modification timestamp value.
-     */
-    public long getTimeStamp() { return stamp; }
 
     /**
      * Returns the <tt>GraphicsNode</tt> rendered by this image
@@ -83,78 +86,38 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
     }
 
     /**
-     * Always throws an exception.
-     */
-    public Shape getDependencyRegion(int srcIndex,
-                                     Rectangle2D outputRgn) {
-        throw new IndexOutOfBoundsException
-            ("Nonexistant source requested.");
-    }
-
-    /**
-     * Always throws an exception
-     */
-    public Shape getDirtyRegion(int srcIndex,
-                                Rectangle2D inputRgn) {
-        throw new IndexOutOfBoundsException
-            ("Nonexistant source requested.");
-    }
-
-
-    public Shape getFilterExtent() {
-        return getBounds2D();
-    }
-
-    /**
-     * @param GraphicsNode this image should represent
+     * @param node The GraphicsNode this image should represent
      */
     public ConcreteGraphicsNodeRable(GraphicsNode node){
         if(node == null)
             throw new IllegalArgumentException();
 
         this.node = node;
-
+        this.usePrimitivePaint = true;
     }
 
     /**
-     * Initializes this image's members
+     * @param node      the GraphicsNode this image should represent
+     * @param usePrimitivePaint indicates if the image should
+     *        include any filters or mask operations on <tt>node</tt>
+     */
+    public ConcreteGraphicsNodeRable(GraphicsNode node, 
+                                     boolean      usePrimitivePaint){
+        if(node == null)
+            throw new IllegalArgumentException();
+
+        this.node = node;
+        this.usePrimitivePaint = usePrimitivePaint;
+    }
+
+    /**
+     * Returns the bounds of this Rable in the user coordinate system.
      */
     public Rectangle2D getBounds2D(){
-        Rectangle2D imageRect = (Rectangle2D)(node.getPrimitiveBounds().clone());
+        if (usePrimitivePaint)
+            return (Rectangle2D)(node.getPrimitiveBounds().clone());
 
-        return imageRect;
-    }
-
-    /**
-     * Returns a vector of RenderableImages that are the sources of
-     * image data for this RenderableImage. Note that this method may
-     * return an empty vector, to indicate that the image has no sources,
-     * or null, to indicate that no information is available.
-     *
-     * @return a (possibly empty) Vector of RenderableImages, or null.
-     */
-    public Vector getSources(){
-        return null;
-    }
-
-    /**
-     * Gets a property from the property set of this image.
-     * If the property name is not recognized, java.awt.Image.UndefinedProperty
-     * will be returned.
-     *
-     * @param name the name of the property to get, as a String.
-     * @return a reference to the property Object, or the value
-     *         java.awt.Image.UndefinedProperty.
-     */
-    public Object getProperty(String name){
-        return Image.UndefinedProperty;
-    }
-
-    /**
-     * Returns a list of names recognized by getProperty.
-     */
-    public String[] getPropertyNames(){
-        return null;
+        return (Rectangle2D)(node.getBounds().clone());
     }
 
     /**
@@ -166,109 +129,6 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
      */
     public boolean isDynamic(){
         return false;
-    }
-
-    /**
-     * Gets the width in user coordinate space.  By convention, the
-     * usual width of a RenderableImage is equal to the image's aspect
-     * ratio (width divided by height).
-     *
-     * @return the width of the image in user coordinates.
-     */
-    public float getWidth(){
-        return (float)getBounds2D().getWidth();
-    }
-
-    /**
-     * Gets the height in user coordinate space.  By convention, the
-     * usual height of a RenderedImage is equal to 1.0F.
-     *
-     * @return the height of the image in user coordinates.
-     */
-    public float getHeight(){
-        return (float)getBounds2D().getHeight();
-    }
-
-    /**
-     * Gets the minimum X coordinate of the rendering-independent image data.
-     */
-    public float getMinX(){
-        return (float)getBounds2D().getX();
-    }
-
-    /**
-     * Gets the minimum Y coordinate of the rendering-independent image data.
-     */
-    public float getMinY(){
-        return (float)getBounds2D().getY();
-    }
-
-    /**
-     * Creates a RenderedImage instance of this image with width w, and
-     * height h in pixels.  The RenderContext is built automatically
-     * with an appropriate usr2dev transform and an area of interest
-     * of the full image.  All the rendering hints come from hints
-     * passed in.
-     *
-     * <p> If w == 0, it will be taken to equal
-     * Math.round(h*(getWidth()/getHeight())).
-     * Similarly, if h == 0, it will be taken to equal
-     * Math.round(w*(getHeight()/getWidth())).  One of
-     * w or h must be non-zero or else an IllegalArgumentException
-     * will be thrown.
-     *
-     * <p> The created RenderedImage may have a property identified
-     * by the String HINTS_OBSERVED to indicate which RenderingHints
-     * were used to create the image.  In addition any RenderedImages
-     * that are obtained via the getSources() method on the created
-     * RenderedImage may have such a property.
-     *
-     * @param w the width of rendered image in pixels, or 0.
-     * @param h the height of rendered image in pixels, or 0.
-     * @param hints a RenderingHints object containg hints.
-     * @return a RenderedImage containing the rendered data.
-     */
-    public RenderedImage createScaledRendering(int w, int h,
-                                               RenderingHints hints) {
-        RenderedImage renderedImage = null;
-        Rectangle2D imageRect2D = getBounds2D();
-        Rectangle2D.Float imageRect =
-            new Rectangle2D.Float((float)imageRect2D.getX(),
-                                  (float)imageRect2D.getY(),
-                                  (float)imageRect2D.getWidth(),
-                                  (float)imageRect2D.getHeight());
-        if((imageRect.width == 0) ||
-               (imageRect.height == 0)) {
-            renderedImage =
-                new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
-        } else {
-            float scaleX = w/imageRect.width;
-            float scaleY = h/imageRect.height;
-
-            AffineTransform scale
-                = AffineTransform.getScaleInstance(scaleX,
-                                                   scaleY);
-
-            RenderContext context = new RenderContext(scale, hints);
-            renderedImage = createRendering(context);
-        }
-        return renderedImage;
-    }
-
-    /**
-     * Returnd a RenderedImage instance of this image with a default
-     * width and height in pixels.  The RenderContext is built
-     * automatically with an appropriate usr2dev transform and an area
-     * of interest of the full image.  The rendering hints are
-     * empty.  createDefaultRendering may make use of a stored
-     * rendering for speed.
-     *
-     * @return a RenderedImage containing the rendered data.
-     */
-    public RenderedImage createDefaultRendering(){
-        return createScaledRendering((int)getBounds2D().getWidth(),
-                                     (int)getBounds2D().getHeight(),
-                                     null);
     }
 
     /**
@@ -317,55 +177,55 @@ public class ConcreteGraphicsNodeRable implements GraphicsNodeRable{
         final Rectangle renderedArea
             = renderableArea.createIntersection(devAOI).getBounds();
 
-        RenderedImage renderedImage = null;
-        if((renderedArea.width == 0)
-           ||
-           (renderedArea.height == 0)){
-            // CHANGE: RETURN NULL
+        if (   (renderedArea.width == 0)
+            || (renderedArea.height == 0))
+            return null;
+
+
             // If there is no intersection, return a fully
             // transparent image, 1x1
-            renderedImage
-                = new BufferedImage(1, 1,
-                                    BufferedImage.TYPE_INT_ARGB_PRE);
+        BufferedImage offScreen
+            = new BufferedImage(renderedArea.width,
+                                renderedArea.height,
+                                BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g = offScreen.createGraphics();
+
+        g.translate(-renderedArea.x, -renderedArea.y);
+
+        // Set hints. Use the one of the GraphicsNodeRenderContext, not
+        // those of this invocation.
+        // CHANGE : GET HINTS FROM renderContext.
+        RenderingHints hints = renderContext.getRenderingHints();
+        if(hints != null){
+            g.setRenderingHints(hints);
         }
-        else{
-            // There is a non-empty intersection. Render into
-            // that image
-              // System.out.println("rendered area: " + renderedArea);
-            BufferedImage offScreen
-                = new BufferedImage(renderedArea.width,
-                                    renderedArea.height,
-                                    BufferedImage.TYPE_INT_ARGB);
 
-            Graphics2D g = offScreen.createGraphics();
+        // Set transform
+        g.transform(usr2dev);
 
-            g.translate(-renderedArea.x, -renderedArea.y);
+        // Clip
+        g.clip(renderContext.getAreaOfInterest());
+            
+        GraphicsNodeRenderContext gnrc;
+        gnrc = GraphicsNodeRenderContext.
+            getGraphicsNodeRenderContext(renderContext);
 
-            // Set hints. Use the one of the GraphicsNodeRenderContext, not
-            // those of this invocation.
-            // CHANGE : GET HINTS FROM renderContext.
-            RenderingHints hints = renderContext.getRenderingHints();
-            if(hints != null){
-                g.setRenderingHints(hints);
-            }
-
-            // Set transform
-            g.transform(usr2dev);
-
-            // Clip
-            g.clip(renderContext.getAreaOfInterest());
-
+        try {
             // Invoke primitive paint.
-            node.primitivePaint(g,
-                                GraphicsNodeRenderContext.getGraphicsNodeRenderContext(renderContext));
-
+            if (usePrimitivePaint)
+                node.primitivePaint (g, gnrc);
+            else
+                node.paint (g, gnrc);
+        } catch (InterruptedException ie) {
             g.dispose();
-
-            renderedImage = new ConcreteBufferedImageCachableRed
-                (offScreen, renderedArea.x, renderedArea.y);
+            return null;
         }
+            
+        g.dispose();
 
-          // System.out.println("ConcreteGraphicsNodeRable done");
-        return renderedImage;
+        return new ConcreteBufferedImageCachableRed
+            (offScreen, renderedArea.x, renderedArea.y);
+
     }
 }

@@ -15,6 +15,8 @@ import java.awt.geom.Point2D;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
 
+import org.apache.batik.util.awt.image.GraphicsUtil;
+
 /**
  * This class provides an implementation for the SVG
  * feMorphology filter, as defined in Chapter 15, section 20
@@ -1519,18 +1521,18 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
             BufferedImage newSrc;
             src = new BufferedImage(src.getWidth(), src.getHeight(),
                                     BufferedImage.TYPE_INT_ARGB_PRE);
-            GaussianBlurOp.copyData(origSrc, src);
+            GraphicsUtil.copyData(origSrc, src);
         }
         else if (!src.isAlphaPremultiplied()) {
             // Get a Premultipled CM.
             ColorModel    srcCM, srcCMPre;
             srcCM    = src.getColorModel();
-            srcCMPre = GaussianBlurOp.coerceColorModel(srcCM, true);
+            srcCMPre = GraphicsUtil.coerceColorModel(srcCM, true);
 
             src = new BufferedImage(srcCMPre, src.getRaster(),
                                     true, null);
             
-            GaussianBlurOp.copyData(origSrc, src);
+            GraphicsUtil.copyData(origSrc, src);
         }
 
 
@@ -1546,7 +1548,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
             // Get a Premultipled CM.
             ColorModel    dstCM, dstCMPre;
             dstCM    = dest.getColorModel();
-            dstCMPre = GaussianBlurOp.coerceColorModel(dstCM, true);
+            dstCMPre = GraphicsUtil.coerceColorModel(dstCM, true);
 
             dest = new BufferedImage(dstCMPre, finalDest.getRaster(),
                                      true, null);
@@ -1558,14 +1560,14 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         if ((src.getRaster() == origSrc.getRaster()) &&
             (src.isAlphaPremultiplied() != origSrc.isAlphaPremultiplied())) {
             // Copy our source back the way it was...
-            GaussianBlurOp.copyData(src, origSrc);
+            GraphicsUtil.copyData(src, origSrc);
         }
 
         // Check to see if we need to store our result...
         if ((dest.getRaster() != finalDest.getRaster()) ||
             (dest.isAlphaPremultiplied() != finalDest.isAlphaPremultiplied())){
             // Coerce our source back the way it was requested...
-            GaussianBlurOp.copyData(dest, finalDest);
+            GraphicsUtil.copyData(dest, finalDest);
         }
 
         return finalDest;
@@ -1586,16 +1588,16 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         if (!isCompatible(src.getColorModel(), src.getSampleModel())) {
             src = new BufferedImage(src.getWidth(), src.getHeight(),
                                     BufferedImage.TYPE_INT_ARGB);
-            GaussianBlurOp.copyData(origSrc, src);
+            GraphicsUtil.copyData(origSrc, src);
         }
         else if (src.isAlphaPremultiplied()) {
             ColorModel    srcCM, srcCMUnpre;
             srcCM = src.getColorModel();
-            srcCMUnpre = GaussianBlurOp.coerceColorModel(srcCM, false);
+            srcCMUnpre = GraphicsUtil.coerceColorModel(srcCM, false);
             src = new BufferedImage(srcCMUnpre, src.getRaster(),
                                     false, null);
             
-            GaussianBlurOp.copyData(origSrc, src);
+            GraphicsUtil.copyData(origSrc, src);
         }
 
 
@@ -1610,7 +1612,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         } else if (dest.isAlphaPremultiplied()) {
             ColorModel    dstCM, dstCMUnpre;
             dstCM      = dest.getColorModel();
-            dstCMUnpre = GaussianBlurOp.coerceColorModel(dstCM, false);
+            dstCMUnpre = GraphicsUtil.coerceColorModel(dstCM, false);
             dest = new BufferedImage(dstCMUnpre, finalDest.getRaster(),
                                      false, null);
         }
@@ -1621,7 +1623,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         // Check to see if we need to 'fix' our source (divide out alpha).
         if ((src.getRaster() == origSrc.getRaster()) &&
             (src.isAlphaPremultiplied() != origSrc.isAlphaPremultiplied())) {
-            GaussianBlurOp.copyData(src, origSrc);
+            GraphicsUtil.copyData(src, origSrc);
         }
 
         // Check to see if we need to store our result...
@@ -1634,7 +1636,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                                " finalDest: " + 
                                finalDest.isAlphaPremultiplied());
             
-            GaussianBlurOp.copyData(dest, finalDest);
+            GraphicsUtil.copyData(dest, finalDest);
         }
         return finalDest;
     } 

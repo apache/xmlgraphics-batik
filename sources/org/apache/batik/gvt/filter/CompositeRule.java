@@ -16,23 +16,37 @@ package org.apache.batik.gvt.filter;
  * @version $Id$
  */
 public final class CompositeRule implements java.io.Serializable {
-      /** Porter-Duff src over rule. */
+
+    /** Porter-Duff src over rule, also used for feBlend <tt>normal</tt>. */
     public static final int RULE_OVER = 1;
 
-      /** Porter-Duff src in rule. */
+    /** Porter-Duff src in rule. */
     public static final int RULE_IN = 2;
 
-      /** Porter-Duff src out rule. */
+    /** Porter-Duff src out rule. */
     public static final int RULE_OUT = 3;
 
-      /** Porter-Duff src atop rule. */
+    /** Porter-Duff src atop rule. */
     public static final int RULE_ATOP = 4;
 
-      /** Porter-Duff src xor rule. */
+    /** Porter-Duff src xor rule. */
     public static final int RULE_XOR = 5;
 
-      /** Arithmatic rule 'out = k1*i1*i2 + k2*i1 + k3*i2 + k4'. */
+    /** Arithmatic rule 'out = k1*i1*i2 + k2*i1 + k3*i2 + k4'. */
     public static final int RULE_ARITHMETIC = 6;
+
+    /** SVG feBlend Multiply rule */
+    public static final int RULE_MULTIPLY = 7;
+        
+    /** SVG feBlend Screen rule */
+    public static final int RULE_SCREEN = 8;
+        
+    /** SVG feBlend Darken rule */
+    public static final int RULE_DARKEN = 9;
+        
+    /** SVG feBlend Lighten rule */
+    public static final int RULE_LIGHTEN = 10;
+        
 
       /**
        * Porter-Duff Source Over Destination rule. The source is
@@ -42,6 +56,7 @@ public final class CompositeRule implements java.io.Serializable {
        *
        *        Cd = Cs + Cd*(1-As)
        *        Ad = As + Ad*(1-As)</pre>
+       * </pre>
        */
     public static final CompositeRule OVER = new CompositeRule(RULE_OVER);
 
@@ -53,6 +68,7 @@ public final class CompositeRule implements java.io.Serializable {
        *
        *        Cd = Cs*Ad
        *        Ad = As*Ad
+       * </pre>
        */
     public static final CompositeRule IN = new CompositeRule(RULE_IN);
 
@@ -64,6 +80,7 @@ public final class CompositeRule implements java.io.Serializable {
        *
        *        Cd = Cs*(1-Ad)
        *        Ad = As*(1-Ad)
+       * </pre>
        */
     public static final CompositeRule OUT = new CompositeRule(RULE_OUT);
 
@@ -76,13 +93,18 @@ public final class CompositeRule implements java.io.Serializable {
        *
        *        Cd = Cs*Ad + Cd*(1-As)
        *        Ad = As*Ad + Ad*(1-As)
-       * NOTE: May not be right!!!!
+       * </pre>
        */
     public static final CompositeRule ATOP = new CompositeRule(RULE_ATOP);
 
       /**
        * Xor rule. The source and destination are Xor'ed togeather.<pre>
-       * NOTE: Need to spec this out...
+       *
+       *  Fs = (1-Ad) and Fd = (1-As), thus:
+       *
+       *        Cd = Cs*(1-Ad) + Cd*(1-As)
+       *        Ad = As*(1-Ad) + Ad*(1-As)
+       * </pre>
        */
     public static final CompositeRule XOR = new CompositeRule(RULE_XOR);
 
@@ -107,6 +129,50 @@ public final class CompositeRule implements java.io.Serializable {
 
         return new CompositeRule(k1, k2, k3, k4);
     }
+
+      /**
+       * FeBlend Multiply rule. <pre>
+       *
+       *        Cd = Cs*(1-Ad) + Cd*(1-As) + Cs*Cd
+       *        Ad = 1 - (1-Ad)*(1-As)
+       * </pre>
+       */
+    public static final CompositeRule MULTIPLY = 
+        new CompositeRule(RULE_MULTIPLY);
+
+      /**
+       * FeBlend Screen rule. <pre>
+       *
+       *        Cd = Cs + Cd - Cs*Cd
+       *        Ad = 1 - (1-Ad)*(1-As)
+       * </pre>
+       */
+    public static final CompositeRule SCREEN = 
+        new CompositeRule(RULE_SCREEN);
+
+      /**
+       * FeBlend Darken rule. <pre>
+       *
+       *        Cd = Min(Cs*(1-Ad) + Cd,
+       *                 Cd*(1-As) + Cs)
+       *        Ad = 1 - (1-Ad)*(1-As)
+       * </pre>
+       */
+    public static final CompositeRule DARKEN = 
+        new CompositeRule(RULE_DARKEN);
+
+
+      /**
+       * FeBlend Lighten rule. <pre>
+       *
+       *        Cd = Max(Cs*(1-Ad) + Cd,
+       *                 Cd*(1-As) + Cs)
+       *        Ad = 1 - (1-Ad)*(1-As)
+       * </pre>
+       */
+    public static final CompositeRule LIGHTEN = 
+        new CompositeRule(RULE_LIGHTEN);
+
 
     /**
      * Returns the type of this composite rule
@@ -163,6 +229,14 @@ public final class CompositeRule implements java.io.Serializable {
             return XOR;
         case RULE_ARITHMETIC:
             return this;
+        case RULE_MULTIPLY:
+            return MULTIPLY;
+        case RULE_SCREEN:
+            return SCREEN;
+        case RULE_DARKEN:
+            return DARKEN;
+        case RULE_LIGHTEN:
+            return LIGHTEN;
         default:
             throw new Error("Unknown Composite Rule type");
         }

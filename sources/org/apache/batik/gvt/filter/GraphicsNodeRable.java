@@ -31,4 +31,18 @@ public interface GraphicsNodeRable extends Filter {
      * Sets the <tt>GraphicsNode</tt> associated with this image.
      */
     public void setGraphicsNode(GraphicsNode node);
+
+    /**
+     * Returns true if this Rable get's it's contents by calling
+     * primitivePaint on the associated <tt>GraphicsNode</tt> or
+     * false if it uses paint.
+     */
+    public boolean getUsePrimitivePaint();
+
+    /**
+     * Set to true if this Rable should get it's contents by calling
+     * primitivePaint on the associated <tt>GraphicsNode</tt> or false
+     * if it should use paint.  
+     */
+    public void setUsePrimitivePaint(boolean usePrimitivePaint);
 }

@@ -18,6 +18,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 
 import java.util.List;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.Collection;
 import java.util.ListIterator;
@@ -58,6 +59,12 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
     protected int modCount;
 
     /**
+     * This flag indicates if this node has BackgroundEnable = 'new'.
+     * If so traversal of the gvt tree can halt here.
+     */
+    protected Rectangle2D backgroundEnableRgn = null;
+
+    /**
      * Cache: Geometry bounds for this node, not taking into account any of its
      * children rendering attributes into account
      */
@@ -79,6 +86,17 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
 
     public List getChildren() {
         return this;
+    }
+
+
+    public void setBackgroundEnable(Rectangle2D bgRgn) {
+        Rectangle2D oldBgRgn = backgroundEnableRgn;
+        backgroundEnableRgn = bgRgn;
+        firePropertyChange("backgroundEnable", oldBgRgn,
+                           backgroundEnableRgn);
+    }
+    public Rectangle2D getBackgroundEnable() {
+        return backgroundEnableRgn;
     }
 
     //

@@ -33,6 +33,9 @@ public class SVGBridgeContext extends ConcreteBridgeContext
         putBridge(SVG_NAMESPACE_URI, TAG_ELLIPSE,
                   new SVGEllipseElementBridge());
 
+        putBridge(SVG_NAMESPACE_URI, TAG_FE_BLEND,
+                  new SVGFeBlendElementBridge());
+
         putBridge(SVG_NAMESPACE_URI, TAG_FE_COLOR_MATRIX,
                   new SVGFeColorMatrixElementBridge());
 

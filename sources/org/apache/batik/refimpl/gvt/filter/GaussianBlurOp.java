@@ -29,6 +29,8 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.ConvolveOp;
 import java.awt.image.ColorConvertOp;
 
+import org.apache.batik.util.awt.image.GraphicsUtil;
+
 /**
  * This class provides an implementation for the SVG
  * feGaussianBlurOp filter, as defined in chapter 15, section 17
@@ -677,18 +679,18 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
             BufferedImage newSrc;
             src = new BufferedImage(src.getWidth(), src.getHeight(),
                                     BufferedImage.TYPE_INT_ARGB_PRE);
-            GaussianBlurOp.copyData(origSrc, src);
+            GraphicsUtil.copyData(origSrc, src);
         }
         else if (!src.isAlphaPremultiplied()) {
             // Get a Premultipled CM.
             ColorModel    srcCM, srcCMPre;
             srcCM    = src.getColorModel();
-            srcCMPre = GaussianBlurOp.coerceColorModel(srcCM, true);
+            srcCMPre = GraphicsUtil.coerceColorModel(srcCM, true);
 
             src = new BufferedImage(srcCMPre, src.getRaster(),
                                     true, null);
             
-            GaussianBlurOp.copyData(origSrc, src);
+            GraphicsUtil.copyData(origSrc, src);
         }
 
 
@@ -704,7 +706,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
             // Get a Premultipled CM.
             ColorModel    dstCM, dstCMPre;
             dstCM    = dest.getColorModel();
-            dstCMPre = GaussianBlurOp.coerceColorModel(dstCM, true);
+            dstCMPre = GraphicsUtil.coerceColorModel(dstCM, true);
 
             dest = new BufferedImage(dstCMPre, finalDest.getRaster(),
                                      true, null);
@@ -716,7 +718,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         if ((src.getRaster() == origSrc.getRaster()) &&
             (src.isAlphaPremultiplied() != origSrc.isAlphaPremultiplied())) {
             // Copy our source back the way it was...
-            GaussianBlurOp.copyData(src, origSrc);
+            GraphicsUtil.copyData(src, origSrc);
         }
 
         // Check to see if we need to store our result...
@@ -727,212 +729,9 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
                                finalDest.isAlphaPremultiplied());*/
 
             // Coerce our source back the way it was...
-            GaussianBlurOp.copyData(dest, finalDest);
+            GraphicsUtil.copyData(dest, finalDest);
         }
 
         return finalDest;
-    }
-
-    public static ColorModel
-        coerceColorModel(ColorModel cm, boolean newAlphaPreMult) {
-        if (cm.isAlphaPremultiplied() == newAlphaPreMult) 
-            return cm;
-
-        // Easiest way to build proper colormodel for new Alpha state...
-        // Eventually this should switch on known ColorModel types and
-        // only fall back on this hack when the CM type is unknown.
-        WritableRaster wr = cm.createCompatibleWritableRaster(1,1);
-        return cm.coerceData(wr, newAlphaPreMult);
-    }
-
-
-    protected static boolean is_INT_PACK_Data(SampleModel sm) {
-          // Check ColorModel is of type DirectColorModel
-        if(!(sm instanceof SinglePixelPackedSampleModel)) return false;
-
-        // Check transfer type
-        if(sm.getDataType() != DataBuffer.TYPE_INT)       return false;
-
-        SinglePixelPackedSampleModel sppsm;
-        sppsm = (SinglePixelPackedSampleModel)sm;
-
-        int [] masks = sppsm.getBitMasks();
-        if(masks[0] != 0x00ff0000) return false;
-        if(masks[1] != 0x0000ff00) return false;
-        if(masks[2] != 0x000000ff) return false;
-        if(masks[3] != 0xff000000) return false;
- 
-        return true;
-   }
-
-    protected static void divide_INT_PACK_Data(WritableRaster wr) {
-        // System.out.println("Divide Int");
-
-        SinglePixelPackedSampleModel sppsm;
-        sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
-
-        final int width = wr.getWidth();
-
-        final int scanStride = sppsm.getScanlineStride();
-        DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
-        final int base   
-            = (db.getOffset() + 
-               sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(), 
-                               wr.getMinY()-wr.getSampleModelTranslateY()));
-
-        // Access the pixel data array
-        final int pixels[] = db.getBankData()[0];
-        for (int y=0; y<wr.getHeight(); y++) {
-            int sp = base + y*scanStride;
-            final int end = sp + width;
-            while (sp < end) {
-                int pixel = pixels[sp];
-                int a = pixel>>>24;
-                if ((a>0) && (a<255)) {
-                    int aFP = (0x00FF0000/a);
-                    pixels[sp] = 
-                        ((a << 24) |
-                         (((((pixel&0xFF0000)>>16)*aFP))    &0xFF0000) |
-                         (((((pixel&0x00FF00)>>8) *aFP)>>8 )&0x00FF00) |
-                         (((((pixel&0x0000FF))    *aFP)>>16)&0x0000FF));
-                }
-                sp++;
-            }
-        }
-    }
-
-    protected static void mult_INT_PACK_Data(WritableRaster wr) {
-        // System.out.println("Multiply Int");
-        
-        SinglePixelPackedSampleModel sppsm;
-        sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
-
-        final int width = wr.getWidth();
-
-        final int scanStride = sppsm.getScanlineStride();
-        DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
-        final int base   
-            = (db.getOffset() + 
-               sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(), 
-                               wr.getMinY()-wr.getSampleModelTranslateY()));
-
-        // Access the pixel data array
-        final int pixels[] = db.getBankData()[0];
-        for (int y=0; y<wr.getHeight(); y++) {
-            int sp = base + y*scanStride;
-            final int end = sp + width;
-            while (sp < end) {
-                int pixel = pixels[sp];
-                int a = pixel>>>24;
-                if ((a>0) && (a<255)) {
-                    pixels[sp] = ((a << 24) |
-                                  ((((pixel&0xFF0000)*a)>>8)&0xFF0000) |
-                                  ((((pixel&0x00FF00)*a)>>8)&0x00FF00) |
-                                  ((((pixel&0x0000FF)*a)>>8)&0x0000FF));
-                }
-                sp++;
-            }
-        }
-    }
-
-    public static ColorModel 
-        coerceData(BufferedImage bi, boolean newAlphaPreMult) {
-        if (bi.isAlphaPremultiplied() == newAlphaPreMult)
-            return bi.getColorModel();
-
-        int [] pixel = null;
-        WritableRaster r = bi.getRaster();
-        int    bands = r.getNumBands();
-        float  norm;
-        if (newAlphaPreMult) {
-            if (is_INT_PACK_Data(bi.getSampleModel()))
-                mult_INT_PACK_Data(bi.getRaster());
-            else {
-                norm = 1/255;
-                for (int y=0; y<bi.getHeight(); y++)
-                    for (int x=0; x<bi.getWidth(); x++) {
-                        pixel = r.getPixel(x,y,pixel);
-                        int a = pixel[bands-1];
-                        if ((a > 0) && (a < 255)) {
-                            float alpha = a*norm;
-                            for (int b=0; b<bands-1; b++) 
-                                pixel[b] = (int)(pixel[b]*alpha+0.5f);
-                            r.setPixel(x,y,pixel);
-                        }
-                    }
-            }
-        } else {
-            if (is_INT_PACK_Data(bi.getSampleModel()))
-                divide_INT_PACK_Data(bi.getRaster());
-            else {
-                for (int y=0; y<bi.getHeight(); y++)
-                    for (int x=0; x<bi.getWidth(); x++) {
-                        pixel = r.getPixel(x,y,pixel);
-                        int a = pixel[bands-1];
-                        if ((a > 0) && (a < 255)) {
-                            float ialpha = 255/(float)a;
-                            for (int b=0; b<bands-1; b++) 
-                                pixel[b] = (int)(pixel[b]*ialpha+0.5f);
-                            r.setPixel(x,y,pixel);
-                        }
-                    }
-            }
-        }
-
-        return coerceColorModel(bi.getColorModel(), newAlphaPreMult);
-    }
-
-    /**
-     * Copies data from one bufferedImage to another paying attention
-     * to the state of AlphaPreMultiplied.
-     *
-     * @param src The source 
-     */
-    public static void 
-        copyData(BufferedImage src, BufferedImage dst) {
-        if (src.isAlphaPremultiplied() == dst.isAlphaPremultiplied()) {
-            dst.setData(src.getRaster());
-            return;
-        }
-
-        int [] pixel = null;
-        Raster         srcR  = src.getRaster();
-        WritableRaster dstR  = dst.getRaster();
-        int            bands = srcR.getNumBands();
-        float          norm;
-        if (dst.isAlphaPremultiplied()) {
-              /*
-              // drawImage works when moving to premult but not away...
-            java.awt.Graphics2D g2d = dst.createGraphics();
-            g2d.setComposite(java.awt.AlphaComposite.Src);
-            g2d.drawImage(src, null, 0, 0);
-              */
-            // Original loop that definately works for all cases...
-            norm = 1/(float)255;
-            for (int y=0; y<src.getHeight(); y++)
-                for (int x=0; x<src.getWidth(); x++) {
-                    pixel = srcR.getPixel(x,y,pixel);
-                    int a = pixel[bands-1];
-                    if ((a > 0) && (a < 255)) {
-                        float alpha = a*norm;
-                        for (int b=0; b<bands-1; b++) 
-                            pixel[b] = (int)(pixel[b]*alpha+0.5f);
-                        dstR.setPixel(x,y,pixel);
-                    }
-                }
-
-        } else {
-            for (int y=0; y<src.getHeight(); y++)
-                for (int x=0; x<src.getWidth(); x++) {
-                    pixel = srcR.getPixel(x,y,pixel);
-                    int a = pixel[bands-1];
-                    if ((a > 0) && (a < 255)) {
-                        float ialpha = 255/(float)a;
-                        for (int b=0; b<bands-1; b++) 
-                            pixel[b] = (int)(pixel[b]*ialpha+0.5f);
-                        dstR.setPixel(x,y,pixel);
-                    }
-                }
-        }
     }
 }

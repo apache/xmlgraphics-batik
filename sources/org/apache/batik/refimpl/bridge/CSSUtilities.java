@@ -36,7 +36,9 @@ import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.refimpl.bridge.resources.Messages;
+import org.apache.batik.refimpl.gvt.filter.ConcreteBackgroundRable;
 import org.apache.batik.refimpl.gvt.filter.ConcreteFloodRable;
+import org.apache.batik.refimpl.gvt.filter.FilterAlphaRable;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.UnitProcessor;
 
@@ -768,7 +770,7 @@ public class CSSUtilities implements SVGConstants {
 
         case SVGUtilities.SOURCE_ALPHA:
             in = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-            in =  new org.apache.batik.refimpl.gvt.filter.FilterAlphaRable(in);
+            in =  new FilterAlphaRable(in);
             return in;
 
         case SVGUtilities.FILL_PAINT: {
@@ -796,14 +798,12 @@ public class CSSUtilities implements SVGConstants {
         }
 
         case SVGUtilities.BACKGROUND_IMAGE:
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("filter.in.unsupported",
-                                       new Object[] {inAttr}));
-
+            return new ConcreteBackgroundRable(node);
+            
         case SVGUtilities.BACKGROUND_ALPHA:
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("filter.in.unsupported",
-                                       new Object[] {inAttr}));
+            in = new ConcreteBackgroundRable(node);
+            in = new FilterAlphaRable(in);
+            return in;
 
         default:
             throw new Error(); // can't be reached

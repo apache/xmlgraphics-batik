@@ -8,7 +8,10 @@
 
 package org.apache.batik.gvt;
 
+import java.awt.geom.Rectangle2D;
+import java.awt.Rectangle;
 import java.util.List;
+
 import org.apache.batik.gvt.event.CompositeGraphicsNodeListener;
 
 /**
@@ -37,4 +40,26 @@ public interface CompositeGraphicsNode extends GraphicsNode {
      * @param l the composite graphics node listener to remove
      */
     void removeCompositeGraphicsNodeListener(CompositeGraphicsNodeListener l);
+
+    /**
+     * This constant is used when the Background Rect is not provided
+     * and hence it defaults to the union of the bounding rects of all
+     * graphics or the viewport which ever is smaller.
+     */
+    static Rectangle2D VIEWPORT = new Rectangle(0, 0, 0, 0);
+    
+    /**
+     * If <tt>bgRgn == VIEWPORT</tt> then background enable is
+     * activated for the entire viewable region.  If bgRgn is null
+     * then background enable is <tt>accumulate</tt>.  If bgRgn is any
+     * other Rectangle2D then it defines the bounds in the user coord
+     * system for which drawing is enabled.
+     */
+    public void setBackgroundEnable(Rectangle2D bgRgn);
+
+    /**
+     * Returns the Rectangle defined as background.  If this is null
+     * then you need to check the parents background-enable.
+     */
+    public Rectangle2D getBackgroundEnable();
 }
