@@ -18,16 +18,13 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.SinglePixelPackedSampleModel;
 
 /**
- * This class creates a noise pattern conform to the one defined
- * for the feTurbulence filter of the SVG specification. It can
- * be used by classes implementing specific interfaces, such as
- * the TurbulenceOp and TurbulencePaintContext classes.
+ * This class creates a noise pattern conform to the one defined for
+ * the feTurbulence filter of the SVG specification. It can be used by
+ * classes implementing specific interfaces, such as the TurbulenceOp
+ * and TurbulencePaintContext classes.
  *
  * @author     <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @version    $Id$
- *
- * @see        org.apache.batik.gvt.refimpl.filters.TurbulenceOp
- * @see        org.apache.batik.gvt.refimpl.filters.TurbulencePaintContext
+ * @version $Id$
  */
 public final class TurbulencePatternGenerator{
     /**

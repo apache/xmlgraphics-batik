@@ -42,6 +42,7 @@
 		      ${class-prefix}.parser.style,
 		      ${class-prefix}.script,
 		      ${class-prefix}.script.test,
+		      ${class-prefix}.transcoder,
 		      ${class-prefix}.util,
 		      ${class-prefix}.util.gui"/>
     <property name="packages-ext"  value="

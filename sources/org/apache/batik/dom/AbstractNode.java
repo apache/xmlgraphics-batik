@@ -36,8 +36,8 @@ public abstract class AbstractNode implements ExtendedNode {
      * An empty instance of NodeList.
      */
     protected final static NodeList EMPTY_NODE_LIST = new NodeList() {
-	public Node item(int i) { return null; }
-	public int  getLength() { return 0; }
+        public Node item(int i) { return null; }
+        public int  getLength() { return 0; }
     };
 
     /**
@@ -62,10 +62,10 @@ public abstract class AbstractNode implements ExtendedNode {
      * to Attr objects.
      */
     public void setSpecified(boolean v) {
-	throw createDOMException(DOMException.INVALID_STATE_ERR,
-				 "node.type",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName()});
+        throw createDOMException(DOMException.INVALID_STATE_ERR,
+                                 "node.type",
+                                 new Object[] { new Integer(getNodeType()),
+                                                getNodeName()});
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return null.
      */
     public String getNodeValue() throws DOMException {
-	return null;
+        return null;
     }
 
     /**
@@ -88,7 +88,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return null.
      */
     public Node getParentNode() {
-	return null;
+        return null;
     }
 
     /**
@@ -96,10 +96,10 @@ public abstract class AbstractNode implements ExtendedNode {
      * Throws a HIERARCHY_REQUEST_ERR {@link org.w3c.dom.DOMException}.
      */
     public void setParentNode(Node v) {
-	throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
-				 "parent.not.allowed",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName() });
+        throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                 "parent.not.allowed",
+                                 new Object[] { new Integer(getNodeType()),
+                                                getNodeName() });
     }
 
     /**
@@ -107,15 +107,15 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return {@link #EMPTY_NODE_LIST}.
      */
     public NodeList getChildNodes() {
-	return EMPTY_NODE_LIST;
+        return EMPTY_NODE_LIST;
     }
-    
+
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getFirstChild()}.
      * @return null.
      */
     public Node getFirstChild() {
-	return null;
+        return null;
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return null.
      */
     public Node getLastChild() {
-	return null;
+        return null;
     }
 
     /**
@@ -131,10 +131,10 @@ public abstract class AbstractNode implements ExtendedNode {
      * Throws a HIERARCHY_REQUEST_ERR {@link org.w3c.dom.DOMException}.
      */
     public void setPreviousSibling(Node n) {
-	throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
-				 "sibling.not.allowed",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName() });
+        throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                 "sibling.not.allowed",
+                                 new Object[] { new Integer(getNodeType()),
+                                                getNodeName() });
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return null.
      */
     public Node getPreviousSibling() {
-	return null;
+        return null;
     }
 
     /**
@@ -150,10 +150,10 @@ public abstract class AbstractNode implements ExtendedNode {
      * Throws a HIERARCHY_REQUEST_ERR {@link org.w3c.dom.DOMException}.
      */
     public void setNextSibling(Node n) {
-	throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
-				 "sibling.not.allowed",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName() });
+        throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                 "sibling.not.allowed",
+                                 new Object[] { new Integer(getNodeType()),
+                                                getNodeName() });
     }
 
     /**
@@ -161,7 +161,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return null.
      */
     public Node getNextSibling() {
-	return null;
+        return null;
     }
 
     /**
@@ -169,7 +169,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return false.
      */
     public boolean hasAttributes() {
-	return false;
+        return false;
     }
 
     /**
@@ -177,7 +177,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return null.
      */
     public NamedNodeMap getAttributes() {
-	return null;
+        return null;
     }
 
     /**
@@ -185,7 +185,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return {@link #ownerDocument}.
      */
     public Document getOwnerDocument() {
-	return ownerDocument;
+        return ownerDocument;
     }
 
     /**
@@ -193,7 +193,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return null.
      */
     public String getNamespaceURI() {
-	return null;
+        return null;
     }
 
     /**
@@ -203,10 +203,10 @@ public abstract class AbstractNode implements ExtendedNode {
      */
     public Node insertBefore(Node newChild, Node refChild)
         throws DOMException {
-	throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
-				 "children.not.allowed",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName() });
+        throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                 "children.not.allowed",
+                                 new Object[] { new Integer(getNodeType()),
+                                                getNodeName() });
     }
 
     /**
@@ -216,10 +216,10 @@ public abstract class AbstractNode implements ExtendedNode {
      */
     public Node replaceChild(Node newChild, Node oldChild)
         throws DOMException {
-	throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
-				 "children.not.allowed",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName()});
+        throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                 "children.not.allowed",
+                                 new Object[] { new Integer(getNodeType()),
+                                                getNodeName()});
     }
 
     /**
@@ -227,10 +227,10 @@ public abstract class AbstractNode implements ExtendedNode {
      * Throws a HIERARCHY_REQUEST_ERR {@link org.w3c.dom.DOMException}.
      */
     public Node removeChild(Node oldChild) throws DOMException {
-	throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
-				 "children.not.allowed",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName() });
+        throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                 "children.not.allowed",
+                                 new Object[] { new Integer(getNodeType()),
+                                                getNodeName() });
     }
 
     /**
@@ -238,10 +238,10 @@ public abstract class AbstractNode implements ExtendedNode {
      * Throws a HIERARCHY_REQUEST_ERR {@link org.w3c.dom.DOMException}.
      */
     public Node appendChild(Node newChild) throws DOMException {
-	throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
-				 "children.not.allowed",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName() });
+        throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                 "children.not.allowed",
+                                 new Object[] { new Integer(getNodeType()),
+                                                getNodeName() });
     }
 
     /**
@@ -249,27 +249,27 @@ public abstract class AbstractNode implements ExtendedNode {
      * @return false.
      */
     public boolean hasChildNodes() {
-	return false;
+        return false;
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#cloneNode(boolean)}.
      */
     public Node cloneNode(boolean deep) {
-	String message = null;
-	try {
-	    Node n = (Node)getClass().newInstance();
-	    return (deep) ? deepCopyInto(n) : copyInto(n);
-	} catch (IllegalAccessException e) {
-	    message = e.getMessage();
-	} catch (InstantiationException e) {
-	    message = e.getMessage();
-	}
-	throw createDOMException(DOMException.INVALID_STATE_ERR,
-				 "cloning.error",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName(),
-						message });
+        String message = null;
+        try {
+            Node n = (Node)getClass().newInstance();
+            return (deep) ? deepCopyInto(n) : copyInto(n);
+        } catch (IllegalAccessException e) {
+            message = e.getMessage();
+        } catch (InstantiationException e) {
+            message = e.getMessage();
+        }
+        throw createDOMException(DOMException.INVALID_STATE_ERR,
+                                 "cloning.error",
+                                 new Object[] { new Integer(getNodeType()),
+                                                getNodeName(),
+                                                message });
     }
 
     /**
@@ -284,7 +284,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * org.w3c.dom.Node#isSupported(String,String)}.
      */
     public boolean isSupported(String feature, String version) {
-	return getCurrentDocument().getImplementation().hasFeature(feature,
+        return getCurrentDocument().getImplementation().hasFeature(feature,
                                                                    version);
     }
 
@@ -292,7 +292,7 @@ public abstract class AbstractNode implements ExtendedNode {
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getPrefix()}.
      */
     public String getPrefix() {
-	return (getNamespaceURI() == null)
+        return (getNamespaceURI() == null)
             ? null
             : DOMUtilities.getPrefix(getNodeName());
     }
@@ -301,58 +301,58 @@ public abstract class AbstractNode implements ExtendedNode {
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#setPrefix(String)}.
      */
     public void setPrefix(String prefix) throws DOMException {
-	if (isReadonly()) {
-	    throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
-				     "readonly.node",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName() });
-	}
-	String uri = getNamespaceURI();
-	if (uri == null) {
-	    throw createDOMException(DOMException.NAMESPACE_ERR,
-				     "namespace",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName() });
-	}
+        if (isReadonly()) {
+            throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                                     "readonly.node",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName() });
+        }
+        String uri = getNamespaceURI();
+        if (uri == null) {
+            throw createDOMException(DOMException.NAMESPACE_ERR,
+                                     "namespace",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName() });
+        }
 
-	String name = getLocalName();
-	if (prefix == null) {
-	    setNodeName(name);
-	}
-	if (!prefix.equals("") && !DOMUtilities.isValidName(prefix)) {
-	    throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
-				     "prefix",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName(),
-						    prefix });
-	}
-	if (!DOMUtilities.isValidPrefix(prefix)) {
-	    throw createDOMException(DOMException.NAMESPACE_ERR,
-				     "prefix",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName(),
-						    prefix });
-	}
-	if ((prefix.equals("xml") &&
-	     !XMLSupport.XML_NAMESPACE_URI.equals(uri)) ||
-	    (prefix.equals("xmlns") &&
-	     !XMLSupport.XMLNS_NAMESPACE_URI.equals(uri))) {
-	    throw createDOMException(DOMException.NAMESPACE_ERR,
-				     "namespace.uri",
-				     new Object[] { new Integer(getNodeType()),
-						    getNodeName(),
-						    uri });
-	}
-	setNodeName(prefix + ":" + name);
+        String name = getLocalName();
+        if (prefix == null) {
+            setNodeName(name);
+        }
+        if (!prefix.equals("") && !DOMUtilities.isValidName(prefix)) {
+            throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
+                                     "prefix",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName(),
+                                                    prefix });
+        }
+        if (!DOMUtilities.isValidPrefix(prefix)) {
+            throw createDOMException(DOMException.NAMESPACE_ERR,
+                                     "prefix",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName(),
+                                                    prefix });
+        }
+        if ((prefix.equals("xml") &&
+             !XMLSupport.XML_NAMESPACE_URI.equals(uri)) ||
+            (prefix.equals("xmlns") &&
+             !XMLSupport.XMLNS_NAMESPACE_URI.equals(uri))) {
+            throw createDOMException(DOMException.NAMESPACE_ERR,
+                                     "namespace.uri",
+                                     new Object[] { new Integer(getNodeType()),
+                                                    getNodeName(),
+                                                    uri });
+        }
+        setNodeName(prefix + ":" + name);
     }
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-	return (getNamespaceURI() == null)
-	    ? null
-	    : DOMUtilities.getLocalName(getNodeName());
+        return (getNamespaceURI() == null)
+            ? null
+            : DOMUtilities.getLocalName(getNodeName());
     }
 
     /**
@@ -361,7 +361,7 @@ public abstract class AbstractNode implements ExtendedNode {
     public DOMException createDOMException(short    type,
                                               String   key,
                                               Object[] args) {
-	try {
+        try {
             return new DOMException
                 (type, getCurrentDocument().formatMessage(key, args));
         } catch (MissingResourceException e) {
@@ -373,17 +373,17 @@ public abstract class AbstractNode implements ExtendedNode {
 
     /**
      * <b>DOM</b>: Implements
-     * {@link 
+     * {@link
      * EventTarget#addEventListener(String,EventListener,boolean)}.
      */
-    public void addEventListener(String type, 
-				 EventListener listener, 
-				 boolean useCapture) {
-	if (eventSupport == null) {
-	    eventSupport = new EventSupport();
-	    getCurrentDocument().setEventsEnabled(true);
-	}
-	eventSupport.addEventListener(type, listener, useCapture);
+    public void addEventListener(String type,
+                                 EventListener listener,
+                                 boolean useCapture) {
+        if (eventSupport == null) {
+            eventSupport = new EventSupport();
+            getCurrentDocument().setEventsEnabled(true);
+        }
+        eventSupport.addEventListener(type, listener, useCapture);
     }
 
     /**
@@ -391,20 +391,20 @@ public abstract class AbstractNode implements ExtendedNode {
      * {@link
      * EventTarget#removeEventListener(String,EventListener,boolean)}.
      */
-    public void removeEventListener(String type, 
-				    EventListener listener, 
-				    boolean useCapture) {
-	if (eventSupport != null) {
-	    eventSupport.removeEventListener(type, listener, useCapture);
-	}
+    public void removeEventListener(String type,
+                                    EventListener listener,
+                                    boolean useCapture) {
+        if (eventSupport != null) {
+            eventSupport.removeEventListener(type, listener, useCapture);
+        }
     }
 
     /**
      * Implements {@link
-     * org.apache.batik.dom.event.NodeEventTarget#getParentNodeEventTarget()}.
+     * org.apache.batik.dom.events.NodeEventTarget#getParentNodeEventTarget()}.
      */
     public NodeEventTarget getParentNodeEventTarget() {
-	return (NodeEventTarget)getParentNode();
+        return (NodeEventTarget)getParentNode();
     }
 
     /**
@@ -412,52 +412,52 @@ public abstract class AbstractNode implements ExtendedNode {
      * {@link org.w3c.dom.events.EventTarget#dispatchEvent(Event)}.
      */
     public boolean dispatchEvent(Event evt) throws EventException {
-	return EventSupport.dispatchEvent(this, evt);
+        return EventSupport.dispatchEvent(this, evt);
     }
 
     /**
      * Returns the event support instance for this node, or null if any.
      */
     public EventSupport getEventSupport() {
-	return eventSupport;
+        return eventSupport;
     }
 
     /**
      * Recursively fires a DOMNodeInsertedIntoDocument event.
      */
     public void fireDOMNodeInsertedIntoDocumentEvent() {
-	AbstractDocument doc = getCurrentDocument();
-	if (doc.getEventsEnabled()) {
-	    DocumentEvent de = (DocumentEvent)doc;
-	    MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
-	    ev.initMutationEvent("DOMNodeInsertedIntoDocument",
-				 true,   // canBubbleArg
-				 false,  // cancelableArg
-				 null,   // relatedNodeArg
-				 null,   // prevValueArg
-				 null,   // newValueArg
-				 null);  // attrNameArg
-	    dispatchEvent(ev);
-	}
+        AbstractDocument doc = getCurrentDocument();
+        if (doc.getEventsEnabled()) {
+            DocumentEvent de = (DocumentEvent)doc;
+            MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
+            ev.initMutationEvent("DOMNodeInsertedIntoDocument",
+                                 true,   // canBubbleArg
+                                 false,  // cancelableArg
+                                 null,   // relatedNodeArg
+                                 null,   // prevValueArg
+                                 null,   // newValueArg
+                                 null);  // attrNameArg
+            dispatchEvent(ev);
+        }
     }
 
     /**
      * Recursively fires a DOMNodeRemovedFromDocument event.
      */
     public void fireDOMNodeRemovedFromDocumentEvent() {
-	AbstractDocument doc = getCurrentDocument();
-	if (doc.getEventsEnabled()) {
-	    DocumentEvent de = (DocumentEvent)doc;
-	    MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
-	    ev.initMutationEvent("DOMNodeRemovedFromDocument",
-				 true,   // canBubbleArg
-				 false,  // cancelableArg
-				 null,   // relatedNodeArg
-				 null,   // prevValueArg
-				 null,   // newValueArg
-				 null);  // attrNameArg
-	    dispatchEvent(ev);
-	}
+        AbstractDocument doc = getCurrentDocument();
+        if (doc.getEventsEnabled()) {
+            DocumentEvent de = (DocumentEvent)doc;
+            MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
+            ev.initMutationEvent("DOMNodeRemovedFromDocument",
+                                 true,   // canBubbleArg
+                                 false,  // cancelableArg
+                                 null,   // relatedNodeArg
+                                 null,   // prevValueArg
+                                 null,   // newValueArg
+                                 null);  // attrNameArg
+            dispatchEvent(ev);
+        }
     }
 
     /**
@@ -465,46 +465,46 @@ public abstract class AbstractNode implements ExtendedNode {
      */
     protected void fireDOMCharacterDataModifiedEvent(String oldv,
                                                      String newv) {
-	AbstractDocument doc = getCurrentDocument();
-	if (doc.getEventsEnabled()) {
-	    DocumentEvent de = (DocumentEvent)doc;
-	    MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
-	    ev.initMutationEvent("DOMCharacterDataModified",
-				 true,  // canBubbleArg
-				 false, // cancelableArg
-				 null,  // relatedNodeArg
-				 oldv,  // prevValueArg
-				 newv,  // newValueArg
-				 null); // attrNameArg
-	    dispatchEvent(ev);
-	}
+        AbstractDocument doc = getCurrentDocument();
+        if (doc.getEventsEnabled()) {
+            DocumentEvent de = (DocumentEvent)doc;
+            MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
+            ev.initMutationEvent("DOMCharacterDataModified",
+                                 true,  // canBubbleArg
+                                 false, // cancelableArg
+                                 null,  // relatedNodeArg
+                                 oldv,  // prevValueArg
+                                 newv,  // newValueArg
+                                 null); // attrNameArg
+            dispatchEvent(ev);
+        }
     }
 
     /**
      * Returns the current document.
      */
     protected AbstractDocument getCurrentDocument() {
-	return ownerDocument;
+        return ownerDocument;
     }
 
     /**
      * Exports this node to the given document.
      */
     protected Node export(Node n, AbstractDocument d) {
-	AbstractNode p = (AbstractNode)n;
-	p.ownerDocument = d;
-	p.setReadonly(false);
-	return n;
+        AbstractNode p = (AbstractNode)n;
+        p.ownerDocument = d;
+        p.setReadonly(false);
+        return n;
     }
 
     /**
      * Deeply exports this node to the given document.
      */
     protected Node deepExport(Node n, AbstractDocument d) {
-	AbstractNode p = (AbstractNode)n;
-	p.ownerDocument = d;
-	p.setReadonly(false);
-	return n;
+        AbstractNode p = (AbstractNode)n;
+        p.ownerDocument = d;
+        p.setReadonly(false);
+        return n;
     }
 
     /**
@@ -512,9 +512,9 @@ public abstract class AbstractNode implements ExtendedNode {
      * @param n a node of the type of this.
      */
     protected Node copyInto(Node n) {
-	AbstractNode an = (AbstractNode)n;
-	an.ownerDocument = ownerDocument;
-	return n;
+        AbstractNode an = (AbstractNode)n;
+        an.ownerDocument = ownerDocument;
+        return n;
     }
 
     /**
@@ -522,18 +522,18 @@ public abstract class AbstractNode implements ExtendedNode {
      * @param n a node of the type of this.
      */
     protected Node deepCopyInto(Node n) {
-	AbstractNode an = (AbstractNode)n;
-	an.ownerDocument = ownerDocument;
-	return n;
+        AbstractNode an = (AbstractNode)n;
+        an.ownerDocument = ownerDocument;
+        return n;
     }
 
     /**
      * Checks the validity of a node to be inserted.
      */
     protected void checkChildType(Node n) {
-	throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
-				 "children.not.allowed",
-				 new Object[] { new Integer(getNodeType()),
-						getNodeName() });
+        throw createDOMException(DOMException.HIERARCHY_REQUEST_ERR,
+                                 "children.not.allowed",
+                                 new Object[] { new Integer(getNodeType()),
+                                                getNodeName() });
     }
 }
