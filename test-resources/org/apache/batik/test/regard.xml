@@ -59,4 +59,6 @@
     <testSuite href="file:test-resources/org/apache/batik/parser/unitTesting.xml" /> 
     <testSuite href="file:test-resources/org/apache/batik/transcoder/image/unitTesting.xml" /> 
 
+    <testSuite href="file:test-resources/org/apache/batik/css/engine/value/unitTesting.xml" /> 
+
 </testRun>

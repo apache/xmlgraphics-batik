@@ -363,6 +363,16 @@ public class Main implements SVGConverterController {
         = Messages.get("Main.cl.option.validate.description", "No description");
 
     /**
+     * Option to specify that the converted SVG files should
+     * be after the dispatch of the 'onload' event.
+     */
+    public static String CL_OPTION_ONLOAD
+        = Messages.get("Main.cl.option.onload", "-onload");
+      
+    public static String CL_OPTION_ONLOAD_DESCRIPTION
+        = Messages.get("Main.cl.option.onload.description", "No description");
+
+    /**
      * Option to specify the user language with which SVG
      * documents should be processed
      */
@@ -598,6 +608,16 @@ public class Main implements SVGConverterController {
 
                               public String getOptionDescription(){
                                   return CL_OPTION_VALIDATE_DESCRIPTION;
+                              }
+                          });
+        optionMap.put(CL_OPTION_ONLOAD,
+                      new NoValueOptionHandler(){
+                              public void handleOption(SVGConverter c){
+                                  c.setExecuteOnload(true);
+                             }
+
+                              public String getOptionDescription(){
+                                  return CL_OPTION_ONLOAD_DESCRIPTION;
                               }
                           });
         

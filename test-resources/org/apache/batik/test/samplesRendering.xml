@@ -254,4 +254,19 @@
         <test id="samples/tests/spec/text/textPosition2.svg" />
     </testGroup>
 
+    <testGroup id="tests.spec.scripting">
+        <test id="samples/tests/spec/scripting/add.svg" />
+        <test id="samples/tests/spec/scripting/circle.svg" />
+        <test id="samples/tests/spec/scripting/ellipse.svg" />
+        <test id="samples/tests/spec/scripting/line.svg" />
+        <test id="samples/tests/spec/scripting/path.svg" />
+        <test id="samples/tests/spec/scripting/polygon.svg" />
+        <test id="samples/tests/spec/scripting/polyline.svg" />
+        <test id="samples/tests/spec/scripting/rect.svg" />
+        <test id="samples/tests/spec/scripting/remove.svg" />
+        <test id="samples/tests/spec/scripting/transform.svg" />
+        <test id="samples/tests/spec/scripting/transform2.svg" />
+        <test id="samples/tests/spec/scripting/xyModifOnLoad.svg" />
+    </testGroup>
+
 </testSuite>

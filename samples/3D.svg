@@ -19,7 +19,7 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" 
      xmlns:xlink="http://www.w3.org/1999/xlink"
-     id="body" width="450" height="500" viewBox="0 0 450 500">
+     id="body" width="640" height="480" viewBox="0 0 640 480">
 
     <script type="text/ecmascript"><![CDATA[
 
@@ -32,8 +32,8 @@
         var OBJECT_GO = 2;
         var OBJECT_PLAY = 3;
 
-        var _xOrigin = 225;
-        var _yOrigin = 250;
+        var _xOrigin = 320;
+        var _yOrigin = 240;
         var svgNS = "http://www.w3.org/2000/svg";
 
         // 3D object collection
@@ -488,6 +488,6 @@
     <!-- ============================================================= -->
     <!-- Batik sample mark                                             -->
     <!-- ============================================================= -->
-    <use xlink:href="batikLogo.svg#Batik_Tag_Box" />
+    <use transform="translate(598,447) scale(0.5, 0.5)" xlink:href="batikLogo.svg#Batik_Squiggle" />
 
 </svg>
