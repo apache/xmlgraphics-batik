@@ -283,6 +283,7 @@
         <test id="samples/tests/spec/scripting/polyline.svg" />
         <test id="samples/tests/spec/scripting/rect.svg" />
         <test id="samples/tests/spec/scripting/remove.svg" />
+        <test id="samples/tests/spec/scripting/removeOnclick.svg" />
         <test id="samples/tests/spec/scripting/transform.svg" />
         <test id="samples/tests/spec/scripting/transform2.svg" />
         <test id="samples/tests/spec/scripting/xyModifOnLoad.svg" />
