@@ -343,14 +343,6 @@ public class AWTEventDispatcher implements EventDispatcher,
         }
 
         GraphicsNode node = root.nodeHitAt(p);
-        GraphicsNode relatedNode = null;
-
-        if (isModalEvent(evt, node) && (lastHit != null)) {
-            // modal if either button release on null node, or
-            // if button is down on a non-press
-            relatedNode = node;
-            node = lastHit;
-        }
 
         // If the receiving node has changed, send a notification
         // check if we enter a new node
@@ -403,7 +395,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                 screenPos.x,
                                                 screenPos.y,
                                                 evt.getClickCount(),
-                                                relatedNode);
+                                                null);
 
             // node.processMouseEvent(gvtevt);
             processMouseEvent(gvtevt);
@@ -420,24 +412,11 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                 screenPos.x,
                                                 screenPos.y,
                                                 evt.getClickCount(),
-                                                relatedNode);
+                                                null);
 
             processMouseEvent(gvtevt);
         }
         lastHit = node;
-    }
-
-    /**
-     * Returns true if the specified event is considered as 'modal'
-     * for the specified graphics node, false otherwise.
-     * @param evt the event to check
-     * @param node the targetted graphics node
-     */
-    protected boolean isModalEvent(MouseEvent evt, GraphicsNode node) {
-        int type = evt.getID();
-        return ((type == MouseEvent.MOUSE_RELEASED) ||
-                ((type != MouseEvent.MOUSE_PRESSED) &&
-                 ((evt.getModifiers() & InputEvent.BUTTON1_MASK) != 0)));
     }
 
     /**
