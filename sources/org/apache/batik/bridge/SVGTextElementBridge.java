@@ -87,12 +87,16 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected final static Integer ZERO = new Integer(0);
 
     public static final 
-        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER 
-        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER =
+        GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
 
-    public static final AttributedCharacterIterator.Attribute PAINT_INFO 
-        = GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
+    public static final AttributedCharacterIterator.Attribute PAINT_INFO =
+         GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
+    public static final 
+        AttributedCharacterIterator.Attribute ALT_GLYPH_HANDLER =
+        GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER;
+        
 
     protected AttributedString laidoutText;
 
@@ -1357,11 +1361,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         Map result = new HashMap();
         String s;
         float f;
-
-        if (element.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
-            result.put
-              (GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER,
-               new SVGAltGlyphHandler(ctx, element));
+        
+        if (SVG_NAMESPACE_URI.equals(element.getNamespaceURI()) &&
+            element.getLocalName().equals(SVG_ALT_GLYPH_TAG)) {
+            result.put(ALT_GLYPH_HANDLER, 
+                       new SVGAltGlyphHandler(ctx, element));
         }
 
         if (textPath != null) {
@@ -2651,8 +2655,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 aci.setIndex(info.characterIndex);
 
                 //check is it is a altGlyph
-                if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                     TextAttribute.ALT_GLYPH_HANDLER) != null){
+                if (aci.getAttribute(ALT_GLYPH_HANDLER) != null){
                     info.glyphIndexStart = 0;
                     info.glyphIndexEnd = info.layout.getGlyphCount()-1;
                 } else {

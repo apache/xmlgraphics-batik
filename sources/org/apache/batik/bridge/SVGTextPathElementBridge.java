@@ -64,7 +64,9 @@ public class SVGTextPathElementBridge extends AbstractSVGBridge
         String uri = XLinkSupport.getXLinkHref(textPathElement);
         Element pathElement = ctx.getReferencedElement(textPathElement, uri);
 
-        if (pathElement == null || !pathElement.getTagName().equals(SVG_PATH_TAG)) {
+        if ((pathElement == null) || 
+            (!SVG_NAMESPACE_URI.equals(pathElement.getNamespaceURI())) ||
+            (!pathElement.getLocalName().equals(SVG_PATH_TAG))) {
             // couldn't find the referenced element
             // or the referenced element was not a path
             throw new BridgeException(textPathElement, ERR_URI_BAD_TARGET,

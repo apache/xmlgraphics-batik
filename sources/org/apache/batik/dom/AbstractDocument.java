@@ -239,19 +239,21 @@ public abstract class AbstractDocument
      */
     public Node importNode(Node importedNode, boolean deep)
         throws DOMException {
-        /* TED: This is bad because it usually does not create the
-         * the proper subclass of Element for the document it is
-         * being imported into based on namespace/tag name.
-         */
-        /**
-        if (importedNode instanceof AbstractNode) {
-            AbstractNode an = (AbstractNode)importedNode;
-            return (deep)
-                ? an.deepExport(an.cloneNode(false), this)
-                : an.export(an.cloneNode(false), this);
-        }
-        */
+        return importNode(importedNode, deep, false);
+    }
 
+    /**
+     * Imports the given node 'importNode' to this document.
+     * It does so deeply if 'deep' is set to true.
+     * It will not mark id attributes as id's if 'trimId' is set false.
+     * this is used primarily for the clone trees of the 'use' element
+     * so they don't clutter the hashtable.
+     */
+    public Node importNode(Node importedNode, boolean deep, boolean trimId) {
+        /*
+         * The trimming of id's is used by the 'use' element to keep 
+         * down the amount of 'bogus' id's in the hashtable.
+         */
         Node result;
         switch (importedNode.getNodeType()) {
         case ELEMENT_NODE:
@@ -263,9 +265,11 @@ public abstract class AbstractDocument
                 int len = attr.getLength();
                 for (int i = 0; i < len; i++) {
                     Attr a = (Attr)attr.item(i);
-                    if (a.getSpecified()) {
-                        e.setAttributeNodeNS((Attr)importNode(a, true));
-                    }
+                    if (!a.getSpecified()) continue;
+                    AbstractAttr aa = (AbstractAttr)importNode(a, true);
+                    if (trimId && aa.isId())
+                        aa.setIsId(false); // don't consider this an Id.
+                    e.setAttributeNodeNS(aa);
                 }
             }
             break;
@@ -337,7 +341,7 @@ public abstract class AbstractDocument
         return n;
     }
 
-    public abstract boolean isID(Attr node);
+    public abstract boolean isId(Attr node);
 
     /**
      * <b>DOM</b>: Implements {@link
