@@ -17,7 +17,7 @@ import org.apache.batik.gvt.GraphicsNode;
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class GraphicsNodeEvent extends EventObject implements Cloneable {
+public class GraphicsNodeEvent extends EventObject {
 
     /** Indicates whether or not this event is consumed. */
     private boolean consumed = false;
@@ -62,13 +62,5 @@ public class GraphicsNodeEvent extends EventObject implements Cloneable {
      */
     public boolean isConsumed() {
         return consumed;
-    }
-
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new Error("Attempt to clone GraphicsNodeEvent failed.");
-        }
     }
 }
