@@ -251,6 +251,7 @@ public interface SVGConstants extends CSSConstants {
     String SVG_RX_ATTRIBUTE = "rx";
     String SVG_RY_ATTRIBUTE = "ry";
     String SVG_R_ATTRIBUTE = "r";
+    String SVG_ROTATE_ATTRIBUTE = "rotate";
     String SVG_SCALE_ATTRIBUTE = "scale";
     String SVG_SEED_ATTRIBUTE = "seed";
     String SVG_SHAPE_RENDERING_ATTRIBUTE = CSS_SHAPE_RENDERING_PROPERTY;
