@@ -311,7 +311,9 @@ trans.addTranscodingHint(ImageTranscoder.KEY_MEDIA, "print");
 <dd>
 
 This hint lets you choose an alternate stylesheet the author of the SVG
-document to transcode might have provided. Example:
+document to transcode might have provided using the <link
+href="http://www.w3.org/TR/xml-stylesheet/">xml-stylesheet</link> processing
+instruction. Example:
 
 <br />
 <br />
