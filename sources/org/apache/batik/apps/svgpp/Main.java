@@ -71,6 +71,7 @@ public class Main {
         handlers.put("-no-format", new NoFormatHandler());
         handlers.put("-system-id", new SystemIdHandler());
         handlers.put("-tab-width", new TabWidthHandler());
+        handlers.put("-xml-decl", new XMLDeclHandler());
     }
 
     /**
@@ -254,6 +255,24 @@ public class Main {
 
         public String getDescription() {
             return localizableSupport.formatMessage("system-id.description", null);
+        }
+    }
+
+    /**
+     * To handle the '-xml-decl' option.
+     */
+    protected class XMLDeclHandler implements OptionHandler {
+        public void handleOption() {
+            index++;
+            if (index >= arguments.length) {
+                throw new IllegalArgumentException();
+            }
+            String s = arguments[index++];
+            transcoder.addTranscodingHint(SVGTranscoder.KEY_XML_DECLARATION, s);
+        }
+
+        public String getDescription() {
+            return localizableSupport.formatMessage("xml-decl.description", null);
         }
     }
 
