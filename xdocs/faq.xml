@@ -3,7 +3,7 @@
 
 <faqs title="Frequently Asked Questions">
 
-<faq title="General">
+<faq>
     <question>What is Batik?</question>
     <answer>
         <p>
@@ -20,6 +20,9 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>Where does the name come from?</question>
     <answer>
         <p>
@@ -39,6 +42,9 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>How did it start?</question>
     <answer>
         <p>
@@ -46,6 +52,7 @@
         efforts with the idea that the whole will be greater than the sum of the parts. The
         following companies or institutions are part of the team that contributed and/or
         created the initial Batik project:
+        <!-- !!!!!!!!!
         <ul>
             <li><link href="http://www.csiro.au/">CSIRO</link></li>
             <li><link href="http://www.ilog.fr/">ILOG</link></li>
@@ -53,6 +60,7 @@
             <li><link href="http://www.kodak.com/">Eastman Kodak Company</link></li>
             <li><link href="http://www.sun.com">Sun Microsystems, Inc.</link></li>
         </ul>
+        -->
         In addition, the Batik project is supported by <link href="http://www.ibm.com">IBM</link>.
         </p>
         <p>
@@ -63,6 +71,9 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>How can I contribute?</question>
     <answer>
         <p>
@@ -73,6 +84,9 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>What can I do with Batik?</question>
     <answer>
         <p>
@@ -107,6 +121,7 @@
         used to serve SVG images to client machines that do not have SVG support; the
         SVG generator can be used to dynamically generate SVG content on a server).
         </p>
+        <p>
         The SVG viewer and the rasterizer are only examples of the type of 
         applications Batik allows. Its architecture allows the different modules to
         be used in different ways and other applications are possible, such as 
@@ -115,6 +130,9 @@
         such as XHTML.
         </p>
     </answer>
+</faq>
+
+<faq>
 
     <question>Where can I find the SVG specification?</question>
     <answer>
@@ -124,6 +142,9 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>How can I create and author SVG content?</question>
     <answer>
         <p>
@@ -149,13 +170,19 @@
         <p>
         The following URLs will be useful to learn more about each of 
         these solutions:
+        <!-- !!!!!!!!!!!!!
         <ul>
             <li><link href="http://xml.apache.org/xalan-j/index.html">Xalan for XSLT</link></li>
-            <li><link href="http://xml.apache.org/xerces-j/index.html>Xerces</link> and
-                <link href="http://java.sun.com/xml/download.html">Crimson</link> for the DOM API</link></li>
+            <li><link href="http://xml.apache.org/xerces-j/index.html">Xerces</link> and
+                <link href="http://java.sun.com/xml/download.html">Crimson</link> for the DOM API</li>
             <li><link href="http://xml.apache.org/xml-batik/svggen">SVG Generator</link></li>
         </ul>
+        -->
+        </p>
     </answer>
+</faq>
+
+<faq>
 
     <question>What are the benefits of SVG being an XML grammar?</question>
     <answer>
@@ -164,12 +191,16 @@
         and SVG actually leverages other grammars such as XLink and SMIL
         for the animation.
         </p>
+        <p>
         Beyond the use and mix with other XML syntaxes, being an XML grammer
         lets SVG benefit from the pletora of XML tools that make is so easy
         to manipulate, generate, search and edit SVG files.
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>How can I see a demo?</question>
     <answer>
         <p>
@@ -184,8 +215,12 @@
         <link href="http://xml.apache.org/xml-batik/demo/rasterizerImages">rasterizer</link>
         and an <link href="http://xml.apache.org/xml-batik/demo/svggenExample">example</link>
         of how to use the SVG Graphics2D generator.
+        </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>What other SVG products are out there?</question>
     <answer>
         <p>
@@ -195,6 +230,9 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>Why do we have such a project at Apache?</question>
     <answer>
         <p>
@@ -204,6 +242,9 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>How does Batik relate to other Apache projects?</question>
     <answer>
         <p>
@@ -213,6 +254,9 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>What is coming next?</question>
     <answer>
         <p>
@@ -227,6 +271,9 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>How much of SVG does Batik implement?</question>
     <answer>
         <p>
@@ -238,7 +285,7 @@
 
 </faq>
 
-<faq title="Developers">
+<faq>
     <question>What are the System Requirements to run Batik?</question>
     <answer>
         <p>
@@ -249,10 +296,13 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>How do I install Batik?</question>
     <answer>
         <p>
-        You will need the <link href="http://java.sun.com/>JDK 1.3</link> (or 1.2.2 if 1.3 
+        You will need the <link href="http://java.sun.com/">JDK 1.3</link> (or 1.2.2 if 1.3 
         is not yet available on your platform) to run Batik.
         </p>
         <p>
@@ -265,6 +315,9 @@
         </p>
     </answer>
 
+</faq>
+
+<faq>
     <question>Which JDK version do I need?</question>
     <answer>
         <p>
@@ -275,6 +328,9 @@
 
     </answer>
 
+</faq>
+
+<faq>
     <question>How do I submit patches or bug fixes?</question>
     <answer>
         <p>

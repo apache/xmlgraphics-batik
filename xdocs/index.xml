@@ -15,11 +15,11 @@
 <!-- ========================================================================= -->
 <document>
     <header>
-        <title>Apache Batik</title>
+        <title>Batik</title>
         <subtitle>SVG Toolkit</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
-            <person name="Thierry Kormann" email="tkormann.apache.org"/>
+            <person name="Thierry Kormann" email="tkormann@apache.org"/>
         </authors>
     </header>
 
@@ -74,12 +74,13 @@
         linking, and has some scripting support, even though dynamic 
         modification of SVG documents is not yet available. 
         </p>
+        <p>
         You will find a detailed description of the set of SVG features
         Batik supports on the 
         <link href="http://xml.apache.org/xml-batik/status.xml">Status</link>
         page.
-
-         </s1>
+        </p>
+        </s1>
 
         <s1 title="What is SVG anyway?">
         <p>
@@ -119,8 +120,7 @@
         For direct participation, we suggest you to subscribe to the
         <link href="http://xml.apache.org/mail.html">Batik mailing list</link>
         (follow the link for information on how to subscribe and to access the mail
-        list archives), to checkout the <link href="http://xml.apache.org/websrc/index.cgi/xml-batik/">
-        latest code</link>.
+        list archives), to checkout the <link href="http://xml.apache.org/websrc/index.cgi/xml-batik/">latest code</link>.
         </p>
         </s1>
     </body>

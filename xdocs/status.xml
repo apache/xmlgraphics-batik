@@ -16,8 +16,8 @@
 <!-- ========================================================================= -->
 <document>
     <header>
-        <title>Apache Batik</title>
-        <subtitle>Implementation Status</subtitle>
+        <title>Batik Status</title>
+        <subtitle>W3C Testsuite</subtitle>
         <authors>
             <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com" />
             <person name="Thierry Kormann" email="Thierry.Kormann@sophia.inria.fr" />
