@@ -64,7 +64,8 @@ public class SVGAltGlyphHandler implements AltGlyphHandler, SVGConstants {
         (FontRenderContext frc, float fontSize,
          AttributedCharacterIterator aci) {
         try {
-            if (textElement.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
+            if (SVG_NAMESPACE_URI.equals(textElement.getNamespaceURI()) &&
+                SVG_ALT_GLYPH_TAG.equals(textElement.getLocalName())) {
                 SVGAltGlyphElementBridge altGlyphBridge
                     = (SVGAltGlyphElementBridge)ctx.getBridge(textElement);
                 Glyph[] glyphArray = altGlyphBridge.createAltGlyphArray

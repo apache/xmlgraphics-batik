@@ -79,7 +79,7 @@ public class GenericDocument
      * Returns true if the given Attr node represents an 'id' 
      * for this document.
      */
-    public boolean isID(Attr node) {
+    public boolean isId(Attr node) {
         if (node.getNamespaceURI() != null) return false;
         return ATTR_ID.equals(node.getNodeName());
     }

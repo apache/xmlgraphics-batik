@@ -42,6 +42,11 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     protected boolean unspecified;
 
     /**
+     * Whether this attribute is an ID attribute
+     */
+    protected boolean isIdAttr;
+
+    /**
      * The owner element.
      */
     protected AbstractElement ownerElement;
@@ -69,11 +74,18 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
 	}
     }
 
+    public boolean isId() { return isIdAttr; }
+
+    public void setIsId(boolean isId) {
+        isIdAttr = isId;
+    }
+
     /**
      * Sets the node name.
      */
     public void setNodeName(String v) {
 	nodeName = v;
+        isIdAttr = ownerDocument.isId(this);
     }
 
     /**

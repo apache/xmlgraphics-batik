@@ -127,9 +127,8 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         }
             
         // import or clone the referenced element in current document
-        Element localRefElement = (isLocal)
-            ? (Element)refElement.cloneNode(true)
-            : (Element)document.importNode(refElement, true);
+        Element localRefElement = 
+            (Element)document.importNode(refElement, true, true);
 
         if (SVG_SYMBOL_TAG.equals(localRefElement.getLocalName())) {
             // The referenced 'symbol' and its contents are deep-cloned into

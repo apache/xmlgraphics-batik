@@ -92,9 +92,11 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             // couldn't find the referenced element
             return null;
         }
+        if (!SVG_NAMESPACE_URI.equals(refElement.getNamespaceURI()))
+            return null; // Not an SVG element.
 
         // if the referenced element is a glyph
-        if (refElement.getTagName().equals(SVG_GLYPH_TAG)) {
+        if (refElement.getLocalName().equals(SVG_GLYPH_TAG)) {
 
             Glyph glyph = getGlyph(ctx, uri, altGlyphElement, fontSize, aci);
 
@@ -109,7 +111,7 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
         }
 
         // else should be an altGlyphDef element
-        if (refElement.getTagName().equals(SVG_ALT_GLYPH_DEF_TAG)) {
+        if (refElement.getLocalName().equals(SVG_ALT_GLYPH_DEF_TAG)) {
 
             // if not local import the referenced altGlyphDef
             // into the current document
@@ -142,7 +144,9 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             for (int i = 0; i < numAltGlyphDefChildren; i++) {
                 Node altGlyphChild = altGlyphDefChildren.item(i);
                 if (altGlyphChild.getNodeType() == Node.ELEMENT_NODE) {
-                    if (((Element)altGlyphChild).getTagName().equals(SVG_GLYPH_REF_TAG)) {
+                    Element agc = (Element)altGlyphChild;
+                    if (SVG_NAMESPACE_URI.equals(agc.getNamespaceURI()) &&
+                        SVG_GLYPH_REF_TAG.equals(agc.getLocalName())) {
                         containsGlyphRefNodes = true;
                         break;
                     }
@@ -269,12 +273,12 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             }
         }
 
-        if (refGlyphElement == null
-            || !refGlyphElement.getTagName().equals(SVG_GLYPH_TAG)) {
+        if ((refGlyphElement == null) ||
+            (!SVG_NAMESPACE_URI.equals(refGlyphElement.getNamespaceURI())) ||
+            (!SVG_GLYPH_TAG.equals(refGlyphElement.getLocalName())))
             // couldn't find the referenced glyph element,
             // or referenced element not a glyph
             return null;
-        }
 
         // see if the referenced glyph element is local
         SVGOMDocument document
