@@ -98,7 +98,6 @@ public class URIResolver {
 
         URL url = new URL(((SVGOMDocument)document).getURLObject(), uri);
         Document doc = documentLoader.loadDocument(url.toString());
-        documentLoader.dispose(doc);
         String ref = url.getRef();
         if (url.getRef() == null) {
             return doc;

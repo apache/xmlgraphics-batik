@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.bridge.DocumentLoader;
 
 import org.w3c.dom.svg.SVGDocument;
 
@@ -29,16 +29,16 @@ import org.xml.sax.SAXException;
  * @version $Id$
  */
 public class SVGDocumentLoader extends Thread {
-    
+
     /**
      * The URL of the document,
      */
     protected String url;
 
     /**
-     * The document factory.
+     * The document loader.
      */
-    protected SAXSVGDocumentFactory documentFactory;
+    protected DocumentLoader loader;
 
     /**
      * The exception thrown.
@@ -53,11 +53,11 @@ public class SVGDocumentLoader extends Thread {
     /**
      * Creates a new SVGDocumentLoader.
      * @param u The URL of the document.
-     * @param df The document factory to use to create the document.
+     * @param l The document loader to use
      */
-    public SVGDocumentLoader(String u, SAXSVGDocumentFactory df) {
+    public SVGDocumentLoader(String u, DocumentLoader l) {
         url = u;
-        documentFactory = df;
+        loader = l;
     }
 
     /**
@@ -66,7 +66,7 @@ public class SVGDocumentLoader extends Thread {
     public void run() {
         try {
             fireStartedEvent();
-            SVGDocument svgDocument = documentFactory.createDocument(url);
+            SVGDocument svgDocument = (SVGDocument)loader.loadDocument(url);
             fireCompletedEvent(svgDocument);
         } catch (InterruptedIOException e) {
             fireCancelledEvent();

@@ -12,7 +12,7 @@ import java.awt.Image;
 import java.beans.SimpleBeanInfo;
 
 /**
- * This class represents a general-purpose SVG component.
+ * A <tt>BeanInfo</tt> for the <tt>JSVGCanvas</tt>.
  *
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
