@@ -15,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
@@ -366,7 +367,27 @@ public class JSVGViewerFrame
             }
         });
 
-        svgCanvas = new JSVGCanvas(userAgent, true, true);
+        //
+        // Set the frame's maximum size so that content
+        // bigger than the screen does not cause the creation
+        // of unnecessary large images.
+        //
+        svgCanvas = new JSVGCanvas(userAgent, true, true){
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                
+                {
+                    setMaximumSize(screenSize);
+                }
+                
+                public Dimension getPreferredSize(){
+                    Dimension s = super.getPreferredSize();
+                    if (s.width > screenSize.width) s.width =screenSize.width;
+                    if (s.height > screenSize.height) s.height = screenSize.height;
+                    return s;
+                }
+                
+            };
+        
         svgCanvas.setDoubleBufferedRendering(true);
 
         listeners.put(ABOUT_ACTION, new AboutAction());
