@@ -58,12 +58,13 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
     /*
      * sRGB ColorSpace instance used for compatibility checking
      */
-    private final ColorSpace sRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+    static private final ColorSpace sRGB = 
+        ColorSpace.getInstance(ColorSpace.CS_sRGB);
 
     /*
      * Linear RGB ColorSpace instance used for compatibility checking
      */
-    private final ColorSpace lRGB =
+    static private final ColorSpace lRGB =
         ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB);
 
     /**
@@ -232,11 +233,11 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
     }
 
     private void checkCompatible(ColorModel  colorModel,
-				 SampleModel sampleModel){
+                                 SampleModel sampleModel){
         ColorSpace cs = colorModel.getColorSpace();
 
         // Check that model is sRGB or linear RGB
-        if((cs != sRGB) || (cs != lRGB))
+        if((!cs.equals(sRGB)) && (!cs.equals(lRGB)))
             throw new IllegalArgumentException
                 ("Expected CS_sRGB or CS_LINEAR_RGB color model");
 
@@ -271,7 +272,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         ColorSpace cs = colorModel.getColorSpace();
         // Check that model is sRGB or linear RGB
         if((cs != ColorSpace.getInstance(ColorSpace.CS_sRGB))
-           ||
+           &&
            (cs != ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB)))
             return false;
 
@@ -334,18 +335,16 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
 
     public BufferedImage createCompatibleDestImage(BufferedImage src,
                                                    ColorModel  destCM){
+        if (destCM==null)
+            destCM = ColorModel.getRGBdefault();
+        
         WritableRaster wr;
         wr = destCM.createCompatibleWritableRaster(src.getWidth(),
                                                    src.getHeight());
-        BufferedImage dest = null;
-        if (destCM==null)
-            destCM = ColorModel.getRGBdefault();
-        else
-            checkCompatible(destCM, wr.getSampleModel());
+        checkCompatible(destCM, wr.getSampleModel());
 
-        dest = new BufferedImage(destCM, wr,
+        return new BufferedImage(destCM, wr,
                                  destCM.isAlphaPremultiplied(), null);
-        return dest;
     }
 
     private void specialProcessRow(Raster src, WritableRaster dest){
@@ -1522,72 +1521,196 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
     }
 
     public BufferedImage filter(BufferedImage src, BufferedImage dest){
-        if (src == null && dest == null)
+        if (src == null)
             throw new NullPointerException
-                ("src image should not be null if dest is null");
+                ("Source image should not be null");
 
-        if (dest == null){
+        BufferedImage origSrc   = src;
+        BufferedImage finalDest = dest;
+
+        if (!isCompatible(src.getColorModel(), src.getSampleModel())) {
+            BufferedImage newSrc;
+            src = new BufferedImage(src.getWidth(), src.getHeight(),
+                                    BufferedImage.TYPE_INT_ARGB_PRE);
+            java.awt.Graphics2D g2d = src.createGraphics();
+            g2d.setComposite(java.awt.AlphaComposite.Src);
+            g2d.drawImage(origSrc, null, 0, 0);
+        }
+        else if (!src.isAlphaPremultiplied()) {
+            // Easiest way to get a Premultipled CM.
+            WritableRaster wr;
+            wr = src.getRaster().createCompatibleWritableRaster(1,1);
+            ColorModel    srcCM = src.getColorModel();
+            ColorModel srcCMPre = srcCM.coerceData(src.getRaster(), true);
+
+            src = new BufferedImage(srcCMPre, src.getRaster(),
+                                    true, null);
+            
+            java.awt.Graphics2D g2d = src.createGraphics();
+            g2d.setComposite(java.awt.AlphaComposite.Src);
+
+            g2d.drawImage(origSrc, null, 0, 0);
+        }
+
+
+        if (dest == null) {
+            dest = new BufferedImage(src.getWidth(), src.getHeight(),
+                                          BufferedImage.TYPE_INT_ARGB_PRE);
+            finalDest = dest;
+        } else if (!isCompatible(dest.getColorModel(),
+                                 dest.getSampleModel())) {
             dest = new BufferedImage(src.getWidth(), src.getHeight(),
                                      BufferedImage.TYPE_INT_ARGB_PRE);
-
-            filter(src.getRaster(), dest.getRaster());
-            return dest;
+        } else if (!dest.isAlphaPremultiplied()) {
+            WritableRaster wr;
+            wr = dest.getRaster().createCompatibleWritableRaster(1,1);
+            ColorModel    dstCM = dest.getColorModel();
+            ColorModel dstCMPre = dstCM.coerceData(wr, true);
+            dest = new BufferedImage(dstCMPre, finalDest.getRaster(),
+                                     true, null);
         }
-
-        BufferedImage finalDest = dest;
-        ColorModel    sRGBCM = ColorModel.getRGBdefault();
-        ColorModel    srcCM = src.getColorModel();
-        ColorModel    dstCM;
-        boolean srcNeedUnMultiply = false;
-        boolean dstNeedUnMultiply = false;
-
-        if(srcCM.equals(sRGBCM)){
-            srcCM.coerceData(src.getRaster(), true);
-            srcNeedUnMultiply = true;
-        }
-        else{
-            BufferedImage newSrc;
-            newSrc = new BufferedImage(src.getWidth(), src.getHeight(),
-                                       BufferedImage.TYPE_INT_ARGB_PRE);
-
-            ColorConvertOp op = new ColorConvertOp(null);
-            src = op.filter(src, newSrc);
-        }
-
-
-        // Now, check destination. If compatible, it is used
-        // as is. Otherwise a temporary image is used.
-        if(!isCompatible(dest.getColorModel(),
-			 dest.getSampleModel()))
-            dest = createCompatibleDestImage(src, null);
-
-        dstCM = dest.getColorModel();
-        if(dstCM.equals(sRGBCM)){
-            dstCM.coerceData(dest.getRaster(), true);
-            dstNeedUnMultiply = true;
-        }
-        else{
-            ColorConvertOp op = new ColorConvertOp(null);
-            BufferedImage newDest;
-            // premultiplied
-            newDest = new BufferedImage(src.getWidth(),
-                                        src.getHeight(),
-                                        BufferedImage.TYPE_INT_ARGB_PRE);
-            dest = filter(dest, newDest);
-        }
+        
         filter(src.getRaster(), dest.getRaster());
 
-        if(srcNeedUnMultiply)
-            srcCM.coerceData(src.getRaster(), false);
+        // Check to see if we need to 'fix' our source (divide out alpha).
+        if ((src.getRaster() == origSrc.getRaster()) &&
+            (src.isAlphaPremultiplied() != origSrc.isAlphaPremultiplied())) {
+            // Coerce our source back the way it was...
+            java.awt.Graphics2D g2d = origSrc.createGraphics();
+            g2d.setComposite(java.awt.AlphaComposite.Src);
+            g2d.drawImage(src, null, 0, 0);
+        }
 
-        if(dstNeedUnMultiply)
-            dstCM.coerceData(dest.getRaster(), false);
+        // Check to see if we need to store our result...
+        if ((dest.getRaster() != finalDest.getRaster()) ||
+            (dest.isAlphaPremultiplied() != finalDest.isAlphaPremultiplied())){
+            // Coerce our source back the way it was...
+            //org.apache.batik.refimpl.gvt.AbstractGraphicsNode.showImage
+            // (dest, "Dest");
+            System.out.println("Dest: " + dest.isAlphaPremultiplied() +
+                               " finalDest: " + 
+                               finalDest.isAlphaPremultiplied());
 
-        if(dest != finalDest){
-            ColorConvertOp op = new ColorConvertOp(null);
+            copyData(dest, finalDest);
+
+            /*
+            byte [] array = new byte [256];
+            for (int i=0; i<256; i++) {
+                array[i] = (byte)i;
+            }
+            java.awt.image.ByteLookupTable lut 
+              = new java.awt.image.ByteLookupTable(0,array);
+            java.awt.image.LookupOp op  
+              = new java.awt.image.LookupOp(lut, null);
             op.filter(dest, finalDest);
+            */
+
+            /*
+            java.awt.Graphics2D g2d = finalDest.createGraphics();
+            g2d.setComposite(java.awt.AlphaComposite.Src);
+            g2d.drawImage(dest, null, 0, 0);
+            */
+            //org.apache.batik.refimpl.gvt.AbstractGraphicsNode.showImage
+            //(finalDest, "finalDest");
         }
 
         return finalDest;
+    }
+
+    public static ColorModel
+        coerceColorModel(ColorModel cm, boolean newAlphaPreMult) {
+        if (cm.isAlphaPremultiplied() == newAlphaPreMult) 
+            return cm;
+
+        // Easiest way to build proper colormodel for new Alpha state...
+        // Eventually this should switch on known ColorModel types and
+        // only fall back on this hack when the CM type is unknown.
+        WritableRaster wr = cm.createCompatibleWritableRaster(1,1);
+        return cm.coerceData(wr, newAlphaPreMult);
+    }
+
+    public static ColorModel 
+        coerceData(BufferedImage bi, boolean newAlphaPreMult) {
+        if (bi.isAlphaPremultiplied() == newAlphaPreMult)
+            return bi.getColorModel();
+
+        int [] pixel = null;
+        WritableRaster r = bi.getRaster();
+        int    bands = r.getNumBands();
+        float  norm;
+        if (newAlphaPreMult) {
+            norm = 1/255;
+            for (int y=0; y<bi.getHeight(); y++)
+                for (int x=0; x<bi.getWidth(); x++) {
+                    pixel = r.getPixel(x,y,pixel);
+                    int a = pixel[bands-1];
+                    if ((a > 0) && (a < 255)) {
+                        float alpha = a*norm;
+                        for (int b=0; b<bands-1; b++) 
+                            pixel[b] = (int)(pixel[b]*alpha+0.5f);
+                        r.setPixel(x,y,pixel);
+                    }
+                }
+        } else {
+            for (int y=0; y<bi.getHeight(); y++)
+                for (int x=0; x<bi.getWidth(); x++) {
+                    pixel = r.getPixel(x,y,pixel);
+                    int a = pixel[bands-1];
+                    if ((a > 0) && (a < 255)) {
+                        float ialpha = 255/(float)a;
+                        for (int b=0; b<bands-1; b++) 
+                            pixel[b] = (int)(pixel[b]*ialpha+0.5f);
+                        r.setPixel(x,y,pixel);
+                    }
+                }
+        }
+
+        return coerceColorModel(bi.getColorModel(), newAlphaPreMult);
+    }
+
+    /**
+     * Copies data from one bufferedImage to another paying attention
+     * to the state of AlphaPreMultiplied.
+     *
+     * @param src The source 
+     */
+    public static void 
+        copyData(BufferedImage src, BufferedImage dst) {
+        if (src.isAlphaPremultiplied() == dst.isAlphaPremultiplied()) {
+            dst.setData(src.getRaster());
+            return;
+        }
+
+        int [] pixel = null;
+        Raster         srcR  = src.getRaster();
+        WritableRaster dstR  = dst.getRaster();
+        int            bands = srcR.getNumBands();
+        float          norm;
+        if (dst.isAlphaPremultiplied()) {
+            norm = 1/(float)255;
+            for (int y=0; y<src.getHeight(); y++)
+                for (int x=0; x<src.getWidth(); x++) {
+                    pixel = srcR.getPixel(x,y,pixel);
+                    int a = pixel[bands-1];
+                    if ((a > 0) && (a < 255)) {
+                        float alpha = a*norm;
+                        for (int b=0; b<bands-1; b++) 
+                            pixel[b] = (int)(pixel[b]*alpha+0.5f);
+                        dstR.setPixel(x,y,pixel);
+                    }
+                }
+        } else {
+            for (int y=0; y<src.getHeight(); y++)
+                for (int x=0; x<src.getWidth(); x++) {
+                    pixel = srcR.getPixel(x,y,pixel);
+                    int a = pixel[bands-1];
+                    if ((a > 0) && (a < 255)) {
+                        float ialpha = 255/(float)a;
+                        for (int b=0; b<bands-1; b++) 
+                            pixel[b] = (int)(pixel[b]*ialpha+0.5f);
+                        dstR.setPixel(x,y,pixel);
+                    }
+                }
+        }
     }
 }
