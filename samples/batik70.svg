@@ -18,7 +18,7 @@
 <!-- ========================================================================= -->
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
-<title>Filter Effect: feColorMatrix</title>
+<title>Batik, 70's Mood</title>
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
@@ -65,7 +65,7 @@
         </g>
 
         <filter id="shadow" filterRes="200" x="0" y="0">
-            <feGaussianBlur stdDeviation="2 3" filterUnits="userSpaceOnUse" />
+            <feGaussianBlur stdDeviation="3 3" />
             <feOffset dx="10" dy="10" />
         </filter>
 
