@@ -15,7 +15,8 @@ package org.apache.batik.util;
  * @version $Id$
  */
 public interface CSSConstants {
-
+    // The CSS property names.
+    //
     String FILL_PROPERTY = "fill";
     String FILL_OPACITY_PROPERTY = "fill-opacity";
     String FILL_RULE_PROPERTY = "fill-rule";
@@ -41,4 +42,9 @@ public interface CSSConstants {
     String TEXT_ANCHOR_PROPERTY = "text-anchor";
     String TEXT_DECORATION_PROPERTY = "text-decoration";
 
+    // The CSS property values.
+    //
+    String AUTO = "auto";
+    String NONE = "none";
+    String NORMAL = "normal";
 }

@@ -58,9 +58,9 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     protected ViewCSS viewCSS;
 
     /**
-     * The associated element.
+     * The associated parent element.
      */
-    protected Element element;
+    protected Element parentElement;
 
     /**
      * Creates a new CSSOMReadOnlyStyleDeclaration object.
@@ -74,7 +74,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
      */
     public void setContext(ViewCSS v, Element elt) {
         viewCSS = v;
-        element = HiddenChildElementSupport.getParentElement(elt);
+        parentElement = HiddenChildElementSupport.getParentElement(elt);
     }
 
     /**
@@ -82,15 +82,14 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
      * org.w3c.dom.css.CSSStyleDeclaration#getCssText()}.
      */
     public String getCssText() {
-        // !!! Fix to display all the values
 	String result = "";
 	for (int i = properties.size() - 1; i >= 0; i--) {
 	    result += "    " + properties.key(i) + ": ";
 	    ValueEntry ve = (ValueEntry)properties.item(i);
-	    if (ve.value != null) {
-		result += ((CSSValue)ve.value).getCssText();
+	    if (ve.getValue() != null) {
+		result += ((CSSValue)ve.getValue()).getCssText();
 	    }
-	    result += ve.priority + ";\n";
+	    result += ve.getPriority() + ";\n";
 	}
 	return result;
     }
@@ -114,13 +113,16 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     public String getPropertyValue(String propertyName) {
         String s = propertyName.toLowerCase().intern();
 	ValueEntry ve = (ValueEntry)properties.get(s);
-
-        if (ve == null || ve.value == ImmutableInherit.INSTANCE) {
+        if (ve == null) {
+            return "";
+        }
+        if (ve.getValue() == null ||
+            ve.getValue() == ImmutableInherit.INSTANCE) {
             CSSStyleDeclaration sd;
-            sd = viewCSS.getComputedStyle(element, null);
+            sd = viewCSS.getComputedStyle(parentElement, null);
             return sd.getPropertyCSSValue(s).getCssText();
         } else {
-            return ve.value.getCssText();
+            return ve.getValue().getCssText();
         }
     }
 
@@ -131,14 +133,20 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     public CSSValue getPropertyCSSValue(String propertyName) {
         String s = propertyName.toLowerCase().intern();
 	ValueEntry ve = (ValueEntry)properties.get(s);
-
-        if (ve == null || ve.value == ImmutableInherit.INSTANCE) {
+        if (ve == null) {
+            return null;
+        }
+        if (ve.getValue() == null ||
+            ve.getValue() == ImmutableInherit.INSTANCE) {
             CSSStyleDeclaration sd;
-            sd = viewCSS.getComputedStyle(element, null);
-            CSSValue res = sd.getPropertyCSSValue(s);
+            sd = viewCSS.getComputedStyle(parentElement, null);
+            CSSOMReadOnlyValue v =
+                (CSSOMReadOnlyValue)sd.getPropertyCSSValue(s);
+            CSSOMReadOnlyValue res;
+            ve.setValue(res = new CSSOMReadOnlyValue(v.getImmutableValue()));
             return res;
         } else {
-            return ve.value;
+            return ve.getValue();
         }
     }
 
@@ -148,7 +156,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     public CSSValue getLocalPropertyCSSValue(String propertyName) {
         String s = propertyName.toLowerCase().intern();
 	ValueEntry ve = (ValueEntry)properties.get(s);
-        return (ve == null) ? null : ve.value;
+        return (ve == null) ? null : ve.getValue();
     }
 
     /**
@@ -159,8 +167,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
 				    String   imp,
 				    int      orig) {
 	ValueEntry ve = (ValueEntry)properties.put(propertyName,
-						 new ValueEntry(v, imp, orig));
-	CSSValue oldV = (ve == null) ? null : ve.value;
+					      createValueEntry(v, imp, orig));
     }
 
     /**
@@ -169,14 +176,17 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     public int getPropertyOrigin(String propertyName) {
         String s = propertyName.toLowerCase().intern();
 	ValueEntry ve = (ValueEntry)properties.get(s);
-
-        if (ve == null || ve.value == ImmutableInherit.INSTANCE) {
+        if (ve == null) {
+            return AUTHOR_ORIGIN;
+        }
+        if (ve.getValue() == null ||
+            ve.getValue() == ImmutableInherit.INSTANCE) {
             CSSStyleDeclaration sd;
-            sd = viewCSS.getComputedStyle(element, null);
+            sd = viewCSS.getComputedStyle(parentElement, null);
             return ((CSSOMReadOnlyStyleDeclaration)
                     sd).getPropertyOrigin(s);
         } else {
-            return ve.origin;
+            return ve.getOrigin();
         }
     }
 
@@ -186,7 +196,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     public int getLocalPropertyOrigin(String propertyName) {
         String s = propertyName.toLowerCase().intern();
 	ValueEntry ve = (ValueEntry)properties.get(s);
-        return (ve == null) ? AUTHOR_ORIGIN : ve.origin;
+        return (ve == null) ? AUTHOR_ORIGIN : ve.getOrigin();
     }
 
     /**
@@ -207,14 +217,17 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     public String getPropertyPriority(String propertyName) {
         String s = propertyName.toLowerCase().intern();
 	ValueEntry ve = (ValueEntry)properties.get(s);
-
-        if (ve == null || ve.value == ImmutableInherit.INSTANCE) {
+        if (ve == null) {
+            return "";
+        }
+        if (ve.getValue() == null ||
+            ve.getValue() == ImmutableInherit.INSTANCE) {
             CSSStyleDeclaration sd;
-            sd = viewCSS.getComputedStyle(element, null);
+            sd = viewCSS.getComputedStyle(parentElement, null);
             return ((CSSOMReadOnlyStyleDeclaration)
                     sd).getPropertyPriority(s);
         } else {
-            return ve.priority;
+            return ve.getPriority();
         }
     }
 
@@ -224,7 +237,7 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     public String getLocalPropertyPriority(String propertyName) {
         String s = propertyName.toLowerCase().intern();
 	ValueEntry ve = (ValueEntry)properties.get(s);
-        return (ve == null) ? "" : ve.priority;
+        return (ve == null) ? "" : ve.getPriority();
     }
 
     /**
@@ -266,31 +279,331 @@ public class CSSOMReadOnlyStyleDeclaration implements CSSStyleDeclaration {
     }
 
     /**
-     * To store the CSSValue of a property.
+     * Creates a new value entry.
      */
-    protected static class ValueEntry {
-	/**
-	 * The value
-	 */
-	public CSSValue value;
+    protected ValueEntry createValueEntry(CSSValue v, String s, int p) {
+        switch (p) {
+        case USER_AGENT_ORIGIN:
+            if (s.length() == 0) {
+                return new UserAgentValueEntry(v);
+            } else {
+                return new ImportantUserAgentValueEntry(v);
+            }
+        case USER_ORIGIN:
+            if (s.length() == 0) {
+                return new UserValueEntry(v);
+            } else {
+                return new ImportantUserValueEntry(v);
+            }
+        case AUTHOR_ORIGIN:
+            if (s.length() == 0) {
+                return new AuthorValueEntry(v);
+            } else {
+                return new ImportantAuthorValueEntry(v);
+            }
+        default:
+            throw new RuntimeException();
+        }
+    }
 
-	/**
-	 * The priority
-	 */
-	public String priority;
+    /**
+     * This interface represents a value entry in the table.
+     */
+    protected interface ValueEntry {
+        /**
+         * Returns the CSS value.
+         */
+        CSSValue getValue();
 
-	/**
-	 * The origin
-	 */
-	public int origin;
+        /**
+         * Sets the CSS value.
+         */
+        void setValue(CSSValue v);
 
-	/**
-	 * Creates a new ValueEntry object.
-	 */
-	public ValueEntry(CSSValue value, String priority, int origin) {
-	    this.value    = value;
-	    this.priority = priority;
-	    this.origin   = origin;
-	}
+        /**
+         * Returns the priority.
+         */
+        String getPriority();
+
+        /**
+         * Returns the value origin.
+         */
+        int getOrigin();
+    }
+
+    /**
+     * To store an important user-agent value.
+     */
+    protected static class ImportantUserAgentValueEntry
+        implements ValueEntry {
+        /**
+         * The CSS value.
+         */
+        protected CSSValue value;
+
+        /**
+         * Creates a new value entry.
+         */
+        public ImportantUserAgentValueEntry(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the CSS value.
+         */
+        public CSSValue getValue() {
+            return value;
+        }
+
+        /**
+         * Sets the CSS value.
+         */
+        public void setValue(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the priority.
+         */
+        public String getPriority() {
+            return "!important";
+        }
+
+        /**
+         * Returns the value origin.
+         */
+        public int getOrigin() {
+            return USER_AGENT_ORIGIN;
+        }
+    }
+
+    /**
+     * To store a user-agent value.
+     */
+    protected static class UserAgentValueEntry
+        implements ValueEntry {
+        /**
+         * The CSS value.
+         */
+        protected CSSValue value;
+
+        /**
+         * Creates a new value entry.
+         */
+        public UserAgentValueEntry(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the CSS value.
+         */
+        public CSSValue getValue() {
+            return value;
+        }
+
+        /**
+         * Sets the CSS value.
+         */
+        public void setValue(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the priority.
+         */
+        public String getPriority() {
+            return "";
+        }
+
+        /**
+         * Returns the value origin.
+         */
+        public int getOrigin() {
+            return USER_AGENT_ORIGIN;
+        }
+    }
+
+    /**
+     * To store an important user value.
+     */
+    protected static class ImportantUserValueEntry
+        implements ValueEntry {
+        /**
+         * The CSS value.
+         */
+        protected CSSValue value;
+
+        /**
+         * Creates a new value entry.
+         */
+        public ImportantUserValueEntry(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the CSS value.
+         */
+        public CSSValue getValue() {
+            return value;
+        }
+
+        /**
+         * Sets the CSS value.
+         */
+        public void setValue(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the priority.
+         */
+        public String getPriority() {
+            return "!important";
+        }
+
+        /**
+         * Returns the value origin.
+         */
+        public int getOrigin() {
+            return USER_ORIGIN;
+        }
+    }
+
+    /**
+     * To store a user value.
+     */
+    protected static class UserValueEntry
+        implements ValueEntry {
+        /**
+         * The CSS value.
+         */
+        protected CSSValue value;
+
+        /**
+         * Creates a new value entry.
+         */
+        public UserValueEntry(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the CSS value.
+         */
+        public CSSValue getValue() {
+            return value;
+        }
+
+        /**
+         * Sets the CSS value.
+         */
+        public void setValue(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the priority.
+         */
+        public String getPriority() {
+            return "";
+        }
+
+        /**
+         * Returns the value origin.
+         */
+        public int getOrigin() {
+            return USER_ORIGIN;
+        }
+    }
+
+    /**
+     * To store an important author value.
+     */
+    protected static class ImportantAuthorValueEntry
+        implements ValueEntry {
+        /**
+         * The CSS value.
+         */
+        protected CSSValue value;
+
+        /**
+         * Creates a new value entry.
+         */
+        public ImportantAuthorValueEntry(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the CSS value.
+         */
+        public CSSValue getValue() {
+            return value;
+        }
+
+        /**
+         * Sets the CSS value.
+         */
+        public void setValue(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the priority.
+         */
+        public String getPriority() {
+            return "!important";
+        }
+
+        /**
+         * Returns the value origin.
+         */
+        public int getOrigin() {
+            return AUTHOR_ORIGIN;
+        }
+    }
+
+    /**
+     * To store a author value.
+     */
+    protected static class AuthorValueEntry
+        implements ValueEntry {
+        /**
+         * The CSS value.
+         */
+        protected CSSValue value;
+
+        /**
+         * Creates a new value entry.
+         */
+        public AuthorValueEntry(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the CSS value.
+         */
+        public CSSValue getValue() {
+            return value;
+        }
+
+        /**
+         * Sets the CSS value.
+         */
+        public void setValue(CSSValue v) {
+            value = v;
+        }
+
+        /**
+         * Returns the priority.
+         */
+        public String getPriority() {
+            return "";
+        }
+
+        /**
+         * Returns the value origin.
+         */
+        public int getOrigin() {
+            return AUTHOR_ORIGIN;
+        }
     }
 }

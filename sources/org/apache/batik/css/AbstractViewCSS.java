@@ -200,9 +200,9 @@ public abstract class AbstractViewCSS implements ViewCSS {
                 (!rvr.isInheritedProperty() ||
                  HiddenChildElementSupport.getParentElement(e) == null)) {
                 val = rvr.getDefaultValue();
-                rd.setPropertyCSSValue(prop, val, "",
-                              CSSOMReadOnlyStyleDeclaration.USER_AGENT_ORIGIN);
             }
+            rd.setPropertyCSSValue(prop, val, "",
+                             CSSOMReadOnlyStyleDeclaration.USER_AGENT_ORIGIN);
             if (val != null) {
                 rvr.resolveValue(e, pe, this, rd, val, prio, orig);
             }

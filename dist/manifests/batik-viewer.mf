@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: org.apache.batik.apps.svgviewer.Main
+Class-Path: batik-ext.jar batik-dom.jar batik-int.jar batik-refimpl.jar \
+            batik-res.jar batik-util.jar crimson.jar
