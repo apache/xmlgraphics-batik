@@ -1,207 +1,140 @@
 <?xml version="1.0"?>
-
 <!DOCTYPE document SYSTEM "./dtd/document-v10.dtd">
 
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
 
-
-<!-- I left this here so that you have a view of the structure of the thing
-     feel free to add as you go -->
-
-
-
-
+<!-- ========================================================================= -->
+<!-- author stefano@apache.org                                                 -->
+<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
 <document>
- <header>
-  <title>Apache Batik</title>
-  <subtitle>SVG Toolkit</subtitle>
-  <authors>
-   <person name="Stefano Mazzocchi" email="stefano@apache.org"/>
-  </authors>
- </header>
+    <header>
+        <title>Apache Batik</title>
+        <subtitle>SVG Toolkit</subtitle>
+        <authors>
+            <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com"/>
+            <person name="Stefano Mazzochi" email="stefano@apache.org" />
+        </authors>
+    </header>
 
- <body>
- <s1 title="What is it?">
+    <body>
+        <s1 title="What is it?">
 
-  <p>
-   Cocoon is a 100% pure
-   Java publishing framework that relies on new W3C
-   technologies (such as DOM, XML, and XSL) to provide web content.
-  </p>
+        <p>
+        Batik is a Java based toolkit for applications which
+        images in the Scalable Vector Graphics (SVG) format for
+        various purposes, such as viewing, generation or manipulation.
+        </p>
+        <p>
+        The project's ambition is to give developers a set of core modules which can be used together 
+        or individually to support specific SVG solutions. Examples of modules are SVG parsers, SVG 
+        generators and SVG DOM implementations. Even though the goal of the project is to provide a set 
+        of core modules, one of the deliveries is a full fledged SVG Viewer implementation which 
+        validates the various modules and their inter-operability. 
+        </p>
 
-  <p>
-   The Cocoon project aims to change the way web information is created,
-   rendered and served. This new paradigm is based on fact that document content, style and
-   logic are often created by different individuals or working groups. Cocoon aims to a
-   complete separation of the three layers, allowing the three layers to be independently
-   designed, created and managed, reducing management overhead, increasing work reuse and
-   reducing time to market.
-  </p>
+        </s1>
 
-  <p>
-   Read the <connect href="technologies.xml">Introduction on Cocoon
-   technologies</connect> white paper to find out more on the subject.
-  </p>
- </s1>
+        <s1 title="What does it do?">
+        <p>
+        With Batik, you can view SVG documents on all platforms where
+        Java is available. You can also use the various Batik modules to
+        generate, manipulate, transcode and search SVG images in your 
+        applications.
+        </p>
+        </s1>
 
- <s1 title="What does it do?">
-  <p>
-   Web content generation is mostly based on HTML, but HTML doesn't separate
-   the information from its presentation, mixing formatting tags, descriptive tags and
-   programmable logic (both on server side and client side). Cocoon changes this view
-   allowing content, logic and style on different XML files and uses XSL transformation
-   capabilities to merge them.
-  </p>
- </s1>
+        <s1 title="What does it change for me?">
+        <p>
+        Batik makes it easy for Java based applications to deal with SVG
+        contents. For example, using Batik's SVG generator, a Java application
+        can very easily export its graphics in the SVG format. Using 
+        Batik's SVG processor and viewer, an application can very easily
+        integrate SVG viewing capabilities. Another possibilities is to
+        use Batik's modules to convert SVG to various formats, such as 
+        raster images (JPEG or PNG).
+        </p>
+        <p>
+        Batik provides core components for handling and processing SVG
+        files.
+        </p>
+         </s1>
 
- <s1 title="What does it change for me?">
-  <p>
-   Even if the most common use of Cocoon is the automatic creation of HTML
-   through the processing of statically or dynamically generated XML files, Cocoon is also
-   able to perform more sophisticated formatting, such as XSL:FO rendering on PDF,
-   client-depending transformations such as WML formatting for WAP-enabled
-   devices or direct XML serving to XML and XSL aware clients.
-  </p>
+        <s1 title="Are there any known limitations?">
 
-  <p>
-   The Cocoon model allows web sites to be highly structured and
-   well designed, reducing duplication efforts and site management costs by
-   allowing different presentations of the same data depending on the requesting
-   client (HTML clients, PDF clients, WML clients) and separating on different <em>contexts</em>
-   different requirements, skills and capacities. Cocoon allows a better human
-   resource management by giving to each individual its job and reducing to a
-   minimum the cross-talks between different working contexts.
-  </p>
+        <p>
+        At this time, Batik does not support all of the SVG features. It 
+        provides a good support for all the SVG static features, supports
+        linking, and has some scripting support, even though dynamic 
+        modification of SVG documents is not yet available. 
+        </p>
+        You will find a detailed description of the set of SVG features
+        Batik supports on the 
+        <link href="http://xml.apache.org/xml-batik/status.xml">Status</link>
+        page.
 
-  <p>
-   To do this, the Cocoon model divides the development of web content in three
-   separate levels:
-  </p>
+         </s1>
 
-  <dl>
-    <dt>XML creation</dt>
-    <dd>the XML file is created by the <em>content owners</em>. They do not
-     require specific knowledge on how the XML content is further processed rather than the
-     particular chosen DTD/namespace. This layer is always performed by humans directly
-     through normal text editors or XML-aware tools/editors.</dd>
-    <dt>XML processing</dt>
-    <dd>the requested XML file is processed and the logic contained in its
-     logicsheet is applied. Unlike other dynamic content generators, the logic
-     is separated from the content file.</dd>
-    <dt>XSL rendering</dt>
-    <dd>the created document is then rendered by applying an XSL
-     stylesheet to it and formatting it to the specified resource type
-     (HTML, PDF, XML, WML, XHTML)</dd>
-  </dl>
- </s1>
-
- <s1 title="Are there any known problems?">
-  <p>
-   The biggest known problem in this framework is the lack of XML/XSL
-   knowledge, being relatively new formats. We do believe, though, that this publishing
-   framework will be a winner in web sites of medium to high complexity and will lead the
-   transition from an HTML-oriented to a XML-oriented web publishing model, still allowing the
-   use of existing client technologies as well as supporting new types of clients
-   (such as WAP-aware ultra thin clients like cell phones or PDAs).
-  </p>
-  <p>
-   Even if considered heavy and hype overloaded, the XML/XSL pair will do
-   magic once its public knowledge receives the spread it deserves. This project wants to be
-   a small step in this direction, helping people to learn this technology and to focus on
-   what they need with examples, tutorial and source code and a real-life system
-   carefully designed with portability, modularity and real-life usage in
-   mind.
-  </p>
-  <p>
-   The main concern remains processing complexity: the kind of operations required
-   to process the document layers are complex and not designed for real-time
-   operation on the server side. For this reason, Cocoon is designed to be a page compiler for dynamic pages,
-   trying to hardcode, whenever possible, those layers in precompiled binary
-   code coupled with an adaptive and memory-wise cache system for both static and
-   dynamic pages. Most of the development effort is focused on performance
-   improvement of both processing subsystems as well as the creation and testing
-   of special cache systems.
-  </p>
-  <p>
-   Another problem is the intrinsic impossibility of page-compiling all the three
-   processing layers, due to the post-processing requirements of XSL styling. This
-   problem will be solved (hopefully!) with the availability of XSL-enabled
-   web browsers since the XSL rendering would be then
-   performed on client side reducing the server work.
-  </p>
- </s1>
-
- <s1 title="Are there books that cover this stuff?">
-  <p>
-   Yes, even if XML publishing is a brand new area, the incredible acceptance
-   of these technologies urged editors to provide books that covered the subject.
-   While many books that cover XML exist, one of them dedicates an entire chapter
-   to XML publishing frameworks and Cocoon in particular and that chapter
-   was made available free of charge 
-   <link href="http://www.oreilly.com/catalog/javaxml/chapter/ch09.html">here</link>.
-   Our greatful thanks go to both O'Reilly and Brett McLaughlin for this.
-  </p>
- </s1>
+        <s1 title="What is SVG anyway?">
+        <p>
+        Scalable Vector Graphics, SVG, is a <link href="http://www.w3.org">W3C</link>
+        Candidate Recommendation. It defines an XML grammar for rich 2D graphics
+        which includes features such as transparency, arbitrary geometry, filter
+        effects (shadows, lighting effects, etc...), scripting and animation.
+        </p>
+        <p>
+        The SVG specification can be found on the 
+        <link href="http://www.w3.org/TR/SVG/">W3C site</link>.
+        </p>
+         </s1>
  
- <s1 title="Where do I get it?">
-  <p>
-   The official distribution site is <link href="http://xml.apache.org/cocoon/dist/">here</link>.
-  </p>
-  <note>
-   Since Cocoon requires many different packages to work (Xerces, Xalan, FOP, etc...)
-   but sometimes there are small incompatibilities between them that make the
-   installation harder, we decided to help you by placing all the required
-   binary libraries inside the Cocoon distribution. So, after you
-   downloaded the latest Cocoon distribution, <strong>you don't need anything else</strong>.
-  </note>
-  <p>
-   But, if you want, you can find unofficial RPM packages <link href="http://grapeape.codingapes.com/xml.xml">here</link>.
-  </p>
- </s1>
+        <s1 title="Where do I get it?">
+        <p>
+        You can get Batik on the 
+        <link href="http://xml.apache.org/xml-batik/download/">download page</link>.
+        </p>
+        <note>
+        All other libraries needed by Batik are included in the distribution.
+        After you downloaded Batik, you will not need anything else.
+        </note>
+        </s1>
 
- <s1 title="How do I Contribute?">
-  <p>
-   The Cocoon Project is an open volunteer project based on the spirit of the
-   <link href="http://www.apache.org">Apache Software Foundation</link> (ASF).
-   This means that there are lots of ways to contribute to the project, either
-   with direct participation (coding, documenting, answering questions,
-   proposing ideas, reporting bugs, suggesting bug-fixes, etc..) or by resource
-   donation (money, time, publicity, hardware, software, conference
-   presentations, speeches, etc...).
-  </p>
-  <p>
-   For direct participation, we suggest you to subscribe to the
-   <link href="http://xml.apache.org/mail.html">Cocoon mail lists</link>
-   (follow the link for information on how to subscribe and to access the mail
-   list archives), to checkout the <link href="http://xml.apache.org/websrc/cvsweb.cgi/xml-cocoon/">
-   latest and greatest code</link> (which you found in the xml-cocoon module in
-   the xml.apache.org CVS code repository, or from the
-   <link href="http://xml.apache.org/from-cvs/xml-cocoon/">CVS snapshots</link>),
-   control the <connect href="../todo.xml">todo</connect>
-   list and jump in. Document writers are usually the most wanted people so if
-   you like to help but you're not familiar with technical details, don't worry:
-   we have work for you.
-  </p>
-  <p>
-   For money funding in particular, the Cocoon Project and the ASF in general
-   is closely collaborating with the <link href="http://www.sourcexchange.com">Collab.net
-   SourceXchange</link> program that will provide a legal, solid and well
-   established resource for money collecting to fund direct software production
-   under the open source flag. Please, feel free to contact directly Cocoon's
-   main architect and project creator <link href="mailto:stefano@apache.org">Stefano
-   Mazzocchi</link> or the ASF President and Collab.net co-founder <link href="mailto:brian@collab.net">Brian
-   Behlendorf</link> for more information on how to contribute directly to the
-   advancement of this project.
-  </p>
-  <p>
-   Anyway, a great way of contributing back to the project is to
-   allow others to know about it so that the word spreads and others may wish to
-   contribute, so, please, help us by placing the cocoon logo somewhere in your
-   site to indicate that you are using and supporting the Cocoon Project.
-  </p>
+        <s1 title="How do I Contribute?">
+        <p>
+        The Batik Project is an open volunteer project based on the spirit of the
+        <link href="http://www.apache.org">Apache Software Foundation</link> (ASF).
+        This means that there are lots of ways to contribute to the project, either
+        with direct participation (coding, documenting, answering questions,
+        proposing ideas, reporting bugs, suggesting bug-fixes, etc..) or by resource
+        donation (money, time, publicity, hardware, software, conference
+        presentations, speeches, etc...).
+        </p>
+        <p>
+        For direct participation, we suggest you to subscribe to the
+        <link href="http://xml.apache.org/mail.html">Batik mailing list</link>
+        (follow the link for information on how to subscribe and to access the mail
+        list archives), to checkout the <link href="http://xml.apache.org/websrc/index.cgi/xml-batik/">
+        latest code</link>. Document writers are usually the most wanted people so if
+        you like to help but you're not familiar with technical details, don't worry:
+        we have work for you.
+        </p>
+        <p>
+        A great way of contributing back to the project is to
+        allow others to know about it so that the word spreads and others may wish to
+        contribute, so, please, help us by placing the cocoon logo somewhere in your
+        site to indicate that you are using and supporting the Cocoon Project.
+        </p>
 
-  <p>
-   Thank you very much.
-  </p>
- </s1>
- </body>
+        <p>
+        Thank you very much.
+        </p>
+        </s1>
+    </body>
 </document>

@@ -1,0 +1,600 @@
+<?xml version="1.0"?>
+<!DOCTYPE document SYSTEM "./dtd/document-v10.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- author Thierry.Kormann@sophia.inria.fr                                                 -->
+<!-- author vincent.hardy@eng.sun.com                                          -->
+<!-- version $Id$ -->
+<!-- ========================================================================= -->
+<document>
+    <header>
+        <title>Apache Batik</title>
+        <subtitle>Implementation Status</subtitle>
+        <authors>
+            <person name="Vincent Hardy" email="vincent.hardy@eng.sun.com" />
+            <person name="Thierry Kormann" email="Thierry.Kormann@sophia.inria.fr" />
+        </authors>
+    </header>
+
+    <body>
+        <s1 title="Introduction">
+            <p>
+            This page shows Batik's implementation status with 
+            regards to the Scalable Vector Graphics Basic Effectivity
+            test suite, commonly refered to as the SVG BE Test suite.
+            </p>
+            <p>
+            The SVG BE Test suite is developed by the W3C SVG working
+            group to allow implementation to check their level of
+            conformance with the SVG specification. In that spirit,
+            the table below shows how much of the test suite the 
+            SVG Viewer included in the Batik distribution passes.
+            </p>
+            <p>
+            There are two sections: the first one shows the tests
+            passed by Batik and the second shows the tests that 
+            Batik does not pass (not yet, it will eventually).
+            In each section, tests have been seperated out in
+            static SVG content and dynamic SVG content.
+            </p>
+        </s1>
+
+        <s1 title="SVG BE Tests Passed by Batik">
+        <p>
+        Static
+        </p>
+        <table>
+	    <tr>
+	      <td >color-datatypes-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >coords-transforms-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >coords-units-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >coords-unitsProc-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >coords-viewBox-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-transfer-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-turb-BE-11.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-linearGr-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-linearGr-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-linearGr-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-radialGr-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-radialGr-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-stop-BE-06.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-stop-BE-10.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >masking-clipPath-BE-08.svg</td>
+	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
+	    </tr>
+	    <tr>
+	      <td >masking-groupOpac-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >masking-vportClip-BE-09.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >paint-inherit-BE-06.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >paint-stroke-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >path-curves-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >path-curves-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >path-curves-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >path-lines-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >rendering-orderGr-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >rendering-shape-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >rendering-text-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >shapes-circle-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >shapes-ellipse-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >shapes-line-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >shapes-polygon-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >shapes-polyline-BE-06.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >shapes-rect-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >structure-basicG-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >structure-defs-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >structure-empty-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >structure-nested-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >structure-switch-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >structure-symbol-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >style-selector-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >style-selector-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >style-selector-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-font-BE-15.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-text-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-whiteSpace-BE-06.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+        </table>
+
+        <p>
+        Dynamic
+        </p>
+
+        <table>
+	    <tr>
+	      <td >linking-outBound-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >linking-xlinkAttr-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+        </table>
+
+    </s1>
+
+    <s1 title="SVG BE Tests Not Passed by Batik">
+
+        <p>Static</p>
+
+        <p>Close, but not quite</p>
+        
+        <table>
+        
+	    <tr>
+	      <td >filters-blur-BE-12.svg</td>
+	      <td >The BE test seems not correct</td>
+	    </tr>
+        
+	    <tr>
+	      <td >filters-colorMtrx-BE-03.svg</td>
+	      <td >The rectangle with <em>type="hueRotate" values="90"</em> is wrong</td>
+	    </tr>
+	    <tr>
+	      <td >masking-clipPath-BE-01.svg</td>
+	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
+	    </tr>
+        
+	    <tr>
+	      <td >masking-clipPath-BE-02.svg</td>
+	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
+	    </tr>
+	    <tr>
+	      <td >masking-clipRule-BE-03.svg</td>
+	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
+	    </tr>
+	    <tr>
+	      <td >masking-mask-BE-05.svg</td>
+	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
+	    </tr>
+	    <tr>
+	      <td >masking-mask-BE-06.svg</td>
+	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
+	    </tr>
+        </table>
+
+
+        <p>Not at all</p>
+        <table>
+	    <tr>
+	      <td >color-colorProf-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >color-property-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >coords-unitsProc-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >extend-multiNS-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-blend-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-composite-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-convolve-BE-06.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-diffuseLt-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-dispMap-BE-16.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-feImage-BE-13.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-feTile-BE-14.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-fldMrgOff-BE-15.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-lights-BE-09.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-many-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-morph-BE-10.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >filters-specularLt-BE-08.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >fonts-fontElement-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-pattern-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-referenc-BE-08.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-transfrm-BE-09.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >masking-property-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >metadata-sample-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >paint-colIntProp-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >paint-fill-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >paint-markers-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >paint-markers-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >structure-allElem-BE-09.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >structure-image-BE-06.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >structure-lang-BE-08.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-alignment-BE-10.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-alignment-BE-11.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-altGlyph-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-decoration-BE-12.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-font-BE-16.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-glyphRun-BE-08.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-i18n-BE-09.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-selection-BE-13.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-spacing-BE-14.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-textAnchor-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-textLength-BE-17.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-textOnPath-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-tref-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-trefBE04-aux.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >text-tspan-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+        </table>
+
+        <p>Dynamic</p>
+
+        <p>Not at all</p>
+        <table>
+	    <tr>
+	      <td >animation-add-BE-09.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-href-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-inherit-BE-10.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-motion-BE-11.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-motion-BE-12.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-overall-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-targAtt-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-targElt-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-timing-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-values-BE-06.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-values-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >animation-values-BE-08.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >dom-core-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >dom-eventListener-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >dom-featureString-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >dom-svg-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >interact-bubble-BE-04-targ.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >interact-bubble-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >interact-cursor-BE-08.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >interact-onload-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >interact-pEvents-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >interact-pEvents-BE-06.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >interact-zoomPan-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >interact-zoomPan-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >interact-zoomPan-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >linking-inBound-BE-03.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >linking-view-BE-04.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >linking-view-BE-05.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >script-eventDom-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >script-uiEvents-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+        </table>
+
+        </s1>
+
+    </body>
+</document>
