@@ -338,11 +338,12 @@ public class AWTEventDispatcher implements EventDispatcher,
     protected void dispatchMouseEvent(MouseEvent evt) {
         GraphicsNodeMouseEvent gvtevt;
         Point2D p = new Point2D.Float(evt.getX(), evt.getY());
+        Point2D gnp = p;
         if (baseTransform != null) {
-            p = baseTransform.transform(p, null);
+            gnp = baseTransform.transform(p, null);
         }
 
-        GraphicsNode node = root.nodeHitAt(p);
+        GraphicsNode node = root.nodeHitAt(gnp);
 
         // If the receiving node has changed, send a notification
         // check if we enter a new node

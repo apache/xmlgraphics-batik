@@ -16,29 +16,27 @@ package org.apache.batik.bridge;
  */
 public class UserAgentViewport implements Viewport {
 
-    private float width;
-    private float height;
+    private UserAgent userAgent;
 
     /**
      * Constructs a new viewport for the specified user agent.
      * @param userAgent the user agent that defines the viewport
      */
     public UserAgentViewport(UserAgent userAgent) {
-        width = (float) userAgent.getViewportSize().getWidth();
-        height = (float) userAgent.getViewportSize().getHeight();
+        this.userAgent = userAgent;
     }
 
     /**
      * Returns the width of this viewport.
      */
     public float getWidth() {
-        return width;
+        return (float) userAgent.getViewportSize().getWidth();
     }
 
     /**
      * Returns the height of this viewport.
      */
     public float getHeight() {
-        return height;
+        return (float) userAgent.getViewportSize().getHeight();
     }
 }

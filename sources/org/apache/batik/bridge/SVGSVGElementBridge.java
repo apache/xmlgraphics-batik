@@ -70,7 +70,7 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
 	    return null;
 	}
 
-        CanvasGraphicsNode gn = new CanvasGraphicsNode();
+        CanvasGraphicsNode cgn = new CanvasGraphicsNode();
 
         UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
         String s;
@@ -111,28 +111,29 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
             (s, SVG_HEIGHT_ATTRIBUTE, uctx);
 
         // 'visibility'
-        gn.setVisible(CSSUtilities.convertVisibility(e));
+        cgn.setVisible(CSSUtilities.convertVisibility(e));
 
         // 'viewBox' and "preserveAspectRatio' attributes
-        AffineTransform at =
+        AffineTransform viewingTransform =
             ViewBox.getPreserveAspectRatioTransform(e, w, h);
 
         float actualWidth = w;
         float actualHeight = h;
         try {
-            AffineTransform atInv = at.createInverse();
-            actualWidth = (float) (w*atInv.getScaleX());
-            actualHeight = (float) (h*atInv.getScaleY());
+            AffineTransform vtInv = viewingTransform.createInverse();
+            actualWidth = (float) (w*vtInv.getScaleX());
+            actualHeight = (float) (h*vtInv.getScaleY());
         } catch (NoninvertibleTransformException ex) {}
 
-        at.preConcatenate(AffineTransform.getTranslateInstance(x, y));
-
+        AffineTransform positionTransform =
+            AffineTransform.getTranslateInstance(x, y);
         // 'overflow' and 'clip'
         // The outermost preserveAspectRatio matrix is set by the user
         // agent, so we don't need to set the transform for outermost svg
         Shape clip = null;
         if (!isOutermost) {
-            gn.setTransform(at);
+            cgn.setPositionTransform(positionTransform);
+            cgn.setViewingTransform(viewingTransform);
         } else {
             // <!> FIXME: hack to compute the original document's size
             if (ctx.getDocumentSize() == null) {
@@ -158,24 +159,26 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
 
         if (clip != null) {
             try {
+                AffineTransform at = new AffineTransform(positionTransform);
+                at.concatenate(viewingTransform);
                 at = at.createInverse(); // clip in user space
                 clip = at.createTransformedShape(clip);
-                Filter filter = gn.getGraphicsNodeRable(true);
-                gn.setClip(new ClipRable8Bit(filter, clip));
+                Filter filter = cgn.getGraphicsNodeRable(true);
+                cgn.setClip(new ClipRable8Bit(filter, clip));
             } catch (NoninvertibleTransformException ex) {}
         }
 
         // 'enable-background'
         Rectangle2D r = CSSUtilities.convertEnableBackground(e);
         if (r != null) {
-            gn.setBackgroundEnable(r);
+            cgn.setBackgroundEnable(r);
         }
 
         ctx.openViewport
             (e, new SVGSVGElementViewport((SVGSVGElement)e,
                                           actualWidth,
                                           actualHeight));
-        return gn;
+        return cgn;
     }
 
     /**
@@ -199,6 +202,14 @@ public class SVGSVGElementBridge extends SVGGElementBridge {
     }
 
     // BridgeUpdateHandler implementation //////////////////////////////////
+
+    /**
+     * Disposes this BridgeUpdateHandler and releases all resources.
+     */
+    public void dispose() {
+        ctx.removeViewport(e);
+        super.dispose();
+    }
 
     /**
      * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.

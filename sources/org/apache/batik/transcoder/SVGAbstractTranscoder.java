@@ -22,6 +22,8 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.CanvasGraphicsNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
@@ -165,19 +167,12 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         GraphicsNode gvtRoot;
         try {
             gvtRoot = builder.build(ctx, svgDoc);
-            // dispatch an 'onload' event if needed
-            if (ctx.isDynamic()) {
-                BaseScriptingEnvironment se = new BaseScriptingEnvironment(ctx);
-                se.loadScripts();
-                se.dispatchSVGLoadEvent();
-            }
         } catch (BridgeException ex) {
             throw new TranscoderException(ex);
         }
         // get the 'width' and 'height' attributes of the SVG document
         float docWidth = (float)ctx.getDocumentSize().getWidth();
         float docHeight = (float)ctx.getDocumentSize().getHeight();
-        ctx = null;
         builder = null;
 
         setImageSize(docWidth, docHeight);
@@ -188,6 +183,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
 
         try {
             Px = ViewBox.getViewTransform(ref, root, width, height);
+            
         } catch (BridgeException ex) {
             throw new TranscoderException(ex);
         }
@@ -219,8 +215,40 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         } else {
             curAOI = new Rectangle2D.Float(0, 0, width, height);
         }
-        curTxf = Px;
+        
+        CanvasGraphicsNode cgn = getCanvasGraphicsNode(gvtRoot);
+        if (cgn != null) {
+            cgn.setViewingTransform(Px);
+            curTxf = new AffineTransform();
+        } else {
+            curTxf = Px;
+        }
+
+        try {
+            // dispatch an 'onload' event if needed
+            if (ctx.isDynamic()) {
+                BaseScriptingEnvironment se;
+                se = new BaseScriptingEnvironment(ctx);
+                se.loadScripts();
+                se.dispatchSVGLoadEvent();
+            }
+        } catch (BridgeException ex) {
+            throw new TranscoderException(ex);
+        }
+        ctx = null;
+
+
         this.root = gvtRoot;
+    }
+
+    protected CanvasGraphicsNode getCanvasGraphicsNode(GraphicsNode gn) {
+        if (!(gn instanceof CompositeGraphicsNode))
+            return null;
+        CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
+        gn = (GraphicsNode)cgn.getChildren().get(0);
+        if (!(gn instanceof CanvasGraphicsNode))
+            return null;
+        return (CanvasGraphicsNode)gn;
     }
 
     /**
@@ -678,10 +706,26 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         }
 
         /**
+         * Return the rendering transform.
+         */
+        public AffineTransform getTransform() {
+            return SVGAbstractTranscoder.this.curTxf;
+        }
+
+        /**
+         * Return the rendering transform.
+         */
+        public void setTransform(AffineTransform at) {
+            SVGAbstractTranscoder.this.curTxf = at;
+        }
+
+        /**
          * Returns the default size of this user agent (400x400).
          */
         public Dimension2D getViewportSize() {
-            return new Dimension(400, 400);
+            return new Dimension
+                ((int)SVGAbstractTranscoder.this.width, 
+                 (int)SVGAbstractTranscoder.this.height);
         }
 
         /**
@@ -701,6 +745,7 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
          */
         public void displayError(Exception e) {
             try {
+                e.printStackTrace();
                 SVGAbstractTranscoder.this.handler.error
                     (new TranscoderException(e));
             } catch (TranscoderException ex) {

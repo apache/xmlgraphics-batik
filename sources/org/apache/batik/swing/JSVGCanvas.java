@@ -517,7 +517,7 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected class ResetTransformAction extends AbstractAction {
         public void actionPerformed(ActionEvent evt) {
-            setFragmentIdentifier(null);
+            fragmentIdentifier = null;
             resetRenderingTransform();
         }
     }

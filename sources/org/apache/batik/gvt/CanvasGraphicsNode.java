@@ -12,6 +12,8 @@ import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 
 /**
  * The graphics node container with a background color.
@@ -20,6 +22,21 @@ import java.awt.geom.Dimension2D;
  * @version $Id$
  */
 public class CanvasGraphicsNode extends CompositeGraphicsNode {
+
+    /**
+     * This is the position transform for this graphics node.
+     * This is needed because getCTM returns the transform
+     * to the viewport coordinate system which is after viewing but
+     * before positioning.
+     */
+    protected AffineTransform positionTransform;
+    /**
+     * This is the viewing transform for this graphics node.
+     * This is needed because getCTM returns the transform
+     * to the viewport coordinate system which is after viewing but
+     * before positioning.
+     */
+    protected AffineTransform viewingTransform;
 
     /** 
      * The background of this canvas graphics node.
@@ -51,6 +68,71 @@ public class CanvasGraphicsNode extends CompositeGraphicsNode {
         return backgroundPaint;
     }
 
+    public void setPositionTransform(AffineTransform at) {
+        fireGraphicsNodeChangeStarted();
+        invalidateGeometryCache();
+        this.positionTransform = at;
+        if (positionTransform != null) {
+            transform = new AffineTransform(positionTransform);
+            if (viewingTransform != null)
+                transform.concatenate(viewingTransform);
+        } else if (viewingTransform != null)
+            transform = new AffineTransform(viewingTransform);
+        else
+            transform = new AffineTransform();
+        
+        if (transform.getDeterminant() != 0){
+            try{
+                inverseTransform = transform.createInverse();
+            }catch(NoninvertibleTransformException e){
+                // Should never happen.
+                throw new Error();
+            }
+        }
+        else{
+            // The transform is not invertible. Use the same
+            // transform.
+            inverseTransform = transform;
+        }
+        fireGraphicsNodeChangeCompleted();
+    }
+
+    public AffineTransform getPositionTransform() {
+        return positionTransform;
+    }
+
+    public void setViewingTransform(AffineTransform at) {
+        fireGraphicsNodeChangeStarted();
+        invalidateGeometryCache();
+        this.viewingTransform = at;
+        if (positionTransform != null) {
+            transform = new AffineTransform(positionTransform);
+            if (viewingTransform != null)
+                transform.concatenate(viewingTransform);
+        } else if (viewingTransform != null)
+            transform = new AffineTransform(viewingTransform);
+        else
+            transform = new AffineTransform();
+
+        if(transform.getDeterminant() != 0){
+            try{
+                inverseTransform = transform.createInverse();
+            }catch(NoninvertibleTransformException e){
+                // Should never happen.
+                throw new Error();
+            }
+        }
+        else{
+            // The transform is not invertible. Use the same
+            // transform.
+            inverseTransform = transform;
+        }
+        fireGraphicsNodeChangeCompleted();
+    }
+
+    public AffineTransform getViewingTransform() {
+        return viewingTransform;
+    }
     //
     // Drawing methods
     //

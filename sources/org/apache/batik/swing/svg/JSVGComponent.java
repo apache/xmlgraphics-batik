@@ -8,6 +8,7 @@
 
 package org.apache.batik.swing.svg;
 
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -15,6 +16,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Window;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -58,6 +60,8 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.CanvasGraphicsNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 
 import org.apache.batik.gvt.event.EventDispatcher;
 
@@ -538,7 +542,8 @@ public class JSVGComponent extends JGVTComponent {
      */
     public void setFragmentIdentifier(String fi) {
         fragmentIdentifier = fi;
-        computeRenderingTransform();
+        if (computeRenderingTransform())
+            scheduleGVTRendering();
     }
 
     /**
@@ -593,33 +598,81 @@ public class JSVGComponent extends JGVTComponent {
         }
     }
 
+    public CanvasGraphicsNode getCanvasGraphicsNode() {
+        return getCanvasGraphicsNode(gvtRoot);
+        
+    }
+
+    protected CanvasGraphicsNode getCanvasGraphicsNode(GraphicsNode gn) {
+        if (!(gn instanceof CompositeGraphicsNode))
+            return null;
+        CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
+        gn = (GraphicsNode)cgn.getChildren().get(0);
+        if (!(gn instanceof CanvasGraphicsNode))
+            return null;
+        return (CanvasGraphicsNode)gn;
+    }
+
     /**
      * Computes the transform used for rendering.
+     * Returns true if the component needs to be repainted.
      */
-    protected void computeRenderingTransform() {
+    protected boolean computeRenderingTransform() {
+        if ((svgDocument == null) || (gvtRoot == null))
+            return false;
+
+        boolean ret = false;
         try {
-            if (svgDocument != null) {
-                SVGSVGElement elt = svgDocument.getRootElement();
-                Dimension d = getSize();
-                if (d.width  < 1) d.width  = 1;
-                if (d.height < 1) d.height = 1;
-                setRenderingTransform
-                    (ViewBox.getViewTransform
-                     (fragmentIdentifier, elt, d.width, d.height));
-                initialTransform = renderingTransform;
+            SVGSVGElement elt = svgDocument.getRootElement();
+            Dimension d = getSize();
+            if (d.width  < 1) d.width  = 1;
+            if (d.height < 1) d.height = 1;
+            AffineTransform at = ViewBox.getViewTransform
+                (fragmentIdentifier, elt, d.width, d.height);
+            CanvasGraphicsNode cgn = getCanvasGraphicsNode();
+            if (!at.equals(cgn.getViewingTransform())) {
+                cgn.setViewingTransform(at);
+                if (renderer != null)
+                    renderer.setTree(gvtRoot);
+                ret = true;
+            }
+
+            initialTransform = new AffineTransform();
+            if (!initialTransform.equals(getRenderingTransform())) {
+                setRenderingTransform(initialTransform, false);
+                ret = true;
             }
         } catch (BridgeException e) {
             userAgent.displayError(e);
         }
+        return ret;
     }
 
     /**
      * Updates the value of the transform used for rendering.
+     * Return true if a repaint is required, otherwise false.
      */
-    protected void updateRenderingTransform() {
-        if (initialTransform == renderingTransform) {
-            computeRenderingTransform();
+    protected boolean updateRenderingTransform() {
+        if ((svgDocument == null) || (gvtRoot == null))
+            return false;
+        try {
+            SVGSVGElement elt = svgDocument.getRootElement();
+            Dimension d = getSize();
+            if (d.width  < 1) d.width  = 1;
+            if (d.height < 1) d.height = 1;
+            AffineTransform at = ViewBox.getViewTransform
+                (fragmentIdentifier, elt, d.width, d.height);
+            CanvasGraphicsNode cgn = getCanvasGraphicsNode();
+            if (!at.equals(cgn.getViewingTransform())) {
+                cgn.setViewingTransform(at);
+                if (renderer != null)
+                    renderer.setTree(gvtRoot);
+                return true;
+            }
+        } catch (BridgeException e) {
+            userAgent.displayError(e);
         }
+        return false;
     }
 
     /**
@@ -866,7 +919,6 @@ public class JSVGComponent extends JGVTComponent {
          * The data of the event is initialized to the old document.
          */
         public void gvtBuildStarted(GVTTreeBuilderEvent e) {
-            computeRenderingTransform();
         }
 
         /**
@@ -885,16 +937,39 @@ public class JSVGComponent extends JGVTComponent {
                 return;
             }
 
+            Dimension2D dim = bridgeContext.getDocumentSize();
+            setMySize(new Dimension((int)dim.getWidth(),
+                                    (int)dim.getHeight()));
+            SVGSVGElement elt = svgDocument.getRootElement();
+            Dimension sz = getSize();
+            if (sz.width  < 1) sz.width  = 1;
+            if (sz.height < 1) sz.height = 1;
+            AffineTransform vt = ViewBox.getViewTransform
+                (fragmentIdentifier, elt, sz.width, sz.height);
+            CanvasGraphicsNode cgn = getCanvasGraphicsNode(e.getGVTRoot());
+            cgn.setViewingTransform(vt);
+            gvtRoot = null;
 
             if (isDynamicDocument && JSVGComponent.this.eventsEnabled) {
                 startSVGLoadEventDispatcher(e.getGVTRoot());
             } else {
                 JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
+                scheduleGVTRendering();
             }
-            Dimension2D dim = bridgeContext.getDocumentSize();
-            setPreferredSize(new Dimension((int)dim.getWidth(),
-                                           (int)dim.getHeight()));
+        }
+
+        public void setMySize(Dimension d) {
+            setPreferredSize(d);
             invalidate();
+            Container p = getParent();
+            while (p != null) {
+                if (p instanceof Window) {
+                    Window w = (Window) p;
+                    w.pack();
+                    break;
+                }
+                p = p.getParent();
+            }
         }
 
         /**
@@ -938,10 +1013,10 @@ public class JSVGComponent extends JGVTComponent {
                 JSVGComponent.this.image = null;
                 repaint();
             } else {
+                setMySize(new Dimension((int)dim.getWidth(),
+                                        (int)dim.getHeight()));
                 JSVGComponent.this.setGraphicsNode(gn, false);
-                setPreferredSize(new Dimension((int)dim.getWidth(),
-                                               (int)dim.getHeight()));
-                invalidate();
+                computeRenderingTransform();
             }
             userAgent.displayError(((GVTTreeBuilder)e.getSource())
                                    .getException());
@@ -980,6 +1055,7 @@ public class JSVGComponent extends JGVTComponent {
             }
 
             JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
+            scheduleGVTRendering();
         }
 
         /**
@@ -1030,6 +1106,7 @@ public class JSVGComponent extends JGVTComponent {
                 repaint();
             } else {
                 JSVGComponent.this.setGraphicsNode(gn, false);
+                computeRenderingTransform();
             }
             userAgent.displayError(((SVGLoadEventDispatcher)e.getSource())
                                    .getException());
@@ -1945,6 +2022,25 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         /**
+         * Sets the <code>AffineTransform</code> to be
+         * applied to the drawing by the UserAgent.
+         */
+        public void setTransform(AffineTransform at) {
+            if (EventQueue.isDispatchThread()) {
+                userAgent.setTransform(at);
+            } else {
+                final AffineTransform affine = at;
+                class Query implements Runnable {
+                    public void run() {
+                        userAgent.setTransform(affine);
+                    }
+                }
+                Query q = new Query();
+                invokeAndWait(q);
+            }
+        }
+
+        /**
          * Returns this user agent's CSS media.
          */
         public String getMedia() {
@@ -2497,7 +2593,8 @@ public class JSVGComponent extends JGVTComponent {
                         ((s == null) || (!s.equals(fragmentIdentifier)))) {
                         // It is, so update rendering transform.
                         fragmentIdentifier = s;
-                        computeRenderingTransform();
+                        if (computeRenderingTransform())
+                            scheduleGVTRendering();
                     }
                     // Let every one know the link fired (but don't
                     // load doc, it's already loaded.).
@@ -2567,6 +2664,14 @@ public class JSVGComponent extends JGVTComponent {
          */
         public AffineTransform getTransform() {
             return JSVGComponent.this.renderingTransform;
+        }
+
+        /**
+         * Sets the <code>AffineTransform</code> to be
+         * applied to the drawing by the UserAgent.
+         */
+        public void setTransform(AffineTransform at) {
+            JSVGComponent.this.setRenderingTransform(at);
         }
 
         /**

@@ -150,7 +150,6 @@ public class UpdateManager implements RunnableQueue.RunHandler {
         throws InterruptedException {
         scriptingEnvironment.loadScripts();
         scriptingEnvironment.dispatchSVGLoadEvent();
-
     }
 
     /**

@@ -1901,6 +1901,24 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         }
 
         /**
+         * Returns the transformation matrix from the userspace of
+         * the root element to the screen.
+         */
+        public AffineTransform getScreenTransform() {
+            //return node.getScreenTransform();
+            return null;
+        }
+
+        /**
+         * Sets the transformation matrix to be used from the
+         * userspace of the root element to the screen.
+         */
+        public void setScreenTransform(AffineTransform at) {
+            //return node.setScreenTransform(at);
+            return;
+        }
+
+        /**
          * Returns the width of the viewport which directly contains the
          * given element.
          */

@@ -17,8 +17,11 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 
-import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.CanvasGraphicsNode;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.RootGraphicsNode;
+
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -312,17 +315,41 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         AffineTransform ctm = new AffineTransform();
         Element elt = e;
         while (elt != null) {
-            AffineTransform at = gn.getTransform();
-            if (at != null) {
-                ctm.preConcatenate(at);
-            }
-            elt = SVGCSSEngine.getParentCSSStylableElement(elt);
-            gn = gn.getParent();
             if (elt instanceof SVGFitToViewBox) {
+                AffineTransform at;
+                if (gn instanceof CanvasGraphicsNode) {
+                    at = ((CanvasGraphicsNode)gn).getViewingTransform();
+                } else {
+                    at = gn.getTransform();
+                }
+                if (at != null) {
+                    ctm.preConcatenate(at);
+                }
                 break;
             }
+
+            AffineTransform at = gn.getTransform();
+            if (at != null)
+                ctm.preConcatenate(at);
+
+            elt = SVGCSSEngine.getParentCSSStylableElement(elt);
+            gn = gn.getParent();
         }
         return ctm;
+    }
+
+    /**
+     * Returns the display transform.
+     */
+    public AffineTransform getScreenTransform() {
+        return ctx.getUserAgent().getTransform();
+    }
+
+    /**
+     * Returns the display transform.
+     */
+    public void setScreenTransform(AffineTransform at) {
+        ctx.getUserAgent().setTransform(at);
     }
 
     /**
