@@ -22,8 +22,8 @@
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
     <defs>
-        <filter id="dropShadow"  filterUnits="userSpaceOnUse" x="0" y="0" width="500" height="500" filterRes="200">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="5 5" x="0" y="0" width="500" height="500"/> 
+        <filter id="dropShadow"  filterUnits="objectBoundingBox" filterRes="200" width="1.4" height="1.4">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="5 5" /> 
             <feOffset dx="10" dy="10" />
             <feComponentTransfer result="shadow">
                <feFuncA type="linear" slope=".5" intercept="0" />
