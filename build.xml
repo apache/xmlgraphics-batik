@@ -652,8 +652,7 @@ To display the available targets type:
           depends="compile, testdirs"
           description="converts selected glyphs from a True Type Font file to the SVG Font format" >
     <java fork="yes"
-          classname="${class-prefix}.apps.ttf2svg.Main"
-          jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
+          classname="${class-prefix}.apps.ttf2svg.Main">
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
@@ -667,8 +666,7 @@ To display the available targets type:
           depends="compiletest, testdirs"
           description="Runs test suite whose file or uri is passed as an input">
     <java fork="yes"
-          classname="${class-prefix}.test.xml.XMLTestSuiteRunner"
-          jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
+          classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
@@ -685,8 +683,7 @@ To display the available targets type:
           description="Runs test suite whose file or uri is passed as an input">
     <mkdir dir="${test-reports}"/>
     <java fork="yes"
-          classname="${class-prefix}.test.xml.XMLTestSuiteRunner"
-          jvmargs="-DproxyHost=webcache.eng.sun.com -DproxyPort=8080">
+          classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
       <classpath>
         <pathelement location="${dest}" />
         <path refid="libs-classpath"/>
