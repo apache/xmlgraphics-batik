@@ -33,4 +33,12 @@
         <arg class="java.lang.String" value="nodeID" />
     </test>
 
+    <!-- ================================================================ -->
+    <!-- Self contained tests                                             -->
+    <!-- ================================================================ -->
+    <testGroup id="basic" name="Basic SVG DOM Testing"
+               class="org.apache.batik.dom.svg.EcmaScriptSVGDOMTest">
+        <test id="lengthTest"/>
+    </testGroup>
+
 </testSuite>
