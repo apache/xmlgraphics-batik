@@ -108,6 +108,7 @@
     <javac classpath="lib/js.jar:lib/jpython.jar:lib/jacl.jar:lib/tcljava.jar"
            srcdir="${src}"
            destdir="${dest}"
+           deprecation="on"
            includes="**/*.java"/>
   </target>
 
