@@ -487,6 +487,7 @@ public class JSVGCanvas extends JSVGComponent {
          * Called when the loading of a document was started.
          */
         public void documentLoadingStarted(SVGDocumentLoaderEvent e) {
+            super.documentLoadingStarted(e);
             JSVGCanvas.this.setToolTipText(null);
         }
 

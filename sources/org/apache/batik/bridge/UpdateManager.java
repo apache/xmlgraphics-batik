@@ -93,7 +93,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     /**
      * Whether the update manager is running.
      */
-    protected volatile boolean running;
+    protected boolean running;
 
     /**
      * Whether the suspend() method was called.
@@ -136,6 +136,11 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     protected GraphicsNode graphicsNode;
 
     /**
+     * Whether the manager was started.
+     */
+    protected boolean started;
+
+    /**
      * Creates a new update manager.
      * @param ctx The bridge context.
      * @param gn GraphicsNode whose updates are to be tracked.
@@ -158,25 +163,54 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     }
 
     /**
+     * Dispatches an 'SVGLoad' event to the document.
+     * NOTES:
+     * - This method starts the update manager threads so one can't use
+     *   the update runnable queue to invoke this method.
+     * - The scripting lock is taken. Is is released by a call to
+     *   manageUpdates().
+     */
+    public void dispatchSVGLoadEvent() throws InterruptedException {
+        // Locking avoid execution of scripts scheduled by calls
+        // to the setTimeout() function.
+        // The lock is be released by a call to manageUpdates().
+        scriptingEnvironment.getScriptingLock().lock();
+
+        scriptingEnvironment.loadScripts();
+        scriptingEnvironment.dispatchSVGLoadEvent();
+        
+        updateRunnableQueue.resumeExecution();
+    }
+
+    /**
      * Finishes the UpdateManager initialization.
      */
-    public void manageUpdates(ImageRenderer r) {
-        running = true;
-        renderer = r;
+    public void manageUpdates(final ImageRenderer r) {
+        updateRunnableQueue.invokeLater(new Runnable() {
+                public void run() {
+                    startingTime = System.currentTimeMillis();
+
+                    running = true;
+                    renderer = r;
         
-        updateTracker = new UpdateTracker();
-        RootGraphicsNode root = graphicsNode.getRoot();
-        if (root != null){
-            root.addTreeGraphicsNodeChangeListener(updateTracker);
-        }
+                    updateTracker = new UpdateTracker();
+                    RootGraphicsNode root = graphicsNode.getRoot();
+                    if (root != null){
+                        root.addTreeGraphicsNodeChangeListener(updateTracker);
+                    }
 
-        repaintManager = new RepaintManager(this, renderer);
-        repaintRateManager = new RepaintRateManager(this);
-        repaintRateManager.start();
-
-        scriptingEnvironment.getScriptingLock().unlock();
-
-        fireManagerStartedEvent();
+                    repaintManager =
+                        new RepaintManager(UpdateManager.this, renderer);
+                    repaintRateManager =
+                        new RepaintRateManager(UpdateManager.this);
+                    repaintRateManager.start();
+                    
+                    scriptingEnvironment.getScriptingLock().unlock();
+                    
+                    fireManagerStartedEvent();
+                    started = true;
+                }
+            });
     }
 
 
@@ -260,24 +294,25 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     }
 
     /**
-     * Dispatches an 'SVGLoad' event to the document.
-     * NOTES:
-     * - This method starts the update manager threads so one can't use
-     *   the update runnable queue to invoke this method.
-     * - The scripting lock is taken. Is is released by a call to
-     *   manageUpdates().
+     * Interrupts the manager tasks.
      */
-    public void dispatchSVGLoadEvent() throws InterruptedException {
-        // Locking avoid execution of scripts scheduled by calls
-        // to the setTimeout() function.
-        // The lock is be released by a call to manageUpdates().
-        scriptingEnvironment.getScriptingLock().lock();
-
-        scriptingEnvironment.loadScripts();
-        scriptingEnvironment.dispatchSVGLoadEvent();
-        
-        updateRunnableQueue.resumeExecution();
-        startingTime = System.currentTimeMillis();
+    public void interrupt() {
+        if (updateRunnableQueue.getThread() != null) {
+            if (started) {
+                dispatchSVGUnLoadEvent();
+            } else {
+                resume();
+                updateRunnableQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            if (repaintRateManager != null) {
+                                repaintRateManager.interrupt();
+                            }
+                            scriptingEnvironment.interruptScripts();
+                            updateRunnableQueue.getThread().interrupt();
+                        }
+                    });
+            }
+        }
     }
 
     /**
@@ -286,6 +321,10 @@ public class UpdateManager implements RunnableQueue.RunHandler {
      * NOTE: this method must be called outside the update thread.
      */
     public void dispatchSVGUnLoadEvent() {
+        if (!started) {
+            throw new IllegalStateException("UpdateManager not started.");
+        }
+
         resume();
         updateRunnableQueue.invokeLater(new Runnable() {
                 public void run() {
@@ -296,9 +335,8 @@ public class UpdateManager implements RunnableQueue.RunHandler {
                         dispatchEvent(evt);
                     running = false;
                     
-                    if (repaintManager != null) {
-                        repaintRateManager.interrupt();
-                    }
+                    repaintRateManager.interrupt();
+                    scriptingEnvironment.interruptScripts();
                     updateRunnableQueue.getThread().interrupt();
                     fireManagerStoppedEvent();
                 }
@@ -494,6 +532,7 @@ public class UpdateManager implements RunnableQueue.RunHandler {
     public void executionResumed(RunnableQueue rq) {
         if (suspendCalled && !running) {
             running = true;
+
             suspendCalled = false;
             suspendedTime = System.currentTimeMillis() - suspendStartTime;
             fireManagerResumedEvent();

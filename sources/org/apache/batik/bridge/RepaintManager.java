@@ -57,7 +57,7 @@ public class RepaintManager {
      * Provokes a repaint, if needed.
      * @param b If true, waits until the repaint has finished.
      */
-    public void repaint(boolean b) {
+    public void repaint(boolean b) throws InterruptedException {
         if (!enabled) {
             return;
         }
@@ -80,10 +80,7 @@ public class RepaintManager {
             return;
         }
         if (b) {
-            try {
-                updateManager.getUpdateRunnableQueue().invokeAndWait(r);
-            } catch (InterruptedException e) {
-            }
+            updateManager.getUpdateRunnableQueue().invokeAndWait(r);
         } else {
             updateManager.getUpdateRunnableQueue().invokeLater(r);
         }
