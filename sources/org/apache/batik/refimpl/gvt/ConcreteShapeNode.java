@@ -38,6 +38,11 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     protected ShapePainter shapePainter;
 
     /**
+     * Primitive bounds
+     */
+    protected Rectangle2D primitiveBounds;
+
+    /**
      * Constructs a new empty shape node.
      */
     public ConcreteShapeNode() {}
@@ -93,9 +98,14 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     // Geometric methods
     //
     public Rectangle2D getPrimitiveBounds() {
-        if(shapePainter == null)
-            return null;
-        return shapePainter.getPaintedArea(shape).getBounds2D();
+        if(primitiveBounds == null){
+            if(shapePainter == null)
+                return null;
+            primitiveBounds = shapePainter.getPaintedArea(shape).getBounds2D();
+        }
+
+        return primitiveBounds;
+
     }
 
     public Shape getOutline() {
