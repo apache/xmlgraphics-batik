@@ -60,8 +60,8 @@
     <testSuite href="file:test-resources/org/apache/batik/dom/svg/unitTesting.xml" /> 
     <testSuite href="file:test-resources/org/apache/batik/gvt/unitTesting.xml" /> 
     <testSuite href="file:test-resources/org/apache/batik/parser/unitTesting.xml" /> 
+    <testSuite href="file:test-resources/org/apache/batik/script/rhino/unitTesting.xml" />
     <testSuite href="file:test-resources/org/apache/batik/transcoder/image/unitTesting.xml" /> 
-
     <testSuite href="file:test-resources/org/apache/batik/css/engine/value/unitTesting.xml" /> 
 
 
