@@ -260,6 +260,9 @@ public class SVGOMDocument
         factories.put(TAG_TEXT,
                       new TextElementFactory());
 
+        factories.put(TAG_TEXTPATH,
+                      new TextPathElementFactory());
+
         factories.put(TAG_TITLE,
                       new TitleElementFactory());
 
@@ -1326,6 +1329,19 @@ public class SVGOMDocument
          */
         public Element create(String prefix) {
             return new SVGOMTextElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'textPath' element.
+     */
+    protected class TextPathElementFactory implements ElementFactory {
+        public TextPathElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMTextPathElement(prefix, SVGOMDocument.this);
         }
     }
 

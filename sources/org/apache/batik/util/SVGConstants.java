@@ -75,6 +75,7 @@ public interface SVGConstants extends CSSConstants {
     String TAG_SWITCH = "switch";
     String TAG_SYMBOL = "symbol";
     String TAG_TEXT = "text";
+    String TAG_TEXTPATH = "textPath";
     String TAG_TITLE = "title";
     String TAG_TREF = "tref";
     String TAG_TSPAN = "tspan";
@@ -139,6 +140,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_MASK = "mask";
     String ATTR_MASK_UNITS = "maskUnits";
     String ATTR_MEDIA = "media";
+    String ATTR_METHOD = "method";
     String ATTR_OFFSET = "offset";
     String ATTR_OPACITY = "opacity";
     String ATTR_OPERATOR = "operator";
@@ -166,9 +168,11 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_SHAPE_RENDERING = "shape-rendering";
     String ATTR_SLOPE = "slope";
     String ATTR_SPACE = "space";
+    String ATTR_SPACING = "spacing";
     String ATTR_SPECULAR_CONSTANT = "specularConstant";
     String ATTR_SPECULAR_EXPONENT = "specularExponent";
     String ATTR_SPREAD_METHOD = "spreadMethod";
+    String ATTR_START_OFFSET = "startOffset";
     String ATTR_STD_DEVIATION = "stdDeviation";
     String ATTR_STOP_COLOR = "stop-color";
     String ATTR_STITCH_TILES = "stitchTiles";
@@ -190,6 +194,7 @@ public interface SVGConstants extends CSSConstants {
     String ATTR_TARGET_Y = "targetY";
     String ATTR_TABLE_VALUES = "tableValues";
     String ATTR_TEXT_ANCHOR = TEXT_ANCHOR_PROPERTY;
+    String ATTR_TEXT_LENGTH = "textLength";
     String ATTR_TEXT_RENDERING = "text-rendering";
     String ATTR_TITLE = "title";
     String ATTR_TRANSFORM = "transform";
@@ -209,6 +214,7 @@ public interface SVGConstants extends CSSConstants {
      * Attribute values
      */
     String VALUE_ARITHMETIC = "arithmetic";
+    String VALUE_ALIGN = "align";
     String VALUE_AUTO = "auto";
     String VALUE_BACKGROUND_IMAGE = "BackgroundImage";
     String VALUE_COMPOSITE = "composite";
@@ -219,6 +225,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_EDGE_NONE = "none";
     String VALUE_END = "end";
     String VALUE_EVEN_ODD = "evenodd";
+    String VALUE_EXACT = "exact";
     String VALUE_FILTER_X_DEFAULT = "-10%";
     String VALUE_FILTER_Y_DEFAULT = "-10%";
     String VALUE_FILTER_WIDTH_DEFAULT = "120%";
@@ -282,6 +289,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_SRGB = "sRGB";
     String VALUE_START = "start";
     String VALUE_STITCH = "stitch";
+    String VALUE_STRETCH = "stretch";
     String VALUE_TURBULENCE = "turbulence";
     String VALUE_TYPE_LINEAR = "linear";
     String VALUE_TYPE_TABLE = "table";
