@@ -172,22 +172,42 @@ viewBox="0 0 450 600" onmouseover="showNumberOfChars(evt)" >
 
         function showCharactersBBox(elt, index)
         {
-                var doc = elt.getOwnerDocument();
+          var doc = elt.getOwnerDocument();
 
-                var group = doc.getElementById('bboxGroup');
+          var group = doc.getElementById('bboxGroup');
 
-                var r = doc.createElementNS("http://www.w3.org/2000/svg","rect");
+          var box = elt.getExtentOfChar(index);
+          var mat = elt.getTransformToElement(group);
+          var root = doc.getRootElement();
+          var pt0  = root.createSVGPoint();
+          pt0.x = box.getX();
+          pt0.y = box.getY();
+          pt0 = pt0.matrixTransform(mat);
 
-                var box = elt.getExtentOfChar(index);
+          var pt1  = root.createSVGPoint();
+          pt1.x = box.getX()+box.getWidth();
+          pt1.y = box.getY();
+          pt1 = pt1.matrixTransform(mat);
 
-                r.setAttribute("x",box.getX());
-                r.setAttribute("y",box.getY());
-                r.setAttribute("width",box.getWidth());
-                r.setAttribute("height",box.getHeight());
-                r.setAttributeNS(null,"stroke","red");
-                
-                group.appendChild(r);
-                        
+          var pt2  = root.createSVGPoint();
+          pt2.x = box.getX()+box.getWidth();
+          pt2.y = box.getY()+box.getHeight();
+          pt2 = pt2.matrixTransform(mat);
+
+          var pt3  = root.createSVGPoint();
+          pt3.x = box.getX();
+          pt3.y = box.getY()+box.getHeight();
+          pt3 = pt3.matrixTransform(mat);
+
+          var p = doc.createElementNS
+          ("http://www.w3.org/2000/svg","path");
+          p.setAttribute("d","M" + pt0.x + "," + pt0.y + 
+                         "L" + pt1.x + "," + pt1.y +
+                         "L" + pt2.x + "," + pt2.y +
+                         "L" + pt3.x + "," + pt3.y + "z");
+          p.setAttributeNS(null,"stroke","red");
+          group.appendChild(p);
+          
         }
 
         function showCharactersStartPosition(elt, index)
@@ -195,6 +215,7 @@ viewBox="0 0 450 600" onmouseover="showNumberOfChars(evt)" >
                 var doc = elt.getOwnerDocument();
 
                 var group = doc.getElementById('bboxGroup');
+                var root = doc.getRootElement();
 
                 //while (group.hasChildNodes() ){
                 //   group.removeChild(group.getFirstChild());
@@ -203,7 +224,8 @@ viewBox="0 0 450 600" onmouseover="showNumberOfChars(evt)" >
                 var u = doc.createElementNS("http://www.w3.org/2000/svg","use");
 
                 var point = elt.getStartPositionOfChar(index);
-
+                var mat = elt.getTransformToElement(group);
+                point = point.matrixTransform(mat);
                 u.setAttributeNS(null,"transform","translate("+point.getX()+","+point.getY()+")");
                 u.setAttributeNS("http://www.w3.org/1999/xlink","href","#arrow");
                 u.setAttributeNS(null,"stroke","green");
@@ -226,9 +248,13 @@ viewBox="0 0 450 600" onmouseover="showNumberOfChars(evt)" >
                 var group = doc.getElementById('bboxGroup');
 
                 var u = doc.createElementNS("http://www.w3.org/2000/svg","use");
+                var mat = elt.getTransformToElement(group);
+                var root = doc.getRootElement();
 
                 var point1 = elt.getStartPositionOfChar(index);
+                point1 = point1.matrixTransform(mat);
                 var point2 = elt.getEndPositionOfChar(index);
+                point2 = point2.matrixTransform(mat);
 
                 x = ( point1.getX() + point2.getX() )/2;
                 y = ( point1.getY() + point2.getY() )/2;
@@ -253,6 +279,8 @@ viewBox="0 0 450 600" onmouseover="showNumberOfChars(evt)" >
                 var u = doc.createElementNS("http://www.w3.org/2000/svg","use");
 
                 var point = elt.getEndPositionOfChar(index);
+                var mat = elt.getTransformToElement(group);
+                point = point.matrixTransform(mat);
 
                 u.setAttributeNS(null,"transform","translate("+point.getX()+","+point.getY()+")");
                 u.setAttributeNS("http://www.w3.org/1999/xlink","href","#arrow");
@@ -272,6 +300,8 @@ viewBox="0 0 450 600" onmouseover="showNumberOfChars(evt)" >
                 }
                 
                 var point = elt.getStartPositionOfChar(0);
+                var mat = elt.getTransformToElement(group);
+                point = point.matrixTransform(mat);
                 var length = elt.getSubStringLength(0,index+1);
 
                 var text = doc.getElementById("extraInfo");

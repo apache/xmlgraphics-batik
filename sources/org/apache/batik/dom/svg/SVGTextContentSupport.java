@@ -147,27 +147,13 @@ public class SVGTextContentSupport
         
         final SVGTextContent context = (SVGTextContent)svgelt.getSVGContext();
 
-        return new SVGPoint(){
+        return new SVGTextPoint(svgelt){
                 public float getX(){
                     return (float)context.getStartPositionOfChar(charnum).getX();
                 }
                 public float getY(){
                     return (float)context.getStartPositionOfChar(charnum).getY();
                 }
-                public void setX(float x) throws DOMException {
-                    throw svgelt.createDOMException
-                        (DOMException.NO_MODIFICATION_ALLOWED_ERR,
-                         "readonly.point", null);
-                }
-                public void setY(float y) throws DOMException {
-                    throw svgelt.createDOMException
-                        (DOMException.NO_MODIFICATION_ALLOWED_ERR,
-                         "readonly.point", null);
-                }
-                public SVGPoint matrixTransform(SVGMatrix matrix) {
-                    throw new RuntimeException("!!! TODO: matrixTransform()");
-                }
-
             };
 
     }
@@ -189,27 +175,13 @@ public class SVGTextContentSupport
         
         final SVGTextContent context = (SVGTextContent)svgelt.getSVGContext();
 
-        return new SVGPoint(){
+        return new SVGTextPoint(svgelt){
                 public float getX(){
                     return (float)context.getEndPositionOfChar(charnum).getX();
                 }
                 public float getY(){
                     return (float)context.getEndPositionOfChar(charnum).getY();
                 }
-                public void setX(float x) throws DOMException {
-                    throw svgelt.createDOMException
-                        (DOMException.NO_MODIFICATION_ALLOWED_ERR,
-                         "readonly.point", null);
-                }
-                public void setY(float y) throws DOMException {
-                    throw svgelt.createDOMException
-                        (DOMException.NO_MODIFICATION_ALLOWED_ERR,
-                         "readonly.point", null);
-                }
-                public SVGPoint matrixTransform(SVGMatrix matrix) {
-                    throw new RuntimeException("!!! TODO: matrixTransform()");
-                }
-
             };
 
     }
@@ -298,4 +270,22 @@ public class SVGTextContentSupport
         
         return context.getCharNumAtPosition(x,y);
     }
+
+    public static class SVGTextPoint extends SVGOMPoint {
+        SVGOMElement svgelt;
+        SVGTextPoint(SVGOMElement elem) {
+            svgelt = elem;
+        }
+        public void setX(float x) throws DOMException {
+            throw svgelt.createDOMException
+                (DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                 "readonly.point", null);
+        }
+        public void setY(float y) throws DOMException {
+            throw svgelt.createDOMException
+                (DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                 "readonly.point", null);
+        }
+    }
+
 }
