@@ -395,11 +395,16 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         DataBufferInt dstDB = (DataBufferInt)dest.getDataBuffer();
 
         // Offset defines where in the stack the real data begin
-        final int srcOff = (srcDB.getOffset() + 
-                            srcSPPSM.getOffset(src.getMinX(), src.getMinY()));
-        final int dstOff = (dstDB.getOffset() +
-                            dstSPPSM.getOffset(dest.getMinX(), 
-                                               dest.getMinY()));;
+        final int srcOff 
+            = (srcDB.getOffset() + 
+               srcSPPSM.getOffset
+               (src.getMinX()-src.getSampleModelTranslateX(),
+                src.getMinY()-src.getSampleModelTranslateY()));
+        final int dstOff 
+            = (dstDB.getOffset() +
+               dstSPPSM.getOffset
+               (dest.getMinX()-dest.getSampleModelTranslateX(),
+                dest.getMinY()-dest.getSampleModelTranslateY()));
 
         // Access the pixel value array
         final int srcPixels[] = srcDB.getBankData()[0];
@@ -508,11 +513,16 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         DataBufferInt dstDB = (DataBufferInt)dest.getDataBuffer();
 
         // Offset defines where in the stack the real data begin
-        final int srcOff = (srcDB.getOffset() + 
-                            srcSPPSM.getOffset(src.getMinX(), src.getMinY()));
-        final int dstOff = (dstDB.getOffset() +
-                            dstSPPSM.getOffset(dest.getMinX(), 
-                                               dest.getMinY()));;
+        final int srcOff 
+            = (srcDB.getOffset() + 
+               srcSPPSM.getOffset
+               (src.getMinX()-src.getSampleModelTranslateX(),
+                src.getMinY()-src.getSampleModelTranslateY()));
+        final int dstOff 
+            = (dstDB.getOffset() +
+               dstSPPSM.getOffset
+               (dest.getMinX()-dest.getSampleModelTranslateX(),
+                dest.getMinY()-dest.getSampleModelTranslateY()));
 
 
         // Access the pixel value array
@@ -735,6 +745,96 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         return cm.coerceData(wr, newAlphaPreMult);
     }
 
+
+    protected static boolean is_INT_PACK_Data(SampleModel sm) {
+          // Check ColorModel is of type DirectColorModel
+        if(!(sm instanceof SinglePixelPackedSampleModel)) return false;
+
+        // Check transfer type
+        if(sm.getDataType() != DataBuffer.TYPE_INT)       return false;
+
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)sm;
+
+        int [] masks = sppsm.getBitMasks();
+        if(masks[0] != 0x00ff0000) return false;
+        if(masks[1] != 0x0000ff00) return false;
+        if(masks[2] != 0x000000ff) return false;
+        if(masks[3] != 0xff000000) return false;
+ 
+        return true;
+   }
+
+    protected static void divide_INT_PACK_Data(WritableRaster wr) {
+        // System.out.println("Divide Int");
+
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
+
+        final int width = wr.getWidth();
+
+        final int scanStride = sppsm.getScanlineStride();
+        DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
+        final int base   
+            = (db.getOffset() + 
+               sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(), 
+                               wr.getMinY()-wr.getSampleModelTranslateY()));
+
+        // Access the pixel data array
+        final int pixels[] = db.getBankData()[0];
+        for (int y=0; y<wr.getHeight(); y++) {
+            int sp = base + y*scanStride;
+            final int end = sp + width;
+            while (sp < end) {
+                int pixel = pixels[sp];
+                int a = pixel>>>24;
+                if ((a>0) && (a<255)) {
+                    int aFP = (0x00FF0000/a);
+                    pixels[sp] = 
+                        ((a << 24) |
+                         (((((pixel&0xFF0000)>>16)*aFP))    &0xFF0000) |
+                         (((((pixel&0x00FF00)>>8) *aFP)>>8 )&0x00FF00) |
+                         (((((pixel&0x0000FF))    *aFP)>>16)&0x0000FF));
+                }
+                sp++;
+            }
+        }
+    }
+
+    protected static void mult_INT_PACK_Data(WritableRaster wr) {
+        // System.out.println("Multiply Int");
+        
+        SinglePixelPackedSampleModel sppsm;
+        sppsm = (SinglePixelPackedSampleModel)wr.getSampleModel();
+
+        final int width = wr.getWidth();
+
+        final int scanStride = sppsm.getScanlineStride();
+        DataBufferInt db = (DataBufferInt)wr.getDataBuffer();
+        final int base   
+            = (db.getOffset() + 
+               sppsm.getOffset(wr.getMinX()-wr.getSampleModelTranslateX(), 
+                               wr.getMinY()-wr.getSampleModelTranslateY()));
+
+        // Access the pixel data array
+        final int pixels[] = db.getBankData()[0];
+        for (int y=0; y<wr.getHeight(); y++) {
+            int sp = base + y*scanStride;
+            final int end = sp + width;
+            while (sp < end) {
+                int pixel = pixels[sp];
+                int a = pixel>>>24;
+                if ((a>0) && (a<255)) {
+                    pixels[sp] = ((a << 24) |
+                                  ((((pixel&0xFF0000)*a)>>8)&0xFF0000) |
+                                  ((((pixel&0x00FF00)*a)>>8)&0x00FF00) |
+                                  ((((pixel&0x0000FF)*a)>>8)&0x0000FF));
+                }
+                sp++;
+            }
+        }
+    }
+
     public static ColorModel 
         coerceData(BufferedImage bi, boolean newAlphaPreMult) {
         if (bi.isAlphaPremultiplied() == newAlphaPreMult)
@@ -745,30 +845,38 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         int    bands = r.getNumBands();
         float  norm;
         if (newAlphaPreMult) {
-            norm = 1/255;
-            for (int y=0; y<bi.getHeight(); y++)
-                for (int x=0; x<bi.getWidth(); x++) {
-                    pixel = r.getPixel(x,y,pixel);
-                    int a = pixel[bands-1];
-                    if ((a > 0) && (a < 255)) {
-                        float alpha = a*norm;
-                        for (int b=0; b<bands-1; b++) 
-                            pixel[b] = (int)(pixel[b]*alpha+0.5f);
-                        r.setPixel(x,y,pixel);
+            if (is_INT_PACK_Data(bi.getSampleModel()))
+                mult_INT_PACK_Data(bi.getRaster());
+            else {
+                norm = 1/255;
+                for (int y=0; y<bi.getHeight(); y++)
+                    for (int x=0; x<bi.getWidth(); x++) {
+                        pixel = r.getPixel(x,y,pixel);
+                        int a = pixel[bands-1];
+                        if ((a > 0) && (a < 255)) {
+                            float alpha = a*norm;
+                            for (int b=0; b<bands-1; b++) 
+                                pixel[b] = (int)(pixel[b]*alpha+0.5f);
+                            r.setPixel(x,y,pixel);
+                        }
                     }
-                }
+            }
         } else {
-            for (int y=0; y<bi.getHeight(); y++)
-                for (int x=0; x<bi.getWidth(); x++) {
-                    pixel = r.getPixel(x,y,pixel);
-                    int a = pixel[bands-1];
-                    if ((a > 0) && (a < 255)) {
-                        float ialpha = 255/(float)a;
-                        for (int b=0; b<bands-1; b++) 
-                            pixel[b] = (int)(pixel[b]*ialpha+0.5f);
-                        r.setPixel(x,y,pixel);
+            if (is_INT_PACK_Data(bi.getSampleModel()))
+                divide_INT_PACK_Data(bi.getRaster());
+            else {
+                for (int y=0; y<bi.getHeight(); y++)
+                    for (int x=0; x<bi.getWidth(); x++) {
+                        pixel = r.getPixel(x,y,pixel);
+                        int a = pixel[bands-1];
+                        if ((a > 0) && (a < 255)) {
+                            float ialpha = 255/(float)a;
+                            for (int b=0; b<bands-1; b++) 
+                                pixel[b] = (int)(pixel[b]*ialpha+0.5f);
+                            r.setPixel(x,y,pixel);
+                        }
                     }
-                }
+            }
         }
 
         return coerceColorModel(bi.getColorModel(), newAlphaPreMult);

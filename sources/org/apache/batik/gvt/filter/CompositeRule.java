@@ -32,7 +32,7 @@ public final class CompositeRule implements java.io.Serializable {
     public static final int RULE_XOR = 5;
 
       /** Arithmatic rule 'out = k1*i1*i2 + k2*i1 + k3*i2 + k4'. */
-    public static final int RULE_ARITHMATIC = 6;
+    public static final int RULE_ARITHMETIC = 6;
 
       /**
        * Porter-Duff Source Over Destination rule. The source is
@@ -91,7 +91,7 @@ public final class CompositeRule implements java.io.Serializable {
        * 'out = k1*i1*i2 + k2*i1 + k3*i2 + k4'
        * Note that arithmatic CompositeRules are not singletons.
        */
-    public static CompositeRule ARITHMATIC
+    public static CompositeRule ARITHMETIC
         (float k1, float k2, float k3, float k4) {
         if      (k1 < 0)   k1 = 0;
         else if (k1 > 1.0) k1 = 1.0f;
@@ -120,7 +120,7 @@ public final class CompositeRule implements java.io.Serializable {
        */
     private int rule;
 
-      /* Arithmatic constants, only used for RULE_ARITHMATIC */
+      /* Arithmatic constants, only used for RULE_ARITHMETIC */
     private float k1, k2, k3, k4;
 
     private CompositeRule(int rule) {
@@ -128,11 +128,18 @@ public final class CompositeRule implements java.io.Serializable {
     }
 
     private CompositeRule(float k1, float k2, float k3, float k4) {
-        rule = RULE_ARITHMATIC;
+        rule = RULE_ARITHMETIC;
         this.k1 = k1;
         this.k2 = k2;
         this.k3 = k3;
         this.k4 = k4;
+    }
+
+    public float [] getCoefficients() {
+        if (rule != RULE_ARITHMETIC)
+            return null;
+
+        return new float[] {k1, k2, k3, k4};
     }
 
     /**
@@ -154,7 +161,7 @@ public final class CompositeRule implements java.io.Serializable {
             return ATOP;
         case RULE_XOR:
             return XOR;
-        case RULE_ARITHMATIC:
+        case RULE_ARITHMETIC:
             return this;
         default:
             throw new Error("Unknown Composite Rule type");

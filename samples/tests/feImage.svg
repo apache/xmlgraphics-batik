@@ -1,0 +1,99 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- Test description here                                                     -->
+<!--                                                                           -->
+<!-- @author tkormann@apache.org                                               -->
+<!-- @version $Id $  -->
+<!-- ========================================================================= -->
+
+<svg id="body" width="450" height="500" viewBox="0 0 450 500">
+<title>Composite Test</title>
+
+    <!-- ============================================================= -->
+    <!-- Test content                                                  -->
+    <!-- ============================================================= -->
+    <g id="testContent">
+
+      <text x="175" y="40" class="title">
+    	feImage Test
+      </text>
+  
+      <defs>
+
+       <g id="elem1">
+         <circle id="Circle1" cx="40" cy="60" r="30" style="fill:orange" />
+         <circle id="Circle2" cx="80" cy="60" r="30" style="fill:blue" />
+       </g>
+  
+    	<filter id="Elem1">
+    	  <feImage xlink:href="#elem1"/>
+    	</filter>
+  
+    	<filter id="Elem2">
+    	  <feImage xlink:href="opacity2.svg"/>
+    	</filter>
+  
+    	<filter id="Elem3">
+    	  <feImage xlink:href="dataProtocol.svg#testContent"/>
+    	</filter>
+  
+      </defs>
+  
+      <g transform="translate(0 40)" class="legend">
+
+        <!-- ============================================== -->
+        <!-- Composite_1_*                                  -->
+        <!-- ============================================== -->
+        <g transform="translate(0 20)" class="row1" >
+    	  <g id="c1" transform="translate(20 0)">
+              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
+    	      <rect x="0" y="0" width="120" height="120" 
+    	            style="fill:FireBrick;  filter:url(#Elem1)"/>
+              <text x="60" y="130" style="text-anchor:middle">
+               1.1 Reference local element
+              </text>
+    	  </g>
+             
+    	  <g id="c2" transform="translate(160 0)">
+              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
+    	      <rect x="0" y="0" width="480" height="480" 
+	            transform="scale(0.25 0.25)"
+    	            style="fill:FireBrick;  filter:url(#Elem2)" />
+              <text x="60" y="140" style="text-anchor:middle">
+               1.2 Reference external SVG file
+              </text>
+    	  </g>
+  
+  
+    	  <g id="c2" transform="translate(300 0)">
+              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
+    	      <rect x="0" y="0" width="480" height="480" 
+                    transform="scale(0.25)"
+    	            style="fill:FireBrick;  filter:url(#Elem3)" />
+              <g transform="translate(60, 130)">
+               <text x="0" y="0" style="text-anchor:middle">
+               1.3 Reference external SVG element
+               </text>
+             </g>
+    	  </g>
+    	</g>
+      </g>
+    </g>
+
+    <!-- ============================================================= -->
+    <!-- Batik sample mark                                             -->
+    <!-- ============================================================= -->
+    <use xlink:href="../testTemplate.svg#BatikTag" />
+    
+</svg>

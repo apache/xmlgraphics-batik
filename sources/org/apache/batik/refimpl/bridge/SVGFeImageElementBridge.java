@@ -8,49 +8,47 @@
 
 package org.apache.batik.refimpl.bridge;
 
-import java.awt.Color;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.util.Hashtable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.Vector;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.filter.AffineRable;
 import org.apache.batik.gvt.filter.Filter;
-import org.apache.batik.gvt.filter.FilterChainRable;
 import org.apache.batik.gvt.filter.FilterRegion;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.PadMode;
-import org.apache.batik.gvt.filter.PadRable;
-import org.apache.batik.refimpl.gvt.filter.ConcreteAffineRable;
+import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
 import org.apache.batik.refimpl.gvt.filter.FilterSourceRegion;
+import org.apache.batik.refimpl.gvt.filter.RasterRable;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSValue;
-import org.w3c.dom.css.RGBColor;
-import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.views.DocumentView;
+import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGElement;
+import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.util.XLinkSupport;
 
 /**
- * This class bridges an SVG <tt>filter</tt> element with a concrete
- * <tt>Filter</tt>.
+ * This class bridges an SVG <tt>feImage</tt> element with
+ * a concrete <tt>Filter</tt> filter implementation
  *
- * @author <a href="mailto:dean@w3.org">Dean Jackson</a>
- * @version $Id$
+ * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
+ * @version $Id $
  */
-public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
+public class SVGFeImageElementBridge implements FilterBridge,
+                                                SVGConstants {
+    
+    public final static String PROTOCOL_DATA = "data:";
+
     /**
      * Returns the <tt>Filter</tt> that implements the filter
      * operation modeled by the input DOM element
@@ -74,97 +72,115 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
                          Filter in,
                          FilterRegion filterRegion,
                          Map filterMap){
+        SVGElement svgElement = (SVGElement) filterElement;
 
-        System.out.println("In Offset Bridge");
-
-        // Extract dx attribute
-        String dxAttr = filterElement.getAttributeNS(null,
-                                                     ATTR_DX);
-        float dx = DEFAULT_VALUE_DX;
-        try {
-            dx = SVGUtilities.convertSVGNumber(dxAttr);
-        } catch (NumberFormatException e) {
-            // use default
+        String uriStr = XLinkSupport.getXLinkHref(svgElement);
+        // nothing referenced.
+        if (uriStr == null) {
+            return null;
         }
 
-        // Extract dy attribute
-        String dyAttr = filterElement.getAttributeNS(null,
-                                                     ATTR_DY);
-        float dy = DEFAULT_VALUE_DY;
-        try {
-            dy = SVGUtilities.convertSVGNumber(dyAttr);
-        } catch (NumberFormatException e) {
-            // use default
-        }
+         Filter filter = null;
+         if (uriStr.startsWith(PROTOCOL_DATA))
+             filter = RasterRable.create(uriStr, null);
+         else {
+             SVGDocument svgDoc;
+             svgDoc = (SVGDocument)filterElement.getOwnerDocument();
+             URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
+             URL url = null;
+             try {
+                 url = new URL(baseURL, uriStr);
+             } catch (MalformedURLException mue) {
+                 return null;
+             }
 
-        AffineTransform offsetTransform =
-            AffineTransform.getTranslateInstance(dx, dy);
+             try {
 
-        // Get source
-        String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-        in = CSSUtilities.getFilterSource(filteredNode, inAttr, bridgeContext, 
-                                          filteredElement,
-                                          in, filterMap);
+                 URIResolver ur = new URIResolver
+                     (svgDoc, bridgeContext.getDocumentLoader());
+            
+                 Node refNode = ur.getNode(url.toString());
+                 if (refNode == null)
+                     return null;
 
-        System.out.println("In: " + in);
-        // feOffset is a point operation. Therefore, to take the
-        // filter primitive region into account, only a pad operation
-        // on the input is required.
+                 Element refElement;
+                 if (refNode.getNodeType() == refNode.DOCUMENT_NODE)
+                     refElement = ((SVGDocument)refNode).getRootElement();
+                 else
+                     refElement = (Element)refNode;
 
-        CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                          null);
+                   // Cannot access referenced file...
+                 if(refElement == null){
+                     return null;
+                 }
+             
+                 GraphicsNode gn;
+                 gn = bridgeContext.getGVTBuilder().build(bridgeContext, 
+                                                          refElement);
 
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext,
-                                              cssDecl);
+                 GraphicsNodeRableFactory gnrFactory
+                     = bridgeContext.getGraphicsNodeRableFactory();
+                 filter = gnrFactory.createGraphicsNodeRable(gn);
+             } catch (Exception ex) {
+                 filter = RasterRable.create(url, null);
+             }
+         }
 
-        // Get default filter region. Source for feOffset
-        FilterRegion defaultRegion = new FilterSourceRegion(in);
-
-        // Get unit. Comes from parent node.
+        FilterRegion defaultRegion = new FilterSourceRegion(filter);
+        
+          // Get unit. Comes from parent node.
         Node parentNode = filterElement.getParentNode();
         String units = VALUE_USER_SPACE_ON_USE;
         if((parentNode != null)
-           &&
-           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
-            units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+           && (parentNode.getNodeType() == parentNode.ELEMENT_NODE)) {
+            units = ((Element)parentNode).
+                getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
         }
-
-        final FilterRegion offsetArea
+        
+          //
+          // Now, extraact filter region
+          //
+        CSSStyleDeclaration cssDecl
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
+                                                          null);
+        
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(bridgeContext,
+                                              cssDecl);
+        
+        final FilterRegion compositeArea
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
                                                         defaultRegion,
                                                         units,
                                                         filteredNode,
                                                         uctx);
-
-        PadRable pad = new ConcretePadRable(in,
-                                            offsetArea.getRegion(),
-                                            PadMode.ZERO_PAD){
+        
+        filter = new ConcretePadRable(filter,
+                                      compositeArea.getRegion(),
+                                      PadMode.ZERO_PAD) {
                 public Rectangle2D getBounds2D(){
-                    setPadRect(offsetArea.getRegion());
+                    setPadRect(compositeArea.getRegion());
                     return super.getBounds2D();
                 }
-
+                
                 public java.awt.image.RenderedImage createRendering
                     (java.awt.image.renderable.RenderContext rc){
-                    setPadRect(offsetArea.getRegion());
+                    setPadRect(compositeArea.getRegion());
                     return super.createRendering(rc);
                 }
             };
-
-        // Create the AffineRable that maps the input filter node
-        AffineRable offset = new ConcreteAffineRable(pad, offsetTransform);
-
-        // Get result attribute if any
-        String result = filterElement.getAttributeNS(null,
-                                                     ATTR_RESULT);
+        
+        
+          // Get result attribute and update map
+        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
-            filterMap.put(result, offset);
+              // The filter will be added to the filter map. Before
+              // we do that, append the filter region crop
+            filterMap.put(result, filter);
         }
 
-        return offset;
+        return filter;
     }
 
     /**
@@ -174,4 +190,5 @@ public class SVGFeOffsetElementBridge implements FilterBridge, SVGConstants {
     public void update(BridgeMutationEvent evt) {
         // <!> FIXME : TODO
     }
+
 }
