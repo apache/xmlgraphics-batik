@@ -60,90 +60,70 @@
     <!-- ================================================================ -->
     <testGroup id="security" name="Script Security"
                class="org.apache.batik.bridge.ScriptSelfTest">
-        <test id="ecmaCheckPermissionsDenied">
-            <property name="Secure" class="java.lang.Boolean" value="true" />
-        </test>
 
-        <test id="ecmaCheckPermissionsDenied2">
-            <property name="Secure" class="java.lang.Boolean" value="true" />
-        </test>
+        <testGroup id="ecmaSecurityTests">
+            <!-- Check conditions under which ecma script should not be loaded -->
+            <!-- and generate a SecurityException instead.                     -->
+            <test id="ecmaNoLoad" class="org.apache.batik.bridge.EcmaNoLoadTest"/>
 
-        <test id="ecmaCheckPermissionsGranted">
-            <property name="Secure" class="java.lang.Boolean" value="false" />
-        </test>
+            <!-- Check conditions under which ecma script should be loaded     -->
+            <test id="ecmaLoad" class="org.apache.batik.bridge.EcmaLoadTest"/>               
 
-        <test id="ecmaCheckNoLoad">
-            <property name="Scripts" class="java.lang.String" 
-                      value="application/java-archive" />
-        </test>
+            <!-- Check that permissions are denied for : scripts loaded        -->
+            <!-- 'normall', for scripts loaded with a Function() object and    -->
+            <!-- for scripts loaded with the 'eval()' function. Note that      -->
+            <!-- scripts loaded with the 'Script()' object are disallowed      -->
+            <!-- completely in secure mode.                                    -->
+            <testGroup id="ecmaCheckPermissionsDenied">
+                <property name="Secure" class="java.lang.Boolean" value="true" />
+                
+                <test id="ecmaCheckPermissionsDenied" />
+                <test id="ecmaCheckPermissionsDeniedFunction" />
+                <test id="ecmaCheckPermissionsDeniedEval" />
+            </testGroup>
 
-        <test id="ecmaCheckNoLoad2">
-            <property name="Scripts" class="java.lang.String" 
-                      value="application/java-archive" />
-        </test>
 
-        <test id="ecmaCheckNoLoad2">
-            <property name="Scripts" class="java.lang.String" 
-                      value="text/ecmascript" />
-            <property name="Constrain" class="java.lang.Boolean" 
-                      value="true" />
-            <property name="Document" class="java.lang.Boolean" 
-                      value="false" />
-            <property name="Embed" class="java.lang.Boolean" 
-                      value="false" />
-        </test>
+            <!-- Check that permissions are granted for all types of scripts   -->
+            <!-- when in non-secure model, except for Script() objects which   -->
+            <!-- are not supported _at all_                                    -->
+            <testGroup id="ecmaCheckPermissionsGranted">
+                <property name="Secure" class="java.lang.Boolean" value="false" />
+                
+                <test id="ecmaCheckPermissionsGranted" />
+                <test id="ecmaCheckPermissionsGrantedFunction" />
+                <test id="ecmaCheckPermissionsGrantedEval" />
+            </testGroup>
 
-        <test id="ecmaCheckLoad">
-            <property name="Scripts" class="java.lang.String" 
-                      value="text/ecmascript" />
-        </test>
+        </testGroup>
 
-        <test id="ecmaCheckConstrain">
-            <property name="Constrain" class="java.lang.Boolean" 
-                      value="true" />
-        </test>
+        <testGroup id="jarSecurityTest">
+            <!-- Check conditions under which Jar script should not be loaded  -->
+            <!-- and generate a SecurityException instead.                     -->
+            <test id="jarNoLoad" class="org.apache.batik.bridge.JarNoLoadTest"/>
 
-        <test id="ecmaCheckNoConstrain">
-            <property name="Constrain" class="java.lang.Boolean" 
-                      value="false" />
-        </test>
+            <!-- Check conditions under which jar script should be loaded      -->
+            <!-- NOTE: see jarCheckLoadEmbeded below.                          -->
+            <test id="jarLoad" class="org.apache.batik.bridge.JarLoadTest"/>               
 
-        <test id="jarCheckPermissionsDenied">
-            <property name="Secure" class="java.lang.Boolean" value="true" />
-        </test>
+            <test id="jarCheckPermissionsDenied">
+                <property name="Secure" class="java.lang.Boolean" value="true" />
+            </test>
 
-        <test id="jarCheckPermissionsGranted">
-            <property name="Secure" class="java.lang.Boolean" value="false" />
-        </test>
+            <test id="jarCheckPermissionsGranted">
+                <property name="Secure" class="java.lang.Boolean" value="false" />
+            </test>
+        </testGroup>
 
-        <test id="jarCheckNoLoad">
-            <property name="Scripts" class="java.lang.String" 
-                      value="text/ecmascript" />
-        </test>
-
-        <test id="jarCheckLoad">
-            <property name="Scripts" class="java.lang.String" 
-                      value="application/java-archive" />
-        </test>
-
-        <test id="jarCheckConstrain">
-            <property name="Constrain" class="java.lang.Boolean" 
-                      value="true" />
-        </test>
-
-        <test id="jarCheckNoConstrain">
-            <property name="Constrain" class="java.lang.Boolean" 
-                      value="false" />
-        </test>
-
-        <test id="externalResourcesAccess.secure" 
+        <testGroup id="resourceAccessTest">
+            <test id="externalResourcesAccess.secure" 
               class="org.apache.batik.bridge.ExternalResourcesTest" />
 
-        <test id="externalResourcesAccess.unsecure" 
+            <test id="externalResourcesAccess.unsecure" 
               class="org.apache.batik.bridge.ExternalResourcesTest" >
-            <property name="Secure" class="java.lang.Boolean"
+                <property name="Secure" class="java.lang.Boolean"
                       value="false" />
-        </test>
+            </test>
+        </testGroup>
 
     </testGroup>
 
@@ -157,15 +137,44 @@
                       value="java.lang.SecurityException" />
         </test>
 
-        <test id="bridge/embedData" >
+        <test id="bridge/ecmaCheckPermissionsDeniedScript" >
+            <property name="Secure" class="java.lang.Boolean"
+                      value="true" />
             <property name="Scripts" class="java.lang.String" 
                       value="application/java-archive" />
-            <property name="ResourceOrigin" class="java.lang.String"
+            <property name="ScriptOrigin" class="java.lang.String"
                       value="NONE" />
             <property name="ExpectedExceptionClass" class="java.lang.String"
-                      value="org.apache.batik.bridge.BridgeException" />
-            <property name="ExpectedErrorCode" class="java.lang.String"
-                      value="uri.unsecure" />
+                      value="java.lang.SecurityException" />
+        </test>
+
+        <test id="bridge/ecmaCheckPermissionsDeniedScript" >
+            <property name="Secure" class="java.lang.Boolean"
+                      value="false" />
+            <property name="Scripts" class="java.lang.String" 
+                      value="application/java-archive" />
+            <property name="ScriptOrigin" class="java.lang.String"
+                      value="NONE" />
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="java.lang.SecurityException" />
+        </test>
+
+        <test id="bridge/ecmaCheckPermissionsDeniedScript" >
+            <property name="Scripts" class="java.lang.String" 
+                      value="application/java-archive" />
+            <property name="ScriptOrigin" class="java.lang.String"
+                      value="NONE" />
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="java.lang.SecurityException" />
+        </test>
+
+        <test id="bridge/jarCheckLoadEmbed" >
+            <property name="Scripts" class="java.lang.String" 
+                      value="application/java-archive" />
+            <property name="ScriptOrigin" class="java.lang.String"
+                      value="ANY" />
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="java.net.MalformedURLException" />
         </test>
     </testGroup>
 

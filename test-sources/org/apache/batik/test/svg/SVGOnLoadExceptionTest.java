@@ -77,6 +77,7 @@ import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.apache.batik.util.ApplicationSecurityEnforcer;
 
 /**
  * This test takes an SVG file as an input. It processes the input SVG
@@ -189,6 +190,11 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
     protected String resourceOrigin = "ANY";
 
     /**
+     * True if the scripts are run securely (i.e., with a security manager)
+     */
+    protected boolean secure = false;
+
+    /**
      * Controls whether or not the input SVG document should be validated
      */
     protected Boolean validate = new Boolean(false);
@@ -215,6 +221,14 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
 
     public String getResourceOrigin(){
         return this.resourceOrigin;
+    }
+
+    public void setSecure(boolean secure){
+        this.secure = secure;
+    }
+
+    public boolean getSecure(){
+        return secure;
     }
 
     public void setExpectedExceptionClass(String expectedExceptionClass){
@@ -252,7 +266,15 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
 
     public void setId(String id){
         super.setId(id);
-        svgURL = resolveURL("test-resources/org/apache/batik/" + id + ".svg");
+
+        if (id != null) {
+            int i = id.indexOf("(");
+            if (i != -1) {
+                id = id.substring(0, i);
+            }
+            String fileName = "test-resources/org/apache/batik/" + id + ".svg";
+            svgURL = resolveURL(fileName);
+        }
     }
 
     /**
@@ -293,51 +315,71 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
      *
      */
     public TestReport runImpl() throws Exception{
-        //
-        // First step: 
-        //
-        // Load the input SVG into a Document object
-        //
-        String parserClassName = XMLResourceDescriptor.getXMLParserClassName();
-        SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parserClassName);
-        f.setValidating(validate.booleanValue());
-        Document doc = null;
+        ApplicationSecurityEnforcer ase
+            = new ApplicationSecurityEnforcer(this.getClass(),
+                                              "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy");
+
+        if (secure) {
+            ase.enforceSecurity(true);
+        }
 
         try {
-            doc = f.createDocument(svgURL);
-        } catch(Exception e){
-            return handleException(e);
-        } 
+            //
+            // First step: 
+            //
+            // Load the input SVG into a Document object
+            //
+            String parserClassName = XMLResourceDescriptor.getXMLParserClassName();
+            SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parserClassName);
+            f.setValidating(validate.booleanValue());
+            Document doc = null;
+            
+            try {
+                doc = f.createDocument(svgURL);
+            } catch(Exception e){
+                return handleException(e);
+            } 
+            
+            //
+            // Second step:
+            // 
+            // Now that the SVG file has been loaded, build
+            // a GVT Tree from it
+            //
+            TestUserAgent userAgent = buildUserAgent();
+            GVTBuilder builder = new GVTBuilder();
+            BridgeContext ctx = new BridgeContext(userAgent);
+            ctx.setDynamic(true);
+            Exception e = null;
+            try {
+                builder.build(ctx, doc);
+                BaseScriptingEnvironment scriptEnvironment 
+                    = new BaseScriptingEnvironment(ctx);
+                scriptEnvironment.loadScripts();
+                scriptEnvironment.dispatchSVGLoadEvent();
+            } catch (Exception ex){
+                e = ex;
+            } finally {
+                if (e == null && userAgent.e != null) {
+                    e = userAgent.e;
+                }
 
-        //
-        // Second step:
-        // 
-        // Now that the SVG file has been loaded, build
-        // a GVT Tree from it
-        //
-        UserAgent userAgent = buildUserAgent();
-        GVTBuilder builder = new GVTBuilder();
-        BridgeContext ctx = new BridgeContext(userAgent);
-        ctx.setDynamic(true);
-
-        try {
-            builder.build(ctx, doc);
-            BaseScriptingEnvironment scriptEnvironment 
-                = new BaseScriptingEnvironment(ctx);
-            scriptEnvironment.loadScripts();
-            scriptEnvironment.dispatchSVGLoadEvent();
-        } catch (Exception e){
-            return handleException(e);
-        } 
-
-        //
-        // If we got here, it means that the expected exception did not
-        // happen. Report an error
-        //
-        TestReport report = reportError(ERROR_EXCEPTION_DID_NOT_OCCUR);
-        report.addDescriptionEntry(ENTRY_KEY_EXPECTED_EXCEPTION,
-                                   expectedExceptionClass);
-        return report;
+                if (e != null) {
+                    return handleException(e);
+                }
+            } 
+            
+            //
+            // If we got here, it means that the expected exception did not
+            // happen. Report an error
+            //
+            TestReport report = reportError(ERROR_EXCEPTION_DID_NOT_OCCUR);
+            report.addDescriptionEntry(ENTRY_KEY_EXPECTED_EXCEPTION,
+                                       expectedExceptionClass);
+            return report;
+        } finally {
+            ase.enforceSecurity(false);
+        }
     }
 
     /** 
@@ -371,11 +413,13 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
     /**
      * Give subclasses a chance to build their own UserAgent
      */
-    protected UserAgent buildUserAgent(){
+    protected TestUserAgent buildUserAgent(){
         return new TestUserAgent();
     }
 
     class TestUserAgent extends UserAgentAdapter {
+        Exception e;
+
         public ExternalResourceSecurity 
             getExternalResourceSecurity(ParsedURL resourceURL,
                                         ParsedURL docURL) {
@@ -396,25 +440,31 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
             getScriptSecurity(String scriptType,
                               ParsedURL scriptURL,
                               ParsedURL docURL) {
+            ScriptSecurity result = null;
             if (scripts.indexOf(scriptType) == -1) {
-                return new NoLoadScriptSecurity(scriptType);
+                result = new NoLoadScriptSecurity(scriptType);
             } else {
                 if ("ANY".equals(scriptOrigin)) {
-                    return new RelaxedScriptSecurity(scriptType,
+                    result = new RelaxedScriptSecurity(scriptType,
                                                      scriptURL,
                                                      docURL);
                 } else if ("DOCUMENT".equals(resourceOrigin)) {
-                    return new DefaultScriptSecurity(scriptType,
+                    result = new DefaultScriptSecurity(scriptType,
                                                      scriptURL,
                                                      docURL);
                 } else if ("EMBEDED".equals(resourceOrigin)) {
-                    return new EmbededScriptSecurity(scriptType,
+                    result = new EmbededScriptSecurity(scriptType,
                                                      scriptURL,
                                                      docURL);
                 } else {
-                    return new NoLoadScriptSecurity(scriptType);
+                    result = new NoLoadScriptSecurity(scriptType);
                 }
             }
+            return result;
+        }
+
+        public void displayError(Exception e) {
+            this.e = e;
         }
     }
 

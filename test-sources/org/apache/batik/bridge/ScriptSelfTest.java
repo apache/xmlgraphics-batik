@@ -55,6 +55,15 @@ import org.apache.batik.util.ApplicationSecurityEnforcer;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.test.svg.SelfContainedSVGOnLoadTest;
 
+import java.security.AccessController;
+import java.security.AccessControlContext;
+import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedActionException;
+import java.security.ProtectionDomain;
+import java.security.Permissions;
+
+import java.io.FilePermission;
+
 /**
  * Helper class to simplify writing the unitTesting.xml file for 
  * the bridge.
@@ -64,51 +73,50 @@ import org.apache.batik.test.svg.SelfContainedSVGOnLoadTest;
  */
 
 public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
-    boolean secure = true;
-    boolean constrain = true;
-    boolean document = true;
-    boolean embed = false;
-
     String scripts = "text/ecmascript, application/java-archive";
+    boolean secure = true;
+    String scriptOrigin = "any";
+    boolean restricted = false;
+    String fileName;
+
     TestUserAgent userAgent = new TestUserAgent();
 
     public void setId(String id){
         super.setId(id);
-        svgURL = resolveURL("test-resources/org/apache/batik/bridge/" + id + ".svg");
+
+        if (id != null) {
+            int i = id.indexOf("(");
+            if (i != -1) {
+                id = id.substring(0, i);
+            }
+            fileName = "test-resources/org/apache/batik/bridge/" + id + ".svg";
+            svgURL = resolveURL(fileName);
+        }
     }
 
-    public void setSecure(Boolean secure){
-        this.secure = secure.booleanValue();
+    public void setSecure(boolean secure){
+        this.secure = secure;
     }
 
-    public Boolean getSecure(){
-        return new Boolean(this.secure);
+    public boolean getSecure(){
+        return secure;
     }
 
-    public void setConstrain(Boolean constrain){
-        this.constrain = constrain.booleanValue();
+    public String getScriptOrigin() {
+        return scriptOrigin;
     }
 
-    public Boolean getConstrain(){
-        return new Boolean(this.constrain);
+    public void setScriptOrigin(String scriptOrigin) {
+        this.scriptOrigin = scriptOrigin;
     }
 
-    public void setEmbed(Boolean embed){
-        this.embed = embed.booleanValue();
+    public boolean getRestricted() {
+        return restricted;
     }
 
-    public Boolean getEmbed(){
-        return new Boolean(this.embed);
+    public void setRestricted(boolean restricted) {
+        this.restricted = restricted;
     }
-
-    public void setDocument(Boolean document){
-        this.document = document.booleanValue();
-    }
-
-    public Boolean getDocument(){
-        return new Boolean(this.document);
-    }
-
 
     public void setScripts(String scripts){
         this.scripts = scripts;
@@ -118,7 +126,7 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
         return scripts;
     }
 
-    public TestReport runImpl() throws Exception{
+    public TestReport runImpl() throws Exception {
         ApplicationSecurityEnforcer ase
             = new ApplicationSecurityEnforcer(this.getClass(),
                                               "org/apache/batik/apps/svgbrowser/resources/svgbrowser.policy");
@@ -128,9 +136,44 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
         }
 
         try {
-            return super.runImpl();
+            if (!restricted) {
+                return superRunImpl();
+            } else {
+                // Emulate calling from restricted code. We create a 
+                // calling context with only the permission to read
+                // the file.
+                FilePermission permission 
+                    = new FilePermission(fileName, "read");
+                Permissions permissions = new Permissions();
+                permissions.add(permission);
+                ProtectionDomain domain = new ProtectionDomain(null, permissions);
+                AccessControlContext ctx = new AccessControlContext
+                    (new ProtectionDomain[] {domain});
+
+                try {
+                    return (TestReport)AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                            public Object run() throws Exception {
+                                return superRunImpl();
+                            }
+                        }, ctx);
+                } catch (PrivilegedActionException pae) {
+                    throw pae.getException();
+                }
+            }
         } finally {
             ase.enforceSecurity(false);
+        }
+    }
+
+    protected TestReport superRunImpl() throws Exception {
+        try {
+            return super.runImpl();
+        } catch (ExceptionInInitializerError e) {
+            e.printStackTrace();
+            throw e;
+        } catch (NoClassDefFoundError e) {
+            // e.printStackTrace();
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -142,24 +185,29 @@ public class ScriptSelfTest extends SelfContainedSVGOnLoadTest {
         public ScriptSecurity getScriptSecurity(String scriptType,
                                                 ParsedURL scriptPURL,
                                                 ParsedURL docPURL){
+            ScriptSecurity scriptSecurity = null;
             if (scripts.indexOf(scriptType) == -1){
-                return new NoLoadScriptSecurity(scriptType);
+                scriptSecurity = new NoLoadScriptSecurity(scriptType);
             } else {
-                if (constrain) {
-                    if (document) {
-                        return new DefaultScriptSecurity
-                            (scriptType, scriptPURL, docPURL);
-                    } else if (embed){
-                        return new EmbededScriptSecurity
-                            (scriptType, scriptPURL, docPURL);
-                    } else {
-                        return new NoLoadScriptSecurity(scriptType);
-                    }
-                } else {
-                    return new RelaxedScriptSecurity
+                if ("any".equals(scriptOrigin)) {
+                     scriptSecurity = new RelaxedScriptSecurity
                         (scriptType, scriptPURL, docPURL);
+                } else if ("document".equals(scriptOrigin)) {
+                    scriptSecurity = new DefaultScriptSecurity
+                        (scriptType, scriptPURL, docPURL);
+                } else if ("embeded".equals(scriptOrigin)) {
+                    scriptSecurity = new EmbededScriptSecurity
+                        (scriptType, scriptPURL, docPURL);
+                } else if ("none".equals(scriptOrigin)) {
+                    scriptSecurity = new NoLoadScriptSecurity(scriptType);
+                } else {
+                    throw new Error("Wrong scriptOrigin : " + scriptOrigin);
                 }
             }
+
+            System.err.println(">>>>>>>>>>>>> using script security: " + scriptSecurity + 
+                               " for " + scriptPURL + " referenced from " + docPURL);
+            return scriptSecurity;
         }
     }
 
