@@ -9,6 +9,7 @@
 package org.apache.batik.dom;
 
 import org.apache.batik.dom.events.NodeEventTarget;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -35,6 +36,11 @@ public interface ExtendedNode extends Node, NodeEventTarget {
      * Sets this node readonly attribute.
      */
     void setReadonly(boolean v);
+
+    /**
+     * Sets the owner document of this node.
+     */
+    void setOwnerDocument(Document doc);
 
     /**
      * Sets the parent node.

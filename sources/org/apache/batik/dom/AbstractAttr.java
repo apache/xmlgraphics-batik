@@ -34,7 +34,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     /**
      * The owner element.
      */
-    protected Element ownerElement;
+    protected transient Element ownerElement;
 
     /**
      * Creates a new Attr object.

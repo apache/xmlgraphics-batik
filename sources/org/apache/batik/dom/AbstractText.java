@@ -22,6 +22,7 @@ import org.w3c.dom.Text;
 public abstract class AbstractText
     extends    AbstractCharacterData
     implements Text {
+
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Text#splitText(int)}.
      */
@@ -44,7 +45,7 @@ public abstract class AbstractText
 				     "need.parent",
 				     new Object[] {});
 	}
-	String t1 = v.substring(offset, v.length());
+	String t1 = v.substring(offset);
 	Text t = createTextNode(t1);
 	Node ns = getNextSibling();
 	if (ns != null) {

@@ -8,11 +8,19 @@
 
 package org.apache.batik.dom;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import java.lang.reflect.Method;
+
 import java.util.Locale;
 import java.util.MissingResourceException;
+
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMException;
@@ -34,6 +42,7 @@ public abstract class AbstractDocument
     implements Document,
                DocumentEvent,
                Localizable {
+
     /**
      * The error messages bundle class name.
      */
@@ -43,13 +52,13 @@ public abstract class AbstractDocument
     /**
      * The localizable support for the error messages.
      */
-    protected LocalizableSupport localizableSupport =
+    protected transient LocalizableSupport localizableSupport =
         new LocalizableSupport(RESOURCES);
 
     /**
      * The DOM implementation.
      */
-    protected DOMImplementation implementation;
+    protected transient DOMImplementation implementation;
 
     /**
      * Whether the event dispatching must be done.
@@ -276,6 +285,7 @@ public abstract class AbstractDocument
 	super.copyInto(n);
 	AbstractDocument ad = (AbstractDocument)n;
 	ad.implementation = implementation;
+        ad.localizableSupport = new LocalizableSupport(RESOURCES);
 	return n;
     }
 
@@ -287,6 +297,7 @@ public abstract class AbstractDocument
 	super.deepCopyInto(n);
 	AbstractDocument ad = (AbstractDocument)n;
 	ad.implementation = implementation;
+        ad.localizableSupport = new LocalizableSupport(RESOURCES);
 	return n;
     }
 
@@ -319,5 +330,39 @@ public abstract class AbstractDocument
 		                                    new Integer(t),
 						    n.getNodeName() });
 	}
+    }
+
+    // Serialization //////////////////////////////////////////////////////
+
+    /**
+     * Writes the object to the given stream.
+     */
+    private void writeObject(ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+            
+        // Save the name of the DOM implementation class.
+        s.writeObject(implementation.getClass().getName());
+    }
+
+    /**
+     * Reads the object from the given stream.
+     */
+    private void readObject(ObjectInputStream s) 
+        throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        
+        localizableSupport = new LocalizableSupport(RESOURCES);
+
+        Class c = Class.forName((String)s.readObject());
+
+        try {
+            Method m = c.getMethod("getDOMImplementation", null);
+            implementation = (DOMImplementation)m.invoke(null, null);
+        } catch (Exception e) {
+            try {
+                implementation = (DOMImplementation)c.newInstance();
+            } catch (Exception ex) {
+            }
+        }
     }
 }

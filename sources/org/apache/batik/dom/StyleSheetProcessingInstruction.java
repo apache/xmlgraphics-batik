@@ -24,6 +24,7 @@ import org.w3c.dom.stylesheets.StyleSheet;
 public class StyleSheetProcessingInstruction
     extends AbstractProcessingInstruction
     implements LinkStyle {
+
     /**
      * Is this node immutable?
      */
@@ -32,7 +33,7 @@ public class StyleSheetProcessingInstruction
     /**
      * The style sheet.
      */
-    protected StyleSheet sheet;
+    protected transient StyleSheet sheet;
 
     /**
      * The stylesheet factory.

@@ -8,6 +8,8 @@
 
 package org.apache.batik.dom.util;
 
+import java.io.Serializable;
+
 /**
  * A simple hashtable, not synchronized, with fixed load factor.
  *
@@ -15,7 +17,7 @@ package org.apache.batik.dom.util;
  * @version $Id$
  */
 
-public class HashTable {
+public class HashTable implements Serializable {
     /**
      * The load factor
      */
@@ -227,7 +229,7 @@ public class HashTable {
     /**
      * To manage collisions
      */
-    protected static class Entry {
+    protected static class Entry implements Serializable {
 	/**
 	 * The hash code
 	 */
