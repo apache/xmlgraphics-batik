@@ -275,6 +275,54 @@ public class MainTest extends DefaultTestSuite {
         addTest(t);
         t.setId("MainConfigTest.validate");
 
+        t = new MainConfigTest("-lang fr"){
+                public TestReport validate(SVGConverter c){
+                    if("fr".equals(c.getLanguage())){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-lang", "fr", c.getLanguage());
+                    }
+                }
+            };
+        addTest(t);
+        t.setId("MainConfigTest.lang");
+
+        t = new MainConfigTest("-cssUser myStylesheet.css"){
+                public TestReport validate(SVGConverter c){
+                    if("myStylesheet.css".equals(c.getUserStylesheet())){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-cssUser", "myStylesheet.css", c.getUserStylesheet());
+                    }
+                }
+            };
+        addTest(t);
+        t.setId("MainConfigTest.cssUser");
+
+        t = new MainConfigTest("-dpi 5.08"){
+                public TestReport validate(SVGConverter c){
+                    if(c.getPixelToMillimeter() == .5f){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-dpi", ".5f", "" + c.getPixelToMillimeter());
+                    }
+                }
+            };
+        addTest(t);
+        t.setId("MainConfigTest.dpi");
+
+        t = new MainConfigTest("-q .5"){
+                public TestReport validate(SVGConverter c){
+                    if(c.getQuality() == .5f){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-q", ".5f", "" + c.getQuality());
+                    }
+                }
+            };
+        addTest(t);
+        t.setId("MainConfigTest.quality");
+
         t = new MainConfigErrorTest("-d", "hello.svg -d");
         addTest(t);
         t.setId("MainConfigErrorTest.output");
@@ -307,6 +355,22 @@ public class MainTest extends DefaultTestSuite {
         addTest(t);
         t.setId("MainConfigErrorTest.cssAlternate");
 
+        t = new MainConfigErrorTest("-lang", "hello.svg -lang");
+        addTest(t);
+        t.setId("MainConfigErrorTest.lang");
+
+        t = new MainConfigErrorTest("-cssUser", "hello.svg -cssUser");
+        addTest(t);
+        t.setId("MainConfigErrorTest.cssUser");
+
+        t = new MainConfigErrorTest("-dpi", "hello.svg -dpi");
+        addTest(t);
+        t.setId("MainConfigErrorTest.dpi");
+
+        t = new MainConfigErrorTest("-q", "hello.svg -q");
+        addTest(t);
+        t.setId("MainConfigErrorTest.quality");
+
         t = new MainIllegalArgTest("-m", "-m images/jpeq");
         addTest(t);
         t.setId("MainIllegalArgTest.mediaType");
@@ -326,6 +390,14 @@ public class MainTest extends DefaultTestSuite {
         t = new MainIllegalArgTest("bg", "-bg a.b.c.d");
         addTest(t);
         t.setId("MainIllegalArgTest.bg");
+
+        t = new MainIllegalArgTest("dpi", "-dpi invalidDPI");
+        addTest(t);
+        t.setId("MainIllegalArgTest.dpi");
+
+        t = new MainIllegalArgTest("q", "-q illegalQuality");
+        addTest(t);
+        t.setId("MainIllegalArgTest.q");
 
     }
 

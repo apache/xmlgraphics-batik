@@ -124,6 +124,33 @@ public class SVGConverterTest extends DefaultTestSuite {
         t.setId("HintsConfigTest.KEY_ALTERNATE_STYLESHEET");
 
         t = new HintsConfigTest(new Object[][]{
+            {ImageTranscoder.KEY_USER_STYLESHEET_URI, "userStylesheet.css"}}){
+                protected void deltaConfigure(SVGConverter c){
+                    c.setUserStylesheet("userStylesheet.css");
+                }
+            };
+        addTest(t);
+        t.setId("HintsConfigTest.KEY_USER_STYLESHEET_URI");
+
+        t = new HintsConfigTest(new Object[][]{
+            {ImageTranscoder.KEY_LANGUAGE, "fr"}}){
+                protected void deltaConfigure(SVGConverter c){
+                    c.setLanguage("fr");
+                }
+            };
+        addTest(t);
+        t.setId("HintsConfigTest.KEY_LANGUAGE");
+
+        t = new HintsConfigTest(new Object[][]{
+            {ImageTranscoder.KEY_PIXEL_TO_MM, new Float(.5f)}}){
+                protected void deltaConfigure(SVGConverter c){
+                    c.setPixelToMillimeter(.5f);
+                }
+            };
+        addTest(t);
+        t.setId("HintsConfigTest.KEY_PIXEL_TO_MM");
+
+        t = new HintsConfigTest(new Object[][]{
             {ImageTranscoder.KEY_XML_PARSER_VALIDATING, new Boolean(true)}}){
                 protected void deltaConfigure(SVGConverter c){
                     c.setValidate(true);

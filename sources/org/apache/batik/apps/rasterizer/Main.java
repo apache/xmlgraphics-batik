@@ -363,6 +363,43 @@ public class Main implements SVGConverterController {
         = Messages.get("Main.cl.option.validate.description", "No description");
 
     /**
+     * Option to specify the user language with which SVG
+     * documents should be processed
+     */
+    public static String CL_OPTION_LANGUAGE
+        = Messages.get("Main.cl.option.language", "-lang");
+
+    public static String CL_OPTION_LANGUAGE_DESCRIPTION
+        = Messages.get("Main.cl.option.language.description", "No description");
+
+    /**
+     * Option to specify an addition user stylesheet
+     */
+    public static String CL_OPTION_USER_STYLESHEET
+        = Messages.get("Main.cl.option.user.stylesheet", "-cssUser");
+
+    public static String CL_OPTION_USER_STYLESHEET_DESCRIPTION
+        = Messages.get("Main.cl.option.user.stylesheet.description", "No description");
+
+    /**
+     * Option to specify the resolution for the output image
+     */
+    public static String CL_OPTION_DPI
+        = Messages.get("Main.cl.option.dpi", "-dpi");
+
+    public static String CL_OPTION_DPI_DESCRIPTION
+        = Messages.get("Main.cl.option.dpi.description", "No description");
+
+    /**
+     * Option to specify the output JPEG quality
+     */
+    public static String CL_OPTION_QUALITY
+        = Messages.get("Main.cl.option.quality", "-q");
+
+    public static String CL_OPTION_QUALITY_DESCRIPTION
+        = Messages.get("Main.cl.option.quality.description", "No description");
+
+    /**
      * Static map containing all the option handlers able to analyze the
      * various options.
      */
@@ -481,7 +518,7 @@ public class Main implements SVGConverterController {
                               }
 
                               public String getOptionDescription(){
-                                  return CL_OPTION_MEDIA_TYPE;
+                                  return CL_OPTION_MEDIA_TYPE_DESCRIPTION;
                               }
                           });
 
@@ -493,7 +530,63 @@ public class Main implements SVGConverterController {
                               }
 
                               public String getOptionDescription(){
-                                  return CL_OPTION_ALTERNATE_STYLESHEET;
+                                  return CL_OPTION_ALTERNATE_STYLESHEET_DESCRIPTION;
+                              }
+                          });
+
+        optionMap.put(CL_OPTION_USER_STYLESHEET,
+                      new SingleValueOptionHandler(){
+                              public void handleOption(String optionValue,
+                                                       SVGConverter c){
+                                  c.setUserStylesheet(optionValue);
+                              }
+
+                              public String getOptionDescription(){
+                                  return CL_OPTION_USER_STYLESHEET_DESCRIPTION;
+                              }
+                          });
+
+        optionMap.put(CL_OPTION_LANGUAGE,
+                      new SingleValueOptionHandler(){
+                              public void handleOption(String optionValue,
+                                                       SVGConverter c){
+                                  c.setLanguage(optionValue);
+                              }
+
+                              public String getOptionDescription(){
+                                  return CL_OPTION_LANGUAGE_DESCRIPTION;
+                              }
+                          });
+
+        optionMap.put(CL_OPTION_DPI,
+                      new FloatOptionHandler(){
+                              public void handleOption(float optionValue,
+                                                       SVGConverter c){
+                                  if (optionValue <= 0){
+                                      throw new IllegalArgumentException();
+                                  }
+
+                                  c.setPixelToMillimeter(2.54f/optionValue);
+                              }
+
+                              public String getOptionDescription(){
+                                  return CL_OPTION_DPI_DESCRIPTION;
+                              }
+                          });
+        
+        optionMap.put(CL_OPTION_QUALITY,
+                      new FloatOptionHandler(){
+                              public void handleOption(float optionValue,
+                                                       SVGConverter c){
+                                  if (optionValue <= 0 || optionValue >= 1){
+                                      throw new IllegalArgumentException();
+                                  }
+
+                                  c.setQuality(optionValue);
+                              }
+
+                              public String getOptionDescription(){
+                                  return CL_OPTION_QUALITY_DESCRIPTION;
                               }
                           });
 
