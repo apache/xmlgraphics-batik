@@ -57,6 +57,10 @@
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
+	      <td >color-property-BE-02.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
 	      <td >coords-transforms-BE-02.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
@@ -109,8 +113,33 @@
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
+	      <td >gradPatt-pattern-BE-07.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-referenc-BE-08.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >gradPatt-transfrm-BE-09.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
 	      <td >masking-clipPath-BE-08.svg</td>
-	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td >masking-clipPath-BE-01.svg</td>
+	      <td >(if the test is modified to be conformed to the latest spec)</td>
+	    </tr>
+        
+	    <tr>
+	      <td >masking-clipPath-BE-02.svg</td>
+	      <td >(if the test is modified to be conformed to the latest spec)</td>
+	    </tr>
+	    <tr>
+	      <td >masking-clipRule-BE-03.svg</td>
+	      <td >(if the test is modified to be conformed to the latest spec)</td>
 	    </tr>
 	    <tr>
 	      <td >masking-groupOpac-BE-04.svg</td>
@@ -265,19 +294,6 @@
 	      <td >The rectangle with <em>type="hueRotate" values="90"</em> is wrong</td>
 	    </tr>
 	    <tr>
-	      <td >masking-clipPath-BE-01.svg</td>
-	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
-	    </tr>
-        
-	    <tr>
-	      <td >masking-clipPath-BE-02.svg</td>
-	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
-	    </tr>
-	    <tr>
-	      <td >masking-clipRule-BE-03.svg</td>
-	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
-	    </tr>
-	    <tr>
 	      <td >masking-mask-BE-05.svg</td>
 	      <td >objectBoundingBox and userSpaceOnUse not yet implemented</td>
 	    </tr>
@@ -292,10 +308,6 @@
         <table>
 	    <tr>
 	      <td >color-colorProf-BE-03.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >color-property-BE-02.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
@@ -356,18 +368,6 @@
 	    </tr>
 	    <tr>
 	      <td >fonts-fontElement-BE-01.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >gradPatt-pattern-BE-07.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >gradPatt-referenc-BE-08.svg</td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
-	      <td >gradPatt-transfrm-BE-09.svg</td>
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>

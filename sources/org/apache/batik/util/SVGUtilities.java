@@ -526,7 +526,7 @@ public class SVGUtilities implements SVGConstants {
         String result = "";
         boolean preserve = false;
         Node n = elt.getFirstChild();
-        if (n.getNodeType() == Node.ELEMENT_NODE) {
+        if (n != null && n.getNodeType() == Node.ELEMENT_NODE) {
             String name = (n.getPrefix() == null)
                 ? n.getNodeName()
                 : n.getLocalName();
