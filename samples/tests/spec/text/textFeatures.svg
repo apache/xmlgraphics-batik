@@ -29,14 +29,14 @@
     </defs>
 
     <g id="testContent">
-        <text class="title" x="50%" y="10%" font-size="3%" text-anchor="middle" >
+        <text class="title" x="50%" y="10%" font-size="15" text-anchor="middle" >
             Text Element Features</text>
-      <g font-family="dialog" font-size="3%" 
+      <g font-family="dialog" font-size="15" 
                   text-anchor="start" fill="MidnightBlue">
         <text x="10%" y="20%">
         Text can change 
-        <tspan font-size="6%">size,</tspan>
-        <tspan font-size="4%" font-family="Serif">typeface,</tspan> 
+        <tspan font-size="30">size,</tspan>
+        <tspan font-size="20" font-family="Serif">typeface,</tspan> 
         <tspan fill="green">color,</tspan>
         or 
         <tspan fill="none" font-style="oblique" stroke="red" stroke-width="1">style</tspan>
@@ -81,7 +81,7 @@
         </text>
         <text x="10%" y="85%">Text elements also can be</text>
         <text x="10%" y="90%">filtered and transformed.</text>
-        <g font-size="8%" transform="translate(250, 450)">  
+        <g font-size="40" transform="translate(250, 450)">  
         <text x="0" y="0" filter="url(#blur)" fill="black" opacity="0.7"
          transform="skewX(40) translate(-6,-6)">
             Shadow
