@@ -68,7 +68,9 @@
         </p>
         <p>
         Batik provides core components for handling and processing SVG
-        files.
+        files. See <link href="#projectAndProductExamples">examples of projects and
+        products using Batik</link> for real-life example of how Batik is
+        already integrated in projects and products.
         </p>
          </s1>
 
@@ -113,6 +115,24 @@
         As a consequence the Batik archive is quite big, but
         after you downloaded it, you will not need anything else.
         </note>
+        </s1>
+
+        <anchor id="projectAndProductExamples" />
+        <s1 title="Examples of projects and products using Batik">
+        <p>While it is hard to track projects are products which are using Batik, here are a few
+        ones which are known:</p>
+        <ul>
+        <li><link href="http://xml.apache.org/fop">The Apache FOP project</link> uses Batik to handle SVG images. It uses the SVG rasterizer and extends the Batik transcoder 
+            architecture to offer SVG to PDF conversion.</li>
+        <li><link href="http://xml.apache.org/cocoon">The Apache Cocoon project</link> uses Batik to rasterize SVG images. </li>
+        <li><link href="http://www.ilog.com/products/jviews">ILOG's JViews</link> product uses and extends the Batik SVG export module. </li>
+        <li><link href="http://otn.oracle.com/products/jdev/content.html">Oracle Corp.'s JDeveloper9i</link> uses Batik to export class diagrams in SVG. It uses the
+        SVG export module (SVGGraphics2D).</li>
+        <li><link href="http://www.optimalj.com">OptimalJ</link>, a UML Class Diagram Editor for NetBeans, uses Batik to export SVG. </li>
+        <li><link href="http://xweb.sf.net">XWeb</link>, a tool to create websites automatically out of XML input. Uses the Batik SVG Rasterizer.</li>
+        <li><link href="http://www.elixirtech.com/ElixirReport">ElixirTech's ElixirReport</link> uses 
+        Batik for charting and SVG component.</li>
+        </ul>
         </s1>
     </body>
 </document>
