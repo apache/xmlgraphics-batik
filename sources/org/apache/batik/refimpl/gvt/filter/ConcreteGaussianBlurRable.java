@@ -102,10 +102,19 @@ public class ConcreteGaussianBlurRable
     }
 
     /**
-     * Pass-through: returns the source's bounds
+     * Grow the source's bounds
      */
     public Rectangle2D getBounds2D(){
-        return getSource().getBounds2D();
+        Rectangle2D src = getSource().getBounds2D();
+        float dX = (float)(stdDeviationX*GaussianBlurOp.DSQRT2PI);
+        float dY = (float)(stdDeviationY*GaussianBlurOp.DSQRT2PI);
+        float radX = 3*dX/2;
+        float radY = 3*dY/2;
+        return new Rectangle2D.Float
+            ((float)(src.getMinX()  -radX),
+             (float)(src.getMinY()  -radY),
+             (float)(src.getWidth() +2*radX),
+             (float)(src.getHeight()+2*radY));
     }
 
     /**
@@ -165,6 +174,7 @@ public class ConcreteGaussianBlurRable
         double blurRadY = op.getRadiusY();
 
         Rectangle2D r = aoi.getBounds2D();
+
         r = new Rectangle2D.Double(r.getX()-blurRadX, 
                                    r.getY()-blurRadY,
                                    r.getWidth() +2*blurRadX, 
@@ -176,15 +186,15 @@ public class ConcreteGaussianBlurRable
         CachableRed cr;
         cr = new ConcreteRenderedImageCachableRed(ri);
 
-        r = cr.getBounds();
+        Shape devShape = srcAt.createTransformedShape(aoi.getBounds2D());
+        r = devShape.getBounds2D();
         r = new Rectangle2D.Double(r.getX()-blurRadX, 
                                    r.getY()-blurRadY,
                                    r.getWidth() +2*blurRadX, 
                                    r.getHeight()+2*blurRadY);
+
         cr = new PadRed(cr, r.getBounds(), PadMode.ZERO_PAD, rh);
         
-        // System.out.println("Src: " + cr.getBounds());
-
         ColorModel cm = ri.getColorModel();
 
         // OK this is a bit of a cheat. We Pull the DataBuffer out of
@@ -198,7 +208,7 @@ public class ConcreteGaussianBlurRable
         
         BufferedImage srcBI;
         srcBI = new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
-        
+
         BufferedImage destBI;
         destBI = op.filter(srcBI, null);
 
@@ -217,8 +227,6 @@ public class ConcreteGaussianBlurRable
 
         if (!resAt.isIdentity())
             cr = new AffineRed(cr, resAt, rh);
-        
-        // System.out.println("Res: " + cr.getBounds());
 
         return cr;
     }
@@ -234,20 +242,25 @@ public class ConcreteGaussianBlurRable
      * coordinate system for the source indicated by srcIndex.
      */
     public Shape getDependencyRegion(int srcIndex, Rectangle2D outputRgn){
-        // For GaussianBlur, the output is equal to the input. Therefore,
-        // the dependency region is the intersection of the outputRgn
-        // with the source.
-        // NOTE: This needs to grow the region!!!
-        //       Gausian actually needs a larget area of input than
-        //       it outputs.
-        Rectangle2D dependencyRegion = null;
-        if(srcIndex == 0){
-            // There is only one source in GaussianBlur
+        if(srcIndex != 0)
+            outputRgn = null;
+        else {
             // Intersect with output region
-            dependencyRegion = outputRgn.createIntersection(getBounds2D());
+            outputRgn = outputRgn.createIntersection(getBounds2D());
+
+            // There is only one source in GaussianBlur
+            float dX = (float)(stdDeviationX*GaussianBlurOp.DSQRT2PI);
+            float dY = (float)(stdDeviationY*GaussianBlurOp.DSQRT2PI);
+            float radX = 3*dX/2;
+            float radY = 3*dY/2;
+            outputRgn = new Rectangle2D.Float
+                            ((float)(outputRgn.getMinX()  -radX),
+                             (float)(outputRgn.getMinY()  -radY),
+                             (float)(outputRgn.getWidth() +2*radX),
+                             (float)(outputRgn.getHeight()+2*radY));
         }
 
-        return dependencyRegion;
+        return outputRgn;
     }
 
     /**
@@ -262,14 +275,18 @@ public class ConcreteGaussianBlurRable
      *  this is in the user coordinate system of this node.
      */
     public Shape getDirtyRegion(int srcIndex, Rectangle2D inputRgn){
-        // For GaussianBlur, the output is equal to the input. Therefore
-        // the dependency region is the intersection of the inputRgn
-        // with the source.
-        // NOTE: This needs to grow the region!!!
-        //       Changes in the input region affect a larger area of
-        //       output than the input.
         Rectangle2D dirtyRegion = null;
         if(srcIndex == 0){
+            float dX = (float)(stdDeviationX*GaussianBlurOp.DSQRT2PI);
+            float dY = (float)(stdDeviationY*GaussianBlurOp.DSQRT2PI);
+            float radX = 3*dX/2;
+            float radY = 3*dY/2;
+            inputRgn = new Rectangle2D.Float
+                            ((float)(inputRgn.getMinX()  -radX),
+                             (float)(inputRgn.getMinY()  -radY),
+                             (float)(inputRgn.getWidth() +2*radX),
+                             (float)(inputRgn.getHeight()+2*radY));
+
             // There is only one source in GaussianBlur
             // Intersect with output region
             dirtyRegion = inputRgn.createIntersection(getBounds2D());

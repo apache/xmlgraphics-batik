@@ -349,19 +349,15 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                 // Render directly on the canvas
                 primitivePaint(g2d, rc);
             } else{
-                Filter nodeImage
-                    = rc.getGraphicsNodeRableFactory().createGraphicsNodeRable(this);
                 Filter filteredImage = null;
 
-                if(filter != null){
+                if(filter == null){
+                    filteredImage = rc.getGraphicsNodeRableFactory().
+                        createGraphicsNodeRable(this);
+                }
+                else {
                     traceFilter(filter, "=====>> ");
                     filteredImage = filter;
-                }
-                else{
-                    filteredImage = new org.apache.batik.refimpl.gvt.filter.ConcretePadRable(nodeImage,
-                                                                                             nodeImage.getBounds2D(),
-                                                                                             PadMode.ZERO_PAD);
-                    // filteredImage = nodeImage;
                 }
 
                 if (mask != null) {
