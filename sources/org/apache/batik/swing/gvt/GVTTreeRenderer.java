@@ -109,6 +109,9 @@ public class GVTTreeRenderer extends Thread {
             }
 
             fireCompletedEvent(renderer.getOffScreen());
+        } catch (NoClassDefFoundError e) {
+            // This error was reported to happen when the rendering
+            // is interrupted with JDK1.3.0rc1 Solaris.
         } catch (Exception e) {
             e.printStackTrace();
             fireFailedEvent();

@@ -74,9 +74,12 @@ public class GVTTreeBuilder extends Thread {
             fireCompletedEvent(gvtRoot);
         } catch (InterruptedBridgeException e) {
             fireCancelledEvent();
+        } catch (BridgeException e) {
+            exception = e;
+            fireFailedEvent(e.getGraphicsNode());
         } catch (Exception e) {
             exception = e;
-            fireFailedEvent();
+            fireFailedEvent(null);
         }
     }
 
@@ -158,11 +161,11 @@ public class GVTTreeBuilder extends Thread {
     /**
      * Fires a GVTTreeBuilderEvent.
      */
-    protected void fireFailedEvent() {
+    protected void fireFailedEvent(GraphicsNode root) {
         final Object[] dll = listeners.toArray();
 
         if (dll.length > 0) {
-            final GVTTreeBuilderEvent ev = new GVTTreeBuilderEvent(this, null);
+            final GVTTreeBuilderEvent ev = new GVTTreeBuilderEvent(this, root);
 
             if (EventQueue.isDispatchThread()) {
                 for (int i = 0; i < dll.length; i++) {
