@@ -72,6 +72,7 @@ To display the available targets type:
 
     <property name="site"            value="../xml-site/targets/${project}"/>
     <property name="site-skin"       value="${skins}/xml.apache.org/"/>
+    <property name="print-skin"      value="${skins}/printer/"/>
 
   </target>
 
@@ -91,11 +92,14 @@ To display the available targets type:
     <echo message=""/>
     <echo message=" Available targets are:"/>
     <echo message=""/>
-    <echo message="   compile   --> compiles the source code"/>
-    <echo message="   svgviewer --> runs the SVG viewer"/>
-    <echo message="   javadoc   --> generates the API documentation"/>
-    <echo message="   sitedoc   --> generates the site documentation"/>
-    <echo message="   clean     --> cleans up the directory"/>
+    <echo message="   compile    --> compiles the source code"/>
+    <echo message="   svgviewer  --> runs the SVG viewer"/>
+    <echo message="   javadoc    --> generates the API documentation"/>
+    <echo message="   site       --> generates the site documentation"/>
+    <echo message="   htmldoc    --> generates the site documentation in docs/"/>
+    <echo message="   printerdoc --> generates the printable documentation in"/>
+    <echo message="                  docs/print"/>
+    <echo message="   clean      --> cleans up the directory"/>
     <echo message=""/>
     <echo message=" See the comments in the build.xml file for more details."/>
     <echo message=""/>
@@ -145,7 +149,29 @@ To display the available targets type:
     <mkdir dir="${docs}"/>
   </target>
 
-  <target name="sitedoc" depends="prepare-docs">
+  <target name="htmldoc" depends="prepare-docs">
+    <copy file="${xdocs}/site-book.xml"
+          tofile="${xdocs}/book.xml"
+          filtering="on"/>
+    <java classname="${stylebook-class}" fork="yes">
+      <classpath refid="libs-classpath"/>
+      <arg line="targetDirectory=${docs} ${xdocs}/book.xml ${site-skin}"/>
+    </java>
+  </target>
+
+  <target name="printerdoc" depends="prepare-docs">
+    <mkdir dir="${docs}/print"/>
+    <copy file="${xdocs}/docs-book.xml"
+          tofile="${xdocs}/book.xml"
+          filtering="on"/>
+    <java classname="${stylebook-class}" fork="yes">
+      <classpath refid="libs-classpath"/>
+      <arg line="targetDirectory=${docs}/print ${xdocs}/book.xml ${print-skin}"/>
+    </java>
+  </target>
+
+  <target name="site" depends="sitedoc"/>
+  <target name="sitedoc" depends="init">
     <mkdir dir="${site}"/>
     <copy file="${xdocs}/site-book.xml"
           tofile="${xdocs}/book.xml"

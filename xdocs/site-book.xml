@@ -13,7 +13,7 @@
 <!-- version $Id$ -->
 <!-- ========================================================================= -->
 
-<book title="Apache Batik documentation" copyright="@year@ The Apache Software Foundation">
+<book title="Apache Batik documentation" copyright="2000 The Apache Software Foundation">
   <page id="index"    label="Overview" source="index.xml"/>
   <page id="status"   label="Status" source="status.xml" />
   <separator/>
