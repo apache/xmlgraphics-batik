@@ -123,7 +123,8 @@ public class SVGOMRadialGradientElement
         SVGAnimatedLength result;
         if (fxReference == null ||
             (result = (SVGAnimatedLength)fxReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, ATTR_FX, null);
+            result = new SVGOMAnimatedLength
+                (this, null, SVG_FX_ATTRIBUTE, null);
             fxReference = new WeakReference(result);
         }
         return result;
@@ -137,7 +138,8 @@ public class SVGOMRadialGradientElement
         SVGAnimatedLength result;
         if (fyReference == null ||
             (result = (SVGAnimatedLength)fyReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, ATTR_FY, null);
+            result = new SVGOMAnimatedLength
+                (this, null, SVG_FY_ATTRIBUTE, null);
             fyReference = new WeakReference(result);
         }
         return result;

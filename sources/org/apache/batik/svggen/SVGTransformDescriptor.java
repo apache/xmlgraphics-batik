@@ -41,7 +41,7 @@ public class SVGTransformDescriptor implements SVGDescriptor, SVGSyntax{
         if(attrMap == null)
             attrMap = new Hashtable();
 
-        attrMap.put(ATTR_TRANSFORM, transform);
+        attrMap.put(SVG_TRANSFORM_ATTRIBUTE, transform);
 
         return attrMap;
     }

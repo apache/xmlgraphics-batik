@@ -70,7 +70,7 @@ public class SVGTexturePaint extends AbstractSVGConverter {
             Rectangle2D anchorRect = texture.getAnchorRect();
             Element patternDef = domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                             SVG_PATTERN_TAG);
-            patternDef.setAttributeNS(null, ATTR_PATTERN_UNITS,
+            patternDef.setAttributeNS(null, SVG_PATTERN_UNITS_ATTRIBUTE,
                                     SVG_USER_SPACE_ON_USE_VALUE);
 
             //

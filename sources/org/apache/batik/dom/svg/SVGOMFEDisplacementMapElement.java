@@ -140,13 +140,13 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-	SVGAnimatedString result;
-	if (inReference == null ||
-	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-	    inReference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedString result;
+        if (inReference == null ||
+            (result = (SVGAnimatedString)inReference.get()) == null) {
+            result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
+            inReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**
@@ -154,28 +154,28 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getIn2()}.
      */
     public SVGAnimatedString getIn2() {
-	SVGAnimatedString result;
-	if (in2Reference == null ||
-	    (result = (SVGAnimatedString)in2Reference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN2_ATTRIBUTE);
-	    in2Reference = new WeakReference(result);
-	}
-	return result;
+        SVGAnimatedString result;
+        if (in2Reference == null ||
+            (result = (SVGAnimatedString)in2Reference.get()) == null) {
+            result = new SVGOMAnimatedString(this, null, SVG_IN2_ATTRIBUTE);
+            in2Reference = new WeakReference(result);
+        }
+        return result;
     }
-    
+
     /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGFEDisplacementMapElement#getScale()}.
      */
     public SVGAnimatedNumber getScale() {
-	SVGAnimatedNumber result;
-	if (scaleReference == null ||
-	    (result = (SVGAnimatedNumber)scaleReference.get()) == null) {
-	    result = new SVGOMAnimatedNumber(this, null, ATTR_SCALE,
+        SVGAnimatedNumber result;
+        if (scaleReference == null ||
+            (result = (SVGAnimatedNumber)scaleReference.get()) == null) {
+            result = new SVGOMAnimatedNumber(this, null, SVG_SCALE_ATTRIBUTE,
                                              SCALE_DEFAULT_VALUE_PRODUCER);
-	    scaleReference = new WeakReference(result);
-	}
-	return result;
+            scaleReference = new WeakReference(result);
+        }
+        return result;
     }
 
     /**

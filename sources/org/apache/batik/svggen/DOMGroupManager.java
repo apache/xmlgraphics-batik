@@ -205,7 +205,7 @@ public class DOMGroupManager implements SVGSyntax {
     private void setTransform(Element element, TransformStackElement transformStack[]){
         String transform = domTreeManager.gcConverter.toSVG(transformStack).trim();
         if(transform.length() > 0)
-            element.setAttributeNS(null, ATTR_TRANSFORM, transform);
+            element.setAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE, transform);
     }
 
     /**
@@ -281,13 +281,13 @@ public class DOMGroupManager implements SVGSyntax {
             String value = (String)map.get(key);
             String refValue = (String)referenceMap.get(key);
             if(!value.equals(refValue)) {
-                                /*if(key.equals(ATTR_TRANSFORM)){
-                                  // Special handling for the transform attribute.
-                                  // At this point in the processing, the transform
-                                  // in map has to be a substring of the one in
-                                  // referenceMap. see the addElement member.
-                                  value = value.substring(refValue.length()).trim();
-                                  }*/
+                /*if(key.equals(SVG_TRANSFORM_ATTRIBUTE)){
+                  // Special handling for the transform attribute.
+                  // At this point in the processing, the transform
+                  // in map has to be a substring of the one in
+                  // referenceMap. see the addElement member.
+                  value = value.substring(refValue.length()).trim();
+                  }*/
                 mapDelta.put(key, value);
             }
         }

@@ -76,7 +76,8 @@ public class SVGOMLinearGradientElement
         SVGAnimatedLength result;
         if (x1Reference == null ||
             (result = (SVGAnimatedLength)x1Reference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, ATTR_X1, null);
+            result = new SVGOMAnimatedLength
+                (this, null, SVG_X1_ATTRIBUTE, null);
             x1Reference = new WeakReference(result);
         }
         return result;
@@ -90,7 +91,8 @@ public class SVGOMLinearGradientElement
         SVGAnimatedLength result;
         if (y1Reference == null ||
             (result = (SVGAnimatedLength)y1Reference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, ATTR_Y1, null);
+            result = new SVGOMAnimatedLength
+                (this, null, SVG_Y1_ATTRIBUTE, null);
             y1Reference = new WeakReference(result);
         }
         return result;
@@ -104,7 +106,8 @@ public class SVGOMLinearGradientElement
         SVGAnimatedLength result;
         if (x2Reference == null ||
             (result = (SVGAnimatedLength)x2Reference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, ATTR_X2, null);
+            result = new SVGOMAnimatedLength
+                (this, null, SVG_X2_ATTRIBUTE, null);
             x2Reference = new WeakReference(result);
         }
         return result;
@@ -118,7 +121,8 @@ public class SVGOMLinearGradientElement
         SVGAnimatedLength result;
         if (y2Reference == null ||
             (result = (SVGAnimatedLength)y2Reference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, ATTR_Y2, null);
+            result = new SVGOMAnimatedLength
+                (this, null, SVG_Y2_ATTRIBUTE, null);
             y2Reference = new WeakReference(result);
         }
         return result;

@@ -20,7 +20,7 @@ public interface SVGSyntax extends SVGConstants{
     /**
      * This is a qualified form for href, using the xlink: namespace prefix
      */
-    public static final String ATTR_XLINK_HREF = "xlink:" + ATTR_HREF;
+    public static final String ATTR_XLINK_HREF = "xlink:" + SVG_HREF_ATTRIBUTE;
 
     /**
      * ID Prefix. Generated IDs have the form <prefix><nn>

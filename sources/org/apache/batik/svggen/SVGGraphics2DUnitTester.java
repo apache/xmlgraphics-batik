@@ -211,7 +211,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
                                                      SVG_POLYGON_TAG);
 
         rect.setAttributeNS(null, SVG_FILL_ATTRIBUTE, SVG_NONE_VALUE);
-        polygon.setAttributeNS(null, ATTR_STROKE, SVG_NONE_VALUE);
+        polygon.setAttributeNS(null, SVG_STROKE_ATTRIBUTE, SVG_NONE_VALUE);
 
         domGroupManager.addElement(rect);
 
@@ -332,7 +332,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
 
         imageHandler.handleImage((RenderedImage)testImage, imageElement,
                                  getContext(domFactory));
-        System.out.println("Generated xlink:href is : " + imageElement.getAttributeNS(null, SVGSyntax.ATTR_XLINK_HREF));
+        System.out.println("Generated xlink:href is : " + imageElement.getAttributeNS(null, SVGSyntax.SVG_HREF_ATTRIBUTE));
     }
 
     public void testImageHandlerPNGEncoder() throws Exception {
@@ -385,11 +385,11 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
             new SVGAlphaComposite(getContext(domFactory));
 
         Element groupOne = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        groupOne.setAttributeNS(null, ATTR_ID, "groupOne");
+        groupOne.setAttributeNS(null, SVG_ID_ATTRIBUTE, "groupOne");
         buildTestGroup(groupOne, composites, converter);
 
         Element groupTwo = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        groupTwo.setAttributeNS(null, ATTR_ID, "group2");
+        groupTwo.setAttributeNS(null, SVG_ID_ATTRIBUTE, "group2");
         buildTestGroup(groupTwo, composites, converter);
 
         Element defs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
@@ -400,13 +400,13 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         }
 
         Element groupThree = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-        groupThree.setAttributeNS(null, ATTR_ID, "groupThree");
+        groupThree.setAttributeNS(null, SVG_ID_ATTRIBUTE, "groupThree");
         SVGAlphaComposite newConverter =
             new SVGAlphaComposite(getContext(domFactory));
         buildTestGroup(groupThree, new AlphaComposite[]{ ac.SrcIn, ac.DstOut },
         newConverter);
         Element newDefs = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_DEFS_TAG);
-        newDefs.setAttributeNS(null, ATTR_ID, "alphaCompositeSubset");
+        newDefs.setAttributeNS(null, SVG_ID_ATTRIBUTE, "alphaCompositeSubset");
         Iterator newIter = newConverter.getDefinitionSet().iterator();
         while(newIter.hasNext()){
             Element filter = (Element)newIter.next();
@@ -431,7 +431,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         for(int i=0; i<composites.length; i++){
             SVGCompositeDescriptor compositeDesc = converter.toSVG(composites[i]);
             Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
-            rect.setAttributeNS(null, ATTR_OPACITY, compositeDesc.getOpacityValue());
+            rect.setAttributeNS(null, SVG_OPACITY_ATTRIBUTE, compositeDesc.getOpacityValue());
             if(compositeDesc.getDef() != null)
                 rect.setAttributeNS(null, SVG_FILTER_ATTRIBUTE, compositeDesc.getFilterValue());
             group.appendChild(rect);
@@ -630,7 +630,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         Element groupOne = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<clips.length; i++){
             Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
-            rect.setAttributeNS(null, ATTR_ID, clips[i].getClass().getName());
+            rect.setAttributeNS(null, SVG_ID_ATTRIBUTE, clips[i].getClass().getName());
             rect.setAttributeNS(null, SVG_CLIP_PATH_ATTRIBUTE,
                                 (String)converter.toSVG(clips[i]).
                                 getAttributeMap(null).get(SVG_CLIP_PATH_ATTRIBUTE));
@@ -643,7 +643,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
         Element groupTwo = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
         for(int i=0; i<clips.length; i++){
             Element rect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
-            rect.setAttributeNS(null, ATTR_ID, clips[i].getClass().getName());
+            rect.setAttributeNS(null, SVG_ID_ATTRIBUTE, clips[i].getClass().getName());
             rect.setAttributeNS(null, SVG_CLIP_PATH_ATTRIBUTE,
                                 (String)converter.toSVG(clips[i]).
                                 getAttributeMap(null).get(SVG_CLIP_PATH_ATTRIBUTE));
@@ -1167,7 +1167,7 @@ public class SVGGraphics2DUnitTester implements SVGConstants {
             String testName = (String)iter.next();
             RenderingHints hints[] = (RenderingHints[])testMap.get(testName);
             Element testGroup = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
-            testGroup.setAttributeNS(null, ATTR_ID, testName);
+            testGroup.setAttributeNS(null, SVG_ID_ATTRIBUTE, testName);
             for(int i=0; i<hints.length; i++){
                 Element testRect = domFactory.createElementNS(SVG_NAMESPACE_URI, SVG_RECT_TAG);
                 Map attrMap = converter.toSVG(hints[i]).getAttributeMap(null);

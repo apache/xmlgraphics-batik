@@ -124,7 +124,7 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
             if(composite.getRule() != AlphaComposite.SRC_OVER){
                 // Note that the extra alpha is ignored by using the
                 // majorComposite. The extra alpha is already represented
-                // by the ATTR_OPACITY value.
+                // by the SVG_OPACITY_ATTRIBUTE value.
                 AlphaComposite majorComposite =
                     AlphaComposite.getInstance(composite.getRule());
                 filterDef = (Element)compositeDefsMap.get(majorComposite);
@@ -242,14 +242,14 @@ public class SVGAlphaComposite extends AbstractSVGConverter {
         feComposite.setAttributeNS(null, SVG_IN_ATTRIBUTE, input1);
         feComposite.setAttributeNS(null, SVG_IN2_ATTRIBUTE, input2);
         feComposite.setAttributeNS(null, SVG_K2_ATTRIBUTE, k2);
-        feComposite.setAttributeNS(null, ATTR_RESULT, VALUE_COMPOSITE);
+        feComposite.setAttributeNS(null, SVG_RESULT_ATTRIBUTE, VALUE_COMPOSITE);
 
         Element feFlood =
             generatorContext.domFactory.createElementNS(SVG_NAMESPACE_URI,
                                                         SVG_FE_FLOOD_TAG);
         feFlood.setAttributeNS(null, SVG_FLOOD_COLOR_ATTRIBUTE, "white");
         feFlood.setAttributeNS(null, SVG_FLOOD_OPACITY_ATTRIBUTE, "1");
-        feFlood.setAttributeNS(null, ATTR_RESULT, VALUE_FLOOD);
+        feFlood.setAttributeNS(null, SVG_RESULT_ATTRIBUTE, VALUE_FLOOD);
 
 
         Element feMerge =
