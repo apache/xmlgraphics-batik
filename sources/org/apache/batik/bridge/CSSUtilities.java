@@ -861,17 +861,26 @@ public abstract class CSSUtilities
                                            String  uri) {
         Attr xmlBase = localRefElement.getAttributeNodeNS
             (XML_NAMESPACE_URI, "xml:base");
+        ParsedURL purl = new ParsedURL(uri);
         if (xmlBase != null) {
             // We have a current base so merge it with our new base and
             // set the result...
-            ParsedURL purl = new ParsedURL(uri, xmlBase.getNodeValue());
-            uri = purl.toString();
+            purl = new ParsedURL(purl, xmlBase.getNodeValue());
         }
-        localRefElement.setAttributeNS(XML_NAMESPACE_URI,
-                                       "xml:base",
-                                       uri);
 
-        CSSEngine engine = CSSUtilities.getCSSEngine(localRefElement);
+        // Get the URL sans fragment.
+        uri = purl.getPortStr();
+        String path = purl.getPath();
+        if (path != null)
+            uri += path;
+
+        if (uri.length() != 0)
+            // Only set xml:base if we have a real URL.
+            localRefElement.setAttributeNS(XML_NAMESPACE_URI,
+                                           "xml:base",
+                                           uri);
+
+        CSSEngine engine    = CSSUtilities.getCSSEngine(localRefElement);
         CSSEngine refEngine = CSSUtilities.getCSSEngine(refElement);
         
         engine.importCascadedStyleMaps(refElement, refEngine, localRefElement);
