@@ -92,9 +92,6 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
         if (attrName.equals(SVG_D_ATTRIBUTE)) {
 
             buildShape(ctx, e, (ShapeNode)node);
-            if (((ShapeNode)node).getShape() == null) {
-                // <!> FIXME: disable the rendering
-            }
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }

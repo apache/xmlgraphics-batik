@@ -73,7 +73,11 @@ public class ShapeNode extends AbstractGraphicsNode {
         invalidateGeometryCache();
         this.shape = newShape;
         if(this.shapePainter != null){
-            this.shapePainter.setShape(newShape);
+            if (newShape != null) {
+                this.shapePainter.setShape(newShape);
+            } else {
+                this.shapePainter = null;
+            }
         }
         fireGraphicsNodeChangeCompleted();
     }

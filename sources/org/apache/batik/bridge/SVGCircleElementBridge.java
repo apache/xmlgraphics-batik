@@ -87,6 +87,7 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
         }
 	// A value of zero disables rendering of the element
 	if (r == 0) {
+            shapeNode.setShape(null);
 	    return;
 	}
         float x = cx - r;
@@ -107,9 +108,6 @@ public class SVGCircleElementBridge extends SVGShapeElementBridge {
             attrName.equals(SVG_R_ATTRIBUTE)) {
 
             buildShape(ctx, e, (ShapeNode)node);
-            if (((ShapeNode)node).getShape() == null) {
-                // <!> FIXME: disable the rendering
-            }
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }

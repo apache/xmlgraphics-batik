@@ -106,9 +106,6 @@ public class SVGLineElementBridge extends SVGDecoratedShapeElementBridge {
             attrName.equals(SVG_Y2_ATTRIBUTE)) {
 
             buildShape(ctx, e, (ShapeNode)node);
-            if (((ShapeNode)node).getShape() == null) {
-                // <!> FIXME: disable the rendering
-            }
         } else {
             super.handleDOMAttrModifiedEvent(evt);
         }
