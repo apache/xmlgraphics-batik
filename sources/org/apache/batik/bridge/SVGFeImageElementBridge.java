@@ -9,12 +9,14 @@
 package org.apache.batik.bridge;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.net.URL;
 import java.util.Map;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.util.XMLConstants;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -22,6 +24,7 @@ import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.ParsedURL;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
@@ -80,68 +83,104 @@ public class SVGFeImageElementBridge
                                       new Object[] {"xlink:href"});
         }
 
+        //
+        // According the the SVG specification, feImage behaves like
+        // <image> if it references an SVG document or a raster image
+        // and it behaves like a <use> if it references a document
+        // fragment.
+        //
+        // To provide this behavior, depending on whether the uri 
+        // contains a fragment identifier, we create either an 
+        // <image> or a <use> element and request the corresponding
+        // bridges to build the corresponding GraphicsNode for us.
+        // 
+        // Then, we take care of the possible transformation needed 
+        // from objectBoundingBox space to user space.
+        //
+        
+        GraphicsNode gn = null;
+        Document document = filterElement.getOwnerDocument();
+        boolean isUse = (uriStr.indexOf("#") != -1);
+        Element contentElement = null;
+        if (isUse) {
+            contentElement = document.createElementNS(SVG_NAMESPACE_URI,
+                                                    SVG_USE_TAG);
+        } else {
+            contentElement = document.createElementNS(SVG_NAMESPACE_URI,
+                                                    SVG_IMAGE_TAG);
+        }
+
+        
+        contentElement.setAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, XMLConstants.XLINK_PREFIX + 
+                                    ":" + SVG_HREF_ATTRIBUTE,
+                                    uriStr);
+
+        Element proxyElement = document.createElementNS(SVG_NAMESPACE_URI,
+                                                        SVG_G_TAG);
+        proxyElement.appendChild(contentElement);
+
         // feImage's default region is that of the filter chain.
         Rectangle2D defaultRegion = filterRegion;
 
+        // Compute the transform from object bounding box to user
+        // space if needed.
+        AffineTransform at = new AffineTransform();
+
+        // 'primitiveUnits' attribute - default is userSpaceOnUse
+        short coordSystemType;
+        Element filterDefElement = (Element)(filterElement.getParentNode());
+        boolean isBBox = false;
+        String s = SVGUtilities.getChainableAttributeNS
+            (filterDefElement, null, SVG_PRIMITIVE_UNITS_ATTRIBUTE, ctx);
+        if (s.length() == 0) {
+            coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
+        } else {
+                coordSystemType = SVGUtilities.parseCoordinateSystem
+                    (filterDefElement, SVG_PRIMITIVE_UNITS_ATTRIBUTE, s);
+        }
+        
+        if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {
+            isBBox = true;
+            at = SVGUtilities.toObjectBBox(at, filteredNode);
+        }
+        
         // get filter primitive chain region
-        Rectangle2D primitiveRegion
+        Rectangle2D primitiveRegionUserSpace
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
                                                         filteredNode,
                                                         defaultRegion,
                                                         filterRegion,
                                                         ctx);
+        Rectangle2D primitiveRegion = primitiveRegionUserSpace;
 
-        Filter filter = null;
-        // try to load the image as an svg document
-        SVGDocument svgDoc = (SVGDocument)filterElement.getOwnerDocument();
-        ParsedURL purl;
-        URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
-        if (baseURL != null)
-            purl = new ParsedURL(baseURL.toString(), uriStr);
-        else
-            purl = new ParsedURL(uriStr);
-
-        // try to load an SVG document
-        DocumentLoader loader = ctx.getDocumentLoader();
-        URIResolver resolver = new URIResolver(svgDoc, loader);
-        boolean toBBoxNeeded = false;
-        try {
-            Element refElement = null;
-            Node n = resolver.getNode(purl.toString(), filterElement);
-            if (n.getNodeType() == n.DOCUMENT_NODE) {
-                refElement = ((SVGDocument)n).getRootElement();
-            } else if (n.getNodeType() == Node.ELEMENT_NODE) {
-                refElement = (Element)n;
-                toBBoxNeeded = true;
-            } else {
-                throw new BridgeException
-                    (filterElement, ERR_URI_IMAGE_INVALID,
-                     new Object[] {uriStr});
+        if (isBBox) {
+            try {
+                AffineTransform ati = at.createInverse();
+                primitiveRegion = ati.createTransformedShape(primitiveRegion).getBounds2D();
+            } catch (NoninvertibleTransformException nite) {
+                // Should never happen, seem above
+                throw new Error();
             }
-            filter = createSVGFeImage
-                (ctx, primitiveRegion, refElement, toBBoxNeeded, filterElement, filteredNode);
-        } catch (BridgeException ex) {
-            throw ex;
-        } catch (SecurityException ex) {
-            throw new BridgeException(filterElement, ERR_URI_UNSECURE,
-                                      new Object[] {uriStr});
-        } catch (Exception ex) {/* Nothing to do */ }
-
-        if (filter == null) {
-            // try to load the image as a raster image (JPG or PNG)
-            filter = createRasterFeImage(ctx, primitiveRegion, purl);
         }
 
-        if (filter == null) {
-            throw new BridgeException(filterElement, ERR_URI_IMAGE_INVALID,
-                                      new Object[] {"xlink:href", uriStr});
-        }
+        contentElement.setAttributeNS(null, SVG_X_ATTRIBUTE, "" + primitiveRegion.getX());
+        contentElement.setAttributeNS(null, SVG_Y_ATTRIBUTE, "" + primitiveRegion.getY());
+        contentElement.setAttributeNS(null, SVG_WIDTH_ATTRIBUTE, "" + primitiveRegion.getWidth());
+        contentElement.setAttributeNS(null, SVG_HEIGHT_ATTRIBUTE, "" + primitiveRegion.getHeight());
+        
+        // System.err.println(">>>>>>>>>>>> primitiveRegion : " + primitiveRegion);
+        // System.err.println(">>>>>>>>>>>> at              : " + at);
+
+        GraphicsNode node = ctx.getGVTBuilder().build(ctx, proxyElement);
+        Filter filter = node.getGraphicsNodeRable(true);
+        
+        filter = new AffineRable8Bit(filter, at);
 
         // handle the 'color-interpolation-filters' property
         handleColorInterpolationFilters(filter, filterElement);
 
-        filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);
+        filter = new PadRable8Bit(filter, primitiveRegionUserSpace, PadMode.ZERO_PAD);
 
         // update the filter Map
         updateFilterMap(filterElement, filter, filterMap);
