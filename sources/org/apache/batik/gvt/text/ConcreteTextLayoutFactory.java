@@ -65,14 +65,14 @@ public class ConcreteTextLayoutFactory implements TextLayoutFactory {
                                                 FontRenderContext frc) {
         Set keys = aci.getAllAttributeKeys();
         Set glyphPositionKeys = new HashSet();
-        //glyphPositionKeys.add(
-        //      GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT);
+        glyphPositionKeys.add(
+              GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT);
         glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.DX);
         glyphPositionKeys.add(GVTAttributedCharacterIterator.TextAttribute.DY);
         glyphPositionKeys.add(
                 GVTAttributedCharacterIterator.TextAttribute.ROTATION);
         glyphPositionKeys.retainAll(keys);
-        if (true) { //        if (glyphPositionKeys.isEmpty()) {
+        if (glyphPositionKeys.isEmpty()) {
             return new TextLayoutAdapter(new TextLayout(aci, frc), offset, aci);
         } else {
             char ch = aci.first();

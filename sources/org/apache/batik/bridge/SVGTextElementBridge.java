@@ -585,24 +585,14 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                     GVTAttributedCharacterIterator.TextAttribute.DX,
                           new Float(Float.NaN), 0, asLength);
 
-                int i=0;
-                float cx = 0f;
-                for (int n=0; n<indexMap.length && indexMap[n] >= 0; ++n) {
-                    boolean hasAnother = false;
-                    while ((indexMap[n] != i) && (i<x.length)) {
-                        cx += x[i];
-                        ++i;
-                        hasAnother = true;
+                for (int i=0; i<asLength; ++i) {
+                    if (i < x.length) {
+                        as.addAttribute(
+                            GVTAttributedCharacterIterator.TextAttribute.DX,
+                                new Float(x[i]), i, i+1);
                     }
-                    if ((i<x.length) && (indexMap[n] == i)) {
-                        cx += x[i];
-                        hasAnother = true;
-                    }
-                    if (hasAnother) as.addAttribute(
-                          GVTAttributedCharacterIterator.TextAttribute.DX,
-                                    new Float(cx), n, n+1);
-                    cx = 0f;
                 }
+
             }
             // parse the y attribute, (default is 0)
             s = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
@@ -616,24 +606,12 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                     GVTAttributedCharacterIterator.TextAttribute.DY,
                           new Float(Float.NaN), 0, asLength);
 
-                int i=0;
-                float cy = 0f;
-                for (int n=0; n<indexMap.length && indexMap[n] >= 0; ++n) {
-                    boolean hasAnother = false;
-                    while ((indexMap[n] != i) && (i<y.length)) {
-                        cy += y[i];
-                        ++i;
-                        hasAnother = true;
+                for (int i=0; i<asLength; ++i) {
+                    if (i < y.length) {
+                        as.addAttribute(
+                            GVTAttributedCharacterIterator.TextAttribute.DY,
+                                new Float(y[i]), i, i+1);
                     }
-                    if ((i<y.length) && (indexMap[n] == i)) {
-                        cy += y[i];
-                        hasAnother = true;
-                    }
-                    if (hasAnother) as.addAttribute(
-                           GVTAttributedCharacterIterator.TextAttribute.DY,
-                                    new Float(cy), n, n+1);
-                    //System.out.println("Setting DY to "+cy+" at "+n);
-                    cy = 0f;
                 }
         }
     }
