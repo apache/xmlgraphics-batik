@@ -50,7 +50,6 @@ public class URIResolver {
      */
     public URIResolver(SVGDocument doc, DocumentLoader dl) {
         document = (SVGOMDocument)doc;
-        documentURI = doc.getURL();
         documentLoader = dl;
     }
 
@@ -76,17 +75,27 @@ public class URIResolver {
      */
     public Node getNode(String uri)
         throws MalformedURLException, IOException {
+
+        if (uri.startsWith("#")) {
+            return document.getElementById(uri.substring(1));
+        }
+
+        if (documentURI == null)
+            documentURI = document.getURL();
+
         if (documentURI.equals(uri)) {
             return document;
         }
         if (uri.startsWith(documentURI) &&
             uri.length() > documentURI.length() + 1 &&
-                uri.charAt(documentURI.length()) == '#') {
+            uri.charAt(documentURI.length()) == '#') {
             uri = uri.substring(documentURI.length());
         }
+
         if (uri.startsWith("#")) {
             return document.getElementById(uri.substring(1));
         }
+
         URL url = new URL(((SVGOMDocument)document).getURLObject(), uri);
         Document doc = documentLoader.loadDocument(url.toString());
         documentLoader.dispose(doc);

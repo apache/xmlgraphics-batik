@@ -13,6 +13,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Paint;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
@@ -20,6 +21,9 @@ import java.awt.geom.Rectangle2D;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.batik.css.AbstractViewCSS;
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
@@ -162,6 +166,156 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
         return CSS_LINEARRGB_VALUE.equals(v.getStringValue())
             ? MultipleGradientPaint.LINEAR_RGB
             : MultipleGradientPaint.SRGB;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    // 'color-rendering', 'text-rendering', 'image-rendering', 'shape-rendering'
+    /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns the rendering hints for the specified shape element or null
+     * none has been specified. Checks the 'shape-rendering' property.
+     *
+     * @param e the element
+     */
+    public static Map convertShapeRendering(Element e) {
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        CSSPrimitiveValue v = (CSSPrimitiveValue)
+            decl.getPropertyCSSValueInternal(CSS_SHAPE_RENDERING_PROPERTY);
+        String s = v.getStringValue();
+        if (s.charAt(0) == 'a') { // auto
+            return null;
+        }
+        Map hints = new HashMap();
+        switch(s.charAt(0)) {
+        case 'o': // optimizeSpeed
+            hints.put(RenderingHints.KEY_RENDERING,
+                      RenderingHints.VALUE_RENDER_SPEED);
+            hints.put(RenderingHints.KEY_ANTIALIASING,
+                      RenderingHints.VALUE_ANTIALIAS_OFF);
+            break;
+        case 'c': // crispEdges
+            hints.put(RenderingHints.KEY_RENDERING,
+                      RenderingHints.VALUE_RENDER_DEFAULT);
+            hints.put(RenderingHints.KEY_ANTIALIASING,
+                      RenderingHints.VALUE_ANTIALIAS_OFF);
+            break;
+        case 'g': // geometricPrecision
+            hints.put(RenderingHints.KEY_RENDERING,
+                      RenderingHints.VALUE_RENDER_QUALITY);
+            hints.put(RenderingHints.KEY_ANTIALIASING,
+                      RenderingHints.VALUE_ANTIALIAS_ON);
+            break;
+        }
+        return hints;
+    }
+
+    /**
+     * Returns the rendering hints for the specified text element or null
+     * none has been specified. Checks the 'text-rendering' property.
+     *
+     * @param e the element
+     */
+    public static Map convertTextRendering(Element e) {
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        CSSPrimitiveValue v = (CSSPrimitiveValue)
+            decl.getPropertyCSSValueInternal(CSS_TEXT_RENDERING_PROPERTY);
+        String s = v.getStringValue();
+        if (s.charAt(0) == 'a') { // auto
+            return null;
+        }
+        Map hints = new HashMap();
+        switch(s.charAt(9)) {
+        case 'S': // optimizeSpeed
+            hints.put(RenderingHints.KEY_RENDERING,
+                      RenderingHints.VALUE_RENDER_SPEED);
+            hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,
+                      RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
+                      RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            break;
+        case 'L': // optimizeLegibility
+            hints.put(RenderingHints.KEY_RENDERING,
+                      RenderingHints.VALUE_RENDER_QUALITY);
+            hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,
+                      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
+                      RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+            break;
+        case 'c': // geometricPrecision
+            hints.put(RenderingHints.KEY_RENDERING,
+                      RenderingHints.VALUE_RENDER_QUALITY);
+            hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,
+                      RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+            hints.put(RenderingHints.KEY_FRACTIONALMETRICS,
+                      RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+            break;
+        }
+        return hints;
+    }
+
+    /**
+     * Returns the rendering hints for the specified image element or null
+     * none has been specified. Checks the 'image-rendering' property.
+     *
+     * @param e the element
+     */
+    public static Map convertImageRendering(Element e) {
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        CSSPrimitiveValue v = (CSSPrimitiveValue)
+            decl.getPropertyCSSValueInternal(CSS_IMAGE_RENDERING_PROPERTY);
+        String s = v.getStringValue();
+        if (s.charAt(0) == 'a') { // auto
+            return null;
+        }
+        Map hints = new HashMap();
+        switch(s.charAt(9)) {
+        case 'S': // optimizeSpeed
+            hints.put(RenderingHints.KEY_RENDERING,
+                      RenderingHints.VALUE_RENDER_SPEED);
+            hints.put(RenderingHints.KEY_INTERPOLATION,
+                      RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            break;
+        case 'Q': // optimizeQuality
+            hints.put(RenderingHints.KEY_RENDERING,
+                      RenderingHints.VALUE_RENDER_QUALITY);
+            hints.put(RenderingHints.KEY_INTERPOLATION,
+                      RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            break;
+        }
+        return hints;
+    }
+
+    /**
+     * Returns the rendering hints for the specified element or null
+     * none has been specified. Checks the 'color-rendering' property.
+     *
+     * @param e the element
+     */
+    public static Map convertColorRendering(Element e) {
+        CSSOMReadOnlyStyleDeclaration decl = getComputedStyle(e);
+        CSSPrimitiveValue v = (CSSPrimitiveValue)
+            decl.getPropertyCSSValueInternal(CSS_COLOR_RENDERING_PROPERTY);
+        String s = v.getStringValue();
+        if (s.charAt(0) == 'a') { // auto
+            return null;
+        }
+        Map hints = new HashMap();
+        switch(v.getStringValue().charAt(9)) {
+        case 'S': // optimizeSpeed
+            hints.put(RenderingHints.KEY_COLOR_RENDERING,
+                      RenderingHints.VALUE_COLOR_RENDER_SPEED);
+            hints.put(RenderingHints.KEY_ALPHA_INTERPOLATION,
+                      RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+            break;
+        case 'Q': // optimizeQuality
+            hints.put(RenderingHints.KEY_COLOR_RENDERING,
+                      RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+            hints.put(RenderingHints.KEY_ALPHA_INTERPOLATION,
+                      RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+            break;
+        }
+        return hints;
     }
 
     /////////////////////////////////////////////////////////////////////////

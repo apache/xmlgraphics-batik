@@ -8,6 +8,9 @@
 
 package org.apache.batik.bridge;
 
+import java.awt.RenderingHints;
+import java.util.Map;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
@@ -39,6 +42,21 @@ public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
         ShapeNode shapeNode = (ShapeNode)super.createGraphicsNode(ctx, e);
         // delegates to subclasses the shape construction
         buildShape(ctx, e, shapeNode);
+        // 'shape-rendering' and 'color-rendering'
+        Map shapeHints = CSSUtilities.convertShapeRendering(e);
+        Map colorHints = CSSUtilities.convertColorRendering(e);
+        if (shapeHints != null || colorHints != null) {
+            RenderingHints hints;
+            if (shapeHints == null) {
+                hints = new RenderingHints(colorHints);
+            } else if (colorHints == null) {
+                hints = new RenderingHints(shapeHints);
+            } else {
+                hints = new RenderingHints(shapeHints);
+                hints.putAll(colorHints);
+            }
+            shapeNode.setRenderingHints(hints);
+        }
         return shapeNode;
     }
 
