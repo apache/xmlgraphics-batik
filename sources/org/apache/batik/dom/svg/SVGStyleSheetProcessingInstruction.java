@@ -21,6 +21,10 @@ import org.apache.batik.dom.StyleSheetProcessingInstruction;
 
 import org.apache.batik.dom.util.HashTable;
 
+import org.apache.batik.util.ParsedURL;
+
+import org.w3c.css.sac.InputSource;
+
 import org.w3c.dom.Node;
 
 /**
@@ -80,21 +84,24 @@ public class SVGStyleSheetProcessingInstruction
             String type = (String)attrs.get("type");
 
             if ("text/css".equals(type)) {
+                String title     = (String)attrs.get("title");
+                String media     = (String)attrs.get("media");
+                String href      = (String)attrs.get("href");
+                String alternate = (String)attrs.get("alternate");
+                SVGOMDocument doc = (SVGOMDocument)getOwnerDocument();
+                URL durl = doc.getURLObject();
+                URL burl = durl;
                 try {
-                    String title     = (String)attrs.get("title");
-                    String media     = (String)attrs.get("media");
-                    String href      = (String)attrs.get("href");
-                    String alternate = (String)attrs.get("alternate");
-                    SVGOMDocument doc = (SVGOMDocument)getOwnerDocument();
-                    URL url = doc.getURLObject();
-                    CSSEngine e = doc.getCSSEngine();
-                    styleSheet = e.parseStyleSheet(new URL(url, href), media);
-                    styleSheet.setAlternate("yes".equals(alternate));
-                    styleSheet.setTitle(title);
-                } catch (MalformedURLException e) {
-                    // !!! TODO exception handling.
-                    e.printStackTrace();
+                    burl = new URL(durl, href);
+                } catch (Exception ex) {
                 }
+                CSSEngine e = doc.getCSSEngine();
+                styleSheet = e.parseStyleSheet
+                    (new InputSource(new ParsedURL(durl, href).toString()),
+                     burl,
+                     media);
+                styleSheet.setAlternate("yes".equals(alternate));
+                styleSheet.setTitle(title);
             }
         }
         return styleSheet;
