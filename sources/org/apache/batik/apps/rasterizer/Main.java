@@ -57,6 +57,8 @@ public class Main {
         out.println("usage: rasterizer [options] [@files]");
         out.println("-d <directory>   Destination directory for output files");
         out.println("-m <mimetype>    Mime type for output files");
+        out.println("-w <width>       Width of the output image");
+        out.println("-h <height>      Height of the output image");
     }
 
     public static void main(String [] args) {
@@ -64,6 +66,9 @@ public class Main {
         String directory = null;
         List svgFiles = new LinkedList();
         int i=0;
+        float width = Float.NaN;
+        float height = Float.NaN;
+
         while (i < args.length) {
             if (args[i].equals("-d")) {
                 if (i+1 < args.length) {
@@ -82,6 +87,36 @@ public class Main {
                     continue;
                 } else {
                     error("option -m requires an argument");
+                    usage(System.err);
+                    System.exit(1);
+                }
+            } else if (args[i].equals("-w")) {
+                if (i+1 < args.length) {
+                    i++;
+                    try{
+                        width = Float.parseFloat(args[i++]);
+                    }catch(NumberFormatException e){
+                        usage(System.err);
+                        System.exit(1);
+                    }
+                    continue;
+                } else {
+                    error("option -w requires an argument");
+                    usage(System.err);
+                    System.exit(1);
+                }
+            } else if (args[i].equals("-h")) {
+                if (i+1 < args.length) {
+                    i++;
+                    try{
+                        width = Float.parseFloat(args[i++]);
+                    }catch(NumberFormatException e){
+                        usage(System.err);
+                        System.exit(1);
+                    }
+                    continue;
+                } else {
+                    error("option -h requires an argument");
                     usage(System.err);
                     System.exit(1);
                 }
@@ -112,6 +147,17 @@ public class Main {
             error("No transcoder found for mime type : "+mimeType);
             System.exit(1);
         }
+
+        if(!Float.isNaN(width)){
+            t.addTranscodingHint(ImageTranscoder.KEY_WIDTH,
+                                 new Float(width));
+        }
+        
+        if(!Float.isNaN(height)){
+            t.addTranscodingHint(ImageTranscoder.KEY_HEIGHT,
+                                 new Float(height));
+        }
+
         for (Iterator iter = svgFiles.iterator(); iter.hasNext();) {
             String s = (String) iter.next();
             File f = new File(s);
