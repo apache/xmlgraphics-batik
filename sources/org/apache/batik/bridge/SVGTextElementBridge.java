@@ -75,6 +75,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
 
     protected final static Integer ZERO = new Integer(0);
 
+    protected AttributedString layoutedText;
+
     /**
      * Constructs a new bridge for the &lt;text> element.
      */
@@ -172,10 +174,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
                                   Element e,
                                   GraphicsNode node) {
         e.normalize();
-
         AttributedString as = buildAttributedString(ctx, e);
         addGlyphPositionAttributes(as, e, ctx);
-        ((TextNode)node).setAttributedCharacterIterator(as.getIterator());
+        if (ctx.isDynamic()) {
+            layoutedText = new AttributedString(as.getIterator());
+        }
 
         // now add the painting attributes, cannot do it before this because
         // some of the Paint objects need to know the bounds of the text
@@ -198,10 +201,111 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
     // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
+     * This flag bit indicates if a new ACI has been created in
+     * response to a CSSEngineEvent.
+     * Avoid creating one ShapePainter per CSS property change
+     */
+    private boolean hasNewACI;
+
+    /**
      * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
     public void handleDOMAttrModifiedEvent(MutationEvent evt) {
         super.handleDOMAttrModifiedEvent(evt);
+    }
+
+    /**
+     * Invoked when CSS properties have changed on an element.
+     *
+     * @param evt the CSSEngine event that describes the update
+     */
+    public void handleCSSEngineEvent(CSSEngineEvent evt) {
+        hasNewACI = false;
+        int [] properties = evt.getProperties();
+        // first try to find CSS properties that change the layout
+        for (int i=0; i < properties.length; ++i) {
+            switch(properties[i]) {
+            case SVGCSSEngine.TEXT_ANCHOR_INDEX:
+            case SVGCSSEngine.FONT_SIZE_INDEX:
+            case SVGCSSEngine.FONT_WEIGHT_INDEX:
+            case SVGCSSEngine.FONT_STYLE_INDEX:
+            case SVGCSSEngine.FONT_STRETCH_INDEX:
+            case SVGCSSEngine.FONT_FAMILY_INDEX:
+            case SVGCSSEngine.BASELINE_SHIFT_INDEX:
+            case SVGCSSEngine.UNICODE_BIDI_INDEX:
+            case SVGCSSEngine.DIRECTION_INDEX:
+            case SVGCSSEngine.WRITING_MODE_INDEX:
+            case SVGCSSEngine.GLYPH_ORIENTATION_VERTICAL_INDEX:
+            case SVGCSSEngine.LETTER_SPACING_INDEX:
+            case SVGCSSEngine.WORD_SPACING_INDEX:
+            case SVGCSSEngine.KERNING_INDEX: {
+                if (!hasNewACI) {
+                    hasNewACI = true;
+                    AttributedString as = buildAttributedString(ctx, e);
+                    addGlyphPositionAttributes(as, e, ctx);
+                    layoutedText = new AttributedString(as.getIterator());
+                    TextNode tn = (TextNode)node;
+                    TextDecoration textDecoration = 
+                        getTextDecoration(e, tn, new TextDecoration(), ctx);
+                    addPaintAttributes(as, e, tn, textDecoration, ctx);
+                    tn.setAttributedCharacterIterator(as.getIterator());
+                }
+                break;
+            }
+            }
+        }
+        // go for the other CSS properties
+        super.handleCSSEngineEvent(evt);
+    }
+
+    /**
+     * Invoked for each CSS property that has changed.
+     */
+    protected void handleCSSPropertyChanged(int property) {
+        switch(property) {
+        case SVGCSSEngine.FILL_INDEX:
+        case SVGCSSEngine.FILL_OPACITY_INDEX:
+        case SVGCSSEngine.STROKE_INDEX:
+        case SVGCSSEngine.STROKE_OPACITY_INDEX:
+        case SVGCSSEngine.STROKE_WIDTH_INDEX:
+        case SVGCSSEngine.STROKE_LINECAP_INDEX:
+        case SVGCSSEngine.STROKE_LINEJOIN_INDEX:
+        case SVGCSSEngine.STROKE_MITERLIMIT_INDEX:
+        case SVGCSSEngine.STROKE_DASHARRAY_INDEX:
+        case SVGCSSEngine.STROKE_DASHOFFSET_INDEX:
+        case SVGCSSEngine.TEXT_DECORATION_INDEX: {
+            if (!hasNewACI) {
+                hasNewACI = true;
+                System.out.println(node+" "+property);
+                AttributedString as = 
+                    new AttributedString(layoutedText.getIterator());
+                TextNode tn = (TextNode)node;
+                TextDecoration textDecoration = 
+                    getTextDecoration(e, tn, new TextDecoration(), ctx);
+                addPaintAttributes(as, e, tn, textDecoration, ctx);
+                tn.setAttributedCharacterIterator(as.getIterator());
+            }
+            break;
+        }
+        case SVGCSSEngine.TEXT_RENDERING_INDEX: {
+            RenderingHints hints = node.getRenderingHints();
+            hints = CSSUtilities.convertTextRendering(e, hints);
+            if (hints != null) {
+                node.setRenderingHints(hints);
+            }
+            break;
+        }
+        case SVGCSSEngine.COLOR_RENDERING_INDEX: {
+            RenderingHints hints = node.getRenderingHints();
+            hints = CSSUtilities.convertColorRendering(e, hints);
+            if (hints != null) {
+                node.setRenderingHints(hints);
+            }
+            break;
+        } 
+        default:
+            super.handleCSSPropertyChanged(property);
+        }
     }
 
     // -----------------------------------------------------------------------
