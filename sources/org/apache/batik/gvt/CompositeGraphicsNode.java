@@ -470,11 +470,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         checkRange(index);
         GraphicsNode node = (GraphicsNode) o;
         {
-            Rectangle2D     rgn = node.getBounds();
-            AffineTransform at  = node.getTransform();
-            if ((rgn != null) && (at != null))
-                rgn = at.createTransformedShape(rgn).getBounds2D();
-            fireGraphicsNodeChangeStarted(rgn,rgn);
+            fireGraphicsNodeChangeStarted(node);
         }
         // Reparent the graphics node and tidy up the tree's state
         if (node.getParent() != null) {
@@ -515,11 +511,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         }
         GraphicsNode node = (GraphicsNode) o;
         {
-            Rectangle2D     rgn = node.getBounds();
-            AffineTransform at  = node.getTransform();
-            if ((rgn != null) && (at != null))
-                rgn = at.createTransformedShape(rgn).getBounds2D();
-            fireGraphicsNodeChangeStarted(rgn,rgn);
+            fireGraphicsNodeChangeStarted(node);
         }
         // Reparent the graphics node and tidy up the tree's state
         if (node.getParent() != null) {
@@ -565,11 +557,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         }
         GraphicsNode node = (GraphicsNode) o;
         {
-            Rectangle2D     rgn = node.getBounds();
-            AffineTransform at  = node.getTransform();
-            if ((rgn != null) && (at != null))
-                rgn = at.createTransformedShape(rgn).getBounds2D();
-            fireGraphicsNodeChangeStarted(rgn,rgn);
+            fireGraphicsNodeChangeStarted(node);
         }
         // Reparent the graphics node and tidy up the tree's state
         if (node.getParent() != null) {
@@ -646,11 +634,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         checkRange(index);
         GraphicsNode oldNode = children[index];
         {
-            Rectangle2D     rgn = oldNode.getBounds();
-            AffineTransform at  = oldNode.getTransform();
-            if ((rgn != null) && (at != null))
-                rgn = at.createTransformedShape(rgn).getBounds2D();
-            fireGraphicsNodeChangeStarted(rgn,rgn);
+            fireGraphicsNodeChangeStarted(oldNode);
         }
         // Remove the node at the specified index
         modCount++;

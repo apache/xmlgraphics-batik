@@ -72,8 +72,7 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             
             Rectangle2D srcORgn = (Rectangle2D)fromBounds.remove(gnWRef);
 
-            Rectangle2D srcNRgn = (Rectangle2D)toBounds.remove(gnWRef);
-            if (srcNRgn == null) srcNRgn = gn.getBounds();
+            Rectangle2D srcNRgn = gn.getBounds();
             AffineTransform nat = gn.getTransform();
 
             if (nat != null){
@@ -149,6 +148,50 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
     }
 
     /**
+     * This returns the dirty region for gn in the coordinate system
+     * given by <code>at</at>.
+     * @param gn Node tree to return dirty region for.
+     * @param at Affine transform to coordinate space to accumulate
+     *           dirty regions in.
+     */
+    public Rectangle2D getNodeDirtyRegion(GraphicsNode gn, 
+                                          AffineTransform at) {
+        WeakReference gnWRef = gn.getWeakReference();
+        AffineTransform nat = (AffineTransform)dirtyNodes.get(gnWRef);
+        if (nat == null) nat = gn.getTransform();
+        if (nat != null) {
+            at = new AffineTransform(at);
+            at.concatenate(nat);
+        }
+
+        Rectangle2D ret = null;
+        if (gn instanceof CompositeGraphicsNode) {
+            CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
+            Iterator iter = cgn.iterator();
+
+            while (iter.hasNext()) {
+                GraphicsNode childGN = (GraphicsNode)iter.next();
+                Rectangle2D r2d = getNodeDirtyRegion(childGN, at);
+                if (r2d != null) {
+                    if (ret == null) ret = r2d;
+                    else ret = ret.createUnion(r2d);
+                }
+            }
+        } else {
+            ret = (Rectangle2D)fromBounds.remove(gnWRef);
+            if (ret == null) 
+                ret = gn.getBounds();
+            if (ret != null)
+                ret = at.createTransformedShape(ret).getBounds2D();
+        }
+        return ret;
+    }
+
+    public Rectangle2D getNodeDirtyRegion(GraphicsNode gn) {
+        return getNodeDirtyRegion(gn, new AffineTransform());
+    }
+
+    /**
      * Recieves notification of a change to a GraphicsNode.
      * @param gn The graphics node that is changing.
      */
@@ -171,27 +214,24 @@ public class UpdateTracker extends GraphicsNodeChangeAdapter {
             dirtyNodes.put(gnWRef, at);
         }
 
-        Rectangle2D r2d = gnce.getFrom();
-        if (r2d == null) 
-            r2d = gn.getBounds();
-        if (r2d != null) {
-            Rectangle2D rgn = (Rectangle2D)fromBounds.remove(gnWRef);
-            if (rgn != null)
-                r2d = r2d.createUnion(rgn);
-            else
-                r2d = (Rectangle2D)r2d.clone();
-            fromBounds.put(gnWRef, r2d);
+        GraphicsNode chngSrc = gnce.getChangeSrc();
+        Rectangle2D rgn;
+        if (chngSrc != null) {
+            // A child node is moving in the tree so assign it's dirty
+            // regions to this node before it moves.
+            rgn = getNodeDirtyRegion(chngSrc);
+        } else {
+            // Otherwise just use gn's dirty region.
+            rgn = gn.getBounds();
         }
-
-        r2d = gnce.getTo();
-        if (r2d != null) {
-            Rectangle2D rgn = (Rectangle2D)toBounds.remove(gnWRef);
-            if (rgn != null)
-                r2d = r2d.createUnion(rgn);
-            else
-                r2d = (Rectangle2D)r2d.clone();
-            toBounds.put(gnWRef, r2d);
+        // Add this dirty region to any existing dirty region.
+        Rectangle2D r2d = (Rectangle2D)fromBounds.remove(gnWRef);
+        if (rgn != null) {
+            if (r2d != null) r2d = r2d.createUnion(rgn);
+            else             r2d = rgn;
         }
+        // Store the bounds for the future.
+        fromBounds.put(gnWRef, r2d);
     }
 
     /**

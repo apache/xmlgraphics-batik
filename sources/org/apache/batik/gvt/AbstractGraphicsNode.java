@@ -596,13 +596,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     //
     // Event support methods
     //
-    public void fireGraphicsNodeChangeStarted(Rectangle2D from,
-                                              Rectangle2D to) {
+    public void fireGraphicsNodeChangeStarted(GraphicsNode changeSrc) {
         if (changeStartedEvent == null)
             changeStartedEvent = new GraphicsNodeChangeEvent
                 (this, GraphicsNodeChangeEvent.CHANGE_STARTED);
-        changeStartedEvent.setFrom(from);
-        changeStartedEvent.setTo(to);
+        changeStartedEvent.setChangeSrc(changeSrc);
         fireGraphicsNodeChangeStarted(changeStartedEvent);
     }
 
@@ -614,8 +612,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             changeStartedEvent = new GraphicsNodeChangeEvent
                 (this, GraphicsNodeChangeEvent.CHANGE_STARTED);
         else {
-            changeStartedEvent.setFrom(null);
-            changeStartedEvent.setTo(null);
+            changeStartedEvent.setChangeSrc(null);
         }
         fireGraphicsNodeChangeStarted(changeStartedEvent);
     }
