@@ -607,109 +607,14 @@ public class JSVGComponent extends JGVTComponent {
         }
 
         if (documentLoader != null) {
-            documentLoader.addSVGDocumentLoaderListener
-                (new SVGDocumentLoaderAdapter() {
-                        SVGDocumentLoader sdl = documentLoader;
-                        public void documentLoadingCompleted
-                            (SVGDocumentLoaderEvent e) { install(); }
-                        public void documentLoadingCancelled
-                            (SVGDocumentLoaderEvent e) { install(); }
-                        public void documentLoadingFailed
-                            (SVGDocumentLoaderEvent e) { install(); }
-                        public void install() {
-                            // Remove ourselves from the doc loader,
-                            // and install the new document.
-                            sdl.removeSVGDocumentLoaderListener(this);
-                            synchronized (JSVGComponent.this) {
-                                EventQueue.invokeLater(afterStopRunnable);
-                                afterStopRunnable = null;
-                            }
-                        }
-                    });
             stopProcessing();
         } else if (gvtTreeBuilder != null) {
-            gvtTreeBuilder.addGVTTreeBuilderListener
-                (new GVTTreeBuilderAdapter() {
-                        GVTTreeBuilder gtb = gvtTreeBuilder;
-                        public void gvtBuildCompleted
-                            (GVTTreeBuilderEvent e) { install(); }
-                        public void gvtBuildCancelled
-                            (GVTTreeBuilderEvent e) { install(); }
-                        public void gvtBuildFailed
-                            (GVTTreeBuilderEvent e) { install(); }
-                        public void install() {
-                            // Remove ourselves from the old tree builder,
-                            // and install the new document.
-                            gtb.removeGVTTreeBuilderListener(this);
-                            synchronized (JSVGComponent.this) {
-                                EventQueue.invokeLater(afterStopRunnable);
-                                afterStopRunnable = null;
-                            }
-                        }
-                    });
             stopProcessing();
         } else if (updateManager != null) {
-            // We have to wait for the update manager to stop
-            // before we install the new document otherwise bad
-            // things can happen with the update manager.
-            addUpdateManagerListener(new UpdateManagerAdapter () {
-                    public void managerStopped(UpdateManagerEvent e) {
-                        // Remove ourselves and install the new document.
-                        JSVGComponent.this.removeUpdateManagerListener(this);
-                        synchronized (JSVGComponent.this) {
-                            EventQueue.invokeLater(afterStopRunnable);
-                            afterStopRunnable = null;
-                        }
-                    }
-                });
             stopProcessing();
         } else if (nextUpdateManager != null) {
-            // We have to wait for the rendering to stop
-            // before we install the new document.
-            gvtTreeRenderer.addGVTTreeRendererListener
-                (new GVTTreeRendererAdapter() {
-                        GVTTreeRenderer gtr = gvtTreeRenderer;
-                        public void gvtRenderingCompleted
-                            (GVTTreeRendererEvent e) { install(); }
-                        public void gvtRenderingCancelled
-                            (GVTTreeRendererEvent e) { install(); }
-                        public void gvtRenderingFailed
-                            (GVTTreeRendererEvent e) { install(); }
-
-                        public void install() {
-                            // Remove ourselves from the old update manger,
-                            // and install the new document.
-                            gtr.removeGVTTreeRendererListener(this);
-                            synchronized (JSVGComponent.this) {
-                                EventQueue.invokeLater(afterStopRunnable);
-                                afterStopRunnable = null;
-                            }
-                        }
-                    });
             stopProcessing();
         } else if (svgLoadEventDispatcher != null) {
-            // We have to wait for the onload dispatch to stop
-            // before we install the new document.
-            svgLoadEventDispatcher.addSVGLoadEventDispatcherListener
-                (new SVGLoadEventDispatcherAdapter() {
-                        SVGLoadEventDispatcher sled = svgLoadEventDispatcher;
-                        public void svgLoadEventDispatchCompleted
-                            (SVGLoadEventDispatcherEvent e) { install(); }
-                        public void svgLoadEventDispatchCancelled
-                            (SVGLoadEventDispatcherEvent e) { install(); }
-                        public void svgLoadEventDispatchFailed
-                            (SVGLoadEventDispatcherEvent e) { install(); }
-
-                        public void install() {
-                            // Remove ourselves from the old onload dispacher
-                            // and install the new document.
-                            sled.removeSVGLoadEventDispatcherListener(this);
-                            synchronized (JSVGComponent.this) {
-                                EventQueue.invokeLater(afterStopRunnable);
-                                afterStopRunnable = null;
-                            }
-                        }
-                    });
             stopProcessing();
         }  else {
             stopProcessing();
@@ -1288,6 +1193,12 @@ public class JSVGComponent extends JGVTComponent {
             }
 
             documentLoader = null;
+            if (afterStopRunnable != null) {
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
+                
             setSVGDocument(e.getSVGDocument());
         }
 
@@ -1301,6 +1212,11 @@ public class JSVGComponent extends JGVTComponent {
             }
 
             documentLoader = null;
+            if (afterStopRunnable != null) {
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
 
             if (nextGVTTreeBuilder != null) {
                 startGVTTreeBuilder();
@@ -1321,6 +1237,11 @@ public class JSVGComponent extends JGVTComponent {
             userAgent.displayError(((SVGDocumentLoader)e.getSource()).
                                    getException());
 
+            if (afterStopRunnable != null) {
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
             if (nextGVTTreeBuilder != null) {
                 startGVTTreeBuilder();
                 return;
@@ -1349,6 +1270,13 @@ public class JSVGComponent extends JGVTComponent {
 
             loader = null;
             gvtTreeBuilder = null;
+
+            if (afterStopRunnable != null) {
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
+
             if (nextDocumentLoader != null) {
                 startDocumentLoader();
                 return;
@@ -1399,6 +1327,13 @@ public class JSVGComponent extends JGVTComponent {
 
             loader = null;
             gvtTreeBuilder = null;
+
+            if (afterStopRunnable != null) {
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
+
             if (nextDocumentLoader != null) {
                 startDocumentLoader();
                 return;
@@ -1418,6 +1353,13 @@ public class JSVGComponent extends JGVTComponent {
 
             loader = null;
             gvtTreeBuilder = null;
+
+            if (afterStopRunnable != null) {
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
+
             if (nextDocumentLoader != null) {
                 startDocumentLoader();
                 return;
@@ -1456,6 +1398,15 @@ public class JSVGComponent extends JGVTComponent {
             nextUpdateManager = svgLoadEventDispatcher.getUpdateManager();
             svgLoadEventDispatcher = null;
 
+            if (afterStopRunnable != null) {
+                nextUpdateManager.interrupt();
+                nextUpdateManager = null;
+            
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
+
             if (nextGVTTreeBuilder != null) {
                 nextUpdateManager.interrupt();
                 nextUpdateManager = null;
@@ -1486,6 +1437,12 @@ public class JSVGComponent extends JGVTComponent {
             nextUpdateManager.interrupt();
             nextUpdateManager = null;
             
+            if (afterStopRunnable != null) {
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
+
             if (nextGVTTreeBuilder != null) {
                 startGVTTreeBuilder();
                 return;
@@ -1506,6 +1463,12 @@ public class JSVGComponent extends JGVTComponent {
 
             nextUpdateManager.interrupt();
             nextUpdateManager = null;
+
+            if (afterStopRunnable != null) {
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
 
             if (nextGVTTreeBuilder != null) {
                 startGVTTreeBuilder();
@@ -1536,6 +1499,16 @@ public class JSVGComponent extends JGVTComponent {
          */
         public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
             super.gvtRenderingCompleted(e);
+
+            if (afterStopRunnable != null) {
+                if (nextUpdateManager != null) {
+                    nextUpdateManager.interrupt();
+                    nextUpdateManager = null;
+                }
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
 
             if (nextGVTTreeBuilder != null) {
                 if (nextUpdateManager != null) {
@@ -1568,6 +1541,17 @@ public class JSVGComponent extends JGVTComponent {
         public void gvtRenderingCancelled(GVTTreeRendererEvent e) {
             super.gvtRenderingCancelled(e);
 
+            if (afterStopRunnable != null) {
+                if (nextUpdateManager != null) {
+                    nextUpdateManager.interrupt();
+                    nextUpdateManager = null;
+                }
+
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
+
             if (nextGVTTreeBuilder != null) {
                 if (nextUpdateManager != null) {
                     nextUpdateManager.interrupt();
@@ -1592,6 +1576,17 @@ public class JSVGComponent extends JGVTComponent {
          */
         public void gvtRenderingFailed(GVTTreeRendererEvent e) {
             super.gvtRenderingFailed(e);
+
+            if (afterStopRunnable != null) {
+                if (nextUpdateManager != null) {
+                    nextUpdateManager.interrupt();
+                    nextUpdateManager = null;
+                }
+
+                EventQueue.invokeLater(afterStopRunnable);
+                afterStopRunnable = null;
+                return;
+            }
 
             if (nextGVTTreeBuilder != null) {
                 if (nextUpdateManager != null) {
@@ -1687,6 +1682,12 @@ public class JSVGComponent extends JGVTComponent {
                                 ((UpdateManagerListener)dll[i]).
                                     managerStopped(e);
                             }
+                        }
+
+                        if (afterStopRunnable != null) {
+                            EventQueue.invokeLater(afterStopRunnable);
+                            afterStopRunnable = null;
+                            return;
                         }
 
                         if (nextGVTTreeBuilder != null) {
