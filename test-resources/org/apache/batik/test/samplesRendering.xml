@@ -115,6 +115,12 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/gradients.png" />
     </test>
 
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/GVT.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/GVT.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/accepted-variation/GVT.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/candidate-variation/GVT.png" />
+    </test>
 
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/henryV.svg" />
