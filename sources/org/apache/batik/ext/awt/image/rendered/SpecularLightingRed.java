@@ -83,9 +83,9 @@ public class SpecularLightingRed extends AbstractTiledRed{
 
         ColorModel cm;
         if (linear)
-            cm = GraphicsUtil.Linear_sRGB_Pre;
+            cm = GraphicsUtil.Linear_sRGB_Unpre;
         else
-            cm = GraphicsUtil.sRGB_Pre;
+            cm = GraphicsUtil.sRGB_Unpre;
 
         int tw = litRegion.width;
         int th = litRegion.height;
@@ -135,7 +135,23 @@ public class SpecularLightingRed extends AbstractTiledRed{
         // x and y are in user space
         double x = scaleX*minX;
         double y = scaleY*minY;
-        double ksPwNHns = 0, norm = 0;
+        double norm = 0;
+
+        int pixel = 0, tmp;
+        double mult;
+        mult = (lightColor[0]>lightColor[1])?lightColor[0]:lightColor[1];
+        mult = (mult>lightColor[2])?mult:lightColor[2];
+        
+        double scale = 255/mult;
+        pixel = (int)(lightColor[0]*scale+0.5);
+        tmp   = (int)(lightColor[1]*scale+0.5);
+        pixel = pixel<<8 | tmp;
+        tmp   = (int)(lightColor[2]*scale+0.5);
+        pixel = pixel<<8 | tmp;
+
+        mult*=255*ks;
+
+        // System.out.println("Pixel: 0x" + Integer.toHexString(pixel));
 
         final double[][][] NA = bumpMap.getNormalArray(minX, minY, w, h);
 
@@ -155,44 +171,18 @@ public class SpecularLightingRed extends AbstractTiledRed{
 
                     // Compute Half-way vector
                     L[2] += 1;
-                    norm = Math.sqrt(L[0]*L[0] + L[1]*L[1] + L[2]*L[2]);
-                    if(norm > 0){
-                        double iNorm = 1.0/norm;
-                        L[0] *= iNorm;
-                        L[1] *= iNorm;
-                        L[2] *= iNorm;
+                    norm = L[0]*L[0] + L[1]*L[1] + L[2]*L[2];
+                    if(norm == 0) 
+                        a = (int)(mult+0.5);
+                    else {
+                        norm = Math.sqrt(norm);
+                        a = (int)(mult*Math.pow((N[0]*L[0] + 
+                                                 N[1]*L[1] + N[2]*L[2])/norm, 
+                                                specularExponent) + 0.5);
+                        if ((a & 0xFFFFFF00) != 0)
+                            a = ((a & 0x80000000) != 0)?0:255;
                     }
-                    
-                    ksPwNHns = 255.*ks*Math.pow(N[0]*L[0] + 
-                                                N[1]*L[1] + 
-                                                N[2]*L[2], specularExponent);
-                    
-                    r = (int)(ksPwNHns*lightColor[0]);
-                    g = (int)(ksPwNHns*lightColor[1]);
-                    b = (int)(ksPwNHns*lightColor[2]);
-                    
-                    
-                    // If any high bits are set we are not in range.
-                    // If the highest bit is set then we are negative so
-                    // clamp to zero else we are > 255 so clamp to 255.
-                    if ((r & 0xFFFFFF00) != 0)
-                        r = ((r & 0x80000000) != 0)?0:255;
-                    if ((g & 0xFFFFFF00) != 0)
-                        g = ((g & 0x80000000) != 0)?0:255;
-                    if ((b & 0xFFFFFF00) != 0)
-                        b = ((b & 0x80000000) != 0)?0:255;
-                    
-                    a = r > g ? r : g;
-                    a = a > b ? a : b;
-                    
-                    pixels[p++] = (a << 24
-                                   |
-                                   r << 16
-                                   |
-                                   g << 8
-                                   |
-                                   b);
-                    
+                    pixels[p++] = (a << 24 | pixel);
                 }
                 p += adjust;
             }
@@ -217,34 +207,10 @@ public class SpecularLightingRed extends AbstractTiledRed{
                     // Get Normal 
                     final double [] N = NR[j];
                     
-                    ksPwNHns = 255.*ks*Math.pow(N[0]*L[0] + N[1]*L[1] + N[2]*L[2],
-                                                specularExponent);
+                    a = (int)(mult*Math.pow(N[0]*L[0] + N[1]*L[1] + N[2]*L[2], 
+                                            specularExponent) + 0.5);
                     
-                    r = (int)(ksPwNHns*lightColor[0]);
-                    g = (int)(ksPwNHns*lightColor[1]);
-                    b = (int)(ksPwNHns*lightColor[2]);
-                    
-                    // If any high bits are set we are not in range.
-                    // If the highest bit is set then we are negative so
-                    // clamp to zero else we are > 255 so clamp to 255.
-                    if ((r & 0xFFFFFF00) != 0)
-                        r = ((r & 0x80000000) != 0)?0:255;
-                    if ((g & 0xFFFFFF00) != 0)
-                        g = ((g & 0x80000000) != 0)?0:255;
-                    if ((b & 0xFFFFFF00) != 0)
-                        b = ((b & 0x80000000) != 0)?0:255;
-                    
-                    a = r > g ? r : g;
-                    a = a > b ? a : b;
-                    
-                    pixels[p++] = (a << 24
-                                   |
-                                   r << 16
-                                   |
-                                   g << 8
-                                   |
-                                   b);
-                    
+                    pixels[p++] = (a << 24 | pixel);
                 }
                 p += adjust;
             }
