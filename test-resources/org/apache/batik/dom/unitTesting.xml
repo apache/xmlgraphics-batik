@@ -46,6 +46,26 @@
     </test>
 
     <!-- ========================================================================== -->
+    <!-- hasChildNodes test                                                         -->
+    <!-- ========================================================================== -->
+    <test id="hasChildNodes" class="org.apache.batik.dom.HasChildNodesTest" >
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML3.xml" />
+        <arg class="java.lang.String" value="doc" />
+        <arg class="java.lang.String" value="root" />
+    </test>
+
+    <!-- ========================================================================== -->
+    <!-- replaceChild test                                                          -->
+    <!-- ========================================================================== -->
+    <test id="replaceChild" class="org.apache.batik.dom.ReplaceChildTest" >
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML3.xml" />
+        <arg class="java.lang.String" value="doc" />
+        <arg class="java.lang.String" value="root" />
+    </test>
+
+    <!-- ========================================================================== -->
     <!-- Serialization test                                                         -->
     <!-- ========================================================================== -->
     <test id="serialization1" class="org.apache.batik.dom.SerializationTest">
