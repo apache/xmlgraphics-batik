@@ -81,6 +81,31 @@ public class ButtonFactory extends ResourceManager {
     }
 
     /**
+     * Creates and returns a new swing button initialised
+     * to be used as a toolbar button
+     * @param name the name of the button in the resource bundle
+     * @throws MissingResourceException if key is not the name of a button.
+     *         It is not thrown if the mnemonic and the action keys are missing
+     * @throws ResourceFormatException if the mnemonic is not a single
+     *         character
+     * @throws MissingListenerException if the button action is not found in
+     *         the action map
+     */
+    public JButton createJToolbarButton(String name)
+	throws MissingResourceException,
+	       ResourceFormatException,
+	       MissingListenerException {
+        JButton result;
+	try {
+	    result = new JToolbarButton(getString(name+TEXT_SUFFIX));
+	} catch (MissingResourceException e) {
+	    result = new JToolbarButton();
+	}
+	initializeButton(result, name);
+        return result;
+    }
+
+    /**
      * Creates and returns a new swing radio button
      * @param name the name of the button in the resource bundle
      * @throws MissingResourceException if key is not the name of a button.

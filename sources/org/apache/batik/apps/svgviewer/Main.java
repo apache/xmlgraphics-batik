@@ -62,8 +62,14 @@ public class Main implements ViewerFrame.Application {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
-        Font font = new Font("Dialog", Font.PLAIN, 10);
-        SwingInitializer.swingDefaultsFontInit(font);
+        if (args.length > 0 && args[0].equals("-sf")) {
+            Font font = new Font("Dialog", Font.PLAIN, 10);
+            SwingInitializer.swingDefaultsFontInit(font);
+            String[] t = new String[args.length - 1];
+            for (int i = 0; i < t.length; i++) {
+                t[i] = args[i + 1];
+            }
+        }
 
         CSSDocumentHandler.setParserClassName
             (bundle.getString(CSS_PARSER_CLASS_NAME_KEY));

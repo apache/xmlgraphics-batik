@@ -171,6 +171,11 @@ public class ViewerFrame
     protected String uri;
 
     /**
+     * The current path.
+     */
+    protected String currentPath = ".";
+
+    /**
      * The uri chooser.
      */
     protected URIChooser uriChooser;
@@ -446,7 +451,7 @@ public class ViewerFrame
         public OpenAction() {}
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser =
-                new JFileChooser((uri == null) ? "." : uri);
+                new JFileChooser(currentPath);
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
                 (JFileChooser.FILES_AND_DIRECTORIES);
@@ -456,7 +461,7 @@ public class ViewerFrame
             if (choice == JFileChooser.APPROVE_OPTION) {
                 File f = fileChooser.getSelectedFile();
                 try {
-                    loadDocument(f.getCanonicalPath());
+                    loadDocument(currentPath = f.getCanonicalPath());
                 } catch (IOException ex) {
                 }
             }
