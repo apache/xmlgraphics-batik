@@ -54,6 +54,7 @@ import org.apache.batik.util.gui.resource.ResourceManager;
  * This class represents a language selection dialog.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @version $Id$
  */
 public class LanguageDialog extends JDialog implements ActionMap {
@@ -108,7 +109,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
         getContentPane().add("South", createButtonsPanel());
 
         pack();
-    }    
+    }
 
     /**
      * Sets a language change handler.
@@ -156,7 +157,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
          * The user languages list
          */
         protected JList userList;
-        
+
         /**
          * The languages list
          */
@@ -166,7 +167,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
          * The user list model
          */
         protected DefaultListModel userListModel = new DefaultListModel();
-        
+
         /**
          * The language list model
          */
@@ -203,14 +204,23 @@ public class LanguageDialog extends JDialog implements ActionMap {
         protected Map listeners = new HashMap();
 
         /**
+         * The cached map for country icons (takes more than 2 secs.
+         * to be computed).
+         */
+        private static Map iconMap = null;
+
+        /**
          * Creates a new Panel object.
          */
         public Panel() {
             super(new GridBagLayout());
+
+            initCountryIcons();
+
             setBorder(BorderFactory.createTitledBorder
                       (BorderFactory.createEtchedBorder(),
                        resources.getString("Panel.title")));
-            
+
             listeners.put("AddLanguageButtonAction",
                           new AddLanguageButtonAction());
             listeners.put("RemoveLanguageButtonAction",
@@ -310,6 +320,29 @@ public class LanguageDialog extends JDialog implements ActionMap {
         }
 
         /**
+         * Allows to pre-initialize icons used by the <code>Panel</code>
+         * constructor. It is not neccessary to call it and it should
+         * be called only once.
+         * This method is safe to be called by another thread than the
+         * event thread as it doesn't manipulate Swing <code>JComponent</code>
+         * instances.
+         */
+        public synchronized static void initCountryIcons()
+        {
+            // don't need to init several times...
+            if (iconMap == null) {
+                iconMap = new HashMap();
+                StringTokenizer st;
+                st = new StringTokenizer(resources.getString("Country.list"),
+                                         " ");
+                while (st.hasMoreTokens()) {
+                    computeCountryIcon(LanguageDialog.Panel.class,
+                                       st.nextToken());
+                }
+            }
+        }
+
+        /**
          * Returns the selected user languages.
          */
         public String getLanguages() {
@@ -362,7 +395,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
             boolean selected     = i != -1;
             boolean zeroSelected = i == 0;
             boolean lastSelected = i == size - 1;
-        
+
             removeLanguageButton.setEnabled(!empty && selected);
             upLanguageButton.setEnabled(!empty && selected && !zeroSelected);
             downLanguageButton.setEnabled(!empty && selected && !lastSelected);
@@ -388,15 +421,24 @@ public class LanguageDialog extends JDialog implements ActionMap {
          * returns the icon associated with a country code.
          */
         protected Icon getCountryIcon(String code) {
+            return computeCountryIcon(getClass(), code);
+        }
+
+        private static Icon computeCountryIcon(Class ref,
+                                               String code) {
+            ImageIcon icon = null;
             try {
+                if ((icon = (ImageIcon)iconMap.get(code)) != null)
+                    return icon;
                 String s = resources.getString(code + ".icon");
-                URL url  = getClass().getResource(s);
+                URL url  = ref.getResource(s);
                 if (url != null) {
-                    return new ImageIcon(url);
+                    iconMap.put(code, icon = new ImageIcon(url));
+                    return icon;
                 }
             } catch (MissingResourceException e) {
             }
-            return new ImageIcon(getClass().getResource("resources/blank.gif"));
+            return new ImageIcon(ref.getResource("resources/blank.gif"));
         }
 
         // ActionMap implementation ///////////////////////////////////////
@@ -508,7 +550,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
                 userList.getSelectionModel().clearSelection();
                 languageList.setSelectedIndex(i);
                 updateButtons();
-            }   
+            }
         }
 
         /**
@@ -521,7 +563,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
                 languageList.getSelectionModel().clearSelection();
                 userList.setSelectedIndex(i);
                 updateButtons();
-            }   
+            }
         }
 
         /**

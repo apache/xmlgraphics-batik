@@ -281,9 +281,11 @@ public class ViewerFrame
     protected DOMViewer domViewer = new DOMViewer();
 
     /**
-     * The language dialog.
+     * The language dialog. It is private now to allow
+     * dynamic building (very long to build). You can
+     * get it from subclasses with getLanguageDialog().
      */
-    protected LanguageDialog languageDialog;
+    private LanguageDialog languageDialog;
 
     /**
      * The user style dialog.
@@ -373,6 +375,10 @@ public class ViewerFrame
     public ViewerFrame(Application a) {
         application = a;
 
+        if (!Locale.getDefault().getLanguage().equals(userLanguages))
+            userLanguages=Locale.getDefault().getLanguage()+","+
+                userLanguages;
+
         setTitle(resources.getString("Frame.title"));
         setSize(resources.getInteger("Frame.width"),
                 resources.getInteger("Frame.height"));
@@ -431,8 +437,8 @@ public class ViewerFrame
             ToolBarFactory tbf = new ToolBarFactory(bundle, this);
             JToolBar tb = tbf.createJToolBar("ToolBar");
             tb.setFloatable(false);
-            getContentPane().add("North", p);
-            p.add("North", tb);
+            getContentPane().add(p, BorderLayout.NORTH);
+            p.add(tb, BorderLayout.NORTH);
         } catch (MissingResourceException e) {
             System.out.println(e.getMessage());
             System.exit(0);
@@ -443,29 +449,43 @@ public class ViewerFrame
         locationBar.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 1));
         locationBar.addActionListener(new LocationBarAction());
 
-        p.add("South", locationBar);
-        p.add("Center", new JSeparator());
+        p.add(locationBar, BorderLayout.SOUTH);
+        p.add(new JSeparator(), BorderLayout.CENTER);
 
         // Create the view panel
         panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEtchedBorder());
-        getContentPane().add("Center", panel);
+        getContentPane().add(panel, BorderLayout.CENTER);
         p = new JPanel(new BorderLayout());
-        panel.add("Center", p);
+        panel.add(p, BorderLayout.CENTER);
 
         // Create the status bar
         statusBar = new StatusBar();
-        getContentPane().add("South", statusBar);
+        getContentPane().add(statusBar, BorderLayout.SOUTH);
 
         // Create the language dialog
-        languageDialog = new LanguageDialog(this);
-        languageDialog.setLanguageChangeHandler(this);
+        /**
+         * The dialog takes a very long time to be build
+         * we speed up launching by doing it elsewhere
+         * languageDialog = new LanguageDialog(this);
+         * languageDialog.setLanguageChangeHandler(this);
+         */
+        // we want to do it only after init. As we don't
+        // know if a file will be loaded just after init
+        // the only simple means to be pretty sure to be
+        // after is to put a timer.
+        javax.swing.Timer timer =
+            new javax.swing.Timer(15000,
+                                  new InitLanguageDialog());
+        timer.setRepeats(false);
+        timer.start();
+        timer = null;
 
         // Create the user style dialog
         userStyleDialog = new UserStyleDialog(this);
         userStyleDialog.setChangeHandler(this);
 
-        panel.add("Center", canvas);
+        panel.add(canvas, BorderLayout.CENTER);
         panel.revalidate();
         panel.repaint();
         canvas.setZoomHandler(this);
@@ -489,6 +509,39 @@ public class ViewerFrame
                     statusBar.setHeight(dim.height);
                 }
             });
+
+            }
+
+    /**
+     * Utility class for deferred initialization of
+     * LanguageDialog instance.
+     */
+    private static class InitLanguageDialog
+        implements java.awt.event.ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            Thread t = new Thread(new Runnable() {
+                    public void run() {
+                        LanguageDialog.Panel.
+                            initCountryIcons();
+                    }
+                });
+            t.setPriority(Thread.MIN_PRIORITY);
+            t.start();
+            ((javax.swing.Timer)e.getSource()).stop();
+        }
+    }
+
+    /**
+     * Returns the instance of <code>LanguageDialog</code>
+     * used by the <code>ViewerFrame</code>.
+     */
+    protected LanguageDialog getLanguageDialog()
+    {
+        if (languageDialog == null) {
+            languageDialog = new LanguageDialog(this);
+            languageDialog.setLanguageChangeHandler(this);
+        }
+        return languageDialog;
     }
 
     /**
@@ -857,7 +910,8 @@ public class ViewerFrame
                             currentExportPath = f.getCanonicalPath();
                             OutputStream ostream =
                               new BufferedOutputStream(new FileOutputStream(f));
-                            trans.writeImage(img, new TranscoderOutput(ostream));
+                            trans.writeImage(img,
+                                             new TranscoderOutput(ostream));
                             ostream.flush();
                             ostream.close();
                             statusBar.setMessage(
@@ -1061,7 +1115,7 @@ public class ViewerFrame
             scroll.getViewport().add(ta);
             scroll.setVerticalScrollBarPolicy
                 (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            fr.getContentPane().add("Center", scroll);
+            fr.getContentPane().add(scroll, BorderLayout.CENTER);
 
             Document  doc = new PlainDocument();
             InputStream is = null;
@@ -1140,7 +1194,7 @@ public class ViewerFrame
             scroll.getViewport().add(ta);
             scroll.setVerticalScrollBarPolicy
                 (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            fr.getContentPane().add("Center", scroll);
+            fr.getContentPane().add(scroll, BorderLayout.CENTER);
 
             ta.setText(description);
             ta.setEditable(false);
@@ -1257,7 +1311,8 @@ public class ViewerFrame
     public class ProgressivePaintAction extends AbstractAction {
         public ProgressivePaintAction() {}
         public void actionPerformed(ActionEvent e) {
-            progressivePaintEnabled = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+            progressivePaintEnabled = ((JCheckBoxMenuItem)e.getSource()).
+                isSelected();
             canvas.setProgressiveRenderingEnabled(progressivePaintEnabled);
         }
     }
@@ -1269,11 +1324,12 @@ public class ViewerFrame
         public LanguageAction() {}
         public void actionPerformed(ActionEvent e) {
             Rectangle fr = getBounds();
-            Dimension ld = languageDialog.getSize();
-            languageDialog.setLocation(fr.x + (fr.width  - ld.width) / 2,
+            LanguageDialog dialog = getLanguageDialog();
+            Dimension ld = dialog.getSize();
+            dialog.setLocation(fr.x + (fr.width  - ld.width) / 2,
                                        fr.y + (fr.height - ld.height) / 2);
-            languageDialog.setLanguages(userLanguages);
-            languageDialog.show();
+            dialog.setLanguages(userLanguages);
+            dialog.show();
         }
     }
 
@@ -1307,7 +1363,8 @@ public class ViewerFrame
     /**
      * To display the about dialog.
      */
-    public class AboutAction extends AbstractAction implements DocumentListener {
+    public class AboutAction extends AbstractAction
+        implements DocumentListener {
         JSVGCanvas canvas;
         public AboutAction() {}
         public void actionPerformed(ActionEvent e) {
@@ -1335,7 +1392,7 @@ public class ViewerFrame
                         aboutFrame.setVisible(false);
                     }
                 });
-                aboutFrame.getContentPane().add("South", p);
+                aboutFrame.getContentPane().add(p, BorderLayout.SOUTH);
                 canvas = new JSVGCanvas(ViewerFrame.this);
                 canvas.setBorder(BorderFactory.createLoweredBevelBorder());
                 panel.add(canvas);
