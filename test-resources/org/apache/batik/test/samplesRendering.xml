@@ -183,6 +183,8 @@
         <test id="samples/tests/spec/structure/useTargets.svg" />
         <test id="samples/tests/spec/structure/xmlBase.svg" />
         <test id="samples/tests/spec/structure/xmlBaseStyling.svg" />
+        <test id="samples/tests/spec/structure/requiredFeatures.svg" />
+        <test id="samples/tests/spec/structure/requiredFeaturesCombo.svg" />
     </testGroup>
 
     <testGroup id="tests.spec.styling">
