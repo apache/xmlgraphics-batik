@@ -1044,7 +1044,13 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * For characters in script systems such as Hebrew and Arabic,
      * the glyphs can be rendered from right to left, in which case the
      * coordinate supplied is the location of the leftmost character
-     * on the baseline.
+     * on the baseline.<br />
+     * 
+     * <b>Note</b>: The current implementation turns a drawString call
+     * into shapes. Therefore, the generated SVG file will be sub-optimal
+     * in terms of size and will have lost semantic (i.e., text is no
+     * longer text but shapes), but it is graphically accurate.
+     *
      * @param iterator the iterator whose text is to be rendered
      * @param x,&nbsp;y the coordinates where the iterator's text is to be
      * rendered
