@@ -165,6 +165,7 @@ To display the available targets type:
     <copy todir="${build}/samples">
       <fileset dir="samples"/>
     </copy>
+    <delete file="${build}/samples/tests/bboxOnText.svg" />
     <zip zipfile="${build}/samples.zip" basedir="." includes="samples/**"/>
     <zip zipfile="${project}-${version}.zip" basedir="." includes="${build}/**"/>
 
