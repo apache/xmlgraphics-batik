@@ -331,7 +331,7 @@ styles of the SVG document to transcode. Example:
 <br />
 <br />
 <code>
-trans.addTranscodingHint(ImageTranscoder.KEY_ALTERNATE_STYLESHEET, "http://...");
+trans.addTranscodingHint(ImageTranscoder.KEY_USER_STYLESHEET_URI, "http://...");
 </code>
 <br />
 <br />
@@ -351,13 +351,9 @@ is used to determine how units are converted into pixels. Example:
 trans.addTranscodingHint(ImageTranscoder.KEY_PIXEL_TO_MM, new Float(0.2645833f));
 </code>
 <br />
-<br />
 or
 <br />
-<br />
-<code>
-// 72dpi
-</code>
+<code>// 72dpi</code>
 <br />
 <code>
 trans.addTranscodingHint(ImageTranscoder.KEY_PIXEL_TO_MM, new Float(0.3528f));
