@@ -178,6 +178,31 @@ public class JSVGViewerFrame
                UpdateManagerListener {
 
     /**
+     * Kind of ugly, but we need to know if we are running before
+     * or after 1.4...
+     */
+    protected static boolean priorJDK1_4 = true;
+
+    /**
+     * If the following class can be found (it appeared in JDK 1.4),
+     * then we know we are post JDK 1.4.
+     */
+    protected static final String JDK_1_4_PRESENCE_TEST_CLASS
+        = "java.util.logging.LoggingPermission";
+
+    static {
+        Class cl = null;
+        try {
+            cl = Class.forName(JDK_1_4_PRESENCE_TEST_CLASS);
+        } catch (ClassNotFoundException e){
+        }
+
+        if (cl != null) {
+            priorJDK1_4 = false;
+        }
+    }
+
+    /**
      * The gui resources file name
      */
     public final static String RESOURCES =
@@ -723,10 +748,12 @@ public class JSVGViewerFrame
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = null;
 
-            // Apply work around Windows problem when security is enabled 
+            // Apply work around Windows problem when security is enabled, 
+            // and when prior to JDK 1.4.
             String os = System.getProperty(PROPERTY_OS_NAME, PROPERTY_OS_NAME_DEFAULT);
             SecurityManager sm = System.getSecurityManager();
-            if ( sm != null && os.indexOf(PROPERTY_OS_WINDOWS_PREFIX) != -1 ){
+            
+            if ( priorJDK1_4 && sm != null && os.indexOf(PROPERTY_OS_WINDOWS_PREFIX) != -1 ){
                 fileChooser = new JFileChooser(makeAbsolute(currentPath),
                                                new WindowsAltFileSystemView());
             } else {
