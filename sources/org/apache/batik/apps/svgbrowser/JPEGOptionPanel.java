@@ -8,32 +8,19 @@
 
 package org.apache.batik.apps.svgbrowser;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import java.awt.event.ActionEvent;
-
 import java.util.Hashtable;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 import org.apache.batik.util.gui.ExtendedGridBagConstraints;
-import org.apache.batik.util.gui.resource.ResourceManager;
 
 /**
  * This class represents a panel to control jpeg encoding quality.
@@ -41,29 +28,7 @@ import org.apache.batik.util.gui.resource.ResourceManager;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class JPEGOptionPanel extends JPanel {
-
-    /**
-     * The gui resources file name
-     */
-    public final static String RESOURCES =
-        "org.apache.batik.apps.svgbrowser.resources.GUI";
-
-    /**
-     * The resource bundle
-     */
-    protected static ResourceBundle bundle;
-
-    /**
-     * The resource manager
-     */
-    protected static ResourceManager resources;
-
-    static {
-        bundle = ResourceBundle.getBundle(RESOURCES, Locale.getDefault());
-        resources = new ResourceManager(bundle);
-    }
-
+public class JPEGOptionPanel extends OptionPanel {
     /**
      * The jpeg encoding quality.
      */
@@ -119,71 +84,16 @@ public class JPEGOptionPanel extends JPanel {
 	return quality.getValue()/100f;
     }
 
-    public static void main(String [] args) {
-	System.out.println(showDialog(null));
-    }
-    
     /**
-     * Shows a dialog to choose the jpeg encoding quality and return the quality
-     * as a float.
+     * Shows a dialog to choose the jpeg encoding quality and return
+     * the quality as a float.  
      */
     public static float showDialog(Component parent) {
-	Dialog dialog = new Dialog(parent);
+        String title = resources.getString("JPEGOptionPanel.dialog.title");
+        JPEGOptionPanel panel = new JPEGOptionPanel();
+	Dialog dialog = new Dialog(parent, title, panel);
 	dialog.pack();
 	dialog.show();
-	return dialog.getQuality();
-    }
-
-    /**
-     * This class is modal dialog to choose the jpeg encoding quality.
-     */
-    public static class Dialog extends JDialog {
-
-	/**
-	 * The 'ok' button.
-	 */
-	protected JButton ok;
-
-	/**
-	 * The 'ok' button.
-	 */
-	protected JPEGOptionPanel panel;
-
-	public Dialog(Component parent) {
-	    super(JOptionPane.getFrameForComponent(parent),
-		  resources.getString("JPEGOptionPanel.dialog.title"));
-	    setModal(true);
-	    panel = new JPEGOptionPanel();
-	    getContentPane().add(panel, BorderLayout.CENTER);
-	    getContentPane().add(createButtonPanel(), BorderLayout.SOUTH);
-	}
-
-	/**
-	 * Returns the jpeg quality.
-	 */
-	public float getQuality() {
-	    return panel.getQuality();
-	}
-
-	/**
-	 * Creates the button panel.
-	 */
-	protected JPanel createButtonPanel() {
-	    JPanel panel = new JPanel(new FlowLayout());
-	    ok = new JButton(resources.getString("OKButton.text"));
-	    ok.addActionListener(new OKButtonAction());
-	    panel.add(ok);
-	    return panel;
-	}
-
-	/**
-	 * The action associated to the 'ok' button.
-	 */
-	protected class OKButtonAction extends AbstractAction {
-
-	    public void actionPerformed(ActionEvent evt) {
-		dispose();
-	    }
-	}
+	return panel.getQuality();
     }
 }
