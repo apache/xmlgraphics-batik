@@ -275,6 +275,58 @@ public class MainTest extends DefaultTestSuite {
         addTest(t);
         t.setId("MainConfigTest.validate");
 
+        t = new MainConfigTest("-onload"){
+                public TestReport validate(SVGConverter c){
+                    if(c.getExecuteOnload()){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-onload", "true", "false");
+                    }
+                }
+            };
+
+        addTest(t);
+        t.setId("MainConfigTest.onload");
+
+        t = new MainConfigTest("-scripts text/jpython"){
+                public TestReport validate(SVGConverter c){
+                    if("text/jpython".equals(c.getAllowedScriptTypes())){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-scripts", "text/jpython", ">>" + c.getAllowedScriptTypes() + "<<");
+                    }
+                }
+            };
+
+        addTest(t);
+        t.setId("MainConfigTest.scripts");
+
+        t = new MainConfigTest("-anyScriptOrigin"){
+                public TestReport validate(SVGConverter c){
+                    if(!c.getConstrainScriptOrigin()){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-anyScriptOrigin", "true", "false");
+                    }
+                }
+            };
+
+        addTest(t);
+        t.setId("MainConfigTest.anyScriptOrigin");
+
+        t = new MainConfigTest("-scriptSecurityOff"){
+                public TestReport validate(SVGConverter c){
+                    if(c.getSecurityOff()){
+                        return reportSuccess();
+                    } else {
+                        return reportError("-scriptSecurityOff", "true", "false");
+                    }
+                }
+            };
+
+        addTest(t);
+        t.setId("MainConfigTest.scriptSecurityOff");
+
         t = new MainConfigTest("-lang fr"){
                 public TestReport validate(SVGConverter c){
                     if("fr".equals(c.getLanguage())){
@@ -370,6 +422,10 @@ public class MainTest extends DefaultTestSuite {
         t = new MainConfigErrorTest("-q", "hello.svg -q");
         addTest(t);
         t.setId("MainConfigErrorTest.quality");
+
+        t = new MainConfigErrorTest("-scripts", "hello.svg -scripts");
+        addTest(t);
+        t.setId("MainConfigErrorTest.allowedScriptTypes");
 
         t = new MainIllegalArgTest("-m", "-m images/jpeq");
         addTest(t);

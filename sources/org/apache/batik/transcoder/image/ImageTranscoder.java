@@ -28,6 +28,8 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.apache.batik.bridge.BaseScriptingEnvironment;
 import org.apache.batik.bridge.BridgeContext;
@@ -35,6 +37,8 @@ import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeExtension;
 import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.NoLoadScriptSecurity;
+import org.apache.batik.bridge.RelaxedScriptSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
@@ -108,7 +112,6 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @version $Id$
  */
 public abstract class ImageTranscoder extends XMLAbstractTranscoder {
-
     /** The user agent dedicated to an <tt>ImageTranscoder</tt>. */
     protected UserAgent userAgent = new ImageTranscoderUserAgent();
 
@@ -126,6 +129,8 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
                   "screen");
         hints.put(KEY_EXECUTE_ONLOAD, 
                   Boolean.FALSE);
+        hints.put(KEY_ALLOWED_SCRIPT_TYPES,
+                  DEFAULT_ALLOWED_SCRIPT_TYPES);
     }
 
     /**
@@ -317,6 +322,10 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      * A user agent implementation for <tt>ImageTranscoder</tt>.
      */
     protected class ImageTranscoderUserAgent implements UserAgent {
+        /**
+         * Vector containing the allowed script types
+         */
+        protected Vector scripts;
 
         /**
          * Returns the default size of this user agent (400x400).
@@ -546,7 +555,47 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         public ScriptSecurity getScriptSecurity(String scriptType,
                                                 URL scriptURL,
                                                 URL docURL){
-            return new DefaultScriptSecurity(scriptType, scriptURL, docURL);
+            if (scripts == null){
+                computeAllowedScripts();
+            }
+
+            if (!scripts.contains(scriptType)) {
+                return new NoLoadScriptSecurity(scriptType);
+            }
+
+
+            boolean constrainOrigin = true;
+
+            if (ImageTranscoder.this.hints.containsKey(KEY_CONSTRAIN_SCRIPT_ORIGIN)) {
+                constrainOrigin =
+                    ((Boolean)ImageTranscoder.this.hints.get
+                     (KEY_CONSTRAIN_SCRIPT_ORIGIN)).booleanValue();
+            } 
+
+            if (constrainOrigin) {
+                return new DefaultScriptSecurity(scriptType, scriptURL, docURL);
+            } else {
+                return new RelaxedScriptSecurity(scriptType, scriptURL, docURL);
+            }
+        }
+
+        /**
+         * Helper method. Builds a Vector containing the allowed
+         * values for the &lt;script&gt; element's type attribute.
+         */
+        protected void computeAllowedScripts(){
+            scripts = new Vector();
+            if (!ImageTranscoder.this.hints.containsKey(KEY_ALLOWED_SCRIPT_TYPES)) {
+                return;
+            }
+
+            String allowedScripts 
+                = (String)ImageTranscoder.this.hints.get(KEY_ALLOWED_SCRIPT_TYPES);
+                
+            StringTokenizer st = new StringTokenizer(allowedScripts, ",");
+            while (st.hasMoreTokens()) {
+                scripts.addElement(st.nextToken());
+            }
         }
 
     }
@@ -837,4 +886,70 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
      */
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
         = new BooleanKey();
+
+    /**
+     * The set of supported script languages (i.e., the set of possible
+     * values for the &lt;script&gt; tag's type attribute).
+     *
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_ALLOWED_SCRIPT_TYPES</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">String (Comma separated values)</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">text/ecmascript, application/java-archive</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">Specifies the allowed values for the type attribute
+     * in the &lt;script&gt; element. This is a comma separated list. The
+     * special value '*' means that all script types are allowed.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_ALLOWED_SCRIPT_TYPES
+        = new StringKey();
+
+    /**
+     * Default value for the KEY_ALLOWED_SCRIPT_TYPES key
+     */
+    public static final String DEFAULT_ALLOWED_SCRIPT_TYPES
+        = SVGConstants.SVG_SCRIPT_TYPE_ECMASCRIPT + ", " 
+        + SVGConstants.SVG_SCRIPT_TYPE_JAVA;
+
+    /**
+     * Controls whether or not scripts can only be loaded from the 
+     * same location as the document which references them.
+     *
+     * <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="1">
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Key: </TH>
+     * <TD VALIGN="TOP">KEY_CONSTRAIN_SCRIPT_ORIGIN</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Value: </TH>
+     * <TD VALIGN="TOP">boolean</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Default: </TH>
+     * <TD VALIGN="TOP">true</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Required: </TH>
+     * <TD VALIGN="TOP">No</TD></TR>
+     * <TR>
+     * <TH VALIGN="TOP" ALIGN="RIGHT"><P ALIGN="RIGHT">Description: </TH>
+     * <TD VALIGN="TOP">When set to true, script elements referencing
+     * files from a different origin (server) than the document containing
+     * the script element will not be loaded. When set to true, script elements
+     * may reference script files from any origin.
+     * </TD></TR>
+     * </TABLE>
+     */
+    public static final TranscodingHints.Key KEY_CONSTRAIN_SCRIPT_ORIGIN
+        = new BooleanKey();
+
+
 }
