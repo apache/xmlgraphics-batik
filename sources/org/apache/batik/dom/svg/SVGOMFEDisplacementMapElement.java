@@ -8,11 +8,8 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -31,85 +28,19 @@ public class SVGOMFEDisplacementMapElement
     implements SVGFEDisplacementMapElement {
 
     /**
-     * The DefaultAttributeValueProducer for scale.
+     * The attribute initializer.
      */
-    protected final static DefaultAttributeValueProducer
-        SCALE_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_FE_DISPLACEMENT_MAP_SCALE_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The reference to the in attribute.
-     */
-    protected transient WeakReference inReference;
-
-    /**
-     * The reference to the in2 attribute.
-     */
-    protected transient WeakReference in2Reference;
-
-    /**
-     * The reference to the scale attribute.
-     */
-    protected transient WeakReference scaleReference;
-
-    /**
-     * The reference to the xChannelSelector attribute.
-     */
-    protected transient WeakReference xChannelSelectorReference;
-
-    /**
-     * The reference to the yChannelSelector attribute.
-     */
-    protected transient WeakReference yChannelSelectorReference;
-
-    /**
-     * The attribute-value map map.
-     */
-    protected static Map attributeValues = new HashMap(2);
+    protected final static AttributeInitializer attributeInitializer;
     static {
-        Map values = new HashMap(3);
-        values.put(SVG_X_CHANNEL_SELECTOR_ATTRIBUTE, SVG_A_VALUE);
-        values.put(SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE, SVG_A_VALUE);
-        attributeValues.put(null, values);
-    }
-
-    // The enumeration maps
-    protected final static Map STRING_TO_SHORT_X_CHANNEL_SELECTOR = new HashMap(6);
-    protected final static Map SHORT_TO_STRING_X_CHANNEL_SELECTOR = new HashMap(6);
-    protected final static Map STRING_TO_SHORT_Y_CHANNEL_SELECTOR =
-        STRING_TO_SHORT_X_CHANNEL_SELECTOR;
-    protected final static Map SHORT_TO_STRING_Y_CHANNEL_SELECTOR =
-        SHORT_TO_STRING_X_CHANNEL_SELECTOR;
-    static {
-        STRING_TO_SHORT_X_CHANNEL_SELECTOR.put
-            (SVG_R_VALUE,
-             SVGOMAnimatedEnumeration.createShort((short)1));
-        STRING_TO_SHORT_X_CHANNEL_SELECTOR.put
-            (SVG_G_VALUE,
-             SVGOMAnimatedEnumeration.createShort((short)2));
-        STRING_TO_SHORT_X_CHANNEL_SELECTOR.put
-            (SVG_B_VALUE,
-             SVGOMAnimatedEnumeration.createShort((short)3));
-        STRING_TO_SHORT_X_CHANNEL_SELECTOR.put
-            (SVG_A_VALUE,
-             SVGOMAnimatedEnumeration.createShort((short)4));
-
-        SHORT_TO_STRING_X_CHANNEL_SELECTOR.put
-            (SVGOMAnimatedEnumeration.createShort((short)1),
-             SVG_A_VALUE);
-        SHORT_TO_STRING_X_CHANNEL_SELECTOR.put
-            (SVGOMAnimatedEnumeration.createShort((short)2),
-             SVG_R_VALUE);
-        SHORT_TO_STRING_X_CHANNEL_SELECTOR.put
-            (SVGOMAnimatedEnumeration.createShort((short)3),
-             SVG_G_VALUE);
-        SHORT_TO_STRING_X_CHANNEL_SELECTOR.put
-            (SVGOMAnimatedEnumeration.createShort((short)4),
-             SVG_B_VALUE);
+        attributeInitializer = new AttributeInitializer(2);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_X_CHANNEL_SELECTOR_ATTRIBUTE,
+                                          SVG_A_VALUE);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE,
+                                          SVG_A_VALUE);
     }
 
     /**
@@ -140,13 +71,7 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        SVGAnimatedString result;
-        if (inReference == null ||
-            (result = (SVGAnimatedString)inReference.get()) == null) {
-            result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-            inReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getIn1()");
     }
 
     /**
@@ -154,13 +79,7 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getIn2()}.
      */
     public SVGAnimatedString getIn2() {
-        SVGAnimatedString result;
-        if (in2Reference == null ||
-            (result = (SVGAnimatedString)in2Reference.get()) == null) {
-            result = new SVGOMAnimatedString(this, null, SVG_IN2_ATTRIBUTE);
-            in2Reference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getIn2()");
     }
 
     /**
@@ -168,14 +87,7 @@ public class SVGOMFEDisplacementMapElement
      * org.w3c.dom.svg.SVGFEDisplacementMapElement#getScale()}.
      */
     public SVGAnimatedNumber getScale() {
-        SVGAnimatedNumber result;
-        if (scaleReference == null ||
-            (result = (SVGAnimatedNumber)scaleReference.get()) == null) {
-            result = new SVGOMAnimatedNumber(this, null, SVG_SCALE_ATTRIBUTE,
-                                             SCALE_DEFAULT_VALUE_PRODUCER);
-            scaleReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getScale()");
     }
 
     /**
@@ -183,17 +95,7 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getXChannelSelector()}.
      */
     public SVGAnimatedEnumeration getXChannelSelector() {
-        SVGAnimatedEnumeration result;
-        if (xChannelSelectorReference == null ||
-            (result = (SVGAnimatedEnumeration)xChannelSelectorReference.get()) == null) {
-            result = new SVGOMAnimatedEnumeration(this, null,
-                                                  SVG_X_CHANNEL_SELECTOR_ATTRIBUTE,
-                                                  STRING_TO_SHORT_X_CHANNEL_SELECTOR,
-                                                  SHORT_TO_STRING_X_CHANNEL_SELECTOR,
-                                                  null);
-            xChannelSelectorReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getXChannelSelector()");
     }
 
     /**
@@ -201,25 +103,15 @@ public class SVGOMFEDisplacementMapElement
      * SVGFEDisplacementMapElement#getYChannelSelector()}.
      */
     public SVGAnimatedEnumeration getYChannelSelector() {
-        SVGAnimatedEnumeration result;
-        if (yChannelSelectorReference == null ||
-            (result = (SVGAnimatedEnumeration)yChannelSelectorReference.get()) == null) {
-            result = new SVGOMAnimatedEnumeration(this, null,
-                                                  SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE,
-                                                  STRING_TO_SHORT_Y_CHANNEL_SELECTOR,
-                                                  SHORT_TO_STRING_Y_CHANNEL_SELECTOR,
-                                                  null);
-            yChannelSelectorReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getYChannelSelector()");
     }
 
     /**
-     * Returns the default attribute values in a map.
+     * Returns the AttributeInitializer for this element type.
      * @return null if this element has no attribute with a default value.
      */
-    protected Map getDefaultAttributeValues() {
-        return attributeValues;
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**

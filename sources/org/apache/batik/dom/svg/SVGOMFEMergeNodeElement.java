@@ -8,8 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.Node;
@@ -19,7 +17,7 @@ import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEMergeNodeElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEMergeNodeElement}.
+ * This class implements {@link SVGFEMergeNodeElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -27,11 +25,6 @@ import org.w3c.dom.svg.SVGFEMergeNodeElement;
 public class SVGOMFEMergeNodeElement
     extends    SVGOMElement
     implements SVGFEMergeNodeElement {
-
-    /**
-     * The reference to the in attribute.
-     */
-    protected transient WeakReference inReference;
 
     /**
      * Creates a new SVGOMFEMergeNodeElement object.
@@ -49,7 +42,7 @@ public class SVGOMFEMergeNodeElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_FE_MERGE_NODE_TAG;
@@ -60,13 +53,7 @@ public class SVGOMFEMergeNodeElement
      * SVGFEMergeNodeElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-	SVGAnimatedString result;
-	if (inReference == null ||
-	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-	    inReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException("!!! TODO getIn1()");
     }
 
     /**

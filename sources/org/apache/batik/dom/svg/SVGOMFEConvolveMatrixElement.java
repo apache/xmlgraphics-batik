@@ -8,11 +8,9 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedBoolean;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -24,7 +22,7 @@ import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEConvolveMatrixElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEConvolveMatrixElement}.
+ * This class implements {@link SVGFEConvolveMatrixElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -34,103 +32,15 @@ public class SVGOMFEConvolveMatrixElement
     implements SVGFEConvolveMatrixElement {
 
     /**
-     * The DefaultAttributeValueProducer for edgeMode.
+     * The attribute initializer.
      */
-    protected final static DefaultAttributeValueProducer
-        EDGE_MODE_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_FE_CONVOLVE_MATRIX_EDGE_MODE_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The reference to the in attribute.
-     */
-    protected transient WeakReference inReference;
-
-    /**
-     * The reference to the edgeMode attribute.
-     */
-    protected transient WeakReference edgeModeReference;
-
-    /**
-     * The reference to the kernelMatrix attribute.
-     */
-    protected transient WeakReference kernelMatrixReference;
-
-    /**
-     * The reference to the orderX attribute.
-     */
-    protected transient WeakReference orderXReference;
-
-    /**
-     * The reference to the orderY attribute.
-     */
-    protected transient WeakReference orderYReference;
-
-    /**
-     * The reference to the targetX attribute.
-     */
-    protected transient WeakReference targetXReference;
-
-    /**
-     * The reference to the targetY attribute.
-     */
-    protected transient WeakReference targetYReference;
-
-    /**
-     * The reference to the divisor attribute.
-     */
-    protected transient WeakReference divisorReference;
-
-    /**
-     * The reference to the bias attribute.
-     */
-    protected transient WeakReference biasReference;
-
-    /**
-     * The reference to the kernelUnitLengthX attribute.
-     */
-    protected transient WeakReference kernelUnitLengthXReference;
-
-    /**
-     * The reference to the kernelUnitLengthY attribute.
-     */
-    protected transient WeakReference kernelUnitLengthYReference;
-
-    /**
-     * The reference to the preserveAlpha attribute.
-     */
-    protected transient WeakReference preserveAlphaReference;
-
-    /**
-     * The attribute-value map map.
-     */
-    protected static Map attributeValues = new HashMap(3);
+    protected final static AttributeInitializer attributeInitializer;
     static {
-        Map values = new HashMap(2);
-        values.put(SVG_EDGE_MODE_ATTRIBUTE, SVG_DUPLICATE_VALUE);
-        attributeValues.put(null, values);
-    }
-
-    // The enumeration maps.
-    protected final static Map STRING_TO_SHORT_EDGE_MODE = new HashMap(5);
-    protected final static Map SHORT_TO_STRING_EDGE_MODE = new HashMap(5);
-    static {
-        STRING_TO_SHORT_EDGE_MODE.put(SVG_DUPLICATE_VALUE,
-                                      SVGOMAnimatedEnumeration.createShort((short)1));
-        STRING_TO_SHORT_EDGE_MODE.put(SVG_WRAP_VALUE,
-                                      SVGOMAnimatedEnumeration.createShort((short)2));
-        STRING_TO_SHORT_EDGE_MODE.put(SVG_NONE_VALUE,
-                                      SVGOMAnimatedEnumeration.createShort((short)3));
-
-        SHORT_TO_STRING_EDGE_MODE.put(SVGOMAnimatedEnumeration.createShort((short)1),
-                                      SVG_DUPLICATE_VALUE);
-        SHORT_TO_STRING_EDGE_MODE.put(SVGOMAnimatedEnumeration.createShort((short)2),
-                                      SVG_WRAP_VALUE);
-        SHORT_TO_STRING_EDGE_MODE.put(SVGOMAnimatedEnumeration.createShort((short)3),
-                                      SVG_NONE_VALUE);
+        attributeInitializer = new AttributeInitializer(1);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_EDGE_MODE_ATTRIBUTE,
+                                          SVG_DUPLICATE_VALUE);
     }
 
     /**
@@ -149,7 +59,7 @@ public class SVGOMFEConvolveMatrixElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_FE_CONVOLVE_MATRIX_TAG;
@@ -159,117 +69,56 @@ public class SVGOMFEConvolveMatrixElement
      * <b>DOM</b>: Implements { @link SVGFEConvolveMatrixElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-        SVGAnimatedString result;
-        if (inReference == null ||
-            (result = (SVGAnimatedString)inReference.get()) == null) {
-            result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-            inReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getIn1()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGFEConvolveMatrixElement#getEdgeMode()}.
+     * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getEdgeMode()}.
      */
     public SVGAnimatedEnumeration getEdgeMode() {
-        SVGAnimatedEnumeration result;
-        if (edgeModeReference == null ||
-            (result = (SVGAnimatedEnumeration)edgeModeReference.get()) == null) {
-            result = new SVGOMAnimatedEnumeration(this, null,
-                                                  SVG_EDGE_MODE_ATTRIBUTE,
-                                                  STRING_TO_SHORT_EDGE_MODE,
-                                                  SHORT_TO_STRING_EDGE_MODE,
-                                                  EDGE_MODE_DEFAULT_VALUE_PRODUCER);
-            edgeModeReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getEdgeMode()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGFEConvolveMatrixElement#getKernelMatrix()}.
+     * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getKernelMatrix()}.
      */
     public SVGAnimatedNumberList getKernelMatrix() {
-        SVGAnimatedNumberList result;
-        if (kernelMatrixReference == null ||
-            (result = (SVGOMAnimatedNumberList)kernelMatrixReference.get()) == null) {
-            result = new SVGOMAnimatedNumberList(this, null,
-                                                 SVG_KERNEL_MATRIX_ATTRIBUTE,
-                                                 null);
-            kernelMatrixReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getKernelMatrix()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getOrderX()}.
+     * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getOrderX()}.
      */
     public SVGAnimatedInteger getOrderX() {
-        SVGAnimatedInteger result;
-        if (orderXReference == null ||
-            (result = (SVGAnimatedInteger)orderXReference.get()) == null) {
-            result = new SVGOMAnimatedInteger(this, null, SVG_ORDER_X_ATTRIBUTE, null);
-            orderXReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getOrderX()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getOrderY()}.
+     * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getOrderY()}.
      */
     public SVGAnimatedInteger getOrderY() {
-        SVGAnimatedInteger result;
-        if (orderYReference == null ||
-            (result = (SVGAnimatedInteger)orderYReference.get()) == null) {
-            result = new SVGOMAnimatedInteger(this, null, SVG_ORDER_Y_ATTRIBUTE, null);
-            orderYReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getOrderY()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getTargetX()}.
+     * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getTargetX()}.
      */
     public SVGAnimatedInteger getTargetX() {
-        SVGAnimatedInteger result;
-        if (targetXReference == null ||
-            (result = (SVGAnimatedInteger)targetXReference.get()) == null) {
-            result = new SVGOMAnimatedInteger(this, null, SVG_TARGET_X_ATTRIBUTE, null);
-            targetXReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getTargetX()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getTargetY()}.
+     * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getTargetY()}.
      */
     public SVGAnimatedInteger getTargetY() {
-        SVGAnimatedInteger result;
-        if (targetYReference == null ||
-            (result = (SVGAnimatedInteger)targetYReference.get()) == null) {
-            result = new SVGOMAnimatedInteger(this, null, SVG_TARGET_Y_ATTRIBUTE, null);
-            targetYReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getTargetY()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getDivisor()}.
+     * <b>DOM</b>: Implements {@link SVGFEConvolveMatrixElement#getDivisor()}.
      */
     public SVGAnimatedNumber getDivisor() {
-        SVGAnimatedNumber result;
-        if (divisorReference == null ||
-            (result = (SVGAnimatedNumber)divisorReference.get()) == null) {
-            result = new SVGOMAnimatedNumber(this, null, SVG_DIVISOR_ATTRIBUTE, null);
-            divisorReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getDivisor()");
     }
 
     /**
@@ -277,13 +126,7 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getBias()}.
      */
     public SVGAnimatedNumber getBias() {
-        SVGAnimatedNumber result;
-        if (biasReference == null ||
-            (result = (SVGAnimatedNumber)biasReference.get()) == null) {
-            result = new SVGOMAnimatedNumber(this, null, SVG_BIAS_ATTRIBUTE, null);
-            biasReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getBias()");
     }
 
     /**
@@ -291,15 +134,7 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getKernelUnitLengthX()}.
      */
     public SVGAnimatedLength getKernelUnitLengthX() {
-        SVGAnimatedLength result;
-        if (kernelUnitLengthXReference == null ||
-            (result = (SVGAnimatedLength)kernelUnitLengthXReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null,
-                                             SVG_KERNEL_UNIT_LENGTH_X_ATTRIBUTE,
-                                             null);
-            kernelUnitLengthXReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getKernelUnitLengthX()");
     }
 
     /**
@@ -307,15 +142,7 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getKernelUnitLengthY()}.
      */
     public SVGAnimatedLength getKernelUnitLengthY() {
-        SVGAnimatedLength result;
-        if (kernelUnitLengthYReference == null ||
-            (result = (SVGAnimatedLength)kernelUnitLengthYReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null,
-                                             SVG_KERNEL_UNIT_LENGTH_Y_ATTRIBUTE,
-                                             null);
-            kernelUnitLengthYReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getKernelUnitLengthY()");
     }
 
     /**
@@ -323,21 +150,15 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getPreserveAlpha()}.
      */
     public SVGAnimatedBoolean getPreserveAlpha() {
-        SVGAnimatedBoolean result;
-        if (preserveAlphaReference == null ||
-            (result = (SVGAnimatedBoolean)preserveAlphaReference.get()) == null) {
-            result = new SVGOMAnimatedBoolean(this, null, SVG_PRESERVE_ALPHA_ATTRIBUTE);
-            preserveAlphaReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getPreserveAlpha()");
     }
 
     /**
-     * Returns the default attribute values in a map.
+     * Returns the AttributeInitializer for this element type.
      * @return null if this element has no attribute with a default value.
      */
-    protected Map getDefaultAttributeValues() {
-        return attributeValues;
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**

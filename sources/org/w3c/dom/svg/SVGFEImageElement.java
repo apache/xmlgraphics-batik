@@ -6,6 +6,5 @@ public interface SVGFEImageElement extends
                SVGURIReference,
                SVGLangSpace,
                SVGExternalResourcesRequired,
-               SVGStylable,
                SVGFilterPrimitiveStandardAttributes {
 }

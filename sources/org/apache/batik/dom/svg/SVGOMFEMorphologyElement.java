@@ -8,9 +8,8 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -20,7 +19,7 @@ import org.w3c.dom.svg.SVGAnimatedString;
 import org.w3c.dom.svg.SVGFEMorphologyElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEMorphologyElement}.
+ * This class implements {@link SVGFEMorphologyElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -30,19 +29,16 @@ public class SVGOMFEMorphologyElement
     implements SVGFEMorphologyElement {
 
     /**
-     * The reference to the in attribute.
+     * The attribute initializer.
      */
-    protected transient WeakReference inReference;
-
-    /**
-     * The reference to the radiusX attribute.
-     */
-    protected transient WeakReference radiusXReference;
-
-    /**
-     * The reference to the radiusY attribute.
-     */
-    protected transient WeakReference radiusYReference;
+    protected final static AttributeInitializer attributeInitializer;
+    static {
+        attributeInitializer = new AttributeInitializer(1);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_OPERATOR_ATTRIBUTE,
+                                          SVG_ERODE_VALUE);
+    }
 
     /**
      * Creates a new SVGOMFEMorphologyElement object.
@@ -60,7 +56,7 @@ public class SVGOMFEMorphologyElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_FE_MORPHOLOGY_TAG;
@@ -70,35 +66,37 @@ public class SVGOMFEMorphologyElement
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-	SVGAnimatedString result;
-	if (inReference == null ||
-	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-	    inReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException("!!! TODO getIn1()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getOperator()}.
      */
     public SVGAnimatedEnumeration getOperator() {
-        throw new RuntimeException(" !!! TODO");
+        throw new RuntimeException(" !!! TODO getOperator()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getRadiusX()}.
      */
     public SVGAnimatedLength getRadiusX() {
-        throw new RuntimeException(" !!! TODO");
+        throw new RuntimeException(" !!! TODO getRadiusX()");
     } 
 
     /**
      * <b>DOM</b>: Implements {@link SVGFEMorphologyElement#getRadiusY()}.
      */
     public SVGAnimatedLength getRadiusY() {
-        throw new RuntimeException(" !!! TODO");
+        throw new RuntimeException(" !!! TODO getRadiusY()");
     } 
+
+    /**
+     * Returns the AttributeInitializer for this element type.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
+    }
 
     /**
      * Returns a new uninitialized instance of this object's class.

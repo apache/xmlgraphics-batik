@@ -10,78 +10,25 @@ package org.apache.batik.dom.svg;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAnimatedTransformList;
-import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.svg.SVGException;
-import org.w3c.dom.svg.SVGMatrix;
-import org.w3c.dom.svg.SVGRect;
 
 /**
- * To provide support for the SVGTransformable interface.
+ * This class provides support for the SVGTransformable interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public class SVGTransformableSupport {
     /**
-     * Creates a new SVGTransformable element.
+     * Creates a new SVGTransformableSupport.
      */
     public SVGTransformableSupport() {
     }
     
     /**
      * To implement {@link
-     * org.w3c.dom.svg.SVGTransformable#getNearestViewportElement()}.
-     */
-    public SVGElement getNearestViewportElement(Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGTransformableSupport.getNearestViewportElement()");
-    }
-
-    /**
-     * To implement {@link
-     * org.w3c.dom.svg.SVGTransformable#getFarthestViewportElement()}.
-     */
-    public SVGElement getFarthestViewportElement(Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGTransformableSupport.getFarthestViewportElement()");
-    }
-
-    /**
-     * To implement {@link
      * org.w3c.dom.svg.SVGTransformable#getTransform()}.
      */
-    public SVGAnimatedTransformList getTransform(Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGTransformableSupport.getTransform()");
-    }
-
-    /**
-     * To implement {@link
-     * org.w3c.dom.svg.SVGTransformable#getBBox()}.
-     */
-    public SVGRect getBBox(Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGTransformableSupport.getBBox()");
-    }
-
-    /**
-     * To implement {@link
-     * org.w3c.dom.svg.SVGTransformable#getCTM()}.
-     */
-    public SVGMatrix getCTM(Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGTransformableSupport.getCTM()");
-    }
-
-    /**
-     * To implement {@link
-     * org.w3c.dom.svg.SVGTransformable#getScreenCTM()}.
-     */
-    public SVGMatrix getScreenCTM(Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGTransformableSupport.getScreenCTM()");
-    }
-
-    /**
-     * To implement {@link
-     * org.w3c.dom.svg.SVGTransformable#getTransformToElement(SVGElement)}.
-     */
-    public SVGMatrix getTransformToElement(SVGElement element, Element elt)
-	throws SVGException {
-	throw new RuntimeException(" !!! TODO: SVGTransformableSupport.getTransformToElement()");
+    public static SVGAnimatedTransformList getTransform(Element elt) {
+	throw new RuntimeException(" !!! TODO: getTransform()");
     }
 }

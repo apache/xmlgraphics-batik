@@ -8,8 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.Node;
@@ -17,7 +15,7 @@ import org.w3c.dom.svg.SVGAnimatedNumber;
 import org.w3c.dom.svg.SVGFEPointLightElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGFEPointLightElement}.
+ * This class implements {@link SVGFEPointLightElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -25,51 +23,6 @@ import org.w3c.dom.svg.SVGFEPointLightElement;
 public class SVGOMFEPointLightElement
     extends    SVGOMElement
     implements SVGFEPointLightElement {
-
-    /**
-     * The DefaultAttributeValueProducer for x.
-     */
-    protected final static DefaultAttributeValueProducer X_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_FE_POINT_LIGHT_X_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The DefaultAttributeValueProducer for y.
-     */
-    protected final static DefaultAttributeValueProducer Y_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_FE_POINT_LIGHT_Y_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The DefaultAttributeValueProducer for z.
-     */
-    protected final static DefaultAttributeValueProducer Z_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_FE_POINT_LIGHT_Z_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The reference to the x attribute.
-     */
-    protected transient WeakReference xReference;
-
-    /**
-     * The reference to the y attribute.
-     */
-    protected transient WeakReference yReference;
-
-    /**
-     * The reference to the z attribute.
-     */
-    protected transient WeakReference zReference;
 
     /**
      * Creates a new SVGOMFEPointLightElement object.
@@ -88,40 +41,24 @@ public class SVGOMFEPointLightElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_FE_POINT_LIGHT_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEPointLightElement#getX()}.
+     * <b>DOM</b>: Implements {@link SVGFEPointLightElement#getX()}.
      */
     public SVGAnimatedNumber getX() {
-        SVGAnimatedNumber result;
-        if (xReference == null ||
-            (result = (SVGAnimatedNumber)xReference.get()) == null) {
-            result = new SVGOMAnimatedNumber(this, null, SVG_X_ATTRIBUTE,
-                                             X_DEFAULT_VALUE_PRODUCER);
-            xReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO getX()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGFEPointLightElement#getY()}.
+     * <b>DOM</b>: Implements {@link SVGFEPointLightElement#getY()}.
      */
     public SVGAnimatedNumber getY() {
-        SVGAnimatedNumber result;
-        if (yReference == null ||
-            (result = (SVGAnimatedNumber)yReference.get()) == null) {
-            result = new SVGOMAnimatedNumber(this, null, SVG_Y_ATTRIBUTE,
-                                             Y_DEFAULT_VALUE_PRODUCER);
-            yReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO getY()");
     }
 
     /**
@@ -129,14 +66,7 @@ public class SVGOMFEPointLightElement
      * org.w3c.dom.svg.SVGFEPointLightElement#getZ()}.
      */
     public SVGAnimatedNumber getZ() {
-        SVGAnimatedNumber result;
-        if (zReference == null ||
-            (result = (SVGAnimatedNumber)zReference.get()) == null) {
-            result = new SVGOMAnimatedNumber(this, null, SVG_Z_ATTRIBUTE,
-                                             Z_DEFAULT_VALUE_PRODUCER);
-            zReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO getZ()");
     }
 
     /**

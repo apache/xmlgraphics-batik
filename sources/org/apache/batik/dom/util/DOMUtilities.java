@@ -163,70 +163,26 @@ public class DOMUtilities extends XMLUtilities {
                     NamedNodeMap attr = root.getAttributes();
                     int len = attr.getLength();
                     for (int i = 0; i < len; i++) {
-                        rroot.setAttributeNode((Attr)deepCloneNode(attr.item(i),
-                                                                   result));
+                        rroot.setAttributeNode((Attr)result.importNode(attr.item(i),
+                                                                       true));
                     }
                 }
-                deepCloneChildren(root, rroot, result);
+                for (Node c = root.getFirstChild();
+                     c != null;
+                     c = c.getNextSibling()) {
+                    rroot.appendChild(result.importNode(c, true));
+                }
             } else {
                 if (n.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
                     if (before) {
-                        result.insertBefore(deepCloneNode(n, result), rroot);
+                        result.insertBefore(result.importNode(n, true), rroot);
                     } else {
-                        result.appendChild(deepCloneNode(n, result));
+                        result.appendChild(result.importNode(n, true));
                     }
                 }
             }
         }
         return result;
-    }
-
-    /**
-     * Deep clones the given node, using the given document as factory.
-     */
-    protected static Node deepCloneNode(Node n, Document doc) {
-        switch (n.getNodeType()) {
-        case Node.ELEMENT_NODE:
-            Node res = doc.createElementNS(n.getNamespaceURI(), n.getNodeName());
-            deepCloneChildren(n, res, doc);
-            if (n.hasAttributes()) {
-                NamedNodeMap attr = n.getAttributes();
-                int len = attr.getLength();
-                Element elt = (Element)res;
-                for (int i = 0; i < len; i++) {
-                    elt.setAttributeNode((Attr)deepCloneNode(attr.item(i), doc));
-                }
-            }
-            return res;
-        case Node.ATTRIBUTE_NODE:
-            res = doc.createAttributeNS(n.getNamespaceURI(), n.getNodeName());
-            deepCloneChildren(n, res, doc);
-            return res;
-        case Node.TEXT_NODE:
-            return doc.createTextNode(n.getNodeValue());
-        case Node.CDATA_SECTION_NODE:
-            return doc.createCDATASection(n.getNodeValue());
-        case Node.ENTITY_REFERENCE_NODE:
-            res = doc.createEntityReference(n.getNodeName());
-            deepCloneChildren(n, res, doc);
-            return res;
-        case Node.PROCESSING_INSTRUCTION_NODE:
-            return doc.createProcessingInstruction(n.getNodeName(), n.getNodeValue());
-        case Node.COMMENT_NODE:
-            return doc.createComment(n.getNodeValue());
-        default:
-            throw new Error("Internal error (" + n.getNodeType() + ")");
-        }
-    }
-
-    /**
-     * Clones the children of the source node and appends them to the
-     * destination node.
-     */
-    protected static void deepCloneChildren(Node source, Node dest, Document doc) {
-        for (Node n = source.getFirstChild(); n != null; n = n.getNextSibling()) {
-            dest.appendChild(deepCloneNode(n, doc));
-        }
     }
 
     /**

@@ -13,6 +13,7 @@ import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -162,21 +163,6 @@ public abstract class SVGOMTextContentElement
     // SVGStylable support ///////////////////////////////////////////////////
 
     /**
-     * The stylable support.
-     */
-    protected SVGStylableSupport stylableSupport;
-
-    /**
-     * Returns stylableSupport different from null.
-     */
-    protected final SVGStylableSupport getStylableSupport() {
-	if (stylableSupport == null) {
-	    stylableSupport = new SVGStylableSupport();
-	}
-	return stylableSupport;
-    }
-
-    /**
      * Implements {@link
      * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
      */
@@ -188,7 +174,7 @@ public abstract class SVGOMTextContentElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
      */
     public CSSStyleDeclaration getStyle() {
-        return getStylableSupport().getStyle(this);
+        return SVGStylableSupport.getStyle(this);
     }
 
     /**
@@ -196,7 +182,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
      */
     public CSSValue getPresentationAttribute(String name) {
-        return getStylableSupport().getPresentationAttribute(name, this);
+        return SVGStylableSupport.getPresentationAttribute(name, this);
     }
 
     /**
@@ -204,7 +190,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGStylable#getClassName()}.
      */
     public SVGAnimatedString getClassName() {
-        return getStylableSupport().getClassName(this);
+        return SVGStylableSupport.getClassName(this);
     }
 
     // OverrideStyleElement ///////////////////////////////////////////
@@ -214,7 +200,7 @@ public abstract class SVGOMTextContentElement
      * OverrideStyleElement#hasOverrideStyle(String)}.
      */
     public boolean hasOverrideStyle(String pseudoElt) {
-	return getStylableSupport().hasOverrideStyle(pseudoElt);
+	return SVGStylableSupport.hasOverrideStyle(pseudoElt);
     }    
 
     /**
@@ -222,35 +208,17 @@ public abstract class SVGOMTextContentElement
      * OverrideStyleElement#getOverrideStyle(String)}.
      */
     public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-	return getStylableSupport().getOverrideStyle(pseudoElt, this);
+	return SVGStylableSupport.getOverrideStyle(pseudoElt, this);
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
-
-    /**
-     * The SVGExternalResourcesRequired support.
-     */
-    protected SVGExternalResourcesRequiredSupport
-        externalResourcesRequiredSupport;
-
-    /**
-     * Returns testsSupport different from null.
-     */
-    protected final SVGExternalResourcesRequiredSupport
-	getExternalResourcesRequiredSupport() {
-	if (externalResourcesRequiredSupport == null) {
-	    externalResourcesRequiredSupport =
-                new SVGExternalResourcesRequiredSupport();
-	}
-	return externalResourcesRequiredSupport;
-    }
 
     /**
      * <b>DOM</b>: Implements {@link
      * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-	return getExternalResourcesRequiredSupport().
+	return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 
@@ -287,26 +255,11 @@ public abstract class SVGOMTextContentElement
     // SVGTests support ///////////////////////////////////////////////////
 
     /**
-     * The tests support.
-     */
-    protected SVGTestsSupport testsSupport;
-
-    /**
-     * Returns testsSupport different from null.
-     */
-    protected final SVGTestsSupport getTestsSupport() {
-	if (testsSupport == null) {
-	    testsSupport = new SVGTestsSupport();
-	}
-	return testsSupport;
-    }
-
-    /**
      * <b>DOM</b>: Implements {@link
      * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
-	return getTestsSupport().getRequiredFeatures(this);
+	return SVGTestsSupport.getRequiredFeatures(this);
     }
 
     /**
@@ -314,7 +267,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
-	return getTestsSupport().getRequiredExtensions(this);
+	return SVGTestsSupport.getRequiredExtensions(this);
     }
 
     /**
@@ -322,7 +275,7 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
-	return getTestsSupport().getSystemLanguage(this);
+	return SVGTestsSupport.getSystemLanguage(this);
     }
 
     /**
@@ -330,6 +283,6 @@ public abstract class SVGOMTextContentElement
      * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-	return getTestsSupport().hasExtension(extension, this);
+	return SVGTestsSupport.hasExtension(extension, this);
     }
 }

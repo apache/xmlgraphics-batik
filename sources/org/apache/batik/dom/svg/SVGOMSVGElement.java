@@ -8,14 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.batik.css.ElementNonCSSPresentationalHints;
-import org.apache.batik.css.ExtendedElementCSSInlineStyle;
 import org.apache.batik.dom.AbstractDocument;
-import org.apache.batik.dom.util.OverrideStyleElement;
 import org.apache.batik.dom.util.XMLSupport;
 
 import org.w3c.dom.DOMException;
@@ -23,7 +16,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.DocumentCSS;
 import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.DocumentEvent;
@@ -57,75 +49,40 @@ import org.w3c.dom.views.DocumentView;
  * @version $Id$
  */
 public class SVGOMSVGElement
-    extends    SVGOMElement
-    implements SVGSVGElement,
-               OverrideStyleElement,
-               ExtendedElementCSSInlineStyle,
-               ElementNonCSSPresentationalHints {
+    extends    SVGStylableElement
+    implements SVGSVGElement {
 
     /**
-     * The DefaultAttributeValueProducer for 'width'.
+     * The attribute initializer.
      */
-    protected final static DefaultAttributeValueProducer
-        WIDTH_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_SVG_WIDTH_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The DefaultAttributeValueProducer for 'height'.
-     */
-    protected final static DefaultAttributeValueProducer
-        HEIGHT_DEFAULT_VALUE_PRODUCER =
-        new DefaultAttributeValueProducer() {
-                public String getDefaultAttributeValue() {
-                    return SVG_SVG_HEIGHT_DEFAULT_VALUE;
-                }
-            };
-
-    /**
-     * The attribute-value map map.
-     */
-    protected static Map attributeValues = new HashMap(3);
+    protected final static AttributeInitializer attributeInitializer;
     static {
-        Map values = new HashMap(7);
-        values.put(SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE,   "text/ecmascript");
-        values.put(SVG_CONTENT_STYLE_TYPE_ATTRIBUTE,    "text/css");
-        values.put(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE, "xMidYMid meet");
-        values.put(SVG_ZOOM_AND_PAN_ATTRIBUTE,          "magnify");
-        attributeValues.put(null, values);
-
-        values = new HashMap(2);
-        values.put("xmlns", SVGDOMImplementation.SVG_NAMESPACE_URI);
-        attributeValues.put(XMLSupport.XMLNS_NAMESPACE_URI, values);
+        attributeInitializer = new AttributeInitializer(6);
+        attributeInitializer.addAttribute(XMLSupport.XMLNS_NAMESPACE_URI,
+                                          null,
+                                          "xmlns",
+                                          SVG_NAMESPACE_URI);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
+                                          "xMidYMid meet");
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_ZOOM_AND_PAN_ATTRIBUTE,
+                                          SVG_MAGNIFY_VALUE);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_VERSION_ATTRIBUTE,
+                                          SVG_VERSION);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE,
+                                          "text/ecmascript");
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_CONTENT_STYLE_TYPE_ATTRIBUTE,
+                                          "text/css");
     }
-
-    /**
-     * The reference to the x attribute.
-     */
-    protected WeakReference xReference;
-
-    /**
-     * The reference to the y attribute.
-     */
-    protected WeakReference yReference;
-
-    /**
-     * The reference to the width attribute.
-     */
-    protected WeakReference widthReference;
-
-    /**
-     * The reference to the height attribute.
-     */
-    protected WeakReference heightReference;
-
-    /**
-     * The parent element.
-     */
-    protected Element parentElement;
 
     /**
      * Creates a new SVGOMSVGElement object.
@@ -143,105 +100,73 @@ public class SVGOMSVGElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "svg";
+        return SVG_SVG_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGSVGElement#getX()}.
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-        SVGAnimatedLength result;
-        if (xReference == null ||
-            (result = (SVGAnimatedLength)xReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_X_ATTRIBUTE, null);
-            xReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getX()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGSVGElement#getY()}.
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-        SVGAnimatedLength result;
-        if (yReference == null ||
-            (result = (SVGAnimatedLength)yReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_Y_ATTRIBUTE, null);
-            yReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getY()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGSVGElement#getWidth()}.
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-        SVGAnimatedLength result;
-        if (widthReference == null ||
-            (result = (SVGAnimatedLength)widthReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_WIDTH_ATTRIBUTE,
-                                             WIDTH_DEFAULT_VALUE_PRODUCER);
-            widthReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getWidth()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGSVGElement#getHeight()}.
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-        SVGAnimatedLength result;
-        if (heightReference == null ||
-            (result = (SVGAnimatedLength)heightReference.get()) == null) {
-            result = new SVGOMAnimatedLength(this, null, SVG_HEIGHT_ATTRIBUTE,
-                                             HEIGHT_DEFAULT_VALUE_PRODUCER);
-            heightReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getHeight()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGSVGElement#getContentScriptType()}.
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getContentScriptType()}.
      */
     public String getContentScriptType() {
         return getAttributeNS(null, SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGSVGElement#setContentScriptType(String)}.
+     * <b>DOM</b>: Implements {@link SVGSVGElement#setContentScriptType(String)}.
      */
     public void setContentScriptType(String type) {
         setAttributeNS(null, SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE, type);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGSVGElement#getContentStyleType()}.
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getContentStyleType()}.
      */
     public String getContentStyleType() {
         return getAttributeNS(null, SVG_CONTENT_STYLE_TYPE_ATTRIBUTE);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGSVGElement#setContentStyleType(String)}.
+     * <b>DOM</b>: Implements {@link SVGSVGElement#setContentStyleType(String)}.
      */
     public void setContentStyleType(String type) {
         setAttributeNS(null, SVG_CONTENT_STYLE_TYPE_ATTRIBUTE, type);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGSVGElement#getViewport()}.
+     * <b>DOM</b>: Implements {@link SVGSVGElement#getViewport()}.
      */
     public SVGRect getViewport() {
-        throw new RuntimeException(" !!! TODO: SVGOMSVGElement.getViewport()");
+        throw new RuntimeException(" !!! TODO: getViewport()");
     }
 
     public float getPixelUnitToMillimeterX( ) {
@@ -327,14 +252,14 @@ public class SVGOMSVGElement
      * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGNumber()}.
      */
     public SVGNumber createSVGNumber() {
-        return new SVGOMNumber();
+        throw new RuntimeException("!!! TODO: createSVGNumber()");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGSVGElement#createSVGLength()}.
      */
     public SVGLength createSVGLength() {
-        return new SVGOMLength();
+        throw new RuntimeException("!!! TODO: createSVGNumber()");
     }
 
     public SVGAngle               createSVGAngle (  ) {
@@ -362,14 +287,6 @@ public class SVGOMSVGElement
         throw new Error();
     }
 
-    /**
-     * Returns the default attribute values in a map.
-     * @return null if this element has no attribute with a default value.
-     */
-    protected Map getDefaultAttributeValues() {
-        return attributeValues;
-    }
-
     // SVGLocatable ///////////////////////////////////////////////////////
 
     public SVGElement getNearestViewportElement( ) {
@@ -390,17 +307,6 @@ public class SVGOMSVGElement
     public SVGMatrix getTransformToElement (SVGElement element)
         throws SVGException {
         throw new Error();
-    }
-
-    // ElementNonCSSPresentationalHints ////////////////////////////////////
-
-    /**
-     * Returns the translation of the non-CSS hints to the corresponding
-     * CSS rules. The result can be null.
-     */
-    public CSSStyleDeclaration getNonCSSPresentationalHints() {
-        return ElementNonCSSPresentationalHintsSupport
-            .getNonCSSPresentationalHints(this);
     }
 
     // ViewCSS ////////////////////////////////////////////////////////////////
@@ -453,72 +359,6 @@ public class SVGOMSVGElement
                                                                   pseudoElt);
     }
 
-    // SVGStylable support ///////////////////////////////////////////////////
-
-    /**
-     * The stylable support.
-     */
-    protected SVGStylableSupport stylableSupport;
-
-    /**
-     * Returns stylableSupport different from null.
-     */
-    protected final SVGStylableSupport getStylableSupport() {
-        if (stylableSupport == null) {
-            stylableSupport = new SVGStylableSupport();
-        }
-        return stylableSupport;
-    }
-
-    /**
-     * Implements {@link
-     * org.apache.batik.css.ExtendedElementCSSInlineStyle#hasStyle()}.
-     */
-    public boolean hasStyle() {
-        return SVGStylableSupport.hasStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGStylable#getStyle()}.
-     */
-    public CSSStyleDeclaration getStyle() {
-        return getStylableSupport().getStyle(this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getPresentationAttribute(String)}.
-     */
-    public CSSValue getPresentationAttribute(String name) {
-        return getStylableSupport().getPresentationAttribute(name, this);
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGStylable#getClassName()}.
-     */
-    public SVGAnimatedString getClassName() {
-        return getStylableSupport().getClassName(this);
-    }
-
-    // OverrideStyleElement ///////////////////////////////////////////
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#hasOverrideStyle(String)}.
-     */
-    public boolean hasOverrideStyle(String pseudoElt) {
-        return getStylableSupport().hasOverrideStyle(pseudoElt);
-    }
-
-    /**
-     * Implements {@link
-     * OverrideStyleElement#getOverrideStyle(String)}.
-     */
-    public CSSStyleDeclaration getOverrideStyle(String pseudoElt) {
-        return getStylableSupport().getOverrideStyle(pseudoElt, this);
-    }
-
     // SVGLangSpace support //////////////////////////////////////////////////
 
     /**
@@ -552,16 +392,14 @@ public class SVGOMSVGElement
     // SVGZoomAndPan support ///////////////////////////////////////////////
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
      */
     public short getZoomAndPan() {
         return SVGZoomAndPanSupport.getZoomAndPan(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
+     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGZoomAndPan#getZoomAndPan()}.
      */
     public void setZoomAndPan(short val) {
         SVGZoomAndPanSupport.setZoomAndPan(this, val);
@@ -574,7 +412,7 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGFitToViewBox#getViewBox()}.
      */
     public SVGAnimatedRect getViewBox() {
-        throw new RuntimeException(" !!! TODO: SVGOMSVGElement.getViewBox()");
+        throw new RuntimeException(" !!! TODO: getViewBox()");
     }
 
     /**
@@ -582,86 +420,56 @@ public class SVGOMSVGElement
      * org.w3c.dom.svg.SVGFitToViewBox#getPreserveAspectRatio()}.
      */
     public SVGAnimatedPreserveAspectRatio getPreserveAspectRatio() {
-        throw new RuntimeException
-            (" !!! TODO: SVGOMSVGElement.getPreserveAspectRatio()");
+        throw new RuntimeException(" !!! TODO: getPreserveAspectRatio()");
     }
 
     // SVGExternalResourcesRequired support /////////////////////////////
 
     /**
-     * The SVGExternalResourcesRequired support.
-     */
-    protected SVGExternalResourcesRequiredSupport
-        externalResourcesRequiredSupport;
-
-    /**
-     * Returns testsSupport different from null.
-     */
-    protected final SVGExternalResourcesRequiredSupport
-        getExternalResourcesRequiredSupport() {
-        if (externalResourcesRequiredSupport == null) {
-            externalResourcesRequiredSupport =
-                new SVGExternalResourcesRequiredSupport();
-        }
-        return externalResourcesRequiredSupport;
-    }
-
-    /**
      * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGExternalResourcesRequired}.
+     * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
     public SVGAnimatedBoolean getExternalResourcesRequired() {
-        return getExternalResourcesRequiredSupport().
+        return SVGExternalResourcesRequiredSupport.
             getExternalResourcesRequired(this);
     }
 
     // SVGTests support ///////////////////////////////////////////////////
 
     /**
-     * The tests support.
-     */
-    protected SVGTestsSupport testsSupport;
-
-    /**
-     * Returns testsSupport different from null.
-     */
-    protected final SVGTestsSupport getTestsSupport() {
-        if (testsSupport == null) {
-            testsSupport = new SVGTestsSupport();
-        }
-        return testsSupport;
-    }
-
-    /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
+     * <b>DOM</b>: Implements {@link SVGTests#getRequiredFeatures()}.
      */
     public SVGStringList getRequiredFeatures() {
-        return getTestsSupport().getRequiredFeatures(this);
+        return SVGTestsSupport.getRequiredFeatures(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
+     * <b>DOM</b>: Implements {@link SVGTests#getRequiredExtensions()}.
      */
     public SVGStringList getRequiredExtensions() {
-        return getTestsSupport().getRequiredExtensions(this);
+        return SVGTestsSupport.getRequiredExtensions(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
+     * <b>DOM</b>: Implements {@link SVGTests#getSystemLanguage()}.
      */
     public SVGStringList getSystemLanguage() {
-        return getTestsSupport().getSystemLanguage(this);
+        return SVGTestsSupport.getSystemLanguage(this);
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGTests#hasExtension(String)}.
+     * <b>DOM</b>: Implements {@link SVGTests#hasExtension(String)}.
      */
     public boolean hasExtension(String extension) {
-        return getTestsSupport().hasExtension(extension, this);
+        return SVGTestsSupport.hasExtension(extension, this);
+    }
+
+    /**
+     * Returns the AttributeInitializer for this element type.
+     * @return null if this element has no attribute with a default value.
+     */
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**

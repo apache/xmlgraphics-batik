@@ -8,7 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.Node;
@@ -16,7 +15,7 @@ import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGLineElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGLineElement}.
+ * This class implements {@link SVGLineElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -24,26 +23,6 @@ import org.w3c.dom.svg.SVGLineElement;
 public class SVGOMLineElement
     extends    SVGGraphicsElement
     implements SVGLineElement {
-
-    /**
-     * The reference to the x1 attribute.
-     */
-    protected WeakReference x1Reference;
-
-    /**
-     * The reference to the y1 attribute.
-     */
-    protected WeakReference y1Reference;
-
-    /**
-     * The reference to the x2 attribute.
-     */
-    protected WeakReference x2Reference;
-
-    /**
-     * The reference to the y2 attribute.
-     */
-    protected WeakReference y2Reference;
 
     /**
      * Creates a new SVGOMLineElement object.
@@ -61,62 +40,38 @@ public class SVGOMLineElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "line";
+        return SVG_LINE_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGLineElement#getX1()}.
+     * <b>DOM</b>: Implements {@link SVGLineElement#getX1()}.
      */
     public SVGAnimatedLength getX1() {
-	SVGAnimatedLength result;
-	if (x1Reference == null ||
-	    (result = (SVGAnimatedLength)x1Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x1", null);
-	    x1Reference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getX1()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGLineElement#getY1()}.
+     * <b>DOM</b>: Implements {@link SVGLineElement#getY1()}.
      */
     public SVGAnimatedLength getY1() {
-	SVGAnimatedLength result;
-	if (y1Reference == null ||
-	    (result = (SVGAnimatedLength)y1Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y1", null);
-	    y1Reference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getY1()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGLineElement#getX2()}.
+     * <b>DOM</b>: Implements {@link SVGLineElement#getX2()}.
      */
     public SVGAnimatedLength getX2() {
-	SVGAnimatedLength result;
-	if (x2Reference == null ||
-	    (result = (SVGAnimatedLength)x2Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x2", null);
-	    x2Reference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getX2()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGLineElement#getY2()}.
+     * <b>DOM</b>: Implements {@link SVGLineElement#getY2()}.
      */
     public SVGAnimatedLength getY2() {
-	SVGAnimatedLength result;
-	if (y2Reference == null ||
-	    (result = (SVGAnimatedLength)y2Reference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y2", null);
-	    y2Reference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getY2()");
     } 
 
     /**

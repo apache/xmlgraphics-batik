@@ -97,8 +97,7 @@ public class ElementNonCSSPresentationalHintsSupport
      * Returns the translation of the non-CSS hints to the corresponding
      * CSS rules. The result can be null.
      */
-    public static CSSStyleDeclaration getNonCSSPresentationalHints
-        (Element elt) {
+    public static CSSStyleDeclaration getNonCSSPresentationalHints(Element elt) {
 	CSSStyleDeclaration result = null;
 
 	NamedNodeMap nnm = elt.getAttributes();

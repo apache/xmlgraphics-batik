@@ -8,7 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
 import org.apache.batik.dom.AbstractDocument;
 
 import org.w3c.dom.Node;
@@ -16,7 +15,7 @@ import org.w3c.dom.svg.SVGAnimatedLength;
 import org.w3c.dom.svg.SVGRectElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGRectElement}.
+ * This class implements {@link SVGRectElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -24,36 +23,6 @@ import org.w3c.dom.svg.SVGRectElement;
 public class SVGOMRectElement
     extends    SVGGraphicsElement
     implements SVGRectElement {
-
-    /**
-     * The reference to the x attribute.
-     */
-    protected WeakReference xReference;
-
-    /**
-     * The reference to the y attribute.
-     */
-    protected WeakReference yReference;
-
-    /**
-     * The reference to the width attribute.
-     */
-    protected WeakReference widthReference;
-
-    /**
-     * The reference to the height attribute.
-     */
-    protected WeakReference heightReference;
-
-    /**
-     * The reference to the rx attribute.
-     */
-    protected WeakReference rxReference;
-
-    /**
-     * The reference to the ry attribute.
-     */
-    protected WeakReference ryReference;
 
     /**
      * Creates a new SVGOMRectElement object.
@@ -71,90 +40,52 @@ public class SVGOMRectElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
-        return "rect";
+        return SVG_RECT_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGRectElement#getX()}.
+     * <b>DOM</b>: Implements {@link SVGRectElement#getX()}.
      */
     public SVGAnimatedLength getX() {
-	SVGAnimatedLength result;
-	if (xReference == null ||
-	    (result = (SVGAnimatedLength)xReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "x", null);
-	    xReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getX()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGRectElement#getY()}.
+     * <b>DOM</b>: Implements {@link SVGRectElement#getY()}.
      */
     public SVGAnimatedLength getY() {
-	SVGAnimatedLength result;
-	if (yReference == null ||
-	    (result = (SVGAnimatedLength)yReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "y", null);
-	    yReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getY()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGRectElement#getWidth()}.
+     * <b>DOM</b>: Implements {@link SVGRectElement#getWidth()}.
      */
     public SVGAnimatedLength getWidth() {
-	SVGAnimatedLength result;
-	if (widthReference == null ||
-	    (result = (SVGAnimatedLength)widthReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "width", null);
-	    widthReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getWidth()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * org.w3c.dom.svg.SVGRectElement#getHeight()}.
+     * <b>DOM</b>: Implements {@link SVGRectElement#getHeight()}.
      */
     public SVGAnimatedLength getHeight() {
-	SVGAnimatedLength result;
-	if (heightReference == null ||
-	    (result = (SVGAnimatedLength)heightReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "height", null);
-	    heightReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getHeight()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGRectElement#getRx()}.
+     * <b>DOM</b>: Implements {@link SVGRectElement#getRx()}.
      */
     public SVGAnimatedLength getRx() {
-	SVGAnimatedLength result;
-	if (rxReference == null ||
-	    (result = (SVGAnimatedLength)rxReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "rx", null);
-	    rxReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getRx()");
     } 
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.svg.SVGRectElement#getRy()}.
+     * <b>DOM</b>: Implements {@link SVGRectElement#getRy()}.
      */
     public SVGAnimatedLength getRy() {
-	SVGAnimatedLength result;
-	if (ryReference == null ||
-	    (result = (SVGAnimatedLength)ryReference.get()) == null) {
-	    result = new SVGOMAnimatedLength(this, null, "ry", null);
-	    ryReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException(" !!! TODO: getRy()");
     } 
 
     /**

@@ -9,22 +9,32 @@
 package org.apache.batik.dom.svg;
 
 import java.net.URL;
+
+import java.util.Locale;
+import java.util.MissingResourceException;
+
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.css.CSSOMStyleDeclaration;
 import org.apache.batik.css.CSSOMStyleSheet;
 import org.apache.batik.css.DOMMediaList;
 import org.apache.batik.css.svg.SVGValueFactoryMap;
 import org.apache.batik.css.value.ValueFactoryMap;
+
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractDOMImplementation;
-import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.GenericElement;
 import org.apache.batik.dom.GenericElementNS;
 import org.apache.batik.dom.StyleSheetFactory;
+
 import org.apache.batik.dom.events.DocumentEventSupport;
+
 import org.apache.batik.dom.util.CSSStyleDeclarationFactory;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.HashTable;
+
+import org.apache.batik.i18n.Localizable;
+import org.apache.batik.i18n.LocalizableSupport;
+
 import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
@@ -33,26 +43,27 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.events.Event;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSStyleSheet;
 import org.w3c.dom.css.DOMImplementationCSS;
+import org.w3c.dom.events.Event;
 import org.w3c.dom.stylesheets.StyleSheet;
-import org.w3c.dom.svg.SVGDocument;
 
 /**
  * This class implements the {@link org.w3c.dom.DOMImplementation} interface.
- * This implementation only supports the SVG 1.0 elements.
+ * It provides support the SVG 1.0 documents.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
 public class SVGDOMImplementation
     extends    AbstractDOMImplementation
-    implements DOMImplementationCSS,
+    implements Localizable,
+               DOMImplementationCSS,
                CSSStyleDeclarationFactory,
                StyleSheetFactory,
                SVGConstants {
+    
     /**
      * The SVG namespace uri.
      */
@@ -65,12 +76,23 @@ public class SVGDOMImplementation
     protected final static DOMImplementation DOM_IMPLEMENTATION =
         new SVGDOMImplementation();
 
-    {
-        registerFeature("CSS",            "2.0");
-        registerFeature("StyleSheets",    "2.0");
-        registerFeature("SVG",            "1.0");
-        registerFeature("SVGEvents",      "1.0");
-    }
+    /**
+     * The error messages bundle class name.
+     */
+    protected final static String RESOURCES =
+        "org.apache.batik.dom.svg.resources.Messages";
+
+    /**
+     * The CSS value factory map for SVG.
+     */
+    protected ValueFactoryMap valueFactoryMap =
+        new SVGValueFactoryMap(CSSDocumentHandler.createParser());
+
+    /**
+     * The localizable support for the error messages.
+     */
+    protected LocalizableSupport localizableSupport =
+        new LocalizableSupport(RESOURCES);
 
     /**
      * Returns the default instance of this class.
@@ -80,10 +102,14 @@ public class SVGDOMImplementation
     }
 
     /**
-     * The CSS value factory map for SVG.
+     * Creates a new SVGDOMImplementation object.
      */
-    protected ValueFactoryMap valueFactoryMap =
-        new SVGValueFactoryMap(CSSDocumentHandler.createParser());
+    public SVGDOMImplementation() {
+        registerFeature("CSS",            "2.0");
+        registerFeature("StyleSheets",    "2.0");
+        registerFeature("SVG",            "1.0");
+        registerFeature("SVGEvents",      "1.0");
+    }
 
     /**
      * <b>DOM</b>: Implements {@link
@@ -93,7 +119,7 @@ public class SVGDOMImplementation
                                            String publicId,
                                            String systemId) {
         throw new DOMException(DOMException.NOT_SUPPORTED_ERR,
-                               "Doctype not supported");
+                               formatMessage("doctype.not.supported", null));
     }
 
     /**
@@ -108,42 +134,6 @@ public class SVGDOMImplementation
         result.appendChild(result.createElementNS(namespaceURI,
                                                   qualifiedName));
         return result;
-    }
-
-    /**
-     * Returns the user-agent stylesheet.
-     */
-    public CSSStyleSheet getUserAgentStyleSheet() {
-        CSSStyleSheet result = null;
-
-        URL url = getClass().getResource("resources/UserAgentStyleSheet.css");
-        if (url != null) {
-            String uri = url.toString();
-            result = createCSSStyleSheet("User Agent Style Sheet", "all");
-            try {
-                CSSDocumentHandler.parseStyleSheet
-                    ((CSSOMStyleSheet)result, uri);
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
-        }
-        return result;
-    }
-
-    // CSSStyleDeclarationFactory ///////////////////////////////////////////
-
-    /**
-     * Creates a style declaration.
-     * @return a CSSOMStyleDeclaration instance.
-     */
-    public CSSStyleDeclaration createCSSStyleDeclaration() {
-        try {
-            CSSOMStyleDeclaration result = new CSSOMStyleDeclaration();
-            result.setValueFactoryMap(valueFactoryMap);
-            return result;
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
 
     // DOMImplementationCSS /////////////////////////////////////////////////
@@ -167,12 +157,51 @@ public class SVGDOMImplementation
         }
     }
 
+    // CSSStyleDeclarationFactory ///////////////////////////////////////////
+
+    /**
+     * Creates a style declaration.
+     * @return a CSSOMStyleDeclaration instance.
+     */
+    public CSSStyleDeclaration createCSSStyleDeclaration() {
+        try {
+            CSSOMStyleDeclaration result = new CSSOMStyleDeclaration();
+            result.setValueFactoryMap(valueFactoryMap);
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    // Localizable //////////////////////////////////////////////////////
+
+    /**
+     * Implements {@link Localizable#setLocale(Locale)}.
+     */
+    public void setLocale(Locale l) {
+	localizableSupport.setLocale(l);
+    }
+
+    /**
+     * Implements {@link Localizable#getLocale()}.
+     */
+    public Locale getLocale() {
+        return localizableSupport.getLocale();
+    }
+
+    /**
+     * Implements {@link Localizable#formatMessage(String,Object[])}.
+     */
+    public String formatMessage(String key, Object[] args)
+        throws MissingResourceException {
+        return localizableSupport.formatMessage(key, args);
+    }
+
     // StyleSheetFactory /////////////////////////////////////////////
 
     /**
      * Creates a stylesheet from the data of an xml-stylesheet
-     * processing instruction or throws a DOMException when it is not possible
-     * to create the given stylesheet.
+     * processing instruction or return null.
      */
     public StyleSheet createStyleSheet(Node n, String data) {
         HashTable attrs = new HashTable();
@@ -204,24 +233,27 @@ public class SVGDOMImplementation
                 CSSDocumentHandler.parseStyleSheet(ss, url.toString());
                 return ss;
             } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
             }
         }
-        //throw new RuntimeException("'" + type + "' not supported");
         return null;
     }
 
     /**
-     * Creates an DocumentEventSupport object suitable for use with this implementation.
+     * Returns the user-agent stylesheet.
      */
-    public DocumentEventSupport createDocumentEventSupport() {
-        DocumentEventSupport result =  new DocumentEventSupport();
-        result.registerEventFactory("SVGEvents",
-                                    new DocumentEventSupport.EventFactory() {
-                                            public Event createEvent() {
-                                                return new SVGOMEvent();
-                                            }
-                                        });
+    public CSSStyleSheet getUserAgentStyleSheet() {
+        CSSStyleSheet result = null;
+
+        URL url = getClass().getResource("resources/UserAgentStyleSheet.css");
+        if (url != null) {
+            String uri = url.toString();
+            result = createCSSStyleSheet("User Agent Style Sheet", "all");
+            try {
+                CSSDocumentHandler.parseStyleSheet
+                    ((CSSOMStyleSheet)result, uri);
+            } catch (Exception e) {
+            }
+        }
         return result;
     }
 
@@ -252,6 +284,20 @@ public class SVGDOMImplementation
         }
     }
 
+    /**
+     * Creates an DocumentEventSupport object suitable for use with this implementation.
+     */
+    public DocumentEventSupport createDocumentEventSupport() {
+        DocumentEventSupport result =  new DocumentEventSupport();
+        result.registerEventFactory("SVGEvents",
+                                    new DocumentEventSupport.EventFactory() {
+                                            public Event createEvent() {
+                                                return new SVGOMEvent();
+                                            }
+                                        });
+        return result;
+    }
+
     // The element factories /////////////////////////////////////////////////
 
     /**
@@ -268,6 +314,7 @@ public class SVGDOMImplementation
      * The SVG element factories.
      */
     protected HashTable factories = new HashTable();
+
     {
         factories.put(SVG_A_TAG,
                       new AElementFactory());
@@ -341,6 +388,9 @@ public class SVGDOMImplementation
         factories.put(SVG_FE_DISTANT_LIGHT_TAG,
                       new FeDistantLightElementFactory());
 
+        factories.put(SVG_FE_FLOOD_TAG,
+                      new FeFloodElementFactory());
+
         factories.put(SVG_FE_FUNC_A_TAG,
                       new FeFuncAElementFactory());
 
@@ -352,9 +402,6 @@ public class SVGDOMImplementation
 
         factories.put(SVG_FE_FUNC_B_TAG,
                       new FeFuncBElementFactory());
-
-        factories.put(SVG_FE_FLOOD_TAG,
-                      new FeFloodElementFactory());
 
         factories.put(SVG_FE_GAUSSIAN_BLUR_TAG,
                       new FeGaussianBlurElementFactory());
@@ -434,11 +481,11 @@ public class SVGDOMImplementation
         factories.put(SVG_LINEAR_GRADIENT_TAG,
                       new LinearGradientElementFactory());
 
-        factories.put(SVG_MASK_TAG,
-                      new MaskElementFactory());
-
         factories.put(SVG_MARKER_TAG,
                       new MarkerElementFactory());
+
+        factories.put(SVG_MASK_TAG,
+                      new MaskElementFactory());
 
         factories.put(SVG_METADATA_TAG,
                       new MetadataElementFactory());
@@ -525,7 +572,7 @@ public class SVGDOMImplementation
             return new SVGOMAElement(prefix, (AbstractDocument)doc);
         }
     }
-
+    
     /**
      * To create a 'altGlyph' element.
      */
@@ -535,9 +582,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_ALT_GLYPH_TAG);
+            return new SVGOMAltGlyphElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -550,9 +595,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_ALT_GLYPH_DEF_TAG);
+            return new SVGOMAltGlyphDefElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -565,9 +608,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_ALT_GLYPH_ITEM_TAG);
+            return new SVGOMAltGlyphItemElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -580,9 +621,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_ANIMATE_TAG);
+            return new SVGOMAnimateElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -595,9 +634,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_ANIMATE_COLOR_TAG);
+            return new SVGOMAnimateColorElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -610,9 +647,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_ANIMATE_MOTION_TAG);
+            return new SVGOMAnimateMotionElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -625,9 +660,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_ANIMATE_TRANSFORM_TAG);
+            return new SVGOMAnimateTransformElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -666,9 +699,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_COLOR_PROFILE_TAG);
+            return new SVGOMColorProfileElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -681,9 +712,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_CURSOR_TAG);
+            return new SVGOMCursorElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -696,9 +725,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_DEFINITION_SRC_TAG);
+            return new SVGOMDefinitionSrcElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -729,7 +756,7 @@ public class SVGDOMImplementation
     }
 
     /**
-     * To create a 'ellipse' element.
+     * To create an 'ellipse' element.
      */
     protected static class EllipseElementFactory implements ElementFactory {
         public EllipseElementFactory() {}
@@ -783,19 +810,6 @@ public class SVGDOMImplementation
     }
 
     /**
-     * To create a 'feConvolveMatrix' element.
-     */
-    protected static class FeConvolveMatrixElementFactory implements ElementFactory {
-        public FeConvolveMatrixElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SVGOMFEConvolveMatrixElement(prefix, (AbstractDocument)doc);
-        }
-    }
-
-    /**
      * To create a 'feComposite' element.
      */
     protected static class FeCompositeElementFactory
@@ -806,6 +820,19 @@ public class SVGDOMImplementation
          */
         public Element create(String prefix, Document doc) {
             return new SVGOMFECompositeElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'feConvolveMatrix' element.
+     */
+    protected static class FeConvolveMatrixElementFactory implements ElementFactory {
+        public FeConvolveMatrixElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFEConvolveMatrixElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -983,7 +1010,6 @@ public class SVGDOMImplementation
         }
     }
 
-
     /**
      * To create a 'feOffset' element.
      */
@@ -1063,96 +1089,6 @@ public class SVGDOMImplementation
     }
 
     /**
-     * To create a 'font' element.
-     */
-    protected static class FontElementFactory implements ElementFactory {
-        public FontElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_FONT_TAG);
-        }
-    }
-
-    /**
-     * To create a 'font-face' element.
-     */
-    protected static class FontFaceElementFactory implements ElementFactory {
-        public FontFaceElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_FONT_FACE_TAG);
-        }
-    }
-
-    /**
-     * To create a 'font-face-format' element.
-     */
-    protected static class FontFaceFormatElementFactory implements ElementFactory {
-        public FontFaceFormatElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_FONT_FACE_FORMAT_TAG);
-        }
-    }
-
-    /**
-     * To create a 'font-face-name' element.
-     */
-    protected static class FontFaceNameElementFactory implements ElementFactory {
-        public FontFaceNameElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_FONT_FACE_NAME_TAG);
-        }
-    }
-
-    /**
-     * To create a 'font-face-src' element.
-     */
-    protected static class FontFaceSrcElementFactory implements ElementFactory {
-        public FontFaceSrcElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_FONT_FACE_SRC_TAG);
-        }
-    }
-
-    /**
-     * To create a 'font-face-uri' element.
-     */
-    protected static class FontFaceUriElementFactory implements ElementFactory {
-        public FontFaceUriElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_FONT_FACE_URI_TAG);
-        }
-    }
-
-    /**
      * To create a 'filter' element.
      */
     protected static class FilterElementFactory implements ElementFactory {
@@ -1166,6 +1102,84 @@ public class SVGDOMImplementation
     }
 
     /**
+     * To create a 'font' element.
+     */
+    protected static class FontElementFactory implements ElementFactory {
+        public FontElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFontElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'font-face' element.
+     */
+    protected static class FontFaceElementFactory implements ElementFactory {
+        public FontFaceElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFontFaceElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'font-face-format' element.
+     */
+    protected static class FontFaceFormatElementFactory implements ElementFactory {
+        public FontFaceFormatElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFontFaceFormatElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'font-face-name' element.
+     */
+    protected static class FontFaceNameElementFactory implements ElementFactory {
+        public FontFaceNameElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFontFaceNameElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'font-face-src' element.
+     */
+    protected static class FontFaceSrcElementFactory implements ElementFactory {
+        public FontFaceSrcElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFontFaceSrcElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'font-face-uri' element.
+     */
+    protected static class FontFaceUriElementFactory implements ElementFactory {
+        public FontFaceUriElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMFontFaceUriElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
      * To create a 'foreignObject' element.
      */
     protected static class ForeignObjectElementFactory implements ElementFactory {
@@ -1174,9 +1188,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_FOREIGN_OBJECT_TAG);
+            return new SVGOMForeignObjectElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -1202,9 +1214,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_GLYPH_TAG);
+            return new SVGOMGlyphElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -1217,9 +1227,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_GLYPH_REF_TAG);
+            return new SVGOMGlyphRefElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -1232,9 +1240,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_HKERN_TAG);
+            return new SVGOMHKernElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -1278,19 +1284,6 @@ public class SVGDOMImplementation
     }
 
     /**
-     * To create a 'mask' element.
-     */
-    protected static class MaskElementFactory implements ElementFactory {
-        public MaskElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SVGOMMaskElement(prefix, (AbstractDocument)doc);
-        }
-    }
-
-    /**
      * To create a 'marker' element.
      */
     protected static class MarkerElementFactory implements ElementFactory {
@@ -1300,6 +1293,19 @@ public class SVGDOMImplementation
          */
         public Element create(String prefix, Document doc) {
             return new SVGOMMarkerElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'mask' element.
+     */
+    protected static class MaskElementFactory implements ElementFactory {
+        public MaskElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMMaskElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -1325,9 +1331,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_MISSING_GLYPH_TAG);
+            return new SVGOMMissingGlyphElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -1340,9 +1344,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_MPATH_TAG);
+            return new SVGOMMPathElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -1425,21 +1427,6 @@ public class SVGDOMImplementation
     }
 
     /**
-     * To create a 'set' element.
-     */
-    protected static class SetElementFactory implements ElementFactory {
-        public SetElementFactory() {}
-        /**
-         * Creates an instance of the associated element type.
-         */
-        public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_SET_TAG);
-        }
-    }
-
-    /**
      * To create a 'script' element.
      */
     protected static class ScriptElementFactory implements ElementFactory {
@@ -1449,6 +1436,19 @@ public class SVGDOMImplementation
          */
         public Element create(String prefix, Document doc) {
             return new SVGOMScriptElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'set' element.
+     */
+    protected static class SetElementFactory implements ElementFactory {
+        public SetElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new SVGOMSetElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -1604,9 +1604,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_VIEW_TAG);
+            return new SVGOMViewElement(prefix, (AbstractDocument)doc);
         }
     }
 
@@ -1619,9 +1617,7 @@ public class SVGDOMImplementation
          * Creates an instance of the associated element type.
          */
         public Element create(String prefix, Document doc) {
-            return new SVGOMToBeImplementedElement(prefix,
-                                                   (AbstractDocument)doc,
-                                                   SVG_VKERN_TAG);
+            return new SVGOMVKernElement(prefix, (AbstractDocument)doc);
         }
     }
 }

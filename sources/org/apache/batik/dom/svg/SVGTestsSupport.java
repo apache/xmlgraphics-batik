@@ -19,20 +19,6 @@ import org.w3c.dom.svg.SVGStringList;
  * @version $Id$
  */
 public class SVGTestsSupport {
-    /**
-     * The requiredFeatures attribute name.
-     */
-    public final static String REQUIRED_FEATURES = "requiredFeatures";
-
-    /**
-     * The requiredExtensions attribute name.
-     */
-    public final static String REQUIRED_EXTENSIONS = "requiredExtensions";
-
-    /**
-     * The systemLanguage attribute name.
-     */
-    public final static String SYSTEM_LANGUAGE = "systemLanguage";
 
     /**
      * Creates a new SVGTestsSupport object.
@@ -43,28 +29,28 @@ public class SVGTestsSupport {
     /**
      * To implements {@link org.w3c.dom.svg.SVGTests#getRequiredFeatures()}.
      */
-    public SVGStringList getRequiredFeatures(Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGTestsSupport.getRequiredFeatures()");
+    public static SVGStringList getRequiredFeatures(Element elt) {
+	throw new RuntimeException(" !!! TODO: getRequiredFeatures()");
     }
 
     /**
      * To implements {@link org.w3c.dom.svg.SVGTests#getRequiredExtensions()}.
      */
-    public SVGStringList getRequiredExtensions(Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGTestsSupport.getRequiredExtensions()");
+    public static SVGStringList getRequiredExtensions(Element elt) {
+	throw new RuntimeException(" !!! TODO: getRequiredExtensions()");
     }
 
     /**
      * To implements {@link org.w3c.dom.svg.SVGTests#getSystemLanguage()}.
      */
-    public SVGStringList getSystemLanguage(Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGTestsSupport.getSystemLanguage()");
+    public static SVGStringList getSystemLanguage(Element elt) {
+	throw new RuntimeException(" !!! TODO: getSystemLanguage()");
     }
 
     /**
      * To implements {@link org.w3c.dom.svg.SVGTests#hasExtension(String)}.
      */
-    public boolean hasExtension(String extension, Element elt) {
-	throw new RuntimeException(" !!! TODO: SVGTestsSupport.hasExtension()");	
+    public static boolean hasExtension(String extension, Element elt) {
+	throw new RuntimeException(" !!! TODO: hasExtension()");	
     }
 }

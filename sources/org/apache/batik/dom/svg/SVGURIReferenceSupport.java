@@ -8,8 +8,6 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.util.SVGConstants;
 
@@ -23,22 +21,11 @@ import org.w3c.dom.svg.SVGAnimatedString;
  * @version $Id$
  */
 public class SVGURIReferenceSupport implements SVGConstants {
-    /**
-     * The reference to the 'href' animated string.
-     */
-    protected WeakReference hrefReference;
 
     /**
      * To implement {@link org.w3c.dom.svg.SVGURIReference#getHref()}.
      */
-    public SVGAnimatedString getHref(Element elt) {
-        SVGAnimatedString result;
-        if (hrefReference == null ||
-            (result = (SVGAnimatedString)hrefReference.get()) == null) {
-            result = new SVGOMAnimatedString
-                (elt, XLinkSupport.XLINK_NAMESPACE_URI, SVG_HREF_ATTRIBUTE);
-            hrefReference = new WeakReference(result);
-        }
-        return result;
+    public static SVGAnimatedString getHref(Element elt) {
+        throw new RuntimeException("!!! TODO: getHref()");
     }
 }

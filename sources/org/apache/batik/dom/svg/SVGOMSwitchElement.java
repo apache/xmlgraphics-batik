@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGSwitchElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGSwitchElement}.
+ * This class implements {@link SVGSwitchElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
@@ -40,7 +40,7 @@ public class SVGOMSwitchElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_SWITCH_TAG;

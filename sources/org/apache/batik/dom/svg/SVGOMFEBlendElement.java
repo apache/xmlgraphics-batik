@@ -8,11 +8,8 @@
 
 package org.apache.batik.dom.svg;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.util.DoublyIndexedTable;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGAnimatedEnumeration;
@@ -29,56 +26,16 @@ public class SVGOMFEBlendElement
     extends    SVGOMFilterPrimitiveStandardAttributes
     implements SVGFEBlendElement {
 
-    // The enumeration maps
-    protected final static Map STRING_TO_SHORT_MODE = new HashMap(7);
-    protected final static Map SHORT_TO_STRING_MODE = new HashMap(7);
+    /**
+     * The attribute initializer.
+     */
+    protected final static AttributeInitializer attributeInitializer;
     static {
-        STRING_TO_SHORT_MODE.put(SVG_NORMAL_VALUE,
-                                  SVGOMAnimatedEnumeration.createShort((short)1));
-        STRING_TO_SHORT_MODE.put(SVG_MULTIPLY_VALUE,
-                                  SVGOMAnimatedEnumeration.createShort((short)2));
-        STRING_TO_SHORT_MODE.put(SVG_SCREEN_VALUE,
-                                  SVGOMAnimatedEnumeration.createShort((short)3));
-        STRING_TO_SHORT_MODE.put(SVG_DARKEN_VALUE,
-                                  SVGOMAnimatedEnumeration.createShort((short)4));
-        STRING_TO_SHORT_MODE.put(SVG_LIGHTEN_VALUE,
-                                  SVGOMAnimatedEnumeration.createShort((short)5));
-
-        SHORT_TO_STRING_MODE.put(SVGOMAnimatedEnumeration.createShort((short)1),
-                                 SVG_NORMAL_VALUE);
-        SHORT_TO_STRING_MODE.put(SVGOMAnimatedEnumeration.createShort((short)2),
-                                 SVG_MULTIPLY_VALUE);
-        SHORT_TO_STRING_MODE.put(SVGOMAnimatedEnumeration.createShort((short)3),
-                                 SVG_SCREEN_VALUE);
-        SHORT_TO_STRING_MODE.put(SVGOMAnimatedEnumeration.createShort((short)4),
-                                 SVG_DARKEN_VALUE);
-        SHORT_TO_STRING_MODE.put(SVGOMAnimatedEnumeration.createShort((short)5),
-                                 SVG_LIGHTEN_VALUE);
-    }
-
-    /**
-     * The reference to the in attribute.
-     */
-    protected transient WeakReference inReference;
-
-    /**
-     * The reference to the in2 attribute.
-     */
-    protected transient WeakReference in2Reference;
-
-    /**
-     * The reference to the mode attribute.
-     */
-    protected transient WeakReference modeReference;
-
-    /**
-     * The attribute-value map map.
-     */
-    protected static Map attributeValues = new HashMap(2);
-    static {
-        Map values = new HashMap(2);
-        values.put(SVG_MODE_ATTRIBUTE,  SVG_NORMAL_VALUE);
-        attributeValues.put(null, values);
+        attributeInitializer = new AttributeInitializer(1);
+        attributeInitializer.addAttribute(null,
+                                          null,
+                                          SVG_MODE_ATTRIBUTE,
+                                          SVG_NORMAL_VALUE);
     }
 
     /**
@@ -97,64 +54,39 @@ public class SVGOMFEBlendElement
     }
 
     /**
-     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
+     * <b>DOM</b>: Implements {@link Node#getLocalName()}.
      */
     public String getLocalName() {
         return SVG_FE_BLEND_TAG;
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGFEBlendElement#getIn1()}.
+     * <b>DOM</b>: Implements {@link SVGFEBlendElement#getIn1()}.
      */
     public SVGAnimatedString getIn1() {
-	SVGAnimatedString result;
-	if (inReference == null ||
-	    (result = (SVGAnimatedString)inReference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN_ATTRIBUTE);
-	    inReference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException("!!! TODO: getIn1()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGFEBlendElement#getIn2()}.
+     * <b>DOM</b>: Implements {@link SVGFEBlendElement#getIn2()}.
      */
     public SVGAnimatedString getIn2() {
-	SVGAnimatedString result;
-	if (in2Reference == null ||
-	    (result = (SVGAnimatedString)in2Reference.get()) == null) {
-	    result = new SVGOMAnimatedString(this, null, SVG_IN2_ATTRIBUTE);
-	    in2Reference = new WeakReference(result);
-	}
-	return result;
+        throw new RuntimeException("!!! TODO: getIn2()");
     }
 
     /**
-     * <b>DOM</b>: Implements {@link
-     * SVGFEBlendElement#getMode()}.
+     * <b>DOM</b>: Implements {@link SVGFEBlendElement#getMode()}.
      */
     public SVGAnimatedEnumeration getMode() {
-        SVGAnimatedEnumeration result;
-        if (modeReference == null ||
-            (result = (SVGAnimatedEnumeration)modeReference.get()) == null) {
-            result = new SVGOMAnimatedEnumeration(this, null,
-                                                  SVG_MODE_ATTRIBUTE,
-                                                  STRING_TO_SHORT_MODE,
-                                                  SHORT_TO_STRING_MODE,
-                                                  null);
-            modeReference = new WeakReference(result);
-        }
-        return result;
+        throw new RuntimeException("!!! TODO: getMode()");
     }
 
     /**
-     * Returns the default attribute values in a map.
+     * Returns the AttributeInitializer for this element type.
      * @return null if this element has no attribute with a default value.
      */
-    protected Map getDefaultAttributeValues() {
-        return attributeValues;
+    protected AttributeInitializer getAttributeInitializer() {
+        return attributeInitializer;
     }
 
     /**
