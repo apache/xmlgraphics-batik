@@ -30,14 +30,14 @@ import java.awt.image.renderable.RenderContext;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class ConcreteColorMatrixRable 
+public class ConcreteColorMatrixRable
     extends  AbstractRable
     implements ColorMatrixRable {
     /**
      * Predefined luminanceToAlpha matrix
      */
-    private static float MATRIX_LUMINANCE_TO_ALPHA[][] 
-        = { 
+    private static float MATRIX_LUMINANCE_TO_ALPHA[][]
+        = {
             {0,       0,       0,       0, 0},
             {0,       0,       0,       0, 0},
             {0,       0,       0,       0, 0},
@@ -69,7 +69,7 @@ public class ConcreteColorMatrixRable
     }
 
     /**
-     * Returns the type of this color matrix. 
+     * Returns the type of this color matrix.
      * @return one of TYPE_MATRIX, TYPE_SATURATE, TYPE_HUE_ROTATE,
      *         TYPE_LUMINANCE_TO_ALPHA
      */
@@ -86,7 +86,7 @@ public class ConcreteColorMatrixRable
     }
 
     /**
-     * Instances should be built through the static 
+     * Instances should be built through the static
      * factory methods
      */
     private ConcreteColorMatrixRable(){
@@ -105,7 +105,7 @@ public class ConcreteColorMatrixRable
         }
 
         float newMatrix[][] = new float[4][];
-        
+
         for(int i=0; i<4; i++){
             float m[] = matrix[i];
             if(m == null){
@@ -126,7 +126,7 @@ public class ConcreteColorMatrixRable
             System.out.println();
             }*/
 
-        ConcreteColorMatrixRable filter 
+        ConcreteColorMatrixRable filter
             = new ConcreteColorMatrixRable();
         filter.type = TYPE_MATRIX;
         filter.matrix = newMatrix;
@@ -137,7 +137,7 @@ public class ConcreteColorMatrixRable
      * Builds a TYPE_SATURATE instance
      */
     public static ColorMatrixRable buildSaturate(float s){
-        ConcreteColorMatrixRable filter 
+        ConcreteColorMatrixRable filter
             = new ConcreteColorMatrixRable();
         filter.type = TYPE_SATURATE;
         filter.matrix = new float[][] {
@@ -154,7 +154,7 @@ public class ConcreteColorMatrixRable
      * @param a angle, in radian
      */
     public static ColorMatrixRable buildHueRotate(float a){
-        ConcreteColorMatrixRable filter 
+        ConcreteColorMatrixRable filter
             = new ConcreteColorMatrixRable();
         filter.type = TYPE_HUE_ROTATE;
 
@@ -194,12 +194,12 @@ public class ConcreteColorMatrixRable
      * Builds a TYPE_LUMINANCE_TO_ALPHA instance
      */
     public static ColorMatrixRable buildLuminanceToAlpha(){
-        ConcreteColorMatrixRable filter 
+        ConcreteColorMatrixRable filter
             = new ConcreteColorMatrixRable();
         filter.type = TYPE_LUMINANCE_TO_ALPHA;
         filter.matrix = MATRIX_LUMINANCE_TO_ALPHA;
         return filter;
-    }        
+    }
 
     public RenderedImage createRendering(RenderContext rc){
         //
@@ -215,7 +215,7 @@ public class ConcreteColorMatrixRable
         final int srcMinY = srcRI.getMinY();
 
         RenderingHints hints = rc.getRenderingHints();
-        ColorMatrixOp op = new ColorMatrixOp(matrix, null);
+        BandCombineOp op = new BandCombineOp(matrix, null);
 
         //
         // Wrap source in buffered image
