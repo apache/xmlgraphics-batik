@@ -834,6 +834,8 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                              PARSER_CLASS_NAME);
         t.addTranscodingHint(PNGTranscoder.KEY_FORCE_TRANSPARENT_WHITE,
                              new Boolean(false));
+        t.addTranscodingHint(PNGTranscoder.KEY_BACKGROUND_COLOR,
+                             new Color(0,0,0,0));
         return t;
     }
 
