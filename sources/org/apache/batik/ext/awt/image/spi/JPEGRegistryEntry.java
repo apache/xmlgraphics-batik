@@ -73,15 +73,12 @@ import com.sun.image.codec.jpeg.TruncatedFileException;
 public class JPEGRegistryEntry 
     extends MagicNumberRegistryEntry {
 
-    static final byte [] sigJFIF   = {(byte)0xFF, (byte)0xd8, 
-                                      (byte)0xFF, (byte)0xe0};
-    static final byte [] sigEXIF   = {(byte)0xFF, (byte)0xd8, 
-                                      (byte)0xFF, (byte)0xe1};
+    static final byte [] sigJPEG   = {(byte)0xFF, (byte)0xd8, 
+                                      (byte)0xFF};
     static final String [] exts      = {"jpeg", "jpg" };
     static final String [] mimeTypes = {"image/jpeg", "image/jpg" };
     static final MagicNumber [] magicNumbers = {
-        new MagicNumber(0, sigJFIF),
-        new MagicNumber(0, sigEXIF)
+        new MagicNumber(0, sigJPEG)
     };
 
     public JPEGRegistryEntry() {
