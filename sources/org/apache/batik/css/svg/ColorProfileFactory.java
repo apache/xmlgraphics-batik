@@ -32,7 +32,7 @@ public class ColorProfileFactory
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(CSS_AUTO_VALUE,  START_VALUE);
+	values.put(CSS_AUTO_VALUE,  AUTO_VALUE);
 	values.put(CSS_SRGB_VALUE,  SRGB_VALUE);
     }
 
@@ -55,8 +55,10 @@ public class ColorProfileFactory
      */
     public ImmutableValue createValue(LexicalUnit lu) throws DOMException {
 	if (lu.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
-	    if (lu.getStringValue().equalsIgnoreCase(CSS_AUTO_VALUE)) {
-		return AUTO_VALUE;
+            String s = lu.getStringValue().toLowerCase();
+            if (!s.equals(CSS_AUTO_VALUE) &&
+                !s.equals(CSS_SRGB_VALUE)) {
+                return new ImmutableString(CSSPrimitiveValue.CSS_IDENT, s);
 	    }
 	}
         return super.createValue(lu);
