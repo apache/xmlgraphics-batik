@@ -15,6 +15,7 @@ import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DOMUtilities;
 
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -78,13 +79,14 @@ public abstract class SVGOMElement
      * <b>DOM</b>: Implements {@link SVGElement#getXMLbase()}.
      */
     public String getXMLbase() {
-        throw new RuntimeException("!!! TODO: getXMLbase()");
+        return XMLBaseSupport.getXMLBase(this);
     }
+
     /**
      * <b>DOM</b>: Implements {@link SVGElement#setXMLbase(String)}.
      */
     public void setXMLbase(String xmlbase) throws DOMException {
-        throw new RuntimeException("!!! TODO: setXMLbase()");
+        setAttributeNS(XMLConstants.XML_NAMESPACE_URI, "xml:base", xmlbase);
     }
 
     /**

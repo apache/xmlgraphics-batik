@@ -15,8 +15,8 @@ import org.apache.batik.css.AbstractViewCSS;
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Document;
@@ -79,7 +79,7 @@ public class URIResolver {
     public Node getNode(String uri, Element ref)
         throws MalformedURLException, IOException {
 
-        String baseURI = XMLSupport.getXMLBase(ref);
+        String baseURI = XMLBaseSupport.getXMLBase(ref);
         if ((baseURI == null) &&
             (uri.startsWith("#")))
             return document.getElementById(uri.substring(1));
