@@ -57,8 +57,12 @@ public class URIResolver {
     }
 
     /**
-     * Imports the element referenced by the given URI.
+     * Imports the Element referenced by the given URI on Element
+     * <tt>ref</tt>.
      * @param uri The element URI.
+     * @param ref The Element in the DOM tree to evaluate <tt>uri</tt>
+     *            from.  
+     * @return The referenced element or null if element can't be found.
      */
     public Element getElement(String uri, Element ref)
         throws MalformedURLException, IOException {
@@ -73,8 +77,12 @@ public class URIResolver {
     }
 
     /**
-     * Returns the node referenced by the given URI on element ref.
-     * @return The document or the element
+     * Imports the Node referenced by the given URI on Element
+     * <tt>ref</tt>.
+     * @param uri The element URI.
+     * @param ref The Element in the DOM tree to evaluate <tt>uri</tt>
+     *            from. 
+     * @return The referenced Node/Document or null if element can't be found.
      */
     public Node getNode(String uri, Element ref)
         throws MalformedURLException, IOException {
