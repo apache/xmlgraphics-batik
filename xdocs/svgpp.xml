@@ -60,7 +60,7 @@
             <s2 title="Using the binary distribution" >
 
                 <p>If you downloaded the binary distribution of Batik, you should have
-                gotten a file called <em>batik-1.0beta.zip</em>, and, after expanding that
+                gotten a file called <em>batik-1.0.zip</em>, and, after expanding that
                 file, a JAR (Java ARchive) file called <em>batik-svgpp.jar</em>. 
                 To start the pretty-printer, open a console, go to the directory where you 
                 expanded the distribution (and where batik-svgpp.jar is located) and
@@ -75,7 +75,7 @@
                         <li><em>-newline &lt;cr | cr-lf | lf&gt;</em> lets you select the  newline character(s) generated in the printed document. The default is 'lf' (unix style newline).</li>
                         <li><em>-tab-width &lt;number&gt;</em> lets you select the tabulation width. The default value is 4.</li>
                         <li><em>-doc-width &lt;number&gt;</em> lets you select the document preferred number of columns. The default value is 80.</li>
-                        <li><em>-no-format</em> lets you preserve the actual indentation. This option is useful to perform doctype or newline substitutions.</li>
+                        <li><em>-no-format</em> lets you preserve the current indentation. This option is useful to perform doctype or newline substitutions.</li>
                         <li><em>-xml-decl &lt;string&gt;</em> lets you set the XML declaration.</li>
                         <li><em>-doctype &lt;change | remove&gt;</em> lets you change or remove the doctype of the document.</li>
                         <li><em>-public-id &lt;string&gt;</em> lets you specify a public id to use when writing the document. This option is ignored unless '-doctype change' is specified.</li>
@@ -112,8 +112,8 @@
                         help message for the pretty-printer</li>
                 </ul>
                 <p>You can pass options to the rasterizer as follows:</p>
-                <p><strong>Windows: </strong><em>build svgpp -Dargs="[@options] [@files]"</em></p>
-                <p><strong>UNIX: </strong><em>build.sh svgpp -Dargs="[@options] [@files]"</em></p>
+                <p><strong>Windows: </strong><em>build svgpp [@options] [@files]</em></p>
+                <p><strong>UNIX: </strong><em>build.sh svgpp [@options] [@files]</em></p>
                 <p>Refer to <link href="#usingBinary">"Using the binary distribution" </link>for an explanation of these
                 options</p>
             </s2>
