@@ -56,7 +56,7 @@
 
     </defs>
 
-    <g id="svg" fill="black" filter="url(#shadow)" stroke="none" opacity=".5">
+    <g fill="black" filter="url(#shadow)" stroke="none" opacity=".5">
         <use xlink:href="#SVG_S" />
         <use xlink:href="#SVG_V" />
         <use xlink:href="#SVG_G" />
@@ -64,7 +64,7 @@
         <use xlink:href="#Ball" />
     </g>
     
-    <g id="svg" fill="black" stroke="none">
+    <g fill="black" stroke="none">
         <use xlink:href="#SVG_S" />
         <use xlink:href="#SVG_V" />
         <use xlink:href="#SVG_G" />

@@ -1,4 +1,4 @@
-<?xml version="1.0" standalone="yes"?>
+<?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
 "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 
@@ -312,7 +312,7 @@
     <!-- filterRegion_2               -->
     <!-- ============================ -->
     <g transform="translate(100, 0)">
--       <rect x="0" y="3000" width="20000000" height="25" style="filter:url(#filterRegion_2);" />
+        <rect x="0" y="3000" width="20000000" height="25" style="filter:url(#filterRegion_2);" />
         <rect class="filterRegionControl" x="25" y="35" width="45" height="35" />
         <text x="45" y="25" class="filterRegionControlLabel">filterRegion_2</text>
     </g>
