@@ -26,6 +26,7 @@
         <test id="samples/batikFX.svg" />
         <test id="samples/batikLogo.svg" />
         <test id="samples/batikYin.svg" />
+        <test id="samples/bookOfKells.svg" />
         <test id="samples/chessboard.svg" />
         <test id="samples/gradients.svg" />
         <test id="samples/GVT.svg" />
@@ -34,6 +35,7 @@
         <test id="samples/logoTexture.svg" />
         <test id="samples/moonPhases.svg" />
         <test id="samples/sizeOfSun.svg" />
+        <test id="samples/sunRise.svg" />
         <test id="samples/textRotate.svg" />
         <test id="samples/textRotateShadows.svg" />
     </testGroup>
