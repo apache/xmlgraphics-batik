@@ -1,0 +1,24 @@
+Manifest-Version: $Id$
+Main-Class: org.apache.batik.apps.svgviewer.Main
+Class-Path: lib/batik-ext.jar \
+            lib/batik-dom.jar \
+            lib/batik-css.jar \
+            lib/batik-svg-dom.jar \
+            lib/batik-gvt.jar \
+            lib/batik-parser.jar \
+            lib/batik-script.jar \
+            lib/batik-bridge.jar \
+            lib/batik-transcoder.jar \
+            lib/batik-gui-util.jar \
+            lib/batik-awt-util.jar \
+            lib/batik-util.jar \
+            lib/batik-xml.jar \
+            lib/batik-root.jar \
+            lib/batik-svggen.jar \
+            batik-svgviewer.jar \
+            batik-rasterizer.jar \
+            batik-pp.jar \
+            lib/crimson.jar \
+            lib/js.jar \
+            lib/xalan-1.2.1.jar \
+            lib/xerces-1.2.1.jar

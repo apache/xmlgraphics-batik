@@ -247,6 +247,7 @@ To display the available targets type:
                                transcoder-jar,
                                bridge-jar,
                                xml-jar,
+                               root-jar,
                                svg-pp-jar,
                                svggen-jar,
                                svg-viewer-jar,
@@ -310,7 +311,7 @@ To display the available targets type:
   </target>
 
 
-  <!-- AWT Util (dependencies: util) -->
+  <!-- SVGGraphics2D (dependencies: util) -->
   <target name="svggen-jar" depends="compile, prepare-build">
     <jar jarfile="${build}/lib/${project}-svggen.jar">
       <fileset dir="${dest}">
@@ -505,6 +506,12 @@ To display the available targets type:
         <include name="${package-prefix}/apps/rasterizer/**/resources/**"/>
       </fileset>
     </jar>
+  </target>
+
+  <!-- batik.jar (dependencies: all) -->
+  <target name="root-jar" depends="compile, prepare-build">
+    <jar manifest="${src}/${project}.mf"
+         jarfile="${build}/${project}.jar"/>
   </target>
 
 
