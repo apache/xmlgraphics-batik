@@ -116,6 +116,22 @@ public class TextSelectionManager {
     }
 
     /**
+     * Add a selection listener to be notified when the 
+     * text selection changes in the document.
+     */
+    public void addSelectionListener(SelectionListener sl) {
+        textSelector.addSelectionListener(sl);
+    }
+
+    /**
+     * Remove a selection listener to be notified when the 
+     * text selection changes in the document.
+     */
+    public void removeSelectionListener(SelectionListener sl) {
+        textSelector.removeSelectionListener(sl);
+    }
+
+    /**
      * Sets the color of the selection overlay to the specified color.
      *
      * @param color the new color of the selection overlay
