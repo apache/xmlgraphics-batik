@@ -48,7 +48,6 @@ public class Main implements Application {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
-        javax.swing.JOptionPane.showMessageDialog(null, "Starting latest Batik");
         new Main(args).run();
     }
 
