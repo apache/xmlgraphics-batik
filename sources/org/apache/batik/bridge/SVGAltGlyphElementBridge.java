@@ -123,7 +123,8 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             if (containsGlyphRefNodes) { // process the glyphRef children
 
                 NodeList glyphRefNodes
-                    = localRefElement.getElementsByTagName(SVG_GLYPH_REF_TAG);
+                    = localRefElement.getElementsByTagNameNS(SVG_NAMESPACE_URI,
+							     SVG_GLYPH_REF_TAG);
                 int numGlyphRefNodes = glyphRefNodes.getLength();
                 Glyph[] glyphArray = new Glyph[numGlyphRefNodes];
                 for (int i = 0; i < numGlyphRefNodes; i++) {
@@ -144,7 +145,8 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             } else { // try looking for altGlyphItem children
 
                 NodeList altGlyphItemNodes
-                    = localRefElement.getElementsByTagName(SVG_ALT_GLYPH_ITEM_TAG);
+                    = localRefElement.getElementsByTagNameNS
+		    (SVG_NAMESPACE_URI, SVG_ALT_GLYPH_ITEM_TAG);
                 int numAltGlyphItemNodes = altGlyphItemNodes.getLength();
                 if (numAltGlyphItemNodes > 0) {
                     Glyph[] glyphArray = new Glyph[numAltGlyphItemNodes];
@@ -152,7 +154,8 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
                         // try to find a resolvable glyphRef
                         Element altGlyphItemElement = (Element)altGlyphItemNodes.item(i);
                         NodeList altGlyphRefNodes
-                            = altGlyphItemElement.getElementsByTagName(SVG_GLYPH_REF_TAG);
+                            = altGlyphItemElement.getElementsByTagNameNS
+			    (SVG_NAMESPACE_URI, SVG_GLYPH_REF_TAG);
                         int numAltGlyphRefNodes = altGlyphRefNodes.getLength();
                         boolean foundMatchingGlyph = false;
                         for (int j = 0; j < numAltGlyphRefNodes; j++) {
@@ -231,7 +234,8 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             localGlyphElement = refGlyphElement;
             Element fontElement = (Element)localGlyphElement.getParentNode();
             NodeList fontFaceElements
-                = fontElement.getElementsByTagName(SVG_FONT_FACE_TAG);
+                = fontElement.getElementsByTagNameNS
+		(SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
             if (fontFaceElements.getLength() > 0) {
                 localFontFaceElement = (Element)fontFaceElements.item(0);
             }
@@ -248,7 +252,8 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
 
             // get the local glyph element
             String glyphId = refGlyphElement.getAttributeNS(null, SVG_ID_ATTRIBUTE);
-            NodeList glyphElements = localFontElement.getElementsByTagName(SVG_GLYPH_TAG);
+            NodeList glyphElements = localFontElement.getElementsByTagNameNS
+		(SVG_NAMESPACE_URI, SVG_GLYPH_TAG);
             for (int i = 0; i < glyphElements.getLength(); i++) {
                 Element glyphElem = (Element)glyphElements.item(i);
                 if (glyphElem.getAttributeNS(null, SVG_ID_ATTRIBUTE).equals(glyphId)) {
@@ -258,7 +263,8 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             }
             // get the local font-face element
             NodeList fontFaceElements
-                = localFontElement.getElementsByTagName(SVG_FONT_FACE_TAG);
+                = localFontElement.getElementsByTagNameNS
+		(SVG_NAMESPACE_URI, SVG_FONT_FACE_TAG);
             if (fontFaceElements.getLength() > 0) {
                 localFontFaceElement = (Element)fontFaceElements.item(0);
             }
