@@ -16,6 +16,7 @@ import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.util.ParsedURL;
 
 import org.w3c.dom.Document;
@@ -59,9 +60,9 @@ public class URIResolver {
      * Imports the element referenced by the given URI.
      * @param uri The element URI.
      */
-    public Element getElement(String uri)
+    public Element getElement(String uri, Element ref)
         throws MalformedURLException, IOException {
-        Node n = getNode(uri);
+        Node n = getNode(uri, ref);
         if (n == null) {
             return null;
         } else if (n.getNodeType() == n.DOCUMENT_NODE) {
@@ -72,37 +73,65 @@ public class URIResolver {
     }
 
     /**
-     * Returns the node referenced by the given URI.
+     * Returns the node referenced by the given URI on element ref.
      * @return The document or the element
      */
-    public Node getNode(String uri)
+    public Node getNode(String uri, Element ref)
         throws MalformedURLException, IOException {
 
-        if (uri.startsWith("#")) {
+        String baseURI = XMLSupport.getXMLBase(ref);
+        if ((baseURI == null) &&
+            (uri.startsWith("#")))
             return document.getElementById(uri.substring(1));
-        }
+
+        ParsedURL purl = new ParsedURL(baseURI, uri);
+        // System.out.println("PURL: " + purl);
 
         if (documentURI == null)
             documentURI = document.getURL();
 
-        ParsedURL purl = new ParsedURL(documentURI, uri);
-        String    ref  = purl.getRef();
-        if ((ref != null) && (documentURI != null)) {
+        String    frag  = purl.getRef();
+        if ((frag != null) && (documentURI != null)) {
             ParsedURL pDocURL = new ParsedURL(documentURI);
+
+            // System.out.println("Purl: " + 
+            //                    purl.getPath()     + " - " +
+            //                    purl.getPort()     + " - " +
+            //                    purl.getHost()     + " - " +
+            //                    purl.getProtocol() + "\n" +
+            //                    "doc:  " +
+            //                    pDocURL.getPath()     + " - " +
+            //                    pDocURL.getPort()     + " - " +
+            //                    pDocURL.getHost()     + " - " +
+            //                    pDocURL.getProtocol());
+                               
+
             // Check if the rest of the URL matches...
             // if so then return the referenced element.
-            if ((pDocURL.getPath() == purl.getPath()) &&
-                (pDocURL.getPort() == purl.getPort()) &&
-                (pDocURL.getHost() == purl.getHost()) &&
-                (pDocURL.getProtocol() == purl.getProtocol()))
-                return document.getElementById(ref);
+            // if ((pDocURL.getPath()     == purl.getPath()) &&
+            //     (pDocURL.getPort()     == purl.getPort()) &&
+            //     (pDocURL.getHost()     == purl.getHost()) &&
+            //     (pDocURL.getProtocol() == purl.getProtocol()))
+            //     return document.getElementById(frag);
+
+            if ((pDocURL.getPort()      == purl.getPort()) &&
+                ((pDocURL.getPath()     == purl.getPath()) 
+                 || ((pDocURL.getPath()!=null) 
+                     && pDocURL.getPath().equals(purl.getPath()))) &&
+                ((pDocURL.getHost()     == purl.getHost()) 
+                 || ((pDocURL.getHost()!=null) 
+                     && pDocURL.getHost().equals(purl.getHost()))) &&
+                ((pDocURL.getProtocol()     == purl.getProtocol()) 
+                 || ((pDocURL.getProtocol()!=null) 
+                     && pDocURL.getProtocol().equals(purl.getProtocol()))))
+                return document.getElementById(frag);
         }
 
         // uri is not a reference into this document, so load the 
         // document it does reference.
         Document doc = documentLoader.loadDocument(purl.toString());
-        if (ref != null)
-            return doc.getElementById(ref);
+        if (frag != null)
+            return doc.getElementById(frag);
         return doc;
     }
 }

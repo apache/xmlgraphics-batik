@@ -270,7 +270,7 @@ public class BridgeContext implements ErrorConstants {
         try {
             SVGDocument document = (SVGDocument)e.getOwnerDocument();
             URIResolver ur = new URIResolver(document, documentLoader);
-            Element ref = ur.getElement(uri);
+            Element ref = ur.getElement(uri, e);
             if (ref == null) {
                 throw new BridgeException(e, ERR_URI_REFERENCE_A_DOCUMENT,
                                           new Object[] {uri});

@@ -10,6 +10,7 @@ package org.apache.batik.bridge;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 
@@ -102,9 +103,13 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             if (!isLocal) {
                 // need to attach the imported element to the document and
                 // then compute the styles and uris
+                String base = XMLSupport.getXMLBase(altGlyphElement);
                 Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                 g.appendChild(localRefElement);
-                CSSUtilities.computeStyleAndURIs(refElement, localRefElement);
+                XMLSupport.setXMLBase(g, base);
+                CSSUtilities.computeStyleAndURIs(refElement, 
+                                                 localRefElement, 
+                                                 uri);
             }
 
             // look for glyphRef children
@@ -133,7 +138,7 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
                     String glyphUri = XLinkSupport.getXLinkHref(glyphRefElement);
 
                     Glyph glyph
-                        = getGlyph(ctx, glyphUri, altGlyphElement, fontSize, aci);
+                        = getGlyph(ctx, glyphUri, glyphRefElement, fontSize, aci);
                     if (glyph == null) {
                         // failed to create a glyph for the specified glyph uri
                         return null;
@@ -163,7 +168,7 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
                             Element glyphRefElement = (Element)altGlyphRefNodes.item(j);
                             String glyphUri = XLinkSupport.getXLinkHref(glyphRefElement);
 
-                            Glyph glyph = getGlyph(ctx, glyphUri, altGlyphElement, fontSize, aci);
+                            Glyph glyph = getGlyph(ctx, glyphUri, glyphRefElement, fontSize, aci);
                             if (glyph != null) {
                                 // found a matching glyph for this altGlyphItem
                                 glyphArray[i] = glyph;
@@ -206,7 +211,8 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
 
         Element refGlyphElement = null;
         try {
-            refGlyphElement = ctx.getReferencedElement(altGlyphElement, glyphUri);
+            refGlyphElement = ctx.getReferencedElement(altGlyphElement, 
+                                                       glyphUri);
         } catch (BridgeException e) {
             // this is ok, it is possible that the glyph at the given
             // uri is not available
@@ -245,10 +251,13 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             // import the whole font
             Element localFontElement
                 = (Element)document.importNode(refGlyphElement.getParentNode(), true);
+            String base = XMLSupport.getXMLBase(altGlyphElement);
             Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
             g.appendChild(localFontElement);
+            XMLSupport.setXMLBase(g, base);
             CSSUtilities.computeStyleAndURIs(
-                (Element)refGlyphElement.getParentNode(), localFontElement);
+                (Element)refGlyphElement.getParentNode(), 
+                localFontElement, glyphUri);
 
             // get the local glyph element
             String glyphId = refGlyphElement.getAttributeNS(null, SVG_ID_ATTRIBUTE);
@@ -290,8 +299,7 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             GVTAttributedCharacterIterator.TextAttribute.STROKE);
 
         return glyphBridge.createGlyph(ctx, localGlyphElement, altGlyphElement,
-                                       -1, fontSize, fontFace,
-                                       fillPaint, strokePaint, stroke);
-
+                                      -1, fontSize, fontFace,
+                                      fillPaint, strokePaint, stroke);
     }
 }

@@ -32,7 +32,7 @@ import org.apache.batik.ext.awt.image.rendered.SpecularLightingRed;
  * @version $Id$
  */
 public class SpecularLightingRable8Bit
-    extends AbstractRable
+    extends AbstractColorInterpolationRable
     implements SpecularLightingRable {
     /**
      * Surface Scale
@@ -285,7 +285,8 @@ public class SpecularLightingRable8Bit
         BumpMap bumpMap = new BumpMap(cr, surfaceScale, scaleX, scaleY);
 
         cr = new SpecularLightingRed(ks, specularExponent, light, bumpMap,
-                                    devRect, 1/scaleX, 1/scaleY);
+                                     devRect, 1/scaleX, 1/scaleY,
+                                     isColorSpaceLinear());
 
         // Return sheared/rotated tiled image
         AffineTransform shearAt =

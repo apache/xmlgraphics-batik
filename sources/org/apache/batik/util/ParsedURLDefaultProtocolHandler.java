@@ -68,17 +68,25 @@ public class ParsedURLDefaultProtocolHandler
     public ParsedURLData parseURL(String urlStr) {
         try {
             URL url = new URL(urlStr);
+            // System.out.println("System Parse: " + urlStr);
             return constructParsedURLData(url);
         } catch (MalformedURLException mue) {
             // Built in URL wouldn't take it...
         }
 
+        // new Exception("Custom Parse: " + urlStr).printStackTrace();
+
         ParsedURLData ret = constructParsedURLData();
 
         int pidx=0, idx;
         int len = urlStr.length();
+        String prefix = urlStr;
+        if ((idx = prefix.indexOf('/')) != -1)
+            // Only check for ':' prior to first '/'
+            // allows for foo/12:30 as a relative URL.
+            prefix = prefix.substring(0, idx);
 
-        idx = urlStr.indexOf(':');
+        idx = prefix.indexOf(':');
         if (idx != -1) {
             // May have a protocol spec...
             ret.protocol = urlStr.substring(pidx, idx).toLowerCase();
@@ -169,10 +177,27 @@ public class ParsedURLDefaultProtocolHandler
         if (urlStr.length() == 0) 
             return baseURL.data;
 
-        int idx = urlStr.indexOf(':');
-        if (idx != -1) {
-            String protocol = urlStr.substring(0,idx).toLowerCase();
+        // System.out.println("Base: " + baseURL + "\n" +
+        //                    "Sub:  " + urlStr);
+
+        int idx;
+        String prefix = urlStr;
+        if ((idx = prefix.indexOf('/')) != -1)
+            // Only check for ':' prior to first '/'
+            // allows for foo/12:30 as a relative URL.
+            prefix = prefix.substring(0, idx);
             
+        idx = prefix.indexOf(':');
+        if (idx != -1) {
+            String protocol = prefix.substring(0,idx).toLowerCase();
+
+            // Temporary if we have a protocol then assume absolute
+            // URL.  Technically this is the correct handling but much
+            // software supports relative URLs with a protocol that
+            // matches the base URL's protocol.
+            // if (true)
+            //     return parseURL(urlStr);
+
             if (!protocol.equals(baseURL.getProtocol()))
                 // Different protocols, assume absolute URL ignore base...
                 return parseURL(urlStr);
@@ -204,9 +229,11 @@ public class ParsedURLDefaultProtocolHandler
             return parseURL(baseURL.getPortStr() + urlStr);
         }
 
-        if (urlStr.startsWith("#"))
-            return parseURL(baseURL.getPortStr() + 
-                            baseURL.getPath() + urlStr);
+        if (urlStr.startsWith("#")) {
+            String base = baseURL.getPortStr();
+            if (baseURL.getPath()    != null) base += baseURL.getPath();
+            return parseURL(base + urlStr);
+        }
 
         String path = baseURL.getPath();
         // No path? well we will treat this as being relative to it's self.
@@ -219,6 +246,8 @@ public class ParsedURLDefaultProtocolHandler
         else
             path = path.substring(0,idx+1);
         
+        // System.out.println("Base Path: " + path);
+        // System.out.println("Base PortStr: " + baseURL.getPortStr());
         return parseURL(baseURL.getPortStr() + path + urlStr);
     }
 }

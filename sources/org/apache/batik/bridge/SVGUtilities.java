@@ -249,7 +249,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
                     }
                 }
                 URIResolver resolver = new URIResolver(svgDoc, loader);
-                e = resolver.getElement(url.toString());
+                e = resolver.getElement(url.toString(), e);
                 refs.add(url);
             } catch(MalformedURLException ex) {
                 throw new BridgeException(e, ERR_URI_MALFORMED,

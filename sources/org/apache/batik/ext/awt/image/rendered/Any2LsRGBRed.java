@@ -62,6 +62,14 @@ public class Any2LsRGBRed extends AbstractRed {
      * Gamma for linear to sRGB convertion
      */
     private static final double GAMMA = 2.4;
+    private static final double LFACT = 1.0/12.92;
+
+
+    public static final double sRGBToLsRGB(double value) {
+        if(value <= 0.003928)
+            return value*LFACT;
+        return Math.pow((value+0.055)/1.055, GAMMA);
+    }
 
     /**
      * Lookup tables for RGB lookups. The linearToSRGBLut is used
@@ -72,15 +80,10 @@ public class Any2LsRGBRed extends AbstractRed {
     private static final int sRGBToLsRGBLut[] = new int[256];
     static {
         final double scale = 1.0/255;
-        final double lFact = 1.0/12.92;
 
         // System.out.print("S2L: ");
         for(int i=0; i<256; i++){
-            double value = i*scale;
-            if(value <= 0.003928)
-                value *= lFact;
-            else
-                value = Math.pow((value+0.055)/1.055, GAMMA);
+            double value = sRGBToLsRGB(i*scale);
             sRGBToLsRGBLut[i] = (int)Math.round(value*255.0);
             // System.out.print(sRGBToLsRGBLut[i] + ",");
         }

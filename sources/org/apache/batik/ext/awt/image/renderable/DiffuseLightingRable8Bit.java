@@ -32,7 +32,7 @@ import org.apache.batik.ext.awt.image.rendered.PadRed;
  * @version $Id$
  */
 public class DiffuseLightingRable8Bit
-    extends AbstractRable
+    extends AbstractColorInterpolationRable
     implements DiffuseLightingRable {
     /**
      * Surface Scale
@@ -265,7 +265,8 @@ public class DiffuseLightingRable8Bit
         BumpMap bumpMap = new BumpMap(cr, surfaceScale, scaleX, scaleY);
 
         cr = new DiffuseLightingRed(kd, light, bumpMap,
-                                    devRect, 1/scaleX, 1/scaleY);
+                                    devRect, 1/scaleX, 1/scaleY,
+                                    isColorSpaceLinear());
 
         // Return sheared/rotated tiled image
         AffineTransform shearAt =

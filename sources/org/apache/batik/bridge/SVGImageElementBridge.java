@@ -93,7 +93,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         DocumentLoader loader = ctx.getDocumentLoader();
         URIResolver resolver = new URIResolver(svgDoc, loader);
         try {
-            Node n = resolver.getNode(purl.toString());
+            Node n = resolver.getNode(purl.toString(), e);
             if (n.getNodeType() == n.DOCUMENT_NODE) {
                 SVGDocument imgDocument = (SVGDocument)n;
                 node = createSVGImageNode(ctx, e, imgDocument);

@@ -53,19 +53,31 @@ public class DiffuseLightingRed extends AbstractRed{
      */
     private Rectangle litRegion;
 
+    /**
+     * true if calculations should be performed in linear sRGB
+     */
+    private boolean linear;
+
+
     public DiffuseLightingRed(double kd,
                               Light light,
                               BumpMap bumpMap,
                               Rectangle litRegion,
-                              double scaleX, double scaleY){
+                              double scaleX, double scaleY,
+                              boolean linear){
         this.kd = kd;
         this.light = light;
         this.bumpMap = bumpMap;
         this.litRegion = litRegion;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+        this.linear = linear;
 
-        ColorModel cm = GraphicsUtil.Linear_sRGB_Unpre;
+        ColorModel cm;
+        if (linear)
+            cm = GraphicsUtil.Linear_sRGB_Unpre;
+        else
+            cm = GraphicsUtil.sRGB_Unpre;
 
         SampleModel sm = 
             cm.createCompatibleSampleModel(litRegion.width,
@@ -76,7 +88,7 @@ public class DiffuseLightingRed extends AbstractRed{
     }
 
     public WritableRaster copyData(WritableRaster wr){
-        final double[] lightColor = light.getColor();
+        final double[] lightColor = light.getColor(linear);
         
         final int w = wr.getWidth();
         final int h = wr.getHeight();

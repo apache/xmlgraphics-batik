@@ -19,9 +19,6 @@ import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import java.util.Map;
 import java.util.HashMap;
 
@@ -32,6 +29,7 @@ import org.apache.batik.css.value.ImmutableString;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.util.XMLSupport;
 
 import org.apache.batik.ext.awt.MultipleGradientPaint;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
@@ -44,7 +42,10 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.CSSConstants;
+import org.apache.batik.util.XMLConstants;
+import org.apache.batik.util.ParsedURL;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -68,7 +69,8 @@ import org.w3c.dom.svg.SVGPaint;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
+public abstract class CSSUtilities 
+    implements CSSConstants, ErrorConstants, XMLConstants {
 
     /**
      * No instance of this class is required.
@@ -820,7 +822,17 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * @param localRefElement the referenced element in the current document
      */
     public static void computeStyleAndURIs(Element refElement,
-                                           Element localRefElement) {
+                                           Element localRefElement,
+                                           String  uri) {
+        Attr xmlBase = localRefElement.getAttributeNodeNS
+            (XML_NAMESPACE_URI, "base");
+        if (xmlBase != null) {
+            // We have a current base so merge it with our new base and
+            // set the result...
+            ParsedURL purl = new ParsedURL(uri, xmlBase.getNodeValue());
+            uri = purl.toString();
+        }
+        XMLSupport.setXMLBase(localRefElement, uri);
 
         SVGOMDocument document
             = (SVGOMDocument)localRefElement.getOwnerDocument();
@@ -830,13 +842,8 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
             = (SVGOMDocument)refElement.getOwnerDocument();
         ViewCSS refView = (ViewCSS)refDocument.getDefaultView();
 
-        URL url = refDocument.getURLObject();
-
-        computeStyleAndURIs(refElement,
-                            refView,
-                            localRefElement,
-                            view,
-                            url);
+        computeStyle(refElement,      refView,
+                     localRefElement, view);
     }
 
     /**
@@ -845,31 +852,20 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
      * Note: This method must be called only when 'def' has been added
      * to the tree.
      */
-    static void computeStyleAndURIs(Element use, ViewCSS uv,
-                                            Element def, ViewCSS dv,
-                                            URL url) {
-
-        String href = XLinkSupport.getXLinkHref(def);
-
-        if (!href.equals("")) {
-            try {
-                XLinkSupport.setXLinkHref(def, new URL(url, href).toString());
-            } catch (MalformedURLException e) { }
-        }
+    static void computeStyle(Element use, ViewCSS uv,
+                             Element def, ViewCSS dv) {
 
         CSSOMReadOnlyStyleDeclaration usd;
         AbstractViewCSS uview = (AbstractViewCSS)uv;
 
         usd = (CSSOMReadOnlyStyleDeclaration)uview.computeStyle(use, null);
-        try {
-            updateURIs(usd, url);
-        } catch (MalformedURLException ex) { }
+        // updateURIs(usd, basePURL);
         ((AbstractViewCSS)dv).setComputedStyle(def, null, usd);
         for (Node un = use.getFirstChild(), dn = def.getFirstChild();
              un != null;
              un = un.getNextSibling(), dn = dn.getNextSibling()) {
             if (un.getNodeType() == Node.ELEMENT_NODE) {
-                computeStyleAndURIs((Element)un, uv, (Element)dn, dv, url);
+                computeStyle((Element)un, uv, (Element)dn, dv);
             }
         }
     }
@@ -877,8 +873,8 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
     /**
      * Updates the URIs in the given style declaration.
      */
-    public static void updateURIs(CSSOMReadOnlyStyleDeclaration sd, URL url)
-        throws MalformedURLException {
+    public static void updateURIs(CSSOMReadOnlyStyleDeclaration sd, 
+                                  ParsedURL basePURL) {
         int len = sd.getLength();
         for (int i = 0; i < len; i++) {
             String name = sd.item(i);
@@ -892,7 +888,8 @@ public abstract class CSSUtilities implements CSSConstants, ErrorConstants {
                     CSSOMReadOnlyValue v = new CSSOMReadOnlyValue
                         (new ImmutableString
                          (CSSPrimitiveValue.CSS_URI,
-                          new URL(url, pv.getStringValue()).toString()));
+                          new ParsedURL(basePURL, 
+                                        pv.getStringValue()).toString()));
                     sd.setPropertyCSSValue(name, v,
                                            sd.getLocalPropertyPriority(name),
                                            sd.getLocalPropertyOrigin(name));
