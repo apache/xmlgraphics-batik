@@ -11,8 +11,8 @@
 <!--                                                                           -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
-"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd" [
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd" [
 	<!ENTITY st0 "fill-rule:nonzero;fill:#D9D9D9;stroke:#D9D9D9;stroke-width:0.5956;stroke-miterlimit:4;">
 	<!ENTITY st1 "fill:url(#AIgd2);">
 	<!ENTITY st2 "fill:url(#AIgd3);">
