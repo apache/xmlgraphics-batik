@@ -82,17 +82,17 @@ public class SVGTextElementBridge extends AbstractSVGBridge
      * @return a graphics node that represents the specified element
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
-	// 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-	if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
-	    return null;
-	}
+        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+        if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+            return null;
+        }
 
         TextNode node = new TextNode();
-	// specify the text painter to use if one has been provided in the
-	// bridge context
-	if (ctx.getTextPainter() != null) {
-	    node.setTextPainter(ctx.getTextPainter());
-	}
+        // specify the text painter to use if one has been provided in the
+        // bridge context
+        if (ctx.getTextPainter() != null) {
+            node.setTextPainter(ctx.getTextPainter());
+        }
 
         // 'transform'
         String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
@@ -290,6 +290,11 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                           TextPath textPath,
                                           LinkedList result) {
 
+        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+        if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
+            return result;
+        }
+
         // !!! return two lists
         Map m = getAttributeMap(ctx, element, node, textPath);
         String s = XMLSupport.getXMLSpace(element);
@@ -325,7 +330,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
                 if (n.getLocalName().equals(SVG_TSPAN_TAG) ||
                     n.getLocalName().equals(SVG_ALT_GLYPH_TAG) ||
-		    n.getLocalName().equals(SVG_A_TAG)) {
+                    n.getLocalName().equals(SVG_A_TAG)) {
 
                     buildAttributedStrings(ctx,
                                            nodeElement,
@@ -333,7 +338,6 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                            false,
                                            textPath,
                                            result);
-
                 } else if (n.getLocalName().equals(SVG_TEXT_PATH_TAG)) {
 
                     SVGTextPathElementBridge textPathBridge
@@ -380,7 +384,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                 }
                 break;
             case Node.TEXT_NODE:
-            case Node.CDATA_SECTION_NODE:            
+            case Node.CDATA_SECTION_NODE:
                 s = n.getNodeValue();
                 int[] indexMap = new int[s.length()];
                 as = createAttributedString
@@ -531,6 +535,10 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                               Element element,
                                               BridgeContext ctx) {
 
+        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+        if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
+            return;
+        }
         // get all of the glyph position attribute values
         String xAtt = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
         String yAtt = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
@@ -662,6 +670,10 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                                       BridgeContext ctx) {
 
 
+        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+        if (!SVGUtilities.matchUserAgent(element, ctx.getUserAgent())) {
+            return;
+        }
         AttributedCharacterIterator aci = as.getIterator();
 
         // calculate which chars in the string belong to this element
@@ -693,7 +705,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
 
         // Fill
         Paint p = PaintServer.convertFillPaint(element, node, ctx);
-        as.addAttribute(TextAttribute.FOREGROUND, p, 
+        as.addAttribute(TextAttribute.FOREGROUND, p,
                         firstChar, lastChar+1);
 
         // Stroke Paint
@@ -711,7 +723,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         // Text decoration
         if (textDecoration != null) {
             as.addAttribute(GVTAttributedCharacterIterator.
-                            TextAttribute.UNDERLINE_PAINT, 
+                            TextAttribute.UNDERLINE_PAINT,
                             textDecoration.underlinePaint,
                             firstChar, lastChar+1);
 
@@ -719,14 +731,14 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                             TextAttribute.UNDERLINE_STROKE_PAINT,
                             textDecoration.underlineStrokePaint,
                             firstChar, lastChar+1);
-            
+
             as.addAttribute(GVTAttributedCharacterIterator.
                             TextAttribute.UNDERLINE_STROKE,
                             textDecoration.underlineStroke,
                             firstChar, lastChar+1);
 
             as.addAttribute(GVTAttributedCharacterIterator.
-                            TextAttribute.OVERLINE_PAINT, 
+                            TextAttribute.OVERLINE_PAINT,
                             textDecoration.overlinePaint,
                             firstChar, lastChar+1);
 
@@ -744,7 +756,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
                             TextAttribute.STRIKETHROUGH_PAINT,
                             textDecoration.strikethroughPaint,
                             firstChar, lastChar+1);
-            
+
             as.addAttribute(GVTAttributedCharacterIterator.
                             TextAttribute.STRIKETHROUGH_STROKE_PAINT,
                             textDecoration.strikethroughStrokePaint,
