@@ -31,7 +31,13 @@ public interface TestReport {
      * that the test failed.
      */
     public static final String ERROR_TEST_FAILED 
-        = "DefaultTestSuiteReport.error.test.failed";
+        = "TestReport.error.test.failed";
+
+    /**
+     * Generic error code to report test assertion failures.
+     */
+    public static final String ERROR_ASSERTION_FAILED
+        = "TestReport.error.assertion.failed";
 
     /**
      * Entry describing the class of the internal exception 
@@ -95,6 +101,14 @@ public interface TestReport {
     public static final String
         ENTRY_KEY_REPORTED_TEST_FAILURE_EXCEPTION_STACK_TRACE
         = "TestReport.entry.key.reported.test.failure.exception.stack.trace";
+
+    /**
+     * Entry with the stack trace for a specific test error
+     * condition.
+     */
+    public static final String
+        ENTRY_KEY_ERROR_CONDITION_STACK_TRACE
+        = "TestReport.entry.key.error.condition.stack.trace";
 
     /**
      * Inner class for describing an information element in a 
