@@ -431,6 +431,16 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
             = new DefaultTestReport(this);
 
         //
+        // First, do clean-up
+        //
+        if (candidateReference != null){
+            if (candidateReference.exists()){
+                candidateReference.delete();
+            }
+        }
+                    
+
+        //
         // Render the SVG image into a raster. We use the 
         // ImageTranscoder to convert the SVG into a raster in
         // a temporary file.
@@ -441,7 +451,6 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
             tmpFile = File.createTempFile(TEMP_FILE_PREFIX,
                                           TEMP_FILE_SUFFIX,
                                           null);
-            tmpFile.deleteOnExit();
         }catch(IOException e){
             report.setErrorCode(ERROR_CANNOT_CREATE_TEMP_FILE);
             report.setDescription(new TestReport.Entry[] { 
@@ -452,6 +461,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
             report.setPassed(false);
             return report;
         }
+
 
         FileOutputStream tmpFileOS = null;
 
@@ -465,6 +475,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                  new String[]{tmpFile.getAbsolutePath(),
                                                               e.getMessage()})) });
             report.setPassed(false);
+            tmpFile.deleteOnExit();
             return report;
         }
 
@@ -488,6 +499,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                               trace.toString()
                                                  })) });
             report.setPassed(false);
+            tmpFile.deleteOnExit();
             return report;
         }catch(Exception e){
             StringWriter trace = new StringWriter();
@@ -503,6 +515,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                               trace.toString()
                                                  })) });
             report.setPassed(false);
+            tmpFile.deleteOnExit();
             return report;
         }
 
@@ -525,9 +538,6 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
             // Try and save tmp file as a candidate variation
             boolean deleteTmp = true;
             if (candidateReference != null){
-                if (candidateReference.exists()){
-                    candidateReference.delete();
-                }
                 deleteTmp = tmpFile.renameTo(candidateReference);
             }
 
@@ -549,6 +559,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                               e.getMessage()}))});
             report.setPassed(false);
             tmpFile.delete();
+            tmpFile.deleteOnExit();
             return report;
         }
 
@@ -565,13 +576,11 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                               tmpFile.getAbsolutePath(),
                                                               e.getMessage()}))});
             if (candidateReference != null){
-                if (candidateReference.exists()){
-                    candidateReference.delete();
-                }
                 tmpFile.renameTo(candidateReference);
             }
 
             report.setPassed(false);
+            tmpFile.deleteOnExit();
             return report;
         }
 
@@ -644,13 +653,11 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                              diffFile) });
 
                     if (candidateReference != null){
-                        if (candidateReference.exists()){
-                            candidateReference.delete();
-                        }
                         tmpFile.renameTo(candidateReference);
                     }
                     
                     report.setPassed(false);
+                    tmpFile.deleteOnExit();
                     return report;
                 }
             }catch(Exception e){
@@ -668,13 +675,11 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                                                              trace.toString()})) });
 
                 if (candidateReference != null){
-                    if (candidateReference.exists()){
-                        candidateReference.delete();
-                    }
                     tmpFile.renameTo(candidateReference);
                 }
                 
                 report.setPassed(false);
+                tmpFile.deleteOnExit();
                 return report;
             }
         }
@@ -684,6 +689,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
         // Yahooooooo! everything worked out well.
         //
         report.setPassed(true);
+        tmpFile.deleteOnExit();
         return report;
     }
 
