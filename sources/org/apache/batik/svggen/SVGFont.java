@@ -9,10 +9,9 @@
 package org.apache.batik.svggen;
 
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Map;
 import java.awt.font.TextAttribute;
-import org.w3c.dom.*;
 
 import org.apache.batik.ext.awt.g2d.GraphicContext;
 
@@ -20,6 +19,7 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  * Utility class that converts a Font object into a set of SVG
  * font attributes
  *
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
@@ -142,7 +142,7 @@ public class SVGFont extends AbstractSVGConverter {
         String fontSize = "" + font.getSize();
         String fontWeight = weightToSVG(font);
         String fontStyle = styleToSVG(font);
-        String fontFamilyStr = familtyToSVG(font);
+        String fontFamilyStr = familyToSVG(font);
         return new SVGFontDescriptor(fontSize, fontWeight,
                                      fontStyle, fontFamilyStr);
     }
@@ -155,7 +155,7 @@ public class SVGFont extends AbstractSVGConverter {
         String fontFamilyStr = font.getFamily();
         String logicalFontFamily =
             (String)logicalFontMap.get(font.getName().toLowerCase());
-        if (logicalFontFamily() != null)
+        if (logicalFontFamily != null)
             fontFamilyStr = logicalFontFamily;
         else {
             StringBuffer fontFamily = new StringBuffer("'");
@@ -163,6 +163,7 @@ public class SVGFont extends AbstractSVGConverter {
             fontFamily.append("'");
             fontFamilyStr = fontFamily.toString();
         }
+        return fontFamilyStr;
     }
 
     /**
@@ -173,8 +174,8 @@ public class SVGFont extends AbstractSVGConverter {
         Map attrMap = font.getAttributes();
         Float styleValue = (Float)attrMap.get(TextAttribute.POSTURE);
 
-        if(styleValue == null){
-            if(font.isItalic())
+        if (styleValue == null) {
+            if (font.isItalic())
                 styleValue = TextAttribute.POSTURE_OBLIQUE;
             else
                 styleValue = TextAttribute.POSTURE_REGULAR;
@@ -183,8 +184,8 @@ public class SVGFont extends AbstractSVGConverter {
         float style = styleValue.floatValue();
 
         int i = 0;
-        for(i=0; i<fontStyles.length; i++){
-            if(style<=fontStyles[i])
+        for (i=0; i< fontStyles.length; i++) {
+            if (style <= fontStyles[i])
                 break;
         }
 
@@ -199,8 +200,8 @@ public class SVGFont extends AbstractSVGConverter {
     public static String weightToSVG(Font font) {
         Map attrMap = font.getAttributes();
         Float weightValue = (Float)attrMap.get(TextAttribute.WEIGHT);
-        if(weightValue==null){
-            if(font.isBold())
+        if (weightValue==null) {
+            if (font.isBold())
                 weightValue = TextAttribute.WEIGHT_BOLD;
             else
                 weightValue = TextAttribute.WEIGHT_REGULAR;
@@ -209,8 +210,8 @@ public class SVGFont extends AbstractSVGConverter {
         float weight = weightValue.floatValue();
 
         int i = 0;
-        for(i=0; i<fontWeights.length; i++){
-            if(weight<=fontWeights[i])
+        for (i=0; i<fontWeights.length; i++) {
+            if (weight<=fontWeights[i])
                 break;
         }
 
