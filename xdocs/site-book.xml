@@ -64,6 +64,7 @@
     <page id="scripting"          label="Scripting Intro"          source="scriptIntro.xml" />
     <page id="scriptfeatures"     label="Scripting Features"       source="scriptFeatures.xml" />
     <page id="javaScripting"      label="Java Scripting"           source="javaScripting.xml" />
+    <page id="security"           label="Security"                 source="security.xml" />
     <separator />
     <page id="extendingBatik"     label="Extensions"               source="extendingBatik.xml" />
     <separator/>
