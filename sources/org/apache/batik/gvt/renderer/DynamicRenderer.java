@@ -203,7 +203,6 @@ public class DynamicRenderer extends StaticRenderer {
                 iter = devRLM.iterator();
                 while (iter.hasNext()) {
                     Rectangle r = (Rectangle)iter.next();
-                    System.out.println("Render: " + r);
                     WritableRaster dst = copyRaster.createWritableChild
                         (r.x, r.y, r.width, r.height, r.x, r.y, null);
                     cr.copyData(dst);
