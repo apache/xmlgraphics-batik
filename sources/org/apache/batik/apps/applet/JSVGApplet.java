@@ -26,6 +26,7 @@ import javax.swing.JPopupMenu;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.css.CSSDocumentHandler;
 import org.apache.batik.dom.svg.DefaultSVGContext;
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.event.EventDispatcher;
@@ -93,7 +94,7 @@ public class JSVGApplet extends JApplet implements UserAgent, DocumentListener {
 
     public void init() {
         CSSDocumentHandler.setParserClassName("org.w3c.flute.parser.Parser");
-        df = new SVGDocumentFactory(getXMLParserClassName());
+        df = new SAXSVGDocumentFactory(getXMLParserClassName());
         canvas = new JSVGCanvas(this);
         eventDispatcher = 
             new ConcreteEventDispatcher(

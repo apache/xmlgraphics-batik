@@ -43,18 +43,14 @@ public class BridgeTest extends JFrame {
 
     public static void main(String [] args) {
         CSSDocumentHandler.setParserClassName(SAC_PARSER);
-        SVGDocumentFactory documentFactory = new SVGDocumentFactory(SAX_PARSER);
+        SVGDocumentFactory documentFactory = new SAXSVGDocumentFactory(SAX_PARSER);
 
         // build the DOM document
         SVGDocument svgDocument = null;
         try {
             String entityURI = args[0];
             System.out.println("Loading ... : " + entityURI);
-            svgDocument = documentFactory.createDocument
-                (SVGConstants.SVG_NAMESPACE_URI, new InputSource(entityURI));
-        } catch(SAXException e){
-            e.printStackTrace();
-            return;
+            svgDocument = documentFactory.createDocument(entityURI);
         } catch(IOException e) {
 	    return;
 	}

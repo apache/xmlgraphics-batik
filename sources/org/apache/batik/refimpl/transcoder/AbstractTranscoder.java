@@ -10,13 +10,13 @@ package org.apache.batik.refimpl.transcoder;
 
 import java.awt.Color;
 import java.awt.Paint;
-import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.Viewport;
 import org.apache.batik.css.CSSDocumentHandler;
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.refimpl.bridge.ConcreteGVTBuilder;
 import org.apache.batik.transcoder.Transcoder;
@@ -59,13 +59,10 @@ public abstract class AbstractTranscoder implements Transcoder {
      */
     public void transcodeToStream(InputSource isource, OutputStream ostream)
             throws TranscoderException {
-        SVGDocumentFactory f = new SVGDocumentFactory(getParserClassName());
+        SVGDocumentFactory f = new SAXSVGDocumentFactory(getParserClassName());
         try {
-            transcodeToStream(f.createDocument(isource.getSystemId(),
-                                               isource), ostream);
+            transcodeToStream(f.createDocument(isource.getSystemId()), ostream);
         } catch (DOMException ex) {
-            throw new TranscoderException(ex.getMessage(), ex);
-        } catch (SAXException ex) {
             throw new TranscoderException(ex.getMessage(), ex);
         } catch (IOException ex) {
             throw new TranscoderException(ex.getMessage(), ex);
