@@ -16,6 +16,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
@@ -27,8 +28,13 @@ import java.util.Hashtable;
 import java.lang.ref.SoftReference;
 
 import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
+
+import org.apache.batik.gvt.GraphicsNode;
 
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.ListValue;
@@ -42,8 +48,11 @@ import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SoftReferenceCache;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
+import org.w3c.dom.svg.SVGPreserveAspectRatio;
 
 
 /**
@@ -76,6 +85,12 @@ public class CursorManager implements SVGConstants, ErrorConstants {
      */
     public static final Cursor TEXT_CURSOR
         = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR);
+
+    /**
+     * Default preferred cursor size, used for SVG images
+     */
+    public static final int DEFAULT_PREFERRED_WIDTH = 32;
+    public static final int DEFAULT_PREFERRED_HEIGHT = 32;
 
     /**
      * Static initialization of the cursorMap
@@ -307,6 +322,11 @@ public class CursorManager implements SVGConstants, ErrorConstants {
         // One of the cursor url resolved to a <cursor> element
         // Try to handle its image.
         String uriStr = XLinkSupport.getXLinkHref(cursorElement);
+        if (uriStr.length() == 0) {
+            throw new BridgeException(cursorElement, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {"xlink:href"});
+        }
+
         String baseURI = XMLBaseSupport.getCascadedXMLBase(cursorElement);
         ParsedURL purl;
         if (baseURI == null) {
@@ -337,108 +357,193 @@ public class CursorManager implements SVGConstants, ErrorConstants {
 
         CursorDescriptor desc = new CursorDescriptor(purl, x, y);
 
+        //
         // Check if there is a cursor in the cache for this url
+        //
         Cursor cachedCursor = cursorCache.getCursor(desc);
 
         if (cachedCursor != null) {
             return cachedCursor;
         } 
         
-        ImageTagRegistry reg = ImageTagRegistry.getRegistry();
-        Filter f = reg.readURL(purl);
-
-
         //
-        // Check if we got a broken image
+        // Load image into Filter f and transform hotSpot to 
+        // cursor space.
         //
-        if (f.getProperty
-            (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY) != null) {
-            cursorCache.clearCursor(desc);
-            return null;
-        } 
-            
-        //
-        // Now, get the preferred cursor dimension
-        //
-        Rectangle preferredSize = f.getBounds2D().getBounds();
-        if (preferredSize == null || preferredSize.width <=0
-            || preferredSize.height <=0 ) {
+        Point2D.Float hotSpot = new Point2D.Float(x, y);
+        Filter f = cursorHrefToFilter(cursorElement, 
+                                      purl, 
+                                      hotSpot);
+        if (f == null) {
             cursorCache.clearCursor(desc);
             return null;
         }
-
-        Dimension cursorSize 
-            = Toolkit.getDefaultToolkit().getBestCursorSize
-            (preferredSize.width, preferredSize.height);
-
-        // 
-        // Fit the rendered image into the cursor image
-        // size and aspect ratio if it does not fit into 
-        // the cursorSize area. Otherwise, draw the cursor 
-        // into an image the size of the preferred cursor 
-        // size.
-        //
-        Image bi = null;
-
-        if (cursorSize.width < preferredSize.width 
-            ||
-            cursorSize.height < preferredSize.height) {
-            float rw = cursorSize.width;
-            float rh = (cursorSize.width * preferredSize.height) / (float)preferredSize.width;
             
-            if (rh > cursorSize.height) {
-                rw *= (cursorSize.height / rh);
-                rh = cursorSize.height;
-            }
-            
-            RenderedImage ri = f.createScaledRendering((int)Math.round(rw),
-                                                       (int)Math.round(rh),
-                                                       null);
-            
-            if (ri instanceof Image) {
-                bi = (Image)ri;
-            } else {
-                bi = renderedImageToImage(ri);
-            }
+        // The returned Filter is guaranteed to create a 
+        // default rendering of the desired size
+        Rectangle cursorSize = f.getBounds2D().getBounds();
+        RenderedImage ri = f.createScaledRendering(cursorSize.width,
+                                                   cursorSize.height,
+                                                   null);
+        Image img = null;
 
-            // Apply the scale transform that is applied to the image
-            x *= rw/preferredSize.width;
-            y *= rh/preferredSize.height;
-
+        if (ri instanceof Image) {
+            img = (Image)ri;
         } else {
-            // Preferred size fits into ideal cursor size. No resize,
-            // just draw cursor in 0, 0.
-            BufferedImage tbi = new BufferedImage(cursorSize.width,
-                                                  cursorSize.height,
-                                                  BufferedImage.TYPE_INT_ARGB);
-            RenderedImage ri = f.createScaledRendering(preferredSize.width,
-                                                       preferredSize.height,
-                                                       null);
-            Graphics2D g = GraphicsUtil.createGraphics(tbi);
-            GraphicsUtil.drawImage(g, ri);
-            g.dispose();
-            bi = tbi;
+            img = renderedImageToImage(ri);
         }
 
         // Make sure the not spot does not fall out of the cursor area. If it
         // does, then clamp the coordinates to the image space.
-        x = x < 0 ? 0 : x;
-        y = y < 0 ? 0 : y;
-        x = x > (cursorSize.width-1) ? cursorSize.width - 1 : x;
-        y = y > (cursorSize.height-1) ? cursorSize.height - 1: y;
+        hotSpot.x = hotSpot.x < 0 ? 0 : hotSpot.x;
+        hotSpot.y = hotSpot.y < 0 ? 0 : hotSpot.y;
+        hotSpot.x = hotSpot.x > (cursorSize.width-1) ? cursorSize.width - 1 : hotSpot.x;
+        hotSpot.y = hotSpot.y > (cursorSize.height-1) ? cursorSize.height - 1: hotSpot.y;
 
         //
-        // The cursor image is now into the bi image
+        // The cursor image is now into 'img'
         //
         Cursor c = Toolkit.getDefaultToolkit()
-            .createCustomCursor(bi, 
-                                new Point((int)Math.round(x),
-                                          (int)Math.round(y)),
+            .createCustomCursor(img, 
+                                new Point((int)Math.round(hotSpot.x),
+                                          (int)Math.round(hotSpot.y)),
                                 purl.toString());
 
         cursorCache.putCursor(desc, c);
         return c;        
     }
+
+    /**
+     * Converts the input ParsedURL into a Filter and transforms the 
+     * input hotSpot point (in image space) to cursor space
+     */
+    protected Filter cursorHrefToFilter(Element cursorElement, 
+                                        ParsedURL purl,
+                                        Point2D hotSpot) {
+        
+        AffineRable8Bit f = null;
+        String uriStr = purl.toString();
+        Dimension cursorSize = null;
+
+        // Try to load as an SVG Document
+        DocumentLoader loader = (DocumentLoader)ctx.getDocumentLoader();
+        SVGDocument svgDoc = (SVGDocument)cursorElement.getOwnerDocument();
+        URIResolver resolver = new URIResolver(svgDoc, loader);
+        try {
+            Element rootElement = null;
+            Node n = resolver.getNode(uriStr, cursorElement);
+            if (n.getNodeType() == n.DOCUMENT_NODE) {
+                rootElement = ((SVGDocument)n).getRootElement();
+            } else {
+                throw new BridgeException 
+                    (cursorElement, ERR_URI_IMAGE_INVALID,
+                     new Object[] {uriStr});
+            }
+            GraphicsNode node = ctx.getGVTBuilder().build(ctx, rootElement);
+
+            //
+            // The cursorSize define the viewport into which the 
+            // cursor is displayed. That viewport is platform 
+            // dependant and is not defined by the SVG content.
+            //
+            float width  = DEFAULT_PREFERRED_WIDTH;
+            float height = DEFAULT_PREFERRED_HEIGHT;
+            UnitProcessor.Context uctx 
+                = UnitProcessor.createContext(ctx, rootElement);
+
+            String s = rootElement.getAttribute(SVG_WIDTH_ATTRIBUTE);
+            if (s.length() != 0) {
+                width = UnitProcessor.svgHorizontalLengthToUserSpace
+                (s, SVG_WIDTH_ATTRIBUTE, uctx);
+            }
+            
+            s = rootElement.getAttribute(SVG_HEIGHT_ATTRIBUTE);
+            if (s.length() != 0) {
+                height = UnitProcessor.svgVerticalLengthToUserSpace
+                    (s, SVG_HEIGHT_ATTRIBUTE, uctx);
+            }
+
+            cursorSize 
+                = Toolkit.getDefaultToolkit().getBestCursorSize
+                ((int)Math.round(width), (int)Math.round(height));
+            
+            // Handle the viewBox transform
+            AffineTransform at 
+                = ViewBox.getPreserveAspectRatioTransform(rootElement,
+                                                          cursorSize.width,
+                                                          cursorSize.height);
+            Filter filter = node.getGraphicsNodeRable(true);
+            f = new AffineRable8Bit(filter, at);
+        } catch (BridgeException ex) {
+            throw ex;
+        } catch (SecurityException ex) {
+            throw new BridgeException(cursorElement, ERR_URI_UNSECURE,
+                                      new Object[] {uriStr});
+        } catch (Exception ex) {
+            /* Nothing to do */ 
+        }
+
+
+        // If f is null, it means that we are not dealing with
+        // an SVG image. Try as a raster image.
+        if (f == null) {
+            ImageTagRegistry reg = ImageTagRegistry.getRegistry();
+            Filter filter = reg.readURL(purl);
+            if (filter == null) {
+                return null;
+            }
+
+            // Check if we got a broken image
+            if (filter.getProperty
+                (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY) != null) {
+                return null;
+            } 
+            
+            Rectangle preferredSize = filter.getBounds2D().getBounds();
+            cursorSize = Toolkit.getDefaultToolkit().getBestCursorSize
+                (preferredSize.width, preferredSize.height);
+            
+            if (preferredSize != null && preferredSize.width >0
+                && preferredSize.height > 0 ) {
+                AffineTransform at = new AffineTransform();
+                if (preferredSize.width > cursorSize.width 
+                    ||
+                    preferredSize.height > cursorSize.height) {
+                    at = ViewBox.getPreserveAspectRatioTransform
+                        (new float[] {0, 0, preferredSize.width, preferredSize.height},
+                         SVGPreserveAspectRatio.SVG_PRESERVEASPECTRATIO_XMINYMIN,
+                         true,
+                         cursorSize.width,
+                         cursorSize.height);
+                } 
+                f = new AffineRable8Bit(filter, at);
+            } else {
+                // Invalid Size
+                return null;
+            }
+        }
+
+
+        //
+        // Transform the hot spot from image space to cursor space
+        //
+        AffineTransform at = f.getAffine();
+        at.transform(hotSpot, hotSpot);
+
+        //
+        // In all cases, clip to the cursor boundaries
+        //
+        Rectangle cursorViewport 
+            = new Rectangle(0, 0, cursorSize.width, cursorSize.height);
+
+        PadRable8Bit cursorImage 
+            = new PadRable8Bit(f, cursorViewport,
+                               PadMode.ZERO_PAD);
+
+        return cursorImage;
+            
+    }
+
 
     /**
      * Implementation helper: converts a RenderedImage to an Image
@@ -495,8 +600,6 @@ public class CursorManager implements SVGConstants, ErrorConstants {
                  &&
                  this.y == desc.y;
                  
-            // System.out.println("isEqual : " + isEqual);
-            // (new Exception()).printStackTrace();
             return isEqual;
         }
 

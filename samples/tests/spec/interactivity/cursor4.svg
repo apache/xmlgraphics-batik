@@ -77,8 +77,8 @@ function changeCursor(evt) {
         <rect x="0" y="0" width="100" height="100" stroke="black"/>
         <rect x="44" y="44" width="12" height="12" fill="black"/>
         <rect x="45" y="45" width="10" height="10" fill="#eeeeee" />
-        <rect x="49" y="40" width="2" height="20" fill="black" />
-        <rect y="49" x="40" height="2" width="20" fill="black" />
+        <rect x="49" y="30" width="2" height="40" fill="black" />
+        <rect y="49" x="30" height="2" width="40" fill="black" />
         <!-- <line x1="40" y1="50" x2="60" y2="50" stroke="black" />
         <line y1="40" x1="50" y2="60" x2="50" stroke="black" /> -->
         <rect x="49" y="49" width="2" height="2" fill="black"
@@ -98,6 +98,9 @@ function changeCursor(evt) {
         <use xlink:href="#jpegImage" x="0" y="34"/>
         <use xlink:href="#unsupportedImage" x="34" y="34"/>
         <use xlink:href="#svgImage" x="68" y="34"/>
+        <use xlink:href="#svgImage2" x="0" y="68"/>
+        <use xlink:href="#svgImage3" x="34" y="68"/>
+        <use xlink:href="#svgImage4" x="68" y="68"/>
     </g>
 
     <text class="label" text-anchor="middle" x="75%" y="340" >Current Target Area Cursor</text>
@@ -127,6 +130,18 @@ function changeCursor(evt) {
             <text class="label" text-anchor="middle" y="40">SVG Image<tspan dy="1.5em" x="0">defaults to crosshair</tspan></text>
             <use xlink:href="#svgImage"  />
         </g>
+        <g id="refsvgImage2">
+            <text class="label" text-anchor="middle" y="40">SVG Image<tspan dy="1.5em" x="0">No viewBox/width/height</tspan></text>
+            <use xlink:href="#svgImage2"  />
+        </g>
+        <g id="refsvgImage3">
+            <text class="label" text-anchor="middle" y="40">SVG Image<tspan dy="1.5em" x="0">ViewBox, no width/height</tspan></text>
+            <use xlink:href="#svgImage3"  />
+        </g>
+y        <g id="refsvgImage4">
+            <text class="label" text-anchor="middle" y="40">SVG Image<tspan dy="1.5em" x="0">ViewBox, different aspect ratio</tspan></text>
+            <use xlink:href="#svgImage4"  />
+        </g>
 
     </g>
 
@@ -137,6 +152,9 @@ function changeCursor(evt) {
         <image id="jpegImage" xlink:href="../../resources/images/jpegCursor.jpg" width="32" height="32" x="-16" y="-16"/>
         <image id="unsupportedImage" xlink:href="../../resources/images/bmpCursor.bmp" width="32" height="32" x="-16" y="-16"/>
         <image id="svgImage" xlink:href="../../resources/images/svgCursor.svg" width="32" height="32" x="-16" y="-16"/>
+        <image id="svgImage2" xlink:href="../../resources/images/svgCursor2.svg" width="32" height="32" x="-16" y="-16"/>
+        <image id="svgImage3" xlink:href="../../resources/images/svgCursor3.svg" width="32" height="32" x="-16" y="-16"/>
+        <image id="svgImage4" xlink:href="../../resources/images/svgCursor4.svg" width="32" height="32" x="-16" y="-16"/>
 
         <cursor id="cursorbrokenImage" xlink:href="../../resources/images/iDontExist.png" x="16" y="16"/>
         <cursor id="cursortiffImage" xlink:href="../../resources/images/tiffCursor.tif" x="16" y="16"/>
@@ -144,6 +162,9 @@ function changeCursor(evt) {
         <cursor id="cursorjpegImage" xlink:href="../../resources/images/jpegCursor.jpg" x="16" y="16"/>
         <cursor id="cursorunsupportedImage" xlink:href="../../resources/images/bmpCursor.bmp" x="16" y="16"/>
         <cursor id="cursorsvgImage" xlink:href="../../resources/images/svgCursor.svg" x="16" y="16"/>
+        <cursor id="cursorsvgImage2" xlink:href="../../resources/images/svgCursor2.svg" x="16" y="16"/>
+        <cursor id="cursorsvgImage3" xlink:href="../../resources/images/svgCursor3.svg" x="16" y="16"/>
+        <cursor id="cursorsvgImage4" xlink:href="../../resources/images/svgCursor4.svg" x="16" y="8"/>
     </defs>
 
 </svg>
