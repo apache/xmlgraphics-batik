@@ -612,7 +612,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public boolean intersects(Rectangle2D r) {
-        return getOutline().intersects(r);
+        return getBounds().intersects(r);
     }
 
     public void processMouseEvent(GraphicsNodeMouseEvent evt) {

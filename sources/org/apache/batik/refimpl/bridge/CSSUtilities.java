@@ -268,16 +268,22 @@ public class CSSUtilities implements SVGConstants {
                                                     CSSStyleDeclaration decl,
                                                     UnitProcessor.Context uctx){
         GVTFactory f = ctx.getGVTFactory();
-        CompositeShapePainter painter = f.createCompositeShapePainter();
         // resolve fill
-        ShapePainter fillPainter = convertFill(svgElement, node, ctx, decl, uctx);
-        if (fillPainter != null) {
-            painter.addShapePainter(fillPainter);
-        }
+        ShapePainter fillPainter = convertFill(svgElement, node, ctx,
+                                               decl, uctx);
         // resolve stroke
-        ShapePainter strokePainter = convertStroke(svgElement, node, ctx, decl, uctx);
-        if (strokePainter != null) {
-            painter.addShapePainter(strokePainter);
+        ShapePainter strokePainter = convertStroke(svgElement, node, ctx,
+                                                   decl, uctx);
+        ShapePainter painter = null;
+        if (fillPainter != null && strokePainter != null) {
+            CompositeShapePainter comp = f.createCompositeShapePainter();
+            comp.addShapePainter(fillPainter);
+            comp.addShapePainter(strokePainter);
+            painter = comp;
+        } else if (fillPainter != null) {
+            painter = fillPainter;
+        } else if (strokePainter != null) {
+            painter = strokePainter;
         }
         return painter;
     }
@@ -842,9 +848,9 @@ public class CSSUtilities implements SVGConstants {
             cssDecl = ctx.getViewCSS().getComputedStyle(filteredElement, null);
             UnitProcessor.Context uctx
                 = new DefaultUnitProcessorContext(ctx, cssDecl);
-            Paint paint = convertFillToPaint((SVGElement)filteredElement, 
+            Paint paint = convertFillToPaint((SVGElement)filteredElement,
                                              node, ctx, cssDecl, uctx);
-            if (paint == null) 
+            if (paint == null)
                 // create a transparent flood
                 paint = new Color(0, 0, 0, 0);
 
@@ -879,13 +885,13 @@ public class CSSUtilities implements SVGConstants {
     // -floatmax/2 -> floatmax/2 (should cover the area ok).
     static FilterRegion infiniteFilterRegion = new FilterRegion() {
             public Rectangle2D getRegion() {
-                return new Rectangle2D.Float(-Float.MAX_VALUE/2, 
+                return new Rectangle2D.Float(-Float.MAX_VALUE/2,
                                              -Float.MAX_VALUE/2,
-                                             Float.MAX_VALUE,    
+                                             Float.MAX_VALUE,
                                              Float.MAX_VALUE);
             }
         };
-    
+
     /**
      * Converts the input value to a ratio. If the input value ends
      * with a % character, it is considered a percentage. Otherwise,

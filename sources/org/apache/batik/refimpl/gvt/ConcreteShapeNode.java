@@ -53,6 +53,13 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     private Shape paintedArea;
 
     /**
+     * Cache: The painted outline. (same as the painted area except as
+     * we are using Area instead of GeneralPath to create the Shape in
+     * ConcreteCompositeShapePainter.
+     */
+    private Shape paintedOutline;
+
+    /**
      * Constructs a new empty shape node.
      */
     public ConcreteShapeNode() {}
@@ -113,10 +120,15 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
         primitiveBounds = null;
         geometryBounds = null;
         paintedArea = null;
+        paintedOutline = null;
     }
 
     public boolean contains(Point2D p) {
-        return (getBounds().contains(p) && getOutline().contains(p));
+        return (getBounds().contains(p) && paintedArea.contains(p));
+    }
+
+    public boolean intersects(Rectangle2D r) {
+        return (getBounds().intersects(r) && paintedArea.intersects(r));
     }
 
     public Rectangle2D getPrimitiveBounds() {
@@ -124,10 +136,10 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
             if (shapePainter == null) {
                 return null;
             }
-            primitiveBounds = getOutline().getBounds2D();
+            paintedArea = shapePainter.getPaintedArea(shape);
+            primitiveBounds = paintedArea.getBounds2D();
         }
         return primitiveBounds;
-
     }
 
     public Rectangle2D getGeometryBounds(){
@@ -138,12 +150,12 @@ public class ConcreteShapeNode extends AbstractGraphicsNode
     }
 
     public Shape getOutline() {
-        if (paintedArea == null) {
+        if (paintedOutline == null) {
             if(shapePainter == null) {
                 return null;
             }
-            paintedArea = shapePainter.getPaintedArea(shape);
+            paintedOutline = shapePainter.getPaintedOutline(shape);
         }
-        return paintedArea;
+        return paintedOutline;
     }
 }
