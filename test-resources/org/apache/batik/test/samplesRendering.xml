@@ -42,9 +42,15 @@
     <!-- Samples extensions files                                                -->
     <!-- ======================================================================= -->
     <testGroup id="extensions" name="extensions rendering">
-        <test id="samples/extensions/regularPolygon.svg" />
-        <test id="samples/extensions/star.svg" />
-        <test id="samples/extensions/histogramNormalization.svg" />
+        <test id="samples/extensions/regularPolygon.svg" >
+            <property name="validating" value="false" />
+	</test>
+        <test id="samples/extensions/star.svg" >
+            <property name="validating" value="false" />
+	</test>
+        <test id="samples/extensions/histogramNormalization.svg" >
+            <property name="validating" value="false" />
+	</test>
     </testGroup>
 
     <!-- ======================================================================= -->
