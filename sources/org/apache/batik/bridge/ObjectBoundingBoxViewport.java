@@ -16,11 +16,23 @@ package org.apache.batik.bridge;
  */
 public class ObjectBoundingBoxViewport implements Viewport {
 
+    private float width;
+    private float height;
+
+    public ObjectBoundingBoxViewport() {
+        this(1f, 1f);
+    }
+
+    public ObjectBoundingBoxViewport(float width, float height) {
+        this.width = width;
+        this.height = height;
+    }
+
     public float getWidth() {
-        return 1f;
+        return width;
     }
 
     public float getHeight() {
-        return 1f;
+        return width;
     }
 }

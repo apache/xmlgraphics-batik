@@ -12,6 +12,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
+
 import java.io.StringReader;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
@@ -21,6 +22,7 @@ import org.apache.batik.bridge.ObjectBoundingBoxViewport;
 import org.apache.batik.bridge.Viewport;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.filter.Clip;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
@@ -73,16 +75,16 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         Area area = new Area();
         GVTBuilder builder = bridgeContext.getGVTBuilder();
         Viewport oldViewport = bridgeContext.getCurrentViewport();
+
         bridgeContext.setCurrentViewport(new ObjectBoundingBoxViewport());
         for(Node child=clipElement.getFirstChild();
             child != null;
             child = child.getNextSibling()){
             if(child.getNodeType() == child.ELEMENT_NODE){
-                Element e = (Element)child;
                 GraphicsNode node
-                    = builder.build(bridgeContext, e) ;
+                    = builder.build(bridgeContext, (Element)child) ;
                 if(node != null){
-                      // Apply the child clip if any...
+                    // Apply the child clip if any...
                     Area outline = new Area(node.getOutline());
                     Clip clip = node.getClip();
                     if (clip != null) {
@@ -92,11 +94,12 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                         }
                     }
                     area.add(outline);
+
                 }
             }
         }
 
-        // Compute the global matrix of this clipPath Element
+        // Compute the transform matrix of this clipPath Element
         AffineTransform at = AWTTransformProducer.createAffineTransform
             (new StringReader(clipElement.getAttributeNS(null, ATTR_TRANSFORM)),
              bridgeContext.getParserFactory());
@@ -116,8 +119,12 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         Shape clipPath = childrenClipPath;
 
         // Get the clip-path property of this clipPath Element in user space
+        ShapeNode outlineNode = bridgeContext.getGVTFactory().createShapeNode();
+        outlineNode.setShape(clipPath);
         Clip clipElementClipPath =
-            CSSUtilities.convertClipPath(clipElement, gn, bridgeContext);
+            CSSUtilities.convertClipPath(clipElement,
+                                         outlineNode,
+                                         bridgeContext);
         if (clipElementClipPath != null) {
             Area merge = new Area(clipPath);
             merge.subtract(new Area(clipElementClipPath.getClipPath()));
