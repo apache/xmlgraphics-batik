@@ -24,7 +24,7 @@ import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.Parser;
 
 /**
- * This class implements the {@link org.apache.batik.css.ExtendedParser} 
+ * This class implements the {@link org.apache.batik.css.parser.ExtendedParser} 
  * interface by wrapping a standard {@link org.w3c.css.sac.Parser}.
  *
  * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
@@ -34,11 +34,11 @@ public class ExtendedParserWrapper implements ExtendedParser {
 
     /**
      * This converts a standard @link org.w3c.css.sac.Parser into
-     * an Exteneded Parser.  If it is already an ExtendedParser
+     * an Extended Parser.  If it is already an ExtendedParser
      * it will simply cast it and return, otherwise it will wrap it
      * and return the result.
      * @param p Parser to wrap.
-     * @return p as an ExtenedParser.
+     * @return p as an ExtendedParser.
      */
     public static ExtendedParser wrap(Parser p) {
 	if (p instanceof ExtendedParser)
@@ -55,105 +55,54 @@ public class ExtendedParserWrapper implements ExtendedParser {
     }
     
     /**
-     * Returns a string about which CSS language is supported by this
-     * parser. For CSS Level 1, it returns "CSS1", for CSS Level 2, it returns
-     * "CSS2". For CSS Level 3, it returns "CSS3", etc. Note that a "CSSx"
-     * parser can return lexical unit other than those allowed by CSS Level x
-     * but this usage is not recommended.
+     * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#getParserVersion()}.
      */
     public String getParserVersion() {
 	return parser.getParserVersion();
     }
     
     /**
-     * Allow an application to request a locale for errors and warnings.
-     *
-     * <p>CSS parsers are not required to provide localisation for errors
-     * and warnings; if they cannot support the requested locale,
-     * however, they must throw a CSS exception.  Applications may
-     * not request a locale change in the middle of a parse.</p>
-     *
-     * @param locale A Java Locale object.
-     * @exception CSSException Throws an exception
-     *            (using the previous or default locale) if the 
-     *            requested locale is not supported.
-     * @see CSSException
-     * @see CSSParseException
+     * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#setLocale(Locale)}.
      */
     public void setLocale(Locale locale) throws CSSException {
 	parser.setLocale(locale);
     }
 
     /**
-     * Allow an application to register a document event handler.
-     *
-     * <p>If the application does not register a document handler, all
-     * document events reported by the CSS parser will be silently
-     * ignored (this is the default behaviour implemented by
-     * HandlerBase).</p>
-     *
-     * <p>Applications may register a new or different handler in the
-     * middle of a parse, and the CSS parser must begin using the new
-     * handler immediately.</p>
-     *
-     * @param handler The document handler.
-     * @see DocumentHandler
+     * <b>SAC</b>: Implements {@link
+     * org.w3c.css.sac.Parser#setDocumentHandler(DocumentHandler)}.
      */
     public void setDocumentHandler(DocumentHandler handler) {
 	parser.setDocumentHandler(handler);
     }
 
+    /**
+     * <b>SAC</b>: Implements {@link
+     * org.w3c.css.sac.Parser#setSelectorFactory(SelectorFactory)}.
+     */
     public void setSelectorFactory(SelectorFactory selectorFactory) {
 	parser.setSelectorFactory(selectorFactory);
     }
+
+    /**
+     * <b>SAC</b>: Implements {@link
+     * org.w3c.css.sac.Parser#setConditionFactory(ConditionFactory)}.
+     */
     public void setConditionFactory(ConditionFactory conditionFactory) {
 	parser.setConditionFactory(conditionFactory);
     }
     
     /**
-     * Allow an application to register an error event handler.
-     *
-     * <p>If the application does not register an error event handler,
-     * all error events reported by the CSS parser will be silently
-     * ignored, except for fatalError, which will throw a CSSException
-     * (this is the default behaviour implemented by HandlerBase).</p>
-     *
-     * <p>Applications may register a new or different handler in the
-     * middle of a parse, and the CSS parser must begin using the new
-     * handler immediately.</p>
-     *
-     * @param handler The error handler.
-     * @see ErrorHandler
-     * @see CSSException
+     * <b>SAC</b>: Implements {@link
+     * org.w3c.css.sac.Parser#setErrorHandler(ErrorHandler)}.
      */
     public void setErrorHandler(ErrorHandler handler) {
 	parser.setErrorHandler(handler);
     }
     
     /**
-     * Parse a CSS document.
-     *
-     * <p>The application can use this method to instruct the CSS parser
-     * to begin parsing an CSS document from any valid input
-     * source (a character stream, a byte stream, or a URI).</p>
-     *
-     * <p>Applications may not invoke this method while a parse is in
-     * progress (they should create a new Parser instead for each
-     * additional CSS document).  Once a parse is complete, an
-     * application may reuse the same Parser object, possibly with a
-     * different input source.</p>
-     *
-     * @param source The input source for the top-level of the
-     *        CSS document.
-     * @exception CSSException Any CSS exception, possibly
-     *            wrapping another exception.
-     * @exception java.io.IOException An IO exception from the parser,
-     *            possibly from a byte stream or character stream
-     *            supplied by the application.
-     * @see InputSource
-     * @see #parseStyleSheet(java.lang.String)
-     * @see #setDocumentHandler
-     * @see #setErrorHandler
+     * <b>SAC</b>: Implements {@link
+     * org.w3c.css.sac.Parser#parseStyleSheet(InputSource)}.
      */
     public void parseStyleSheet(InputSource source) 
 	throws CSSException, IOException {
@@ -186,14 +135,8 @@ public class ExtendedParserWrapper implements ExtendedParser {
     }
 
     /**
-     * Parse a CSS style declaration (without '{' and '}').
-     *
-     * @param styleValue The declaration.
-     * @exception CSSException Any CSS exception, possibly
-     *            wrapping another exception.
-     * @exception java.io.IOException An IO exception from the parser,
-     *            possibly from a byte stream or character stream
-     *            supplied by the application.
+     * <b>SAC</b>: Implements {@link
+     * org.w3c.css.sac.Parser#parseStyleDeclaration(InputSource)}.
      */
     public void parseStyleDeclaration(InputSource source) 
 	throws CSSException, IOException {
@@ -206,7 +149,7 @@ public class ExtendedParserWrapper implements ExtendedParser {
      * @param styleValue The declaration.
      * @exception CSSException Any CSS exception, possibly
      *            wrapping another exception.
-     * @exception java.io.IOException An IO exception from the parser,
+     * @exception IOException An IO exception from the parser,
      *            possibly from a byte stream or character stream
      *            supplied by the application.
      */
@@ -218,13 +161,7 @@ public class ExtendedParserWrapper implements ExtendedParser {
 
 
     /**
-     * Parse a CSS rule.
-     *
-     * @exception CSSException Any CSS exception, possibly
-     *            wrapping another exception.
-     * @exception java.io.IOException An IO exception from the parser,
-     *            possibly from a byte stream or character stream
-     *            supplied by the application.
+     * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#parseRule(InputSource)}.
      */
     public void parseRule(InputSource source) 
 	throws CSSException, IOException {
@@ -245,14 +182,7 @@ public class ExtendedParserWrapper implements ExtendedParser {
     }
     
     /**
-     * Parse a comma separated list of selectors.
-     * 
-     * 
-     * @exception CSSException Any CSS exception, possibly
-     *            wrapping another exception.
-     * @exception java.io.IOException An IO exception from the parser,
-     *            possibly from a byte stream or character stream
-     *            supplied by the application.
+     * <b>SAC</b>: Implements {@link org.w3c.css.sac.Parser#parseSelectors(InputSource)}.
      */    
     public SelectorList parseSelectors(InputSource source)
         throws CSSException, IOException {
@@ -277,14 +207,8 @@ public class ExtendedParserWrapper implements ExtendedParser {
 
 
     /**
-     * Parse a CSS property value.
-     * 
-     * 
-     * @exception CSSException Any CSS exception, possibly
-     *            wrapping another exception.
-     * @exception java.io.IOException An IO exception from the parser,
-     *            possibly from a byte stream or character stream
-     *            supplied by the application.
+     * <b>SAC</b>: Implements
+     * {@link org.w3c.css.sac.Parser#parsePropertyValue(InputSource)}.
      */    
     public LexicalUnit parsePropertyValue(InputSource source)
         throws CSSException, IOException {
@@ -309,14 +233,8 @@ public class ExtendedParserWrapper implements ExtendedParser {
 
     
     /**
-     * Parse a CSS priority value (e.g. "!important").
-     * 
-     * 
-     * @exception CSSException Any CSS exception, possibly
-     *            wrapping another exception.
-     * @exception java.io.IOException An IO exception from the parser,
-     *            possibly from a byte stream or character stream
-     *            supplied by the application.
+     * <b>SAC</b>: Implements
+     * {@link org.w3c.css.sac.Parser#parsePriority(InputSource)}.
      */    
     public boolean parsePriority(InputSource source)
         throws CSSException, IOException {
