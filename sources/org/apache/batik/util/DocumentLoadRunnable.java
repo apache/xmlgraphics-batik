@@ -31,14 +31,13 @@ import java.util.zip.GZIPInputStream;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
+import org.apache.batik.refimpl.bridge.SVGUtilities;
 import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XSLTransformer;
 
 import org.w3c.dom.svg.SVGSVGElement;
-
-//import org.apache.batik.util.SVGUtilities;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

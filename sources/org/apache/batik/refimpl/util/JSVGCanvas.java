@@ -79,6 +79,7 @@ import org.apache.batik.refimpl.bridge.BufferedDocumentLoader;
 import org.apache.batik.refimpl.bridge.ConcreteGVTBuilder;
 import org.apache.batik.refimpl.bridge.DefaultUserAgent;
 import org.apache.batik.refimpl.bridge.SVGBridgeContext;
+import org.apache.batik.refimpl.bridge.SVGUtilities;
 
 import org.apache.batik.refimpl.gvt.ConcreteGVTFactory;
 
@@ -91,8 +92,6 @@ import org.apache.batik.refimpl.gvt.renderer.DynamicRendererFactory;
 import org.apache.batik.refimpl.parser.ParserFactory;
 
 import org.apache.batik.refimpl.script.ConcreteInterpreterPool;
-
-import org.apache.batik.util.SVGUtilities;
 
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.MissingListenerException;

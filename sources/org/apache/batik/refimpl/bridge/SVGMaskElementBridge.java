@@ -32,7 +32,6 @@ import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 
 import org.apache.batik.refimpl.gvt.filter.ConcreteMaskRable;
@@ -51,8 +50,7 @@ import org.w3c.dom.css.CSSStyleDeclaration;
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGMaskElementBridge
-    implements MaskBridge, SVGConstants {
+public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
 
     /**
      * Returns the <tt>Mask</tt> referenced by the input
@@ -66,14 +64,12 @@ public class SVGMaskElementBridge
         // Get the mask region
         //
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle
-            (maskElement, null);
+            = bridgeContext.getViewCSS().getComputedStyle(maskElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, 
-                                              cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
-        Rectangle2D maskRegion 
+        Rectangle2D maskRegion
             = SVGUtilities.convertMaskRegion(maskElement,
                                              maskedElement,
                                              maskedNode,
@@ -86,9 +82,8 @@ public class SVGMaskElementBridge
         //
         // Build the GVT tree that represents the mask
         //
-        String maskContentUnits 
-            = maskElement.getAttributeNS(null,
-                                         ATTR_MASK_CONTENT_UNITS);
+        String maskContentUnits
+            = maskElement.getAttributeNS(null, ATTR_MASK_CONTENT_UNITS);
         if(maskContentUnits.length() == 0){
             maskContentUnits = VALUE_USER_SPACE_ON_USE;
         }
@@ -137,7 +132,7 @@ public class SVGMaskElementBridge
             filter = gnrFactory.createGraphicsNodeRable(maskedNode);
         }
 
-        return new ConcreteMaskRable(filter, maskNode, 
+        return new ConcreteMaskRable(filter, maskNode,
                                      maskRegion);
     }
 

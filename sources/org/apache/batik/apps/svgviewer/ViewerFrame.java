@@ -78,6 +78,7 @@ import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.XSLTransformer;
 import org.apache.batik.gvt.event.EventDispatcher;
 
+import org.apache.batik.refimpl.bridge.SVGUtilities;
 import org.apache.batik.refimpl.transcoder.ImageTranscoder;
 import org.apache.batik.refimpl.transcoder.PngTranscoder;
 import org.apache.batik.refimpl.transcoder.JpegTranscoder;
@@ -85,7 +86,6 @@ import org.apache.batik.refimpl.util.JSVGCanvas;
 import org.apache.batik.refimpl.gvt.event.ConcreteEventDispatcher;
 
 import org.apache.batik.util.SVGFileFilter;
-import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.DocumentEvent;
 import org.apache.batik.util.DocumentLoadingEvent;
 import org.apache.batik.util.DocumentPropertyEvent;

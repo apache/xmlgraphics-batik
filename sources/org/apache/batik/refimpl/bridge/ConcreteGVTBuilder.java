@@ -32,7 +32,6 @@ import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.bridge.Bridge;
 
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.SVGUtilities;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;

@@ -13,17 +13,16 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Locale;
-import java.util.MissingResourceException;
+
+import org.apache.batik.bridge.Viewport;
 import org.apache.batik.css.HiddenChildElementSupport;
-import org.apache.batik.i18n.Localizable;
-import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.LengthHandler;
 import org.apache.batik.parser.LengthParser;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.ParserFactory;
-import org.apache.batik.bridge.Viewport;
+import org.apache.batik.util.resources.Messages;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -57,44 +56,9 @@ public abstract class UnitProcessor {
     public final static short OTHER_LENGTH = 0;
 
     /**
-     * The error messages bundle class name.
-     */
-    protected final static String RESOURCES =
-        "org.apache.batik.util.resources.Messages";
-
-    /**
-     * The localizable support for the error messages.
-     */
-    protected static LocalizableSupport localizableSupport =
-        new LocalizableSupport(RESOURCES);
-
-    /**
      * This class does not need to be instantiated.
      */
     protected UnitProcessor() {
-    }
-
-    /**
-     * Implements {@link org.apache.batik.i18n.Localizable#setLocale(Locale)}.
-     */
-    public static void setLocale(Locale l) {
-        localizableSupport.setLocale(l);
-    }
-
-    /**
-     * Implements {@link org.apache.batik.i18n.Localizable#getLocale()}.
-     */
-    public static Locale getLocale() {
-        return localizableSupport.getLocale();
-    }
-
-    /**
-     * Implements {@link
-     * org.apache.batik.i18n.Localizable#formatMessage(String,Object[])}.
-     */
-    public static String formatMessage(String key, Object[] args)
-        throws MissingResourceException {
-        return localizableSupport.formatMessage(key, args);
     }
 
     /**
@@ -133,8 +97,8 @@ public abstract class UnitProcessor {
             return percentagesToPixels(v, e, d, c);
         default:
             throw new RuntimeException
-                (formatMessage("invalid.css.unit",
-                               new Object[] { new Integer(t) }));
+                (Messages.formatMessage("invalid.css.unit",
+                                        new Object[] { new Integer(t) }));
         }
     }
 
@@ -174,8 +138,8 @@ public abstract class UnitProcessor {
             return percentagesToPixels(v, e, d, c);
         default:
             throw new RuntimeException
-                (formatMessage("invalid.svg.unit",
-                               new Object[] { new Integer(t) }));
+                (Messages.formatMessage("invalid.svg.unit",
+                                        new Object[] { new Integer(t) }));
         }
 /*
         if (t == SVGLength.SVG_LENGTHTYPE_NUMBER) {
@@ -322,7 +286,7 @@ public abstract class UnitProcessor {
                                        Context c) {
         if (e == null) {
             throw new RuntimeException
-                (formatMessage("element.needed", null));
+                (Messages.formatMessage("element.needed", null));
         }
         CSSPrimitiveValue val = c.getFontSize(e);
         short type = val.getPrimitiveType();
@@ -346,7 +310,7 @@ public abstract class UnitProcessor {
                                        Context c) {
         if (e == null) {
             throw new RuntimeException
-                (formatMessage("element.needed", null));
+                (Messages.formatMessage("element.needed", null));
         }
         CSSPrimitiveValue val = c.getFontSize(e);
         short type = val.getPrimitiveType();
@@ -372,7 +336,7 @@ public abstract class UnitProcessor {
                                                Context c) {
         if (e == null) {
             throw new RuntimeException
-                (formatMessage("element.needed", null));
+                (Messages.formatMessage("element.needed", null));
         }
         if (d == HORIZONTAL_LENGTH) {
             float w = c.getViewport().getWidth();

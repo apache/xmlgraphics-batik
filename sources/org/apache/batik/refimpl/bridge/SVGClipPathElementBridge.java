@@ -32,8 +32,8 @@ import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.refimpl.gvt.filter.ConcreteClipRable;
 
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -56,6 +56,7 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                             GraphicsNode gn,
                             Element clipElement,
                             Element clipedElement) {
+
         CSSStyleDeclaration decl
             = ctx.getViewCSS().getComputedStyle(clipElement, null);
 
@@ -71,22 +72,24 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         Area clipPath = new Area();
         GVTBuilder builder = ctx.getGVTBuilder();
         GVTFactory gvtFactory = ctx.getGVTFactory();
-        Viewport oldViewport = ctx.getCurrentViewport();
 
-        // compute the transform matrix of this clipPath Element
+        // parse the transform attribute
         AffineTransform Tx = AWTTransformProducer.createAffineTransform
            (new StringReader(clipElement.getAttributeNS(null, ATTR_TRANSFORM)),
             ctx.getParserFactory());
-        // compute an additional transform related the clipPathUnits
+
+        // parse the clipPathUnits attribute
+        Viewport oldViewport = ctx.getCurrentViewport();
         String units = clipElement.getAttributeNS(null, ATTR_CLIP_PATH_UNITS);
         if (units.length() == 0) {
             units = VALUE_USER_SPACE_ON_USE;
         }
-
-        if (VALUE_OBJECT_BOUNDING_BOX.equals(units)) {
+        int unitsType = SVGUtilities.parseCoordinateSystem(units);
+        if (unitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
             // units are resolved using objectBoundingBox
             ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
         }
+        // compute an additional transform related the clipPathUnits
         Tx = SVGUtilities.convertAffineTransform(Tx, gn, units);
 
         // build the clipPath according to the clipPath's children

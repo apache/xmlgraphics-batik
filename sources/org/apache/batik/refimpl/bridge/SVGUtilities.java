@@ -6,7 +6,7 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.util;
+package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -23,6 +23,10 @@ import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.parser.PreserveAspectRatioHandler;
 import org.apache.batik.parser.PreserveAspectRatioParser;
+import org.apache.batik.parser.PreserveAspectRatioParser;
+import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.util.resources.Messages;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,6 +39,7 @@ import org.w3c.dom.svg.SVGPreserveAspectRatio;
  * This class contains utility methods for SVG.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public class SVGUtilities implements SVGConstants {

@@ -25,7 +25,6 @@ import org.apache.batik.gvt.GVTFactory;
 import org.apache.batik.parser.AWTTransformProducer;
 import org.apache.batik.parser.ParserFactory;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 
 import org.apache.batik.refimpl.gvt.ConcretePatternPaint;
@@ -84,10 +83,18 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
                                 Element paintedElement,
                                 Element paintElement) {
 
+        Viewport oldViewport = ctx.getCurrentViewport();
+
+        // parse the patternContentUnits attribute
         String patternContentUnits
             = paintElement.getAttributeNS(null, ATTR_PATTERN_CONTENT_UNITS);
+
         if(patternContentUnits.length() == 0){
             patternContentUnits = VALUE_USER_SPACE_ON_USE;
+        }
+        int unitsType = SVGUtilities.parseCoordinateSystem(patternContentUnits);
+        if (unitsType == SVGUtilities.OBJECT_BOUNDING_BOX) {
+            ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
         }
 
         // Build pattern content
@@ -95,13 +102,6 @@ public class SVGPatternElementBridge implements PaintBridge, SVGConstants {
 
         CompositeGraphicsNode patternContentNode
             = ctx.getGVTFactory().createCompositeGraphicsNode();
-
-        // If we are in objectBoundingBox units, percentages
-        // are relative to a (0, 0, 1, 1) viewport
-        Viewport oldViewport = ctx.getCurrentViewport();
-        if(VALUE_OBJECT_BOUNDING_BOX.equals(patternContentUnits)){
-            ctx.setCurrentViewport(new ObjectBoundingBoxViewport());
-        }
 
         // build the GVT tree that represents the pattern
         boolean hasChildren = false;
