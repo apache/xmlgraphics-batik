@@ -149,9 +149,10 @@ public class ImageTagRegistry implements ErrorConstants {
                 // make sense of it...
                 ret = getBrokenLinkImage(this, ERR_URL_UNINTERPRETABLE, 
                                          new Object[] { purl } );
+            cache.put(purl, null);
+        } else {
+            cache.put(purl, ret);
         }
-
-        cache.put(purl, ret);
 
         if ((colorSpace != null) &&
             ret.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY) == null)
