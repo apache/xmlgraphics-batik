@@ -129,7 +129,10 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge,
                 }
             }
         } else {
-            ctx.setDocumentSize(new Dimension((int)w, (int)h));
+            // <!> FIXME: hack to compute the original document's size
+            if (ctx.getDocumentSize() == null) {
+                ctx.setDocumentSize(new Dimension((int)w, (int)h));
+            }
             clip = new Rectangle2D.Float(x, y, w, h);
         }
 
