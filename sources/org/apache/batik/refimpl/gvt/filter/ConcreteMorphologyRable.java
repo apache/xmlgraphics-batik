@@ -188,10 +188,10 @@ public class ConcreteMorphologyRable
             aoi = getBounds2D();
 
         Rectangle2D r = aoi.getBounds2D();
-        r = new Rectangle2D.Double(r.getX()-radX, 
-                                   r.getY()-radY,
-                                   r.getWidth() +2*radX, 
-                                   r.getHeight()+2*radY);
+        r = new Rectangle2D.Double(r.getX()-radX/scaleX, 
+                                   r.getY()-radY/scaleY,
+                                   r.getWidth() +2*radX/scaleX, 
+                                   r.getHeight()+2*radY/scaleY);
 
         RenderedImage ri;
         ri = getSource().createRendering(new RenderContext(srcAt, r, rh));
@@ -199,7 +199,8 @@ public class ConcreteMorphologyRable
         CachableRed cr;
         cr = new ConcreteRenderedImageCachableRed(ri);
 
-        r = cr.getBounds();
+        Shape devShape = srcAt.createTransformedShape(aoi.getBounds2D());
+        r = devShape.getBounds2D();
         r = new Rectangle2D.Double(r.getX()-radX, 
                                    r.getY()-radY,
                                    r.getWidth() +2*radX, 

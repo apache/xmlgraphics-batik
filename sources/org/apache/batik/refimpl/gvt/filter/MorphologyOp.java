@@ -279,14 +279,14 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 sp = srcOff + i*srcScanStride;
                 dp = dstOff + i*dstScanStride;
                 pel = srcPixels[sp++];
-                a = pel&0xff000000;
+                a = pel>>>24;
                 r = pel&0xff0000;
                 g = pel&0xff00;
                 b = pel&0xff;
 
                 for (int k=1; k<w; k++){
                     currentPixel = srcPixels[sp++];
-                    a1 = currentPixel&0xff000000;
+                    a1 = currentPixel>>>24;
                     r1 = currentPixel&0xff0000;
                     g1 = currentPixel&0xff00;
                     b1 = currentPixel&0xff;
@@ -306,7 +306,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 }
                 // all the element share the same max/min value
                 for (int k=0; k<w; k++){
-                    destPixels[dp++] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                 }
             }
         }
@@ -333,7 +333,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 maxIndexB = 0;
 
                 pel = srcPixels[sp++];
-                a = pel&0xff000000;
+                a = pel>>>24;
                 r = pel&0xff0000;
                 g = pel&0xff00;
                 b = pel&0xff;
@@ -344,7 +344,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
 
                 for (int k=1; k<=radiusX; k++){
                     currentPixel = srcPixels[sp++];
-                    a1 = currentPixel&0xff000000;
+                    a1 = currentPixel>>>24;
                     r1 = currentPixel&0xff0000;
                     g1 = currentPixel&0xff00;
                     b1 = currentPixel&0xff;
@@ -370,7 +370,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                         maxIndexB = k;
                     }
                 }
-                destPixels[dp++] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
 
                 //
                 // 1 <= j <= w-radiusX-1 : The left margin of each row.
@@ -382,7 +382,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
 
                     // we retrieve the previous max/min value
                     a = bufferA[maxIndexA];
-                    a1 = lastPixel&0xff000000;
+                    a1 = lastPixel>>>24;
                     bufferA[j+radiusX] = a1;
                     if (isBetter(a1, a, doDilation)){
                         a = a1;
@@ -423,7 +423,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // new max/min value according to each channel's
                     // max/min vlue
 
-                    destPixels[dp++] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
 
                 }
                 // Now is the inner body of the row:
@@ -500,7 +500,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // discard the leftmost element
                     bufferHead++;
 
-                    destPixels[dp++] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                 }
                 // return to the first pixel of the next row
             }
@@ -557,7 +557,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 cp = dstOff + j;
                 pel = destPixels[cp];
                 cp += dstScanStride;
-                a = pel&0xff000000;
+                a = pel>>>24;
                 r = pel&0xff0000;
                 g = pel&0xff00;
                 b = pel&0xff;
@@ -565,7 +565,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 for (int k=1; k<h; k++){
                     currentPixel = destPixels[cp];
                     cp += dstScanStride;
-                    a1 = currentPixel&0xff000000;
+                    a1 = currentPixel>>>24;
                     r1 = currentPixel&0xff0000;
                     g1 = currentPixel&0xff00;
                     b1 = currentPixel&0xff;
@@ -584,7 +584,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     }
                 }
                 for (int k=0; k<h; k++){
-                    destPixels[dp] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                     dp += dstScanStride;
                 }
                 // return to the first pixel of the next column
@@ -614,7 +614,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
 
                 pel = destPixels[cp];
                 cp += dstScanStride;
-                a = pel&0xff000000;
+                a = pel>>>24;
                 r = pel&0xff0000;
                 g = pel&0xff00;
                 b = pel&0xff;
@@ -626,7 +626,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 for (int k=1; k<=radiusY; k++){
                     currentPixel = destPixels[cp];
                     cp += dstScanStride;
-                    a1 = currentPixel&0xff000000;
+                    a1 = currentPixel>>>24;
                     r1 = currentPixel&0xff0000;
                     g1 = currentPixel&0xff00;
                     b1 = currentPixel&0xff;
@@ -653,7 +653,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     }
                 }
                 // fill the first pixel of each column
-                destPixels[dp] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                 dp += dstScanStride;
 
                 //
@@ -666,7 +666,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // here is the Alpha channel
 
                     a = bufferA[maxIndexA];
-                    a1 = lastPixel&0xff000000;
+                    a1 = lastPixel>>>24;
                     bufferA[i+radiusY] = a1;
                     if (isBetter(a1, a, doDilation)){
                         a = a1;
@@ -707,7 +707,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // new max/min value according to each channel's
                     // max/min vlue
 
-                    destPixels[dp] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);                                 dp += dstScanStride;
+                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);                                 dp += dstScanStride;
                 }
                 // Now is the inner body of the column
                 // when radiusY < h <= 2*radiusY
@@ -783,7 +783,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // discard the leftmost element
                     bufferHead++;
 
-                    destPixels[dp] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                     dp += dstScanStride;
                 }
                 // return to the first pixel of the next column
@@ -909,7 +909,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 //       index array for the use of other pixels.
                 //
                 pel = srcPixels[sp++];
-                a = pel&0xff000000;
+                a = pel>>>24;
                 r = pel&0xff0000;
                 g = pel&0xff00;
                 b = pel&0xff;
@@ -920,7 +920,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
 
                 for (int k=1; k<=radiusX; k++){
                     currentPixel = srcPixels[sp++];
-                    a1 = currentPixel&0xff000000;
+                    a1 = currentPixel>>>24;
                     r1 = currentPixel&0xff0000;
                     g1 = currentPixel&0xff00;
                     b1 = currentPixel&0xff;
@@ -946,7 +946,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                         maxIndexB = k;
                     }
                 }
-                destPixels[dp++] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
 
                 //
                 // 1 <= j <= radiusX : The left margin of each row.
@@ -958,7 +958,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
 
                     // we retrieve the previous max/min value
                     a = bufferA[maxIndexA];
-                    a1 = lastPixel&0xff000000;
+                    a1 = lastPixel>>>24;
                     bufferA[j+radiusX] = a1;
                     if (isBetter(a1, a, doDilation)){
                         a = a1;
@@ -999,7 +999,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                     // new max/min value according to each channel's
                     // max/min vlue
 
-                    destPixels[dp++] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                 }
 
                 //
@@ -1008,7 +1008,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 //
                 for (int j=radiusX+1; j<=w-1-radiusX; j++){
                     lastPixel = srcPixels[sp++];
-                    a1 = lastPixel&0xff000000;
+                    a1 = lastPixel>>>24;
                     r1 = lastPixel&0xff0000;
                     g1 = lastPixel&0xff00;
                     b1 = lastPixel&0xff;
@@ -1111,7 +1111,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                             maxIndexB = bufferHead;
                         }
                     }
-                    destPixels[dp++] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                     bufferHead = (bufferHead+1)%rangeX;
                 }
 
@@ -1180,7 +1180,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                             hd = (hd+1)%rangeX;
                         }
                     }
-                    destPixels[dp++] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp++] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                     bufferHead = (bufferHead+1)%rangeX;
                     // we throw another element
                     count--;
@@ -1224,7 +1224,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 // i=0 : The first pixel
                 pel = destPixels[cp];
                 cp += dstScanStride;
-                a = pel&0xff000000;
+                a = pel>>>24;
                 r = pel&0xff0000;
                 g = pel&0xff00;
                 b = pel&0xff;
@@ -1236,7 +1236,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                 for (int k=1; k<=radiusY; k++){
                     currentPixel = destPixels[cp];
                     cp += dstScanStride;
-                    a1 = currentPixel&0xff000000;
+                    a1 = currentPixel>>>24;
                     r1 = currentPixel&0xff0000;
                     g1 = currentPixel&0xff00;
                     b1 = currentPixel&0xff;
@@ -1262,7 +1262,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                         maxIndexB = k;
                     }
                 }
-                destPixels[dp] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                 // go to the next element in the column.
                 dp += dstScanStride;
 
@@ -1275,7 +1275,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
 
                     // here is the Alpha channel
                     a = bufferA[maxIndexA];
-                    a1 = lastPixel&0xff000000;
+                    a1 = lastPixel>>>24;
                     bufferA[maxI] = a1;
                     if (isBetter(a1, a, doDilation)){
                         a = a1;
@@ -1308,7 +1308,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                         b = b1;
                         maxIndexB = maxI;
                     }
-                    destPixels[dp] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                     dp += dstScanStride;
                 }
 
@@ -1321,7 +1321,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
 
                     lastPixel = destPixels[cp];
                     cp += dstScanStride;
-                    a1 = lastPixel&0xff000000;
+                    a1 = lastPixel>>>24;
                     r1 = lastPixel&0xff0000;
                     g1 = lastPixel&0xff00;
                     b1 = lastPixel&0xff;
@@ -1420,7 +1420,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                             maxIndexB = bufferHead;
                         }
                     }
-                    destPixels[dp] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                     dp += dstScanStride;
                     bufferHead = (bufferHead+1)%rangeY;
                 }
@@ -1487,7 +1487,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
                             hd = (hd+1)%rangeY;
                         }
                     }
-                    destPixels[dp] = (a & 0xff000000) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
+                    destPixels[dp] = (a << 24) | (r & 0xff0000) | (g & 0xff00) | (b & 0xff);
                     dp += dstScanStride;
                     bufferHead = (bufferHead+1)%rangeY;
                     // we throw out this useless element
@@ -1500,8 +1500,16 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         return dest;
     }// end of the filter() method for Raster
 
+      /**
+       * This implementation of filter does the morphology operation
+       * on a premultiplied alpha image.  This tends to muddy the
+       * colors.  so something that is supposed to be a mostly
+       * transparent bright red may well become a muddy opaque red.
+       * Where as I think it should become a bright opaque red. Which
+       * is the result you would get if you were using unpremult data.
+       */
     public BufferedImage filter(BufferedImage src, BufferedImage dest){
-        if (src == null && dest == null)
+        if (src == null)
             throw new NullPointerException("Source image should not be null");
 
         BufferedImage origSrc   = src;
@@ -1511,24 +1519,18 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
             BufferedImage newSrc;
             src = new BufferedImage(src.getWidth(), src.getHeight(),
                                     BufferedImage.TYPE_INT_ARGB_PRE);
-            java.awt.Graphics2D g2d = src.createGraphics();
-            g2d.setComposite(java.awt.AlphaComposite.Src);
-            g2d.drawImage(origSrc, null, 0, 0);
+            GaussianBlurOp.copyData(origSrc, src);
         }
         else if (!src.isAlphaPremultiplied()) {
-            // Easiest way to get a Premultipled CM.
-            WritableRaster wr;
-            wr = src.getRaster().createCompatibleWritableRaster(1,1);
-            ColorModel    srcCM = src.getColorModel();
-            ColorModel srcCMPre = srcCM.coerceData(src.getRaster(), true);
+            // Get a Premultipled CM.
+            ColorModel    srcCM, srcCMPre;
+            srcCM    = src.getColorModel();
+            srcCMPre = GaussianBlurOp.coerceColorModel(srcCM, true);
 
             src = new BufferedImage(srcCMPre, src.getRaster(),
                                     true, null);
             
-            java.awt.Graphics2D g2d = src.createGraphics();
-            g2d.setComposite(java.awt.AlphaComposite.Src);
-
-            g2d.drawImage(origSrc, null, 0, 0);
+            GaussianBlurOp.copyData(origSrc, src);
         }
 
 
@@ -1541,12 +1543,76 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
             dest = new BufferedImage(src.getWidth(), src.getHeight(),
                                      BufferedImage.TYPE_INT_ARGB_PRE);
         } else if (!dest.isAlphaPremultiplied()) {
-            WritableRaster wr;
-            wr = dest.getRaster().createCompatibleWritableRaster(1,1);
-            ColorModel    dstCM = dest.getColorModel();
-            ColorModel dstCMPre = dstCM.coerceData(wr, true);
+            // Get a Premultipled CM.
+            ColorModel    dstCM, dstCMPre;
+            dstCM    = dest.getColorModel();
+            dstCMPre = GaussianBlurOp.coerceColorModel(dstCM, true);
+
             dest = new BufferedImage(dstCMPre, finalDest.getRaster(),
                                      true, null);
+        }
+
+        filter(src.getRaster(), dest.getRaster());
+
+        // Check to see if we need to 'fix' our source (divide out alpha).
+        if ((src.getRaster() == origSrc.getRaster()) &&
+            (src.isAlphaPremultiplied() != origSrc.isAlphaPremultiplied())) {
+            // Copy our source back the way it was...
+            GaussianBlurOp.copyData(src, origSrc);
+        }
+
+        // Check to see if we need to store our result...
+        if ((dest.getRaster() != finalDest.getRaster()) ||
+            (dest.isAlphaPremultiplied() != finalDest.isAlphaPremultiplied())){
+            // Coerce our source back the way it was requested...
+            GaussianBlurOp.copyData(dest, finalDest);
+        }
+
+        return finalDest;
+    }
+      /*
+       * This commented out implementation of filter does the
+       * morphology operation on unpremultiplied alpha image data.
+       * This tends to leave colors bright.
+       */
+      /*
+    public BufferedImage filter(BufferedImage src, BufferedImage dest){
+        if (src == null && dest == null)
+            throw new NullPointerException("Source image should not be null");
+
+        BufferedImage origSrc   = src;
+        BufferedImage finalDest = dest;
+
+        if (!isCompatible(src.getColorModel(), src.getSampleModel())) {
+            src = new BufferedImage(src.getWidth(), src.getHeight(),
+                                    BufferedImage.TYPE_INT_ARGB);
+            GaussianBlurOp.copyData(origSrc, src);
+        }
+        else if (src.isAlphaPremultiplied()) {
+            ColorModel    srcCM, srcCMUnpre;
+            srcCM = src.getColorModel();
+            srcCMUnpre = GaussianBlurOp.coerceColorModel(srcCM, false);
+            src = new BufferedImage(srcCMUnpre, src.getRaster(),
+                                    false, null);
+            
+            GaussianBlurOp.copyData(origSrc, src);
+        }
+
+
+        if (dest == null) {
+            dest = new BufferedImage(src.getWidth(), src.getHeight(),
+                                          BufferedImage.TYPE_INT_ARGB);
+            finalDest = dest;
+        } else if (!isCompatible(dest.getColorModel(),
+                                 dest.getSampleModel())) {
+            dest = new BufferedImage(src.getWidth(), src.getHeight(),
+                                     BufferedImage.TYPE_INT_ARGB);
+        } else if (dest.isAlphaPremultiplied()) {
+            ColorModel    dstCM, dstCMUnpre;
+            dstCM      = dest.getColorModel();
+            dstCMUnpre = GaussianBlurOp.coerceColorModel(dstCM, false);
+            dest = new BufferedImage(dstCMUnpre, finalDest.getRaster(),
+                                     false, null);
         }
 
         // We now have two compatible images. We can safely filter the rasters
@@ -1555,10 +1621,7 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
         // Check to see if we need to 'fix' our source (divide out alpha).
         if ((src.getRaster() == origSrc.getRaster()) &&
             (src.isAlphaPremultiplied() != origSrc.isAlphaPremultiplied())) {
-            // Coerce our source back the way it was...
-            java.awt.Graphics2D g2d = origSrc.createGraphics();
-            g2d.setComposite(java.awt.AlphaComposite.Src);
-            g2d.drawImage(src, null, 0, 0);
+            GaussianBlurOp.copyData(src, origSrc);
         }
 
         // Check to see if we need to store our result...
@@ -1574,7 +1637,8 @@ public class MorphologyOp implements BufferedImageOp, RasterOp {
             GaussianBlurOp.copyData(dest, finalDest);
         }
         return finalDest;
-    }
+    } 
+      */
 }
 
 

@@ -667,24 +667,18 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
             BufferedImage newSrc;
             src = new BufferedImage(src.getWidth(), src.getHeight(),
                                     BufferedImage.TYPE_INT_ARGB_PRE);
-            java.awt.Graphics2D g2d = src.createGraphics();
-            g2d.setComposite(java.awt.AlphaComposite.Src);
-            g2d.drawImage(origSrc, null, 0, 0);
+            GaussianBlurOp.copyData(origSrc, src);
         }
         else if (!src.isAlphaPremultiplied()) {
-            // Easiest way to get a Premultipled CM.
-            WritableRaster wr;
-            wr = src.getRaster().createCompatibleWritableRaster(1,1);
-            ColorModel    srcCM = src.getColorModel();
-            ColorModel srcCMPre = srcCM.coerceData(src.getRaster(), true);
+            // Get a Premultipled CM.
+            ColorModel    srcCM, srcCMPre;
+            srcCM    = src.getColorModel();
+            srcCMPre = GaussianBlurOp.coerceColorModel(srcCM, true);
 
             src = new BufferedImage(srcCMPre, src.getRaster(),
                                     true, null);
             
-            java.awt.Graphics2D g2d = src.createGraphics();
-            g2d.setComposite(java.awt.AlphaComposite.Src);
-
-            g2d.drawImage(origSrc, null, 0, 0);
+            GaussianBlurOp.copyData(origSrc, src);
         }
 
 
@@ -697,10 +691,11 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
             dest = new BufferedImage(src.getWidth(), src.getHeight(),
                                      BufferedImage.TYPE_INT_ARGB_PRE);
         } else if (!dest.isAlphaPremultiplied()) {
-            WritableRaster wr;
-            wr = dest.getRaster().createCompatibleWritableRaster(1,1);
-            ColorModel    dstCM = dest.getColorModel();
-            ColorModel dstCMPre = dstCM.coerceData(wr, true);
+            // Get a Premultipled CM.
+            ColorModel    dstCM, dstCMPre;
+            dstCM    = dest.getColorModel();
+            dstCMPre = GaussianBlurOp.coerceColorModel(dstCM, true);
+
             dest = new BufferedImage(dstCMPre, finalDest.getRaster(),
                                      true, null);
         }
@@ -710,43 +705,19 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         // Check to see if we need to 'fix' our source (divide out alpha).
         if ((src.getRaster() == origSrc.getRaster()) &&
             (src.isAlphaPremultiplied() != origSrc.isAlphaPremultiplied())) {
-            // Coerce our source back the way it was...
-            java.awt.Graphics2D g2d = origSrc.createGraphics();
-            g2d.setComposite(java.awt.AlphaComposite.Src);
-            g2d.drawImage(src, null, 0, 0);
+            // Copy our source back the way it was...
+            GaussianBlurOp.copyData(src, origSrc);
         }
 
         // Check to see if we need to store our result...
         if ((dest.getRaster() != finalDest.getRaster()) ||
             (dest.isAlphaPremultiplied() != finalDest.isAlphaPremultiplied())){
-            // Coerce our source back the way it was...
-            //org.apache.batik.refimpl.gvt.AbstractGraphicsNode.showImage
-            // (dest, "Dest");
             /*System.out.println("Dest: " + dest.isAlphaPremultiplied() +
                                " finalDest: " + 
                                finalDest.isAlphaPremultiplied());*/
 
+            // Coerce our source back the way it was...
             GaussianBlurOp.copyData(dest, finalDest);
-
-            /*
-            byte [] array = new byte [256];
-            for (int i=0; i<256; i++) {
-                array[i] = (byte)i;
-            }
-            java.awt.image.ByteLookupTable lut 
-              = new java.awt.image.ByteLookupTable(0,array);
-            java.awt.image.LookupOp op  
-              = new java.awt.image.LookupOp(lut, null);
-            op.filter(dest, finalDest);
-            */
-
-            /*
-            java.awt.Graphics2D g2d = finalDest.createGraphics();
-            g2d.setComposite(java.awt.AlphaComposite.Src);
-            g2d.drawImage(dest, null, 0, 0);
-            */
-            //org.apache.batik.refimpl.gvt.AbstractGraphicsNode.showImage
-            //(finalDest, "finalDest");
         }
 
         return finalDest;
@@ -822,6 +793,13 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
         int            bands = srcR.getNumBands();
         float          norm;
         if (dst.isAlphaPremultiplied()) {
+              /*
+              // drawImage works when moving to premult but not away...
+            java.awt.Graphics2D g2d = dst.createGraphics();
+            g2d.setComposite(java.awt.AlphaComposite.Src);
+            g2d.drawImage(src, null, 0, 0);
+              */
+            // Original loop that definately works for all cases...
             norm = 1/(float)255;
             for (int y=0; y<src.getHeight(); y++)
                 for (int x=0; x<src.getWidth(); x++) {
@@ -834,6 +812,7 @@ public class GaussianBlurOp implements BufferedImageOp, RasterOp {
                         dstR.setPixel(x,y,pixel);
                     }
                 }
+
         } else {
             for (int y=0; y<src.getHeight(); y++)
                 for (int x=0; x<src.getWidth(); x++) {
