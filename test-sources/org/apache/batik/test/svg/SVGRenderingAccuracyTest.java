@@ -543,7 +543,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
 
             if (deleteTmp){
                 tmpFile.delete();
-            }
+            } 
             return report;
         }
 
@@ -626,7 +626,7 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                 }
 
                 if(!accurate){
-
+                    System.err.println(">>>>>>>>>>>>>>>>>>>>>> Rendering is not accurate");
                     if(saveVariation != null){
                         // There is a computed variation different from the 
                         // referenced variation and there is a place where the new 
@@ -653,7 +653,13 @@ public class SVGRenderingAccuracyTest extends AbstractTest {
                                              diffFile) });
 
                     if (candidateReference != null){
-                        tmpFile.renameTo(candidateReference);
+                        System.err.print(">>>>>> saving candidate reference : ");
+                        boolean res = tmpFile.renameTo(candidateReference);
+                        System.err.println(res);
+                        if (!res) {
+                            System.out.println("failed renaiming : " + tmpFile + " to " + candidateReference);
+                            System.out.println("tmpFile.existis  : " + tmpFile.exists());
+                        }
                     }
                     
                     report.setPassed(false);
