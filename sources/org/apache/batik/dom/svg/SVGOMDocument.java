@@ -73,8 +73,8 @@ public class SVGOMDocument
     implements SVGDocument,
                DocumentCSS,
                DocumentView,
-               SVGConstants
-{
+               SVGConstants {
+
     /**
      * The error messages bundle class name.
      */
@@ -217,6 +217,9 @@ public class SVGOMDocument
         factories.put(TAG_MASK,
                       new MaskElementFactory());
 
+        factories.put(TAG_METADATA,
+                      new MetadataElementFactory());
+
         factories.put(TAG_PATH,
                       new PathElementFactory());
 
@@ -255,6 +258,9 @@ public class SVGOMDocument
 
         factories.put(TAG_TITLE,
                       new TitleElementFactory());
+
+        factories.put(TAG_TSPAN,
+                      new TspanElementFactory());
 
         factories.put(TAG_USE,
                       new UseElementFactory());
@@ -1142,6 +1148,19 @@ public class SVGOMDocument
     }
 
     /**
+     * To create a 'metadata' element.
+     */
+    protected class MetadataElementFactory implements ElementFactory {
+        public MetadataElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMMetadataElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
      * To create a 'path' element.
      */
     protected class PathElementFactory implements ElementFactory {
@@ -1311,6 +1330,19 @@ public class SVGOMDocument
          */
         public Element create(String prefix) {
             return new SVGOMTitleElement(prefix, SVGOMDocument.this);
+        }
+    }
+
+    /**
+     * To create a 'tspan' element.
+     */
+    protected class TspanElementFactory implements ElementFactory {
+        public TspanElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix) {
+            return new SVGOMTSpanElement(prefix, SVGOMDocument.this);
         }
     }
 

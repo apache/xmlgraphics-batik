@@ -61,6 +61,7 @@ public interface SVGConstants extends CSSConstants {
     String TAG_LINE = "line";
     String TAG_LINEAR_GRADIENT = "linearGradient";
     String TAG_MASK = "mask";
+    String TAG_METADATA = "metadata";
     String TAG_PATH = "path";
     String TAG_PATTERN = "pattern";
     String TAG_POLYGON = "polygon";
@@ -75,6 +76,7 @@ public interface SVGConstants extends CSSConstants {
     String TAG_SYMBOL = "symbol";
     String TAG_TEXT = "text";
     String TAG_TITLE = "title";
+    String TAG_TSPAN = "tspan";
     String TAG_USE = "use";
 
     /**

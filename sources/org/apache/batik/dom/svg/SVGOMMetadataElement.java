@@ -9,29 +9,29 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.dom.AbstractDocument;
-import org.w3c.dom.svg.SVGDefsElement;
+import org.w3c.dom.svg.SVGMetadataElement;
 
 /**
- * This class implements {@link org.w3c.dom.svg.SVGDefsElement}.
+ * This class implements {@link org.w3c.dom.svg.SVGMetadataElement}.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGOMDefsElement
-    extends    SVGGraphicsElement
-    implements SVGDefsElement {
+public class SVGOMMetadataElement
+    extends    SVGOMElement
+    implements SVGMetadataElement {
     /**
-     * Creates a new SVGOMDefsElement object.
+     * Creates a new SVGOMMetadataElement object.
      */
-    public SVGOMDefsElement() {
+    public SVGOMMetadataElement() {
     }
 
     /**
-     * Creates a new SVGOMDefsElement object.
+     * Creates a new SVGOMMetadataElement object.
      * @param prefix The namespace prefix.
      * @param owner The owner document.
      */
-    public SVGOMDefsElement(String prefix, AbstractDocument owner) {
+    public SVGOMMetadataElement(String prefix, AbstractDocument owner) {
         super(prefix, owner);
 
     }
@@ -40,6 +40,6 @@ public class SVGOMDefsElement
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getLocalName()}.
      */
     public String getLocalName() {
-        return TAG_DEFS;
+        return TAG_METADATA;
     }
 }

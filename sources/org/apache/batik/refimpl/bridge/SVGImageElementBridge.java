@@ -133,6 +133,9 @@ public class SVGImageElementBridge implements GraphicsNodeBridge,
         Mask   mask   = CSSUtilities.convertMask(element, node, ctx);
         node.setMask(mask);
 
+        Shape clip = CSSUtilities.convertClipPath(element, node, ctx);
+        node.setClippingArea(clip);
+
         // <!> TODO only when binding is enabled
         BridgeEventSupport.addDOMListener(ctx, element);
 
