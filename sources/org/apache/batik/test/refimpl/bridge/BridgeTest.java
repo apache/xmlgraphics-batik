@@ -54,7 +54,9 @@ public class BridgeTest extends JFrame {
         } catch(SAXException e){
             e.printStackTrace();
             return;
-        }
+        } catch(InterruptedException e) {
+	    return;
+	}
 
         // create the default SVG context
         BridgeContext ctx

@@ -76,6 +76,11 @@ import org.apache.batik.refimpl.gvt.event.ConcreteEventDispatcher;
 
 import org.apache.batik.util.SVGFileFilter;
 import org.apache.batik.util.SVGUtilities;
+import org.apache.batik.util.DocumentEvent;
+import org.apache.batik.util.DocumentLoadingEvent;
+import org.apache.batik.util.DocumentPropertyEvent;
+import org.apache.batik.util.DocumentListener;
+import org.apache.batik.util.DocumentLoadRunnable;
 
 import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.LanguageChangeHandler;
@@ -112,7 +117,8 @@ public class ViewerFrame
                UserAgent,
                LanguageChangeHandler,
                UserStyleDialog.ChangeHandler,
-               JSVGCanvas.ZoomHandler {
+               JSVGCanvas.ZoomHandler,
+               DocumentListener {
 
     // The actions names.
     public final static String OPEN_ACTION        = "OpenAction";
@@ -266,11 +272,6 @@ public class ViewerFrame
     protected String description = "";
 
     /**
-     * Is the document thread running?
-     */
-    protected boolean isRunning;
-
-    /**
      * Has the windows a fixed size?
      */
     protected boolean fixedSize;
@@ -306,6 +307,12 @@ public class ViewerFrame
      */
     protected int loadedDocumentsCount;
 
+
+    /**
+     * The factory that creates new SVG Document instances.
+     */
+    private SVGDocumentFactory df;
+
     /**
      * Creates a new ViewerFrame object.
      * @param a The current application.
@@ -318,6 +325,7 @@ public class ViewerFrame
                 resources.getInteger("Frame.height"));
         URL url = getClass().getResource(resources.getString("Frame.icon"));
         setIconImage(new ImageIcon(url).getImage());
+        df = new SVGDocumentFactory(application.getXMLParserClassName());
 
         addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent e) {
@@ -526,9 +534,13 @@ public class ViewerFrame
     /**
      * Runs the given thread.
      */
-    public void runThread(Thread t) {
-        t.start();
+    public synchronized void runThread(Thread t) {
+        stopAction.update(true);
+        reloadAction.update(false);
+        thread = t;
+        thread.start();
     }
+
 
     /**
      * Returns the class name of the XML parser.
@@ -552,6 +564,10 @@ public class ViewerFrame
             }
         }
         if (uri != null) {
+            // interrupt any document load already underway
+            if ((thread != null) && thread.isAlive()) {
+                thread.interrupt();
+            }
             loadedDocument++;
             if (loadedDocument == loadedDocuments.size()) {
                 loadedDocuments.add(uri);
@@ -565,19 +581,16 @@ public class ViewerFrame
             if (loadedDocumentsCount == loadedDocument) {
                 loadedDocumentsCount++;
             }
-            backAction.update();
-            forwardAction.update();
-
             locationBar.setText(uri);
-            thread = new DocumentThread(uri);
-            thread.start();
+            Thread t = DocumentLoadRunnable.createLoaderThread(uri, this, df);
+            runThread(t);
         }
     }
 
     // ActionMap /////////////////////////////////////////////////////
 
     /**
-     * The map that contains the listeners
+     * The map that contains the action listeners
      */
     protected Map listeners = new HashMap();
 
@@ -711,8 +724,8 @@ public class ViewerFrame
         public ReloadAction() {}
         public void actionPerformed(ActionEvent e) {
             if (uri != null) {
-                thread = new DocumentThread(uri);
-                thread.start();
+                Thread t = DocumentLoadRunnable.createLoaderThread(uri, ViewerFrame.this, df);
+                runThread(t);
             }
         }
 
@@ -721,10 +734,10 @@ public class ViewerFrame
             c.setEnabled(true);
         }
 
-        protected void update() {
+        protected void update(boolean isLoadComplete) {
             Iterator it = components.iterator();
             while (it.hasNext()) {
-                ((JComponent)it.next()).setEnabled(!isRunning);
+                ((JComponent)it.next()).setEnabled(isLoadComplete);
             }
         }
     }
@@ -907,20 +920,10 @@ public class ViewerFrame
         java.util.List components = new LinkedList();
         public StopAction() {}
         public void actionPerformed(ActionEvent e) {
-	    /*
-	     * Lines below removed because they are unsafe,
-	     * (and were causing hangs);
-	     * thread should stop itself by checking a
-	     * flag instead - or, better, using Thread.interrupt()
-	     * and calls to isInterrupted().
-	     */
-	    //thread.stop();
-            //canvas.stopDocumentViewThread();
-	    // TODO: replace class-scope flag with
-	    // thread.setIsRunning(false); (etc.)
-	    //thread.interrupt();
-            isRunning = false;
-            update();
+            if (thread.isAlive()) {
+                thread.interrupt();
+            }
+            update(false);
         }
 
         public void addJComponent(JComponent c) {
@@ -928,7 +931,7 @@ public class ViewerFrame
             c.setEnabled(false);
         }
 
-        protected void update() {
+        protected void update(boolean isRunning) {
             Iterator it = components.iterator();
             while (it.hasNext()) {
                 ((JComponent)it.next()).setEnabled(isRunning);
@@ -1008,162 +1011,109 @@ public class ViewerFrame
                 if (uri != null) {
                     locationBar.setText(uri);
                     locationBar.addToHistory(uri);
-                    thread = new DocumentThread(uri);
-                    thread.start();
+                    Thread t = DocumentLoadRunnable.createLoaderThread(
+                                        uri, ViewerFrame.this, df);
+                    runThread(t);
                 }
             }
         }
     }
 
     /**
-     * The document loading thread.
+     * Take action on receipt of a document event.
      */
-    protected class DocumentThread extends Thread {
-        /**
-         * The document URI.
-         */
-        protected String documentURI;
+    public void processDocumentEvent(DocumentEvent e) {
 
-        /**
-         * Creates a new thread.
-         */
-        public DocumentThread(String uri) {
-            setPriority(Thread.MIN_PRIORITY);
-            documentURI = uri;
+        // perhaps keying on public field is faster than instanceof ?
+
+        if (e.classid == DocumentEvent.LOADING) {
+            processDocumentLoadingEvent((DocumentLoadingEvent)e);
+        } else if (e.classid == DocumentEvent.PROPERTY) {
+            processDocumentPropertyEvent((DocumentPropertyEvent)e);
         }
+    }
 
-        /**
-         * The thread main method.
-         */
-        public void run() {
-            InterruptedException ie = null;
-            try {
-                statusBar.setMainMessage
-                    (resources.getString("Document.loading"));
-		sleep(0); // allows swap, checks for interrupt
-                setCursor(WAIT_CURSOR);
-
-                isRunning = true;
-                reloadAction.update();
-                stopAction.update();
-
-                // Load the requested document.
-                SVGOMDocument doc;
-
-                long t1 = System.currentTimeMillis();
-
-                SVGDocumentFactory df = new SVGDocumentFactory
-                    (application.getXMLParserClassName());
-		checkInterrupt(); 
-                URL url = new URL(uri);
-                InputStream is = url.openStream();
-		checkInterrupt();
-                try {
-                    is = new GZIPInputStream(is);
-                } catch (IOException e) {
-                    is.close();
-                    is = url.openStream();
-                }
-                Reader r = new InputStreamReader(is);
-                
-		checkInterrupt();
-                doc = df.createDocument(documentURI, new InputSource(r));
-
-                List l = XSLTransformer.getStyleSheets(doc.getFirstChild(),
-                                                       documentURI);
-                if (l.size() > 0) {
-                    // XSL transformations
-                    is.close();
-                    is = url.openStream();
-                    try {
-                        is = new GZIPInputStream(is);
-                    } catch (IOException e) {
-                        is.close();
-                        is = url.openStream();
-                    }
-                    r = new InputStreamReader(is);
-                    r = XSLTransformer.transform(r, l);
-
-                    doc = df.createDocument(documentURI, new InputSource(r));
-                }
-
-                DefaultSVGContext dc = new DefaultSVGContext();
-                dc.setUserAgent(ViewerFrame.this);
-                dc.setUserStyleSheetURI(userStyleSheetURI);
-                doc.setSVGContext(dc);
-
-                long t2 = System.currentTimeMillis();
-                System.out.println("-------- Document loading ----- " +
-                                   (t2 - t1) + " ms");
-
-                String title = doc.getTitle();
-                if (title.equals("")) {
-                    setTitle(resources.getString("Frame.title") + ": " +
-                             resources.getString("Frame.no_title"));
-                } else {
-                    setTitle(resources.getString("Frame.title") + ": " + title);
-                }
-
-		checkInterrupt();
-                domViewer.setDocument(doc, (ViewCSS)doc.getDocumentElement());
-
-                statusBar.setMainMessage(resources.getString
+    /**
+     * Take action on receipt of a document loading event.
+     */
+    public void processDocumentLoadingEvent(DocumentLoadingEvent e) {
+        switch (e.type) {
+        case (DocumentLoadingEvent.START_LOADING):
+            setCursor(WAIT_CURSOR);
+            reloadAction.update(false);
+            stopAction.update(true);
+            statusBar.setMainMessage
+                (resources.getString("Document.loading"));
+            break;
+        case (DocumentLoadingEvent.LOADED):
+            // New doc has been loaded, prepare for new view
+            DefaultSVGContext dc = new DefaultSVGContext();
+            SVGOMDocument doc = (SVGOMDocument) e.getValue();
+            dc.setUserAgent(ViewerFrame.this);
+            dc.setUserStyleSheetURI(userStyleSheetURI);
+            doc.setSVGContext(dc);
+            domViewer.setDocument(doc, (ViewCSS)doc.getDocumentElement());
+            statusBar.setMainMessage(resources.getString
                                          ("Document.creating"));
-
-                canvas.setSVGDocument(null);
-
-                // Set the panel preferred size.
-                SVGSVGElement elt = doc.getRootElement();
-                float w = elt.getWidth().getBaseVal().getValue();
-                float h = elt.getHeight().getBaseVal().getValue();
-                canvas.setPreferredSize(new Dimension((int)w, (int)h));
-                panel.invalidate();
-                if (!fixedSize) {
-                    pack();
-                }
-
-		checkInterrupt();
-                canvas.setSVGDocument(doc);
-
-                t1 = System.currentTimeMillis();
-                System.out.println("-------- GVT construction ----- " +
-                                   (t1 - t2) + " ms");
-
-                description
-                    =  SVGUtilities.getDescription(doc.getRootElement());
-                if (description.equals("")) {
-                    description
-                        = resources.getString("Description.no_description");
-                }
-
-            } catch (InterruptedException e) {
-	        System.out.println("Document loading thread interrupted.");
-                ie = e;
-	    } catch (InterruptedIOException iioe) {
-	        System.out.println("Interrupted during document I/O.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            canvas.setSVGDocument(null);
+            break;
+        case (DocumentLoadingEvent.DONE):
+            doc = (SVGOMDocument) e.getValue();
+            canvas.setSVGDocument(doc);
             setCursor(DEFAULT_CURSOR);
-            isRunning = false;
-            stopAction.update();
-            reloadAction.update();
+            stopAction.update(false);
+            reloadAction.update(true);
             statusBar.setMainMessage("");
             statusBar.setMessage(resources.getString("Document.done"));
-
-            if (ie != null) {
-	      // throw ie; Doesn't need to be rethrown, thread dies here.
-            }
+            break;
+        case (DocumentLoadingEvent.LOAD_CANCELLED):
+            setCursor(DEFAULT_CURSOR);
+            stopAction.update(false);
+            reloadAction.update(true); // in case we want to try again
+            statusBar.setMainMessage("");
+            statusBar.setMessage(resources.getString("Document.cancelled"));
+            break;
+        case (DocumentLoadingEvent.LOAD_FAILED):
+            setCursor(DEFAULT_CURSOR);
+            stopAction.update(false);
+            reloadAction.update(true); // in case we want to try again
+            statusBar.setMainMessage("");
+            statusBar.setMessage(resources.getString("Document.failed"));
         }
+    }
 
-      private void checkInterrupt() throws InterruptedException {
-	  // TODO: use Thread.interrupt(), etc. instead of this flag.
-	  // if (isInterrupted()) {
-	  if (!isRunning) {
-	    throw new InterruptedException();
-	  }
-      }
+    /**
+     * Take action on receipt of a document property change.
+     */
+    public void processDocumentPropertyEvent(DocumentPropertyEvent e) {
+        switch (e.type) {
+        case (DocumentPropertyEvent.TITLE) :
+            String title = (String) e.getValue();
+            if (title.equals("")) {
+                setTitle(resources.getString("Frame.title") + ": " +
+                         resources.getString("Frame.no_title"));
+            } else {
+                setTitle(resources.getString("Frame.title") + ": " + title);
+            }
+            break;
+        case (DocumentPropertyEvent.SIZE) :
+            Dimension size = (Dimension) e.getValue();
+            canvas.setPreferredSize(size);
+            panel.invalidate();
+            if (!fixedSize) {
+                pack();
+            }
+            break;
+        case (DocumentPropertyEvent.DESCRIPTION) :
+            String desc = (String) e.getValue();
+            if (desc.equals("")) {
+                   // possibly unsafe to ask resources
+                    // (resources may need synchronized access)
+                desc = resources.getString("Description.no_description");
+            }
+            description = desc;
+            break;
+        }
     }
 }
 

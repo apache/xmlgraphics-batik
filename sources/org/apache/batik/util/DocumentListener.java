@@ -6,21 +6,21 @@
  * the LICENSE file.                                                         *
  *****************************************************************************/
 
-package org.apache.batik.bridge;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMException;
-import org.xml.sax.SAXException;
+package org.apache.batik.util;
 
 /**
- * Defines a class that is responsible of loading (creating) a Document.
+ * Interface for classes which listen to DocumentEvents.
  *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @version $Id$
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @version $Id $
  */
-public interface DocumentLoader {
+public interface DocumentListener {
 
-    Document loadDocument(String uri) throws DOMException, 
-				SAXException, InterruptedException;
+   /**
+    * Take action on receipt of a DocumentEvent.
+    */
+    public void processDocumentEvent(DocumentEvent e);
 
 }
+
+

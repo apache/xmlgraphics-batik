@@ -141,11 +141,11 @@ public class StrokingTextPainter extends BasicTextPainter {
             AttributedCharacterIterator runaci = textRun.getACI();
             TextLayout layout = textRun.getLayout();
             runaci.first();
-            System.out.print("Painting text: ");
-            for (int j=runaci.getBeginIndex(); j<runaci.getEndIndex(); ++j) {
-                System.out.print(runaci.setIndex(j));
-            }
-            System.out.println("");
+            //System.out.print("Painting text: ");
+            //for (int j=runaci.getBeginIndex(); j<runaci.getEndIndex(); ++j) {
+            //    System.out.print(runaci.setIndex(j));
+            //}
+            //System.out.println("");
             runaci.first();
             boolean underline =
                 (runaci.getAttribute(GVTAttributedCharacterIterator.

@@ -73,8 +73,10 @@ public class BufferedDocumentLoader implements DocumentLoader {
      * load it and update the cache.
      *
      * @param uri the uri of the document to return
+     * @exception InterruptedException is thrown if this thread is interrupted.
      */
-    public Document loadDocument(String uri) throws DOMException, SAXException {
+    public Document loadDocument(String uri) throws DOMException, SAXException,
+                                       InterruptedException {
         int n = uri.indexOf('#');
         if (n != -1) {
             uri = uri.substring(0, n);

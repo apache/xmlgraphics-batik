@@ -9,6 +9,7 @@
 package org.apache.batik.dom.util;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import org.apache.batik.css.ElementWithID;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -98,10 +99,11 @@ public class DocumentFactory
      * @param is  The document input source.
      * @exception DOMException if an error occured when building the document.
      * @exception SAXException if an error occured when reading the document.
+     * @exception InterruptedException if the current thread is interrupted.
      */
     public Document createDocument(String ns, String root, String uri,
                                    InputSource is)
-	throws DOMException, SAXException {
+	throws DOMException, SAXException, InterruptedException {
 	documentElementParsed = false;
 	document = implementation.createDocument(ns, root, null);
 
@@ -122,6 +124,9 @@ public class DocumentFactory
 	}
 	try {
 	    parser.parse(is);
+        } catch (InterruptedIOException iioe) {
+	    // if this thread is interrupted (for instance, by user)
+	    throw new InterruptedException();
 	} catch (IOException e) {
 	    throw new SAXException(e);
 	}

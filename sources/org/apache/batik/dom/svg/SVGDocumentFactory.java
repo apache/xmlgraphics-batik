@@ -51,9 +51,10 @@ public class SVGDocumentFactory extends DocumentFactory {
      * @param is  The document input source.
      * @exception DOMException if an error occured when building the document.
      * @exception SAXException if an error occured when reading the document.
+     * @exception InterruptedException if the I/O thread is interrupted
      */
     public SVGOMDocument createDocument(String uri, InputSource is)
-	throws DOMException, SAXException {
+	throws DOMException, SAXException, InterruptedException {
 	SVGOMDocument doc;
 	doc = (SVGOMDocument)createDocument
             (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
