@@ -270,18 +270,8 @@ public class ConcreteTurbulenceRable
             g.dispose();
             }*/
 
-        RenderedImage result = new ConcreteBufferedImageCachableRed(bi){
-                public int getMinX(){
-                    return rasterRect.x;
-                }
-
-                public int getMinY(){
-                    return rasterRect.y;
-                }
-            };
-
-        return result;
-                                             
+        return new ConcreteBufferedImageCachableRed(bi, rasterRect.x,
+                                                    rasterRect.y);
     }
 
     public RenderedImage createRenderingThomas(RenderContext rc) {

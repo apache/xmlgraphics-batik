@@ -80,110 +80,91 @@ public class SVGFeMorphologyElementBridge implements FilterBridge,
         //
         // Build filter only if radius is not negative
         //
+        if((radiusPair[0] == null)
+           || (radiusPair[0].floatValue() <= 0))
+            return null;
+
+        float radiusX = radiusPair[0].floatValue();
+        float radiusY = radiusX;
+        if(radiusPair[1] != null){
+            radiusY = radiusPair[1].floatValue();
+        }
+
+        if(radiusY <= 0)
+            return null;
+
+          // Get source
+        String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
+        in = CSSUtilities.getFilterSource(filteredNode, inAttr, 
+                                          bridgeContext, 
+                                          filteredElement,
+                                          in, filterMap);
+
+        // feMorphology is a point operation. Therefore, to take the
+        // filter primitive region into account, only a pad operation
+        // on the input is required.
+        
+        // The primitive region defaults to the source's region.
+        FilterRegion defaultRegion = new FilterSourceRegion(in);
+        
+        // Get unit. Comes from parent node.
+        Node parentNode = filterElement.getParentNode();
+        String units = VALUE_USER_SPACE_ON_USE;
+        if((parentNode != null)
+           &&
+           (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
+            units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
+        }
+        
+        // Compute primitive region
+        CSSStyleDeclaration cssDecl
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement,
+                                                          null);
+        
+        UnitProcessor.Context uctx
+            = new DefaultUnitProcessorContext(bridgeContext,
+                                              cssDecl);
+        
+        final FilterRegion blurArea
+            = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
+                                                        filteredElement,
+                                                        defaultRegion,
+                                                        units,
+                                                        filteredNode,
+                                                        uctx);
+        
+        PadRable pad = new ConcretePadRable(in,
+                                            new Rectangle2D.Float(0, 0, 0, 0),
+                                            PadMode.ZERO_PAD){
+                public Rectangle2D getBounds2D(){
+                    setPadRect(blurArea.getRegion());
+                    return super.getBounds2D();
+                }
+
+                public Rectangle2D getPadRect() {
+                    setPadRect(blurArea.getRegion());
+                    return super.getPadRect();
+                }
+                
+                public java.awt.image.RenderedImage createRendering
+                    (java.awt.image.renderable.RenderContext rc){
+                    setPadRect(blurArea.getRegion());
+                    return super.createRendering(rc);
+                }
+            };
+        
+        // Build filter
         Filter filter = null;
-        if((radiusPair[0] != null)
-           || (radiusPair[0].floatValue() > 0)){
-            float radiusX = radiusPair[0].floatValue();
-            float radiusY = radiusX;
-            if(radiusPair[1] != null){
-                radiusY = radiusPair[1].floatValue();
-            }
-
-            if(radiusY > 0){
-                // Get source
-                String inAttr = filterElement.getAttributeNS(null, ATTR_IN);
-                int inValue = SVGUtilities.parseInAttribute(inAttr);
-                switch(inValue){
-                case SVGUtilities.EMPTY:
-                    // Do not change in's value. It is correctly
-                    // set to the current chain result.
-                    break;
-                case SVGUtilities.BACKGROUND_ALPHA:
-                    throw new Error("BackgroundAlpha not implemented yet");
-                case SVGUtilities.BACKGROUND_IMAGE:
-                    throw new Error("BackgroundImage not implemented yet");
-                case SVGUtilities.FILL_PAINT:
-                    throw new Error("Not implemented yet");
-                case SVGUtilities.SOURCE_ALPHA:
-                    throw new Error("SourceAlpha not implemented yet");
-                case SVGUtilities.SOURCE_GRAPHIC:
-                    in = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-                    break;
-                case SVGUtilities.STROKE_PAINT:
-                    throw new Error("Not implemented yet");
-                case SVGUtilities.IDENTIFIER:
-                    in = (Filter)filterMap.get(inAttr);
-                    break;
-                default:
-                    // Should never, ever, ever happen
-                    throw new Error();
-                }
-
-                // feMorphology is a point operation. Therefore, to take the
-                // filter primitive region into account, only a pad operation
-                // on the input is required.
-
-                // The primitive region defaults to the source's region.
-                FilterRegion defaultRegion = new FilterSourceRegion(in);
-
-                // Get unit. Comes from parent node.
-                Node parentNode = filterElement.getParentNode();
-                String units = VALUE_USER_SPACE_ON_USE;
-                if((parentNode != null)
-                   &&
-                   (parentNode.getNodeType() == parentNode.ELEMENT_NODE)){
-                    units = ((Element)parentNode).getAttributeNS(null, ATTR_PRIMITIVE_UNITS);
-                }
-
-                // Compute primitive region
-                CSSStyleDeclaration cssDecl
-                    = bridgeContext.getViewCSS().getComputedStyle(filterElement,
-                                                                  null);
-
-                UnitProcessor.Context uctx
-                    = new DefaultUnitProcessorContext(bridgeContext,
-                                                      cssDecl);
-
-                final FilterRegion blurArea
-                    = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
-                                                                filteredElement,
-                                                                defaultRegion,
-                                                                units,
-                                                                filteredNode,
-                                                                uctx);
-
-                PadRable pad = new ConcretePadRable(in,
-                                                    new Rectangle2D.Float(0, 0, 0, 0),
-                                                    PadMode.ZERO_PAD){
-                        public Rectangle2D getBounds2D(){
-                            setPadRect(blurArea.getRegion());
-                            return super.getBounds2D();
-                        }
-
-                        public java.awt.image.RenderedImage createRendering(java.awt.image.renderable.RenderContext rc){
-                            setPadRect(blurArea.getRegion());
-                            return super.createRendering(rc);
-                        }
-                    };
-
-                // Build filter
-                filter = new ConcreteMorphologyRable(pad, radiusX, radiusY, doDilation);
-
-                // Get result attribute if any
-                String result
-                    = filterElement.getAttributeNS(null,
-                                                   ATTR_RESULT);
-                if((result != null) && (result.trim().length() > 0)){
-                    // The filter will be added to the filter map. Before
-                    // we do that, append the filter region crop
-                    filterMap.put(result, filter);
-                }
-            }
+        filter = new ConcreteMorphologyRable(pad, radiusX, radiusY, doDilation);
+        
+        // Get result attribute if any
+        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
+        if((result != null) && (result.trim().length() > 0)){
+            // The filter w ill be added to the filter map. Before
+            // we do     that, append the filter region crop
+            filterMap.put(result, filter);
         }
-        else{
-            System.out.println("radiusPair : " + radiusPair[0] + " / " + radiusPair[1]);
-        }
-
+    
         return filter;
     }
 

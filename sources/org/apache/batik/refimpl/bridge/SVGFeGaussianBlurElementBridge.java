@@ -135,6 +135,11 @@ public class SVGFeGaussianBlurElementBridge implements FilterBridge,
                     return super.getBounds2D();
                 }
 
+                public Rectangle2D getPadRect() {
+                    setPadRect(blurArea.getRegion());
+                    return super.getPadRect();
+                }
+                
                 public java.awt.image.RenderedImage createRendering
                     (java.awt.image.renderable.RenderContext rc){
                     setPadRect(blurArea.getRegion());

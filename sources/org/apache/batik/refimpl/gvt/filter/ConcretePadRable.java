@@ -113,29 +113,27 @@ public class ConcretePadRable extends AbstractRable
         Rectangle2D.intersect(arect, rect, arect);
         Rectangle2D.intersect(srect, arect, srect);
 
-        RenderedImage result = null;
-        if((srect.getWidth() > 0)
-           &&
-           (srect.getHeight() > 0)){
-            AffineTransform at = rc.getTransform();
-            
-            RenderContext srcRC = new RenderContext(at, srect, rh);
-            RenderedImage ri = src.createRendering(srcRC);
-            
-            if(ri != null){
-                CachableRed cr = ConcreteRenderedImageCachableRed.wrap(ri);
-                
-                arect = at.createTransformedShape(arect).getBounds2D();
-                
-                // System.out.println("Pad rect : " + arect);
-                // Use arect (my bounds intersect area of interest)
+        if((srect.getWidth()  <= 0) ||
+           (srect.getHeight() <= 0))
+            return null;
 
-                result = new PadRed(cr, arect.getBounds(), padMode, rh);
-            }
-        }
+        AffineTransform at = rc.getTransform();
+            
+        RenderContext srcRC = new RenderContext(at, srect, rh);
+        RenderedImage ri = src.createRendering(srcRC);
+        
+        if(ri == null)
+            return null;
 
-        // System.out.println("ConcretePadRable done");
-        return result;
+        CachableRed cr = ConcreteRenderedImageCachableRed.wrap(ri);
+            
+        arect = at.createTransformedShape(arect).getBounds2D();
+            
+        // System.out.println("Pad rect : " + arect);
+        // Use arect (my bounds intersect area of interest)
+            
+        cr = new PadRed(cr, arect.getBounds(), padMode, rh);
+        return cr;
     }
 
     public Shape getDependencyRegion(int srcIndex, Rectangle2D outputRgn) {

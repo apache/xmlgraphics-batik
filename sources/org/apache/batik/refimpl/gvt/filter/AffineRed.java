@@ -70,7 +70,7 @@ public class AffineRed extends AbstractRed {
 
         // Finish initializing our base class...
         init(src, myBounds, src.getColorModel(), sm,
-             (int)(pt.getX()+0.5), (int)(pt.getY()+0.5), null);
+             (int)pt2d.getX(), (int)pt2d.getY(), null);
     }
 
     public WritableRaster copyData(WritableRaster wr) {
@@ -84,6 +84,9 @@ public class AffineRed extends AbstractRed {
 
         // Don't try and get data from src that it doesn't have...
         srcR = srcR.intersection(src.getBounds());
+
+        if (srcR.isEmpty())
+            return null;
 
         WritableRaster srcWR = wr.createCompatibleWritableRaster(srcR);
         src.copyData(srcWR);

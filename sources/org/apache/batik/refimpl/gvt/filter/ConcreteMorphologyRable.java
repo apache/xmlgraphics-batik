@@ -195,7 +195,9 @@ public class ConcreteMorphologyRable
 
         RenderedImage ri;
         ri = getSource().createRendering(new RenderContext(srcAt, r, rh));
-        
+        if (ri == null) 
+            return null;
+
         CachableRed cr;
         cr = new ConcreteRenderedImageCachableRed(ri);
 
@@ -234,15 +236,7 @@ public class ConcreteMorphologyRable
         final int rrMinX = cr.getMinX();
         final int rrMinY = cr.getMinY();
 
-        cr = new ConcreteBufferedImageCachableRed(destBI) {
-                public int getMinX(){
-                    return rrMinX;
-                }
-                
-                public int getMinY(){
-                    return rrMinY;
-                }
-            };
+        cr = new ConcreteBufferedImageCachableRed(destBI, rrMinX, rrMinY);
 
         if (!resAt.isIdentity())
             cr = new AffineRed(cr, resAt, rh);

@@ -32,6 +32,8 @@ import java.awt.image.SampleModel;
  * @version $Id$ */
 public class PadRed extends AbstractRed {
 
+    static final boolean DEBUG=false;
+
     RenderingHints hints;
 
     /**
@@ -49,9 +51,15 @@ public class PadRed extends AbstractRed {
                   RenderingHints hints) {
         super(src,bounds,src.getColorModel(),
               fixSampleModel(src, bounds),
-              src.getTileGridXOffset(), src.getTileGridYOffset(),
+              bounds.x, bounds.y,
               null);
 
+        if (DEBUG) {
+            System.out.println("Src: " + src + " Bounds: " + bounds + 
+                               " Off: " +
+                               src.getTileGridXOffset() + ", " +
+                               src.getTileGridYOffset());
+        }
         this.hints = hints;
     }
 
@@ -65,25 +73,6 @@ public class PadRed extends AbstractRed {
         Rectangle r = wrR.intersection(srcR);
 
         if(!r.isEmpty()){
-            /*
-            Raster srcRas = src.getData();
-            wr.setRect(srcRas);
-            */
-            
-            /*
-            WritableRaster srcWR;
-            SampleModel smRet;
-            smRet = wr.getSampleModel().createCompatibleSampleModel(r.width,
-                                                                    r.height);
-            Point pt = new Point(r.x, r.y);
-            srcWR = Raster.createWritableRaster(smRet, pt);
-
-            // Have my source fill his section...
-            src.copyData(srcWR);
-            
-            wr.setRect(srcWR);
-            */
-
             // Limit the raster I send to my source to his rect.
             WritableRaster srcWR;
             srcWR = wr.createWritableChild(r.x, r.y, r.width, r.height,
@@ -95,23 +84,26 @@ public class PadRed extends AbstractRed {
         //       to check what the mode is and pad out the edges
         //       of wr.  For now I just zero them...
         BufferedImage bi;
-        bi = new BufferedImage(getColorModel(), wr.createWritableTranslatedChild(0,0),
+        bi = new BufferedImage(getColorModel(), 
+                               wr.createWritableTranslatedChild(0,0),
                                getColorModel().isAlphaPremultiplied(),
                                null);
 
         Graphics2D g2d = bi.createGraphics();
         // Make sure we draw with our hints.
         if (hints != null) g2d.setRenderingHints(hints);
+        // Overwrite whatever is there.
+        g2d.setComposite(AlphaComposite.Src);
         // Fully transparent black.
         g2d.setColor(new Color(0,0,0,0));
-        g2d.translate(-wr.getMinX(), -wr.getMinY());
-        // Just put it in.
-        g2d.setComposite(AlphaComposite.Src);
                            
         int x      = wrR.x;
-        int y      = wrR.x;
+        int y      = wrR.y;
         int width  = wrR.width;
         int height = wrR.height;
+
+        // Position x, y at the topleft of the bufferedImage...
+        g2d.translate(-x, -y);
 
         // We split the edge drawing up into four parts.
         //
@@ -129,16 +121,27 @@ public class PadRed extends AbstractRed {
         //  We update our x,y, width, height as we go along so
         //  we 'forget' about the parts we have already painted...
 
+
         // Draw #1
+        if (DEBUG) {
+            System.out.println("WrR: " + wrR + " srcR: " + srcR);
+            g2d.setColor(new Color(255,0,0,128));
+        }
         if (x < srcR.x) {
             int w = srcR.x-x;
-            if (w > wrR.width) w=wrR.width;
+            if (w > width) w=width;
             g2d.fillRect(x, y, w, height);
             x+=w;
             width-=w;
         }
 
         // Draw #2
+        if (DEBUG) {
+            System.out.println("WrR: [" + 
+                               x + "," + y + "," + width + "," + height + 
+                               "] s rcR: " + srcR);
+            g2d.setColor(new Color(0,0,255,128));
+        }
         if (y < srcR.y) {
             int h = srcR.y-y;
             if (h > height) h=height;
@@ -148,8 +151,14 @@ public class PadRed extends AbstractRed {
         }
 
         // Draw #3
+        if (DEBUG) {
+            System.out.println("WrR: [" + 
+                               x + "," + y + "," + width + "," + height + 
+                               "] srcR: " + srcR);
+            g2d.setColor(new Color(0,255,0,128));
+        }
         if (y+height > srcR.y+srcR.height) {
-            int h = (srcR.y+srcR.height) - (y+height);
+            int h = (y+height) - (srcR.y+srcR.height);
             if (h > height) h=height;
 
             int y0 = y+height-h; // the +/-1 cancel (?)
@@ -159,8 +168,14 @@ public class PadRed extends AbstractRed {
         }
 
         // Draw #4
+        if (DEBUG) {
+            System.out.println("WrR: [" + 
+                               x + "," + y + "," + width + "," + height + 
+                               "] srcR: " + srcR);
+            g2d.setColor(new Color(255,255,0,128));
+        }
         if (x+width > srcR.x+srcR.width) {
-            int w = (srcR.x+srcR.width) - (x+width);
+            int w = (x+width) - (srcR.x+srcR.width);
             if (w > width) w=width;
             int x0 = x+width-w; // the +/-1 cancel (?)
 
@@ -180,9 +195,12 @@ public class PadRed extends AbstractRed {
                                                 Rectangle   bounds) {
         SampleModel sm = src.getSampleModel();
         int w = sm.getWidth();
-        if (w > bounds.width)  w = bounds.width;
+        if (w < 256) w = 256;
+        if      (w > bounds.width)  w = bounds.width;
         int h = sm.getHeight();
+        if (h < 256) h = 256;
         if (h > bounds.height) h = bounds.height;
+
         return sm.createCompatibleSampleModel(w, h);
     }
 }

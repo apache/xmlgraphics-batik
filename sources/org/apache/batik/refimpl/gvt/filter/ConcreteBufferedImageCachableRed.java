@@ -31,9 +31,11 @@ public class ConcreteBufferedImageCachableRed extends AbstractRed {
      * Construct an instance of CachableRed around a BufferedImage.
      */
     public ConcreteBufferedImageCachableRed(BufferedImage bi) {
-        super((CachableRed)null, new Rectangle(bi.getMinX(),  bi.getMinY(),
-                                  bi.getWidth(), bi.getHeight()),
-              bi.getColorModel(), bi.getSampleModel(), 0, 0, null);
+        super((CachableRed)null, 
+              new Rectangle(bi.getMinX(),  bi.getMinY(),
+                            bi.getWidth(), bi.getHeight()),
+              bi.getColorModel(), bi.getSampleModel(), 
+              bi.getMinX(), bi.getMinY(), null);
 
         this.bi = bi;
     }
@@ -43,7 +45,7 @@ public class ConcreteBufferedImageCachableRed extends AbstractRed {
         super((CachableRed)null, new Rectangle(xloc,  yloc,
                                                bi.getWidth(), 
                                                bi.getHeight()),
-              bi.getColorModel(), bi.getSampleModel(), 0, 0, null);
+              bi.getColorModel(), bi.getSampleModel(), xloc, yloc, null);
 
         this.bi = bi;
     }
@@ -87,10 +89,14 @@ public class ConcreteBufferedImageCachableRed extends AbstractRed {
     }
 
     public WritableRaster copyData(WritableRaster wr) {
-        BufferedImage dest = new BufferedImage(bi.getColorModel(), wr.createWritableTranslatedChild(0,0), 
-                                               bi.getColorModel().isAlphaPremultiplied(), null);
+        BufferedImage dest;
+        dest = new BufferedImage(bi.getColorModel(), 
+                                 wr.createWritableTranslatedChild(0,0), 
+                                 bi.getColorModel().isAlphaPremultiplied(), 
+                                 null);
         java.awt.Graphics2D g2d = dest.createGraphics();
-        g2d.drawImage(bi, java.awt.geom.AffineTransform.getTranslateInstance(getMinX()-wr.getMinX(), getMinY()-wr.getMinY()), null);
+        g2d.drawImage(bi, null, getMinX()-wr.getMinX(), 
+                      getMinY()-wr.getMinY());
         g2d.dispose();
         return wr;
     }
