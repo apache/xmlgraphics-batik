@@ -3,22 +3,21 @@ package org.w3c.dom.svg;
 
 import org.w3c.dom.DOMException;
 
-public interface SVGList {
+public interface SVGPointList {
   public int getNumberOfItems( );
 
-  void   clear (  )
+  public void   clear (  )
                   throws DOMException;
-  Object initialize ( Object newItem )
+  public SVGPoint initialize ( SVGPoint newItem )
                   throws DOMException, SVGException;
-  Object createItem (  );
-  Object getItem ( int index )
+  public SVGPoint getItem ( int index )
                   throws DOMException;
-  Object insertItemBefore ( Object newItem, int index )
+  public SVGPoint insertItemBefore ( SVGPoint newItem, int index )
                   throws DOMException, SVGException;
-  Object replaceItem ( Object newItem, int index )
+  public SVGPoint replaceItem ( SVGPoint newItem, int index )
                   throws DOMException, SVGException;
-  Object removeItem ( int index )
+  public SVGPoint removeItem ( int index )
                   throws DOMException;
-  Object appendItem ( Object newItem )
+  public SVGPoint appendItem ( SVGPoint newItem )
                   throws DOMException, SVGException;
 }
