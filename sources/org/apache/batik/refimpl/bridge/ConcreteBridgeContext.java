@@ -25,6 +25,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import org.w3c.dom.views.DocumentView;
 import org.w3c.dom.css.ViewCSS;
+import org.w3c.dom.svg.SVGSVGElement;
 
 import java.util.HashMap;
 import java.util.List;
@@ -122,10 +123,23 @@ public class ConcreteBridgeContext implements BridgeContext {
     private DocumentLoader documentLoader;
 
     /**
+     * The viewport to use to compute percentages and units.
+     */
+    private SVGSVGElement viewport;
+
+    /**
      * Constructs a new empty <tt>BridgeContext</tt>.
      */
     public ConcreteBridgeContext() {
         updateManager = new BridgeUpdateManager(this);
+    }
+
+    public SVGSVGElement getCurrentViewport() {
+        return viewport;
+    }
+
+    public void setCurrentViewport(SVGSVGElement newViewport) {
+        this.viewport = newViewport;
     }
 
     public GVTBuilder getGVTBuilder() {
@@ -187,9 +201,6 @@ public class ConcreteBridgeContext implements BridgeContext {
         bridgePool.removeBridge(namespaceURI, localName);
     }
 
-    /**
-     * Binds and Element (SVG element) to a GraphicsNode.
-     */
     public void bind(Element element, GraphicsNode node){
         // Create the hashmap lazily
         if (elementNodeMap == null) {
@@ -200,9 +211,6 @@ public class ConcreteBridgeContext implements BridgeContext {
         nodeElementMap.put(node, element);
     }
 
-    /**
-     * UnBinds an Element (SVG element) and its corresponding GraphicsNode.
-     */
     public void unbind(Element element){
         if (elementNodeMap == null) {
             return;
@@ -257,9 +265,6 @@ public class ConcreteBridgeContext implements BridgeContext {
 
     }
 
-    /**
-     * Returns the GraphicsNode bound to the specified SVG Element.
-     */
     public GraphicsNode getGraphicsNode(Element element){
         if (elementNodeMap != null)
             return (GraphicsNode)elementNodeMap.get(element);
@@ -267,9 +272,6 @@ public class ConcreteBridgeContext implements BridgeContext {
             return null;
     }
 
-    /**
-     * Returns the SVG Element bound to the specified GraphicsNode.
-     */
     public Element getElement(GraphicsNode node){
         if (nodeElementMap != null)
             return (Element)nodeElementMap.get(node);
@@ -299,7 +301,6 @@ public class ConcreteBridgeContext implements BridgeContext {
         }
         list.add(element);
     }
-
 
     public List getStyleReferenceList(Element element){
         if (elementStyleAttMap == null)
