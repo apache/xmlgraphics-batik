@@ -23,6 +23,8 @@ import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
 import org.apache.batik.script.Window;
 
+import org.w3c.dom.Document;
+
 /**
  * This class wraps a Window object to expose it to the interpreter.
  *
@@ -157,6 +159,25 @@ public class WindowWrapper extends ScriptableObject {
             window.clearTimeout(NativeJavaObject.coerceType
                                 (Object.class, args[0]));
         }
+    }
+
+    /**
+     * Wraps the 'parseXML' method of the Window interface.
+     */
+    public static Object jsFunction_parseXML(Context cx,
+                                             Scriptable thisObj,
+                                             Object[] args,
+                                             Function funObj)
+        throws JavaScriptException {
+        int len = args.length;
+        WindowWrapper ww = (WindowWrapper)thisObj;
+        Window window = ww.window;
+        if (len >= 2) {
+            return window.parseXML
+              ((String)NativeJavaObject.coerceType(String.class, args[0]),
+               (Document)NativeJavaObject.coerceType(Document.class, args[1]));
+        }
+        return null;
     }
 
     /**

@@ -254,6 +254,27 @@
             <code>setTimeout</code>.</li>
       </ul>
 
+      <!-- ========================================================= -->
+
+      <table>
+        <tr>
+          <td>Method <code>parseXML</code>(<em>text</em>,
+                                           <em>document</em>)</td>
+        
+        </tr>
+      </table>
+      <p>
+      Parses and returns a DocumentFragment object.
+      </p>
+      <ul>
+        <li><em>text</em>: A string representing an XML document fragment.</li>
+        <li><em>document</em>: The document used to build the DOM
+            representation of the XML fragment.</li>
+      </ul>
+      <p>
+      This method returns a <code>org.w3c.dom.DocumentFragment</code> object.
+      </p>
+
     </s1>
   </body>
 </document>

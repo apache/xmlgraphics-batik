@@ -1,4 +1,4 @@
-Manifest-Version: $Id$
+Manifest-Version: 1.0
 Class-Path: lib/batik-ext.jar \
             lib/batik-dom.jar \
             lib/batik-css.jar \
@@ -7,6 +7,7 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-parser.jar \
             lib/batik-script.jar \
             lib/batik-bridge.jar \
+            lib/batik-swing.jar \
             lib/batik-transcoder.jar \
             lib/batik-awt-util.jar \
             lib/batik-util.jar \
