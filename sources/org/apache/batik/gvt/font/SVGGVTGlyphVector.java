@@ -23,7 +23,6 @@ import java.text.AttributedCharacterIterator;
 import java.awt.Paint;
 import java.awt.Stroke;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.bridge.SVGGVTFont;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import java.text.AttributedCharacterIterator;
 import java.awt.font.TextAttribute;
@@ -202,9 +201,9 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
 
         if (glyphIndex < glyphs.length - 1) {
             // check for kerning
-            if (font != null && font instanceof SVGGVTFont) {
-                float kern = ((SVGGVTFont)font).getKerning(glyphs[glyphIndex].getUnicode(),
-                                                           glyphs[glyphIndex+1].getUnicode());
+            if (font != null) {
+                float kern = font.getKerning(glyphs[glyphIndex].getUnicode(),
+                                             glyphs[glyphIndex+1].getUnicode());
                 return glyphs[glyphIndex].getGlyphMetrics(kern);
             }
         }

@@ -163,6 +163,13 @@ public final class AWTGVTFont implements GVTFont {
         return awtFont.getSize();
     }
 
+    /**
+     * Returns the kerning value of this character pair.
+     */
+    public float getKerning(String unicode1, String unicode2) {
+        return 0f;
+    }
+
     public String toString() {
         return awtFont.getFontName();
     }
