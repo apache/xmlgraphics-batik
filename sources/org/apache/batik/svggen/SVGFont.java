@@ -99,7 +99,7 @@ public class SVGFont extends AbstractSVGConverter {
         /*SEMIBOLD*/    SVG_FONT_WEIGHT_500_VALUE,
         /*MEDIUM*/      SVG_FONT_WEIGHT_500_VALUE,
         /*DEMIBOLD*/    SVG_FONT_WEIGHT_600_VALUE,
-        /*BOLD*/        SVG_FONT_WEIGHT_BOLDER_VALUE,
+        /*BOLD*/        SVG_FONT_WEIGHT_BOLD_VALUE,
         /*HEAVY*/       SVG_FONT_WEIGHT_800_VALUE,
         /*EXTRABOLD*/   SVG_FONT_WEIGHT_800_VALUE,
         /*ULTRABOLD*/   SVG_FONT_WEIGHT_900_VALUE
