@@ -25,21 +25,17 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.AffineRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
-import org.apache.batik.ext.awt.image.renderable.PadRable;
-
-import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.TileRable;
-import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
-import org.apache.batik.ext.awt.image.rendered.TileRed;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.AffineRable;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.PadRable;
+import org.apache.batik.ext.awt.image.renderable.TileRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.TileRable;
+import org.apache.batik.ext.awt.image.rendered.TileRed;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
+import org.apache.batik.gvt.filter.GraphicsNodeRable;
 
 /**
  * <tt>PaintContext</tt> for the <tt>ConcretePatterPaint</tt>
@@ -48,7 +44,8 @@ import org.apache.batik.ext.awt.RenderingHintsKeyExt;
  * @author <a href="vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class ConcretePatternPaintContext implements PaintContext {
+public class PatternPaintContext implements PaintContext {
+
     /**
      * ColorModel for the Rasters created by this Paint
      */
@@ -85,14 +82,14 @@ public class ConcretePatternPaintContext implements PaintContext {
      * @param overflow controls whether the pattern region clips the
      *        pattern tile
      */
-    public ConcretePatternPaintContext(ColorModel destCM,
-                                       AffineTransform usr2dev,
-                                       RenderingHints hints,
-                                       GraphicsNode node,
-                                       GraphicsNodeRenderContext gnrc,
-                                       AffineTransform nodeTxf,
-                                       Rectangle2D patternTile,
-                                       boolean overflow){
+    public PatternPaintContext(ColorModel destCM,
+                               AffineTransform usr2dev,
+                               RenderingHints hints,
+                               GraphicsNode node,
+                               GraphicsNodeRenderContext gnrc,
+                               AffineTransform nodeTxf,
+                               Rectangle2D patternTile,
+                               boolean overflow){
         if(usr2dev == null){
             throw new IllegalArgumentException();
         }

@@ -8,54 +8,44 @@
 
 package org.apache.batik.gvt;
 
-import java.awt.Cursor;
-import java.awt.Composite;
 import java.awt.AlphaComposite;
-import java.awt.Rectangle;
-import java.awt.Shape;
+import java.awt.Composite;
+import java.awt.Cursor;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
-import java.awt.image.RenderedImage;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.awt.image.ColorModel;
+import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderContext;
 import java.awt.image.renderable.RenderableImage;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.Vector;
-import java.util.EventListener;
 import java.lang.reflect.Array;
-
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import javax.swing.event.EventListenerList;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.RootGraphicsNode;
-import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.GraphicsNodeHitDetector;
-import org.apache.batik.gvt.event.GraphicsNodeEvent;
-import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
-import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
-import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
-import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
-import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
 import org.apache.batik.gvt.event.CompositeGraphicsNodeEvent;
 import org.apache.batik.gvt.event.CompositeGraphicsNodeListener;
+import org.apache.batik.gvt.event.GraphicsNodeEvent;
+import org.apache.batik.gvt.event.GraphicsNodeEventFilter;
+import org.apache.batik.gvt.event.GraphicsNodeKeyEvent;
+import org.apache.batik.gvt.event.GraphicsNodeKeyListener;
+import org.apache.batik.gvt.event.GraphicsNodeMouseEvent;
+import org.apache.batik.gvt.event.GraphicsNodeMouseListener;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.ext.awt.RenderingHintsKeyExt;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.Clip;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
 
 /**
  * A partial implementation of the <tt>GraphicsNode</tt> interface.
@@ -66,24 +56,17 @@ import org.apache.batik.ext.awt.image.renderable.PadMode;
  * @version $Id$
  */
 public abstract class AbstractGraphicsNode implements GraphicsNode {
+
     /**
      * Used to draw renderable images
      */
     static final AffineTransform IDENTITY = new AffineTransform();
 
     /**
-     * The Map used to store mememto objects.
-     */
-    protected Map mememtos;
-
-    /**
      * The listeners list.
      */
     protected EventListenerList listeners;
-    /**
-     * Used to manage and fire property change listeners.
-     */
-    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
     /**
      * The filter used to filter graphics node events.
      */
@@ -147,92 +130,54 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     protected Filter filter;
 
     /**
-     * Cache: node bounds
+     * Internal Cache: node bounds
      */
     private Rectangle2D bounds;
 
     /**
      * Constructs a new graphics node.
      */
-    public AbstractGraphicsNode() {}
-
-    //
-    // fire property change methods.
-    //
-    protected void firePropertyChange(String propertyName,
-                                      boolean oldValue, boolean newValue){
-        // First fire to local listeners
-        pcs.firePropertyChange(propertyName, oldValue, newValue);
-        // fire to root node listeners if possible.
-        if (root != null) {
-            ConcreteRootGraphicsNode node = (ConcreteRootGraphicsNode) root;
-            node.fireGlobalPropertyChange(this, propertyName,
-                                          oldValue, newValue);
-        }
-    }
-
-    protected void firePropertyChange(String propertyName,
-                                      int oldValue, int newValue){
-        // First fire to local listeners
-        pcs.firePropertyChange(propertyName, oldValue, newValue);
-        // fire to root node listeners if possible.
-        if (root != null) {
-            ConcreteRootGraphicsNode node = (ConcreteRootGraphicsNode) root;
-            node.fireGlobalPropertyChange(this, propertyName,
-                                          oldValue, newValue);
-        }
-    }
-
-    protected void firePropertyChange(String propertyName,
-                                      Object oldValue, Object newValue){
-        // First fire to local listeners
-        pcs.firePropertyChange(propertyName, oldValue, newValue);
-        // fire to root node listeners if possible.
-        if (root != null) {
-            ConcreteRootGraphicsNode node = (ConcreteRootGraphicsNode) root;
-            node.fireGlobalPropertyChange(this, propertyName,
-                                          oldValue, newValue);
-        }
-    }
-
-    /**
-     * Fires the paint listener.
-     * @param oldBounds the old bounds of this node in renderer space.
-     */
-    protected void fireGraphicsNodePaintListener(Rectangle2D oldBounds) {
-        if (root != null) {
-            ConcreteRootGraphicsNode node = (ConcreteRootGraphicsNode) root;
-            node.fireGraphicsNodePaintListener(this, oldBounds);
-        }
-    }
+    protected AbstractGraphicsNode() {}
 
     //
     // Properties methods
     //
 
+    /**
+     * Sets the cursor of this node.
+     * @param newCursor the new cursor of this node
+     */
     public void setCursor(Cursor newCursor) {
-        Cursor oldCursor = cursor;
         this.cursor = newCursor;
-        firePropertyChange("cursor", oldCursor, newCursor);
     }
 
+    /**
+     * Returns the cursor of this node.
+     */
     public Cursor getCursor() {
         return cursor;
     }
 
+    /**
+     * Sets the transform of this node.
+     * @param newTransform the new transform of this node
+     */
     public void setTransform(AffineTransform newTransform) {
-        //Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
-        AffineTransform oldTransform = transform;
         this.transform = newTransform;
-        firePropertyChange("transform", oldTransform, newTransform);
-        //fireGraphicsNodePaintListener(oldBounds);
     }
 
+    /**
+     * Returns the transform of this node.
+     */
     public AffineTransform getTransform() {
         return transform;
     }
 
+    /**
+     * Returns the concatenated transform of this node. i.e., this
+     * node's transform preconcatenated with it's parent's transforms.
+     */
     public AffineTransform getGlobalTransform(){
         AffineTransform ctm = new AffineTransform();
         GraphicsNode node = this;
@@ -245,44 +190,62 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         return ctm;
     }
 
+    /**
+     * Sets the composite of this node.
+     * @param composite the composite of this node
+     */
     public void setComposite(Composite newComposite) {
-        //Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
-        Composite oldComposite = composite;
         this.composite = newComposite;
-        firePropertyChange("composite", oldComposite, newComposite);
-        //fireGraphicsNodePaintListener(oldBounds);
     }
 
+    /**
+     * Returns the composite of this node.
+     */
     public Composite getComposite() {
         return composite;
     }
 
+    /**
+     * Sets if this node is visible or not depending on the specified value.
+     * @param isVisible If true this node is visible
+     */
     public void setVisible(boolean isVisible) {
-        //Rectangle2D oldBounds = getGlobalBounds();
-        boolean oldIsVisible = this.isVisible;
         this.isVisible = isVisible;
-        firePropertyChange("visible", oldIsVisible, isVisible);
-        //fireGraphicsNodePaintListener(oldBounds);
     }
 
+    /**
+     * Determines whether or not this node is visible when its parent
+     * is visible. Nodes are initially visible.
+     * @return true if this node is visible, false otherwise
+     */
     public boolean isVisible() {
         return isVisible;
     }
 
+    /**
+     * Sets the clipping filter for this node.
+     * @param newClipper the new clipping filter of this node
+     */
     public void setClip(Clip newClipper) {
-        //Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
-        Clip oldClip = clip;
         this.clip = newClipper;
-        firePropertyChange("clippingArea", oldClip, newClipper);
-        //fireGraphicsNodePaintListener(oldBounds);
     }
 
+    /**
+     * Returns the clipping filter of this node or null if any.
+     */
     public Clip getClip() {
         return clip;
     }
 
+    /**
+     * Maps the specified key to the specified value in the rendering
+     * hints of this node.
+     * @param key the key of the hint to be set
+     * @param value the value indicating preferences for the specified
+     * hint category.
+     */
     public void setRenderingHint(RenderingHints.Key key, Object value) {
         if (this.hints == null) {
             this.hints = new RenderingHints(key, value);
@@ -291,6 +254,11 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
     }
 
+    /**
+     * Copies all of the mappings from the specified Map to the
+     * rendering hints of this node.
+     * @param hints the rendering hints to be set
+     */
     public void setRenderingHints(Map hints) {
         if (this.hints == null) {
             this.hints = new RenderingHints(hints);
@@ -299,36 +267,49 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
     }
 
+    /**
+     * Sets the rendering hints of this node.
+     * @param newHints the new rendering hints of this node
+     */
     public void setRenderingHints(RenderingHints newHints) {
         this.hints = newHints;
     }
 
+    /**
+     * Returns the rendering hints of this node or null if any.
+     */
     public RenderingHints getRenderingHints() {
         return hints;
     }
 
+    /**
+     * Sets the mask of this node.
+     * @param newMask the new mask of this node
+     */
     public void setMask(Mask newMask) {
-        //Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
-        Mask oldMask = mask;
         this.mask = newMask;
-        firePropertyChange("mask", oldMask, newMask);
-        //fireGraphicsNodePaintListener(oldBounds);
     }
 
+    /**
+     * Returns the mask of this node or null if any.
+     */
     public Mask getMask() {
         return mask;
     }
 
+    /**
+     * Sets the filter of this node.
+     * @param newFilter the new filter of this node
+     */
     public void setFilter(Filter newFilter) {
-        //Rectangle2D oldBounds = getGlobalBounds();
         invalidateGeometryCache();
-        Filter oldFilter = filter;
         this.filter = newFilter;
-        firePropertyChange("filter", oldFilter, newFilter);
-        //fireGraphicsNodePaintListener(oldBounds);
     }
 
+    /**
+     * Returns the filter of this node or null if any.
+     */
     public Filter getFilter() {
         return filter;
     }
@@ -337,7 +318,16 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     // Drawing methods
     //
 
-    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) throws InterruptedException {
+    /**
+     * Paints this node.
+     *
+     * @param g2d the Graphics2D to use
+     * @param rc the GraphicsNodeRenderContext to use
+     * @exception InterruptedException thrown if the current thread
+     * was interrupted during paint
+     */
+    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc)
+            throws InterruptedException {
 
         // first, make sure we haven't been interrupted
         if (Thread.currentThread().isInterrupted()) {
@@ -368,7 +358,8 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
 
         Shape curClip = g2d.getClip();
-        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST, curClip);
+        g2d.setRenderingHint(RenderingHintsKeyExt.KEY_AREA_OF_INTEREST,
+                             curClip);
         rc.setTransform(g2d.getTransform());
         rc.setRenderingHints(g2d.getRenderingHints());
         rc.setAreaOfInterest(curClip);
@@ -519,7 +510,6 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
                  usr2dev.getShearX() == 0 &&
                  usr2dev.getShearY() == 0)){
                 antialiased = true;
-                // System.out.println("Using antialiased clip" + clip.getClass().getName());
             }
         }
         // return antialiased;
@@ -530,6 +520,19 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     // Event support methods
     //
 
+    /**
+     * Dispatches the specified event to the interested registered listeners.
+     * @param evt the event to dispatch
+     */
+    public void dispatch(GraphicsNodeEvent evt) {
+        // <!> FIXME : TODO
+    }
+
+    /**
+     * Adds the specified graphics node mouse listener to receive
+     * graphics node mouse events from this node.
+     * @param l the graphics node mouse listener to add
+     */
     public void addGraphicsNodeMouseListener(GraphicsNodeMouseListener l) {
         if (listeners == null) {
             listeners = new EventListenerList();
@@ -537,12 +540,22 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         listeners.add(GraphicsNodeMouseListener.class, l);
     }
 
+    /**
+     * Removes the specified graphics node mouse listener so that it
+     * no longer receives graphics node mouse events from this node.
+     * @param l the graphics node mouse listener to remove
+     */
     public void removeGraphicsNodeMouseListener(GraphicsNodeMouseListener l) {
         if (listeners != null) {
             listeners.remove(GraphicsNodeMouseListener.class, l);
         }
     }
 
+    /**
+     * Adds the specified graphics node key listener to receive
+     * graphics node key events from this node.
+     * @param l the graphics node key listener to add
+     */
     public void addGraphicsNodeKeyListener(GraphicsNodeKeyListener l) {
         if (listeners == null) {
             listeners = new EventListenerList();
@@ -550,50 +563,52 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         listeners.add(GraphicsNodeKeyListener.class, l);
     }
 
+    /**
+     * Removes the specified graphics node key listener so that it
+     * no longer receives graphics node key events from this node.
+     * @param l the graphics node key listener to remove
+     */
     public void removeGraphicsNodeKeyListener(GraphicsNodeKeyListener l) {
         if (listeners != null) {
             listeners.remove(GraphicsNodeKeyListener.class, l);
         }
     }
 
+    /**
+     * Sets the graphics node event filter of this node.
+     * @param evtFilter the new graphics node event filter
+     */
     public void setGraphicsNodeEventFilter(GraphicsNodeEventFilter evtFilter) {
-        GraphicsNodeEventFilter oldFilter = eventFilter;
         this.eventFilter = evtFilter;
-        firePropertyChange("graphicsNodeEventFilter", oldFilter, evtFilter);
     }
 
+    /**
+     * Returns the graphics node event filter of this node.
+     */
     public GraphicsNodeEventFilter getGraphicsNodeEventFilter() {
         return eventFilter;
     }
 
-    public void setGraphicsNodeHitDetector(
-            GraphicsNodeHitDetector hitDetector) {
-        GraphicsNodeHitDetector oldDetector = this.hitDetector;
+    /**
+     * Sets the hit detector for this node.
+     * @param hitDetector the new hit detector
+     */
+    public void setGraphicsNodeHitDetector(GraphicsNodeHitDetector hitDetector){
         this.hitDetector = hitDetector;
-        firePropertyChange("graphicsNodeHitDetector", oldDetector, hitDetector);
     }
 
+    /**
+     * Returns the hit detector for this node.
+     */
     public GraphicsNodeHitDetector getGraphicsNodeHitDetector() {
         return hitDetector;
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener l) {
-        pcs.addPropertyChangeListener(l);
-    }
-
-    public void addPropertyChangeListener(String propertyName,
-                                          PropertyChangeListener l) {
-        pcs.addPropertyChangeListener(propertyName, l);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener l) {
-        pcs.removePropertyChangeListener(l);
-    }
-
-    public void dispatch(GraphicsNodeEvent evt) {
-        // <!> FIXME : TO DO
-    }
-
+    /**
+     * Returns an array of listeners that were added to this node and
+     * of the specified type.
+     * @param listenerType the type of the listeners to return
+     */
     public EventListener [] getListeners(Class listenerType) {
         Object array =
             Array.newInstance(listenerType,
@@ -606,49 +621,141 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
             }
         }
         return (EventListener[]) array;
-
         // XXX: Code below is a jdk 1.3 dependency!  Should be removed.
         //return listeners.getListeners(listenerType);
     }
+
+    /**
+     * Dispatches a graphics node event to this node or one of its child.
+     * @param evt the evt to dispatch
+     */
+    public void processMouseEvent(GraphicsNodeMouseEvent evt) {
+        if ((listeners != null) && acceptEvent(evt)) {
+            GraphicsNodeMouseListener[] listeners =
+                (GraphicsNodeMouseListener[])
+                getListeners(GraphicsNodeMouseListener.class);
+
+            switch (evt.getID()) {
+            case GraphicsNodeMouseEvent.MOUSE_MOVED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].mouseMoved((GraphicsNodeMouseEvent)evt.clone());
+                }
+                break;
+            case GraphicsNodeMouseEvent.MOUSE_DRAGGED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].mouseDragged((GraphicsNodeMouseEvent)evt.clone());
+                }
+                break;
+            case GraphicsNodeMouseEvent.MOUSE_ENTERED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].mouseEntered((GraphicsNodeMouseEvent)evt.clone());
+                }
+                break;
+            case GraphicsNodeMouseEvent.MOUSE_EXITED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].mouseExited((GraphicsNodeMouseEvent)evt.clone());
+                }
+                    break;
+            case GraphicsNodeMouseEvent.MOUSE_CLICKED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].mouseClicked((GraphicsNodeMouseEvent)evt.clone());
+                }
+                break;
+            case GraphicsNodeMouseEvent.MOUSE_PRESSED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].mousePressed((GraphicsNodeMouseEvent)evt.clone());
+                }
+                break;
+            case GraphicsNodeMouseEvent.MOUSE_RELEASED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].mouseReleased((GraphicsNodeMouseEvent)evt.clone());
+                }
+                break;
+                default:
+                    throw new Error("Unknown Mouse Event type: "+evt.getID());
+            }
+        }
+        evt.consume();
+    }
+
+
+    /**
+     * Dispatches a graphics node event to this node or one of its child.
+     * @param evt the evt to dispatch
+     */
+   public void processKeyEvent(GraphicsNodeKeyEvent evt) {
+        if ((listeners != null) && acceptEvent(evt)) {
+            GraphicsNodeKeyListener[] listeners =
+                (GraphicsNodeKeyListener[])
+                getListeners(GraphicsNodeKeyListener.class);
+
+            switch (evt.getID()) {
+            case GraphicsNodeKeyEvent.KEY_PRESSED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].keyPressed((GraphicsNodeKeyEvent) evt.clone());
+                }
+            case GraphicsNodeKeyEvent.KEY_RELEASED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].keyReleased((GraphicsNodeKeyEvent) evt.clone());
+                }
+                break;
+            case GraphicsNodeKeyEvent.KEY_TYPED:
+                for (int i=0; i<listeners.length; ++i) {
+                    listeners[i].keyTyped((GraphicsNodeKeyEvent) evt.clone());
+                }
+                break;
+            default:
+                throw new Error("Unknown Key Event type: "+evt.getID());
+            }
+        }
+        evt.consume();
+    }
+
+    /**
+     * Returns true is this node accepts the specified event, false otherwise.
+     * @param evt the event to check
+     */
+    protected boolean acceptEvent(GraphicsNodeEvent evt) {
+        if (eventFilter != null) {
+            return eventFilter.accept(this, evt);
+        }
+        return true;
+    }
+
 
     //
     // Structural methods
     //
 
+    /**
+     * Returns the parent of this node or null if any.
+     */
     public CompositeGraphicsNode getParent() {
         return parent;
     }
 
+    /**
+     * Returns the root of the GVT tree or <code>null</code> if
+     * the node is not part of a GVT tree.
+     */
     public RootGraphicsNode getRoot() {
         return root;
     }
 
+    /**
+     * Sets the root node of this graphics node.
+     * @param newRoot the new root node of this node
+     */
     protected void setRoot(RootGraphicsNode newRoot) {
         this.root = newRoot;
     }
 
-    void setParent(CompositeGraphicsNode newParent) {
+    /**
+     * Sets the parent node of this graphics node.
+     * @param newParent the new parent node of this node
+     */
+    protected void setParent(CompositeGraphicsNode newParent) {
         this. parent = newParent;
-    }
-
-    public void putMemento(Object key, Object mememto) {
-        if (mememtos == null) {
-            mememtos = new HashMap();
-        }
-        mememtos.put(key, mememto);
-    }
-
-    public Object getMemento(Object key) {
-        return (mememtos != null)? mememtos.get(key) : null;
-    }
-
-    public void removeMemento(Object key) {
-        if (mememtos != null) {
-            mememtos.remove(key);
-            if (mememtos.isEmpty()) {
-                mememtos = null;
-            }
-        }
     }
 
     //
@@ -667,18 +774,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         bounds = null;
     }
 
-    protected Rectangle2D getGlobalBounds(GraphicsNodeRenderContext rc) {
-        Rectangle2D r = getBounds(rc);
-        if (r == null) {
-            return null;
-        } else {
-            return getGlobalTransform().createTransformedShape(r).getBounds2D();
-        }
-    }
-
     /**
      * Compute the rendered bounds of this node based on it's
-     * renderBounds, i.e., the area painted by its primitivePaint
+     * renderBounds. i.e., the area painted by its primitivePaint
      * method. This is used in addition to the mask, clip and filter
      * to compute the area actually rendered by this node.
      */
@@ -711,10 +809,26 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         return bounds;
     }
 
+    /**
+     * Returns true if the specified coordinates are inside the
+     * interior of the bounds of this node, false otherwise.
+     *
+     * @param p the specified Point2D in the user space
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+     * @return true if the coordinates are inside, false otherwise
+     */
     public boolean contains(Point2D p, GraphicsNodeRenderContext rc) {
         return getBounds(rc).contains(p);
     }
 
+    /**
+     * Returns the GraphicsNode containing point p if this node or one of
+     * its children is sensitive to mouse events at p.
+     *
+     * @param p the specified Point2D in the user space
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+     * @return the GraphicsNode containing p on this branch of the GVT tree.
+     */
     public GraphicsNode nodeHitAt(Point2D p, GraphicsNodeRenderContext rc) {
         if (hitDetector != null) {
             if (hitDetector.isHit(this, p)) {
@@ -727,115 +841,15 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
         }
     }
 
+    /**
+     * Tests if the bounds of this node intersects the interior of a
+     * specified Rectangle2D.
+     *
+     * @param r the specified Rectangle2D in the user node space
+     * @param rc the GraphicsNodeRenderContext for which this dimension applies
+     * @return true if the rectangle intersects, false otherwise
+     */
     public boolean intersects(Rectangle2D r, GraphicsNodeRenderContext rc) {
         return getBounds(rc).intersects(r);
-    }
-
-    public void processMouseEvent(GraphicsNodeMouseEvent evt) {
-        if ((listeners != null) && acceptEvent(evt)) {
-            GraphicsNodeMouseListener[] listeners =
-                (GraphicsNodeMouseListener[])
-                getListeners(GraphicsNodeMouseListener.class);
-
-            switch (evt.getID()) {
-            case GraphicsNodeMouseEvent.MOUSE_MOVED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseMoved((GraphicsNodeMouseEvent) evt.clone());
-                }
-                break;
-            case GraphicsNodeMouseEvent.MOUSE_DRAGGED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseDragged((GraphicsNodeMouseEvent) evt.clone());
-                }
-                break;
-            case GraphicsNodeMouseEvent.MOUSE_ENTERED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseEntered((GraphicsNodeMouseEvent) evt.clone());
-                }
-                break;
-            case GraphicsNodeMouseEvent.MOUSE_EXITED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseExited((GraphicsNodeMouseEvent) evt.clone());
-                }
-                    break;
-            case GraphicsNodeMouseEvent.MOUSE_CLICKED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseClicked((GraphicsNodeMouseEvent) evt.clone());
-                }
-                break;
-            case GraphicsNodeMouseEvent.MOUSE_PRESSED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mousePressed((GraphicsNodeMouseEvent) evt.clone());
-                }
-                break;
-            case GraphicsNodeMouseEvent.MOUSE_RELEASED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].mouseReleased((GraphicsNodeMouseEvent) evt.clone());
-                }
-                break;
-                default:
-                    throw new Error("Unknown Mouse Event type: "+evt.getID());
-            }
-        }
-        evt.consume();
-    }
-
-
-   public void processKeyEvent(GraphicsNodeKeyEvent evt) {
-        if ((listeners != null) && acceptEvent(evt)) {
-            GraphicsNodeKeyListener[] listeners =
-                (GraphicsNodeKeyListener[])
-                getListeners(GraphicsNodeKeyListener.class);
-
-            switch (evt.getID()) {
-            case GraphicsNodeKeyEvent.KEY_PRESSED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].keyPressed((GraphicsNodeKeyEvent) evt.clone());
-                }
-            case GraphicsNodeKeyEvent.KEY_RELEASED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].keyReleased((GraphicsNodeKeyEvent) evt.clone());
-                }
-                break;
-            case GraphicsNodeKeyEvent.KEY_TYPED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].keyTyped((GraphicsNodeKeyEvent) evt.clone());
-                }
-                break;
-            default:
-                throw new Error("Unknown Key Event type: "+evt.getID());
-            }
-        }
-        evt.consume();
-    }
-
-    public void processChangeEvent(CompositeGraphicsNodeEvent evt) {
-        if ((listeners != null) && acceptEvent(evt)) {
-            CompositeGraphicsNodeListener[] listeners =
-                (CompositeGraphicsNodeListener[])
-                getListeners(CompositeGraphicsNodeListener.class);
-
-            switch (evt.getID()) {
-            case CompositeGraphicsNodeEvent.GRAPHICS_NODE_ADDED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].graphicsNodeAdded((CompositeGraphicsNodeEvent) evt.clone());
-                }
-            case CompositeGraphicsNodeEvent.GRAPHICS_NODE_REMOVED:
-                for (int i=0; i<listeners.length; ++i) {
-                    listeners[i].graphicsNodeRemoved((CompositeGraphicsNodeEvent) evt.clone());
-                }
-                break;
-            default:
-                throw new Error("Unknown Key Event type: "+evt.getID());
-            }
-        }
-        evt.consume();
-    }
-
-    protected boolean acceptEvent(GraphicsNodeEvent evt) {
-        if (eventFilter != null) {
-            return eventFilter.accept(this, evt);
-        }
-        return true;
     }
 }

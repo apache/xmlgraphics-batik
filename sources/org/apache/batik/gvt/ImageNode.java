@@ -8,6 +8,9 @@
 
 package org.apache.batik.gvt;
 
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Dimension2D;
 
@@ -17,18 +20,26 @@ import java.awt.geom.Dimension2D;
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
  */
-public interface ImageNode extends LeafGraphicsNode {
+public class ImageNode extends CompositeGraphicsNode {
 
     /**
-     * Sets the image of this image node.
-     * @param newImage the new image of this image node
+     * Constructs a new empty <tt>ImageNode</tt>.
      */
-    void setImage(GraphicsNode newImage);
+    public ImageNode() {}
 
-    /**
-     * Returns the image of this image node.
-     * @return the image of this image node
-     */
-    GraphicsNode getImage();
+    //
+    // Properties methods
+    //
 
+    public void setImage(GraphicsNode newImage) {
+        getChildren().add(0, newImage);
+    }
+
+    public GraphicsNode getImage() {
+        if (count > 0) {
+            return children[0];
+        } else {
+            return null;
+        }
+    }
 }

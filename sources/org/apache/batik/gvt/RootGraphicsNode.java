@@ -8,55 +8,17 @@
 
 package org.apache.batik.gvt;
 
-import java.beans.PropertyChangeListener;
-import org.apache.batik.gvt.event.GraphicsNodePaintListener;
-
 /**
  * The top-level graphics node of the GVT tree.
  *
  * @author <a href="mailto:etissandier@ilog.fr">Emmanuel Tissandier</a>
  * @version $Id$
  */
-public interface RootGraphicsNode extends CompositeGraphicsNode {
+public class RootGraphicsNode extends CompositeGraphicsNode {
 
-    /**
-     * Adds the specified graphics node paint listener to receive graphics
-     * node paint events from all elements of the GVT tree.
-     * @param l the graphics node paint listener to add
+   /**
+     * Constructs a new empty <tt>RootGraphicsNode</tt>.
      */
-    void addGraphicsNodePaintListener(GraphicsNodePaintListener l);
-
-    /**
-     * Removes the specified graphics node paint listener so that it no
-     * longer receives graphics node paint change events from all nodes of
-     * the GVT tree.
-     * @param l the graphics node paint listener to remove
-     */
-    void removeGraphicsNodePaintListener(GraphicsNodePaintListener l);
-
-    /**
-     * Adds the specified property change listener to receive property
-     * change events from all elements of the GVT tree.
-     * @param l the property change listener to add
-     */
-    void addGlobalPropertyChangeListener(PropertyChangeListener l);
-
-    /**
-     * Adds the specified property change listener to receive property
-     * change events for the specified property name of all nodes
-     * of the GVT tree.
-     * @param propertyName the name of the property
-     * @param l the property change listener to add for the specified property
-     */
-    void addGlobalPropertyChangeListener(String propertyName,
-                                         PropertyChangeListener l);
-
-    /**
-     * Removes the specified property change listener so that it no
-     * longer receives property change events from all nodes of
-     * the GVT tree.
-     * @param l the property change listener to remove
-     */
-    void removeGlobalPropertyChangeListener(PropertyChangeListener l);
+    public RootGraphicsNode() {}
 
 }
