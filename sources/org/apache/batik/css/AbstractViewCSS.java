@@ -169,7 +169,20 @@ public abstract class AbstractViewCSS implements ViewCSS {
      * Computes the cascaded style for the given element and pseudo element.
      */
     public CSSOMReadOnlyStyleDeclaration computeStyle(Element elt,
-                                            String pseudoElt) {
+                                                      String pseudoElt) {
+        CSSOMReadOnlyStyleDeclaration result;
+        result = getCascadedStyle(elt, pseudoElt);
+
+	computeRelativeValues(elt, pseudoElt, result);
+
+	return result;
+    }
+
+    /**
+     * Computes the cascaded style for the given element and pseudo element.
+     */
+    public CSSOMReadOnlyStyleDeclaration getCascadedStyle(Element elt,
+                                                          String pseudoElt) {
         CSSOMReadOnlyStyleDeclaration result;
         result = new CSSOMReadOnlyStyleDeclaration(this, elt);
 
@@ -179,8 +192,6 @@ public abstract class AbstractViewCSS implements ViewCSS {
 	addAuthorStyleSheetProperties(elt, pseudoElt, result);
 	addInlineStyleProperties(elt, pseudoElt, result);
 	addOverrideStyleProperties(elt, pseudoElt, result);
-
-	computeRelativeValues(elt, pseudoElt, result);
 
 	return result;
     }
