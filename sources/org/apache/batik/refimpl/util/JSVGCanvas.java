@@ -1433,7 +1433,6 @@ public class JSVGCanvas
                     ((dx > 0) ? Math.acos(cos) : -Math.acos(cos),
                      dim.width / 2,
                      dim.height / 2);
-
                 rotateMarker = rotateTransform.createTransformedShape(p);
 /*
  *               Rectangle r;
@@ -1634,19 +1633,19 @@ public class JSVGCanvas
                 p.lineTo(csize.width, csize.height);
                 p.lineTo(0, csize.height);
                 p.closePath();
-                p.moveTo(csize.width / 2, 0);
-                p.lineTo(csize.width / 2 + csize.height / 6, csize.height / 6);
-                p.moveTo(csize.width / 2, 0);
-                p.lineTo(csize.width / 2 - csize.height / 6, csize.height / 6);
+                p.moveTo(0, csize.height/24);
+                p.lineTo(csize.width, csize.height/24);
 
-                Shape s = JSVGCanvas.this.getAreaOfInterest(p);
                 AffineTransform at = (AffineTransform)transform.clone();
                 at.preConcatenate(markerTransform);
+
+                Shape s = JSVGCanvas.this.getAreaOfInterest(p);
                 s = at.createTransformedShape(s);
+
                 g2d.setColor(Color.black);
-                g2d.setStroke(markerStroke);
                 g2d.setXORMode(Color.white);
                 g2d.draw(s);
+                g2d.setXORMode(Color.white);
             }
         }
 
