@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) The Apache Software Foundation. All rights reserved.        *
+ * Copyrightp (C) The Apache Software Foundation. All rights reserved.        *
  * ------------------------------------------------------------------------- *
  * This software is published under the terms of the Apache Software License *
  * version 1.1, a copy of which has been included with this distribution in  *
@@ -31,21 +31,6 @@ import java.util.StringTokenizer;
  * @version $Id$
  */
 public abstract class SVGFontUtilities implements SVGConstants {
-
-
-    /**
-     * A hash map of all the font families already matched. This is
-     * to reduce the number of instances of GVTFontFamilies and to
-     * hopefully reduce the time taken to search for a matching SVG font.
-     */
-    private static HashMap fontFamilyMap;
-
-    /**
-     * Keeps track of the currentDocument. This is used to detect when a new
-     * document has been loaded.
-     */
-    private static Document currentDocument = null;
-
     /**
      * Given a font family name tries to find a matching SVG font object.
      * If finds one, returns an SVGFontFamily otherwise returns an
@@ -67,17 +52,11 @@ public abstract class SVGFontUtilities implements SVGConstants {
                                              String fontStyle) {
 
         // TODO: should match against font-variant as well
-
-        // if this is a new document reset the fontFamilyMap
-        if (fontFamilyMap == null || textElement.getOwnerDocument() != currentDocument) {
-            fontFamilyMap = new HashMap();
-            currentDocument = textElement.getOwnerDocument();
-        }
-
         String fontKeyName = fontFamilyName.toLowerCase() + " " + fontWeight + " " + fontStyle;
 
         // check fontFamilyMap to see if we have already created an FontFamily
         // that matches
+        HashMap fontFamilyMap = ctx.getFontFamilyMap();
         GVTFontFamily fontFamily = (GVTFontFamily)fontFamilyMap.get(fontKeyName);
         if (fontFamily != null) {
             return fontFamily;
