@@ -215,8 +215,11 @@ public abstract class AbstractElement
 				     "attribute.missing",
 				     new Object[] { oldAttr.getName() });
 	}
-	return (Attr)attributes.removeNamedItemNS(oldAttr.getNamespaceURI(),
-                                                  oldAttr.getLocalName());
+        String nsURI = oldAttr.getNamespaceURI();
+	return (Attr)attributes.removeNamedItemNS(nsURI,
+                                                  (nsURI==null
+                                                   ? oldAttr.getNodeName()
+                                                   : oldAttr.getLocalName()));
     }
 
     /**

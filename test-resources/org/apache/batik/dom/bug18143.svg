@@ -75,8 +75,17 @@
        t.setAttributeNS("http://foo.com", "foo:bar", "barValue"); 
        var an = t.getAttributeNodeNS("http://foo.com", "bar");
        t.removeAttributeNode(an);
-       t.setAttributeNS(null, "fill", "#0F0");
-       result.setAttributeNS(null, "result", "passed");
+
+       t.setAttribute("fake-attribute","fake-value");
+       an = t.getAttributeNode("fake-attribute");
+       t.removeAttributeNode(an);
+
+       if ( !t.hasAttributeNS("http://foo.com", "bar") &amp;&amp;
+            !t.hasAttribute("fake-attribute") )
+       {
+         t.setAttributeNS(null, "fill", "#0F0");
+         result.setAttributeNS(null, "result", "passed");
+       }
    }
 
 </script>
