@@ -42,7 +42,8 @@ public interface Interpreter extends org.apache.batik.i18n.Localizable {
     public void setOut(Writer output);
     /**
      * This method can dispose resources used by the interpreter when it is
-     * no longer used.
+     * no longer used. Be careful, you SHOULD NOT use this interpreter after
+     * calling this method.
      */
     public void dispose();
 }

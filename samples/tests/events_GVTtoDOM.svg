@@ -1,0 +1,17 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000802//EN"
+"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd">
+
+<!-- ===================================================================== -->
+<!--
+
+  Test for propaging GVT events to the DOM
+
+  author: Christophe Jolif - 2000/10/18
+
+-->
+<!-- ===================================================================== -->
+
+<svg width="800" height="600">
+ <rect x="0" y="0" width="400" height="300" style="fill:blue;stroke:red" onmousedown="System.err.println(&#34;event is &#34;+evt)" />
+</svg>
