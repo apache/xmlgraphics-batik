@@ -27,7 +27,7 @@
 
     <defs>
       <clipPath id="textClip">
-       <text x="0" y="0" text-anchor="middle" font-size="80%" font-family="Serif" id="text">batik</text>
+       <text x="0" y="0" text-anchor="middle" font-size="400" font-family="Serif" id="text">batik</text>
       </clipPath>
        <g id="words">
          <use xlink:href="#text"/>
@@ -69,7 +69,7 @@
     </defs>
 
     <g id="testContent">
-    <text class="title" x="50%" y="10%" font-size="3%" text-anchor="middle" >
+    <text class="title" x="50%" y="10%" font-size="15" text-anchor="middle" >
             Text Transformation</text>
     <g transform="translate(-40,-30)" filter="url(#blur)" fill="black" opacity="0.2">
          <use xlink:href="#rotatedText"/>
