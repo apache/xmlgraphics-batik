@@ -75,7 +75,7 @@ import org.apache.batik.gvt.event.SelectionListener;
 import org.apache.batik.gvt.event.SelectionEvent;
 
 import org.apache.batik.gvt.renderer.ImageRenderer;
-import org.apache.batik.gvt.renderer.RendererFactory;
+import org.apache.batik.gvt.renderer.ImageRendererFactory;
 
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.ConcreteGVTBuilder;
@@ -173,7 +173,7 @@ public class JSVGCanvas
     /**
      * The renderer factory.
      */
-    protected RendererFactory rendererFactory;
+    protected ImageRendererFactory rendererFactory;
 
     /**
      * The current renderer.
@@ -372,7 +372,7 @@ public class JSVGCanvas
     /**
      * Sets the renderer factory to use to create the renderer.
      */
-    public void setRendererFactory(RendererFactory rf) {
+    public void setRendererFactory(ImageRendererFactory rf) {
         rendererFactory = rf;
         renderer = null;
         repaint();
@@ -428,7 +428,7 @@ public class JSVGCanvas
     /**
      * Returns the current renderer factory.
      */
-    public RendererFactory getRendererFactory() {
+    public ImageRendererFactory getRendererFactory() {
         return rendererFactory;
     }
 
@@ -861,7 +861,7 @@ public class JSVGCanvas
 
         if (bufferNeedsRendering) {
             if (renderer == null)
-                renderer = (ImageRenderer)rendererFactory.createRenderer();
+                renderer = rendererFactory.createImageRenderer();
         }
         
         if (renderer != null && gvtRoot != null &&
@@ -1796,7 +1796,7 @@ public class JSVGCanvas
 
             if (bufferNeedsRendering) {
                 if (renderer == null)
-                    renderer = (ImageRenderer)rendererFactory.createRenderer();
+                    renderer = rendererFactory.createImageRenderer();
             }
 
             if (renderer != null && gvtRoot != null &&

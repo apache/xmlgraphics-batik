@@ -37,7 +37,7 @@ import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.XMLAbstractTranscoder;
 import org.apache.batik.transcoder.image.resources.Messages;
 import org.apache.batik.gvt.renderer.ImageRenderer;
-import org.apache.batik.gvt.renderer.RendererFactory;
+import org.apache.batik.gvt.renderer.ImageRendererFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
@@ -175,7 +175,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
         // build the GVT tree
         GVTBuilder builder = new ConcreteGVTBuilder();
-        RendererFactory rendFactory = new StaticRendererFactory();
+        ImageRendererFactory rendFactory = new StaticRendererFactory();
         GraphicsNodeRenderContext rc = rendFactory.getRenderContext(); // <!> FIX ME
         BridgeContext ctx = new BridgeContext(userAgent, rc);
         GraphicsNode gvtRoot = builder.build(ctx, svgDoc);
@@ -184,7 +184,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
         // paint the SVG document using the bridge package
         // create the appropriate renderer
-        ImageRenderer renderer = (ImageRenderer)rendFactory.createRenderer();
+        ImageRenderer renderer = rendFactory.createImageRenderer();
         renderer.updateOffScreen(w, h);
         renderer.setTransform(Px);
         renderer.setTree(gvtRoot);
