@@ -63,7 +63,7 @@ public class LengthListParser extends LengthParser {
 		lengthHandler.startLength();
 		parseLength();
 		lengthHandler.endLength();
-		skipSpaces();
+		skipCommaSpaces();
 		if (current == -1) {
 		    break;
 		}
