@@ -8,7 +8,7 @@
     <style type="text/css" xml:space="preserve">
       <![CDATA[.testC1 {shape-rendering:geometricPrecision;text-rendering:optimizeLegibility;}
 .testC2 {stroke:none;}
-.testC3 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Arial';stroke-width:1;stroke-opacity:1;}
+.testC3 {stroke-dashoffset:0;text-rendering:auto;color-rendering:auto;stroke-linecap:square;fill:black;font-size:12;stroke-linejoin:miter;font-weight:normal;stroke:black;fill-opacity:1;font-style:normal;stroke-dasharray:none;stroke-miterlimit:10;color-interpolation:auto;image-rendering:auto;shape-rendering:auto;font-family:'Lucida Sans';stroke-width:1;stroke-opacity:1;}
 ]]>
     </style>
     <g>

@@ -8,6 +8,8 @@
 
 package org.apache.batik.svggen;
 
+import org.apache.batik.svggen.SVGGeneratorContext.GraphicContextDefaults;
+
 import java.awt.*;
 import java.awt.geom.*;
 import org.w3c.dom.*;
@@ -84,6 +86,12 @@ public class GeneratorContext extends SVGAccuracyTest implements SVGConstants {
 
         // Turn SVG Font embedding on.
         ctx.setEmbeddedFontsOn(true);
+
+        // Set the default font to use
+        GraphicContextDefaults defaults 
+            = new GraphicContextDefaults();
+        defaults.font = new Font("Lucida Sans", Font.PLAIN, 12);
+        ctx.setGraphicContextDefaults(defaults);
 
         //
         // Build SVGGraphics2D with our customized context

@@ -8,7 +8,10 @@
 
 package org.apache.batik.svggen;
 
+import org.apache.batik.svggen.SVGGeneratorContext.GraphicContextDefaults;
+
 import java.awt.Dimension;
+import java.awt.Font;
 
 import java.net.URL;
 
@@ -296,7 +299,12 @@ public class SVGAccuracyTest extends AbstractTest
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
         String namespaceURI = SVGDOMImplementation.SVG_NAMESPACE_URI;
         Document domFactory = impl.createDocument(namespaceURI, SVG_SVG_TAG, null);
-        return new SVGGraphics2D(domFactory);
+        SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
+        GraphicContextDefaults defaults 
+            = new GraphicContextDefaults();
+        defaults.font = new Font("Lucida Sans", Font.PLAIN, 12);
+        ctx.setGraphicContextDefaults(defaults);
+        return new SVGGraphics2D(ctx, false);
     }
 
 

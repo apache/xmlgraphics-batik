@@ -25,7 +25,7 @@ public class GVector implements Painter {
                             RenderingHints.VALUE_ANTIALIAS_ON);
 
          // Set default font
-         Font font = new Font("Arial", Font.BOLD, 15);
+         Font font = new Font("Lucida Sans", Font.BOLD, 15);
          g.setFont(font);
 
          // Colors used for labels and test output
