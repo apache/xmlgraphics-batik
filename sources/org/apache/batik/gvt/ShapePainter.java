@@ -33,4 +33,11 @@ public interface ShapePainter {
      * @param shape the shape to paint
      */
     Shape getPaintedArea(Shape shape);
+
+    /**
+     * Returns the painted outline by this painter for a given input shape
+     *
+     * @param shape the shape to paint
+     */
+    Shape getPaintedOutline(Shape shape);
 }
