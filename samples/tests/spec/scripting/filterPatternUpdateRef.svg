@@ -51,8 +51,7 @@
 </filter>
 
 <filter id="filterUserSpaceOnUse" primitiveUnits="objectBoundingBox" filterUnits="userSpaceOnUse">
-      x="250" y="110" width="180" height="190">
-<feTurbulence x="0" y="0" width="1" height="1" type="turbulence" baseFrequency="0.1" numOctaves="2"/>
+     <feTurbulence x="0" y="0" width="1" height="1" type="turbulence" baseFrequency="0.1" numOctaves="2"/>
 </filter>
 
 <pattern id="patternObjectBoundingBox" patternContentUnits="userSpaceOnUse" patternUnits="objectBoundingBox"
