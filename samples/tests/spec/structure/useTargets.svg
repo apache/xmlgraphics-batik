@@ -81,8 +81,8 @@
 <use xlink:href="#svg" x="115" y="230" width="75" height="75" style="fill:orange" />
 <rect x="115" y="230" width="75" height="75" style="stroke:black; fill:none;" />
 
-<use xlink:href="#other" x="115" y="330" width="75" height="75" style="fill:orange" 
-     transform="translate(38 38) scale(.75)"/>
+<use xlink:href="#other" x="115" y="330" style="fill:orange" 
+     transform="translate(152.5, 367.5) scale(.75) translate(-115 -330)"/>
 <rect x="115" y="330" width="75" height="75" style="stroke:black; fill:none;" />
 
 
@@ -93,8 +93,8 @@
 <use xlink:href="../../resources/svg/defs.svg#extSvg" x="265" y="230" width="75" height="75" style="fill:orange" />
 <rect x="265" y="230" width="75" height="75" style="stroke:black; fill:none;" />
 
-<use xlink:href="../../resources/svg/defs.svg#extOther" x="265" y="330" width="75" height="75" style="fill:orange" 
-     transform="translate(38 38) scale(.75)"/>
+<use xlink:href="../../resources/svg/defs.svg#extOther" x="265" y="330" style="fill:orange" 
+     transform="translate(302.5, 367.5) scale(.75) translate(-265, -330)"/>
 <rect x="265" y="330" width="75" height="75" style="stroke:black; fill:none;" />
 
     </g>

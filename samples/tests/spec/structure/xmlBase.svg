@@ -33,7 +33,7 @@
         Test of xml:base, use and SVG fonts 
         </text>
 
-       <use transform="scale(.5)" x="25" y="200" 
+       <use transform="translate(25, 200) scale(.5)"
         xlink:href="#Batik_Logo_Shadow" />
 
 
@@ -49,9 +49,10 @@
        </g> <!-- End Batik_Logo_Shadow -->
 
        <g xml:base="tests/">
-           <use x="250" y="350" transform="scale(.5)" 
+           <use transform="translate(250 350) scale(.5)" 
                 xlink:href="../batikLogo.svg#Batik_Logo_Shadow" />
        </g>
     </g>
+
     <use xlink:href="../../../batikLogo.svg#Batik_Tag_Box" /> 
 </svg>
