@@ -19,8 +19,7 @@ import org.w3c.dom.events.UIEvent;
 import org.w3c.dom.events.MouseEvent;
 
 /**
- * A class that manages focus on elements. Users of this class needs
- * to attached this EventListener with the 'mouseover' event type.
+ * A class that manages focus on elements.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -104,6 +103,8 @@ public class FocusManager {
         target.removeEventListener("mouseout", mouseoutListener, true);
         target.removeEventListener("DOMFocusIn", domFocusInListener, true);
         target.removeEventListener("DOMFocusOut", domFocusOutListener, true);
+        lastFocusEventTarget = null;
+        document = null;
     }
 
     /**
