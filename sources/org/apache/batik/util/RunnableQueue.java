@@ -138,7 +138,16 @@ public class RunnableQueue implements Runnable {
                     }
                 }
 
+                // The following seriously stress tests the class
+                // for stuff happening between the two sync blocks.
+                // 
+                // try {
+                //     Thread.sleep(1);
+                // } catch (InterruptedException ie) { }
+
                 synchronized (list) {
+                    if (state == SUSPENDING)
+                        continue;
                     l = (Link)list.pop();
                     if (l == null) {
                         // No item to run, wait till there is one.
