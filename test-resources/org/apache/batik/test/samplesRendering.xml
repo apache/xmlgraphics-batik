@@ -595,6 +595,50 @@
         <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/symbolViewBoxClip.png" />
     </test>
 
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/svgImageViewBox.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/svgImageViewBox.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/svgImageViewBox.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/svgImageViewBox.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/svgImageViewBoxOverflow.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/svgImageViewBoxOverflow.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/svgImageViewBoxOverflow.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/svgImageViewBoxOverflow.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/svgImageViewBoxClip.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/svgImageViewBoxClip.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/svgImageViewBoxClip.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/svgImageViewBoxClip.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/rasterImageViewBox.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/rasterImageViewBox.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/rasterImageViewBox.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/rasterImageViewBox.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/rasterImageViewBoxOverflow.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/rasterImageViewBoxOverflow.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/rasterImageViewBoxOverflow.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/rasterImageViewBoxOverflow.png" />
+    </test>
+
+    <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
+        <arg class="java.net.URL" value="file:samples/tests/rasterImageViewBoxClip.svg" />
+        <arg class="java.net.URL" value="file:test-references/samples/tests/rasterImageViewBoxClip.png" />
+        <property name="VariationURL" class="java.net.URL" value="file:test-references/samples/tests/accepted-variation/rasterImageViewBoxClip.png" />
+        <property name="SaveVariation" class="java.io.File" value="test-references/samples/tests/candidate-variation/rasterImageViewBoxClip.png" />
+    </test>
+
+
     <test class="org.apache.batik.test.svg.SVGRenderingAccuracyTest">
         <arg class="java.net.URL" value="file:samples/tests/systemColors.svg" />
         <arg class="java.net.URL" value="file:test-references/samples/tests/systemColors.png" />
