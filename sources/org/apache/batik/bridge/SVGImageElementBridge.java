@@ -472,27 +472,41 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     protected void rebuildImageNode() {
-        //reference copy of the imgDocument
-        SVGDocument oldSVGDoc = imgDocument;
+        // Reference copy of the imgDocument
+        if ((imgDocument != null) && (listener != null)) {
+            EventTarget tgt = (EventTarget)imgDocument.getRootElement();
+
+            tgt.removeEventListener(SVG_EVENT_CLICK,     listener, false);
+            tgt.removeEventListener(SVG_EVENT_KEYDOWN,   listener, false);
+            tgt.removeEventListener(SVG_EVENT_KEYPRESS,  listener, false);
+            tgt.removeEventListener(SVG_EVENT_KEYUP,     listener, false);
+            tgt.removeEventListener(SVG_EVENT_MOUSEDOWN, listener, false);
+            tgt.removeEventListener(SVG_EVENT_MOUSEMOVE, listener, false);
+            tgt.removeEventListener(SVG_EVENT_MOUSEOUT,  listener, false);
+            tgt.removeEventListener(SVG_EVENT_MOUSEOVER, listener, false);
+            tgt.removeEventListener(SVG_EVENT_MOUSEUP,   listener, false);
+            listener = null;
+        }
+
+        if (imgDocument != null) {
+            SVGSVGElement svgElement = imgDocument.getRootElement();
+            disposeTree(svgElement);
+        }
+
+        imgDocument = null;
+        subCtx = null;
 
         //update of the reference of the image.
         GraphicsNode inode = buildImageGraphicsNode(ctx,e);
+
+        ImageNode imgNode = (ImageNode)node;
+        imgNode.setImage(inode);
 
         if (inode == null) {
             String uriStr = XLinkSupport.getXLinkHref(e);
             throw new BridgeException(e, ERR_URI_IMAGE_INVALID,
                                       new Object[] {uriStr});
         }
-        ImageNode imgNode = (ImageNode)node;
-        //HACK : see 'initializeDynamicSupport'
-        if (!(imgNode.getImage() instanceof RasterImageNode)) {
-            //it was an svg file referenced
-            //dispose it
-            if ( oldSVGDoc != null ){
-                disposeTree(oldSVGDoc);
-            }
-        }
-        imgNode.setImage(inode);
     }
 
     /**
@@ -601,7 +615,9 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         CanvasGraphicsNode node;
         node = (CanvasGraphicsNode)subCtx.getGVTBuilder().build
             (subCtx, svgElement);
-        subCtx.addUIEventListeners(imgDocument);
+
+        if (eng == null) // If we "created" this document then add listerns.
+            subCtx.addUIEventListeners(imgDocument);
 
         // HACK: remove the clip set by the SVGSVGElement as the overflow
         // and clip properties must be ignored. The clip will be set later
@@ -660,12 +676,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     public void dispose() {
-        if (imgDocument != null) {
-            SVGSVGElement svgElement = imgDocument.getRootElement();
-            disposeTree(svgElement);
-        }
-        super.dispose();
-
         if ((imgDocument != null) && (listener != null)) {
             EventTarget tgt = (EventTarget)imgDocument.getRootElement();
 
@@ -680,12 +690,15 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             tgt.removeEventListener(SVG_EVENT_MOUSEUP,   listener, false);
             listener = null;
         }
-        if (subCtx != null) {
-            subCtx.removeUIEventListeners(imgDocument);
-        }
 
-        imgDocument = null;
-        subCtx = null;
+        if (imgDocument != null) {
+            SVGSVGElement svgElement = imgDocument.getRootElement();
+            disposeTree(svgElement);
+            imgDocument = null;
+            subCtx = null;
+        }
+        super.dispose();
+
     }
     /**
      * A simple DOM listener to forward events from the SVG image document to
