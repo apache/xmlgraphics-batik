@@ -157,6 +157,8 @@ as a software engineer for Bull.</em>
             component. </li>
           <li><link href="mailto:pier.fumagalli@eng.sun.com">Pier Fumagalli</link>- is helping us with the Batik web site and
               mailing lists.</li>
+          <li><link href="mailto:Christophe.Held@sophia.inria.fr">Christophe Helm</link>- Contributed a math formula in SVG 
+              generated from MathML. </li>
           <li><link href="mailto:keiron@aftexsw.com">Keiron Liddle</link> - A <link href="http://xml.apache.org/fop">FOP</link>
               member who is working on an SVG to PDF transcoder that will be part of FOP but that will work in 
               the Batik infrastructure</li>
