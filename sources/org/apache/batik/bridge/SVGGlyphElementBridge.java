@@ -170,7 +170,7 @@ public class SVGGlyphElementBridge extends AbstractSVGBridge
                     Element childElement = (Element)childNode;
                     GraphicsNode childGraphicsNode =
                          builder.build(ctx, childElement);
-                         glyphChildrenNode.add(childGraphicsNode);
+                    glyphChildrenNode.add(childGraphicsNode);
                 }
             }
             glyphContentNode.add(glyphChildrenNode);

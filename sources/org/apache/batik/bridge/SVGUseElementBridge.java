@@ -69,10 +69,10 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
      * @return a graphics node that represents the specified element
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
-	// 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-	if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
-	    return null;
-	}
+        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+        if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+            return null;
+        }
 
         // get the referenced element
         String uri = XLinkSupport.getXLinkHref(e);
