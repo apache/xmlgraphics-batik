@@ -35,6 +35,7 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -53,6 +54,7 @@ import org.apache.batik.swing.gvt.Overlay;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.util.gui.resource.ResourceManager;
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 
@@ -159,6 +161,9 @@ public class ThumbnailDialog extends JDialog {
         if (!(gn instanceof CompositeGraphicsNode))
             return null;
         CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
+        List children = cgn.getChildren();
+        if (children.size() == 0) 
+            return null;
         gn = (GraphicsNode)cgn.getChildren().get(0);
         if (!(gn instanceof CanvasGraphicsNode))
             return null;
@@ -174,9 +179,16 @@ public class ThumbnailDialog extends JDialog {
             SVGSVGElement elt = svgDocument.getRootElement();
             Dimension dim = svgThumbnailCanvas.getSize();
 
-            AffineTransform Tx
-                = ViewBox.getViewTransform(null, elt, dim.width, dim.height);
-            if (Tx.isIdentity()) {
+            String viewBox = elt.getAttributeNS
+                (null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
+
+            AffineTransform Tx;
+            if (viewBox.length() != 0) {
+                String aspectRatio = elt.getAttributeNS
+                    (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
+                Tx = ViewBox.getPreserveAspectRatioTransform
+                    (elt, viewBox, aspectRatio, dim.width, dim.height);
+            }else {
                 // no viewBox has been specified, create a scale transform
                 Dimension2D docSize = svgCanvas.getSVGDocumentSize();
                 double sx = dim.width / docSize.getWidth();
@@ -187,13 +199,15 @@ public class ThumbnailDialog extends JDialog {
 
             GraphicsNode gn = svgCanvas.getGraphicsNode();
             CanvasGraphicsNode cgn = getCanvasGraphicsNode(gn);
-            AffineTransform vTx = cgn.getViewingTransform();
-            if ((vTx != null) && !vTx.isIdentity()) {
-                try {
-                    AffineTransform invVTx = vTx.createInverse();
-                    Tx.concatenate(invVTx);
-                } catch (NoninvertibleTransformException nite) {
-                    /* nothing */
+            if (cgn != null) {
+                AffineTransform vTx = cgn.getViewingTransform();
+                if ((vTx != null) && !vTx.isIdentity()) {
+                    try {
+                        AffineTransform invVTx = vTx.createInverse();
+                        Tx.concatenate(invVTx);
+                    } catch (NoninvertibleTransformException nite) {
+                        /* nothing */
+                    }
                 }
             }
 

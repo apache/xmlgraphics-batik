@@ -440,7 +440,11 @@ public abstract class AbstractParentNode extends AbstractNode {
 				     "node.from.wrong.document",
 				     new Object[] { new Integer(getNodeType()),
 						    getNodeName() });
-        
+        if (this == n)
+            throw createDOMException
+                (DOMException.HIERARCHY_REQUEST_ERR,
+                 "add.self", new Object[] { getNodeName() });
+
 	Node np = n.getParentNode();
         if (np == null)
             return;  // Already removed from tree, do nothing.

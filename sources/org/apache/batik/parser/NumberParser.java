@@ -218,7 +218,7 @@ public abstract class NumberParser extends AbstractParser {
             return 0f;
         }
 
-        if (exp >  128) {
+        if (exp >=  128) {
             return (mant > 0)
                 ? Float.POSITIVE_INFINITY
                 : Float.NEGATIVE_INFINITY;
@@ -228,7 +228,7 @@ public abstract class NumberParser extends AbstractParser {
             return mant;
         }
             
-        if (mant >= 1 << 26) {
+        if (mant >= (1 << 26)) {
             mant++;  // round up trailing bits if they will be dropped.
         }
 
