@@ -48,7 +48,9 @@ public abstract class SVGDescriptiveElement extends SVGStylableElement {
      * <b>DOM</b>: Sets the xml:lang attribute value.
      */
     public void setXMLlang(String lang) {
-        XMLSupport.setXMLLang(this, lang);
+        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
+                       XMLSupport.XML_LANG_ATTRIBUTE,
+                       lang);
     }
     
     /**
@@ -62,6 +64,8 @@ public abstract class SVGDescriptiveElement extends SVGStylableElement {
      * <b>DOM</b>: Sets the xml:space attribute value.
      */
     public void setXMLspace(String space) {
-        XMLSupport.setXMLSpace(this, space);
+        setAttributeNS(XMLSupport.XML_NAMESPACE_URI,
+                       XMLSupport.XML_SPACE_ATTRIBUTE,
+                       space);
     }
 }
