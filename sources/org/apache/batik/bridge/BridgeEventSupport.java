@@ -293,7 +293,7 @@ public class BridgeEventSupport implements SVGConstants {
             }
             */
             short button = getButton(evt);
-            Point screenXY = getScreenMouseLocation(clientXY);
+            Point screenXY = evt.getScreenPoint();
             // create the coresponding DOM MouseEvent
             DocumentEvent d = (DocumentEvent)targetElement.getOwnerDocument();
             MouseEvent mouseEvt = (MouseEvent)d.createEvent("MouseEvents");

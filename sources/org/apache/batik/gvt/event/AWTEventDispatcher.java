@@ -8,6 +8,7 @@
 
 package org.apache.batik.gvt.event;
 
+import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -337,7 +338,6 @@ public class AWTEventDispatcher implements EventDispatcher,
     protected void dispatchMouseEvent(MouseEvent evt) {
         GraphicsNodeMouseEvent gvtevt;
         Point2D p = new Point2D.Float(evt.getX(), evt.getY());
-
         if (baseTransform != null) {
             p = baseTransform.transform(p, null);
         }
@@ -354,6 +354,7 @@ public class AWTEventDispatcher implements EventDispatcher,
 
         // If the receiving node has changed, send a notification
         // check if we enter a new node
+        Point screenPos = evt.getComponent().getLocationOnScreen();
         if (lastHit != node) {
             // post an MOUSE_EXITED
             if (lastHit != null) {
@@ -364,6 +365,8 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                     evt.getModifiers(),
                                                     (float)p.getX(),
                                                     (float)p.getY(),
+                                                    screenPos.x,
+                                                    screenPos.y,
                                                     evt.getClickCount(),
                                                     node);
                 processMouseEvent(gvtevt);
@@ -379,8 +382,9 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                     getModifiers(),
                                                     (float)p.getX(),
                                                     (float)p.getY(),
-                                                    evt.
-                                                    getClickCount(),
+                                                    screenPos.x,
+                                                    screenPos.y,
+                                                    evt.getClickCount(),
                                                     lastHit);
                 processMouseEvent(gvtevt);
                 // node.processMouseEvent(gvtevt);
@@ -394,6 +398,8 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                 evt.getModifiers(),
                                                 (float)p.getX(),
                                                 (float)p.getY(),
+                                                screenPos.x,
+                                                screenPos.y,
                                                 evt.getClickCount(),
                                                 relatedNode);
 
@@ -409,6 +415,8 @@ public class AWTEventDispatcher implements EventDispatcher,
                                                 evt.getModifiers(),
                                                 (float)p.getX(),
                                                 (float)p.getY(),
+                                                screenPos.x,
+                                                screenPos.y,
                                                 evt.getClickCount(),
                                                 relatedNode);
 
