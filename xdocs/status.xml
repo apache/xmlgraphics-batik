@@ -148,10 +148,6 @@
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
-	      <td ><link href="http://xml.apache.org/batik/images/BE/gradPatt-referenc-BE-08.png">gradPatt-referenc-BE-08.svg</link></td>
-	      <td >&nbsp;</td>
-	    </tr>
-	    <tr>
 	      <td ><link href="http://xml.apache.org/batik/images/BE/gradPatt-stop-BE-06.png">gradPatt-stop-BE-06.svg</link></td>
 	      <td >&nbsp;</td>
 	    </tr>
@@ -408,6 +404,10 @@
 
 	    <tr>
 	      <td >fonts-fontElement-BE-01.svg</td>
+	      <td >&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td ><link href="http://xml.apache.org/batik/images/BE/gradPatt-referenc-BE-08.png">gradPatt-referenc-BE-08.svg</link></td>
 	      <td >&nbsp;</td>
 	    </tr>
 	    <tr>
