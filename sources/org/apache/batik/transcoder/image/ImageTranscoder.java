@@ -254,9 +254,10 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
                 g2d.fillRect(0, 0, w, h);
                 g2d.dispose();
             }
-            g2d.drawRenderedImage(rend, new AffineTransform());
+            if (rend != null) { // might be null if the svg document is empty
+                g2d.drawRenderedImage(rend, new AffineTransform());
+            }
             rend = null; // We're done with it...
-
             writeImage(dest, output);
         } catch (Exception ex) {
             throw new TranscoderException(ex);
@@ -444,7 +445,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
         /**
          * Lets the bridge tell the user agent that the following
-         * ex   tension is supported by the bridge.  
+         * ex   tension is supported by the bridge.
          */
         public void registerExtension(BridgeExtension ext) {
             Iterator i = ext.getImplementedExtensions();

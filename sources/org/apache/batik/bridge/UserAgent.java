@@ -14,7 +14,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 
 import org.apache.batik.gvt.event.EventDispatcher;
-import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
@@ -109,7 +108,7 @@ public interface UserAgent {
 
     /**
      * Lets the bridge tell the user agent that the following
-     * extension is supported by the bridge.  
+     * extension is supported by the bridge.
      */
     public void registerExtension(BridgeExtension ext);
 }
