@@ -214,12 +214,14 @@ public class ConcreteTurbulenceRable
             aoi = getBounds2D();
         }
 
+        AffineTransform usr2dev = rc.getTransform();
+
         // Compute size of raster image in device space.
         // System.out.println("Turbulence aoi : " + aoi);
-        // System.out.println("Scale X : " + rc.getTransform().getScaleX() + " scaleY : " + rc.getTransform().getScaleY());
-        // System.out.println("Turbulence aoi dev : " + rc.getTransform().createTransformedShape(aoi).getBounds());
+        // System.out.println("Scale X : " + usr2dev.getScaleX() + " scaleY : " + usr2dev.getScaleY());
+        // System.out.println("Turbulence aoi dev : " + usr2dev.createTransformedShape(aoi).getBounds());
         final Rectangle rasterRect 
-            = rc.getTransform().createTransformedShape(aoi).getBounds();
+            = usr2dev.createTransformedShape(aoi).getBounds();
 
         ColorModel cm = ColorModel.getRGBdefault();
 
@@ -238,7 +240,7 @@ public class ConcreteTurbulenceRable
 
         AffineTransform patternTxf = new AffineTransform();
         try{
-            patternTxf = rc.getTransform().createInverse();
+            patternTxf = usr2dev.createInverse();
         }catch(NoninvertibleTransformException e){
         }
 
@@ -250,20 +252,23 @@ public class ConcreteTurbulenceRable
                                              null);
 
         // Clear area outside area of interest
-        /*Graphics2D g = bi.createGraphics();
-        RenderingHints hints = rc.getRenderingHints();
-        if(hints == null){
-            hints = new RenderingHints(null);
-        }
-        g.setRenderingHints(hints);
-        g.setComposite(AlphaComposite.Src);
+        /*if(usr2dev.getShearX() != 0 || usr2dev.getShearY() != 0){
+            Graphics2D g = bi.createGraphics();
+            RenderingHints hints = rc.getRenderingHints();
+            if(hints == null){
+                hints = new RenderingHints(null);
+            }
+            g.setRenderingHints(hints);
+            g.setComposite(AlphaComposite.Src);
         
-        Area nonAoi = new Area(rasterRect);
-        nonAoi.subtract(new Area(rc.getTransform().createTransformedShape(aoi)));
-        g.setPaint(CLEAR_PAINT);
-        g.translate(-rasterRect.x, -rasterRect.y);
-        g.fill(nonAoi);
-        g.dispose();*/
+            Area nonAoi = new Area(rasterRect);
+            nonAoi.subtract(new Area(usr2dev.createTransformedShape(aoi)));
+            g.setPaint(CLEAR_PAINT);
+            // g.setPaint(java.awt.Color.red);
+            g.translate(-rasterRect.x, -rasterRect.y);
+            g.fill(nonAoi);
+            g.dispose();
+            }*/
 
         RenderedImage result = new ConcreteBufferedImageCachableRed(bi){
                 public int getMinX(){

@@ -41,7 +41,20 @@ import org.apache.batik.gvt.filter.Clip;
  * @version $Id$
  */
 public interface GraphicsNode {
-
+    /**
+     * Key for the AOI hint. This hint is used to propagate the AOI to Paint
+     * and PaintContext instances.
+     */
+    public static RenderingHints.Key KEY_AREA_OF_INTEREST = new RenderingHints.Key(1000){
+            public boolean isCompatibleValue(Object val){
+                boolean isCompatible = true;
+                if((val != null) && !(val instanceof Shape)){
+                    isCompatible = false;
+                }
+                return isCompatible;
+            }
+        };
+            
     //
     // Properties methods
     //

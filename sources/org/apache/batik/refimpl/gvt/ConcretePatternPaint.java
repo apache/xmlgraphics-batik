@@ -12,7 +12,9 @@ import java.awt.Paint;
 import java.awt.PaintContext;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
 
@@ -105,14 +107,31 @@ public class ConcretePatternPaint implements PatternPaint {
         return patternTransform;
     }
 
-    public PaintContext createContext(ColorModel cm, Rectangle deviceBounds,
-                                      Rectangle2D userBounds, AffineTransform xform,
+    public PaintContext createContext(ColorModel cm, Rectangle 
+                                      deviceBounds,
+                                      Rectangle2D userBounds, 
+                                      AffineTransform xform,
                                       RenderingHints hints) {
+        System.out.println("deviceBounds   : " + deviceBounds);
+
         //
         // Concatenate the patternTransform to xform
         //
         if(patternTransform != null){
+            xform = new AffineTransform(xform);
             xform.concatenate(patternTransform);
+
+            // Modify area of interest accordingly
+            try{
+                AffineTransform patternTransformInv = patternTransform.createInverse();
+                Shape aoi = (Shape)hints.get(GraphicsNode.KEY_AREA_OF_INTEREST);
+                if(aoi != null){
+                    hints = new RenderingHints(hints);
+                    hints.put(GraphicsNode.KEY_AREA_OF_INTEREST,
+                              patternTransformInv.createTransformedShape(aoi));
+                }
+            }catch(NoninvertibleTransformException e){
+            }
         }
 
         return new ConcretePatternPaintContext(cm, xform,
