@@ -53,4 +53,7 @@
         <property name="ReferenceScore" class="java.lang.Double" value="0.3724747761938356" />
     </test>
 
+    <!-- SVGGeneratorTests.doubleString NullPointerException regression test -->
+    <test id="DoubleString" class="org.apache.batik.svggen.DoubleString" />
+
 </testSuite>

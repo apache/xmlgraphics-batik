@@ -431,7 +431,7 @@ public class SVGGeneratorContext implements ErrorConstants {
 
     protected static DecimalFormat decimalFormats[] = new DecimalFormat[13];
 
-    {
+    static {
         decimalFormats[0] = new DecimalFormat("#", dsf);
 
         String format = "#.";
