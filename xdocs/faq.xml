@@ -561,4 +561,37 @@
       </p>
     </answer>
 </faq>
+<faq>
+    <question>
+    I'm using Mac OS X, and some of the SVG files I view are messed up (things
+    appear clipped or out of place).  What do I need to do to fix this?
+    </question> 
+    <answer>
+      <p>As of Mac OS X release 10.1.1 there still appear to be problems in the
+      Apple implementation of the Java 2D API's. The true source of 
+      these problems and/or work arounds have yet to be identified (although 
+      the problems appear to be closely tied to a 'gstack underflow' error 
+      messages from the Apple JVM). We are interested in finding the source 
+      of these problems and reasonable work arounds, so if you know what 
+      causes these errors the Batik team would be very interested in hearing 
+      from you (either directly or through the user/developer mailing lists).
+      </p>
+
+      <p>Other things to be aware of on Mac OS X, due to fixes for other 
+      problems with Java 2D under Mac OS X, you may find that some filtering 
+      operations take significantly more memory than on other platforms.  
+      This will be especially true for deeply nested filter trees (where the 
+      result of one filtering operation is filtered by another filtering 
+      operation).</p>
+
+      <p>Finally a few hints on avoiding problems under Mac OS X. The bugs 
+      seems to be triggered by filters (I've never seen a pure raster SVG 
+      document 'mess up').  The use of the 'filterRes' attribute on the 
+      'filter' element seems especially problematic.  The bug isn't 100% 
+      reproducible, so while some content has the problem a lot if you play 
+      with the document enough it will often 'fix' it's self for a while, 
+      then after a while it will go back to being broken (this makes me
+      think the problem may be some sort of race condition in the JVM).</p>
+    </answer>
+</faq>
 </faqs>

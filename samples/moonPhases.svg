@@ -359,8 +359,8 @@
   		<text x="0" y="306.0146">Near <tspan x="0" y="316.0146">full</tspan></text> 
 		<text x="0" y="263.7744">Full <tspan x="0" y="273.7744">moon</tspan></text>
 		<text x="0" y="212.3188">Near <tspan x="0" y="222.3188">full</tspan></text> 
-		<text x="0" y="165.4707">Waining <tspan x="0" y="175.4707">quarter</tspan></text>
-		<text x="0" y="113.2466">Waining <tspan x="0" y="123.2466">crescent</tspan></text>
+		<text x="0" y="165.4707">Waning <tspan x="0" y="175.4707">quarter</tspan></text>
+		<text x="0" y="113.2466">Waning <tspan x="0" y="123.2466">crescent</tspan></text>
 		<text x="0" y="67.1665" >New <tspan x="0" y="77.1665">moon</tspan></text>
 		</g>
 		<text x="89.7632" y="297.918" text-anchor="start" fill="black">Sun</text>
@@ -377,8 +377,8 @@
         <use transform="scale(2)" xlink:href="#Near_Full_Before_Full" y="306" />
         <use transform="scale(2)" xlink:href="#Full_Moon" y="263" />
         <use transform="scale(2)" xlink:href="#Near_Full_After_Full" y="212" />
-        <use transform="scale(2)" xlink:href="#Waining_Quarter" y="165" />
-        <use transform="scale(2)" xlink:href="#Waxing_Quarter" y="113" />
+        <use transform="scale(2)" xlink:href="#Waning_Quarter" y="165" />
+        <use transform="scale(2)" xlink:href="#Waning_Quarter" y="113" />
         <use transform="scale(2)" xlink:href="#New_Moon2" y="67" />
 
         <!--
@@ -388,8 +388,8 @@
   		<text x="0" y="306.0146" >Near <tspan x="0" y="316.0146">full</tspan></text> 
 		<text x="0" y="263.7744" >Full <tspan x="0" y="273.7744">moon</tspan></text>
 		<text x="0" y="212.3188" >Near <tspan x="0" y="222.3188">full</tspan></text> 
-		<text x="0" y="165.4707" >Waining <tspan x="0" y="175.4707">quarter</tspan></text>
-		<text x="0" y="113.2466" >Waining <tspan x="0" y="123.2466">crescent</tspan></text>
+		<text x="0" y="165.4707" >Waning <tspan x="0" y="175.4707">quarter</tspan></text>
+		<text x="0" y="113.2466" >Waning <tspan x="0" y="123.2466">crescent</tspan></text>
 		<text x="0" y="67.1665" >New <tspan x="0" y="77.1665">moon</tspan></text>
         -->
 		</g>
@@ -431,7 +431,7 @@
 				c-0.224,0-0.448,0-0.672,0c0-0.27-0.044-0.538-0.089-0.762c0.178,0,0.358,0,0.582,0c0.09,0,0.09-0.045,0.09-0.18c0-0.537,0-1.12,0-1.702z M26.499,4.637c0.896,0,1.747,0,2.598,0c0-0.447,0-0.851,0-1.299c-0.851,0-1.703,0-2.598,0c0,0.448,0,0.852,0,1.299z
 				 M26.499,2.576c0.896,0,1.747,0,2.598,0c0-0.403,0-0.852,0-1.254c-0.851,0-1.703,0-2.598,0c0,0.402,0,0.851,0,1.254z"/>
 		</g>
-		<g id="Waining_Crescent" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:10;">
+		<g id="Waning_Crescent" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:10;">
 			<path d="M19.51,0.896c0,0.224,0,0.493,0,0.762c-1.613,0-3.226,0-4.883,0c0-0.269,0-0.538,0-0.762c1.658,0,3.271,0,4.883,0z M19.152,4.346c-1.389,0-2.778,0-4.167,0c0-0.269,0-0.538,0-0.806c1.388,0,2.777,0,4.167,0c0,0.268,0,0.537,0,0.806z M14.09,6.406
 				c1.971,0,3.942,0,5.913,0c0,0.27,0,0.538,0,0.762c-1.971,0-3.942,0-5.913,0c0-0.224,0-0.492,0-0.762z"/>
 			<path d="M22.557,7.571c-0.179,0-0.403,0-0.627,0c0-2.284,0-4.524,0-6.81c1.434,0,2.867,0,4.3,0c0,2.24,0,4.436,0,6.675c-0.224,0-0.403,0-0.627,0c0-0.179,0-0.313,0-0.492c-1.03,0-2.016,0-3.046,0c0,0.224,0,0.403,0,0.627z M25.603,3.45c0-0.673,0-1.344,0-2.017
@@ -440,7 +440,7 @@
 				c-0.179,0-0.403,0-0.627,0c-0.045-0.224-0.09-0.492-0.134-0.762c0.224,0,0.403,0,0.583,0c0.09,0,0.134-0.044,0.134-0.134c0-0.583,0-1.165,0-1.747z M29.949,4.436c0.851,0,1.702,0,2.598,0c0-0.403,0-0.852,0-1.255c-0.896,0-1.747,0-2.598,0
 				c0,0.403,0,0.852,0,1.255z M29.949,2.374c0.851,0,1.702,0,2.598,0c0-0.402,0-0.851,0-1.254c-0.896,0-1.747,0-2.598,0c0,0.403,0,0.852,0,1.254z"/>
 		</g>
-		<g id="Waining_Quarter" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:10;">
+		<g id="Waning_Quarter" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:10;">
 			<path d="M19.42,6.811c0-2.106,0-4.167,0-6.228c0.224,0,0.403,0,0.627,0c0.179,0,0.179,0.135,0,0.269c0,0.672,0,1.344,0,2.061c0.762,0,1.479,0,2.24,0c0,0.225,0,0.493,0,0.762c-0.761,0-1.478,0-2.24,0c0,1.03,0,2.106,0,3.136c0.985,0,1.926,0,2.867,0
 				c0,0.268,0,0.492,0,0.761c-1.971,0-3.942,0-5.958,0c0-0.269,0-0.493,0-0.761c0.851,0,1.658,0,2.464,0z"/>
 			<path d="M25.917,6.721c-0.045,0.627-0.09,0.985-0.224,1.254c-0.09,0.224-0.313,0.313-0.538,0.313c-0.269,0-0.492,0-0.761,0c0-0.268-0.044-0.537-0.044-0.761c0.224,0,0.447,0,0.716,0c0.134,0,0.224-0.135,0.269-0.359c0.045-0.313,0.045-0.627,0.045-0.896
