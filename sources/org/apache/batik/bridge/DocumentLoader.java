@@ -8,6 +8,7 @@
 
 package org.apache.batik.bridge;
 
+import java.io.IOException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
@@ -24,8 +25,7 @@ public interface DocumentLoader {
      * Returns a document from the specified uri.
      * @param uri the uri of the document
      */
-    Document loadDocument(String uri) throws DOMException,
-                                SAXException, InterruptedException;
+    Document loadDocument(String uri) throws DOMException, SAXException, IOException;
 
     /**
      * Disposes and releases all resources allocated by this document loader.

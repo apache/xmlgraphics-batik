@@ -10,6 +10,7 @@ package org.apache.batik.refimpl.transcoder;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
@@ -66,7 +67,7 @@ public abstract class AbstractTranscoder implements Transcoder {
             throw new TranscoderException(ex.getMessage(), ex);
         } catch (SAXException ex) {
             throw new TranscoderException(ex.getMessage(), ex);
-        } catch (InterruptedException ex) {
+        } catch (IOException ex) {
             throw new TranscoderException(ex.getMessage(), ex);
         }
     }

@@ -8,6 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
@@ -26,6 +27,7 @@ import org.xml.sax.SAXException;
  * @version $Id$
  */
 public class SVGDocumentFactory extends DocumentFactory {
+
     /**
      * The dtd URIs resource bundle class name.
      */
@@ -54,7 +56,7 @@ public class SVGDocumentFactory extends DocumentFactory {
      * @exception InterruptedException if the I/O thread is interrupted
      */
     public SVGOMDocument createDocument(String uri, InputSource is)
-	throws DOMException, SAXException, InterruptedException {
+	throws DOMException, SAXException, IOException {
 	SVGOMDocument doc;
 	doc = (SVGOMDocument)createDocument
             (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);

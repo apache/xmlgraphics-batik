@@ -8,6 +8,7 @@
 
 package org.apache.batik.refimpl.bridge;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class BufferedDocumentLoader implements DocumentLoader {
      * @exception InterruptedException is thrown if this thread is interrupted.
      */
     public Document loadDocument(String uri) throws DOMException, SAXException,
-                                       InterruptedException {
+                                       IOException {
         int n = uri.indexOf('#');
         if (n != -1) {
             uri = uri.substring(0, n);

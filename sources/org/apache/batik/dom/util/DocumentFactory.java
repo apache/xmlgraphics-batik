@@ -9,7 +9,6 @@
 package org.apache.batik.dom.util;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import org.apache.batik.css.ElementWithID;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -36,6 +35,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class DocumentFactory
     extends    DefaultHandler
     implements LexicalHandler {
+
     /**
      * The DOM implementation used to create the document.
      */
@@ -103,7 +103,7 @@ public class DocumentFactory
      */
     public Document createDocument(String ns, String root, String uri,
                                    InputSource is)
-	throws DOMException, SAXException, InterruptedException {
+	throws DOMException, SAXException, IOException {
 	documentElementParsed = false;
 	document = implementation.createDocument(ns, root, null);
 
@@ -122,14 +122,8 @@ public class DocumentFactory
 			       this);
 	} catch (SAXException e) {
 	}
-	try {
-	    parser.parse(is);
-        } catch (InterruptedIOException iioe) {
-	    // if this thread is interrupted (for instance, by user)
-	    throw new InterruptedException();
-	} catch (IOException e) {
-	    throw new SAXException(e);
-	}
+
+        parser.parse(is);
 	
 	return document;
     }

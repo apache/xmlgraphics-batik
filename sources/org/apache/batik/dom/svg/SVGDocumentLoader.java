@@ -8,6 +8,7 @@
 
 package org.apache.batik.dom.svg;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -41,7 +42,8 @@ public class SVGDocumentLoader implements DocumentLoader {
         this.documentFactory = new SVGDocumentFactory(parser);
     }
 
-    public Document loadDocument(String uri) throws DOMException, SAXException, InterruptedException {
+    public Document loadDocument(String uri)
+        throws DOMException, SAXException, IOException {
         return documentFactory.createDocument(uri, new InputSource(uri));
     }
 
