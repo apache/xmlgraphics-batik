@@ -94,9 +94,10 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
             addEventListener("DOMNodeRemoved", listener, true);
 
 
-        // <!> TODO as previous line this should be done only if we want
+        // <!> TODO as previous lines this should be done only if we want
         // binding !!!!
         BridgeEventSupport.addGVTListener(ctx, svgRoot);
+        BridgeEventSupport.loadScripts(ctx, svgDocument);
 
         return treeRoot;
     }
