@@ -73,19 +73,33 @@
                 <p>For example, if you type:</p>
                 <p><em>java -jar batik-rasterizer.jar samples/batikFX.svg</em></p>
                 <p>you will see the following printout:</p>
-                <p><em>Converting file:samples/batikFX.svg to ./samples/batikFX.png</em></p>
+                <p><em>Converting file: samples/BatikFX.svg to samples/BatikFX.png</em></p>
                 <p>Once the conversion is complete, you will find a batikFX.png file in the samples
                 directory</p>
                 <p>You can pass options to the command line:</p>
-                <p><em>java -jar batik-rasterizer.jar [-d &lt;directory&gt;] [-m &lt;mimeType&gt;] [@files]</em></p>
-                <p>Where:</p>
-                    <ul>
-                        <li><em>-d &lt;directory&gt;</em> lets you select the directory where the raster files will 
-                        be stored.</li>
-                        <li><em>-m &lt;mimeType&gt;</em> lets you select the mime type corresponding to the desired 
-                        raster format for the generated images. Currently, the tool supports <em>image/jpg</em>, 
-                        <em>image/png</em>, and <em>image/tiff</em>. The default value is <em>image/png</em></li>
-                    </ul>
+                <p><em>java -jar batik-rasterizer.jar [options] [@files]</em></p>
+                <p>Where the options are:</p>
+                <ul>
+                <li><em>-d &lt;dir|file&gt;</em>. Output directory. If there is a single input file, this can be a file.</li>
+                <li><em>-m &lt;mimeType&gt;</em>. Output mime type, one of image/png, image/jpeg, application/pdf, image/tiff.</li>
+                <li><em>-w &lt;width&gt;</em>. Output width. This is a floating point value.</li>
+                <li><em>-h &lt;height&gt;</em>. Output height. This is a floating point value.</li>
+                <li><em>-a &lt;area&gt;</em>. Output area. The format for &lt;area&gt; is x,y,w,h, where x, y, w and h
+                are floating point values.</li>
+                <li><em>-bg &lt;color&gt;</em>. Uuput color. The format for &lt;color&gt; is a.r.g.b, where a, r, g and b
+                are integer values.</li>
+                <li><em>-cssMedia &lt;media&gt;</em>.CSS media type for which the source SVG files should be
+                converted.</li>
+                <li><em>-cssAlternate &lt;alternate&gt;</em>. CSS alternate stylesheet to use when converting the source
+                SVG files.</li>
+                <li><em>-cssUser &lt;userStylesheet&gt;</em>. CSS user stylesheet URI to apply to converted SVG documents
+                in addition to any other referened or embeded stylesheets.</li>
+                <li><em>-lang &lt;userLanguage&gt;</em>. User language to use when converting SVG documents.</li>
+                <li><em>-q &lt;quality&gt;</em>. Quality for the output image. This is only relevant for the
+                image/jpeg mime type.</li>
+                <li><em>-dpi &lt;resolution&gt;</em>. Resolution for the ouptut image.</li>
+                <li><em>-validate</em>. Controls whether the source SVG files should be validated.</li>
+                </ul>
                 <p>For example:</p>
                 <ul>
                     <li><em>java -jar batik-rasterizer.jar -d myDir -m image/jpg samples\*.svg</em> will generate JPEG images
@@ -117,8 +131,8 @@
                         help message for the rasterizer</li>
                 </ul>
                 <p>You can pass options to the rasterizer as follows:</p>
-                <p><strong>Windows: </strong><em>build svgrasterizer [-d &lt;directory&gt;] [-m &lt;mimeType&gt;] [@files]</em></p>
-                <p><strong>UNIX: </strong><em>build.sh svgrasterizer [-d &lt;directory&gt;] [-m &lt;mimeType&gt;] [@files]</em></p>
+                <p><strong>Windows: </strong><em>build svgrasterizer [options] [@files]</em></p>
+                <p><strong>UNIX: </strong><em>build.sh svgrasterizer [options] [@files]</em></p>
                 <p>Refer to <link href="#usingBinary">"Using the binary distribution" </link>for an explanation of these
                 options</p>
             </s2>
