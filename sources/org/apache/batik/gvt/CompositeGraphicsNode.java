@@ -388,6 +388,20 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         }
     }
 
+    /**
+     *
+     */
+    public GraphicsNode renderingClone() {
+        CompositeGraphicsNode n =
+            (CompositeGraphicsNode)super.renderingClone();
+        n.children = new GraphicsNode[count];
+        for (int i = 0; i < count; ++i) {
+            n.children[i] = children[i].renderingClone();
+        }
+        n.count = count;
+        return n;
+    }
+
     //
     // List implementation
     //
@@ -431,7 +445,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      */
     public Object [] toArray() {
         GraphicsNode [] result = new GraphicsNode[count];
-        System.arraycopy(children, 0, result, 0, count);
+        for (int i=0; i < count; ++i) {
+            result[i] = children[i];
+        }
         return result;
     }
 
