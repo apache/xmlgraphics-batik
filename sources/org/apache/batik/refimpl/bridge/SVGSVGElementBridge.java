@@ -76,6 +76,8 @@ public class SVGSVGElementBridge implements GraphicsNodeBridge, SVGConstants {
             (svgElement, w, h, ctx.getParserFactory());
         at.translate(x, y);
         if (svgElement.getOwnerSVGElement() != null) {
+            // <!> as it is already done in the JSVGCanvas, we don't have to
+            // do it for the top most svg element
             node.setTransform(at);
         }
         try {
