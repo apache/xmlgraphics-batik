@@ -50,6 +50,13 @@ public abstract class AbstractSVGAnimatedLength
         UnitProcessor.OTHER_LENGTH;
 
     /**
+     * The unit string representations.
+     */
+    protected final static String[] UNITS = {
+        "", "", "%", "em", "ex", "px", "cm", "mm", "in", "pt", "pc"
+    };
+
+    /**
      * The associated element.
      */
     protected AbstractElement element;
@@ -73,6 +80,11 @@ public abstract class AbstractSVGAnimatedLength
      * The base value.
      */
     protected BaseSVGLength baseVal;
+
+    /**
+     * Whether the value is changing.
+     */
+    protected boolean changing;
 
     /**
      * Creates a new SVGAnimatedLength.
@@ -118,7 +130,7 @@ public abstract class AbstractSVGAnimatedLength
      * Called when an Attr node has been added.
      */
     public void attrAdded(Attr node, String newv) {
-        if (baseVal != null) {
+        if (!changing && baseVal != null) {
             baseVal.invalidate();
         }
     }
@@ -127,7 +139,7 @@ public abstract class AbstractSVGAnimatedLength
      * Called when an Attr node has been modified.
      */
     public void attrModified(Attr node, String oldv, String newv) {
-        if (baseVal != null) {
+        if (!changing && baseVal != null) {
             baseVal.invalidate();
         }
     }
@@ -136,7 +148,7 @@ public abstract class AbstractSVGAnimatedLength
      * Called when an Attr node has been removed.
      */
     public void attrRemoved(Attr node, String oldv) {
-        if (baseVal != null) {
+        if (!changing && baseVal != null) {
             baseVal.invalidate();
         }
     }
@@ -204,6 +216,7 @@ public abstract class AbstractSVGAnimatedLength
             revalidate();
             this.value = UnitProcessor.userSpaceToSVG(value, unitType,
                                                       direction, context);
+            resetAttribute();
         }
 
         /**
@@ -221,6 +234,7 @@ public abstract class AbstractSVGAnimatedLength
         public void setValueInSpecifiedUnits(float value) throws DOMException {
             revalidate();
             this.value = value;
+            resetAttribute();
         }
 
         /**
@@ -248,6 +262,7 @@ public abstract class AbstractSVGAnimatedLength
         public void newValueSpecifiedUnits(short unit, float value) {
             unitType = unit;
             this.value = value;
+            resetAttribute();
         }
 
         /**
@@ -258,6 +273,18 @@ public abstract class AbstractSVGAnimatedLength
             float v = getValue();
             unitType = unit;
             setValue(v);
+        }
+
+        /**
+         * Resets the value of the associated attribute.
+         */
+        protected void resetAttribute() {
+            try {
+                changing = true;
+                setValueAsString(value + UNITS[unitType]);
+            } finally {
+                changing = false;
+            }
         }
 
         /**
