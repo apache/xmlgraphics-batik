@@ -444,19 +444,11 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
         transform.concatenate(gradientTransform);
 
         try{
-            return 
-                new RadialGradientPaintContext(cm, 
-                                               deviceBounds,
-                                               userBounds, 
-                                               transform,
-                                               hints,
-                                               (float)center.getX(), (float)center.getY(),
-                                               radius,
-                                               (float)focus.getX(), (float)focus.getY(),
-                                               fractions,
-                                               colors,
-                                               cycleMethod, 
-                                               colorSpace);       	    
+            return new RadialGradientPaintContext
+                (cm, deviceBounds, userBounds, transform, hints,
+                 (float)center.getX(), (float)center.getY(), radius,
+                 (float)focus.getX(), (float)focus.getY(),
+                 fractions, colors, cycleMethod, colorSpace);       	    
         }
 	
         catch(NoninvertibleTransformException e){

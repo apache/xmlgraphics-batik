@@ -89,9 +89,14 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      */
     protected boolean isSimpleLookup = true;
 
-    /** Size of gradients array for scaling the 0-1 index when looking up
-     *  colors the fast way.
+    /** This boolean indicates if the gradient appears to have sudden
+     *  discontinuities in it, this may be because of multiple stops
+     *  at the same location or use of the REPEATE mode.  
      */
+    protected boolean hasDiscontinuity = false;
+
+    /** Size of gradients array for scaling the 0-1 index when looking up
+     *  colors the fast way.  */
     protected int fastGradientArraySize;
 
     /**
@@ -120,12 +125,6 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
     /** fractions array */
     protected float[] fractions;
-
-    /** Non-normalized intervals array */
-    protected float[] intervals;
-
-    /** Gradient colors */
-    private Color[] colors;
 
     /** Used to determine if gradient colors are all opaque */
     private int transparencyTest;
@@ -181,111 +180,60 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         boolean fixFirst = false;
         boolean fixLast = false;
+        int len = fractions.length;
 
         //if the first gradient stop is not equal to zero, fix this condition
         if (fractions[0] != 0f) {
             fixFirst = true;
+            len++;
         }
 
         //if the first gradient stop is not equal to one, fix this condition
         if (fractions[fractions.length - 1] != 1f) {
             fixLast = true;
+            len++;
+        }
+        
+        for (int i=0; i<fractions.length-1; i++)
+            if (fractions[i] == fractions[i+1])
+                len--;
+
+        this.fractions      = new float[len];
+        Color [] loColors   = new Color[len-1];
+        Color [] hiColors   = new Color[len-1];
+        normalizedIntervals = new float[len-1];
+
+        int idx = 0;
+        if (fixFirst) {
+            this.fractions[0] = 0;
+            loColors[0] = colors[0];
+            hiColors[0] = colors[0];
+            normalizedIntervals[0] = fractions[0];
+            idx++;
         }
 
-        //copy the arrays, leaving room for the new first and last stops
-        if (fixFirst && fixLast) {
-            this.fractions = new float[fractions.length + 2];
-            System.arraycopy(fractions, 0, this.fractions,
-                             1, fractions.length);
-            this.fractions[0] = 0f;
-            this.fractions[this.fractions.length - 1] = 1f;
-
-            this.colors = new Color[colors.length + 2];
-            System.arraycopy(colors, 0, this.colors,
-                             1, colors.length);
-
-            this.colors[0] = colors[0];
-            this.colors[this.colors.length - 1] = colors[colors.length - 1];
-        }
-        //copy the arrays, shifting over to make room for the new first stops
-        else if (fixFirst) {
-            this.fractions = new float[fractions.length + 1];
-            System.arraycopy(fractions, 0, this.fractions,
-                             1, fractions.length);
-            this.fractions[0] = 0f;
-
-            this.colors = new Color[colors.length + 1];
-            System.arraycopy(colors, 0, this.colors,
-                             1, colors.length);
-            this.colors[0] = colors[0];
-        }
-        //copy the arrays, leaving room for the new last stops
-        else if (fixLast) {
-            this.fractions = new float[fractions.length + 1];
-            System.arraycopy(fractions, 0, this.fractions,
-                             0, fractions.length);
-            this.fractions[this.fractions.length - 1] = 1f;
-
-            this.colors = new Color[colors.length + 1];
-            System.arraycopy(colors, 0, this.colors,
-                             0, colors.length);
-            this.colors[this.colors.length - 1] = colors[colors.length - 1];
-        }
-        else { //don't fix anything, just copy the arrays.
-            this.fractions = new float[fractions.length];
-            System.arraycopy(fractions, 0, this.fractions,
-                             0, fractions.length);
-
-            this.colors = new Color[colors.length];
-            System.arraycopy(colors, 0, this.colors,
-                             0, colors.length);
-        }
-
-        //this will store the intervals (distances) between gradient stops
-        intervals = new float[this.fractions.length - 1];
-
-        float currentPosition = this.fractions[0];
-        float previousPosition = 0;
-
-        //convert from fractions into intervals, check that values are in
-        //the proper range and progress in increasing order from 0 to 1
-        for (int i = 1; i < this.fractions.length; i++) {
-
-            if (currentPosition < 0f || currentPosition > 1f) {
-                throw new IllegalArgumentException("Keyframe values should " +
-                                                   "be in the range 0 to 1: " +
-                                                   currentPosition);
+        for (int i=0; i<fractions.length-1; i++) {
+            if (fractions[i] == fractions[i+1]) {
+                // System.out.println("EQ Fracts");
+                if (!colors[i].equals(colors[i+1])) {
+                    hasDiscontinuity = true;
+                }
+                continue;
             }
-
-            previousPosition = currentPosition;
-            currentPosition = this.fractions[i];
-
-            if (currentPosition < previousPosition) {
-                throw
-                    new IllegalArgumentException("Keyframe fractions must be" +
-                                                 " increasing: " +
-                                                 currentPosition);
-            }
-
-            //interval distance is equal to the difference in positions
-            intervals[i-1] = currentPosition - previousPosition;
+            this.fractions[idx] = fractions[i];
+            loColors[idx] = colors[i];
+            hiColors[idx] = colors[i+1];
+            normalizedIntervals[idx] = fractions[i+1]-fractions[i];
+            idx++;
         }
+            
+        this.fractions[idx] = fractions[fractions.length-1];
 
-        //copy the non-normalized intervals array
-        normalizedIntervals = new float[intervals.length];
-        System.arraycopy(intervals, 0,
-                         normalizedIntervals, 0,
-                         intervals.length);
-
-        // Normalize intervals and check values are positive.
-        float sum = 0;
-
-        for(int i = 0; i < intervals.length; i++) {
-            sum += intervals[i];
-        }
-
-        for(int i = 0; i < normalizedIntervals.length; i++) {
-            normalizedIntervals[i] /= sum;
+        if (fixLast) {
+            loColors[idx] = hiColors[idx] = colors[colors.length-1];
+            normalizedIntervals[idx] = 1-fractions[fractions.length-1];
+            idx++;
+            this.fractions[idx] = 1;
         }
 
         // The inverse transform is needed to from device to user space.
@@ -304,7 +252,6 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         this.cycleMethod = cycleMethod;
         this.colorSpace = colorSpace;
 
-
         // Setup an example Model, we may refine it later.
         if (cm.getColorSpace() == lrgbmodel_A.getColorSpace())
             dataModel = lrgbmodel_A;
@@ -313,6 +260,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         else
             throw new IllegalArgumentException
                 ("Unsupported ColorSpace for interpolation");
+
+        calculateGradientFractions(loColors, hiColors);
 
         model = GraphicsUtil.coerceColorModel(dataModel,
                                               cm.isAlphaPremultiplied());
@@ -323,15 +272,22 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      * gradient colors based on an array of fractions and color values at those
      * fractions.
      */
-    protected final void calculateGradientFractions() {
+    protected final void calculateGradientFractions
+        (Color []loColors, Color []hiColors) {
 
         //if interpolation should occur in Linear RGB space, convert the
         //colors using the lookup table
         if (colorSpace == LinearGradientPaint.LINEAR_RGB) {
-            for (int i = 0; i < colors.length; i++) {
-                colors[i] = new Color(SRGBtoLinearRGB[colors[i].getRed()],
-                                      SRGBtoLinearRGB[colors[i].getGreen()],
-                                      SRGBtoLinearRGB[colors[i].getBlue()]);
+            for (int i = 0; i < loColors.length; i++) {
+                loColors[i] = 
+                    new Color(SRGBtoLinearRGB[loColors[i].getRed()],
+                              SRGBtoLinearRGB[loColors[i].getGreen()],
+                              SRGBtoLinearRGB[loColors[i].getBlue()]);
+                
+                hiColors[i] = 
+                    new Color(SRGBtoLinearRGB[hiColors[i].getRed()],
+                              SRGBtoLinearRGB[hiColors[i].getGreen()],
+                              SRGBtoLinearRGB[hiColors[i].getBlue()]);
             }
         }
 
@@ -361,18 +317,27 @@ abstract class MultipleGradientPaintContext implements PaintContext {
 
         if (Imin == 0) {
             estimatedSize = Integer.MAX_VALUE;
+            hasDiscontinuity = true;
         } else {
             for (int i = 0; i < normalizedIntervals.length; i++) {
                 estimatedSize += (normalizedIntervals[i]/Imin) * GRADIENT_SIZE;
             }
         }
 
+
         if (estimatedSize > MAX_GRADIENT_ARRAY_SIZE) {
             //slow method
-            calculateMultipleArrayGradient();
+            calculateMultipleArrayGradient(loColors, hiColors);
+            if ((cycleMethod == MultipleGradientPaint.REPEAT) &&
+                (gradients[0][0] != 
+                 gradients[gradients.length-1][GRADIENT_SIZE_INDEX]))
+                hasDiscontinuity = true;
         } else {
             //fast method
-            calculateSingleArrayGradient(Imin);
+            calculateSingleArrayGradient(loColors, hiColors, Imin);
+            if ((cycleMethod == MultipleGradientPaint.REPEAT) &&
+                (gradient[0] != gradient[fastGradientArraySize]))
+                hasDiscontinuity = true;
         }
 
         // Use the most 'economical' model (no alpha).
@@ -410,7 +375,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      * @param Imin the size of the smallest interval
      *
      */
-    private void calculateSingleArrayGradient(float Imin) {
+    private void calculateSingleArrayGradient
+        (Color [] loColors, Color [] hiColors, float Imin) {
 
         //set the flag so we know later it is a non-simple lookup
         isSimpleLookup = true;
@@ -436,8 +402,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             gradients[i] = new int[nGradients];
 
             //the the 2 colors (keyframes) to interpolate between
-            rgb1 = colors[i].getRGB();
-            rgb2 = colors[i+1].getRGB();
+            rgb1 = loColors[i].getRGB();
+            rgb2 = hiColors[i].getRGB();
 
             //fill this array with the colors in between rgb1 and rgb2
             interpolate(rgb1, rgb2, gradients[i]);
@@ -468,7 +434,7 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                              curOffset, gradients[i].length);
             curOffset += gradients[i].length;
         }
-        gradient[gradient.length-1] = colors[colors.length-1].getRGB();
+        gradient[gradient.length-1] = hiColors[hiColors.length-1].getRGB();
 
         //if interpolation occurred in Linear RGB space, convert the
         //gradients back to SRGB using the lookup table
@@ -513,7 +479,8 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      * time-space tradeoff.
      *
      */
-    private void calculateMultipleArrayGradient() {
+    private void calculateMultipleArrayGradient
+        (Color [] loColors, Color [] hiColors) {
 
         //set the flag so we know later it is a non-simple lookup
         isSimpleLookup = false;
@@ -530,12 +497,16 @@ abstract class MultipleGradientPaintContext implements PaintContext {
         //for every interval (transition between 2 colors)
         for(int i=0; i < gradients.length; i++){
 
+            // This interval will never actually be used (zero size)
+            if (normalizedIntervals[i] == 0)
+                continue;
+
             //create an array of the maximum theoretical size for each interval
             gradients[i] = new int[GRADIENT_SIZE];
 
             //get the the 2 colors
-            rgb1 = colors[i].getRGB();
-            rgb2 = colors[i+1].getRGB();
+            rgb1 = loColors[i].getRGB();
+            rgb2 = hiColors[i].getRGB();
 
             //fill this array with the colors in between rgb1 and rgb2
             interpolate(rgb1, rgb2, gradients[i]);
@@ -822,7 +793,6 @@ abstract class MultipleGradientPaintContext implements PaintContext {
      * @returns ARGB integer color to display
      */
     protected final int indexGradientAntiAlias(float position, float sz) {
-
         //first, manipulate position value depending on the cycle method.
         if (cycleMethod == MultipleGradientPaint.NO_CYCLE) {
             if (DEBUG) System.out.println("NO_CYCLE");
@@ -1000,20 +970,15 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             int idx1 = (int)p1;
             int idx2 = (int)p2;
 
-            // Simpliest case we just take the average value.
-            // Note that this may not be correct in all cases,
-            // but saves us always doing the summation between idx1 and idx2.
-            if ((idx1 <= idx2) && p1_up && !p2_up)
-                return gradient[(idx1+idx2)>>1];
+            int i, pix;
 
-            if (DEBUG) System.out.println( "P1: " + p1 + " " + p1_up +
-                                           " P2: " + p2 + " " + p2_up);
+            if (p1_up && !p2_up && (idx1 <= idx2)) {
 
-            // Do the bulk of the work, all the whole gradient entries
-            // for idx1 and idx2.
-            int pix, norm;
-            if (p1_up) {
-                for (int i=idx1+1; i<fastGradientArraySize; i++) {
+                if (idx1 == idx2)
+                    return gradient[idx1];
+
+                // Sum between idx1 and idx2.
+                for (i=idx1+1; i<idx2; i++) {
                     pix  = gradient[i];
                     ach += ((pix>>>20)&0xFF0);
                     rch += ((pix>>>12)&0xFF0);
@@ -1021,55 +986,65 @@ abstract class MultipleGradientPaintContext implements PaintContext {
                     bch += ((pix<<  4)&0xFF0);
                 }
             } else {
-                for (int i=0; i<idx1; i++) {
-                    pix  = gradient[i];
-                    ach += ((pix>>>20)&0xFF0);
-                    rch += ((pix>>>12)&0xFF0);
-                    gch += ((pix>>> 4)&0xFF0);
-                    bch += ((pix<<  4)&0xFF0);
+                // Do the bulk of the work, all the whole gradient entries
+                // for idx1 and idx2.
+                if (p1_up) {
+                    for (i=idx1+1; i<fastGradientArraySize; i++) {
+                        pix  = gradient[i];
+                        ach += ((pix>>>20)&0xFF0);
+                        rch += ((pix>>>12)&0xFF0);
+                        gch += ((pix>>> 4)&0xFF0);
+                        bch += ((pix<<  4)&0xFF0);
+                    }
+                } else {
+                    for (i=0; i<idx1; i++) {
+                        pix  = gradient[i];
+                        ach += ((pix>>>20)&0xFF0);
+                        rch += ((pix>>>12)&0xFF0);
+                        gch += ((pix>>> 4)&0xFF0);
+                        bch += ((pix<<  4)&0xFF0);
+                    }
+                }
+
+                if (p2_up) {
+                    for (i=idx2+1; i<fastGradientArraySize; i++) {
+                        pix  = gradient[i];
+                        ach += ((pix>>>20)&0xFF0);
+                        rch += ((pix>>>12)&0xFF0);
+                        gch += ((pix>>> 4)&0xFF0);
+                        bch += ((pix<<  4)&0xFF0);
+                    }
+                } else {
+                    for (i=0; i<idx2; i++) {
+                        pix  = gradient[i];
+                        ach += ((pix>>>20)&0xFF0);
+                        rch += ((pix>>>12)&0xFF0);
+                        gch += ((pix>>> 4)&0xFF0);
+                        bch += ((pix<<  4)&0xFF0);
+                    }
                 }
             }
 
-            if (p2_up) {
-                for (int i=idx2+1; i<fastGradientArraySize; i++) {
-                    pix  = gradient[i];
-                    ach += ((pix>>>20)&0xFF0);
-                    rch += ((pix>>>12)&0xFF0);
-                    gch += ((pix>>> 4)&0xFF0);
-                    bch += ((pix<<  4)&0xFF0);
-                }
-            } else {
-                for (int i=0; i<idx2; i++) {
-                    pix  = gradient[i];
-                    ach += ((pix>>>20)&0xFF0);
-                    rch += ((pix>>>12)&0xFF0);
-                    gch += ((pix>>> 4)&0xFF0);
-                    bch += ((pix<<  4)&0xFF0);
-                }
-            }
+            int norm, isz;
 
             // Normalize the summation so far...
-            int isz = (int)((1<<16)/(sz*fastGradientArraySize));
+            isz = (int)((1<<16)/(sz*fastGradientArraySize));
             ach = (ach*isz)>>16;
             rch = (rch*isz)>>16;
             gch = (gch*isz)>>16;
             bch = (bch*isz)>>16;
 
             // Clean up with the partial buckets at each end.
-            if (p1_up) norm = (int)(((1-(p1-idx1))*(1<<16))
-                                    /(sz*fastGradientArraySize));
-            else       norm = (int)(((p1-idx1)*(1<<16))
-                                    /(sz*fastGradientArraySize));
+            if (p1_up) norm = (int)((1-(p1-idx1))*isz);
+            else       norm = (int)(   (p1-idx1) *isz);
             pix = gradient[idx1];
             ach += (((pix>>>20)&0xFF0) *norm)>>16;
             rch += (((pix>>>12)&0xFF0) *norm)>>16;
             gch += (((pix>>> 4)&0xFF0) *norm)>>16;
             bch += (((pix<<  4)&0xFF0) *norm)>>16;
 
-            if (p2_up) norm = (int)(((1-(p2-idx2))*(1<<16))
-                                    /(sz*fastGradientArraySize));
-            else       norm = (int)(((p2-idx2)*(1<<16))
-                                    /(sz*fastGradientArraySize));
+            if (p2_up) norm = (int)((1-(p2-idx2))*isz);
+            else       norm = (int)(   (p2-idx2) *isz);
             pix = gradient[idx2];
             ach += (((pix>>>20)&0xFF0) *norm)>>16;
             rch += (((pix>>>12)&0xFF0) *norm)>>16;
@@ -1262,18 +1237,6 @@ abstract class MultipleGradientPaintContext implements PaintContext {
             gch = ((gch*iw)+aveG)>>16;
             bch = ((bch*iw)+aveB)>>16;
         }
-        // If any high bits are set we are not in range.
-              // If the highest bit is set then we are negative so
-              // clamp to zero else we are > 255 so clamp to 255.
-        if ((ach & 0xFFFFFF00) != 0)
-            ach = ((ach & 0x80000000) != 0)?0:255;
-        if ((rch & 0xFFFFFF00) != 0)
-            rch = ((rch & 0x80000000) != 0)?0:255;
-        if ((gch & 0xFFFFFF00) != 0)
-            gch = ((gch & 0x80000000) != 0)?0:255;
-        if ((bch & 0xFFFFFF00) != 0)
-            bch = ((bch & 0x80000000) != 0)?0:255;
-
               
         return ((ach<<24) | (rch<<16) | (gch<<8) | bch);
     }
