@@ -188,8 +188,8 @@ public abstract class LengthManager extends AbstractValueManager {
                 sm.putBlockHeightRelative(idx, true);
                 double w = ctx.getBlockWidth(elt);
                 double h = ctx.getBlockHeight(elt);
-                fs = (float)(value.getFloatValue() * 100.0 /
-                             (Math.sqrt(w * w + h * h) / Math.sqrt(2)));
+                fs = (float)(value.getFloatValue() *
+                        (Math.sqrt(w * w + h * h) / Math.sqrt(2)) / 100.0);
             }
             return new FloatValue(CSSPrimitiveValue.CSS_NUMBER, fs);
         }
