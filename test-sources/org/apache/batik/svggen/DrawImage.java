@@ -45,7 +45,7 @@ public class DrawImage implements Painter {
         g.drawImage(image, 5, 10, Color.gray, null);
         g.translate(150, 0);
         
-        // drawImage(img,x,y,w,h,bgcolor,observer)
+        // drawImage(img,x,y,w,h,observer)
         g.drawImage(image, 5, 10, 50, 40, null);
         g.translate(-150, 80);
         
@@ -67,8 +67,14 @@ public class DrawImage implements Painter {
 
         // drawImage(img,op,x,y);
         RescaleOp op = new RescaleOp(.5f, 0f, null);
-          g.drawImage(image,op,5,10);
+        g.drawImage(image,op,5,10);
         
+        g.translate(-150, 0);
+
+        g.translate(0, 80);
+
+        // drawImage(x,y,w,y,bgcolor,observer)
+        g.drawImage(image, 5, 10, 50, 40, Color.gray, null);
 
     }
 }
