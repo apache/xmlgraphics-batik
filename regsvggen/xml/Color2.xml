@@ -29,7 +29,7 @@
 		Rectangle rect = new Rectangle(10, 40, 100, 50);
 
 		// Define thick stroke
-		BasicStroke thickStroke = new BasicStroke(10);
+		BasicStroke thickStroke = new BasicStroke(5);
 
 		// First test: Opaque Colors with AlphaComposite
 		g.setPaint(Color.black);
