@@ -17,6 +17,9 @@ The distribution contains a precompiled version of Ant.
 The only thing that you have to make sure, is the "JAVA_HOME" environment
 property should be set to match the JVM you want to use. 
 
+If you are going to be doing development you may want to create a file
+called 'build.properties' with the line 'debug=on' in it.  This will 
+turn on the generation of debugging information when compiling Batik.
 
 Building Instructions
 ..............................................................................
@@ -61,6 +64,11 @@ To display the available targets type:
     <property name="project" value="batik"/>
     <property name="year"    value="2001"/>
     <property name="version" value="1.1"/>
+
+    <property file="build.properties"/>
+    <property name="debug"       value="off"/>
+    <property name="optimize"    value="on"/>
+    <property name="deprecation" value="on"/>
 
     <property name="src"             value="sources"/>
     <property name="resources"       value="resources"/>
@@ -237,8 +245,9 @@ To display the available targets type:
           depends    ="init"
           description="Compiles the source files">
     <mkdir dir="${dest}"/>
-
-    <javac srcdir="${src}" destdir="${dest}" deprecation="on" debug="off">
+    <echo message="debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
+    <javac srcdir="${src}" destdir="${dest}" deprecation="${deprecation}" 
+           debug="${debug}" optimize="${optimize}">
       <classpath refid="libs-classpath"/>
       <exclude name="**/*.html"/>
       <exclude name="**/rhino/*" unless="rhino.present"/>      
