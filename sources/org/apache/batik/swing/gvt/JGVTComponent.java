@@ -169,6 +169,11 @@ public class JGVTComponent extends JComponent {
     protected boolean suspendInteractions;
 
     /**
+     * Whether to inconditionally disable interactions.
+     */ 
+    protected boolean disableInteractions;
+
+    /**
      * Creates a new JGVTComponent.
      */
     public JGVTComponent() {
@@ -767,7 +772,9 @@ public class JGVTComponent extends JComponent {
          * Selects an interactor, given an input event.
          */
         protected void selectInteractor(InputEvent ie) {
-            if (!suspendInteractions && interactor == null) {
+            if (!disableInteractions &&
+                !suspendInteractions &&
+                interactor == null) {
                 Iterator it = interactors.iterator();
                 while (it.hasNext()) {
                     Interactor i = (Interactor)it.next();

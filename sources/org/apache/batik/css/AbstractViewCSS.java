@@ -8,15 +8,17 @@
 
 package org.apache.batik.css;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.batik.css.sac.ExtendedSelector;
 import org.apache.batik.css.value.ImmutableInherit;
 import org.apache.batik.css.value.RelativeValueResolver;
+
 import org.w3c.css.sac.SelectorList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -44,6 +46,7 @@ import org.w3c.dom.views.DocumentView;
  * @version $Id$
  */
 public abstract class AbstractViewCSS implements ViewCSS {
+
     /**
      * The document of which this object is a view.
      */
@@ -52,12 +55,7 @@ public abstract class AbstractViewCSS implements ViewCSS {
     /**
      * The cached computed styles.
      */
-    protected Map styles = new HashMap(11);
-
-    /**
-     * The cached stylesheets.
-     */
-    protected StyleSheetList styleSheets;
+    protected ComputedStyleCache styles = new ComputedStyleCache();
 
     /**
      * The media to use for cascading.
@@ -109,34 +107,32 @@ public abstract class AbstractViewCSS implements ViewCSS {
      */
     public CSSOMReadOnlyStyleDeclaration getComputedStyleInternal(Element elt,
                                                                   String pseudoElt) {
-	Map m = (Map)styles.get(elt);
-	if (m == null) {
-	    styles.put(elt, m = new HashMap(11));
-	}
         pseudoElt = (pseudoElt == null) ? "" : pseudoElt;
-        CSSOMReadOnlyStyleDeclaration result =
-            (CSSOMReadOnlyStyleDeclaration)m.get(pseudoElt);
+        CSSOMReadOnlyStyleDeclaration result = styles.get(elt, pseudoElt);
 	
         if (result == null) {
             result = computeStyle(elt, pseudoElt);
-            m.put(pseudoElt, result);
+            styles.put(elt, pseudoElt, result);
         }
 	return result;
     }
  
     /**
-     * Sets the computed style.
+     * Sets the computed style in the cache in a way it is not collectable.
      */
     public void setComputedStyle(Element elt,
                                  String pseudoElt,
-                                 CSSStyleDeclaration sd) {
-	Map m = (Map)styles.get(elt);
-	if (m == null) {
-	    styles.put(elt, m = new HashMap(11));
-	}
+                                 CSSOMReadOnlyStyleDeclaration sd) {
         pseudoElt = (pseudoElt == null) ? "" : pseudoElt;
-        ((CSSOMReadOnlyStyleDeclaration)sd).setContext(this, elt);
-        m.put(pseudoElt, sd);
+        sd.setContext(this, elt);
+        styles.putPermanent(elt, pseudoElt, sd);
+    }
+
+    /**
+     * Disposes the style declarations explicitly setted in the cache.
+     */
+    public void dispose() {
+        styles.dispose();
     }
 
     /**
@@ -532,5 +528,253 @@ public abstract class AbstractViewCSS implements ViewCSS {
 	    }
 	}
 	return false;
+    }
+
+    /**
+     * To cache the computed styles.
+     */
+    protected static class ComputedStyleCache {
+
+        /**
+         * The table used to store the style.
+         */
+        protected Entry[] table;
+
+        /**
+         * The number of entries
+         */
+        protected int count;
+
+        /**
+         * Creates a new ComputedStyleCache.
+         */
+        public ComputedStyleCache() {
+            table = new Entry[11];
+        }
+
+        /**
+         * Caches the given computed style.
+         */
+        public void put(Element elt, String pe, CSSOMReadOnlyStyleDeclaration sd) {
+            update();
+
+            int hash  = hashCode(elt, pe) & 0x7FFFFFFF;
+            int index = hash % table.length;
+	
+            for (Entry e = table[index]; e != null; e = e.next) {
+                if ((e.hash == hash) && e.match(elt, pe)) {
+                    e.computedStyleReference = new SoftReference(sd);
+                    return;
+                }
+            }
+
+            // The key is not in the hash table
+            int len = table.length;
+            if (count++ >= (len * 3) >>> 2) {
+                rehash();
+                index = hash % table.length;
+            }
+            
+            Entry e = new Entry(hash, elt, pe, new SoftReference(sd), table[index]);
+            table[index] = e;
+        }
+
+        /**
+         * Caches the given computed style without possibility of collection.
+         */
+        public void putPermanent(Element elt, String pe,
+                                 CSSOMReadOnlyStyleDeclaration sd) {
+            update();
+
+            int hash  = hashCode(elt, pe) & 0x7FFFFFFF;
+            int index = hash % table.length;
+	
+            for (Entry e = table[index]; e != null; e = e.next) {
+                if ((e.hash == hash) && e.match(elt, pe)) {
+                    e.computedStyleReference = new StrongReference(sd);
+                    return;
+                }
+            }
+
+            // The key is not in the hash table
+            int len = table.length;
+            if (count++ >= (len * 3) >>> 2) {
+                rehash();
+                index = hash % table.length;
+            }
+            
+            Entry e = new Entry(hash, elt, pe, new StrongReference(sd), table[index]);
+            table[index] = e;
+        }
+
+        /**
+         * Returns the computed style mapped with the given element
+         * and pseudo-element, if any.
+         */
+        public CSSOMReadOnlyStyleDeclaration get(Element elt, String pe) {
+            update();
+            
+            int hash  = hashCode(elt, pe) & 0x7FFFFFFF;
+            int index = hash % table.length;
+	
+            for (Entry e = table[index]; e != null; e = e.next) {
+                if ((e.hash == hash) && e.match(elt, pe)) {
+                    return (CSSOMReadOnlyStyleDeclaration)e.computedStyleReference.get();
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Rehash the table
+         */
+        protected void rehash () {
+            Entry[] oldTable = table;
+	
+            table = new Entry[oldTable.length * 2 + 1];
+	
+            for (int i = oldTable.length-1; i >= 0; i--) {
+                for (Entry old = oldTable[i]; old != null;) {
+                    Entry e = old;
+                    old = old.next;
+                    
+                    int index = e.hash % table.length;
+                    e.next = table[index];
+                    table[index] = e;
+                }
+            }
+        }
+
+        /**
+         * Updates the table.
+         */
+        protected void update() {
+            for (int i = table.length - 1; i >= 0; --i) {
+                Entry e = table[i];
+                Entry p = null;
+                if (e != null) {
+                    if (e.computedStyleReference.get() == null) {
+                        table[i] = e.next;
+                        count--;
+                    }
+                    p = e;
+                    e = e.next;
+                }
+                while (e != null) {
+                    if (e.computedStyleReference.get() == null) {
+                        p.next = e.next;
+                        count--;
+                    }
+                    p = e;
+                    e = e.next;
+                }
+            }
+        }
+
+        /**
+         * Removes the permanently cached style declarations.
+         */
+        public void dispose() {
+            for (int i = table.length - 1; i >= 0; --i) {
+                Entry e = table[i];
+                Entry p = null;
+                if (e != null) {
+                    if (e.computedStyleReference instanceof StrongReference) {
+                        table[i] = e.next;
+                        count--;
+                    }
+                    p = e;
+                    e = e.next;
+                }
+                while (e != null) {
+                    if (e.computedStyleReference instanceof StrongReference) {
+                        p.next = e.next;
+                        count--;
+                    }
+                    p = e;
+                    e = e.next;
+                }
+            }
+        }
+
+        /**
+         * Computes a hash code for the given element and pseudo-element.
+         */
+        protected int hashCode(Element e, String pe) {
+            return e.hashCode() ^ pe.hashCode();
+        }
+
+        /**
+         * To store computed style with a strong reference.
+         */
+        protected static class StrongReference extends SoftReference {
+            
+            /**
+             * A strong reference.
+             */
+            protected Object reference;
+
+            /**
+             * Creates a new strong reference.
+             */
+            public StrongReference(Object o) {
+                super(o);
+                reference = o;
+            }
+        }
+
+        /**
+         * To manage collisions in the table.
+         */
+        protected static class Entry {
+            
+            /**
+             * The hash code
+             */
+            public int hash;
+	
+            /**
+             * The element.
+             */
+            public Element element;
+
+            /**
+             * The pseudo-element.
+             */
+            public String pseudoElement;
+
+            /**
+             * The computed style.
+             */
+            public SoftReference computedStyleReference;
+
+            /**
+             * The next entry.
+             */
+            public Entry next;
+
+            /**
+             * Creates a new entry.
+             */
+            public Entry(int h, Element e, String pe, SoftReference sd, Entry n) {
+                hash = h;
+                element = e;
+                pseudoElement = pe;
+                computedStyleReference = sd;
+                next = n;
+            }
+
+            /**
+             * Whether this entry match the given keys.
+             */
+            public boolean match(Element e, String pe) {
+                if (e == element) {
+                    if (pe.equals(pseudoElement)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
     }
 }

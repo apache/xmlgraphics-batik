@@ -141,6 +141,9 @@ public class LocalHistory {
      * @param uri The URI of the document just loaded.
      */
     public void update(String uri) {
+        if (currentURI < -1) {
+            currentURI = -1;
+        }
         if (++currentURI < visitedURIs.size()) {
             if (!visitedURIs.get(currentURI).equals(uri)) {
                 for (int i = currentURI + 1; i + index <= menu.getItemCount(); i++) {
