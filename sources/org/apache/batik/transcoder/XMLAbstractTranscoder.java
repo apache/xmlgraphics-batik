@@ -18,6 +18,8 @@ import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.transcoder.keys.DOMImplementationKey;
 import org.apache.batik.transcoder.keys.StringKey;
 
+import org.apache.batik.util.XMLResourceDescriptor;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -29,8 +31,6 @@ import org.w3c.dom.Document;
  * transcoding hints:
  *
  * <ul>
- * <li><tt>KEY_XML_PARSER_CLASSNAME</tt>: the XML parser to use
- *
  * <li><tt>KEY_DOM_IMPLEMENTATION</tt>: the DOM Implementation to use
  *
  * <li><tt>KEY_DOCUMENT_ELEMENT_NAMESPACE_URI</tt>: the namespace URI of the
@@ -78,9 +78,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
                 (DOMImplementation)hints.get(KEY_DOM_IMPLEMENTATION);
 
             if (parserClassname == null) {
-                handler.fatalError(new TranscoderException(
-                   "Unspecified transcoding hints: KEY_XML_PARSER_CLASSNAME"));
-                return;
+                parserClassname = XMLResourceDescriptor.getXMLParserClassName();
             }
             if (domImpl == null) {
                 handler.fatalError(new TranscoderException(

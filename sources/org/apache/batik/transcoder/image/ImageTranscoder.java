@@ -63,6 +63,7 @@ import org.apache.batik.transcoder.keys.Rectangle2DKey;
 import org.apache.batik.transcoder.keys.StringKey;
 
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
@@ -138,7 +139,6 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         SVGDocument svgDoc = (SVGDocument)document;
         SVGSVGElement root = svgDoc.getRootElement();
         // initialize the SVG document with the appropriate context
-        String parserClassname = (String)hints.get(KEY_XML_PARSER_CLASSNAME);
         DefaultSVGContext svgCtx = new DefaultSVGContext();
         svgCtx.setPixelToMM(userAgent.getPixelToMM());
         ((SVGOMDocument)document).setSVGContext(svgCtx);
@@ -376,7 +376,11 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
          * Returns the XML parser to use from the TranscodingHints.
          */
         public String getXMLParserClassName() {
-            return (String)hints.get(KEY_XML_PARSER_CLASSNAME);
+            if (hints.containsKey(KEY_XML_PARSER_CLASSNAME)) {
+                return (String)hints.get(KEY_XML_PARSER_CLASSNAME);
+            } else {
+                return XMLResourceDescriptor.getXMLParserClassName();
+            }
         }
 
         /**

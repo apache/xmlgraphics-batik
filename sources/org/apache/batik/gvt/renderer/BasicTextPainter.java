@@ -8,28 +8,34 @@
 
 package org.apache.batik.gvt.renderer;
 
-import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.TextPainter;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import org.apache.batik.gvt.text.TextSpanLayout;
-import org.apache.batik.gvt.text.TextLayoutFactory;
-import org.apache.batik.gvt.text.TextHit;
-import org.apache.batik.gvt.text.ConcreteTextLayoutFactory;
-import java.awt.Graphics2D;
-import java.awt.Color;
-import java.awt.Paint;
-import java.awt.Stroke;
 import java.awt.BasicStroke;
-import java.awt.Shape;
+import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextAttribute;
+
+import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.AffineTransform;
+
 import java.text.AttributedCharacterIterator;
-import java.awt.font.TextAttribute;
-import java.awt.font.FontRenderContext;
+
+import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import org.apache.batik.gvt.TextNode;
+import org.apache.batik.gvt.TextPainter;
+
+import org.apache.batik.gvt.text.ConcreteTextLayoutFactory;
+import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
+import org.apache.batik.gvt.text.Mark;
+import org.apache.batik.gvt.text.TextHit;
+import org.apache.batik.gvt.text.TextLayoutFactory;
+import org.apache.batik.gvt.text.TextSpanLayout;
 
 /**
  * Basic implementation of TextPainter which

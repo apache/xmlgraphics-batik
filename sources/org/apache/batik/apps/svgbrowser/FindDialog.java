@@ -112,6 +112,9 @@ public class FindDialog extends JDialog implements ActionMap {
     /** The case sensitive button. */
     protected JCheckBox caseSensitive;
 
+    /** The zoom button. */
+    protected JCheckBox enableZoom;
+
     /** The canvas. */
     protected JSVGCanvas svgCanvas;
 
@@ -160,7 +163,7 @@ public class FindDialog extends JDialog implements ActionMap {
 
         gbc.fill = ExtendedGridBagConstraints.HORIZONTAL;
         gbc.setWeight(1.0, 0);
-        gbc.setGridBounds(1, 0, 1, 1);
+        gbc.setGridBounds(1, 0, 2, 1);
         panel.add(search = new JTextField(20), gbc);
         search.getDocument().addDocumentListener(new TextTracker());
 
@@ -170,6 +173,13 @@ public class FindDialog extends JDialog implements ActionMap {
         gbc.setGridBounds(1, 1, 1, 1);
         caseSensitive = buttonFactory.createJCheckBox("CaseSensitiveCheckBox");
         panel.add(caseSensitive, gbc);
+
+        gbc.fill = ExtendedGridBagConstraints.NONE;
+        gbc.anchor = ExtendedGridBagConstraints.WEST;
+        gbc.setWeight(0, 0);
+        gbc.setGridBounds(2, 1, 1, 1);
+        enableZoom = buttonFactory.createJCheckBox("EnableZoomCheckBox");
+        panel.add(enableZoom, gbc);
 
         return panel;
     }
@@ -275,17 +285,19 @@ public class FindDialog extends JDialog implements ActionMap {
         if (!(gn instanceof TextNode)) {
             return;
         }
-        Rectangle2D bounds = gn.getBounds(svgCanvas.getRenderContext());
-        bounds = gn.getGlobalTransform().createTransformedShape
-            (bounds).getBounds();
-        Dimension dim = svgCanvas.getSize();
-        AffineTransform Tx = new AffineTransform();
-        double s = Math.min(dim.width/bounds.getWidth(),
-                            dim.height/bounds.getHeight());
-        Tx.scale(s*.8, s*.8);
-        Tx.translate(-bounds.getX(), -bounds.getY());
-        svgCanvas.setRenderingTransform(Tx);
-        //System.out.println(gn+" "+((TextNode)gn).getText()+" "+bounds);
+        System.out.println(((TextNode)gn).getText());
+        if (enableZoom.isSelected()) {
+            Rectangle2D bounds = gn.getBounds(svgCanvas.getRenderContext());
+            bounds = gn.getGlobalTransform().createTransformedShape
+                (bounds).getBounds();
+            Dimension dim = svgCanvas.getSize();
+            AffineTransform Tx = new AffineTransform();
+            double s = Math.min(dim.width/bounds.getWidth(),
+                                dim.height/bounds.getHeight());
+            Tx.scale(s*.8, s*.8);
+            Tx.translate(-bounds.getX(), -bounds.getY());
+            svgCanvas.setRenderingTransform(Tx);
+        }
     }
 
 
