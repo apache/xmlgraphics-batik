@@ -79,46 +79,46 @@
   </a>
 
   <rect x="5" y="95" width="440" height="30" style="fill:rgb(203, 203, 255)"/>
-  <a xlink:href="turbulence.svg" xlink:show="new">
+  <a xlink:href="feTurbulence.svg" xlink:show="new">
     <text class="link" x="50%" y="115">
-      feTurbulence Effect (turbulence.svg)
+      feTurbulence Effect (feTurbulence.svg)
     </text>
   </a>
 
   <rect x="5" y="130" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
-  <a xlink:href="colorMatrix.svg" xlink:show="new">
+  <a xlink:href="feColorMatrix.svg" xlink:show="new">
     <text class="link2" x="50%" y="150">
-      feColorMatrix Effect (colorMatrix.svg)
+      feColorMatrix Effect (feColorMatrix.svg)
     </text>
   </a>
 
   <rect x="5" y="165" width="440" height="30"
         style="fill:rgb(203, 203, 255)"/>
-  <a xlink:href="componentTransfer.svg" xlink:show="new">
+  <a xlink:href="feComponentTransfer.svg" xlink:show="new">
     <text class="link" x="50%" y="185">
-      feComponentTransfer Effect (componentTransfer.svg)
+      feComponentTransfer Effect (feComponentTransfer.svg)
     </text>
   </a>
 
   <rect x="5" y="200" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
-  <a xlink:href="componentTransfer2.svg" xlink:show="new">
+  <a xlink:href="feComponentTransfer2.svg" xlink:show="new">
     <text class="link2" x="50%" y="220">
-      feComponentTransfer Effect (componentTransfer2.svg)
+      feComponentTransfer Effect (feComponentTransfer2.svg)
     </text>
   </a>
 
   <rect x="5" y="235" width="440" height="30"
         style="fill:rgb(203, 203, 255)"/>
-  <a xlink:href="events_GVTtoDOM.svg" xlink:show="new">
+  <a xlink:href="opacity.svg" xlink:show="new">
     <text class="link" x="50%" y="255">
-      Scripting &amp; Events (events_GVTtoDOM.svg)
+      Opacity (opacity.svg)
     </text>
   </a>
 
   <rect x="5" y="270" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
-  <a xlink:href="events_transform.svg" xlink:show="new">
+  <a xlink:href="opacity2.svg" xlink:show="new">
     <text class="link2" x="50%" y="290">
-      Scripting &amp; Events (events_transform.svg)
+      Opacity on Group (opacity2.svg)
     </text>
   </a>
 
@@ -131,9 +131,9 @@
   </a>
 
   <rect x="5" y="340" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
-  <a xlink:href="clip.svg" xlink:show="new">
+  <a xlink:href="feMorphology.svg" xlink:show="new">
     <text class="link2" x="50%" y="360">
-      Clipping (clip.svg)
+      Morphology Effect (feMorphology.svg)
     </text>
   </a>
 
@@ -146,11 +146,6 @@
   </a>
 
   <rect x="5" y="410" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
-  <a xlink:href="opacity.svg" xlink:show="new">
-    <text class="link2" x="50%" y="430">
-      Group Opacity (opacity.svg)
-    </text>
-  </a>
 
   <rect x="5" y="445" width="440" height="50" style="fill:url(#nextGradient)"/>
   <a xlink:href="index2.svg">
