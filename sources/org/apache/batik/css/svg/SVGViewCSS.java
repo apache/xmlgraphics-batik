@@ -34,6 +34,7 @@ public class SVGViewCSS
 	addRelativeValueResolver(new ClipPathResolver());
 	addRelativeValueResolver(new ClipRuleResolver());
 	addRelativeValueResolver(new ColorInterpolationResolver());
+	addRelativeValueResolver(new ColorInterpolationFiltersResolver());
 	addRelativeValueResolver(new ColorProfileResolver());
 	addRelativeValueResolver(new ColorRenderingResolver());
 	addRelativeValueResolver(new DominantBaselineResolver());
