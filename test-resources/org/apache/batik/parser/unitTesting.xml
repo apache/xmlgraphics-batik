@@ -1,0 +1,144 @@
+<!-- ========================================================================= -->
+<!-- Copyright (C) The Apache Software Foundation. All rights reserved.        -->
+<!--                                                                           -->
+<!-- This software is published under the terms of the Apache Software License -->
+<!-- version 1.1, a copy of which has been included with this distribution in  -->
+<!-- the LICENSE file.                                                         -->
+<!-- ========================================================================= -->
+
+<!-- ========================================================================= -->
+<!-- @author stephane@hillion.org                                              -->
+<!-- @version $Id$  -->
+<!-- ========================================================================= -->
+<testSuite id="parser.unitTesting" name="org.apache.batik.parser package - Unit Testing">
+
+    <!-- ========================================================================== -->
+    <!-- PathParser tests                                                           -->
+    <!-- ========================================================================== -->
+
+    <test id="pathParser1" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2" />
+        <arg class="java.lang.String" value="M1.0 2.0" />
+    </test>
+
+    <test id="pathParser2" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="m1.1 2.0" />
+        <arg class="java.lang.String" value="m1.1 2.0" />
+    </test>
+
+    <test id="pathParser3" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2z" />
+        <arg class="java.lang.String" value="M1.0 2.0Z" />
+    </test>
+
+    <test id="pathParser4" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2e3Z" />
+        <arg class="java.lang.String" value="M1.0 2000.0Z" />
+    </test>
+
+    <test id="pathParser5" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2L 3,4" />
+        <arg class="java.lang.String" value="M1.0 2.0L3.0 4.0" />
+    </test>
+
+    <test id="pathParser6" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2H3.1" />
+        <arg class="java.lang.String" value="M1.0 2.0H3.1" />
+    </test>
+
+    <test id="pathParser7" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2h 3.1" />
+        <arg class="java.lang.String" value="M1.0 2.0h3.1" />
+    </test>
+
+    <test id="pathParser8" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2H 3.1,4" />
+        <arg class="java.lang.String" value="M1.0 2.0H3.1H4.0" />
+    </test>
+
+    <test id="pathParser9" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2h 3.1-4" />
+        <arg class="java.lang.String" value="M1.0 2.0h3.1h-4.0" />
+    </test>
+
+    <test id="pathParser10" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2V3.1e-3" />
+        <arg class="java.lang.String" value="M1.0 2.0V0.0031" />
+    </test>
+
+    <test id="pathParser11" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2V3.1" />
+        <arg class="java.lang.String" value="M1.0 2.0V3.1" />
+    </test>
+
+    <test id="pathParser12" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2v3.1,.4" />
+        <arg class="java.lang.String" value="M1.0 2.0v3.1v0.4" />
+    </test>
+
+    <test id="pathParser13" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2v3.1-.4" />
+        <arg class="java.lang.String" value="M1.0 2.0v3.1v-0.4" />
+    </test>
+
+    <test id="pathParser14" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2C3 4 5 6 7 8" />
+        <arg class="java.lang.String" value="M1.0 2.0C3.0 4.0 5.0 6.0 7.0 8.0" />
+    </test>
+
+    <test id="pathParser15" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2c.3.4.5.6.7.8" />
+        <arg class="java.lang.String" value="M1.0 2.0c0.3 0.4 0.5 0.6 0.7 0.8" />
+    </test>
+
+    <test id="pathParser16" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2S3+4+5+6" />
+        <arg class="java.lang.String" value="M1.0 2.0S3.0 4.0 5.0 6.0" />
+    </test>
+
+    <test id="pathParser17" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2s.3+.4+.5-.6" />
+        <arg class="java.lang.String" value="M1.0 2.0s0.3 0.4 0.5 -0.6" />
+    </test>
+
+    <test id="pathParser18" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2q3. 4.+5 6" />
+        <arg class="java.lang.String" value="M1.0 2.0q3.0 4.0 5.0 6.0" />
+    </test>
+
+    <test id="pathParser19" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2Q.3e0.4.5.6" />
+        <arg class="java.lang.String" value="M1.0 2.0Q0.3 0.4 0.5 0.6" />
+    </test>
+
+    <test id="pathParser20" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2t+.3-.4" />
+        <arg class="java.lang.String" value="M1.0 2.0t0.3 -0.4" />
+    </test>
+
+    <test id="pathParser21" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2T -.3+4" />
+        <arg class="java.lang.String" value="M1.0 2.0T-0.3 4.0" />
+    </test>
+
+    <test id="pathParser22" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2a3 4 5 0,1 6 7" />
+        <arg class="java.lang.String" value="M1.0 2.0a3.0 4.0 5.0 0 1 6.0 7.0" />
+    </test>
+
+    <test id="pathParser23" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2A3 4 5 0,1 6 7" />
+        <arg class="java.lang.String" value="M1.0 2.0A3.0 4.0 5.0 0 1 6.0 7.0" />
+    </test>
+
+    <test id="pathParser24" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2t+.3-.4,5,6" />
+        <arg class="java.lang.String" value="M1.0 2.0t0.3 -0.4t5.0 6.0" />
+    </test>
+
+    <test id="pathParser25" class="org.apache.batik.parser.PathParserTest" >
+        <arg class="java.lang.String" value="M1 2T -.3+4 5-6" />
+        <arg class="java.lang.String" value="M1.0 2.0T-0.3 4.0T5.0 -6.0" />
+    </test>
+
+</testSuite>
