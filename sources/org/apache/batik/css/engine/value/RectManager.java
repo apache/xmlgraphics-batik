@@ -11,11 +11,14 @@ package org.apache.batik.css.engine.value;
 import org.apache.batik.util.CSSConstants;
 
 import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSStylableElement;
+import org.apache.batik.css.engine.StyleMap;
 
 import org.w3c.css.sac.LexicalUnit;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.CSSValue;
 
 /**
  * This class provides a manager for the property with support for
@@ -24,8 +27,13 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class RectManager extends AbstractValueManager {
+public abstract class RectManager extends LengthManager {
     
+    /**
+     * The current orientation.
+     */
+    protected int orientation;
+
     /**
      * Implements {@link ValueManager#createValue(LexicalUnit,CSSEngine)}.
      */
@@ -108,6 +116,52 @@ public abstract class RectManager extends AbstractValueManager {
                                   lu.getFloatValue());
         }
         throw createMalformedRectDOMException();
+    }
+
+    /**
+     * Implements {@link
+     * ValueManager#computeValue(CSSStylableElement,String,CSSEngine,int,StyleMap,Value)}.
+     */
+    public Value computeValue(CSSStylableElement elt,
+                              String pseudo,
+                              CSSEngine engine,
+                              int idx,
+                              StyleMap sm,
+                              Value value) {
+        if (value.getCssValueType() != CSSValue.CSS_PRIMITIVE_VALUE) {
+            return value;
+        }
+        if (value.getPrimitiveType() != CSSPrimitiveValue.CSS_RECT) {
+            return value;
+        }
+        RectValue rect = (RectValue)value;
+
+        orientation = VERTICAL_ORIENTATION;
+        Value top = super.computeValue(elt, pseudo, engine, idx, sm,
+                                       rect.getTop());
+        Value bottom = super.computeValue(elt, pseudo, engine, idx, sm,
+                                          rect.getBottom());
+        orientation = HORIZONTAL_ORIENTATION;
+        Value left = super.computeValue(elt, pseudo, engine, idx, sm,
+                                        rect.getLeft());
+        Value right = super.computeValue(elt, pseudo, engine, idx, sm,
+                                         rect.getRight());
+        if (top != rect.getTop() ||
+            right != rect.getRight() ||
+            bottom != rect.getBottom() ||
+            left != rect.getLeft()) {
+            return new RectValue(top, right, bottom, left);
+        } else {
+            return value;
+        }
+    }
+
+    /**
+     * Indicates the orientation of the property associated with
+     * this manager.
+     */
+    protected int getOrientation() {
+        return orientation;
     }
 
     private DOMException createMalformedRectDOMException() {
