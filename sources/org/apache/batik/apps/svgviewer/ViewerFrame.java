@@ -57,6 +57,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -66,6 +67,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+
+import javax.swing.border.TitledBorder;
 
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
@@ -151,6 +154,7 @@ public class ViewerFrame
     public final static String LANGUAGE_ACTION    = "LanguageAction";
     public final static String USER_STYLE_ACTION  = "UserStyleAction";
     public final static String MONITOR_ACTION     = "MonitorAction";
+    public final static String ABOUT_ACTION       = "AboutAction";
 
     /**
      * The default cursor.
@@ -174,6 +178,11 @@ public class ViewerFrame
      * The memory monitor frame.
      */
     protected static JFrame memoryMonitor;
+
+    /**
+     * The about frame.
+     */
+    protected static JFrame aboutFrame;
 
     /**
      * The resource bundle
@@ -382,6 +391,7 @@ public class ViewerFrame
         listeners.put(LANGUAGE_ACTION,    new LanguageAction());
         listeners.put(USER_STYLE_ACTION,  new UserStyleAction());
         listeners.put(MONITOR_ACTION,     new MonitorAction());
+        listeners.put(ABOUT_ACTION,       new AboutAction());
 
         JPanel p = null;
         try {
@@ -1122,6 +1132,74 @@ public class ViewerFrame
     }
 
     /**
+     * To display the about dialog.
+     */
+    public class AboutAction extends AbstractAction implements DocumentListener {
+        JSVGCanvas canvas;
+        public AboutAction() {}
+        public void actionPerformed(ActionEvent e) {
+            if (aboutFrame == null) {
+                aboutFrame = new JFrame(resources.getString("About.title"));
+                aboutFrame.setSize(resources.getInteger("About.width"),
+                                   resources.getInteger("About.height"));
+                JPanel panel = new JPanel(new BorderLayout());
+
+                aboutFrame.getContentPane().add(panel);
+                panel.setBorder(BorderFactory.createCompoundBorder
+                                (BorderFactory.createTitledBorder
+                                 (BorderFactory.createEtchedBorder(),
+                                  resources.getString("About.border_title"),
+                                  TitledBorder.CENTER,
+                                  TitledBorder.DEFAULT_POSITION),
+                                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
+                JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                ButtonFactory bf = new ButtonFactory(bundle, null);
+                JButton button;
+                p.add(button = bf.createJButton("AboutCloseButton"));
+                button.addActionListener(new AbstractAction() {
+                    public void actionPerformed(ActionEvent e) {
+                        aboutFrame.setVisible(false);
+                    }
+                });
+                aboutFrame.getContentPane().add("South", p);
+                canvas = new JSVGCanvas(ViewerFrame.this);
+                canvas.setBorder(BorderFactory.createLoweredBevelBorder());
+                panel.add(canvas);
+
+                String uri = getClass().getResource("resources/authors.svg").toString();
+                Thread t = DocumentLoadRunnable.createLoaderThread(uri,
+                                                                   this,
+                                                                   df);
+                
+                t.start();
+            }
+            Rectangle fr = getBounds();
+            Dimension sd = aboutFrame.getSize();
+            aboutFrame.setLocation(fr.x + (fr.width  - sd.width) / 2,
+                                   fr.y + (fr.height - sd.height) / 2);
+            aboutFrame.show();
+        }
+
+        /**
+         * Take action on receipt of a DocumentEvent.
+         */
+        public void processDocumentEvent(DocumentEvent e) {
+            if (e.classid == DocumentEvent.LOADING) {
+                if (e.type == DocumentLoadingEvent.DONE) {
+                    DefaultSVGContext dc = new DefaultSVGContext();
+                    SVGOMDocument doc = (SVGOMDocument)e.getValue();
+                    dc.setUserAgent(ViewerFrame.this);
+                    doc.setSVGContext(dc);
+                    canvas.setSVGDocument(doc);
+                }
+            } else if (e.classid == DocumentEvent.PROPERTY) {
+                //
+            }
+        }
+    }
+
+    /**
      * To manage the location bar action
      */
     public class LocationBarAction extends AbstractAction {
@@ -1245,24 +1323,3 @@ public class ViewerFrame
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
