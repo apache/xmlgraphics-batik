@@ -9,9 +9,7 @@
 package org.apache.batik.bridge;
 
 import java.util.EventObject;
-
 import org.apache.batik.gvt.GraphicsNode;
-
 import org.w3c.dom.Element;
 
 /**
@@ -136,7 +134,4 @@ public class BridgeMutationEvent extends EventObject {
     public void setStyleMutationEvent(BridgeMutationEvent event){
         styleMutationEvent = event;
     }
-
-
-
 }

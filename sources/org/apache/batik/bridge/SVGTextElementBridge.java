@@ -18,197 +18,164 @@ import java.awt.Stroke;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import java.io.StringReader;
-
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.CharacterIterator;
-
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
-import org.apache.batik.ext.awt.image.renderable.Clip;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import org.apache.batik.bridge.resources.Messages;
+import org.apache.batik.util.CSSConstants;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.css.CSSValueList;
-import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.svg.SVGDocument;
 
 /**
- * A factory for the &lt;text&gt; SVG element.
+ * Bridge class for the &lt;text> element.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
  * @version $Id$
  */
-public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
-    protected final static Map fonts = new HashMap(11);
-    static {
-        fonts.put("serif",           "Serif");
-        fonts.put("Times",           "Serif");
-        fonts.put("Times New Roman", "Serif");
-        fonts.put("sans-serif",      "SansSerif");
-        fonts.put("cursive",         "Dialog");
-        fonts.put("fantasy",         "Symbol");
-        fonts.put("monospace",       "Monospaced");
-        fonts.put("monospaced",      "Monospaced");
-        fonts.put("Courier",         "Monospaced");
+public class SVGTextElementBridge implements GraphicsNodeBridge,
+                                             CSSConstants,
+                                             SVGConstants,
+                                             ErrorConstants {
 
-        //
-        // Load all fonts. Work around
-        //
-        /* Note to maintainer:  font init code should not be here!
-         * we should not have dependencies in the Bridge
-         * on java2d Fonts - they are not relevant to non-rasterizing
-         * renderers!
-         * We should instead support a list of fonts, in order of preference,
-         * as CSS allows, and defer resolving these names to actual
-         * implementation-dependent font names until render time.
-         *
-         *                -Bill Haneman
-         */
-        GraphicsEnvironment env;
-        env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        // System.out.println("Initializing fonts .... please wait");
-        String fontNames[] = env.getAvailableFontFamilyNames();
-        int nFonts = fontNames != null ? fontNames.length : 0;
-        // System.out.println("Done initializing " + nFonts + " fonts");
-        for(int i=0; i<nFonts; i++){
-            fonts.put(fontNames[i], fontNames[i]);
-            //System.out.println(fontNames[i]);
+    /**
+     * Constructs a new bridge for the &lt;text> element.
+     */
+    public SVGTextElementBridge() {}
+
+    /**
+     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @return a graphics node that represents the specified element
+     */
+    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
+
+        TextNode node = new TextNode();
+        // 'transform'
+        String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
+        if (s.length() != 0) {
+            node.setTransform
+                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
         }
-    }
+        // 'visibility'
+        node.setVisible(CSSUtilities.convertVisibility(e));
 
-    public GraphicsNode createGraphicsNode(BridgeContext ctx,
-                                           Element element){
-        TextNode result = new TextNode();
-        result.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                RenderingHints.VALUE_ANTIALIAS_ON);
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
 
-
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, cssDecl);
-
-        // Transform
-        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
-        if (transformStr.length() > 0) {
-            AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
-            result.setTransform(at);
-        }
-
-        // parse the x attribute, (default is 0)
-        String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        // 'x' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
         float x = 0;
         if (s.length() != 0) {
-            x = SVGUtilities.svgToUserSpace(element,
-                                            SVG_X_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
+            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_X_ATTRIBUTE, uctx);
         }
 
-        // parse the y attribute, (default is 0)
-        s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        // 'y' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_Y_ATTRIBUTE);
         float y = 0;
         if (s.length() != 0) {
-            y = SVGUtilities.svgToUserSpace(element,
-                                            SVG_Y_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.VERTICAL_LENGTH);
+            y = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_Y_ATTRIBUTE, uctx);
         }
 
-        result.setLocation(new Point2D.Float(x, y));
-        // visibility
-        result.setVisible(CSSUtilities.convertVisibility(element));
-
-        return result;
+        node.setLocation(new Point2D.Float(x, y));
+        return node;
     }
 
-    public void buildGraphicsNode(GraphicsNode node,
-                                  BridgeContext ctx,
-                                  Element element) {
+    /**
+     * Builds using the specified BridgeContext and element, the
+     * specified graphics node.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @param node the graphics node to build
+     */
+    public void buildGraphicsNode(BridgeContext ctx,
+                                  Element e,
+                                  GraphicsNode node) {
+        e.normalize();
+        AttributedString as = buildAttributedString(ctx, e, node);
+        ((TextNode)node).setAttributedCharacterIterator(as.getIterator());
 
-        TextNode result = (TextNode)node;
+        // 'filter'
+        node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
+        // 'mask'
+        node.setMask(CSSUtilities.convertMask(e, node, ctx));
+        // 'clip-path'
+        node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
 
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, cssDecl);
-
-        element.normalize();
-
-        AttributedString as = buildAttributedString(ctx,
-                                                    element,
-                                                    result);
-        result.setAttributedCharacterIterator(as.getIterator());
-
-        // Set the node filter
-        Filter filter = CSSUtilities.convertFilter(element, result, ctx);
-        result.setFilter(filter);
-
-        // Set the node mask
-        Mask mask = CSSUtilities.convertMask(element, result, ctx);
-        result.setMask(mask);
-
-        // Set the node clip
-        Clip clip = CSSUtilities.convertClipPath(element, result, ctx);
-        result.setClip(clip);
-
-        // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, (SVGElement)element);
-        ctx.bind(element, result);
+        // bind the specified element and its associated graphics node if needed
+        if (ctx.isDynamic()) {
+            ctx.bind(e, node);
+        }
     }
 
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
-    }
-
-    public boolean isContainer() {
+    /**
+     * Returns false as text is not a container.
+     */
+    public boolean isComposite() {
         return false;
     }
 
     /**
-     * Creates the attributed string which represent the given text
+     * Performs an update according to the specified event.
+     *
+     * @param evt the event describing the update to perform
+     */
+    public void update(BridgeMutationEvent evt) {
+        throw new Error("Not implemented");
+    }
+
+    /**
+     * Creates a <tt>TextNode</tt>.
+     */
+    protected GraphicsNode instantiateGraphicsNode() {
+        return new TextNode();
+    }
+
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+
+    /**
+     * Creates the attributed string which represents the given text
      * element children.
+     *
+     * @param ctx the bridge context to use
+     * @param element the text element
+     * @param textNode the textNode that will be used to paint the text
      */
     protected AttributedString buildAttributedString(BridgeContext ctx,
-                                             Element element,
-                                             GraphicsNode node) {
-
+                                                     Element element,
+                                                     GraphicsNode node) {
 
         AttributedString result = null;
+        List l = buildAttributedStrings
+            (ctx, element, node, true, new LinkedList());
 
-        List l = buildAttributedStrings(ctx,
-                                        element,
-                                        node,
-                                        true,
-                                        new LinkedList());
         // Simple cases
         switch (l.size()) {
         case 0:
@@ -235,7 +202,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 sb.append(c);
             }
         }
-
         result = new AttributedString(sb.toString());
 
         // Second pass: decorate the attributed string.
@@ -246,9 +212,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             AttributedCharacterIterator aci = s.getIterator();
             Iterator attrIter = aci.getAllAttributeKeys().iterator();
             while (attrIter.hasNext()) { // for each attribute key...
-                AttributedCharacterIterator.Attribute key =
-                    (AttributedCharacterIterator.Attribute) attrIter.next();
-
+                AttributedCharacterIterator.Attribute key
+                    = (AttributedCharacterIterator.Attribute) attrIter.next();
                 int begin;
                 int end;
                 aci.first();
@@ -264,7 +229,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             }
             i += aci.getEndIndex();
         }
-
         return result;
     }
 
@@ -279,7 +243,6 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                           LinkedList result) {
 
         // !!! return two lists
-
         Map m = getAttributeMap(ctx, element, node);
         String s = XMLSupport.getXMLSpace(element);
         boolean preserve = s.equals("preserve");
@@ -301,11 +264,11 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             last = n.getNextSibling() == null;
 
             int lastChar = (as != null) ?
-                  (as.getIterator().last()) : CharacterIterator.DONE;
+                (as.getIterator().last()) : CharacterIterator.DONE;
             stripFirst = !preserve && first &&
-                  (top ||
-                  (lastChar == ' ') ||
-                  (lastChar == CharacterIterator.DONE));
+                (top ||
+                 (lastChar == ' ') ||
+                 (lastChar == CharacterIterator.DONE));
 
             switch (n.getNodeType()) {
             case Node.ELEMENT_NODE:
@@ -313,88 +276,74 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 nodeElement = (Element)n;
 
                 if (n.getLocalName().equals("tspan")
-|| n.getLocalName().equals("altGlyph")) {
+                    || n.getLocalName().equals("altGlyph")) {
                     buildAttributedStrings(ctx,
                                            nodeElement,
                                            node,
                                            false,
                                            result);
                 } else if (n.getLocalName().equals("tref")) {
-                    try {
-                        String uriStr = XLinkSupport.getXLinkHref((Element)n);
-                        SVGDocument svgDoc =
-                            (SVGDocument)element.getOwnerDocument();
-                        URL baseURL = ((SVGOMDocument)svgDoc).getURLObject();
-                        URL url = new URL(baseURL, uriStr);
-
-                        DocumentLoader loader = ctx.getDocumentLoader();
-                        URIResolver resolver = new URIResolver(svgDoc, loader);
-                        Element ref = (Element)resolver.getNode(url.toString());
-                        s = getElementContent(ref);
-                        Map map = getAttributeMap(ctx, nodeElement, node);
-                        int[] indexMap = new int[s.length()];
-                        as = createAttributedString(s, map, indexMap, preserve,
-                                                    stripFirst, last && top);
-                        if (as != null) {
-                            // NOTE: we get position attributes from the
-                            // surrounding text or tspan node, not the tref
-                            // link target
-                            addGlyphPositionAttributes(
-                                 as, true, indexMap, ctx, nodeElement);
-                            stripLast = !preserve &&
-                                        (as.getIterator().first() == ' ');
-                            if (stripLast) {
-                                AttributedString las =
-                                     (AttributedString) result.removeLast();
-                                if (las != null) {
-                                    AttributedCharacterIterator iter =
-                                                            las.getIterator();
-                                    int endIndex = iter.getEndIndex()-1;
-                                    if (iter.setIndex(endIndex) == ' ') {
-                                         las = new AttributedString(
-                                             las.getIterator(null,
-                                                 iter.getBeginIndex(),
-                                                     endIndex));
-                                    }
-                                    result.add(las);
+                    String uriStr = XLinkSupport.getXLinkHref((Element)n);
+                    Element ref = ctx.getReferencedElement((Element)n, uriStr);
+                    s = getElementContent(ref);
+                    Map map = getAttributeMap(ctx, nodeElement, node);
+                    int[] indexMap = new int[s.length()];
+                    as = createAttributedString(s, map, indexMap, preserve,
+                                                stripFirst, last && top);
+                    if (as != null) {
+                        // NOTE: we get position attributes from the
+                        // surrounding text or tspan node, not the tref
+                        // link target
+                        addGlyphPositionAttributes
+                            (as, true, indexMap, ctx, nodeElement);
+                        stripLast = !preserve &&
+                            (as.getIterator().first() == ' ');
+                        if (stripLast) {
+                            AttributedString las
+                                = (AttributedString) result.removeLast();
+                            if (las != null) {
+                                AttributedCharacterIterator iter
+                                    = las.getIterator();
+                                int endIndex = iter.getEndIndex()-1;
+                                if (iter.setIndex(endIndex) == ' ') {
+                                    las = new AttributedString
+                                        (las.getIterator (null, iter.getBeginIndex(), endIndex));
                                 }
+                                result.add(las);
                             }
-                            result.add(as);
                         }
-                    } catch(MalformedURLException ex) {
-                        throw new IllegalAttributeValueException(
-                        Messages.formatMessage("tref.xlinkHref.badURL", null));
-                    } catch (Exception ex) { /* Nothing to do */ }
+                        result.add(as);
+                    }
                 }
                 break;
             case Node.TEXT_NODE:
                 s = n.getNodeValue();
                 int[] indexMap = new int[s.length()];
-                as = createAttributedString(
-                         s, m, indexMap, preserve, stripFirst, last && top);
+                as = createAttributedString
+                    (s, m, indexMap, preserve, stripFirst, last && top);
                 if (as != null) {
-                     if (first) {
-                         addGlyphPositionAttributes(
-                              as, !top, indexMap, ctx, element);
-                     }
-                     stripLast =
-                             !preserve && (as.getIterator().first() == ' ');
-                     if (stripLast && !result.isEmpty()) {
-                         AttributedString las =
-                              (AttributedString) result.removeLast();
-                         if (las != null) {
-                             AttributedCharacterIterator iter =
-                                                         las.getIterator();
-                             int endIndex = iter.getEndIndex()-1;
-                             if (iter.setIndex(endIndex) == ' ') {
-                                 las = new AttributedString(
-                                         las.getIterator(null,
-                                             iter.getBeginIndex(), endIndex));
-                             }
-                             result.add(las);
-                         }
-                     }
-                     result.add(as);
+                    if (first) {
+                        addGlyphPositionAttributes
+                            (as, !top, indexMap, ctx, element);
+                    }
+                    stripLast =
+                        !preserve && (as.getIterator().first() == ' ');
+                    if (stripLast && !result.isEmpty()) {
+                        AttributedString las =
+                            (AttributedString) result.removeLast();
+                        if (las != null) {
+                            AttributedCharacterIterator iter
+                                = las.getIterator();
+                            int endIndex = iter.getEndIndex()-1;
+                            if (iter.setIndex(endIndex) == ' ') {
+                                las = new AttributedString
+                                    (las.getIterator(null,
+                                                     iter.getBeginIndex(), endIndex));
+                            }
+                            result.add(las);
+                        }
+                    }
+                    result.add(as);
                 }
             }
             first = false;
@@ -477,8 +426,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                         break;
                     }
                 }
-             }
-             if (striplast) {
+            }
+            if (striplast) {
                 int len;
                 while ((len = sb.length()) > 0) {
                     if (sb.charAt(len - 1) == ' ') {
@@ -487,15 +436,14 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                         break;
                     }
                 }
-             }
-             for (int i=sb.length(); i<indexMap.length; ++i) {
+            }
+            for (int i=sb.length(); i<indexMap.length; ++i) {
                 indexMap[i] = -1;
-             }
+            }
         }
         if (sb.length() > 0) {
             as = new AttributedString(sb.toString(), m);
         }
-
         return as;
     }
 
@@ -503,110 +451,94 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
      * Adds glyph position attributes to an AttributedString.
      */
     protected void addGlyphPositionAttributes(AttributedString as,
-                                  boolean isChild,
-                                  int[] indexMap,
-                                  BridgeContext ctx,
-                                  Element element) {
+                                              boolean isChild,
+                                              int[] indexMap,
+                                              BridgeContext ctx,
+                                              Element element) {
 
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, cssDecl);
+            = UnitProcessor.createContext(ctx, element);
 
-        int asLength =
-            as.getIterator().getEndIndex();
-            // AttributedStrings always start at index 0, we hope!
+        int asLength = as.getIterator().getEndIndex();
+        // AttributedStrings always start at index 0, we hope!
 
         // glyph and sub-element positions
-            String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
-            if (s.length() != 0) {
-                float x[] = SVGUtilities.svgToUserSpaceArray(element,
-                                            SVG_X_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
+        String s = element.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        if (s.length() != 0) {
+            float x[] = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
+                (element, SVG_X_ATTRIBUTE, s, ctx);
 
-                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X,
-                                new Float(Float.NaN), 0, asLength);
+            as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X,
+                            new Float(Float.NaN), 0, asLength);
 
-                if ((x.length > 1) || (isChild)) {
-                    as.addAttribute(
-                GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT,
-                                new Boolean(true), 0, asLength);
-                }
+            if ((x.length > 1) || (isChild)) {
+                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT, new Boolean(true), 0, asLength);
+            }
 
-                for (int i=0; i<asLength; ++i) {
-                    if (i < x.length) {
-                            as.addAttribute(
-                                GVTAttributedCharacterIterator.TextAttribute.X,
-                                    new Float(x[i]), i, i+1);
-                    }
+            for (int i=0; i<asLength; ++i) {
+                if (i < x.length) {
+                    as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X, new Float(x[i]), i, i+1);
                 }
             }
-            // parse the y attribute, (default is 0)
-            s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
-            //System.out.println("Y: "+s);
-            if (s.length() != 0) {
-                float y[] = SVGUtilities.svgToUserSpaceArray(element,
-                                            SVG_Y_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.VERTICAL_LENGTH);
-                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.Y,
-                                new Float(Float.NaN), 0, asLength);
+        }
+        // parse the y attribute, (default is 0)
+        s = element.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        if (s.length() != 0) {
+            float y[] = TextUtilities.svgVerticalCoordinateArrayToUserSpace
+                (element, SVG_Y_ATTRIBUTE, s, ctx);
 
-                if ((y.length > 1) || (isChild)) {
-                    as.addAttribute(
-                GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT,
-                                new Boolean(true), 0, asLength);
-                }
+            as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.Y,
+                            new Float(Float.NaN), 0, asLength);
 
-                for (int i=0; i<asLength; ++i) {
-                    if (i < y.length) {
-                        as.addAttribute(
-                            GVTAttributedCharacterIterator.TextAttribute.Y,
-                                new Float(y[i]), i, i+1);
-                    }
-                }
-
+            if ((y.length > 1) || (isChild)) {
+                as.addAttribute
+                    (GVTAttributedCharacterIterator.TextAttribute.EXPLICIT_LAYOUT, new Boolean(true), 0, asLength);
             }
-            s = element.getAttributeNS(null, SVG_DX_ATTRIBUTE);
-            //System.out.println("DX: "+s);
-            if (s.length() != 0) {
-                float x[] = SVGUtilities.svgToUserSpaceArray(element,
-                                            SVG_DX_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
 
-                as.addAttribute(
-                    GVTAttributedCharacterIterator.TextAttribute.DX,
-                          new Float(Float.NaN), 0, asLength);
-
-                for (int i=0; i<asLength; ++i) {
-                    if (i < x.length) {
-                        as.addAttribute(
-                            GVTAttributedCharacterIterator.TextAttribute.DX,
-                                new Float(x[i]), i, i+1);
-                    }
+            for (int i=0; i<asLength; ++i) {
+                if (i < y.length) {
+                    as.addAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.Y,
+                         new Float(y[i]), i, i+1);
                 }
-
             }
-            // parse the y attribute, (default is 0)
-            s = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
-            //System.out.println("DY: "+s);
-            if (s.length() != 0) {
-                float y[] = SVGUtilities.svgToUserSpaceArray(element,
-                                            SVG_DY_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.VERTICAL_LENGTH);
-                as.addAttribute(
-                    GVTAttributedCharacterIterator.TextAttribute.DY,
-                          new Float(Float.NaN), 0, asLength);
+        }
 
-                for (int i=0; i<asLength; ++i) {
-                    if (i < y.length) {
-                        as.addAttribute(
-                            GVTAttributedCharacterIterator.TextAttribute.DY,
-                                new Float(y[i]), i, i+1);
-                    }
+        s = element.getAttributeNS(null, SVG_DX_ATTRIBUTE);
+        if (s.length() != 0) {
+            float x[] = TextUtilities.svgHorizontalCoordinateArrayToUserSpace
+                (element, SVG_DX_ATTRIBUTE, s, ctx);
+
+            as.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.DX,
+                 new Float(Float.NaN), 0, asLength);
+
+            for (int i=0; i<asLength; ++i) {
+                if (i < x.length) {
+                    as.addAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.DX,
+                         new Float(x[i]), i, i+1);
                 }
+            }
+        }
+
+        // parse the y attribute, (default is 0)
+        s = element.getAttributeNS(null, SVG_DY_ATTRIBUTE);
+        if (s.length() != 0) {
+            float y[] = TextUtilities.svgVerticalCoordinateArrayToUserSpace
+                (element, SVG_DY_ATTRIBUTE, s, ctx);
+
+            as.addAttribute
+                (GVTAttributedCharacterIterator.TextAttribute.DY,
+                 new Float(Float.NaN), 0, asLength);
+
+            for (int i=0; i<asLength; ++i) {
+                if (i < y.length) {
+                    as.addAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.DY,
+                         new Float(y[i]), i, i+1);
+                }
+            }
         }
     }
 
@@ -618,8 +550,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                   GraphicsNode node) {
 
         CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, cssDecl);
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, element);
 
         Map result = new HashMap();
         CSSPrimitiveValue v;
@@ -647,10 +578,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         result.put(GVTAttributedCharacterIterator.TextAttribute.ANCHOR_TYPE, a);
 
         // Font size, in user space units.
-        float fs = CSSUtilities.convertFontSize((SVGElement)element,
-                                                ctx,
-                                                cssDecl,
-                                                uctx);
+        float fs = TextUtilities.convertFontSize(element, ctx, cssDecl, uctx);
 
         result.put(TextAttribute.SIZE, new Float(fs));
 
@@ -753,17 +681,12 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                        new Float(f*fs/100f));
         } else {
             // TODO
-            t = v.getPrimitiveType();
-            f = UnitProcessor.cssToUserSpace(t,
-                                            v.getFloatValue(t),
-                                            (SVGElement) element,
-                                            UnitProcessor.HORIZONTAL_LENGTH,
-                                            uctx);
+            f = UnitProcessor.cssOtherLengthToUserSpace
+                (v, CSS_BASELINE_SHIFT_PROPERTY, uctx);
 
             // XXX: HORIZONTAL LENGTH not appropriate for vertical layout!
 
-            result.put(GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT,
-                       new Float(f));
+            result.put(GVTAttributedCharacterIterator.TextAttribute.BASELINE_SHIFT, new Float(f));
         }
 
         // Unicode-bidi mode
@@ -774,7 +697,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             (CSS_UNICODE_BIDI_PROPERTY);
         s = v.getStringValue();
         if (s.charAt(0) == 'n') {
-             result.put(TextAttribute.BIDI_EMBEDDING,
+            result.put(TextAttribute.BIDI_EMBEDDING,
                        new Integer(0));
         } else {
 
@@ -794,11 +717,11 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             switch (rs.charAt(0)) {
             case 'l':
                 result.put(TextAttribute.RUN_DIRECTION,
-                       TextAttribute.RUN_DIRECTION_LTR);
+                           TextAttribute.RUN_DIRECTION_LTR);
                 break;
             case 'r':
                 result.put(TextAttribute.RUN_DIRECTION,
-                       TextAttribute.RUN_DIRECTION_RTL);
+                           TextAttribute.RUN_DIRECTION_RTL);
                 switch (s.charAt(0)) {
                 case 'b': // bidi-override
                     result.put(TextAttribute.BIDI_EMBEDDING,
@@ -811,7 +734,7 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 }
                 break;
             }
-       }
+        }
 
         // Writing mode
 
@@ -899,21 +822,18 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             (CSS_LETTER_SPACING_PROPERTY);
         t = v.getPrimitiveType();
         if (t != CSSPrimitiveValue.CSS_IDENT) {
-            f = UnitProcessor.cssToUserSpace(t,
-                                            v.getFloatValue(t),
-                                            (SVGElement) element,
-                                            UnitProcessor.HORIZONTAL_LENGTH,
-                                            uctx);
+            f = UnitProcessor.cssHorizontalCoordinateToUserSpace
+                (v, CSS_LETTER_SPACING_PROPERTY, uctx);
 
             // XXX: HACK: Assuming horizontal length units is wrong,
             // layout might be vertical!
 
             result.put(GVTAttributedCharacterIterator.
-                           TextAttribute.LETTER_SPACING,
-                           new Float(f));
+                       TextAttribute.LETTER_SPACING,
+                       new Float(f));
             result.put(GVTAttributedCharacterIterator.
-                           TextAttribute.CUSTOM_SPACING,
-                           new Boolean(true));
+                       TextAttribute.CUSTOM_SPACING,
+                       new Boolean(true));
         }
 
         // Word spacing
@@ -921,34 +841,30 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
             (CSS_WORD_SPACING_PROPERTY);
         t = v.getPrimitiveType();
         if (t != CSSPrimitiveValue.CSS_IDENT) {
-            f = UnitProcessor.cssToUserSpace(t,
-                                            v.getFloatValue(t),
-                                            (SVGElement) element,
-                                            UnitProcessor.HORIZONTAL_LENGTH,
-                                            uctx);
+            f = UnitProcessor.cssOtherLengthToUserSpace
+                (v, CSS_WORD_SPACING_PROPERTY, uctx);
 
             // XXX: HACK: Assuming horizontal length units is wrong,
             // layout might be vertical!
 
             result.put(GVTAttributedCharacterIterator.TextAttribute.WORD_SPACING,
-                                                               new Float(f));
+                       new Float(f));
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.CUSTOM_SPACING,
                        new Boolean(true));
         }
 
         // Kerning
-        s = element.getAttributeNS(null, SVGConstants.ATTR_KERNING);
+        s = element.getAttributeNS(null, ATTR_KERNING);
         if (s.length() != 0) {
-            f = SVGUtilities.svgToUserSpace(element,
-                                            ATTR_KERNING, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
+            f = UnitProcessor.svgHorizontalLengthToUserSpace
+                (s, ATTR_KERNING, uctx);
+
             // XXX: Assuming horizontal length units is wrong,
             // layout might be vertical!
 
             result.put(GVTAttributedCharacterIterator.TextAttribute.KERNING,
-                                                             new Float(f));
+                       new Float(f));
             result.put(GVTAttributedCharacterIterator.
                        TextAttribute.CUSTOM_SPACING,
                        new Boolean(true));
@@ -957,75 +873,52 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         // textLength
         s = element.getAttributeNS(null, SVGConstants.ATTR_TEXT_LENGTH);
         if (s.length() != 0) {
-            f = SVGUtilities.svgToUserSpace(element,
-                                            ATTR_TEXT_LENGTH, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
+            f = UnitProcessor.svgHorizontalLengthToUserSpace
+                (s, ATTR_TEXT_LENGTH, uctx);
+
             // XXX: Assuming horizontal length units is wrong,
             // layout might be vertical!
 
             result.put(GVTAttributedCharacterIterator.TextAttribute.BBOX_WIDTH,
-                                                             new Float(f));
+                       new Float(f));
             // lengthAdjust
             s = element.getAttributeNS(null, SVGConstants.ATTR_LENGTH_ADJUST);
 
             if (s.length() < 10) {
                 result.put(GVTAttributedCharacterIterator.
-                       TextAttribute.LENGTH_ADJUST,
-                       GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING);
+                           TextAttribute.LENGTH_ADJUST,
+                           GVTAttributedCharacterIterator.TextAttribute.ADJUST_SPACING);
                 result.put(GVTAttributedCharacterIterator.
-                       TextAttribute.CUSTOM_SPACING,
-                       new Boolean(true));
+                           TextAttribute.CUSTOM_SPACING,
+                           new Boolean(true));
             } else {
                 result.put(GVTAttributedCharacterIterator.
-                       TextAttribute.LENGTH_ADJUST,
-                       GVTAttributedCharacterIterator.TextAttribute.ADJUST_ALL);
+                           TextAttribute.LENGTH_ADJUST,
+                           GVTAttributedCharacterIterator.TextAttribute.ADJUST_ALL);
             }
 
         }
 
-
-
         // Opacity
-        CSSPrimitiveValue opacityVal =
-            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
-        if (opacityVal != null) {
-            Composite composite =
-                CSSUtilities.convertOpacityToComposite(opacityVal);
-            result.put(GVTAttributedCharacterIterator.TextAttribute.OPACITY,
-                                                                     composite);
-        }
+        Composite composite = CSSUtilities.convertOpacity(element);
+        result.put(GVTAttributedCharacterIterator.TextAttribute.OPACITY,
+                   composite);
 
         // Fill
-        Paint p = CSSUtilities.convertFillToPaint((SVGElement)element,
-                                                  node,
-                                                  ctx,
-                                                  cssDecl,
-                                                  uctx);
-
+        Paint p = PaintServer.convertFillPaint(element, node, ctx);
         if (p != null) {
             result.put(TextAttribute.FOREGROUND, p);
         }
 
         // Stroke Paint
-        Paint sp = CSSUtilities.convertStrokeToPaint((SVGElement)element,
-                                              node,
-                                              ctx,
-                                              cssDecl,
-                                              uctx);
-
+        Paint sp = PaintServer.convertStrokePaint(element, node, ctx);
         if (sp != null) {
             result.put
                 (GVTAttributedCharacterIterator.TextAttribute.STROKE_PAINT, sp);
         }
 
         // Stroke
-        Stroke stroke
-            = CSSUtilities.convertStrokeToBasicStroke((SVGElement)element,
-                                                      ctx,
-                                                      cssDecl,
-                                                      uctx);
-
+        Stroke stroke = PaintServer.convertStroke(element, ctx);
         if(stroke != null){
             result.put(GVTAttributedCharacterIterator.TextAttribute.STROKE,
                        stroke);
@@ -1043,8 +936,8 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                 switch (s.charAt(0)) {
                 case 'u':
                     result.put(
-                        GVTAttributedCharacterIterator.TextAttribute.UNDERLINE,
-                        GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_ON);
+                               GVTAttributedCharacterIterator.TextAttribute.UNDERLINE,
+                               GVTAttributedCharacterIterator.TextAttribute.UNDERLINE_ON);
                     if (sp != null) {
                         result.put(GVTAttributedCharacterIterator.
                                    TextAttribute.UNDERLINE_STROKE_PAINT, sp);
@@ -1063,9 +956,9 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
                                GVTAttributedCharacterIterator.TextAttribute.OVERLINE_ON);
                     break;
                 case 'l':
-                    result.put(
-                        GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH,
-                        GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_ON);
+                    result.put
+                        (GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH,
+                         GVTAttributedCharacterIterator.TextAttribute.STRIKETHROUGH_ON);
                 }
             }
         }
@@ -1073,4 +966,41 @@ public class SVGTextElementBridge implements GraphicsNodeBridge, SVGConstants {
         return result;
     }
 
+
+    protected final static Map fonts = new HashMap(11);
+    static {
+        fonts.put("serif",           "Serif");
+        fonts.put("Times",           "Serif");
+        fonts.put("Times New Roman", "Serif");
+        fonts.put("sans-serif",      "SansSerif");
+        fonts.put("cursive",         "Dialog");
+        fonts.put("fantasy",         "Symbol");
+        fonts.put("monospace",       "Monospaced");
+        fonts.put("monospaced",      "Monospaced");
+        fonts.put("Courier",         "Monospaced");
+
+        //
+        // Load all fonts. Work around
+        //
+        /* Note to maintainer:  font init code should not be here!
+         * we should not have dependencies in the Bridge
+         * on java2d Fonts - they are not relevant to non-rasterizing
+         * renderers!
+         * We should instead support a list of fonts, in order of preference,
+         * as CSS allows, and defer resolving these names to actual
+         * implementation-dependent font names until render time.
+         *
+         *                -Bill Haneman
+         */
+        GraphicsEnvironment env;
+        env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        // System.out.println("Initializing fonts .... please wait");
+        String fontNames[] = env.getAvailableFontFamilyNames();
+        int nFonts = fontNames != null ? fontNames.length : 0;
+        // System.out.println("Done initializing " + nFonts + " fonts");
+        for(int i=0; i<nFonts; i++){
+            fonts.put(fontNames[i], fontNames[i]);
+            //System.out.println(fontNames[i]);
+        }
+    }
 }

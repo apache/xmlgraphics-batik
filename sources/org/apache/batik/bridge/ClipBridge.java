@@ -9,8 +9,8 @@
 package org.apache.batik.bridge;
 
 import java.awt.Shape;
-import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.ext.awt.image.renderable.Clip;
+import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
@@ -24,20 +24,23 @@ import org.w3c.dom.Element;
 public interface ClipBridge extends Bridge {
 
     /**
-     * Creates a <tt>Clip</tt> filter using the specified context and element.
-     * @param node the GraphicsNode clipedNode
-     * @param ctx the context to use
-     * @param clipElement element containing the clip definition
-     * @param clipedElement the Element with the 'clip-path' attribute
+     * Creates a <tt>Clip</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param clipElement the element that defines the clip
+     * @param clipedElement the element that references the clip element
+     * @param clipedNode the graphics node to clip
      */
     Clip createClip(BridgeContext ctx,
-                    GraphicsNode node,
                     Element clipElement,
-                    Element clipedElement);
+                    Element clipedElement,
+                    GraphicsNode clipedNode);
 
     /**
-     * Updates an Element coresponding to the specified BridgeMutationEvent.
-     * @param evt the event that describes the modification to perform
+    /**
+     * Performs an update according to the specified event.
+     *
+     * @param evt the event describing the update to perform
      */
     void update(BridgeMutationEvent evt);
 }

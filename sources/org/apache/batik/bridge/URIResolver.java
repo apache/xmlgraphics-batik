@@ -11,20 +11,15 @@ package org.apache.batik.bridge;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.css.AbstractViewCSS;
 import org.apache.batik.css.CSSOMReadOnlyStyleDeclaration;
 import org.apache.batik.css.CSSOMReadOnlyValue;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.XLinkSupport;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.svg.SVGDocument;
-
-import org.xml.sax.SAXException;
 
 /**
  * This class is used to resolve the URI that can be found in a SVG document.
@@ -66,30 +61,32 @@ public class URIResolver {
     public Element getElement(String uri)
         throws MalformedURLException, IOException {
         Node n = getNode(uri);
-        if (n.getNodeType() == n.DOCUMENT_NODE) {
-            throw new Error("Documents not allowed");
+        if (n == null) {
+            return null;
+        } else if (n.getNodeType() == n.DOCUMENT_NODE) {
+            throw new IllegalArgumentException();
+        } else {
+            return (Element)n;
         }
-        return (Element)n;
     }
 
     /**
      * Returns the node referenced by the given URI.
      * @return The document or the element
      */
-    public Node getNode(String uri) throws MalformedURLException,
-                               IOException {
+    public Node getNode(String uri)
+        throws MalformedURLException, IOException {
         if (documentURI.equals(uri)) {
             return document;
         }
         if (uri.startsWith(documentURI) &&
-                uri.length() > documentURI.length() + 1 &&
+            uri.length() > documentURI.length() + 1 &&
                 uri.charAt(documentURI.length()) == '#') {
             uri = uri.substring(documentURI.length());
         }
         if (uri.startsWith("#")) {
             return document.getElementById(uri.substring(1));
         }
-
         URL url = new URL(((SVGOMDocument)document).getURLObject(), uri);
         Document doc = documentLoader.loadDocument(url.toString());
         documentLoader.dispose(doc);

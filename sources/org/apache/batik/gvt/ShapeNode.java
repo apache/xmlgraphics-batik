@@ -87,7 +87,7 @@ public class ShapeNode extends AbstractGraphicsNode {
     public void setShapePainter(ShapePainter newShapePainter) {
         invalidateGeometryCache();
         this.shapePainter = newShapePainter;
-        if(shape != this.shapePainter.getShape()){
+        if(shapePainter != null && shape != this.shapePainter.getShape()){
             shapePainter.setShape(shape);
         }
     }

@@ -8,37 +8,34 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.Viewport;
-import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.Marker;
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
-
 import org.w3c.dom.Element;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.svg.SVGElement;
+
 /**
- * Turns a marker element into a <tt>Marker</tt> object
+ * Factory class for vending <tt>Marker</tt> objects.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public interface MarkerBridge extends Bridge, SVGConstants {
+public interface MarkerBridge extends Bridge {
+
     /**
-     * @param ctx the context to use
-     * @param elem the &lt;marker&gt element to be converted to a Marker object
-     * @return a Marker object representing the Element
+     * Creates a <tt>Marker</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param markerElement the element that represents the marker
+     * @param paintedElement the element that references the marker element
      */
-    public Marker buildMarker(BridgeContext ctx,
-                              Element markerElement,
-                              Element paintedElement);
+    Marker createMarker(BridgeContext ctx,
+                        Element markerElement,
+                        Element paintedElement);
+
+    /**
+     * Performs an update according to the specified event.
+     *
+     * @param evt the event describing the update to perform
+     */
+    void update(BridgeMutationEvent evt);
+
 }
 

@@ -11,16 +11,15 @@ package org.apache.batik.bridge;
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.color.NamedProfileCache;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,46 +27,39 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * This class bridges an SVG <tt>color-profile</tt> element with
- * an <tt>ICC_ColorSpace</tt> object.
+ * This class bridges an SVG <tt>color-profile</tt> element with an
+ * <tt>ICC_ColorSpace</tt> object.
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
- * @version $Id$
- */
-public class SVGColorProfileElementBridge implements Bridge, SVGConstants {
+ * @version $Id$ */
+public class SVGColorProfileElementBridge
+    implements Bridge, ErrorConstants, SVGConstants {
+
     /**
      * Profile cache
      */
     public NamedProfileCache cache = new NamedProfileCache();
 
     /**
-     * Builds an ICC_ColorSpace for the given input color profile 
-     * name, if the name can be resolved and successfully accessed
+     * Creates an ICC_ColorSpace according to the specified parameters.
      *
+     * @param ctx the bridge context to use
+     * @param paintedElement element on which the color is painted
      * @param iccProfileName name of the profile that should be loaded
      *        that could be a color-profile element or an @color-profile
      *        CSS rule
-     *
-     * @param ctx BridgeContext 
-     *
-     * @param paintedElement element on which the color is painted
      */
-    public ICCColorSpaceExt build(String iccProfileName,
-                                  BridgeContext ctx,
-                                  Element paintedElement){
-        /*
-         * Check if there is one if the cache.
-         */
+    public ICCColorSpaceExt createICCColorSpaceExt(BridgeContext ctx,
+                                                   Element paintedElement,
+                                                   String iccProfileName) {
+        // Check if there is one if the cache.
         ICCColorSpaceExt cs = cache.request(iccProfileName.toLowerCase());
-        if(cs != null){
+        if (cs != null){
             return cs;
         }
 
-        /**
-         * There was no cached copies for the profile. Load it
-         * now.
-         * Search for a color-profile element with specific name
-         */
+        // There was no cached copies for the profile. Load it now.
+        // Search for a color-profile element with specific name
         Document doc = paintedElement.getOwnerDocument();
         NodeList list = doc.getElementsByTagNameNS(SVG_NAMESPACE_URI,
                                                    SVG_COLOR_PROFILE_TAG);
@@ -78,81 +70,76 @@ public class SVGColorProfileElementBridge implements Bridge, SVGConstants {
             Node node = list.item(i);
             if(node.getNodeType() == Node.ELEMENT_NODE){
                 Element profileNode = (Element)node;
-                String nameAttr 
+                String nameAttr
                     = profileNode.getAttributeNS(null, SVG_NAME_ATTRIBUTE);
-                
+
                 if(iccProfileName.equalsIgnoreCase(nameAttr)){
                     profile = profileNode;
                 }
             }
         }
-        
+
         if(profile == null)
             return null;
 
-        /**
-         * Now that we have a profile element, try to load the 
-         * corresponding ICC profile xlink:href
-         */
+        // Now that we have a profile element,
+        // try to load the corresponding ICC profile xlink:href
         String href = XLinkSupport.getXLinkHref(profile);
         ICC_Profile p = null;
-        if(href != null){
+        if (href != null) {
             try{
                 URL baseURL = ((SVGOMDocument)doc).getURLObject();
                 URL url = new URL(baseURL, href);
                 p = ICC_Profile.getInstance(url.openStream());
-            }catch(MalformedURLException e){
+            } catch(MalformedURLException e) {
                 e.printStackTrace(System.err);
-                throw new IllegalAttributeValueException
-                    (Messages.formatMessage("color-profile.xlinkHref.invalid", null));
-            }catch(IOException e){
+                throw new BridgeException(paintedElement, ERR_URI_MALFORMED,
+                                          new Object[] {href});
+            } catch(IOException e) {
+                e.printStackTrace(System.err);
+                throw new BridgeException(paintedElement, ERR_URI_IO,
+                                          new Object[] {href});
                 // ??? IS THAT AN ERROR FOR THE SVG SPEC ???
-                e.printStackTrace(System.err);
             }
         }
-
-        if(p == null){
+        if (p == null) {
             return null;
         }
 
-        /**
-         * Extract the rendering intent from profile element
-         */
-        String intentStr = profile.getAttributeNS(null, SVG_RENDERING_INTENT_ATTRIBUTE);
-        int intent = convertIntent(intentStr);
-
+        // Extract the rendering intent from profile element
+        int intent = convertIntent(profile);
         cs = new ICCColorSpaceExt(p, intent);
 
-        /**
-         * Add profile to cache
-         */
+        // Add profile to cache
         cache.put(iccProfileName.toLowerCase(), cs);
-
         return cs;
     }
 
-    private int convertIntent(String intentStr){
-        if("".equals(intentStr)){
+    private static int convertIntent(Element profile) {
+
+        String intent
+            = profile.getAttributeNS(null, SVG_RENDERING_INTENT_ATTRIBUTE);
+
+        if (intent.length() == 0) {
             return ICCColorSpaceExt.AUTO;
         }
-        if(VALUE_RENDERING_INTENT_PERCEPTUAL_VALUE.equals(intentStr)){
+        if (VALUE_RENDERING_INTENT_PERCEPTUAL_VALUE.equals(intent)) {
             return ICCColorSpaceExt.PERCEPTUAL;
         }
-        if(VALUE_RENDERING_INTENT_AUTO_VALUE.equals(intentStr)){
+        if (VALUE_RENDERING_INTENT_AUTO_VALUE.equals(intent)) {
             return ICCColorSpaceExt.AUTO;
         }
-        if(VALUE_RENDERING_INTENT_RELATIVE_COLORIMETRIC_VALUE.equals(intentStr)){
+        if (VALUE_RENDERING_INTENT_RELATIVE_COLORIMETRIC_VALUE.equals(intent)) {
             return ICCColorSpaceExt.RELATIVE_COLORIMETRIC;
         }
-        if(VALUE_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC_VALUE.equals(intentStr)){
+        if (VALUE_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC_VALUE.equals(intent)) {
             return ICCColorSpaceExt.ABSOLUTE_COLORIMETRIC;
         }
-
-        if(VALUE_RENDERING_INTENT_SATURATION_VALUE.equals(intentStr)){
+        if (VALUE_RENDERING_INTENT_SATURATION_VALUE.equals(intent)) {
             return ICCColorSpaceExt.SATURATION;
         }
-
-        throw new IllegalAttributeValueException
-            (Messages.formatMessage("color-profile.intent.invalid", new Object[]{intentStr}));
+        throw new BridgeException
+            (profile, ERR_ATTRIBUTE_VALUE_MALFORMED,
+             new Object[] {SVG_RENDERING_INTENT_ATTRIBUTE, intent});
     }
 }

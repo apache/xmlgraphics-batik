@@ -12,122 +12,96 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MissingAttributeException;
+import org.apache.batik.parser.ParseException;
 import org.apache.batik.gvt.ShapeNode;
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.util.UnitProcessor;
 
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.Element;
 
 /**
- * A factory for the &lt;rect> SVG element.
+ * Bridge class for the &lt;rect> element.
  *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
 public class SVGRectElementBridge extends SVGShapeElementBridge {
 
     /**
-     * Returns a <tt>Rectangle2D.Float</tt> or a
-     * <tt>RoundRectangle2D.Float</tt> depending on the 'x', 'y',
-     * 'width', 'height', 'rx' and 'ry' attributes.
+     * Constructs a new bridge for the &lt;rect> element.
+     */
+    public SVGRectElementBridge() {}
+
+    /**
+     * Constructs a rectangle according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes a rect element
+     * @param shapeNode the shape node to initialize
      */
     protected void buildShape(BridgeContext ctx,
-                              SVGElement svgElement,
-                              ShapeNode node,
-                              CSSStyleDeclaration decl,
-                              UnitProcessor.Context uctx) {
+                              Element e,
+                              ShapeNode shapeNode) {
 
-        // parse the x attribute, (default is 0)
-        String s = svgElement.getAttributeNS(null, SVG_X_ATTRIBUTE);
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
+        String s;
+
+        // 'x' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_X_ATTRIBUTE);
         float x = 0;
         if (s.length() != 0) {
-            x = SVGUtilities.svgToUserSpace(svgElement,
-                                            SVG_X_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
+            x = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_X_ATTRIBUTE, uctx);
         }
 
-        // parse the y attribute, (default is 0)
-        s = svgElement.getAttributeNS(null, SVG_Y_ATTRIBUTE);
+        // 'y' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_Y_ATTRIBUTE);
         float y = 0;
         if (s.length() != 0) {
-            y = SVGUtilities.svgToUserSpace(svgElement,
-                                            SVG_Y_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.VERTICAL_LENGTH);
+            y = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_Y_ATTRIBUTE, uctx);
         }
 
-        // parse the width attribute (required and must be positive)
-        s = svgElement.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
+        // 'width' attribute - required
+        s = e.getAttributeNS(null, SVG_WIDTH_ATTRIBUTE);
         float w;
-        if (s.length() == 0) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("rect.width.required", null));
-        } else {
-            w = SVGUtilities.svgToUserSpace(svgElement,
-                                            SVG_WIDTH_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.HORIZONTAL_LENGTH);
-            if (w < 0) {
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("rect.width.negative", null));
-            }
-        }
-
-        // parse the height attribute (required and must be positive)
-        s = svgElement.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
-        float h;
-        if (s.length() == 0) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("rect.height.required", null));
-        } else {
-            h = SVGUtilities.svgToUserSpace(svgElement,
-                                            SVG_HEIGHT_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.VERTICAL_LENGTH);
-            if (h < 0) {
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("rect.height.negative", null));
-            }
-        }
-
-        // parse the rx attribute (must be positive if any)
-        s = svgElement.getAttributeNS(null, SVG_RX_ATTRIBUTE);
-        boolean rxs = s.length() != 0;
-        float rx = 0;
         if (s.length() != 0) {
-            rx = SVGUtilities.svgToUserSpace(svgElement,
-                                             SVG_RX_ATTRIBUTE, s,
-                                             uctx,
-                                             UnitProcessor.HORIZONTAL_LENGTH);
-            if (rx < 0) {
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("rect.rx.negative", null));
-            }
+            w = UnitProcessor.svgHorizontalLengthToUserSpace
+                (s, SVG_WIDTH_ATTRIBUTE, uctx);
+        } else {
+            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {SVG_WIDTH_ATTRIBUTE, s});
+        }
+
+        // 'height' attribute - required
+        s = e.getAttributeNS(null, SVG_HEIGHT_ATTRIBUTE);
+        float h;
+        if (s.length() != 0) {
+            h = UnitProcessor.svgVerticalLengthToUserSpace
+                (s, SVG_HEIGHT_ATTRIBUTE, uctx);
+        } else {
+            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {SVG_HEIGHT_ATTRIBUTE, s});
+        }
+
+        // 'rx' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_RX_ATTRIBUTE);
+        boolean rxs = (s.length() != 0);
+        float rx = 0;
+        if (rxs) {
+            rx = UnitProcessor.svgHorizontalLengthToUserSpace
+                (s, SVG_RX_ATTRIBUTE, uctx);
         }
         rx = (rx > w / 2) ? w / 2 : rx;
 
-        // parse the ry attribute (must be positive if any)
-        s = svgElement.getAttributeNS(null, SVG_RY_ATTRIBUTE);
-        boolean rys = s.length() != 0;
+        // 'ry' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_RY_ATTRIBUTE);
+        boolean rys = (s.length() != 0);
         float ry = 0;
-        if (s.length() != 0) {
-            ry = SVGUtilities.svgToUserSpace(svgElement,
-                                             SVG_RY_ATTRIBUTE, s,
-                                             uctx,
-                                             UnitProcessor.VERTICAL_LENGTH);
-            if (ry < 0) {
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("rect.ry.negative", null));
-            }
+        if (rys) {
+            ry = UnitProcessor.svgVerticalLengthToUserSpace
+                (s, SVG_RY_ATTRIBUTE, uctx);
         }
         ry = (ry > h / 2) ? h / 2 : ry;
+
         Shape shape = null;
         if (rxs && rys) {
             if (rx == 0 || ry == 0) {
@@ -150,10 +124,6 @@ public class SVGRectElementBridge extends SVGShapeElementBridge {
         } else {
             shape = new Rectangle2D.Float(x, y, w, h);
         }
-        node.setShape(shape);
+        shapeNode.setShape(shape);
     }
-
-    public void update(BridgeMutationEvent evt) {
-    }
-
 }

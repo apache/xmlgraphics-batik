@@ -11,74 +11,68 @@ package org.apache.batik.bridge;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MissingAttributeException;
+import org.apache.batik.parser.ParseException;
 import org.apache.batik.gvt.ShapeNode;
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.util.UnitProcessor;
 
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.Element;
 
 /**
- * A factory for the &lt;circle> SVG element.
+ * Bridge class for the &lt;circle> element.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
 public class SVGCircleElementBridge extends SVGShapeElementBridge {
 
     /**
-     * Returns a <tt>Ellipse2D.Float</tt>.
+     * Constructs a new bridge for the &lt;circle> element.
+     */
+    public SVGCircleElementBridge() {}
+
+    /**
+     * Constructs a circle according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes a rect element
+     * @param shapeNode the shape node to initialize
      */
     protected void buildShape(BridgeContext ctx,
-                              SVGElement svgElement,
-                              ShapeNode node,
-                              CSSStyleDeclaration decl,
-                              UnitProcessor.Context uctx) {
+                              Element e,
+                              ShapeNode shapeNode) {
 
-        // parse the cx attribute, (default is 0)
-        String s = svgElement.getAttributeNS(null, SVG_CX_ATTRIBUTE);
+        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx, e);
+        String s;
+
+        // 'cx' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_CX_ATTRIBUTE);
         float cx = 0;
         if (s.length() != 0) {
-            cx = SVGUtilities.svgToUserSpace(svgElement,
-                                             SVG_CX_ATTRIBUTE, s,
-                                             uctx,
-                                             UnitProcessor.HORIZONTAL_LENGTH);
+            cx = UnitProcessor.svgHorizontalCoordinateToUserSpace
+                (s, SVG_CX_ATTRIBUTE, uctx);
         }
 
-        // parse the cy attribute, (default is 0)
-        s = svgElement.getAttributeNS(null, SVG_CY_ATTRIBUTE);
+        // 'cy' attribute - default is 0
+        s = e.getAttributeNS(null, SVG_CY_ATTRIBUTE);
         float cy = 0;
         if (s.length() != 0) {
-            cy = SVGUtilities.svgToUserSpace(svgElement,
-                                             SVG_CY_ATTRIBUTE, s,
-                                             uctx,
-                                             UnitProcessor.VERTICAL_LENGTH);
+            cy = UnitProcessor.svgVerticalCoordinateToUserSpace
+                (s, SVG_CY_ATTRIBUTE, uctx);
         }
 
-        // parse the r attribute, (required and must be positive)
-        s = svgElement.getAttributeNS(null, SVG_R_ATTRIBUTE);
+        // 'r' attribute - required
+        s = e.getAttributeNS(null, SVG_R_ATTRIBUTE);
         float r;
-        if (s.length() == 0) {
-            throw new MissingAttributeException(
-                Messages.formatMessage("circle.r.required", null));
+        if (s.length() != 0) {
+            r = UnitProcessor.svgOtherLengthToUserSpace
+                (s, SVG_R_ATTRIBUTE, uctx);
         } else {
-            r = SVGUtilities.svgToUserSpace(svgElement,
-                                            SVG_R_ATTRIBUTE, s,
-                                            uctx,
-                                            UnitProcessor.OTHER_LENGTH);
-            if (r < 0) {
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("circle.r.negative", null));
-            }
+            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
+                                      new Object[] {SVG_R_ATTRIBUTE, s});
         }
 
         float x = cx - r;
         float y = cy - r;
         float w = r * 2;
-        node.setShape(new Ellipse2D.Float(x, y, w, w));
+        shapeNode.setShape(new Ellipse2D.Float(x, y, w, w));
     }
 }

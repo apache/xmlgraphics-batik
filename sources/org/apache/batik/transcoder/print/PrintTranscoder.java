@@ -52,9 +52,8 @@ import org.apache.batik.gvt.renderer.StrokingTextPainter;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.ConcreteGVTBuilder;
 import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.SVGUtilities;
+import org.apache.batik.bridge.ViewBox;
 
 import org.apache.batik.gvt.event.EventDispatcher;
 
@@ -80,21 +79,21 @@ import org.w3c.dom.svg.SVGSVGElement;
  * is invoked, the corresponding input is cached and nothing
  * else happens. <br />
  * However, the <tt>PrintTranscoder</tt> is also a Printable. If used
- * in a print operation, it will print each of the input 
+ * in a print operation, it will print each of the input
  * it cached, one input per page.
  * <br />
  * The <tt>PrintTranscoder</tt> uses several different hints that
  * guide its printing:<br />
  * <ul>
  *   <li><tt>KEY_LANGUAGE, KEY_USER_STYLESHEET_URI, KEY_PIXEL_TO_MM,
- *       KEY_XML_PARSER_CLASSNAME</tt> can be used to set the defaults for 
+ *       KEY_XML_PARSER_CLASSNAME</tt> can be used to set the defaults for
  *       the various SVG properties.</li>
  *   <li><tt>KEY_PAGE_WIDTH, KEY_PAGE_HEIGHT, KEY_MARGIN_TOP, KEY_MARGIN_BOTTOM,
  *       KEY_MARGIN_LEFT, KEY_MARGIN_RIGHT</tt> and <tt>KEY_PAGE_ORIENTATION</tt>
  *       can be used to specify the printing page characteristics.</li>
- *   <li><tt>KEY_WIDTH, KEY_HEIGHT</tt> can be used to specify how to scale the 
+ *   <li><tt>KEY_WIDTH, KEY_HEIGHT</tt> can be used to specify how to scale the
  *       SVG image</li>
- *   <li><tt>KEY_SCALE_TO_PAGE</tt> can be used to specify whether or not the 
+ *   <li><tt>KEY_SCALE_TO_PAGE</tt> can be used to specify whether or not the
  *       SVG image should be scaled uniformly to fit into the printed page or
  *       if it should just be centered into the printed page.</li>
  * </ul>
@@ -102,16 +101,16 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
-public class PrintTranscoder extends XMLAbstractTranscoder  
+public class PrintTranscoder extends XMLAbstractTranscoder
     implements Printable{
     /**
-     * Set of inputs this transcoder has been requested to 
+     * Set of inputs this transcoder has been requested to
      * transcode so far
      */
     private Vector inputs = new Vector();
 
     /**
-     * Currently printing set of pages. This vector is 
+     * Currently printing set of pages. This vector is
      * created as a clone of inputs when the first page is printed.
      */
     private Vector printedInputs = null;
@@ -164,7 +163,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
     /**
      * Constructs a new transcoder that prints images.
      */
-    public PrintTranscoder() { 
+    public PrintTranscoder() {
         hints.put(KEY_DOCUMENT_ELEMENT_NAMESPACE_URI,
                   SVGConstants.SVG_NAMESPACE_URI);
         hints.put(KEY_DOCUMENT_ELEMENT,
@@ -185,7 +184,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      */
     public void print() throws PrinterException{
         //
-        // Now, request the transcoder to actually perform the 
+        // Now, request the transcoder to actually perform the
         // printing job.
         //
         PrinterJob printerJob =
@@ -198,7 +197,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         // Set the page parameters from the hints
         //
         Paper paper = pageFormat.getPaper();
-        
+
         Float pageWidth = (Float)hints.get(KEY_PAGE_WIDTH);
         Float pageHeight = (Float)hints.get(KEY_PAGE_HEIGHT);
         if(pageWidth != null){
@@ -211,7 +210,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         }
 
         float x=0, y=0, width=(float)paper.getWidth(), height=(float)paper.getHeight();
-        
+
         Float leftMargin = (Float)hints.get(KEY_MARGIN_LEFT);
         Float topMargin = (Float)hints.get(KEY_MARGIN_TOP);
         Float rightMargin = (Float)hints.get(KEY_MARGIN_RIGHT);
@@ -247,7 +246,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
 
         pageFormat.setPaper(paper);
         pageFormat = printerJob.validatePage(pageFormat);
-        
+
         // Print on the default printer: there is no way in
         // the Java API to set the printer by program (without
         // a GUI).
@@ -261,7 +260,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      */
     public int print(Graphics _g, PageFormat pageFormat, int pageIndex){
         //
-        // On the first page, take a snapshot of the vector of 
+        // On the first page, take a snapshot of the vector of
         // TranscodeInputs.
         //
         if(pageIndex == 0){
@@ -293,12 +292,12 @@ public class PrintTranscoder extends XMLAbstractTranscoder
                 return PAGE_EXISTS;
             }
         }
-        
+
         // Cast to Graphics2D to access Java 2D features
         Graphics2D g = (Graphics2D)_g;
         g.addRenderingHints(nodeRenderContext.getRenderingHints());
-        
-        
+
+
         //
         // Compute transform so that the SVG document fits on one page
         //
@@ -306,11 +305,11 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         Shape clip = g.getClip();
 
         Rectangle2D bounds = curAOI;
-        
+
         double scaleX = pageFormat.getImageableWidth() / bounds.getWidth();
         double scaleY = pageFormat.getImageableHeight() / bounds.getHeight();
         double scale = scaleX < scaleY ? scaleX : scaleY;
-        
+
         // Check hint to know if scaling is really needed
         Boolean scaleToPage = (Boolean)hints.get(KEY_SCALE_TO_PAGE);
         if(scaleToPage != null && !scaleToPage.booleanValue()){
@@ -319,7 +318,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
 
         double xMargin = (pageFormat.getImageableWidth() - bounds.getWidth()*scale)/2;
         double yMargin = (pageFormat.getImageableHeight() - bounds.getHeight()*scale)/2;
-        g.translate(pageFormat.getImageableX() + xMargin, 
+        g.translate(pageFormat.getImageableX() + xMargin,
                     pageFormat.getImageableY() + yMargin);
         g.scale(scale, scale);
 
@@ -328,7 +327,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         // Append transform to selected area
         //
         g.transform(curTxf);
-        
+
         g.clip(curAOI);
 
         //
@@ -341,7 +340,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
             g.setClip(clip);
             drawError(_g, e);
         }
-        
+
         //
         // Restore transform and clip
         //
@@ -350,8 +349,8 @@ public class PrintTranscoder extends XMLAbstractTranscoder
 
         // g.setPaint(Color.black);
         // g.drawString(uris[pageIndex], 30, 30);
-        
-        
+
+
         //
         // Return status indicated that we did paint a page
         //
@@ -362,7 +361,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
      * Prints an error on the output page
      */
     private void drawError(Graphics g, Exception e){
-        // Do nothing now. 
+        // Do nothing now.
     }
 
     /**
@@ -382,7 +381,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         SVGDocument svgDoc = (SVGDocument)document;
         SVGSVGElement root = svgDoc.getRootElement();
 
-        // 
+        //
         // Initialize the SVG document with the appropriate context
         //
         String parserClassname = (String)hints.get(KEY_XML_PARSER_CLASSNAME);
@@ -426,7 +425,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         // Compute the preserveAspectRatio matrix
         //
         AffineTransform Px =
-            SVGUtilities.getPreserveAspectRatioTransform(root, width, height);
+            ViewBox.getPreserveAspectRatioTransform(root, width, height);
         if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
             // The document has no viewBox, we need to resize it by hand.
             // we want to keep the document size ratio
@@ -464,7 +463,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         //
         // Build the GVT tree
         //
-        GVTBuilder builder = new ConcreteGVTBuilder();
+        GVTBuilder builder = new GVTBuilder();
         GraphicsNodeRenderContext rc = getRenderContext();
         BridgeContext ctx = new BridgeContext(userAgent, rc);
         this.root = builder.build(ctx, svgDoc);
@@ -832,22 +831,22 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         //
 
         // Language
-        setTranscoderFloatHint(transcoder, 
+        setTranscoderFloatHint(transcoder,
                                KEY_LANGUAGE_STR,
                                KEY_LANGUAGE);
 
         // User stylesheet
-        setTranscoderFloatHint(transcoder, 
+        setTranscoderFloatHint(transcoder,
                                KEY_USER_STYLESHEET_URI_STR,
                                KEY_USER_STYLESHEET_URI);
 
         // XML parser
-        setTranscoderStringHint(transcoder, 
+        setTranscoderStringHint(transcoder,
                                  KEY_XML_PARSER_CLASSNAME_STR,
                                  KEY_XML_PARSER_CLASSNAME);
 
         // Scale to page
-        setTranscoderBooleanHint(transcoder, 
+        setTranscoderBooleanHint(transcoder,
                                  KEY_SCALE_TO_PAGE_STR,
                                  KEY_SCALE_TO_PAGE);
 
@@ -855,13 +854,13 @@ public class PrintTranscoder extends XMLAbstractTranscoder
         setTranscoderRectangleHint(transcoder,
                                    KEY_AOI_STR,
                                    KEY_AOI);
-        
+
 
         // Image size
-        setTranscoderFloatHint(transcoder, 
+        setTranscoderFloatHint(transcoder,
                                KEY_WIDTH_STR,
                                KEY_WIDTH);
-        setTranscoderFloatHint(transcoder, 
+        setTranscoderFloatHint(transcoder,
                                KEY_HEIGHT_STR,
                                KEY_HEIGHT);
 
@@ -876,24 +875,24 @@ public class PrintTranscoder extends XMLAbstractTranscoder
                                 KEY_PAGE_ORIENTATION);
 
         // Page size
-        setTranscoderFloatHint(transcoder, 
+        setTranscoderFloatHint(transcoder,
                                KEY_PAGE_WIDTH_STR,
                                KEY_PAGE_WIDTH);
-        setTranscoderFloatHint(transcoder, 
+        setTranscoderFloatHint(transcoder,
                                KEY_PAGE_HEIGHT_STR,
                                KEY_PAGE_HEIGHT);
 
         // Margins
-        setTranscoderFloatHint(transcoder, 
+        setTranscoderFloatHint(transcoder,
                                KEY_MARGIN_TOP_STR,
                                KEY_MARGIN_TOP);
-        setTranscoderFloatHint(transcoder, 
+        setTranscoderFloatHint(transcoder,
                                KEY_MARGIN_RIGHT_STR,
                                KEY_MARGIN_RIGHT);
-        setTranscoderFloatHint(transcoder, 
+        setTranscoderFloatHint(transcoder,
                                KEY_MARGIN_BOTTOM_STR,
                                KEY_MARGIN_BOTTOM);
-        setTranscoderFloatHint(transcoder, 
+        setTranscoderFloatHint(transcoder,
                                KEY_MARGIN_LEFT_STR,
                                KEY_MARGIN_LEFT);
 

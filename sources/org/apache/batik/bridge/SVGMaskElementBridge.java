@@ -8,151 +8,120 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
-import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.io.StringReader;
 
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.IllegalAttributeValueException;
-import org.apache.batik.bridge.MaskBridge;
-import org.apache.batik.bridge.Viewport;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.gvt.filter.MaskRable8Bit;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.css.ViewCSS;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * A factory for the &lt;mask&gt; SVG element.
+ * Bridge class for the &lt;mask> element.
  *
- * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
 public class SVGMaskElementBridge implements MaskBridge, SVGConstants {
 
     /**
-     * Returns the <tt>Mask</tt> referenced by the input
-     * element's <tt>mask</tt> attribute.
+     * Creates a <tt>Mask</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param maskElement the element that defines the mask
+     * @param maskedElement the element that references the mask element
+     * @param maskedNode the graphics node to mask
      */
-    public Mask createMask(GraphicsNode  maskedNode,
-                           BridgeContext bridgeContext,
+    public Mask createMask(BridgeContext ctx,
                            Element maskElement,
-                           Element maskedElement) {
+                           Element maskedElement,
+                           GraphicsNode maskedNode) {
 
-        GraphicsNodeRenderContext rc =
-                   bridgeContext.getGraphicsNodeRenderContext();
+        String s;
 
-        //
-        // Get the mask region
-        //
-        CSSStyleDeclaration cssDecl =
-            CSSUtilities.getComputedStyle(maskElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
-
-        Rectangle2D maskRegion
-            = SVGUtilities.convertMaskRegion(maskElement,
-                                             maskedElement,
-                                             maskedNode,
-                                             rc,
-                                             uctx);
+        // get mask region using 'maskUnits'
+        Rectangle2D maskRegion = SVGUtilities.convertMaskRegion
+            (maskElement, maskedElement, maskedNode, ctx);
 
         //
         // Build the GVT tree that represents the mask
         //
-        String maskContentUnits
-            = maskElement.getAttributeNS(null, ATTR_MASK_CONTENT_UNITS);
-        if(maskContentUnits.length() == 0){
-            maskContentUnits = SVG_USER_SPACE_ON_USE_VALUE;
-        }
-        int maskContentUnitsType;
-        try {
-            maskContentUnitsType =
-                SVGUtilities.parseCoordinateSystem(maskContentUnits);
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("mask.maskContentUnits.invalid",
-                                       new Object[] {maskContentUnits,
-                                                     ATTR_MASK_CONTENT_UNITS}));
-        }
-
-        GVTBuilder builder = bridgeContext.getGVTBuilder();
+        GVTBuilder builder = ctx.getGVTBuilder();
         CompositeGraphicsNode maskNode = new CompositeGraphicsNode();
         CompositeGraphicsNode maskNodeContent = new CompositeGraphicsNode();
         maskNode.getChildren().add(maskNodeContent);
         boolean hasChildren = false;
-        for(Node node=maskElement.getFirstChild();
-                node != null;
-                node = node.getNextSibling()){
+        for(Node node = maskElement.getFirstChild();
+            node != null;
+            node = node.getNextSibling()){
 
             // check if the node is a valid Element
             if(node.getNodeType() != node.ELEMENT_NODE) {
                 continue;
             }
+
             Element child = (Element)node;
-            GraphicsNode gn = builder.build(bridgeContext, child) ;
+            GraphicsNode gn = builder.build(ctx, child) ;
             if(gn == null) {
-                continue; // skip element has <mask> can contain <defs>...
-                /*
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("mask.subelement.illegal",
-                                           new Object[] {node.getLocalName()}));
-                                           */
+                continue;
             }
             hasChildren = true;
             maskNodeContent.getChildren().add(gn);
         }
         if (!hasChildren) {
-            return null; // no mask defined
+            return null; // empty mask
         }
 
-        // Get the mask transform
-        String transformStr = maskElement.getAttributeNS(null, ATTR_TRANSFORM);
-        AffineTransform at;
-        if (transformStr.length() > 0) {
-            at = SVGUtilities.convertAffineTransform(transformStr);
+        // 'transform' attribute
+        AffineTransform Tx;
+        s = maskElement.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
+        if (s.length() != 0) {
+            Tx = SVGUtilities.convertTransform
+                (maskElement, SVG_TRANSFORM_ATTRIBUTE, s);
         } else {
-            at = new AffineTransform();
+            Tx = new AffineTransform();
         }
 
-        at = SVGUtilities.convertAffineTransform(at,
-                                                 maskedNode,
-                                                 rc,
-                                                 maskContentUnitsType);
-        maskNodeContent.setTransform(at);
+        // 'maskContentUnits' attribute - default is userSpaceOnUse
+        short coordSystemType;
+        s = maskElement.getAttributeNS(null, SVG_MASK_CONTENT_UNITS_ATTRIBUTE);
+        if (s.length() == 0) {
+            coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
+        } else {
+            coordSystemType = SVGUtilities.parseCoordinateSystem
+                (maskElement, SVG_MASK_CONTENT_UNITS_ATTRIBUTE, s);
+        }
+
+        // additional transform to move to objectBoundingBox coordinate system
+        GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
+        if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {
+            Tx = SVGUtilities.toObjectBBox(Tx, maskedNode, rc);
+        }
+
+        maskNodeContent.setTransform(Tx);
 
         Filter filter = maskedNode.getFilter();
         if (filter == null) {
             // Make the initial source as a RenderableImage
-            GraphicsNodeRableFactory gnrFactory
-                = bridgeContext.getGraphicsNodeRableFactory();
-            filter = gnrFactory.createGraphicsNodeRable(maskedNode, rc);
+            filter = new GraphicsNodeRable8Bit(maskedNode, rc);
         }
 
         return new MaskRable8Bit(filter, maskNode, maskRegion);
     }
 
+    /**
+     * Performs an update according to the specified event.
+     *
+     * @param evt the event describing the update to perform
+     */
     public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+        throw new Error("Not implemented");
     }
 }

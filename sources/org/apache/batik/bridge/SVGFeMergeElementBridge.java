@@ -9,155 +9,191 @@
 package org.apache.batik.bridge;
 
 import java.awt.geom.Rectangle2D;
-import java.util.Map;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.CompositeRable;
-import org.apache.batik.ext.awt.image.renderable.CompositeRule;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
-
-import org.apache.batik.bridge.resources.Messages;
+import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.ext.awt.image.renderable.CompositeRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.ext.awt.image.renderable.PadMode;
+import org.apache.batik.ext.awt.image.renderable.CompositeRule;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * This class bridges an SVG <tt>feMerge</tt> element with
- * a concrete <tt>Filter</tt> filter implementation
+ * Bridge class for the &lt;feMerge> element.
  *
- * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGFeMergeElementBridge implements FilterPrimitiveBridge,
-                                                SVGConstants {
+public class SVGFeMergeElementBridge
+    extends SVGAbstractFilterPrimitiveElementBridge {
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feMerge> element.
+     */
+    public SVGFeMergeElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        GraphicsNodeRenderContext rc =
-                     bridgeContext.getGraphicsNodeRenderContext();
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
+        List srcs = extractFeMergeNode(filterElement,
+                                       filteredElement,
+                                       filteredNode,
+                                       filterMap,
+                                       ctx);
 
-        // Extract sources, they are defined in the filterElement's children.
-        List srcs = new LinkedList();
-        for(Node child=filterElement.getFirstChild();
-                 child != null;
-                 child = child.getNextSibling()) {
-
-            if (child.getNodeType() != Node.ELEMENT_NODE) {
-                continue; // skip node that is not an Element
-            }
-
-            Element elt = (Element)child;
-            String namespaceURI = elt.getNamespaceURI();
-            if (namespaceURI == null ||
-                    !namespaceURI.equals(SVG_NAMESPACE_URI)) {
-                continue; // skip element in the wrong namespace
-            }
-            if (!elt.getLocalName().equals(SVG_FE_MERGE_NODE_TAG)) {
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("feMerge.subelement.invalid",
-                                           new Object[] {elt.getLocalName()}));
-            }
-
-            String inAttr = elt.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-            Filter tmp = CSSUtilities.getFilterSource(filteredNode,
-                                                      inAttr,
-                                                      bridgeContext,
-                                                      elt,
-                                                      in,
-                                                      filterMap);
-            if (tmp == null) {
-                continue;
-            }
-            in = tmp;
-            srcs.add(in);
+        if (srcs == null) {
+            return null; // <!> FIXME: no subelement found, result unspecified
         }
 
-        if (srcs.size() == 0) { // no subelement found
-            // <!> FIXME :  the result is unspecified
-            return null;
-        }
-
-        // The default region is the input sources regions union
+        // the default region is the input sources regions union
         Iterator iter = srcs.iterator();
-        Rectangle2D defaultRegion = ((Filter) iter.next()).getBounds2D();
+        Rectangle2D defaultRegion = ((Filter)iter.next()).getBounds2D();
         while (iter.hasNext()) {
-            defaultRegion.add(((Filter) iter.next()).getBounds2D());
+            defaultRegion.add(((Filter)iter.next()).getBounds2D());
         }
 
-        CSSStyleDeclaration cssDecl
-            = CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
-
+        // get filter primitive chain region
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
+                                                        filteredNode,
                                                         defaultRegion,
                                                         filterRegion,
-                                                        filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
+                                                        ctx);
 
-        Filter filter = null;
-        filter = new CompositeRable8Bit(srcs, CompositeRule.OVER, true);
+        Filter filter = new CompositeRable8Bit(srcs, CompositeRule.OVER, true);
+        filter = new PadRable8Bit(filter, primitiveRegion, PadMode.ZERO_PAD);;
 
-        filter = new PadRable8Bit(filter,
-                                      primitiveRegion,
-                                      PadMode.ZERO_PAD);;
-
-
-        // Get result attribute and update map
-        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
-        if((result != null) && (result.trim().length() > 0)){
-            filterMap.put(result, filter);
-        }
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
         return filter;
     }
 
+
     /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
+     * Returns a list of Filter objects that represents the feMergeNode of
+     * the specified feMerge filter element.
+     *
+     * @param filterElement the feMerge filter element
+     * @param filteredElement the filtered element
+     * @param filteredNode the filtered graphics node
+     * @param filterMap the filter map that contains named filter primitives
+     * @param ctx the bridge context
      */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+    protected static List extractFeMergeNode(Element filterElement,
+                                             Element filteredElement,
+                                             GraphicsNode filteredNode,
+                                             Map filterMap,
+                                             BridgeContext ctx) {
+
+        List srcs = null;
+        for (Node n = filterElement.getFirstChild();
+             n != null;
+             n = n.getNextSibling()) {
+
+            if (n.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+
+            Element e = (Element)n;
+            Bridge bridge = ctx.getBridge(e);
+            if (bridge == null ||
+                !(bridge instanceof SVGFeMergeNodeElementBridge)) {
+                continue;
+            }
+            Filter filter =  ((SVGFeMergeNodeElementBridge)bridge).createFilter
+                (ctx,
+                 e,
+                 filterElement,
+                 filteredElement,
+                 filteredNode,
+                 filterMap);
+            if (filter != null) {
+                if (srcs == null) {
+                    srcs = new LinkedList();
+                }
+                srcs.add(filter);
+            }
+        }
+        return srcs;
     }
 
+    /**
+     * Bridge class for the &lt;feMergeNode> element.
+     */
+    public static class SVGFeMergeNodeElementBridge implements Bridge {
+
+        /**
+         * Constructs a new bridge for the &lt;feMergeNode> element.
+         */
+        public SVGFeMergeNodeElementBridge() {}
+
+        /**
+         * Creates a <tt>Filter</tt> according to the specified parameters.
+         *
+         * @param ctx the bridge context to use
+         * @param filterElement the element that defines a filter
+         * @param filteredElement the element that references the filter
+         * @param filteredNode the graphics node to filter
+         * @param inputFilter the <tt>Filter</tt> that represents the current
+         *        filter input if the filter chain.
+         * @param filterMap a map where the mediator can map a name to the
+         *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
+         *        can then access a filter node from the filterMap if they
+         *        know its name.
+         */
+        public Filter createFilter(BridgeContext ctx,
+                                   Element mergeNodeElement,
+                                   Element filterElement,
+                                   Element filteredElement,
+                                   GraphicsNode filteredNode,
+                                   Map filterMap) {
+
+            String in = mergeNodeElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
+            return getFilterSource(filterElement,
+                                   in,
+                                   filteredElement,
+                                   filteredNode,
+                                   filterMap,
+                                   ctx);
+        }
+
+        /**
+         * Performs an update according to the specified event.
+         *
+         * @param evt the event describing the update to perform
+         */
+        public void update(BridgeMutationEvent evt) {
+            throw new Error("Not implemented");
+        }
+    }
 }

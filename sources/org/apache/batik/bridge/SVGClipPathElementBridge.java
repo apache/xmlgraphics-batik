@@ -12,41 +12,71 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
-import java.io.StringReader;
-import org.apache.batik.bridge.resources.Messages;
+
 import org.apache.batik.ext.awt.image.renderable.Clip;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapeNode;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
-import org.w3c.dom.Element;
+
 import org.w3c.dom.Node;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.ViewCSS;
+import org.w3c.dom.Element;
 
 /**
- * A factory for the &lt;clipPath&gt; SVG element.
+ * Bridge class for the &lt;clipPath> element.
  *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
 public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
 
     /**
-     * Returns the <tt>Shape</tt> referenced by the input element's
-     * <tt>clip-path</tt> attribute.
+     * Constructs a new SVGClipPathElementBridge.
+     */
+    public SVGClipPathElementBridge() {}
+
+    /**
+     * Creates a <tt>Clip</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param clipElement the element that defines the clip
+     * @param clipedElement the element that references the clip element
+     * @param clipedNode the graphics node to clip
      */
     public Clip createClip(BridgeContext ctx,
-                            GraphicsNode gn,
-                            Element clipElement,
-                            Element clippedElement) {
+                           Element clipElement,
+                           Element clipedElement,
+                           GraphicsNode clipedNode) {
 
-        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(clipElement);
+        String s;
+
+        // 'transform' attribute
+        AffineTransform Tx;
+        s = clipElement.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
+        if (s.length() != 0) {
+            Tx = SVGUtilities.convertTransform
+                (clipElement, SVG_TRANSFORM_ATTRIBUTE, s);
+        } else {
+            Tx = new AffineTransform();
+        }
+
+        // 'clipPathUnits' attribute - default is userSpaceOnUse
+        short coordSystemType;
+        s = clipElement.getAttributeNS(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE);
+        if (s.length() == 0) {
+            coordSystemType = SVGUtilities.USER_SPACE_ON_USE;
+        } else {
+            coordSystemType = SVGUtilities.parseCoordinateSystem
+                (clipElement, SVG_CLIP_PATH_UNITS_ATTRIBUTE, s);
+        }
+        // additional transform to move to objectBoundingBox coordinate system
+        GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
+        if (coordSystemType == SVGUtilities.OBJECT_BOUNDING_BOX) {
+            Tx = SVGUtilities.toObjectBBox(Tx, clipedNode, rc);
+        }
 
         // Build the GVT tree that represents the clip path
         //
@@ -57,66 +87,33 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
         // The 'clipPath' element or any of its children can specify
         // property 'clip-path'.
         //
-        GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
         Area clipPath = new Area();
         GVTBuilder builder = ctx.getGVTBuilder();
-
-        // parse the transform attribute
-        String transformStr = clipElement.getAttributeNS(null, ATTR_TRANSFORM);
-        AffineTransform Tx;
-        if (transformStr.length() > 0) {
-            Tx = SVGUtilities.convertAffineTransform(transformStr);
-        } else {
-            Tx = new AffineTransform();
-        }
-
-        // parse the clipPathUnits attribute
-        String units = clipElement.getAttributeNS(null, SVG_CLIP_PATH_UNITS_ATTRIBUTE);
-        if (units.length() == 0) {
-            units = SVG_USER_SPACE_ON_USE_VALUE;
-        }
-        int unitsType;
-        try {
-            unitsType = SVGUtilities.parseCoordinateSystem(units);
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("clipPath.units.invalid",
-                                       new Object[] {units,
-                                                     SVG_CLIP_PATH_UNITS_ATTRIBUTE}));
-        }
-        // compute an additional transform related the clipPathUnits
-        Tx = SVGUtilities.convertAffineTransform(Tx, gn, rc, unitsType);
-        // build the clipPath according to the clipPath's children
         boolean hasChildren = false;
-        for(Node node=clipElement.getFirstChild();
-                node != null;
-                node = node.getNextSibling()){
+        for(Node node = clipElement.getFirstChild();
+            node != null;
+            node = node.getNextSibling()) {
 
             // check if the node is a valid Element
             if (node.getNodeType() != node.ELEMENT_NODE) {
                 continue;
             }
+
             Element child = (Element)node;
             GraphicsNode clipNode = builder.build(ctx, child) ;
             // check if a GVT node has been created
             if (clipNode == null) {
-                throw new IllegalAttributeValueException(
-                    Messages.formatMessage("clipPath.subelement.illegal",
-                                        new Object[] {node.getLocalName()}));
+                continue;
             }
             hasChildren = true;
-            // compute the outline of the current Element
-            CSSStyleDeclaration c = CSSUtilities.getComputedStyle(child);
-            CSSPrimitiveValue v = (CSSPrimitiveValue)c.getPropertyCSSValue
-                (CSS_CLIP_RULE_PROPERTY);
-            int wr = (CSSUtilities.rule(v) == CSSUtilities.RULE_NONZERO)
-                ? GeneralPath.WIND_NON_ZERO
-                : GeneralPath.WIND_EVEN_ODD;
+
+            // compute the outline of the current clipPath's child
+            int wr = CSSUtilities.convertClipRule(child);
             GeneralPath path = new GeneralPath(clipNode.getOutline(rc));
             path.setWindingRule(wr);
             Shape outline = Tx.createTransformedShape(path);
 
-            // apply the clip-path of the current Element
+            // apply the 'clip-path' of the current clipPath's child
             ShapeNode outlineNode = new ShapeNode();
             outlineNode.setShape(outline);
             Clip clip = CSSUtilities.convertClipPath(child,
@@ -130,31 +127,34 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
             clipPath.add(new Area(outline));
         }
         if (!hasChildren) {
-            return null; // no clipPath defined
+            return null; // empty clipPath
         }
 
-        // apply the clip-path of this clipPath Element (already in user space)
+        // construct the shape node that represents the clipPath
         ShapeNode clipPathNode = new ShapeNode();
         clipPathNode.setShape(clipPath);
+
+        // apply the 'clip-path' of the clipPath element (already in user space)
         Clip clipElementClipPath =
             CSSUtilities.convertClipPath(clipElement, clipPathNode, ctx);
         if (clipElementClipPath != null) {
             clipPath.subtract(new Area(clipElementClipPath.getClipPath()));
         }
 
-        // OTHER PROBLEM: SHOULD TAKE MASK REGION INTO ACCOUNT
-        Filter filter = gn.getFilter();
+        Filter filter = clipedNode.getFilter();
         if (filter == null) {
-              // Make the initial source as a RenderableImage
-            GraphicsNodeRableFactory gnrFactory
-                = ctx.getGraphicsNodeRableFactory();
-            filter = gnrFactory.createGraphicsNodeRable(gn, rc);
+            // Make the initial source as a RenderableImage
+            filter = new GraphicsNodeRable8Bit(clipedNode, rc);
         }
         return new ClipRable8Bit(filter, clipPath);
-
     }
 
+    /**
+     * Performs an update according to the specified event.
+     *
+     * @param evt the event describing the update to perform
+     */
     public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
+        throw new Error("Not implemented");
     }
 }

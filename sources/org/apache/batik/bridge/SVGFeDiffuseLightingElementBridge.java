@@ -8,174 +8,106 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.Color;
 import java.awt.geom.Rectangle2D;
-
 import java.util.Map;
-import java.util.StringTokenizer;
 
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.Light;
-import org.apache.batik.ext.awt.image.renderable.DiffuseLightingRable;
-import org.apache.batik.ext.awt.image.renderable.DistantLight;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.ext.awt.image.renderable.PadMode;
-import org.apache.batik.ext.awt.image.renderable.PadRable;
-
-import org.apache.batik.bridge.resources.Messages;
 import org.apache.batik.ext.awt.image.renderable.DiffuseLightingRable8Bit;
-import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
-
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
+import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.renderable.Light;
+import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.css.CSSStyleDeclaration;
 
 /**
- * This class bridges an SVG <tt>feDiffuseLighting</tt> element with
- * a concrete <tt>Filter</tt> filter implementation
+ * Bridge class for the &lt;feDiffuseLighting> element.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
 public class SVGFeDiffuseLightingElementBridge
-        implements FilterPrimitiveBridge, SVGConstants {
+    extends SVGFeAbstractLightingElementBridge {
+
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Constructs a new bridge for the &lt;feDiffuseLighting> element.
+     */
+    public SVGFeDiffuseLightingElementBridge() {}
+
+    /**
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param in the <tt>Filter</tt> that represents the current
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
+     * @param inputFilter the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
-     * @param filterRegion the filter area defined for the filter chained
+     * @param filterRegion the filter area defined for the filter chain
      *        the new node will be part of.
      * @param filterMap a map where the mediator can map a name to the
      *        <tt>Filter</tt> it creates. Other <tt>FilterBridge</tt>s
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap){
-        Filter filter = null;
+    public Filter createFilter(BridgeContext ctx,
+                               Element filterElement,
+                               Element filteredElement,
+                               GraphicsNode filteredNode,
+                               Filter inputFilter,
+                               Rectangle2D filterRegion,
+                               Map filterMap) {
 
-        GraphicsNodeRenderContext rc =
-                         bridgeContext.getGraphicsNodeRenderContext();
+        // 'surfaceScale' attribute - default is 1
+        float surfaceScale
+            = convertNumber(filterElement, SVG_SURFACE_SCALE_ATTRIBUTE, 1);
 
-        DocumentLoader loader = bridgeContext.getDocumentLoader();
-        // First, extract source
-        String inAttr = filterElement.getAttributeNS(null, SVG_IN_ATTRIBUTE);
-        in = CSSUtilities.getFilterSource(filteredNode,
-                                          inAttr,
-                                          bridgeContext,
-                                          filteredElement,
-                                          in,
-                                          filterMap);
+        // 'diffuseConstant' attribute - default is 1
+        float diffuseConstant
+            = convertNumber(filterElement, SVG_DIFFUSE_CONSTANT_ATTRIBUTE, 1);
 
-        // Exit if no 'in' found
+        // 'kernelUnitLength' attribute
+        // <!> FIXME: Why is it ignored ???
+
+        // extract the light definition from the filterElement's children list
+        Light light = extractLight(filterElement, ctx);
+
+        // 'in' attribute
+        Filter in = getIn(filterElement,
+                          filteredElement,
+                          filteredNode,
+                          inputFilter,
+                          filterMap,
+                          ctx);
         if (in == null) {
-            return null;
+            return null; // disable the filter
         }
 
-        //
-        // The default region is the input source's region unless the
-        // source is SourceGraphics, in which case the default region
-        // is the filter chain's region
-        //
+        // The default region is the union of the input sources
+        // regions unless 'in' is 'SourceGraphic' in which case the
+        // default region is the filterChain's region
         Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
-
-        Rectangle2D defaultRegion = in.getBounds2D();
-
-        if (in == sourceGraphics){
+        Rectangle2D defaultRegion;
+        if (in == sourceGraphics) {
             defaultRegion = filterRegion;
+        } else {
+            defaultRegion = in.getBounds2D();
         }
-
-        CSSStyleDeclaration cssDecl
-            = CSSUtilities.getComputedStyle(filterElement);
-
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D primitiveRegion
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
                                                         filteredElement,
+                                                        filteredNode,
                                                         defaultRegion,
                                                         filterRegion,
-                                                        filteredNode,
-                                                        rc,
-                                                        uctx,
-                                                        loader);
+                                                        ctx);
+        Filter filter = new DiffuseLightingRable8Bit
+            (in, primitiveRegion, light, diffuseConstant, surfaceScale);
 
-
-        // Extract the light color
-        Color color = CSSUtilities.convertLightingColor(filterElement, cssDecl, bridgeContext);
-
-        // Extract the Light from the child node.
-        NodeList children = filterElement.getChildNodes();
-        int nChildren = children.getLength();
-        if(nChildren < 1){
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feDiffuseLighting.child.missing",
-                                       null));
-        }
-
-        Node lightNode = children.item(0);
-        if((lightNode == null) ||
-           !(lightNode.getNodeType() == Node.ELEMENT_NODE)){
-            throw new IllegalAttributeValueException(
-                Messages.formatMessage("feDiffuseLighting.child.missing",
-                                       null));
-        }
-
-        Light light = SVGLightElementBridge.createLight((Element)lightNode, color);
-
-        // Extract diffuse lighting constant
-        String kdStr =
-            filterElement.getAttributeNS(null, SVG_DIFFUSE_CONSTANT_ATTRIBUTE);
-
-        double kd =
-            SVGUtilities.convertSVGNumber(SVG_DIFFUSE_CONSTANT_ATTRIBUTE, kdStr);
-
-        // Extract surface scale
-        String surfaceScaleStr =
-            filterElement.getAttributeNS(null, SVG_SURFACE_SCALE_ATTRIBUTE);
-
-        double surfaceScale =
-            SVGUtilities.convertSVGNumber(SVG_SURFACE_SCALE_ATTRIBUTE,
-                                          surfaceScaleStr);
-
-        filter = new DiffuseLightingRable8Bit(in,
-                                                  primitiveRegion,
-                                                  light,
-                                                  kd,
-                                                  surfaceScale);
-
-        // Get result attribute and update map
-        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
-        if ((result != null) && (result.trim().length() > 0)) {
-            filterMap.put(result, filter);
-        }
+        // update the filter Map
+        updateFilterMap(filterElement, filter, filterMap);
 
         return filter;
     }
-
-    /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
-     */
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
-    }
-
 }

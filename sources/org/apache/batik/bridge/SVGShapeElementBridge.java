@@ -8,130 +8,104 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-
-import java.io.StringReader;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.IllegalAttributeValueException;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.ShapePainter;
-import org.apache.batik.ext.awt.image.renderable.Clip;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.parser.ParseException;
-import org.apache.batik.bridge.resources.Messages;
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.CSSPrimitiveValue;
 
 /**
- * A factory for the SVG elements that represents a shape.
+ * The base bridge class for shapes. Subclasses bridge <tt>ShapeNode</tt>.
  *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
- * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public abstract class SVGShapeElementBridge implements GraphicsNodeBridge,
-                                                       SVGConstants {
+public abstract class SVGShapeElementBridge extends AbstractGraphicsNodeBridge {
 
-    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element){
-        SVGElement svgElement = (SVGElement) element;
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx,
-                                              cssDecl);
-        ShapeNode node = new ShapeNode();
-        // Initialize the transform
-        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
-        if (transformStr.length() > 0) {
-            AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
-            node.setTransform(at);
-        }
-        // visibility
-        node.setVisible(CSSUtilities.convertVisibility(element));
-        // Initialize the shape of the ShapeNode
-        buildShape(ctx, svgElement, node, cssDecl, uctx);
+    /**
+     * Constructs a new bridge for SVG shapes.
+     */
+    protected SVGShapeElementBridge() {}
 
-        return node;
-    }
-
-    public void buildGraphicsNode(GraphicsNode gn,
-                                  BridgeContext ctx,
-                                  Element element) {
-        ShapeNode node = (ShapeNode)gn;
-
-        SVGElement svgElement = (SVGElement) element;
-        CSSStyleDeclaration cssDecl = CSSUtilities.getComputedStyle(element);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx,
-                                              cssDecl);
-
-        // Initialize the style properties
-        ShapePainter painter = convertPainter(svgElement,
-                                              node,
-                                              cssDecl,
-                                              uctx, ctx);
-
-        node.setShapePainter(painter);
-
-        // Set node composite
-        CSSPrimitiveValue opacityVal =
-            (CSSPrimitiveValue)cssDecl.getPropertyCSSValue(ATTR_OPACITY);
-        Composite composite =
-            CSSUtilities.convertOpacityToComposite(opacityVal);
-        node.setComposite(composite);
-
-        // Set node filter
-        Filter filter = CSSUtilities.convertFilter(element, node, ctx);
-        node.setFilter(filter);
-
-        // Set the node mask
-        Mask mask = CSSUtilities.convertMask(element, node, ctx);
-        node.setMask(mask);
-
-        // Set the node clip
-        Clip clip = CSSUtilities.convertClipPath(element, node, ctx);
-        node.setClip(clip);
-
-        // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, svgElement);
-        ctx.bind(element, node);
-    }
-
-    protected ShapePainter convertPainter(SVGElement svgElement,
-                                          ShapeNode node,
-                                          CSSStyleDeclaration cssDecl,
-                                          UnitProcessor.Context uctx,
-                                          BridgeContext ctx){
-        return CSSUtilities.convertStrokeAndFill(node.getShape(), svgElement, node,
-                                                 ctx, cssDecl, uctx);
-    }
-
-    public void update(BridgeMutationEvent evt) {
-    }
-
-    public boolean isContainer() {
-        return false;
+    /**
+     * Creates a graphics node using the specified BridgeContext and
+     * for the specified element.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @return a graphics node that represents the specified element
+     */
+    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
+        ShapeNode shapeNode = (ShapeNode)super.createGraphicsNode(ctx, e);
+        // delegates to subclasses the shape construction
+        buildShape(ctx, e, shapeNode);
+        return shapeNode;
     }
 
     /**
-     * Creates the shape depending on the specified context and element.
+     * Creates a <tt>ShapeNode</tt>.
+     */
+    protected GraphicsNode instantiateGraphicsNode() {
+        return new ShapeNode();
+    }
+
+    /**
+     * Builds using the specified BridgeContext and element, the
+     * specified graphics node.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @param node the graphics node to build
+     */
+    public void buildGraphicsNode(BridgeContext ctx,
+                                  Element e,
+                                  GraphicsNode node) {
+        ShapeNode shapeNode = (ShapeNode)node;
+        shapeNode.setShapePainter(createShapePainter(ctx, e, shapeNode));
+        super.buildGraphicsNode(ctx, e, node);
+    }
+
+    /**
+     * Creates the shape painter associated to the specified element.
+     * This implementation creates a shape painter considering the
+     * various fill and stroke properties.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the shape painter to use
+     * @param shapeNode the shape node that is interested in its shape painter
+     */
+    protected ShapePainter createShapePainter(BridgeContext ctx,
+                                              Element e,
+                                              ShapeNode shapeNode) {
+        // 'fill'
+        // 'fill-opacity'
+        // 'stroke'
+        // 'stroke-opacity',
+        // 'stroke-width'
+        // 'stroke-linecap'
+        // 'stroke-linejoin'
+        // 'stroke-miterlimit'
+        // 'stroke-dasharray'
+        // 'stroke-dashoffset'
+        return PaintServer.convertFillAndStroke(e, shapeNode, ctx);
+    }
+
+    /**
+     * Initializes the specified ShapeNode's shape defined by the
+     * specified Element and using the specified bridge context.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the shape node to build
+     * @param node the shape node to initialize
      */
     protected abstract void buildShape(BridgeContext ctx,
-                                       SVGElement svgElement,
-                                       ShapeNode node,
-                                       CSSStyleDeclaration decl,
-                                       UnitProcessor.Context uctx);
+                                       Element e,
+                                       ShapeNode node);
+
+    /**
+     * Returns false as shapes are not a container.
+     */
+    public boolean isComposite() {
+        return false;
+    }
 }

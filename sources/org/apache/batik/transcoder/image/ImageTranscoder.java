@@ -16,30 +16,38 @@ import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.ViewBox;
+
 import org.apache.batik.dom.svg.DefaultSVGContext;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DocumentFactory;
+
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.event.EventDispatcher;
+import org.apache.batik.gvt.renderer.ImageRenderer;
+import org.apache.batik.gvt.renderer.ImageRendererFactory;
+
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.XMLAbstractTranscoder;
 import org.apache.batik.transcoder.image.resources.Messages;
-import org.apache.batik.gvt.renderer.ImageRenderer;
-import org.apache.batik.gvt.renderer.ImageRendererFactory;
+
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
@@ -49,8 +57,6 @@ import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 
 // <!> FIXME : Those import clauses will change with new design
-import org.apache.batik.bridge.ConcreteGVTBuilder;
-import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.gvt.renderer.StaticRendererFactory;
 
 /**
@@ -144,7 +150,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         }
         // compute the preserveAspectRatio matrix
         AffineTransform Px =
-            SVGUtilities.getPreserveAspectRatioTransform(root, width, height);
+            ViewBox.getPreserveAspectRatioTransform(root, width, height);
         if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
             // The document has no viewBox, we need to resize it by hand.
             // we want to keep the document size ratio
@@ -174,9 +180,10 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         int h = (int)height;
 
         // build the GVT tree
-        GVTBuilder builder = new ConcreteGVTBuilder();
+        GVTBuilder builder = new GVTBuilder();
         ImageRendererFactory rendFactory = new StaticRendererFactory();
-        GraphicsNodeRenderContext rc = rendFactory.getRenderContext(); // <!> FIX ME
+        GraphicsNodeRenderContext rc = rendFactory.getRenderContext();
+
         BridgeContext ctx = new BridgeContext(userAgent, rc);
         GraphicsNode gvtRoot = builder.build(ctx, svgDoc);
         ctx = null;
@@ -200,7 +207,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             renderer = null; // We're done with it...
 
             BufferedImage dest = createImage(w, h);
-            
+
             Graphics2D g2d = GraphicsUtil.createGraphics(dest);
             if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
                 Paint bgcolor = (Paint)hints.get(KEY_BACKGROUND_COLOR);

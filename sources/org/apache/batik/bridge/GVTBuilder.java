@@ -8,30 +8,142 @@
 
 package org.apache.batik.bridge;
 
+import java.util.List;
+
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.CanvasGraphicsNode;
+import org.apache.batik.gvt.CompositeGraphicsNode;
+import org.apache.batik.gvt.RootGraphicsNode;
+
+import org.apache.batik.util.SVGConstants;
+
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
- * This class is responsible on building a GVT tree using an SVG document.
+ * This class is responsible for creating a GVT tree using an SVG DOM tree.
  *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public interface GVTBuilder {
+public class GVTBuilder implements SVGConstants {
 
     /**
-     * Builds a GVT tree using the specified context and SVG document.
-     * @param ctx the context to use
-     * @param svgDocument the DOM tree that represents an SVG document
+     * Constructs a new builder.
      */
-    GraphicsNode build(BridgeContext ctx, Document svgDocument);
+    public GVTBuilder() {}
 
     /**
-     * Builds a GVT tree using the specified context and SVG element
-     * @param ctx the context to use
-     * @param element element for which a GVT representation should be built
+     * Builds using the specified bridge context the specified SVG document.
+     *
+     * @param ctx the bridge context
+     * @param document the SVG document to build
+     * @exception BridgeException if an error occured while constructing
+     * the GVT tree
      */
-    GraphicsNode build(BridgeContext ctx, Element element);
+    public GraphicsNode build(BridgeContext ctx, Document document) {
+        // inform the bridge context the builder to use
+        ctx.setGVTBuilder(this);
 
+        // build the GVT tree
+        RootGraphicsNode rootNode = new RootGraphicsNode();
+        Element svgElement = document.getDocumentElement();
+        GraphicsNode topNode = null;
+        try {
+            topNode = build(ctx, svgElement);
+        } catch (BridgeException ex) {
+            // update the exception with the missing parameters
+            ex.setGraphicsNode(rootNode);
+            Element errElement = ex.getElement();
+            ex.setLineNumber(ctx.getDocumentLoader().getLineNumber(errElement));
+            throw ex; // re-throw the udpated exception
+        } finally {
+            if (topNode != null) {
+                rootNode.getChildren().add(topNode);
+            }
+            ctx.getDocumentLoader().dispose(document);
+        }
+        return rootNode;
+    }
+
+    /**
+     * Builds using the specified bridge context the specified Element.
+     *
+     * @param ctx the bridge context
+     * @param e the element to build
+     * @exception BridgeException if an error occured while constructing
+     * the GVT tree
+     */
+    public GraphicsNode build(BridgeContext ctx, Element e) {
+        // get the appropriate bridge according to the specified element
+        Bridge bridge = ctx.getBridge(e);
+        if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
+            return null;
+        }
+        // create the associated graphics node
+        GraphicsNodeBridge gnBridge = (GraphicsNodeBridge)bridge;
+        GraphicsNode gn = gnBridge.createGraphicsNode(ctx, e);
+        if (gnBridge.isComposite()) {
+            buildComposite(ctx, e, (CompositeGraphicsNode)gn);
+        }
+        gnBridge.buildGraphicsNode(ctx, e, gn);
+        return gn;
+    }
+
+    /**
+     * Builds a composite Element.
+     *
+     * @param ctx the bridge context
+     * @param e the element to build
+     * @param parent the composite graphics node, parent of the
+     *               graphics node to build
+     * @exception BridgeException if an error occured while constructing
+     * the GVT tree
+     */
+    protected void buildComposite(BridgeContext ctx,
+                                  Element e,
+                                  CompositeGraphicsNode parentNode) {
+        for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                buildGraphicsNode(ctx, (Element)n, parentNode);
+            }
+        }
+    }
+
+    /**
+     * Builds a 'leaf' Element.
+     *
+     * @param ctx the bridge context
+     * @param e the element to build
+     * @param parent the composite graphics node, parent of the
+     *               graphics node to build
+     * @exception BridgeException if an error occured while constructing
+     * the GVT tree
+     */
+    protected void buildGraphicsNode(BridgeContext ctx,
+                                     Element e,
+                                     CompositeGraphicsNode parentNode) {
+        // Check for interruption.
+        if (Thread.currentThread().isInterrupted()) {
+            throw new InterruptedBridgeException();
+        }
+        // get the appropriate bridge according to the specified element
+        Bridge bridge = ctx.getBridge(e);
+        if (bridge == null || !(bridge instanceof GraphicsNodeBridge)) {
+            return;
+        }
+        // create the associated graphics node
+        GraphicsNodeBridge gnBridge = (GraphicsNodeBridge)bridge;
+        GraphicsNode gn = gnBridge.createGraphicsNode(ctx, e);
+        // attach the graphics node to the GVT tree now !
+        parentNode.getChildren().add(gn);
+        // check if the element has children to build
+        if (gnBridge.isComposite()) {
+            buildComposite(ctx, e, (CompositeGraphicsNode)gn);
+        }
+        gnBridge.buildGraphicsNode(ctx, e, gn);
+    }
 }
+

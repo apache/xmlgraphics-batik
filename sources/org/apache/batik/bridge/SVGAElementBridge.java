@@ -8,114 +8,70 @@
 
 package org.apache.batik.bridge;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
 import java.awt.Cursor;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 
-import java.io.StringReader;
-
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeMutationEvent;
-import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.bridge.GraphicsNodeBridge;
-import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.css.HiddenChildElementSupport;
+import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.Clip;
-import org.apache.batik.ext.awt.image.renderable.Filter;
-import org.apache.batik.gvt.filter.Mask;
-import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.UnitProcessor;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.CSSStyleDeclaration;
-import org.w3c.dom.css.ViewCSS;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGAElement;
-import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.views.DocumentView;
 
 /**
- * A factory for the &lt;a&gt; SVG element.
+ * Bridge class for the &lt;a> element.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGAElementBridge implements GraphicsNodeBridge, SVGConstants {
+public class SVGAElementBridge extends AbstractGraphicsNodeBridge {
 
-    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element element) {
+    /**
+     * Constructs a new bridge for the &lt;a> element.
+     */
+    public SVGAElementBridge() {}
 
-        CompositeGraphicsNode gn = new CompositeGraphicsNode();
-
-        // Initialize the transform
-        String transformStr = element.getAttributeNS(null, ATTR_TRANSFORM);
-        if (transformStr.length() > 0) {
-            AffineTransform at = SVGUtilities.convertAffineTransform(transformStr);
-            gn.setTransform(at);
-        }
-
-        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
-        UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext(ctx, decl);
-
-        Rectangle2D rect = CSSUtilities.convertEnableBackground((SVGElement)element,
-                                                                decl,
-                                                                uctx);
-        if (rect != null) {
-            gn.setBackgroundEnable(rect);
-        }
-
-        return gn;
+    /**
+     * Creates a <tt>CompositeGraphicsNode</tt>.
+     */
+    protected GraphicsNode instantiateGraphicsNode() {
+        return new CompositeGraphicsNode();
     }
 
-    public void buildGraphicsNode(GraphicsNode gn,
-                                  BridgeContext ctx,
-                                  Element element) {
-        CSSStyleDeclaration decl = CSSUtilities.getComputedStyle(element);
-        CSSPrimitiveValue val =
-            (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_OPACITY);
-        Composite composite = CSSUtilities.convertOpacityToComposite(val);
-        gn.setComposite(composite);
+    /**
+     * Builds using the specified BridgeContext and element, the
+     * specified graphics node.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @param node the graphics node to build
+     */
+    public void buildGraphicsNode(BridgeContext ctx,
+                                  Element e,
+                                  GraphicsNode node) {
 
-        Filter filter = CSSUtilities.convertFilter(element, gn, ctx);
-        gn.setFilter(filter);
+        super.buildGraphicsNode(ctx, e, node);
 
-        Mask mask = CSSUtilities.convertMask(element, gn, ctx);
-        gn.setMask(mask);
+        EventTarget target = (EventTarget)e;
 
-        Clip clip = CSSUtilities.convertClipPath(element, gn, ctx);
-        gn.setClip(clip);
+        target.addEventListener("click",
+                                new AnchorListener(ctx.getUserAgent()),
+                                false);
 
-        EventTarget et = (EventTarget)element;
-        et.addEventListener("click",
-                            new AnchorListener(ctx.getUserAgent()), false);
-        et.addEventListener("mouseover",
-                            new CursorMouseOverListener(ctx.getUserAgent()),
-                            false);
-        et.addEventListener("mouseout",
-                            new CursorMouseOutListener(ctx.getUserAgent()),
-                            false);
+        target.addEventListener("mouseover",
+                                new CursorMouseOverListener(ctx.getUserAgent()),
+                                false);
 
-        // <!> TODO only when binding is enabled
-        BridgeEventSupport.addDOMListener(ctx, (SVGElement)element);
-        ctx.bind(element, gn);
-    }
+        target.addEventListener("mouseout",
+                                new CursorMouseOutListener(ctx.getUserAgent()),
+                                false);    }
 
-    public void update(BridgeMutationEvent evt) {
-        // <!> FIXME : TODO
-    }
-
-    public boolean isContainer() {
+    /**
+     * Returns true as the &lt;a> element is a container.
+     */
+    public boolean isComposite() {
         return true;
     }
 

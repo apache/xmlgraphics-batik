@@ -8,46 +8,48 @@
 
 package org.apache.batik.bridge;
 
-import org.w3c.dom.Element;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
+import org.w3c.dom.Element;
 
 /**
- * Factory class for vending <tt>GraphicsNode</tt> objects.
+ * Bridge class for creating, building, and updating a <tt>GraphicsNode</tt>
+ * according to an <tt>Element</tt>.
  *
- * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
+ * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
 public interface GraphicsNodeBridge extends Bridge {
 
     /**
-     * Creates a <tt>GraphicsNode</tt> using the specified context and element.
-     * @param ctx the context to use
-     * @param elem the Element that describes the GraphicsNode to build
-     * @return a GraphicsNode object representing the Element
+     * Creates a <tt>GraphicsNode</tt> according to the specified parameters.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @return a graphics node that represents the specified element
      */
-    GraphicsNode createGraphicsNode(BridgeContext ctx, Element element);
+    GraphicsNode createGraphicsNode(BridgeContext ctx, Element e);
 
     /**
-     * Builds the specified <tt>GraphicsNode</tt> using the specified
-     * context and element.
-     * @param node the node to build
-     * @param ctx the context to use
-     * @param elem the Element that describes the GraphicsNode to build
-     * @return a GraphicsNode object representing the Element
+     * Builds using the specified BridgeContext and element, the
+     * specified graphics node.
+     *
+     * @param ctx the bridge context to use
+     * @param e the element that describes the graphics node to build
+     * @param node the graphics node to build
      */
-    void buildGraphicsNode(GraphicsNode node, 
-                           BridgeContext ctx,
-                           Element element);
+    void buildGraphicsNode(BridgeContext ctx, Element e, GraphicsNode node);
 
     /**
-     * Updates an Element coresponding to the specified BridgeMutationEvent.
-     * @param evt the event that describes the modification to perform
+     * Performs an update according to the specified event.
+     *
+     * @param evt the event describing the update to perform
      */
     void update(BridgeMutationEvent evt);
 
     /**
-     * Returns true if this bridge is a container, false otherwise.
+     * Returns true if the bridge handles container element, false
+     * otherwise.
      */
-    boolean isContainer();
+    boolean isComposite();
+
 }

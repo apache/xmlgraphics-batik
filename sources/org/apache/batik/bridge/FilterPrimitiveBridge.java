@@ -10,17 +10,13 @@ package org.apache.batik.bridge;
 
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.ext.awt.image.renderable.Filter;
-
+import org.apache.batik.gvt.GraphicsNode;
 import org.w3c.dom.Element;
 
 /**
- * Implementations of this interface are able to bridge a specific
- * filter primitive, modeled by a DOM element, to a concrete
- * <tt>Filter<tt>.
+ * Factory class for vending <tt>Filter</tt> objects that represents
+ * a filter primitive.
  *
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  * @version $Id$
@@ -28,13 +24,14 @@ import org.w3c.dom.Element;
 public interface FilterPrimitiveBridge extends Bridge {
 
     /**
-     * Returns the <tt>Filter</tt> that implements the filter
-     * operation modeled by the input DOM element
+     * Creates a <tt>Filter</tt> primitive according to the specified
+     * parameters.
      *
-     * @param filteredNode the GVT node to which the filter will be attached.
-     * @param bridgeContext the context to use.
-     * @param filterElement DOM element that represents a filter abstraction
-     * @param filteredElement DOM element that references the input filter element.
+     * @param ctx the bridge context to use
+     * @param filterElement the element that defines a filter
+     * @param filteredElement the element that references the filter
+     * @param filteredNode the graphics node to filter
+     *
      * @param in the <tt>Filter</tt> that represents the current
      *        filter input if the filter chain.
      * @param filterRegion the filter area defined for the filter chain
@@ -44,18 +41,19 @@ public interface FilterPrimitiveBridge extends Bridge {
      *        can then access a filter node from the filterMap if they
      *        know its name.
      */
-    public Filter create(GraphicsNode filteredNode,
-                         BridgeContext bridgeContext,
-                         Element filterElement,
-                         Element filteredElement,
-                         Filter in,
-                         Rectangle2D filterRegion,
-                         Map filterMap);
+    Filter createFilter(BridgeContext ctx,
+                        Element filterElement,
+                        Element filteredElement,
+                        GraphicsNode filteredNode,
+                        Filter in,
+                        Rectangle2D filterRegion,
+                        Map filterMap);
 
     /**
-     * Update the <tt>Filter</tt> object to reflect the current
-     * configuration in the <tt>Element</tt> that models the filter.
+     * Performs an update according to the specified event.
+     *
+     * @param evt the event describing the update to perform
      */
-    public void update(BridgeMutationEvent evt);
+    void update(BridgeMutationEvent evt);
 
 }
