@@ -243,7 +243,9 @@ public class DynamicRenderer extends StaticRenderer {
                     Iterator iter = damagedAreas.iterator();
                     while (iter.hasNext()) {
                         Rectangle r = (Rectangle)iter.next();
-                        // System.out.println("Copy: " + r);
+                        if (!dr.intersects(r)) continue;
+                        r = dr.intersection(r);
+                        // System.err.println("Copy: " + r);
                         Raster src = currentRaster.createWritableChild
                             (r.x, r.y, r.width, r.height, r.x, r.y, null);
                         GraphicsUtil.copyData(src, copyRaster);
@@ -262,6 +264,7 @@ public class DynamicRenderer extends StaticRenderer {
                     if (!dr.intersects(r)) continue;
                     r = dr.intersection(r);
                     
+                    // System.err.println("Render: " + r);
                     WritableRaster dst = copyRaster.createWritableChild
                         (r.x, r.y, r.width, r.height, r.x, r.y, null);
                     cr.copyData(dst);
