@@ -82,6 +82,10 @@ public class SVGTextElementBridge extends AbstractSVGBridge
      * @return a graphics node that represents the specified element
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
+	// 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+	if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+	    return null;
+	}
 
         TextNode node = new TextNode();
 	// specify the text painter to use if one has been provided in the

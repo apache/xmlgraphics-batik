@@ -53,6 +53,11 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * @return a graphics node that represents the specified element
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
+	// 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
+	if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+	    return null;
+	}
+
         GraphicsNode node = instantiateGraphicsNode();
         // 'transform'
         String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
