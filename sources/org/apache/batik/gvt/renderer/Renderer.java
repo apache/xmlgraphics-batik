@@ -34,21 +34,6 @@ public interface Renderer {
     public GraphicsNode getTree();
 
     /**
-     * Update the required size of the offscreen buffer.
-     */
-    public void updateOffScreen(int width, int height);
-
-    /**
-     * Get the Current offscreen buffer used for rendering
-     */
-    public BufferedImage getOffScreen();
-
-    /**
-     * Tells renderer to clear current contents of offscreen buffer
-     */
-    public void clearOffScreen();
-
-    /**
      * Forces repaint of provided node. 'node' must be a node in the
      * currently associated GVT tree.  Normally there is no need to
      * call this method explicitly as the Renderer listens for changes
