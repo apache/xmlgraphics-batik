@@ -28,10 +28,6 @@
         <s1 title="Batik Overview">
         <figure src="images/1_0beta2splash.png" alt="1.0 beta2" />
 
-        <p><strong>
-        This is a staging area for the next revision of the Batik web site that will
-        come on-line when Batik 1.0 becomes available mid-May 2001.
-        </strong></p>
         <p>
         Batik is a Java(tm) technology based toolkit for applications that want 
         to use images in the <link href="http://www.w3.org/TR/SVG/">Scalable Vector
