@@ -216,6 +216,7 @@ public class SVGDOMImplementation
                 String title = (String)attrs.get("title");
                 String media = (String)attrs.get("media");
                 String href  = (String)attrs.get("href");
+                String alternate = (String)attrs.get("alternate");
 
                 SVGOMDocument doc = (SVGOMDocument)n.getOwnerDocument();
                 URL url = new URL(doc.getURLObject(), href);
@@ -231,6 +232,11 @@ public class SVGDOMImplementation
                      CSSDocumentHandler.createParser());
 
                 CSSDocumentHandler.parseStyleSheet(ss, url.toString());
+                if (title == null || alternate.equals("no")) {
+                   ss.setDisabled (false);
+                } else {
+                   ss.setDisabled (true);
+                }
                 return ss;
             } catch (Exception e) {
             }

@@ -8,9 +8,9 @@
 
 package org.apache.batik.dom.svg;
 
-import org.w3c.dom.Element;
+import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.svg.SVGAnimatedBoolean;
-import org.w3c.dom.svg.SVGExternalResourcesRequired;
 
 /**
  * Provides support for the SVGExternalResourcesRequired interface.
@@ -18,13 +18,23 @@ import org.w3c.dom.svg.SVGExternalResourcesRequired;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGExternalResourcesRequiredSupport {
+public class SVGExternalResourcesRequiredSupport implements SVGConstants {
+
+    private final static String ATTR_NAME = SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE;
 
     /**
      * To implement {@link
-     * SVGExternalResourcesRequired#getExternalResourcesRequired()}.
+     * org.w3c.dom.svg.SVGExternalResourcesRequired#getExternalResourcesRequired()}.
      */
-    public static SVGAnimatedBoolean getExternalResourcesRequired(Element elt) {
-        throw new RuntimeException("!!! TODO getExternalResourcesRequired()");
+    public static SVGAnimatedBoolean getExternalResourcesRequired(AbstractElement elt) {
+        LiveAttributeValue lav;
+        lav = elt.getLiveAttributeValue(null, ATTR_NAME);
+        if (lav == null) {
+            lav = new SVGOMAnimatedBoolean(elt, null, ATTR_NAME,
+                                           elt.getAttributeNodeNS(null, ATTR_NAME),
+                                           "false");
+            elt.putLiveAttributeValue(null, ATTR_NAME, lav);
+        }
+        return (SVGAnimatedBoolean)lav;
     }
 }

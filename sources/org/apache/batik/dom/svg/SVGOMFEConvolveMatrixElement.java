@@ -150,7 +150,16 @@ public class SVGOMFEConvolveMatrixElement
      * org.w3c.dom.svg.SVGFEConvolveMatrixElement#getPreserveAlpha()}.
      */
     public SVGAnimatedBoolean getPreserveAlpha() {
-        throw new RuntimeException("!!! TODO: getPreserveAlpha()");
+        LiveAttributeValue lav;
+        lav = getLiveAttributeValue(null, SVG_PRESERVE_ALPHA_ATTRIBUTE);
+        if (lav == null) {
+            lav = new SVGOMAnimatedBoolean
+                (this, null, SVG_PRESERVE_ALPHA_ATTRIBUTE,
+                 getAttributeNodeNS(null, SVG_PRESERVE_ALPHA_ATTRIBUTE),
+                 "false");
+            putLiveAttributeValue(null, SVG_PRESERVE_ALPHA_ATTRIBUTE, lav);
+        }
+        return (SVGAnimatedBoolean)lav;
     }
 
     /**

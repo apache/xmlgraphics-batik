@@ -124,17 +124,17 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
 	    removeChild(n);
 	}
 
+        String val = (nodeValue == null) ? "" : nodeValue;
+
 	// Create and append a new child.
-	n = getOwnerDocument().createTextNode((nodeValue == null)
-                                              ? ""
-                                              : nodeValue);
+	n = getOwnerDocument().createTextNode(val);
 	appendChild(n);
 
         if (ownerElement != null) {
             ownerElement.fireDOMAttrModifiedEvent(nodeName,
                                                   this,
                                                   s,
-                                                  nodeValue,
+                                                  val,
                                                   MutationEvent.MODIFICATION);
         }
     }

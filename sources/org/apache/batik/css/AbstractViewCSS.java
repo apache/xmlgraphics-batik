@@ -362,10 +362,13 @@ public abstract class AbstractViewCSS implements ViewCSS {
             CSSOMRuleList authorRules = new CSSOMRuleList();
             StyleSheetList l = ((DocumentStyle)document).getStyleSheets();
             for (int i = 0; i < l.getLength(); i++) {
-                addMatchingRules(((CSSStyleSheet)l.item(i)).getCssRules(),
-                                 e,
-                                 pe,
-                                 authorRules);
+                CSSStyleSheet ss = (CSSStyleSheet)l.item(i);
+                if (!ss.getDisabled()) {
+                    addMatchingRules(((CSSStyleSheet)l.item(i)).getCssRules(),
+                                     e,
+                                     pe,
+                                     authorRules);
+                }
             }
             authorRules = sortRules(authorRules, e, pe);
             for (int i = 0; i < authorRules.getLength(); i++) {

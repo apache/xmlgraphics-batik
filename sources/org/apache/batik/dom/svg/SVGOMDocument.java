@@ -441,6 +441,13 @@ public class SVGOMDocument
         return defaultView;
     }
 
+    /**
+     * Clears the view CSS.
+     */
+    public void clearViewCSS() {
+        defaultView = null;
+    }
+
     // DocumentCSS ////////////////////////////////////////////////////////////
 
     /**

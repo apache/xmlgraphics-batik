@@ -61,6 +61,7 @@ import java.util.zip.GZIPInputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -69,6 +70,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
@@ -78,7 +80,12 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
+import org.apache.batik.dom.StyleSheetProcessingInstruction;
+
 import org.apache.batik.dom.svg.SVGOMDocument;
+
+import org.apache.batik.dom.util.HashTable;
+import org.apache.batik.dom.util.DOMUtilities;
 
 import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
@@ -129,6 +136,14 @@ import org.apache.batik.ext.swing.JAffineTransformChooser;
 import org.apache.batik.xml.XMLUtilities;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.ProcessingInstruction;
+
+import org.w3c.dom.stylesheets.DocumentStyle;
+import org.w3c.dom.stylesheets.StyleSheetList;
+ 
+import org.w3c.dom.css.CSSStyleSheet;
 
 import org.w3c.dom.css.ViewCSS;
 
@@ -175,6 +190,7 @@ public class JSVGViewerFrame
     public final static String ZOOM_OUT_ACTION = "ZoomOutAction";
     public final static String PREVIOUS_TRANSFORM_ACTION = "PreviousTransformAction";
     public final static String NEXT_TRANSFORM_ACTION = "NextTransformAction";
+    public final static String USE_STYLESHEET_ACTION = "UseStylesheetAction";
     public final static String STOP_ACTION = "StopAction";
     public final static String MONITOR_ACTION = "MonitorAction";
     public final static String DOM_VIEWER_ACTION = "DOMViewerAction";
@@ -260,6 +276,12 @@ public class JSVGViewerFrame
      */
     protected NextTransformAction nextTransformAction =
         new NextTransformAction();
+
+    /**
+     * The use (author) stylesheet action
+     */
+    protected UseStylesheetAction useStylesheetAction =
+        new UseStylesheetAction();
 
     /**
      * The debug flag.
@@ -372,6 +394,7 @@ public class JSVGViewerFrame
  
         listeners.put(PREVIOUS_TRANSFORM_ACTION, previousTransformAction);
         listeners.put(NEXT_TRANSFORM_ACTION, nextTransformAction);
+        listeners.put(USE_STYLESHEET_ACTION, useStylesheetAction);
         listeners.put(STOP_ACTION, stopAction);
         listeners.put(MONITOR_ACTION, new MonitorAction());
         listeners.put(DOM_VIEWER_ACTION, new DOMViewerAction());
@@ -1142,6 +1165,90 @@ public class JSVGViewerFrame
     }
 
     /**
+     * To apply the selected author stylesheet
+     */
+    public class UseStylesheetAction extends    AbstractAction
+                                     implements JComponentModifier {
+
+        List components = new LinkedList();
+
+        public UseStylesheetAction() {}
+
+        public void actionPerformed(ActionEvent e) {
+        }
+
+        public void addJComponent(JComponent c) {
+            components.add(c);
+            c.setEnabled(false);
+        }
+
+        protected void update() {
+            Iterator it = components.iterator();
+            if (it.hasNext()) {
+
+                JComponent stylesheetMenu = (JComponent)it.next();
+                stylesheetMenu.removeAll();
+                stylesheetMenu.setEnabled(false);
+
+                SVGDocument doc = svgCanvas.getSVGDocument();
+                NodeList children = doc.getChildNodes();
+                ButtonGroup buttonGroup = new ButtonGroup();
+                HashTable stylesheetTitles = new HashTable();
+
+                // !!! The traversal should be recursive
+                for (int ix=0; ix < children.getLength(); ix++) {
+                    Node n = children.item(ix);
+                    if (n.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE &&
+                        n instanceof StyleSheetProcessingInstruction) {
+
+                        String data = ((ProcessingInstruction)n).getData();
+
+                        HashTable attrs = new HashTable();
+                        attrs.put("alternate", "no");
+
+                        DOMUtilities.parseStyleSheetPIData(data, attrs);
+                        final String title = (String)attrs.get("title");
+
+                        // If no title is specified, then the stylesheet should
+                        // always be applied
+                        
+                        // If the title has already been found, then it is part
+                        // of a group, and no new menu option is needed
+                        if (title != null && stylesheetTitles.get(title) == null)  {
+                            stylesheetTitles.put(title, title);
+
+                            JRadioButtonMenuItem button;
+                            button = new JRadioButtonMenuItem(title);
+                            if (((String)attrs.get("alternate")).equals("no")) {
+                                button.setSelected(true);
+                            }
+                            button.addActionListener
+                                (new java.awt.event.ActionListener() {
+                                    public void actionPerformed (ActionEvent e) {
+                                        SVGDocument doc = svgCanvas.getSVGDocument();
+                                        StyleSheetList l;
+                                        l = ((DocumentStyle)doc).getStyleSheets();
+                                        for (int i = 0; i < l.getLength(); i++) {
+                                            CSSStyleSheet ss;
+                                            ss = (CSSStyleSheet)l.item(i);
+                                            ss.setDisabled(!title.equals(ss.getTitle()));
+                                        }
+                                        ((SVGOMDocument)doc).clearViewCSS();
+                                        svgCanvas.setSVGDocument(doc);
+                                    }
+                                });
+  
+                            buttonGroup.add(button);
+                            stylesheetMenu.add(button);
+                            stylesheetMenu.setEnabled(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * To stop the current processing.
      */
     public class StopAction extends    AbstractAction
@@ -1363,6 +1470,8 @@ public class JSVGViewerFrame
         transformHistory = new TransformHistory();
         previousTransformAction.update();
         nextTransformAction.update();
+
+        useStylesheetAction.update();
     }
 
     /**
