@@ -214,6 +214,11 @@ public class ViewerFrame
     protected String currentPath = ".";
 
     /**
+     * The current path where to export files.
+     */
+    protected String currentExportPath = ".";
+
+    /**
      * The uri chooser.
      */
     protected URIChooser uriChooser;
@@ -745,7 +750,7 @@ public class ViewerFrame
     public class ExportPNGAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser =
-                new JFileChooser(currentPath);
+                new JFileChooser(currentExportPath);
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
                 (JFileChooser.FILES_AND_DIRECTORIES);
@@ -765,6 +770,7 @@ public class ViewerFrame
                 new Thread() {
                     public void run() {
                         try {
+                            currentExportPath = f.getCanonicalPath();
                             OutputStream ostream =
                               new BufferedOutputStream(new FileOutputStream(f));
                             trans.writeImage(img, ostream);
@@ -785,7 +791,7 @@ public class ViewerFrame
     public class ExportJPGAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser =
-                new JFileChooser(currentPath);
+                new JFileChooser(currentExportPath);
             fileChooser.setFileHidingEnabled(false);
             fileChooser.setFileSelectionMode
                 (JFileChooser.FILES_AND_DIRECTORIES);
@@ -805,6 +811,7 @@ public class ViewerFrame
                 new Thread() {
                     public void run() {
                         try {
+                            currentExportPath = f.getCanonicalPath();
                             OutputStream ostream =
                               new BufferedOutputStream(new FileOutputStream(f));
                             trans.writeImage(img, ostream);
