@@ -294,70 +294,26 @@ public class SVGFeComponentTransferElementBridge implements FilterBridge,
             throw new MissingAttributeException(
                 Messages.formatMessage("feComponentTransfer.type.required",
                                        null));
-        } else {
-            switch(value.charAt(0)){
-            case 't': // table
-                if(value.length() == VALUE_TABLE.length()){
-                    if(value.charAt(1) == 'a' &&
-                           value.charAt(2) == 'b' &&
-                           value.charAt(3) == 'l' &&
-                           value.charAt(4) == 'e'){
-                        return ComponentTransferFunction.TABLE;
-                    }
-                }
-                break;
-            case 'd': // discrete
-                if(value.length() == VALUE_DISCRETE.length()){
-                    if(value.charAt(1) == 'i' &&
-                           value.charAt(2) == 's' &&
-                           value.charAt(3) == 'c' &&
-                           value.charAt(4) == 'r' &&
-                           value.charAt(5) == 'e' &&
-                           value.charAt(6) == 't' &&
-                           value.charAt(7) == 'e'){
-                        return ComponentTransferFunction.DISCRETE;
-                    }
-                }
-                break;
-            case 'l': // linear
-                if(value.length() == VALUE_LINEAR.length()){
-                    if(value.charAt(1) == 'i' &&
-                           value.charAt(2) == 'n' &&
-                           value.charAt(3) == 'e' &&
-                           value.charAt(4) == 'a' &&
-                           value.charAt(5) == 'r' ){
-                        return ComponentTransferFunction.LINEAR;
-                    }
-                }
-                break;
-            case 'g': // gamma
-                if(value.length() == VALUE_GAMMA.length()){
-                    if(value.charAt(1) == 'a' &&
-                           value.charAt(2) == 'm' &&
-                           value.charAt(3) == 'm' &&
-                           value.charAt(4) == 'a'){
-                        return ComponentTransferFunction.GAMMA;
-                    }
-                }
-                break;
-            case 'i': // identity
-                if(value.length() == VALUE_IDENTITY.length()){
-                    if(value.charAt(1) == 'd' &&
-                           value.charAt(2) == 'e' &&
-                           value.charAt(3) == 'n' &&
-                           value.charAt(4) == 't' &&
-                           value.charAt(5) == 'i' &&
-                           value.charAt(6) == 't' &&
-                           value.charAt(7) == 'y'){
-                        return ComponentTransferFunction.IDENTITY;
-                    }
-                }
-                break;
-            }
+
         }
-        throw new IllegalAttributeValueException(
+
+        int type;
+        if (VALUE_TABLE.equals(value)) {
+            type = ComponentTransferFunction.TABLE;
+        } else if (VALUE_DISCRETE.equals(value)) {
+            type = ComponentTransferFunction.DISCRETE;
+        } else if (VALUE_LINEAR.equals(value)) {
+            type = ComponentTransferFunction.LINEAR;
+        } else if (VALUE_GAMMA.equals(value)) {
+            type = ComponentTransferFunction.GAMMA;
+        } else if (VALUE_IDENTITY.equals(value)) {
+            type = ComponentTransferFunction.IDENTITY;
+        } else {
+            throw new IllegalAttributeValueException(
                 Messages.formatMessage("feComponentTransfer.type.invalid",
                                        new Object[] { value }));
+        }
+        return type;
     }
 
 

@@ -217,9 +217,12 @@ public interface SVGConstants extends CSSConstants {
     /**
      * Attribute values
      */
+    String VALUE_A = "A";
     String VALUE_ARITHMETIC = "arithmetic";
     String VALUE_ALIGN = "align";
+    String VALUE_ATOP = "atop";
     String VALUE_AUTO = "auto";
+    String VALUE_B = "B";
     String VALUE_BACKGROUND_IMAGE = "BackgroundImage";
     String VALUE_COMPOSITE = "composite";
     String VALUE_CRISP_EDGES = "crispEdges";
@@ -253,6 +256,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_FONT_STYLE_ITALIC = "italic";
     String VALUE_FONT_STYLE_OBLIQUE = "oblique";
     String VALUE_FRACTAL_NOISE = "fractalNoise";
+    String VALUE_G = "G";
     String VALUE_GAMMA = "gamma";
     String VALUE_GEOMETRIC_PRECISION = "geometricPrecision";
     String VALUE_HUE_ROTATE = "hueRotate";
@@ -292,6 +296,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_PATTERN_WIDTH_DEFAULT = "100%";
     String VALUE_PATTERN_HEIGHT_DEFAULT = "100%";
     String VALUE_PRESERVE = "preserve";
+    String VALUE_R = "R";
     String VALUE_REFLECT = "reflect";
     String VALUE_REPEAT = "repeat";
     String VALUE_SATURATE = "saturate";
@@ -306,6 +311,7 @@ public interface SVGConstants extends CSSConstants {
     String VALUE_TYPE_TABLE = "table";
     String VALUE_USER_SPACE_ON_USE = "userSpaceOnUse";
     String VALUE_USER_SPACE = "userSpace";
+    String VALUE_XOR = "xor";
     String VALUE_ZERO = "0";
     String VALUE_ZERO_PERCENT = "0%";
 

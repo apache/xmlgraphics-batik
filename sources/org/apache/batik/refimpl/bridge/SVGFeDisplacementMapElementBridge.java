@@ -9,23 +9,31 @@
 package org.apache.batik.refimpl.bridge;
 
 import java.awt.geom.Rectangle2D;
+
 import java.util.Map;
 import java.util.Vector;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeMutationEvent;
 import org.apache.batik.bridge.FilterBridge;
+import org.apache.batik.bridge.IllegalAttributeValueException;
+import org.apache.batik.bridge.MissingAttributeException;
+
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.filter.ARGBChannel;
-import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.DisplacementMapRable;
+import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.PadMode;
 import org.apache.batik.gvt.filter.PadRable;
+
+import org.apache.batik.refimpl.bridge.resources.Messages;
 import org.apache.batik.refimpl.gvt.filter.ConcreteDisplacementMapRable;
 import org.apache.batik.refimpl.gvt.filter.ConcretePadRable;
+
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSStyleDeclaration;
@@ -65,21 +73,20 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
         //
         // Extract standard deviation
         //
-        String scaleStr
-            = filterElement.getAttributeNS(null,
-                                           ATTR_SCALE);
-        double scale = Float.parseFloat(scaleStr);
+        String scaleStr = filterElement.getAttributeNS(null, ATTR_SCALE);
+        double scale = 0;
+        if (scaleStr.length() != 0) {
+            scale = Float.parseFloat(scaleStr);
+        }
 
         String xChannelSelectorStr
-            = filterElement.getAttributeNS(null,
-                                           ATTR_X_CHANNEL_SELECTOR);
+            = filterElement.getAttributeNS(null, ATTR_X_CHANNEL_SELECTOR);
 
-        ARGBChannel xChannelSelector
-            = computeChannelSelector(xChannelSelectorStr);
+        ARGBChannel xChannelSelector =
+            computeChannelSelector(xChannelSelectorStr);
 
         String yChannelSelectorStr
-            = filterElement.getAttributeNS(null,
-                                           ATTR_Y_CHANNEL_SELECTOR);
+            = filterElement.getAttributeNS(null, ATTR_Y_CHANNEL_SELECTOR);
 
         ARGBChannel yChannelSelector
             = computeChannelSelector(yChannelSelectorStr);
@@ -95,29 +102,32 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
                                                   inAttr,
                                                   bridgeContext,
                                                   filteredElement,
-                                                  in, filterMap);
+                                                  in,
+                                                  filterMap);
 
         Filter in2 = null;
 
         // Get source 2
         String in2Attr = filterElement.getAttributeNS(null, ATTR_IN2);
+        if (in2Attr.length() == 0) {
+            throw new MissingAttributeException(
+                Messages.formatMessage("feDisplacementMap.in2.required", null));
+        }
         in2 = CSSUtilities.getFilterSource(filteredNode,
-                                          in2Attr,
-                                          bridgeContext,
-                                          filteredElement,
-                                          in, filterMap);
+                                           in2Attr,
+                                           bridgeContext,
+                                           filteredElement,
+                                           in,
+                                           filterMap);
 
         //
-        // The default region is the union of the
-        // input sources bounds unless in in is
-        // SourceGraphic, in which case the default
-        // is the filter chain's region
+        // The default region is the union of the input sources bounds
+        // unless in in is SourceGraphic, in which case the default is
+        // the filter chain's region
         //
-        Filter sourceGraphics
-            = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        Filter sourceGraphics = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
 
-        Rectangle2D defaultRegion
-            = in1.getBounds2D();
+        Rectangle2D defaultRegion = in1.getBounds2D();
         defaultRegion.add(in2.getBounds2D());
 
         if(in1 == sourceGraphics){
@@ -125,14 +135,10 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
         }
 
         CSSStyleDeclaration cssDecl
-            = bridgeContext.getViewCSS().getComputedStyle
-            (filterElement,
-             null);
+            = bridgeContext.getViewCSS().getComputedStyle(filterElement, null);
 
         UnitProcessor.Context uctx
-            = new DefaultUnitProcessorContext
-                (bridgeContext,
-                 cssDecl);
+            = new DefaultUnitProcessorContext(bridgeContext, cssDecl);
 
         Rectangle2D dispArea
             = SVGUtilities.convertFilterPrimitiveRegion(filterElement,
@@ -141,23 +147,19 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
                                                         filteredNode,
                                                         uctx);
 
-        PadRable pad
-            = new ConcretePadRable
-                (in, dispArea, PadMode.ZERO_PAD);
+        PadRable pad = new ConcretePadRable(in, dispArea, PadMode.ZERO_PAD);
 
         // Build filter
         Vector sources = new Vector();
         sources.addElement(pad);
         sources.addElement(in2);
-        filter
-            = new ConcreteDisplacementMapRable(sources, scale,
-                                               xChannelSelector,
-                                               yChannelSelector);
+        filter = new ConcreteDisplacementMapRable(sources,
+                                                  scale,
+                                                  xChannelSelector,
+                                                  yChannelSelector);
 
         // Get result attribute if any
-        String result
-            = filterElement.getAttributeNS(null,
-                                           ATTR_RESULT);
+        String result = filterElement.getAttributeNS(null, ATTR_RESULT);
         if((result != null) && (result.trim().length() > 0)){
             filterMap.put(result, filter);
         }
@@ -173,32 +175,25 @@ public class SVGFeDisplacementMapElementBridge implements FilterBridge,
         // <!> FIXME : TODO
     }
 
-    private ARGBChannel computeChannelSelector
-        (String channelSelectorStr){
-        ARGBChannel channelSelector = ARGBChannel.R;
+    private static ARGBChannel computeChannelSelector(String value) {
+        ARGBChannel channelSelector;
+        if (value.length() == 0) {
+            channelSelector = ARGBChannel.A; // default value
+        } else if (VALUE_A.equals(value)) {
+            channelSelector = ARGBChannel.A;
+        } else if (VALUE_R.equals(value)) {
+            channelSelector = ARGBChannel.R;
+        } else if (VALUE_G.equals(value)) {
+            channelSelector = ARGBChannel.G;
+        } else if (VALUE_B.equals(value)) {
+            channelSelector = ARGBChannel.B;
+        } else {
+            throw new IllegalAttributeValueException(
+                Messages.formatMessage(
+                    "feDisplacementMap.channelSelector.invalid",
+                    new Object[] { value }));
 
-        if(channelSelectorStr.length() == 1){
-            char xChar = channelSelectorStr.charAt(0);
-            switch(xChar){
-            case 'R':
-                break;
-            case 'G':
-                channelSelector = ARGBChannel.G;
-                break;
-            case 'B':
-                channelSelector = ARGBChannel.B;
-                break;
-            case 'A':
-                channelSelector = ARGBChannel.A;
-                break;
-            default:
-                throw new IllegalArgumentException("Illegal Channel: " + xChar);
-            }
         }
-        else if(channelSelectorStr.length() != 0){
-            throw new IllegalArgumentException();
-        }
-
         return channelSelector;
     }
 }

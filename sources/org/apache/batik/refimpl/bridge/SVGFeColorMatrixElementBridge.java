@@ -192,77 +192,30 @@ public class SVGFeColorMatrixElementBridge implements FilterBridge,
      * Converts an feFuncXX type attribute into a
      * ComponentTransferFunction type constant
      */
-    private static int convertType(String value){
-        if(value.length() > 0){
-            switch(value.charAt(0)){
-            case 's': // saturate
-                if(value.length() == VALUE_SATURATE.length()){
-                    if(value.charAt(1) == 'a' &&
-                           value.charAt(2) == 't' &&
-                           value.charAt(3) == 'u' &&
-                           value.charAt(4) == 'r' &&
-                           value.charAt(5) == 'a' &&
-                           value.charAt(6) == 't' &&
-                           value.charAt(7) == 'e' ){
-                        return ColorMatrixRable.TYPE_SATURATE;
-                    }
-                }
-                break;
-            case 'h': // hueRotate
-                if(value.length() == VALUE_HUE_ROTATE.length()){
-                    if(value.charAt(1) == 'u' &&
-                           value.charAt(2) == 'e' &&
-                           value.charAt(3) == 'R' &&
-                           value.charAt(4) == 'o' &&
-                           value.charAt(5) == 't' &&
-                           value.charAt(6) == 'a' &&
-                           value.charAt(7) == 't' &&
-                           value.charAt(8) == 'e'){
-                        return ColorMatrixRable.TYPE_HUE_ROTATE;
-                    }
-                }
-                break;
-            case 'l': // luminanceToAlpha
-                if(value.length() == VALUE_LUMINANCE_TO_ALPHA.length()){
-                    if(value.charAt(1) == 'u' &&
-                           value.charAt(2) == 'm' &&
-                           value.charAt(3) == 'i' &&
-                           value.charAt(4) == 'n' &&
-                           value.charAt(5) == 'a' &&
-                           value.charAt(6) == 'n' &&
-                           value.charAt(7) == 'c' &&
-                           value.charAt(8) == 'e' &&
-                           value.charAt(9) == 'T' &&
-                           value.charAt(10) == 'o' &&
-                           value.charAt(11) == 'A' &&
-                           value.charAt(12) == 'l' &&
-                           value.charAt(13) == 'p' &&
-                           value.charAt(14) == 'h' &&
-                           value.charAt(15) == 'a'){
-                        return ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA;
-                    }
-                }
-            case 'm': // matrix
-                if(value.length() == VALUE_MATRIX.length()){
-                    if(value.charAt(1) == 'a' &&
-                           value.charAt(2) == 't' &&
-                           value.charAt(3) == 'r' &&
-                           value.charAt(4) == 'i' &&
-                           value.charAt(5) == 'x' ){
-                        return ColorMatrixRable.TYPE_MATRIX;
-                    }
-                }
-                break;
-            }
+    private static int convertType(String typeStr){
+        int type;
+        if (typeStr.length() == 0) {
+            type = ColorMatrixRable.TYPE_MATRIX; // default value
 
+        } else if (VALUE_SATURATE.equals(typeStr)) {
+            type = ColorMatrixRable.TYPE_SATURATE;
+
+        } else if (VALUE_HUE_ROTATE.equals(typeStr)) {
+            type = ColorMatrixRable.TYPE_HUE_ROTATE;
+
+        } else if (VALUE_LUMINANCE_TO_ALPHA.equals(typeStr)) {
+            type = ColorMatrixRable.TYPE_LUMINANCE_TO_ALPHA;
+
+        } else if (VALUE_MATRIX.equals(typeStr)) {
+            type = ColorMatrixRable.TYPE_MATRIX;
+
+        } else {
             throw new IllegalAttributeValueException(
                 Messages.formatMessage("feColorMatrix.type.invalid",
-                                       new Object[] { value }));
-        } else {
-            return ColorMatrixRable.TYPE_MATRIX;
+                                       new Object[] { typeStr }));
         }
+        return type;
     }
-
 
     /**
      * Update the <tt>Filter</tt> object to reflect the current
