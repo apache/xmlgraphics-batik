@@ -8,6 +8,8 @@
 
 package org.apache.batik.refimpl.bridge;
 
+import java.util.Map;
+
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -15,6 +17,8 @@ import java.awt.Composite;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
+
+import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.ClipBridge;
@@ -32,10 +36,12 @@ import org.apache.batik.gvt.StrokeShapePainter;
 import org.apache.batik.gvt.filter.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 import org.apache.batik.gvt.filter.Mask;
+import org.apache.batik.gvt.filter.FilterRegion;
 
 import org.apache.batik.refimpl.bridge.resources.Messages;
 
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.SVGUtilities;
 import org.apache.batik.util.UnitProcessor;
 
 import org.w3c.dom.Document;
@@ -805,6 +811,81 @@ public class CSSUtilities implements SVGConstants {
         return filter;
     }
 
+    public static Filter getFilterSource(GraphicsNode  node,
+                                         String        inAttr,
+                                         BridgeContext ctx,
+                                         Element       filteredElement,
+                                         Filter        in,
+                                         Map           filterMap) {
+        System.out.println("In: " + in);
+        int inValue = SVGUtilities.parseInAttribute(inAttr);
+        System.out.println("InVal: " + inValue);
+        switch (inValue) {
+        case SVGUtilities.EMPTY:
+            return in;
+
+        case SVGUtilities.IDENTIFIER:
+            return (Filter)filterMap.get(inAttr);
+
+        case SVGUtilities.SOURCE_GRAPHIC:
+            return (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+
+        case SVGUtilities.SOURCE_ALPHA:
+            in = (Filter)filterMap.get(VALUE_SOURCE_GRAPHIC);
+        System.out.println("In: " + in);
+            in =  new org.apache.batik.refimpl.gvt.filter.FilterAlphaRable(in);
+        System.out.println("In: " + in);
+            return in;
+
+        case SVGUtilities.FILL_PAINT: {
+            CSSStyleDeclaration cssDecl;
+            cssDecl = ctx.getViewCSS().getComputedStyle(filteredElement, null);
+            UnitProcessor.Context uctx
+                = new DefaultUnitProcessorContext(ctx, cssDecl);
+            Paint paint = convertFillToPaint((SVGElement)filteredElement, 
+                                             node, ctx, cssDecl, uctx);
+            if (paint == null) 
+                // create a transparent flood
+                paint = new Color(0, 0, 0, 0);
+
+            return new org.apache.batik.refimpl.gvt.filter.ConcreteFloodRable
+                (infiniteFilterRegion, paint);
+        }
+
+        case SVGUtilities.STROKE_PAINT: {
+            CSSStyleDeclaration cssDecl;
+            cssDecl = ctx.getViewCSS().getComputedStyle(filteredElement, null);
+            UnitProcessor.Context uctx
+                = new DefaultUnitProcessorContext(ctx, cssDecl);
+            Paint paint = convertStrokeToPaint((SVGElement)filteredElement,
+                                               node, ctx, cssDecl, uctx);
+            return new org.apache.batik.refimpl.gvt.filter.ConcreteFloodRable
+                (infiniteFilterRegion, paint);
+        }
+
+        case SVGUtilities.BACKGROUND_IMAGE:
+            throw new Error("BackgroundImage not implemented yet");
+
+        case SVGUtilities.BACKGROUND_ALPHA:
+            throw new Error("BackgroundAlpha not implemented yet");
+
+        default:
+            // Should never, ever, ever happen
+            throw new Error();
+        }
+    }
+
+    // This is a bit of a hack but we set the flood bounds to
+    // -floatmax/2 -> floatmax/2 (should cover the area ok).
+    static FilterRegion infiniteFilterRegion = new FilterRegion() {
+            public Rectangle2D getRegion() {
+                return new Rectangle2D.Float(-Float.MAX_VALUE/2, 
+                                             -Float.MAX_VALUE/2,
+                                             Float.MAX_VALUE,    
+                                             Float.MAX_VALUE);
+            }
+        };
+    
     /**
      * Converts the input value to a ratio. If the input value ends
      * with a % character, it is considered a percentage. Otherwise,

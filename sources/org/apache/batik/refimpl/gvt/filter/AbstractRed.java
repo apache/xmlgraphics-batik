@@ -607,5 +607,20 @@ public abstract class AbstractRed implements CachableRed {
         return wr;
     }
 
+    public static void copyBand(Raster         src, int srcBand, 
+                                WritableRaster dst, int dstBand) {
+        Rectangle srcR = new Rectangle(src.getMinX(),  src.getMinY(),
+                                       src.getWidth(), src.getHeight());
+        Rectangle dstR = new Rectangle(dst.getMinX(),  dst.getMinY(),
+                                       dst.getWidth(), dst.getHeight());
+
+        Rectangle cpR  = srcR.intersection(dstR);
+
+        int [] samples = null;
+        for (int y=cpR.y; y< cpR.y+cpR.height; y++) {
+            samples = src.getSamples(cpR.x, y, cpR.width, 1, srcBand, samples);
+            dst.setSamples(cpR.x, y, cpR.width, 1, dstBand, samples);
+        }
+    }
 }
 

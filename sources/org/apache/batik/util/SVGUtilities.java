@@ -191,9 +191,9 @@ public class SVGUtilities implements SVGConstants {
                         value.charAt(8) != 'p' ||
                         value.charAt(9) != 'h' ||
                         value.charAt(10) != 'a') {
-                        return SOURCE_ALPHA;
+                        return IDENTIFIER;
                     }
-                    return IDENTIFIER;
+                    return SOURCE_ALPHA;
                 case 'G':
                     if (len != 13 ||
                         value.charAt(2) != 'u' ||
@@ -206,9 +206,9 @@ public class SVGUtilities implements SVGConstants {
                         value.charAt(10) != 'h' ||
                         value.charAt(11) != 'i' ||
                         value.charAt(12) != 'c') {
-                        return SOURCE_GRAPHIC;
+                        return IDENTIFIER;
                     }
-                    return IDENTIFIER;
+                    return SOURCE_GRAPHIC;
                 default:
                     return IDENTIFIER;
                 }

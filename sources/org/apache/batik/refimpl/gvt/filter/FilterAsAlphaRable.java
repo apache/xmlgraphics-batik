@@ -59,19 +59,26 @@ public class FilterAsAlphaRable
 
     /**
      * Notice to source that we only want an alpha channel.
+     * The source should simply render alpha (no conversion)
+     */
+    public static Object VALUE_COLORSPACE_ALPHA = new Object();
+
+    /**
+     * Notice to source that we only want an alpha channel.
      * The source should follow the SVG spec for how to
      * convert ARGB, RGB, Grey and AGrey to just an Alpha channel.
      */
-    public static Object VALUE_COLORSPACE_ALPHA = new Object();
+    public static Object VALUE_COLORSPACE_ALPHA_CONVERT = new Object();
 
     public static RenderingHints.Key KEY_COLORSPACE = 
         new RenderingHints.Key(9876) {
                 public boolean isCompatibleValue(Object val) {
-                    if (val == VALUE_COLORSPACE_ARGB)  return true;
-                    if (val == VALUE_COLORSPACE_RGB)   return true;
-                    if (val == VALUE_COLORSPACE_GREY)  return true;
-                    if (val == VALUE_COLORSPACE_AGREY) return true;
-                    if (val == VALUE_COLORSPACE_ALPHA) return true; 
+                    if (val == VALUE_COLORSPACE_ARGB)          return true;
+                    if (val == VALUE_COLORSPACE_RGB)           return true;
+                    if (val == VALUE_COLORSPACE_GREY)          return true;
+                    if (val == VALUE_COLORSPACE_AGREY)         return true;
+                    if (val == VALUE_COLORSPACE_ALPHA)         return true; 
+                    if (val == VALUE_COLORSPACE_ALPHA_CONVERT) return true; 
                     return false;
                 }
             };
@@ -79,7 +86,7 @@ public class FilterAsAlphaRable
     public static final String PROPERTY_COLORSPACE = 
         "org.apache.batik.gvt.refimpl.filter.Colorspace";
 
-    FilterAsAlphaRable(Filter src) {
+    public FilterAsAlphaRable(Filter src) {
         super(src, null);
     }
 
@@ -107,7 +114,7 @@ public class FilterAsAlphaRable
         if (aoi == null)
             aoi = getBounds2D();
 
-        rh.put(KEY_COLORSPACE, VALUE_COLORSPACE_ALPHA);
+        rh.put(KEY_COLORSPACE, VALUE_COLORSPACE_ALPHA_CONVERT);
 
         RenderedImage ri;
         ri = getSource().createRendering(new RenderContext(at, aoi, rh));
@@ -115,7 +122,7 @@ public class FilterAsAlphaRable
         CachableRed cr = ConcreteRenderedImageCachableRed.wrap(ri);
 
         Object val = cr.getProperty(PROPERTY_COLORSPACE);
-        if (val == VALUE_COLORSPACE_ALPHA) 
+        if (val == VALUE_COLORSPACE_ALPHA_CONVERT) 
             return cr;
 
         return new FilterAsAlphaRed(cr);

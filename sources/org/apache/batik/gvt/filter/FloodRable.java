@@ -8,11 +8,11 @@
 
 package org.apache.batik.gvt.filter;
 
-import java.awt.Color;
+import java.awt.Paint;
 import java.awt.Shape;
 
 /**
- * Fills the input image with a given color
+ * Fills the input image with a given paint
  *
  * @author <a href="mailto:dean@w3.org">Dean Jackson</a>
  * @version $Id$
@@ -20,20 +20,20 @@ import java.awt.Shape;
 
 public interface FloodRable extends Filter {
     /**
-     * Set the flood color.
-     * @param color the flood color to use when filling
+     * Set the flood paint.
+     * @param paint the flood paint to use when filling
      */
-    public void setFloodColor(Color color);
+    public void setFloodPaint(Paint paint);
 
     /**
-     * Get the flood color.
-     * @return The current flood color for the filter
+     * Get the flood paint.
+     * @return The current flood paint for the filter
      */
-    public Color getFloodColor();
+    public Paint getFloodPaint();
 
     /**
      * Sets the flood region
-     * @param floodRegion region to flood with floodColor
+     * @param floodRegion region to flood with floodPaint
      */
     public void setFloodRegion(FilterRegion floodRegion);
     
