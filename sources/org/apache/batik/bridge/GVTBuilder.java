@@ -88,7 +88,7 @@ public class GVTBuilder implements SVGConstants {
         }
         // <!> FIXME: TO BE REMOVED
         if (ctx.isDynamic()) {
-            BridgeEventSupport.loadScripts(ctx, document);
+            BridgeEventSupport.loadScripts(ctx, svgElement);
             BridgeEventSupport.addGVTListener(ctx, svgElement);
         }
         return rootNode;
@@ -120,6 +120,12 @@ public class GVTBuilder implements SVGConstants {
                 buildComposite(ctx, e, (CompositeGraphicsNode)gn);
             }
             gnBridge.buildGraphicsNode(ctx, e, gn);
+        }
+        // <!> FIXME: see build(BridgeContext, Element)
+        // + may load the script twice (for example
+        // outside 'use' is ok versus local 'use' maybe wrong).
+        if (ctx.isDynamic()) {
+            BridgeEventSupport.loadScripts(ctx, e);
         }
         return gn;
     }

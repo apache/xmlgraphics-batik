@@ -326,9 +326,10 @@ class BridgeEventSupport implements SVGConstants {
         }
     }
 
-    public static void loadScripts(BridgeContext ctx, Document doc) {
-        NodeList list = doc.getElementsByTagNameNS(SVG_NAMESPACE_URI,
-                                                   SVG_SCRIPT_TAG);
+    public static void loadScripts(BridgeContext ctx, Element element) {
+        Document doc = element.getOwnerDocument();
+        NodeList list = element.getElementsByTagNameNS(SVG_NAMESPACE_URI,
+                                                       SVG_SCRIPT_TAG);
         final UserAgent ua = ctx.getUserAgent();
         String language = null;
         Element selement = null;
