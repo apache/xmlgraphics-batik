@@ -36,10 +36,11 @@
             <li><link href="#using">Rasterizing one or several SVG files</link></li>
         </ul>            
         <p>
-        The SVG Rasterizer is a utility that can convert SVG files to a raster format.
-        The tool can convert individual files or sets of files, making it easy to 
-        convert entire directories of SVG files. It can convert to various raster image
-        formats and the two supported by default are JPEG and PNG.
+            The SVG Rasterizer is a utility that can convert SVG files to a
+            raster format. The tool can convert individual files or sets of
+            files, making it easy to convert entire directories of SVG
+            files. The two by default formats are JPEG and PNG, however the
+            design allows new formats to be added easily.
         </p>
 
         </s1>

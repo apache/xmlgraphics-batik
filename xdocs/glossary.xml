@@ -43,7 +43,7 @@
         binding which allows SVG scripts to access or modify SVG document, for example
         in reaction to events. There is also a Java technology binding which allows
         Java programs to dynamically interact with SVG documents. The Java binding
-        and the ECMA Script binding are both used in Batik.
+        and the ECMA Script binding are both available in Batik.
         </p>
 
         </s1>

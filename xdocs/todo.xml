@@ -206,5 +206,9 @@
             SVG Generator.
         </action>
 
+        <action context="doc" assigned-to="VH">
+            Use new version of StyleBook
+        </action>
+
     </actions>
 </todo>

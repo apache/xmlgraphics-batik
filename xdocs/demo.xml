@@ -29,7 +29,7 @@
                 <p>The Batik distribution contains several pre-packaged demos:</p>
                 <ul>
                     <li><link href="#svgviewer">SVG Viewer</link></li>
-                    <li><link href="#applet">SVG Applet</link></li>
+                    <!-- <li><link href="#applet">SVG Applet</link></li>-->
                     <li><link href="#rasterizer">SVG Rasterizer</link></li>
                     <li><link href="#svggen">SVG Generator</link></li>
                 </ul>
@@ -40,12 +40,12 @@
                 <p>The <link href="svgviewer.html">SVG Viewer</link> lets you view SVG file,
                 zoom, pan and rotate in the content and select text items in the image.</p>
             </s2>
-            <anchor id="applet" />
+            <!-- <anchor id="applet" />
             <s2 title="SVG Applet">
                 <figure src="images/applet.jpg" alt="Batik Applet"/>
                 <p>The <link href="svgapplet.html">SVG Applet</link> delivers the viewer's 
                 display capabilities as a Java technology applet.</p>
-            </s2>
+            </s2> -->
             <anchor id="rasterizer" />
             <s2 title="SVG Rasterizer">
                 <figure src="images/rasterizer.jpg" alt="Batik Rasterizer"/>

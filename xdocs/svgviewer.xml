@@ -61,9 +61,10 @@
                 gotten a file called <em>batik-1.0beta.zip</em>, which, when expanded, 
                 created a <em>batik-svgviewer.jar</em> file. To start the viewer, simply
                 type the following on the command line:</p>
+                <p><em>cd &lt;installationDirectory&gt;</em></p>
                 <p><em>java -jar batik-svgviewer.jar</em></p>
                 <p>You can pass options to the command line:</p>
-                <p><em>java -jar batik-viewer.jar [-sf] [-lnf [lookAndFeelName]] [svgURL]</em></p>
+                <p><em>java -jar batik-svgviewer.jar [-sf] [-lnf [lookAndFeelName]] [svgURL]</em></p>
                 <p>Where:</p>
                     <ul>
                         <li><em>-sf</em> will make the viewer use small fonts in the GUI.</li>
@@ -76,7 +77,8 @@
                     <li><em>java -jar batik-svgviewer.jar -sf</em> starts the viewer with small fonts.</li>
                     <li><em>java -jar batik-svgviewer.jar -lnf com.sun.java.swing.plaf.motif.MotifLookAndFeel</em> starts the viewer with 
                         the Motif look and feel. The default look and feel is Metal, the default Swing look and feel</li>
-                    <li><em>java -jar batik-svgviewer.jar -sf logo.svg</em> starts the viewer with the logo.svg file open (and small fonts,
+                    <li><em>java -jar batik-svgviewer.jar -sf samples/batikLogo.svg</em> starts the viewer with 
+                        the batikLogo.svg file open (and small fonts,
                         because of -sf)</li>
                 </ul>
             </s2>
@@ -207,7 +209,7 @@
                 <p>There are several methods to zoom in an SVG Document:</p>
                 <ul>
                     <li>You can select the "View -&gt; Zoom In" menu item</li>
-                    <li>You can click on the "Zoom In" tool bar buttom (the one that shows a magnifying glass
+                    <li>You can click on the "Zoom In" tool bar button (the one that shows a magnifying glass
                         with a "+" sign)</li>
                     <li>You can use the "Ctrl+Shift+P" keyboard acceleration</li>
                     <li>If the mouse is over the document in the display area, you can press the Ctrl key
@@ -234,7 +236,7 @@
                <ul>
                     <li>You can select the "View -&gt; Initial Zoom" menu item</li>
                     <li>You can click on the "Initial Zoom" tool bar buttom (the one that shows a square with four
-                    arrows pointing in the Nort, East, South and West directions)</li>
+                    arrows pointing in the North, East, South and West directions)</li>
                     <li>You can use the "Ctrl+1" keyboard acceleration</li>
                 </ul>        
             </s2>
