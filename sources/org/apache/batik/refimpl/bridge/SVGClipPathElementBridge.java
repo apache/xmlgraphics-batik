@@ -96,11 +96,15 @@ public class SVGClipPathElementBridge implements ClipBridge, SVGConstants {
                 GraphicsNode node
                     = builder.build(bridgeContext, (Element)child) ;
                 if(node != null){
-                    Area outline = new Area(new TransformedShape(node.getOutline(), ats));
+                    Area outline =
+                        new Area(new TransformedShape(node.getOutline(), ats));
                     // compute clip-path on the child
-                    ShapeNode outlineNode = bridgeContext.getGVTFactory().createShapeNode();
+                    ShapeNode outlineNode =
+                        bridgeContext.getGVTFactory().createShapeNode();
                     outlineNode.setShape(outline);
-                    Clip clip = CSSUtilities.convertClipPath((Element)child, outlineNode, bridgeContext);
+                    Clip clip = CSSUtilities.convertClipPath((Element)child,
+                                                             outlineNode,
+                                                             bridgeContext);
                     if (clip != null) {
                         Shape clipPath = clip.getClipPath();
                         if (clipPath != null) {
