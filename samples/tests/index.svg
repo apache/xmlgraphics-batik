@@ -146,6 +146,11 @@
   </a>
 
   <rect x="5" y="410" width="440" height="30" style="fill:rgb(153, 153, 203)"/>
+  <a xlink:href="textPath.svg" xlink:show="new">
+    <text class="link" x="50%" y="430">
+      Text on a Path (textPath.svg)
+    </text>
+  </a>
 
   <rect x="5" y="445" width="440" height="50" style="fill:url(#nextGradient)"/>
   <a xlink:href="index2.svg">
