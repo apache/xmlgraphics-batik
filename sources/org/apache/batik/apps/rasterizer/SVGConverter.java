@@ -9,7 +9,6 @@
 package org.apache.batik.apps.rasterizer;
 
 import org.apache.batik.transcoder.Transcoder;
-import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
@@ -18,7 +17,6 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
@@ -26,14 +24,11 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 /**
  * This application can be used to convert SVG images to raster images.
@@ -60,9 +55,11 @@ import java.util.StringTokenizer;
  * There are a number of options which control the way the image is
  * converted to the destination format:<br /><ul>
  * <li>destinationType: controls the type of conversion which should be done. 
- * see the {@link DestinationType} documentation.</li>
+ *     see the {@link DestinationType} documentation.</li>
  * <li>width/height: they control the desired width and height, in user space,
- * for the output image.</li>
+ *     for the output image.</li>
+ * <li>maxWidth/maxHeight: control the maximum width and height, 
+ *     in user space, of the output image.</li>
  * <li>area: controls the specific sub-area of the image which should be 
  *     rendered.</li>
  * <li>backgroundColor: controls the color which is used to fill the 
@@ -85,8 +82,9 @@ import java.util.StringTokenizer;
  * </ul>
  *
  * @version $Id$
- * @author Henri Ruini
- * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a> */
+ * @author <a href="Henri.Ruini@nokia.com">Henri Ruini</a>
+ * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
+ */
 public class SVGConverter {
     // 
     // Error codes reported by the SVGConverter
@@ -203,6 +201,12 @@ public class SVGConverter {
 
     /** Output image width. */
     protected float width = DEFAULT_WIDTH;
+
+    /** Maximum output image height. */
+    protected float maxHeight = DEFAULT_HEIGHT;
+
+    /** Maximum output image width. */
+    protected float maxWidth = DEFAULT_WIDTH;
 
     /** Output image quality. */
     protected float quality = DEFAULT_QUALITY;
@@ -330,6 +334,32 @@ public class SVGConverter {
 
     public float getWidth(){
         return width;
+    }
+
+    /**
+     * If less than or equal to zero, the maximum height 
+     * does not have any effect on the output image. 
+     * The maximum height is in user space.
+     */
+    public void setMaxHeight(float height) {
+        this.maxHeight = height;
+    }
+
+    public float getMaxHeight(){
+        return maxHeight;
+    }
+
+    /**
+     * If less than or equal to zero, the maximum width 
+     * does not have any effect on the output image. 
+     * The maximum width is in user space.
+     */
+    public void setMaxWidth(float width) {
+        this.maxWidth = width;
+    }
+
+    public float getMaxWidth(){
+        return maxWidth;
     }
 
     /**
@@ -792,6 +822,14 @@ public class SVGConverter {
         }
         if (width > 0){
             map.put(ImageTranscoder.KEY_WIDTH, new Float(this.width));
+        }
+
+        // Set maximum height and width ---------------------------------------
+        if (maxHeight > 0) {
+            map.put(ImageTranscoder.KEY_MAX_HEIGHT, new Float(this.maxHeight));
+        }
+        if (maxWidth > 0){
+            map.put(ImageTranscoder.KEY_MAX_WIDTH, new Float(this.maxWidth));
         }
 
         // Set CSS Media

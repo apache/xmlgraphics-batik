@@ -11,35 +11,18 @@ package org.apache.batik.apps.rasterizer;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.StringTokenizer;
-import java.net.URL;
-import java.net.MalformedURLException;
 
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.Transcoder;
-import org.apache.batik.transcoder.image.JPEGTranscoder;
-import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.apache.batik.transcoder.image.TIFFTranscoder;
 
 import org.apache.batik.util.ApplicationSecurityEnforcer;
-
-import org.xml.sax.InputSource;
 
 /**
  * Handles command line parameters to configure the <tt>SVGConverter</tt>
@@ -324,6 +307,24 @@ public class Main implements SVGConverterController {
         = Messages.get("Main.cl.option.height.description", "No description");
 
     /**
+     * Option to specify the output image's maximum width.
+     */
+    public static String CL_OPTION_MAX_WIDTH 
+        = Messages.get("Main.cl.option.max.width", "-maxw");
+
+    public static String CL_OPTION_MAX_WIDTH_DESCRIPTION
+        = Messages.get("Main.cl.option.max.width.description", "No description");
+
+    /**
+     * Option to specify the output image's maximum height.
+     */
+    public static String CL_OPTION_MAX_HEIGHT
+        = Messages.get("Main.cl.option.max.height", "-maxh");
+
+    public static String CL_OPTION_MAX_HEIGHT_DESCRIPTION
+        = Messages.get("Main.cl.option.max.height.description", "No description");
+
+    /**
      * Option to specify the area of interest in the output 
      * image.
      */
@@ -552,7 +553,38 @@ public class Main implements SVGConverterController {
                               }
                           });
 
-        
+        optionMap.put(CL_OPTION_MAX_WIDTH,
+                      new FloatOptionHandler(){
+                              public void handleOption(float optionValue,
+                                                       SVGConverter c){
+                                  if (optionValue <= 0){
+                                      throw new IllegalArgumentException();
+                                  }
+
+                                  c.setMaxWidth(optionValue);
+                              }
+
+                              public String getOptionDescription(){
+                                  return CL_OPTION_MAX_WIDTH_DESCRIPTION;
+                              }
+                          });
+
+        optionMap.put(CL_OPTION_MAX_HEIGHT,
+                      new FloatOptionHandler(){
+                              public void handleOption(float optionValue,
+                                                       SVGConverter c){
+                                  if (optionValue <= 0){
+                                      throw new IllegalArgumentException();
+                                  }
+
+                                  c.setMaxHeight(optionValue);
+                              }
+
+                              public String getOptionDescription(){
+                                  return CL_OPTION_MAX_HEIGHT_DESCRIPTION;
+                              }
+                          });
+
         optionMap.put(CL_OPTION_AOI,
                       new RectangleOptionHandler(){
                               public void handleOption(Rectangle2D optionValue,

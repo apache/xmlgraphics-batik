@@ -66,7 +66,7 @@
             <s2 title="Using the binary distribution" >
 
                 <p>If you downloaded the binary distribution of Batik, you should have
-                gotten a file called <em>batik-1.5beta3.zip</em>, and, after expanding that
+                gotten a file called <em>batik-1.5beta4.zip</em>, and, after expanding that
                 file, a JAR (Java ARchive) file called <code>batik-rasterizer.jar</code>. 
                 To start the rasterizer, open a console, go to the directory where you 
                 expanded the distribution (and where <code>batik-rasterizer.jar</code> is located) and
@@ -82,10 +82,12 @@
                 <p><code>java -jar batik-rasterizer.jar </code><em>[options] [@files]</em></p>
                 <p>Where the options are:</p>
                 <ul>
-                <li><code>-d</code> <em>&lt;dir|file&gt;</em>. Output directory. If there is a single input file, this can be a file.</li>
+                <li><code>-d</code><em> &lt;dir|file&gt;</em>. Output directory. If there is a single input file, this can be a file.</li>
                 <li><code>-m</code><em> &lt;mimeType&gt;</em>. Output mime type, one of image/png, image/jpeg, application/pdf, image/tiff.</li>
                 <li><code>-w</code><em> &lt;width&gt;</em>. Output width. This is a floating point value.</li>
                 <li><code>-h</code><em> &lt;height&gt;</em>. Output height. This is a floating point value.</li>
+                <li><code>-maxw</code><em> &lt;width&gt;</em>. Maximum output width. This is a floating point value.</li>
+                <li><code>-maxh</code><em> &lt;height&gt;</em>. Maximum output height. This is a floating point value.</li>
                 <li><code>-a</code><em> &lt;area&gt;</em>. Output area. The format for &lt;area&gt; is x,y,w,h, where x, y, w and h
                 are floating point values.</li>
                 <li><code>-bg</code><em> &lt;color&gt;</em>. Uuput color. The format for &lt;color&gt; is a.r.g.b, where a, r, g and b
@@ -111,7 +113,7 @@
                     <li><code>java -jar batik-rasterizer.jar -d myDir -m image/jpeg samples/*.svg</code> will generate JPEG images
                     for all the SVG files found in the samples directory.</li>
                 </ul>
-                <p><strong>NOTE:</strong>to run MIME type <code>application/pdf</code> need to have (see <link href="http://xml.apache.org/fop/index.html">FOP</link>) installed.</p>
+                <p><strong>NOTE:</strong> to run MIME type <code>application/pdf</code> need to have (see <link href="http://xml.apache.org/fop/index.html">FOP</link>) installed.</p>
             </s2>
 
             <s2 title="Using the source distribution">
@@ -162,12 +164,18 @@
 
             <anchor id="initTask" />
             <s2 title="Taking rasterizer task in use">
-                <p>The first thing to do before you can use the task in your Ant 
-                projects is to set <code>batik-rasterizer.jar</code> and 
-                classes of the rasterizer task to your 
+
+                <p>The first thing to do is to compile rasterizer task classes. 
+                Download <link href="install.html#distributions">source distribution</link> 
+                of Batik and see <code>README</code> file in <code>xml-batik\contrib\rasterizertask</code> 
+                directory for more instructions. The build procedure works the same way as when building 
+                Batik itself.</p>
+
+                <p> After building set <code>batik-rasterizer.jar</code> and 
+                classes (or JAR) of the rasterizer task to your 
                 <em>CLASSPATH</em>.</p>
 
-                <p>After that you have to define the task in your Ant 
+                <p>Next you have to define the task in your Ant 
                 project. To do this, add the following line either after the 
                 <code>project</code> start tag or after the <code>target</code> 
                 start tag in the target you are using the rasterizer task:</p>
@@ -219,6 +227,22 @@ classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask" /&gt;
                         aspect ratio of the SVG file even if the both 
                         <code>height</code> and <code>width</code> has been set. 
                         </td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>maxheight</td>
+                        <td>Sets the maximum height of the result image in pixels.
+                        The image won't be higher than defined in this parameter, 
+                        regardless of the size set in the image itself or in other parameters.
+                        This is a floating point value.</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>maxwidth</td>
+                        <td>Sets the maximum width of the result image in pixels.
+                        The image won't be wider than defined in this parameter, 
+                        regardless of the size set in the image itself or in other parameters.
+                        This is a floating point value.</td>
                         <td>No</td>
                     </tr>
                     <tr>
@@ -297,11 +321,6 @@ classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask" /&gt;
                         <code>fileset</code> element(s).</td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
-                    </tr>
-
-                    <tr>
                         <td>dest</td>
                         <td>Name of a one output file. Use this with 
                         <code>src</code> parameter only. Output directory is 
@@ -334,6 +353,15 @@ classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask" /&gt;
                         created if they don't exist.</td>
                         <td>Required if <code>srcdir</code> attribute or 
                         <code>fileset</code> elements are used.</td>
+                    </tr>
+                    <tr>
+                        <td>classname</td>
+                        <td>Classname of the XML parser used to parse SVG images.
+                        The value can be either complete classname with package 
+                        information included or <code>jaxp</code>, 
+                        which means any available parser in the <code>CLASSPATH</code> 
+                        that supports JAXP. See the Batik code for the default value.</td>
+                        <td>No</td>
                     </tr>
                 </table>
                 <p>You can use <code>fileset</code> elements to select input 

@@ -133,6 +133,63 @@
 
 </testGroup>
 
+<!-- ================================================================== -->
+<!-- KEY_MAX_WIDTH and/or KEY_MAX_HEIGHT tests                          -->
+<!-- ================================================================== -->
+
+<testGroup id="transcoder.image.hints.maxDimension" class="org.apache.batik.transcoder.image.MaxDimensionTest">
+
+<!-- ###### Limit size in the document ###### -->
+<test id="transcoder.image.hints.maxWidth200">
+	<arg class="java.lang.String" value="samples/anne.svg" />
+	<arg class="java.lang.String" value="test-references/org/apache/batik/transcoder/image/anneMaxW200.png" />
+	<arg class="java.lang.Float" value="200" />
+	<arg class="java.lang.Float" value="-1" />
+</test>
+
+<test id="transcoder.image.hints.maxHeight200">
+	<arg class="java.lang.String" value="samples/anne.svg" />
+	<arg class="java.lang.String" value="test-references/org/apache/batik/transcoder/image/anneMaxH200.png" />
+	<arg class="java.lang.Float" value="-1" />
+	<arg class="java.lang.Float" value="200" />
+</test>
+
+<test id="transcoder.image.hints.maxWidthHeight200">
+	<arg class="java.lang.String" value="samples/anne.svg" />
+	<arg class="java.lang.String" value="test-references/org/apache/batik/transcoder/image/anneMaxWH200.png" />
+	<arg class="java.lang.Float" value="200" />
+	<arg class="java.lang.Float" value="200" />
+</test>
+
+<!-- ###### Limit size set in hints ###### -->
+<test id="transcoder.image.hints.maxWidth200.overrideHints">
+	<arg class="java.lang.String" value="samples/anne.svg" />
+	<arg class="java.lang.String" value="test-references/org/apache/batik/transcoder/image/anneMaxW200.png" />
+	<arg class="java.lang.Float" value="200" />
+	<arg class="java.lang.Float" value="-1" />
+	<arg class="java.lang.Float" value="300" />
+	<arg class="java.lang.Float" value="-1" />
+</test>
+
+<test id="transcoder.image.hints.maxHeight200.overrideHints">
+	<arg class="java.lang.String" value="samples/anne.svg" />
+	<arg class="java.lang.String" value="test-references/org/apache/batik/transcoder/image/anneMaxH200.png" />
+	<arg class="java.lang.Float" value="-1" />
+	<arg class="java.lang.Float" value="200" />
+	<arg class="java.lang.Float" value="-1" />
+	<arg class="java.lang.Float" value="300" />
+</test>
+
+<test id="transcoder.image.hints.maxWidthHeight200.overrideHints">
+	<arg class="java.lang.String" value="samples/anne.svg" />
+	<arg class="java.lang.String" value="test-references/org/apache/batik/transcoder/image/anneMaxWH200.png" />
+	<arg class="java.lang.Float" value="200" />
+	<arg class="java.lang.Float" value="200" />
+	<arg class="java.lang.Float" value="300" />
+	<arg class="java.lang.Float" value="300" />
+</test>
+
+</testGroup>
 
 <!-- ================================================================== -->
 <!-- KEY_BACKGROUND_COLOR                                               -->

@@ -26,10 +26,14 @@
     <!-- lib: Directory where the library files (jars etc.) are located. -->
     <property name="src" value="${root}/sources" />
     <!-- src: Directory for source files. -->
-    <property name="build" value="${root}/classes" />
-    <!-- build: Directory for compiles class files. -->
-    <property name="javadoc" value="${root}/javadoc" />
-    <!-- javadocs: Directory for javadocs. -->
+    <property name="build" value="${root}/build" />
+    <!-- build: Directory for build results. -->
+    <property name="build.classes" value="${build}/classes" />
+	<!-- build.classes: Directory for compiled classes. -->
+    <property name="doc" value="${root}/doc" />
+    <!-- doc: Directory for documentation. -->
+    <property name="doc.api" value="${doc}/javadoc" />
+    <!-- doc.api: Directory for javadocs. -->
 
 
 
@@ -39,37 +43,47 @@
         <echo>SVG Rasterizer Task build file.</echo>
         <echo>Available targets are:</echo>
         <echo>  compile --> Compiles the source code.</echo>
-        <echo>  javadoc --> Generates Javadoc documentation.</echo>
         <echo>  jar     --> Builds the JAR distribution.</echo>
-        <echo>  clean   --> Deletes the generated directories.</echo>
+        <echo>  javadoc --> Generates Javadoc documentation.</echo>
+        <echo>  clean   --> Deletes generated directories.</echo>
     </target>
 
     <target name="prepare">
+		<echo>Using ${ant.version}.</echo>
         <tstamp/>
     </target>
 
     <target name="compile" depends="prepare"
         description="Compiles source files.">
-        <!-- Clean and (re)create the build directory. -->
-        <delete dir="${build}" />
-        <mkdir dir="${build}" />
+        <mkdir dir="${build.classes}" />
         <!-- Compile code. -->
-        <javac srcdir="${src}" destdir="${build}" />
+        <javac srcdir="${src}" destdir="${build.classes}" />
+    </target>
+
+    <target name="jar" depends="prepare, compile"
+        description="Creates a JAR package.">
+
+		<mkdir dir="${build}/lib" />
+        <jar jarfile="${build}/lib/RasterizerTask.jar"
+            basedir="${build.classes}"
+            excludes="**/CVS"
+            includes="**/*.class">
+        </jar>
     </target>
 
     <target name="javadoc" depends="prepare"
         description="Generates Javadoc documentation.">
         <!-- Clean and (re)create the javadocs directory. -->
-        <delete dir="${javadoc}" />
-        <mkdir dir="${javadoc}" />
+        <delete dir="${doc.api}" />
+        <mkdir dir="${doc.api}" />
         <!-- Create javadocs. -->
-        <javadoc destdir="${javadoc}"
+        <javadoc destdir="${doc.api}"
             packagenames="org.apache.tools.ant.*"
             version="false"
             author="false"
             windowtitle="Rasterizer Task Javadoc"
             doctitle="Rasterizer Task API Specification"
-            bottom="Copyright &#169; 2001 Apache Software Foundation. All Rights Reserved.">
+            bottom="Copyright &#169; 2001-2002 Apache Software Foundation. All Rights Reserved.">
             <sourcepath>
                 <pathelement path="${src}" />
                 <pathelement path="${root}/../../sources" />
@@ -78,18 +92,9 @@
         </javadoc>
     </target>
 
-    <target name="jar" depends="prepare, compile"
-        description="Creates a JAR package.">
-        <jar jarfile="${root}/RasterizerTask.jar"
-            basedir="${build}"
-            excludes="**/CVS"
-            includes="**/*.class">
-        </jar>
-    </target>
-
     <target name="clean"
         description="Deletes directories created by this script.">
-        <delete dir="${javadoc}" />
+        <delete dir="${doc}" />
         <delete dir="${build}" />
     </target>
 
