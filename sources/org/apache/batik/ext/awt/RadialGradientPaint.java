@@ -440,6 +440,8 @@ public final class RadialGradientPaint extends MultipleGradientPaint {
                                       Rectangle2D userBounds,
                                       AffineTransform transform,
                                       RenderingHints hints) {
+        // Can't modify the transform passed in...
+        transform = new AffineTransform(transform);
         // incorporate the gradient transform
         transform.concatenate(gradientTransform);
 

@@ -298,6 +298,8 @@ public final class LinearGradientPaint extends MultipleGradientPaint {
                                       AffineTransform transform,
                                       RenderingHints hints) {
 
+        // Can't modify the transform passed in...
+        transform = new AffineTransform(transform);
         //incorporate the gradient transform
         transform.concatenate(gradientTransform); 
 
