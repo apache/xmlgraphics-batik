@@ -201,7 +201,7 @@ public class PrintTranscoder extends XMLAbstractTranscoder
     }
 
     public void transcode(TranscoderInput in,
-                           TranscoderOutput out){
+                          TranscoderOutput out){
         if(in != null){
             inputs.addElement(in);
         }
@@ -419,12 +419,17 @@ public class PrintTranscoder extends XMLAbstractTranscoder
 
     /**
      * Transcodes the specified Document as an image in the specified output.
+     *
      * @param document the document to transcode
+     * @param uri the uri of the document or null if any
      * @param output the ouput where to transcode
      * @exception TranscoderException if an error occured while transcoding
      */
-    protected void transcode(Document document, TranscoderOutput output)
+    protected void transcode(Document document,
+                             String uri,
+                             TranscoderOutput output)
             throws TranscoderException {
+
         // We can only handle SVG documents.
         if (!(document instanceof SVGOMDocument)) {
             // <!> TO BE FIXED WHEN WE DO ERROR HANDLING PROPERLY

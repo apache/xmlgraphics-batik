@@ -22,6 +22,9 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.GVTBuilder;
@@ -114,12 +117,17 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
     /**
      * Transcodes the specified Document as an image in the specified output.
+     *
      * @param document the document to transcode
+     * @param uri the uri of the document or null if any
      * @param output the ouput where to transcode
      * @exception TranscoderException if an error occured while transcoding
      */
-    protected void transcode(Document document, TranscoderOutput output)
+    protected void transcode(Document document,
+                             String uri,
+                             TranscoderOutput output)
             throws TranscoderException {
+
         if (!(document instanceof SVGOMDocument)) {
             throw new TranscoderException(
                 Messages.formatMessage("notsvg", null));
@@ -173,8 +181,20 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
             height = docHeight;
         }
         // compute the preserveAspectRatio matrix
-        AffineTransform Px =
-            ViewBox.getPreserveAspectRatioTransform(root, width, height);
+        AffineTransform Px;
+        String ref = null;
+        try {
+            ref = new URL(uri).getRef();
+        } catch (MalformedURLException ex) {
+            // nothing to do, catched previously
+        }
+
+        try {
+            Px = ViewBox.getViewTransform(ref, root, width, height);
+        } catch (BridgeException ex) {
+            throw new TranscoderException(ex);
+        }
+
         if (Px.isIdentity() && (width != docWidth || height != docHeight)) {
             // The document has no viewBox, we need to resize it by hand.
             // we want to keep the document size ratio
@@ -234,7 +254,6 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
 
             writeImage(dest, output);
         } catch (Exception ex) {
-            ex.printStackTrace();
             throw new TranscoderException(ex);
         }
     }

@@ -64,6 +64,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
             throws TranscoderException {
 
         Document document = null;
+        String uri = input.getURI();
         if (input.getDocument() != null) {
             document = input.getDocument();
         } else {
@@ -109,11 +110,10 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
                                                 documentElement,
                                                 input.getURI(),
                                                 input.getReader());
-                } else if (input.getURI() != null) {
-                    System.out.println("Creating Document from URI...");
+                } else if (uri != null) {
                     document = f.createDocument(namespaceURI,
                                                 documentElement,
-                                                input.getURI());
+                                                uri);
                 }
             } catch (DOMException ex) {
                 handler.fatalError(new TranscoderException(ex));
@@ -125,7 +125,7 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
         // call the dedicated transcode method
         if (document != null) {
             try {
-                transcode(document, output);
+                transcode(document, uri, output);
             } catch(TranscoderException ex) {
                 // at this time, all TranscoderExceptions are fatal errors
                 handler.fatalError(ex);
@@ -150,11 +150,14 @@ public abstract class XMLAbstractTranscoder extends AbstractTranscoder {
 
     /**
      * Transcodes the specified Document in the specified output.
+     *
      * @param document the document to transcode
+     * @param uri the uri of the document or null if any
      * @param output the ouput where to transcode
      * @exception TranscoderException if an error occured while transcoding
      */
     protected abstract void transcode(Document document,
+                                      String uri,
                                       TranscoderOutput output)
             throws TranscoderException;
 
