@@ -31,8 +31,8 @@
         <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
     </test>
     <test class="org.apache.batik.util.ParsedURLTest">
-        <arg class="java.lang.String" value="fooz:///home/deweese/.cshrc" />
-        <arg class="java.lang.String" value="fooz:/home/deweese/.cshrc" />
+        <arg class="java.lang.String" value="fazz:///home/deweese/.cshrc" />
+        <arg class="java.lang.String" value="fazz:/home/deweese/.cshrc" />
     </test>
     <test class="org.apache.batik.util.ParsedURLTest">
         <arg class="java.lang.String" 
@@ -55,5 +55,13 @@
              value="/xyz.svg#ijkl" />
         <arg class="java.lang.String" 
              value="fooz://www.com:1234/xyz.svg#ijkl" />
+    </test>
+    <test class="org.apache.batik.util.ParsedURLTest">
+        <arg class="java.lang.String" 
+             value="file:/home/deweese/test.txt" />
+        <arg class="java.lang.String" 
+             value="file:junk.html" />
+        <arg class="java.lang.String" 
+             value="file:/home/deweese/junk.html" />
     </test>
 </testSuite>

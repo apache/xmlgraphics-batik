@@ -78,7 +78,7 @@ public class ParsedURLDefaultProtocolHandler
         idx = urlStr.indexOf(':');
         if (idx != -1) {
             // May have a protocol spec...
-            ret.protocol = urlStr.substring(pidx, idx);
+            ret.protocol = urlStr.substring(pidx, idx).toLowerCase();
             if (ret.protocol.indexOf('/') == -1)
                 pidx = idx+1;
             else {
@@ -163,9 +163,28 @@ public class ParsedURLDefaultProtocolHandler
      */
     public ParsedURLData parseURL(ParsedURL baseURL, String urlStr) {
         int idx = urlStr.indexOf(':');
-        if (idx != -1)
-            // Absolute URL ignore base...
-            return parseURL(urlStr);
+        if (idx != -1) {
+            String protocol = urlStr.substring(0,idx).toLowerCase();
+            
+            if (!protocol.equals(baseURL.getProtocol()))
+                // Different protocols, assume absolute URL ignore base...
+                return parseURL(urlStr);
+
+            // Same protocols, if char after ':' is a '/' then it's
+            // still absolute...
+            idx++;
+            if (idx == urlStr.length()) 
+                // Just a Protocol???
+                return parseURL(urlStr);
+
+            if (urlStr.charAt(idx) == '/')
+                // Absolute URL...
+                return parseURL(urlStr);
+
+            // Still relative just drop the protocol (we will pick it
+            // back up from the baseURL later...).
+            urlStr = urlStr.substring(idx);
+        }
 
         if (urlStr.startsWith("/"))
             // Absolute path.
