@@ -93,6 +93,11 @@ public class BatikDomExtension
 
         di.registerCustomElementFactory
             (BATIK_EXT_NAMESPACE_URI,
+             BATIK_EXT_MULTI_IMAGE_TAG,
+             new BatikMultiImageElementFactory());
+
+        di.registerCustomElementFactory
+            (BATIK_EXT_NAMESPACE_URI,
              BATIK_EXT_SOLID_COLOR_TAG,
              new SolidColorElementFactory());
 
@@ -150,6 +155,21 @@ public class BatikDomExtension
          */
         public Element create(String prefix, Document doc) {
             return new BatikHistogramNormalizationElement
+                (prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'multiImage' element.
+     */
+    protected static class BatikMultiImageElementFactory 
+        implements SVGDOMImplementation.ElementFactory {
+        public BatikMultiImageElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new BatikMultiImageElement
                 (prefix, (AbstractDocument)doc);
         }
     }

@@ -35,13 +35,13 @@ public interface BatikExtConstants {
     public static final String BATIK_EXT_HISTOGRAM_NORMALIZATION_TAG =
         "histogramNormalization";
 
-    /** Tag name for Batik's multi-image extension. */
+    /** Tag name for Batik's multiImage extension. */
     public static final String BATIK_EXT_MULTI_IMAGE_TAG =
-        "multi-image";
+        "multiImage";
 
-    /** Tag name for Batik's multi-image extension. */
+    /** Tag name for Batik's subImage multiImage extension. */
     public static final String BATIK_EXT_SUB_IMAGE_TAG =
-        "sub-image";
+        "subImage";
 
     /** Attribute name for sides attribute */
     public static final String BATIK_EXT_SIDES_ATTRIBUTE = 

@@ -42,9 +42,25 @@ import org.apache.batik.gvt.RasterImageNode;
 import org.apache.batik.util.ParsedURL;
 
 /**
- * Bridge class for the &lt;image> element.
+ * Bridge class for the &lt;multiImage> element.
  *
- * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
+ * The 'multiImage' element is similar to the 'image' element (supports
+ * all the same attributes and properties) except.
+ * <ol>
+ *    <li>It can only be used to reference raster content (this is an
+ *        implementation thing really)</li>
+ *    <li>It has two addtional attributes: 'pixel-width' and
+ *        'pixel-height' which are the maximum width and height of the
+ *        image referenced by the xlink:href attribute.</li>
+ *    <li>It can contain a child element 'subImage' which has only
+ *        three attributes, pixel-width, pixel-height and xlink:href.
+ *        The image displayed is the smallest image such that
+ *        pixel-width and pixel-height are greater than or equal to the
+ *        required image size for display.</li>
+ * </ol>
+ *
+ *
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
 public class BatikMultiImageElementBridge extends SVGImageElementBridge
@@ -60,7 +76,7 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
     }
 
     /**
-     * Returns 'multi-image'.
+     * Returns 'multiImage'.
      */
     public String getLocalName() {
         return BATIK_EXT_MULTI_IMAGE_TAG;
@@ -174,31 +190,29 @@ public class BatikMultiImageElementBridge extends SVGImageElementBridge
         int w=0, h=0;
         String s;
 
-        s = e.getAttributeNS
-            (null,BATIK_EXT_PIXEL_WIDTH_ATTRIBUTE);
-        if (s.length() == 0) 
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {"pixel-width"});
+        s = e.getAttributeNS(null,BATIK_EXT_PIXEL_WIDTH_ATTRIBUTE);
+        if (s.length() == 0) throw new BridgeException
+            (e, ERR_ATTRIBUTE_MISSING,
+             new Object[] {BATIK_EXT_PIXEL_WIDTH_ATTRIBUTE});
 
         try {
             w = (int)SVGUtilities.convertSVGNumber(s);
         } catch (NumberFormatException ex) {
             throw new BridgeException
                 (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {BATIK_EXT_TRIM_ATTRIBUTE, s});
+                 new Object[] {BATIK_EXT_PIXEL_WIDTH_ATTRIBUTE, s});
         }
 
-        s = e.getAttributeNS
-            (null,BATIK_EXT_PIXEL_HEIGHT_ATTRIBUTE);
-        if (s.length() == 0) 
-            throw new BridgeException(e, ERR_ATTRIBUTE_MISSING,
-                                      new Object[] {"pixel-height"});
+        s = e.getAttributeNS(null,BATIK_EXT_PIXEL_HEIGHT_ATTRIBUTE);
+        if (s.length() == 0) throw new BridgeException
+            (e, ERR_ATTRIBUTE_MISSING,
+             new Object[] {BATIK_EXT_PIXEL_HEIGHT_ATTRIBUTE});
         try {
             h = (int)SVGUtilities.convertSVGNumber(s);
         } catch (NumberFormatException ex) {
             throw new BridgeException
                 (e, ERR_ATTRIBUTE_VALUE_MALFORMED,
-                 new Object[] {BATIK_EXT_TRIM_ATTRIBUTE, s});
+                 new Object[] {BATIK_EXT_PIXEL_HEIGHT_ATTRIBUTE, s});
         }
 
         return new Dimension(w, h);
