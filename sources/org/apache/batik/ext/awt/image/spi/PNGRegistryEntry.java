@@ -32,7 +32,7 @@ public class PNGRegistryEntry
     static final byte [] signature = {(byte)0x89, 80, 78, 71, 13, 10, 26, 10};
 
     public PNGRegistryEntry() {
-        super("PNG", "png", 0, signature);
+        super("PNG", "png", "image/png", 0, signature);
     }
 
     /**

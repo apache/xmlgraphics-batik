@@ -27,7 +27,9 @@ import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.rendered.CachableRed;
 import org.apache.batik.ext.awt.image.rendered.PadRed;
 import org.apache.batik.ext.awt.image.rendered.TranslateRed;
+import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
 
+import java.lang.ref.SoftReference;
 import java.util.Iterator;
 import java.util.Stack;
 import java.awt.AlphaComposite;
@@ -68,6 +70,8 @@ public class StaticRenderer implements ImageRenderer {
     protected GraphicsNode      rootGN;
     protected GraphicsNodeRable rootGNR;
     protected CachableRed       rootCR;
+    protected SoftReference     lastCR;
+    protected SoftReference     lastCache;
 
     /**
      * Flag for double buffering.
@@ -143,7 +147,7 @@ public class StaticRenderer implements ImageRenderer {
         rootGN  = null;
         rootGNR = null;
         rootCR  = null;
-
+        
         workingOffScreen = null;
         workingBaseRaster = null;
         workingRaster = null;
@@ -389,6 +393,77 @@ public class StaticRenderer implements ImageRenderer {
     }
 
     /**
+     * Flush any cached image data.
+     */
+    public void flush() {
+        if (lastCache == null) return;
+        Object o = lastCache.get();
+        if (o == null) return;
+        
+        TileCacheRed tcr = (TileCacheRed)o;
+        tcr.flushCache(tcr.getBounds());
+    }
+
+
+    /**
+     * Flush a rectangle of cached image data.
+     */
+    public void flush(Rectangle r) {
+        if (lastCache == null) return;
+        Object o = lastCache.get();
+        if (o == null) return;
+        
+        TileCacheRed tcr = (TileCacheRed)o;
+        tcr.flushCache(r);
+    }
+
+    protected CachableRed setupCache(CachableRed img) {
+        if ((lastCR == null) ||
+            (img != lastCR.get())) {
+            lastCR    = new SoftReference(img);
+            lastCache = null;
+        }
+
+        Object o = null;
+        if (lastCache != null)
+            o = lastCache.get();
+        if (o != null)
+            return (CachableRed)o;
+
+        img       = new TileCacheRed(img);
+        lastCache = new SoftReference(img);
+        return img;
+    }
+
+    protected CachableRed renderGNR() {
+        AffineTransform at, rcAT;
+        at = nodeRenderContext.getTransform();
+        rcAT = new AffineTransform(at.getScaleX(), at.getShearY(),
+                                   at.getShearX(), at.getScaleY(),
+                                   0, 0);
+
+        RenderContext rc = new RenderContext
+            (rcAT, null,
+             nodeRenderContext.getRenderingHints());
+            
+        RenderedImage ri = rootGNR.createRendering(rc);
+        if (ri == null)
+            return null;
+
+        CachableRed ret;
+        ret = GraphicsUtil.wrap(ri);
+        ret = setupCache(ret);
+        
+        int dx = Math.round((float)at.getTranslateX());
+        int dy = Math.round((float)at.getTranslateY());
+        ret = new TranslateRed(ret, ret.getMinX()+dx, ret.getMinY()+dy);
+        ret = GraphicsUtil.convertTosRGB(ret);
+
+        return ret;
+    }
+
+
+    /**
      * Internal method used to synchronize local state in response to
      * various set methods.  
      */
@@ -404,26 +479,9 @@ public class StaticRenderer implements ImageRenderer {
             workingRaster     = null;
             workingOffScreen  = null;
 
-            AffineTransform at, rcAT;
-            at = nodeRenderContext.getTransform();
-            rcAT = new AffineTransform(at.getScaleX(), at.getShearY(),
-                                       at.getShearX(), at.getScaleY(),
-                                       0, 0);
+            rootCR = renderGNR();
 
-            RenderContext rc = new RenderContext
-                (rcAT, null,
-                 nodeRenderContext.getRenderingHints());
-            
-            RenderedImage ri = rootGNR.createRendering(rc);
-            if (ri == null)
-                return;
-
-            rootCR = GraphicsUtil.wrap(ri);
-            int dx = Math.round((float)at.getTranslateX());
-            int dy = Math.round((float)at.getTranslateY());
-            rootCR = new TranslateRed(rootCR, rootCR.getMinX()+dx, 
-                                      rootCR.getMinY()+dy);
-            rootCR = GraphicsUtil.convertTosRGB(rootCR);
+            if (rootCR == null) return;
         }
 
         SampleModel sm = rootCR.getSampleModel();

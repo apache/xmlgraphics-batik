@@ -107,6 +107,7 @@ import org.apache.batik.transcoder.image.TIFFTranscoder;
 import org.apache.batik.transcoder.print.PrintTranscoder;
 
 import org.apache.batik.util.ParsedURL;
+import org.apache.batik.util.MimeTypeConstants;
 import org.apache.batik.util.gui.DOMViewer;
 import org.apache.batik.util.gui.LocationBar;
 import org.apache.batik.util.gui.MemoryMonitor;
@@ -176,6 +177,7 @@ public class JSVGViewerFrame
     public final static String SET_TRANSFORM_ACTION = "SetTransformAction";
     public final static String FIND_DIALOG_ACTION = "FindDialogAction";
     public final static String THUMBNAIL_DIALOG_ACTION = "ThumbnailDialogAction";
+    public final static String FLUSH_ACTION = "FlushAction";
 
     /**
      * The cursor indicating that an operation is pending.
@@ -363,6 +365,7 @@ public class JSVGViewerFrame
         listeners.put(SET_TRANSFORM_ACTION, new SetTransformAction());
         listeners.put(FIND_DIALOG_ACTION, new FindDialogAction());
         listeners.put(THUMBNAIL_DIALOG_ACTION, new ThumbnailDialogAction());
+        listeners.put(FLUSH_ACTION, new FlushAction());
 
         svgCanvas = new JSVGCanvas(userAgent, true, true);
 
@@ -1007,14 +1010,8 @@ public class JSVGViewerFrame
                 return;
             }
 
-            URL tu = null;
-            try {
-                tu = new URL(((SVGOMDocument)svgDocument).getURLObject(), "");
-            } catch (MalformedURLException ex) {
-                // Can't happen
-                throw new InternalError(ex.getMessage());
-            }
-            final URL u = tu;
+            final ParsedURL u
+                = new ParsedURL(((SVGOMDocument)svgDocument).getURLObject());
 
             final JFrame fr = new JFrame(u.toString());
             fr.setSize(resources.getInteger("ViewSource.width"),
@@ -1036,11 +1033,12 @@ public class JSVGViewerFrame
                     try {
                         Document  doc = new PlainDocument();
 
-                        InputStream is = ParsedURL.checkGZIP(u.openStream());
+                        InputStream is
+                            = u.openStream(MimeTypeConstants.MIME_TYPES_SVG);
 
                         Reader in = XMLUtilities.createXMLDocumentReader(is);
                         int len;
-                        while ((len = in.read(buffer, 0, buffer.length)) != -1) {
+                        while ((len=in.read(buffer, 0, buffer.length)) != -1) {
                             doc.insertString(doc.getLength(),
                                              new String(buffer, 0, len), null);
                         }
@@ -1054,6 +1052,18 @@ public class JSVGViewerFrame
                     }
                 }
             }.start();
+        }
+    }
+
+    /**
+     * To flush image cache (purely for debugging purposes)
+     */
+    public class FlushAction extends AbstractAction {
+        public FlushAction() {}
+        public void actionPerformed(ActionEvent e) {
+            svgCanvas.flush();
+            // Force redraw...
+            svgCanvas.setRenderingTransform(svgCanvas.getRenderingTransform());
         }
     }
 

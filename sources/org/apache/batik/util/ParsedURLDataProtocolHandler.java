@@ -11,6 +11,7 @@ package org.apache.batik.util;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Protocol Handler for the 'data' protocol.
@@ -80,7 +81,9 @@ public class ParsedURLDataProtocolHandler
             return ret;
         }
 
-        public InputStream openStreamRaw() throws IOException {
+        protected InputStream openStreamInternal
+            (String userAgent, Iterator mimeTypes, Iterator encodingTypes)
+            throws IOException {
             byte [] data = path.getBytes();
             InputStream is = new ByteArrayInputStream(data);
             return new Base64DecodeStream(is);

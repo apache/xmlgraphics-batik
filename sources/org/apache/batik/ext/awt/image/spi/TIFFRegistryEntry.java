@@ -36,9 +36,11 @@ public class TIFFRegistryEntry
         new MagicNumberRegistryEntry.MagicNumber(0, sig1),
         new MagicNumberRegistryEntry.MagicNumber(0, sig2) };
 
+    static final String [] exts      = {"tiff", "tif" };
+    static final String [] mimeTypes = {"image/tiff", "image/tif" };
 
     public TIFFRegistryEntry() {
-        super("TIFF", "tiff", magicNumbers);
+        super("TIFF", exts, mimeTypes, magicNumbers);
     }
 
     /**

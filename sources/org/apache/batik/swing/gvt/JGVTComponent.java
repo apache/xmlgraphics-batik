@@ -438,6 +438,22 @@ public class JGVTComponent extends JComponent {
     }
 
     /**
+     * Flush any cached image data (preliminary interface,
+     * may be removed or modified in the future).
+     */
+    public void flush() {
+        renderer.flush();
+    }
+
+    /**
+     * Flush a rectangle of cached image data (preliminary interface,
+     * may be removed or modified in the future).
+     */
+    public void flush(Rectangle r) {
+        renderer.flush(r);
+    }
+
+    /**
      * Renders the GVT tree. Used for the initial rendering and resize only.
      */
     protected void renderGVTTree() {

@@ -14,9 +14,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -24,6 +21,7 @@ import java.util.MissingResourceException;
 
 import org.apache.batik.css.sac.CSSOMConditionFactory;
 import org.apache.batik.css.sac.CSSOMSelectorFactory;
+import org.apache.batik.util.ParsedURL;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 
@@ -149,6 +147,8 @@ public class Parser
 
         ENCODINGS.put("csBig5",               "Big5");
     }
+
+    public final static String MIME_TYPE_CSS = "text/css";
 
     /**
      * The default resource bundle base name.
@@ -1532,10 +1532,10 @@ public class Parser
         String uri = source.getURI();
         if (uri != null) {
             try {
-                URL url = new URL(uri);
-                return characterStream(source, url.openStream(), enc);
-            } catch (MalformedURLException e) {
-                throw new CSSException(e);
+                ParsedURL purl = new ParsedURL(uri);
+                return characterStream(source, 
+                                       purl.openStreamRaw(MIME_TYPE_CSS), 
+                                       enc);
             } catch (IOException e) {
                 throw new CSSException(e);
             }

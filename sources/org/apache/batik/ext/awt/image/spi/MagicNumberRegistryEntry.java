@@ -111,8 +111,9 @@ public abstract class MagicNumberRegistryEntry
      */
     public MagicNumberRegistryEntry(String name,
                                     String ext,
+                                    String mimeType,
                                     int offset, byte[]magicNumber) {
-        super(name, PRIORITY, ext);
+        super(name, PRIORITY, ext, mimeType);
         magicNumbers    = new MagicNumber[1];
         magicNumbers[0] = new MagicNumber(offset, magicNumber);
     }
@@ -126,8 +127,9 @@ public abstract class MagicNumberRegistryEntry
      */
     public MagicNumberRegistryEntry(String name,
                                     String ext,
+                                    String mimeType,
                                     MagicNumber [] magicNumbers) {
-        super(name, PRIORITY, ext);
+        super(name, PRIORITY, ext, mimeType);
         this.magicNumbers = magicNumbers;
     }
 
@@ -141,8 +143,9 @@ public abstract class MagicNumberRegistryEntry
      */
     public MagicNumberRegistryEntry(String    name,
                                     String [] exts,
+                                    String [] mimeTypes,
                                     int offset, byte[]magicNumber) {
-        super(name, PRIORITY, exts);
+        super(name, PRIORITY, exts, mimeTypes);
         magicNumbers    = new MagicNumber[1];
         magicNumbers[0] = new MagicNumber(offset, magicNumber);
     }
@@ -155,8 +158,9 @@ public abstract class MagicNumberRegistryEntry
      */
     public MagicNumberRegistryEntry(String    name,
                                     String [] exts,
+                                    String [] mimeTypes,
                                     MagicNumber [] magicNumbers) {
-        super(name, PRIORITY, exts);
+        super(name, PRIORITY, exts, mimeTypes);
         this.magicNumbers = magicNumbers;
     }
     
@@ -172,9 +176,10 @@ public abstract class MagicNumberRegistryEntry
      */
     public MagicNumberRegistryEntry(String         name,
                                     String []      exts,
+                                    String []      mimeTypes,
                                     MagicNumber [] magicNumbers,
                                     float          priority) {
-        super(name, priority, exts);
+        super(name, priority, exts, mimeTypes);
         this.magicNumbers = magicNumbers;
     }
 

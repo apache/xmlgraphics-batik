@@ -8,7 +8,6 @@
 
 package org.apache.batik.gvt.renderer;
 
-import java.awt.image.BufferedImage;
 import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 /**

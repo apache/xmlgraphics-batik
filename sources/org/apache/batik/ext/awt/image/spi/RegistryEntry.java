@@ -28,6 +28,13 @@ public interface RegistryEntry {
     public List   getStandardExtensions();
 
     /**
+     * Return a List of mime types for this file format.
+     * The first entry in the list may be used as the default
+     * mime type.
+     */
+    public List   getMimeTypes();
+
+    /**
      * Returns the name of the format. For example "JPEG", "PNG", ...
      */
     public String getFormatName();
