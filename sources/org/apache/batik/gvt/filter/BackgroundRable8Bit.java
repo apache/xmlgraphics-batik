@@ -27,10 +27,9 @@ import java.util.Vector;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
-import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
+import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
+import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.CompositeRule;
 import org.apache.batik.ext.awt.image.PadMode;
 import org.apache.batik.ext.awt.image.renderable.AbstractRable;
@@ -54,11 +53,6 @@ public class BackgroundRable8Bit
     private GraphicsNode node;
 
     /**
-     * GraphicsNodeRenderContext currently associated with above GraphicsNode.
-     */
-    private GraphicsNodeRenderContext gnrc;
-
-    /**
      * Returns the <tt>GraphicsNode</tt> rendered by this image
      */
     public GraphicsNode getGraphicsNode(){
@@ -79,11 +73,10 @@ public class BackgroundRable8Bit
     /**
      * @param node The GraphicsNode this image should represent
      */
-    public BackgroundRable8Bit(GraphicsNode node, GraphicsNodeRenderContext rc){
+    public BackgroundRable8Bit(GraphicsNode node){
         if(node == null)
             throw new IllegalArgumentException();
 
-        this.gnrc = rc;
         this.node = node;
     }
 
@@ -93,7 +86,6 @@ public class BackgroundRable8Bit
     // It unions them with init if provided.
     static Rectangle2D addBounds(CompositeGraphicsNode cgn,
                                  GraphicsNode child,
-                                 GraphicsNodeRenderContext rc,
                                  Rectangle2D  init) {
         // System.out.println("CGN: " + cgn);
         // System.out.println("Child: " + child);
@@ -133,8 +125,7 @@ public class BackgroundRable8Bit
 
 
     static Rectangle2D getViewportBounds(GraphicsNode gn,
-                                         GraphicsNode child,
-                                         GraphicsNodeRenderContext rc) {
+                                         GraphicsNode child) {
         // See if background is enabled.
         Rectangle2D r2d = null;
         if (gn instanceof CompositeGraphicsNode) {
@@ -144,7 +135,7 @@ public class BackgroundRable8Bit
 
         if (r2d == null)
             // No background enable so check our parent's value.
-            r2d = getViewportBounds(gn.getParent(), gn, rc);
+            r2d = getViewportBounds(gn.getParent(), gn);
 
         // No background for any ancester (error) return null
         if (r2d == null)
@@ -159,7 +150,7 @@ public class BackgroundRable8Bit
             // gn must be composite so add all it's children's bounds
             // up to child.
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
-            return addBounds(cgn, child, rc, null);
+            return addBounds(cgn, child, null);
         }
 
         // We have a partial bound from parent, so map it to gn's
@@ -178,7 +169,7 @@ public class BackgroundRable8Bit
         if (child != null) {
             // Add our childrens bounds to it...
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
-            r2d = addBounds(cgn, child, rc, r2d);
+            r2d = addBounds(cgn, child, r2d);
         } else
             r2d.add(gn.getPrimitiveBounds());
 
@@ -247,8 +238,7 @@ public class BackgroundRable8Bit
         // System.out.println("BoundsRec: " + r2d);
 
         if (r2d == CompositeGraphicsNode.VIEWPORT) {
-            r2d = getViewportBounds(node, null, 
-                                    getGraphicsNodeRenderContext());
+            r2d = getViewportBounds(node, null);
             // System.out.println("BoundsViewport: " + r2d);
         }
 
@@ -261,7 +251,6 @@ public class BackgroundRable8Bit
      */
     public Filter getBackground(GraphicsNode gn,
                                 GraphicsNode child,
-                                GraphicsNodeRenderContext rc,
                                 Rectangle2D aoi) {
         if (gn == null) {
             throw new IllegalArgumentException
@@ -281,14 +270,11 @@ public class BackgroundRable8Bit
             AffineTransform at = gn.getTransform();
             if (at != null)
                 paoi = at.createTransformedShape(aoi).getBounds2D();
-            Filter f = getBackground(gn.getParent(), gn, rc, paoi);
+            Filter f = getBackground(gn.getParent(), gn, paoi);
             if ((f != null) && f.getBounds2D().intersects(aoi)) {
                 srcs.add(f);
             }
         }
-
-        GraphicsNodeRableFactory gnrf;
-         gnrf = rc.getGraphicsNodeRableFactory();
 
         if (child != null) {
             CompositeGraphicsNode cgn = (CompositeGraphicsNode)gn;
@@ -314,7 +300,7 @@ public class BackgroundRable8Bit
 
                 if (aoi.intersects(cbounds)) {
                     GraphicsNodeRable gnr;
-                    gnr  = gnrf.createGraphicsNodeRable(childGN, rc);
+                    gnr  = new GraphicsNodeRable8Bit(childGN);
                     gnr.setUsePrimitivePaint(false);
                     srcs.add(gnr);
                 }
@@ -377,10 +363,6 @@ public class BackgroundRable8Bit
      */
     public RenderedImage createRendering(RenderContext renderContext){
 
-        GraphicsNodeRenderContext gnrc;
-        gnrc = GraphicsNodeRenderContext.
-            getGraphicsNodeRenderContext(renderContext);
-
         Rectangle2D r2d = getBounds2D();
 
         // System.out.println("Rendering called");
@@ -397,7 +379,7 @@ public class BackgroundRable8Bit
             Rectangle2D.intersect(r2d, aoiR2d, r2d);
         }
 
-        Filter f = getBackground(node, null, gnrc, r2d);
+        Filter f = getBackground(node, null, r2d);
 
         if ( f == null)
             return null;
@@ -406,14 +388,4 @@ public class BackgroundRable8Bit
         // org.ImageDisplay.showImage("BG: ", ri);
         return ri;
     }
-
-    protected void setGraphicsNodeRenderContext(GraphicsNodeRenderContext rc) {
-        this.gnrc = rc;
-    }
-
-    protected GraphicsNodeRenderContext getGraphicsNodeRenderContext() {
-        return gnrc;
-    }
-
-
 }

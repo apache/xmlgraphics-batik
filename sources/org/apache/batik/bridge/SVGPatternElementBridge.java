@@ -27,9 +27,7 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
 
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.PatternPaint;
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -123,19 +121,18 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
         // +-------------------------------+
         //
         // where:
-        //   - viewPortTranslation is the transform that translate to the viewPort's
-        //     origin.
+        //   - viewPortTranslation is the transform that translate to
+        //     the viewPort's origin.
         //   - preserveAspectRatioTransform is the transformed implied by the
         //     preserveAspectRatio attribute.
         //   - patternContentUnitsTransform is the transform implied by the
         //     patternContentUnits attribute.
         //
-        // Note that there is an additional transform from the tiling space to the
-        // user space (patternTransform) that is passed separately to the PatternPaintContext.
+        // Note that there is an additional transform from the tiling
+        // space to the user space (patternTransform) that is passed
+        // separately to the PatternPaintContext.
         //
-        GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
-        AffineTransform patternContentTransform
-            = new AffineTransform();
+        AffineTransform patternContentTransform = new AffineTransform();
 
         //
         // Process viewPortTranslation
@@ -197,14 +194,12 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
                                  {0, 0, 0, opacity, 0} };
 
             ColorMatrixRable filter = ColorMatrixRable8Bit.buildMatrix(matrix);
-            Filter contentRable
-                = new GraphicsNodeRable8Bit(patternContentNode, rc);
+            Filter contentRable = patternContentNode.getGraphicsNodeRable();
             filter.setSource(contentRable);
             patternContentNode.setFilter(filter);
         }
 
         return new PatternPaint(patternContentNode,
-                                rc,
                                 patternRegion,
                                 !overflowIsHidden,
                                 patternTransform);

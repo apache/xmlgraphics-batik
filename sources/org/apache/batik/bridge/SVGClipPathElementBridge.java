@@ -17,7 +17,6 @@ import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 
@@ -150,8 +149,7 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
         Filter filter = clipedNode.getFilter();
         if (filter == null) {
             // Make the initial source as a RenderableImage
-	    GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
-            filter = new GraphicsNodeRable8Bit(clipedNode, rc);
+            filter = clipedNode.getGraphicsNodeRable();
         }
         return new ClipRable8Bit(filter, clipPath);
     }

@@ -23,7 +23,6 @@ import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 
 import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.text.TextSpanLayout;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextHit;
@@ -102,15 +101,15 @@ public class GlyphLayout implements TextSpanLayout {
      * @param g2d the Graphics2D to use
      * @param context The current render context
      */
-    public void draw(Graphics2D g2d, GraphicsNodeRenderContext context) {
+    public void draw(Graphics2D g2d) {
         AffineTransform t;
         if (transform != null) {
             t = g2d.getTransform();
             g2d.transform(transform);
-            gv.draw(g2d, context, aci);
+            gv.draw(g2d, aci);
             g2d.setTransform(t);
         } else {
-            gv.draw(g2d, context, aci);
+            gv.draw(g2d, aci);
         }
     }
 

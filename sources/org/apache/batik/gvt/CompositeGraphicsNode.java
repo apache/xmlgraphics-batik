@@ -118,7 +118,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
      *
      * @param g2d the Graphics2D to use
      */
-    public void primitivePaint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
+    public void primitivePaint(Graphics2D g2d) {
         if (count == 0) {
             return;
         }
@@ -129,7 +129,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
             if (node == null) {
                 continue;
             }
-            node.paint(g2d, rc);
+            node.paint(g2d);
         }
     }
 

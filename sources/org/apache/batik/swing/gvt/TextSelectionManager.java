@@ -19,8 +19,6 @@ import java.awt.geom.AffineTransform;
 
 import java.util.List;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.Selectable;
@@ -90,7 +88,6 @@ public class TextSelectionManager {
      * Creates a new TextSelectionManager.
      */
     public TextSelectionManager(JGVTComponent comp,
-                                GraphicsNodeRenderContext rc,
                                 AWTEventDispatcher ed) {
         textSelector = new ConcreteTextSelector();
         textSelectionListener = new TextSelectionListener();

@@ -97,12 +97,12 @@ public class MarkerShapePainter implements ShapePainter {
      * @param shape the shape to paint
      * @param g2d the Graphics2D to use
      */
-     public void paint(Graphics2D g2d, GraphicsNodeRenderContext ctx) {
+     public void paint(Graphics2D g2d) {
 	 if (markerGroup == null) {
 	     buildMarkerGroup();
 	 }
          if (markerGroup.getChildren().size() > 0) {
-             markerGroup.paint(g2d, ctx);
+             markerGroup.paint(g2d);
          }
      }
 

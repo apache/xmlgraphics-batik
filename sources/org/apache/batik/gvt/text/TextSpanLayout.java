@@ -13,7 +13,6 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 /**
  * Class that performs layout of attributed text strings into
@@ -42,7 +41,7 @@ public interface TextSpanLayout {
      * specified Graphics2D and rendering context.
      * @param g2d the Graphics2D to use
      */
-    public void draw(Graphics2D g2d, GraphicsNodeRenderContext ctx);
+    public void draw(Graphics2D g2d);
 
     /**
      * Returns the outline of the completed glyph layout, transformed

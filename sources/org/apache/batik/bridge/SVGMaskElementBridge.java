@@ -14,8 +14,6 @@ import java.awt.geom.Rectangle2D;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.gvt.filter.Mask;
 import org.apache.batik.gvt.filter.MaskRable8Bit;
 
@@ -121,8 +119,7 @@ public class SVGMaskElementBridge extends AbstractSVGBridge
         Filter filter = maskedNode.getFilter();
         if (filter == null) {
             // Make the initial source as a RenderableImage
-            GraphicsNodeRenderContext rc = ctx.getGraphicsNodeRenderContext();
-            filter = new GraphicsNodeRable8Bit(maskedNode, rc);
+            filter = maskedNode.getGraphicsNodeRable();
         }
 
         return new MaskRable8Bit(filter, maskNode, maskRegion);

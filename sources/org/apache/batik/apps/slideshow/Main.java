@@ -9,7 +9,6 @@
 package org.apache.batik.apps.slideshow;
 
 import org.apache.batik.gvt.renderer.StaticRenderer;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.GraphicsNode;
 
 import org.apache.batik.bridge.UserAgentAdapter;
@@ -54,7 +53,6 @@ import org.w3c.dom.svg.SVGDocument;
 public class Main extends JComponent {
 
     StaticRenderer renderer;
-    GraphicsNodeRenderContext  rc;
     UserAgent      userAgent;
     DocumentLoader loader;
     BridgeContext  ctx;
@@ -72,10 +70,9 @@ public class Main extends JComponent {
         setBackground(Color.black);
         this.files = files;
         renderer = new StaticRenderer();
-        rc        = renderer.getRenderContext();
         userAgent = new UserAgentAdapter();
         loader    = new DocumentLoader(userAgent);
-        ctx       = new BridgeContext(userAgent, rc, loader);
+        ctx       = new BridgeContext(userAgent, loader);
 
         Thread t = new RenderThread();
         t.start();

@@ -45,12 +45,6 @@ public class PatternPaint implements Paint {
     private GraphicsNode node;
 
     /**
-     * The <tt>GraphicsNodeRenderContext</tt> for rendering this
-     * <tt>Paint</tt>'s node.
-     */
-    private GraphicsNodeRenderContext gnrc;
-
-    /**
      * The region to which this paint is constrained
      */
     private Rectangle2D patternRegion;
@@ -85,7 +79,6 @@ public class PatternPaint implements Paint {
      *        top of the user space to device space transform.
      */
     public PatternPaint(GraphicsNode node,
-                        GraphicsNodeRenderContext gnrc,
                         Rectangle2D patternRegion,
                         boolean overflow,
                         AffineTransform patternTransform){
@@ -99,7 +92,6 @@ public class PatternPaint implements Paint {
         }
 
         this.node             = node;
-        this.gnrc             = gnrc;
         this.patternRegion    = patternRegion;
         this.overflow         = overflow;
         this.patternTransform = patternTransform;
@@ -109,7 +101,7 @@ public class PatternPaint implements Paint {
         // into account.
         CompositeGraphicsNode comp = new CompositeGraphicsNode();
         comp.getChildren().add(node);
-        GraphicsNodeRable gnr = new GraphicsNodeRable8Bit(comp, gnrc);
+        GraphicsNodeRable gnr = new GraphicsNodeRable8Bit(comp);
 
         Rectangle2D padBounds = (Rectangle2D)patternRegion.clone();
 

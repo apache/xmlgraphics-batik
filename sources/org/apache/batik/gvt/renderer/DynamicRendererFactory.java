@@ -8,9 +8,6 @@
 
 package org.apache.batik.gvt.renderer;
 
-import org.apache.batik.gvt.renderer.Renderer;
-import org.apache.batik.gvt.renderer.RendererFactory;
-
 /**
  * This class is a factory for DynamicRenderers.
  *
@@ -22,6 +19,6 @@ public class DynamicRendererFactory extends StaticRendererFactory {
      * Creates a new renderer.
      */
     public ImageRenderer createImageRenderer() {
-        return new DynamicRenderer(getRenderContext());
+        return new DynamicRenderer();
     }
 }

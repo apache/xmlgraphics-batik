@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.apache.batik.css.HiddenChildElementSupport;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.script.InterpreterPool;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
@@ -107,11 +106,6 @@ public class BridgeContext implements ErrorConstants {
     protected HashMap namespaceURIMap;
 
     /**
-     * The current <tt>GraphicsNodeRenderContext</tt> for <tt>GraphicsNode</tt>.
-     */
-    protected GraphicsNodeRenderContext rc;
-
-    /**
      * The interpreter pool used to handle scripts.
      */
     protected InterpreterPool interpreterPool;
@@ -139,12 +133,9 @@ public class BridgeContext implements ErrorConstants {
     /**
      * Constructs a new bridge context.
      * @param userAgent the user agent
-     * @param rc the graphics node renderer context
      */
-    public BridgeContext(UserAgent userAgent,
-                         GraphicsNodeRenderContext rc) {
+    public BridgeContext(UserAgent userAgent) {
         this(userAgent,
-             rc,
              sharedPool,
              new DocumentLoader(userAgent));
     }
@@ -152,29 +143,24 @@ public class BridgeContext implements ErrorConstants {
     /**
      * Constructs a new bridge context.
      * @param userAgent the user agent
-     * @param rc the graphics node renderer context
      * @param documentLoader document loader
      */
     public BridgeContext(UserAgent userAgent,
-                         GraphicsNodeRenderContext rc,
                          DocumentLoader loader) {
-        this(userAgent, rc, sharedPool, loader);
+        this(userAgent, sharedPool, loader);
     }
 
     /**
      * Constructs a new bridge context.
      * @param userAgent the user agent
-     * @param rc the graphics node renderer context
      * @param interpreterPool the interpreter pool
      * @param documentLoader document loader
      */
     public BridgeContext(UserAgent userAgent,
-                         GraphicsNodeRenderContext rc,
                          InterpreterPool interpreterPool,
                          DocumentLoader documentLoader) {
         this.userAgent = userAgent;
         this.viewportMap.put(userAgent, new UserAgentViewport(userAgent));
-        this.rc = rc;
         this.interpreterPool = interpreterPool;
         this.documentLoader = documentLoader;
         registerSVGBridges(this);
@@ -242,21 +228,6 @@ public class BridgeContext implements ErrorConstants {
      */
     protected void setDocumentLoader(DocumentLoader newDocumentLoader) {
         this.documentLoader = newDocumentLoader;
-    }
-
-    /**
-     * Returns a <tt>GraphicsNodeRenderContext</tt> to use.
-     */
-    public GraphicsNodeRenderContext getGraphicsNodeRenderContext() {
-        return rc;
-    }
-
-    /**
-     * Sets the <tt>GraphicsNodeRenderContext</tt> to use.
-     * @param rc the new GraphicsNodeRenderContext
-     */
-    protected void setGraphicsNodeRenderContext(GraphicsNodeRenderContext rc) {
-        this.rc = rc;
     }
 
     /////////////////////////////////////////////////////////////////////////

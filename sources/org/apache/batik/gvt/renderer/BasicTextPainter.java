@@ -26,7 +26,6 @@ import java.awt.geom.Rectangle2D;
 
 import java.text.AttributedCharacterIterator;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
 
@@ -79,14 +78,12 @@ public abstract class BasicTextPainter implements TextPainter {
     }
 
     /**
-     * Given an X, y coordinate,
-     * AttributedCharacterIterator, and GraphicsNodeRenderContext,
+     * Given an X, y coordinate, AttributedCharacterIterator,
      * return a Mark which encapsulates a "selection start" action.
      * The standard order of method calls for selection is:
      * selectAt(); [selectTo(),...], selectTo(); getSelection().
      */
-    public Mark selectAt(double x, 
-			 double y,
+    public Mark selectAt(double x, double y,
                          AttributedCharacterIterator aci,
                          TextNode node) {
         Mark newMark = hitTest(x, y, aci, node);
@@ -95,8 +92,7 @@ public abstract class BasicTextPainter implements TextPainter {
     }
 
     /**
-     * Given an X, y coordinate, starting Mark,
-     * AttributedCharacterIterator, and GraphicsNodeRenderContext,
+     * Given an X, y coordinate, starting Mark, AttributedCharacterIterator,
      * return a Mark which encapsulates a "selection continued" action.
      * The standard order of method calls for selection is:
      * selectAt(); [selectTo(),...], selectTo(); getSelection().

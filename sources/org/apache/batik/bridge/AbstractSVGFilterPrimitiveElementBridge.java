@@ -182,13 +182,11 @@ public abstract class AbstractSVGFilterPrimitiveElementBridge
             if (s.charAt(10) == SVG_BACKGROUND_IMAGE_VALUE.charAt(10)) {
                 if (SVG_BACKGROUND_IMAGE_VALUE.equals(s)) {
                     // BackgroundImage
-                    source = new BackgroundRable8Bit
-                        (filteredNode, ctx.getGraphicsNodeRenderContext());
+                    source = new BackgroundRable8Bit(filteredNode);
                 }
             } else if (SVG_BACKGROUND_ALPHA_VALUE.equals(s)) {
                 // BackgroundAlpha
-                source = new BackgroundRable8Bit
-                    (filteredNode, ctx.getGraphicsNodeRenderContext());
+                source = new BackgroundRable8Bit(filteredNode);
                 source = new FilterAlphaRable(source);
             }
             break;

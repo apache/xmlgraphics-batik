@@ -45,7 +45,6 @@ import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
@@ -149,8 +148,7 @@ public abstract class ImageTranscoder extends XMLAbstractTranscoder {
         // build the GVT tree
         GVTBuilder builder = new GVTBuilder();
         ImageRendererFactory rendFactory = new StaticRendererFactory();
-        GraphicsNodeRenderContext rc = rendFactory.getRenderContext();
-        BridgeContext ctx = new BridgeContext(userAgent, rc);
+        BridgeContext ctx = new BridgeContext(userAgent);
         GraphicsNode gvtRoot;
         try {
             gvtRoot = builder.build(ctx, svgDoc);

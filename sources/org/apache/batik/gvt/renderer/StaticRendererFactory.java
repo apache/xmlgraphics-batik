@@ -12,7 +12,6 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.font.FontRenderContext;
 
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 
@@ -29,8 +28,6 @@ import org.apache.batik.gvt.filter.ConcreteGraphicsNodeRableFactory;
  */
 public class StaticRendererFactory implements ImageRendererFactory {
 
-    private GraphicsNodeRenderContext nodeRenderContext = null;
-
     /**
      * Creates a new renderer.
      */
@@ -42,40 +39,6 @@ public class StaticRendererFactory implements ImageRendererFactory {
      * Creates a new renderer
      */
     public ImageRenderer createImageRenderer(){
-        return new StaticRenderer(getRenderContext());
+        return new StaticRenderer();
     }
-
-    /**
-     * @return a GraphicsNodeRenderContext suitable for use
-     * with this factory's Renderers.
-     */
-    public GraphicsNodeRenderContext getRenderContext() {
-        if (nodeRenderContext == null) {
-            RenderingHints hints = new RenderingHints(null);
-            hints.put(RenderingHints.KEY_ANTIALIASING,
-                  RenderingHints.VALUE_ANTIALIAS_ON);
-
-            hints.put(RenderingHints.KEY_INTERPOLATION,
-                  RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
-            FontRenderContext fontRenderContext =
-                new FontRenderContext(new AffineTransform(), true, true);
-
-            TextPainter textPainter = new StrokingTextPainter();
-
-            GraphicsNodeRableFactory gnrFactory =
-                new ConcreteGraphicsNodeRableFactory();
-
-            nodeRenderContext =
-                new GraphicsNodeRenderContext(new AffineTransform(),
-                                          null,
-                                          hints,
-                                          fontRenderContext,
-                                          textPainter,
-                                          gnrFactory);
-            }
-
-        return nodeRenderContext;
-    }
-
 }

@@ -9,7 +9,6 @@
 package org.apache.batik.gvt.filter;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 import org.apache.batik.gvt.filter.GraphicsNodeRable;
 import org.apache.batik.gvt.filter.GraphicsNodeRableFactory;
 
@@ -26,8 +25,7 @@ public class ConcreteGraphicsNodeRableFactory implements GraphicsNodeRableFactor
      * Returns a <tt>GraphicsNodeRable</tt> initialized with the
      * input <tt>GraphicsNode</tt>.
      */
-    public GraphicsNodeRable createGraphicsNodeRable(GraphicsNode node,
-                                                GraphicsNodeRenderContext rc){
-        return new GraphicsNodeRable8Bit(node, rc);
+    public GraphicsNodeRable createGraphicsNodeRable(GraphicsNode node){
+        return (GraphicsNodeRable)node.getGraphicsNodeRable();
     }
 }

@@ -32,9 +32,9 @@ public class ImageNode extends CompositeGraphicsNode {
      *
      * @param g2d the Graphics2D to use
      */
-    public void paint(Graphics2D g2d, GraphicsNodeRenderContext rc) {
+    public void paint(Graphics2D g2d) {
         if (isVisible) {
-            super.paint(g2d, rc);
+            super.paint(g2d);
         }
     }
 

@@ -17,7 +17,6 @@ import java.awt.geom.Point2D;
 
 import org.apache.batik.gvt.TextPainter;
 import org.apache.batik.gvt.TextNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
 
 /**
  * Renders the attributed character iterator of a <tt>TextNode</tt>.
@@ -33,10 +32,10 @@ public abstract class ConcreteTextPainter extends BasicTextPainter {
      * @param g2d the Graphics2D to use
      * @param context rendering context.
      */
-    public void paint(AttributedCharacterIterator aci, Point2D location, TextNode.Anchor anchor,
-                      Graphics2D g2d, GraphicsNodeRenderContext context){
+    public void paint(AttributedCharacterIterator aci, Point2D location, 
+                      TextNode.Anchor anchor, Graphics2D g2d) {
         // Compute aci size to be able to draw it
-        TextLayout layout = new TextLayout(aci, context.getFontRenderContext());
+        TextLayout layout = new TextLayout(aci, fontRenderContext);
         float advance = layout.getAdvance();
         float tx = 0;
 

@@ -18,8 +18,6 @@ import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.GraphicsNodeRenderContext;
-import org.apache.batik.gvt.filter.GraphicsNodeRable8Bit;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.util.SVGConstants;
 
@@ -146,8 +144,7 @@ public class SVGSVGElementBridge extends AbstractSVGBridge
             try {
                 at = at.createInverse(); // clip in user space
                 clip = at.createTransformedShape(clip);
-                Filter filter = new GraphicsNodeRable8Bit
-                    (gn, ctx.getGraphicsNodeRenderContext());
+                Filter filter = gn.getGraphicsNodeRable();
                 gn.setClip(new ClipRable8Bit(filter, clip));
             } catch (NoninvertibleTransformException ex) {}
         }
