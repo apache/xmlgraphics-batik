@@ -425,6 +425,9 @@ public class SVGTextPathElementBridge implements GraphicsNodeBridge, SVGConstant
         return node;
     }
 
+    public void build(GraphicsNode node, BridgeContext ctx, Element elt) {
+    }
+
     public void update(BridgeMutationEvent evt) {
         // <!> FIXME : TODO
     }
