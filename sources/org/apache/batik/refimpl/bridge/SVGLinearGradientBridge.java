@@ -25,6 +25,7 @@ import org.apache.batik.util.awt.LinearGradientPaint;
 import org.apache.batik.util.awt.geom.AffineTransformSource;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.svg.SVGElement;
 
@@ -170,6 +171,19 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
         }
 
         //
+        // Extract the color interpolation property
+        //
+        cssDecl = ctx.getViewCSS().getComputedStyle(paintedElement, null);
+        CSSPrimitiveValue colorInterpolation
+            = (CSSPrimitiveValue) cssDecl.getPropertyCSSValue(COLOR_INTERPOLATION_PROPERTY);
+        
+        LinearGradientPaint.ColorSpaceEnum colorSpace 
+            = LinearGradientPaint.SRGB;
+        if(LINEAR_RGB.equals(colorInterpolation.getStringValue())){
+            colorSpace = LinearGradientPaint.LINEAR_RGB;
+        }
+
+        //
         // Build Paint
         //
         Paint paint = null;
@@ -180,16 +194,11 @@ public class SVGLinearGradientBridge extends SVGGradientBridge
                 GradientStop stop = (GradientStop)stopVector.elementAt(i);
                 colors[i] = stop.stopColor;
                 offsets[i] = stop.offset;
-                System.out.println("offset[" + i + "] = " + offsets[i]);
-                System.out.println("colors[" + i + "] = " +
-                                   Integer.toHexString(colors[i].getRGB()));
             }
             paint = new LinearGradientPaint(p1, p2, offsets, colors,
                                             cycleMethod,
-                                            LinearGradientPaint.SRGB,
+                                            colorSpace,
                                             ats);
-            // System.out.println("x1 : " + p1.getX() + " y1 : " + p1.getY());
-            // System.out.println("x2 : " + p2.getX() + " y2 : " + p2.getY());
         }
         return paint;
     }
