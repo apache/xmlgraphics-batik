@@ -20,6 +20,7 @@ import org.w3c.dom.events.EventTarget;
 
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
+import org.apache.batik.script.JavaFunction;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
@@ -231,8 +232,20 @@ public class RhinoInterpreter implements Interpreter {
      * @param object the Java object
      */
     public void bindObject(String name, Object object) {
-        Scriptable jsObject =  Context.toObject(object, globalObject);
-        globalObject.put(name, globalObject, jsObject);
+        Context ctx = Context.enter();
+        ctx.setWrapHandler(wrapHandler);
+        try {
+            if (object instanceof JavaFunction) {
+                JavaFunction jf = (JavaFunction)object;
+                globalObject.put(name, globalObject,
+                                 new RhinoFunction(jf, globalObject));
+                return;
+            }
+            Scriptable jsObject =  Context.toObject(object, globalObject);
+            globalObject.put(name, globalObject, jsObject);
+        } finally {
+            Context.exit();
+        }
     }
 
     /**

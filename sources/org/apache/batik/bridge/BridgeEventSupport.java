@@ -315,29 +315,18 @@ class BridgeEventSupport implements SVGConstants {
         final ScriptingEnvironment se = ctx.getUpdateManager().
             getScriptingEnvironment();
 
-	// add a function definition 'alert'
-	final Interpreter inter =
-	    ctx.getInterpreterPool().getInterpreter(doc, "text/ecmascript");
-	if (inter != null) {
-            try {
-                javax.swing.JOptionPane pane = new javax.swing.JOptionPane();
-                inter.bindObject("pane", pane);
-                inter.evaluate("function alert(msg) { pane.showMessageDialog(null, msg); }");
-                
-                inter.bindObject("scriptEnv", se);
-                inter.evaluate("function setTimeout(s, t) { scriptEnv.pauseScript(t); scriptEnv.runScript(s, 'text/ecmascript', null); }");
-            } catch (Exception ex) {
-                // nothing to do
-                ex.printStackTrace();
-            }
-	}
-
+        String lang = null;
         for (int i = 0; i < list.getLength(); i++) {
             language = (selement = (Element)list.item(i)).
                 getAttribute("type");
             final Interpreter interpret =
                 ctx.getInterpreterPool().getInterpreter(doc, language);
             if (interpret != null) {
+                if (language != lang) {
+                    se.setEnvironment(interpret, language);
+                }
+                lang = language;
+
                 final StringBuffer script = new StringBuffer();
                 for (Node n = selement.getFirstChild(); n != null;
                      n = n.getNextSibling()) {
@@ -503,8 +492,6 @@ class BridgeEventSupport implements SVGConstants {
     }
 
     public static class ScriptCaller implements EventListener {
-        private static String EVENT_NAME = "evt";
-
         private String script = null;
         private BridgeContext context;
         private String language;
@@ -520,7 +507,7 @@ class BridgeEventSupport implements SVGConstants {
         public void handleEvent(Event evt) {
             ScriptingEnvironment se =
                 context.getUpdateManager().getScriptingEnvironment();
-            se.runScript(script, language, evt);
+            se.runEventHandler(script, evt, language);
         }
     }
 }
