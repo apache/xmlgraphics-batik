@@ -19,6 +19,9 @@ import org.apache.batik.gvt.font.GVTGlyphVector;
 import org.apache.batik.gvt.font.GVTLineMetrics;
 
 public class GlyphIterator {
+    public static final AttributedCharacterIterator.Attribute PREFORMATTED 
+        = GVTAttributedCharacterIterator.TextAttribute.PREFORMATTED;
+
     public static final AttributedCharacterIterator.Attribute FLOW_LINE_BREAK 
         = GVTAttributedCharacterIterator.TextAttribute.FLOW_LINE_BREAK;
 
@@ -366,10 +369,20 @@ public class GlyphIterator {
         leftShiftIdx = null;
         leftShiftAmt = null;
 
+        float lineInfoChW;
+        int   hideIdx;
+        // System.out.println("ChIdx: " + chIdx);
+        if ((chIdx != 0) || (isPrinting())) {
+            lineInfoChW = getCharWidth(chIdx);
+            hideIdx     = chIdx+1;
+        } else {
+            lineInfoChW = 0;
+            hideIdx     = 0;
+        }
+
         int   lineInfoIdx = idx+1;
         float lineInfoAdv = adv;
         float lineInfoAdj = adj;
-
         while (!done()) {
           adv=0;
           adj=0;
@@ -388,16 +401,6 @@ public class GlyphIterator {
         }
 
         // hide trailing spaces if any
-        float lineInfoChW;
-        int   hideIdx;
-        // System.out.println("ChIdx: " + chIdx);
-        if (chIdx != -1) {
-            lineInfoChW = getCharWidth(chIdx);
-            hideIdx     = chIdx+1;
-        } else {
-            lineInfoChW = 0;
-            hideIdx     = 0;
-        }
         for (int i = hideIdx; i<lineInfoIdx; i++) {
             gv.setGlyphVisible(i, false);
         }
@@ -414,6 +417,8 @@ public class GlyphIterator {
     }
 
     public boolean isPrinting() {
+        if (aci.getAttribute(PREFORMATTED) == Boolean.TRUE)
+            return true;
         return isPrinting(ch);
     }
 

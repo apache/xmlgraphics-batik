@@ -38,6 +38,7 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.MarginInfo;
+import org.apache.batik.gvt.text.TextPath;
 
 /**
  * Bridge class for the &lt;flowText> element.
@@ -60,6 +61,9 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
     
     public static final AttributedCharacterIterator.Attribute FLOW_REGIONS
         = GVTAttributedCharacterIterator.TextAttribute.FLOW_REGIONS;
+
+    public static final AttributedCharacterIterator.Attribute PREFORMATTED
+        = GVTAttributedCharacterIterator.TextAttribute.PREFORMATTED;
 
     /**
      * Constructs a new bridge for the &lt;flowText> element.
@@ -531,6 +535,24 @@ public class SVGFlowTextElementBridge extends SVGTextElementBridge
             first = false;
         }
     }
+
+    /**
+     * Returns the map to pass to the current characters.
+     */
+    protected Map getAttributeMap(BridgeContext ctx,
+                                  Element element,
+                                  TextPath textPath) {
+        Map result = super.getAttributeMap(ctx, element, textPath);
+        String s;
+        s = element.getAttributeNS(null, BATIK_EXT_PREFORMATTED_ATTRIBUTE);
+        if (s.length() != 0) {
+            if (s.equals("true")) {
+                result.put(PREFORMATTED, Boolean.TRUE);
+            }
+        }
+        return result;
+    }
+
 
     protected void checkMap(Map attrs) {
         if (attrs.containsKey(TEXTPATH)) {

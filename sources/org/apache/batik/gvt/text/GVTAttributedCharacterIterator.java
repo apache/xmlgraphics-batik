@@ -211,6 +211,9 @@ public interface GVTAttributedCharacterIterator extends AttributedCharacterItera
         public final static TextAttribute FLOW_REGIONS =
             new TextAttribute("FLOW_REGIONS");
 
+        public final static TextAttribute PREFORMATTED =
+            new TextAttribute("PREFORMATTED");
+
         /** Attribute span delimiter - new tspan, tref, or textelement.*/
         public final static TextAttribute TEXT_COMPOUND_DELIMITER =
                               new TextAttribute("TEXT_COMPOUND_DELIMITER");
