@@ -336,15 +336,15 @@
         <switch>
             <g systemLanguage="fr">
 		<g transform="translate(340, 0)" fill="white" stroke="none" >
-		<text  y="455.0063" >Nouvelle</text><text  y="465.0063">lune</text>
-		<text  y="407.3906">Premier</text><text  y="417.3906">croissant</text>
-		<text  y="356.3438" >Premier</text><text  y="366.3438">quartier</text>
-		<text  y="306.0146" >Lune</text><text  y="316.0146">gibbeuse</text>
-		<text  y="263.7744" >Pleine</text><text  y="273.7744">lune</text>
-		<text  y="212.3188" >Lune</text><text  y="222.3188">gibbeuse</text>
-		<text  y="165.4707" >Dernier</text><text  y="175.4707">quartier</text>
-		<text  y="113.2466" >Dernier</text><text  y="123.2466">croissant</text>
-		<text  y="67.1665" >Nouvelle</text><text  y="77.1665">lune</text>
+		<text x="0" y="455.0063" >Nouvelle <tspan x="0" y="465.0063">lune</tspan></text>
+		<text x="0" y="407.3906">Premier <tspan x="0" y="417.3906">croissant</tspan></text>
+		<text x="0" y="356.3438" >Premier <tspan x="0" y="366.3438">quartier</tspan></text>
+		<text x="0" y="306.0146" >Lune <tspan x="0" y="316.0146">gibbeuse</tspan></text>
+		<text x="0" y="263.7744" >Pleine <tspan x="0" y="273.7744">lune</tspan></text>
+		<text x="0" y="212.3188" >Lune <tspan x="0" y="222.3188">gibbeuse</tspan></text>
+		<text x="0" y="165.4707" >Dernier <tspan x="0" y="175.4707">quartier</tspan></text>
+		<text x="0" y="113.2466" >Dernier <tspan x="0" y="123.2466">croissant</tspan></text>
+		<text x="0" y="67.1665" >Nouvelle <tspan x="0" y="77.1665">lune</tspan></text>
 		</g>
 		<text x="89.7632" y="297.918" text-anchor="start" fill="black">Soleil</text>
 		<text x="180" y="427" fill="white" stroke="none" text-anchor="start" >Lune</text>
@@ -353,15 +353,15 @@
 
             <g systemLanguage="en">
 		<g transform="translate(340, 0)" fill="white" stroke="none" >
-		<text  y="455.0063" >New</text><text  y="465.0063">moon</text>
-		<text  y="407.3906">Waxing</text><text  y="417.3906">crescent</text>
-		<text  y="356.3438" >Waxing</text><text  y="366.3438">quarter</text>
-  		<text  y="306.0146" >Near</text><text  y="316.0146">full</text> 
-		<text  y="263.7744" >Full</text><text  y="273.7744">moon</text>
-		<text  y="212.3188" >Near</text><text  y="222.3188">full</text> 
-		<text  y="165.4707" >Waining</text><text  y="175.4707">quarter</text>
-		<text  y="113.2466" >Waining</text><text  y="123.2466">crescent</text>
-		<text  y="67.1665" >New</text><text  y="77.1665">moon</text>
+		<text x="0" y="455.0063">New <tspan x="0" y="465.0063">moon</tspan></text>
+		<text x="0" y="407.3906">Waxing <tspan x="0" y="417.3906">crescent</tspan></text>
+		<text x="0" y="356.3438">Waxing <tspan x="0" y="366.3438">quarter</tspan></text>
+  		<text x="0" y="306.0146">Near <tspan x="0" y="316.0146">full</tspan></text> 
+		<text x="0" y="263.7744">Full <tspan x="0" y="273.7744">moon</tspan></text>
+		<text x="0" y="212.3188">Near <tspan x="0" y="222.3188">full</tspan></text> 
+		<text x="0" y="165.4707">Waining <tspan x="0" y="175.4707">quarter</tspan></text>
+		<text x="0" y="113.2466">Waining <tspan x="0" y="123.2466">crescent</tspan></text>
+		<text x="0" y="67.1665" >New <tspan x="0" y="77.1665">moon</tspan></text>
 		</g>
 		<text x="89.7632" y="297.918" text-anchor="start" fill="black">Sun</text>
 		<text x="180" y="427" fill="white" stroke="none" text-anchor="start" >Moon</text>
@@ -382,15 +382,15 @@
         <use transform="scale(2)" xlink:href="#New_Moon2" y="67" />
 
         <!--
-		<text  y="455.0063" >New</text><text  y="465.0063">moon</text>
-		<text  y="407.3906">Waxing</text><text  y="417.3906">crescent</text>
-		<text  y="356.3438" >Waxing</text><text  y="366.3438">quarter</text>
-  		<text  y="306.0146" >Near</text><text  y="316.0146">full</text> 
-		<text  y="263.7744" >Full</text><text  y="273.7744">moon</text>
-		<text  y="212.3188" >Near</text><text  y="222.3188">full</text> 
-		<text  y="165.4707" >Waining</text><text  y="175.4707">quarter</text>
-		<text  y="113.2466" >Waining</text><text  y="123.2466">crescent</text>
-		<text  y="67.1665" >New</text><text  y="77.1665">moon</text>
+		<text x="0" y="455.0063" >New <tspan x="0" y="465.0063">moon</tspan></text>
+		<text x="0" y="407.3906">Waxing <tspan x="0" y="417.3906">crescent</tspan></text>
+		<text x="0" y="356.3438" >Waxing <tspan x="0" y="366.3438">quarter</tspan></text>
+  		<text x="0" y="306.0146" >Near <tspan x="0" y="316.0146">full</tspan></text> 
+		<text x="0" y="263.7744" >Full <tspan x="0" y="273.7744">moon</tspan></text>
+		<text x="0" y="212.3188" >Near <tspan x="0" y="222.3188">full</tspan></text> 
+		<text x="0" y="165.4707" >Waining <tspan x="0" y="175.4707">quarter</tspan></text>
+		<text x="0" y="113.2466" >Waining <tspan x="0" y="123.2466">crescent</tspan></text>
+		<text x="0" y="67.1665" >New <tspan x="0" y="77.1665">moon</tspan></text>
         -->
 		</g>
 
@@ -723,9 +723,7 @@
 		<g transform="translate(100, 130)" text-anchor="middle" fill="white" 
 			stroke="none" font-size="16" font-family="Verdana"
 			filter="url(#bgRect)">
-			<text>Les phases</text>
-			<text y="16">de</text>
-			<text y="32">la lune</text>
+			<text x="0" y="0">Les phases <tspan x="0" y="16">de </tspan><tspan x="0" y="32">la lune</tspan></text>
 		</g>
         </g>
 
@@ -734,9 +732,7 @@
 		<g transform="translate(100, 130)" text-anchor="middle" fill="white" 
 			stroke="none" font-size="16" font-family="Verdana"
 			filter="url(#bgRect)">
-			<text>The phases</text>
-			<text y="16">of</text>
-			<text y="32">the moon</text>
+			<text  x="0" y="0">The phases <tspan x="0" y="16">of </tspan><tspan x="0" y="32">the moon</tspan></text>
 		</g>
         </g>
 
