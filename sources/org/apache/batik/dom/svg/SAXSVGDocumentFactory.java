@@ -19,6 +19,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import java.util.zip.GZIPInputStream;
+
 import org.apache.batik.dom.util.SAXDocumentFactory;
 
 import org.w3c.dom.Document;
@@ -58,23 +60,33 @@ public class SAXSVGDocumentFactory
     }
 
     /**
-     * Creates a SVGOMDocument instance.
+     * Creates a SVGOMDocument instance.<br>
+     * This method supports gzipped sources.
      * @param uri The document URI.
      * @exception IOException if an error occured while reading the document.
      */
     public SVGOMDocument createDocument(String uri) throws IOException {
-        SVGOMDocument doc;
-        InputSource is = new InputSource(uri);
-
+        URL url = null;
         try {
-            doc = (SVGOMDocument)super.createDocument
-                (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, is);
-            if (uri != null) {
-                doc.setURLObject(new URL(uri));
-            }
+            url = new URL(uri);
         } catch (MalformedURLException e) {
-            throw new IOException(e.getMessage());
+            throw new IOException("Malformed URL: " + uri);
         }
+
+        InputStream is = url.openStream();
+        try {
+            is = new GZIPInputStream(is);
+        } catch (IOException e) {
+            is.close();
+            is = url.openStream();
+        }
+
+        InputSource isrc = new InputSource(is);
+
+        SVGOMDocument doc = (SVGOMDocument)super.createDocument
+            (SVGDOMImplementation.SVG_NAMESPACE_URI, "svg", uri, isrc);
+        doc.setURLObject(url);
+
         return doc;
     }
 

@@ -8,6 +8,11 @@
 
 package org.apache.batik.bridge;
 
+import java.io.InterruptedIOException;
+import java.io.IOException;
+
+import java.net.MalformedURLException;
+
 import java.util.List;
 
 import org.apache.batik.css.HiddenChildElement;
@@ -56,7 +61,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
      * @param ctx the context to use
      * @param svgDocument the DOM tree that represents an SVG document
      */
-    public GraphicsNode build(BridgeContext ctx, Document svgDocument){
+    public GraphicsNode build(BridgeContext ctx, Document svgDocument) {
         ctx.initialize(this);
         RootGraphicsNode root = new RootGraphicsNode();
         Element svgRoot = svgDocument.getDocumentElement();
@@ -109,7 +114,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
      * @param ctx the context to use
      * @param element element for which a GVT representation should be built
      */
-    public GraphicsNode build(BridgeContext ctx, Element element){
+    public GraphicsNode build(BridgeContext ctx, Element element) {
 
         Bridge bridge = ctx.getBridge(element);
 
@@ -135,7 +140,7 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
      */
     protected void buildComposite(BridgeContext ctx,
                                   CompositeGraphicsNode composite,
-                                  Node first){
+                                  Node first) {
         for (Node child = first;
              child != null;
              child = child.getNextSibling()) {
@@ -151,6 +156,10 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
     protected void buildGraphicsNode(BridgeContext ctx,
                                      CompositeGraphicsNode composite,
                                      Element e) {
+        // Check for interruption.
+        if (Thread.currentThread().isInterrupted()) {
+            throw new InterruptedBridgeException();
+        }
 
         Bridge bridge = ctx.getBridge(e);
 
@@ -240,8 +249,12 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                     buildGraphicsNode(ctx,
                                       (CompositeGraphicsNode)childGVTNode,
                                       inst);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (MalformedURLException ex) {
+                    throw new BridgeException(ex.getMessage());
+                } catch (InterruptedIOException ex) {
+                    throw new InterruptedBridgeException();
+                } catch (IOException ex) {
+                    throw new BridgeException(ex.getMessage());
                 }
             } else if (SVG_SWITCH_TAG.equals(e.getLocalName())) {
                 for (Node n = e.getFirstChild();
@@ -263,6 +276,8 @@ public class ConcreteGVTBuilder implements GVTBuilder, SVGConstants {
                 }
             }
             gnb.buildGraphicsNode(childGVTNode, ctx, e);
+        } catch (InterruptedBridgeException ex) {
+            throw ex;
         } catch (BridgeException ex) {
             if (ex.getGraphicsNode() != null) {
                 GraphicsNode gn = ex.getGraphicsNode();

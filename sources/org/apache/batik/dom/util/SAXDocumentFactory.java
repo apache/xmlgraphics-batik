@@ -9,6 +9,7 @@
 package org.apache.batik.dom.util;
 
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -164,6 +165,10 @@ public class SAXDocumentFactory
 
             parser.parse(is);
 	} catch (SAXException e) {
+            Exception ex = e.getException();
+            if (ex != null && ex instanceof InterruptedIOException) {
+                throw (InterruptedIOException)ex;
+            }
             throw new IOException(e.getMessage());
 	}
 
@@ -194,6 +199,11 @@ public class SAXDocumentFactory
 			     String     localName,
 			     String     rawName,
 			     Attributes attributes) throws SAXException {
+        // Check for interruption.
+        if (Thread.currentThread().isInterrupted()) {
+            throw new SAXException(new InterruptedIOException());
+        }
+
 	// Namespaces resolution
 	int len = attributes.getLength();
 	namespaces.push();
