@@ -40,11 +40,15 @@
    </p>
 
    <p>The general Batik list, for problems using Batik, bug reports... 
-   This is not an appropriate list for general SVG questions.</p>
+   This is not an appropriate list for general SVG questions, you might try
+   the <link href="mailto:w3c-svg@w3.org">public SVG mailing list</link> instead, or
+   the <link href="mailto:svg-developers@yahoogroups.com">SVG Developers</link> list.</p>
 
    <p><strong>IMPORTANT:</strong> If you are posting about a problem you are having
-    (as most people do), it will aid in finding a speedy resolution if you provide
-    full configuration details</p>
+    (as most people do), please provide details about the system configuration (Operating
+    System, JDK version, Window Manager etc...), and detailed information about the 
+    problem such as any available stack trace or, ideally, a test case that isolates
+    the problem. This will help get a quick resolution.</p>
   </s1>
 
   <s1 title="Batik Dev">
@@ -54,7 +58,7 @@
 
    <p>This list is for developers <strong>working on</strong> or wanting to work on
     Batik itself (not developers merely working <strong>with</strong> Batik),
-    for code patches to Batik to be posted,...
+    for patches to Batik to be posted,...
     </p>
   </s1>
   <s1 title="Related Mailing Lists">

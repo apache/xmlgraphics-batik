@@ -422,10 +422,11 @@
     <question>What are the System Requirements to run Batik?</question>
     <answer>
         <p>
-        Batik is written in the Java language and requires a version 1.2
-        implementation. However, version 1.3 is highly recommended, as that version
-        fixes several bugs and has greatly improved performance. <strong>Linux users:</strong> we 
-        recommend that you use 1.2.2 or higher.       
+        Batik is written in the Java language and requires a version 1.3
+        implementation at this time. Note that the Batik team is working on
+        removing the few dependancies that Batik has on 1.3-specific APIs 
+        so that users may choose to run Batik on JDK 1.2.2. Note, however, 
+        that performances on version 1.3 are much better.
         </p>
     </answer>
 
@@ -435,9 +436,7 @@
     <question>How do I install Batik?</question>
     <answer>
         <p>
-        You will need the <link href="http://java.sun.com/">JDK 1.3</link> (or 1.2 if 1.3 
-        is not yet available on your platform) to run Batik. <strong>Linux users:</strong> we 
-        recommend that you use 1.2.2 or higher.       
+        You will need the <link href="http://java.sun.com/">JDK 1.3</link> to run Batik. 
         </p>
         <p>
         To install Batik you need to <link href="dist">download</link>
