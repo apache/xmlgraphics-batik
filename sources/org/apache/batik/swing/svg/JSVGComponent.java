@@ -42,6 +42,8 @@ import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.apache.batik.swing.gvt.JGVTComponent;
 
+import org.apache.batik.util.SVGConstants;
+
 import org.w3c.dom.Element;
 
 import org.w3c.dom.svg.SVGAElement;
@@ -186,6 +188,12 @@ public class JSVGComponent extends JGVTComponent {
             throw new IllegalArgumentException("Invalid DOM implementation.");
         }
         svgDocument = doc;
+
+        Element root = doc.getDocumentElement();
+        String znp = root.getAttributeNS(null, SVGConstants.SVG_ZOOM_AND_PAN_ATTRIBUTE);
+        if (!znp.equals(SVGConstants.SVG_MAGNIFY_VALUE)) {
+            disableInteractions = true;
+        }
 
         gvtTreeBuilder = new GVTTreeBuilder(doc, bridgeContext = createBridgeContext());
         gvtTreeBuilder.setPriority(Thread.MIN_PRIORITY);
