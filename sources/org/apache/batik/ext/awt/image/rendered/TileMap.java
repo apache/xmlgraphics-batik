@@ -26,10 +26,10 @@ public class TileMap implements TileStore {
 
     static class TileMapLRUMember extends TileLRUMember {
         public Point   pt;
-        public TileMap parent;
+        public SoftReference parent;
         TileMapLRUMember(TileMap parent, Point pt, Raster ras) {
             super(ras);
-            this.parent = parent;
+            this.parent = new SoftReference(parent);
             this.pt     = pt;
         }
 
@@ -48,7 +48,7 @@ public class TileMap implements TileStore {
     private LRUCache      cache = null;
 
     public TileMap(TileGenerator source,
-                    LRUCache cache) {
+		   LRUCache cache) {
         this.cache    = cache;
         this.source   = source;
     }
@@ -155,7 +155,9 @@ public class TileMap implements TileStore {
                             if (o == null) continue;
                         
                             TileMapLRUMember item = (TileMapLRUMember)o;
-                            item.parent.rasters.remove(item.pt);
+			    TileMap parent = (TileMap)item.parent.get();
+			    if (parent != null)
+				parent.rasters.remove(item.pt);
                         }
                     }
                 }
