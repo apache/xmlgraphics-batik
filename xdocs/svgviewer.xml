@@ -84,7 +84,7 @@
             <s2 title="Starting the browser for the developer distribution">
 
                 <p>If you downloaded the developer distrubution of Batik, you should have gotten
-                a zip or tar file that expanded into an xml-batik directory. In that directory, you
+                a zip file that expanded into an xml-batik directory. In that directory, you
                 can find build scripts for the platform you are running on. For example, there is 
                 a build.bat script for users of the Windows platform and there is a build.sh script
                 for UNIX users.</p>
@@ -111,7 +111,7 @@
             </s2>
 
             <s2 title="SVG browser screen shot">
-                <p>The following image shows the result of starging the browser, in the binary or 
+                <p>The following image shows the result of starting the browser, in the binary or 
                 developer distribution, with the <code>-font-size 10 samples/batikFX.svg</code> options.</p>
                 <figure src="images/svgviewerDefaultRegular.jpg" alt="Batik Browser"/>
                 
@@ -120,7 +120,7 @@
 
         <anchor id="viewing"/>
         <s1 title="Viewing SVG Files">
-            <p>There browser has several features to view and browse SVG files:</p>
+            <p>The browser has several features to view and browse SVG files:</p>
             <ul>
                 <li><link href="#localFile">Opening a local SVG file</link></li>
                 <li><link href="#urlFile">Opening an SVG file from the web</link></li>
@@ -133,7 +133,7 @@
             <s2 title="Opening a local SVG file">
 
             <p>In situations where you have an SVG file locally on the machine where you are running the
-            Batik SVG browser, you can use the "File-&gt;File Open" menu item to open that file, or use
+            Batik SVG browser, you can use the "File-&gt;Open File" menu item to open that file, or use
             the "Ctrl-F" key accelerator. Doing so brings up a file choser that lets you select the file
             you want to view.</p>
 
@@ -190,14 +190,14 @@
 
             <figure src="images/svgviewerMultipleFiles.gif" alt="Viewing multiple files" />
             <p>The Batik SVG Browser can display multiple files simultaneously in different windows. To view a
-            new file in a separate window, simply select the "File-&gt; New Window..." menu item or use
+            new file in a separate window, simply select the "File-&gt; Create New Window" menu item or use
             the Ctrl-N keyboard accelerator.</p>
         </s2>
 
         <s2 title="Reloading an SVG document">
 
             <p>When working on an SVG document, you may want the browser to reprocess a document that you 
-            have modified. The "File-&gt; Reload" menu item or the Ctrl-R keyboard accelerator will cause the 
+            have modified. The "File-&gt; Reload Document" menu item or the Ctrl-R keyboard accelerator will cause the 
             document to be reprocessed by the browser.</p>
         </s2>
         </s1>
@@ -206,7 +206,7 @@
         <s1 title="Exporting and Printing SVG documents">
             <p>The "File-&gt;Print" menu will print the currently displayed SVG document when selected.</p>
             <p>The "File-&gt;Export As" menu offers the option to export the currently displayed SVG document
-            to various raster formats. Currently, the browser supports the PNG, JPEG and TIF formats.</p>
+            to various raster formats. Currently, the browser supports the PNG, JPEG and TIFF formats.</p>
         </s1>
 
         <anchor id="inspectingSVGSourceContent" />
@@ -227,10 +227,10 @@
         <anchor id="viewingTree" />
         <s2 title="Viewing the document tree">
             <figure src="images/svgviewerViewTree.gif" alt="Viewing the document tree" />
-            <p>When the browser displays an SVG file, you can select the "View-&gt; View Document Tree..."
+            <p>When the browser displays an SVG file, you can select the "View-&gt; DOM Viewer..."
             menu item or use the Ctrl-T keyboard accelerator to open a dialog that shows the SVG
             document in the form of a tree. The dialog lets you navigate the tree, select individual
-            elements, such as a filter element, and view the attributes and CSS values that apply to
+            elements, such as a path element, and view the attributes and CSS values that apply to
             these elements.</p>
         </s2>
         </s1>
@@ -250,7 +250,7 @@
             proxy server to use if you are working from behind a firewall.</li>
             <li><strong>Languages Panel</strong>. This is the panel shown in the above 
             figure. That panel lets you select your languages. The user language can 
-            be used in SVG documents to chose between alternate contents. For example, 
+            be used in SVG documents to choose between alternate contents. For example, 
             open the samples/moonPhases.svg example. Then, change the user language to 
             french and reload the document (Ctrl-R). You will see that the text is now
             displayed in french. You can do the same with Japanese and the text will be
@@ -272,7 +272,7 @@
             <li><strong>Stylesheet Panel</strong>. This panel lets you specify a user
             stylesheet which can override some of the default settings in viewed SVG 
             documents. This might be useful if you want, for example, to override the 
-            font face used in text elements.</li>
+            font size used in text elements.</li>
         </ul>
         </s1>
 
@@ -352,7 +352,7 @@
                 "View -&gt; Thumbnail" menu item or Ctrl-Y keyboard acceleration. The 
                 thumbnail shows a rectangular marker that represents the "Area of Interest", i.e., the 
                 region currently displayed in the window (the visible portion of the document). You
-                can grag that little marker with the left mouse button and drag it to another area
+                can drag that little marker with the left mouse button and drag it to another area
                 of interest to view a different portion of the document in the main window.</p>
                 <figure src="images/svgviewerThumbnail.gif" alt="SVG Browser Thumbnail" />
             </s2>
