@@ -340,7 +340,7 @@ public interface GraphicsNode {
     Rectangle2D getBounds();
 
     /**
-     * Returns the bounds of the area covered by this node's 
+     * Returns the bounds of the area covered by this node's
      * primitive paint.
      */
     Rectangle2D getPrimitiveBounds();
@@ -348,7 +348,7 @@ public interface GraphicsNode {
     /**
      * Tests if the specified Point2D is inside the boundary of this
      * node.
-     * @param p the specified Point2D in the parent node space
+     * @param p the specified Point2D in the user space
      * @return true if the coordinates are inside, false otherwise
      */
     boolean contains(Point2D p);
@@ -356,7 +356,7 @@ public interface GraphicsNode {
     /**
      * Tests if the interior of this node intersects the interior of a
      * specified Rectangle2D.
-     * @param r the specified Rectangle2D in the parent node space
+     * @param r the specified Rectangle2D in the user node space
      * @return true if the rectangle intersects, false otherwise
      */
     boolean intersects(Rectangle2D r);
@@ -364,7 +364,7 @@ public interface GraphicsNode {
     /**
      * Returns the GraphicsNode containing point p if this node or one of
      * its children is sensitive to mouse events at p.
-     * @param p the specified Point2D in the parent node space
+     * @param p the specified Point2D in the user space
      * @return the GraphicsNode containing p on this branch of the GVT tree.
      */
     GraphicsNode nodeHitAt(Point2D p);

@@ -118,16 +118,19 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
     //
 
     public boolean contains(Point2D p) {
-
         if (getBounds().contains(p)) {
-            for (int i=0; i<count; ++i) {
+            for (int i=0; i < count; ++i) {
                 AffineTransform t = children[i].getTransform();
                 if (t == null) {
-                    t = new AffineTransform(); // TODO: replace with static identity
+                    t = IDENTITY;
+                } else {
+                    // put the coordinates to children space
+                    try {
+                        t = t.createInverse();
+                    } catch (NoninvertibleTransformException ex) {}
                 }
                 Point2D pt = t.transform(p, null);
-                boolean isContained = children[i].contains(pt);
-                if (isContained) {
+                if (children[i].contains(pt)) {
                     return true;
                 }
             }
@@ -137,11 +140,18 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
 
     public GraphicsNode nodeHitAt(Point2D p) {
         if (getBounds().contains(p)) {
-            for (int i=0; i<count; ++i) {
-                //System.out.println("Testing "+i+" "+children[i]);
+            //
+            // Go backward because the children are in rendering order
+            //
+            for (int i=count-1; i >= 0; --i) {
                 AffineTransform t = children[i].getTransform();
                 if (t == null) {
-                    t = new AffineTransform(); // TODO: replace with static identity
+                    t = IDENTITY;
+                } else {
+                    // put the coordinates to children space
+                    try {
+                        t = t.createInverse();
+                    } catch (NoninvertibleTransformException ex) {}
                 }
                 Point2D pt = t.transform(p, null);
                 GraphicsNode node = children[i].nodeHitAt(pt);
@@ -160,12 +170,10 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
             txf = children[0].getTransform();
             nodeBounds = children[0].getBounds();
             bounds = txf.createTransformedShape(nodeBounds).getBounds2D();
-        }
-        else{
+        } else {
             // With the following empty groups may have bad side effects.
             bounds = new Rectangle(0, 0, 0, 0);
         }
-
         for (int i=1; i < count; ++i) {
             GraphicsNode node = children[i];
             nodeBounds = node.getBounds();
@@ -173,7 +181,6 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
             nodeBounds = txf.createTransformedShape(nodeBounds).getBounds2D();
             bounds.add(nodeBounds);
         }
-
         return bounds;
     }
 
@@ -185,10 +192,10 @@ public class ConcreteCompositeGraphicsNode extends AbstractGraphicsNode
     //
     // Structural info
     //
-    
+
     protected void setRoot(RootGraphicsNode newRoot) {
         super.setRoot(newRoot);
-        for (int i=1; i < count; ++i) {
+        for (int i=0; i < count; ++i) {
             GraphicsNode node = children[i];
             ((AbstractGraphicsNode)node).setRoot(newRoot);
         }
