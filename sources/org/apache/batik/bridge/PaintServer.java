@@ -148,6 +148,7 @@ public abstract class PaintServer
         Paint strokePaint = convertStrokePaint(e, node, ctx);
 
         Shape shape = node.getShape();
+        if (shape == null) return null;
         if (fillPaint != null && strokePaint != null) {
             FillShapePainter fp = new FillShapePainter(shape);
             fp.setPaint(fillPaint);

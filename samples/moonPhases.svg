@@ -371,27 +371,15 @@
             <g systemLanguage="ja">
     
 		<g transform="translate(330, -10)" fill="white" stroke="none" >
-        <use transform="scale(2)" xlink:href="#New_Moon" y="455" />
-        <use transform="scale(2)" xlink:href="#Waxing_Crescent" y="407" />
-        <use transform="scale(2)" xlink:href="#Waxing_Quarter" y="356" />
-        <use transform="scale(2)" xlink:href="#Near_Full_Before_Full" y="306" />
-        <use transform="scale(2)" xlink:href="#Full_Moon" y="263" />
-        <use transform="scale(2)" xlink:href="#Near_Full_After_Full" y="212" />
-        <use transform="scale(2)" xlink:href="#Waning_Quarter" y="165" />
-        <use transform="scale(2)" xlink:href="#Waning_Quarter" y="113" />
-        <use transform="scale(2)" xlink:href="#New_Moon2" y="67" />
-
-        <!--
-		<text x="0" y="455.0063" >New <tspan x="0" y="465.0063">moon</tspan></text>
-		<text x="0" y="407.3906">Waxing <tspan x="0" y="417.3906">crescent</tspan></text>
-		<text x="0" y="356.3438" >Waxing <tspan x="0" y="366.3438">quarter</tspan></text>
-  		<text x="0" y="306.0146" >Near <tspan x="0" y="316.0146">full</tspan></text> 
-		<text x="0" y="263.7744" >Full <tspan x="0" y="273.7744">moon</tspan></text>
-		<text x="0" y="212.3188" >Near <tspan x="0" y="222.3188">full</tspan></text> 
-		<text x="0" y="165.4707" >Waning <tspan x="0" y="175.4707">quarter</tspan></text>
-		<text x="0" y="113.2466" >Waning <tspan x="0" y="123.2466">crescent</tspan></text>
-		<text x="0" y="67.1665" >New <tspan x="0" y="77.1665">moon</tspan></text>
-        -->
+        	   <use transform="scale(2)" xlink:href="#New_Moon2" y="33" />
+        	   <use transform="scale(2)" xlink:href="#Waning_Crescent" y="56" />
+        	   <use transform="scale(2)" xlink:href="#Waning_Quarter" y="82" />
+        	   <use transform="scale(2)" xlink:href="#Near_Full_After_Full" y="106" />
+        	   <use transform="scale(2)" xlink:href="#Full_Moon" y="130" />
+        	   <use transform="scale(2)" xlink:href="#Near_Full_Before_Full" y="154" />
+        	   <use transform="scale(2)" xlink:href="#Waxing_Quarter" y="178" />
+        	   <use transform="scale(2)" xlink:href="#Waxing_Crescent" y="202" />
+        	   <use transform="scale(2)" xlink:href="#New_Moon" y="227" />
 		</g>
 
         <g filter="url(#bgRect)">
