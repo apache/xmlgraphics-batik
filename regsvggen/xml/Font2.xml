@@ -22,7 +22,7 @@
 		// First, font size
 		//
 		AffineTransform defaultTransform = g.getTransform();
-		Font defaultFont = new Font("dialog", Font.BOLD, 16);
+		Font defaultFont = new Font("Arial", Font.BOLD, 16);
 		g.setFont(defaultFont);
 		FontRenderContext frc = g.getFontRenderContext();
 		g.setPaint(labelColor);
@@ -99,8 +99,7 @@
 													  new Font("dialoginput", Font.BOLD, 14),
 													  new Font("monospaced", Font.ITALIC, 14),
 													  new Font("serif", Font.PLAIN, 14),
-													  new Font("sansserif", Font.BOLD, 14),
-													  new Font("symbol", Font.ITALIC, 14) };
+													  new Font("sansserif", Font.BOLD, 14)};
 
 		g.translate(0, 70);
 		g.setFont(defaultFont);
