@@ -66,6 +66,7 @@ import org.w3c.dom.NamedNodeMap;
  * - ResourceOrigin: "ANY", "DOCUMENT", "EMBEDED", "NONE"
  * - ExpectedExceptionClass (e.g., "java.lang.SecurityException")
  * - ExpectedErrorCode (e.g., "err.uri.unsecure")
+ * - Validate (e.g., "true")
  *
  * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
@@ -156,6 +157,11 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
      */
     protected String resourceOrigin = "ANY";
 
+    /**
+     * Controls whether or not the input SVG document should be validated
+     */
+    protected Boolean validate = new Boolean(false);
+
     public void setScripts(String scripts){
         this.scripts = scripts;
     }
@@ -194,6 +200,17 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
 
     public String getExpectedErrorCode(){
         return this.expectedErrorCode;
+    }
+
+    public Boolean getValidate() {
+        return validate;
+    }
+
+    public void setValidate(Boolean validate) {
+        this.validate = validate;
+        if (this.validate == null) {
+            this.validate = new Boolean(false);
+        }
     }
     
     /**
@@ -252,6 +269,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
         //
         String parserClassName = XMLResourceDescriptor.getXMLParserClassName();
         SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parserClassName);
+        f.setValidating(validate.booleanValue());
         Document doc = null;
 
         try {

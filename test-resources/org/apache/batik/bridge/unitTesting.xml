@@ -105,6 +105,464 @@
             <property name="ExpectedErrorCode" class="java.lang.String"
                       value="uri.unsecure" />
         </test>
+    </testGroup>
+
+    <testGroup id="BridgeExceptions" name="Bridge Exceptions" class="org.apache.batik.test.svg.SVGOnLoadExceptionTest">
+        <test id="bridge/error/rect-negative-width">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test>
+
+        <test id="bridge/error/clipPath-clipPathUnits-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+
+        <!-- <!>Could not find that an empty clipPath is an error. Batik does not -->
+        <!-- generate an error.                                                -->
+        <!-- <test id="bridge/error/clipPath-empty">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test> -->
+        <test id="bridge/error/clipPath-subelement-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/clipPath-uri-illegal">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="css.uri.badTarget" />
+        </test>
+        <test id="bridge/error/css-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.w3c.dom.DOMException" />
+        </test>
+        <test id="bridge/error/ellipse-missing-rx">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/ellipse-missing-ry">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/ellipse-negative-rx">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test>
+        <test id="bridge/error/ellipse-negative-ry">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test>
+        <test id="bridge/error/feColorMatrix-type-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feColorMatrix-value-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feColorMatrix-values-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feComponentTransfert-type-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feComponentTransfert-type-missing">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/feComponentTransfert-value-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feComposite-in2-missing">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/feComposite-operator-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feDisplacementMap-channelSelector-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feDisplacementMap-in2-missing">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/feGaussianBlur-stdDeviationX-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feGaussianBlur-stdDeviationY-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+
+        <!-- <!> As we have the same processing as for image, we do not -->
+        <!-- throw an exception here either                             -->
+        <!--
+        <test id="bridge/error/feImage-badurl">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>-->
+
+        <test id="bridge/error/feMerge-feMergeNode-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="java.io.IOException" />
+            <property name="Validate" class="java.lang.Boolean"
+                      value="true" />
+        </test>
+
+        <test id="bridge/error/feMorphology-operator-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feMorphology-radiusX-negative">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feMorphology-radiusY-negative">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feTurbulence-stitchTiles.invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/feTurbulence-type-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <!-- <!> Not clear this is an error. Works with Batik and could not -->
+        <!-- error handling in spec.                                        -->
+        <!--
+        <test id="bridge/error/filter-empty">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test> -->
+        <test id="bridge/error/filter-filterPrimitive-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="java.io.IOException" />
+            <property name="Validate" class="java.lang.Boolean"
+                      value="true" />
+        </test>
+        <test id="bridge/error/filter-filterResX-negative">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/filter-filterResY-negative">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/filter-filterUnits-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/filter-uri-illegal">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="css.uri.badTarget" />
+        </test>
+        <!-- <!> This just displays a broken-image image -->
+        <!--
+        <test id="bridge/error/image-badurl">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test> -->
+        <test id="bridge/error/image-missing-height">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/image-missing-width">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/image-negative-height">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test>
+        <test id="bridge/error/image-negative-width">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test>
+
+        <!-- <!> No error is generated in Batik -->
+        <!-- 
+        <test id="bridge/error/linearGradient-empty">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test> -->
+        <test id="bridge/error/linearGradient-gradientUnits-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/linearGradient-missing-offset">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/linearGradient-spreadMethod-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/linearGradient-uri-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="css.uri.badTarget" />
+        </test>
+        <!-- <!> -->
+        <!--
+        <test id="bridge/error/mask-empty">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test> -->
+        <test id="bridge/error/mask-maskUnits-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/mask-subelement-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/mask-uri-illegal">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="css.uri.badTarget" />
+        </test>
+        <test id="bridge/error/path-invalid-d">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/path-missing-d">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <!-- <!> -->
+        <!--
+        <test id="bridge/error/pattern-empty">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test> -->
+        <test id="bridge/error/pattern-patternUnits-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+
+        <test id="bridge/error/pattern-subelement-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="java.io.IOException" />
+            <property name="Validate" class="java.lang.Boolean"
+                      value="true" />
+        </test> 
+        <test id="bridge/error/polygon-invalid-points">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/polygon-missing-points">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/polyline-invalid-points">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/polyline-missing-points">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <!-- <!> According to 13.2.4, this is not an error -->
+        <!-- 
+        <test id="bridge/error/radialGradient-empty">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test> -->
+        <test id="bridge/error/radialGradient-gradientUnits-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/radialGradient-missing-offset">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/radialGradient-r-negative">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test>
+        <!-- <!> This is not an error according to 13.2.3 -->
+        <!-- 
+        <test id="bridge/error/radialGradient-r-zero">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test> -->
+        <test id="bridge/error/radialGradient-spreadMethod-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/rect-missing-height">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/rect-missing-width">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.missing" />
+        </test>
+        <test id="bridge/error/rect-negative-height">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test>
+        <test id="bridge/error/rect-negative-rx">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test>
+        <test id="bridge/error/rect-negative-ry">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test>
+        <test id="bridge/error/rect-negative-width">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="length.negative" />
+        </test>
+        <test id="bridge/error/transform">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="org.apache.batik.bridge.BridgeException" />
+            <property name="ExpectedErrorCode" class="java.lang.String"
+                      value="attribute.malformed" />
+        </test>
+        <test id="bridge/error/xml-invalid">
+            <property name="ExpectedExceptionClass" class="java.lang.String"
+                      value="java.io.IOException" />
+        </test>
 
     </testGroup>
 </testSuite>

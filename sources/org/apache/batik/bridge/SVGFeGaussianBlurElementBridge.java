@@ -74,7 +74,11 @@ public class SVGFeGaussianBlurElementBridge
         // 'stdDeviation' attribute - default is [0, 0]
         float [] stdDeviationXY = convertStdDeviation(filterElement);
         if (stdDeviationXY[0] < 0 || stdDeviationXY[1] < 0) {
-            return null; // should return a fully transparent image
+            throw new BridgeException(filterElement,
+                                      ERR_ATTRIBUTE_VALUE_MALFORMED,
+                                      new Object[] {SVG_STD_DEVIATION_ATTRIBUTE,
+                                                    "" + stdDeviationXY[0] + 
+                                                    stdDeviationXY[1]});
         }
 
         // 'in' attribute
