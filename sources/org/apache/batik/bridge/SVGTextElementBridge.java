@@ -495,16 +495,18 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         return as;
     }
 
-    // returns true if node1 is an ancestor of node2
+    /**
+     * Returns true if node1 is an ancestor of node2
+     */
     private boolean nodeAncestorOf(Node node1, Node node2) {
+        if (node2 == null || node1 == null) {
+            return false;
+        }
         Node parent = node2.getParentNode();
         while (parent != null && parent != node1) {
             parent = parent.getParentNode();
         }
-        if (parent == node1) {
-            return true;
-        }
-        return false;
+        return (parent == node1);
     }
 
 
