@@ -99,5 +99,10 @@ public interface GVTFont {
      */
     public float getSize();
 
+    /**
+     * Returns the kerning value of this character pair.
+     */
+    public float getKerning(String unicode1, String unicode2);
+
     public String toString();
 }
