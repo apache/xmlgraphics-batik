@@ -145,6 +145,56 @@ public class FontFamilyResolver {
      */
     protected static Map resolvedFontFamilies;
 
+    /**
+     * Looks up a font family name and returns the platform name
+     * for the font.
+     *
+     * @param familyName The Font Family name to resolve
+     *
+     * @return The platform name for the font or null if it can't be found.
+     */
+    public static String lookup(String familyName) {
+        return (String)fonts.get(familyName.toLowerCase());
+    }
+
+    /**
+     * Resolves a font family name into a GVTFontFamily. If the font
+     * family cannot be resolved then null will be returned.
+     *
+     * @param familyName The Font Family name to resolve
+     *
+     * @return A resolved GVTFontFamily or null if the font family could not
+     * be resolved.
+     */
+    public static GVTFontFamily resolve(String familyName) {
+        if (resolvedFontFamilies == null) {
+            resolvedFontFamilies = new HashMap();
+        }
+
+        // first see if this font family has already been resolved
+        GVTFontFamily resolvedFF = 
+            (GVTFontFamily)resolvedFontFamilies.get(familyName.toLowerCase());
+
+        if (resolvedFF == null) { // hasn't been resolved yet
+            // try to find a matching family name in the list of
+            // available fonts
+            String awtFamilyName = (String)fonts.get(familyName.toLowerCase());
+            if (awtFamilyName != null) {
+                resolvedFF = new AWTFontFamily(awtFamilyName);
+            }
+
+            resolvedFontFamilies.put(familyName.toLowerCase(), resolvedFF);
+        }
+
+        //  if (resolvedFF != null) {
+        //      System.out.println("resolved " + fontFamily.getFamilyName() + 
+        //                         " to " + resolvedFF.getFamilyName());
+        //  } else {
+        //      System.out.println("could not resolve " + 
+        //                         fontFamily.getFamilyName());
+        //  }
+        return resolvedFF;
+    }
 
     /**
      * Resolves an UnresolvedFontFamily into a GVTFontFamily. If the font
@@ -159,29 +209,7 @@ public class FontFamilyResolver {
      */
     public static GVTFontFamily resolve(UnresolvedFontFamily fontFamily) {
 
-        if (resolvedFontFamilies == null) {
-            resolvedFontFamilies = new HashMap();
-        }
-
-        // first see if this font family has already been resolved
-        String familyName = fontFamily.getFamilyName();
-        GVTFontFamily resolvedFontFamily = (GVTFontFamily)resolvedFontFamilies.get(familyName.toLowerCase());
-
-        if (resolvedFontFamily == null) { // hasn't been resolved yet
-            // try to find a matching family name in the list of available fonts
-            String awtFamilyName = (String) fonts.get(familyName.toLowerCase());
-            if (awtFamilyName != null) {
-                resolvedFontFamily = new AWTFontFamily(awtFamilyName);
-            }
-
-            resolvedFontFamilies.put(familyName.toLowerCase(), resolvedFontFamily);
-        }
-      //  if (resolvedFontFamily != null) {
-      //      System.out.println("resolved " + fontFamily.getFamilyName() + " to " + resolvedFontFamily.getFamilyName());
-      //  } else {
-      //      System.out.println("could not resolve " + fontFamily.getFamilyName());
-      //  }
-        return resolvedFontFamily;
+        return resolve(fontFamily.getFamilyName());
     }
 
     public static GVTFontFamily getFamilyThatCanDisplay(char c) {

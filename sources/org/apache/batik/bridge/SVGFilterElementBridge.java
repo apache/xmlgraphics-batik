@@ -135,7 +135,7 @@ public class SVGFilterElementBridge extends AbstractSVGBridge
                                           sourceGraphic,
                                           filterNodeMap,
                                           ctx);
-        if (in == sourceGraphic) {
+        if ((in == null) || (in == sourceGraphic)) {
             return null; // no filter primitives found, disable the filter.
         } else {
             filterChain.setSource(in);
