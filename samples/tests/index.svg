@@ -18,6 +18,7 @@
 <!-- ========================================================================= -->
 
 <svg id="body" width="450" height="500">
+<title>Index Page</title>
   <style type="text/css"><![CDATA[
     text.headfoot {
       font-family:   'SunSansCondensed-Demi';

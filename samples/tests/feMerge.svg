@@ -31,14 +31,16 @@
     	feMerge Test
       </text>
   
+      <g transform="translate(0, 50)">
       <defs>
+
        
-       <circle id="Circle1" cx="40" cy="65" r="25" style="fill:orange" />
+       <circle id="Circle1" cx="40" cy="65" r="25" style="fill:yellowGreen" />
   
-       <circle id="Circle2" cx="80" cy="55" r="25" style="fill:blue" />
+       <circle id="Circle2" cx="80" cy="55" r="25" style="fill:darkBlue" />
   
        <rect   id="Rect1"   x="40" y="35" width="30" height="70" 
-	       style="fill:LightBlue" />
+	       style="fill:dodgerBlue" />
   
        <rect   id="Rect2"   x="60" y="15" width="30" height="70" 
 	       rx="10" ry="10"
@@ -136,36 +138,36 @@
         <!-- ============================================== -->
         <g transform="translate(0 20)" class="row1" >
     	  <g id="c1" transform="translate(20 0)">
-              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
+              <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	            style="fill:FireBrick;  filter:url(#Merge1)"/>
       
               <g transform="translate(60, 130)">
                <text x="0" y="0" style="text-anchor:middle">
-	        Orange, blue, lt blue, green
+	        lt green/blue/lt blue/green
                </text>
              </g>
     	  </g>
              
     	  <g id="c2" transform="translate(160 0)">
-              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
+              <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	       style="fill:FireBrick;  filter:url(#Merge2)" />
               <g transform="translate(60, 130)">
                <text x="0" y="0" style="text-anchor:middle">
-                Orange, lt blue, blue, green
+                lt green/lt blue/blue/green
                </text>
              </g>
     	  </g>
   
   
     	  <g id="c2" transform="translate(300 0)">
-              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
+              <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	       style="fill:FireBrick;  filter:url(#Merge3)" />
               <g transform="translate(60, 130)">
                <text x="0" y="0" style="text-anchor:middle">
-                Orange, lt blue, green, blue
+                lt green/lt blue/green/blue
                </text>
              </g>
     	  </g>
@@ -176,40 +178,41 @@
         <!-- ============================================== -->
         <g transform="translate(0 160)" class="row2" >
     	  <g id="c1" transform="translate(20 0)">
-              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
+              <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	       style="fill:FireBrick;  filter:url(#Merge4)"/>
               <g transform="translate(60, 130)">
                <text x="0" y="0" style="text-anchor:middle">
-                lt blue, green, orange, blue
+                lt blue/green/orange/blue
                </text>
              </g>
     	  </g>
 
     	  <g id="c1" transform="translate(160 0)">
-              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
+              <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	       style="fill:FireBrick;  filter:url(#Merge5)"/>
               <g transform="translate(60, 130)">
                <text x="0" y="0" style="text-anchor:middle">
-                lt blue, orange, green, blue
+                lt blue/orange/green/blue
                </text>
              </g>
     	  </g>
 
     	  <g id="c1" transform="translate(300 0)">
-              <rect x="0" y="0" width="120" height="120" style="fill:Beige"/>
+              <rect x="0" y="0" width="120" height="120" style="fill:WhiteSmoke"/>
     	      <rect x="0" y="0" width="120" height="120" 
     	       style="fill:FireBrick;  filter:url(#Merge6)"/>
               <g transform="translate(60, 130)">
                <text x="0" y="0" style="text-anchor:middle">
-                green, blue, lt blue, orange
+                green/blue/lt blue/orange
                </text>
              </g>
     	  </g>
       
     	</g>
 
+      </g>
       </g>
     </g>
 

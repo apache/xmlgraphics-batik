@@ -16,8 +16,10 @@
 <!-- @author bill.haneman@ireland.sun.com                                      -->
 <!-- @version $Id$                                                             -->
 <!-- ========================================================================= -->
-
+<?xml-stylesheet type="text/css" href="test.css" ?>
 <svg width="450" height="500" viewBox="0 0 450 500">
+<title>Text Font Faces and Styles</title>
+
     <!-- ============================================================= -->
     <!-- Test content                                                  -->
     <!-- ============================================================= -->
@@ -106,7 +108,7 @@
     </defs>
 
     <g id="testContent" text-anchor="middle" font-size="6%">
-        <text x="50%" y="10%" font-size="3%" >
+        <text class="title" x="50%" y="10%" font-size="3%" >
             Text Font Faces and Styles</text>
        
        <text x="50%" y="15%" font-size="2%">Standard Font Faces</text>

@@ -70,9 +70,9 @@
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:attribute name="font-size">36pt</xsl:attribute>
-      <xsl:attribute name="fill">purple</xsl:attribute>
+      <xsl:attribute name="fill">yellow</xsl:attribute>
       <xsl:attribute name="stroke">black</xsl:attribute>
-      <xsl:attribute name="stroke-width">1.5</xsl:attribute>
+      <xsl:attribute name="stroke-width">1</xsl:attribute>
       <xsl:attribute name="text-anchor">middle</xsl:attribute>
       <xsl:apply-templates/>
     </xsl:copy>

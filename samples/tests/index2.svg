@@ -18,6 +18,7 @@
 <!-- ========================================================================= -->
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
+<title>Index 2</title>
   <style type="text/css"><![CDATA[
       .c1 {
 	  fill: url(#ballGradientA); /*rgb(203, 203, 255);*/

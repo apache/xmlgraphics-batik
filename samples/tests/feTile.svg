@@ -20,7 +20,7 @@
 <?xml-stylesheet type="text/css" href="test.css" ?>
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
-<title>Clip Test</title>
+<title>feTile Test</title>
 
     <!-- ============================================================= -->
     <!-- Test content                                                  -->

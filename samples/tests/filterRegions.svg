@@ -24,6 +24,7 @@
 <?xml-stylesheet type="text/css" href="test.css" ?>
 
 <svg id="body" width="450" height="500" viewBox="0 0 450 500">
+<title>FilterRegions test</title>
 
     <text x="225" y="40" class="title">
         Filter Regions

@@ -39,8 +39,8 @@
       <xsl:template match="*[@id='testRect']">
         <xsl:copy>
           <xsl:copy-of select="@*"/>
-          <xsl:attribute name="fill">lavender</xsl:attribute>
-          <xsl:attribute name="stroke">purple</xsl:attribute>
+          <xsl:attribute name="fill">slateBlue</xsl:attribute>
+          <xsl:attribute name="stroke">yellow</xsl:attribute>
           <xsl:apply-templates/>
         </xsl:copy>
       </xsl:template>
@@ -65,11 +65,11 @@
                                      stroke:none">
         XSL stylesheets.
       </text>
-      <text x="225" y="230">
+      <text font-weight="bold" x="225" y="230">
         Centered, 36pt, black
       </text>
-      <text x="225" y="280">
-        stroked, purple text.
+      <text font-weight="bold" x="225" y="280">
+        stroked, yellow text.
       </text>
 
   </g>
