@@ -21,48 +21,18 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class StrokeLinejoinFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'miter' keyword.
-     */
-    public final static String MITER = "miter";
-
-    /**
-     * The 'miter' keyword.
-     */
-    public final static ImmutableValue MITER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, MITER);
-
-    /**
-     * The 'round' keyword.
-     */
-    public final static String ROUND = "round";
-
-    /**
-     * The 'round' keyword.
-     */
-    public final static ImmutableValue ROUND_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, ROUND);
-
-    /**
-     * The 'bevel' keyword.
-     */
-    public final static String BEVEL = "bevel";
-
-    /**
-     * The 'bevel' keyword.
-     */
-    public final static ImmutableValue BEVEL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BEVEL);
+public class StrokeLinejoinFactory
+    extends    AbstractIdentifierFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(MITER,  MITER_VALUE);
-	values.put(ROUND,  ROUND_VALUE);
-	values.put(BEVEL,  BEVEL_VALUE);
+	values.put(CSS_MITER_VALUE,  MITER_VALUE);
+	values.put(CSS_ROUND_VALUE,  ROUND_VALUE);
+	values.put(CSS_BEVEL_VALUE,  BEVEL_VALUE);
     }
 
     /**
@@ -76,7 +46,7 @@ public class StrokeLinejoinFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "stroke-linejoin";
+	return CSS_STROKE_LINEJOIN_PROPERTY;
     }
     
     /**

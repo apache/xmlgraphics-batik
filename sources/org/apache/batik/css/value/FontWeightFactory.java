@@ -21,103 +21,19 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class FontWeightFactory extends AbstractIdentifierFactory {
-    /**
-     * The '100' float value.
-     */
-    public final static ImmutableValue VALUE_100 =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 100);
-
-    /**
-     * The '200' float value.
-     */
-    public final static ImmutableValue VALUE_200 =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 200);
-
-     /**
-     * The '300' float value.
-     */
-    public final static ImmutableValue VALUE_300 =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 300);
-
-    /**
-     * The '400' float value.
-     */
-    public final static ImmutableValue VALUE_400 =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 400);
-
-    /**
-     * The '500' float value.
-     */
-    public final static ImmutableValue VALUE_500 =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 500);
-
-    /**
-     * The '600' float value.
-     */
-    public final static ImmutableValue VALUE_600 =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 600);
-
-    /**
-     * The '700' float value.
-     */
-    public final static ImmutableValue VALUE_700 =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 700);
-
-    /**
-     * The '800' float value.
-     */
-    public final static ImmutableValue VALUE_800 =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 800);
-
-    /**
-     * The '900' float value.
-     */
-    public final static ImmutableValue VALUE_900 =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 900);
-
-   /**
-     * The 'bold' string.
-     */
-    public final static String BOLD = "bold";
-
-    /**
-     * The 'bold' identifier value.
-     */
-    public final static ImmutableValue BOLD_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BOLD);
-
-    /**
-     * The 'bolder' string.
-     */
-    public final static String BOLDER = "bolder";
-
-    /**
-     * The 'bolder' identifier value.
-     */
-    public final static ImmutableValue BOLDER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BOLDER);
-
-    /**
-     * The 'lighter' string.
-     */
-    public final static String LIGHTER = "lighter";
-
-    /**
-     * The 'lighter' identifier value.
-     */
-    public final static ImmutableValue LIGHTER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, LIGHTER);
+public class FontWeightFactory
+    extends    AbstractIdentifierFactory
+    implements ValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(BOLD,    BOLD_VALUE);
-	values.put(BOLDER,  BOLDER_VALUE);
-	values.put(LIGHTER, LIGHTER_VALUE);
-	values.put(NORMAL,  NORMAL_VALUE);
+	values.put(CSS_BOLD_VALUE,    BOLD_VALUE);
+	values.put(CSS_BOLDER_VALUE,  BOLDER_VALUE);
+	values.put(CSS_LIGHTER_VALUE, LIGHTER_VALUE);
+	values.put(CSS_NORMAL_VALUE,  NORMAL_VALUE);
     }
 
     /**
@@ -132,7 +48,7 @@ public class FontWeightFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "font-weight";
+	return CSS_FONT_WEIGHT_PROPERTY;
     }
     
     /**
@@ -144,23 +60,23 @@ public class FontWeightFactory extends AbstractIdentifierFactory {
 	    int i = lu.getIntegerValue();
 	    switch (i) {
 	    case 100:
-		return VALUE_100;
+		return NUMBER_100;
 	    case 200:
-		return VALUE_200;
+		return NUMBER_200;
 	    case 300:
-		return VALUE_300;
+		return NUMBER_300;
 	    case 400:
-		return VALUE_400;
+		return NUMBER_400;
 	    case 500:
-		return VALUE_500;
+		return NUMBER_500;
 	    case 600:
-		return VALUE_600;
+		return NUMBER_600;
 	    case 700:
-		return VALUE_700;
+		return NUMBER_700;
 	    case 800:
-		return VALUE_800;
+		return NUMBER_800;
 	    case 900:
-		return VALUE_900;
+		return NUMBER_900;
 	    }
 	    throw CSSDOMExceptionFactory.createDOMException
 		(DOMException.INVALID_ACCESS_ERR,

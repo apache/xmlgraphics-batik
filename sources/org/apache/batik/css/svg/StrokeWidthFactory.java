@@ -24,11 +24,6 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  */
 
 public class StrokeWidthFactory extends AbstractLengthFactory {
-    /**
-     * The 1 number.
-     */
-    public ImmutableValue ONE =
-        new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 1);
 
     /**
      * Creates a new LengthFactory object.
@@ -41,16 +36,9 @@ public class StrokeWidthFactory extends AbstractLengthFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "stroke-width";
+	return SVGValueConstants.CSS_STROKE_WIDTH_PROPERTY;
     }
     
-    /**
-     * Creates the default value for the handled property.
-     */
-    public ImmutableValue createDefaultValue() throws DOMException {
-	return ONE;
-    }
-
     /**
      * Creates a value from a lexical unit.
      */

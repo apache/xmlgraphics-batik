@@ -18,49 +18,19 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class OverflowFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'hidden' string.
-     */
-    public final static String HIDDEN = "hidden";
-
-    /**
-     * The 'hidden' identifier value.
-     */
-    public final static ImmutableValue HIDDEN_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, HIDDEN);
-
-    /**
-     * The 'scroll' string.
-     */
-    public final static String SCROLL = "scroll";
-
-    /**
-     * The 'scroll' identifier value.
-     */
-    public final static ImmutableValue SCROLL_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SCROLL);
-
-    /**
-     * The 'visible' string.
-     */
-    public final static String VISIBLE = "visible";
-
-    /**
-     * The 'visible' identifier value.
-     */
-    public final static ImmutableValue VISIBLE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, VISIBLE);
+public class OverflowFactory
+    extends    AbstractIdentifierFactory
+    implements ValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(AUTO,     AUTO_VALUE);
-	values.put(HIDDEN,   HIDDEN_VALUE);
-	values.put(SCROLL,   SCROLL_VALUE);
-	values.put(VISIBLE,  VISIBLE_VALUE);
+	values.put(CSS_AUTO_VALUE,     AUTO_VALUE);
+	values.put(CSS_HIDDEN_VALUE,   HIDDEN_VALUE);
+	values.put(CSS_SCROLL_VALUE,   SCROLL_VALUE);
+	values.put(CSS_VISIBLE_VALUE,  VISIBLE_VALUE);
     }
 
     /**
@@ -75,7 +45,7 @@ public class OverflowFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "overflow";
+	return CSS_OVERFLOW_PROPERTY;
     }
     
     /**

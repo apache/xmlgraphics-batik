@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class VisibilityResolver implements RelativeValueResolver {
-    /**
-     * The inherit CSS value.
-     */
-    public final static CSSOMReadOnlyValue INHERIT =
-	new CSSOMReadOnlyValue(AbstractValueFactory.INHERIT);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class VisibilityResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "visibility";
+	return ValueConstants.CSS_VISIBILITY_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return INHERIT;
+	return new CSSOMReadOnlyValue(ValueConstants.INHERIT);
     }
     
     /**

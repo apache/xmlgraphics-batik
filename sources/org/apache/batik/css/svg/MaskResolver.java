@@ -26,11 +26,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class MaskResolver implements RelativeValueResolver {
-    /**
-     * The none CSS value.
-     */
-    public final static CSSOMReadOnlyValue NONE =
-        new CSSOMReadOnlyValue(MaskFactory.NONE_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -43,14 +38,14 @@ public class MaskResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "mask";
+	return SVGValueConstants.CSS_MASK_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return NONE;
+	return new CSSOMReadOnlyValue(SVGValueConstants.NONE_VALUE);
     }
     
     /**
@@ -74,7 +69,8 @@ public class MaskResolver implements RelativeValueResolver {
         if (im == PaintFactory.CURRENTCOLOR_VALUE) {
 	    styleDeclaration.setPropertyCSSValue
                 (getPropertyName(),
-                 styleDeclaration.getPropertyCSSValue("color"),
+                 styleDeclaration.getPropertyCSSValue
+                     (SVGValueConstants.CSS_COLOR_PROPERTY),
                  priority,
                  origin);
         }

@@ -26,20 +26,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class SimpleColorResolver implements RelativeValueResolver {
-    /**
-     * 0.
-     */
-    protected final static ImmutableValue N_0 =
-        new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 0);
-
-    /**
-     * The black CSS value.
-     */
-    public final static CSSOMReadOnlyValue BLACK;
-    static {
-        CSSPrimitiveValue v = new CSSOMReadOnlyValue(N_0);
-        BLACK = new CSSOMReadOnlyValue(new ImmutableRGBColor(v, v, v));
-    }
 
     /**
      * The handled property name.
@@ -72,7 +58,10 @@ public class SimpleColorResolver implements RelativeValueResolver {
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return BLACK;
+	return new CSSOMReadOnlyValue
+            (new ImmutableRGBColor(new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_0),
+                                   new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_0),
+                                   new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_0)));
     }
     
     /**
@@ -93,10 +82,11 @@ public class SimpleColorResolver implements RelativeValueResolver {
 			     String priority,
 			     int origin) {
         ImmutableValue im = value.getImmutableValue();
-        if (im == PaintFactory.CURRENTCOLOR_VALUE) {
+        if (im == SVGValueConstants.CURRENTCOLOR_VALUE) {
 	    styleDeclaration.setPropertyCSSValue
                 (getPropertyName(),
-                 styleDeclaration.getPropertyCSSValue("color"),
+                 styleDeclaration.getPropertyCSSValue
+                     (SVGValueConstants.CSS_COLOR_PROPERTY),
                  priority,
                  origin);
         }

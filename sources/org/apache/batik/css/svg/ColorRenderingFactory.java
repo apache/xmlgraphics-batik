@@ -22,37 +22,18 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class ColorRenderingFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'optimizeQuality' string.
-     */
-    public final static String OPTIMIZEQUALITY = "optimizequality";
-
-    /**
-     * The 'optimizeQuality' keyword.
-     */
-    public final static ImmutableValue OPTIMIZEQUALITY_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, OPTIMIZEQUALITY);
-
-    /**
-     * The 'optimizeSpeed' string.
-     */
-    public final static String OPTIMIZESPEED = "optimizespeed";
-
-    /**
-     * The 'optimizeSpeed' keyword.
-     */
-    public final static ImmutableValue OPTIMIZESPEED_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, OPTIMIZESPEED);
+public class ColorRenderingFactory
+    extends    AbstractIdentifierFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(AUTO,            AUTO_VALUE);
-	values.put(OPTIMIZEQUALITY, OPTIMIZEQUALITY_VALUE);
-	values.put(OPTIMIZESPEED,   OPTIMIZESPEED_VALUE);
+	values.put(CSS_AUTO_VALUE,            AUTO_VALUE);
+	values.put(CSS_OPTIMIZEQUALITY_VALUE, OPTIMIZEQUALITY_VALUE);
+	values.put(CSS_OPTIMIZESPEED_VALUE,   OPTIMIZESPEED_VALUE);
     }
 
     /**
@@ -66,7 +47,7 @@ public class ColorRenderingFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "color-rendering";
+	return CSS_COLOR_RENDERING_PROPERTY;
     }
     
     /**

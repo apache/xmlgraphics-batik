@@ -22,72 +22,20 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class FontFamilyFactory extends AbstractValueFactory {
-    /**
-     * The 'cursive' string.
-     */
-    public final static String CURSIVE = "cursive";
-
-    /**
-     * The 'cursive' keyword.
-     */
-    public final static ImmutableValue CURSIVE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, CURSIVE);
-
-    /**
-     * The 'fantasy' string.
-     */
-    public final static String FANTASY = "fantasy";
-
-    /**
-     * The 'fantasy' keyword.
-     */
-    public final static ImmutableValue FANTASY_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, FANTASY);
-
-    /**
-     * The 'monospaced' string.
-     */
-    public final static String MONOSPACED = "monospaced";
-
-    /**
-     * The 'monospaced' keyword.
-     */
-    public final static ImmutableValue MONOSPACED_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, MONOSPACED);
-
-    /**
-     * The 'serif' string.
-     */
-    public final static String SERIF = "serif";
-
-    /**
-     * The 'serif' keyword.
-     */
-    public final static ImmutableValue SERIF_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SERIF);
-
-    /**
-     * The 'sans-serif' string.
-     */
-    public final static String SANS_SERIF = "sans-serif";
-
-    /**
-     * The 'sans-serif' keyword.
-     */
-    public final static ImmutableValue SANS_SERIF_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SANS_SERIF);
+public class FontFamilyFactory
+    extends    AbstractValueFactory
+    implements ValueFactory {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(CURSIVE,    CURSIVE_VALUE);
-	values.put(FANTASY,    FANTASY_VALUE);
-	values.put(MONOSPACED, MONOSPACED_VALUE);
-	values.put(SERIF,      SERIF_VALUE);
-	values.put(SANS_SERIF, SANS_SERIF_VALUE);
+	values.put(CSS_CURSIVE_VALUE,    CURSIVE_VALUE);
+	values.put(CSS_FANTASY_VALUE,    FANTASY_VALUE);
+	values.put(CSS_MONOSPACED_VALUE, MONOSPACED_VALUE);
+	values.put(CSS_SERIF_VALUE,      SERIF_VALUE);
+	values.put(CSS_SANS_SERIF_VALUE, SANS_SERIF_VALUE);
     }
 
     /**
@@ -111,7 +59,7 @@ public class FontFamilyFactory extends AbstractValueFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "font-family";
+	return CSS_FONT_FAMILY_PROPERTY;
     }
 
     /**

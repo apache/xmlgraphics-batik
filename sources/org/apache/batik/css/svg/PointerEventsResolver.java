@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class PointerEventsResolver implements RelativeValueResolver {
-    /**
-     * The visiblePainted CSS value.
-     */
-    public final static CSSOMReadOnlyValue VISIBLEPAINTED =
-        new CSSOMReadOnlyValue(PointerEventsFactory.VISIBLEPAINTED_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class PointerEventsResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "pointer-events";
+	return SVGValueConstants.CSS_POINTER_EVENTS_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return VISIBLEPAINTED;
+	return new CSSOMReadOnlyValue(SVGValueConstants.VISIBLEPAINTED_VALUE);
     }
     
     /**

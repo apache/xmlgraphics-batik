@@ -41,14 +41,14 @@ public class BaselineShiftResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "baseline-shift";
+	return SVGValueConstants.CSS_BASELINE_SHIFT_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return BASELINE;
+	return new CSSOMReadOnlyValue(SVGValueConstants.BASELINE_VALUE);
     }
     
     /**

@@ -26,20 +26,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class FillResolver implements RelativeValueResolver {
-    /**
-     * 0.
-     */
-    protected final static ImmutableValue N_0 =
-        new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 0);
-
-    /**
-     * The black CSS value.
-     */
-    public final static CSSOMReadOnlyValue BLACK;
-    static {
-        CSSPrimitiveValue v = new CSSOMReadOnlyValue(N_0);
-        BLACK = new CSSOMReadOnlyValue(new ImmutableRGBColor(v, v, v));
-    }
 
     /**
      * Whether the handled property is inherited or not.
@@ -52,14 +38,17 @@ public class FillResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "fill";
+	return SVGValueConstants.CSS_FILL_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return BLACK;
+	return new CSSOMReadOnlyValue
+            (new ImmutableRGBColor(new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_0),
+                                   new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_0),
+                                   new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_0)));
     }
     
     /**
@@ -83,7 +72,8 @@ public class FillResolver implements RelativeValueResolver {
         if (im == PaintFactory.CURRENTCOLOR_VALUE) {
 	    styleDeclaration.setPropertyCSSValue
                 (getPropertyName(),
-                 styleDeclaration.getPropertyCSSValue("color"),
+                 styleDeclaration.getPropertyCSSValue
+                     (SVGValueConstants.CSS_COLOR_PROPERTY),
                  priority,
                  origin);
         }

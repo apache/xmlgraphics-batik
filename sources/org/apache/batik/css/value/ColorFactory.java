@@ -23,314 +23,9 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class ColorFactory extends AbstractRGBColorFactory {
-    /**
-     * The 'activeborder' string.
-     */
-    public final static String ACTIVEBORDER = "activeborder";
-
-    /**
-     * The 'activeborder' identifier value.
-     */
-    public final static ImmutableValue ACTIVEBORDER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, ACTIVEBORDER);
-
-    /**
-     * The 'activecaption' string.
-     */
-    public final static String ACTIVECAPTION = "activecaption";
-
-    /**
-     * The 'activecaption' identifier value.
-     */
-    public final static ImmutableValue ACTIVECAPTION_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, ACTIVECAPTION);
-
-    /**
-     * The 'appworkspace' string.
-     */
-    public final static String APPWORKSPACE = "appworkspace";
-
-    /**
-     * The 'appworkspace' identifier value.
-     */
-    public final static ImmutableValue APPWORKSPACE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, APPWORKSPACE);
-
-    /**
-     * The 'background' string.
-     */
-    public final static String BACKGROUND = "background";
-
-    /**
-     * The 'background' identifier value.
-     */
-    public final static ImmutableValue BACKGROUND_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BACKGROUND);
-
-    /**
-     * The 'buttonface' string.
-     */
-    public final static String BUTTONFACE = "buttonface";
-
-    /**
-     * The 'buttonface' identifier value.
-     */
-    public final static ImmutableValue BUTTONFACE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BUTTONFACE);
-
-    /**
-     * The 'buttonhighlight' string.
-     */
-    public final static String BUTTONHIGHLIGHT = "buttonhighlight";
-
-    /**
-     * The 'buttonhighlight' identifier value.
-     */
-    public final static ImmutableValue BUTTONHIGHLIGHT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BUTTONHIGHLIGHT);
-
-    /**
-     * The 'buttonshadow' string.
-     */
-    public final static String BUTTONSHADOW = "buttonshadow";
-
-    /**
-     * The 'buttonshadow' identifier value.
-     */
-    public final static ImmutableValue BUTTONSHADOW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BUTTONSHADOW);
-
-    /**
-     * The 'buttontext' string.
-     */
-    public final static String BUTTONTEXT = "buttontext";
-
-    /**
-     * The 'buttontext' identifier value.
-     */
-    public final static ImmutableValue BUTTONTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BUTTONTEXT);
-
-    /**
-     * The 'captiontext' string.
-     */
-    public final static String CAPTIONTEXT = "captiontext";
-
-    /**
-     * The 'captiontext' identifier value.
-     */
-    public final static ImmutableValue CAPTIONTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, CAPTIONTEXT);
-
-    /**
-     * The 'graytext' string.
-     */
-    public final static String GRAYTEXT = "graytext";
-
-    /**
-     * The 'graytext' identifier value.
-     */
-    public final static ImmutableValue GRAYTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, GRAYTEXT);
-
-    /**
-     * The 'highlight' string.
-     */
-    public final static String HIGHLIGHT = "highlight";
-
-    /**
-     * The 'highlight' identifier value.
-     */
-    public final static ImmutableValue HIGHLIGHT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, HIGHLIGHT);
-
-    /**
-     * The 'highlighttext' string.
-     */
-    public final static String HIGHLIGHTTEXT = "highlighttext";
-
-    /**
-     * The 'highlighttext' identifier value.
-     */
-    public final static ImmutableValue HIGHLIGHTTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, HIGHLIGHTTEXT);
-
-    /**
-     * The 'inactiveborder' string.
-     */
-    public final static String INACTIVEBORDER = "inactiveborder";
-
-    /**
-     * The 'inactiveborder' identifier value.
-     */
-    public final static ImmutableValue INACTIVEBORDER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, INACTIVEBORDER);
-
-    /**
-     * The 'inactivecaption' string.
-     */
-    public final static String INACTIVECAPTION = "inactivecaption";
-
-    /**
-     * The 'inactivecaption' identifier value.
-     */
-    public final static ImmutableValue INACTIVECAPTION_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, INACTIVECAPTION);
-
-    /**
-     * The 'inactivecaptiontext' string.
-     */
-    public final static String INACTIVECAPTIONTEXT = "inactivecaptiontext";
-
-    /**
-     * The 'inactivecaptiontext' identifier value.
-     */
-    public final static ImmutableValue INACTIVECAPTIONTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, INACTIVECAPTIONTEXT);
-
-    /**
-     * The 'infobackground' string.
-     */
-    public final static String INFOBACKGROUND = "infobackground";
-
-    /**
-     * The 'infobackground' identifier value.
-     */
-    public final static ImmutableValue INFOBACKGROUND_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, INFOBACKGROUND);
-
-    /**
-     * The 'infotext' string.
-     */
-    public final static String INFOTEXT = "infotext";
-
-    /**
-     * The 'infotext' identifier value.
-     */
-    public final static ImmutableValue INFOTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, INFOTEXT);
-
-    /**
-     * The 'menu' string.
-     */
-    public final static String MENU = "menu";
-
-    /**
-     * The 'menu' identifier value.
-     */
-    public final static ImmutableValue MENU_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, MENU);
-
-    /**
-     * The 'menutext' string.
-     */
-    public final static String MENUTEXT = "menutext";
-
-    /**
-     * The 'menutext' identifier value.
-     */
-    public final static ImmutableValue MENUTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, MENUTEXT);
-
-    /**
-     * The 'scrollbar' string.
-     */
-    public final static String SCROLLBAR = "scrollbar";
-
-    /**
-     * The 'scrollbar' identifier value.
-     */
-    public final static ImmutableValue SCROLLBAR_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, "scrollbar");
-
-    /**
-     * The 'threeddarkshadow' string.
-     */
-    public final static String THREEDDARKSHADOW = "threeddarkshadow";
-
-    /**
-     * The 'threeddarkshadow' identifier value.
-     */
-    public final static ImmutableValue THREEDDARKSHADOW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, THREEDDARKSHADOW);
-
-    /**
-     * The 'threedface' string.
-     */
-    public final static String THREEDFACE = "threedface";
-
-    /**
-     * The 'threedface' identifier value.
-     */
-    public final static ImmutableValue THREEDFACE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, THREEDFACE);
-
-    /**
-     * The 'threedhighlight' string.
-     */
-    public final static String THREEDHIGHLIGHT = "threedhighlight";
-
-    /**
-     * The 'threedhighlight' identifier value.
-     */
-    public final static ImmutableValue THREEDHIGHLIGHT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, THREEDHIGHLIGHT);
-
-    /**
-     * The 'threedlightshadow' string.
-     */
-    public final static String THREEDLIGHTSHADOW = "threedlightshadow";
-
-    /**
-     * The 'threedlightshadow' identifier value.
-     */
-    public final static ImmutableValue THREEDLIGHTSHADOW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, THREEDLIGHTSHADOW);
-
-    /**
-     * The 'threedshadow' string.
-     */
-    public final static String THREEDSHADOW = "threedshadow";
-
-    /**
-     * The 'threedshadow' identifier value.
-     */
-    public final static ImmutableValue THREEDSHADOW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, THREEDSHADOW);
-
-    /**
-     * The 'window' string.
-     */
-    public final static String WINDOW = "window";
-
-    /**
-     * The 'window' identifier value.
-     */
-    public final static ImmutableValue WINDOW_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, WINDOW);
-
-    /**
-     * The 'windowframe' string.
-     */
-    public final static String WINDOWFRAME = "windowframe";
-
-    /**
-     * The 'windowframe' identifier value.
-     */
-    public final static ImmutableValue WINDOWFRAME_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, WINDOWFRAME);
-
-    /**
-     * The 'windowtext' string.
-     */
-    public final static String WINDOWTEXT = "windowtext";
-
-    /**
-     * The 'windowtext' identifier value.
-     */
-    public final static ImmutableValue WINDOWTEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, WINDOWTEXT);
+public class ColorFactory
+    extends    AbstractRGBColorFactory
+    implements ValueConstants {
 
     /**
      * The color component factory.
@@ -348,34 +43,34 @@ public class ColorFactory extends AbstractRGBColorFactory {
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(ACTIVEBORDER,        ACTIVEBORDER_VALUE);
-	values.put(ACTIVECAPTION,       ACTIVECAPTION_VALUE);
-	values.put(APPWORKSPACE,        APPWORKSPACE_VALUE);
-	values.put(BACKGROUND,          BACKGROUND_VALUE);
-	values.put(BUTTONFACE,          BUTTONFACE_VALUE);
-	values.put(BUTTONHIGHLIGHT,     BUTTONHIGHLIGHT_VALUE);
-	values.put(BUTTONSHADOW,        BUTTONSHADOW_VALUE);
-	values.put(BUTTONTEXT,          BUTTONTEXT_VALUE);
-	values.put(CAPTIONTEXT,         CAPTIONTEXT_VALUE);
-	values.put(GRAYTEXT,            GRAYTEXT_VALUE);
-	values.put(HIGHLIGHT,           HIGHLIGHT_VALUE);
-	values.put(HIGHLIGHTTEXT,       HIGHLIGHTTEXT_VALUE);
-	values.put(INACTIVEBORDER,      INACTIVEBORDER_VALUE);
-	values.put(INACTIVECAPTION,     INACTIVECAPTION_VALUE);
-	values.put(INACTIVECAPTIONTEXT, INACTIVECAPTIONTEXT_VALUE);
-	values.put(INFOBACKGROUND,      INFOBACKGROUND_VALUE);
-	values.put(INFOTEXT,            INFOTEXT_VALUE);
-	values.put(MENU,                MENU_VALUE);
-	values.put(MENUTEXT,            MENUTEXT_VALUE);
-	values.put(SCROLLBAR,           SCROLLBAR_VALUE);
-	values.put(THREEDDARKSHADOW,    THREEDDARKSHADOW_VALUE);
-	values.put(THREEDFACE,          THREEDFACE_VALUE);
-	values.put(THREEDHIGHLIGHT,     THREEDHIGHLIGHT_VALUE);
-	values.put(THREEDLIGHTSHADOW,   THREEDLIGHTSHADOW_VALUE);
-	values.put(THREEDSHADOW,        THREEDSHADOW_VALUE);
-	values.put(WINDOW,              WINDOW_VALUE);
-	values.put(WINDOWFRAME,         WINDOWFRAME_VALUE);
-	values.put(WINDOWTEXT,          WINDOWTEXT_VALUE);
+	values.put(CSS_ACTIVEBORDER_VALUE,        ACTIVEBORDER_VALUE);
+	values.put(CSS_ACTIVECAPTION_VALUE,       ACTIVECAPTION_VALUE);
+	values.put(CSS_APPWORKSPACE_VALUE,        APPWORKSPACE_VALUE);
+	values.put(CSS_BACKGROUND_VALUE,          BACKGROUND_VALUE);
+	values.put(CSS_BUTTONFACE_VALUE,          BUTTONFACE_VALUE);
+	values.put(CSS_BUTTONHIGHLIGHT_VALUE,     BUTTONHIGHLIGHT_VALUE);
+	values.put(CSS_BUTTONSHADOW_VALUE,        BUTTONSHADOW_VALUE);
+	values.put(CSS_BUTTONTEXT_VALUE,          BUTTONTEXT_VALUE);
+	values.put(CSS_CAPTIONTEXT_VALUE,         CAPTIONTEXT_VALUE);
+	values.put(CSS_GRAYTEXT_VALUE,            GRAYTEXT_VALUE);
+	values.put(CSS_HIGHLIGHT_VALUE,           HIGHLIGHT_VALUE);
+	values.put(CSS_HIGHLIGHTTEXT_VALUE,       HIGHLIGHTTEXT_VALUE);
+	values.put(CSS_INACTIVEBORDER_VALUE,      INACTIVEBORDER_VALUE);
+	values.put(CSS_INACTIVECAPTION_VALUE,     INACTIVECAPTION_VALUE);
+	values.put(CSS_INACTIVECAPTIONTEXT_VALUE, INACTIVECAPTIONTEXT_VALUE);
+	values.put(CSS_INFOBACKGROUND_VALUE,      INFOBACKGROUND_VALUE);
+	values.put(CSS_INFOTEXT_VALUE,            INFOTEXT_VALUE);
+	values.put(CSS_MENU_VALUE,                MENU_VALUE);
+	values.put(CSS_MENUTEXT_VALUE,            MENUTEXT_VALUE);
+	values.put(CSS_SCROLLBAR_VALUE,           SCROLLBAR_VALUE);
+	values.put(CSS_THREEDDARKSHADOW_VALUE,    THREEDDARKSHADOW_VALUE);
+	values.put(CSS_THREEDFACE_VALUE,          THREEDFACE_VALUE);
+	values.put(CSS_THREEDHIGHLIGHT_VALUE,     THREEDHIGHLIGHT_VALUE);
+	values.put(CSS_THREEDLIGHTSHADOW_VALUE,   THREEDLIGHTSHADOW_VALUE);
+	values.put(CSS_THREEDSHADOW_VALUE,        THREEDSHADOW_VALUE);
+	values.put(CSS_WINDOW_VALUE,              WINDOW_VALUE);
+	values.put(CSS_WINDOWFRAME_VALUE,         WINDOWFRAME_VALUE);
+	values.put(CSS_WINDOWTEXT_VALUE,          WINDOWTEXT_VALUE);
     }
 
     /**

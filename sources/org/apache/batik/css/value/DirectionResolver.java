@@ -21,11 +21,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class DirectionResolver implements RelativeValueResolver {
-    /**
-     * The ltr CSS value.
-     */
-    public final static CSSOMReadOnlyValue LTR =
-	new CSSOMReadOnlyValue(DirectionFactory.LTR_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -38,14 +33,14 @@ public class DirectionResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "direction";
+	return ValueConstants.CSS_DIRECTION_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return LTR;
+	return new CSSOMReadOnlyValue(ValueConstants.LTR_VALUE);
     }
     
     /**

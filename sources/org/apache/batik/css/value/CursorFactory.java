@@ -21,193 +21,31 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class CursorFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'crosshair' string.
-     */
-    public final static String CROSSHAIR = "crosshair";
-
-    /**
-     * The 'crosshair' identifier value.
-     */
-    public final static ImmutableValue CROSSHAIR_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, CROSSHAIR);
-
-    /**
-     * The 'default' string.
-     */
-    public final static String DEFAULT = "default";
-
-    /**
-     * The 'default' identifier value.
-     */
-    public final static ImmutableValue DEFAULT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, DEFAULT);
-
-    /**
-     * The 'e-resize' string.
-     */
-    public final static String E_RESIZE = "e-resize";
-
-    /**
-     * The 'e-resize' identifier value.
-     */
-    public final static ImmutableValue E_RESIZE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, E_RESIZE);
-
-    /**
-     * The 'help' string.
-     */
-    public final static String HELP = "help";
-
-    /**
-     * The 'help' identifier value.
-     */
-    public final static ImmutableValue HELP_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, HELP);
-
-    /**
-     * The 'move' string.
-     */
-    public final static String MOVE = "move";
-
-    /**
-     * The 'move' identifier value.
-     */
-    public final static ImmutableValue MOVE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, MOVE);
-
-    /**
-     * The 'n-resize' string.
-     */
-    public final static String N_RESIZE = "n-resize";
-
-    /**
-     * The 'n-resize' identifier value.
-     */
-    public final static ImmutableValue N_RESIZE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, N_RESIZE);
-
-    /**
-     * The 'ne-resize' string.
-     */
-    public final static String NE_RESIZE = "ne-resize";
-
-    /**
-     * The 'ne-resize' identifier value.
-     */
-    public final static ImmutableValue NE_RESIZE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, NE_RESIZE);
-
-    /**
-     * The 'nw-resize' string.
-     */
-    public final static String NW_RESIZE = "nw-resize";
-
-    /**
-     * The 'nw-resize' identifier value.
-     */
-    public final static ImmutableValue NW_RESIZE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, NW_RESIZE);
-
-    /**
-     * The 'pointer' string.
-     */
-    public final static String POINTER = "pointer";
-
-    /**
-     * The 'pointer' identifier value.
-     */
-    public final static ImmutableValue POINTER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, POINTER);
-
-    /**
-     * The 's-resize' string.
-     */
-    public final static String S_RESIZE = "s-resize";
-
-    /**
-     * The 's-resize' identifier value.
-     */
-    public final static ImmutableValue S_RESIZE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, S_RESIZE);
-
-    /**
-     * The 'se-resize' string.
-     */
-    public final static String SE_RESIZE = "se-resize";
-
-    /**
-     * The 'se-resize' identifier value.
-     */
-    public final static ImmutableValue SE_RESIZE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SE_RESIZE);
-
-    /**
-     * The 'sw-resize' string.
-     */
-    public final static String SW_RESIZE = "sw-resize";
-
-    /**
-     * The 'sw-resize' identifier value.
-     */
-    public final static ImmutableValue SW_RESIZE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SW_RESIZE);
-
-    /**
-     * The 'text' string.
-     */
-    public final static String TEXT = "text";
-
-    /**
-     * The 'text' identifier value.
-     */
-    public final static ImmutableValue TEXT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, TEXT);
-
-    /**
-     * The 'w-resize' string.
-     */
-    public final static String W_RESIZE = "w-resize";
-
-    /**
-     * The 'w-resize' identifier value.
-     */
-    public final static ImmutableValue W_RESIZE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, W_RESIZE);
-
-    /**
-     * The 'wait' string.
-     */
-    public final static String WAIT = "wait";
-
-    /**
-     * The 'wait' identifier value.
-     */
-    public final static ImmutableValue WAIT_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, WAIT);
+public class CursorFactory
+    extends    AbstractIdentifierFactory
+    implements ValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(AUTO,       AUTO_VALUE);
-	values.put(CROSSHAIR,  CROSSHAIR_VALUE);
-	values.put(DEFAULT,    DEFAULT_VALUE);
-	values.put(E_RESIZE,   E_RESIZE_VALUE);
-	values.put(HELP,       HELP_VALUE);
-	values.put(MOVE,       MOVE_VALUE);
-	values.put(N_RESIZE,   N_RESIZE_VALUE);
-	values.put(NE_RESIZE,  NE_RESIZE_VALUE);
-	values.put(NW_RESIZE,  NW_RESIZE_VALUE);
-	values.put(POINTER,    POINTER_VALUE);
-	values.put(S_RESIZE,   S_RESIZE_VALUE);
-	values.put(SE_RESIZE,  SE_RESIZE_VALUE);
-	values.put(SW_RESIZE,  SW_RESIZE_VALUE);
-	values.put(TEXT,       TEXT_VALUE);
-	values.put(W_RESIZE,   W_RESIZE_VALUE);
-	values.put(WAIT,       WAIT_VALUE);
+	values.put(CSS_AUTO_VALUE,       AUTO_VALUE);
+	values.put(CSS_CROSSHAIR_VALUE,  CROSSHAIR_VALUE);
+	values.put(CSS_DEFAULT_VALUE,    DEFAULT_VALUE);
+	values.put(CSS_E_RESIZE_VALUE,   E_RESIZE_VALUE);
+	values.put(CSS_HELP_VALUE,       HELP_VALUE);
+	values.put(CSS_MOVE_VALUE,       MOVE_VALUE);
+	values.put(CSS_N_RESIZE_VALUE,   N_RESIZE_VALUE);
+	values.put(CSS_NE_RESIZE_VALUE,  NE_RESIZE_VALUE);
+	values.put(CSS_NW_RESIZE_VALUE,  NW_RESIZE_VALUE);
+	values.put(CSS_POINTER_VALUE,    POINTER_VALUE);
+	values.put(CSS_S_RESIZE_VALUE,   S_RESIZE_VALUE);
+	values.put(CSS_SE_RESIZE_VALUE,  SE_RESIZE_VALUE);
+	values.put(CSS_SW_RESIZE_VALUE,  SW_RESIZE_VALUE);
+	values.put(CSS_TEXT_VALUE,       TEXT_VALUE);
+	values.put(CSS_W_RESIZE_VALUE,   W_RESIZE_VALUE);
+	values.put(CSS_WAIT_VALUE,       WAIT_VALUE);
     }
 
     /**
@@ -232,7 +70,7 @@ public class CursorFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "cursor";
+	return CSS_CURSOR_PROPERTY;
     }
     
     /**

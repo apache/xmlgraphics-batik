@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class AlignmentBaselineResolver implements RelativeValueResolver {
-    /**
-     * The auto CSS value.
-     */
-    public final static CSSOMReadOnlyValue AUTO =
-        new CSSOMReadOnlyValue(AbstractValueFactory.AUTO_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class AlignmentBaselineResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "alignment-baseline";
+	return SVGValueConstants.CSS_ALIGNMENT_BASELINE_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return AUTO;
+	return new CSSOMReadOnlyValue(SVGValueConstants.AUTO_VALUE);
     }
     
     /**

@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class StrokeDashoffsetResolver implements RelativeValueResolver {
-    /**
-     * The 0 CSS value.
-     */
-    public final static CSSOMReadOnlyValue N_0 =
-        new CSSOMReadOnlyValue(StrokeDashoffsetFactory.ZERO_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class StrokeDashoffsetResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "stroke-dashoffset";
+	return SVGValueConstants.CSS_STROKE_DASHOFFSET_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return N_0;
+	return new CSSOMReadOnlyValue(SVGValueConstants.NUMBER_0);
     }
     
     /**

@@ -47,7 +47,7 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "stroke-dasharray";
+	return SVGValueConstants.CSS_STROKE_DASHARRAY_PROPERTY;
     }
     
     /**
@@ -59,7 +59,7 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
 	case LexicalUnit.SAC_INHERIT:
 	    return INHERIT;
 	case LexicalUnit.SAC_IDENT:
-	    return createStringValue(CSSPrimitiveValue.CSS_IDENT, NONE);
+	    return createStringValue(CSSPrimitiveValue.CSS_IDENT, CSS_NONE_VALUE);
 	default:
 	    return createValueList(lu);
 	}
@@ -74,7 +74,7 @@ public class StrokeDasharrayFactory extends AbstractValueFactory {
     public ImmutableValue createStringValue(short type, String value)
 	throws DOMException {
 	if (type != CSSPrimitiveValue.CSS_IDENT ||
-            !value.equalsIgnoreCase(NONE)) {
+            !value.equalsIgnoreCase(CSS_NONE_VALUE)) {
 	throw CSSDOMExceptionFactory.createDOMException
 	    (DOMException.INVALID_ACCESS_ERR,
 	     "invalid.identifier",

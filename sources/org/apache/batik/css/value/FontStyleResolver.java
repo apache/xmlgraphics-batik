@@ -21,11 +21,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class FontStyleResolver implements RelativeValueResolver {
-    /**
-     * The medium CSS value.
-     */
-    public final static CSSOMReadOnlyValue NORMAL =
-	new CSSOMReadOnlyValue(FontStyleFactory.NORMAL_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -38,14 +33,14 @@ public class FontStyleResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "font-style";
+	return ValueConstants.CSS_FONT_STYLE_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return NORMAL;
+	return new CSSOMReadOnlyValue(ValueConstants.NORMAL_VALUE);
     }
     
     /**

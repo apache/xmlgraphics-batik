@@ -21,21 +21,13 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class PaintFactory extends SVGColorFactory {
-    /**
-     * The 'currentColor' string.
-     */
-    public final static String CURRENTCOLOR = "currentcolor";
-
-    /**
-     * The 'currentColor' keyword.
-     */
-    public final static ImmutableValue CURRENTCOLOR_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, CURRENTCOLOR);
+public class PaintFactory
+    extends    SVGColorFactory
+    implements SVGValueConstants {
 
     static {
-	values.put(CURRENTCOLOR, CURRENTCOLOR_VALUE);
-	values.put(NONE,         NONE_VALUE);
+	values.put(CSS_CURRENTCOLOR_VALUE, CURRENTCOLOR_VALUE);
+	values.put(CSS_NONE_VALUE,         NONE_VALUE);
     }
 
     /**

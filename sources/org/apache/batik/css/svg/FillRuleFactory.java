@@ -21,36 +21,17 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class FillRuleFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'evenodd' keyword.
-     */
-    public final static String EVENODD = "evenodd";
-
-    /**
-     * The 'evenodd' keyword.
-     */
-    public final static ImmutableValue EVENODD_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, EVENODD);
-
-    /**
-     * The 'nonzero' keyword.
-     */
-    public final static String NONZERO = "nonzero";
-
-    /**
-     * The 'nonzero' keyword.
-     */
-    public final static ImmutableValue NONZERO_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, NONZERO);
+public class FillRuleFactory
+    extends    AbstractIdentifierFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(EVENODD, EVENODD_VALUE);
-	values.put(NONZERO, NONZERO_VALUE);
+	values.put(CSS_EVENODD_VALUE, EVENODD_VALUE);
+	values.put(CSS_NONZERO_VALUE, NONZERO_VALUE);
     }
 
     /**
@@ -64,7 +45,7 @@ public class FillRuleFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "fill-rule";
+	return CSS_FILL_RULE_PROPERTY;
     }
     
     /**

@@ -32,7 +32,7 @@ public class ClipResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "clip";
+	return ValueConstants.CSS_CLIP_PROPERTY;
     }
 
     /**

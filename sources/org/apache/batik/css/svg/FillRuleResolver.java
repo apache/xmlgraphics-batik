@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class FillRuleResolver implements RelativeValueResolver {
-    /**
-     * The none CSS value.
-     */
-    public final static CSSOMReadOnlyValue EVENODD =
-        new CSSOMReadOnlyValue(FillRuleFactory.EVENODD_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class FillRuleResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "fill-rule";
+	return SVGValueConstants.CSS_FILL_RULE_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return EVENODD;
+	return new CSSOMReadOnlyValue(SVGValueConstants.NONZERO_VALUE);
     }
     
     /**

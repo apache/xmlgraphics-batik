@@ -42,12 +42,14 @@ public abstract class CommonViewCSS extends AbstractViewCSS {
 	addRelativeValueResolver(new FontStyleResolver());
 	addRelativeValueResolver(new FontVariantResolver());
 	addRelativeValueResolver(new FontWeightResolver());
-	addRelativeValueResolver(new SpacingResolver("letter-spacing"));
+	addRelativeValueResolver(new SpacingResolver
+                                 (ValueConstants.CSS_LETTER_SPACING_PROPERTY));
 	addRelativeValueResolver(new OverflowResolver());
 	addRelativeValueResolver(new TextDecorationResolver());
 	addRelativeValueResolver(new UnicodeBidiResolver());
 	addRelativeValueResolver(new VisibilityResolver());
-	addRelativeValueResolver(new SpacingResolver("word-spacing"));
+	addRelativeValueResolver(new SpacingResolver
+                                 (ValueConstants.CSS_WORD_SPACING_PROPERTY));
 
         Document document = (Document)doc;
         DOMImplementationCSS impl =

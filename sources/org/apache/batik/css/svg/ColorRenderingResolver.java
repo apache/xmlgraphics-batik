@@ -41,14 +41,14 @@ public class ColorRenderingResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "color-rendering";
+	return SVGValueConstants.CSS_COLOR_RENDERING_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return AUTO;
+	return new CSSOMReadOnlyValue(SVGValueConstants.AUTO_VALUE);
     }
     
     /**

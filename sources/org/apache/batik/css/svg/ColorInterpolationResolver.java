@@ -24,11 +24,6 @@ import org.w3c.dom.css.ViewCSS;
  * @version $Id$
  */
 public class ColorInterpolationResolver implements RelativeValueResolver {
-    /**
-     * The none CSS value.
-     */
-    public final static CSSOMReadOnlyValue SRGB =
-        new CSSOMReadOnlyValue(ColorInterpolationFactory.SRGB_VALUE);
 
     /**
      * Whether the handled property is inherited or not.
@@ -41,14 +36,14 @@ public class ColorInterpolationResolver implements RelativeValueResolver {
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "color-interpolation";
+	return SVGValueConstants.CSS_COLOR_INTERPOLATION_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return SRGB;
+	return new CSSOMReadOnlyValue(SVGValueConstants.SRGB_VALUE);
     }
     
     /**

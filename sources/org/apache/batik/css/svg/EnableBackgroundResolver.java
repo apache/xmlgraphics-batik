@@ -23,13 +23,7 @@ import org.w3c.dom.css.ViewCSS;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class EnableBackgroundResolver
-    implements RelativeValueResolver {
-    /**
-     * The accumulate CSS value.
-     */
-    public final static CSSOMReadOnlyValue ACCUMULATE =
-        new CSSOMReadOnlyValue(EnableBackgroundFactory.ACCUMULATE_VALUE);
+public class EnableBackgroundResolver implements RelativeValueResolver {
 
     /**
      * Whether the handled property is inherited or not.
@@ -42,14 +36,14 @@ public class EnableBackgroundResolver
      * Returns the name of the handled property.
      */
     public String getPropertyName() {
-	return "enable-background";
+	return SVGValueConstants.CSS_ENABLE_BACKGROUND_PROPERTY;
     }
 
     /**
      * Returns the default value for the handled property.
      */
     public CSSOMReadOnlyValue getDefaultValue() {
-	return ACCUMULATE;
+	return new CSSOMReadOnlyValue(SVGValueConstants.ACCUMULATE_VALUE);
     }
     
     /**

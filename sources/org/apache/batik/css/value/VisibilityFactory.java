@@ -18,48 +18,18 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class VisibilityFactory extends AbstractIdentifierFactory {
-    /**
-     * The 'collapse' string.
-     */
-    public final static String COLLAPSE = "collapse";
-
-    /**
-     * The 'collapse' identifier value.
-     */
-    public final static ImmutableValue COLLAPSE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, COLLAPSE);
-
-    /**
-     * The 'hidden' string.
-     */
-    public final static String HIDDEN = "hidden";
-
-    /**
-     * The 'hidden' identifier value.
-     */
-    public final static ImmutableValue HIDDEN_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, HIDDEN);
-
-    /**
-     * The 'visible' string.
-     */
-    public final static String VISIBLE = "visible";
-
-    /**
-     * The 'visible' identifier value.
-     */
-    public final static ImmutableValue VISIBLE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, VISIBLE);
+public class VisibilityFactory
+    extends    AbstractIdentifierFactory
+    implements ValueFactory {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(COLLAPSE, COLLAPSE_VALUE);
-	values.put(HIDDEN,   HIDDEN_VALUE);
-	values.put(VISIBLE,  VISIBLE_VALUE);
+	values.put(CSS_COLLAPSE_VALUE, COLLAPSE_VALUE);
+	values.put(CSS_HIDDEN_VALUE,   HIDDEN_VALUE);
+	values.put(CSS_VISIBLE_VALUE,  VISIBLE_VALUE);
     }
 
     /**
@@ -74,7 +44,7 @@ public class VisibilityFactory extends AbstractIdentifierFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "visibility";
+	return CSS_VISIBILITY_PROPERTY;
     }
     
     /**

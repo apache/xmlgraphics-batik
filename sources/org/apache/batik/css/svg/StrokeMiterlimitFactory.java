@@ -24,11 +24,6 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @version $Id$
  */
 public class StrokeMiterlimitFactory extends AbstractValueFactory {
-    /**
-     * The 4 number.
-     */
-    public final static ImmutableValue FOUR_VALUE =
-	new ImmutableFloat(CSSPrimitiveValue.CSS_NUMBER, 4);
 
     /**
      * Creates a new StrokeMiterlimitFactory object.
@@ -41,7 +36,7 @@ public class StrokeMiterlimitFactory extends AbstractValueFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "stroke-miterlimit";
+	return SVGValueConstants.CSS_STROKE_MITERLIMIT_PROPERTY;
     }
     
     /**

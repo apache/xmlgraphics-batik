@@ -24,48 +24,18 @@ import org.w3c.dom.css.CSSPrimitiveValue;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class BaselineShiftFactory extends AbstractLengthFactory {
-    /**
-     * The 'baseline' string.
-     */
-    public final static String BASELINE = "baseline";
-
-    /**
-     * The 'baseline' keyword.
-     */
-    public final static ImmutableValue BASELINE_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, BASELINE);
-
-    /**
-     * The 'sub' string.
-     */
-    public final static String SUB = "sub";
-
-    /**
-     * The 'sub' keyword.
-     */
-    public final static ImmutableValue SUB_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SUB);
-
-    /**
-     * The 'super' string.
-     */
-    public final static String SUPER = "super";
-
-    /**
-     * The 'super' keyword.
-     */
-    public final static ImmutableValue SUPER_VALUE =
-	new ImmutableString(CSSPrimitiveValue.CSS_IDENT, SUPER);
+public class BaselineShiftFactory
+    extends    AbstractLengthFactory
+    implements SVGValueConstants {
 
     /**
      * The identifier values.
      */
     protected final static PropertyMap values = new PropertyMap();
     static {
-	values.put(BASELINE,        BASELINE_VALUE);
-	values.put(SUB,             SUB_VALUE);
-	values.put(SUPER,           SUPER_VALUE);
+	values.put(CSS_BASELINE_VALUE,        BASELINE_VALUE);
+	values.put(CSS_SUB_VALUE,             SUB_VALUE);
+	values.put(CSS_SUPER_VALUE,           SUPER_VALUE);
     }
 
     /**
@@ -79,7 +49,7 @@ public class BaselineShiftFactory extends AbstractLengthFactory {
      * Returns the name of the property handled.
      */
     public String getPropertyName() {
-	return "baseline-shift";
+	return CSS_BASELINE_SHIFT_PROPERTY;
     }
     
     /**

@@ -80,8 +80,8 @@ public class CSSUtilities implements SVGConstants {
         Composite composite = null;
         if (opacity > 0) {
             if (opacity < 1) {
-                composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                                                       opacity);
+                composite = AlphaComposite.getInstance
+                    (AlphaComposite.SRC_OVER, opacity);
             } else {
                 composite = AlphaComposite.SrcOver;
             }
@@ -144,16 +144,19 @@ public class CSSUtilities implements SVGConstants {
          //
          // Build Shape based on 'clip-path' attr.
          //
-         CSSPrimitiveValue clipValue
-             = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_CLIP_PATH);
+         CSSPrimitiveValue clipValue;
+         clipValue = (CSSPrimitiveValue)decl.getPropertyCSSValue(ATTR_CLIP_PATH);
+
          String uriString = null;
          switch(clipValue.getPrimitiveType()){
          case CSSPrimitiveValue.CSS_IDENT:
              // NONE
              break;
+
          case CSSPrimitiveValue.CSS_URI:
              uriString = clipValue.getStringValue();
              break;
+
          default:
              throw new Error("clipValue's primitive type is: " +
                              clipValue.getPrimitiveType());
@@ -191,9 +194,7 @@ public class CSSUtilities implements SVGConstants {
          SVGOMDocument doc = (SVGOMDocument)clipPathElement.getOwnerDocument();
          ViewCSS v = ctx.getViewCSS();
          ctx.setViewCSS((ViewCSS)doc.getDefaultView());
-         Clip result = clipBridge.createClip(ctx,
-                                             gn,
-                                             clipPathElement,
+         Clip result = clipBridge.createClip(ctx, gn, clipPathElement,
                                              clipedElement);
          ctx.setViewCSS(v);
          return result;
@@ -337,21 +338,23 @@ public class CSSUtilities implements SVGConstants {
                                              CSSStyleDeclaration decl,
                                              UnitProcessor.Context uctx) {
         // resolve the paint of the StrokeShapePainter
-        CSSPrimitiveValue v
-            = (CSSPrimitiveValue) decl.getPropertyCSSValue(STROKE_PROPERTY);
+        CSSPrimitiveValue v;
+        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STROKE_PROPERTY);
+
         switch(v.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // stroke:'none'
+
         case CSSPrimitiveValue.CSS_RGBCOLOR:
-            CSSPrimitiveValue vv = (CSSPrimitiveValue)
-                decl.getPropertyCSSValue(STROKE_OPACITY_PROPERTY);
+            CSSPrimitiveValue vv = (CSSPrimitiveValue)decl.getPropertyCSSValue
+                (CSS_STROKE_OPACITY_PROPERTY);
             float opacity = convertOpacity(vv);
             Color c = convertColor(v.getRGBColorValue(), opacity);
             return c;
+
         case CSSPrimitiveValue.CSS_URI:
-            Paint uriPaint =
-                convertURIStrokeToPaint(element, node, ctx,
-                                        decl, uctx, v.getStringValue());
+            Paint uriPaint = convertURIStrokeToPaint(element, node, ctx, decl,
+                                                     uctx, v.getStringValue());
             return uriPaint;
         }
 
@@ -370,8 +373,8 @@ public class CSSUtilities implements SVGConstants {
         GVTFactory f = ctx.getGVTFactory();
 
         // resolve the java.awt.Stroke of the StrokeShapePainter
-        CSSPrimitiveValue v =
-            (CSSPrimitiveValue) decl.getPropertyCSSValue(STROKE_WIDTH_PROPERTY);
+        CSSPrimitiveValue v;
+        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STROKE_WIDTH_PROPERTY);
         short type = v.getPrimitiveType();
         // 'stroke-width'
         float width
@@ -380,9 +383,9 @@ public class CSSUtilities implements SVGConstants {
                                            svgElement,
                                            UnitProcessor.OTHER_LENGTH,
                                            uctx);
+
         // 'stroke-linecap'
-        v = (CSSPrimitiveValue)decl.getPropertyCSSValue
-            (STROKE_LINECAP_PROPERTY);
+        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STROKE_LINECAP_PROPERTY);
         int linecap;
         switch(parseStrokeLinecapProperty(v.getStringValue())) {
         case LINECAP_BUTT:
@@ -397,9 +400,9 @@ public class CSSUtilities implements SVGConstants {
         default:
             throw new Error(); // can't be reached
         }
+
         // 'stroke-linejoin'
-        v = (CSSPrimitiveValue)decl.getPropertyCSSValue
-            (STROKE_LINEJOIN_PROPERTY);
+        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STROKE_LINEJOIN_PROPERTY);
         int linejoin;
         switch(parseStrokeLinejoinProperty(v.getStringValue())) {
         case LINEJOIN_MITER:
@@ -414,13 +417,14 @@ public class CSSUtilities implements SVGConstants {
         default:
             throw new Error(); // can't be reached
         }
+
         // 'stroke-miterlimit'
-        v = (CSSPrimitiveValue)decl.getPropertyCSSValue
-            (STROKE_MITERLIMIT_PROPERTY);
+        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STROKE_MITERLIMIT_PROPERTY);
         float miterlimit = v.getFloatValue(CSSPrimitiveValue.CSS_NUMBER);
         miterlimit = (miterlimit < 1)? 1 : miterlimit;
+
         // 'stroke-dasharray'
-        CSSValue vv = decl.getPropertyCSSValue(STROKE_DASHARRAY_PROPERTY);
+        CSSValue vv = decl.getPropertyCSSValue(CSS_STROKE_DASHARRAY_PROPERTY);
         float [] dashArray = null;
         float dashOffset = 0;
         if (vv.getCssValueType() == CSSValue.CSS_VALUE_LIST) {
@@ -437,9 +441,10 @@ public class CSSUtilities implements SVGConstants {
                                                  UnitProcessor.OTHER_LENGTH,
                                                  uctx);
             }
+
             // 'stroke-dashoffset'
             v = (CSSPrimitiveValue)decl.getPropertyCSSValue
-                (STROKE_DASHOFFSET_PROPERTY);
+                (CSS_STROKE_DASHOFFSET_PROPERTY);
             type = v.getPrimitiveType();
             dashOffset =
                 UnitProcessor.cssToUserSpace(type,
@@ -588,17 +593,19 @@ public class CSSUtilities implements SVGConstants {
                                            BridgeContext ctx,
                                            CSSStyleDeclaration decl,
                                            UnitProcessor.Context uctx) {
-        CSSPrimitiveValue v
-            = (CSSPrimitiveValue) decl.getPropertyCSSValue(FILL_PROPERTY);
+        CSSPrimitiveValue v;
+        v = (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_FILL_PROPERTY);
         switch(v.getPrimitiveType()) {
         case CSSPrimitiveValue.CSS_IDENT:
             return null; // fill:'none'
+
         case CSSPrimitiveValue.CSS_RGBCOLOR:
-            CSSPrimitiveValue vv = (CSSPrimitiveValue)
-                decl.getPropertyCSSValue(FILL_OPACITY_PROPERTY);
+            CSSPrimitiveValue vv;
+            vv = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FILL_OPACITY_PROPERTY);
             float opacity = convertOpacity(vv);
             Color c = convertColor(v.getRGBColorValue(), opacity);
             return c;
+
         case CSSPrimitiveValue.CSS_URI:
             Paint uriPaint = convertURIFillToPaint(element, node, ctx,
                                               decl, uctx, v.getStringValue());
@@ -614,11 +621,10 @@ public class CSSUtilities implements SVGConstants {
      * @param decl the css style declaration
      */
     public static Color convertFloodColorToPaint(CSSStyleDeclaration decl) {
-        CSSPrimitiveValue v
-            = (CSSPrimitiveValue) decl.getPropertyCSSValue
-            (FLOOD_COLOR_PROPERTY);
-        CSSPrimitiveValue vv = (CSSPrimitiveValue)
-            decl.getPropertyCSSValue(FLOOD_OPACITY_PROPERTY);
+        CSSPrimitiveValue v;
+        v = (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_FLOOD_COLOR_PROPERTY);
+        CSSPrimitiveValue vv;
+        vv = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FLOOD_OPACITY_PROPERTY);
         float opacity = convertOpacity(vv);
 
         //System.out.println("Flood color: " + v.getCssText());
@@ -631,11 +637,10 @@ public class CSSUtilities implements SVGConstants {
      * @param decl the css style declaration
      */
     public static Color convertStopColorToPaint(CSSStyleDeclaration decl) {
-        CSSPrimitiveValue v
-            = (CSSPrimitiveValue) decl.getPropertyCSSValue
-            (STOP_COLOR_PROPERTY);
-        CSSPrimitiveValue vv = (CSSPrimitiveValue)
-            decl.getPropertyCSSValue(STOP_OPACITY_PROPERTY);
+        CSSPrimitiveValue v;
+        v = (CSSPrimitiveValue) decl.getPropertyCSSValue(CSS_STOP_COLOR_PROPERTY);
+        CSSPrimitiveValue vv;
+        vv = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_STOP_OPACITY_PROPERTY);
         float opacity = convertOpacity(vv);
 
         return convertColor(v.getRGBColorValue(), opacity);
@@ -740,7 +745,7 @@ public class CSSUtilities implements SVGConstants {
                                         CSSStyleDeclaration decl,
                                         UnitProcessor.Context uctx) {
         CSSPrimitiveValue v;
-        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(FONT_SIZE_PROPERTY);
+        v = (CSSPrimitiveValue)decl.getPropertyCSSValue(CSS_FONT_SIZE_PROPERTY);
 
         short t = v.getPrimitiveType();
         switch (t) {
