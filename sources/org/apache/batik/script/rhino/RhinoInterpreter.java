@@ -184,13 +184,13 @@ public class RhinoInterpreter implements Interpreter {
             // import Java lang package & DOM Level 2 & SVG DOM packages
             NativeJavaPackage[] p= new NativeJavaPackage[TO_BE_IMPORTED.length];
             for (int i = 0; i < TO_BE_IMPORTED.length; i++) {
-                p[i] = new NativeJavaPackage(TO_BE_IMPORTED[i]);
+                p[i] = new NativeJavaPackage(TO_BE_IMPORTED[i], rhinoClassLoader);
             } try {
-	      ScriptableObject.callMethod(globalObject, "importPackage", p);
-	    } catch (JavaScriptException e) {
-	      // cannot happen as we know the method is there and
-	      // the parameters are ok
-	    }
+              ScriptableObject.callMethod(globalObject, "importPackage", p);
+            } catch (JavaScriptException e) {
+              // cannot happen as we know the method is there and
+              // the parameters are ok
+            }
         } finally {
             Context.exit();
         }
@@ -327,7 +327,7 @@ public class RhinoInterpreter implements Interpreter {
                             public Object run() {
                                 try {
                                     return ctx.compileReader
-                                        (globalObject, 
+                                        (globalObject,
                                          new StringReader(scriptstr),
                                          SOURCE_NAME_SVG,
                                          1, rhinoClassLoader);
@@ -371,7 +371,7 @@ public class RhinoInterpreter implements Interpreter {
                 // other RuntimeExceptions
                 throw new InterpreterException(re, re.getMessage(), -1, -1);
             }
-        
+
         } finally {
             Context.exit();
         }
@@ -501,7 +501,7 @@ public class RhinoInterpreter implements Interpreter {
      */
     void callHandler(Function handler, ArgumentsBuilder ab)
         throws JavaScriptException {
-        Context ctx = enterContext(); 
+        Context ctx = enterContext();
         try {
             Object [] args = ab.buildArguments();
            handler.call(ctx, handler.getParentScope(), globalObject, args );
@@ -572,11 +572,11 @@ public class RhinoInterpreter implements Interpreter {
         public ExtendedContext() {
             super();
         }
-        
+
         public RhinoInterpreter getInterpreter() {
             return RhinoInterpreter.this;
         }
-        
+
         public Window getWindow() {
             return RhinoInterpreter.this.getWindow();
         }
