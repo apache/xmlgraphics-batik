@@ -197,25 +197,26 @@ public class SVGPatternElementBridge extends AbstractSVGBridge
                 (patternElement, viewBoxStr, aspectRatioStr, w, h);
 
             patternContentTransform.concatenate(preserveAspectRatioTransform);
-        }
+        } else {
+            //
+            // Process patternContentUnitsTransform
+            //
+            if (contentCoordSystem == SVGUtilities.OBJECT_BOUNDING_BOX){
+                AffineTransform patternContentUnitsTransform
+                    = new AffineTransform();
+                Rectangle2D objectBoundingBox = 
+                    paintedNode.getGeometryBounds();
+                patternContentUnitsTransform.translate
+                    (objectBoundingBox.getX(),
+                     objectBoundingBox.getY());
 
-        //
-        // Process patternContentUnitsTransform
-        //
-        if(contentCoordSystem == SVGUtilities.OBJECT_BOUNDING_BOX){
-            AffineTransform patternContentUnitsTransform
-                = new AffineTransform();
-            Rectangle2D objectBoundingBox = paintedNode.getGeometryBounds();
-            patternContentUnitsTransform.translate
-                (objectBoundingBox.getX(),
-                 objectBoundingBox.getY());
+                patternContentUnitsTransform.scale
+                    (objectBoundingBox.getWidth(),
+                     objectBoundingBox.getHeight());
 
-            patternContentUnitsTransform.scale
-                (objectBoundingBox.getWidth(),
-                 objectBoundingBox.getHeight());
-
-            patternContentTransform.concatenate
-                (patternContentUnitsTransform);
+                patternContentTransform.concatenate
+                    (patternContentUnitsTransform);
+            }
         }
 
         //

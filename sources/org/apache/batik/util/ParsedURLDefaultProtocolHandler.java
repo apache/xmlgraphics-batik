@@ -111,6 +111,7 @@ public class ParsedURLDefaultProtocolHandler
             return constructParsedURLData(url);
         } catch (MalformedURLException mue) {
             // Built in URL wouldn't take it...
+            // mue.printStackTrace();
         }
 
         // new Exception("Custom Parse: " + urlStr).printStackTrace();

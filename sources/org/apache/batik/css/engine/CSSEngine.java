@@ -2313,6 +2313,9 @@ public abstract class CSSEngine {
             }
 
             MutationEvent mevt = (MutationEvent)evt;
+            if (mevt.getNewValue().equals(mevt.getPrevValue()))
+                return;  // no change really...
+
             Node attr = mevt.getRelatedNode();
             String attrNS = attr.getNamespaceURI();
             String name = (attrNS == null)

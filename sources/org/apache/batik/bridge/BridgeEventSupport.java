@@ -54,6 +54,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.util.List;
 
@@ -437,7 +438,9 @@ public class BridgeEventSupport implements SVGConstants {
                         float x = (float)pt.getX();
                         float y = (float)pt.getY();
                         TextHit textHit = layout.hitTestChar(x, y);
-                        if (textHit != null && layout.getBounds2D().contains(x, y)) {
+                        Rectangle2D bounds = layout.getBounds2D();
+                        if ((textHit != null) && 
+                            (bounds != null) && bounds.contains(x, y)) {
                             Object delimiter = aci.getAttribute
                                 (GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER);
                             if (delimiter instanceof Element) {
