@@ -45,11 +45,18 @@
         <anchor id="downloading" />
         <s1 title="Downloading the browser">
 
-            <p>Refer to the <link href="dist">download area</link> to find out how to 
-            download Batik. Remember that you can get either the <link href="install.html#distributions">source distribution</link>
-            or the <link href="install.html#distributions">binary distribution</link>.</p>
-            <p>Refer to the <link href="install.html">installation page</link> for instructions
-            on how to install the Batik download on your system.</p>
+            <p>Refer to the <link
+            href="http://www.apache.org/dyn/closer.cgi/xml/batik">download
+            area</link> to find out how to download Batik. Remember
+            that you can get either the <link
+            href="install.html#distributions">source
+            distribution</link>
+ or the <link
+            href="install.html#distributions">binary
+            distribution</link>.</p> <p>Refer to the <link
+            href="install.html">installation page</link> for
+            instructions on how to install the Batik download on your
+            system.</p>
         </s1>
 
         <anchor id="starting" />

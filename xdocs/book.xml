@@ -15,7 +15,7 @@
 <!-- version $Id$        -->
 <!-- ========================================================================= -->
 
-<book title="Apache Batik documentation" copyright="2000-2003 The Apache Software Foundation">
+<book title="Apache Batik documentation" copyright="2000-2002 The Apache Software Foundation">
     <!-- ======================= -->
     <!-- Home                    -->
     <!-- ======================= -->
@@ -28,7 +28,7 @@
     <page id="index"              label="Overview"                 source="index.xml"/>
     <faqs id="faqs"               label="FAQ"                      source="faq.xml"/>
     <page id="license"            label="License"                  source="license.xml"/>
-    <external                     label="Download"                 href="http://xml.apache.org/batik/dist" />
+    <external                     label="Download"                 href="http://www.apache.org/dyn/closer.cgi/xml/batik" />
     <page id="install"            label="Install"                  source="installing.xml"/>
     <page id="batikDemo"          label="Demo"                     source="batikDemo.xml"/>
     <separator/>

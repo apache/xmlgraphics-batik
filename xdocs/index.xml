@@ -147,7 +147,7 @@
         <p>
         You can get the Batik distribution (<link href="install.html#distributions">source</link> 
         and <link href="install.html#distributions">binary</link>) on the 
-        <link href="http://xml.apache.org/batik/dist/">download page</link>.
+        <link href="http://xml.apache.org/dyn/closer.cgi/xml/batik">download page</link>.
         </p>
         <note>
         All other libraries needed by Batik are included in the distribution.

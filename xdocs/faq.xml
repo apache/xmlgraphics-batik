@@ -210,16 +210,15 @@
     <question>How can I see a demo?</question>
     <answer>
         <p>
-        You can see an online demonstration of Squiggle the SVG browser
-        on the <link href="batikDemo.html">demo page</link>. Alternatively,
-        you can <link href="dist">download</link>
-        Batik or see 
-        <link href="svgviewer.html">screenshots</link> 
-        of the Batik SVG viewer, images created from the 
-        <link href="svgrasterizer.html">rasterizer</link>
-        and an <link href="svggen.html">example</link>
-        of how to use the <link href="svggen.html">SVGGraphics2D</link> 
-        generator.
+        You can see an online demonstration of Squiggle the SVG
+        browser on the <link href="batikDemo.html">demo
+        page</link>. Alternatively, you can <link
+        href="http://www.apache.org/dyn/closer.cgi/xml/batik">download</link>
+        Batik or see <link href="svgviewer.html">screenshots</link> of
+        the Batik SVG viewer, images created from the <link
+        href="svgrasterizer.html">rasterizer</link> and an <link
+        href="svggen.html">example</link> of how to use the <link
+        href="svggen.html">SVGGraphics2D</link> generator.
         </p>
     </answer>
 
@@ -486,7 +485,7 @@
         1.3</link> to run Batik.
         </p>
         <p>
-        To install Batik you need to <link href="dist">download</link>
+        To install Batik you need to <link href="http://www.apache.org/dyn/closer.cgi/xml/batik">download</link>
         the binary or source distribution and unzip it on your computer.
         </p>
 	<p>You can have a look at the <link
