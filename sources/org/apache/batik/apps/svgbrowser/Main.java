@@ -140,6 +140,7 @@ public class Main implements Application {
                     break;
                 }
                 oh.handleOption();
+                index++;
             }
             createAndShowJSVGViewerFrame();
             if (index < arguments.length) {
