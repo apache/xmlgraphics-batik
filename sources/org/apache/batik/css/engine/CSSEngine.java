@@ -1315,8 +1315,8 @@ public abstract class CSSEngine {
      * Fires a CSSEngineEvent, given a list of modified properties.
      */
     protected void firePropertiesChangedEvent(Element target, int[] props) {
-        System.out.println("EVT props.length: " + props.length);
-        System.out.println("    target      : " + target);
+        //System.out.println("EVT props.length: " + props.length);
+        //System.out.println("    target      : " + target);
 
         CSSEngineListener[] ll =
             (CSSEngineListener[])listeners.toArray(LISTENER_ARRAY);

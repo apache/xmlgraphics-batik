@@ -57,13 +57,11 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
      * @return a graphics node that represents the specified element
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
-	// 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-	if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
-	    return null;
-	}
-
         CompositeGraphicsNode gn =
             (CompositeGraphicsNode)super.createGraphicsNode(ctx, e);
+	if (gn == null) {
+	    return null;
+	}
 
         // 'color-rendering'
         RenderingHints hints = CSSUtilities.convertColorRendering(e, null);
@@ -93,31 +91,12 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
         return true;
     }
 
-    // dynamic support
+    // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * This method is invoked during the build phase if the document
-     * is dynamic. The responsability of this method is to ensure that
-     * any dynamic modifications of the element this bridge is
-     * dedicated to, happen on its associated GVT product.
+     * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
-    protected void initializeDynamicSupport() {
-        super.initializeDynamicSupport();
-        ((EventTarget)e).addEventListener("DOMNodeInserted", 
-                                          new DOMNodeInsertedEventListener(),
-                                          false);
-        ((EventTarget)e).addEventListener("DOMNodeRemoved", 
-                                          new DOMNodeRemovedEventListener(),
-                                          false);
-    }
-
-    /**
-     * Handles DOMNodeInserted events.
-     *
-     * @param evt the DOM mutation event
-     */
-    protected void handleDOMNodeInserted(MutationEvent evt) {
-        //System.out.println("handleDOMNodeInserted "+e.getLocalName());
+    public void handleDOMNodeInsertedEvent(MutationEvent evt) {
         Element childElt = (Element)evt.getTarget();
         // build the graphics node
         GVTBuilder builder = ctx.getGVTBuilder();
@@ -147,82 +126,6 @@ public class SVGGElementBridge extends AbstractGraphicsNodeBridge {
             }
             // insert at the index
             ((CompositeGraphicsNode)node).add(index, childNode);
-        }
-    }
-
-    /**
-     * Handles DOMNodeRemoved events.
-     *
-     * @param evt the DOM mutation event
-     */
-    protected void handleDOMNodeRemoved(MutationEvent evt) {
-        //System.out.println("handleDOMNodeRemoved "+e.getLocalName());
-        Element childElt = (Element)evt.getTarget();
-        if (!ctx.hasGraphicsNodeBridge(childElt)) {
-            return; // the removed element is not a graphic element
-        }
-        Node n = e.getFirstChild();
-        Node lastChild = e.getLastChild();
-        if (n == childElt) {
-            // remove first
-            ((CompositeGraphicsNode)node).remove(0);
-        } else if (lastChild == childElt) {
-            // remove last
-            CompositeGraphicsNode cgn = (CompositeGraphicsNode)node;
-            cgn.remove(cgn.size()-1);
-        } else {
-            // find the index of the GraphicsNode to remove
-            int index = 0;
-            while (n != lastChild && n != childElt) {
-                if (n.getNodeType() == Node.ELEMENT_NODE) {
-                    if (ctx.hasGraphicsNodeBridge((Element)n)) {
-                        index++;
-                    }
-                }
-                n = n.getNextSibling();
-            }
-            // remove at the index
-            ((CompositeGraphicsNode)node).remove(index);
-        }
-    }
-
-    /**
-     * The listener class for 'DOMNodeInserted' event.
-     */
-    protected class DOMNodeInsertedEventListener implements EventListener {
-
-        /**
-         * Handles 'DOMNodeInserted' events and deleguates to the
-         * 'handleDOMNodeInserted' method any changes to the
-         * GraphicsNode if any.
-         *
-         * @param evt the DOM event
-         */
-        public void handleEvent(Event evt) {
-            if (((MutationEvent)evt).getRelatedNode() != e) {
-                return;
-            }
-            handleDOMNodeInserted((MutationEvent)evt);
-        }
-    }
-
-    /**
-     * The listener class for 'DOMNodeRemoved' event.
-     */
-    protected class DOMNodeRemovedEventListener implements EventListener {
-
-        /**
-         * Handles 'DOMNodeRemoved' events and deleguates to the
-         * 'handleDOMNodeRemoved' method any changes to the
-         * GraphicsNode if any.
-         *
-         * @param evt the DOM event
-         */
-        public void handleEvent(Event evt) {
-            if (((MutationEvent)evt).getRelatedNode() != e) {
-                return;
-            }
-            handleDOMNodeRemoved((MutationEvent)evt);
         }
     }
 }

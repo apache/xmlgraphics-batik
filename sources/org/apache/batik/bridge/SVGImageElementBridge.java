@@ -24,8 +24,9 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.value.Value;
 
 import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg.XMLBaseSupport;
+import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -88,12 +89,10 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * @return a graphics node that represents the specified element
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
-        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-        if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+        ImageNode imageNode = (ImageNode)super.createGraphicsNode(ctx, e);
+        if (imageNode == null) {
             return null;
         }
-
-        ImageNode imageNode = (ImageNode)super.createGraphicsNode(ctx, e);
 
         // 'xlink:href' attribute - required
         String uriStr = XLinkSupport.getXLinkHref(e);
@@ -153,40 +152,6 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     /**
-     * Builds using the specified BridgeContext and element, the
-     * specified graphics node.
-     *
-     * @param ctx the bridge context to use
-     * @param e the element that describes the graphics node to build
-     * @param node the graphics node to build
-     */
-    public void buildGraphicsNode(BridgeContext ctx,
-                                  Element e,
-                                  GraphicsNode node) {
-        // 'opacity'
-        node.setComposite(CSSUtilities.convertOpacity(e));
-        // 'filter'
-        node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
-        // 'mask'
-        node.setMask(CSSUtilities.convertMask(e, node, ctx));
-        // 'clip-path'
-        node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
-        // 'pointer-events'
-        node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
-
-        // bind the specified element and its associated graphics node if needed
-        if (ctx.isDynamic()) {
-            this.e = e;
-            this.node = node;
-            this.ctx = ctx;
-            initializeDynamicSupport();
-        }
-
-        // Handle children elements such as <title>
-        SVGUtilities.bridgeChildren(ctx, e);
-    }
-
-    /**
      * Creates an <tt>ImageNode</tt>.
      */
     protected GraphicsNode instantiateGraphicsNode() {
@@ -208,10 +173,12 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      * any dynamic modifications of the element this bridge is
      * dedicated to, happen on its associated GVT product.
      */
-    protected void initializeDynamicSupport() {
-        ((EventTarget)e).addEventListener("DOMAttrModified", 
-                                          new DOMAttrModifiedEventListener(),
-                                          false);
+    protected void initializeDynamicSupport(BridgeContext ctx,
+                                            Element e,
+                                            GraphicsNode node) {
+        this.e = e;
+        this.node = node;
+        this.ctx = ctx;
         // HACK due to the way images are represented in GVT
         ImageNode imgNode = (ImageNode)node;
         if (imgNode.getImage() instanceof RasterImageNode) {
@@ -220,33 +187,19 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         } else {
             ctx.bind(e, node);
         }
+        ((SVGOMElement)e).setSVGContext(this);
     }
+
+    // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * Handles DOMAttrModified events.
-     *
-     * @param evt the DOM mutation event
+     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
-    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-        if (attrName.equals(SVG_X_ATTRIBUTE) ||
-            attrName.equals(SVG_Y_ATTRIBUTE) ||
-            attrName.equals(SVG_WIDTH_ATTRIBUTE) ||
-            attrName.equals(SVG_HEIGHT_ATTRIBUTE)) {
-
-            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
-            fireBridgeUpdateStarting(be);
-            
-            // <!> FIXME: Not yet implemented
-            System.err.println("Not yet implemented");
-
-            fireBridgeUpdateCompleted(be);
-        } else {
-            super.handleDOMAttrModifiedEvent(evt);
-        }
+    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        super.handleDOMAttrModifiedEvent(evt);
     }
 
-    // convenient methods
+    // convenient methods //////////////////////////////////////////////////
 
     /**
      * Returns a GraphicsNode that represents an raster image in JPEG or PNG

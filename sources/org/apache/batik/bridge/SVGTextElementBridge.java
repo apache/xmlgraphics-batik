@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.StringTokenizer;
 
+import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.SVGCSSEngine;
@@ -41,7 +42,9 @@ import org.apache.batik.css.engine.value.ComputedValue;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
 
+import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMDocument;
+import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
@@ -68,25 +71,9 @@ import org.w3c.dom.events.MutationEvent;
  * @author <a href="bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
-public class SVGTextElementBridge extends AbstractSVGBridge
-    implements BridgeUpdateHandler, GraphicsNodeBridge, ErrorConstants {
+public class SVGTextElementBridge extends AbstractGraphicsNodeBridge {
 
     protected final static Integer ZERO = new Integer(0);
-
-    /**
-     * The element that has been handled by this bridge.
-     */
-    protected Element e;
-
-    /**
-     * The graphics node constructed by this bridge.
-     */
-    protected GraphicsNode node;
-
-    /**
-     * The bridge context to use for dynamic updates.
-     */
-    protected BridgeContext ctx;
 
     /**
      * Constructs a new bridge for the &lt;text> element.
@@ -115,37 +102,31 @@ public class SVGTextElementBridge extends AbstractSVGBridge
      * @return a graphics node that represents the specified element
      */
     public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
-        // 'requiredFeatures', 'requiredExtensions' and 'systemLanguage'
-        if (!SVGUtilities.matchUserAgent(e, ctx.getUserAgent())) {
+        TextNode node = (TextNode)super.createGraphicsNode(ctx, e);
+        if (node == null) {
             return null;
         }
-
-        TextNode node = new TextNode();
-        // specify the text painter to use if one has been provided in the
-        // bridge context
+        // specify the text painter to use
         if (ctx.getTextPainter() != null) {
             node.setTextPainter(ctx.getTextPainter());
         }
-
-        // 'transform'
-        String s = e.getAttributeNS(null, SVG_TRANSFORM_ATTRIBUTE);
-        if (s.length() != 0) {
-            node.setTransform
-                (SVGUtilities.convertTransform(e, SVG_TRANSFORM_ATTRIBUTE, s));
-        }
-        // 'visibility'
-        node.setVisible(CSSUtilities.convertVisibility(e));
-
         // 'text-rendering' and 'color-rendering'
         RenderingHints hints = CSSUtilities.convertTextRendering(e, null);
         hints = CSSUtilities.convertColorRendering(e, hints);
         if (hints != null) {
             node.setRenderingHints(hints);
         }
-
         node.setLocation(getLocation(ctx, e));
 
         return node;
+    }
+
+    /**
+     * Creates the GraphicsNode depending on the GraphicsNodeBridge
+     * implementation.
+     */
+    protected GraphicsNode instantiateGraphicsNode() {
+        return new TextNode();
     }
 
     /**
@@ -175,6 +156,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
             y = UnitProcessor.svgVerticalCoordinateToUserSpace
                 (st.nextToken(), SVG_Y_ATTRIBUTE, uctx);
         }
+
         return new Point2D.Float(x, y);
     }
 
@@ -189,14 +171,8 @@ public class SVGTextElementBridge extends AbstractSVGBridge
     public void buildGraphicsNode(BridgeContext ctx,
                                   Element e,
                                   GraphicsNode node) {
-
-
-        // push 'this' as the current BridgeUpdateHandler for subbridges
-        if (ctx.isDynamic()) {
-            ctx.pushBridgeUpdateHandler(this);
-        }
-
         e.normalize();
+
         AttributedString as = buildAttributedString(ctx, e);
         addGlyphPositionAttributes(as, e, ctx);
         ((TextNode)node).setAttributedCharacterIterator(as.getIterator());
@@ -209,26 +185,7 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         addPaintAttributes(as, e, (TextNode)node, textDecoration, ctx);
         ((TextNode)node).setAttributedCharacterIterator(as.getIterator());
 
-        // 'filter'
-        node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
-        // 'mask'
-        node.setMask(CSSUtilities.convertMask(e, node, ctx));
-        // 'clip-path'
-        node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
-        // 'pointer-events'
-        node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
-
-        if (ctx.isDynamic()) {
-            this.e = e;
-            this.node = node;
-            this.ctx = ctx;
-            initializeDynamicSupport();
-            // 'this' is no more the current BridgeUpdateHandler
-            ctx.popBridgeUpdateHandler();
-        }
-
-        // Handle children elements such as <title>
-        SVGUtilities.bridgeChildren(ctx, e);
+        super.buildGraphicsNode(ctx, e, node);
     }
 
     /**
@@ -238,86 +195,13 @@ public class SVGTextElementBridge extends AbstractSVGBridge
         return false;
     }
 
-    // dynamic support
+    // BridgeUpdateHandler implementation //////////////////////////////////
 
     /**
-     * This method is invoked during the build phase if the document
-     * is dynamic. The responsability of this method is to ensure that
-     * any dynamic modifications of the element this bridge is
-     * dedicated to, happen on its associated GVT product.
+     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
-    protected void initializeDynamicSupport() {
-        ((EventTarget)e).addEventListener("DOMAttrModified", 
-                                          new DOMAttrModifiedEventListener(),
-                                          false);
-        ctx.bind(e, node);
-    }
-
-    /**
-     * Invoked when a bridge update is starting.
-     *
-     * @param evt the evt that describes the incoming update
-     */
-    public void bridgeUpdateStarting(BridgeUpdateEvent evt) {
-        System.out.println("("+e.getLocalName()+" "+node+") update started "+
-                           evt.getHandlerKey());
-    }
-
-    /**
-     * Invoked when a bridge update is completed.
-     *
-     * @param evt the evt that describes the update
-     */
-    public void bridgeUpdateCompleted(BridgeUpdateEvent evt) {
-        System.out.println("("+e.getLocalName()+" "+node+") update completed "+
-                           evt.getHandlerKey());
-    }
-
-    /**
-     * Handles DOMAttrModified events.
-     *
-     * @param evt the DOM mutation event
-     */
-    protected void handleDOMAttrModifiedEvent(MutationEvent evt) {
-        String attrName = evt.getAttrName();
-        if (attrName.equals(SVG_TRANSFORM_ATTRIBUTE)) {
-            BridgeUpdateEvent be = new BridgeUpdateEvent(this);
-            fireBridgeUpdateStarting(be);
-            
-            String s = evt.getNewValue();
-            AffineTransform at = GraphicsNode.IDENTITY;
-            if (s.length() != 0) {
-                at = SVGUtilities.convertTransform
-                    (e, SVG_TRANSFORM_ATTRIBUTE, s);
-            }
-            node.setTransform(at);
-            
-            fireBridgeUpdateCompleted(be);
-        } else {
-            System.out.println("Unsupported attribute modification: "+attrName+
-                               " on "+e.getLocalName());
-        }
-    }
-
-
-    /**
-     * The listener class for 'DOMAttrModified' event.
-     */
-    protected class DOMAttrModifiedEventListener implements EventListener {
-
-        /**
-         * Handles 'DOMAttrModfied' events and deleguates to the
-         * 'handleDOMAttrModifiedEvent' method any changes to the
-         * GraphicsNode if any.
-         *
-         * @param evt the DOM event
-         */
-        public void handleEvent(Event evt) {
-            if (evt.getTarget() != e) {
-                return;
-            }
-            handleDOMAttrModifiedEvent((MutationEvent)evt);
-        }
+    public void handleDOMAttrModifiedEvent(MutationEvent evt) {
+        super.handleDOMAttrModifiedEvent(evt);
     }
 
     // -----------------------------------------------------------------------

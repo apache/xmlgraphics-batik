@@ -8,9 +8,11 @@
 
 package org.apache.batik.bridge;
 
+import org.apache.batik.css.engine.CSSEngineEvent;
+import org.w3c.dom.events.MutationEvent;
+
 /**
- * Interface for objects interested in being notified of updates
- * by a <tt>Bridge</tt>.
+ * Interface for objects interested in being notified of updates.
  * 
  * @author <a href="mailto:vincent.hardy@apache.org">Vincent Hardy</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
@@ -19,16 +21,23 @@ package org.apache.batik.bridge;
 public interface BridgeUpdateHandler {
     
     /**
-     * Invoked when a bridge update starts.
-     *
-     * @param evt the evt that describes the incoming update
+     * Invoked when an MutationEvent of type 'DOMAttrModified' is fired.
      */
-    void bridgeUpdateStarting(BridgeUpdateEvent evt);
+    void handleDOMAttrModifiedEvent(MutationEvent evt);
 
     /**
-     * Invoked when a bridge update ends.
-     *
-     * @param evt the evt that describes the update
+     * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
-    void bridgeUpdateCompleted(BridgeUpdateEvent evt);
+    void handleDOMNodeInsertedEvent(MutationEvent evt);
+
+    /**
+     * Invoked when an MutationEvent of type 'DOMNodeRemoved' is fired.
+     */
+    void handleDOMNodeRemovedEvent(MutationEvent evt);
+
+    /**
+     * Invoked when an CSSEngineEvent is fired.
+     */
+    void handleCSSEngineEvent(CSSEngineEvent evt);
+
 }
