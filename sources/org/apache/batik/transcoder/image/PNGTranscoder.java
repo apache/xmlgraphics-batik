@@ -32,8 +32,7 @@ public class PNGTranscoder extends ImageTranscoder {
      * Constructs a new transcoder that produces png images.
      */
     public PNGTranscoder() { 
-        hints.put(KEY_FORCE_TRANSPARENT_WHITE, 
-                  new Boolean(false));
+        hints.put(KEY_FORCE_TRANSPARENT_WHITE, new Boolean(false));
     }
 
     /**
@@ -66,21 +65,22 @@ public class PNGTranscoder extends ImageTranscoder {
         params.setSRGBIntent(PNGEncodeParam.INTENT_PERCEPTUAL);
 
         //
-        // This is a trick so that viewers which do not support
-        // the alpha channel will see a white background (and not
-        // a black one).
+        // This is a trick so that viewers which do not support the alpha
+        // channel will see a white background (and not a black one).
         //
         boolean forceTransparentWhite = true;
 
         if (hints.containsKey(KEY_FORCE_TRANSPARENT_WHITE)) {
-            forceTransparentWhite = ((Boolean)hints.get(KEY_FORCE_TRANSPARENT_WHITE)).booleanValue();
+            forceTransparentWhite = 
+		((Boolean)hints.get
+		 (KEY_FORCE_TRANSPARENT_WHITE)).booleanValue();
         }
 
-        if(forceTransparentWhite){
-            System.out.println("Forcing transparent white");
+        if (forceTransparentWhite) {
             int w = img.getWidth(), h = img.getHeight();
             DataBufferInt biDB = (DataBufferInt)img.getRaster().getDataBuffer();
-            int scanStride = ((SinglePixelPackedSampleModel)img.getSampleModel()).getScanlineStride();
+            int scanStride = ((SinglePixelPackedSampleModel)
+			      img.getSampleModel()).getScanlineStride();
             int dbOffset = biDB.getOffset();
             int pixels[] = biDB.getBankData()[0];
             int p = dbOffset;
@@ -118,16 +118,16 @@ public class PNGTranscoder extends ImageTranscoder {
     // --------------------------------------------------------------------
     // Keys definition
     // --------------------------------------------------------------------
+
     /**
-     * The 'forceTransparentWhite' key.
-     * It controls whether the encoder should force the image's fully transparent
-     * pixels to be fully transparent white instead of fully transparent black. 
-     * This is usefull when the encoded PNG is displayed in a browser which
-     * does not support PNG transparency and lets the image display
-     * with a white background instead of a black background. <br />
-     * However, note that the modified image will display differently
-     * over a white background in a viewer that supports transparency.
-     */
+     * The 'forceTransparentWhite' key.  It controls whether the encoder should
+     * force the image's fully transparent pixels to be fully transparent white
+     * instead of fully transparent black.  This is usefull when the encoded PNG
+     * is displayed in a browser which does not support PNG transparency and
+     * lets the image display with a white background instead of a black
+     * background. <br /> However, note that the modified image will display
+     * differently over a white background in a viewer that supports
+     * transparency.  */
     public static final TranscodingHints.Key KEY_FORCE_TRANSPARENT_WHITE
         = new BooleanKey();
 }
