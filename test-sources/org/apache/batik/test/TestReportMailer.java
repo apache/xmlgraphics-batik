@@ -11,12 +11,14 @@ package org.apache.batik.test;
 import javax.mail.Session;
 import javax.mail.Message;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.InternetAddress;
 
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -30,6 +32,12 @@ import java.io.StringWriter;
  * @version $Id$
  */
 public class TestReportMailer implements TestReportProcessor {
+    /**
+     * Separators allowed to separate email addresses for the 
+     * destination addresses.
+     */
+    public static final String ADDRESS_SEPARATORS = ",";
+
     /**
      * System property used to specify the SMTP server
      */
@@ -56,16 +64,20 @@ public class TestReportMailer implements TestReportProcessor {
     /**
      * Destination email address
      */
-    private String reportDestinationAddress;
+    private String reportDestinationAddressList;
 
     /**
-     * Constructor
+     * Constructor.
+     * @param reportSourceAddress address to use as the source of the report
+     * @param reportDestinationAddressList comma separated list of addresses where the
+     *        report should be sent.
+     * @param mailServer server which will send the email.
      */
     public TestReportMailer(String reportSourceAddress,
-                            String reportDestinationAddress,
+                            String reportDestinationAddressList,
                             String mailServer){
         this.reportSourceAddress = reportSourceAddress;
-        this.reportDestinationAddress = reportDestinationAddress;
+        this.reportDestinationAddressList = reportDestinationAddressList;
         this.mailServer = mailServer;
     }
 
@@ -99,7 +111,7 @@ public class TestReportMailer implements TestReportProcessor {
             
             MimeMessage msg = new MimeMessage(session);
             InternetAddress[] dest 
-                = {new InternetAddress(reportDestinationAddress)};
+                = convertAddressList(reportDestinationAddressList);
             msg.setRecipients(Message.RecipientType.TO, dest);
 
             String mailReportSubject 
@@ -132,7 +144,19 @@ public class TestReportMailer implements TestReportProcessor {
         }
     }
 
+    protected InternetAddress[] convertAddressList(String addressList)
+        throws AddressException {
 
+        StringTokenizer st = new StringTokenizer(addressList, ADDRESS_SEPARATORS);
+        InternetAddress[] addresses = new InternetAddress[st.countTokens()];
+        int i=0;
+        while(st.hasMoreElements()){
+            addresses[i] = new InternetAddress(st.nextToken());
+            i++;
+        }
+
+        return addresses;
+    }
 }
 
 
