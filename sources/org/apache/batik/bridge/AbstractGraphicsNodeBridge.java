@@ -400,8 +400,4 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         return CSSUtilities.getComputedStyle
             (e, SVGCSSEngine.FONT_SIZE_INDEX).getFloatValue();
     }
-
-    public void deselectAll() {
-        ctx.getUserAgent().deselectAll();
-    }
 }

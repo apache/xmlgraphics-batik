@@ -88,9 +88,4 @@ public interface SVGContext {
      */
     float getFontSize();
 
-    /**
-     * Informs the user agent that the text selection should be
-     * cleared.
-     */
-    void deselectAll();
 }
