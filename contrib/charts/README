@@ -2,6 +2,10 @@
 # Author  : Vincent Hardy
 # Version : $Id$
 #
+
+Content of this directory
+=========================
+
 This directory contains XSL stylesheets to create charts from XML data. 
 This has been contributed by John Morrison (john.r.morrison@ntlworld.com).
 
