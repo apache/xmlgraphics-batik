@@ -66,6 +66,16 @@
     </test>
 
     <!-- ========================================================================== -->
+    <!-- appendChild test                                                          -->
+    <!-- ========================================================================== -->
+    <test id="appendChild" class="org.apache.batik.dom.AppendChildTest" >
+        <arg class="java.lang.String"
+             value="test-resources/org/apache/batik/dom/dummyXML3.xml" />
+        <arg class="java.lang.String" value="doc" />
+        <arg class="java.lang.String" value="root" />
+    </test>
+
+    <!-- ========================================================================== -->
     <!-- removeAttribute test                                                       -->
     <!-- ========================================================================== -->
     <test id="removeAttribute1"
