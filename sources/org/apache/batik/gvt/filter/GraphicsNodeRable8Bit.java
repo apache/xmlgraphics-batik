@@ -139,11 +139,11 @@ public class GraphicsNodeRable8Bit
         // space that we will draw our selves into (since paint unlike
         // primitivePaint incorporates the transform from our user
         // space to our parents user space).
-        AffineTransform at     = node.getTransform();
-        Rectangle2D     bounds = 
-                        node.getBounds(getGraphicsNodeRenderContext());
-        
-        return at.createTransformedShape(bounds).getBounds2D();
+        Rectangle2D bounds = node.getBounds(getGraphicsNodeRenderContext());
+        AffineTransform at = node.getTransform();
+        if (at != null)
+            bounds = at.createTransformedShape(bounds).getBounds2D();
+        return bounds;
     }
 
     /**
