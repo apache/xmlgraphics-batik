@@ -23,6 +23,7 @@
   <separator/>
   <page id="license"  label="License" source="license.xml"/>
   <external href="dist" label="Download"/>
+  <page id="install"  label="Install" source="installing.xml"/>
 
   <separator/>
 
