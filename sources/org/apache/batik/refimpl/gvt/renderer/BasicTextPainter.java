@@ -20,6 +20,7 @@ import java.awt.Shape;
 import java.awt.Composite;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.AffineTransform;
 import java.text.AttributedCharacterIterator;
 import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
@@ -191,7 +192,8 @@ public class BasicTextPainter implements TextPainter {
      * an instance of this enclosing TextPainter implementation.</em>
      */
     public Shape getHighlightShape(org.apache.batik.gvt.text.Mark beginMark,
-                                   org.apache.batik.gvt.text.Mark endMark) {
+                                   org.apache.batik.gvt.text.Mark endMark,
+                                   Point2D location, TextNode.Anchor anchor) {
 
         // TODO: later we can return more complex things like
         // noncontiguous selections
@@ -237,6 +239,17 @@ public class BasicTextPainter implements TextPainter {
                                     firsthit,
                                     lasthit,
                                     layout.getBounds());
+
+            double tx = location.getX();
+            double ty = location.getY();
+            if (anchor == TextNode.Anchor.MIDDLE) {
+                tx -= layout.getAdvance()/2;
+            } else if (anchor == TextNode.Anchor.END) {
+                tx -= layout.getAdvance();
+            }
+            AffineTransform t =
+                    AffineTransform.getTranslateInstance(tx, ty);
+            shape = t.createTransformedShape(shape);
         }
         return shape;
     }
@@ -263,6 +276,7 @@ public class BasicTextPainter implements TextPainter {
         case TextNode.Anchor.ANCHOR_END:
             tx = advance;
         }
+
         TextHitInfo textHit =
             layout.hitTestChar((float) (x+tx), (float) y, layout.getBounds());
 
@@ -271,16 +285,18 @@ public class BasicTextPainter implements TextPainter {
         //System.out.println("    with advance: "+layout.getAdvance());
         //if (textHit != null) System.out.println("HIT : "+textHit);
 
-        if ((aci != cachedACI) || 
-            (textHit == null) || 
+        if ((aci != cachedACI) ||
+            (textHit == null) ||
             (textHit.getInsertionIndex() != cachedHit.getInsertionIndex())) {
             cachedMark = new BasicTextPainter.Mark(x, y, layout, textHit);
             cachedACI = aci;
             cachedHit = textHit;
         } // else old mark is still valid, return it.
-  
+
         return cachedMark;
     }
+
+
 
     /**
      * This TextPainter's implementation of the Mark interface.

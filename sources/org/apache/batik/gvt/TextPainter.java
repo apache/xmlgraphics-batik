@@ -105,13 +105,16 @@ public interface TextPainter {
 
 
     /*
-     * Get a Shape which encloses the textnode glyphs bounded by two Marks.
+     * Get a Shape in userspace coords which encloses the textnode
+     * glyphs bounded by two Marks.
      * Note that the instances of Mark passed to this function
      * <em>must come</em>
      * from the same TextPainter that generated them via selectAt() and
      * selectTo(), since the TextPainter implementation may rely on hidden
      * implementation details of its own Mark implementation.
      */
-     public Shape getHighlightShape(Mark beginMark, Mark endMark);
+     public Shape getHighlightShape(Mark beginMark, Mark endMark,
+                                    Point2D location,
+                                    TextNode.Anchor anchor);
 
 }
