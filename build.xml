@@ -1033,6 +1033,9 @@ To display the available targets type:
     <mkdir dir="${test-references}/samples/extensions/accepted-variation"/>
     <mkdir dir="${test-references}/samples/extensions/candidate-variation"/>
     <mkdir dir="${test-references}/samples/extensions/candidate-reference"/>
+    <mkdir dir="${test-references}/samples/extensions/opera/accepted-variation"/>
+    <mkdir dir="${test-references}/samples/extensions/opera/candidate-variation"/>
+    <mkdir dir="${test-references}/samples/extensions/opera/candidate-reference"/>
     <mkdir dir="${test-references}/svgbe/accepted-variation"/>
     <mkdir dir="${test-references}/svgbe/candidate-variation"/>
     <mkdir dir="${test-references}/svgbe/candidate-reference"/>

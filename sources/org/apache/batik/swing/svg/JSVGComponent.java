@@ -198,6 +198,11 @@ public class JSVGComponent extends JGVTComponent {
     public final static int ALWAYS_STATIC = 2;
 
     /**
+     * Means that all document must be considered as interactive.
+     */
+    public final static int ALWAYS_INTERACTIVE = 3;
+
+    /**
      * The document loader.
      */
     protected SVGDocumentLoader documentLoader;
@@ -293,6 +298,11 @@ public class JSVGComponent extends JGVTComponent {
     protected boolean isDynamicDocument;
 
     /**
+     * Whether the current document has dynamic features.
+     */
+    protected boolean isInteractiveDocument;
+
+    /**
      * The document state.
      */
     protected int documentState;
@@ -332,6 +342,14 @@ public class JSVGComponent extends JGVTComponent {
      */
     public boolean isDynamic() {
         return isDynamicDocument;
+    }
+
+    /**
+     * Tells whether the component use dynamic features to
+     * process the current document.
+     */
+    public boolean isInteractive() {
+        return isInteractiveDocument;
     }
 
     /**
@@ -456,14 +474,26 @@ public class JSVGComponent extends JGVTComponent {
         switch (documentState) {
         case ALWAYS_STATIC:
             isDynamicDocument = false;
+            isInteractiveDocument = false;
+            break;
+        case ALWAYS_INTERACTIVE:
+            isDynamicDocument = false;
+            isInteractiveDocument = true;
             break;
         case ALWAYS_DYNAMIC:
             isDynamicDocument = true;
+            isInteractiveDocument = true;
             break;
         case AUTODETECT:
-            isDynamicDocument = UpdateManager.isDynamicDocument(doc);
+            isDynamicDocument = BridgeContext.isDynamicDocument(doc);
+            if (isDynamicDocument)
+                isInteractiveDocument = true;
+            else
+                isInteractiveDocument = BridgeContext.isInteractiveDocument(doc);
         }
-        
+        // System.err.println("Dynamic:     " + isDynamicDocument);
+        // System.err.println("Interactive: " + isInteractiveDocument);
+
         svgDocument = doc;
 
         Element root = doc.getDocumentElement();
@@ -551,7 +581,12 @@ public class JSVGComponent extends JGVTComponent {
             loader = new DocumentLoader(userAgent);
         }
         BridgeContext result = new BridgeContext(userAgent, loader);
-        result.setDynamic(true);
+        if (isInteractiveDocument) {
+            if (isDynamicDocument)
+                result.setDynamicState(BridgeContext.DYNAMIC);
+            else
+                result.setDynamicState(BridgeContext.INTERACTIVE);
+        }
         return result;
     }
 
@@ -706,7 +741,7 @@ public class JSVGComponent extends JGVTComponent {
      * Renders the GVT tree.
      */
     protected void renderGVTTree() {
-        if (!isDynamicDocument ||
+        if (!isInteractiveDocument ||
             updateManager == null ||
             !updateManager.isRunning()) {
             super.renderGVTTree();
@@ -872,7 +907,8 @@ public class JSVGComponent extends JGVTComponent {
         float prevTransY = 0;
 
         public void componentResized(ComponentEvent ce) {
-            if (updateManager != null && updateManager.isRunning()) {
+            if (isDynamicDocument &&
+                (updateManager != null) && updateManager.isRunning()) {
                 updateManager.getUpdateRunnableQueue().invokeLater
                     (new Runnable() {
                         public void run() {
@@ -894,7 +930,8 @@ public class JSVGComponent extends JGVTComponent {
             final boolean dispatchZoom    = (currScale != prevScale);
             final boolean dispatchScroll  = ((currTransX != prevTransX) ||
                                              (currTransX != prevTransX));
-            if (updateManager != null && updateManager.isRunning()) {
+            if (isDynamicDocument &&
+                (updateManager != null) && updateManager.isRunning()) {
                 updateManager.getUpdateRunnableQueue().invokeLater
                     (new Runnable() {
                         public void run() {
@@ -1049,6 +1086,12 @@ public class JSVGComponent extends JGVTComponent {
             if (isDynamicDocument && JSVGComponent.this.eventsEnabled) {
                 startSVGLoadEventDispatcher(e.getGVTRoot());
             } else {
+                if (isInteractiveDocument) {
+                    nextUpdateManager = new UpdateManager(bridgeContext,
+                                                          e.getGVTRoot(),
+                                                          svgDocument);
+                }
+                    
                 JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
                 scheduleGVTRendering();
             }
@@ -1543,7 +1586,7 @@ public class JSVGComponent extends JGVTComponent {
          * Dispatches the event to the GVT tree.
          */
         protected void dispatchMouseClicked(final MouseEvent e) {
-            if (!isDynamicDocument) {
+            if (!isInteractiveDocument) {
                 super.dispatchMouseClicked(e);
                 return;
             }
@@ -1601,7 +1644,7 @@ public class JSVGComponent extends JGVTComponent {
          * Dispatches the event to the GVT tree.
          */
         protected void dispatchMouseEntered(final MouseEvent e) {
-            if (!isDynamicDocument) {
+            if (!isInteractiveDocument) {
                 super.dispatchMouseEntered(e);
                 return;
             }
@@ -1620,7 +1663,7 @@ public class JSVGComponent extends JGVTComponent {
          * Dispatches the event to the GVT tree.
          */
         protected void dispatchMouseExited(final MouseEvent e) {
-            if (!isDynamicDocument) {
+            if (!isInteractiveDocument) {
                 super.dispatchMouseExited(e);
                 return;
             }
@@ -1682,7 +1725,7 @@ public class JSVGComponent extends JGVTComponent {
          * Dispatches the event to the GVT tree.
          */
         protected void dispatchMouseMoved(MouseEvent e) {
-            if (!isDynamicDocument) {
+            if (!isInteractiveDocument) {
                 super.dispatchMouseMoved(e);
                 return;
             }

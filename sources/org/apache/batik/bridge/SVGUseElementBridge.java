@@ -227,23 +227,22 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
 
         super.buildGraphicsNode(ctx, e, node);
 
-        EventTarget target = (EventTarget)e;
-
-        EventListener l = new CursorMouseOverListener(ctx.getUserAgent());
-        target.addEventListener(SVG_EVENT_MOUSEOVER, l, false);
-        ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, l, false);
-
+        if (ctx.isInteractive()) {
+            EventTarget target = (EventTarget)e;
+            EventListener l = new CursorMouseOverListener(ctx);
+            target.addEventListener(SVG_EVENT_MOUSEOVER, l, false);
+            ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, l, false);
+        }
     }
 
     /**
      * To handle a mouseover on an anchor and set the cursor.
      */
-    public class CursorMouseOverListener implements EventListener {
+    public static class CursorMouseOverListener implements EventListener {
 
-        protected UserAgent userAgent;
-
-        public CursorMouseOverListener(UserAgent ua) {
-            userAgent = ua;
+        protected BridgeContext ctx;
+        public CursorMouseOverListener(BridgeContext ctx) {
+            this.ctx = ctx;
         }
 
         public void handleEvent(Event evt) {
@@ -254,9 +253,10 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
             Element currentTarget = (Element)evt.getCurrentTarget();
 
             if (!CSSUtilities.isAutoCursor(currentTarget)) {
-                Cursor cursor = CSSUtilities.convertCursor(currentTarget, ctx);
+                Cursor cursor;
+                cursor = CSSUtilities.convertCursor(currentTarget, ctx);
                 if (cursor != null) {
-                    userAgent.setSVGCursor(cursor);
+                    ctx.getUserAgent().setSVGCursor(cursor);
                 }
             }
         }

@@ -135,8 +135,10 @@ public class BridgeEventSupport implements SVGConstants {
 
         protected void dispatchKeyEvent(String eventType, 
                                         GraphicsNodeKeyEvent evt) {
-            Element targetElement = 
-                (Element)context.getFocusManager().getCurrentEventTarget();
+            FocusManager fmgr = context.getFocusManager();
+            if (fmgr == null) return;
+
+            Element targetElement = (Element)fmgr.getCurrentEventTarget();
             if (targetElement == null) {
                 return;
             }

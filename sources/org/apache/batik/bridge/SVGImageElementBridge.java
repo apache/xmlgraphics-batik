@@ -190,9 +190,10 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     protected void initializeDynamicSupport(BridgeContext ctx,
                                             Element e,
                                             GraphicsNode node) {
-        this.e = e;
-        this.node = node;
-        this.ctx = ctx;
+        if (!ctx.isInteractive())
+            return;
+
+        // Bind the nodes for interactive and dynamic
         // HACK due to the way images are represented in GVT
         ImageNode imgNode = (ImageNode)node;
         if (imgNode.getImage() instanceof RasterImageNode) {
@@ -201,7 +202,14 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         } else {
             ctx.bind(e, node);
         }
-        ((SVGOMElement)e).setSVGContext(this);
+
+        if (ctx.isDynamic()) {
+            // Only do this for dynamic not interactive.
+            this.e = e;
+            this.node = node;
+            this.ctx = ctx;
+            ((SVGOMElement)e).setSVGContext(this);
+        }
     }
 
     // BridgeUpdateHandler implementation //////////////////////////////////
@@ -396,7 +404,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         // add a listener on the outermost svg element of the SVG image.
         // if an event occured inside the SVG image document, send it
         // to the <image> element (inside the original document).
-        if (ctx.isDynamic()) {
+        if (ctx.isInteractive()) {
             EventListener listener = new ForwardEventListener(svgElement, e);
             EventTarget target = (EventTarget)svgElement;
 

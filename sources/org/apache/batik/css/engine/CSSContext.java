@@ -85,4 +85,13 @@ public interface CSSContext {
         checkLoadExternalResource(ParsedURL resourceURL,
                                   ParsedURL docURL) throws SecurityException;
 
+    /**
+     * Returns true if the document is dynamic, false otherwise.
+     */
+    public boolean isDynamic();
+
+    /**
+     * Returns true if the document is interactive, false otherwise.
+     */
+    public boolean isInteractive();
 }

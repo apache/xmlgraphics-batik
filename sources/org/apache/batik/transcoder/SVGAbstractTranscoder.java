@@ -166,7 +166,9 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
             (hints.containsKey(KEY_EXECUTE_ONLOAD) &&
              ((Boolean)hints.get(KEY_EXECUTE_ONLOAD)).booleanValue() &&
              BaseScriptingEnvironment.isDynamicDocument(svgDoc));
-        ctx.setDynamic(isDynamic);
+
+        if (isDynamic)
+            ctx.setDynamicState(BridgeContext.DYNAMIC);
 
         GraphicsNode gvtRoot;
         try {

@@ -123,9 +123,8 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         // 'pointer-events'
         node.setPointerEventType(CSSUtilities.convertPointerEvents(e));
 
-        if (ctx.isDynamic()) {
-            initializeDynamicSupport(ctx, e, node);
-        }
+        initializeDynamicSupport(ctx, e, node);
+
         // Handle children elements such as <title>
         SVGUtilities.bridgeChildren(ctx, e);
     }
@@ -147,11 +146,19 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     protected void initializeDynamicSupport(BridgeContext ctx,
                                             Element e,
                                             GraphicsNode node) {
-        this.e = e;
-        this.node = node;
-        this.ctx = ctx;
+        if (!ctx.isInteractive())
+            return;
+
+        // Bind the nodes for interactive and dynamic
         ctx.bind(e, node);
-        ((SVGOMElement)e).setSVGContext(this);
+
+        if (ctx.isDynamic()) {
+            // only set context for dynamic documents not interactive.
+            this.e = e;
+            this.node = node;
+            this.ctx = ctx;
+            ((SVGOMElement)e).setSVGContext(this);
+        }
     }
 
     // BridgeUpdateHandler implementation //////////////////////////////////

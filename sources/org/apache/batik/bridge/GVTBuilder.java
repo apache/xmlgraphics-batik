@@ -75,12 +75,15 @@ public class GVTBuilder implements SVGConstants {
         }
 
         // For cursor handling
-        ctx.addUIEventListeners(document);
+        if (ctx.isInteractive()) {
+            ctx.addUIEventListeners(document);
+
+            // register GVT listeners for AWT event support
+            BridgeEventSupport.addGVTListener(ctx, document);
+        }
 
         // <!> FIXME: TO BE REMOVED
         if (ctx.isDynamic()) {
-            // register GVT listeners for AWT event support
-            BridgeEventSupport.addGVTListener(ctx, document);
             // register DOM listeners for dynamic support
             ctx.addDOMListeners();
         }

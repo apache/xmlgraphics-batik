@@ -107,8 +107,10 @@
 
 
     <g transform="translate(330, 120)" class="label" text-anchor="middle">
-        <use xlink:href="#oddRow" cursor="e-resize"/>
-        <text>e-resize</text>
+        <g transform="translate(0,0)" cursor="e-resize">
+          <use xlink:href="#oddRow"/>
+          <text>e-resize</text>
+        </g>
 
         <g transform="translate(0,20)" cursor="w-resize">
             <use xlink:href="#evenRow"/>
@@ -170,11 +172,9 @@
         <g transform="translate(0,280)">
             <use xlink:href="#oddRow"/>
             <image x="-93" y="-14" width="186" height="16" xlink:href="cursorImage.svg" cursor="crosshair"/>
-            <text>&lt;use cursor=crosshair&gt;</text>
+            <text>&lt;image cursor=crosshair&gt;</text>
         </g>
-    
     </g>
-
 
     <!-- ============================================================= -->
     <!-- Batik sample mark                                             -->
