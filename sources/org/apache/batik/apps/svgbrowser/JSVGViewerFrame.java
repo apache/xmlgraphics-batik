@@ -842,6 +842,11 @@ public class JSVGViewerFrame
                 final SVGDocument doc = svgDocument;
                 new Thread() {
                     public void run(){
+			String uri = doc.getURL();
+			String fragment = svgCanvas.getFragmentIdentifier();
+			if (fragment != null) {
+			    uri += "#"+fragment;
+			}
                         //
                         // Build a PrintTranscoder to handle printing
                         // of the svgDocument object
@@ -864,7 +869,7 @@ public class JSVGViewerFrame
                         //
                         // Do transcoding now
                         //
-                        pt.transcode(new TranscoderInput(doc), null);
+                        pt.transcode(new TranscoderInput(uri), null);
 
                         //
                         // Print
