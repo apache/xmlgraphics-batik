@@ -81,6 +81,7 @@ public class GVTTreeBuilder extends Thread {
             exception = e;
             fireFailedEvent(null);
         }
+        bridgeContext.getDocumentLoader().dispose();
     }
 
     /**
