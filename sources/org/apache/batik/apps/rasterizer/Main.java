@@ -124,7 +124,7 @@ public class Main {
                     background = c;
                     continue;
                 } else {
-                    error("option -w requires an argument");
+                    error("option -bg requires an argument");
                     usage(System.err);
                     System.exit(1);
                 }
@@ -132,7 +132,7 @@ public class Main {
                 if (i+1 < args.length) {
                     i++;
                     try{
-                        width = Float.parseFloat(args[i++]);
+                        height = Float.parseFloat(args[i++]);
                     }catch(NumberFormatException e){
                         usage(System.err);
                         System.exit(1);

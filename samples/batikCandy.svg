@@ -40,7 +40,7 @@
     panose-1="2 11 8 6 3 9 2 5 2 4"
     ascent="2066"
     descent="-432"
-    baseline="0" />
+     />
 
 <missing-glyph horiz-adv-x="1536" d="M256 0V1280H1280V0H256ZM288 32H1248V1248H288V32Z" />
 
