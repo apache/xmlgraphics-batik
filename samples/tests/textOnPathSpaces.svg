@@ -66,7 +66,7 @@
 
          <g transform="translate(0,160)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="20" x="100" y="300">
+	      <text font-size="20">
                 <textPath xlink:href="#Path1" textLength="140">sample</textPath>
             </text>
             <text font-size="10" x="35" y="60">textLength="140"</text>
@@ -75,7 +75,7 @@
 
          <g transform="translate(150,160)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="20" x="100" y="300">
+	      <text font-size="20">
                 <textPath xlink:href="#Path1" textLength="70">sample</textPath>
             </text>
             <text font-size="10" x="35" y="60">textLength="70"</text>
@@ -83,7 +83,7 @@
 
          <g transform="translate(300,160)">
             <use xlink:href="#Path1" style="fill:none; stroke:blue; stroke-width:2"/>
-	      <text font-size="20" x="100" y="300">
+	      <text font-size="20">
                 <textPath xlink:href="#Path1" kerning="10">sample</textPath>
             </text>
             <text font-size="10" x="35" y="60">kerning="10"</text>
