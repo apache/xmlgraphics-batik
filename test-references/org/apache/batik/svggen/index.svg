@@ -16,7 +16,7 @@
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
 
-<svg id="body" width="450" height="500">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body" width="450" height="500">
 
   <style type="text/css"><![CDATA[
     text.link {

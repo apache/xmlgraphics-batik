@@ -19,7 +19,7 @@
 <!-- ========================================================================= -->
 
 <?xml-stylesheet type="text/css" href="tests/resources/style/test.css" ?>
-<svg id="body" width="450" height="500" xml:space="preserve" viewBox="0 0 450 500">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body" width="450" height="500" xml:space="preserve" viewBox="0 0 450 500">
     <title>Bar Chart</title>
 
     <g id="barChart" transform="translate(40, 100)" fill-rule="evenodd" clip-rule="evenodd" stroke="none" class="legend"

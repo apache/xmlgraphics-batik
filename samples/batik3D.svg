@@ -14,7 +14,7 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<svg  width="450" height="500" viewBox="0 0 900 1000" xml:space="preserve">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  width="450" height="500" viewBox="0 0 900 1000" xml:space="preserve">
 	<g id="Background" style="fill-rule:nonzero;clip-rule:nonzero;stroke:#000000;stroke-miterlimit:4;">
 		<radialGradient id="aigrd1" cx="376.6831" cy="541.9688" r="814.0695" fx="376.6831" fy="541.9688" gradientTransform="matrix(0.9978 0 0 0.9192 1.1528 44.8691)" gradientUnits="userSpaceOnUse">
 			<stop  offset="0" style="stop-color:#FFFFFF"/>
