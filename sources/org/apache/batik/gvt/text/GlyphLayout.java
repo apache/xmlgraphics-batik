@@ -1101,8 +1101,8 @@ public class GlyphLayout implements TextSpanLayout {
             // computed on the basis of baseline-shifts, etc.
             float ox = 0f;
             float oy = 0f;
-            Float rotation = null;
             float verticalGlyphRotation = 0f;
+            Float rotation = null;
 
             if (ch != CharacterIterator.DONE) {
                 Float x = (Float) aci.getAttribute(
@@ -1139,6 +1139,7 @@ public class GlyphLayout implements TextSpanLayout {
                     }
                 }
 
+                // calculate the total rotation for this glyph
                 if (rotation == null || rotation.isNaN()) {
                     rotation = new Float(verticalGlyphRotation);
                 } else {
@@ -1225,13 +1226,11 @@ public class GlyphLayout implements TextSpanLayout {
                     }
                 }
             }
-            gv.setGlyphPosition(i, new Point2D.Float(curr_x_pos+ox,curr_y_pos+oy));
-            if (rotation.floatValue() != 0f) {
-                gv.setGlyphTransform(i,
-                    AffineTransform.getRotateInstance(
-                        (double)rotation.floatValue()));
-            }
 
+            // set the new glyph position
+            gv.setGlyphPosition(i, new Point2D.Float(curr_x_pos+ox,curr_y_pos+oy));
+
+            // calculte the position of the next glyph
             if (!ArabicTextHandler.arabicCharTransparent(ch)) {
                 // only apply the advance if the current char is not transparent
                 GVTGlyphMetrics gm = gv.getGlyphMetrics(i);
@@ -1250,14 +1249,9 @@ public class GlyphLayout implements TextSpanLayout {
                             advanceY = gm.getHorizontalAdvance();
                         } else { // 270
                             advanceY = gm.getHorizontalAdvance();
-                            // need to translate backwards so that the spacing
+                            // need to translate so that the spacing
                             // between chars is correct
-                            AffineTransform glyphTransform = gv.getGlyphTransform(i);
-                            if (glyphTransform == null) {
-                                glyphTransform = new AffineTransform();
-                            }
-                            glyphTransform.translate(-advanceY, 0);
-                            gv.setGlyphTransform(i, glyphTransform);
+                            gv.setGlyphTransform(i, AffineTransform.getTranslateInstance(0, advanceY));
                         }
                     }
                     curr_y_pos += advanceY;
@@ -1265,6 +1259,17 @@ public class GlyphLayout implements TextSpanLayout {
                     curr_x_pos += gm.getHorizontalAdvance();
                 }
             }
+
+            // rotate the glyph
+            if (rotation.floatValue() != 0f) {
+                AffineTransform glyphTransform = gv.getGlyphTransform(i);
+                if (glyphTransform == null) {
+                    glyphTransform = new AffineTransform();
+                }
+                glyphTransform.rotate((double)rotation.floatValue());
+                gv.setGlyphTransform(i, glyphTransform);
+            }
+
             ch = aci.setIndex(aci.getBeginIndex() + i + gv.getCharacterCount(i,i));
             i++;
             firstChar = false;
