@@ -32,6 +32,14 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
  */
 public class SVGRenderingHints extends AbstractSVGConverter{
     /**
+     * @param generatorContext used by converter to handle precision
+     *        or to create elements.
+     */
+    public SVGRenderingHints(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
+    }
+
+    /**
      * Converts part or all of the input GraphicContext into
      * a set of attribute/value pairs and related definitions
      *

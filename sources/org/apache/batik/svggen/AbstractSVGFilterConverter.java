@@ -66,15 +66,8 @@ public abstract class AbstractSVGFilterConverter
 
     /**
      * Utility method for subclasses.
-     * @return the double value formated as an int if there
-     *         is no fractional part. This avoids the extra
-     *         ".0" that a standard convertion gives.
      */
-    public static String doubleString(double value){
-        if(((int)value) == value)
-            return Integer.toString((int)value);
-        else
-            return Double.toString(value);
+    public final String doubleString(double value) {
+        return generatorContext.doubleString(value);
     }
-
 }

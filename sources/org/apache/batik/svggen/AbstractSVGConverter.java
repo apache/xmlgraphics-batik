@@ -13,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Locale;
+
 /**
  * Abstract class with common utility methods used by subclasses
  * for specific convertion operations. It holds a reference to a
@@ -55,11 +57,6 @@ public abstract class AbstractSVGConverter implements SVGConverter, ErrorConstan
     }
 
     /**
-     * Default constructor
-     */
-    public AbstractSVGConverter() {}
-
-    /**
      * @return set of definitions referenced by the attribute
      *         values created by the implementation since its
      *         creation. The return value should never be null.
@@ -72,14 +69,8 @@ public abstract class AbstractSVGConverter implements SVGConverter, ErrorConstan
 
     /**
      * Utility method for subclasses.
-     * @return the double value formated as an int if there
-     *         is no fractional part. This avoids the extra
-     *         ".0" that a standard convertion gives.
      */
-    public static String doubleString(double value) {
-        if(((int)value) == value)
-            return Integer.toString((int)value);
-        else
-            return Double.toString(value);
+    public final String doubleString(double value) {
+        return generatorContext.doubleString(value);
     }
 }

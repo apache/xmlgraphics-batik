@@ -27,6 +27,15 @@ public class SVGTransform extends AbstractSVGConverter{
      * Ratio used to convert radians to degrees
      */
     private static double radiansToDegrees = 180.0 / Math.PI;
+
+    /**
+     * @param generatorContext used by converter to handle precision
+     *        or to create elements.
+     */
+    public SVGTransform(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
+    }
+
     /**
      * Converts part or all of the input GraphicContext into
      * a set of attribute/value pairs and related definitions
@@ -47,7 +56,7 @@ public class SVGTransform extends AbstractSVGConverter{
      * @return the value of an SVG attribute equivalent to the input
      *         GraphicContext's transform stack.
      */
-    public static String toSVGTransform(GraphicContext gc){
+    public final String toSVGTransform(GraphicContext gc){
         return toSVGTransform(gc.getTransformStack());
     }
 
@@ -60,7 +69,7 @@ public class SVGTransform extends AbstractSVGConverter{
      * @param transformStack sequence of transform that should
      *        be converted to an SVG transform attribute equivalent
      */
-    public static String toSVGTransform(TransformStackElement transformStack[]){
+    public final String toSVGTransform(TransformStackElement transformStack[]){
         StringBuffer transformStackBuffer = new StringBuffer();
         int nTransforms = transformStack.length;
         //
@@ -165,7 +174,7 @@ public class SVGTransform extends AbstractSVGConverter{
     /**
      * Converts an AffineTransform to an SVG transform string
      */
-    static String convertTransform(TransformStackElement transformElement){
+    final String convertTransform(TransformStackElement transformElement){
         StringBuffer transformString = new StringBuffer();
         double transformParameters[] = transformElement.getTransformParameters();
         switch(transformElement.getType().toInt()){

@@ -203,7 +203,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
      * Converts the filter's LookupTable into an array of corresponding SVG
      * table strings
      */
-    private static String[] convertLookupTables(LookupOp lookupOp){
+    private String[] convertLookupTables(LookupOp lookupOp){
         LookupTable lookupTable = lookupOp.getTable();
         int nComponents = lookupTable.getNumComponents();
 
@@ -227,7 +227,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
                     // lookupTableBuf[j].append(Integer.toString(i));
-                    lookupTableBuf[j].append(doubleString(i/255., 1000));
+                    lookupTableBuf[j].append(doubleString(i/255.));
                     lookupTableBuf[j].append(SPACE);
                 }
             }
@@ -241,7 +241,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
 
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
-                    lookupTableBuf[j].append(doubleString(dest[j]/255., 1000));
+                    lookupTableBuf[j].append(doubleString(dest[j]/255.));
                     // lookupTableBuf[j].append(Integer.toString(dest[j]));
                     lookupTableBuf[j].append(SPACE);
                 }
@@ -261,7 +261,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
                     // lookupTableBuf[j].append(Integer.toString(i));
-                    lookupTableBuf[j].append(doubleString(i/255., 1000));
+                    lookupTableBuf[j].append(doubleString(i/255.));
                     lookupTableBuf[j].append(SPACE);
                 }
             }
@@ -276,8 +276,7 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
 
                 // Fill in string buffers
                 for(int j=0; j<nComponents; j++){
-                    lookupTableBuf[j].append(doubleString((0xff & dest[j])/255.,
-                                                          1000));
+                    lookupTableBuf[j].append(doubleString((0xff & dest[j])/255.));
                     lookupTableBuf[j].append(SPACE);
                 }
             }
@@ -292,20 +291,5 @@ public class SVGLookupOp extends AbstractSVGFilterConverter {
             }*/
 
         return lookupTables;
-    }
-
-
-    /**
-     * Utility method for subclasses.
-     * @return the double value formated as an int if there
-     *         is no fractional part. This avoids the extra
-     *         ".0" that a standard convertion gives.
-     */
-    public static String doubleString(double value, int precision){
-        value = Math.round(value*precision)/(double)precision;
-        if(((int)value) == value)
-            return Integer.toString((int)value);
-        else
-            return Double.toString(value);
     }
 }

@@ -31,7 +31,7 @@
     </g>
     <g text-rendering="optimizeLegibility" font-size="18" transform="translate(0,139.6)">
       <text xml:space="preserve" x="10" y="40" stroke="none">Arial</text>
-      <text x="10" y="40" transform="translate(0,19.599999999999998)" font-family="&apos;Times New Roman&apos;" stroke="none" xml:space="preserve">Times New Roman</text>
+      <text x="10" y="40" transform="translate(0,19.6)" font-family="&apos;Times New Roman&apos;" stroke="none" xml:space="preserve">Times New Roman</text>
       <text x="10" y="40" transform="translate(0,37.8)" font-family="&apos;Courier New&apos;" stroke="none" xml:space="preserve">Courier New</text>
       <text x="10" y="40" transform="translate(0,58.8)" font-family="&apos;Verdana&apos;" stroke="none" xml:space="preserve">Verdana</text>
     </g>
@@ -40,10 +40,10 @@
     </g>
     <g text-rendering="optimizeLegibility" font-size="14" font-family="sans-serif" transform="translate(0,288)">
       <text xml:space="preserve" x="10" y="0" stroke="none">dialog</text>
-      <text x="10" y="0" transform="translate(0,16.799999999999997)" font-family="monospace" stroke="none" font-weight="bold" xml:space="preserve">dialoginput</text>
-      <text x="10" y="0" transform="translate(0,33.599999999999994)" font-family="monospace" font-style="italic" stroke="none" xml:space="preserve">monospaced</text>
-      <text x="10" y="0" transform="translate(0,48.99999999999999)" font-family="serif" stroke="none" xml:space="preserve">serif</text>
-      <text x="10" y="0" transform="translate(0,65.79999999999998)" stroke="none" font-weight="bold" xml:space="preserve">sansserif</text>
+      <text x="10" y="0" transform="translate(0,16.8)" font-family="monospace" stroke="none" font-weight="bold" xml:space="preserve">dialoginput</text>
+      <text x="10" y="0" transform="translate(0,33.6)" font-family="monospace" font-style="italic" stroke="none" xml:space="preserve">monospaced</text>
+      <text x="10" y="0" transform="translate(0,49)" font-family="serif" stroke="none" xml:space="preserve">serif</text>
+      <text x="10" y="0" transform="translate(0,65.8)" stroke="none" font-weight="bold" xml:space="preserve">sansserif</text>
     </g>
   </g>
 </svg>

@@ -69,6 +69,14 @@ public class SVGColor extends AbstractSVGConverter{
     }
 
     /**
+     * @param generatorContext used by converter to handle precision
+     *        or to create elements.
+     */
+    public SVGColor(SVGGeneratorContext generatorContext) {
+        super(generatorContext);
+    }
+
+    /**
      * Converts part or all of the input GraphicContext into
      * a set of attribute/value pairs and related definitions
      *
@@ -80,14 +88,14 @@ public class SVGColor extends AbstractSVGConverter{
      */
     public SVGDescriptor toSVG(GraphicContext gc) {
         Paint paint = gc.getPaint();
-        return toSVG((Color)paint);
+        return toSVG((Color)paint, generatorContext);
     }
 
     /**
      * Converts a Color object to a set of two corresponding
      * values: a CSS color string and an opacity value.
      */
-    public static SVGPaintDescriptor toSVG(Color color) {
+    public static SVGPaintDescriptor toSVG(Color color, SVGGeneratorContext gc) {
         //
         // First, convert the color value
         //
@@ -110,7 +118,7 @@ public class SVGColor extends AbstractSVGConverter{
         int alphaInt = color.getAlpha();
         float alpha = color.getAlpha()/255f;
 
-        String alphaString = doubleString(alpha);
+        String alphaString = gc.doubleString(alpha);
 
         return new SVGPaintDescriptor(cssColor, alphaString);
     }

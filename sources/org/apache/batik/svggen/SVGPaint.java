@@ -60,7 +60,7 @@ public class SVGPaint implements SVGConverter {
         this.svgLinearGradient = new SVGLinearGradient(generatorContext);
         this.svgTexturePaint = new SVGTexturePaint(generatorContext);
         this.svgCustomPaint = new SVGCustomPaint(generatorContext);
-        this.svgColor = new SVGColor();
+        this.svgColor = new SVGColor(generatorContext);
         this.generatorContext = generatorContext;
     }
 
@@ -117,7 +117,7 @@ public class SVGPaint implements SVGConverter {
 
         if (paintDesc == null) {
             if (paint instanceof Color)
-                paintDesc = svgColor.toSVG((Color)paint);
+                paintDesc = svgColor.toSVG((Color)paint, generatorContext);
             else if (paint instanceof GradientPaint)
                 paintDesc = svgLinearGradient.toSVG((GradientPaint)paint);
             else if (paint instanceof TexturePaint)

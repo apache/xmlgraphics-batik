@@ -15,7 +15,7 @@
       <line y2="80" fill="none" x1="20" x2="120" y1="80" />
       <text xml:space="preserve" x="20" y="120" transform="matrix(1,0.5,0.5,1,-60,-10)" stroke="none">Sheared Font</text>
     </g>
-    <g text-rendering="optimizeLegibility" transform="matrix(0.7071067811865476,0.7071067811865475,-0.7071067811865475,0.7071067811865476,149.28932188134524,-120.41630560342614)">
+    <g text-rendering="optimizeLegibility" transform="matrix(0.707106781187,0.707106781187,-0.707106781187,0.707106781187,149.289321881345,-120.416305603426)">
       <text xml:space="preserve" x="220" y="120" stroke="none">Rotated Font</text>
     </g>
   </g>

@@ -97,7 +97,7 @@ public class SVGLinearGradient extends AbstractSVGConverter {
             gradientStop.setAttributeNS(null, SVG_OFFSET_ATTRIBUTE,
                                       SVG_ZERO_PERCENT_VALUE);
 
-            SVGPaintDescriptor colorDesc = SVGColor.toSVG(gradient.getColor1());
+            SVGPaintDescriptor colorDesc = SVGColor.toSVG(gradient.getColor1(), generatorContext);
             gradientStop.setAttributeNS(null, SVG_STOP_COLOR_ATTRIBUTE,
                                       colorDesc.getPaintValue());
             gradientStop.setAttributeNS(null, SVG_STOP_OPACITY_ATTRIBUTE,
@@ -113,7 +113,7 @@ public class SVGLinearGradient extends AbstractSVGConverter {
             gradientStop.setAttributeNS(null, SVG_OFFSET_ATTRIBUTE,
                                       SVG_HUNDRED_PERCENT_VALUE);
 
-            colorDesc = SVGColor.toSVG(gradient.getColor2());
+            colorDesc = SVGColor.toSVG(gradient.getColor2(), generatorContext);
             gradientStop.setAttributeNS(null, SVG_STOP_COLOR_ATTRIBUTE,
                                         colorDesc.getPaintValue());
             gradientStop.setAttributeNS(null, SVG_STOP_OPACITY_ATTRIBUTE,

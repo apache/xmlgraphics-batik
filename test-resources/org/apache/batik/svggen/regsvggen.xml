@@ -10,38 +10,47 @@
 <!-- @author vincent.hardy@eng.sun.com                                         -->
 <!-- @version $Id$ -->
 <!-- ========================================================================= -->
-<testSuite id="svggen" name="SVGGraphics2D Accuracy Testing" class="org.apache.batik.svggen.SVGGeneratorTests">
-    <test id="ATransform" />
-    <test id="AttributedCharacterIterator" />
-    <test id="BasicShapes" />
-    <test id="BasicShapes2" />
-    <test id="BStroke" />
-    <test id="Bug4389" />
-    <test id="Bug4945" />
-    <test id="Bug6535" />
-    <test id="Bug17965" />
-    <test id="Clip" />
-    <test id="Color1" />
-    <test id="Color2" />
-    <test id="DrawImage" />
-    <test id="Font1" />
-    <test id="Font2" />
-    <test id="GVector" />
-    <test id="Gradient" />
-    <test id="GraphicObjects" />
-    <test id="IdentityTest" />
-    <test id="Lookup" />
-    <test id="NegativeLengths" />
-    <test id="Paints" />
-    <test id="RHints" />
-    <test id="Rescale" />
-    <test id="ShearTest" />
-    <test id="Texture" />
-    <test id="TextSpacePreserve" />    
-    <test id="TransformCollapse" /> 
+<testSuite id="svggen" name="SVGGraphics2D Accuracy Testing">
+    <testGroup id="roundTripSVG" class="org.apache.batik.svggen.SVGGeneratorTests">
+        <test id="ATransform" />
+        <test id="AttributedCharacterIterator" />
+        <test id="BasicShapes" />
+        <test id="BasicShapes2" />
+        <test id="BStroke" />
+        <test id="Bug4389" />
+        <test id="Bug4945" />
+        <test id="Bug6535" />
+        <test id="Bug17965" />
+        <test id="Clip" />
+        <test id="Color1" />
+        <test id="Color2" />
+        <test id="DrawImage" />
+        <test id="Font1" />
+        <test id="Font2" />
+        <test id="GVector" />
+        <test id="Gradient" />
+        <test id="GraphicObjects" />
+        <test id="IdentityTest" />
+        <test id="Lookup" />
+        <test id="NegativeLengths" />
+        <test id="Paints" />
+        <test id="RHints" />
+        <test id="Rescale" />
+        <test id="ShearTest" />
+        <test id="Texture" />
+        <test id="TextSpacePreserve" />    
+        <test id="TransformCollapse" /> 
+    </testGroup>
 
     <test id="ShowSVG" class="org.apache.batik.svggen.ShowGraphics2DOutput" />
     <test id="GetRootTest" class="org.apache.batik.svggen.GetRootTest" />
 
     <test id="bug21259" class="org.apache.batik.svggen.Bug21259" />
+
+    <!-- In the OnePerformanceTest, runOp is the same as runref. Therefore, the -->
+    <!-- score should be 1.                                                     -->
+    <test id="DoubleStringPerformanceTest" class="org.apache.batik.svggen.DoubleStringPerformanceTest">
+        <property name="ReferenceScore" class="java.lang.Double" value="0.3724747761938356" />
+    </test>
+
 </testSuite>

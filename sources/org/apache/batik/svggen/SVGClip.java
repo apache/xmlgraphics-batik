@@ -56,17 +56,8 @@ public class SVGClip extends AbstractSVGConverter {
      * @see org.apache.batik.svggen.SVGDescriptor
      */
     public SVGDescriptor toSVG(GraphicContext gc) {
-        Shape userClip = gc.getClip();
-        return toSVG(userClip);
-    }
+        Shape clip = gc.getClip();
 
-    /**
-     * @param clip the path that should be converted to a clip object.
-     * @return value of the clip-path property. If required, a
-     *         new clipPath element definition may have been
-     *         added to clipDefsMap.
-     */
-    public SVGClipDescriptor toSVG(Shape clip) {
         SVGClipDescriptor clipDesc = null;
 
         if (clip != null) {
@@ -76,7 +67,7 @@ public class SVGClip extends AbstractSVGConverter {
             GeneralPath clipPath = new GeneralPath(clip);
 
             // Check if this object is already in the Map
-            ClipKey clipKey = new ClipKey(clipPath);
+            ClipKey clipKey = new ClipKey(clipPath, generatorContext);
             clipDesc = (SVGClipDescriptor)descMap.get(clipKey);
 
             if (clipDesc == null) {
@@ -152,8 +143,8 @@ class ClipKey {
     /**
      * @param proxiedPath path used as an index in the Map
      */
-    public ClipKey(GeneralPath proxiedPath ){
-        String pathData = SVGPath.toSVGPathData(proxiedPath);
+    public ClipKey(GeneralPath proxiedPath, SVGGeneratorContext gc){
+        String pathData = SVGPath.toSVGPathData(proxiedPath, gc);
         hashCodeValue = pathData.hashCode();
     }
 

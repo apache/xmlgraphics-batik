@@ -91,7 +91,8 @@ public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, Error
         } else {
             imageHandler.handleImage(image, imageElement, generatorContext);
             setImageAttributes(imageElement, (double) x, (double) y,
-                               (double)width, (double)height);
+                               (double)width, (double)height,
+                               generatorContext);
         }
         return null;
     }
@@ -118,7 +119,7 @@ public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, Error
         } else {
             imageHandler.handleImage(image, imageElement, generatorContext);
             setImageAttributes(imageElement, (double) x, (double) y,
-                               (double)width, (double)height);
+                               (double)width, (double)height, generatorContext);
         }
         return null;
     }
@@ -144,7 +145,7 @@ public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, Error
 
         } else {
             imageHandler.handleImage(image, imageElement, generatorContext);
-            setImageAttributes(imageElement, x, y, width, height);
+            setImageAttributes(imageElement, x, y, width, height, generatorContext);
         }
         return null;
     }
@@ -157,19 +158,20 @@ public class SimpleImageHandler implements GenericImageHandler, SVGSyntax, Error
                                       double x, 
                                       double y,
                                       double width,
-                                      double height) {
+                                      double height,
+                                      SVGGeneratorContext generatorContext) {
         imageElement.setAttributeNS(null,
                                     SVG_X_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(x));
+                                    generatorContext.doubleString(x));
         imageElement.setAttributeNS(null,
                                     SVG_Y_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(y));
+                                    generatorContext.doubleString(y));
         imageElement.setAttributeNS(null,
                                     SVG_WIDTH_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(width));
+                                    generatorContext.doubleString(width));
         imageElement.setAttributeNS(null,
                                     SVG_HEIGHT_ATTRIBUTE,
-                                    AbstractSVGConverter.doubleString(height));
+                                    generatorContext.doubleString(height));
         imageElement.setAttributeNS(null,
                                     SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE,
                                     SVG_NONE_VALUE);
