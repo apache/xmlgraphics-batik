@@ -235,7 +235,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 		(img.getMinY() != minY) ||
 		(img.getWidth() != w) ||
 		(img.getHeight() != h)) {
-		showDiff(img);
+		//showDiff(img);
 		state = false;
 		return;
 	    }
@@ -243,9 +243,7 @@ public abstract class AbstractImageTranscoderTest extends AbstractTest {
 	    for (int y = minY; y < minY+h; ++y) {
 		for (int x = minX; x < minX+w; ++x) {
 		    if (img.getRGB(x, y) != refImg.getRGB(x, y)) {
-
-			showDiff(img);
-
+			//showDiff(img);
 			state = false;
 			return;
 		    }
