@@ -135,8 +135,6 @@ public class SaveAsJPEG {
         // create a JPEG transcoder
         <strong>JPEGTranscoder t = new JPEGTranscoder();</strong>
         // set the transcoding hints
-        <strong>t.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                             "org.apache.crimson.parser.XMLReaderImpl");</strong>
         <strong>t.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,
                              new Float(.8));</strong>
         // create the transcoder input
@@ -224,8 +222,6 @@ public class SaveAsJPEGTiles {
     JPEGTranscoder trans = new JPEGTranscoder();
 
     public SaveAsJPEGTiles() {
-        trans.addTranscodingHint(JPEGTranscoder.KEY_XML_PARSER_CLASSNAME,
-                                 "org.apache.crimson.parser.XMLReaderImpl");
         trans.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,
                                  new Float(.8));
     }
@@ -285,6 +281,110 @@ image size.
  and tileBottomLeft.jpg</li>
 </ol>
 </s2>
+
+<s2 title="Other Transcoding Hints">
+<p>
+
+The <code>ImageTranscoder</code> provides additional
+<code>TranscodingHints</code> that lets you customize the generated
+images.
+</p>
+
+<dl>
+<dt><code>ImageTranscoder.KEY_MEDIA</code></dt>
+<dd>
+
+This hint lets you choose the CSS medium to use. The author of the SVG document
+to transcode can control CSS media using the <link
+href="http://www.w3.org/TR/REC-CSS2/media.html">CSS media rule</link>. Example:
+
+<br />
+<br />
+<code>
+trans.addTranscodingHint(ImageTranscoder.KEY_MEDIA, "print");
+</code>
+<br />
+<br />
+</dd>
+
+<dt><code>ImageTranscoder.KEY_ALTERNATE_STYLESHEET</code></dt>
+<dd>
+
+This hint lets you choose an alternate stylesheet the author of the SVG
+document to transcode might have provided. Example:
+
+<br />
+<br />
+<code>
+trans.addTranscodingHint(ImageTranscoder.KEY_ALTERNATE_STYLESHEET, alternateStylesheetName);
+</code>
+<br />
+<br />
+</dd>
+
+<dt><code>ImageTranscoder.KEY_USER_STYLESHEET_URI</code></dt>
+<dd>
+
+This hint lets you use a user stylesheet. User stylesheet can override some
+styles of the SVG document to transcode. Example:
+
+<br />
+<br />
+<code>
+trans.addTranscodingHint(ImageTranscoder.KEY_ALTERNATE_STYLESHEET, "http://...");
+</code>
+<br />
+<br />
+</dd>
+
+<dt><code>ImageTranscoder.KEY_PIXEL_TO_MM</code></dt>
+<dd>
+
+This hint lets you use the pixel to millimeter conversion factor. This factor
+is used to determine how units are converted into pixels. Example:
+
+<br />
+<br />
+<code>// 96dpi</code>
+<br />
+<code>
+trans.addTranscodingHint(ImageTranscoder.KEY_PIXEL_TO_MM, new Float(0.2645833f));
+</code>
+<br />
+<br />
+or
+<br />
+<br />
+<code>
+// 72dpi
+</code>
+<br />
+<code>
+trans.addTranscodingHint(ImageTranscoder.KEY_PIXEL_TO_MM, new Float(0.3528f));
+</code>
+<br />
+<br />
+</dd>
+
+<dt><code>ImageTranscoder.KEY_BACKGROUND_COLOR</code></dt>
+<dd>
+
+This hint lets you choose a background color. Example:
+
+<br />
+<br />
+<code>
+trans.addTranscodingHint(ImageTranscoder.KEY_BACKGROUND_COLOR, Color.white);
+</code>
+<br />
+<br />
+</dd>
+
+</dl>
+
+
+</s2>
+
 
 <s2 title="Generating an Image from a SVG DOM Tree">
 <p>
@@ -365,13 +465,13 @@ DOM implementation (via the SVGDOMImplementation class). Then, you can
 create a <code>org.w3c.dom.Document</code> (which is a SVG Document by
 the way) by invoking the <code>createDocument</code> method with the
 svg namespace URI and the "svg" document element. At last, you can get
-the document element and start to build your DOM tree.  <br /><br />
+the document element and start building your DOM tree.  <br /><br />
 </dd>
 <dt>Rasterizing your DOM</dt>
 <dd>
 <br />See the <code>save</code> method<br /> Similar to the previous
 examples, you can transcode a SVG document to a raster image by
-creating a <code>TransocderInput</code> with this time, the SVG Document.
+creating a <code>TranscoderInput</code> with this time, the SVG Document.
 <br /><br />
 </dd>
 </dl>

@@ -116,7 +116,7 @@
 
         <anchor id="projectAndProductExamples" />
         <s1 title="Examples of projects and products using Batik">
-        <p>While it is hard to track projects are products which are using Batik, here are a few
+        <p>While it is hard to track projects and products which are using Batik, here are a few
         ones which are known:</p>
         <ul>
         <li><link href="http://xml.apache.org/fop">The Apache FOP project</link> uses Batik to handle SVG images. It uses the SVG rasterizer and extends the Batik transcoder 
