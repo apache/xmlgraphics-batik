@@ -43,7 +43,7 @@ public class SamplesRenderingTest extends PreconfiguredRenderingTest {
         = "candidate-reference/";
 
     public SamplesRenderingTest(){
-        setValidating(true);
+        setValidating(new Boolean(true));
     }
 
     protected String getSVGURLPrefix(){
