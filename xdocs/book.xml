@@ -36,6 +36,7 @@
     <!-- ======================= -->
     <page id="index"              label="Overview"                 source="index.xml"/>
     <faqs id="faqs"               label="FAQ"                      source="faq.xml"/>
+    <external                     label="Wiki"                     href="http://wiki.apache.org/xmlgraphics-batik/FrontPage" />
     <page id="license"            label="License"                  source="license.xml"/>
     <external                     label="Download"                 href="http://www.apache.org/dyn/closer.cgi/xml/batik" />
     <page id="install"            label="Install"                  source="installing.xml"/>
