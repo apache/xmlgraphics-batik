@@ -487,6 +487,7 @@ To display the available targets type:
         <include name="org/w3c/css/sac/**"/>
         <include name="org/w3c/dom/smil/**"/>
         <include name="org/w3c/dom/svg/**"/>
+        <include name="org/w3c/dom/svg12/**"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="**"/>
@@ -509,7 +510,7 @@ To display the available targets type:
       </manifest>
       <fileset dir="${dest}">
         <include name="org/w3c/**"/>
-        <include name="${package-prefix}/bridge/*.class"/>
+        <include name="${package-prefix}/bridge/**/*.class"/>
         <include name="${package-prefix}/css/**/*.class"/>
         <include name="${package-prefix}/dom/**/*.class"/>
         <include name="${package-prefix}/ext/**/*.class"/>
@@ -653,6 +654,7 @@ To display the available targets type:
         <include name="${package-prefix}/css/engine/value/*.class"/>
         <include name="${package-prefix}/css/engine/value/css2/*.class"/>
         <include name="${package-prefix}/css/engine/value/svg/*.class"/>
+        <include name="${package-prefix}/css/engine/value/svg12/*.class"/>
         <include name="${package-prefix}/css/parser/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
@@ -662,6 +664,7 @@ To display the available targets type:
         <include name="${package-prefix}/css/engine/value/resources/**"/>
         <include name="${package-prefix}/css/engine/value/css2/resources/**"/>
         <include name="${package-prefix}/css/engine/value/svg/resources/**"/>
+        <include name="${package-prefix}/css/engine/value/svg12/resources/**"/>
         <include name="${package-prefix}/css/parser/resources/**"/>
       </fileset>
     </jar>
@@ -672,9 +675,11 @@ To display the available targets type:
     <jar jarfile="${build}/lib/${project}-svg-dom.jar">
       <fileset dir="${dest}">
         <include name="${package-prefix}/dom/svg/*.class"/>
+        <include name="${package-prefix}/dom/svg12/*.class"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="${package-prefix}/dom/svg/resources/**"/>
+        <include name="${package-prefix}/dom/svg12/resources/**"/>
       </fileset>
     </jar>
   </target>
