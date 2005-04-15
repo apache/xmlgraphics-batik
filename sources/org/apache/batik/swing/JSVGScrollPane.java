@@ -51,6 +51,7 @@ import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.JGVTComponentListener;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
+import org.apache.batik.swing.svg.SVGDocumentLoaderListener;
 import org.apache.batik.swing.svg.GVTTreeBuilderListener;
 import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 
@@ -132,11 +133,10 @@ public class JSVGScrollPane extends JPanel
         add(horizontalPanel, BorderLayout.SOUTH);
 		
         // inform of ZOOM events (to print sizes, such as in a status bar)
-        canvas.addSVGDocumentLoaderListener
-            (new SVGScrollDocumentLoaderListener());
+        canvas.addSVGDocumentLoaderListener(createLoadListener());
 		
         // canvas listeners
-        ScrollListener xlistener = new ScrollListener();
+        ScrollListener xlistener = createScrollListener();
         this.addComponentListener(xlistener);
         canvas.addJGVTComponentListener(xlistener);
         canvas.addGVTTreeBuilderListener(xlistener);
@@ -146,12 +146,27 @@ public class JSVGScrollPane extends JPanel
 
     /**
      * Scrollbar listener factory method so subclasses can
-     * use a subclass of SBListener if needed.
+     * override the default SBListener behaviour.
      */
     protected SBListener createScrollBarListener(boolean isVertical) {
         return new SBListener(isVertical);
     }
 
+    /**
+     * Factory method so subclasses can override the default listener behaviour
+     */
+    protected ScrollListener createScrollListener() {
+        return new ScrollListener();
+    }
+	
+
+    /**
+     * Factory method so subclasses can override the default load listener.
+     */
+    protected SVGDocumentLoaderListener createLoadListener() {
+        return new SVGScrollDocumentLoaderListener();
+    }
+	
     public JSVGCanvas getCanvas() {
         return canvas;
     }
@@ -320,8 +335,7 @@ public class JSVGScrollPane extends JPanel
         }// stateChanged()
     }// inner class SBListener
 	
-	
-	
+
     /** Handle scroll, zoom, and resize events */
     protected class ScrollListener extends ComponentAdapter 
         implements JGVTComponentListener, GVTTreeBuilderListener, 
@@ -343,7 +357,7 @@ public class JSVGScrollPane extends JPanel
         }// componentResized()
 		
 		
-        public void gvtBuildPrepare  (GVTTreeBuilderEvent e) { 
+        public void gvtBuildStarted  (GVTTreeBuilderEvent e) { 
             isReady = false;
             // Start by assuming we won't need them.
             vertical       .setVisible(false);
@@ -375,7 +389,6 @@ public class JSVGScrollPane extends JPanel
 
         public void gvtBuildCancelled(GVTTreeBuilderEvent e) { }
         public void gvtBuildFailed   (GVTTreeBuilderEvent e) { }
-        public void gvtBuildStarted  (GVTTreeBuilderEvent e) { }
 
         public void managerStarted  (UpdateManagerEvent e) { }
         public void managerSuspended(UpdateManagerEvent e) { }

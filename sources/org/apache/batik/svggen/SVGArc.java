@@ -80,11 +80,19 @@ public class SVGArc extends SVGGraphicObjectConverter {
         d.append(SPACE);
         d.append("0");  // no rotation with J2D arc.
         d.append(SPACE);
-        if (ext > 180)  d.append("1");  // use large arc.
-        else            d.append("0");  // use small arc.
-        d.append(SPACE);
-        if (ext > 0)    d.append("0");  // sweep ccw
-        else            d.append("1");  // sweep cw
+        if (ext > 0) { 
+            // CCW sweep case, ext > 0
+            if (ext > 180)  d.append("1");  // use large arc.
+            else            d.append("0");  // use small arc.
+            d.append(SPACE);
+            d.append("0");  // sweep ccw
+        } else {
+            // CW sweep case, ext < 0
+            if (ext < -180)  d.append("1");  // use large arc.
+            else             d.append("0");  // use small arc.
+            d.append(SPACE);
+            d.append("1");  // sweep cw
+        }
 
         d.append(SPACE);
         d.append(doubleString(endPt.getX()));
