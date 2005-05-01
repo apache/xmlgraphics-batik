@@ -256,6 +256,40 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         this.documentLoader = documentLoader;
     }
 
+
+    /** 
+     * This function creates a new 'sub' BridgeContext to associated
+     * with 'newDoc' if one currently doesn't exist, otherwise it
+     * returns the BridgeContext currently associated with the
+     * document.
+     * @param newDoc The document to get/create a BridgeContext for.
+     */
+    public BridgeContext createSubBridgeContext(SVGOMDocument newDoc) {
+        CSSEngine eng = newDoc.getCSSEngine();
+        if (eng != null)
+            return (BridgeContext)newDoc.getCSSEngine().getCSSContext();
+
+        BridgeContext subCtx;
+        subCtx = createBridgeContext();
+        subCtx.setGVTBuilder(getGVTBuilder());
+        subCtx.setTextPainter(getTextPainter());
+        subCtx.setDocument(newDoc);
+        subCtx.initializeDocument(newDoc);
+        if (isInteractive())
+            subCtx.addUIEventListeners(newDoc);
+        return subCtx;
+    }
+
+
+    /** 
+     * This function creates a new BridgeContext, it mostly
+     * exists so subclasses can provide an instance of 
+     * themselves when a sub BridgeContext is needed
+     */
+    public BridgeContext createBridgeContext() {
+        return new BridgeContext(getUserAgent(), getDocumentLoader());
+    }
+
     /**
      * Initializes the given document.
      */
@@ -591,15 +625,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 // since the new document isn't 'tied into' this
                 // bridge context.
                 if (refDoc != document) {
-                    CSSEngine eng = refDoc.getCSSEngine();
-                    if (eng == null) {
-                        BridgeContext subCtx;
-                        subCtx = new BridgeContext(getUserAgent(),
-                                                   getDocumentLoader());
-                        subCtx.setGVTBuilder(getGVTBuilder());
-                        subCtx.setDocument(refDoc);
-                        subCtx.initializeDocument(refDoc);
-                    }
+                    createSubBridgeContext(refDoc);
                 }
                 return ref;
             }
