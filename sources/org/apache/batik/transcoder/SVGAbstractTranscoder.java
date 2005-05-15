@@ -242,16 +242,18 @@ public abstract class SVGAbstractTranscoder extends XMLAbstractTranscoder {
         } else {
             String ref = new ParsedURL(uri).getRef();
 
-            try {
-                Px = ViewBox.getViewTransform(ref, root, width, height);
-            } catch (BridgeException ex) {
-                throw new TranscoderException(ex);
-            }
+            String viewBox = root.getAttributeNS
+                (null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
 
-            if (Px.isIdentity() && 
-                (width != docWidth || height != docHeight)) {
-                // The document has no viewBox, we need to resize it by hand.
-                // we want to keep the document size ratio
+            if ((ref != null) && (ref.length() != 0)) {
+                Px = ViewBox.getViewTransform(ref, root, width, height);
+            } else if ((viewBox != null) && (viewBox.length() != 0)) {
+                String aspectRatio = root.getAttributeNS
+                    (null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
+                Px = ViewBox.getPreserveAspectRatioTransform
+                    (root, viewBox, aspectRatio, width, height);
+            } else {
+                // no viewBox has been specified, create a scale transform
                 float xscale, yscale;
                 xscale = width/docWidth;
                 yscale = height/docHeight;
