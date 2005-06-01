@@ -1233,7 +1233,7 @@ public class JSVGComponent extends JGVTComponent {
 
             final boolean dispatchZoom    = (currScale != prevScale);
             final boolean dispatchScroll  = ((currTransX != prevTransX) ||
-                                             (currTransX != prevTransX));
+                                             (currTransY != prevTransY));
             if (isDynamicDocument &&
                 (updateManager != null) && updateManager.isRunning()) {
                 updateManager.getUpdateRunnableQueue().invokeLater
