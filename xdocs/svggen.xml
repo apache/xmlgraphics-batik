@@ -244,7 +244,7 @@ SVGGraphics2D g2d = new SVGGraphics2D(ctx, true);
   <source>
 
 SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(myFactory);
-ImageHandler ihandler = new ImageHandlerPNGEncoder("res/images", null);
+GenericImageHandler ihandler = new ImageHandlerPNGEncoder("res/images", null);
 ctx.setImageHandler(ihandler);
 SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
   </source>
@@ -306,7 +306,7 @@ class MySVGGenerator {
   </p>
   <source>
 
-public class StyleSheetStyleHandler {
+public class StyleSheetStyleHandler implements StyleHandler {
     private CDATASection styleSheet;
     // Build the handler with a reference to the StyleSheet section
     public StyleSheetStyleHandler(CDATASection styleSheet) {
@@ -345,7 +345,7 @@ SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
 // use the g2d to dump drawings (component.paint(g2d))
 
 // add a style sheet to the definition section
-Element root = g2d.getRoot();
+SVGSVGElement root = (SVGSVGElement)g2d.getRoot();
 Element defs = root.getElementById(SVGSyntax.ID_PREFIX_GENERIC_DEFS);
 Element style = myFactory.createElementNS(SVGSyntax.SVG_NAMESPACE_URI, 
                                           SVGSyntax.SVG_STYLE_TAG);
@@ -377,7 +377,7 @@ g2d.stream(root, myWriter);
           Element grad = generatorCtx.getDOMFactory().
                createElementNS(SVGSyntax.SVG_NAMESPACE_URI, 
                                SVGSyntax.SVG_LINEAR_GRADIENT_TAG);
-          grad.setAttributeNS(null, SVGSyntax.SVG_ID_ATTRIBUTE, ref);
+          grad.setAttributeNS(null, SVGSyntax.SVG_ID_ATTRIBUTE, id);
           grad.setAttributeNS(null, 
 	                      SVGSyntax.SVG_GRADIENT_UNITS_ATTRIBUTE, 
 	                      SVGSyntax.SVG_USER_SPACE_ON_USE_VALUE);
