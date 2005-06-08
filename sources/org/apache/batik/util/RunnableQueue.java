@@ -208,7 +208,6 @@ public class RunnableQueue implements Runnable {
                 l.unlock();
                 runnableInvoked(rable);
             }
-        } catch (InterruptedException e) {
         } finally {
             synchronized (this) {
                 runnableQueueThread = null;
@@ -568,7 +567,7 @@ public class RunnableQueue implements Runnable {
          * unlock link and notify locker.  
          * Basic implementation does nothing.
          */
-        public void unlock() throws InterruptedException { return; }
+        public void unlock() { return; }
     }
 
     /**
@@ -607,11 +606,15 @@ public class RunnableQueue implements Runnable {
         /**
          * unlocks this link.
          */
-        public synchronized void unlock() throws InterruptedException {
+        public synchronized void unlock() {
             while (!locked) {
-                // Wait until lock is called...
-                wait();
+                try {
+                    wait(); // Wait until lock is called...
+                } catch (InterruptedException ie) {
+                    // Loop again...
+                }
             }
+            locked = false;
             // Wake the locking thread...
             notify();
         }
