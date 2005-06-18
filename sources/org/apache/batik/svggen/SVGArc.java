@@ -18,6 +18,7 @@
 package org.apache.batik.svggen;
 
 import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
@@ -32,10 +33,16 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class SVGArc extends SVGGraphicObjectConverter {
+
     /**
      * Line converter used for degenerate cases
      */
     private SVGLine svgLine;
+
+    /**
+     * Ellipse converter for 360 degree arcs.
+     */
+    private SVGEllipse svgEllipse;
 
     /**
      * @param generatorContext used to build Elements
@@ -48,14 +55,30 @@ public class SVGArc extends SVGGraphicObjectConverter {
      * @param arc the Arc2D object to be converted
      */
     public Element toSVG(Arc2D arc) {
-        if ((arc.getWidth() == 0) ||  (arc.getHeight() == 0)) {
+        double ext    = arc.getAngleExtent();
+        double width  = arc.getWidth();
+        double height = arc.getHeight();
+
+        if (width == 0 || height == 0) {
             Line2D line = new Line2D.Double
                 (arc.getX(), arc.getY(), 
-                 arc.getX() + arc.getWidth(), 
-                 arc.getY() + arc.getHeight());
-            if (svgLine == null)
+                 arc.getX() + width, 
+                 arc.getY() + height);
+            if (svgLine == null) {
                 svgLine = new SVGLine(generatorContext);
+            }
             return svgLine.toSVG(line);
+        }
+
+        if (ext >= 360 || ext <= -360) {
+            Ellipse2D ellipse = new Ellipse2D.Double
+                (arc.getX(), arc.getY(),
+                 arc.getX() + width,
+                 arc.getY() + height);
+            if (svgEllipse == null) {
+                svgEllipse = new SVGEllipse(generatorContext);
+            }
+            return svgEllipse.toSVG(ellipse);
         }
 
         Element svgPath = generatorContext.domFactory.createElementNS
@@ -64,7 +87,6 @@ public class SVGArc extends SVGGraphicObjectConverter {
 
         Point2D startPt = arc.getStartPoint();
         Point2D endPt   = arc.getEndPoint();
-        double  ext     = arc.getAngleExtent();
         int     type    = arc.getArcType();
 
         d.append(PATH_MOVE);
@@ -74,9 +96,9 @@ public class SVGArc extends SVGGraphicObjectConverter {
         d.append(SPACE);
 
         d.append(PATH_ARC);
-        d.append(doubleString(arc.getWidth()/2));
+        d.append(doubleString(width / 2));
         d.append(SPACE);
-        d.append(doubleString(arc.getHeight()/2));
+        d.append(doubleString(height / 2));
         d.append(SPACE);
         d.append("0");  // no rotation with J2D arc.
         d.append(SPACE);
@@ -102,8 +124,8 @@ public class SVGArc extends SVGGraphicObjectConverter {
         if (type == Arc2D.CHORD) {
             d.append(PATH_CLOSE);
         } else if (type == Arc2D.PIE) {
-            double cx = arc.getX()+arc.getWidth()/2;
-            double cy = arc.getY()+arc.getHeight()/2;
+            double cx = arc.getX() + width / 2;
+            double cy = arc.getY() + height / 2;
             d.append(PATH_LINE_TO);
             d.append(SPACE);
             d.append(doubleString(cx));
