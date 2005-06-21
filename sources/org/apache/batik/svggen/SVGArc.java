@@ -72,9 +72,7 @@ public class SVGArc extends SVGGraphicObjectConverter {
 
         if (ext >= 360 || ext <= -360) {
             Ellipse2D ellipse = new Ellipse2D.Double
-                (arc.getX(), arc.getY(),
-                 arc.getX() + width,
-                 arc.getY() + height);
+                (arc.getX(), arc.getY(), width, height);
             if (svgEllipse == null) {
                 svgEllipse = new SVGEllipse(generatorContext);
             }
