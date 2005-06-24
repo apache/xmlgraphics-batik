@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.Selector;
 import org.apache.batik.gvt.TextNode;
@@ -40,7 +41,6 @@ import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.event.SelectionListener;
 
 /**
- * ConcreteTextSelector.java:
  * A simple implementation of GraphicsNodeMouseListener for text selection.
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
@@ -49,9 +49,10 @@ import org.apache.batik.gvt.event.SelectionListener;
 
 public class ConcreteTextSelector implements Selector {
 
-    private ArrayList listeners = null;
-    private GraphicsNode selectionNode = null;
-    private GraphicsNode currentNode = null;
+    private ArrayList listeners;
+    private GraphicsNode selectionNode;
+    private RootGraphicsNode selectionNodeRoot;
+    private GraphicsNode currentNode;
     private int firstHit;
     private int lastHit;
 
@@ -101,8 +102,11 @@ public class ConcreteTextSelector implements Selector {
 
     public void changeStarted (GraphicsNodeChangeEvent gnce) {
     }
+
     public void changeCompleted (GraphicsNodeChangeEvent gnce) {
-        if (selectionNode == null) return;
+        if (selectionNode == null) {
+            return;
+        }
         Shape newShape =
             ((Selectable)selectionNode).getHighlightShape();
         dispatchSelectionEvent
@@ -113,10 +117,12 @@ public class ConcreteTextSelector implements Selector {
 
     public void setSelection(Mark begin, Mark end) {
         TextNode node = begin.getTextNode();
-        if (node != end.getTextNode())
+        if (node != end.getTextNode()) {
             throw new Error("Markers not from same TextNode");
+        }
         node.setSelection(begin, end);
         selectionNode = node;
+        selectionNodeRoot = node.getRoot();
         Object selection = getSelection();
         Shape  shape     = node.getHighlightShape();
         dispatchSelectionEvent(new SelectionEvent
@@ -124,11 +130,13 @@ public class ConcreteTextSelector implements Selector {
     }
 
     public void clearSelection() {
-        if (selectionNode == null) 
+        if (selectionNode == null) {
             return;
+        }
         dispatchSelectionEvent(new SelectionEvent
             (null, SelectionEvent.SELECTION_CLEARED, null));
         selectionNode = null;
+        selectionNodeRoot = null;
     }
 
     /*
@@ -147,10 +155,9 @@ public class ConcreteTextSelector implements Selector {
 
         GraphicsNode source = evt.getGraphicsNode();
         if (isDeselectGesture(evt)) {
-            if (selectionNode != null)
-                selectionNode.getRoot()
-                    .removeTreeGraphicsNodeChangeListener(this);
-
+            if (selectionNode != null) {
+                selectionNodeRoot.removeTreeGraphicsNodeChangeListener(this);
+            }
             clearSelection();
         } else if (mevt != null) {
 
@@ -170,15 +177,18 @@ public class ConcreteTextSelector implements Selector {
             if ((source instanceof Selectable) && 
                 (isSelectStartGesture(evt))) {
                 if (selectionNode != source) {
-                    if (selectionNode != null)
-                        selectionNode.getRoot()
+                    if (selectionNode != null) {
+                        selectionNodeRoot
                             .removeTreeGraphicsNodeChangeListener(this);
-                    if (source != null)
-                        source.getRoot()
+                    }
+                    selectionNode = source;
+                    if (source != null) {
+                        selectionNodeRoot = source.getRoot();
+                        selectionNodeRoot
                             .addTreeGraphicsNodeChangeListener(this);
+                    }
                 }
 
-                selectionNode = source;
                 ((Selectable) source).selectAt(p.getX(), p.getY());
                 dispatchSelectionEvent(
                         new SelectionEvent(null,
@@ -186,8 +196,9 @@ public class ConcreteTextSelector implements Selector {
                                 null));
 
             } else if (isSelectEndGesture(evt)) {
-                if (selectionNode == source) 
+                if (selectionNode == source)  {
                     ((Selectable) source).selectTo(p.getX(), p.getY());
+                }
                 Object oldSelection = getSelection();
                 if (selectionNode != null) {
                     Shape newShape;
@@ -215,14 +226,17 @@ public class ConcreteTextSelector implements Selector {
             } else if ((source instanceof Selectable) && 
                        (isSelectAllGesture(evt))) {
                 if (selectionNode != source) {
-                    if (selectionNode != null)
-                        selectionNode.getRoot()
+                    if (selectionNode != null) {
+                        selectionNodeRoot
                             .removeTreeGraphicsNodeChangeListener(this);
-                    if (source != null)
-                        source.getRoot()
+                    }
+                    selectionNode = source;
+                    if (source != null) {
+                        selectionNodeRoot = source.getRoot();
+                        selectionNodeRoot
                             .addTreeGraphicsNodeChangeListener(this);
+                    }
                 }
-                selectionNode = source;
                 ((Selectable) source).selectAll(p.getX(), p.getY());
                 Object oldSelection = getSelection();
                 Shape newShape =
@@ -263,7 +277,7 @@ public class ConcreteTextSelector implements Selector {
     public Object getSelection() {
         Object value = null;
         if (selectionNode instanceof Selectable) {
-            value =  ((Selectable) selectionNode).getSelection();
+            value = ((Selectable) selectionNode).getSelection();
         }
         return value;
     }
