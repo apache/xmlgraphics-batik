@@ -83,7 +83,7 @@
             distribution</em> contains a complete snapshot of
           the Batik source code, documentation, regression tools
           and utilities as well as the script for building
-          Batik. That distribution is a snapshot of the CVS
+          Batik. That distribution is a snapshot of the SVN
           repository. This is the recommended distribution for
           developers who want to dive into the code and
           understand how Batik can be integrated in their
@@ -95,20 +95,21 @@
       </ul>
 
       <p>We make nightly copies of the source tree available from the
-      <link href="http://cvs.apache.org/builds/xml-batik">Apache
+      <link href="http://svn.apache.org/builds/xml-batik">Apache
       build</link> server. These builds represent the current state of
       development and may or may not be as stable as releases.
       There are two types of distributions provided.</p>
       <ul>
-        <li><strong>batik-cvs-</strong><em>date</em><strong>.zip</strong>
-          (e.g., <code>batik-cvs-03-09-26.zip</code>)<br/> 
+        <li><strong>batik-svn-</strong><em>date</em><strong>.zip</strong>
+          or <strong>batik-cvs-</strong><em>date</em><strong>.zip</strong>
+          (e.g., <code>batik-svn-03-09-26.zip</code>)<br/> 
 
-          This contains a complete copy of the CVS tree, including
-          support for running <link href="test.html">regard</link>
+          This contains a complete copy of the SVN (or old CVS) tree,
+          including support for running <link href="test.html">regard</link>
           Batik's regression testing utility.  In particular this
           includes all the reference images for testing.  Developers
           are encouraged to get these or better use <link
-          href="cvs.html">CVS</link> directly.
+          href="svn.html">SVN</link> directly.
         </li>
         <li><strong>batik-src-</strong><em>date</em><strong>.zip</strong>
           (e.g., <code>batik-src-03-09-26.zip</code>)<br/> 

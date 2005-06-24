@@ -12,7 +12,7 @@
        http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
+   SVNtributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
@@ -192,7 +192,7 @@ contributed some text functionnalities and SVG DOM interface implementations.
         <p>
         In addition, <link href="mailto:James.Davidson@eng.sun.com">James Davidson</link>
         and <link href="mailto:stefano@apache.org">Stefano Mazzochi</link> , two Apache veterans who helped the
-        Batik team start the project at Apache, also have commit access to the CVS repository.
+        Batik team start the project at Apache, also have commit access to the SVN repository.
         </p>        
       </s1>
 

@@ -369,7 +369,7 @@
         <p><em>Daily usage</em></p>
         <p />
         <p>Once the intial set-up has been done, you can use regard by simply updating your 
-        CVS copy, including the test-references. If no change occurs, your test will keep passing
+        SVN copy, including the test-references. If no change occurs, your test will keep passing
         with your reference images. If a test fails (e.g., if someone checks in a new reference
         image from a platform different than the one you are using, you will have to check if it is
         because of system specific reasons or if there is a bigger problem.</p>
