@@ -453,7 +453,6 @@ public class RhinoInterpreter implements Interpreter {
         throws JavaScriptException {
         Context ctx = enterContext();
         try {
-            System.err.println("GlobalObj: " + globalObject);
             Object [] args = ab.buildArguments();
            handler.call(ctx, handler.getParentScope(), globalObject, args );
         } finally {
