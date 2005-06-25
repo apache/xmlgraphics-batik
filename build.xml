@@ -1151,6 +1151,10 @@ To display the available targets type:
           description="Runs test suite whose file or uri is passed as an input">
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
+<!-- Using -Xincgc makes the memory leak tests _much_ more accurate but
+     Also slows down the regard run by 3-4x,  In general I suggest running
+     just the memory leak tests with -Xincgc, I might also experiment with
+     a higher -Xms setting. -->
 <!--      <jvmarg value="-Xincgc" /> -->
 <!--      <jvmarg value="-Xrunhprof:format=b" /> -->
 <!--      <jvmarg value="-Xrunhprof:net=localhost:1234,format=b" /> -->
