@@ -54,8 +54,8 @@ class EventTargetWrapper extends NativeJavaObject {
      * The Java function object calling the Rhino function.
      */
     static class FunctionEventListener implements EventListener {
-        private Function function;
-        private RhinoInterpreter interpreter;
+        protected Function function;
+        protected RhinoInterpreter interpreter;
         FunctionEventListener(Function f, RhinoInterpreter i) {
             function = f;
             interpreter = i;
@@ -74,11 +74,11 @@ class EventTargetWrapper extends NativeJavaObject {
     }
 
     static class HandleEventListener implements EventListener {
-        private final static String HANDLE_EVENT = "handleEvent";
+        public final static String HANDLE_EVENT = "handleEvent";
 
-        private Scriptable scriptable;
-        private Object[] array = new Object[1];
-        private RhinoInterpreter interpreter;
+        public Scriptable scriptable;
+        public Object[] array = new Object[1];
+        public RhinoInterpreter interpreter;
 
         HandleEventListener(Scriptable s, RhinoInterpreter interpreter) {
             scriptable = s;
@@ -189,11 +189,13 @@ class EventTargetWrapper extends NativeJavaObject {
      * cases.
      */
     static class FunctionAddProxy extends FunctionProxy {
-        private Map listenerMap;
-
-        FunctionAddProxy(Function delegate, Map listenerMap) {
+        protected Map              listenerMap;
+        protected RhinoInterpreter interpreter;
+        FunctionAddProxy(RhinoInterpreter interpreter,
+                         Function delegate, Map listenerMap) {
             super(delegate);
             this.listenerMap = listenerMap;
+            this.interpreter = interpreter;
         }
 
         public Object call(Context ctx, Scriptable scope,
@@ -202,8 +204,7 @@ class EventTargetWrapper extends NativeJavaObject {
             NativeJavaObject  njo = (NativeJavaObject)thisObj;
             if (args[1] instanceof Function) {
                 EventListener evtListener = new FunctionEventListener
-                    ((Function)args[1],
-                     ((RhinoInterpreter.ExtendedContext)ctx).getInterpreter());
+                    ((Function)args[1], interpreter);
                 listenerMap.put(args[1], new SoftReference(evtListener));
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Function.class,
@@ -218,8 +219,7 @@ class EventTargetWrapper extends NativeJavaObject {
             if (args[1] instanceof NativeObject) {
                 EventListener evtListener =
                     new HandleEventListener((Scriptable)args[1],
-                                            ((RhinoInterpreter.ExtendedContext)
-                                             ctx).getInterpreter());
+                                            interpreter);
                 listenerMap.put(args[1], new SoftReference(evtListener));
                 // we need to marshall args
                 Class[] paramTypes = { String.class, Scriptable.class,
@@ -236,7 +236,7 @@ class EventTargetWrapper extends NativeJavaObject {
     }
 
     static class FunctionRemoveProxy extends FunctionProxy {
-        private Map listenerMap;
+        public Map listenerMap;
 
         FunctionRemoveProxy(Function delegate, Map listenerMap) {
             super(delegate);
@@ -287,18 +287,20 @@ class EventTargetWrapper extends NativeJavaObject {
     // the keys are the underlying Java object, in order
     // to remove potential memory leaks use a WeakHashMap to allow
     // to collect entries as soon as the underlying Java object is
-    // not anymore available.
-    private static WeakHashMap mapOfListenerMap;
+    // not available anymore.
+    protected static WeakHashMap mapOfListenerMap;
 
-    private final static String ADD_NAME    = "addEventListener";
-    private final static String REMOVE_NAME = "removeEventListener";
-    private final static Class[] ARGS_TYPE = { String.class,
+    public final static String ADD_NAME    = "addEventListener";
+    public final static String REMOVE_NAME = "removeEventListener";
+    public final static Class[] ARGS_TYPE = { String.class,
                                                EventListener.class,
                                                Boolean.TYPE };
-    private final static String NAME = "name";
 
-    EventTargetWrapper(Scriptable scope, EventTarget object) {
+    protected RhinoInterpreter interpreter;
+    EventTargetWrapper(Scriptable scope, EventTarget object,
+                       RhinoInterpreter interpreter) {
         super(scope, object, null);
+        this.interpreter = interpreter;
     }
 
     /**
@@ -309,12 +311,14 @@ class EventTargetWrapper extends NativeJavaObject {
         if (name.equals(ADD_NAME)) {
             // prevent creating a Map for all JavaScript objects
             // when we need it only from time to time...
-            method = new FunctionAddProxy((Function)method, initMap());
+            method = new FunctionAddProxy(interpreter, 
+                                          (Function)method, initMap());
         }
         if (name.equals(REMOVE_NAME)) {
             // prevent creating a Map for all JavaScript objects
             // when we need it only from time to time...
-            method = new FunctionRemoveProxy((Function)method, initMap());
+            method = new FunctionRemoveProxy
+                ((Function)method, initMap());
         }
         return method;
     }
