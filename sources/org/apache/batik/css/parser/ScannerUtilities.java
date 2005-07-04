@@ -30,15 +30,13 @@ public class ScannerUtilities {
      * The set of the valid identifier start characters.
      */
     protected final static int[] IDENTIFIER_START = 
-    { 0x0, 0x0, 0x7FFFFFE, 0x7FFFFFE };
-    // { 0x0, 0x0, 0x87FFFFFE, 0x7FFFFFE }; // For use with CSS 2.1 add '_'
+    { 0x0, 0x0, 0x87FFFFFE, 0x7FFFFFE };
 
     /**
      * The set of the valid name characters.
      */
     protected final static int[] NAME = 
-    { 0, 0x3FF2000, 0x07FFFFFE, 0x7FFFFFE };
-    // { 0, 0x3FF2000, 0x87FFFFFE, 0x7FFFFFE };// For use with CSS 2.1 add '_'
+    { 0, 0x3FF2000, 0x87FFFFFE, 0x7FFFFFE };
 
     /**
      * The set of the valid hexadecimal characters.
