@@ -31,6 +31,6 @@
      width="450" height="500" viewBox="0 0 450 500">
 
     <test:testResult id="testResult" result="passed" />
-    <script type="application/java-archive" xlink:href="http://cvs.apache.org/viewcvs.cgi/~checkout~/xml-batik/test-resources/org/apache/batik/bridge/IWasLoaded.jar" />
+    <script type="application/java-archive" xlink:href="http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/test-resources/org/apache/batik/bridge/IWasLoaded.jar" />
 
 </svg>

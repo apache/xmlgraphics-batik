@@ -127,12 +127,15 @@ public class GraphicsUtil {
         else
             at.preConcatenate(g2dAt);
 
-        ColorModel  srcCM = cr.getColorModel();
-        ColorSpace g2dCS = getDestinationColorSpace(g2d);
+        ColorModel srcCM = cr.getColorModel();
         ColorModel g2dCM = getDestinationColorModel(g2d);
+        ColorSpace g2dCS = null;
+        if (g2dCM != null)
+            g2dCS = g2dCM.getColorSpace();
         if (g2dCS == null)
             // Assume device is sRGB
             g2dCS = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+
         ColorModel drawCM = g2dCM;
         if ((g2dCM == null) || !g2dCM.hasAlpha()) {
             // If we can't find out about our device or the device
@@ -513,6 +516,8 @@ public class GraphicsUtil {
             return bi.getColorModel();
 
         GraphicsConfiguration gc = g2d.getDeviceConfiguration();
+        if (gc == null) 
+            return null; // Can't tell
 
         // We are going to a BufferedImage but no hint was provided
         // so we can't determine the destination Color Model.

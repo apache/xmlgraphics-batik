@@ -33,6 +33,6 @@
      onload="runTest()">
 
     <test:testResult id="testResult" result="failed" errorCode="ecmascript.not.loaded"/>
-    <script type="text/ecmascript" xlink:href="http://cvs.apache.org/viewcvs.cgi/~checkout~/xml-batik/test-resources/org/apache/batik/bridge/iWasLoadedToo.js?content-type=text/plain" />
+    <script type="text/ecmascript" xlink:href="http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/test-resources/org/apache/batik/bridge/iWasLoadedToo.js?content-type=text/plain" />
 
 </svg>
