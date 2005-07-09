@@ -62,8 +62,8 @@ public class WindowWrapper extends ImporterTopLevel {
     public WindowWrapper(Context context) {
         super(context);
         String[] names = { "setInterval", "setTimeout", "clearInterval", 
-                           "clearTimeout", "parseXML", "getURL", "alert", 
-                           "confirm", "prompt" };
+                           "clearTimeout", "parseXML", "getURL", "postURL",
+                           "alert", "confirm", "prompt" };
         try {
             this.defineFunctionProperties(names, WindowWrapper.class,
                                           ScriptableObject.DONTENUM);
@@ -285,6 +285,7 @@ public class WindowWrapper extends ImporterTopLevel {
                         return null;
                     }
                 }, acc);
+            break;
         case 4:
             AccessController.doPrivileged(new PrivilegedAction() {
                     public Object run() {
@@ -294,6 +295,7 @@ public class WindowWrapper extends ImporterTopLevel {
                         return null;
                     }
                 }, acc);
+            break;
         default:
             AccessController.doPrivileged(new PrivilegedAction() {
                     public Object run() {
