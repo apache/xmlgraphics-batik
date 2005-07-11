@@ -32,8 +32,8 @@ import org.w3c.dom.DOMImplementation;
  */
 
 public abstract class AbstractDOMImplementation
-    implements org.apache.batik.dom.dom3.DOMImplementation,
-               Serializable {
+        implements DOMImplementation,
+                   Serializable {
 
     /**
      * The supported features.

@@ -20,9 +20,10 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
+import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
 
 import org.w3c.dom.*;
 
@@ -66,13 +67,13 @@ public class DocumentNormalizeDocumentTest extends DOM3Test {
 
         // cdata-sections == false
         Document doc = newSVGDoc();
-        DOMConfiguration conf = ((org.apache.batik.dom.dom3.Document) doc).getDomConfig();
+        DOMConfiguration conf = ((AbstractDocument) doc).getDomConfig();
         conf.setParameter("cdata-sections", Boolean.FALSE);
         Element e = doc.getDocumentElement();
         e.appendChild(doc.createTextNode("abc"));
         e.appendChild(doc.createCDATASection("def"));
         e.appendChild(doc.createTextNode("ghi"));
-        ((org.apache.batik.dom.dom3.Document) doc).normalizeDocument();
+        ((AbstractDocument) doc).normalizeDocument();
         if (!(e.getFirstChild().getNodeType() == Node.TEXT_NODE
                 && e.getFirstChild().getNodeValue().equals("abcdefghi")
                 && e.getFirstChild() == e.getLastChild())) {
@@ -84,13 +85,13 @@ public class DocumentNormalizeDocumentTest extends DOM3Test {
 
         // comments == false
         doc = newSVGDoc();
-        conf = ((org.apache.batik.dom.dom3.Document) doc).getDomConfig();
+        conf = ((AbstractDocument) doc).getDomConfig();
         conf.setParameter("comments", Boolean.FALSE);
         e = doc.getDocumentElement();
         e.appendChild(doc.createTextNode("abc"));
         e.appendChild(doc.createComment("def"));
         e.appendChild(doc.createTextNode("ghi"));
-        ((org.apache.batik.dom.dom3.Document) doc).normalizeDocument();
+        ((AbstractDocument) doc).normalizeDocument();
         if (!(e.getFirstChild().getNodeType() == Node.TEXT_NODE
                 && e.getFirstChild().getNodeValue().equals("abcghi")
                 && e.getFirstChild() == e.getLastChild())) {
@@ -102,13 +103,13 @@ public class DocumentNormalizeDocumentTest extends DOM3Test {
 
         // element-content-whitespace == false
         doc = newSVGDoc();
-        conf = ((org.apache.batik.dom.dom3.Document) doc).getDomConfig();
+        conf = ((AbstractDocument) doc).getDomConfig();
         conf.setParameter("element-content-whitespace", Boolean.FALSE);
         e = doc.getDocumentElement();
         e.appendChild(doc.createTextNode("    "));
         e.appendChild(doc.createElementNS(SVG_NAMESPACE_URI, "g"));
         e.appendChild(doc.createTextNode("    "));
-        ((org.apache.batik.dom.dom3.Document) doc).normalizeDocument();
+        ((AbstractDocument) doc).normalizeDocument();
         if (!(e.getFirstChild().getNodeType() == Node.ELEMENT_NODE
                 && e.getFirstChild().getNodeName().equals("g")
                 && e.getFirstChild() == e.getLastChild())) {
@@ -120,12 +121,12 @@ public class DocumentNormalizeDocumentTest extends DOM3Test {
 
         // split-cdata-sections == true
         doc = newSVGDoc();
-        conf = ((org.apache.batik.dom.dom3.Document) doc).getDomConfig();
+        conf = ((AbstractDocument) doc).getDomConfig();
         conf.setParameter("split-cdata-sections", Boolean.TRUE);
         conf.setParameter("error-handler", h);
         e = doc.getDocumentElement();
         e.appendChild(doc.createCDATASection("before ]]> after"));
-        ((org.apache.batik.dom.dom3.Document) doc).normalizeDocument();
+        ((AbstractDocument) doc).normalizeDocument();
         if (!(e.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE
                 && e.getFirstChild().getNodeValue().equals("before ]]")
                 && e.getFirstChild().getNextSibling().getNodeType() == Node.CDATA_SECTION_NODE
@@ -140,15 +141,15 @@ public class DocumentNormalizeDocumentTest extends DOM3Test {
 
         // well-formed
         doc = newSVGDoc();
-        ((org.apache.batik.dom.dom3.Document) doc).setStrictErrorChecking(false);
-        conf = ((org.apache.batik.dom.dom3.Document) doc).getDomConfig();
+        ((AbstractDocument) doc).setStrictErrorChecking(false);
+        conf = ((AbstractDocument) doc).getDomConfig();
         conf.setParameter("error-handler", h);
         e = doc.getDocumentElement();
         e.appendChild(doc.createComment("before -- after"));
         e.appendChild(doc.createComment("ends in a dash -"));
         e.setAttribute("*", "blah");
         e.appendChild(doc.createProcessingInstruction("abc", "def?>"));
-        ((org.apache.batik.dom.dom3.Document) doc).normalizeDocument();
+        ((AbstractDocument) doc).normalizeDocument();
         if (!(h.get("wf-invalid-character-in-node-name") == 1
                 && h.get("wf-invalid-character") == 3)) {
             if (report == null) {
@@ -170,7 +171,7 @@ public class DocumentNormalizeDocumentTest extends DOM3Test {
         e3.setAttributeNS(XMLNS_NAMESPACE_URI, "xmlns:ns", "http://www.example.org/ns2");
         e3 = doc.createElementNS("http://www.example.org/ns2", "ns:child2");
         e2.appendChild(e3);
-        ((org.apache.batik.dom.dom3.Document) doc).normalizeDocument();
+        ((AbstractDocument) doc).normalizeDocument();
         Attr a = e3.getAttributeNodeNS(XMLNS_NAMESPACE_URI, "ns");
         if (!(a != null
                     && a.getNodeName().equals("xmlns:ns")
@@ -189,8 +190,8 @@ public class DocumentNormalizeDocumentTest extends DOM3Test {
         e2.setAttributeNS(XMLNS_NAMESPACE_URI, "xmlns:ns", "http://www.example.org/ns1");
         e3 = doc.createElementNS("http://www.example.org/ns1", "ns:child2");
         e2.appendChild(e3);
-        e2 = (Element) ((org.apache.batik.dom.dom3.Document) doc).renameNode(e2, "http://www.example.org/ns2", "ns:child1");
-        ((org.apache.batik.dom.dom3.Document) doc).normalizeDocument();
+        e2 = (Element) ((AbstractDocument) doc).renameNode(e2, "http://www.example.org/ns2", "ns:child1");
+        ((AbstractDocument) doc).normalizeDocument();
         a = e2.getAttributeNodeNS(XMLNS_NAMESPACE_URI, "ns");
         Attr a2 = e3.getAttributeNodeNS(XMLNS_NAMESPACE_URI, "ns");
         if (!(a != null
@@ -211,7 +212,7 @@ public class DocumentNormalizeDocumentTest extends DOM3Test {
         e2 = doc.createElementNS("http://www.example.org/ns1", "child1");
         e.appendChild(e2);
         e2.setAttributeNS("http://www.example.org/ns2", "blah", "hi");
-        ((org.apache.batik.dom.dom3.Document) doc).normalizeDocument();
+        ((AbstractDocument) doc).normalizeDocument();
         a = e2.getAttributeNodeNS(XMLNS_NAMESPACE_URI, "xmlns");
         a2 = e2.getAttributeNodeNS(XMLNS_NAMESPACE_URI, "NS1");
         if (!(a != null
@@ -228,10 +229,10 @@ public class DocumentNormalizeDocumentTest extends DOM3Test {
         doc = newDoc();
         e = doc.createElementNS(null, "ex:root");
         e.setAttributeNS(XMLNS_NAMESPACE_URI, "xmlns:ex", "http://www.example.org/ns1");
-        conf = ((org.apache.batik.dom.dom3.Document) doc).getDomConfig();
+        conf = ((AbstractDocument) doc).getDomConfig();
         conf.setParameter("namespace-declarations", Boolean.FALSE);
         doc.appendChild(e);
-        ((org.apache.batik.dom.dom3.Document) doc).normalizeDocument();
+        ((AbstractDocument) doc).normalizeDocument();
         if (!(e.getAttributeNodeNS(XMLNS_NAMESPACE_URI, "ex") == null)) {
             if (report == null) {
                 report = reportError("Document.normalizeDocument test failed");

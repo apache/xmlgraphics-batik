@@ -27,8 +27,7 @@ import org.w3c.dom.events.EventTarget;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class AbstractEvent
-        implements org.apache.batik.dom.dom3.events.Event {
+public abstract class AbstractEvent implements Event {
 
     /**
      * The event type.
@@ -271,7 +270,7 @@ public abstract class AbstractEvent
     }
 
     void stopImmediatePropagation(boolean state) {
-	this.stopPropagation = state;
+	this.stopImmediatePropagation = state;
     }
 
     void preventDefault(boolean state) {

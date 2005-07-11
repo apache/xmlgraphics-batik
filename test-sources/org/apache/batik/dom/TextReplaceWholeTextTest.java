@@ -20,8 +20,9 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.AbstractText;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.*;
 
@@ -40,7 +41,7 @@ public class TextReplaceWholeTextTest extends DOM3Test {
         doc.getDocumentElement().appendChild(n1);
         doc.getDocumentElement().appendChild(n2);
         doc.getDocumentElement().appendChild(n3);
-        ((org.apache.batik.dom.dom3.Text) n2).replaceWholeText("xyz");
+        ((AbstractText) n2).replaceWholeText("xyz");
 
         return doc.getDocumentElement().getFirstChild().getNodeValue().equals("xyz")
                 && doc.getDocumentElement().getFirstChild().getNextSibling() == null;

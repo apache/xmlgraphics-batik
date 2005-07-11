@@ -22,8 +22,14 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public class GenericDocumentType extends AbstractChildNode 
-    implements org.apache.batik.dom.dom3.DocumentType {
+/**
+ * This class implements the {@link org.w3c.dom.DocumentType} interface.
+ *
+ * @version $Id:$
+ */
+public class GenericDocumentType
+        extends AbstractChildNode 
+        implements DocumentType {
 
     protected String qualifiedName;
     protected String publicId;

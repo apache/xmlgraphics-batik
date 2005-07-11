@@ -29,7 +29,7 @@ import org.w3c.dom.Text;
  */
 public class GenericCDATASection
         extends AbstractText
-        implements org.apache.batik.dom.dom3.CDATASection {
+        implements CDATASection {
 
     /**
      * Is this element immutable?

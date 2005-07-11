@@ -20,8 +20,9 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.AbstractElement;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.*;
 
@@ -34,7 +35,7 @@ import org.w3c.dom.*;
 public class NodeTextContentTest extends DOM3Test {
     public boolean runImplBase() throws Exception {
         Document doc = newSVGDoc();
-        org.apache.batik.dom.dom3.Element e = (org.apache.batik.dom.dom3.Element) doc.getDocumentElement();
+        AbstractElement e = (AbstractElement) doc.getDocumentElement();
         e.appendChild(doc.createTextNode("abc"));
         Element e2 = doc.createElementNS(SVG_NAMESPACE_URI, "text");
         e2.appendChild(doc.createTextNode("def"));

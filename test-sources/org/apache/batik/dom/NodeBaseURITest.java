@@ -20,8 +20,10 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.*;
 
@@ -34,15 +36,15 @@ import org.w3c.dom.*;
 public class NodeBaseURITest extends DOM3Test {
     public boolean runImplBase() throws Exception {
         Document doc = newSVGDoc();
-        ((org.apache.batik.dom.dom3.Document) doc).setDocumentURI("http://example.com/blah");
+        ((AbstractDocument) doc).setDocumentURI("http://example.com/blah");
         Element e = doc.createElementNS(SVG_NAMESPACE_URI, "g");
         doc.getDocumentElement().appendChild(e);
         e.setAttributeNS(XML_NAMESPACE_URI, "xml:base", "http://example.org/base");
         Element e2 = doc.createElementNS(SVG_NAMESPACE_URI, "g");
         e.appendChild(e2);
         e2.setAttributeNS(XML_NAMESPACE_URI, "xml:base", "/somewhere");
-        return "http://example.com/blah".equals(((org.apache.batik.dom.dom3.Node) doc).getBaseURI())
-                && "http://example.org/base".equals(((org.apache.batik.dom.dom3.Node) e).getBaseURI())
-                && "http://example.org/somewhere".equals(((org.apache.batik.dom.dom3.Node) e2).getBaseURI());
+        return "http://example.com/blah".equals(((AbstractNode) doc).getBaseURI())
+                && "http://example.org/base".equals(((AbstractNode) e).getBaseURI())
+                && "http://example.org/somewhere".equals(((AbstractNode) e2).getBaseURI());
     }
 }

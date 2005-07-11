@@ -30,7 +30,7 @@ import org.w3c.dom.Node;
  */
 public abstract class AbstractEntityReference
     extends    AbstractParentChildNode
-    implements org.apache.batik.dom.dom3.EntityReference {
+    implements EntityReference {
 
     /**
      * The node name.

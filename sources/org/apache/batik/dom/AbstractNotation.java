@@ -29,7 +29,7 @@ import org.w3c.dom.Notation;
  */
 public abstract class AbstractNotation
     extends    AbstractNode
-    implements org.apache.batik.dom.dom3.Notation {
+    implements Notation {
 
     /**
      * The node name.

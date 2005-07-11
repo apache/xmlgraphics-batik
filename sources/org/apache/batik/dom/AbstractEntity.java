@@ -29,7 +29,7 @@ import org.w3c.dom.Node;
  */
 public abstract class AbstractEntity
     extends    AbstractParentNode
-    implements org.apache.batik.dom.dom3.Entity {
+    implements Entity {
 
     /**
      * The node name.

@@ -20,8 +20,9 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.*;
 import org.w3c.dom.svg.*;
@@ -38,10 +39,10 @@ public class DocumentRenameNodeTest extends DOM3Test {
         Element e = doc.getDocumentElement();
         Element e2 = doc.createElementNS(SVG_NAMESPACE_URI, "g");
         boolean pass = e2 instanceof SVGGElement;
-        e2 = (Element) ((org.apache.batik.dom.dom3.Document) doc).renameNode(e2, SVG_NAMESPACE_URI, "svg");
+        e2 = (Element) ((AbstractDocument) doc).renameNode(e2, SVG_NAMESPACE_URI, "svg");
         pass = pass && e2 instanceof SVGSVGElement;
         Attr a = doc.createAttributeNS(null, "test");
-        a = (Attr) ((org.apache.batik.dom.dom3.Document) doc).renameNode(a, EX_NAMESPACE_URI, "test2");
+        a = (Attr) ((AbstractDocument) doc).renameNode(a, EX_NAMESPACE_URI, "test2");
         pass = pass && a.getNamespaceURI().equals(EX_NAMESPACE_URI)
             && a.getLocalName().equals("test2");
         return pass;

@@ -20,8 +20,10 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.*;
 
@@ -48,10 +50,10 @@ public class NodeGetUserDataTest extends DOM3Test {
     public boolean runImplBase() throws Exception {
         UserHandler udh = new UserHandler();
         Document doc = newDoc();
-        org.apache.batik.dom.dom3.Element e = (org.apache.batik.dom.dom3.Element) doc.createElementNS(null, "test");
-        e.setUserData("key", "val", udh);
-        ((org.apache.batik.dom.dom3.Document) doc).renameNode(e, null, "abc");
+        AbstractNode n = (AbstractNode) doc.createElementNS(null, "test");
+        n.setUserData("key", "val", udh);
+        ((AbstractDocument) doc).renameNode(n, null, "abc");
         return udh.getCount() == 1
-                && ((String) e.getUserData("key")).equals("val");
+                && ((String) n.getUserData("key")).equals("val");
     }
 }

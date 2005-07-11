@@ -31,8 +31,7 @@ import org.w3c.dom.events.MutationEvent;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class AbstractAttr extends AbstractParentNode
-        implements org.apache.batik.dom.dom3.Attr {
+public abstract class AbstractAttr extends AbstractParentNode implements Attr {
 
     /**
      * The name of this node.

@@ -27,9 +27,7 @@ import org.w3c.dom.events.MutationEvent;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @author <a href="mailto:Thierry.Kormann@sophia.inria.fr">Thierry Kormann</a>
  */
-public class DOMMutationEvent
-        extends AbstractEvent
-        implements org.apache.batik.dom.dom3.events.MutationEvent {
+public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
 
     private Node relatedNode;
     private String prevValue;
