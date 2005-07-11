@@ -20,10 +20,10 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
 
-import org.apache.batik.dom.dom3.Node;
 import org.w3c.dom.*;
 
 /**
@@ -35,21 +35,21 @@ import org.w3c.dom.*;
 public class NodeCompareDocumentPositionTest extends DOM3Test {
     public boolean runImplBase() throws Exception {
         Document doc = newSVGDoc();
-        org.apache.batik.dom.dom3.Element e = (org.apache.batik.dom.dom3.Element) doc.createElementNS(null, "test");
+        AbstractNode e = (AbstractNode) doc.createElementNS(null, "test");
         doc.getDocumentElement().appendChild(e);
-        org.apache.batik.dom.dom3.Element e2 = (org.apache.batik.dom.dom3.Element) doc.createElementNS(null, "two");
+        AbstractNode e2 = (AbstractNode) doc.createElementNS(null, "two");
         e.appendChild(e2);
-        org.apache.batik.dom.dom3.Element e3 = (org.apache.batik.dom.dom3.Element) doc.createElementNS(null, "three");
+        AbstractNode e3 = (AbstractNode) doc.createElementNS(null, "three");
         e.appendChild(e3);
-        org.apache.batik.dom.dom3.Element e4 = (org.apache.batik.dom.dom3.Element) doc.createElementNS(null, "four");
+        AbstractNode e4 = (AbstractNode) doc.createElementNS(null, "four");
         doc.getDocumentElement().appendChild(e4);
 
-        return e.compareDocumentPosition(e2) == (Node.DOCUMENT_POSITION_CONTAINS | Node.DOCUMENT_POSITION_PRECEDING)
-                && e2.compareDocumentPosition(e) == (Node.DOCUMENT_POSITION_CONTAINED_BY | Node.DOCUMENT_POSITION_FOLLOWING)
+        return e.compareDocumentPosition(e2) == (AbstractNode.DOCUMENT_POSITION_CONTAINS | AbstractNode.DOCUMENT_POSITION_PRECEDING)
+                && e2.compareDocumentPosition(e) == (AbstractNode.DOCUMENT_POSITION_CONTAINED_BY | AbstractNode.DOCUMENT_POSITION_FOLLOWING)
                 && e.compareDocumentPosition(e) == 0
-                && e2.compareDocumentPosition(e3) == Node.DOCUMENT_POSITION_PRECEDING
-                && e3.compareDocumentPosition(e2) == Node.DOCUMENT_POSITION_FOLLOWING
-                && e3.compareDocumentPosition(e4) == Node.DOCUMENT_POSITION_PRECEDING
-                && e4.compareDocumentPosition(e3) == Node.DOCUMENT_POSITION_FOLLOWING;
+                && e2.compareDocumentPosition(e3) == AbstractNode.DOCUMENT_POSITION_PRECEDING
+                && e3.compareDocumentPosition(e2) == AbstractNode.DOCUMENT_POSITION_FOLLOWING
+                && e3.compareDocumentPosition(e4) == AbstractNode.DOCUMENT_POSITION_PRECEDING
+                && e4.compareDocumentPosition(e3) == AbstractNode.DOCUMENT_POSITION_FOLLOWING;
     }
 }

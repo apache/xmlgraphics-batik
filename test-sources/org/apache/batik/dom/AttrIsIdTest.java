@@ -20,8 +20,9 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.*;
 
@@ -38,6 +39,6 @@ public class AttrIsIdTest extends DOM3Test {
         g.setAttributeNS(null, "id", "n1");
         doc.getDocumentElement().appendChild(g);
         Attr a = g.getAttributeNodeNS(null, "id");
-        return ((org.apache.batik.dom.dom3.Attr) a).isId();
+        return ((AbstractAttr) a).isId();
     }
 }

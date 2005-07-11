@@ -20,10 +20,10 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.AbstractText;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
 
-import org.apache.batik.dom.dom3.Text;
 import org.w3c.dom.*;
 
 /**
@@ -35,9 +35,9 @@ import org.w3c.dom.*;
 public class TextWholeTextTest extends DOM3Test {
     public boolean runImplBase() throws Exception {
         Document doc = newSVGDoc();
-        Text n1 = (Text) doc.createTextNode("abc");
-        Text n2 = (Text) doc.createTextNode("def");
-        Text n3 = (Text) doc.createCDATASection("ghi");
+        AbstractText n1 = (AbstractText) doc.createTextNode("abc");
+        AbstractText n2 = (AbstractText) doc.createTextNode("def");
+        AbstractText n3 = (AbstractText) doc.createCDATASection("ghi");
         doc.getDocumentElement().appendChild(n1);
         doc.getDocumentElement().appendChild(n2);
         doc.getDocumentElement().appendChild(n3);

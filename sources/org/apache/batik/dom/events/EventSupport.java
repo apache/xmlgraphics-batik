@@ -17,16 +17,20 @@
  */
 package org.apache.batik.dom.events;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import java.util.HashSet;
 
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.util.HashTable;
 
-import org.w3c.dom.events.CustomEvent;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventException;
 import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
 
 /**
  * The class allows registration and removal of EventListeners on
@@ -224,15 +228,23 @@ public class EventSupport {
 	if (e == null) {
 	    return false;
 	}
-        org.apache.batik.dom.dom3.events.Event ev
-            = (org.apache.batik.dom.dom3.events.Event) e;
-        org.apache.batik.dom.dom3.events.CustomEvent ce = null;
-        AbstractEvent evt = null;
-        boolean isCustom = ev.isCustom();
-        if (isCustom) {
-            ce = (org.apache.batik.dom.dom3.events.CustomEvent) e;
+        AbstractEvent aevt = null;
+        CustomEvent ce = null;
+        boolean isCustom;
+        if (e instanceof CustomEvent) {
+            isCustom = true;
+            ce = (CustomEvent) ce;
+        } else if (e instanceof org.w3c.dom.events.CustomEvent) {
+            isCustom = true;
+            ce = new WrappedEvent((org.w3c.dom.events.CustomEvent) e);
+        } else if (e instanceof AbstractEvent) {
+            isCustom = false;
+            aevt = (AbstractEvent) e;
         } else {
-            evt = (AbstractEvent) e;
+            throw createEventException
+                (DOMException.NOT_SUPPORTED_ERR,
+                 "unsupported.event",
+                 new Object[] {});
         }
 	String type = e.getType();
 	if (type == null || type.length() == 0) {
@@ -243,85 +255,70 @@ public class EventSupport {
 	}
 	// fix event status
         if (!isCustom) {
-            evt.setTarget(target);
-            evt.stopPropagation(false);
-            evt.stopImmediatePropagation(false);
-            evt.preventDefault(false);
+            aevt.setTarget(target);
+            aevt.stopPropagation(false);
+            aevt.stopImmediatePropagation(false);
+            aevt.preventDefault(false);
         }
 	// dump the tree hierarchy from top to the target
 	NodeEventTarget [] ancestors = getAncestors(target);
 	// CAPTURING_PHASE : fire event listeners from top to EventTarget
         if (!isCustom) {
-            evt.setEventPhase(Event.CAPTURING_PHASE);
+            aevt.setEventPhase(Event.CAPTURING_PHASE);
         }
         HashSet stoppedGroups = new HashSet();
         HashSet toBeStoppedGroups = new HashSet();
-	for (int i = 0; i < ancestors.length && !eventStopped(ce, evt); i++) {
+	for (int i = 0; i < ancestors.length; i++) {
 	    NodeEventTarget node = ancestors[i];
             if (isCustom) {
                 ce.setDispatchState(node, Event.CAPTURING_PHASE);
             } else {
-                evt.setCurrentTarget(node);
+                aevt.setCurrentTarget(node);
             }
-	    fireEventListeners(node, evt, true,
+	    fireEventListeners(node, e, true,
                                stoppedGroups, toBeStoppedGroups, isCustom);
             stoppedGroups.addAll(toBeStoppedGroups);
             toBeStoppedGroups.clear();
 	}
 	// AT_TARGET : fire local event listeners
-	if (!eventStopped(ce, evt)) {
-            if (isCustom) {
-                ce.setDispatchState(target, Event.AT_TARGET);
-            } else {
-                evt.setEventPhase(Event.AT_TARGET);
-                evt.setCurrentTarget(target);
-            }
-	    fireEventListeners(target, evt, false,
-                               stoppedGroups, toBeStoppedGroups, isCustom);
-            stoppedGroups.addAll(toBeStoppedGroups);
-            toBeStoppedGroups.clear();
-	}
+        if (isCustom) {
+            ce.setDispatchState(target, Event.AT_TARGET);
+        } else {
+            aevt.setEventPhase(Event.AT_TARGET);
+            aevt.setCurrentTarget(target);
+        }
+        fireEventListeners(target, e, false,
+                           stoppedGroups, toBeStoppedGroups, isCustom);
+        stoppedGroups.addAll(toBeStoppedGroups);
+        toBeStoppedGroups.clear();
 	// BUBBLING_PHASE : fire event listeners from target to top
-	if (evt.getBubbles()) {
+	if (e.getBubbles()) {
             if (!isCustom) {
-                evt.setEventPhase(Event.BUBBLING_PHASE);
+                aevt.setEventPhase(Event.BUBBLING_PHASE);
             }
-	    for (int i = ancestors.length - 1;
-                    i >= 0 && !eventStopped(ce, evt);
-                    i--) {
+	    for (int i = ancestors.length - 1; i >= 0; i--) {
 		NodeEventTarget node = ancestors[i];
                 if (isCustom) {
                     ce.setDispatchState(node, Event.BUBBLING_PHASE);
                 } else {
-                    evt.setCurrentTarget(node);
+                    aevt.setCurrentTarget(node);
                 }
-		fireEventListeners(node, evt, false,
+		fireEventListeners(node, e, false,
                                    stoppedGroups, toBeStoppedGroups, isCustom);
                 stoppedGroups.addAll(toBeStoppedGroups);
                 toBeStoppedGroups.clear();
 	    }
 	}
-	return !evt.isDefaultPrevented();
-    }
-
-    /**
-     * Returns true if either the CustomEvent or AbstractEvent given
-     * has been stopped.
-     */
-    protected boolean eventStopped(CustomEvent ce, AbstractEvent ae) {
-        if (ce != null) {
-            return ce.isImmediatePropagationStopped();
-        }
-        return ae.getStopImmediatePropagation();
+        return isCustom ? ce.isDefaultPrevented() : aevt.isDefaultPrevented();
     }
 
     private static void fireEventListeners(NodeEventTarget node, 
-					   Event evt,
+					   Event e,
                                            boolean useCapture,
                                            HashSet stoppedGroups,
                                            HashSet toBeStoppedGroups,
                                            boolean isCustom) {
-	String type = evt.getType();
+	String type = e.getType();
 	EventSupport support = node.getEventSupport();
 	// check if the event support has been instantiated
 	if (support == null) {
@@ -339,19 +336,17 @@ public class EventSupport {
 	    return;
 	}
 	// fire event listeners
-        org.apache.batik.dom.dom3.events.Event ev
-            = (org.apache.batik.dom.dom3.events.Event) evt;
-        org.apache.batik.dom.dom3.events.CustomEvent ce = null;
+        CustomEvent ce = null;
         AbstractEvent aevt = null;
+        String eventNS;
         if (isCustom) {
-            ce = (org.apache.batik.dom.dom3.events.CustomEvent) evt;
+            ce = (CustomEvent) e;
+            eventNS = ce.getNamespaceURI();
         } else {
-            aevt = (AbstractEvent) evt;
+            aevt = (AbstractEvent) e;
+            eventNS = aevt.getNamespaceURI();
         }
-        String eventNS = ev.getNamespaceURI();
-	for (int i = 0;
-                i < listeners.length && !aevt.getStopImmediatePropagation();
-                i++) {
+	for (int i = 0; i < listeners.length; i++) {
 	    try {
                 String listenerNS = listeners[i].getNamespaceURI();
                 if (listenerNS != null && eventNS != null
@@ -360,13 +355,24 @@ public class EventSupport {
                 }
                 Object group = listeners[i].getGroup();
                 if (!stoppedGroups.contains(group)) {
-                    listeners[i].getListener().handleEvent(evt);
-                    if (isCustom && ce.isPropagationStopped()
-                            || !isCustom && aevt.getStopPropagation()) {
-                        toBeStoppedGroups.add(group);
-                        if (isCustom) {
-                            // XXX how to not stop all subsequent groups?
-                        } else {
+                    listeners[i].getListener().handleEvent(e);
+                    if (isCustom) {
+                        if (ce.isImmediatePropagationStopped()) {
+                            stoppedGroups.add(group);
+                            // XXX How to not stop other groups?
+                            // Need something like
+                            // aevt.stopImmediatePropagation(false);
+                        } else if (ce.isPropagationStopped()) {
+                            toBeStoppedGroups.add(group);
+                            // XXX How to not stop other groups?
+                            // Need something like aevt.stopPropagation(false);
+                        }
+                    } else {
+                        if (aevt.getStopImmediatePropagation()) {
+                            stoppedGroups.add(group);
+                            aevt.stopImmediatePropagation(false);
+                        } else if (aevt.getStopPropagation()) {
+                            toBeStoppedGroups.add(group);
                             aevt.stopPropagation(false);
                         }
                     }
@@ -450,6 +456,222 @@ public class EventSupport {
             return new EventException(code, doc.formatMessage(key, args));
         } catch (Exception e) {
             return new EventException(code, key);
+        }
+    }
+
+    /**
+     * Wrapper class for {@org.w3c.dom.events.CustomEvent} objects.
+     */
+    protected class WrappedEvent implements CustomEvent {
+
+        /**
+         * The wrapped event object.
+         */
+        protected org.w3c.dom.events.CustomEvent e;
+
+        /**
+         * The getNamespaceURI method of the wrapped event object.
+         */
+        protected Method getNamespaceURIMethod;
+
+        /**
+         * The stopImmediatePropagation method of the wrapped event object.
+         */
+        protected Method stopImmediatePropagationMethod;
+
+        /**
+         * The isDefaultPrevented method of the wrapped event object.
+         */
+        protected Method isDefaultPreventedMethod;
+
+        /**
+         * Creates a new WrappedEvent object.
+         */
+        public WrappedEvent(org.w3c.dom.events.CustomEvent e) {
+            this.e = e;
+            Class cls = e.getClass();
+            try {
+                getNamespaceURIMethod = cls.getMethod("getNamespaceURI", null);
+                stopImmediatePropagationMethod
+                    = cls.getMethod("stopImmediatePropagation", null);
+                isDefaultPreventedMethod
+                    = cls.getMethod("isDefaultPrevented", null);
+            } catch (NoSuchMethodException nsme) {
+                throw createEventException
+                    (DOMException.NOT_SUPPORTED_ERR,
+                     "unsupported.event",
+                     new Object[] {});
+            } catch (SecurityException se) {
+                throw createEventException
+                    (DOMException.NOT_SUPPORTED_ERR,
+                     "unsupported.event",
+                     new Object[] {});
+            }
+        }
+
+        // Event (since DOM 2) ///////////////////////////////////////////////
+
+        /**
+         * Returns the type of this event.
+         */
+        public String getType() {
+            return e.getType();
+        }
+
+        /**
+         * Returns the current target of this event.
+         */
+        public EventTarget getCurrentTarget() {
+            return e.getCurrentTarget();
+        }
+
+        /**
+         * Returns the target of this event.
+         */
+        public EventTarget getTarget() {
+            return e.getTarget();
+        }
+
+        /**
+         * Returns the current event phase of this event.
+         */
+        public short getEventPhase() {
+            return e.getEventPhase();
+        }
+
+        /**
+         * Returns whether this event bubbles.
+         */
+        public boolean getBubbles() {
+            return e.getBubbles();
+        }
+
+        /**
+         * Returns whether this event can be cancelled.
+         */
+        public boolean getCancelable() {
+            return e.getCancelable();
+        }
+
+        /**
+         * Returns the timestamp of this event object.
+         */
+        public long getTimeStamp() {
+            return e.getTimeStamp();
+        }
+
+        /**
+         * Stops propagation of this event.
+         */
+        public void stopPropagation() {
+            e.stopPropagation();
+        }
+
+        /**
+         * Prevents default processing of the event.
+         */
+        public void preventDefault() {
+            e.preventDefault();
+        }
+
+        /**
+         * Initializes this event object.
+         */
+        public void initEvent(String eventTypeArg, 
+                              boolean canBubbleArg, 
+                              boolean cancelableArg) {
+            e.initEvent(eventTypeArg, canBubbleArg, cancelableArg);
+        }
+
+        // org.w3c.dom.events.CustomEvent ////////////////////////////////////
+
+        /**
+         * Sets the value of currentTarget and eventPhase.
+         */
+        public void setDispatchState(EventTarget target, short phase) {
+            e.setDispatchState(target, phase);
+        }
+
+        /**
+         * Returns whether {@link #stopPropagation} has been called.
+         */
+        public boolean isPropagationStopped() {
+            return e.isPropagationStopped();
+        }
+
+        /**
+         * Returns whether {@link #stopImmediatePropagation} has been called.
+         */
+        public boolean isImmediatePropagationStopped() {
+            return e.isImmediatePropagationStopped();
+        }
+
+        // CustomEvent ///////////////////////////////////////////////////////
+
+        /**
+         * Returns the namespace URI of this custom event.
+         * @see org.w3c.dom.events.Event#getNamespaceURI
+         */
+        public String getNamespaceURI() {
+            try {
+                return (String) getNamespaceURIMethod.invoke(e, null);
+            } catch (InvocationTargetException ite) {
+                ite.printStackTrace();
+            } catch (IllegalAccessException iae) {
+                iae.printStackTrace();
+            }
+            return null;
+        }
+
+        /**
+         * Indicates whether this object implements the
+         * {@link org.w3c.dom.events.CustomEvent} interface.
+         * This must return true for classes implementing this interface.
+         * @see org.w3c.dom.events.Event#isCustom
+         */
+        public boolean isCustom() {
+            return true;
+        }
+
+        /**
+         * Stops event listeners of the same group being triggered.
+         * @see org.w3c.dom.events.Event#stopImmediatePropagation
+         */
+        public void stopImmediatePropagation() {
+            try {
+                stopImmediatePropagationMethod.invoke(e, null);
+            } catch (InvocationTargetException ite) {
+                ite.printStackTrace();
+            } catch (IllegalAccessException iae) {
+                iae.printStackTrace();
+            }
+        }
+
+        /**
+         * Returns whether {@link #stopImmediatePropagation} has been called.
+         * @see org.w3c.dom.events.Event#isDefaultPrevented
+         */
+        public boolean isDefaultPrevented() {
+            try {
+                return ((Boolean) isDefaultPreventedMethod.invoke(e, null))
+                    .booleanValue();
+            } catch (InvocationTargetException ite) {
+                ite.printStackTrace();
+            } catch (IllegalAccessException iae) {
+                iae.printStackTrace();
+            }
+            return false;
+        }
+
+        /**
+         * Initializes this event object.
+         * @see org.w3c.dom.events.Event#initEventNS
+         */
+        public void initEventNS(String namespaceURIArg, 
+                                String eventTypeArg, 
+                                boolean canBubbleArg, 
+                                boolean cancelableArg) {
+            // This method is not needed for event processing.
         }
     }
 }

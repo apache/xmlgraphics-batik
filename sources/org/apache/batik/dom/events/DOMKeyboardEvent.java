@@ -28,9 +28,7 @@ import org.w3c.dom.views.AbstractView;
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public class DOMKeyboardEvent
-        extends DOMUIEvent
-        implements org.apache.batik.dom.dom3.events.KeyboardEvent {
+public class DOMKeyboardEvent extends DOMUIEvent implements KeyboardEvent {
 
     // Key identifiers
     public static final String KEY_UNIDENTIFIED = "Unidentified";

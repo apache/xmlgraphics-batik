@@ -447,10 +447,20 @@ public abstract class AbstractNode
         return getCascadedXMLBase(this);
     }
 
+    // DocumentPosition constants from DOM Level 3 Core org.w3c.dom.Node
+    // interface.
+
+    public static final short DOCUMENT_POSITION_DISCONNECTED = 0x01;
+    public static final short DOCUMENT_POSITION_PRECEDING = 0x02;
+    public static final short DOCUMENT_POSITION_FOLLOWING = 0x04;
+    public static final short DOCUMENT_POSITION_CONTAINS = 0x08;
+    public static final short DOCUMENT_POSITION_CONTAINED_BY = 0x10;
+    public static final short DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC = 0x20;
+
     /**
      * <b>DOM</b>: Implements
      * {@link org.w3c.dom.Node#compareDocumentPosition(Node)}.
-     * XXX doesn't handle notation or entity nodes
+     * XXX Doesn't handle notation or entity nodes.
      */
     public short compareDocumentPosition(Node other) throws DOMException {
         if (this == other) {

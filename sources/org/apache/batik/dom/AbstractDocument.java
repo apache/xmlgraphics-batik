@@ -79,8 +79,8 @@ import org.w3c.dom.xpath.XPathResult;
  */
 public abstract class AbstractDocument
     extends    AbstractParentNode
-    implements org.apache.batik.dom.dom3.Document,
-               org.apache.batik.dom.dom3.events.DocumentEvent,
+    implements Document,
+               DocumentEvent,
                DocumentTraversal,
                Localizable,
                XPathEvaluator {
@@ -1761,7 +1761,7 @@ public abstract class AbstractDocument
             if (DOMConstants.DOM_ERROR_HANDLER_PARAM.equals(name)) {
                 if (value != null && !(value instanceof DOMErrorHandler)) {
                     throw createDOMException
-                        (org.apache.batik.dom.dom3.DOMException.TYPE_MISMATCH_ERR,
+                        ((short) 17 /*DOMException.TYPE_MISMATCH_ERR*/,
                          "domconfig.param.type",
                          new Object[] { name });
                 }
@@ -1771,19 +1771,19 @@ public abstract class AbstractDocument
             Integer i = (Integer) booleanParamIndexes.get(name);
             if (i == null) {
                 throw createDOMException
-                    (org.apache.batik.dom.dom3.DOMException.TYPE_MISMATCH_ERR,
+                    (DOMException.NOT_FOUND_ERR,
                      "domconfig.param.not.found",
                      new Object[] { name });
             }
             if (value == null) {
                 throw createDOMException
-                    (org.apache.batik.dom.dom3.DOMException.TYPE_MISMATCH_ERR,
+                    (DOMException.NOT_SUPPORTED_ERR,
                      "domconfig.param.value",
                      new Object[] { name });
             }
             if (!(value instanceof Boolean)) {
                 throw createDOMException
-                    (org.apache.batik.dom.dom3.DOMException.TYPE_MISMATCH_ERR,
+                    ((short) 17 /*DOMException.TYPE_MISMATCH_ERR*/,
                      "domconfig.param.type",
                      new Object[] { name });
             }
@@ -1792,7 +1792,7 @@ public abstract class AbstractDocument
             if (booleanParamReadOnly[index]
                     && booleanParamValues[index] != val) {
                 throw createDOMException
-                    (org.apache.batik.dom.dom3.DOMException.TYPE_MISMATCH_ERR,
+                    (DOMException.NOT_SUPPORTED_ERR,
                      "domconfig.param.value",
                      new Object[] { name });
             }
@@ -1819,7 +1819,7 @@ public abstract class AbstractDocument
             Integer index = (Integer) booleanParamIndexes.get(name);
             if (index == null) {
                 throw createDOMException
-                    (org.apache.batik.dom.dom3.DOMException.TYPE_MISMATCH_ERR,
+                    (DOMException.NOT_FOUND_ERR,
                      "domconfig.param.not.found",
                      new Object[] { name });
             }

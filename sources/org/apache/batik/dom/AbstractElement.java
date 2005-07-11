@@ -37,7 +37,7 @@ import org.w3c.dom.events.MutationEvent;
  */
 public abstract class AbstractElement
     extends    AbstractParentChildNode
-    implements org.apache.batik.dom.dom3.Element {
+    implements Element {
 
     /**
      * The attributes of this element.

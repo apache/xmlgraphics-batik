@@ -30,9 +30,7 @@ import org.w3c.dom.views.AbstractView;
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  */
-public class DOMUIEvent
-        extends AbstractEvent
-        implements org.apache.batik.dom.dom3.events.UIEvent {
+public class DOMUIEvent extends AbstractEvent implements UIEvent {
 
     private AbstractView view;
     private int detail;

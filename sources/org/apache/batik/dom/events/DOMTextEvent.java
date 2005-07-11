@@ -27,9 +27,7 @@ import org.w3c.dom.views.AbstractView;
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public class DOMTextEvent
-        extends DOMUIEvent
-        implements org.apache.batik.dom.dom3.events.TextEvent {
+public class DOMTextEvent extends DOMUIEvent implements TextEvent {
 
     /**
      * The text data.

@@ -29,9 +29,7 @@ import org.w3c.dom.views.AbstractView;
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  */
-public class DOMMouseEvent
-        extends DOMUIEvent
-        implements org.apache.batik.dom.dom3.events.MouseEvent {
+public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
 
     private int screenX; 
     private int screenY; 

@@ -29,8 +29,7 @@ import org.w3c.dom.Node;
  * @version $Id$
  */
 
-public interface ExtendedNode
-        extends org.apache.batik.dom.dom3.Node, NodeEventTarget {
+public interface ExtendedNode extends Node, NodeEventTarget {
 
     /**
      * Sets the name of this node.

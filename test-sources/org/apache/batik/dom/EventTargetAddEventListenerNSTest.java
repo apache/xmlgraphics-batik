@@ -20,8 +20,9 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.util.SVGConstants;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.dom.AbstractNode;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.*;
 import org.w3c.dom.events.*;
@@ -62,7 +63,7 @@ public class EventTargetAddEventListenerNSTest extends DOM3Test {
 
         Document doc = newDoc();
         Element e = doc.createElementNS(null, "test");
-        org.apache.batik.dom.dom3.events.EventTarget et = (org.apache.batik.dom.dom3.events.EventTarget) e;
+        AbstractNode et = (AbstractNode) e;
         doc.appendChild(e);
         et.addEventListenerNS(XML_EVENTS_NAMESPACE_URI, "DOMAttrModified", l1, false, null);
         et.addEventListenerNS(null, "DOMAttrModified", l1, false, null);

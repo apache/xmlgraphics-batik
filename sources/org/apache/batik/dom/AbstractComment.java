@@ -28,7 +28,7 @@ import org.w3c.dom.Comment;
 
 public abstract class AbstractComment
     extends    AbstractCharacterData
-    implements org.apache.batik.dom.dom3.Comment {
+    implements Comment {
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getNodeName()}.

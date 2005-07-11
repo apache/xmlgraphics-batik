@@ -20,8 +20,9 @@ package org.apache.batik.dom;
 import org.apache.batik.test.AbstractTest;
 import org.apache.batik.test.TestReport;
 
-import org.apache.batik.util.SVGConstants;
+import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
 
 import org.w3c.dom.*;
 
@@ -37,7 +38,7 @@ public class DocumentAdoptNodeTest extends DOM3Test {
         Document doc2 = newSVGDoc();
         Element e = doc2.getDocumentElement();
         e.setAttributeNS(EX_NAMESPACE_URI, "test", "blah");
-        ((org.apache.batik.dom.dom3.Document) doc1).adoptNode(e);
+        ((AbstractDocument) doc1).adoptNode(e);
         return e.getOwnerDocument() == doc1
             && e.getAttributeNodeNS(EX_NAMESPACE_URI, "test").getOwnerDocument() == doc1;
     }

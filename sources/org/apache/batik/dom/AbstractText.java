@@ -35,7 +35,7 @@ import org.w3c.dom.Text;
 
 public abstract class AbstractText
     extends    AbstractCharacterData
-    implements org.apache.batik.dom.dom3.Text {
+    implements Text {
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Text#splitText(int)}.

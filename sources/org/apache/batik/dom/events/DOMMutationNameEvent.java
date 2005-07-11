@@ -28,7 +28,7 @@ import org.w3c.dom.events.MutationNameEvent;
  */
 public class DOMMutationNameEvent
         extends DOMMutationEvent
-        implements org.apache.batik.dom.dom3.events.MutationNameEvent {
+        implements MutationNameEvent {
 
     /**
      * The node's previous namespace URI.
