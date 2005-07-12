@@ -53,7 +53,7 @@ public class GraphicContext implements Cloneable{
     /**
      * Default Transform to be used for creating FontRenderContext.
      */
-    private AffineTransform defaultTransform = new AffineTransform();
+    protected AffineTransform defaultTransform = new AffineTransform();
 
     /**
      * Current AffineTransform. This is the concatenation
@@ -61,63 +61,63 @@ public class GraphicContext implements Cloneable{
      * invocation) and the following transform invocations,
      * as captured by originalTransform and the transformStack.
      */
-    private AffineTransform transform = new AffineTransform();
+    protected AffineTransform transform = new AffineTransform();
 
     /**
      * Transform stack
      */
-    private Vector transformStack = new Vector();
+    protected Vector transformStack = new Vector();
 
     /**
      * Defines whether the transform stack is valide or not.
      * This is for use by the class clients. The client should
      * validate the stack every time it starts using it. The
      * stack becomes invalid when a new transform is set.
-     * @see #invalidatTransformStack
+     * @see #invalidateTransformStack()
      * @see #isTransformStackValid
      * @see #setTransform
      */
-    private boolean transformStackValid = true;
+    protected boolean transformStackValid = true;
 
     /**
      * Current Paint
      */
-    private Paint paint = Color.black;
+    protected Paint paint = Color.black;
 
     /**
      * Current Stroke
      */
-    private Stroke stroke = new BasicStroke();
+    protected Stroke stroke = new BasicStroke();
 
     /**
      * Current Composite
      */
-    private Composite composite = AlphaComposite.SrcOver;
+    protected Composite composite = AlphaComposite.SrcOver;
 
     /**
      * Current clip
      */
-    private Shape clip = null;
+    protected Shape clip = null;
 
     /**
      * Current set of RenderingHints
      */
-    private RenderingHints hints = new RenderingHints(null);
+    protected RenderingHints hints = new RenderingHints(null);
 
     /**
      * Current Font
      */
-    private Font font = new Font("sanserif", Font.PLAIN, 12);
+    protected Font font = new Font("sanserif", Font.PLAIN, 12);
 
     /**
      * Current background color.
      */
-    private Color background = new Color(0, 0, 0, 0);
+    protected Color background = new Color(0, 0, 0, 0);
 
     /**
      * Current foreground color
      */
-    private Color foreground = Color.black;
+    protected Color foreground = Color.black;
 
     /**
      * Default constructor
@@ -397,8 +397,8 @@ public class GraphicContext implements Cloneable{
      * @param paint the <code>Paint</code> object to be used to generate
      * color during the rendering process, or <code>null</code>
      * @see java.awt.Graphics#setColor
-     * @see GradientPaint
-     * @see TexturePaint
+     * @see java.awt.GradientPaint
+     * @see java.awt.TexturePaint
      */
     public void setPaint( Paint paint ){
         if(paint == null)
@@ -583,7 +583,8 @@ public class GraphicContext implements Cloneable{
      * Rotating with a positive angle theta rotates points on the positive
      * x axis toward the positive y axis.
      * @param theta the angle of rotation in radians
-     * @param x,&nbsp;y coordinates of the origin of the rotation
+     * @param x x coordinate of the origin of the rotation
+     * @param y y coordinate of the origin of the rotation
      */
     public void rotate(double theta, double x, double y){
         transform.rotate(theta, x, y);
@@ -709,7 +710,7 @@ public class GraphicContext implements Cloneable{
      * since it was last read. Only validateTransformStack
      * can override this memento
      */
-    void invalidateTransformStack(){
+    protected void invalidateTransformStack(){
         transformStack.removeAllElements();
         transformStackValid = false;
     }
@@ -808,9 +809,9 @@ public class GraphicContext implements Cloneable{
      * The <i>user clip</i> modified by this method is independent of the
      * clipping associated with device bounds and visibility.  If no clip has
      * previously been set, or if the clip has been cleared using
-     * {@link Graphics#setClip(Shape) setClip} with a <code>null</code>
-     * argument, the specified <code>Shape</code> becomes the new
-     * user clip.
+     * {@link java.awt.Graphics#setClip(Shape) setClip} with a
+     * <code>null</code> argument, the specified <code>Shape</code> becomes
+     * the new user clip.
      * @param s the <code>Shape</code> to be intersected with the current
      *          <code>Clip</code>.  If <code>s</code> is <code>null</code>,
      *          this method clears the current <code>Clip</code>.

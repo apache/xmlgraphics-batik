@@ -23,7 +23,7 @@ import java.awt.Color;
  * A light source placed at the infinity, such that the light angle is
  * constant over the whole surface.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class DistantLight extends AbstractLight {
@@ -100,7 +100,7 @@ public class DistantLight extends AbstractLight {
      * @param dx delta x for computing light vectors in user space
      * @param width number of samples to compute on the x axis
      * @param z array containing the z elevation for all the points
-     * @param lightRwo array to store the light info to, if null it will
+     * @param lightRow array to store the light info to, if null it will
      *                 be allocated for you and returned.
      *
      * @return an array width columns where each element

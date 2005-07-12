@@ -361,7 +361,6 @@ public class SVGMultiImageElementBridge extends SVGImageElementBridge {
 
         /**
          * Constructs a new viewport with the specified <tt>SVGSVGElement</tt>.
-         * @param e the SVGSVGElement that defines this viewport
          * @param w the width of the viewport
          * @param h the height of the viewport
          */

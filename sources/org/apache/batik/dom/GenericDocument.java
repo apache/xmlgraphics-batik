@@ -39,6 +39,10 @@ import org.w3c.dom.Text;
  */
 public class GenericDocument
     extends AbstractDocument {
+
+    /** Local name for 'id' attributes. */
+    protected final static String ATTR_ID = "id";
+
     /**
      * Is this document immutable?
      */
@@ -69,6 +73,15 @@ public class GenericDocument
      */
     public void setReadonly(boolean v) {
         readonly = v;
+    }
+
+    /**
+     * Returns true if the given Attr node represents an 'id' 
+     * for this document.
+     */
+    public boolean isId(Attr node) {
+        if (node.getNamespaceURI() != null) return false;
+        return ATTR_ID.equals(node.getNodeName());
     }
 
     /**

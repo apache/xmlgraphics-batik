@@ -49,7 +49,7 @@ import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
  *
  * Complete Class Desc
  *
- * @author <a href="mailto:deweese@apache.org>l449433</a>
+ * @author <a href="mailto:deweese@apache.org">l449433</a>
  * @version $Id$
  */
 public class JSVGCanvasHandler {
@@ -159,10 +159,14 @@ public class JSVGCanvasHandler {
                                 updateManager.addUpdateManagerListener(url);
                             }});
                 } catch (Throwable t) { t.printStackTrace(); }
+
                 if ( abort) return;
 
                 if (updateManager == null)
                     return;
+
+                // Wait for Update Manager to Start.
+                while (!updateManager.isRunning());
 
                 bindHost();
 
@@ -309,6 +313,7 @@ public class JSVGCanvasHandler {
                 }
             });
     }
+
     class UpdateRenderListener implements UpdateManagerListener {
         public void updateCompleted(UpdateManagerEvent e) {
             synchronized(renderMonitor){

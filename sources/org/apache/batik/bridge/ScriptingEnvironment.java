@@ -1034,18 +1034,20 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         }
 
 
-        public void postURL(String uri, String content, URLResponseHandler h) {
+        public void postURL(String uri, String content, 
+                            org.apache.batik.script.Window.URLResponseHandler h) {
             postURL(uri, content, h, "text/plain", null);
         }
 
-        public void postURL(String uri, String content, URLResponseHandler h, 
+        public void postURL(String uri, String content, 
+                            org.apache.batik.script.Window.URLResponseHandler h, 
                      String mimeType) {
             postURL(uri, content, h, mimeType, null);
         }
 
         public void postURL(final String uri, 
                             final String content, 
-                            final URLResponseHandler h, 
+                            final org.apache.batik.script.Window.URLResponseHandler h, 
                             final String mimeType, 
                             final String fEnc) {
             Thread t = new Thread() {

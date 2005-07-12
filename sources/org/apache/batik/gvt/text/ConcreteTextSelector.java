@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.Selectable;
 import org.apache.batik.gvt.Selector;
 import org.apache.batik.gvt.TextNode;
@@ -40,7 +41,6 @@ import org.apache.batik.gvt.event.SelectionEvent;
 import org.apache.batik.gvt.event.SelectionListener;
 
 /**
- * ConcreteTextSelector.java:
  * A simple implementation of GraphicsNodeMouseListener for text selection.
  *
  * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
@@ -49,9 +49,10 @@ import org.apache.batik.gvt.event.SelectionListener;
 
 public class ConcreteTextSelector implements Selector {
 
-    private ArrayList listeners = null;
-    private GraphicsNode selectionNode = null;
-    private GraphicsNode currentNode = null;
+    private ArrayList listeners;
+    private GraphicsNode selectionNode;
+    private RootGraphicsNode selectionNodeRoot;
+    private GraphicsNode currentNode;
     private int firstHit;
     private int lastHit;
 
@@ -101,8 +102,11 @@ public class ConcreteTextSelector implements Selector {
 
     public void changeStarted (GraphicsNodeChangeEvent gnce) {
     }
+
     public void changeCompleted (GraphicsNodeChangeEvent gnce) {
-        if (selectionNode == null) return;
+        if (selectionNode == null) {
+            return;
+        }
         Shape newShape =
             ((Selectable)selectionNode).getHighlightShape();
         dispatchSelectionEvent
@@ -113,24 +117,26 @@ public class ConcreteTextSelector implements Selector {
 
     public void setSelection(Mark begin, Mark end) {
         TextNode node = begin.getTextNode();
-        if (node != end.getTextNode())
+        if (node != end.getTextNode()) {
             throw new Error("Markers not from same TextNode");
+        }
         node.setSelection(begin, end);
         selectionNode = node;
+        selectionNodeRoot = node.getRoot();
         Object selection = getSelection();
         Shape  shape     = node.getHighlightShape();
         dispatchSelectionEvent(new SelectionEvent
             (selection, SelectionEvent.SELECTION_DONE, shape));
-        copyToClipboard(selection);
     }
 
     public void clearSelection() {
-        if (selectionNode == null) 
+        if (selectionNode == null) {
             return;
+        }
         dispatchSelectionEvent(new SelectionEvent
             (null, SelectionEvent.SELECTION_CLEARED, null));
-        // copyToClipboard(null);
         selectionNode = null;
+        selectionNodeRoot = null;
     }
 
     /*
@@ -148,14 +154,12 @@ public class ConcreteTextSelector implements Selector {
         }
 
         GraphicsNode source = evt.getGraphicsNode();
-
         if (isDeselectGesture(evt)) {
-            if (selectionNode != null)
-                selectionNode.getRoot()
-                    .removeTreeGraphicsNodeChangeListener(this);
-
+            if (selectionNode != null) {
+                selectionNodeRoot.removeTreeGraphicsNodeChangeListener(this);
+            }
             clearSelection();
-        } else if ((source instanceof Selectable) && (mevt != null)) {
+        } else if (mevt != null) {
 
             Point2D p = new Point2D.Double(mevt.getX(), mevt.getY());
             AffineTransform t = source.getGlobalTransform();
@@ -170,17 +174,21 @@ public class ConcreteTextSelector implements Selector {
             }
             p = t.transform(p, null);
 
-            if (isSelectStartGesture(evt)) {
+            if ((source instanceof Selectable) && 
+                (isSelectStartGesture(evt))) {
                 if (selectionNode != source) {
-                    if (selectionNode != null)
-                        selectionNode.getRoot()
+                    if (selectionNode != null) {
+                        selectionNodeRoot
                             .removeTreeGraphicsNodeChangeListener(this);
-                    if (source != null)
-                        source.getRoot()
+                    }
+                    selectionNode = source;
+                    if (source != null) {
+                        selectionNodeRoot = source.getRoot();
+                        selectionNodeRoot
                             .addTreeGraphicsNodeChangeListener(this);
+                    }
                 }
 
-                selectionNode = source;
                 ((Selectable) source).selectAt(p.getX(), p.getY());
                 dispatchSelectionEvent(
                         new SelectionEvent(null,
@@ -188,36 +196,26 @@ public class ConcreteTextSelector implements Selector {
                                 null));
 
             } else if (isSelectEndGesture(evt)) {
-                if (selectionNode != source) {
-                    if (selectionNode != null)
-                        selectionNode.getRoot()
-                            .removeTreeGraphicsNodeChangeListener(this);
-                    if (source != null)
-                        source.getRoot()
-                            .addTreeGraphicsNodeChangeListener(this);
+                if (selectionNode == source)  {
+                    ((Selectable) source).selectTo(p.getX(), p.getY());
                 }
-                selectionNode = source;
-
-                ((Selectable) source).selectTo(p.getX(), p.getY());
-
                 Object oldSelection = getSelection();
-                Shape newShape =
-                    ((Selectable) source).getHighlightShape();
-                dispatchSelectionEvent(
-                        new SelectionEvent(oldSelection,
-                                SelectionEvent.SELECTION_DONE,
-                                newShape));
-                copyToClipboard(oldSelection);
-            } else
-
-            if (isSelectContinueGesture(evt)) {
+                if (selectionNode != null) {
+                    Shape newShape;
+                    newShape = ((Selectable)selectionNode).getHighlightShape();
+                    dispatchSelectionEvent
+                        (new SelectionEvent(oldSelection,
+                                            SelectionEvent.SELECTION_DONE,
+                                            newShape));
+                }
+            } else if (isSelectContinueGesture(evt)) {
 
                 if (selectionNode == source) {
                     boolean result = ((Selectable) source).selectTo(p.getX(), 
                                                                     p.getY());
                     if (result) {
                         Shape newShape =
-                        ((Selectable) source).getHighlightShape();
+                            ((Selectable) selectionNode).getHighlightShape();
 
                         dispatchSelectionEvent(
                             new SelectionEvent(null,
@@ -225,17 +223,20 @@ public class ConcreteTextSelector implements Selector {
                                 newShape));
                     }
                 }
-            } else if (isSelectAllGesture(evt)) {
+            } else if ((source instanceof Selectable) && 
+                       (isSelectAllGesture(evt))) {
                 if (selectionNode != source) {
-                    if (selectionNode != null)
-                        selectionNode.getRoot()
+                    if (selectionNode != null) {
+                        selectionNodeRoot
                             .removeTreeGraphicsNodeChangeListener(this);
-                    if (source != null)
-                        source.getRoot()
+                    }
+                    selectionNode = source;
+                    if (source != null) {
+                        selectionNodeRoot = source.getRoot();
+                        selectionNodeRoot
                             .addTreeGraphicsNodeChangeListener(this);
+                    }
                 }
-                selectionNode = source;
-                
                 ((Selectable) source).selectAll(p.getX(), p.getY());
                 Object oldSelection = getSelection();
                 Shape newShape =
@@ -244,7 +245,6 @@ public class ConcreteTextSelector implements Selector {
                         new SelectionEvent(oldSelection,
                                 SelectionEvent.SELECTION_DONE,
                                 newShape));
-                copyToClipboard(oldSelection);
             }
         }
     }
@@ -277,7 +277,7 @@ public class ConcreteTextSelector implements Selector {
     public Object getSelection() {
         Object value = null;
         if (selectionNode instanceof Selectable) {
-            value =  ((Selectable) selectionNode).getSelection();
+            value = ((Selectable) selectionNode).getSelection();
         }
         return value;
     }
@@ -339,44 +339,6 @@ public class ConcreteTextSelector implements Selector {
         if (listeners != null) {
             listeners.remove(l);
         }
-    }
-
-    private void copyToClipboard(final Object o) {
-	//
-	// HACK: getSystemClipboard sometimes deadlocks on linux when called
-	// from the AWT Thread. The Thread creation prevents that.
-	//
-	new Thread() {
-	    public void run() {
-		// first see if we can access the clipboard
-		SecurityManager securityManager = System.getSecurityManager();
-		boolean canAccessClipboard = true;
-		if (securityManager != null) {
-		    try {
-			securityManager.checkSystemClipboardAccess();
-		    } catch (SecurityException e) {
-			canAccessClipboard = false;
-		    }
-		}
-		if (canAccessClipboard) {
-		    String label = "";
-		    if (o instanceof CharacterIterator) {
-			CharacterIterator iter = (CharacterIterator) o;
-			char[] cbuff = new char[iter.getEndIndex()-iter.getBeginIndex()];
-			if (cbuff.length > 0) {
-			    cbuff[0] = iter.first();
-			}
-			for (int i=1; i<cbuff.length;++i) {
-			    cbuff[i] = iter.next();
-			}
-			label = new String(cbuff);
-		    }
-		    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		    StringSelection selection = new StringSelection(label);
-		    clipboard.setContents(selection, selection);
-		}
-	    }
-	}.start();
     }
 
     private void report(GraphicsNodeEvent evt, String message) {

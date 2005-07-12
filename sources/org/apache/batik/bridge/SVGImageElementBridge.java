@@ -535,7 +535,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      *
      * @param ctx the bridge context
      * @param e the image element
-     * @param uriStr the uri of the image
+     * @param img the image to use in creating the graphics node
      */
     protected GraphicsNode createRasterImageNode(BridgeContext ctx,
                                                  Element       e,
@@ -584,15 +584,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                               Element e,
                                               SVGDocument imgDocument) {
         CSSEngine eng = ((SVGOMDocument)imgDocument).getCSSEngine();
-        if (eng != null) {
-            subCtx = (BridgeContext)eng.getCSSContext();
-        } else {
-            subCtx = new BridgeContext(ctx.getUserAgent(), 
-                                       ctx.getDocumentLoader());
-            subCtx.setGVTBuilder(ctx.getGVTBuilder());
-            subCtx.setDocument(imgDocument);
-            subCtx.initializeDocument(imgDocument);
-        }
+        subCtx = ctx.createSubBridgeContext((SVGOMDocument)imgDocument);
 
         CompositeGraphicsNode result = new CompositeGraphicsNode();
         // handles the 'preserveAspectRatio', 'overflow' and 'clip' and 
@@ -616,8 +608,10 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         node = (CanvasGraphicsNode)subCtx.getGVTBuilder().build
             (subCtx, svgElement);
 
-        if (eng == null) // If we "created" this document then add listerns.
+        if ((eng == null) && ctx.isInteractive()) {
+            // If we "created" this document then add listerns.
             subCtx.addUIEventListeners(imgDocument);
+        }
 
         // HACK: remove the clip set by the SVGSVGElement as the overflow
         // and clip properties must be ignored. The clip will be set later

@@ -51,6 +51,7 @@ public class EcmaNoLoadTest extends DefaultTestSuite {
                                                          scriptSource[i],
                                                          scriptOrigin[k],
                                                          secure[j],
+                                                         false,
                                                          false);
                     addTest(t);
                 }
@@ -65,11 +66,13 @@ public class EcmaNoLoadTest extends DefaultTestSuite {
         scripts = "text/ecmascript";
         for (int i=0; i<scriptSource.length; i++) {
             for (int k=0; k<scriptOrigin.length; k++) {
+                boolean expectSuccess = ((i>=2) && (k <= 2));
                 SVGOnLoadExceptionTest t = buildTest(scripts,
                                                      scriptSource[i],
                                                      scriptOrigin[k],
                                                      true,
-                                                     true);
+                                                     true,
+                                                     expectSuccess);
                 addTest(t);
             }
         }
@@ -90,6 +93,7 @@ public class EcmaNoLoadTest extends DefaultTestSuite {
                     SVGOnLoadExceptionTest t= buildTest(scripts, scriptSource[i],
                                                         scriptOrigin[j],
                                                         secure[k],
+                                                        false,
                                                         false);
                     addTest(t);
                 }
@@ -97,7 +101,9 @@ public class EcmaNoLoadTest extends DefaultTestSuite {
         }
     }
 
-    SVGOnLoadExceptionTest buildTest(String scripts, String id, String origin, boolean secure, boolean restricted) {
+    SVGOnLoadExceptionTest buildTest(String scripts, String id, String origin, 
+                                     boolean secure, boolean restricted, 
+                                     boolean successExpected) {
         SVGOnLoadExceptionTest t = new SVGOnLoadExceptionTest();
         String desc = 
             "(scripts=" + scripts + 
@@ -109,7 +115,10 @@ public class EcmaNoLoadTest extends DefaultTestSuite {
         t.setScriptOrigin(origin);
         t.setSecure(secure);
         t.setScripts(scripts);
-        t.setExpectedExceptionClass("java.lang.SecurityException");
+        if (successExpected)
+            t.setExpectedExceptionClass(null);
+        else
+            t.setExpectedExceptionClass("java.lang.SecurityException");
         t.setRestricted(restricted);
 
         return t;

@@ -39,10 +39,23 @@ public class ArabicTextHandler {
 
     private final static Map charMap = new HashMap(54);
 
+    private static final AttributedCharacterIterator.Attribute ARABIC_FORM =
+        GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM;
+    private static final Integer ARABIC_NONE =
+        GVTAttributedCharacterIterator.TextAttribute.ARABIC_NONE;
+    private static final Integer ARABIC_ISOLATED =
+        GVTAttributedCharacterIterator.TextAttribute.ARABIC_ISOLATED;
+    private static final Integer ARABIC_TERMINAL =
+        GVTAttributedCharacterIterator.TextAttribute.ARABIC_TERMINAL;
+    private static final Integer ARABIC_INITIAL =
+        GVTAttributedCharacterIterator.TextAttribute.ARABIC_INITIAL;
+    private static final Integer ARABIC_MEDIAL =
+        GVTAttributedCharacterIterator.TextAttribute.ARABIC_MEDIAL;
+
     /**
      * If the AttributedString contains any arabic chars, assigns an
-     * arabic form attribute, ie. initial|medial|terminal|isolated, to
-     * each arabic char.
+     * arabic form attribute, i&#x2e;e&#x2e; initial|medial|terminal|isolated,
+     * to each arabic char.
      *
      * @param as The string to attach the arabic form attributes to.
      * @return An attributed string with arabic form attributes.  
@@ -80,6 +93,7 @@ public class ArabicTextHandler {
                 }
             }
         }
+
         if (didSomeReordering) {
             // need to reconstruct the reordered attributed string
             String reorderedString = "";
@@ -94,8 +108,10 @@ public class ArabicTextHandler {
                 Map attributes = aci.getAttributes();
                 reorderedAS.addAttributes(attributes, i, i+1);
             }
-            if (charOrder[0] == (aci.getBeginIndex()+1) && charOrder[1] == aci.getBeginIndex()) {
-                // have swapped the first 2 chars, may need to move any position attributes
+            if ((charOrder[0] == (aci.getBeginIndex()+1)) && 
+                (charOrder[1] ==  aci.getBeginIndex())) {
+                // have swapped the first 2 chars, may need to move
+                // any position attributes
 
                 aci.first();
                 Float x = (Float) aci.getAttribute(
@@ -104,112 +120,95 @@ public class ArabicTextHandler {
                     GVTAttributedCharacterIterator.TextAttribute.Y);
 
                 if (x != null && !x.isNaN()) {
-                    reorderedAS.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X,
-                        new Float(Float.NaN), 1, 2);
-                    reorderedAS.addAttribute(GVTAttributedCharacterIterator.TextAttribute.X, x, 0, 1);
+                    reorderedAS.addAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.X,
+                         new Float(Float.NaN), 1, 2);
+                    reorderedAS.addAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.X, 
+                         x, 0, 1);
                 }
                 if (y != null && !y.isNaN()) {
-                    reorderedAS.addAttribute(GVTAttributedCharacterIterator.TextAttribute.Y,
-                        new Float(Float.NaN), 1, 2);
-                    reorderedAS.addAttribute(GVTAttributedCharacterIterator.TextAttribute.Y, y, 0, 1);
+                    reorderedAS.addAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.Y,
+                         new Float(Float.NaN), 1, 2);
+                    reorderedAS.addAttribute
+                        (GVTAttributedCharacterIterator.TextAttribute.Y, 
+                         y, 0, 1);
                 }
             }
             as = reorderedAS;
         }
-
 
         // first assign none to all arabic letters
         int c;
         aci = as.getIterator();
         for (int i = aci.getBeginIndex(); i < aci.getEndIndex(); i++) {
             c = aci.setIndex(i);
-            if (c >= arabicStart && c <= arabicEnd) {
-                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM,
-                                GVTAttributedCharacterIterator.TextAttribute.ARABIC_NONE, i, i+1);
+            if ((c >= arabicStart) && (c <= arabicEnd)) {
+                as.addAttribute(ARABIC_FORM, ARABIC_NONE,i, i+1);
             }
         }
-        aci.first();
+        
+        aci = as.getIterator();  // Make sure ACI tracks ARABIC_FORM
+        int end   = aci.getBeginIndex();
 
-        boolean moreRuns = true;
+        Integer currentForm = ARABIC_NONE;
         // for each run of arabic chars, assign the appropriate form
-        while (moreRuns) {
-            int start = aci.getRunStart(
-                    GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM);
-            int end = aci.getRunLimit(
-                    GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM);
+        while (aci.setIndex(end) != AttributedCharacterIterator.DONE) {
+            int start = aci.getRunStart(ARABIC_FORM);
+            end       = aci.getRunLimit(ARABIC_FORM);
+            char currentChar = aci.setIndex(start);
+            currentForm      = (Integer)aci.getAttribute(ARABIC_FORM);
 
-            aci.setIndex(start);
-
-            if (aci.getAttribute(GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM) != null) {
-
+            if (currentForm == null) {
                 // only modify if the chars in the run are arabic
-
-                int currentIndex = start;
-                while (currentIndex < end) {
-
-                    char currentChar=  aci.setIndex(currentIndex);
-                    char prevChar = currentChar;
-                    int prevCharIndex = currentIndex-1;
-                    if (currentIndex > start) {  // if not at the start
-                        prevChar = aci.setIndex(prevCharIndex);
-                    }
-
-                    while (arabicCharTransparent(currentChar) && currentIndex < end) {
-                        currentIndex++;
-                        currentChar = aci.setIndex(currentIndex);
-                    }
-                    if (currentIndex >= end) {
-                        break;
-                    }
-
-                    if (!arabicCharTransparent(currentChar)) { // if current char is not transparent
-
-                        if (prevCharIndex >= start) {  // if not at the start
-
-                            // if prev char right AND current char left
-                            if (arabicCharShapesRight(prevChar)
-                                && arabicCharShapesLeft(currentChar)) {
-
-                                // then single increment the for of the previous char
-                                aci.setIndex(prevCharIndex);
-                                Integer prevForm = (Integer)aci.getAttribute(
-                                    GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM);
-                                prevForm = new Integer(prevForm.intValue()+1);
-
-                                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM,
-                                                prevForm, prevCharIndex, prevCharIndex+1);
-
-                                // and set the form of the current char to INITIAL
-                                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM,
-                                                GVTAttributedCharacterIterator.TextAttribute.ARABIC_INITIAL,
-                                                currentIndex, currentIndex+1);
-                             }
-
-                            // if not prev char right OR not current char left
-                            // AND current char can be shaped
-                            if ((!arabicCharShapesRight(prevChar) ||
-                                 !arabicCharShapesLeft(currentChar))
-                                 && arabicCharShaped(currentChar)) {
-
-                                // set the form of the current char to ISOLATE
-                                as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM,
-                                                GVTAttributedCharacterIterator.TextAttribute.ARABIC_ISOLATED,
-                                                currentIndex, currentIndex+1);
-                            }
-
-                        // if this is the first arabic char and its shaped, set to ISOLATE
-                        } else if (arabicCharShaped(currentChar)) {
-                            // set the form of the current char to ISOLATE
-                            as.addAttribute(GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM,
-                                            GVTAttributedCharacterIterator.TextAttribute.ARABIC_ISOLATED,
-                                          currentIndex, currentIndex+1);
-                        }
-                    }
-                    currentIndex++;
-                }
+                continue; 
             }
-            if (aci.setIndex(end) == AttributedCharacterIterator.DONE) {
-                moreRuns = false;
+            
+
+            int currentIndex = start;
+            int prevCharIndex = start-1;
+            while (currentIndex < end) {
+                char prevChar = currentChar;
+                currentChar=  aci.setIndex(currentIndex);
+                while (arabicCharTransparent(currentChar) && 
+                       (currentIndex < end)) {
+                    currentIndex++;
+                    currentChar = aci.setIndex(currentIndex);
+                }
+                if (currentIndex >= end) {
+                    break;
+                }
+
+                Integer prevForm = currentForm;
+                currentForm = ARABIC_NONE;
+                if (prevCharIndex >= start) {  // if not at the start
+                    // if prev char right AND current char left
+                    if (arabicCharShapesRight(prevChar)
+                        && arabicCharShapesLeft(currentChar)) {
+                        // Increment the form of the previous char
+                        prevForm = new Integer(prevForm.intValue()+1);
+                        as.addAttribute(ARABIC_FORM, prevForm, 
+                                        prevCharIndex, prevCharIndex+1);
+
+                        // and set the form of the current char to INITIAL
+                        currentForm = ARABIC_INITIAL;
+                    } else if (arabicCharShaped(currentChar)) {
+                        // set the form of the current char to ISOLATE
+                        currentForm = ARABIC_ISOLATED;
+                    }
+
+                    // if this is the first arabic char and its
+                    // shaped, set to ISOLATE
+                } else if (arabicCharShaped(currentChar)) {
+                    // set the form of the current char to ISOLATE
+                    currentForm = ARABIC_ISOLATED;
+                }
+                if (currentForm != ARABIC_NONE)
+                    as.addAttribute(ARABIC_FORM, currentForm,
+                                    currentIndex, currentIndex+1);
+                prevCharIndex = currentIndex;
+                currentIndex++;
             }
         }
         return as;
@@ -264,11 +263,11 @@ public class ArabicTextHandler {
      */
     public static boolean arabicCharTransparent(char c) {
         int charVal = c;
-        if ((charVal >= 0x64B && charVal <= 0x655)
-            || (charVal == 0x0670)
-            || (charVal >= 0x06D6 && charVal <= 0x06E4)
-            || (charVal >= 0x06E7 && charVal <= 0x06E8)
-            || (charVal >= 0x06EA && charVal <= 0x06ED)) {
+        if ((charVal >= 0x064B && charVal <= 0x0655) ||
+            (charVal == 0x0670)                      ||
+            (charVal >= 0x06D6 && charVal <= 0x06E4) ||
+            (charVal >= 0x06E7 && charVal <= 0x06E8) ||
+            (charVal >= 0x06EA && charVal <= 0x06ED)) {
             return true;
         }
         return false;
@@ -283,9 +282,9 @@ public class ArabicTextHandler {
      */
     private static boolean arabicCharShapesRight(char c) {
         int charVal = c;
-        if ((charVal >= 0x622 && charVal <= 0x625)
-         || (charVal == 0x627)
-         || (charVal == 0x629)
+        if ((charVal >= 0x0622 && charVal <= 0x0625)
+         || (charVal == 0x0627)
+         || (charVal == 0x0629)
          || (charVal >= 0x062F && charVal <= 0x0632)
          || (charVal == 0x0648)
          || (charVal >= 0x0671 && charVal <= 0x0673)
@@ -312,8 +311,8 @@ public class ArabicTextHandler {
     private static boolean arabicCharShapesDuel(char c) {
         int charVal = c;
 
-        if ((charVal == 0x626)
-         || (charVal == 0x628)
+        if ((charVal == 0x0626)
+         || (charVal == 0x0628)
          || (charVal >= 0x062A && charVal <= 0x062E)
          || (charVal >= 0x0633 && charVal <= 0x063A)
          || (charVal >= 0x0641 && charVal <= 0x0647)
@@ -364,12 +363,12 @@ public class ArabicTextHandler {
      * exists.
      */
     public static int getSubstituteChar(String unicode, int form) {
-        if (charMap.containsKey(unicode) && form > 0) {
-            int chars[] = (int[])charMap.get(unicode);
-            if (chars[form-1] > 0) {
-                return chars[form-1];
-            }
-        }
+        if (form == 0) return -1;
+        int chars[] = (int[])charMap.get(unicode);
+        if (chars == null) return -1;
+
+        if (chars[form-1] > 0)
+            return chars[form-1];
         return -1;
     }
 
@@ -391,39 +390,36 @@ public class ArabicTextHandler {
         for (int i = aci.getBeginIndex(); i < aci.getEndIndex(); i++) {
             char c = aci.setIndex(i);
             if (arabicChar(c)) {
-                Integer form = (Integer)aci.getAttribute(
-                    GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM);
-
+                Integer form = (Integer)aci.getAttribute(ARABIC_FORM);
                 // see if the c is the start of a ligature
                 if (charStartsLigature(c) && i < aci.getEndIndex()) {
                     char nextChar = aci.setIndex(i+1);
-                    Integer nextForm = (Integer)aci.getAttribute(
-                    GVTAttributedCharacterIterator.TextAttribute.ARABIC_FORM);
+                    Integer nextForm = (Integer)aci.getAttribute(ARABIC_FORM);
                     if (form != null && nextForm != null) {
-                        if (form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_TERMINAL)
-                            && nextForm.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_INITIAL)) {
+                        if (form.equals(ARABIC_TERMINAL)
+                            && nextForm.equals(ARABIC_INITIAL)) {
                             // look for an isolated ligature
-                            int substChar = ArabicTextHandler.getSubstituteChar("" + c + nextChar,
-                                GVTAttributedCharacterIterator.TextAttribute.ARABIC_ISOLATED.intValue());
+                            int substChar = ArabicTextHandler.getSubstituteChar
+                                ("" + c + nextChar,ARABIC_ISOLATED.intValue());
                             if (substChar > -1) {
                                 substString += (char)substChar;
                                 i++;
                                 continue;
                             }
-                        } else if (form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_TERMINAL)) {
+                        } else if (form.equals(ARABIC_TERMINAL)) {
                             // look for a terminal ligature
-                            int substChar = ArabicTextHandler.getSubstituteChar("" + c + nextChar,
-                                GVTAttributedCharacterIterator.TextAttribute.ARABIC_TERMINAL.intValue());
+                            int substChar = ArabicTextHandler.getSubstituteChar
+                                ("" + c + nextChar,ARABIC_TERMINAL.intValue());
                             if (substChar > -1) {
                                 substString += (char)substChar;
                                 i++;
                                 continue;
                             }
-                        } else if (form.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_MEDIAL)
-                                && nextForm.equals(GVTAttributedCharacterIterator.TextAttribute.ARABIC_MEDIAL)) {
+                        } else if (form.equals(ARABIC_MEDIAL)
+                                && nextForm.equals(ARABIC_MEDIAL)) {
                             // look for a medial ligature
-                            int substChar = ArabicTextHandler.getSubstituteChar("" + c + nextChar,
-                                GVTAttributedCharacterIterator.TextAttribute.ARABIC_MEDIAL.intValue());
+                            int substChar = ArabicTextHandler.getSubstituteChar
+                                ("" + c + nextChar,ARABIC_MEDIAL.intValue());
                             if (substChar > -1) {
                                 substString += (char)substChar;
                                 i++;

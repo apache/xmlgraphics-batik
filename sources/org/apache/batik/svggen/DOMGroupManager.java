@@ -65,22 +65,22 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
      * Reference to the GraphicContext this manager will use to
      * reflect style attributes in the tree nodes.
      */
-    private GraphicContext gc;
+    protected GraphicContext gc;
 
     /**
      * DOMTreeManager that this group manager cooperates with
      */
-    private DOMTreeManager domTreeManager;
+    protected DOMTreeManager domTreeManager;
 
     /**
      * Current group's SVG GraphicContext state
      */
-    private SVGGraphicContext groupGC;
+    protected SVGGraphicContext groupGC;
 
     /**
      * Current group node
      */
-    private Element currentGroup;
+    protected Element currentGroup;
 
     /**
      * Constructor
@@ -136,8 +136,9 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
             currentGroup.appendChild(element);
 
             groupGC = domTreeManager.gcConverter.toSVG(gc);
-            SVGGraphicContext deltaGC = processDeltaGC(groupGC,
-                                                       domTreeManager.defaultGC);
+            SVGGraphicContext deltaGC;
+            deltaGC = processDeltaGC(groupGC,
+                                     domTreeManager.defaultGC);
             domTreeManager.getStyleHandler().
                 setStyle(currentGroup, deltaGC.getGroupContext(),
                          domTreeManager.getGeneratorContext());
@@ -217,14 +218,14 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
      * overrides. Only differences in the group context are considered
      * overrides.
      */
-    private int countOverrides(SVGGraphicContext deltaGC) {
+    protected int countOverrides(SVGGraphicContext deltaGC) {
         return deltaGC.getGroupContext().size();
     }
 
     /**
      * Removes properties that do not apply for a specific element
      */
-    private void trimContextForElement(SVGGraphicContext svgGC, Element element) {
+    protected void trimContextForElement(SVGGraphicContext svgGC, Element element) {
         String tag = element.getTagName();
         Map groupAttrMap = svgGC.getGroupContext();
         if (tag != null) {
@@ -246,7 +247,7 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
      * Processes the transform attribute value corresponding to a
      * given transform stack
      */
-    private void setTransform(Element element,
+    protected void setTransform(Element element,
                               TransformStackElement transformStack[]) {
         String transform = domTreeManager.gcConverter.
             toSVG(transformStack).trim();
@@ -259,7 +260,7 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
      * in gc that are different from the values in referenceGc will be
      * present in the delta. Other values will no.
      */
-    private SVGGraphicContext processDeltaGC(SVGGraphicContext gc,
+    protected SVGGraphicContext processDeltaGC(SVGGraphicContext gc,
                                              SVGGraphicContext referenceGc) {
         Map groupDelta = processDeltaMap(gc.getGroupContext(),
                                          referenceGc.getGroupContext());
@@ -310,7 +311,7 @@ public class DOMGroupManager implements SVGSyntax, ErrorConstants {
      * are different from values in referenceMap are place in the
      * returned delta Map.
      */
-    private Map processDeltaMap(Map map, Map referenceMap) {
+    protected Map processDeltaMap(Map map, Map referenceMap) {
         // no need to be synch => HashMap
         Map mapDelta = new HashMap();
         Iterator iter = map.keySet().iterator();

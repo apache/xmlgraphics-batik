@@ -23,7 +23,7 @@ package org.apache.batik.util;
  * 'halt' method.  The Halt method simply sets a boolean that can be
  * checked periodically during expensive processing.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public class HaltingThread extends Thread {

@@ -219,7 +219,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     /**
-     * Returns the concatenated transform of this node. i.e., this
+     * Returns the concatenated transform of this node. That is, this
      * node's transform preconcatenated with it's parent's transforms.
      */
     public AffineTransform getGlobalTransform(){
@@ -237,7 +237,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     /**
      * Sets the composite of this node.
      *
-     * @param composite the composite of this node
+     * @param newComposite the composite of this node
      */
     public void setComposite(Composite newComposite) {
         fireGraphicsNodeChangeStarted();
@@ -832,7 +832,7 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
 
     /**
      * Returns the bounds of the area covered by this node, without
-     * taking any of its rendering attribute into accoun. i.e.,
+     * taking any of its rendering attribute into accoun. That is,
      * exclusive of any clipping, masking, filtering or stroking, for
      * example. The returned value is transformed by the concatenation
      * of the input transform and this node's transform.

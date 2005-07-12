@@ -69,7 +69,7 @@ public interface ValueManager {
      * @param type   A string code as defined in CSSPrimitiveValue. The string
      *               code can only be a string unit type.
      * @param value  The new string value.
-     * @param base   The base URL.
+     * @param engine The CSS engine.
      */
     Value createStringValue(short type, String value, CSSEngine engine)
         throws DOMException;

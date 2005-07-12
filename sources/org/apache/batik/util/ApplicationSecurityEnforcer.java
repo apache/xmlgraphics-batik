@@ -110,7 +110,8 @@ public class ApplicationSecurityEnforcer {
     protected BatikSecurityManager lastSecurityManagerInstalled;
 
     /**
-     * @param appClass class of the applications's main entry point
+     * Creates a new ApplicationSecurityEnforcer.
+     * @param appMainClass class of the applications's main entry point
      * @param securityPolicy resource for the security policy which 
      *        should be enforced for the application. 
      * @param appJarFile the Jar file into which the application is
@@ -127,7 +128,8 @@ public class ApplicationSecurityEnforcer {
 
 
     /**
-     * @param appClass class of the applications's main entry point
+     * Creates a new ApplicationSecurityEnforcer.
+     * @param appMainClass class of the applications's main entry point
      * @param securityPolicy resource for the security policy which 
      *        should be enforced for the application. 
      */

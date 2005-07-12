@@ -40,8 +40,8 @@ import java.io.InputStream;
  *    "Base64DecodeStream: Bad Padding byte (1)."
  * </pre>
  *
- * @author <a href="thomas.deweese@kodak.com">Thomas DeWeese</a>
- * @author <a href="vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:thomas.deweese@kodak.com">Thomas DeWeese</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @author      Chuck McManis
  * @version $Id$
  */

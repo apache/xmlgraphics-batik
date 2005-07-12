@@ -22,6 +22,7 @@ import org.apache.batik.css.engine.CSSStylableElement;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.dom.DOMException;

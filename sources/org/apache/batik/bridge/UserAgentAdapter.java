@@ -302,9 +302,9 @@ public class UserAgentAdapter implements UserAgent {
      *        script was found.
      */
     public ScriptSecurity getScriptSecurity(String    scriptType,
-                                            ParsedURL scriptPURL,
-                                            ParsedURL docPURL){
-        return new DefaultScriptSecurity(scriptType, scriptPURL, docPURL);
+                                            ParsedURL scriptURL,
+                                            ParsedURL docURL){
+        return new DefaultScriptSecurity(scriptType, scriptURL, docURL);
     }
     
     /**
@@ -348,9 +348,9 @@ public class UserAgentAdapter implements UserAgent {
      *        resource was found.
      */
     public ExternalResourceSecurity 
-        getExternalResourceSecurity(ParsedURL resourcePURL,
+        getExternalResourceSecurity(ParsedURL resourceURL,
                                     ParsedURL docURL) {
-        return new RelaxedExternalResourceSecurity(resourcePURL, docURL);
+        return new RelaxedExternalResourceSecurity(resourceURL, docURL);
     }
     
     /**
@@ -362,12 +362,12 @@ public class UserAgentAdapter implements UserAgent {
      * on the ExternalResourceSecurity strategy returned by 
      * getExternalResourceSecurity.
      *
-     * @param scriptURL url for the script, as defined in
-     *        the script's xlink:href attribute. If that
+     * @param resourceURL url for the resource, as defined in
+     *        the resource's xlink:href attribute. If that
      *        attribute was empty, then this parameter should
      *        be null
      * @param docURL url for the document into which the 
-     *        script was found.
+     *        resource was found.
      */
     public void 
         checkLoadExternalResource(ParsedURL resourceURL,

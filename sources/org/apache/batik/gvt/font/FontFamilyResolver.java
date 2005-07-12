@@ -168,8 +168,6 @@ public class FontFamilyResolver {
      * family cannot be resolved then null will be returned.
      *
      * @param fontFamily The UnresolvedFontFamily to resolve
-     * @param textAttributes The attributes of the font that will be derived
-     * from the resolved font family.
      *
      * @return A resolved GVTFontFamily or null if the font family could not
      * be resolved.

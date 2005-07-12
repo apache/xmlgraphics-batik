@@ -19,13 +19,17 @@ package org.apache.batik.bridge;
 
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.dom.svg.SVGPathContext;
+import org.apache.batik.ext.awt.geom.PathLength;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PathParser;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.events.MutationEvent;
 
@@ -35,7 +39,8 @@ import org.w3c.dom.events.MutationEvent;
  * @author <a href="mailto:tkormann@apache.org">Thierry Kormann</a>
  * @version $Id$
  */
-public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
+public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge 
+       implements SVGPathContext {
 
     /**
      * default shape for the update of 'd' when
@@ -123,5 +128,28 @@ public class SVGPathElementBridge extends SVGDecoratedShapeElementBridge {
         default:
             super.handleCSSPropertyChanged(property);
         }
+    }
+
+    Shape      pathLengthShape = null;
+    PathLength pathLength      = null;
+
+    PathLength getPathLengthObj() {
+        Shape s = ((ShapeNode)node).getShape();
+        if (pathLengthShape != s) {
+            pathLength = new PathLength(s);
+            pathLengthShape = s;
+        }
+        return pathLength;
+    }
+
+    // SVGPathContext interface
+    public float getTotalLength() {
+        PathLength pl = getPathLengthObj();
+        return pl.lengthOfPath();
+    }
+
+    public Point2D getPointAtLength(float distance) {
+        PathLength pl = getPathLengthObj();
+        return pl.pointAtLength(distance);
     }
 }

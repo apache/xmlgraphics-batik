@@ -49,9 +49,9 @@ import org.apache.batik.gvt.TextNode;
  * This class is made abstract so that concrete versions can be made
  * for different JDK versions.
  *
- * @author <a href="bill.haneman@ireland.sun.com">Bill Haneman</a>
- * @author <a href="cjolif@ilog.fr">Christophe Jolif</a>
- * @author <a href="tkormann@ilog.fr">Thierry Kormann</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @author <a href="mailto:cjolif@ilog.fr">Christophe Jolif</a>
+ * @author <a href="mailto:tkormann@ilog.fr">Thierry Kormann</a>
  * @version $Id$
  */
 public abstract class AbstractAWTEventDispatcher
@@ -82,7 +82,7 @@ public abstract class AbstractAWTEventDispatcher
     protected GraphicsNode lastHit;
 
     /**
-     * A dummy graphics node to dispacth "deselect" mouse events to. ie.
+     * A dummy graphics node to dispatch "deselect" mouse events to. That is,
      * when the mouse is clicked outside any nodes.
      */
     protected GraphicsNode dummyNode = new TextNode();
@@ -527,10 +527,9 @@ public abstract class AbstractAWTEventDispatcher
             // node.processMouseEvent(gvtevt);
             processMouseEvent(gvtevt);
 
-        } else if (node == null && evt.getID() == MouseEvent.MOUSE_CLICKED
-              && evt.getClickCount() == 1) {
+        } else {
             // this is a deselect event, dispatch it to dummy node
-            gvtevt = new GraphicsNodeMouseEvent(dummyNode,
+            gvtevt = new GraphicsNodeMouseEvent(root,
                                                 evt.getID(),
                                                 evt.getWhen(),
                                                 evt.getModifiers(),
@@ -698,5 +697,3 @@ public abstract class AbstractAWTEventDispatcher
 
     }
 }
-
-

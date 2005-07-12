@@ -96,13 +96,14 @@ public class InterpreterPool {
      */
     public Interpreter createInterpreter(Document document, String language) {
         InterpreterFactory factory = (InterpreterFactory)factories.get(language);
-        Interpreter interpreter = null;
-        if (factory != null)
-            interpreter = factory.createInterpreter
+        if (factory == null) return null;
+
+        Interpreter interpreter = factory.createInterpreter
                 (((SVGOMDocument)document).getURLObject());
-        if (document != null) {
+        if (interpreter == null) return null;
+
+        if (document != null)
             interpreter.bindObject(BIND_NAME_DOCUMENT, document);
-        }
 
         return interpreter;
     }

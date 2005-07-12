@@ -28,7 +28,7 @@ import org.w3c.dom.svg.SVGLength;
  * Default implementation for SVGLength.
  *
  * This implementation provides the basic
- * functionnalities of SVGLength. To have 
+ * functionalities of SVGLength. To have 
  * a complete implementation, an element is
  * required to resolve the units.
  *
@@ -256,7 +256,6 @@ public abstract class AbstractSVGLength
          */
         public float getPixelToMM() {
             return getPixelUnitToMillimeter();
-            
         }
         
         /**

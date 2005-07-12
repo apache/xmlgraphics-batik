@@ -98,7 +98,6 @@ public abstract class AbstractImageHandlerEncoder extends DefaultImageHandler {
     }
 
     /**
-     * @param generatorContext the context in which the handler will work.
      * @param imageDir directory where this handler should generate images.
      *        If null, an SVGGraphics2DRuntimeException is thrown.
      * @param urlRoot root for the urls that point to images created by this

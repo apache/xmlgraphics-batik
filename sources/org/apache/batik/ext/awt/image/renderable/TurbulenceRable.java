@@ -29,7 +29,7 @@ public interface TurbulenceRable extends FilterColorInterpolation {
 
     /**
      * Sets the turbulence region
-     * @param TurbulenceRable region to fill with turbulence function.
+     * @param turbulenceRegion region to fill with turbulence function.
      */
     public void setTurbulenceRegion(Rectangle2D turbulenceRegion);
 

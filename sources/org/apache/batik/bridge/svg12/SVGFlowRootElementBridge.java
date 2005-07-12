@@ -76,7 +76,7 @@ import org.apache.batik.util.SVG12CSSConstants;
 /**
  * Bridge class for the &lt;flowRoot> element.
  *
- * @author <a href="deweese@apache.org">Thomas DeWeese</a>
+ * @author <a href="mailto:deweese@apache.org">Thomas DeWeese</a>
  * @version $Id$
  */
 public class SVGFlowRootElementBridge extends SVGTextElementBridge {

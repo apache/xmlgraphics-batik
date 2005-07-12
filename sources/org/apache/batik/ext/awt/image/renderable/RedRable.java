@@ -33,7 +33,7 @@ import org.apache.batik.ext.awt.image.rendered.TranslateRed;
  * RasterRable This is used to wrap a Rendered Image back into the
  * RenderableImage world.
  *
- * @author <a href="mailto:Thomas.DeWeese@Kodak.com>Thomas DeWeese</a>
+ * @author <a href="mailto:Thomas.DeWeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public class RedRable

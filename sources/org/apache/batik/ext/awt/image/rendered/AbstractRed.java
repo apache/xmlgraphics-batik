@@ -141,9 +141,9 @@ public abstract class AbstractRed implements CachableRed {
     /**
      * Construct an Abstract Rable from a bounds rect and props
      * (may be null).  The srcs Vector will be empty.
-     * @param srcs This is used to initialize the srcs Vector.  All
-     * the members of srcs must be Filter otherwise an error
-     * will be thrown.
+     * @param src will be the first (and only) member of the srcs
+     * Vector. Src is also used to set the ColorModel, SampleModel,
+     * and tile grid offsets.
      * @param bounds this defines the extent of the rable in the
      * user coordinate system.
      * @param cm The ColorModel to use. If null it will default to
@@ -523,8 +523,8 @@ public abstract class AbstractRed implements CachableRed {
     }
 
     /**
-     * Returns the x index of tile under xloc
-     * @param  yloc the x location (in pixels) to get tile for.
+     * Returns the x index of tile under xloc.
+     * @param  xloc the x location (in pixels) to get tile for.
      * @return The tile index under xloc (may be outside tile grid).
      */
     public final int getXTile(int xloc) {
@@ -537,7 +537,7 @@ public abstract class AbstractRed implements CachableRed {
     }
 
     /**
-     * Returns the y index of tile under yloc
+     * Returns the y index of tile under yloc.
      * @param  yloc the y location (in pixels) to get tile for.
      * @return The tile index under yloc (may be outside tile grid).
      */

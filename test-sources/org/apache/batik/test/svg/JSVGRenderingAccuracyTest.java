@@ -43,7 +43,7 @@ import java.awt.image.BufferedImage;
  *
  * Complete Class Desc
  *
- * @author <a href="mailto:deweese@apache.org>l449433</a>
+ * @author <a href="mailto:deweese@apache.org">l449433</a>
  * @version $Id$
  */
 public class JSVGRenderingAccuracyTest extends SamplesRenderingTest 

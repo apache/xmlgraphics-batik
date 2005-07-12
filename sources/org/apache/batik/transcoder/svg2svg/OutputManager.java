@@ -88,7 +88,8 @@ public class OutputManager {
 
     /**
      * Creates a new output manager.
-     * @param s The scanner used for input tokenization.
+     * @param pp The PrettyPrinter used for formatting the output.
+     * @param w The Writer to write the output to.
      */
     public OutputManager(PrettyPrinter pp, Writer w) {
         prettyPrinter = pp;
@@ -155,7 +156,6 @@ public class OutputManager {
     /**
      * Prints top level white spaces.
      * @param text The space text.
-     * @param opt whether the space is optional.
      */
     public void printTopSpaces(char[] text) throws IOException {
         if (prettyPrinter.getFormat()) {
@@ -182,7 +182,7 @@ public class OutputManager {
             if (column + text.length + 3 < prettyPrinter.getDocumentWidth()) {
                 printCharacters(text);
             } else {
-                formatText(text, margin.toString());
+                formatText(text, margin.toString(), false);
                 printCharacter(' ');
             }
             if (column + 3 > prettyPrinter.getDocumentWidth()) {
@@ -403,7 +403,14 @@ public class OutputManager {
     /**
      * Prints an entity reference.
      */
-    public void printEntityReference(char[] name) throws IOException {
+    public void printEntityReference(char[] name, 
+                                     boolean first) throws IOException {
+        if ((prettyPrinter.getFormat()) &&
+            (xmlSpace.get(0) != Boolean.TRUE) &&
+            first) {
+            printNewline();
+            printString(margin.toString());
+        }
         printCharacter('&');
         printCharacters(name);
         printCharacter(';');
@@ -412,7 +419,25 @@ public class OutputManager {
     /**
      * Prints a character entity reference.
      */
-    public void printCharacterEntityReference(char[] code) throws IOException {
+    public void printCharacterEntityReference
+        (char[] code, boolean first, boolean preceedingSpace) 
+        throws IOException {
+        if ((prettyPrinter.getFormat()) &&
+            (xmlSpace.get(0) != Boolean.TRUE)) {
+
+            if (first) {
+                printNewline();
+                printString(margin.toString());
+            } else if (preceedingSpace) {
+                int endCol = column + code.length + 3;
+                if (endCol > prettyPrinter.getDocumentWidth()){
+                    printNewline();
+                    printString(margin.toString());
+                } else {
+                    printCharacter(' ');
+                }
+            }
+        }
         printString("&#");
         printCharacters(code);
         printCharacter(';');
@@ -551,27 +576,35 @@ public class OutputManager {
     /**
      * Prints the character data of an element content.
      */
-    public void printCharacterData(char[] data) throws IOException {
-        if (prettyPrinter.getFormat()) {
-            canIndent = true;
-            if (isWhiteSpace(data)) {
-                int nl = newlines(data);
-                for (int i = 0; i < nl - 1; i++) {
-                    printNewline();
-                }
-            } else {
-                if (xmlSpace.get(0) == Boolean.TRUE) {
-                    printCharacters(data);
-                    canIndent = false;
-                } else {
-                    printNewline();
-                    printString(margin.toString());
-                    formatText(data, margin.toString());
-                }
-            }
-        } else {
+    public boolean printCharacterData(char[] data, 
+                                      boolean first,
+                                      boolean preceedingSpace) 
+        throws IOException {
+        if (!prettyPrinter.getFormat()) {
             printCharacters(data);
+            return false;
         }
+
+        canIndent = true;
+        if (isWhiteSpace(data)) {
+            int nl = newlines(data);
+            for (int i = 0; i < nl - 1; i++) {
+                printNewline();
+            }
+            return true;
+        }
+
+        if (xmlSpace.get(0) == Boolean.TRUE) {
+            printCharacters(data);
+            canIndent = false;
+            return false;
+        }
+
+        if (first) {
+            printNewline();
+            printString(margin.toString());
+        }
+        return formatText(data, margin.toString(), preceedingSpace);
     }
 
     /**
@@ -714,9 +747,10 @@ public class OutputManager {
     /**
      * Formats the given text.
      */
-    protected void formatText(char[] text, String margin) throws IOException {
+    protected boolean formatText(char[] text, String margin,
+                                 boolean preceedingSpace) throws IOException {
         int i = 0;
-
+        boolean startsWithSpace = preceedingSpace;
         loop: while (i < text.length) {
             for (;;) {
                 if (i >= text.length) {
@@ -725,6 +759,7 @@ public class OutputManager {
                 if (!XMLUtilities.isXMLSpace(text[i])) {
                     break;
                 }
+                startsWithSpace = true;
                 i++;
             }
             StringBuffer sb = new StringBuffer();
@@ -735,28 +770,26 @@ public class OutputManager {
                 sb.append(text[i++]);
             }
             if (sb.length() == 0) {
-                break;
+                return startsWithSpace;
             }
-            if (column + sb.length() >= prettyPrinter.getDocumentWidth() - 1) {
-                if (margin.length() + sb.length() <
-                    prettyPrinter.getDocumentWidth() - 1 ||
-                    margin.length() < column) {
+            if (startsWithSpace) {
+                // Consider reformatting ws so things look nicer.
+                int endCol = column + sb.length();
+                if ((endCol >= prettyPrinter.getDocumentWidth() - 1) &&
+                    ((margin.length() + sb.length() <
+                      prettyPrinter.getDocumentWidth() - 1) ||
+                     (margin.length() < column))) {
                     printNewline();
                     printString(margin);
-                    printString(sb.toString());
-                } else {
-                    if (column >= margin.length()) {
-                        printCharacter(' ');
-                    }
-                    printString(sb.toString());
-                }
-            } else {
-                if (column > margin.length()) {
+                } else if (column > margin.length()) {
+                    // Don't print space at start of new line.
                     printCharacter(' ');
                 }
-                printString(sb.toString());
             }
+            printString(sb.toString());
+            startsWithSpace = false;
         }
+        return startsWithSpace;
     }
 
     /**

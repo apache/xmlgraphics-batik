@@ -22,7 +22,7 @@ package org.apache.batik.css.engine;
  *
  * Complete Class Desc
  *
- * @author <a href="mailto:deweese@apache.org>l449433</a>
+ * @author <a href="mailto:deweese@apache.org">l449433</a>
  * @version $Id$
  */
 public interface CSSEngineUserAgent {

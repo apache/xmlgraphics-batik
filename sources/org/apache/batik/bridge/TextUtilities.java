@@ -32,8 +32,8 @@ import org.w3c.dom.css.CSSPrimitiveValue;
 /**
  * A collection of utility method for text.
  *
- * @author <a href="stephane@hillion.org">Stephane Hillion</a>
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public abstract class TextUtilities implements CSSConstants, ErrorConstants {

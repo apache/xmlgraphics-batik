@@ -264,8 +264,10 @@ public class DefaultGraphics2D extends AbstractGraphics2D {
      * left, in which case the coordinate supplied is the location of the
      * leftmost character on the baseline.
      * @param s the <code>String</code> to be rendered
-     * @param x,&nbsp;y the coordinates where the <code>String</code>
-     * should be rendered
+     * @param x the x coordinate where the <code>String</code> should be
+     *          rendered
+     * @param y the y coordinate where the <code>String</code> should be
+     *          rendered
      * @see #setPaint
      * @see java.awt.Graphics#setColor
      * @see java.awt.Graphics#setFont
@@ -292,8 +294,8 @@ public class DefaultGraphics2D extends AbstractGraphics2D {
      * coordinate supplied is the location of the leftmost character
      * on the baseline.
      * @param iterator the iterator whose text is to be rendered
-     * @param x,&nbsp;y the coordinates where the iterator's text is to be
-     * rendered
+     * @param x the x coordinate where the iterator's text is to be rendered
+     * @param y the y coordinate where the iterator's text is to be rendered
      * @see #setPaint
      * @see java.awt.Graphics#setColor
      * @see #setTransform

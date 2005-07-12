@@ -32,7 +32,7 @@ import org.apache.batik.swing.gvt.Overlay;
  *
  * Complete Class Desc
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public class SVGUpdateOverlay implements Overlay {

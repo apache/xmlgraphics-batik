@@ -113,9 +113,9 @@ public abstract class AbstractTiledRed
     /**
      * Construct an Abstract Rable from a bounds rect and props
      * (may be null).  The srcs Vector will be empty.
-     * @param srcs This is used to initialize the srcs Vector.  All
-     * the members of srcs must be Filter otherwise an error
-     * will be thrown.
+     * @param src will be the first (and only) member of the srcs
+     * Vector. Src is also used to set the ColorModel, SampleModel,
+     * and tile grid offsets.
      * @param bounds this defines the extent of the rable in the
      * user coordinate system.
      * @param cm The ColorModel to use. If null it will default to
@@ -180,7 +180,7 @@ public abstract class AbstractTiledRed
      *               and is the size of the whole image.
      * @param tileGridXOff The x location of tile 0,0.
      * @param tileGridYOff The y location of tile 0,0.
-     * @param tileStore The tileStore to use (or null).
+     * @param tiles  The tileStore to use (or null).
      * @param props  Any properties you want to associate with the image.
      */
     protected void init(CachableRed src, Rectangle   bounds,

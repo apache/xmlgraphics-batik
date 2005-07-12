@@ -29,5 +29,12 @@ public interface Mark {
     /*
      * Return the TextNode this Mark is associated with 
      */
-    TextNode getTextNode();
+    public TextNode getTextNode();
+
+    /**
+     * Returns the index of the character that has been hit.
+     *
+     * @return The character index.
+     */
+    public int getCharIndex();
 }

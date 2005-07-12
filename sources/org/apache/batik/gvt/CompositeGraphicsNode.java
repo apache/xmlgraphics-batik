@@ -196,7 +196,14 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
         Rectangle2D bounds = null;
         while ((bounds == null) && i < count) {
             bounds = children[i++].getTransformedBounds(IDENTITY);
+            if (((i & 0x0F) == 0) && HaltingThread.hasBeenHalted())
+                break; // check every 16 children if we have been interrupted.
         }
+        if (HaltingThread.hasBeenHalted()) {
+            invalidateGeometryCache();
+            return null;
+        }
+
         if (bounds == null) {
             primitiveBounds = NULL_RECT;
             return null;
@@ -215,6 +222,9 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
                     primitiveBounds.add(ctb);
                 }
             }
+
+            if (((i & 0x0F) == 0) && HaltingThread.hasBeenHalted())
+                break; // check every 16 children if we have been interrupted.
         }
         
         // Check If we should halt early.
@@ -294,13 +304,13 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * Returns the bounds of the area covered by this node, without
-     * taking any of its rendering attribute into account. i.e.,
+     * taking any of its rendering attribute into account. That is,
      * exclusive of any clipping, masking, filtering or stroking, for
      * example.
      */
     public Rectangle2D getGeometryBounds() {
         if (geometryBounds == null) {
-            // System.out.println("geometryBounds are null");
+            // System.err.println("geometryBounds are null");
             int i=0;
             while(geometryBounds == null && i < count){
                 geometryBounds = 
@@ -327,7 +337,7 @@ public class CompositeGraphicsNode extends AbstractGraphicsNode
 
     /**
      * Returns the bounds of the area covered by this node, without taking any
-     * of its rendering attribute into accoun. i.e., exclusive of any clipping,
+     * of its rendering attribute into accoun. That is, exclusive of any clipping,
      * masking, filtering or stroking, for example. The returned value is
      * transformed by the concatenation of the input transform and this node's
      * transform.

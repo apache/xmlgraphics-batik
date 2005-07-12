@@ -44,6 +44,11 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     protected boolean unspecified;
 
     /**
+     * Whether this attribute is an ID attribute
+     */
+    protected boolean isIdAttr;
+
+    /**
      * The owner element.
      */
     protected AbstractElement ownerElement;
@@ -52,11 +57,6 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * The attribute type information.
      */
     protected TypeInfo typeInfo;
-
-    /**
-     * Whether this attribute node is an ID.
-     */
-    protected boolean isIdAttribute;
 
     /**
      * Creates a new Attr object.
@@ -86,6 +86,7 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      */
     public void setNodeName(String v) {
 	nodeName = v;
+        isIdAttr = ownerDocument.isId(this);
     }
 
     /**
@@ -225,7 +226,14 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
      * <b>DOM</b>: Implements {@link org.w3c.dom.Attr#getIsId()}.
      */
     public boolean isId() {
-        return isIdAttribute || nodeName.equals("id");
+        return isIdAttr;
+    }
+
+    /**
+     * Sets whether this attribute is an ID attribute.
+     */
+    public void setIsId(boolean isId) {
+        isIdAttr = isId;
     }
 
     /**
@@ -248,8 +256,9 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     protected Node export(Node n, AbstractDocument d) {
 	super.export(n, d);
 	AbstractAttr aa = (AbstractAttr)n;
-	aa.nodeName = nodeName;
-	aa.unspecified = false;
+	aa.nodeName     = nodeName;
+	aa.unspecified  = false;
+        aa.isIdAttr     = d.isId(aa);
 	return n;
     }
 
@@ -259,8 +268,9 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     protected Node deepExport(Node n, AbstractDocument d) {
 	super.deepExport(n, d);
 	AbstractAttr aa = (AbstractAttr)n;
-	aa.nodeName = nodeName;
-	aa.unspecified = false;
+	aa.nodeName     = nodeName;
+	aa.unspecified  = false;
+        aa.isIdAttr     = d.isId(aa);
 	return n;
     }
 
@@ -271,8 +281,9 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     protected Node copyInto(Node n) {
 	super.copyInto(n);
 	AbstractAttr aa = (AbstractAttr)n;
-	aa.nodeName = nodeName;
-	aa.unspecified = unspecified;
+	aa.nodeName     = nodeName;
+	aa.unspecified  = unspecified;
+        aa.isIdAttr     = isIdAttr;
 	return n;
     }
 
@@ -283,8 +294,9 @@ public abstract class AbstractAttr extends AbstractParentNode implements Attr {
     protected Node deepCopyInto(Node n) {
 	super.deepCopyInto(n);
 	AbstractAttr aa = (AbstractAttr)n;
-	aa.nodeName = nodeName;
-	aa.unspecified = unspecified;
+	aa.nodeName     = nodeName;
+	aa.unspecified  = unspecified;
+        aa.isIdAttr     = isIdAttr;
 	return n;
     }
 

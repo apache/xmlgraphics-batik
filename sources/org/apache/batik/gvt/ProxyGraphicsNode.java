@@ -100,7 +100,7 @@ public class ProxyGraphicsNode extends AbstractGraphicsNode {
 
     /**
      * Returns the bounds of the area covered by this node, without
-     * taking any of its rendering attribute into account. i.e.,
+     * taking any of its rendering attribute into account. That is,
      * exclusive of any clipping, masking, filtering or stroking, for
      * example.
      */

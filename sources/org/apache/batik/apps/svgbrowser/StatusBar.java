@@ -92,8 +92,7 @@ public class StatusBar extends JPanel {
     protected DisplayThread displayThread;
 
     /**
-     * Creates a new status bar
-     * @param rm the resource manager that finds the message
+     * Creates a new status bar.
      */
     public StatusBar() {
         super(new BorderLayout(5, 5));

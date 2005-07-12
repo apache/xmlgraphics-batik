@@ -25,7 +25,7 @@ import org.apache.batik.gvt.font.GVTGlyphVector;
  *
  * Complete Class Desc
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 class GlyphGroupInfo {

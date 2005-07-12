@@ -103,7 +103,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * the DOMTreeManager to process attributes based on the
      * GraphicContext state and create groups when needed.
      */
-    private DOMTreeManager domTreeManager;
+    protected DOMTreeManager domTreeManager;
 
     /**
      * The DOMGroupManager manages additions to the current group
@@ -115,28 +115,28 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * originating from the same SVGGraphics2D through various
      * createGraphics calls share the same DOMTreeManager.
      */
-    private DOMGroupManager domGroupManager;
+    protected DOMGroupManager domGroupManager;
 
     /**
      * Contains some information for SVG generation.
      */
-    private SVGGeneratorContext generatorCtx;
+    protected SVGGeneratorContext generatorCtx;
 
     /**
      * Used to convert Java 2D API Shape objects to equivalent SVG
      * elements
      */
-    private SVGShape shapeConverter;
+    protected SVGShape shapeConverter;
 
     /**
      * SVG Canvas size
      */
-    private Dimension svgCanvasSize;
+    protected Dimension svgCanvasSize;
 
     /**
      * Used to create proper font metrics
      */
-    private Graphics2D fmg;
+    protected Graphics2D fmg;
 
     {
         BufferedImage bi
@@ -153,7 +153,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * @param SVG Canvas size. May be null (equivalent to 100%, 100%)
+     * Set the Canvas size, this is used to set the width and
+     * height attributes on the outermost 'svg' element.
+     * @param svgCanvasSize SVG Canvas size. May be null (equivalent
+     * to 100%, 100%)
      */
     public final void setSVGCanvasSize(Dimension svgCanvasSize) {
         this.svgCanvasSize = new Dimension(svgCanvasSize);
@@ -167,10 +170,27 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
+     * @return the SVGShape used by this SVGGraphics2D instance to
+     *         turn Java2D shapes into SVG Shape objects.
+     */ 
+    public final SVGShape getShapeConverter() {
+        return shapeConverter;
+    }
+
+    /**
      * @return the DOMTreeManager used by this SVGGraphics2D instance
      */
     public final DOMTreeManager getDOMTreeManager(){
         return domTreeManager;
+    }
+
+    /** 
+     * Set a DOM Tree manager for the SVGGraphics2D.
+     * @param treeMgr the new DOM Tree manager this SVGGraphics2D should use
+     */
+     protected final void setDOMTreeManager(DOMTreeManager treeMgr) {
+        this.domTreeManager = treeMgr;
+        generatorCtx.genericImageHandler.setDOMTreeManager(domTreeManager);
     }
 
      /**
@@ -178,6 +198,14 @@ public class SVGGraphics2D extends AbstractGraphics2D
      */
     protected final DOMGroupManager getDOMGroupManager(){
         return domGroupManager;
+    }
+
+    /** 
+     * Set a new DOM Group manager for this SVGGraphics2D.
+     * @param groupMgr the new DOM Group manager this SVGGraphics2D should use
+     */
+     protected final void setDOMGroupManager(DOMGroupManager groupMgr) {
+	this.domGroupManager = groupMgr;
     }
 
     /**
@@ -210,7 +238,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * @param new extension handler this SVGGraphics2D should use
+     * @param extensionHandler new extension handler this SVGGraphics2D
+     *        should use
      */
     public final void setExtensionHandler(ExtensionHandler extensionHandler) {
         generatorCtx.setExtensionHandler(extensionHandler);
@@ -227,7 +256,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
 
     /**
      * @param domFactory Factory which will produce Elements for the DOM tree
-     *                    this Graphics2D generates.
+     *                   this Graphics2D generates.
      * @param imageHandler defines how images are referenced in the
      *                     generated SVG fragment
      * @param extensionHandler defines how Java 2D API extensions map
@@ -268,7 +297,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * @param generatorContext the <code>SVGGeneratorContext</code> instance
+     * Creates a new SVGGraphics2D object.
+     * @param generatorCtx the <code>SVGGeneratorContext</code> instance
      * that will provide all useful information to the generator.
      * @param textAsShapes if true, all text is turned into SVG shapes in the
      *        convertion. No SVG text is output.
@@ -289,7 +319,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     /**
      * Sets an non null <code>SVGGeneratorContext</code>.
      */
-    private void setGeneratorContext(SVGGeneratorContext generatorCtx) {
+    protected void setGeneratorContext(SVGGeneratorContext generatorCtx) {
         this.generatorCtx = generatorCtx;
 
         this.gc = new GraphicContext(new AffineTransform());
@@ -331,7 +361,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
     }
 
     /**
-     * This private constructor is used in create
+     * This constructor is used in create()
      *
      * @see #create
      */
@@ -515,8 +545,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
      *
      * @param svgRoot an SVG element underwhich the content should 
      *        be appended.
-     * @returns the svg root node of the SVG document associated with 
-     *          this object.
+     * @return the svg root node of the SVG document associated with 
+     *         this object.
      */
     public Element getRoot(Element svgRoot) {
         svgRoot = domTreeManager.getRoot(svgRoot);
@@ -846,9 +876,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * </pre>
      * @param op the filter to be applied to the image before rendering
      * @param img the <code>BufferedImage</code> to be rendered
-     * @param x,&nbsp;y the location in user space where the upper left
-     * corner of the
-     * image is rendered
+     * @param x the x coordinate in user space where the upper left
+     *          corner of the image is rendered
+     * @param y the y coordinate in user space where the upper left
+     *          corner of the image is rendered
      * @see #transform
      * @see #setTransform
      * @see #setComposite
@@ -966,7 +997,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * that no rendering is done if the specified transform is
      * noninvertible.
      * @param img the image to be rendered
-     * @param xform the transformation from image space into user space
+     * @param trans2 the transformation from image space into user space
      * @see #transform
      * @see #setTransform
      * @see #setComposite
@@ -1036,7 +1067,7 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * <code>Transform</code>, and <code>Composite</code> attributes. Note
      * that no rendering is done if the specified transform is
      * noninvertible.
-     *<p>
+     * <p>
      * Rendering hints set on the <code>Graphics2D</code> object might
      * be used in rendering the <code>RenderableImage</code>.
      * If explicit control is required over specific hints recognized by a
@@ -1044,9 +1075,9 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * are used is required, then a <code>RenderedImage</code> should be
      * obtained directly from the <code>RenderableImage</code>
      * and rendered using
-     *{@link #drawRenderedImage(RenderedImage, AffineTransform)}.
+     * {@link #drawRenderedImage(RenderedImage, AffineTransform)}.
      * @param img the image to be rendered
-     * @param xform the transformation from image space into user space
+     * @param trans2 the transformation from image space into user space
      * @see #transform
      * @see #setTransform
      * @see #setComposite
@@ -1120,8 +1151,10 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * left, in which case the coordinate supplied is the location of the
      * leftmost character on the baseline.
      * @param s the <code>String</code> to be rendered
-     * @param x,&nbsp;y the coordinates where the <code>String</code>
-     * should be rendered
+     * @param x the x coordinate where the <code>String</code>
+     *          should be rendered
+     * @param y the y coordinate where the <code>String</code>
+     *          should be rendered
      * @see #setPaint
      * @see java.awt.Graphics#setColor
      * @see java.awt.Graphics#setFont
@@ -1205,8 +1238,8 @@ public class SVGGraphics2D extends AbstractGraphics2D
      * longer text but shapes), but it is graphically accurate.
      *
      * @param iterator the iterator whose text is to be rendered
-     * @param x,&nbsp;y the coordinates where the iterator's text is to be
-     * rendered
+     * @param x the x coordinate where the iterator's text is to be rendered
+     * @param y the y coordinate where the iterator's text is to be rendered
      * @see #setPaint
      * @see java.awt.Graphics#setColor
      * @see #setTransform

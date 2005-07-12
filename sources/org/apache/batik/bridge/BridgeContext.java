@@ -58,6 +58,7 @@ import org.apache.batik.util.CleanerThread;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.Service;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -180,9 +181,10 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected TextPainter textPainter;
 
     /**
-     * Indicates that no DOM listeners should be registered.
-     * In this case the generated GVT tree should be totally
-     * independent of the DOM tree.
+     * Indicates that no DOM listeners should be registered.  In this
+     * case the generated GVT tree should be totally independent of
+     * the DOM tree (in practice text holds references to the source
+     * text elements for font resolution).
      */
     public final static int STATIC      = 0;
     /**
@@ -232,7 +234,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     /**
      * Constructs a new bridge context.
      * @param userAgent the user agent
-     * @param documentLoader document loader
+     * @param loader document loader
      */
     public BridgeContext(UserAgent userAgent,
                          DocumentLoader loader) {
@@ -252,6 +254,40 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         this.viewportMap.put(userAgent, new UserAgentViewport(userAgent));
         this.interpreterPool = interpreterPool;
         this.documentLoader = documentLoader;
+    }
+
+
+    /** 
+     * This function creates a new 'sub' BridgeContext to associated
+     * with 'newDoc' if one currently doesn't exist, otherwise it
+     * returns the BridgeContext currently associated with the
+     * document.
+     * @param newDoc The document to get/create a BridgeContext for.
+     */
+    public BridgeContext createSubBridgeContext(SVGOMDocument newDoc) {
+        CSSEngine eng = newDoc.getCSSEngine();
+        if (eng != null)
+            return (BridgeContext)newDoc.getCSSEngine().getCSSContext();
+
+        BridgeContext subCtx;
+        subCtx = createBridgeContext();
+        subCtx.setGVTBuilder(getGVTBuilder());
+        subCtx.setTextPainter(getTextPainter());
+        subCtx.setDocument(newDoc);
+        subCtx.initializeDocument(newDoc);
+        if (isInteractive())
+            subCtx.addUIEventListeners(newDoc);
+        return subCtx;
+    }
+
+
+    /** 
+     * This function creates a new BridgeContext, it mostly
+     * exists so subclasses can provide an instance of 
+     * themselves when a sub BridgeContext is needed
+     */
+    public BridgeContext createBridgeContext() {
+        return new BridgeContext(getUserAgent(), getDocumentLoader());
     }
 
     /**
@@ -589,15 +625,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                 // since the new document isn't 'tied into' this
                 // bridge context.
                 if (refDoc != document) {
-                    CSSEngine eng = refDoc.getCSSEngine();
-                    if (eng == null) {
-                        BridgeContext subCtx;
-                        subCtx = new BridgeContext(getUserAgent(),
-                                                   getDocumentLoader());
-                        subCtx.setGVTBuilder(getGVTBuilder());
-                        subCtx.setDocument(refDoc);
-                        subCtx.initializeDocument(refDoc);
-                    }
+                    createSubBridgeContext(refDoc);
                 }
                 return ref;
             }
@@ -607,6 +635,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         } catch (InterruptedIOException ex) {
             throw new InterruptedBridgeException();
         } catch (IOException ex) {
+            ex.printStackTrace();
             throw new BridgeException(e, ERR_URI_IO,
                                       new Object[] {uri});
         } catch (IllegalArgumentException ex) {
@@ -786,7 +815,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     /**
      * Returns the bridge associated with the element type
      *
-     * @param nameSpaceURI namespace of the requested element
+     * @param namespaceURI namespace of the requested element
      * @param localName element's local name
      *
      */
@@ -1432,12 +1461,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * on the ExternalResourceSecurity strategy returned by 
      * getExternalResourceSecurity.
      *
-     * @param scriptURL url for the script, as defined in
-     *        the script's xlink:href attribute. If that
+     * @param resourceURL url for the script, as defined in
+     *        the resource's xlink:href attribute. If that
      *        attribute was empty, then this parameter should
      *        be null
      * @param docURL url for the document into which the 
-     *        script was found.
+     *        resource was found.
      */
     public void 
         checkLoadExternalResource(ParsedURL resourceURL,
@@ -1456,7 +1485,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     
     /**
      * Tells whether the given SVG document is Interactive.
-     * We say it is, if it has any <title>, <desc>, or <a> elements,
+     * We say it is, if it has any &lt;title>, &lt;desc>, or &lt;a> elements,
      * of if the 'cursor' property is anything but Auto on any element.
      */
     public boolean isInteractiveDocument(Document doc) {
@@ -1538,10 +1567,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     // bridge extensions support //////////////////////////////////////////////
 
     protected List extensions = null;
+
     /**
      * Registers the bridges to handle SVG 1.0 elements.
-     *
-     * @param ctx the bridge context to initialize
      */
     public void registerSVGBridges() {
         UserAgent ua = getUserAgent();

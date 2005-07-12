@@ -124,8 +124,6 @@ public abstract class AbstractRable implements Filter {
      * can be called long after the object is constructed to reset the
      * state of the Renderable.
      * @param src will become the first (and only) member of the srcs Vector.
-     * @param bounds defines the extent of this Rable in it's user
-     * coordinate system.
      */
     protected void init(Filter src) {
         touch();
@@ -142,8 +140,6 @@ public abstract class AbstractRable implements Filter {
      * state of the Renderable.
      * @param src will also be set as the first (and only) member of
      * the srcs Vector.
-     * @param bounds defines the extent of this Rable in it's user
-     * coordinate system.
      * @param props use to set the properties on this renderable image.
      * Always clears the current properties (even if null).
      */
@@ -159,8 +155,6 @@ public abstract class AbstractRable implements Filter {
      * possibly a bounds.  This can be called long after the object is
      * constructed to reset the state of the Renderable.
      * @param srcs Used the create a new srcs Vector (old sources are dropped).
-     * @param bounds defines the new bounds of the object. If it is null
-     * then the bounds become the union of the bounds of all sources.
      */
     protected void init(List srcs) {
         touch();
@@ -172,8 +166,6 @@ public abstract class AbstractRable implements Filter {
      * possibly a bounds.  This can be called long after the object is
      * constructed to reset the state of the Renderable.
      * @param srcs Used the create a new srcs Vector (old sources are dropped).
-     * @param bounds defines the new bounds of the object. If it is null
-     * then the bounds become the union of the bounds of all sources.
      * @param props use to set the properties on this renderable image.
      * Always clears the current properties (even if null).
      */

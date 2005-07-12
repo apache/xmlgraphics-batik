@@ -35,7 +35,7 @@ import org.apache.batik.ext.awt.image.rendered.DisplacementMapRed;
  * Implements a DisplacementMap operation, which takes pixel values from
  * another image to spatially displace the input image
  *
- * @author <a href="mailto:sheng.pei@eng.sun.com>Sheng Pei</a>
+ * @author <a href="mailto:sheng.pei@eng.sun.com">Sheng Pei</a>
  * @version $Id$
  */
 public class DisplacementMapRable8Bit

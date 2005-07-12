@@ -54,7 +54,6 @@ public class SVGOptionPanel extends OptionPanel {
             (resources.getString("SVGOptionPanel.PrettyPrint"));
         prettyPrintCB.setSelected
             (resources.getBoolean("SVGOptionPanel.PrettyPrintDefault"));
-        prettyPrintCB.setEnabled(false); // not supported yet.
         add(prettyPrintCB, BorderLayout.SOUTH);
     }
 

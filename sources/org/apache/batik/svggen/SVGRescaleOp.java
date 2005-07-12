@@ -49,7 +49,7 @@ public class SVGRescaleOp extends AbstractSVGFilterConverter {
      * Converts a Java 2D API BufferedImageOp into
      * a set of attribute/value pairs and related definitions
      *
-     * @param op BufferedImageOp filter to be converted
+     * @param filter BufferedImageOp filter to be converted
      * @param filterRect Rectangle, in device space, that defines the area
      *        to which filtering applies. May be null, meaning that the
      *        area is undefined.

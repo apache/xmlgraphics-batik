@@ -71,6 +71,11 @@ public class RunnableQueue implements Runnable {
      */
     protected Object stateLock = new Object();
 
+    /**
+     * Used to indicate if the queue was resumed while
+     * still running, so a 'resumed' event can be sent.
+     */
+    protected boolean wasResumed;
 
     /**
      * The Runnable objects list, also used as synchoronization point
@@ -78,6 +83,10 @@ public class RunnableQueue implements Runnable {
      */
     protected DoublyLinkedList list = new DoublyLinkedList();
 
+    /**
+     * Count of preempt entries in queue, so preempt entries
+     * can be kept properly ordered.
+     */
     protected int preemptCount = 0;
 
     /**
@@ -131,21 +140,30 @@ public class RunnableQueue implements Runnable {
 
                 // Mutex for suspention work.
                 synchronized (stateLock) {
-                    if (state != RUNNING) {
-                        state = SUSPENDED;
+                    if (state == RUNNING) {
 
-                        // notify suspendExecution in case it is
-                        // waiting til we shut down.
-                        stateLock.notifyAll();
-
-                        executionSuspended();
-
+                        if (wasResumed) {
+                            wasResumed = false;
+                            executionResumed();
+                        }
+                    } else {
+                        
                         while (state != RUNNING) {
                             state = SUSPENDED;
+
+                            // notify suspendExecution in case it is
+                            // waiting til we shut down.
+                            stateLock.notifyAll();
+
+                            executionSuspended();
+
                             // Wait until resumeExecution called.
-                            stateLock.wait();
+                            try {
+                                stateLock.wait();
+                            } catch(InterruptedException ie) { }
                         }
 
+                        wasResumed = false;
                         executionResumed();
                     }
                 }
@@ -190,7 +208,6 @@ public class RunnableQueue implements Runnable {
                 l.unlock();
                 runnableInvoked(rable);
             }
-        } catch (InterruptedException e) {
         } finally {
             synchronized (this) {
                 runnableQueueThread = null;
@@ -321,10 +338,16 @@ public class RunnableQueue implements Runnable {
             throw new IllegalStateException
                 ("RunnableQueue not started or has exited");
         }
+        // System.err.println("Suspend Called");
         synchronized (stateLock) {
-            if (state == SUSPENDED) 
-                // already suspended...
+            wasResumed = false;
+
+            if (state == SUSPENDED) {
+                // already suspended, notify stateLock so an event is
+                // generated.
+                stateLock.notifyAll();
                 return;
+            }
 
             if (state == RUNNING) {
                 state = SUSPENDING;
@@ -351,12 +374,15 @@ public class RunnableQueue implements Runnable {
      * @throws IllegalStateException if getThread() is null.
      */
     public void resumeExecution() {
+        // System.err.println("Resume Called");
         if (runnableQueueThread == null) {
             throw new IllegalStateException
                 ("RunnableQueue not started or has exited");
         }
 
         synchronized (stateLock) {
+            wasResumed = true;
+
             if (state != RUNNING) {
                 state = RUNNING;
                 stateLock.notifyAll(); // wake it up.
@@ -425,6 +451,7 @@ public class RunnableQueue implements Runnable {
      * Currently just notifies runHandler
      */
     protected synchronized void executionSuspended() {
+        // System.err.println("Suspend Sent");
         if (runHandler != null) {
             runHandler.executionSuspended(this);
         }
@@ -435,6 +462,7 @@ public class RunnableQueue implements Runnable {
      * Currently just notifies runHandler
      */
     protected synchronized void executionResumed() {
+        // System.err.println("Resumed Sent");
         if (runHandler != null) {
             runHandler.executionResumed(this);
         }
@@ -539,7 +567,7 @@ public class RunnableQueue implements Runnable {
          * unlock link and notify locker.  
          * Basic implementation does nothing.
          */
-        public void unlock() throws InterruptedException { return; }
+        public void unlock() { return; }
     }
 
     /**
@@ -578,11 +606,15 @@ public class RunnableQueue implements Runnable {
         /**
          * unlocks this link.
          */
-        public synchronized void unlock() throws InterruptedException {
+        public synchronized void unlock() {
             while (!locked) {
-                // Wait until lock is called...
-                wait();
+                try {
+                    wait(); // Wait until lock is called...
+                } catch (InterruptedException ie) {
+                    // Loop again...
+                }
             }
+            locked = false;
             // Wake the locking thread...
             notify();
         }

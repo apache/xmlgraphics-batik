@@ -79,7 +79,7 @@ public class JDKRegistryEntry extends AbstractRegistryEntry
     /**
      * Decode the URL into a RenderableImage
      *
-     * @param is The input stream that contains the image.
+     * @param purl URL of the image.
      * @param needRawData If true the image returned should not have
      *                    any default color correction the file may 
      *                    specify applied.  

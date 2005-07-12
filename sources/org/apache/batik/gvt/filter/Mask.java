@@ -48,7 +48,7 @@ public interface Mask extends Filter {
     
     /**
      * This returns the current image being masked by the mask node.
-     * @returns The image to mask
+     * @return The image to mask
      */
     public Filter getSource();
     

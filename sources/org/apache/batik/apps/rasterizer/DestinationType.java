@@ -80,8 +80,6 @@ public final class DestinationType {
     /**
      * Returns a transcoder object of the result image type.
      *
-     * @param type Type of the result image.
-     *
      * @return Transcoder object or <tt>null</tt> if there isn't a proper transcoder.
      */
     protected Transcoder getTranscoder(){

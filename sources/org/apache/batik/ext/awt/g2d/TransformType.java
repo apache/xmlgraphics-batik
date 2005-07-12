@@ -82,11 +82,14 @@ public class TransformType{
     }
 
     /**
-     * Convenience for enumeration switching
-     * i.e. switch(transformType.toInt()){
+     * Convenience for enumeration switching.
+     * That is,
+     * <pre>
+     *   switch(transformType.toInt()){
      *       case TransformType.TRANSFORM_TRANSLATE:
      *        ....
      *       case TransformType.TRANSFORM_ROTATE:
+     * </pre>
      */
     public int toInt(){
         return val;

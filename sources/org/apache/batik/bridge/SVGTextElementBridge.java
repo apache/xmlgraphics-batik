@@ -18,6 +18,7 @@
 package org.apache.batik.bridge;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Paint;
 import java.awt.RenderingHints;
@@ -77,8 +78,8 @@ import org.w3c.dom.events.MutationEvent;
 /**
  * Bridge class for the &lt;text> element.
  *
- * @author <a href="stephane@hillion.org">Stephane Hillion</a>
- * @author <a href="bill.haneman@ireland.sun.com">Bill Haneman</a>
+ * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public class SVGTextElementBridge extends AbstractGraphicsNodeBridge 
@@ -87,12 +88,16 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
     protected final static Integer ZERO = new Integer(0);
 
     public static final 
-        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER 
-        = GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
+        AttributedCharacterIterator.Attribute TEXT_COMPOUND_DELIMITER =
+        GVTAttributedCharacterIterator.TextAttribute.TEXT_COMPOUND_DELIMITER;
 
-    public static final AttributedCharacterIterator.Attribute PAINT_INFO 
-        = GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
+    public static final AttributedCharacterIterator.Attribute PAINT_INFO =
+         GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO;
 
+    public static final 
+        AttributedCharacterIterator.Attribute ALT_GLYPH_HANDLER =
+        GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER;
+        
 
     protected AttributedString laidoutText;
 
@@ -517,9 +522,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         // Install the attributes.
         addPaintAttributes(as, e, tn, pi, ctx);
 
-        if (usingComplexSVGFont) 
+        if (usingComplexSVGFont) {
             // Force Complex SVG fonts to be recreated, if we have them.
             tn.setAttributedCharacterIterator(as.getIterator());
+        }
     }
 
     /**
@@ -545,6 +551,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
 
         int lastChar = getElementEndIndex(aci, element);
         TextPaintInfo pi = new TextPaintInfo();
+        // Set some basic props so we can get bounds info for complex paints.
+        pi.visible   = true;        
+        pi.fillPaint = Color.black;
+
         as.addAttribute(PAINT_INFO, pi, firstChar, lastChar+1);
         elemTPI.put(element, pi);
 
@@ -1357,11 +1367,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         Map result = new HashMap();
         String s;
         float f;
-
-        if (element.getTagName().equals(SVG_ALT_GLYPH_TAG)) {
-            result.put
-              (GVTAttributedCharacterIterator.TextAttribute.ALT_GLYPH_HANDLER,
-               new SVGAltGlyphHandler(ctx, element));
+        
+        if (SVG_NAMESPACE_URI.equals(element.getNamespaceURI()) &&
+            element.getLocalName().equals(SVG_ALT_GLYPH_TAG)) {
+            result.put(ALT_GLYPH_HANDLER, 
+                       new SVGAltGlyphHandler(ctx, element));
         }
 
         if (textPath != null) {
@@ -2625,11 +2635,11 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * look for is the charnum th character in the 
      * element
      *
-     * @param list : list of the layouts
-     * @param firstChar : index in the ACI of the first
+     * @param list list of the layouts
+     * @param startIndex index in the ACI of the first
      *   character for the element
-     * @param charnum : index of the character ( among the 
-     *   characters of the element ) looked for.
+     * @param charnum index of the character (among the 
+     *   characters of the element) looked for.
      *
      * @return information about the glyph representing the
      *  character
@@ -2651,8 +2661,7 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                 aci.setIndex(info.characterIndex);
 
                 //check is it is a altGlyph
-                if (aci.getAttribute(GVTAttributedCharacterIterator.
-                                     TextAttribute.ALT_GLYPH_HANDLER) != null){
+                if (aci.getAttribute(ALT_GLYPH_HANDLER) != null){
                     info.glyphIndexStart = 0;
                     info.glyphIndexEnd = info.layout.getGlyphCount()-1;
                 } else {
@@ -2921,7 +2930,4 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return false;
         }
     }
-
-
-    
 }

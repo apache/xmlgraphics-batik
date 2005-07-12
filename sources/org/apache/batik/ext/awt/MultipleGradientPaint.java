@@ -108,8 +108,6 @@ public abstract class MultipleGradientPaint implements Paint {
      *
      * @throws IllegalArgumentException if fractions.length != colors.length,
      * or if colors is less than 2 in size, or if an enumerated value is bad.
-     *
-     * @see PaintContext
      */
     public MultipleGradientPaint(float[] fractions,
                                  Color[] colors,
@@ -211,7 +209,6 @@ public abstract class MultipleGradientPaint implements Paint {
      * Returns the transparency mode for this LinearGradientPaint.
      * @return an integer value representing this LinearGradientPaint object's
      * transparency mode.
-     * @see Transparency
      */
     public int getTransparency() {
         return transparency;

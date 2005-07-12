@@ -31,12 +31,14 @@ import org.apache.batik.gvt.TextNode;
  * @version $Id$
  */
 public abstract class ConcreteTextPainter extends BasicTextPainter {
+
     /**
      * Paints the specified attributed character iterator using the
      * specified Graphics2D and context and font context.
-     * @param shape the shape to paint
+     * @param aci the AttributedCharacterIterator containing the text
+     * @param location the location to paint the text
+     * @param anchor the text anchor position
      * @param g2d the Graphics2D to use
-     * @param context rendering context.
      */
     public void paint(AttributedCharacterIterator aci, Point2D location, 
                       TextNode.Anchor anchor, Graphics2D g2d) {

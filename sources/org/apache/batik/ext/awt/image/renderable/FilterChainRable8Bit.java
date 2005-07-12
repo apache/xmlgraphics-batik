@@ -40,7 +40,7 @@ import org.apache.batik.ext.awt.image.SVGComposite;
  *      one of the axis, a <tt>AffineRable</tt>
  * </ul>
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class FilterChainRable8Bit extends AbstractRable
@@ -206,7 +206,7 @@ public class FilterChainRable8Bit extends AbstractRable
     
     /**
      * Sets the source to be src.
-     * @param src image to the chain.
+     * @param chainSource image to the chain.
      */
     public void setSource(Filter chainSource) {
         if(chainSource == null){

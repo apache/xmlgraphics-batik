@@ -29,7 +29,7 @@ import org.apache.batik.util.gui.JErrorPane;
  * Methods users may want to implement:
  *    displayMessage
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public class SVGUserAgentGUIAdapter extends SVGUserAgentAdapter{

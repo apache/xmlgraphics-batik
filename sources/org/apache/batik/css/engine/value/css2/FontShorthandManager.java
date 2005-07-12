@@ -47,7 +47,7 @@ import org.w3c.dom.DOMException;
  * before an 'ident' or '/' to be font-size and any preceeding
  * number to be font-weight.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public class FontShorthandManager     

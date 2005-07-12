@@ -79,7 +79,8 @@ public class GVTTreeRenderer extends HaltingThread {
      * @param usr2dev The user to device transform.
      * @param dbuffer Whether the double buffering should be enabled.
      * @param aoi The area of interest in the renderer space units.
-     * @param width&nbsp;height The offscreen buffer size.
+     * @param width The offscreen buffer width.
+     * @param height The offscreen buffer height.
      */
     public GVTTreeRenderer(ImageRenderer r, AffineTransform usr2dev,
                            boolean dbuffer,

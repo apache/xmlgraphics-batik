@@ -502,7 +502,7 @@ public final class SVGGVTGlyphVector implements GVTGlyphVector {
         if ( bounds2D == null ){
             bounds2D = new Rectangle2D.Float();
         }
-        cacheTPI = tpi;
+        cacheTPI = new TextPaintInfo(tpi);
         return bounds2D;
     }
 

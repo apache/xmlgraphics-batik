@@ -26,7 +26,7 @@ import org.apache.batik.ext.awt.geom.RectListManager;
 /**
  * Interface for GVT Renderers.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public interface Renderer {
@@ -46,7 +46,7 @@ public interface Renderer {
     /**
      * Repaints the associated GVT tree at least under <tt>area</tt>.
      * 
-     * @param areas the region to be repainted, in the current user
+     * @param area the region to be repainted, in the current user
      * space coordinate system.  
      */
     public void repaint(Shape area);
@@ -84,12 +84,12 @@ public interface Renderer {
      * Turns on/off double buffering in renderer.  Turning off
      * double buffering makes it possible to see the ongoing results
      * of a render operation.
-     .  */
+     */
     public void setDoubleBuffered(boolean isDoubleBuffered);
 
     /**
      * Cause the renderer to ask to be removed from external reference
-     * lists, de-register as a listener to events, etc. so that
+     * lists, de-register as a listener to events, etc.  This is so that
      * in the absence of other existing references, it can be
      * removed by the garbage collector.
      */

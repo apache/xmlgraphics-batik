@@ -65,7 +65,7 @@ import org.apache.batik.gvt.text.TextSpanLayout;
  * @see org.apache.batik.gvt.TextPainter
  * @see org.apache.batik.gvt.text.GVTAttributedCharacterIterator
  *
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public class StrokingTextPainter extends BasicTextPainter {
@@ -1144,7 +1144,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * Returns the outline of the specified decoration type.
      *
      * @param textRuns The list of text runs to get the decoration outline for.
-     * @param decoratonType Indicates the type of decoration required.
+     * @param decorationType Indicates the type of decoration required.
      * eg. underline, overline or strikethrough.
      *
      * @return The decoration outline or null if the text is not decorated.
@@ -1264,7 +1264,7 @@ public class StrokingTextPainter extends BasicTextPainter {
      * If the decoration has no stroke it will return the fill outline
      *
      * @param textRuns The list of text runs to get the decoration outline for.
-     * @param decoratonType Indicates the type of decoration required.
+     * @param decorationType Indicates the type of decoration required.
      * eg. underline, overline or strikethrough.
      *
      * @return The decoration outline or null if the text is not decorated.
@@ -1446,7 +1446,7 @@ public class StrokingTextPainter extends BasicTextPainter {
     public Mark selectLast(TextNode node) {
         AttributedCharacterIterator aci;
         aci = node.getAttributedCharacterIterator();
-        TextHit textHit = new TextHit(aci.getEndIndex(), false);
+        TextHit textHit = new TextHit(aci.getEndIndex()-1, false);
         return  new BasicTextPainter.BasicMark(node, textHit);
     }
 
@@ -1469,8 +1469,8 @@ public class StrokingTextPainter extends BasicTextPainter {
             start = (BasicTextPainter.BasicMark) startMark;
             finish = (BasicTextPainter.BasicMark) finishMark;
         } catch (ClassCastException cce) {
-            throw new
-            Error("This Mark was not instantiated by this TextPainter class!");
+            throw new Error
+                ("This Mark was not instantiated by this TextPainter class!");
         }
 
         TextNode textNode = start.getTextNode();

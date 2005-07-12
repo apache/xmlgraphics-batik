@@ -51,7 +51,7 @@ import org.apache.batik.util.HaltingThread;
  * Simple implementation of the Renderer that simply does static
  * rendering in an offscreen buffer image.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class StaticRenderer implements ImageRenderer {
@@ -118,7 +118,7 @@ public class StaticRenderer implements ImageRenderer {
     }
 
     /**
-     * @param offScreen image where the Renderer should do its rendering
+     * Creates a new StaticRenderer object.
      */
     public StaticRenderer(){
         renderingHints = new RenderingHints(defaultRenderingHints);

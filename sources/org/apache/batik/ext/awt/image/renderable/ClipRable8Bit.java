@@ -39,7 +39,7 @@ import org.apache.batik.ext.awt.image.rendered.RenderedImageCachableRed;
 /**
  * ClipRable implementation
  *
- * @author <a href="mailto:Thomas.DeWeese@Kodak.com>Thomas DeWeese</a>
+ * @author <a href="mailto:Thomas.DeWeese@Kodak.com">Thomas DeWeese</a>
  * @version $Id$
  */
 public class ClipRable8Bit
@@ -75,7 +75,7 @@ public class ClipRable8Bit
 
     /**
      * This returns the current image being masked by the mask node.
-     * @returns The image to mask
+     * @return The image to mask
      */
     public Filter getSource() {
         return (Filter)getSources().get(0);

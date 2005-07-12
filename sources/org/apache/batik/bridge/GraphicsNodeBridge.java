@@ -66,12 +66,12 @@ public interface GraphicsNodeBridge extends Bridge {
     boolean getDisplay(Element e);
 
     /**
-     * <!> FIX ME: Move to Bridge 
-     * 
      * Returns the Bridge instance to be used for a single DOM 
      * element. For example, a static Bridge (i.e., a Bridge for
      * static SVG content) will always return the same instance.
      * A dynamic Bridge will return a new instance on each call.
+     *
+     * <!> FIX ME: Move to Bridge 
      */
     Bridge getInstance();
 
