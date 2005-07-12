@@ -55,7 +55,7 @@ public class JPEGRegistryEntry
     /**
      * Decode the Stream into a RenderableImage
      *
-     * @param is The input stream that contains the image.
+     * @param inIS The input stream that contains the image.
      * @param origURL The original URL, if any, for documentation
      *                purposes only.  This may be null.
      * @param needRawData If true the image returned should not have

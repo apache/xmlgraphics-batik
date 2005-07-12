@@ -221,59 +221,57 @@ public class DOMKeyEvent extends DOMUIEvent {
     protected int charCode;
 
     /**
-     *  <code>ctrlKey</code> indicates whether the 'ctrl' key was
-     *  depressed * during the firing of the event.
+     * Returns whether the 'ctrl' key was depressed during the firing of the
+     * event.
      */
     public boolean getCtrlKey() {
         return ctrlKey;
     }
 
     /**
-     *  <code>shiftKey</code> indicates whether the 'shift' key was
-     *  depressed * during the firing of the event.
+     * Returns whether the 'shift' key was depressed during the firing of the
+     * event.
      */
     public boolean getShiftKey() {
         return shiftKey;
     }
 
     /**
-     *  <code>altKey</code> indicates whether the 'alt' key was
-     *  depressed during * the firing of the event.  On some platforms
-     *  this key may map to an * alternative key name.
+     * Returns whether the 'alt' key was depressed during the firing of the
+     * event.  On some platforms this key may map to an alternative key name.
      */
     public boolean getAltKey() {
         return altKey;
     }
 
     /**
-     *  <code>metaKey</code> indicates whether the 'meta' key was
-     *  depressed * during the firing of the event.  On some platforms
-     *  this key may map to * an alternative key name.
+     * Returns whether the 'meta' key was depressed during the firing of
+     * the event.  On some platforms this key may map to an alternative
+     * key name.
      */
     public boolean getMetaKey() {
         return metaKey;
     }
 
     /**
-     *  The value of <code>keyCode</code> holds the virtual key code
-     *  value of * the key which was depressed if the event is a key
-     *  event.  Otherwise, the * value is zero.
+     * Returns the virtual key code value of the key which was depressed
+     * if the event is a key event.  Otherwise, the value returned is zero.
      */
     public int getKeyCode() {
         return keyCode;
     }
 
     /**
-     *  <code>charCode</code> holds the value of the Unicode character
-     *  * associated with the depressed key if the event is a key
-     *  event.  * Otherwise, the value is zero.
+     * Returns the value of the Unicode character associated with the
+     * depressed key if the event is a key event.  Otherwise, the value
+     * returned is zero.
      */
     public int getCharCode() {
         return charCode;
     }
 
     /**
-     * 
+     * Initializes this KeyEvent.
      * @param typeArg Specifies the event type.
      * @param canBubbleArg Specifies whether or not the event can bubble.
      * @param cancelableArg Specifies whether or not the event's default  action 

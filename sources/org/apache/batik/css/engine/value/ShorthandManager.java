@@ -42,7 +42,6 @@ public interface ShorthandManager {
      * @param ph   The property handler to use.
      * @param lu   The SAC lexical unit used to create the value.
      * @param imp  The property priority.
-     * @param base The base URL.
      */
     void setValues(CSSEngine eng,
                    PropertyHandler ph,

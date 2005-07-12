@@ -40,7 +40,7 @@ import org.apache.batik.ext.awt.image.rendered.TileCacheRed;
  * <tt>PaintContext</tt> for the <tt>ConcretePatterPaint</tt>
  * paint implementation.
  *
- * @author <a href="vincent.hardy@eng.sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class PatternPaintContext implements PaintContext {

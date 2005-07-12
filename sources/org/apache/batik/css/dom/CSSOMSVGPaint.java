@@ -20,6 +20,8 @@ package org.apache.batik.css.dom;
 import org.apache.batik.css.engine.value.FloatValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.svg.ICCColor;
+import org.apache.batik.util.CSSConstants;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
@@ -67,12 +69,16 @@ public class CSSOMSVGPaint extends CSSOMSVGColor implements SVGPaint {
         switch (value.getCssValueType()) {
         case CSSValue.CSS_PRIMITIVE_VALUE:
             switch (value.getPrimitiveType()) {
-            case CSSPrimitiveValue.CSS_IDENT:
-                if (value.getStringValue().equalsIgnoreCase("none")) {
+            case CSSPrimitiveValue.CSS_IDENT: {
+                String str = value.getStringValue();
+                if (str.equalsIgnoreCase(CSSConstants.CSS_NONE_VALUE)) {
                     return SVG_PAINTTYPE_NONE;
+                } else if (str.equalsIgnoreCase
+                           (CSSConstants.CSS_CURRENTCOLOR_VALUE)) {
+                    return SVG_PAINTTYPE_CURRENTCOLOR;
                 }
-                return SVG_PAINTTYPE_CURRENTCOLOR;
-
+                return SVG_PAINTTYPE_RGBCOLOR;
+            }
             case CSSPrimitiveValue.CSS_RGBCOLOR:
                 return SVG_PAINTTYPE_RGBCOLOR;
 
@@ -85,18 +91,25 @@ public class CSSOMSVGPaint extends CSSOMSVGColor implements SVGPaint {
             Value v0 = value.item(0);
             Value v1 = value.item(1);
             switch (v0.getPrimitiveType()) {
+            case CSSPrimitiveValue.CSS_IDENT:
+                return SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR;
             case CSSPrimitiveValue.CSS_URI:
-                switch (v1.getPrimitiveType()) {
-                case CSSPrimitiveValue.CSS_IDENT:
-                    if (value.getStringValue().equalsIgnoreCase("none")) {
-                        return SVG_PAINTTYPE_URI_NONE;
-                    }
-                    return SVG_PAINTTYPE_URI_CURRENTCOLOR;
+                if (v1.getCssValueType() == CSSValue.CSS_VALUE_LIST)
+                    // Should probably check this more deeply...
+                    return SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR;
 
-                case CSSPrimitiveValue.CSS_RGBCOLOR:
-                    if (value.getLength() == 3) {
-                        return SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR;
+                switch (v1.getPrimitiveType()) {
+                case CSSPrimitiveValue.CSS_IDENT: {
+                    String str = v1.getStringValue();
+                    if (str.equalsIgnoreCase(CSSConstants.CSS_NONE_VALUE)) {
+                        return SVG_PAINTTYPE_URI_NONE;
+                    } else if (str.equalsIgnoreCase
+                               (CSSConstants.CSS_CURRENTCOLOR_VALUE)) {
+                        return SVG_PAINTTYPE_URI_CURRENTCOLOR;
                     }
+                    return SVG_PAINTTYPE_URI_RGBCOLOR;
+                }
+                case CSSPrimitiveValue.CSS_RGBCOLOR:
                     return SVG_PAINTTYPE_URI_RGBCOLOR;
                 }
 
@@ -104,7 +117,7 @@ public class CSSOMSVGPaint extends CSSOMSVGColor implements SVGPaint {
                 return SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR;
             }
         }
-        throw new InternalError();
+        return SVG_PAINTTYPE_UNKNOWN;
     }
 
     /**

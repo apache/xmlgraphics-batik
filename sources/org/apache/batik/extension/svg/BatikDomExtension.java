@@ -80,7 +80,8 @@ public class BatikDomExtension
      * be necessary to replace existing tag handlers, although this
      * is discouraged.
      *
-     * @param ctx The DomContext instance to be updated
+     * @param di The ExtensibleDOMImplementation to register the
+     *           extension elements with.
      */
     public void registerTags(ExtensibleDOMImplementation di) {
         di.registerCustomElementFactory

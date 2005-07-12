@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * methods but for now it will have methods to do intersection
  * and enclosure checking.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public interface SVGSVGContext extends SVGContext {
@@ -53,17 +53,18 @@ public interface SVGSVGContext extends SVGContext {
      * Returns true if the given DOM element intersects
      * <tt>svgRect</tt>.
      */
-  public boolean       checkIntersection (Element element, SVGRect rect );
+    public boolean       checkIntersection (Element element, SVGRect rect );
+
     /**
      * Returns true if the given DOM element is enclosed in the
      * <tt>svgRect</tt>.
      */
-  public boolean       checkEnclosure (Element element, SVGRect rect );
+    public boolean       checkEnclosure (Element element, SVGRect rect );
 
     /**
      * Used to inform the user agent that the text selection should be
      * cleared.
      */
-    void deselectAll();
+    public void deselectAll();
 
 };

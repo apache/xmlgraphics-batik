@@ -50,7 +50,7 @@ import org.apache.batik.gvt.text.TextSpanLayout;
  * Implementation of TextSpanLayout which uses java.awt.font.GlyphVector.
  * @see org.apache.batik.gvt.text.TextSpanLayout
  *
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public class GlyphLayout implements TextSpanLayout {
@@ -385,7 +385,6 @@ public class GlyphLayout implements TextSpanLayout {
      * Paints the text layout using the
      * specified Graphics2D and rendering context.
      * @param g2d the Graphics2D to use
-     * @param context The current render context
      */
     public void draw(Graphics2D g2d) {
         syncLayout();
@@ -980,9 +979,8 @@ public class GlyphLayout implements TextSpanLayout {
      * character iterator.  This should already be set as an attribute
      * on the aci.
      *
-     * @param aci The character iterator to get the font attribute from.
-     *
-     * @return The GVTFont to use.  */
+     * @return The GVTFont to use.
+     */
     protected GVTFont getFont() {
         aci.first();
         GVTFont gvtFont = (GVTFont)aci.getAttributes().get(GVT_FONT);
@@ -1078,9 +1076,7 @@ public class GlyphLayout implements TextSpanLayout {
      * vector. This will handle any glyph position adjustments such as
      * dx, dy and baseline offsets.  It will also handle vertical
      * layouts.
-     *
-     * @param applyOffset Specifies whether or not to add the offset position
-     * to each of the glyph positions.  */
+     */
     protected void doExplicitGlyphLayout() {
 
         this.gv.performDefaultLayout();

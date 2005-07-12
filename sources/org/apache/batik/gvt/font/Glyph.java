@@ -212,7 +212,7 @@ public class Glyph {
     /**
      * Sets the transform to be applied to this glyph.
      *
-     * @param The transform to set.
+     * @param transform The transform to set.
      */
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
@@ -265,8 +265,10 @@ public class Glyph {
      * Returns the metics of this Glyph with the specified kerning value
      * applied.
      *
-     * @param kern The kerning value to apply when calculating the glyph
-     * metrics.  
+     * @param hkern The horizontal kerning value to apply when calculating
+     *              the glyph metrics.  
+     * @param vkern The horizontal vertical value to apply when calculating
+     *              the glyph metrics.  
      * @return The kerned glyph metics
      */
     public GVTGlyphMetrics getGlyphMetrics(float hkern, float vkern) {
@@ -359,7 +361,6 @@ public class Glyph {
      * Draws this glyph.
      *
      * @param graphics2D The Graphics2D object to draw to.
-     * @param context The current rendering context.
      */
     public void draw(Graphics2D graphics2D) {
         AffineTransform tr = 

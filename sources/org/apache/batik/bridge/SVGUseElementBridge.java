@@ -112,10 +112,9 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
 
         Element refElement = ctx.getReferencedElement(e, uri);
 
-        SVGOMDocument document
-            = (SVGOMDocument)e.getOwnerDocument();
-        SVGOMDocument refDocument
-            = (SVGOMDocument)refElement.getOwnerDocument();
+        SVGOMDocument document, refDocument;
+        document    = (SVGOMDocument)e.getOwnerDocument();
+        refDocument = (SVGOMDocument)refElement.getOwnerDocument();
         boolean isLocal = (refDocument == document);
 
         BridgeContext theCtx = ctx;
@@ -127,16 +126,16 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         }
             
         // import or clone the referenced element in current document
-        Element localRefElement = (isLocal)
-            ? (Element)refElement.cloneNode(true)
-            : (Element)document.importNode(refElement, true);
+        Element localRefElement;
+        localRefElement = (Element)document.importNode(refElement, true, true);
 
         if (SVG_SYMBOL_TAG.equals(localRefElement.getLocalName())) {
             // The referenced 'symbol' and its contents are deep-cloned into
             // the generated tree, with the exception that the 'symbol'  is
             // replaced by an 'svg'.
-            Element svgElement
-                = document.createElementNS(SVG_NAMESPACE_URI, SVG_SVG_TAG);
+            Element svgElement = document.createElementNS(SVG_NAMESPACE_URI, 
+                                                          SVG_SVG_TAG);
+
             // move the attributes from <symbol> to the <svg> element
             NamedNodeMap attrs = localRefElement.getAttributes();
             int len = attrs.getLength();

@@ -20,7 +20,7 @@ package org.apache.batik.apps.rasterizer;
 /**
  * Describes an error condition in <tt>SVGConverter</tt>
  *
- * @author <a href="vincent.hardy@sun.com">Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public class SVGConverterException extends Exception {

@@ -25,6 +25,7 @@ import org.apache.batik.css.engine.value.LengthManager;
 import org.apache.batik.css.engine.value.FloatValue;
 import org.apache.batik.css.engine.value.svg12.SVG12ValueConstants;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.SVG12CSSConstants;
 
 import org.w3c.css.sac.LexicalUnit;

@@ -35,7 +35,8 @@ public interface PointsHandler {
 
     /**
      * Invoked when a point has been parsed.
-     * @param x,&nbsp;y the coordinates of the point
+     * @param x the x coordinate of the point
+     * @param y the y coordinate of the point
      * @exception ParseException if an error occured while processing the
      *                           points
      */

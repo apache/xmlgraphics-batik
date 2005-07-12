@@ -36,7 +36,7 @@ import org.apache.batik.gvt.font.GVTGlyphVector;
  * @see java.awt.font.TextLayout
  * @see org.apache.batik.gvt.TextPainter
  *
- * @author <a href="bill.haneman@ireland.sun.com>Bill Haneman</a>
+ * @author <a href="mailto:bill.haneman@ireland.sun.com">Bill Haneman</a>
  * @version $Id$
  */
 public interface TextSpanLayout {
@@ -132,9 +132,11 @@ public interface TextSpanLayout {
 
     /**
      * Returns a Shape which encloses the currently selected glyphs
-     * as specified by glyph indices <tt>begin/tt> and <tt>end</tt>.
-     * @param begin the index of the first glyph in the contiguous selection.
-     * @param end the index of the last glyph in the contiguous selection.
+     * as specified by glyph indices <tt>begin</tt> and <tt>end</tt>.
+     * @param beginCharIndex the index of the first glyph in the contiguous
+     *                       selection.
+     * @param endCharIndex the index of the last glyph in the contiguous
+     *                     selection.
      */
      public Shape getHighlightShape(int beginCharIndex, int endCharIndex);
 

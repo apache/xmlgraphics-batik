@@ -243,7 +243,7 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
 
     /**
      * Returns the bounds of the area covered by this node, without
-     * taking any of its rendering attribute into account. i.e.,
+     * taking any of its rendering attribute into account. That is,
      * exclusive of any clipping, masking, filtering or stroking, for
      * example.
      */
@@ -300,8 +300,8 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
 
     /**
      * Initializes the current selection to begin with the character at (x, y).
-     *
-     * @param the anchor of this node
+     * @param x the x coordinate of the start of the selection
+     * @param y the y coordinate of the start of the selection
      */
     public boolean selectAt(double x, double y) {
         beginMark = textPainter.selectAt(x, y, this);
@@ -309,9 +309,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Extends the current selection to the character at (x, y)..
-     *
-     * @param the anchor of this node
+     * Extends the current selection to the character at (x, y).
+     * @param x the x coordinate of the end of the selection
+     * @param y the y coordinate of the end of the selection
      */
     public boolean selectTo(double x, double y) {
         Mark tmpMark = textPainter.selectTo(x, y, beginMark);
@@ -325,9 +325,9 @@ public class TextNode extends AbstractGraphicsNode implements Selectable {
     }
 
     /**
-     * Selects all the text in this TextNode...
-     *
-     * @param the anchor of this node
+     * Selects all the text in this TextNode.  The coordinates are ignored.
+     * @param x the x coordinate of the point the selection was made
+     * @param y the y coordinate of the point the selection was made
      */
     public boolean selectAll(double x, double y) {
         beginMark = textPainter.selectFirst(this);

@@ -56,19 +56,23 @@ import org.w3c.dom.svg.EventListenerInitializer;
  */
 public class BaseScriptingEnvironment {
     /**
-     * Constant used to describe inline scripts
+     * Constant used to describe inline scripts.
+     * <pre>
      * {0} - URL of document containing script.
      * {1} - Element tag
      * {2} - line number of element.
+     * </pre>
      */
     public static final String INLINE_SCRIPT_DESCRIPTION
         = "BaseScriptingEnvironment.constant.inline.script.description";
 
     /**
-     * Constant used to describe inline scripts
+     * Constant used to describe inline scripts.
+     * <pre>
      * {0} - URL of document containing script.
      * {1} - Event attribute name
      * {2} - line number of element.
+     * </pre>
      */
     public static final String EVENT_SCRIPT_DESCRIPTION
         = "BaseScriptingEnvironment.constant.event.script.description";

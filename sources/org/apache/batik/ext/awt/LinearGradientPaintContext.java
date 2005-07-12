@@ -70,9 +70,9 @@ final class LinearGradientPaintContext extends MultipleGradientPaintContext {
      *  @param hints the hints that the context object uses to choose
      *  between rendering alternatives
      *
-     *  @param start gradient start point, in user space
+     *  @param dStart gradient start point, in user space
      *
-     *  @param end gradient end point, in user space
+     *  @param dEnd gradient end point, in user space
      *
      *  @param fractions the fractions specifying the gradient distribution
      *

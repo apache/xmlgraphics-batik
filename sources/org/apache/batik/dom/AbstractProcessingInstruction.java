@@ -63,7 +63,6 @@ public abstract class AbstractProcessingInstruction
 
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#setNodeValue(String)}.
-     * @return {@link #setData(String)}.
      */
     public void setNodeValue(String nodeValue) throws DOMException {
 	setData(nodeValue);

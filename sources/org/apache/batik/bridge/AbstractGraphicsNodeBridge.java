@@ -203,8 +203,14 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
     public void handleDOMNodeInsertedEvent(MutationEvent evt) {
-        // never called. The global listener on the document will
-        // invoke this method on the parent element.
+        if ( evt.getTarget() instanceof Element ){
+            // Handle "generic" bridges.
+            Element e2 = (Element)evt.getTarget();
+            Bridge b = ctx.getBridge(e2);
+            if (b instanceof GenericBridge) {
+                ((GenericBridge) b).handleElement(ctx, e2);
+            }
+        }
     }
 
     /**

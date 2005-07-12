@@ -910,11 +910,10 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * img1 = op.filter(img, null);
      * drawImage(img1, new AffineTransform(1f,0f,0f,1f,x,y), null);
      * </pre>
-     * @param op the filter to be applied to the image before rendering
      * @param img the <code>BufferedImage</code> to be rendered
-     * @param x,&nbsp;y the location in user space where the upper left
-     * corner of the
-     * image is rendered
+     * @param op the filter to be applied to the image before rendering
+     * @param x the x coordinate in user space where the image is rendered
+     * @param y the y coordinate in user space where the image is rendered
      * @see #transform
      * @see #setTransform
      * @see #setComposite
@@ -944,8 +943,10 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * screen.
      *
      * @param g the <code>GlyphVector</code> to be rendered
-     * @param x,&nbsp;y the position in User Space where the glyphs should
-     * be rendered
+     * @param x the x position in user space where the glyphs should be
+     *        rendered
+     * @param y the y position in user space where the glyphs should be
+     *        rendered
      *
      * @see java.awt.Font#createGlyphVector
      * @see java.awt.font.GlyphVector
@@ -1039,10 +1040,8 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * @param paint the <code>Paint</code> object to be used to generate
      * color during the rendering process, or <code>null</code>
      * @see java.awt.Graphics#setColor
-     * @see GradientPaint
-     * @see TexturePaint
      */
-    public void setPaint( Paint paint ){
+    public void setPaint(Paint paint) {
         gc.setPaint(paint);
     }
 
@@ -1051,7 +1050,6 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * Sets the <code>Stroke</code> for the <code>Graphics2D</code> context.
      * @param s the <code>Stroke</code> object to be used to stroke a
      * <code>Shape</code> during the rendering process
-     * @see BasicStroke
      */
     public void setStroke(Stroke s){
         gc.setStroke(s);
@@ -1202,7 +1200,8 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * Rotating with a positive angle theta rotates points on the positive
      * x axis toward the positive y axis.
      * @param theta the angle of rotation in radians
-     * @param x,&nbsp;y coordinates of the origin of the rotation
+     * @param x the x coordinate of the origin of the rotation
+     * @param y the y coordinate of the origin of the rotation
      */
     public void rotate(double theta, double x, double y){
         gc.rotate(theta, x, y);
@@ -1382,9 +1381,9 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      * The <i>user clip</i> modified by this method is independent of the
      * clipping associated with device bounds and visibility.  If no clip has
      * previously been set, or if the clip has been cleared using
-     * {@link Graphics#setClip(Shape) setClip} with a <code>null</code>
-     * argument, the specified <code>Shape</code> becomes the new
-     * user clip.
+     * {@link java.awt.Graphics#setClip(Shape) setClip} with a
+     * <code>null</code> argument, the specified <code>Shape</code> becomes
+     * the new user clip.
      * @param s the <code>Shape</code> to be intersected with the current
      *          <code>Clip</code>.  If <code>s</code> is <code>null</code>,
      *          this method clears the current <code>Clip</code>.
@@ -1417,5 +1416,12 @@ public abstract class AbstractGraphics2D extends Graphics2D implements Cloneable
      */
     public FontRenderContext getFontRenderContext(){
         return gc.getFontRenderContext();
+    }
+
+    /**
+     * @return the {@link GraphicContext} of this <code>Graphics2D</code>.
+     */    
+    public GraphicContext getGraphicContext() {
+        return gc;
     }
 }

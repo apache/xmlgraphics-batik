@@ -14,7 +14,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */package org.apache.batik.ext.swing;
+ */
+package org.apache.batik.ext.swing;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -27,11 +28,14 @@ import javax.swing.text.PlainDocument;
  * @version $Id$
  */
 public class DoubleDocument extends PlainDocument {
+
     /** 
-     * Strip all non digit characters. '-' and '+' are only allowed as the
-     * first character. Only one '.' is allowed.
-     **/
-    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException { 
+     * Strip all non digit characters.  The first character must be '-' or '+'.
+     * Only one '.' is allowed.
+     */
+    public void insertString(int offs, String str, AttributeSet a)
+            throws BadLocationException { 
+
         if (str == null) {
             return;
         }

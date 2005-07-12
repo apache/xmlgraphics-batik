@@ -38,13 +38,13 @@ public abstract class GraphicsNodeChangeAdapter
     /**
      * Invoked when a change has started on a graphics node, but before
      * any changes occure in the graphics node it's self.
-     * @param evt the graphics node change event
+     * @param gnce the graphics node change event
      */
-    public void changeStarted  (GraphicsNodeChangeEvent gnce) { }
+    public void changeStarted(GraphicsNodeChangeEvent gnce) { }
 
     /**
      * Invoked when a change on a graphics node has completed
-     * @param evt the graphics node change event
+     * @param gnce the graphics node change event
      */
     public void changeCompleted(GraphicsNodeChangeEvent gnce) { }
 }

@@ -81,35 +81,35 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link SVGPathElement#getPathLength()}.
      */
     public SVGAnimatedNumber getPathLength() {
-        throw new RuntimeException(" !!! getPathLength()");
+        throw new RuntimeException(" !!! getPathLength() Not Yet Implemented");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGPathElement#getTotalLength()}.
      */
     public float getTotalLength() {
-        throw new RuntimeException(" !!! getTotalLength()");
+        return SVGPathSupport.getTotalLength(this);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGPathElement#getPointAtLength(float)}.
      */
     public SVGPoint getPointAtLength(float distance) {
-        throw new RuntimeException(" !!! getPointAtLength()");
+        return SVGPathSupport.getPointAtLength(this, distance);
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGPathElement#getPathSegAtLength(float)}.
      */
     public int getPathSegAtLength(float distance) {
-        throw new RuntimeException(" !!! getPathSegAtLength()");
+        throw new RuntimeException
+            (" !!! getPathSegAtLength() Not Yet Implemented");
     }
 
     /**
      * <b>DOM</b>: Implements {@link SVGPathElement#getPathSegList()}.
      */
     public SVGPathSegList getPathSegList() {
-        //throw new RuntimeException(" !!! getPathSegList()");
         return SVGAnimatedPathDataSupport.getPathSegList(this);
     }
 
@@ -117,7 +117,6 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link SVGPathElement#getNormalizedPathSegList()}.
      */
     public SVGPathSegList getNormalizedPathSegList() {
-        //throw new RuntimeException(" !!! getNormalizedPathSegList()");
         return SVGAnimatedPathDataSupport.getNormalizedPathSegList(this);
     }
 
@@ -125,7 +124,6 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link SVGPathElement#getAnimatedPathSegList()}.
      */
     public SVGPathSegList getAnimatedPathSegList() {
-        //throw new RuntimeException(" !!! getAnimatedPathSegList()");
         return SVGAnimatedPathDataSupport.getAnimatedNormalizedPathSegList(this);
     }
 
@@ -133,8 +131,8 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link SVGPathElement#getAnimatedNormalizedPathSegList()}.
      */
     public SVGPathSegList getAnimatedNormalizedPathSegList() {
-        //throw new RuntimeException(" !!! getAnimatedNormalizedPathSegList()");
-        return SVGAnimatedPathDataSupport.getAnimatedNormalizedPathSegList(this);
+        return SVGAnimatedPathDataSupport.getAnimatedNormalizedPathSegList
+            (this);
     }
 
     // Factory methods /////////////////////////////////////////////////////
@@ -143,7 +141,6 @@ public class SVGOMPathElement
      * <b>DOM</b>: Implements {@link SVGPathElement#createSVGPathSegClosePath()}.
      */
     public SVGPathSegClosePath createSVGPathSegClosePath() {
-        //throw new RuntimeException(" !!! createSVGPathSegClosePath()");
         return new SVGPathSegClosePath(){
                 public short getPathSegType(){
                     return SVGPathSeg.PATHSEG_CLOSEPATH;

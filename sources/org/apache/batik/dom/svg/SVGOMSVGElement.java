@@ -393,7 +393,7 @@ public class SVGOMSVGElement
         return tr;
     }
     public Element         getElementById ( String elementId ) {
-        return ((SVGOMDocument)getDocument()).getElementById(elementId);
+        return ownerDocument.getChildElementById(this, elementId);
     }
 
     // SVGLocatable ///////////////////////////////////////////////////////

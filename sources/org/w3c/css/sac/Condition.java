@@ -81,7 +81,7 @@ public interface Condition {
     public static final short SAC_LANG_CONDITION		= 6;
     /**
      * This condition checks for a value in a space-separated values in a
-     * specified attribute
+     * specified attribute.
      * example:
      * <pre class="example">
      *   [values~="10"]

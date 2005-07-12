@@ -41,7 +41,9 @@ public interface ErrorConstants {
     /**
      * The error code when a url of a particular format is unreadable 
      * (corrupt).
+     * <pre>
      * {0} = the format that couldn't be read.
+     * </pre>
      */
     public static final String ERR_STREAM_FORMAT_UNREADABLE
         = "stream.format.unreadable";
@@ -49,7 +51,9 @@ public interface ErrorConstants {
     /**
      * The error code when the data in the  url is uninterpretable by this
      * software (meaning it's corrupt or an unsupported format of some sort).
+     * <pre>
      * {0} = the ParsedURL that couldn't be read.
+     * </pre>
      */
     public static final String ERR_URL_UNINTERPRETABLE
         = "url.uninterpretable";
@@ -57,7 +61,9 @@ public interface ErrorConstants {
     /**
      * The error code when a url is unreachable (ussually bad URL,
      * or server is down).
+     * <pre>
      * {0} = the ParsedURL that couldn't be read.
+     * </pre>
      */
     public static final String ERR_URL_UNREACHABLE
         = "url.unreachable";
@@ -66,8 +72,10 @@ public interface ErrorConstants {
     /**
      * The error code when a url of a particular format is unreadable 
      * (corrupt).
+     * <pre>
      * {0} = the format that couldn't be read.
      * {1} = the ParsedURL for file.
+     * </pre>
      */
     public static final String ERR_URL_FORMAT_UNREADABLE
         = "url.format.unreadable";

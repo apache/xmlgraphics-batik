@@ -197,7 +197,7 @@ public class SVGFeImageElementBridge
      *
      * @param ctx the bridge context
      * @param primitiveRegion the primitive region
-     * @param Element the referenced element
+     * @param refElement the referenced element
      * @param toBBoxNeeded true if there is a need to transform to ObjectBoundingBox
      *        space
      * @param filterElement parent filter element
@@ -260,7 +260,7 @@ public class SVGFeImageElementBridge
      *
      * @param ctx the bridge context
      * @param primitiveRegion the primitive region
-     * @param url the url of the image
+     * @param purl the url of the image
      */
     protected static Filter createRasterFeImage(BridgeContext ctx,
                                                 Rectangle2D   primitiveRegion,

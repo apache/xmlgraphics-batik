@@ -120,7 +120,7 @@ public class TranscodingHints extends HashMap {
      * Copies all of the mappings from the specified <tt>Map</tt>
      * to this <tt>TranscodingHints</tt>.
      *
-     * @param t mappings to be stored in this <tt>TranscodingHints</tt>.
+     * @param m mappings to be stored in this <tt>TranscodingHints</tt>.
      * @exception ClassCastException key is not of type
      * <tt>TranscodingHints.Key</tt>
      */

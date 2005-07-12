@@ -881,7 +881,7 @@ public class Parser implements ExtendedParser, Localizable {
 
     /**
      * Parses a CSS2 expression.
-     * @param lex The type of the current lexical unit.
+     * @param param whether the expression to be parsed is a function parameter
      */
     protected LexicalUnit parseExpression(boolean param) {
         LexicalUnit result = parseTerm(null);

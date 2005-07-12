@@ -25,8 +25,8 @@
 <!-- ====================================================================== -->
 <document>
   <header>
-    <title>Batik CVS Repository</title>
-    <subtitle>How to access Batik from CVS</subtitle>
+    <title>Batik SVN Repository</title>
+    <subtitle>How to access Batik from Subversion</subtitle>
     <authors>
       <person name="Thomas DeWeese" email="deweese@apache.org" />
     </authors>
@@ -40,15 +40,12 @@
       </p>
       <ul>
         <li>The first, and prefered method for developers, is
-          through AnonCVS. Anyone can checkout source code from
-          our anonymous CVS server. To do so, simply use the
-          following commands (if you are using a GUI CVS client,
+          through anonymouse Subversion. Anyone can checkout source code from
+          our anonymous SVN server. To do so, simply use the
+          following commands (if you are using a GUI SVN client,
           configure it appropriately):<br/>
           
-          <code>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login</code><br/> 
-          <code>password: anoncvs</code><br/> 
-          <br/> 
-          <code>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-batik</code><br/><br/>
+          <code>svn checkout http://svn.apache.org/repos/asf/xmlgraphics/batik/trunk/</code>
         </li>
 
         <li>The second and probably easiest is by downloading a <link
@@ -59,18 +56,19 @@
         </li>
 
         <li>The third is by downloading a <link
-            href="http://cvs.apache.org/builds/xml-batik">nightly
+            href="http://svn.apache.org/builds/xml-batik">nightly
             build</link>.  The '-cvs-' packages contain a complete
-          copy of CVS.  The '-src-' packages contain only what is
-          needed to build and run Batik.  The biggest difference
-          being that CVS includes the <link href="test.html">test
-            infrastructure</link>.<br/>
+          copy of CVS for a given date (before the move to Subversion).
+          Snapshots of the SVN repository will be made available soon.
+          The '-src-' packages contain only what is needed to build and
+          run Batik.  The biggest difference being that SVN includes the
+          <link href="test.html">test infrastructure</link>.<br/>
         </li>
 
         <li>The fourth is through <link
-            href="http://cvs.apache.org/viewcvs.cgi/xml-batik"
+            href="http://svn.apache.org/viewcvs.cgi/xmlgraphics/batik/"
             >viewcvs</link>.  This provides the ability to traverse
-          the CVS repository over the web, and check differences
+          the SVN repository over the web, and check differences
           between versions.  This is generally only useful for tracking
           a small number of files/changes.
         </li>

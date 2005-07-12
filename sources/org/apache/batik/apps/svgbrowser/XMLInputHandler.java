@@ -47,6 +47,8 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.svg.SVGDocument;
 
 /**
+ * A <tt>SquiggleInputHandler</tt> that handles XSLT transformable
+ * XML documents.
  * This implementation of the <tt>SquiggleInputHandler</tt> class
  * handles XML files by looking for the first
  * &lt;?xml-stylesheet ... ?&gt; processing instruction referencing

@@ -25,7 +25,7 @@ import org.w3c.dom.Node;
 /**
  * This class implements the {@link org.w3c.dom.DocumentType} interface.
  *
- * @version $Id:$
+ * @version $Id$
  */
 public class GenericDocumentType
         extends AbstractChildNode 

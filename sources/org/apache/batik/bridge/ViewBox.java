@@ -405,8 +405,10 @@ public abstract class ViewBox implements SVGConstants, ErrorConstants {
 
         /**
          * Invoked when 'viewBox(x,y,width,height)' has been parsed.
-         * @param x&nbsp;y&nbsp;width&nbsp;height the coordinates of the
-         * viewbox.
+         * @param x the viewbox x coordinate
+         * @param y the viewbox y coordinate
+         * @param width the viewbox width
+         * @param height the viewbox height
          * @exception ParseException if an error occured while processing the
          *                           fragment identifier
          */

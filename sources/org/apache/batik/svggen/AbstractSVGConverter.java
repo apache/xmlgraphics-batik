@@ -53,7 +53,7 @@ public abstract class AbstractSVGConverter implements SVGConverter, ErrorConstan
     protected List defSet = new LinkedList();
 
     /**
-     * @param genratorContext can be used by the SVGConverter extentions
+     * @param generatorContext can be used by the SVGConverter extensions
      *        to create Elements and other types of DOM objects.
      */
     public AbstractSVGConverter(SVGGeneratorContext generatorContext) {

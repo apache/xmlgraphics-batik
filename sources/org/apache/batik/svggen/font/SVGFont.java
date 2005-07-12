@@ -259,7 +259,8 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
     }
 
     /**
-     * Returns a <font>...</font> block, defining the specified font.
+     * Returns a &lt;font&gt;&#x2e;&#x2e;&#x2e;&lt;/font&gt; block,
+     * defining the specified font.
      *
      * @param font The TrueType font to be converted to SVG
      * @param id An XML id attribute for the font element
@@ -504,7 +505,8 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 arabInitGlyphIndex,
                 defaultHorizAdvanceX,
                 // " arabic-form=\"initial\"",
-                SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + SVG_INITIAL_VALUE + XML_CHAR_QUOT,
+                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + 
+                 SVG_INITIAL_VALUE + XML_CHAR_QUOT),
                 code));
             // sb.append("\r\n");
             sb.append(EOL);
@@ -517,8 +519,9 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 font.getGlyph(arabMediGlyphIndex),
                 arabMediGlyphIndex,
                 defaultHorizAdvanceX,
-                SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + SVG_MEDIAL_VALUE + XML_CHAR_QUOT,
                 // " arabic-form=\"medial\"",
+                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + 
+                 SVG_MEDIAL_VALUE + XML_CHAR_QUOT),
                 code));
             // sb.append("\r\n");
             sb.append(EOL);
@@ -531,8 +534,9 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 font.getGlyph(arabTermGlyphIndex),
                 arabTermGlyphIndex,
                 defaultHorizAdvanceX,
-                SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + SVG_TERMINAL_VALUE + XML_CHAR_QUOT,
                 // " arabic-form=\"terminal\"",
+                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + 
+                 SVG_TERMINAL_VALUE + XML_CHAR_QUOT),
                 code));
             // sb.append("\r\n");
             sb.append(EOL);
@@ -545,8 +549,9 @@ public class SVGFont implements XMLConstants, SVGConstants, ScriptTags, FeatureT
                 glyph,
                 glyphIndex,
                 defaultHorizAdvanceX,
-                SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + SVG_ISOLATED_VALUE + XML_CHAR_QUOT,
                 // " arabic-form=\"isolated\"",
+                (XML_SPACE + SVG_ARABIC_FORM_ATTRIBUTE + XML_EQUAL_QUOT + 
+                 SVG_ISOLATED_VALUE + XML_CHAR_QUOT),
                 code));
         } else {
             sb.append(getGlyphAsSVG(

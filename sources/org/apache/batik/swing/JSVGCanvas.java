@@ -28,7 +28,10 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -52,6 +55,7 @@ import org.apache.batik.swing.svg.SVGUserAgent;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.gui.JErrorPane;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
@@ -173,21 +177,41 @@ public class JSVGCanvas extends JSVGComponent {
      * Keeps track of the last known mouse position over the canvas.
      * This is used for displaying tooltips at the right location.
      */
-    protected LocationListener locationListener = null;
+    protected LocationListener locationListener = new LocationListener();
+
+    /**
+     * Mapping of elements to listeners so they can be removed,
+     * if the tooltip is removed.
+     */
+    protected Map toolTipMap = null;
+    protected EventListener toolTipListener = new ToolTipModifier();
+    protected EventTarget   lastTarget = null;;
+    /**
+     * The time of the last tool tip event.
+     */
+    protected long lastToolTipEventTimeStamp;
+
+    /**
+     * The target for which the last tool tip event was fired.
+     */
+    protected EventTarget lastToolTipEventTarget;
+
+
 
     /**
      * Creates a new JSVGCanvas.
      */
     public JSVGCanvas() {
         this(null, true, true);
+        addMouseMotionListener(locationListener);
     }
 
     /**
      * Creates a new JSVGCanvas.
      *
      * @param ua a SVGUserAgent instance or null.
-     * @param eventEnabled Whether the GVT tree should be reactive to mouse and
-     * key events.
+     * @param eventsEnabled Whether the GVT tree should be reactive to mouse
+     *                      and key events.
      * @param selectableText Whether the text should be selectable.
      */
     public JSVGCanvas(SVGUserAgent ua,
@@ -217,6 +241,7 @@ public class JSVGCanvas extends JSVGComponent {
 
             installKeyboardActions();
         }
+        addMouseMotionListener(locationListener);
     }
 
     /**
@@ -520,6 +545,35 @@ public class JSVGCanvas extends JSVGComponent {
 
     }
 
+    protected void installSVGDocument(SVGDocument doc) {
+        if (svgDocument != null) {
+            EventTarget root;
+            root = (EventTarget)svgDocument.getRootElement();
+            root.removeEventListener(SVGConstants.SVG_EVENT_MOUSEOVER,
+                                     toolTipListener, false);
+            root.removeEventListener(SVGConstants.SVG_EVENT_MOUSEOUT,
+                                     toolTipListener, false);
+            lastTarget = null;
+        }
+
+        if (toolTipMap != null) {
+            toolTipMap.clear();
+        }
+
+        if (doc != null) {
+            EventTarget root;
+            root = (EventTarget)doc.getRootElement();
+            // On mouseover, it sets the tooltip to the given value
+            root.addEventListener(SVGConstants.SVG_EVENT_MOUSEOVER,
+                                  toolTipListener, false);
+            // On mouseout, it removes the tooltip
+            root.addEventListener(SVGConstants.SVG_EVENT_MOUSEOUT,
+                                  toolTipListener, false);
+        }
+
+        super.installSVGDocument(doc);
+    }
+
     // ----------------------------------------------------------------------
     // Actions
     // ----------------------------------------------------------------------
@@ -733,7 +787,7 @@ public class JSVGCanvas extends JSVGComponent {
 
     /**
      * The <tt>CanvasUserAgent</tt> only adds tooltips to the behavior of the
-     * default <tt>BridgeUserAgent</tt>.<br /> A tooltip will be displayed
+     * default <tt>BridgeUserAgent</tt>. A tooltip will be displayed
      * wheneven the mouse lingers over an element which has a &lt;title&gt; or a
      * &lt;desc&gt; child element.
      */
@@ -747,16 +801,6 @@ public class JSVGCanvas extends JSVGComponent {
             = "JSVGCanvas.CanvasUserAgent.ToolTip.descOnly";
         final String TOOLTIP_TITLE_AND_TEXT
             = "JSVGCanvas.CanvasUserAgent.ToolTip.titleAndDesc";
-
-        /**
-         * The time of the last tool tip event.
-         */
-        protected long lastToolTipEventTimeStamp;
-
-        /**
-         * The target for which the last tool tip event was fired.
-         */
-        protected EventTarget lastToolTipEventTarget;
 
         /**
          * The handleElement method builds a tool tip from the
@@ -787,65 +831,103 @@ public class JSVGCanvas extends JSVGComponent {
 
             // Don't handle tool tips for the root SVG element.
             if (elt.getParentNode() == 
-                    elt.getOwnerDocument().getDocumentElement()) {
+                elt.getOwnerDocument().getDocumentElement()) {
                 return;
             }
 
+            Element parent;
+            // When node is removed data is old parent node
+            // since we can't get it otherwise.
+            if (data instanceof Element) parent = (Element)data;
+            else                         parent = (Element)elt.getParentNode();
+
+            Element descPeer = null;
+            Element titlePeer = null;
             if (elt.getLocalName().equals(SVGConstants.SVG_TITLE_TAG)) {
-                // If there is a <desc> peer, do nothing as the tooltip will
-                // be handled when handleElement is invoked for the <desc>
-                // peer.
-                if (hasPeerWithTag
-                    (elt,
-                     SVGConstants.SVG_NAMESPACE_URI,
-                     SVGConstants.SVG_DESC_TAG)){
-                    return;
-                }
-                
-                elt.normalize();
-                if (elt.getFirstChild() == null) {
-                    return;
-                }
-                String toolTip = elt.getFirstChild().getNodeValue();
-                if (toolTip == null || toolTip.length() == 0) {
-                    return;
-                }
-                toolTip = Messages.formatMessage
-                    (TOOLTIP_TITLE_ONLY,
-                     new Object[]{toFormattedHTML(toolTip)});
-                
-                setToolTip((Element)(elt.getParentNode()), toolTip);
-            } else if (elt.getLocalName().equals
-                       (SVGConstants.SVG_DESC_TAG)) {
-                //  If there is a <title> peer, prepend its content to the
-                // content of the <desc> element.
-                elt.normalize();
-                if (elt.getFirstChild() == null) {
-                    return;
-                }
-                String toolTip = elt.getFirstChild().getNodeValue();
-                if (toolTip == null || toolTip.length() == 0) {
-                    return;
-                }
-                
-                Element titlePeer =
-                    getPeerWithTag(elt,
-                                   SVGConstants.SVG_NAMESPACE_URI,
-                                   SVGConstants.SVG_TITLE_TAG);
-                if (titlePeer != null) {
-                    titlePeer.normalize();
-                    toolTip = Messages.formatMessage(TOOLTIP_TITLE_AND_TEXT,
-                                                     new Object[] {
-                                                         toFormattedHTML(titlePeer.getFirstChild().getNodeValue()),
-                                                         toFormattedHTML(toolTip)});
+                if (data == Boolean.TRUE) 
+                    titlePeer = elt;
+                descPeer = getPeerWithTag(parent,
+                                           SVGConstants.SVG_NAMESPACE_URI,
+                                           SVGConstants.SVG_DESC_TAG);
+            } else if (elt.getLocalName().equals(SVGConstants.SVG_DESC_TAG)) {
+                if (data == Boolean.TRUE) 
+                    descPeer = elt;
+                titlePeer = getPeerWithTag(parent,
+                                           SVGConstants.SVG_NAMESPACE_URI,
+                                           SVGConstants.SVG_TITLE_TAG);
+            }
+
+            String titleTip = null;
+            if (titlePeer != null) {
+                titlePeer.normalize();
+                if (titlePeer.getFirstChild() != null)
+                    titleTip = titlePeer.getFirstChild().getNodeValue();
+            }
+
+            String descTip = null;
+            if (descPeer != null) {
+                descPeer.normalize();
+                if (descPeer.getFirstChild() != null)
+                    descTip = descPeer.getFirstChild().getNodeValue();
+            }
+
+            final String toolTip;
+            if ((titleTip != null) && (titleTip.length() != 0)) {
+                if ((descTip != null) && (descTip.length() != 0)) {
+                    toolTip = Messages.formatMessage
+                        (TOOLTIP_TITLE_AND_TEXT,
+                         new Object[] { toFormattedHTML(titleTip),
+                                        toFormattedHTML(descTip)});
                 } else {
-                    toolTip =
-                        Messages.formatMessage
-                        (TOOLTIP_DESC_ONLY,
-                         new Object[]{toFormattedHTML(toolTip)});
+                    toolTip = Messages.formatMessage
+                        (TOOLTIP_TITLE_ONLY,
+                         new Object[]{toFormattedHTML(titleTip)});
                 }
-                
-                setToolTip((Element)(elt.getParentNode()), toolTip);
+            } else {
+                if ((descTip != null) && (descTip.length() != 0)) {
+                    toolTip = Messages.formatMessage
+                        (TOOLTIP_DESC_ONLY,
+                         new Object[]{toFormattedHTML(descTip)});
+                } else {
+                    toolTip = null;
+                }
+            }
+
+            if (toolTip == null) {
+                removeToolTip(parent);
+                return;
+            }
+
+            if (lastTarget != parent) {
+                setToolTip(parent, toolTip);
+            } else {
+                // Already has focus check if it already has tip text.
+                Object o = null;
+                if (toolTipMap != null) {
+                    o = toolTipMap.get(parent);
+                    toolTipMap.put(parent, toolTip);
+                }
+
+                if (o != null) {
+                    // Update components tooltip text now.
+                    EventQueue.invokeLater(new Runnable() {
+                            public void run() {
+                                setToolTipText(toolTip);
+                                MouseEvent e = new MouseEvent
+                                    (JSVGCanvas.this,
+                                     MouseEvent.MOUSE_MOVED,
+                                     System.currentTimeMillis(),
+                                     0,
+                                     locationListener.getLastX(),
+                                     locationListener.getLastY(),
+                                     0,
+                                     false);
+                                ToolTipManager.sharedInstance().mouseMoved(e);
+                            }
+                        });
+                } else {
+                    EventQueue.invokeLater(new ToolTipRunnable(toolTip));
+                }
             }
         }
 
@@ -880,11 +962,11 @@ public class JSVGCanvas extends JSVGComponent {
          * Checks if there is a peer element of a given type.  This returns the
          * first occurence of the given type or null if none is found.
          */
-        public Element getPeerWithTag(Element elt,
+        public Element getPeerWithTag(Element parent,
                                       String nameSpaceURI,
                                       String localName) {
 
-            Element p = (Element)elt.getParentNode();
+            Element p = (Element)parent;
             if (p == null) {
                 return null;
             }
@@ -918,22 +1000,21 @@ public class JSVGCanvas extends JSVGComponent {
          * Sets the tool tip on the input element.
          */
         public void setToolTip(Element elt, String toolTip){
-            EventTarget target = (EventTarget)elt;
-            elt.normalize();
+            if (toolTipMap == null) {
+                toolTipMap = new WeakHashMap();
+            }
 
-            // On mouseover, set the tooltip to the title value
-            target.addEventListener(SVGConstants.SVG_EVENT_MOUSEOVER,
-                                    new ToolTipModifier(toolTip, this),
-                                    false);
+            toolTipMap.put(elt, toolTip);
 
-            // On mouseout, remove the tooltip
-            target.addEventListener(SVGConstants.SVG_EVENT_MOUSEOUT,
-                                    new ToolTipModifier(null, this),
-                                    false);
+            if (elt == lastTarget)
+                EventQueue.invokeLater(new ToolTipRunnable(toolTip));
+        }
 
-            if (locationListener == null) {
-                locationListener = new LocationListener();
-                addMouseMotionListener(locationListener);
+        public void removeToolTip(Element elt) {
+            if (toolTipMap != null)
+                toolTipMap.remove(elt);
+            if (lastTarget == elt) { // clear ToolTip.
+                EventQueue.invokeLater(new ToolTipRunnable(null));
             }
         }
 
@@ -967,28 +1048,28 @@ public class JSVGCanvas extends JSVGComponent {
                 dialog.setVisible(true); // Safe to be called from any thread
             }
         }
-
-        /**
-         * Sets the time and element of the last tool tip event handled.
-         */
-        public void setLastToolTipEvent(long t, EventTarget et) {
-            lastToolTipEventTimeStamp = t;
-            lastToolTipEventTarget = et;
-        }
-
-        /**
-         * Checks if the specified event time and element are the same
-         * as the last tool tip event.
-         */
-        public boolean matchLastToolTipEvent(long t, EventTarget et) {
-            return lastToolTipEventTimeStamp == t
-                && lastToolTipEventTarget == et;
-        }
     }
 
     // ----------------------------------------------------------------------
     // Tooltip
     // ----------------------------------------------------------------------
+
+    /**
+     * Sets the time and element of the last tool tip event handled.
+     */
+    public void setLastToolTipEvent(long t, EventTarget et) {
+        lastToolTipEventTimeStamp = t;
+        lastToolTipEventTarget = et;
+    }
+
+    /**
+     * Checks if the specified event time and element are the same
+     * as the last tool tip event.
+     */
+    public boolean matchLastToolTipEvent(long t, EventTarget et) {
+        return lastToolTipEventTimeStamp == t
+            && lastToolTipEventTarget == et;
+    }
 
     /**
      * Helper class. Simply keeps track of the last known mouse
@@ -997,6 +1078,10 @@ public class JSVGCanvas extends JSVGComponent {
     protected class LocationListener extends MouseMotionAdapter {
 
         protected int lastX, lastY;
+
+        public LocationListener () { 
+            lastX = 0; lastY = 0; 
+        }
 
         public void mouseMoved(MouseEvent evt) {
             lastX = evt.getX();
@@ -1013,65 +1098,99 @@ public class JSVGCanvas extends JSVGComponent {
     }
 
     /**
-     * Sets a specific tooltip on the JSVGCanvas when a given event occurs. This
-     * listener is used in the handleElement method to set, remove or modify the
-     * JSVGCanvas tooltip on mouseover and on mouseout.<br/>
+     * Sets a specific tooltip on the JSVGCanvas when a given event occurs. 
+     * This listener is used in the handleElement method to set, remove or 
+     * modify the JSVGCanvas tooltip on mouseover and on mouseout.<br/>
      *
      * Because we are on a single <tt>JComponent</tt> we trigger an artificial
-     * <tt>MouseEvent</tt> when the toolTip is set to a non-null value, so as to
-     * make sure it will show after the <tt>ToolTipManager</tt>'s default delay.
+     * <tt>MouseEvent</tt> when the toolTip is set to a non-null value, so as 
+     * to make sure it will show after the <tt>ToolTipManager</tt>'s default 
+     * delay.
      */
     protected class ToolTipModifier implements EventListener {
-        /**
-         * Value of the toolTip
-         */
-        protected String toolTip;
-
         /**
          * The CanvasUserAgent used to track the last tool tip event.
          */
         protected CanvasUserAgent canvasUserAgent;
 
         /**
-         * @param toolTip value to which the JSVGCanvas should be
-         *        set when the event occurs.
-         * @param cua the CanvasUserAgent which will be used to track
-         *        the last tool tip event.
+         * Creates a new ToolTipModifier object.
          */
-        public ToolTipModifier(String toolTip, CanvasUserAgent cua) {
-            this.toolTip = toolTip;
-            canvasUserAgent = cua;
+        public ToolTipModifier() {
         }
 
         public void handleEvent(Event evt){
             // Don't set the tool tip if another ToolTipModifier
             // has already handled this event (as it will have been
             // a higher priority tool tip).
-            if (canvasUserAgent.matchLastToolTipEvent(evt.getTimeStamp(),
-                                                     evt.getTarget())) {
+            if (matchLastToolTipEvent(evt.getTimeStamp(), evt.getTarget())) {
                 return;
             }
-            canvasUserAgent.setLastToolTipEvent(evt.getTimeStamp(), 
-                                                evt.getTarget());
+            setLastToolTipEvent(evt.getTimeStamp(), evt.getTarget());
+            EventTarget prevLastTarget = lastTarget;
+            if (SVGConstants.SVG_EVENT_MOUSEOVER.equals(evt.getType())) {
+                lastTarget = evt.getTarget();
+            } else if (SVGConstants.SVG_EVENT_MOUSEOUT.equals(evt.getType())) {
+                // related target is one it is entering or null.
+                org.w3c.dom.events.MouseEvent mouseEvt;
+                mouseEvt = ((org.w3c.dom.events.MouseEvent)evt);
+                lastTarget = mouseEvt.getRelatedTarget(); 
+            }
 
-            EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        setToolTipText(toolTip);
+            if (toolTipMap != null) {
+                Object o = toolTipMap.get(lastTarget);
+                final String theToolTip;
+                if (o == null) theToolTip = null;
+                else           theToolTip = (String)o;
+                if (prevLastTarget != lastTarget)
+                    EventQueue.invokeLater(new ToolTipRunnable(theToolTip));
+            }
+        }
+    }
 
-                        if (toolTip != null) {
-                            MouseEvent e = new MouseEvent
-                                (JSVGCanvas.this,
-                                 MouseEvent.MOUSE_ENTERED,
-                                 System.currentTimeMillis(),
-                                 0,
-                                 locationListener.getLastX(),
-                                 locationListener.getLastY(),
-                                 0,
-                                 false);
-                            ToolTipManager.sharedInstance().mouseEntered(e);
-                        }
-                    }
-                });
+    protected class ToolTipRunnable implements Runnable {
+        String theToolTip;
+        public ToolTipRunnable(String toolTip) {
+            this.theToolTip = toolTip;
+        }
+
+        public void run() {
+            setToolTipText(theToolTip);
+
+            MouseEvent e;
+            if (theToolTip != null) {
+                e = new MouseEvent
+                    (JSVGCanvas.this,
+                     MouseEvent.MOUSE_ENTERED,
+                     System.currentTimeMillis(),
+                     0,
+                     locationListener.getLastX(),
+                     locationListener.getLastY(),
+                     0,
+                     false);
+                ToolTipManager.sharedInstance().mouseEntered(e);
+                e = new MouseEvent
+                    (JSVGCanvas.this,
+                     MouseEvent.MOUSE_MOVED,
+                     System.currentTimeMillis(),
+                     0,
+                     locationListener.getLastX(),
+                     locationListener.getLastY(),
+                     0,
+                     false);
+                ToolTipManager.sharedInstance().mouseMoved(e);
+            } else {
+                e = new MouseEvent
+                    (JSVGCanvas.this,
+                     MouseEvent.MOUSE_MOVED,
+                     System.currentTimeMillis(),
+                     0,
+                     locationListener.getLastX(),
+                     locationListener.getLastY(),
+                     0,
+                     false);
+                ToolTipManager.sharedInstance().mouseMoved(e);
+            }
         }
     }
 }

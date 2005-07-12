@@ -24,7 +24,6 @@ import java.util.Locale;
 
 import org.apache.batik.script.InterpreterException;
 import org.python.util.PythonInterpreter;
-;
 
 /**
  * A simple implementation of <code>Interpreter</code> interface to use

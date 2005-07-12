@@ -3,7 +3,7 @@
 
 <!--
 
-   Copyright 2000-2002  The Apache Software Foundation 
+   Copyright 2000-2002,2004-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -189,7 +189,7 @@ and colorfully designed textiles through Batik's high quality graphical
 representation capabilities.</p>
  
 <p>The Batik Project encourages participation through its mailing list:
-<link href="http://xml.apache.org/mail.html">http://xml.apache.org/mail.html</link></p>
+<link href="http://xmlgraphics.apache.org/mail.html">http://xmlgraphics.apache.org/mail.html</link></p>
  
 <p>For more information about the Batik project please see
 <link href="http://xml.apache.org/batik/">http://xml.apache.org/batik/</link></p>

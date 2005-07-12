@@ -52,7 +52,7 @@ public class ParsedURLData {
 
     /**
      * GZIP header magic number bytes, like found in a gzipped
-     * files, which are encoded in Intel format (ie. little indian).
+     * files, which are encoded in Intel format (i&#x2e;e&#x2e; little indian).
      */
     public final static byte GZIP_MAGIC[] = {(byte)0x1f, (byte)0x8b};
 
@@ -178,7 +178,6 @@ public class ParsedURLData {
             return new URL(protocol, host, port, file);
         }
 
-        // System.err.println("toString: " + toString());
         return new URL(toString());
     }
 

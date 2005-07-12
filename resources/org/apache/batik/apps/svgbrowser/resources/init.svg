@@ -38,19 +38,11 @@
         <filter id="shadow" filterRes="200" x="-.2" y="-.1">
             <feGaussianBlur stdDeviation="3 3" />
             <feOffset dx="-10" dy="10" />
+            <feComponentTransfer result="shadow">
+               <feFuncA type="linear" slope=".5" intercept="0" />
+            </feComponentTransfer>
+            <feComposite in="SourceGraphic" in2="shadow" />
         </filter>
-
-        <filter id="innerShadow" filterRes="500" x="-.2" y="0">
-            <feGaussianBlur stdDeviation="3 4" in="SourceAlpha"/>
-            <feOffset dx="-10" dy="15" result="offsetShadow"/>
-            <feSpecularLighting in="offsetShadow" surfaceScale="-3" 
-                specularConstant="1" specularExponent="20" 
-                lighting-color="white"  result="light" kernelUnitLength="1" >
-                <feDistantLight azimuth="45" elevation="60" />
-            </feSpecularLighting>
-            <feComposite in2="SourceGraphic" in="light" operator="out" />
-        </filter>
-
 
             <path id="Outer_Ellipse" style="stroke:none;" d="M453.747,104.22C333.581-15.897,157.944-35.015,61.45,61.516c-96.493,96.533-77.301,272.161,42.866,392.278C224.48,573.911,400.117,593.031,496.61,496.498c96.493-96.533,77.302-272.161-42.863-392.278z
                          M461.486,454.618c-74.193,74.224-222.251,46.516-330.696-61.886C22.343,284.329-5.426,136.283,68.766,62.059c74.193-74.222,222.251-46.516,330.698,61.887c108.445,108.402,136.214,256.449,62.021,330.672z"/>
@@ -61,11 +53,11 @@
        <g id="words">
          <use xlink:href="#text"/>
          <g clip-path="url(#textClip)">
-             <use xlink:href="#text" transform="scale(0.9) rotate(20) translate(-20,-15)" filter="url(#shadow)" fill="black" opacity="0.4"/>
+             <use xlink:href="#text" transform="scale(0.9) rotate(20) translate(-20,-15)" filter="url(#shadow)" fill="black"/>
          </g>
        </g>
-        <g opacity="1.0" transform="translate(225, 250) rotate(-260)" id="rotatedText">
-        <g  transform="scale(0.9) rotate(20)">
+        <g transform="translate(225, 250) rotate(-260)" id="rotatedText">
+        <g  transform="scale(0.9) rotate(20)" opacity="0.9">
         <use xlink:href="#words"/>
         </g></g>
             <path id="Inner_Ellipse" style="stroke:none;" d="M399.464,123.946C291.018,15.543,142.959-12.163,68.766,62.059c-74.192,74.224-46.423,222.27,62.023,330.672c108.445,108.402,256.503,136.11,330.696,61.886c74.192-74.223,46.424-222.27-62.021-330.672z
@@ -77,7 +69,7 @@
         <circle cx="50" cy="50" r="50"/>
     </g>
 
-    <g filter="url(#innerShadow)" opacity=".5">
+    <g filter="url(#shadow)">
         <use xlink:href="#Outer_Ellipse" fill-opacity="1"/>
     </g>
 
@@ -86,7 +78,7 @@
 
     <g transform="translate(50, 154) scale(1.5, 1.5)">
     <use x="0" y="0" xlink:href="#batik" 
-         fill="black" fill-opacity=".5" filter="url(#shadow)"/>
+         fill="black" filter="url(#shadow)"/>
 
     <use x="0" y="0" xlink:href="#batik" 
          fill="none" stroke-width="8" stroke="rgb(13, 97, 160)"/>
@@ -97,7 +89,8 @@
 
         <use xlink:href="#rotatedText" fill="white" stroke-width="2" stroke="black"/>
         <g  transform="translate(50, 50) scale(0.254) rotate(30)">
-        <use xlink:href="#text" fill="black" filter="url(#shadow)" opacity="0.4" transform="translate(-10, 8)"/>
+        <use xlink:href="#text" fill="black" filter="url(#shadow)" 
+             transform="translate(-10, 8)"/>
         <use xlink:href="#text" stroke="black" stroke-width="16" fill="none"/>
         <use xlink:href="#text" stroke="none" fill="white"/>
         </g>

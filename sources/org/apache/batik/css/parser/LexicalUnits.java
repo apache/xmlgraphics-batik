@@ -71,7 +71,7 @@ public interface LexicalUnits {
     int SEMI_COLON = 8;
 
     /**
-     * Represents the '>' lexical unit.
+     * Represents the '&gt;' lexical unit.
      */
     int PRECEDE = 9;
 
@@ -131,17 +131,17 @@ public interface LexicalUnits {
     int IDENTIFIER = 20;
 
     /**
-     * Represents the '<!--' lexical unit.
+     * Represents the '&lt;&#x21;--' lexical unit.
      */
     int CDO = 21;
 
     /**
-     * Represents the '-->' lexical unit.
+     * Represents the '--&gt;' lexical unit.
      */
     int CDC = 22;
 
     /**
-     * Represents the '!important' lexical unit.
+     * Represents the '&#x21;important' lexical unit.
      */
     int IMPORTANT_SYMBOL = 23;
 

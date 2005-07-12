@@ -101,7 +101,8 @@ public class BridgeEventSupport implements SVGConstants {
         public void handleEvent(Event evt) {
             dispatcher.removeGraphicsNodeMouseListener(listener);
             dispatcher.removeGraphicsNodeKeyListener(listener);
-            evt.getTarget().removeEventListener("SVGUnload", this, false);
+            evt.getTarget().removeEventListener
+                (SVGConstants.SVG_SVGUNLOAD_EVENT_TYPE, this, false);
         }
     }
 

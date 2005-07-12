@@ -50,9 +50,14 @@ public class CSSElementSelector extends AbstractElementSelector {
 	if (name == null) {
 	    return true;
 	}
-	return (e.getPrefix() == null)
-	    ? e.getNodeName().equalsIgnoreCase(name)
-	    : e.getLocalName().equalsIgnoreCase(name);
+        String eName;
+        if (e.getPrefix() == null) eName = e.getNodeName();
+        else                       eName = e.getLocalName();
+        // According to CSS 2 section 5.1 element
+        // names in selectors are case-sensitive for XML.
+        return eName.equals(name);
+        // For HTML
+        // return eName.equalsIgnoreCase(name);
     }
 
     /**

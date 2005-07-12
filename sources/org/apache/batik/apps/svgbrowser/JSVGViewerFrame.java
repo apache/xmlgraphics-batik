@@ -124,6 +124,7 @@ import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.TIFFTranscoder;
 import org.apache.batik.transcoder.print.PrintTranscoder;
+import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.Service;
 import org.apache.batik.util.SVGConstants;
@@ -1330,10 +1331,13 @@ public class JSVGViewerFrame
                                      svgDoc.getURL());
                             }
 
-                            // if (prettyPrint) {
-                            // } else {
+                            if (prettyPrint) {
+                                SVGTranscoder trans = new SVGTranscoder();
+                                trans.transcode(new TranscoderInput(svgDoc), 
+                                                new TranscoderOutput(writer));
+                            } else {
                                 DOMUtilities.writeDocument(svgDoc, writer);
-                                // }
+                            }
 
                             writer.close();
 
@@ -2738,12 +2742,12 @@ public class JSVGViewerFrame
          * on the ExternalResourceSecurity strategy returned by 
          * getExternalResourceSecurity.
          *
-         * @param scriptURL url for the script, as defined in
-         *        the script's xlink:href attribute. If that
+         * @param resourceURL url for the script, as defined in
+         *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
          * @param docURL url for the document into which the 
-         *        script was found.
+         *        resource was found.
          */
         public void 
             checkLoadExternalResource(ParsedURL resourceURL,

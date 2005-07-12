@@ -2,7 +2,7 @@
 
 <!--
 
-   Copyright 2000-2004  The Apache Software Foundation 
+   Copyright 2000-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@
 <!-- version $Id$        -->
 <!-- ========================================================================= -->
 
-<book title="Apache Batik documentation" copyright="2000-2002 The Apache Software Foundation">
+<book title="Apache Batik documentation" copyright="2000-2005 The Apache Software Foundation">
     <!-- ======================= -->
     <!-- Home                    -->
     <!-- ======================= -->
-    <external                    label="Home"                      href="http://xml.apache.org/"/>
+    <external                    label="Home"                      href="http://xmlgraphics.apache.org/"/>
     <separator/>
 
     <!-- ======================= -->
@@ -36,6 +36,7 @@
     <!-- ======================= -->
     <page id="index"              label="Overview"                 source="index.xml"/>
     <faqs id="faqs"               label="FAQ"                      source="faq.xml"/>
+    <external                     label="Wiki"                     href="http://wiki.apache.org/xmlgraphics-batik/FrontPage" />
     <page id="license"            label="License"                  source="license.xml"/>
     <external                     label="Download"                 href="http://www.apache.org/dyn/closer.cgi/xml/batik" />
     <page id="install"            label="Install"                  source="installing.xml"/>
@@ -90,7 +91,7 @@
     <!-- ======================= -->
     <!-- Admin / Status          -->
     <!-- ======================= -->
-    <page id="cvs"                label="CVS Repository"           source="cvs.xml"/>
+    <page id="svn"                label="SVN Repository"           source="svn.xml"/>
     <external                     label="Bug Database"             href="http://issues.apache.org/bugzilla"/>
     <separator/>
     <page id="status"             label="Status"                   source="status.xml" />

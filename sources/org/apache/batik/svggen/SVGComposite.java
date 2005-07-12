@@ -26,14 +26,16 @@ import org.apache.batik.ext.awt.g2d.GraphicContext;
 
 /**
  * Utility class that converts a Composite object into
- * a set of SVG properties and definitions. Here is
- * how Composites are mapped to SVG:
- * + AlphaComposite.SRC_OVER with extra alpha is mapped
- *   to the opacity attribute
- * + AlphaComposite's other rules are translated into
- *   predefined filter effects.
- * + Custom Composite implementations are handled by the
- *   extension mechanism.
+ * a set of SVG properties and definitions.
+ * <p>Here is how Composites are mapped to SVG:</p>
+ * <ul>
+ *   <li>AlphaComposite.SRC_OVER with extra alpha is mapped
+ *     to the opacity attribute</li>
+ *   <li>AlphaComposite's other rules are translated into
+ *     predefined filter effects.</li>
+ *   <li>Custom Composite implementations are handled by the
+ *     extension mechanism.</li>
+ * </ul>
  *
  * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
@@ -56,10 +58,8 @@ public class SVGComposite implements SVGConverter {
     private SVGGeneratorContext generatorContext;
 
     /**
-     * @param domFactory used by the converter to create Element and other
-     *        needed DOM objects
-     * @param extensionHandler can be invoked to handle unknown Composite
-     *        implementations.
+     * @param generatorContext The generator context used for handling
+     *        custom and alpha composites
      */
     public SVGComposite(SVGGeneratorContext generatorContext) {
         this.svgAlphaComposite =  new SVGAlphaComposite(generatorContext);

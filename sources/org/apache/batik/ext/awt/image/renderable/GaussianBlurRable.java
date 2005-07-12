@@ -21,7 +21,7 @@ package org.apache.batik.ext.awt.image.renderable;
  * Implements a GaussianBlur operation, where the blur size is
  * defined by standard deviations along the x and y axis.
  *
- * @author <a href="mailto:vincent.hardy@eng.sun.com>Vincent Hardy</a>
+ * @author <a href="mailto:vincent.hardy@eng.sun.com">Vincent Hardy</a>
  * @version $Id$
  */
 public interface GaussianBlurRable extends FilterColorInterpolation {

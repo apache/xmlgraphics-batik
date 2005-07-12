@@ -25,6 +25,7 @@ import org.apache.batik.css.engine.value.StringValue;
 import org.apache.batik.css.engine.value.URIValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
+import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.util.CSSConstants;
 
 import org.w3c.dom.css.CSSPrimitiveValue;
@@ -36,7 +37,7 @@ import org.w3c.css.sac.LexicalUnit;
  *
  * Complete Class Desc
  *
- * @author <a href="mailto:deweese@apache.org>l449433</a>
+ * @author <a href="mailto:deweese@apache.org">l449433</a>
  * @version $Id$
  */
 public class SrcManager extends IdentifierManager {

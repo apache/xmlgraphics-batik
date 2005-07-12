@@ -156,7 +156,7 @@ public class ExtendedParserWrapper implements ExtendedParser {
     /**
      * Parse a CSS style declaration (without '{' and '}').
      *
-     * @param styleValue The declaration.
+     * @param source The declaration.
      * @exception CSSException Any CSS exception, possibly
      *            wrapping another exception.
      * @exception IOException An IO exception from the parser,
@@ -267,7 +267,7 @@ public class ExtendedParserWrapper implements ExtendedParser {
     }
 
     /**
-     * Parse a CSS priority value (e.g. "!important").
+     * Parse a CSS priority value (e&#x2e;g&#x2e; "&#x21;important").
      * 
      * 
      * @exception CSSException Any CSS exception, possibly

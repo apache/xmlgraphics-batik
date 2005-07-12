@@ -56,7 +56,10 @@ public class DefaultFragmentIdentifierHandler
 
     /**
      * Invoked when 'viewBox(x,y,width,height)' has been parsed.
-     * @param x&nbsp;y&nbsp;width&nbsp;height the coordinates of the viewbox.
+     * @param x the x coordinate of the viewbox.
+     * @param y the y coordinate of the viewbox.
+     * @param width the width of the viewbox.
+     * @param height the height of the viewbox.
      * @exception ParseException if an error occured while processing the
      *                           fragment identifier
      */

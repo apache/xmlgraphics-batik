@@ -575,7 +575,6 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
     * @param filterElement the filter element that defines the attributes
     * @param filteredElement the element referencing the filter
     * @param filteredNode the graphics node to filter (objectBoundingBox)
-    * @param uctx the unit processor context (userSpaceOnUse)
     * @param ctx the bridge context
     */
    public static
@@ -991,7 +990,6 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param hStr the height of the region
      * @param targetNode the graphics node (needed for objectBoundingBox)
      * @param uctx the unit processor context (needed for userSpaceOnUse)
-     * @param rc the graphics node render context
      */
     protected static Rectangle2D convertRegion(String xStr,
                                                String yStr,
@@ -1070,7 +1068,6 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param Tx the original transformation
      * @param node the graphics node that defines the coordinate
      *             system to move into
-     * @param rc the graphics node render context
      */
     public static AffineTransform toObjectBBox(AffineTransform Tx,
                                                GraphicsNode node) {
@@ -1092,7 +1089,6 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
      * @param r the original Rectangle2D
      * @param node the graphics node that defines the coordinate
      *             system to move into
-     * @param rc the graphics node render context
      */
     public static Rectangle2D toObjectBBox(Rectangle2D r,
                                            GraphicsNode node) {

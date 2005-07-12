@@ -104,7 +104,7 @@ public class Scanner {
 
     /**
      * Creates a new Scanner object.
-     * @param r The reader to scan.
+     * @param s The string to scan.
      */
     public Scanner(String s) throws ParseException {
         try {
@@ -421,9 +421,9 @@ public class Scanner {
                     start = position - 1;
                     do {
                         nextChar();
-                        if (current == '\\') {
+                        while (current == '\\') {
                             nextChar();
-                            escape();
+                           escape();
                         }
                     } while (current != -1 &&
                              ScannerUtilities.isCSSNameCharacter
@@ -514,7 +514,7 @@ public class Scanner {
                 }
                 do {
                     nextChar();
-                    if (current == '\\') {
+                    while (current == '\\') {
                         nextChar();
                         escape();
                     }
@@ -751,30 +751,34 @@ public class Scanner {
                 type = LexicalUnits.IDENTIFIER;
                 return;
             default:
-                if (ScannerUtilities.isCSSIdentifierStartCharacter
-                    ((char)current)) {
-                    // Identifier
+                if (current == '\\') {
                     do {
                         nextChar();
-                        if (current == '\\') {
-                            nextChar();
-                            escape();
-                        }
-                    } while (current != -1 && 
-                             ScannerUtilities.isCSSNameCharacter
-                             ((char)current));
-                    if (current == '(') {
+                        escape();
+                    } while(current == '\\');
+                } else if (!ScannerUtilities.isCSSIdentifierStartCharacter
+                           ((char)current)) {
+                    nextChar();
+                    throw new ParseException("identifier.character",
+                                             reader.getLine(),
+                                             reader.getColumn());
+                }
+                // Identifier
+                while ((current != -1) && 
+                       ScannerUtilities.isCSSNameCharacter((char)current)) {
+                    nextChar();
+                    while (current == '\\') {
                         nextChar();
-                        type = LexicalUnits.FUNCTION;
-                        return;
+                        escape();
                     }
-                    type = LexicalUnits.IDENTIFIER;
+                }
+                if (current == '(') {
+                    nextChar();
+                    type = LexicalUnits.FUNCTION;
                     return;
                 }
-                nextChar();
-                throw new ParseException("identifier.character",
-                                         reader.getLine(),
-                                         reader.getColumn());
+                type = LexicalUnits.IDENTIFIER;
+                return;
             }
         } catch (IOException e) {
             throw new ParseException(e);

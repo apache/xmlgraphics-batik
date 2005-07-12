@@ -1,6 +1,6 @@
 <!--
 
-   Copyright 2000-2004  The Apache Software Foundation 
+   Copyright 2000-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -77,42 +77,43 @@ To display the available targets type:
 
   <target name="init" depends="init-args">
     <tstamp/>
-    <property name="Project"         value="Batik"/>
-    <property name="project"         value="batik"/>
-    <property name="year"            value="2004"/>
-    <property name="version"         value="1.5.1"/>
-    <property name="revisionType"    value=""/>
-    <property name="revisionNumber"  value="" />
+    <property name="Project"            value="Batik"/>
+    <property name="project"            value="batik"/>
+    <property name="year"               value="2005"/>
+    <property name="version"            value="1.6"/>
+    <property name="revisionType"       value=""/>
+    <property name="revisionNumber"     value=""/>
 
     <property file="build.properties"/>
-    <property name="debug"           value="on"/>
-    <property name="optimize"        value="off"/>
-    <property name="deprecation"     value="off"/>
+    <property name="debug"              value="off"/>
+    <property name="optimize"           value="on"/>
+    <property name="deprecation"        value="on"/>
 
-    <property name="src"             value="sources"/>
-    <property name="resources"       value="resources"/>
-    <property name="testsrc"         value="test-sources"/>
-    <property name="testresources"   value="test-resources"/>
-    <property name="dest"            value="classes"/>
-    <property name="build"           value="${project}-${version}"/>
-    <property name="docs"            value="${build}/docs"/>
-    <property name="lib"             value="lib"/>
-    <property name="samples"         value="samples"/>
-    <property name="package-prefix"  value="org/apache/${project}"/>
+    <property name="src"                value="sources"/>
+    <property name="resources"          value="resources"/>
+    <property name="testsrc"            value="test-sources"/>
+    <property name="testresources"      value="test-resources"/>
+    <property name="dest"               value="classes"/>
+    <property name="build"              value="${project}-${version}"/>
+    <property name="docs"               value="${build}/docs"/>
+    <property name="lib"                value="lib"/>
+    <property name="samples"            value="samples"/>
+    <property name="package-prefix"     value="org/apache/${project}"/>
 
-    <property name="class-prefix"    value="org.apache.${project}"/>
+    <property name="class-prefix"       value="org.apache.${project}"/>
 
-    <property name="xdocs"           value="xdocs"/>
-    <property name="skins"           value="xdocs/skins"/>
-    <property name="stylebook-class" value="org.apache.stylebook.StyleBook"/>
+    <property name="xdocs"              value="xdocs"/>
+    <property name="skins"              value="xdocs/skins"/>
+    <property name="stylebook-class"    value="org.apache.stylebook.StyleBook"/>
+    <property name="javadoc-exclusions" value=""/>
 
-    <property name="site"            value="../xml-site/targets/${project}"/>
-    <property name="site-skin"       value="${skins}/xml.apache.org/"/>
-    <property name="print-skin"      value="${skins}/printer/"/>
+    <property name="site"               value="../xml-site/targets/${project}"/>
+    <property name="site-skin"          value="${skins}/xml.apache.org/"/>
+    <property name="print-skin"         value="${skins}/printer/"/>
 
-    <property name="test-reports"    value="test-reports" />
-    <property name="test-references" value="test-references" />
-    <property name="test-resources"  value="test-resources" />
+    <property name="test-reports"       value="test-reports" />
+    <property name="test-references"    value="test-references" />
+    <property name="test-resources"     value="test-resources" />
 
     <available property="rhino.present" classname="org.mozilla.javascript.Context">
       <classpath refid="libs-classpath"/>
@@ -131,6 +132,25 @@ To display the available targets type:
     <condition property="src-jdk" value="sources-1.3">
       <not>
         <equals arg1="${jdk14.present}" arg2="true"/>
+      </not>
+    </condition>
+
+    <condition property="javadoc-exclusions"
+               value="org.apache.batik.script.rhino">
+      <not>
+        <equals arg1="${rhino.present}" arg2="true"/>
+      </not>
+    </condition>
+    <condition property="javadoc-exclusions"
+               value="${javadoc-exclusions},org.apache.batik.script.jpython">
+      <not>
+        <equals arg1="${jpython.present}" arg2="true"/>
+      </not>
+    </condition>
+    <condition property="javadoc-exclusions"
+               value="${javadoc-exclusions},org.apache.batik.script.jacl">
+      <not>
+        <equals arg1="${jacl.present}" arg2="true"/>
       </not>
     </condition>
   </target>
@@ -260,7 +280,7 @@ To display the available targets type:
        </fileset>
     </copy>
     <copy file="${resources}/${package-prefix}/extensions/README.txt" 
-	  todir="${build}/extensions"/>
+          todir="${build}/extensions"/>
     <copy todir="${build}/samples">
       <fileset dir="samples"/>
     </copy>
@@ -466,7 +486,7 @@ To display the available targets type:
 
 
   <!-- All batik in a single jar (dependencies: none) -->
-  <target name="all-jar" depends="compile, prepare-build">
+  <target name="all-jar" depends="compile, prepare-build" description="Creates a combined JAR file of the Batik libraries in ${build}/lib">
     <jar jarfile="${build}/lib/${project}-all.jar">
       <fileset dir="${dest}" excludes="**/CVS">
         <include name="**"/>
@@ -487,6 +507,7 @@ To display the available targets type:
         <include name="org/w3c/css/sac/**"/>
         <include name="org/w3c/dom/smil/**"/>
         <include name="org/w3c/dom/svg/**"/>
+        <include name="org/w3c/dom/svg12/**"/>
       </fileset>
       <fileset dir="${resources}" excludes="${resources}/**/CVS">
         <include name="**"/>
@@ -860,7 +881,7 @@ To display the available targets type:
   <target name="squiggle-ext-jar" depends="squiggle-jar">
      <mkdir dir="${build}/extensions"/>
      <jar manifest="${src}/${project}-browser-ext.mf"
-	  jarfile="${build}/extensions/${project}-squiggle-ext.jar">
+          jarfile="${build}/extensions/${project}-squiggle-ext.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik Squiggle Viewer With Extensions"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
@@ -904,7 +925,7 @@ To display the available targets type:
   <target name="rasterizer-ext-jar" depends="rasterizer-jar">
      <mkdir dir="${build}/extensions"/>
      <jar manifest="${src}/${project}-rasterizer-ext.mf"
-	  jarfile="${build}/extensions/${project}-rasterizer-ext.jar">
+          jarfile="${build}/extensions/${project}-rasterizer-ext.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Batik SVG Rasterizer With Extensions"/>
         <attribute name="Implementation-Version" value="${version}${revisionType}${revisionNumber}"/>
@@ -1152,6 +1173,11 @@ To display the available targets type:
           description="Runs test suite whose file or uri is passed as an input">
     <java fork="yes"
           classname="${class-prefix}.test.xml.XMLTestSuiteRunner">
+<!-- Using -Xincgc makes the memory leak tests _much_ more accurate but
+     Also slows down the regard run by 3-4x,  In general I suggest running
+     just the memory leak tests with -Xincgc, I might also experiment with
+     a higher -Xms setting. -->
+<!--      <jvmarg value="-Xincgc" /> -->
 <!--      <jvmarg value="-Xrunhprof:format=b" /> -->
 <!--      <jvmarg value="-Xrunhprof:net=localhost:1234,format=b" /> -->
       <jvmarg value="-Xmx512m"/>  <jvmarg value="-Xms64m"/>
@@ -1235,7 +1261,7 @@ To display the available targets type:
     <mkdir dir="${docs}"/>
   </target>
 
-  <target name="html" depends="javadoc, htmldoc"/>
+  <target name="html" depends="javadoc, htmldoc" description="generates the site documentation in ${build}/docs/"/>
   <target name="htmldoc" depends="prepare-docs">
     <copy file="${xdocs}/site-book.xml"
           tofile="${xdocs}/book.xml"
@@ -1282,6 +1308,7 @@ To display the available targets type:
                            org.xml.*,
                            org.w3c.css.*,
                            org.w3c.dom.*"
+             excludepackagenames="${javadoc-exclusions}"
              maxmemory="128m"
              destdir="${docs}/javadoc"
              author="false"
@@ -1349,7 +1376,7 @@ To display the available targets type:
   </target>
 
   <target name="jarDependImg" depends="compile"
-	  description="Updates jarDependImg PNG">
+          description="Updates jarDependImg PNG">
     <java fork="yes"
           classname="${class-prefix}.apps.rasterizer.Main">
       <classpath>

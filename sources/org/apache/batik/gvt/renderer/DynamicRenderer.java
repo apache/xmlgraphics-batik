@@ -119,7 +119,6 @@ public class DynamicRenderer extends StaticRenderer {
                 (rootCR.getColorModel(), 
                  workingRaster,
                  rootCR.getColorModel().isAlphaPremultiplied(), null);
-
         }
 
         if (!isDoubleBuffered) {
@@ -139,7 +138,7 @@ public class DynamicRenderer extends StaticRenderer {
      * the failed rendering will be visible in the image returned
      * by getOffscreen.
      *
-     * @param areas a List of regions to be repainted, in the current
+     * @param devRLM regions to be repainted, in the current
      * user space coordinate system.  
      */
     // long lastFrame = -1;
@@ -160,8 +159,8 @@ public class DynamicRenderer extends StaticRenderer {
         updateWorkingBuffers();
         if ((rootCR == null)           ||
             (workingBaseRaster == null)) {
-            // System.out.println("RootCR: " + rootCR);
-            // System.out.println("wrkBaseRaster: " + workingBaseRaster);
+            // System.err.println("RootCR: " + rootCR);
+            // System.err.println("wrkBaseRaster: " + workingBaseRaster);
             return;
         }
         cr = rootCR;

@@ -207,16 +207,29 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
     /**
      * Means that all document must be considered as dynamic.
+     *
+     * Indicates that all DOM listeners should be registered. This supports
+     * 'interactivity' (anchors and cursors), as well as DOM modifications
+     * listeners to update the GVT rendering tree.
      */
     public final static int ALWAYS_DYNAMIC = 1; 
 
     /**
      * Means that all document must be considered as static.
+     *
+     * Indicates that no DOM listeners should be registered.
+     * In this case the generated GVT tree should be totally
+     * independent of the DOM tree (in practice text holds
+     * references to the source text elements for font resolution).
      */
     public final static int ALWAYS_STATIC = 2;
 
     /**
      * Means that all document must be considered as interactive.
+     *
+     * Indicates that DOM listeners should be registered to support,
+     * 'interactivity' this includes anchors and cursors, but does not
+     * include support for DOM modifications.
      */
     public final static int ALWAYS_INTERACTIVE = 3;
 
@@ -345,7 +358,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
     /**
      * Creates a new AbstractJSVGComponent.
      * @param ua a SVGUserAgent instance or null.
-     * @param eventEnabled Whether the GVT tree should be reactive
+     * @param eventsEnabled Whether the GVT tree should be reactive
      *        to mouse and key events.
      * @param selectableText Whether the text should be selectable.
      */
@@ -698,7 +711,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
     /**
      * Starts a tree builder.
      */
-    private void startGVTTreeBuilder() {
+    protected void startGVTTreeBuilder() {
         gvtTreeBuilder = nextGVTTreeBuilder;
         nextGVTTreeBuilder = null;
         gvtTreeBuilder.start();
@@ -753,7 +766,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             (fragmentIdentifier, elt);
         CanvasGraphicsNode cgn = getCanvasGraphicsNode(gn);
         cgn.setViewingTransform(at);
-        viewingTransform = at;
+        viewingTransform = null;
         initialTransform = new AffineTransform();
         setRenderingTransform(initialTransform, false);
         jsvgComponentListener.updateMatrix(initialTransform);
@@ -823,6 +836,19 @@ public class AbstractJSVGComponent extends JGVTComponent {
         return (CanvasGraphicsNode)gn;
     }
 
+    public AffineTransform getViewingTransform() {
+        AffineTransform vt;
+        synchronized (this) {
+            vt = viewingTransform;
+            if (vt == null) {
+                CanvasGraphicsNode cgn = getCanvasGraphicsNode();
+                if (cgn != null)
+                    vt = cgn.getViewingTransform();
+            }
+        }
+        return vt;
+    }
+
     /**
      * Returns the transform from viewBox coords to screen coords
      */
@@ -830,8 +856,9 @@ public class AbstractJSVGComponent extends JGVTComponent {
         AffineTransform at = getRenderingTransform();
         if (at == null) at = new AffineTransform();
         else            at = new AffineTransform(at);
-        if (viewingTransform != null) {
-            at.concatenate(viewingTransform);
+        AffineTransform vt = getViewingTransform();
+        if (vt != null) {
+            at.concatenate(vt);
         }
         return at;
     }
@@ -880,7 +907,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             if (d.height < 1) d.height = 1;
             final AffineTransform at = calculateViewingTransform
                 (fragmentIdentifier, elt);
-            AffineTransform vt = viewingTransform;
+            AffineTransform vt = getViewingTransform();
             if (at.equals(vt)) {
                 // No new transform
                 // Only repaint if size really changed.
@@ -927,12 +954,18 @@ public class AbstractJSVGComponent extends JGVTComponent {
                     (AffineTransform.getTranslateInstance(dx, dy));
                 setRenderingTransform(rendAT, false);
             }
-            viewingTransform = at;
+            synchronized (this) {
+                viewingTransform = at;
+            }
             Runnable r = new Runnable() {
                     AffineTransform myAT = at;
                     CanvasGraphicsNode myCGN = getCanvasGraphicsNode();
                     public void run() {
-                        myCGN.setViewingTransform(myAT);
+                        synchronized (AbstractJSVGComponent.this) {
+                            myCGN.setViewingTransform(myAT);
+                            if (viewingTransform == myAT) 
+                                viewingTransform = null;
+                        }
                     }
                 };
             UpdateManager um = getUpdateManager();
@@ -1204,7 +1237,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
 
             final boolean dispatchZoom    = (currScale != prevScale);
             final boolean dispatchScroll  = ((currTransX != prevTransX) ||
-                                             (currTransX != prevTransX));
+                                             (currTransY != prevTransY));
             if (isDynamicDocument &&
                 (updateManager != null) && updateManager.isRunning()) {
                 updateManager.getUpdateRunnableQueue().invokeLater
@@ -2442,7 +2475,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
         }
         
         /**
-         * Informs the user agent that the text selection should changed.
+         * Informs the user agent that the text selection should be changed.
          * @param start The Mark for the start of the selection.
          * @param end   The Mark for the end of the selection.
          */
@@ -2459,9 +2492,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
         }
 
         /**
-         * Informs the user agent that the text selection should changed.
-         * @param start The Mark for the start of the selection.
-         * @param end   The Mark for the end of the selection.
+         * Informs the user agent that the text should be deselected.
          */
         public void deselectAll() {
             if (EventQueue.isDispatchThread()) {
@@ -2692,11 +2723,11 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * 
          * @param scriptType type of script, as found in the 
          *        type attribute of the &lt;script&gt; element.
-         * @param scriptURL url for the script, as defined in
+         * @param scriptPURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docPURL url for the document into which the 
          *        script was found.
          */
         public ScriptSecurity getScriptSecurity(String scriptType,
@@ -2733,11 +2764,11 @@ public class AbstractJSVGComponent extends JGVTComponent {
          *
          * @param scriptType type of script, as found in the 
          *        type attribute of the &lt;script&gt; element.
-         * @param scriptURL url for the script, as defined in
+         * @param scriptPURL url for the script, as defined in
          *        the script's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docPURL url for the document into which the 
          *        script was found.
          */
         public void checkLoadScript(String scriptType,
@@ -2775,11 +2806,11 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * Returns the security settings for the given resource
          * url and document url
          * 
-         * @param resourceURL url for the resource, as defined in
+         * @param resourcePURL url for the resource, as defined in
          *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
-         * @param docURL url for the document into which the 
+         * @param docPURL url for the document into which the 
          *        resource was found.
          */
         public ExternalResourceSecurity 
@@ -2812,12 +2843,12 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * on the ExternalResourceSecurity strategy returned by 
          * getExternalResourceSecurity.
          *
-         * @param scriptURL url for the script, as defined in
-         *        the script's xlink:href attribute. If that
+         * @param resourceURL url for the resource, as defined in
+         *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
          * @param docURL url for the document into which the 
-         *        script was found.
+         *        resource was found.
          */
         public void 
             checkLoadExternalResource(ParsedURL resourceURL,
@@ -3374,12 +3405,12 @@ public class AbstractJSVGComponent extends JGVTComponent {
          * on the ExternalResourceSecurity strategy returned by 
          * getExternalResourceSecurity.
          *
-         * @param scriptURL url for the script, as defined in
-         *        the script's xlink:href attribute. If that
+         * @param resourceURL url for the resource, as defined in
+         *        the resource's xlink:href attribute. If that
          *        attribute was empty, then this parameter should
          *        be null
          * @param docURL url for the document into which the 
-         *        script was found.
+         *        resource was found.
          */
         public void 
             checkLoadExternalResource(ParsedURL resourceURL,

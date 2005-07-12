@@ -27,7 +27,7 @@ import org.w3c.dom.Node;
  * A simple class that implements the DOM NodeList interface by
  * wrapping an Java List instace.
  *
- * @author <a href="mailto:deweese@apache.org>deweese</a>
+ * @author <a href="mailto:deweese@apache.org">deweese</a>
  * @version $Id$
  */
 public class ListNodeList implements NodeList {
@@ -48,7 +48,6 @@ public class ListNodeList implements NodeList {
 
     /**
      * <b>DOM</b>: Implements {@link NodeList#getLength()}.
-     * @return {@link #size}.
      */
     public int getLength() {
         return list.size();

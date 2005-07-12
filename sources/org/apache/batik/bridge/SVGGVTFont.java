@@ -307,7 +307,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      * Returns true if the glyph form matches that of the current character in
      * the aci.
      *
-     * @param gyphUnicode The unicode value of the glyph.
+     * @param glyphUnicode The unicode value of the glyph.
      * @param glyphForm The arabic-form glyph attribute.
      * @param aci The aci containing the character to check.
      * @param currentIndex The index of the character to check.
@@ -410,7 +410,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      *
      * @param name The name of the glyph to check.
      *
-     * @return True if the glyph can be displayed.
+     * @return true if the glyph can be displayed.
      */
     public boolean canDisplayGivenName(String name) {
         for (int i = 0; i < glyphNames.length; i++) {
@@ -430,7 +430,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      *
      * @param c The character to check.
      *
-     * @param True if the character can be displayed.
+     * @return true if the character can be displayed.
      */
     public boolean canDisplay(char c) {
         for (int i = 0; i < glyphUnicodes.length; i++) {
@@ -709,7 +709,7 @@ public final class SVGGVTFont implements GVTFont, SVGConstants {
      *
      * @param size The size of the new font.
      *
-     * @param return The new font object.
+     * @return The new font object.
      */
     public GVTFont deriveFont(float size) {
         return new SVGGVTFont(size, fontFace, glyphUnicodes, glyphNames,

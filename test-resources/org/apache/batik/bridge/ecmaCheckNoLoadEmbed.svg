@@ -34,8 +34,7 @@
     <test:testResult id="testResult" result="passed"/>
     <script type="text/ecmascript" ><![CDATA[
         var result = document.getElementById("testResult");
-        result.setAttributeNS(null, "result", "failed");
-        result.setAttributeNS(null, "errorCode", "embeded script should not have been loaded");
+        result.setAttributeNS(null, "result", "ran");
     ]]></script>
 
 </svg>

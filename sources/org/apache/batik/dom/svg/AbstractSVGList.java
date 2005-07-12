@@ -127,10 +127,7 @@ public abstract class AbstractSVGList {
                                                        Object[] args);
 
     /**
-     * Creates a new SVGList.
-     * @param elt The associated element.
-     * @param ns The attribute's namespace URI.
-     * @param ln The attribute's local name.
+     * Creates a new AbstractSVGList.
      */
     protected AbstractSVGList() {
     }

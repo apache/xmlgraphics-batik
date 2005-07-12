@@ -37,8 +37,9 @@ public class SVGClipDescriptor implements SVGDescriptor, SVGSyntax{
     private Element clipPathDef;
 
     /**
+     * Creates a new SVGClipDescriptor.
+     * @param clipPathValue the clip path value
      * @param clipPathDef definition of a clip path
-     * @param attribute value referencing clipPathDef
      */
     public SVGClipDescriptor(String clipPathValue, Element clipPathDef){
         if (clipPathValue == null)

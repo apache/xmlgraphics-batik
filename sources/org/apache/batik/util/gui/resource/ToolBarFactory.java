@@ -28,7 +28,7 @@ import javax.swing.JToolBar;
 
 /**
  * This class represents a tool bar factory which builds
- * tool bars from the content of a resource file.<br>
+ * tool bars from the content of a resource file. <br>
  *
  * The resource entries format is (for a tool bar named 'ToolBar'):<br>
  * <pre>

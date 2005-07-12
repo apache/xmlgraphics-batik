@@ -298,6 +298,7 @@
          <test id="samples/tests/spec/styling/cssMediaList.svg" />
          <test id="samples/tests/spec/styling/emptyStyle.svg" />
          <test id="samples/tests/spec/styling/fontShorthand.svg" />
+         <test id="samples/tests/spec/styling/important.svg" />
          <test id="samples/tests/spec/styling/smiley.svg" />
          <test id="samples/tests/spec/styling/styleElement.svg" />
 
@@ -364,6 +365,7 @@
         <test id="samples/tests/spec/scripting/enclosureList.svg" />
         <test id="samples/tests/spec/scripting/enclosureList2.svg" />
         <test id="samples/tests/spec/scripting/fill.svg" />
+        <test id="samples/tests/spec/scripting/getElementById.svg" />
         <test id="samples/tests/spec/scripting/image.svg" />
         <test id="samples/tests/spec/scripting/imageRefUpdate.svg" />
         <test id="samples/tests/spec/scripting/imageraster.svg" />
@@ -372,7 +374,9 @@
         <test id="samples/tests/spec/scripting/intersectionList2.svg" />
         <test id="samples/tests/spec/scripting/line.svg" />
         <test id="samples/tests/spec/scripting/nestedsvg.svg" />
+        <test id="samples/tests/spec/scripting/paintType.svg" />
         <test id="samples/tests/spec/scripting/path.svg" />
+        <test id="samples/tests/spec/scripting/pathLength.svg" />
         <test id="samples/tests/spec/scripting/path_pathSegList_create.svg" />
         <test id="samples/tests/spec/scripting/path_pathSegList1.svg" />
         <test id="samples/tests/spec/scripting/path_pathSegList2.svg" />
@@ -428,6 +432,7 @@
         <test id="samples/tests/spec/scripting/rectResizeOnClick.svg" />
         <test id="samples/tests/spec/scripting/setProperty.svg" />
         <test id="samples/tests/spec/scripting/styling.svg" />
+        <test id="samples/tests/spec/scripting/svgFontMove.svg" />
         <test id="samples/tests/spec/scripting/text_content.svg" />
         <test id="samples/tests/spec/scripting/textProperties2.svg" />
         <test id="samples/tests/spec/scripting/visibilityOnClick.svg" />

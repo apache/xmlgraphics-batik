@@ -314,7 +314,7 @@ public abstract class AbstractElement
                                      "readonly.node",
                                      new Object[] { name });
         }
-        a.isIdAttribute = isId;
+        a.isIdAttr = isId;
     }
 
     /**
@@ -334,7 +334,7 @@ public abstract class AbstractElement
                                      "readonly.node",
                                      new Object[] { a.getNodeName() });
         }
-        a.isIdAttribute = isId;
+        a.isIdAttr = isId;
     }
 
     /**
@@ -349,7 +349,7 @@ public abstract class AbstractElement
                                      "readonly.node",
                                      new Object[] { a.getNodeName() });
         }
-        a.isIdAttribute = isId;
+        a.isIdAttr = isId;
     }
 
     /**
@@ -578,8 +578,8 @@ public abstract class AbstractElement
 
     /**
      * Fires a DOMAttrModified event.
-     * <!> WARNING: public accessor because of compilation problems
-     *     on Solaris. Do not change.
+     * WARNING: public accessor because of compilation problems
+     * on Solaris. Do not change.
      *
      * @param name The attribute's name.
      * @param node The attribute's node.
@@ -591,14 +591,20 @@ public abstract class AbstractElement
                                          String newv, short change) {
         switch (change) {
         case MutationEvent.ADDITION:
+            if (((AbstractAttr)node).isId()) 
+                ownerDocument.addIdEntry(this, newv);
             attrAdded(node, newv);
             break;
 
         case MutationEvent.MODIFICATION:
+            if (((AbstractAttr)node).isId()) 
+                ownerDocument.updateIdEntry(this, oldv, newv);
             attrModified(node, oldv, newv);
             break;
 
         default: // MutationEvent.REMOVAL:
+            if (((AbstractAttr)node).isId()) 
+                ownerDocument.removeIdEntry(this, oldv);
             attrRemoved(node, oldv);
         }
 	AbstractDocument doc = getCurrentDocument();

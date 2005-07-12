@@ -32,7 +32,7 @@ import org.apache.batik.test.TestReport;
 /**
  * Validates the operation of the <tt>Main</tt> class.
  *
- * @author <a href="vhardy@apache.org">Vincent Hardy</a>
+ * @author <a href="mailto:vhardy@apache.org">Vincent Hardy</a>
  * @version $Id$
  */
 public class MainTest extends DefaultTestSuite {
