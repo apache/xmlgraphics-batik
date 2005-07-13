@@ -411,104 +411,12 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     }
 
     /**
-     * Adds the scripting listeners to the given element.
+     * Adds the scripting listeners to the given element and all of
+     * its descendants.
      */
     protected void addScriptingListeners(Node node) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
-            // Attach the listeners
-            Element elt = (Element)node;
-            EventTarget target = (EventTarget)elt;
-            if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
-                if (SVGConstants.SVG_SVG_TAG.equals(elt.getLocalName())) {
-                    // <svg> listeners
-                    if (elt.hasAttributeNS(null, "onabort")) {
-                        target.addEventListener("SVGAbort",
-                                                svgAbortListener, false);
-                    }
-                    if (elt.hasAttributeNS(null, "onerror")) {
-                        target.addEventListener("SVGError",
-                                                svgErrorListener, false);
-                    }
-                    if (elt.hasAttributeNS(null, "onresize")) {
-                        target.addEventListener("SVGResize",
-                                                svgResizeListener, false);
-                    }
-                    if (elt.hasAttributeNS(null, "onscroll")) {
-                        target.addEventListener("SVGScroll",
-                                            svgScrollListener, false);
-                    }
-                    if (elt.hasAttributeNS(null, "onunload")) {
-                        target.addEventListener("SVGUnload",
-                                                svgUnloadListener, false);
-                    }
-                    if (elt.hasAttributeNS(null, "onzoom")) {
-                        target.addEventListener("SVGZoom",
-                                                svgZoomListener, false);
-                    }
-                } else {
-                    String name = elt.getLocalName();
-                    if (name.equals(SVGConstants.SVG_SET_TAG) ||
-                        name.startsWith("animate")) {
-                        // animation listeners
-                        if (elt.hasAttributeNS(null, "onbegin")) {
-                            target.addEventListener("beginEvent",
-                                                    beginListener ,
-                                                    false);
-                        }
-                        if (elt.hasAttributeNS(null, "onend")) {
-                            target.addEventListener("endEvent",
-                                                    endListener,
-                                                    false);
-                        }
-                        if (elt.hasAttributeNS(null, "onrepeat")) {
-                            target.addEventListener("repeatEvent",
-                                                    repeatListener ,
-                                                    false);
-                        }
-                        return;
-                    }
-                }
-            }
-
-            // UI listeners
-            if (elt.hasAttributeNS(null, "onfocusin")) {
-                target.addEventListener("DOMFocusIn", focusinListener, false);
-            }
-            if (elt.hasAttributeNS(null, "onfocusout")) {
-                target.addEventListener("DOMFocusOut", focusoutListener,
-                                        false);
-            }
-            if (elt.hasAttributeNS(null, "onactivate")) {
-                target.addEventListener("DOMActivate", activateListener,
-                                        false);
-            }
-            if (elt.hasAttributeNS(null, "onclick")) {
-                target.addEventListener("click", clickListener, false);
-            } 
-            if (elt.hasAttributeNS(null, "onmousedown")) {
-                target.addEventListener("mousedown", mousedownListener, false);
-            }
-            if (elt.hasAttributeNS(null, "onmouseup")) {
-                target.addEventListener("mouseup", mouseupListener, false);
-            }
-            if (elt.hasAttributeNS(null, "onmouseover")) {
-                target.addEventListener("mouseover", mouseoverListener, false);
-            }
-            if (elt.hasAttributeNS(null, "onmouseout")) {
-                target.addEventListener("mouseout", mouseoutListener, false);
-            }
-            if (elt.hasAttributeNS(null, "onmousemove")) {
-                target.addEventListener("mousemove", mousemoveListener, false);
-            }
-            if (elt.hasAttributeNS(null, "onkeypress")) {
-                target.addEventListener("keypress", keypressListener, false);
-            }
-            if (elt.hasAttributeNS(null, "onkeydown")) {
-                target.addEventListener("keydown", keydownListener, false);
-            }
-            if (elt.hasAttributeNS(null, "onkeyup")) {
-                target.addEventListener("keyup", keyupListener, false);
-            }
+            addScriptingListenersOn((Element) node);
         }
 
         // Adds the listeners to the children
@@ -520,60 +428,112 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
     }
 
     /**
-     * Removes the scripting listeners from the given element.
+     * Adds the scripting listeners to the given element.
+     */
+    protected void addScriptingListenersOn(Element elt) {
+        // Attach the listeners
+        EventTarget target = (EventTarget)elt;
+        if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
+            if (SVGConstants.SVG_SVG_TAG.equals(elt.getLocalName())) {
+                // <svg> listeners
+                if (elt.hasAttributeNS(null, "onabort")) {
+                    target.addEventListener("SVGAbort",
+                                            svgAbortListener, false);
+                }
+                if (elt.hasAttributeNS(null, "onerror")) {
+                    target.addEventListener("SVGError",
+                                            svgErrorListener, false);
+                }
+                if (elt.hasAttributeNS(null, "onresize")) {
+                    target.addEventListener("SVGResize",
+                                            svgResizeListener, false);
+                }
+                if (elt.hasAttributeNS(null, "onscroll")) {
+                    target.addEventListener("SVGScroll",
+                                        svgScrollListener, false);
+                }
+                if (elt.hasAttributeNS(null, "onunload")) {
+                    target.addEventListener("SVGUnload",
+                                            svgUnloadListener, false);
+                }
+                if (elt.hasAttributeNS(null, "onzoom")) {
+                    target.addEventListener("SVGZoom",
+                                            svgZoomListener, false);
+                }
+            } else {
+                String name = elt.getLocalName();
+                if (name.equals(SVGConstants.SVG_SET_TAG) ||
+                    name.startsWith("animate")) {
+                    // animation listeners
+                    if (elt.hasAttributeNS(null, "onbegin")) {
+                        target.addEventListener("beginEvent",
+                                                beginListener ,
+                                                false);
+                    }
+                    if (elt.hasAttributeNS(null, "onend")) {
+                        target.addEventListener("endEvent",
+                                                endListener,
+                                                false);
+                    }
+                    if (elt.hasAttributeNS(null, "onrepeat")) {
+                        target.addEventListener("repeatEvent",
+                                                repeatListener ,
+                                                false);
+                    }
+                    return;
+                }
+            }
+        }
+
+        // UI listeners
+        if (elt.hasAttributeNS(null, "onfocusin")) {
+            target.addEventListener("DOMFocusIn", focusinListener, false);
+        }
+        if (elt.hasAttributeNS(null, "onfocusout")) {
+            target.addEventListener("DOMFocusOut", focusoutListener,
+                                    false);
+        }
+        if (elt.hasAttributeNS(null, "onactivate")) {
+            target.addEventListener("DOMActivate", activateListener,
+                                    false);
+        }
+        if (elt.hasAttributeNS(null, "onclick")) {
+            target.addEventListener("click", clickListener, false);
+        } 
+        if (elt.hasAttributeNS(null, "onmousedown")) {
+            target.addEventListener("mousedown", mousedownListener, false);
+        }
+        if (elt.hasAttributeNS(null, "onmouseup")) {
+            target.addEventListener("mouseup", mouseupListener, false);
+        }
+        if (elt.hasAttributeNS(null, "onmouseover")) {
+            target.addEventListener("mouseover", mouseoverListener, false);
+        }
+        if (elt.hasAttributeNS(null, "onmouseout")) {
+            target.addEventListener("mouseout", mouseoutListener, false);
+        }
+        if (elt.hasAttributeNS(null, "onmousemove")) {
+            target.addEventListener("mousemove", mousemoveListener, false);
+        }
+        if (elt.hasAttributeNS(null, "onkeypress")) {
+            target.addEventListener("keypress", keypressListener, false);
+        }
+        if (elt.hasAttributeNS(null, "onkeydown")) {
+            target.addEventListener("keydown", keydownListener, false);
+        }
+        if (elt.hasAttributeNS(null, "onkeyup")) {
+            target.addEventListener("keyup", keyupListener, false);
+        }
+    }
+
+    /**
+     * Removes the scripting listeners from the given element and all
+     * of its descendants.
      */
     protected void removeScriptingListeners(Node node) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             // Detach the listeners
-            Element elt = (Element)node;
-            EventTarget target = (EventTarget)elt;
-            if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
-                if (SVGConstants.SVG_SVG_TAG.equals(elt.getLocalName())) {
-                    // <svg> listeners
-                    target.removeEventListener("SVGAbort",
-                                               svgAbortListener, false);
-                    target.removeEventListener("SVGError",
-                                               svgErrorListener, false);
-                    target.removeEventListener("SVGResize",
-                                               svgResizeListener, false);
-                    target.removeEventListener("SVGScroll",
-                                               svgScrollListener, false);
-                    target.removeEventListener("SVGUnload",
-                                               svgUnloadListener, false);
-                    target.removeEventListener("SVGZoom",
-                                               svgZoomListener, false);
-                } else {
-                    String name = elt.getLocalName();
-                    if (name.equals(SVGConstants.SVG_SET_TAG) ||
-                        name.startsWith("animate")) {
-                        // animation listeners
-                        target.removeEventListener("beginEvent",
-                                                   beginListener ,
-                                                   false);
-                        target.removeEventListener("endEvent",
-                                                   endListener,
-                                                   false);
-                        target.removeEventListener("repeatEvent",
-                                                   repeatListener ,
-                                                   false);
-                        return;
-                    }
-                }
-            }
-
-            // UI listeners
-            target.removeEventListener("DOMFocusIn", focusinListener, false);
-            target.removeEventListener("DOMFocusOut", focusoutListener, false);
-            target.removeEventListener("DOMActivate", activateListener, false);
-            target.removeEventListener("click", clickListener, false);
-            target.removeEventListener("mousedown", mousedownListener, false);
-            target.removeEventListener("mouseup", mouseupListener, false);
-            target.removeEventListener("mouseover", mouseoverListener, false);
-            target.removeEventListener("mouseout", mouseoutListener, false);
-            target.removeEventListener("mousemove", mousemoveListener, false);
-            target.removeEventListener("keypress", keypressListener, false);
-            target.removeEventListener("keydown", keydownListener, false);
-            target.removeEventListener("keyup", keyupListener, false);
+            removeScriptingListenersOn((Element) node);
         }
 
         // Removes the listeners from the children
@@ -582,6 +542,60 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
              n = n.getNextSibling()) {
             removeScriptingListeners(n);
         }
+    }
+
+    /**
+     * Removes the scripting listeners from the given element.
+     */
+    protected void removeScriptingListenersOn(Element elt) {
+        EventTarget target = (EventTarget)elt;
+        if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
+            if (SVGConstants.SVG_SVG_TAG.equals(elt.getLocalName())) {
+                // <svg> listeners
+                target.removeEventListener("SVGAbort",
+                                           svgAbortListener, false);
+                target.removeEventListener("SVGError",
+                                           svgErrorListener, false);
+                target.removeEventListener("SVGResize",
+                                           svgResizeListener, false);
+                target.removeEventListener("SVGScroll",
+                                           svgScrollListener, false);
+                target.removeEventListener("SVGUnload",
+                                           svgUnloadListener, false);
+                target.removeEventListener("SVGZoom",
+                                           svgZoomListener, false);
+            } else {
+                String name = elt.getLocalName();
+                if (name.equals(SVGConstants.SVG_SET_TAG) ||
+                    name.startsWith("animate")) {
+                    // animation listeners
+                    target.removeEventListener("beginEvent",
+                                               beginListener ,
+                                               false);
+                    target.removeEventListener("endEvent",
+                                               endListener,
+                                               false);
+                    target.removeEventListener("repeatEvent",
+                                               repeatListener ,
+                                               false);
+                    return;
+                }
+            }
+        }
+
+        // UI listeners
+        target.removeEventListener("DOMFocusIn", focusinListener, false);
+        target.removeEventListener("DOMFocusOut", focusoutListener, false);
+        target.removeEventListener("DOMActivate", activateListener, false);
+        target.removeEventListener("click", clickListener, false);
+        target.removeEventListener("mousedown", mousedownListener, false);
+        target.removeEventListener("mouseup", mouseupListener, false);
+        target.removeEventListener("mouseover", mouseoverListener, false);
+        target.removeEventListener("mouseout", mouseoutListener, false);
+        target.removeEventListener("mousemove", mousemoveListener, false);
+        target.removeEventListener("keypress", keypressListener, false);
+        target.removeEventListener("keydown", keydownListener, false);
+        target.removeEventListener("keyup", keyupListener, false);
     }
 
     /**

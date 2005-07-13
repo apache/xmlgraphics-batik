@@ -26,11 +26,11 @@
     <test id="samples/tests/spec/scripting/memoryLeak1.svg"/>
   </testGroup>
 
-  <test id="NullURITest" 
+  <!--test id="NullURITest" 
         class="org.apache.batik.swing.NullURITest" />
 
   <test id="NullSetSVGDocumentTest" 
-        class="org.apache.batik.swing.NullSetSVGDocumentTest" />
+        class="org.apache.batik.swing.NullSetSVGDocumentTest" /-->
 
   <test id="SetSVGDocumentTest" 
         class="org.apache.batik.swing.SetSVGDocumentTest" />

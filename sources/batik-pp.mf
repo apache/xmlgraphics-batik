@@ -6,4 +6,4 @@ Class-Path: lib/batik-ext.jar \
             lib/batik-transcoder.jar \
             lib/batik-util.jar \
             lib/batik-xml.jar \
-            lib/xml-apis.jar
+            lib/xml-apis-dom3.jar

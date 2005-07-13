@@ -635,6 +635,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         } catch (InterruptedIOException ex) {
             throw new InterruptedBridgeException();
         } catch (IOException ex) {
+            ex.printStackTrace();
             throw new BridgeException(e, ERR_URI_IO,
                                       new Object[] {uri});
         } catch (IllegalArgumentException ex) {

@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.batik.bridge.svg12.SVG12ScriptingEnvironment;
+import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.UpdateTracker;
@@ -140,7 +142,12 @@ public class UpdateManager  {
 
         graphicsNode = gn;
 
-        scriptingEnvironment = new ScriptingEnvironment(ctx);
+        SVGOMDocument d = (SVGOMDocument) doc;
+        if (d.isSVG12()) {
+            scriptingEnvironment = new SVG12ScriptingEnvironment(ctx);
+        } else {
+            scriptingEnvironment = new ScriptingEnvironment(ctx);
+        }
     }
 
     /**

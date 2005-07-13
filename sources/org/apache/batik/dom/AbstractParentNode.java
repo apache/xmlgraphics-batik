@@ -296,6 +296,23 @@ public abstract class AbstractParentNode extends AbstractNode {
     }
 
     /**
+     * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getTextContent()}.
+     */
+    public String getTextContent() {
+        StringBuffer sb = new StringBuffer();
+        for (Node n = getFirstChild(); n != null; n = n.getNextSibling()) {
+            switch (n.getNodeType()) {
+                case COMMENT_NODE:
+                case PROCESSING_INSTRUCTION_NODE:
+                    break;
+                default:
+                    sb.append(((AbstractNode) n).getTextContent());
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
      * Recursively fires a DOMNodeInsertedIntoDocument event.
      */
     public void fireDOMNodeInsertedIntoDocumentEvent() {
@@ -449,7 +466,7 @@ public abstract class AbstractParentNode extends AbstractNode {
         if (np == null)
             return;  // Already removed from tree, do nothing.
 
-        for (Node pn = getParentNode(); pn != null; pn = pn.getParentNode()) {
+        for (Node pn = this; pn != null; pn = pn.getParentNode()) {
             if (pn == n)
                 throw createDOMException
                     (DOMException.HIERARCHY_REQUEST_ERR,

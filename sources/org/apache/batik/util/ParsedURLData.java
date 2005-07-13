@@ -178,7 +178,6 @@ public class ParsedURLData {
             return new URL(protocol, host, port, file);
         }
 
-        // System.err.println("toString: " + toString());
         return new URL(toString());
     }
 

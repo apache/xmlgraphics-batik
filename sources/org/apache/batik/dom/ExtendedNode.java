@@ -30,6 +30,7 @@ import org.w3c.dom.Node;
  */
 
 public interface ExtendedNode extends Node, NodeEventTarget {
+
     /**
      * Sets the name of this node.
      */

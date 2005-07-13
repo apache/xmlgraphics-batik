@@ -25,6 +25,7 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.TypeInfo;
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.MutationEvent;
 
@@ -44,6 +45,11 @@ public abstract class AbstractElement
     protected NamedNodeMap attributes;
 
     /**
+     * The element type information.
+     */
+    protected TypeInfo typeInfo;
+
+    /**
      * Creates a new AbstractElement object.
      */
     protected AbstractElement() {
@@ -58,7 +64,7 @@ public abstract class AbstractElement
      */
     protected AbstractElement(String name, AbstractDocument owner) {
 	ownerDocument = owner;
-	if (!DOMUtilities.isValidName(name)) {
+	if (owner.getStrictErrorChecking() && !DOMUtilities.isValidName(name)) {
 	    throw createDOMException(DOMException.INVALID_CHARACTER_ERR,
 				     "xml.name",
 				     new Object[] { name });
@@ -280,6 +286,102 @@ public abstract class AbstractElement
 	    attributes = createAttributes();
 	}
 	return (Attr)attributes.setNamedItemNS(newAttr);
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link org.w3c.dom.Element#getSchemaTypeInfo()}.
+     */
+    public TypeInfo getSchemaTypeInfo() {
+        if (typeInfo == null) {
+            typeInfo = new ElementTypeInfo();
+        }
+        return typeInfo;
+    }
+
+    /**
+     * <b>DOM</b>: Implements
+     * {@link org.w3c.dom.Element#setIdAttribute(String,boolean)}.
+     */
+    public void setIdAttribute(String name, boolean isId) throws DOMException {
+        AbstractAttr a = (AbstractAttr) getAttributeNode(name);
+        if (a == null) {
+            throw createDOMException(DOMException.NOT_FOUND_ERR,
+                                     "attribute.missing",
+                                     new Object[] { name });
+        }
+        if (a.isReadonly()) {
+            throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                                     "readonly.node",
+                                     new Object[] { name });
+        }
+        a.isIdAttr = isId;
+    }
+
+    /**
+     * <b>DOM</b>: Implements
+     * {@link org.w3c.dom.Element#setIdAttributeNS(String,String,boolean)}.
+     */
+    public void setIdAttributeNS(String ns, String ln, boolean isId)
+            throws DOMException {
+        AbstractAttr a = (AbstractAttr) getAttributeNodeNS(ns, ln);
+        if (a == null) {
+            throw createDOMException(DOMException.NOT_FOUND_ERR,
+                                     "attribute.missing",
+                                     new Object[] { ns, ln });
+        }
+        if (a.isReadonly()) {
+            throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                                     "readonly.node",
+                                     new Object[] { a.getNodeName() });
+        }
+        a.isIdAttr = isId;
+    }
+
+    /**
+     * <b>DOM</b>: Implements
+     * {@link org.w3c.dom.Element#setIdAttributeNode(Attr,boolean)}.
+     */
+    public void setIdAttributeNode(Attr attr, boolean isId)
+            throws DOMException {
+        AbstractAttr a = (AbstractAttr) attr;
+        if (a.isReadonly()) {
+            throw createDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR,
+                                     "readonly.node",
+                                     new Object[] { a.getNodeName() });
+        }
+        a.isIdAttr = isId;
+    }
+
+    /**
+     * Get an ID attribute.
+     */
+    protected Attr getIdAttribute() {
+        NamedNodeMap nnm = getAttributes();
+        if (nnm == null) {
+            return null;
+        }
+        int len = nnm.getLength();
+        for (int i = 0; i < len; i++) {
+            AbstractAttr a = (AbstractAttr) nnm.item(i);
+            if (a.isId()) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the ID of this element.
+     */
+    protected String getId() {
+        Attr a = getIdAttribute();
+        if (a != null) {
+            String id = a.getNodeValue();
+            if (id.length() > 0) {
+                return id;
+            }
+        }
+        return null;
     }
 
     /**
@@ -885,4 +987,30 @@ public abstract class AbstractElement
         }
     }
 
+    /**
+     * Inner class to hold type information about this element.
+     */
+    public class ElementTypeInfo implements TypeInfo {
+
+        /**
+         * Type namespace.
+         */
+        public String getTypeNamespace() {
+            return null;
+        }
+
+        /**
+         * Type name.
+         */
+        public String getTypeName() {
+            return null;
+        }
+
+        /**
+         * Returns whether this type derives from the given type.
+         */
+        public boolean isDerivedFrom(String ns, String name, int method) {
+            return false;
+        }
+    }
 }

@@ -23,6 +23,7 @@ import java.util.Iterator;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.SVGBridgeExtension;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.SVG12Constants;
 import org.w3c.dom.Element;
 
 /**
@@ -96,5 +97,27 @@ public class SVG12BridgeExtension extends SVGBridgeExtension {
         ctx.putBridge(new SVGFlowRootElementBridge());
         ctx.putBridge(new SVGMultiImageElementBridge());
         ctx.putBridge(new SVGSolidColorElementBridge());
+    }
+
+    /**
+     * Whether the presence of the specified element should cause
+     * the document to be dynamic.  If this element isn't handled
+     * by this BridgeExtension, just return false.
+     *
+     * @param e The element to check.
+     */
+    public boolean isDynamicElement(Element e) {
+        String ns = e.getNamespaceURI();
+        if (!SVGConstants.SVG_NAMESPACE_URI.equals(ns)) {
+            return false;
+        }
+        String ln = e.getLocalName();
+        if (ln.equals(SVGConstants.SVG_SCRIPT_TAG)
+                || ln.equals(SVG12Constants.SVG_HANDLER_TAG)
+                || ln.startsWith("animate")
+                || ln.equals("set")) {
+            return true;
+        }
+        return false;
     }
 }

@@ -87,12 +87,27 @@ public interface EventDispatcher {
      * @param l the listener to add
      */
     void addGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
+
     /**
      * Removes the specified 'global' GraphicsNodeMouseListener which is
      * notified of all MouseEvents dispatched.
      * @param l the listener to remove
      */
     void removeGraphicsNodeMouseListener(GraphicsNodeMouseListener l);
+
+    /**
+     * Adds the specified 'global' GraphicsNodeMouseWheelListener which is
+     * notified of all MouseWheelEvents dispatched.
+     * @param l the listener to add
+     */
+    void addGraphicsNodeMouseWheelListener(GraphicsNodeMouseWheelListener l);
+
+    /**
+     * Removes the specified 'global' GraphicsNodeMouseWheelListener which is
+     * notified of all MouseWheelEvents dispatched.
+     * @param l the listener to remove
+     */
+    void removeGraphicsNodeMouseWheelListener(GraphicsNodeMouseWheelListener l);
 
     /**
      * Adds the specified 'global' GraphicsNodeKeyListener which is
