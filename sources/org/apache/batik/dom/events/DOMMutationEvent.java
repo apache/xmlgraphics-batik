@@ -118,4 +118,24 @@ public class DOMMutationEvent extends AbstractEvent implements MutationEvent {
 	this.attrName = attrNameArg;
         this.attrChange = attrChangeArg;
     }
+
+    /**
+     * <b>DOM</b>: Initializes this event object.
+     */
+    public void initMutationEventNS(String namespaceURIArg,
+                                    String typeArg, 
+                                    boolean canBubbleArg, 
+                                    boolean cancelableArg, 
+                                    Node relatedNodeArg, 
+                                    String prevValueArg, 
+                                    String newValueArg, 
+                                    String attrNameArg,
+                                    short attrChangeArg) {
+        initEventNS(namespaceURIArg, typeArg, canBubbleArg, cancelableArg);
+        this.relatedNode = relatedNodeArg;
+        this.prevValue = prevValueArg;
+        this.newValue = newValueArg;
+        this.attrName = attrNameArg;
+        this.attrChange = attrChangeArg;
+    }
 }

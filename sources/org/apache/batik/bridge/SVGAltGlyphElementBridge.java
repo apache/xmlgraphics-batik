@@ -22,12 +22,13 @@ import java.awt.Stroke;
 import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.svg.SVGOMDocument;
-import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.font.Glyph;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextPaintInfo;
+import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -126,10 +127,10 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             if (!isLocal) {
                 // need to attach the imported element to the document and
                 // then compute the styles and uris
-                String base = XMLBaseSupport.getCascadedXMLBase(altGlyphElement);
+                String base = AbstractNode.getBaseURI(altGlyphElement);
                 Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
                 g.appendChild(localRefElement);
-                g.setAttributeNS(XMLBaseSupport.XML_NAMESPACE_URI,
+                g.setAttributeNS(XMLConstants.XML_NAMESPACE_URI,
                                  "xml:base",
                                  base);
                 CSSUtilities.computeStyleAndURIs(refElement, 
@@ -305,10 +306,10 @@ public class SVGAltGlyphElementBridge extends AbstractSVGBridge
             // import the whole font
             localFontElement = (Element)document.importNode
                 (refGlyphElement.getParentNode(), true);
-            String base = XMLBaseSupport.getCascadedXMLBase(altGlyphElement);
+            String base = AbstractNode.getBaseURI(altGlyphElement);
             Element g = document.createElementNS(SVG_NAMESPACE_URI, SVG_G_TAG);
             g.appendChild(localFontElement);
-            g.setAttributeNS(XMLBaseSupport.XML_NAMESPACE_URI,
+            g.setAttributeNS(XMLConstants.XML_NAMESPACE_URI,
                              "xml:base",
                              base);
             CSSUtilities.computeStyleAndURIs(

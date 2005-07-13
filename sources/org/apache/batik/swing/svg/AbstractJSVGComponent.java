@@ -88,6 +88,10 @@ import org.w3c.dom.svg.SVGSVGElement;
  * displayed. This is the fundamental class for rendering SVG documents in a
  * swing application.
  *
+ * This class is made abstract so that concrete versions can be made
+ * for different JDK versions.  In particular, this is for MouseWheelEvent
+ * support, which only exists in JDKs &gt;= 1.4.
+ *
  * <h2>Rendering Process</h2>
  *
  * <p>The rendering process can be broken down into five phases. Not all of
@@ -193,7 +197,7 @@ import org.w3c.dom.svg.SVGSVGElement;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class JSVGComponent extends JGVTComponent {
+public class AbstractJSVGComponent extends JGVTComponent {
 
     /**
      * Means that the component must auto detect whether
@@ -345,21 +349,21 @@ public class JSVGComponent extends JGVTComponent {
     protected AffineTransform viewingTransform = null;
 
     /**
-     * Creates a new JSVGComponent.
+     * Creates a new AbstractJSVGComponent.
      */
-    public JSVGComponent() {
+    public AbstractJSVGComponent() {
         this(null, false, false);
     }
 
     /**
-     * Creates a new JSVGComponent.
+     * Creates a new AbstractJSVGComponent.
      * @param ua a SVGUserAgent instance or null.
      * @param eventsEnabled Whether the GVT tree should be reactive
      *        to mouse and key events.
      * @param selectableText Whether the text should be selectable.
      */
-    public JSVGComponent(SVGUserAgent ua, boolean eventsEnabled,
-                         boolean selectableText) {
+    public AbstractJSVGComponent(SVGUserAgent ua, boolean eventsEnabled,
+                                 boolean selectableText) {
         super(eventsEnabled, selectableText);
 
         svgUserAgent = ua;
@@ -755,7 +759,7 @@ public class JSVGComponent extends JGVTComponent {
         Dimension2D dim = bridgeContext.getDocumentSize();
         Dimension   mySz = new Dimension((int)dim.getWidth(),
                                          (int)dim.getHeight());
-        JSVGComponent.this.setMySize(mySz);
+        AbstractJSVGComponent.this.setMySize(mySz);
         SVGSVGElement elt = svgDocument.getRootElement();
         prevComponentSize = getSize();
         AffineTransform at = calculateViewingTransform
@@ -957,7 +961,7 @@ public class JSVGComponent extends JGVTComponent {
                     AffineTransform myAT = at;
                     CanvasGraphicsNode myCGN = getCanvasGraphicsNode();
                     public void run() {
-                        synchronized (JSVGComponent.this) {
+                        synchronized (AbstractJSVGComponent.this) {
                             myCGN.setViewingTransform(myAT);
                             if (viewingTransform == myAT) 
                                 viewingTransform = null;
@@ -1272,7 +1276,7 @@ public class JSVGComponent extends JGVTComponent {
      * To hide the listener methods.
      */
     protected class SVGListener
-        extends Listener
+        extends ExtendedListener
         implements SVGDocumentLoaderListener,
                    GVTTreeBuilderListener,
                    SVGLoadEventDispatcherListener,
@@ -1393,7 +1397,7 @@ public class JSVGComponent extends JGVTComponent {
 
             gvtRoot = null;
 
-            if (isDynamicDocument && JSVGComponent.this.eventsEnabled) {
+            if (isDynamicDocument && AbstractJSVGComponent.this.eventsEnabled) {
                 startSVGLoadEventDispatcher(e.getGVTRoot());
             } else {
                 if (isInteractiveDocument) {
@@ -1402,7 +1406,8 @@ public class JSVGComponent extends JGVTComponent {
                                                           svgDocument);
                 }
                     
-                JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
+                AbstractJSVGComponent.this.setGraphicsNode
+                    (e.getGVTRoot(), false);
                 scheduleGVTRendering();
             }
         }
@@ -1429,7 +1434,7 @@ public class JSVGComponent extends JGVTComponent {
                 startDocumentLoader();
                 return;
             }
-            JSVGComponent.this.image = null;
+            AbstractJSVGComponent.this.image = null;
             repaint();
         }
 
@@ -1458,10 +1463,10 @@ public class JSVGComponent extends JGVTComponent {
 
             GraphicsNode gn = e.getGVTRoot();
             if (gn == null) {
-                JSVGComponent.this.image = null;
+                AbstractJSVGComponent.this.image = null;
                 repaint();
             } else {
-                JSVGComponent.this.setGraphicsNode(gn, false);
+                AbstractJSVGComponent.this.setGraphicsNode(gn, false);
                 computeRenderingTransform();
             }
             userAgent.displayError(((GVTTreeBuilder)e.getSource())
@@ -1509,7 +1514,8 @@ public class JSVGComponent extends JGVTComponent {
                 return;
             }
 
-            JSVGComponent.this.setGraphicsNode(e.getGVTRoot(), false);
+            AbstractJSVGComponent.this.setGraphicsNode
+                (e.getGVTRoot(), false);
             scheduleGVTRendering();
         }
 
@@ -1568,10 +1574,10 @@ public class JSVGComponent extends JGVTComponent {
 
             GraphicsNode gn = e.getGVTRoot();
             if (gn == null) {
-                JSVGComponent.this.image = null;
+                AbstractJSVGComponent.this.image = null;
                 repaint();
             } else {
-                JSVGComponent.this.setGraphicsNode(gn, false);
+                AbstractJSVGComponent.this.setGraphicsNode(gn, false);
                 computeRenderingTransform();
             }
             userAgent.displayError(((SVGLoadEventDispatcher)e.getSource())
@@ -2907,7 +2913,7 @@ public class JSVGComponent extends JGVTComponent {
          * <code>UserAgent</code> to dispatch events on GVT.
          */
         public EventDispatcher getEventDispatcher() {
-            return JSVGComponent.this.eventDispatcher;
+            return AbstractJSVGComponent.this.eventDispatcher;
         }
 
         /**
@@ -2945,7 +2951,7 @@ public class JSVGComponent extends JGVTComponent {
                 svgUserAgent.showAlert(message);
                 return;
             }
-            JSVGComponent.this.showAlert(message);
+            AbstractJSVGComponent.this.showAlert(message);
         }
 
         /**
@@ -2955,7 +2961,7 @@ public class JSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 return svgUserAgent.showPrompt(message);
             }
-            return JSVGComponent.this.showPrompt(message);
+            return AbstractJSVGComponent.this.showPrompt(message);
         }
 
         /**
@@ -2965,7 +2971,8 @@ public class JSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 return svgUserAgent.showPrompt(message, defaultValue);
             }
-            return JSVGComponent.this.showPrompt(message, defaultValue);
+            return AbstractJSVGComponent.this.showPrompt
+                (message, defaultValue);
         }
 
         /**
@@ -2975,7 +2982,7 @@ public class JSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 return svgUserAgent.showConfirm(message);
             }
-            return JSVGComponent.this.showConfirm(message);
+            return AbstractJSVGComponent.this.showConfirm(message);
         }
 
         /**
@@ -3106,7 +3113,7 @@ public class JSVGComponent extends JGVTComponent {
                     href = newURI.toString();
                     svgUserAgent.openLink(href, true);
                 } else {
-                    JSVGComponent.this.loadSVGDocument(href);
+                    AbstractJSVGComponent.this.loadSVGDocument(href);
                 }
                 return;
             }
@@ -3145,7 +3152,7 @@ public class JSVGComponent extends JGVTComponent {
             if (svgUserAgent != null) {
                 svgUserAgent.openLink(href, false);
             } else {
-                JSVGComponent.this.loadSVGDocument(href);
+                AbstractJSVGComponent.this.loadSVGDocument(href);
             }
         }
 
@@ -3157,7 +3164,8 @@ public class JSVGComponent extends JGVTComponent {
 
             if (ll.length > 0) {
                 LinkActivationEvent ev;
-                ev = new LinkActivationEvent(JSVGComponent.this, elt, href);
+                ev = new LinkActivationEvent
+                    (AbstractJSVGComponent.this, elt, href);
 
                 for (int i = 0; i < ll.length; i++) {
                     LinkActivationListener l = (LinkActivationListener)ll[i];
@@ -3171,8 +3179,8 @@ public class JSVGComponent extends JGVTComponent {
          * @param cursor the new cursor
          */
         public void setSVGCursor(Cursor cursor) {
-            if (cursor != JSVGComponent.this.getCursor())
-                JSVGComponent.this.setCursor(cursor);
+            if (cursor != AbstractJSVGComponent.this.getCursor())
+                AbstractJSVGComponent.this.setCursor(cursor);
         }
 
         /**
@@ -3181,7 +3189,7 @@ public class JSVGComponent extends JGVTComponent {
          * @param end   The Mark for the end of the selection.
          */
         public void setTextSelection(Mark start, Mark end) {
-            JSVGComponent.this.select(start, end);
+            AbstractJSVGComponent.this.select(start, end);
         }
 
         /**
@@ -3189,7 +3197,7 @@ public class JSVGComponent extends JGVTComponent {
          * cleared.
          */
         public void deselectAll() {
-            JSVGComponent.this.deselectAll();
+            AbstractJSVGComponent.this.deselectAll();
         }
 
         /**
@@ -3218,7 +3226,7 @@ public class JSVGComponent extends JGVTComponent {
          * applied to the drawing by the UserAgent.
          */
         public AffineTransform getTransform() {
-            return JSVGComponent.this.renderingTransform;
+            return AbstractJSVGComponent.this.renderingTransform;
         }
 
         /**
@@ -3226,7 +3234,7 @@ public class JSVGComponent extends JGVTComponent {
          * applied to the drawing by the UserAgent.
          */
         public void setTransform(AffineTransform at) {
-            JSVGComponent.this.setRenderingTransform(at);
+            AbstractJSVGComponent.this.setRenderingTransform(at);
         }
 
         /**

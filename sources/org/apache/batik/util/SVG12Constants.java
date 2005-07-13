@@ -27,6 +27,8 @@ package org.apache.batik.util;
  */
 public interface SVG12Constants extends SVGConstants {
 
+    // SVG 1.2 element tag names ////////////////////////////////////////////
+
     /** Tag name for Batik's flowRoot extension (SVG 1.2). */
     public static final String SVG_FLOW_ROOT_TAG = 
         "flowRoot";
@@ -60,29 +62,43 @@ public interface SVG12Constants extends SVGConstants {
     public static final String SVG_FLOW_SPAN_TAG = 
         "flowSpan";
 
-    /** Tag name for Batik's solid color extension (SVG 1.2). */
-    public static final String SVG_SOLID_COLOR_TAG = 
-        "solidColor";
+    /** SVG 1.2 'handler' element tag name. */
+    public static final String SVG_HANDLER_TAG =
+        "handler";
 
     /** Tag name for Batik's multiImage extension. */
     public static final String SVG_MULTI_IMAGE_TAG =
         "multiImage";
 
+    /** Tag name for Batik's solid color extension (SVG 1.2). */
+    public static final String SVG_SOLID_COLOR_TAG = 
+        "solidColor";
+
     /** Tag name for Batik's subImage multiImage extension. */
     public static final String SVG_SUB_IMAGE_TAG =
         "subImage";
+
     /** Tag name for Batik's subImageRef multiImage extension. */
     public static final String SVG_SUB_IMAGE_REF_TAG =
         "subImageRef";
 
-    /** Attribute name for pixel-width attribute */
-    public static final String SVG_MIN_PIXEL_SIZE_ATTRIBUTE = 
-        "min-pixel-size";
+    // SVG 1.2 attribute names ///////////////////////////////////////////////
+
+    /** Attribute name for filterPrimitiveMarginsUnits */
+    public static final String SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE =
+        "filterPrimitiveMarginsUnits";
+
+    /** Attribute name for filterMarginsUnits */
+    public static final String SVG_FILTER_MARGINS_UNITS_ATTRIBUTE =
+        "filterMarginsUnits";
 
     /** Attribute name for pixel-height attribute */
     public static final String SVG_MAX_PIXEL_SIZE_ATTRIBUTE = 
         "max-pixel-size";
 
+    /** Attribute name for pixel-width attribute */
+    public static final String SVG_MIN_PIXEL_SIZE_ATTRIBUTE = 
+        "min-pixel-size";
 
     /** Attribute name for filter mx attribute */
     public static final String SVG_MX_ATRIBUTE =
@@ -100,13 +116,7 @@ public interface SVG12Constants extends SVGConstants {
     public static final String SVG_MH_ATRIBUTE =
         "mh";
 
-    /** Attribute name for filterPrimitiveMarginsUnits */
-    public static final String SVG_FILTER_PRIMITIVE_MARGINS_UNITS_ATTRIBUTE
-        = "filterPrimitiveMarginsUnits";
-
-    /** Attribute name for filterMarginsUnits */
-    public static final String SVG_FILTER_MARGINS_UNITS_ATTRIBUTE
-        = "filterMarginsUnits";
+    // SVG 1.2 attribute default values //////////////////////////////////////
 
     /** Default value for filter mx */
     public static final String SVG_FILTER_MX_DEFAULT_VALUE = "0";

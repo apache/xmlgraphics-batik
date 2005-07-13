@@ -97,6 +97,11 @@ public class SVGOMDocument
     protected transient boolean readonly;
 
     /**
+     * Whether the document supports SVG 1.2.
+     */
+    protected boolean isSVG12;
+
+    /**
      * Creates a new uninitialized document.
      */
     protected SVGOMDocument() {
@@ -297,6 +302,20 @@ public class SVGOMDocument
         throws DOMException {
         SVGDOMImplementation impl = (SVGDOMImplementation)implementation;
         return impl.createElementNS(this, namespaceURI, qualifiedName);
+    }
+
+    /**
+     * Returns whether the document supports SVG 1.2.
+     */
+    public boolean isSVG12() {
+        return isSVG12;
+    }
+
+    /**
+     * Sets whether the document supports SVG 1.2.
+     */
+    public void setIsSVG12(boolean b) {
+        isSVG12 = b;
     }
 
     /**

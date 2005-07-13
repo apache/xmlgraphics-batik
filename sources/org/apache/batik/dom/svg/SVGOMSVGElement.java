@@ -477,6 +477,16 @@ public class SVGOMSVGElement
         return ((DocumentEvent)getOwnerDocument()).createEvent(eventType);
     }
 
+    /**
+     * <b>DOM</b>: Implements {@link
+     * org.w3c.dom.events.DocumentEvent#canDispatch(String,String)}.
+     */
+    public boolean canDispatch(String namespaceURI, String type)
+            throws DOMException {
+        AbstractDocument doc = (AbstractDocument) getOwnerDocument();
+        return doc.canDispatch(namespaceURI, type);
+    }
+
     // DocumentCSS ////////////////////////////////////////////////////////////
 
     /**

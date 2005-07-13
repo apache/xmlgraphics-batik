@@ -31,6 +31,7 @@ import org.w3c.dom.Node;
 public abstract class AbstractDocumentFragment
     extends AbstractParentNode
     implements DocumentFragment {
+
     /**
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#getNodeName()}.
      * @return "#document-fragment".
