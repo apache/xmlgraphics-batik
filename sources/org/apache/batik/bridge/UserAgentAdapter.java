@@ -33,6 +33,7 @@ import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * An abstract user agent adaptor implementation.  It exists to simply
@@ -422,5 +423,19 @@ public class UserAgentAdapter implements UserAgent {
         }
     }
 
+    /**
+     * This Implementation simply throws a BridgeException.
+     *
+     * @param e   The <image> element that can't be loaded.
+     * @param url The resolved url that can't be loaded.
+     * @param message As best as can be determined the reason it can't be
+     *                loaded (not available, corrupt, unknown format,...).
+     */
+    public SVGDocument getBrokenLinkDocument(Element e, 
+                                             String url, 
+                                             String message) {
+        throw new BridgeException(e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
+                                  new Object[] {url, message });
+    }
 }
 
