@@ -39,6 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.net.URL;
 
 import javax.swing.JOptionPane;
 
@@ -47,7 +48,9 @@ import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeExtension;
 import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.ErrorConstants;
 import org.apache.batik.bridge.ExternalResourceSecurity;
+import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UpdateManager;
@@ -232,6 +235,31 @@ public class AbstractJSVGComponent extends JGVTComponent {
      * include support for DOM modifications.
      */
     public final static int ALWAYS_INTERACTIVE = 3;
+
+    /**
+     * String constant for the resource with the text for a script alert
+     * dialog. Must have a substitution for one string.
+     */
+    public final static String SCRIPT_ALERT = "script.alert";
+
+    /**
+     * String constant for the resource with the text for a script
+     * prompt dialog. Must have a substitution for one string.
+     */
+    public final static String SCRIPT_PROMPT = "script.prompt";
+
+    /**
+     * String constant for the resource with the text for a script
+     * confim dialog. Must have a substitution for one string.
+     */
+    public final static String SCRIPT_CONFIRM = "script.confirm";
+
+    /**
+     * String constant for the resource with the text for the title
+     * of the info tooltip for brokin link images.
+     * No string substitution.
+     */
+    public final static String BROKEN_LINK_TITLE = "broken.link.title";
 
     /**
      * The document loader.
@@ -1151,7 +1179,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
      */
     public void showAlert(String message) {
         JOptionPane.showMessageDialog
-            (this, Messages.formatMessage("script.alert",
+            (this, Messages.formatMessage(SCRIPT_ALERT,
                                           new Object[] { message }));
     }
 
@@ -1160,7 +1188,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
      */
     public String showPrompt(String message) {
         return JOptionPane.showInputDialog
-            (this, Messages.formatMessage("script.prompt",
+            (this, Messages.formatMessage(SCRIPT_PROMPT,
                                           new Object[] { message }));
     }
 
@@ -1170,7 +1198,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
     public String showPrompt(String message, String defaultValue) {
         return (String)JOptionPane.showInputDialog
             (this,
-             Messages.formatMessage("script.prompt",
+             Messages.formatMessage(SCRIPT_PROMPT,
                                     new Object[] { message }),
              null,
              JOptionPane.PLAIN_MESSAGE,
@@ -1182,7 +1210,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
      */
     public boolean showConfirm(String message) {
         return JOptionPane.showConfirmDialog
-            (this, Messages.formatMessage("script.confirm",
+            (this, Messages.formatMessage(SCRIPT_CONFIRM,
                                           new Object[] { message }),
              "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
@@ -2878,6 +2906,37 @@ public class AbstractJSVGComponent extends JGVTComponent {
             }
         }
         
+
+        /**
+         * This Implementation simply forwards the request to the AWT thread.
+         *
+         * @param e   The <image> element that can't be loaded.
+         * @param url The resolved url that can't be loaded.
+         * @param message As best as can be determined the reason it can't be
+         *                loaded (not available, corrupt, unknown format,...).
+         */
+        public SVGDocument getBrokenLinkDocument(final Element e, 
+                                                 final String url, 
+                                                 final String msg) {
+            if (EventQueue.isDispatchThread()) 
+                return userAgent.getBrokenLinkDocument(e, url, msg);
+
+            class Query implements Runnable {
+                SVGDocument doc;
+                RuntimeException rex = null;
+                public void run() {
+                    try {
+                        doc = userAgent.getBrokenLinkDocument(e, url, msg);
+                    } catch (RuntimeException re) { rex = re; }
+                }
+            }
+            Query q = new Query();
+            invokeAndWait(q);
+            if (q.rex != null) throw q.rex;
+            return q.doc;
+        }
+
+  
         /**
          * Invokes the given runnable from the event thread, and wait
          * for the run method to terminate.
@@ -3428,7 +3487,62 @@ public class AbstractJSVGComponent extends JGVTComponent {
             }
         }
         
+        /**
+         * This implementation provides a true SVG Document that it
+         * annotates with some information about why the real document
+         * can't be loaded (unfortunately right now tool tips are broken
+         * for content referenced by images so you can't actually see
+         * the info).
+         *
+         * @param e   The <image> element that can't be loaded.
+         * @param url The resolved url that can't be loaded.
+         * @param message As best as can be determined the reason it can't be
+         *                loaded (not available, corrupt, unknown format,...).
+         */
+        public SVGDocument getBrokenLinkDocument(Element e, 
+                                                 String url, 
+                                                 String message) {
+            Class cls = JSVGComponent.class;
+            URL blURL = cls.getResource("BrokenLink.svg");
+            if (blURL == null) 
+                throw new BridgeException
+                    (e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
+                     new Object[] {url, message });
 
+            DocumentLoader loader  = bridgeContext.getDocumentLoader();
+            SVGDocument    doc = null;
+
+            try {
+                doc  = (SVGDocument)loader.loadDocument(blURL.toString());
+                if (doc == null) return doc;
+
+                DOMImplementation impl;
+                impl = SVGDOMImplementation.getDOMImplementation();
+                doc  = (SVGDocument)DOMUtilities.deepCloneDocument(doc, impl);
+
+                String title;
+                Element infoE, titleE, descE;
+                infoE = doc.getElementById("__More_About");
+                if (infoE == null) return doc;
+
+                titleE = doc.createElementNS(SVGConstants.SVG_NAMESPACE_URI,
+                                            SVGConstants.SVG_TITLE_TAG);
+                title = Messages.formatMessage(BROKEN_LINK_TITLE, null);
+                titleE.appendChild(doc.createTextNode(title));
+
+                descE = doc.createElementNS(SVGConstants.SVG_NAMESPACE_URI,
+                                           SVGConstants.SVG_DESC_TAG);
+                descE.appendChild(doc.createTextNode(message));
+
+                infoE.insertBefore(descE, infoE.getFirstChild());
+                infoE.insertBefore(titleE, descE);
+            } catch (Exception ex) {
+                throw new BridgeException
+                    (e, ErrorConstants.ERR_URI_IMAGE_BROKEN,
+                     new Object[] {url, message });
+            }
+            return doc;
+        }
     }
 
     protected final static Set FEATURES = new HashSet();

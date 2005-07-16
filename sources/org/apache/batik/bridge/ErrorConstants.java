@@ -133,12 +133,25 @@ public interface ErrorConstants {
      * {0} = the uri
      * </pre>
      */
-    public static final String ERR_URI_IMAGE_INVALID
-        = "uri.image.invalid";
+    public static final String ERR_URI_IMAGE_INVALID = "uri.image.invalid";
 
     /**
-     * The resource that contains the title for the Broken Link message
+     * The error code when the bridge tries to read an image and the image
+     * url can't be opened or the contents aren't usable.
+     * <pre>
+     * {0} = the uri
+     * {1} = the reason it can't be opened.
+     * </pre>
      */
-    public static final String MSG_BROKEN_LINK_TITLE
-        = "broken.link.title";
+    public static final String ERR_URI_IMAGE_BROKEN = "uri.image.broken";
+
+    /**
+     * The error code when the bridge tries to read an image and the image
+     * url can't be opened:
+     * <pre>
+     * {0} = the reason it can't be opened.
+     * </pre>
+     */
+    public static final String URI_IMAGE_ERROR = "uri.image.error";
+
 }
