@@ -196,13 +196,11 @@ public class ImageTagRegistry implements ErrorConstants {
                 // Technially it's possible that it's an unknown
                 // 'protocol that caused the open to fail but probably
                 // it's a bad URL...
-                return getBrokenLinkImage(this, ERR_URL_UNREACHABLE,
-                                          new Object[] { purl });
+                return getBrokenLinkImage(this, ERR_URL_UNREACHABLE, null);
 
             // We were able to get to the data we just couldn't
             // make sense of it...
-            return getBrokenLinkImage(this, ERR_URL_UNINTERPRETABLE, 
-                                      new Object[] { purl } );
+            return getBrokenLinkImage(this, ERR_URL_UNINTERPRETABLE, null);
         }
 
         if (ret.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY) != null) {

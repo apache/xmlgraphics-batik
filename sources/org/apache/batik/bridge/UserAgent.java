@@ -27,6 +27,7 @@ import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.util.ParsedURL;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGAElement;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * An interface that provides access to the User Agent informations
@@ -285,4 +286,16 @@ public interface UserAgent {
     void checkLoadExternalResource(ParsedURL resourceURL,
                                    ParsedURL docURL) throws SecurityException;
 
+
+    /**
+     * This method should return an image to be displayed when an image
+     * can't be loaded.  If it returns 'null' then a BridgeException will
+     * be thrown.
+     *
+     * @param e   The <image> element that can't be loaded.
+     * @param url The resolved url that can't be loaded.
+     * @param message As best as can be determined the reason it can't be
+     *                loaded (not available, corrupt, unknown format,...).
+     */
+    SVGDocument getBrokenLinkDocument(Element e, String url, String message);
 }

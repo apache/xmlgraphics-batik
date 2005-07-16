@@ -38,6 +38,7 @@ import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.color.ICCColorSpaceExt;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
+import org.apache.batik.ext.awt.image.spi.BrokenLinkProvider;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.gvt.CanvasGraphicsNode;
 import org.apache.batik.gvt.CompositeGraphicsNode;
@@ -212,7 +213,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             /* Check the ImageTagRegistry Cache */
             Filter img = reg.checkCache(purl, colorspace);
             if (img != null) {
-                return createRasterImageNode(ctx, e, img);
+                return createRasterImageNode(ctx, e, img, purl);
             }
         }
 
@@ -230,7 +231,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             throw new BridgeException(e, ERR_URI_UNSECURE,
                                       new Object[] {purl});
         } catch (IOException ioe) {
-            return createBrokenImageNode(ctx, e, purl.toString());
+            return createBrokenImageNode(ctx, e, purl.toString(),
+                                         ioe.getLocalizedMessage());
         }
 
         {
@@ -244,7 +246,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                      false, false);
             if (img != null) {
                 // It's a bouncing baby Raster...
-                return createRasterImageNode(ctx, e, img);
+                return createRasterImageNode(ctx, e, img, purl);
             }
         }
 
@@ -257,7 +259,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                 reference = openStream(e, purl);
             } catch (IOException ioe2) {
                 // Since we already opened the stream this is unlikely.
-                return createBrokenImageNode(ctx, e, purl.toString());
+                return createBrokenImageNode(ctx, e, purl.toString(),
+                                             ioe2.getLocalizedMessage());
             }
         }
 
@@ -285,7 +288,8 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                 // Couldn't reset stream so reopen it.
                 reference = openStream(e, purl);
             } catch (IOException ioe2) {
-                return createBrokenImageNode(ctx, e, purl.toString());
+                return createBrokenImageNode(ctx, e, purl.toString(),
+                                             ioe2.getLocalizedMessage());
             }
         }
 
@@ -297,7 +301,7 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
                                      true, true);
             if (img != null) {
                 // It's a bouncing baby Raster...
-                return createRasterImageNode(ctx, e, img);
+                return createRasterImageNode(ctx, e, img, purl);
             }
         } finally {
             reference.release();
@@ -539,18 +543,22 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
      */
     protected GraphicsNode createRasterImageNode(BridgeContext ctx,
                                                  Element       e,
-                                                 Filter        img) {
+                                                 Filter        img,
+                                                 ParsedURL     purl) {
         Rectangle2D bounds = getImageBounds(ctx, e);
         if ((bounds.getWidth() == 0) || (bounds.getHeight() == 0)) {
             ShapeNode sn = new ShapeNode();
             sn.setShape(bounds);
             return sn;
         }
-        Object           obj = img.getProperty
-            (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY);
-        if ((obj != null) && (obj instanceof SVGDocument)) {
-            // Ok so we are dealing with a broken link.
-            SVGOMDocument doc = (SVGOMDocument)obj;
+
+        Object obj = img.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY);
+        if (obj != null) {
+            String msg = "unknown";
+            if (obj instanceof String)
+                msg = (String)obj;
+            SVGDocument doc = ctx.getUserAgent().getBrokenLinkDocument
+                (e, purl.toString(), msg);
             return createSVGImageNode(ctx, e, doc);
         }
 
@@ -889,28 +897,11 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     }
 
     GraphicsNode createBrokenImageNode
-        (BridgeContext ctx, Element e, String uri) {
-        
-        String lname = "<Unknown Element>";
-        SVGDocument doc = null;
-        if (e != null) {
-            doc = (SVGDocument)e.getOwnerDocument();
-            lname = e.getLocalName();
-        }
-        String docUri;
-        if (doc == null)  docUri = "<Unknown Document>";
-        else              docUri = doc.getURL();
-        int line = ctx.getDocumentLoader().getLineNumber(e);
-        Object [] fullparams = new Object[4];
-        fullparams[0] = docUri;
-        fullparams[1] = new Integer(line);
-        fullparams[2] = lname;
-        fullparams[3] = uri;
-
-        SVGDocument blDoc = brokenLinkProvider.getBrokenLinkDocument
-            (this, ERR_URI_IO, fullparams);
-        hitCheckChildren = true;
-        return createSVGImageNode(ctx, e, blDoc);
+        (BridgeContext ctx, Element e, String uri, String message) {
+        SVGDocument doc = ctx.getUserAgent().getBrokenLinkDocument
+            (e, uri, Messages.formatMessage(URI_IMAGE_ERROR, 
+                                           new Object[] { message } ));
+        return createSVGImageNode(ctx, e, doc);
     }
 
 

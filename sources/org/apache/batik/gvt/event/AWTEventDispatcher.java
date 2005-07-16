@@ -411,7 +411,7 @@ public class AWTEventDispatcher implements EventDispatcher,
         }
 
         if (lastHit != node) {
-            // post an MOUSE_EXITED
+            // post a MOUSE_EXITED event
             if (lastHit != null) {
                 gvtevt = new GraphicsNodeMouseEvent(lastHit,
                                                     MouseEvent.
@@ -429,7 +429,7 @@ public class AWTEventDispatcher implements EventDispatcher,
                 processMouseEvent(gvtevt);
                 // lastHit.processMouseEvent(gvtevt);
             }
-            // post an MOUSE_ENTERED
+            // post a MOUSE_ENTERED event
             if (node != null) {
                 gvtevt = new GraphicsNodeMouseEvent(node,
                                                     MouseEvent.
