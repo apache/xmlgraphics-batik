@@ -43,6 +43,7 @@ import org.apache.batik.ext.awt.image.renderable.AffineRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
 import org.apache.batik.ext.awt.image.renderable.PadRable8Bit;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.ext.awt.image.spi.BrokenLinkProvider;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
@@ -504,7 +505,7 @@ public class CursorManager implements SVGConstants, ErrorConstants {
 
             // Check if we got a broken image
             if (filter.getProperty
-                (SVGBrokenLinkProvider.SVG_BROKEN_LINK_DOCUMENT_PROPERTY) != null) {
+                (BrokenLinkProvider.BROKEN_LINK_PROPERTY) != null) {
                 return null;
             } 
             
