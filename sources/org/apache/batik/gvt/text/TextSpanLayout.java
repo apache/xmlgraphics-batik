@@ -25,6 +25,7 @@ import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.gvt.font.GVTGlyphMetrics;
 import org.apache.batik.gvt.font.GVTGlyphVector;
+import org.apache.batik.gvt.font.GVTLineMetrics;
 
 /**
  * Class that performs layout of attributed text strings into
@@ -101,6 +102,11 @@ public interface TextSpanLayout {
      * Returns the Metrics for a particular glyph.
      */
     public GVTGlyphMetrics getGlyphMetrics(int glyphIndex);
+
+    /**
+     * Returns the Line metrics for this text span.
+     */
+    public GVTLineMetrics getLineMetrics();
 
     public Point2D getTextPathAdvance();
 

@@ -153,6 +153,18 @@ To display the available targets type:
         <equals arg1="${jacl.present}" arg2="true"/>
       </not>
     </condition>
+
+    <uptodate property="IWasLoadedUpToDate" 
+     targetfile="${testresources}/org/apache/batik/bridge/IWasLoaded.jar">
+     <srcfiles dir= "${testresources}//org/apache/batik/bridge"
+               includes="IWasLoaded.java"/>
+    </uptodate>
+
+    <uptodate property="IWasLoadedTooUpToDate" 
+     targetfile="${testresources}/org/apache/batik/bridge/IWasLoadedToo.jar">
+     <srcfiles dir= "${testresources}//org/apache/batik/bridge"
+               includes="IWasLoadedToo.java"/>
+    </uptodate>
   </target>
 
   <path id="libs-classpath">
@@ -361,20 +373,24 @@ To display the available targets type:
     </jar>
   </target>
 
-  <target name="IWasLoaded.jar" depends="compiletestjars" >
+  <target name="IWasLoaded.jar" depends="compiletestjars" 
+          unless="IWasLoadedUpToDate">
     <jar manifest="${testresources}/org/apache/batik/bridge/IWasLoaded.mf"
          jarfile="${testresources}/org/apache/batik/bridge/IWasLoaded.jar">
       <fileset dir="${testresources}/classes">
-        <include name="org/apache/batik/bridge/IWasLoaded*.class"/>
+        <include name="org/apache/batik/bridge/IWasLoaded.class"/>
+        <include name="org/apache/batik/bridge/IWasLoaded$*.class"/>
       </fileset>
     </jar>
   </target>
 
-  <target name="IWasLoadedToo.jar" depends="compiletestjars" >
+  <target name="IWasLoadedToo.jar" depends="compiletestjars" 
+          unless="IWasLoadedTooUpToDate">
     <jar manifest="${testresources}/org/apache/batik/bridge/IWasLoadedToo.mf"
          jarfile="${testresources}/org/apache/batik/bridge/IWasLoadedToo.jar">
       <fileset dir="${testresources}/classes">
-        <include name="org/apache/batik/bridge/IWasLoadedToo*.class"/>
+        <include name="org/apache/batik/bridge/IWasLoadedToo.class"/>
+        <include name="org/apache/batik/bridge/IWasLoadedToo$*.class"/>
       </fileset>
     </jar>
   </target>
