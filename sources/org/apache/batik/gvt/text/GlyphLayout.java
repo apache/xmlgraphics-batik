@@ -318,6 +318,10 @@ public class GlyphLayout implements TextSpanLayout {
         return gv.getGlyphMetrics(glyphIndex);
     }
 
+    public GVTLineMetrics getLineMetrics() {
+        return metrics;
+    }
+
     /**
      * Returns true if the advance direction of this text is vertical.
      */
@@ -427,7 +431,7 @@ public class GlyphLayout implements TextSpanLayout {
 
         float start = glyphPos[off];
         for (int i=0; i<numGlyphs+1; i++) {
-            glyphAdvances[i] = glyphPos[i+i+off]-start;
+            glyphAdvances[i] = glyphPos[2*i+off]-start;
         }
         return glyphAdvances;
     }
@@ -1140,13 +1144,17 @@ public class GlyphLayout implements TextSpanLayout {
                                 verticalFirstOffset = 0f;
                             } else {
                                 // it won't be rotated
-                                verticalFirstOffset = 
-                                    (float)gm.getBounds2D().getHeight();
+                                float advY = gm.getVerticalAdvance();
+                                float asc  = metrics.getAscent();
+                                float dsc  = metrics.getDescent();
+                                verticalFirstOffset =  asc+(advY-(asc+dsc))/2;
                             }
                         } else {
                             if (glyphOrientationAngle == 0) {
-                                verticalFirstOffset = 
-                                    (float)gm.getBounds2D().getHeight();
+                                float advY = gm.getVerticalAdvance();
+                                float asc  = metrics.getAscent();
+                                float dsc  = metrics.getDescent();
+                                verticalFirstOffset =  asc+(advY-(asc+dsc))/2;
                             } else {
                                 // 90, 180, 270
                                 verticalFirstOffset = 0f;
@@ -1162,11 +1170,12 @@ public class GlyphLayout implements TextSpanLayout {
                         }
                     }
                 } else {
-                    if (glyphOrientationAuto && 
-                        (verticalFirstOffset == 0f)
-                        && !isLatinChar(ch)) {
-                        verticalFirstOffset = 
-                            (float)gm.getBounds2D().getHeight();
+                    if (glyphOrientationAuto        && 
+                        (verticalFirstOffset == 0f) && !isLatinChar(ch)) {
+                        float advY = gm.getVerticalAdvance();
+                        float asc  = metrics.getAscent();
+                        float dsc  = metrics.getDescent();
+                        verticalFirstOffset =  asc + (advY - (asc+dsc))/2;
                     }
                 }
             }
