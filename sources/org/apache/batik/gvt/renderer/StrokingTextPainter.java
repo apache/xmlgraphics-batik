@@ -45,6 +45,7 @@ import org.apache.batik.gvt.font.FontFamilyResolver;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.font.GVTGlyphMetrics;
+import org.apache.batik.gvt.font.GVTLineMetrics;
 import org.apache.batik.gvt.font.UnresolvedFontFamily;
 import org.apache.batik.gvt.text.AttributedCharacterSpanIterator;
 import org.apache.batik.gvt.text.BidiAttributedCharacterIterator;
@@ -706,21 +707,30 @@ public class StrokingTextPainter extends BasicTextPainter {
         TextSpanLayout  layout          = r.getLayout();
         GVTGlyphMetrics lastMetrics = 
             layout.getGlyphMetrics(layout.getGlyphCount()-1);
+        GVTLineMetrics  lastLineMetrics = layout.getLineMetrics();
         Rectangle2D     lastBounds  = lastMetrics.getBounds2D();
-        float lastW = (float)(lastBounds.getWidth()+lastBounds.getX());
-        float lastH = (float)(lastBounds.getHeight());
+        float halfLeading = (lastMetrics.getVerticalAdvance()-
+                               (lastLineMetrics.getAscent() +
+                                lastLineMetrics.getDescent()))/2;
+        float lastW = (float)(lastBounds.getWidth()  + lastBounds.getX());
+        float lastH = (float)(halfLeading + lastLineMetrics.getAscent() +
+                              (lastBounds.getHeight() + lastBounds.getY()));
         Point2D visualAdvance;
         
         if (!doAdjust) {
-            // System.out.println("Adv: " + chunk.advance);
-            // System.out.println("LastBounds: " + lastBounds);
-            // System.out.println("LastMetrics.hadv: " + lastMetrics.getHorizontalAdvance());
-            // System.out.println("LastMetrics.vadv: " + lastMetrics.getVerticalAdvance());
+            // System.err.println("Anchor: " + anchorType);
+            // System.err.println("Advance: " + chunk.advance);
+            // System.err.println("LastBounds: " + lastBounds);
+            // System.err.println("LastMetrics.hadv: " + 
+            //                    lastMetrics.getHorizontalAdvance());
+            // System.err.println("LastMetrics.vadv: " + 
+            //                    lastMetrics.getVerticalAdvance());
+
             visualAdvance = new Point2D.Float
             ((float)(chunk.advance.getX() + lastW -
                      lastMetrics.getHorizontalAdvance()),
-             (float)(chunk.advance.getY() + lastH -
-                     lastMetrics.getVerticalAdvance()));
+             (float)(chunk.advance.getY() - lastMetrics.getVerticalAdvance() +
+                     lastH));
         } else {
             Point2D advance    = chunk.advance;
 
@@ -733,8 +743,8 @@ public class StrokingTextPainter extends BasicTextPainter {
                         ((length.floatValue()-lastH)/
                          (advance.getY()-lastMetrics.getVerticalAdvance()));
                 } else {
-                    double adv = (advance.getY()-
-                                  lastMetrics.getVerticalAdvance() + lastH);
+                    double adv =(advance.getY()-
+                                 lastMetrics.getVerticalAdvance() + lastH);
                     yScale = (float)(length.floatValue()/adv);
                 }
                 visualAdvance = new Point2D.Float(0, length.floatValue());
