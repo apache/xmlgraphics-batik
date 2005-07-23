@@ -29,6 +29,7 @@ import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.ProtectionDomain;
 import java.security.PrivilegedAction;
+import java.security.cert.Certificate;
 
 import org.mozilla.javascript.GeneratedClassLoader;
 
@@ -68,7 +69,7 @@ public class RhinoClassLoader extends URLClassLoader implements GeneratedClassLo
               parent);
         this.documentURL = documentURL;
         if (documentURL != null){
-            codeSource = new CodeSource(documentURL, null);
+            codeSource = new CodeSource(documentURL, (Certificate [])null);
         }
 
         //
