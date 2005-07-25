@@ -150,7 +150,7 @@ public class URIChooser extends JDialog implements ActionMap {
      */
     public int showDialog() {
         pack();
-        show();
+        setVisible(true);
         return returnCode;
     }
 

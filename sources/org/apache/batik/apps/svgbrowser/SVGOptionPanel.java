@@ -80,7 +80,7 @@ public class SVGOptionPanel extends OptionPanel {
         SVGOptionPanel panel = new SVGOptionPanel();
 	Dialog dialog = new Dialog(parent, title, panel);
 	dialog.pack();
-	dialog.show();
+	dialog.setVisible(true);
 	return panel;
     }
 }

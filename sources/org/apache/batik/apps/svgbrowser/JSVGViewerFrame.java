@@ -207,9 +207,8 @@ public class JSVGViewerFrame
             debuggerClass = JSVGViewerFrame.class.getClassLoader().loadClass
                 ("org.mozilla.javascript.tools.debugger.Main");
             clearAllBreakpoints = debuggerClass.getMethod
-                ("clearAllBreakpoints", null);
-            scriptGo = debuggerClass.getMethod
-                ("go", null);
+                ("clearAllBreakpoints", (Class[])null);
+            scriptGo = debuggerClass.getMethod("go", (Class[])null);
             setExitAction = debuggerClass.getMethod
                 ("setExitAction", new Class[] {Runnable.class});
         } catch (ThreadDeath td) {
@@ -274,8 +273,8 @@ public class JSVGViewerFrame
         Context.removeContextListener((ContextListener)debuggerFrame);
         debuggerFrame.setVisible(false);
         try {
-            clearAllBreakpoints.invoke(debuggerFrame, null);
-            scriptGo.invoke(debuggerFrame, null);
+            clearAllBreakpoints.invoke(debuggerFrame, (Object[])null);
+            scriptGo.invoke(debuggerFrame, (Object[])null);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

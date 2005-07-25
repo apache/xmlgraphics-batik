@@ -113,7 +113,8 @@ public class StaticRenderer implements ImageRenderer {
      */
     public StaticRenderer(RenderingHints rh,
                           AffineTransform at){
-        renderingHints = new RenderingHints(rh);
+        renderingHints = new RenderingHints(null);
+        renderingHints.add(rh);
         usr2dev = new AffineTransform(at);
     }
 
@@ -121,7 +122,8 @@ public class StaticRenderer implements ImageRenderer {
      * Creates a new StaticRenderer object.
      */
     public StaticRenderer(){
-        renderingHints = new RenderingHints(defaultRenderingHints);
+        renderingHints = new RenderingHints(null);
+        renderingHints.add(defaultRenderingHints);
         usr2dev = new AffineTransform();
     }
 
@@ -175,7 +177,8 @@ public class StaticRenderer implements ImageRenderer {
      * @param rh Set of rendering hints to use for future renderings
      */
     public void setRenderingHints(RenderingHints rh) {
-        renderingHints = new RenderingHints(rh);
+        renderingHints = new RenderingHints(null);
+        renderingHints.add(rh);
 
         rootFilter = null;
         rootCR     = null;

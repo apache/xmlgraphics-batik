@@ -20,6 +20,7 @@ package org.apache.batik.test.svg;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.cert.Certificate;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -351,7 +352,7 @@ public class SVGOnLoadExceptionTest extends AbstractTest {
                 // the file.
                 Policy policy = Policy.getPolicy();
                 URL classesURL = (new File("classes")).toURL();
-                CodeSource cs = new CodeSource(classesURL, null);
+                CodeSource cs = new CodeSource(classesURL, (Certificate[])null);
                 PermissionCollection permissionsOrig
                     = policy.getPermissions(cs);
                 Permissions permissions = new Permissions();

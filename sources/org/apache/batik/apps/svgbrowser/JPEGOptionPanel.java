@@ -101,7 +101,7 @@ public class JPEGOptionPanel extends OptionPanel {
         JPEGOptionPanel panel = new JPEGOptionPanel();
 	Dialog dialog = new Dialog(parent, title, panel);
 	dialog.pack();
-	dialog.show();
+	dialog.setVisible(true);
 	return panel.getQuality();
     }
 }

@@ -83,7 +83,7 @@ public class PNGOptionPanel extends OptionPanel {
         PNGOptionPanel panel = new PNGOptionPanel();
 	Dialog dialog = new Dialog(parent, title, panel);
 	dialog.pack();
-	dialog.show();
+	dialog.setVisible(true);
 	return panel.isIndexed();
     }
 }

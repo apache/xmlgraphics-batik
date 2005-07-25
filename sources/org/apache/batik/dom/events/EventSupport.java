@@ -491,11 +491,11 @@ public class EventSupport {
             this.e = e;
             Class cls = e.getClass();
             try {
-                getNamespaceURIMethod = cls.getMethod("getNamespaceURI", null);
+                getNamespaceURIMethod = cls.getMethod("getNamespaceURI", (Class[])null);
                 stopImmediatePropagationMethod
-                    = cls.getMethod("stopImmediatePropagation", null);
+                    = cls.getMethod("stopImmediatePropagation", (Class[])null);
                 isDefaultPreventedMethod
-                    = cls.getMethod("isDefaultPrevented", null);
+                    = cls.getMethod("isDefaultPrevented", (Class[])null);
             } catch (NoSuchMethodException nsme) {
                 throw createEventException
                     (DOMException.NOT_SUPPORTED_ERR,
@@ -614,7 +614,7 @@ public class EventSupport {
          */
         public String getNamespaceURI() {
             try {
-                return (String) getNamespaceURIMethod.invoke(e, null);
+                return (String) getNamespaceURIMethod.invoke(e, (Object[])null);
             } catch (InvocationTargetException ite) {
                 ite.printStackTrace();
             } catch (IllegalAccessException iae) {
@@ -639,7 +639,7 @@ public class EventSupport {
          */
         public void stopImmediatePropagation() {
             try {
-                stopImmediatePropagationMethod.invoke(e, null);
+                stopImmediatePropagationMethod.invoke(e, (Object[])null);
             } catch (InvocationTargetException ite) {
                 ite.printStackTrace();
             } catch (IllegalAccessException iae) {
@@ -653,7 +653,7 @@ public class EventSupport {
          */
         public boolean isDefaultPrevented() {
             try {
-                return ((Boolean) isDefaultPreventedMethod.invoke(e, null))
+                return ((Boolean) isDefaultPreventedMethod.invoke(e, (Object[])null))
                     .booleanValue();
             } catch (InvocationTargetException ite) {
                 ite.printStackTrace();
