@@ -356,11 +356,10 @@ public class TileRable8Bit
         AffineTransform usr2dev = rc.getTransform();
 
         // Hints
-        RenderingHints hints = rc.getRenderingHints();
-        if(hints == null){
-            hints = new RenderingHints(null);
-        } else {
-            hints = new RenderingHints(hints);
+        RenderingHints rcHints = rc.getRenderingHints();
+        RenderingHints hints = new RenderingHints(null);
+        if(rcHints != null){
+            hints.add(rcHints);
         }
 
         // The region actually tiles is the intersection

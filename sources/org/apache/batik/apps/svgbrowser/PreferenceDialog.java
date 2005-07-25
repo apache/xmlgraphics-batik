@@ -801,7 +801,7 @@ public class PreferenceDialog extends JDialog
      */
     public int showDialog(){
         pack();
-        show();
+        setVisible(true);
         return returnCode;
     }
 

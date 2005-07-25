@@ -126,7 +126,7 @@ public class UserStyleDialog extends JDialog implements ActionMap {
      */
     public int showDialog() {
         pack();
-        show();
+        setVisible(true);
         return returnCode;
     }
 

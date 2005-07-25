@@ -2572,8 +2572,8 @@ public abstract class AbstractDocument
         Class c = Class.forName((String)s.readObject());
 
         try {
-            Method m = c.getMethod("getDOMImplementation", null);
-            implementation = (DOMImplementation)m.invoke(null, null);
+            Method m = c.getMethod("getDOMImplementation", (Class[])null);
+            implementation = (DOMImplementation)m.invoke(null, (Object[])null);
         } catch (Exception e) {
             try {
                 implementation = (DOMImplementation)c.newInstance();

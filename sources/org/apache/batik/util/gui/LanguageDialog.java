@@ -132,7 +132,7 @@ public class LanguageDialog extends JDialog implements ActionMap {
      * @return OK_CANCEL or CANCEL_OPTION.
      */
     public int showDialog() {
-        show();
+        setVisible(true);
         return returnCode;
     }
 
@@ -390,11 +390,13 @@ public class LanguageDialog extends JDialog implements ActionMap {
             for (int i = 0; i < len; i++) {
                 Object o = userListModel.getElementAt(0);
                 userListModel.removeElementAt(0);
+                String userListModelStr = (String)o;
+
                 int size = languageListModel.getSize();
                 int n = 0;
                 while (n < size) {
                     String s = (String)languageListModel.getElementAt(n);
-                    if (s.compareTo(o) > 0) {
+                    if (userListModelStr.compareTo(s) > 0) {
                         break;
                     }
                     n++;
@@ -503,12 +505,12 @@ public class LanguageDialog extends JDialog implements ActionMap {
                 int i = userList.getSelectedIndex();
                 Object o = userListModel.getElementAt(i);
                 userListModel.removeElementAt(i);
-
+                String userListModelStr = (String)o;
                 int size = languageListModel.getSize();
                 int n = 0;
                 while (n < size) {
                     String s = (String)languageListModel.getElementAt(n);
-                    if (s.compareTo(o) > 0) {
+                    if (userListModelStr.compareTo(s) > 0) {
                         break;
                     }
                     n++;
@@ -554,11 +556,13 @@ public class LanguageDialog extends JDialog implements ActionMap {
                 for (int i = 0; i < len; i++) {
                     Object o = userListModel.getElementAt(0);
                     userListModel.removeElementAt(0);
+                    String userListModelStr = (String)o;
+
                     int size = languageListModel.getSize();
                     int n = 0;
                     while (n < size) {
                         String s = (String)languageListModel.getElementAt(n);
-                        if (s.compareTo(o) > 0) {
+                        if (userListModelStr.compareTo(s) > 0) {
                             break;
                         }
                         n++;

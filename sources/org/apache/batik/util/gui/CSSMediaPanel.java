@@ -249,7 +249,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
 	Dialog dialog = new Dialog(parent, title, mediaList);
 	dialog.setModal(true);
 	dialog.pack();
-	dialog.show();
+	dialog.setVisible(true);
 	return dialog.getReturnCode();
     }
 
@@ -266,7 +266,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
 	Dialog dialog = new Dialog(parent, title, media);
 	dialog.setModal(true);
 	dialog.pack();
-	dialog.show();
+	dialog.setVisible(true);
 	return dialog.getReturnCode();
     }
 
@@ -292,7 +292,7 @@ public class CSSMediaPanel extends JPanel implements ActionMap {
 	public void actionPerformed(ActionEvent e) {
 	    AddMediumDialog dialog = new AddMediumDialog(CSSMediaPanel.this);
 	    dialog.pack();
-	    dialog.show();
+	    dialog.setVisible(true);
 
 	    if ((dialog.getReturnCode() == AddMediumDialog.CANCEL_OPTION) ||
 		(dialog.getMedium() == null)) {

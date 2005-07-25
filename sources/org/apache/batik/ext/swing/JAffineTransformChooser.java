@@ -344,7 +344,7 @@ public class JAffineTransformChooser extends JGridBagPanel{
         dialog.addWindowListener(new Closer());
         dialog.addComponentListener(new DisposeOnClose());
 
-        dialog.show(); // blocks until user brings dialog down...
+        dialog.setVisible(true); // blocks until user brings dialog down...
 
         return tracker.getAffineTransform();
     }
@@ -439,7 +439,7 @@ public class JAffineTransformChooser extends JGridBagPanel{
             }
             okButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        hide();
+                        setVisible(false);
                     }
                 });
             buttonPane.add(okButton);
@@ -449,14 +449,14 @@ public class JAffineTransformChooser extends JGridBagPanel{
             addKeyListener(new KeyAdapter(){
                     public void keyPressed(KeyEvent evt){
                         if(evt.getKeyCode() == KeyEvent.VK_ESCAPE){
-                            hide();
+                            setVisible(false);
                         }
                     }
                 });
             
             cancelButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        hide();
+                        setVisible(false);
                     }
                 });
             
@@ -475,13 +475,13 @@ public class JAffineTransformChooser extends JGridBagPanel{
             setLocationRelativeTo(c);
         }
 
-        public void show() {
-            tracker.reset();
-            super.show();
+        public void setVisible(boolean b) {
+            if (b) tracker.reset();
+            super.setVisible(b);
         }
 
         public AffineTransform showDialog(){
-            this.show();
+            this.setVisible(true);
             return tracker.getAffineTransform();
         }
 
@@ -504,7 +504,7 @@ public class JAffineTransformChooser extends JGridBagPanel{
     static class Closer extends WindowAdapter implements Serializable{
         public void windowClosing(WindowEvent e) {
             Window w = e.getWindow();
-            w.hide();
+            w.setVisible(false);
         }
     }
     
