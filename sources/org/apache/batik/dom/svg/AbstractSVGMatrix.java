@@ -229,7 +229,7 @@ public abstract class AbstractSVGMatrix implements SVGMatrix {
      */
     public SVGMatrix rotate(float angle) {
         AffineTransform tr = (AffineTransform)getAffineTransform().clone();
-        tr.rotate(angle);
+        tr.rotate(Math.PI * angle / 180);
         return new SVGOMMatrix(tr);
     }
 

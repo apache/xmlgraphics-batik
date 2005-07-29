@@ -137,36 +137,40 @@ public class RunnableQueue implements Runnable {
         Runnable rable;
         try {
             while (!HaltingThread.hasBeenHalted()) {
-
+                boolean callSuspended = false;
+                boolean callResumed   = false;
                 // Mutex for suspention work.
                 synchronized (stateLock) {
-                    if (state == RUNNING) {
-
-                        if (wasResumed) {
-                            wasResumed = false;
-                            executionResumed();
-                        }
-                    } else {
-                        
-                        while (state != RUNNING) {
-                            state = SUSPENDED;
-
-                            // notify suspendExecution in case it is
-                            // waiting til we shut down.
-                            stateLock.notifyAll();
-
-                            executionSuspended();
-
-                            // Wait until resumeExecution called.
-                            try {
-                                stateLock.wait();
-                            } catch(InterruptedException ie) { }
-                        }
-
-                        wasResumed = false;
-                        executionResumed();
+                    if (state != RUNNING) {
+                        state = SUSPENDED;
+                        callSuspended = true;
                     }
                 }
+                if (callSuspended)
+                    executionSuspended();
+
+                synchronized (stateLock) {
+                    while (state != RUNNING) {
+                        state = SUSPENDED;
+                        
+                        // notify suspendExecution in case it is
+                        // waiting til we shut down.
+                        stateLock.notifyAll();
+                        
+                        // Wait until resumeExecution called.
+                        try {
+                            stateLock.wait();
+                        } catch(InterruptedException ie) { }
+                    }
+
+                    if (wasResumed) {
+                        wasResumed = false;
+                        callResumed = true;
+                    }
+                }
+
+                if (callResumed)
+                    executionResumed();
 
                 // The following seriously stress tests the class
                 // for stuff happening between the two sync blocks.
