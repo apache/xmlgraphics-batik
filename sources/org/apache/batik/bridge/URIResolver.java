@@ -95,8 +95,7 @@ public class URIResolver {
         String baseURI = XMLBaseSupport.getCascadedXMLBase(ref);
         // System.err.println("baseURI: " + baseURI);
         // System.err.println("URI: " + uri);
-        if ((baseURI == null) &&
-            (uri.startsWith("#")))
+        if ((baseURI == null) && (uri.charAt(0) == '#'))
             return document.getElementById(uri.substring(1));
 
         ParsedURL purl = new ParsedURL(baseURI, uri);
