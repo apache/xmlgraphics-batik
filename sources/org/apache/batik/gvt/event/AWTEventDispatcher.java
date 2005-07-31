@@ -77,12 +77,6 @@ public class AWTEventDispatcher implements EventDispatcher,
     protected GraphicsNode lastHit;
 
     /**
-     * A dummy graphics node to dispatch "deselect" mouse events to. That is,
-     * when the mouse is clicked outside any nodes.
-     */
-    protected GraphicsNode dummyNode = new TextNode();
-
-    /**
      * The current GraphicsNode targeted by an key events.
      */
     protected GraphicsNode currentKeyEventTarget;
@@ -468,7 +462,7 @@ public class AWTEventDispatcher implements EventDispatcher,
             processMouseEvent(gvtevt);
 
         } else {
-            // this is a deselect event, dispatch it to dummy node
+            // this is a deselect event, dispatch it to the root
             gvtevt = new GraphicsNodeMouseEvent(root,
                                                 evt.getID(),
                                                 evt.getWhen(),

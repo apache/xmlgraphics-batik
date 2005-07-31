@@ -227,6 +227,7 @@ public class BridgeEventSupport implements SVGConstants {
                                    clientXY,
                                    evt,
                                    true);
+                lastTargetElement = null;
             }
         }
 
