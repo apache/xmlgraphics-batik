@@ -42,7 +42,7 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
     private FontRenderContext frc;
     private int chunkStart;
     private int [] newCharOrder;
-
+    private final static Float FLOAT_NAN = new Float(Float.NaN);
     private final static Map mirroredGlyphs = new HashMap(50);
 
 
@@ -162,16 +162,19 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
 
         //  work out the new character order
         newCharOrder = doBidiReorder(charIndices, charLevels, 
-                                           numChars, maxBiDi);
+                                     numChars, maxBiDi);
 
         // construct the string in the new order
         StringBuffer reorderedString = new StringBuffer();
         char c;
+        int reorderedFirstChar = 0;
         for (int i = 0; i < numChars; i++) {
-            c = aci.setIndex(newCharOrder[i]);
+            int srcIdx = newCharOrder[i];
+            c = aci.setIndex(srcIdx);
+            if (srcIdx == 0) reorderedFirstChar = i;
 
             // check for mirrored char
-            int bidiLevel = tl.getCharacterLevel(newCharOrder[i]);
+            int bidiLevel = tl.getCharacterLevel(srcIdx);
             if ((bidiLevel & 0x01) != 0) {
                 // bidi level is odd so writing dir is right to left
                 // So get the mirror version of the char if there
@@ -221,14 +224,14 @@ public class BidiAttributedCharacterIterator implements AttributedCharacterItera
         if (x != null && !x.isNaN()) {
             reorderedAS.addAttribute
                 (GVTAttributedCharacterIterator.TextAttribute.X,
-                 new Float(Float.NaN), newCharOrder[0], newCharOrder[0]+1);
+                 FLOAT_NAN, reorderedFirstChar, reorderedFirstChar+1);
             reorderedAS.addAttribute
                 (GVTAttributedCharacterIterator.TextAttribute.X, x, 0, 1);
         }
         if (y != null && !y.isNaN()) {
             reorderedAS.addAttribute
                 (GVTAttributedCharacterIterator.TextAttribute.Y,
-                 new Float(Float.NaN), newCharOrder[0], newCharOrder[0]+1);
+                 FLOAT_NAN, reorderedFirstChar, reorderedFirstChar+1);
             reorderedAS.addAttribute
                 (GVTAttributedCharacterIterator.TextAttribute.Y, y, 0, 1);
         }
