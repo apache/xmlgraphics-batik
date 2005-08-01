@@ -1043,6 +1043,7 @@ public class JSVGViewerFrame
             }
             if (uriChooser.showDialog() == URIChooser.OK_OPTION) {
                 String s = uriChooser.getText();
+                if (s == null) return;
                 int i = s.indexOf("#");
                 String t = "";
                 if (i != -1) {
