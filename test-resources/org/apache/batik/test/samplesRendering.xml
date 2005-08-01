@@ -329,6 +329,7 @@
         <test id="samples/tests/spec/text/textAnchor2.svg" />
         <test id="samples/tests/spec/text/textAnchor3.svg" />
         <test id="samples/tests/spec/text/textBiDi.svg" />
+        <test id="samples/tests/spec/text/textBiDi2.svg" />
         <test id="samples/tests/spec/text/textDecoration.svg" />
         <test id="samples/tests/spec/text/textDecoration2.svg" />
         <test id="samples/tests/spec/text/textEffect.svg" />
