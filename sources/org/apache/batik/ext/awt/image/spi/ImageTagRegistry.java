@@ -135,14 +135,13 @@ public class ImageTagRegistry implements ErrorConstants {
         i = entries.iterator();
         while (i.hasNext()) {
             RegistryEntry re = (RegistryEntry)i.next();
-
             if (re instanceof URLRegistryEntry) {
                 if ((purl == null) || !allowOpenStream) continue;
 
                 URLRegistryEntry ure = (URLRegistryEntry)re;
                 if (ure.isCompatibleURL(purl)) {
                     ret = ure.handleURL(purl, needRawData);
-
+                    
                     // Check if we got an image.
                     if (ret != null) break;
                 }
@@ -163,6 +162,7 @@ public class ImageTagRegistry implements ErrorConstants {
                         try {
                             is = purl.openStream(mimeTypes.iterator());
                         } catch(IOException ioe) {
+                            ioe.printStackTrace();
                             // Couldn't open the stream, go to next entry.
                             openFailed = true;
                             continue;
@@ -203,7 +203,7 @@ public class ImageTagRegistry implements ErrorConstants {
             return getBrokenLinkImage(this, ERR_URL_UNINTERPRETABLE, null);
         }
 
-        if (ret.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY) != null) {
+        if (BrokenLinkProvider.hasBrokenLinkProperty(ret)) {
             // Don't Return Broken link image unless requested
             return (returnBrokenLink)?ret:null;
         }
@@ -230,6 +230,7 @@ public class ImageTagRegistry implements ErrorConstants {
         Iterator i = entries.iterator();
         while (i.hasNext()) {
             RegistryEntry re = (RegistryEntry)i.next();
+            
             if (! (re instanceof StreamRegistryEntry))
                 continue;
             StreamRegistryEntry sre = (StreamRegistryEntry)re;
@@ -249,7 +250,7 @@ public class ImageTagRegistry implements ErrorConstants {
             return getBrokenLinkImage(this, ERR_STREAM_UNREADABLE, null);
 
         if ((colorSpace != null) &&
-            (ret.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY) == null))
+            (!BrokenLinkProvider.hasBrokenLinkProperty(ret)))
             ret = new ProfileRable(ret, colorSpace);
 
         return ret;
