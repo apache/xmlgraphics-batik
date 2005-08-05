@@ -504,8 +504,7 @@ public class CursorManager implements SVGConstants, ErrorConstants {
             }
 
             // Check if we got a broken image
-            if (filter.getProperty
-                (BrokenLinkProvider.BROKEN_LINK_PROPERTY) != null) {
+            if (BrokenLinkProvider.hasBrokenLinkProperty(filter)) {
                 return null;
             } 
             

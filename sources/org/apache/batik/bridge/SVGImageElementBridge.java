@@ -552,11 +552,11 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
             return sn;
         }
 
-        Object obj = img.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY);
-        if (obj != null) {
+        if (BrokenLinkProvider.hasBrokenLinkProperty(img)) {
+            Object o=img.getProperty(BrokenLinkProvider.BROKEN_LINK_PROPERTY);
             String msg = "unknown";
-            if (obj instanceof String)
-                msg = (String)obj;
+            if (o instanceof String)
+                msg = (String)o;
             SVGDocument doc = ctx.getUserAgent().getBrokenLinkDocument
                 (e, purl.toString(), msg);
             return createSVGImageNode(ctx, e, doc);

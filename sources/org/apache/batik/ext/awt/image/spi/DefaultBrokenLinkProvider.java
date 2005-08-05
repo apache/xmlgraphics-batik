@@ -28,7 +28,7 @@ import org.apache.batik.ext.awt.image.renderable.RedRable;
 import org.apache.batik.i18n.LocalizableSupport;
 
 public class DefaultBrokenLinkProvider 
-    implements BrokenLinkProvider {
+    extends BrokenLinkProvider {
 
     static Filter brokenLinkImg = null;
 

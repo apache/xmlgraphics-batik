@@ -17,6 +17,8 @@
  */
 package org.apache.batik.ext.awt.image.spi;
 
+import java.awt.Image;
+
 import org.apache.batik.ext.awt.image.renderable.Filter;
 
 /**
@@ -24,7 +26,7 @@ import org.apache.batik.ext.awt.image.renderable.Filter;
  * generating a placeholder image when the ImageTagRegistry
  * fails to handle a given reference.
  */
-public interface BrokenLinkProvider {
+public abstract class BrokenLinkProvider {
 
     /**
      * The image returned by getBrokenLinkImage should always
@@ -50,6 +52,14 @@ public interface BrokenLinkProvider {
      *             be taken from ErrorConstants.
      * @param params This is more detailed information about
      *        the circumstances of the failure.  */
-    public Filter getBrokenLinkImage(Object base,
-                                     String code, Object[] params);
+    public abstract Filter getBrokenLinkImage(Object base,
+                                              String code, Object[] params);
+
+    public static boolean hasBrokenLinkProperty(Filter f) {
+        Object o = f.getProperty(BROKEN_LINK_PROPERTY);
+        if (o == null) return false;
+        if (o == Image.UndefinedProperty) return false;
+        return true;
+    }
+
 }
