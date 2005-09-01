@@ -19,6 +19,7 @@ package org.apache.batik.dom.svg;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -198,7 +199,7 @@ public class SVGOMDocument
      * <b>DOM</b>: Implements {@link SVGDocument#getURL()}
      */
     public String getURL() {
-        return (url == null) ? null : url.toString();
+        return documentURI;
     }
 
     /**
@@ -213,6 +214,19 @@ public class SVGOMDocument
      */
     public void setURLObject(URL url) {
         this.url = url;
+        documentURI = url == null ? null : url.toString();
+    }
+
+    /**
+     * <b>DOM</b>: Implements {@link org.w3c.dom.Document#setDocumentURI(String)}.
+     */
+    public void setDocumentURI(String uri) {
+        documentURI = uri;
+        try {
+            url = uri == null ? null : new URL(uri);
+        } catch (MalformedURLException ex) {
+            url = null;
+        }
     }
 
     /**
