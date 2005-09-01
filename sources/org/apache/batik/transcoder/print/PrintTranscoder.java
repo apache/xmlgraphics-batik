@@ -170,11 +170,8 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // Now, request the transcoder to actually perform the
         // printing job.
         //
-        PrinterJob printerJob =
-            PrinterJob.getPrinterJob();
-
-        PageFormat pageFormat =
-            printerJob.defaultPage();
+        PrinterJob printerJob = PrinterJob.getPrinterJob();
+        PageFormat pageFormat = printerJob.defaultPage();
 
         //
         // Set the page parameters from the hints
@@ -193,19 +190,20 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         }
 
         float x=0, y=0;
-        float width=(float)paper.getWidth(), height=(float)paper.getHeight();
+        float width =(float)paper.getWidth();
+        float height=(float)paper.getHeight();
 
-        Float leftMargin = (Float)hints.get(KEY_MARGIN_LEFT);
-        Float topMargin = (Float)hints.get(KEY_MARGIN_TOP);
-        Float rightMargin = (Float)hints.get(KEY_MARGIN_RIGHT);
+        Float leftMargin   = (Float)hints.get(KEY_MARGIN_LEFT);
+        Float topMargin    = (Float)hints.get(KEY_MARGIN_TOP);
+        Float rightMargin  = (Float)hints.get(KEY_MARGIN_RIGHT);
         Float bottomMargin = (Float)hints.get(KEY_MARGIN_BOTTOM);
 
         if(leftMargin != null){
-            x = leftMargin.floatValue();
+            x      = leftMargin.floatValue();
             width -= leftMargin.floatValue();
         }
         if(topMargin != null){
-            y = topMargin.floatValue();
+            y       = topMargin.floatValue();
             height -= topMargin.floatValue();
         }
         if(rightMargin != null){
@@ -235,7 +233,7 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         // If required, pop up a dialog to adjust the page format
         //
         Boolean showPageFormat = (Boolean)hints.get(KEY_SHOW_PAGE_DIALOG);
-        if(showPageFormat != null && showPageFormat.booleanValue()){
+        if ((showPageFormat != null) && (showPageFormat.booleanValue())) {
             PageFormat tmpPageFormat = printerJob.pageDialog(pageFormat);
             if(tmpPageFormat == pageFormat){
                 // Dialog was cancelled, meaning that the print process should
@@ -249,7 +247,8 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         //
         // If required, pop up a dialog to select the printer
         //
-        Boolean showPrinterDialog = (Boolean)hints.get(KEY_SHOW_PRINTER_DIALOG);
+        Boolean showPrinterDialog;
+        showPrinterDialog = (Boolean)hints.get(KEY_SHOW_PRINTER_DIALOG);
         if(showPrinterDialog != null && showPrinterDialog.booleanValue()){
             if(!printerJob.printDialog()){
                 // Dialog was cancelled, meaning that the print process
@@ -298,8 +297,8 @@ public class PrintTranscoder extends SVGAbstractTranscoder
             // method which takes a document as an input. That method
             // builds the GVT root tree.{
             try{
-                width  = (int)(pageFormat.getImageableWidth()+0.5);
-                height = (int)(pageFormat.getImageableHeight()+0.5);
+                width  = (int)pageFormat.getImageableWidth();
+                height = (int)pageFormat.getImageableHeight();
                 super.transcode
                     ((TranscoderInput)printedInputs.elementAt(pageIndex),null);
                 curIndex = pageIndex;
@@ -324,6 +323,14 @@ public class PrintTranscoder extends SVGAbstractTranscoder
         AffineTransform t = g.getTransform();
         Shape clip = g.getClip();
 
+        // System.err.println("X/Y: " + pageFormat.getImageableX() + ", " +
+        //                    pageFormat.getImageableY());
+        // System.err.println("W/H: " + width + ", " + height);
+        // System.err.println("Clip: " + clip.getBounds2D());
+
+        // Offset 0,0 to the start of the imageable Area.
+        g.translate(pageFormat.getImageableX(),
+                    pageFormat.getImageableY());
         //
         // Append transform to selected area
         //
