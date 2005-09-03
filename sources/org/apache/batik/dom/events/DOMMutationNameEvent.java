@@ -57,8 +57,8 @@ public class DOMMutationNameEvent
                           null,
                           null,
                           (short) 0);
-        prevNamespaceURI = prevNamespaceURIArg;
-        prevNodeNameArg = prevNodeNameArg;
+        this.prevNamespaceURI = prevNamespaceURIArg;
+        this.prevNodeName     = prevNodeNameArg;
     }
 
     /**
@@ -80,8 +80,8 @@ public class DOMMutationNameEvent
                             null,
                             null,
                             (short) 0);
-        prevNamespaceURI = prevNamespaceURIArg;
-        prevNodeNameArg = prevNodeNameArg;
+        this.prevNamespaceURI = prevNamespaceURIArg;
+        this.prevNodeName     = prevNodeNameArg;
     }
 
     /**

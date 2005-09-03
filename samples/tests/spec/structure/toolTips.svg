@@ -41,13 +41,15 @@
 
     <g id="content">
 
-        <text class="title" x="50%" y="40">&lt;title&gt;and &lt;desc&gt;</text>
-        <text class="title" x="50%" y="55">tool tips on Graphical Elements</text>
+        <text class="title" x="50%" y="35">&lt;title&gt;and &lt;desc&gt;</text>
+        <text class="title" x="50%" y="50">tool tips on Graphical Elements</text>
 
         <defs>
+           <rect id="useElem" fill="crimson" stroke="black"
+                 x="0" y="0" width="20" height="14"/>
         </defs>
 
-        <g id="graphicsElementsTable" transform="translate(75, 80)">
+        <g id="graphicsElementsTable" transform="translate(75, 60)">
 
             <g id="additionalInfoHeader" transform="translate(60, 0)">
                 <rect x="0"   y="0" width="60" height="20" fill="#eeeeee" stroke="black" />
@@ -359,6 +361,43 @@
                         <title>Title: &lt;text&gt; with &lt;title&gt; and &lt;desc&gt;</title>
                         <desc>Description: &lt;text&gt; with &lt;desc&gt; and &lt;desc&gt;</desc>
                     </text>
+                </g>
+            </g> <!-- "textRow" -->
+
+            <g id="useRow" transform="translate(0, 200)">
+                <g fill="white" stroke="black">
+                    <rect x="0"   y="0" width="60" height="20"  />
+                    <rect x="60"  y="0" width="60" height="20"  />
+                    <rect x="120" y="0" width="60" height="20"  />
+                    <rect x="180" y="0" width="60" height="20"  />
+                    <rect x="240" y="0" width="60" height="20"  />
+                </g>
+               
+                <text x="30" y="15" class="label">&lt;use&gt;</text>
+
+                <g id="useSamples" stroke="none" fill="none">
+                    <!-- No info -->
+                    <use transform="translate(60, 0)" x="20" y="3"
+                         xlink:href="#useElem"/>
+
+                    <!-- title -->
+                    <use transform="translate(120, 0)" x="20" y="3"
+                         xlink:href="#useElem">
+                        <title>&lt;use&gt; with &lt;title&gt; only</title>
+                    </use>
+
+                    <!-- desc -->
+                    <use transform="translate(180, 0)" x="20" y="3"
+                         xlink:href="#useElem">
+                        <desc>&lt;use&gt; with &lt;desc&gt; only</desc>
+                    </use>
+
+                    <!-- title and desc -->
+                    <use transform="translate(240, 0)" x="20" y="3"
+                         xlink:href="#useElem">
+                        <title>Title: &lt;use&gt; with &lt;title&gt; and &lt;desc&gt;</title>
+                        <desc>Description: &lt;use&gt; with &lt;desc&gt; and &lt;desc&gt;</desc>
+                    </use>
                 </g>
             </g> <!-- "textRow" -->
         </g> <!-- id="graphicsElementsTable"  -->

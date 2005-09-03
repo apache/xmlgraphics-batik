@@ -81,13 +81,13 @@ public class SVGLinearGradient extends AbstractSVGConverter {
             Point2D p1 = gradient.getPoint1();
             Point2D p2 = gradient.getPoint2();
             gradientDef.setAttributeNS(null, SVG_X1_ATTRIBUTE,
-                                       "" + doubleString(p1.getX()));
+                                       doubleString(p1.getX()));
             gradientDef.setAttributeNS(null, SVG_Y1_ATTRIBUTE,
-                                       "" + doubleString(p1.getY()));
+                                       doubleString(p1.getY()));
             gradientDef.setAttributeNS(null, SVG_X2_ATTRIBUTE,
-                                       "" + doubleString(p2.getX()));
+                                       doubleString(p2.getX()));
             gradientDef.setAttributeNS(null, SVG_Y2_ATTRIBUTE,
-                                       "" + doubleString(p2.getY()));
+                                       doubleString(p2.getY()));
 
             //
             // Spread method

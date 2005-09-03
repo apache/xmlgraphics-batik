@@ -46,6 +46,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ToolTipManager;
 
 import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
 import org.apache.batik.swing.gvt.AbstractResetTransformInteractor;
@@ -1156,10 +1157,17 @@ public class JSVGCanvas extends JSVGComponent {
             }
 
             if (toolTipMap != null) {
-                Object o = toolTipMap.get(lastTarget);
-                final String theToolTip;
-                if (o == null) theToolTip = null;
-                else           theToolTip = (String)o;
+                Element e = (Element)lastTarget;
+                Object o = null;
+                while (e != null) {
+                    // Search the parents of the current node for ToolTips.
+                    o = toolTipMap.get(e);
+                    if (o != null) {
+                        break;
+                    }
+                    e = CSSEngine.getParentElement(e);
+                }
+                final String theToolTip = (String)o;
                 if (prevLastTarget != lastTarget)
                     EventQueue.invokeLater(new ToolTipRunnable(theToolTip));
             }
