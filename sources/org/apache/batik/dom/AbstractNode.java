@@ -881,7 +881,9 @@ public abstract class AbstractNode
     /**
      * Fire any UserDataHandlers on the given oldNode.
      */
-    protected void fireUserDataHandlers(int type, Node oldNode, Node newNode) {
+    protected void fireUserDataHandlers(short type,
+                                        Node oldNode,
+                                        Node newNode) {
         AbstractNode an = (AbstractNode) oldNode;
         if (an.userData != null) {
             Iterator i = an.userData.entrySet().iterator();
@@ -890,7 +892,7 @@ public abstract class AbstractNode
                 UserDataHandler h
                     = (UserDataHandler) an.userDataHandlers.get(e.getKey());
                 if (h != null) {
-                    h.handle(UserDataHandler.NODE_IMPORTED,
+                    h.handle(type,
                              (String) e.getKey(),
                              e.getValue(),
                              oldNode,

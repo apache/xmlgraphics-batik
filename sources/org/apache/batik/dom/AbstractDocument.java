@@ -390,9 +390,13 @@ public abstract class AbstractDocument
                                      new Object[] {});
         }
         
-        fireUserDataHandlers(UserDataHandler.NODE_IMPORTED,
-                             importedNode,
-                             result);
+        if (importedNode instanceof AbstractNode) {
+            // Only fire the UserDataHandler if the imported node is from
+            // Batik's DOM implementation.
+            fireUserDataHandlers(UserDataHandler.NODE_IMPORTED,
+                                 importedNode,
+                                 result);
+        }
 
         if (deep) {
             for (Node n = importedNode.getFirstChild();
