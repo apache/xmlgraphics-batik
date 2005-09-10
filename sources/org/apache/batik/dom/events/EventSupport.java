@@ -460,7 +460,7 @@ public class EventSupport {
     }
 
     /**
-     * Wrapper class for {@org.w3c.dom.events.CustomEvent} objects.
+     * Wrapper class for {@link org.w3c.dom.events.CustomEvent} objects.
      */
     protected class WrappedEvent implements CustomEvent {
 
