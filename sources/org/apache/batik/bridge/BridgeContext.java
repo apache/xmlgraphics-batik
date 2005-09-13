@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2004  The Apache Software Foundation 
+   Copyright 2000-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -43,11 +43,13 @@ import org.apache.batik.css.engine.CSSEngineUserAgent;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.SystemColorSupport;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg.SVGStylableElement;
+import org.apache.batik.dom.xbl.XBLManager;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextPainter;
@@ -58,6 +60,7 @@ import org.apache.batik.util.CleanerThread;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.Service;
+import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -88,6 +91,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * The document is bridge context is dedicated to.
      */
     protected Document document;
+
+    /**
+     * Whether the document is an SVG 1.2 document.
+     */
+    protected boolean isSVG12;
 
     /**
      * The GVT builder that might be used to create a GVT subtree.
@@ -147,6 +155,22 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected Map namespaceURIMap;
 
     /**
+     * Default bridge.
+     * When a bridge is requested for an element type that does not have a
+     * bridge, and there is no other bridge for elements in the same namespace,
+     * the default bridge is returned.  This is used for custom elements,
+     * which all use the same bridge type.
+     */
+    protected Bridge defaultBridge;
+
+    /**
+     * Default bridge reserved namespaces set.
+     * Default bridges will not be created for elements that have a
+     * namespace URI present in this set.
+     */
+    protected Set reservedNamespaceSet;
+
+    /**
      * Element Data Map:
      * This is a general location for elements to 'cache'
      * data.  Such as the graphics tree for a pattern or
@@ -157,7 +181,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * to stay live.
      */
     protected Map elementDataMap;
-
 
     /**
      * The interpreter pool used to handle scripts.
@@ -187,6 +210,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * text elements for font resolution).
      */
     public final static int STATIC      = 0;
+
     /**
      * Indicates that DOM listeners should be registered to support,
      * 'interactivity' this includes anchors and cursors, but does not
@@ -210,6 +234,11 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * The update manager.
      */
     protected UpdateManager updateManager;
+
+    /**
+     * The XBL manager.
+     */
+    protected XBLManager xblManager;
 
     /**
      * Constructs a new empty bridge context.
@@ -256,7 +285,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         this.documentLoader = documentLoader;
     }
 
-
     /** 
      * This function creates a new 'sub' BridgeContext to associated
      * with 'newDoc' if one currently doesn't exist, otherwise it
@@ -271,6 +299,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
 
         BridgeContext subCtx;
         subCtx = createBridgeContext();
+        subCtx.dynamicStatus = dynamicStatus;
         subCtx.setGVTBuilder(getGVTBuilder());
         subCtx.setTextPainter(getTextPainter());
         subCtx.setDocument(newDoc);
@@ -279,7 +308,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             subCtx.addUIEventListeners(newDoc);
         return subCtx;
     }
-
 
     /** 
      * This function creates a new BridgeContext, it mostly
@@ -362,6 +390,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             fontFamilyMap = null;
         }
         this.document = document;
+        this.isSVG12 = ((SVGOMDocument) document).isSVG12();
         registerSVGBridges();
     }
 
@@ -583,7 +612,6 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             setDynamicState(STATIC);
     }
 
-
     /**
      * Returns the update manager, if the bridge supports dynamic features.
      */
@@ -598,25 +626,56 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         updateManager = um;
     }
 
+    /**
+     * Sets the update manager on the given BridgeContext.
+     */
+    protected void setUpdateManager(BridgeContext ctx, UpdateManager um) {
+        ctx.setUpdateManager(um);
+    }
+
+    /**
+     * Sets the xblManager variable of the given BridgeContext.
+     */
+    protected void setXBLManager(BridgeContext ctx, XBLManager xm) {
+        ctx.xblManager = xm;
+    }
+
+    /**
+     * Returns whether the managed document is an SVG 1.2 document.
+     */
+    public boolean isSVG12() {
+        return isSVG12;
+    }
+
     // reference management //////////////////////////////////////////////////
 
     /**
-     * Returns the element referenced by the specified element by the
-     * specified uri. The referenced element can not be a Document.
-     *
-     * @param e the element referencing
-     * @param uri the uri of the referenced element
+     * Returns a new URIResolver object.
      */
-    public Element getReferencedElement(Element e, String uri) {
+    public URIResolver createURIResolver(SVGDocument doc, DocumentLoader dl) {
+        return new URIResolver(doc, dl);
+    }
+
+    /**
+     * Returns the node referenced by the specified element by the specified
+     * uri. The referenced node can be either an element given by a fragment
+     * ID, or the document node.
+     * @param e the element referencing
+     * @param uri the uri of the referenced node
+     */
+    public Node getReferencedNode(Element e, String uri) {
         try {
             SVGDocument document = (SVGDocument)e.getOwnerDocument();
-            URIResolver ur = new URIResolver(document, documentLoader);
-            Element ref = ur.getElement(uri, e);
+            URIResolver ur = createURIResolver(document, documentLoader);
+            Node ref = ur.getNode(uri, e);
             if (ref == null) {
                 throw new BridgeException(e, ERR_URI_BAD_TARGET,
                                           new Object[] {uri});
             } else {
-                SVGOMDocument refDoc = (SVGOMDocument)ref.getOwnerDocument();
+                SVGOMDocument refDoc =
+                    (SVGOMDocument) (ref.getNodeType() == Node.DOCUMENT_NODE
+                                       ? ref
+                                       : ref.getOwnerDocument());
                 // This is new rather than attaching this BridgeContext
                 // with the new document we now create a whole new 
                 // BridgeContext to go with the new document.
@@ -638,13 +697,26 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             ex.printStackTrace();
             throw new BridgeException(e, ERR_URI_IO,
                                       new Object[] {uri});
-        } catch (IllegalArgumentException ex) {
-            throw new BridgeException(e, ERR_URI_REFERENCE_A_DOCUMENT,
-                                      new Object[] {uri});
         } catch (SecurityException ex) {
             throw new BridgeException(e, ERR_URI_UNSECURE,
                                       new Object[] {uri});
         }
+    }
+
+    /**
+     * Returns the element referenced by the specified element by the
+     * specified uri. The referenced element can not be a Document.
+     *
+     * @param e the element referencing
+     * @param uri the uri of the referenced element
+     */
+    public Element getReferencedElement(Element e, String uri) {
+        Node ref = getReferencedNode(e, uri);
+        if (ref != null && ref.getNodeType() != Node.ELEMENT_NODE) {
+            throw new BridgeException(e, ERR_URI_REFERENCE_A_DOCUMENT,
+                                      new Object[] {uri});
+        }
+        return (Element) ref;
     }
 
     // Viewport //////////////////////////////////////////////////////////////
@@ -820,11 +892,18 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      *
      */
     public Bridge getBridge(String namespaceURI, String localName) {
-        HashMap localNameMap = (HashMap) namespaceURIMap.get(namespaceURI);
-        if (localNameMap == null) {
-            return null;
+        Bridge bridge = null;
+        if (namespaceURIMap != null) {
+            HashMap localNameMap = (HashMap) namespaceURIMap.get(namespaceURI);
+            if (localNameMap != null) {
+                bridge = (Bridge)localNameMap.get(localName);
+            }
         }
-        Bridge bridge = (Bridge)localNameMap.get(localName);
+        if (bridge == null
+                && (reservedNamespaceSet == null
+                    || !reservedNamespaceSet.contains(namespaceURI))) {
+            bridge = defaultBridge;
+        }
         if (isDynamic()) {
             return bridge == null ? null : bridge.getInstance();
         } else {
@@ -895,6 +974,44 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         }
     }
 
+    /**
+     * Sets the <tt>Bridge</tt> object to be used for foreign
+     * namespace elements.
+     *
+     * @param bridge the bridge that manages the element
+     */
+    public void setDefaultBridge(Bridge bridge) {
+        defaultBridge = bridge;
+    }
+
+    /**
+     * Adds a namespace URI to avoid when creating default bridges.
+     */
+    public void putReservedNamespaceURI(String namespaceURI) {
+        if (namespaceURI == null) {
+            namespaceURI = "";
+        }
+        if (reservedNamespaceSet == null) {
+            reservedNamespaceSet = new HashSet();
+        }
+        reservedNamespaceSet.add(namespaceURI);
+    }
+
+    /**
+     * Removes a namespace URI to avoid when creating default bridges.
+     */
+    public void removeReservedNamespaceURI(String namespaceURI) {
+        if (namespaceURI == null) {
+            namespaceURI = "";
+        }
+        if (reservedNamespaceSet != null) {
+            reservedNamespaceSet.remove(namespaceURI);
+            if (reservedNamespaceSet.isEmpty()) {
+                reservedNamespaceSet = null;
+            }
+        }
+    }
+
     // dynamic support ////////////////////////////////////////////////////////
 
     /**
@@ -906,7 +1023,7 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     /**
      * The DOM EventListener to receive 'DOMCharacterDataModified' event.
      */
-    protected EventListener domCharacterDataModifiedListener;
+    protected EventListener domCharacterDataModifiedEventListener;
 
     /**
      * The DOM EventListener to receive 'DOMAttrModified' event.
@@ -951,26 +1068,33 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * on anchors, for example), is handled during the bubling phase.
      */
     public void addUIEventListeners(Document doc) {
-        EventTarget evtTarget = (EventTarget)doc.getDocumentElement();
+        NodeEventTarget evtTarget = (NodeEventTarget)doc.getDocumentElement();
 
         DOMMouseOverEventListener domMouseOverListener =
             new DOMMouseOverEventListener();
-        evtTarget.addEventListener(SVGConstants.SVG_EVENT_MOUSEOVER, 
-                                   domMouseOverListener,
-                                   true);
-        storeEventListener(evtTarget, SVGConstants.SVG_EVENT_MOUSEOVER, 
-                           domMouseOverListener, true);
+        evtTarget.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+             SVGConstants.SVG_EVENT_MOUSEOVER, 
+             domMouseOverListener, true, null);
+        storeEventListenerNS
+            (evtTarget,
+             XMLConstants.XML_EVENTS_NAMESPACE_URI,
+             SVGConstants.SVG_EVENT_MOUSEOVER, 
+             domMouseOverListener, true);
 
         DOMMouseOutEventListener domMouseOutListener =
             new DOMMouseOutEventListener();
-        evtTarget.addEventListener(SVGConstants.SVG_EVENT_MOUSEOUT,
-                                   domMouseOutListener,
-                                   true);
-        storeEventListener(evtTarget, SVGConstants.SVG_EVENT_MOUSEOUT, 
-                           domMouseOutListener, true);
+        evtTarget.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+             SVGConstants.SVG_EVENT_MOUSEOUT,
+             domMouseOutListener, true, null);
+        storeEventListenerNS
+            (evtTarget,
+             XMLConstants.XML_EVENTS_NAMESPACE_URI,
+             SVGConstants.SVG_EVENT_MOUSEOUT, 
+             domMouseOutListener, true);
 
     }
-
 
     public void removeUIEventListeners(Document doc) {
         EventTarget evtTarget = (EventTarget)doc.getDocumentElement();
@@ -978,18 +1102,24 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             Iterator i = eventListenerSet.iterator();
             while (i.hasNext()) {
                 EventListenerMememto elm = (EventListenerMememto)i.next();
-                EventTarget   et = elm.getTarget();
+                NodeEventTarget et = elm.getTarget();
                 if (et == evtTarget) {
                     EventListener el = elm.getListener();
                     boolean       uc = elm.getUseCapture();
                     String        t  = elm.getEventType();
-                    if ((et == null) || (el == null) || (t == null))
+                    boolean       n  = elm.getNamespaced();
+                    if (et == null || el == null || t == null) {
                         continue;
-                    et.removeEventListener(t, el, uc);
+                    }
+                    if (n) {
+                        String ns = elm.getNamespaceURI();
+                        et.removeEventListenerNS(ns, t, el, uc);
+                    } else {
+                        et.removeEventListener(t, el, uc);
+                    }
                 }
             }
         }
-        
     }
 
     /**
@@ -998,29 +1128,32 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * properties and update the GVT tree in response.
      */
     public void addDOMListeners() {
-        EventTarget evtTarget = (EventTarget)document;
+        NodeEventTarget evtTarget = (NodeEventTarget)document;
 
         domAttrModifiedEventListener = new DOMAttrModifiedEventListener();
-        evtTarget.addEventListener("DOMAttrModified",
-                                   domAttrModifiedEventListener,
-                                   true);
+        evtTarget.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+             "DOMAttrModified",
+             domAttrModifiedEventListener, true, null);
 
         domNodeInsertedEventListener = new DOMNodeInsertedEventListener();
-        evtTarget.addEventListener("DOMNodeInserted",
-                                   domNodeInsertedEventListener,
-                                   true);
+        evtTarget.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+             "DOMNodeInserted",
+             domNodeInsertedEventListener, true, null);
 
         domNodeRemovedEventListener = new DOMNodeRemovedEventListener();
-        evtTarget.addEventListener("DOMNodeRemoved",
-                                   domNodeRemovedEventListener,
-                                   true);
+        evtTarget.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+             "DOMNodeRemoved",
+             domNodeRemovedEventListener, true, null);
 
-        domCharacterDataModifiedListener = 
-            new DOMCharacterDataModifiedListener();
-        evtTarget.addEventListener("DOMCharacterDataModified",
-                                   domCharacterDataModifiedListener,
-                                   true);
-
+        domCharacterDataModifiedEventListener = 
+            new DOMCharacterDataModifiedEventListener();
+        evtTarget.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+             "DOMCharacterDataModified",
+             domCharacterDataModifiedEventListener, true, null);
 
         focusManager = new FocusManager(document);
 
@@ -1028,6 +1161,35 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         CSSEngine cssEngine = svgDocument.getCSSEngine();
         cssPropertiesChangedListener = new CSSPropertiesChangedListener();
         cssEngine.addCSSEngineListener(cssPropertiesChangedListener);
+    }
+
+    /**
+     * Removes event listeners from the DOM and CSS engine.
+     */
+    protected void removeDOMListeners() {
+        NodeEventTarget evtTarget = (NodeEventTarget)document;
+
+        evtTarget.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMAttrModified",
+             domAttrModifiedEventListener, true);
+        evtTarget.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
+             domNodeInsertedEventListener, true);
+        evtTarget.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+             domNodeRemovedEventListener, true);
+        evtTarget.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMCharacterDataModified",
+             domCharacterDataModifiedEventListener, true);
+        
+        SVGOMDocument svgDocument = (SVGOMDocument)document;
+        CSSEngine cssEngine = svgDocument.getCSSEngine();
+        if (cssEngine != null) {
+            cssEngine.removeCSSEngineListener
+                (cssPropertiesChangedListener);
+            cssEngine.dispose();
+            svgDocument.setCSSEngine(null);
+        }
     }
 
     /**
@@ -1040,6 +1202,20 @@ public class BridgeContext implements ErrorConstants, CSSContext {
                                       boolean b) {
         synchronized (eventListenerSet) {
             eventListenerSet.add(new EventListenerMememto(t, s, l, b, this));
+        }
+    }
+
+    /**
+     * Adds to the eventListenerSet the specified event listener
+     * registration.
+     */
+    protected void storeEventListenerNS(EventTarget t,
+                                        String n,
+                                        String s,
+                                        EventListener l,
+                                        boolean b) {
+        synchronized (eventListenerSet) {
+            eventListenerSet.add(new EventListenerMememto(t, n, s, l, b, this));
         }
     }
 
@@ -1073,7 +1249,9 @@ public class BridgeContext implements ErrorConstants, CSSContext {
         public SoftReference target; // Soft ref to EventTarget
         public SoftReference listener; // Soft ref to EventListener 
         public boolean useCapture;
+        public String namespaceURI;
         public String eventType;
+        public boolean namespaced;
 
         public EventListenerMememto(EventTarget t, 
                                     String s, 
@@ -1087,20 +1265,43 @@ public class BridgeContext implements ErrorConstants, CSSContext {
             useCapture = b;
         }
 
+        public EventListenerMememto(EventTarget t, 
+                                    String n,
+                                    String s, 
+                                    EventListener l, 
+                                    boolean b,
+                                    BridgeContext ctx) {
+            this(t, s, l, b, ctx);
+            namespaceURI = n;
+            namespaced = true;
+        }
+
         public EventListener getListener() {
             return (EventListener)listener.get();
         }
-        public EventTarget getTarget() {
-            return (EventTarget)target.get();
+        public NodeEventTarget getTarget() {
+            return (NodeEventTarget)target.get();
         }
         public boolean getUseCapture() {
             return useCapture;
         }
+        public String getNamespaceURI() {
+            return namespaceURI;
+        }
         public String getEventType() {
             return eventType;
         }
+        public boolean getNamespaced() {
+            return namespaced;
+        }
     }
 
+    /**
+     * Adds the GVT listener for AWT event support.
+     */
+    public void addGVTListener(Document doc) {
+        BridgeEventSupport.addGVTListener(this, doc);
+    }
 
     /**
      * Disposes this BridgeContext.
@@ -1108,44 +1309,29 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     public void dispose() {
 
         synchronized (eventListenerSet) {
-        // remove all listeners added by Bridges
+            // remove all listeners added by Bridges
             Iterator iter = eventListenerSet.iterator();
-        while (iter.hasNext()) {
-            EventListenerMememto m = (EventListenerMememto)iter.next();
-            EventTarget   et = m.getTarget();
-            EventListener el = m.getListener();
-            boolean       uc = m.getUseCapture();
-            String        t  = m.getEventType();
-            if ((et == null) || (el == null) || (t == null))
-                continue;
-            et.removeEventListener(t, el, uc);
+            while (iter.hasNext()) {
+                EventListenerMememto m = (EventListenerMememto)iter.next();
+                NodeEventTarget et = m.getTarget();
+                EventListener   el = m.getListener();
+                boolean         uc = m.getUseCapture();
+                String          t  = m.getEventType();
+                boolean         n  = m.getNamespaced();
+                if (et == null || el == null || t == null) {
+                    continue;
+                }
+                if (n) {
+                    String ns = m.getNamespaceURI();
+                    et.removeEventListenerNS(ns, t, el, uc);
+                } else {
+                    et.removeEventListener(t, el, uc);
+                }
             }
         }
 
         if (document != null) {
-            EventTarget evtTarget = (EventTarget)document;
-
-            evtTarget.removeEventListener("DOMAttrModified",
-                                          domAttrModifiedEventListener, 
-                                          true);
-            evtTarget.removeEventListener("DOMNodeInserted",
-                                          domNodeInsertedEventListener, 
-                                          true);
-            evtTarget.removeEventListener("DOMNodeRemoved",
-                                          domNodeRemovedEventListener, 
-                                          true);
-            evtTarget.removeEventListener("DOMCharacterDataModified",
-                                          domCharacterDataModifiedListener, 
-                                          true);
-            
-            SVGOMDocument svgDocument = (SVGOMDocument)document;
-            CSSEngine cssEngine = svgDocument.getCSSEngine();
-            if (cssEngine != null) {
-                cssEngine.removeCSSEngineListener
-                    (cssPropertiesChangedListener);
-                cssEngine.dispose();
-                svgDocument.setCSSEngine(null);
-            }
+            removeDOMListeners();
         }
         Iterator iter = interpreterMap.values().iterator();
         while (iter.hasNext()) {
@@ -1185,6 +1371,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected class DOMAttrModifiedEventListener implements EventListener {
 
         /**
+         * Creates a new DOMAttrModifiedEventListener.
+         */
+        public DOMAttrModifiedEventListener() {
+        }
+
+        /**
          * Handles 'DOMAttrModified' event type.
          */
         public void handleEvent(Event evt) {
@@ -1204,6 +1396,16 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * The DOM EventListener invoked when the mouse exits an element
      */
     protected class DOMMouseOutEventListener implements EventListener {
+
+        /**
+         * Creates a new DOMMouseOutEventListener.
+         */
+        public DOMMouseOutEventListener() {
+        }
+
+        /**
+         * Handles 'mouseout' MouseEvent event type.
+         */
         public void handleEvent(Event evt) {
             MouseEvent me = (MouseEvent)evt;
             Element newTarget = (Element)me.getRelatedTarget();
@@ -1227,6 +1429,13 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * 
      */
     protected class DOMMouseOverEventListener implements EventListener {
+
+        /**
+         * Creates a new DOMMouseOverEventListener.
+         */
+        public DOMMouseOverEventListener() {
+        }
+
         /**
          * Handles 'mouseover' MouseEvent event type.
          */
@@ -1244,6 +1453,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * The DOM EventListener invoked when a node is added.
      */
     protected class DOMNodeInsertedEventListener implements EventListener {
+
+        /**
+         * Creates a new DOMNodeInsertedEventListener.
+         */
+        public DOMNodeInsertedEventListener() {
+        }
 
         /**
          * Handles 'DOMNodeInserted' event type.
@@ -1270,6 +1485,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     protected class DOMNodeRemovedEventListener implements EventListener {
 
         /**
+         * Creates a new DOMNodeRemovedEventListener.
+         */
+        public DOMNodeRemovedEventListener() {
+        }
+
+        /**
          * Handles 'DOMNodeRemoved' event type.
          */
         public void handleEvent(Event evt) {
@@ -1288,7 +1509,14 @@ public class BridgeContext implements ErrorConstants, CSSContext {
     /**
      * The DOM EventListener invoked when a character data is changed.
      */
-    protected class DOMCharacterDataModifiedListener implements EventListener {
+    protected class DOMCharacterDataModifiedEventListener
+            implements EventListener {
+
+        /**
+         * Creates a new DOMCharacterDataModifiedEventListener.
+         */
+        public DOMCharacterDataModifiedEventListener() {
+        }
 
         /**
          * Handles 'DOMNodeRemoved' event type.
@@ -1314,6 +1542,12 @@ public class BridgeContext implements ErrorConstants, CSSContext {
      * on a particular element.
      */
     protected class CSSPropertiesChangedListener implements CSSEngineListener {
+
+        /**
+         * Creates a new CSSPropertiesChangedListener.
+         */
+        public CSSPropertiesChangedListener() {
+        }
 
         /**
          * Handles CSSEngineEvent that describes the CSS properties

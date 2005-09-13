@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
+   Copyright 2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.engine.CSSImportedElementRoot;
+import org.apache.batik.css.engine.CSSNavigableNode;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.AbstractDocumentFragment;
 import org.w3c.dom.Element;
@@ -30,9 +30,9 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public class SVGOMCSSImportedElementRoot
-    extends    AbstractDocumentFragment
-    implements CSSImportedElementRoot {
+public class SVGOMUseShadowRoot
+        extends AbstractDocumentFragment
+        implements CSSNavigableNode {
 
     /**
      * The parent CSS element.
@@ -48,13 +48,13 @@ public class SVGOMCSSImportedElementRoot
     /**
      * Creates a new DocumentFragment object.
      */
-    protected SVGOMCSSImportedElementRoot() {
+    protected SVGOMUseShadowRoot() {
     }
 
     /**
      * Creates a new DocumentFragment object.
      */
-    public SVGOMCSSImportedElementRoot(AbstractDocument owner,
+    public SVGOMUseShadowRoot(AbstractDocument owner,
                                        Element parent,
                                        boolean isLocal) {
 	ownerDocument = owner;
@@ -75,29 +75,55 @@ public class SVGOMCSSImportedElementRoot
     public void setReadonly(boolean v) {
     }
 
-    // CSSImportedElementRoot ///////////////////////////////
+    // CSSNavigableNode //////////////////////////////////////////////////////
 
     /**
-     * Returns the parent of the imported element, from the CSS
-     * point of view.
+     * Returns the CSS parent node of this node.
      */
-    public Element getCSSParentElement() {
+    public Node getCSSParentNode() {
         return cssParentElement;
     }
 
+    /**
+     * Returns the CSS previous sibling node of this node.
+     */
+    public Node getCSSPreviousSibling() {
+        return null;
+    }
 
     /**
-     * Returns true if the imported CSS tree is from this
-     * 'owner' document.
+     * Returns the CSS next sibling node of this node.
      */
-    public boolean getIsLocal() {
-        return isLocal;
+    public Node getCSSNextSibling() {
+        return null;
+    }
+
+    /**
+     * Returns the CSS first child node of this node.
+     */
+    public Node getCSSFirstChild() {
+        return getFirstChild();
+    }
+
+    /**
+     * Returns the CSS last child of this node.
+     */
+    public Node getCSSLastChild() {
+        return getLastChild();
+    }
+
+    /**
+     * Returns whether this node is the root of a (conceptual) hidden tree
+     * that selectors will not work across.
+     */
+    public boolean isHiddenFromSelectors() {
+        return false;
     }
 
     /**
      * Returns a new uninitialized instance of this object's class.
      */
     protected Node newNode() {
-        return new SVGOMCSSImportedElementRoot();
+        return new SVGOMUseShadowRoot();
     }
 }

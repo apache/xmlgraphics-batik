@@ -19,7 +19,6 @@ package org.apache.batik.dom.svg12;
 
 import org.apache.batik.dom.events.DOMUIEvent;
 
-import org.w3c.dom.events.UIEvent;
 import org.w3c.dom.views.AbstractView;
 
 /**

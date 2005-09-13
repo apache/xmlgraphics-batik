@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,11 +19,8 @@ package org.apache.batik.bridge;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
@@ -40,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.WeakHashMap;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
@@ -49,6 +45,7 @@ import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.StyleMap;
 import org.apache.batik.css.engine.value.ListValue;
 import org.apache.batik.css.engine.value.Value;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SVGContext;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.svg.SVGTextContent;
@@ -66,13 +63,14 @@ import org.apache.batik.gvt.text.TextHit;
 import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.gvt.text.TextSpanLayout;
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.CSSValue;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -316,21 +314,25 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
             return;             // Only add the listeners if we are dynamic
 
 
-        EventTarget evtTarget = (EventTarget)e;
+        NodeEventTarget evtTarget = (NodeEventTarget)e;
 
         //to be notified when a child is removed from the 
         //<text> element.
-        evtTarget.addEventListener
-            ("DOMNodeRemoved", childNodeRemovedEventListener, true);
-        ctx.storeEventListener
-            (evtTarget, "DOMNodeRemoved", childNodeRemovedEventListener, true);
+        evtTarget.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+             childNodeRemovedEventListener, true, null);
+        ctx.storeEventListenerNS
+            (evtTarget, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+             childNodeRemovedEventListener, true);
         
         //to be notified when the modification of the subtree
         //of the <text> element is done
-        evtTarget.addEventListener
-            ("DOMSubtreeModified", subtreeModifiedEventListener, false);
-        ctx.storeEventListener
-            (evtTarget, "DOMSubtreeModified", subtreeModifiedEventListener, false);
+        evtTarget.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMSubtreeModified",
+             subtreeModifiedEventListener, false, null);
+        ctx.storeEventListenerNS
+            (evtTarget, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMSubtreeModified",
+             subtreeModifiedEventListener, false);
 
         // traverse the children to add context on 
         // <tspan>, <tref> and <textPath>
@@ -411,13 +413,13 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * Invoked when an MutationEvent of type 'DOMNodeInserted' is fired.
      */
     public void handleDOMNodeRemovedEvent(MutationEvent evt) {
-        EventTarget evtTarget = evt.getTarget();
-        evtTarget.removeEventListener("DOMNodeRemoved",
-                                      childNodeRemovedEventListener,
-                                      true);
-        evtTarget.removeEventListener("DOMSubtreeModified",
-                                      subtreeModifiedEventListener,
-                                      false);
+        NodeEventTarget evtTarget = (NodeEventTarget) evt.getTarget();
+        evtTarget.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+             childNodeRemovedEventListener, true);
+        evtTarget.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMSubtreeModified",
+             subtreeModifiedEventListener, false);
         super.handleDOMNodeRemovedEvent(evt);
     }
 
@@ -496,8 +498,8 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
      * value.
      */
     protected void computeLaidoutText(BridgeContext ctx, 
-                                       Element e,
-                                       GraphicsNode node) {
+                                      Element e,
+                                      GraphicsNode node) {
         AttributedString as = buildAttributedString(ctx, e);
         addGlyphPositionAttributes(as, e, ctx);
         if (ctx.isDynamic()) {
@@ -525,6 +527,10 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
         if (usingComplexSVGFont) {
             // Force Complex SVG fonts to be recreated, if we have them.
             tn.setAttributedCharacterIterator(as.getIterator());
+        }
+
+        if (ctx.isDynamic()) {
+            checkBBoxChange();
         }
     }
 
@@ -876,11 +882,15 @@ public class SVGTextElementBridge extends AbstractGraphicsNodeBridge
                         asb.append(s, m);
                     }
                 } else if (ln.equals(SVG_A_TAG)) {
-                    EventTarget target = (EventTarget)nodeElement;
+                    NodeEventTarget target = (NodeEventTarget)nodeElement;
                     UserAgent ua = ctx.getUserAgent();
                     EventListener l = new SVGAElementBridge.AnchorListener(ua);
-                    target.addEventListener(SVG_EVENT_CLICK, l, false);
-                    ctx.storeEventListener(target, SVG_EVENT_CLICK, l, false);
+                    target.addEventListenerNS
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
+                         l, false, null);
+                    ctx.storeEventListenerNS
+                        (target, XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                         SVG_EVENT_CLICK, l, false);
                     
                     fillAttributedStringBuffer(ctx,
                                                nodeElement,

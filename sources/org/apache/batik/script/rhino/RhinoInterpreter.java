@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
-import java.lang.reflect.Method;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.security.AccessControlContext;
 import java.security.AccessController;
@@ -39,7 +39,6 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeJavaPackage;
-import org.mozilla.javascript.PropertyException;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -129,7 +128,7 @@ public class RhinoInterpreter implements Interpreter {
      * Context vector, to make sure we are not
      * setting the security context too many times
      */
-    protected List contexts = new LinkedList();
+    protected static List contexts = new LinkedList();
 
     /**
      * Build a <code>Interpreter</code> for ECMAScript using Rhino.
@@ -194,7 +193,19 @@ public class RhinoInterpreter implements Interpreter {
         if (ctx == defaultContext)
             return ctx;
 
-        if (!contexts.contains(ctx)) {
+        boolean found = false;
+        Iterator i = contexts.iterator();
+        while (i.hasNext()) {
+            WeakReference ref = (WeakReference) i.next();
+            Object context = ref.get();
+            if (context == null) {
+                i.remove();
+            } else if (context == ctx) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
             ctx.setWrapFactory(wrapFactory);
             ctx.setSecurityController(securityController);
             ctx.setClassShutter(new RhinoClassShutter());
@@ -202,9 +213,9 @@ public class RhinoInterpreter implements Interpreter {
             // No class loader so don't try and optmize.
             if (rhinoClassLoader == null) {
                 ctx.setOptimizationLevel(-1);
-                ctx.setCachingEnabled(false);
+                Context.setCachingEnabled(false);
             }
-            contexts.add(ctx);
+            contexts.add(new WeakReference(ctx));
         }
         defaultContext = ctx;
         return ctx;
@@ -394,8 +405,8 @@ public class RhinoInterpreter implements Interpreter {
                 window = (Window)object;
                 object = globalObject;
             }
-                Scriptable jsObject;
-                jsObject = Context.toObject(object, globalObject);
+            Scriptable jsObject;
+            jsObject = Context.toObject(object, globalObject);
             globalObject.put(name, globalObject, jsObject);
         } finally {
             Context.exit();

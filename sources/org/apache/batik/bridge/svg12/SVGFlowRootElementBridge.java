@@ -22,7 +22,6 @@ import java.awt.Shape;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
@@ -33,18 +32,14 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.events.EventTarget;
 
 import org.apache.batik.bridge.Bridge;
-import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.CSSUtilities;
-import org.apache.batik.bridge.GraphicsNodeBridge;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.SVGTextElementBridge;
 import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.TextUtilities;
-import org.apache.batik.bridge.UnitProcessor;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.SVGAElementBridge;
 
@@ -56,22 +51,22 @@ import org.apache.batik.css.engine.value.svg12.LineHeightValue;
 import org.apache.batik.css.engine.value.Value;
 import org.apache.batik.css.engine.value.ValueConstants;
 
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.dom.util.XLinkSupport;
 
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.flow.BlockInfo;
 import org.apache.batik.gvt.flow.FlowTextNode;
 import org.apache.batik.gvt.flow.RegionInfo;
 import org.apache.batik.gvt.flow.TextLineBreaks;
 
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.gvt.text.TextPath;
 
 import org.apache.batik.util.SVG12Constants;
 import org.apache.batik.util.SVG12CSSConstants;
+import org.apache.batik.util.XMLConstants;
 
 /**
  * Bridge class for the &lt;flowRoot> element.
@@ -444,22 +439,25 @@ public class SVGFlowRootElementBridge extends SVGTextElementBridge {
 					       asb, lnLocs);
                 } else if (ln.equals(SVG_A_TAG)) {
                     if (ctx.isInteractive()) {
-                        EventTarget target = (EventTarget)nodeElement;
+                        NodeEventTarget target = (NodeEventTarget)nodeElement;
                         UserAgent ua = ctx.getUserAgent();
-                        target.addEventListener
-                            (SVG_EVENT_CLICK, 
+                        target.addEventListenerNS
+                            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                             SVG_EVENT_CLICK, 
                              new SVGAElementBridge.AnchorListener(ua),
-                             false);
+                             false, null);
                     
-                        target.addEventListener
-                            (SVG_EVENT_MOUSEOVER,
+                        target.addEventListenerNS
+                            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                             SVG_EVENT_MOUSEOVER,
                              new SVGAElementBridge.CursorMouseOverListener(ua),
-                             false);
+                             false, null);
                     
-                        target.addEventListener
-                            (SVG_EVENT_MOUSEOUT,
+                        target.addEventListenerNS
+                            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                             SVG_EVENT_MOUSEOUT,
                              new SVGAElementBridge.CursorMouseOutListener(ua),
-                             false);
+                             false, null);
                     }
                     fillAttributedStringBuffer(ctx,
                                                nodeElement,

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,16 +26,17 @@ import org.apache.batik.css.engine.value.ShorthandManager;
 import org.apache.batik.css.engine.value.ValueManager;
 import org.apache.batik.css.parser.ExtendedParser;
 import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.AbstractNode;
 import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.GenericElement;
-import org.apache.batik.dom.GenericElementNS;
 import org.apache.batik.dom.events.DocumentEventSupport;
+import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.util.SVG12Constants;
-
+import org.apache.batik.util.XBLConstants;
 
 import org.w3c.css.sac.InputSource;
 import org.w3c.dom.Document;
@@ -92,7 +93,7 @@ public class SVG12DOMImplementation
                                    String qualifiedName,
                                    DocumentType doctype)
         throws DOMException {
-        SVGOMDocument result = new SVGOMDocument(doctype, this);
+        SVGOMDocument result = new SVG12OMDocument(doctype, this);
         result.setIsSVG12(true);
         // BUG 32108: return empty document if qualifiedName is null.
         if (qualifiedName != null)
@@ -111,16 +112,21 @@ public class SVG12DOMImplementation
         if (namespaceURI == null) 
             return new GenericElement(qualifiedName.intern(), document);
 
+        String name = DOMUtilities.getLocalName(qualifiedName);
         if (SVG12Constants.SVG_NAMESPACE_URI.equals(namespaceURI)) {
-            String name = DOMUtilities.getLocalName(qualifiedName);
             ElementFactory ef = (ElementFactory)factories.get(name);
             if (ef != null)
                 return ef.create(DOMUtilities.getPrefix(qualifiedName),
                                  document);
+        } else if (XBLConstants.XBL_NAMESPACE_URI.equals(namespaceURI)) {
+            ElementFactory ef = (ElementFactory)xblFactories.get(name);
+            if (ef != null)
+                return ef.create(DOMUtilities.getPrefix(qualifiedName),
+                                 document);
         }
-        return new GenericElementNS(namespaceURI.intern(),
-                                    qualifiedName.intern(),
-                                    document);
+
+        String prefix = DOMUtilities.getPrefix(qualifiedName);
+        return new BindableElement(prefix, document, namespaceURI, name);
     }
 
     /**
@@ -135,7 +141,20 @@ public class SVG12DOMImplementation
                                             return new SVGOMWheelEvent();
                                         }
                                     });
+        result.registerEventFactory("ShadowTreeEvent",
+                                    new DocumentEventSupport.EventFactory() {
+                                        public Event createEvent() {
+                                            return new XBLOMShadowTreeEvent();
+                                        }
+                                    });
         return result;
+    }
+
+    /**
+     * Creates an EventSupport object for the given node.
+     */
+    public EventSupport createEventSupport(AbstractNode n) {
+        return new XBLEventSupport(n);
     }
 
     // The element factories /////////////////////////////////////////////////
@@ -377,6 +396,131 @@ public class SVG12DOMImplementation
          */
         public Element create(String prefix, Document doc) {
             return new SVGOMSubImageRefElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * The XBL element factories.
+     */
+    protected static HashTable xblFactories = new HashTable();
+
+    static {
+        xblFactories.put(XBLConstants.XBL_XBL_TAG,
+                         new XBLXBLElementFactory());
+
+        xblFactories.put(XBLConstants.XBL_DEFINITION_TAG,
+                         new XBLDefinitionElementFactory());
+
+        xblFactories.put(XBLConstants.XBL_TEMPLATE_TAG,
+                         new XBLTemplateElementFactory());
+
+        xblFactories.put(XBLConstants.XBL_CONTENT_TAG,
+                         new XBLContentElementFactory());
+
+        xblFactories.put(XBLConstants.XBL_HANDLER_GROUP_TAG,
+                         new XBLHandlerGroupElementFactory());
+
+        xblFactories.put(XBLConstants.XBL_IMPORT_TAG,
+                         new XBLImportElementFactory());
+
+        xblFactories.put(XBLConstants.XBL_SHADOW_TREE_TAG,
+                         new XBLShadowTreeElementFactory());
+    }
+
+    /**
+     * To create a 'xbl:xbl' element.
+     */
+    protected static class XBLXBLElementFactory implements ElementFactory {
+        public XBLXBLElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new XBLOMXBLElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'xbl:definition' element.
+     */
+    protected static class XBLDefinitionElementFactory
+            implements ElementFactory {
+        public XBLDefinitionElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new XBLOMDefinitionElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'xbl:template' element.
+     */
+    protected static class XBLTemplateElementFactory
+            implements ElementFactory {
+        public XBLTemplateElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new XBLOMTemplateElement(prefix, (AbstractDocument) doc);
+        }
+    }
+
+    /**
+     * To create a 'xbl:content' element.
+     */
+    protected static class XBLContentElementFactory
+            implements ElementFactory {
+        public XBLContentElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new XBLOMContentElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'xbl:handlerGroup' element.
+     */
+    protected static class XBLHandlerGroupElementFactory
+            implements ElementFactory {
+        public XBLHandlerGroupElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new XBLOMHandlerGroupElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'xbl:import' element.
+     */
+    protected static class XBLImportElementFactory
+            implements ElementFactory {
+        public XBLImportElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new XBLOMImportElement(prefix, (AbstractDocument)doc);
+        }
+    }
+
+    /**
+     * To create a 'xbl:shadowTree' element.
+     */
+    protected static class XBLShadowTreeElementFactory
+            implements ElementFactory {
+        public XBLShadowTreeElementFactory() {}
+        /**
+         * Creates an instance of the associated element type.
+         */
+        public Element create(String prefix, Document doc) {
+            return new XBLOMShadowTreeElement(prefix, (AbstractDocument)doc);
         }
     }
 

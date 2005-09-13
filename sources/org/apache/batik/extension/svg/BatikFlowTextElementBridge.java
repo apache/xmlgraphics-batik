@@ -38,6 +38,7 @@ import org.apache.batik.bridge.SVGUtilities;
 import org.apache.batik.bridge.TextUtilities;
 import org.apache.batik.bridge.UnitProcessor;
 import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.gvt.GraphicsNode;
@@ -46,9 +47,10 @@ import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
 import org.apache.batik.gvt.text.TextPath;
 import org.apache.batik.gvt.text.TextPaintInfo;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.events.EventTarget;
 
 /**
  * Bridge class for the &lt;flowText> element.
@@ -592,22 +594,25 @@ public class BatikFlowTextElementBridge extends SVGTextElementBridge
 					       asb, lnLocs);
                 } else if (ln.equals(SVG_A_TAG)) {
                     if (ctx.isInteractive()) {
-                        EventTarget target = (EventTarget)nodeElement;
+                        NodeEventTarget target = (NodeEventTarget)nodeElement;
                         UserAgent ua = ctx.getUserAgent();
-                        target.addEventListener
-                            (SVG_EVENT_CLICK, 
+                        target.addEventListenerNS
+                            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                             SVG_EVENT_CLICK, 
                              new SVGAElementBridge.AnchorListener(ua),
-                             false);
+                             false, null);
                     
-                        target.addEventListener
-                            (SVG_EVENT_MOUSEOVER,
+                        target.addEventListenerNS
+                            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                             SVG_EVENT_MOUSEOVER,
                              new SVGAElementBridge.CursorMouseOverListener(ua),
-                             false);
+                             false, null);
                     
-                        target.addEventListener
-                            (SVG_EVENT_MOUSEOUT,
+                        target.addEventListenerNS
+                            (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                             SVG_EVENT_MOUSEOUT,
                              new SVGAElementBridge.CursorMouseOutListener(ua),
-                             false);
+                             false, null);
                     }
                     fillAttributedStringBuffer(ctx,
                                                nodeElement,

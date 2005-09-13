@@ -44,7 +44,8 @@ import org.apache.batik.ext.awt.image.SVGComposite;
  * to do the work.  Eventually this may move to be more tiled in nature.
  *
  * @author <a href="mailto:Thomas.DeWeeese@Kodak.com">Thomas DeWeese</a>
- * @version $Id$ */
+ * @version $Id$
+ */
 public class CompositeRed extends AbstractRed {
 
     CompositeRule rule;

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,7 +24,9 @@ import java.lang.ref.SoftReference;
 
 import org.apache.batik.css.engine.CSSEngineEvent;
 import org.apache.batik.css.engine.SVGCSSEngine;
+import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.svg.SVGContext;
+import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.ext.awt.geom.SegmentList;
 import org.apache.batik.gvt.CanvasGraphicsNode;
@@ -33,6 +35,8 @@ import org.apache.batik.gvt.GraphicsNode;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.events.DocumentEvent;
+import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGFitToViewBox;
 
@@ -77,6 +81,11 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * The bridge context to use for dynamic updates.
      */
     protected BridgeContext ctx;
+
+    /**
+     * Whether the document is an SVG 1.2 document.
+     */
+    protected boolean isSVG12;
 
     /**
      * Constructs a new abstract bridge.
@@ -168,6 +177,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
             this.node = node;
             this.ctx = ctx;
             ((SVGOMElement)e).setSVGContext(this);
+            isSVG12 = ctx.isSVG12();
         }
     }
 
@@ -193,10 +203,34 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     /**
      * Invoked when the geometry of an graphical element has changed.
      */
-    protected  void handleGeometryChanged() {
+    protected void handleGeometryChanged() {
         node.setFilter(CSSUtilities.convertFilter(e, node, ctx));
         node.setMask(CSSUtilities.convertMask(e, node, ctx));
         node.setClip(CSSUtilities.convertClipPath(e, node, ctx));
+        if (isSVG12) {
+            if (!SVG_USE_TAG.equals(e.getLocalName())) {
+                // ShapeChange events get fired only for basic shapes and paths.
+                fireShapeChangeEvent();
+            }
+            fireBBoxChangeEvent();
+        }
+    }
+
+    /**
+     * Fires a ShapeChange event on the element this bridge is managing.
+     */
+    protected void fireShapeChangeEvent() {
+        DocumentEvent d = (DocumentEvent) e.getOwnerDocument();
+        AbstractEvent evt = (AbstractEvent) d.createEvent("SVGEvents");
+        evt.initEventNS(SVG_NAMESPACE_URI,
+                        "shapechange",
+                        true,
+                        false);
+        try {
+            ((EventTarget) e).dispatchEvent(evt);
+        } catch (RuntimeException ex) {
+            ctx.getUserAgent().displayError(ex);
+        }
     }
 
     /**
@@ -242,7 +276,7 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
     /**
      * Disposes all resources related to the specified node and its subtree
      */
-    static void disposeTree(Node node) {
+    protected void disposeTree(Node node) {
         if (node instanceof SVGOMElement) {
             SVGOMElement elt = (SVGOMElement)node;
             BridgeUpdateHandler h = (BridgeUpdateHandler)elt.getSVGContext();
@@ -303,6 +337,43 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
         }
     }
 
+    /**
+     * Checks if the bounding box of the node has changed, and if so,
+     * fires a bboxchange event on the element.
+     */
+    protected void checkBBoxChange() {
+        if (e != null) {
+            /*Rectangle2D oldBBox = bbox;
+            Rectangle2D newBBox = getBBox();
+            if (oldBBox != newBBox && newBBox != null) {
+                if (oldBBox == null ||
+                        oldBBox.getX() != bbox.getX()
+                        || oldBBox.getY() != bbox.getY()
+                        || oldBBox.getWidth() != bbox.getWidth()
+                        || oldBBox.getHeight() != bbox.getHeight()) {*/
+                    fireBBoxChangeEvent();
+                /*}
+            }*/
+        }
+    }
+
+    /**
+     * Fires an svg:bboxchange event on the element.
+     */
+    protected void fireBBoxChangeEvent() {
+        DocumentEvent d = (DocumentEvent) e.getOwnerDocument();
+        AbstractEvent evt = (AbstractEvent) d.createEvent("SVGEvents");
+        evt.initEventNS(SVG_NAMESPACE_URI,
+                        "RenderedBBoxChange",
+                        true,
+                        false);
+        try {
+            ((EventTarget) e).dispatchEvent(evt);
+        } catch (RuntimeException ex) {
+            ctx.getUserAgent().displayError(ex);
+        }
+    }
+
     // SVGContext implementation ///////////////////////////////////////////
 
     /**
@@ -332,6 +403,9 @@ public abstract class AbstractGraphicsNodeBridge extends AbstractSVGBridge
      * stroke-width and filter effects).
      */
     public Rectangle2D getBBox() {
+        if (node == null) {
+            return null;
+        }
         Shape s = node.getOutline();
         
         if ((bboxShape != null) && (s == bboxShape.get())) return bbox;

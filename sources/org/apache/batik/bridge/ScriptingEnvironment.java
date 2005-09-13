@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
+   Copyright 2002-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -39,16 +39,19 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.DeflaterOutputStream;
 
 import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
+import org.apache.batik.script.ScriptEventWrapper;
 import org.apache.batik.util.EncodingUtilities;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.RunnableQueue;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.dom.Document;
@@ -56,7 +59,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
 
@@ -345,16 +347,39 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         addScriptingListeners(document.getDocumentElement());
 
         // Add the listeners responsible of updating the event attributes
-        EventTarget et = (EventTarget)document;
-        et.addEventListener("DOMNodeInserted",
-                            domNodeInsertedListener,
-                            false);
-        et.addEventListener("DOMNodeRemoved",
-                            domNodeRemovedListener,
-                            false);
-        et.addEventListener("DOMAttrModified",
-                            domAttrModifiedListener,
-                            false);
+        addDocumentListeners();
+    }
+
+    /**
+     * Adds DOM listeners to the document.
+     */
+    protected void addDocumentListeners() {
+        NodeEventTarget et = (NodeEventTarget) document;
+        et.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
+             domNodeInsertedListener, false, null);
+        et.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+             domNodeRemovedListener, false, null);
+        et.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMAttrModified",
+             domAttrModifiedListener, false, null);
+    }
+
+    /**
+     * Removes DOM listeners from the document.
+     */
+    protected void removeDocumentListeners() {
+        NodeEventTarget et = (NodeEventTarget) document;
+        et.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
+             domNodeInsertedListener, false);
+        et.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+             domNodeRemovedListener, false);
+        et.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMAttrModified",
+             domAttrModifiedListener, false);
     }
 
     /**
@@ -377,8 +402,14 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         try {
             checkCompatibleScriptURL(lang, docPURL);
 
-            interpreter.bindObject(EVENT_NAME, evt);
-            interpreter.bindObject(ALTERNATE_EVENT_NAME, evt);
+            Object event;
+            if (evt instanceof ScriptEventWrapper) {
+                event = ((ScriptEventWrapper) evt).getEventObject();
+            } else {
+                event = evt;
+            }
+            interpreter.bindObject(EVENT_NAME, event);
+            interpreter.bindObject(ALTERNATE_EVENT_NAME, event);
             interpreter.evaluate(new StringReader(script), desc);
         } catch (IOException ioe) {
             // Do nothing, can't really happen with StringReader
@@ -398,23 +429,14 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
         removeScriptingListeners(document.getDocumentElement());
 
         // Remove the listeners responsible of updating the event attributes
-        EventTarget et = (EventTarget)document;
-        et.removeEventListener("DOMNodeInserted",
-                               domNodeInsertedListener,
-                               false);
-        et.removeEventListener("DOMNodeRemoved",
-                               domNodeRemovedListener,
-                               false);
-        et.removeEventListener("DOMAttrModified",
-                               domAttrModifiedListener,
-                               false);
+        removeDocumentListeners();
     }
 
     /**
      * Adds the scripting listeners to the given element and all of
      * its descendants.
      */
-    protected void addScriptingListeners(Node node) {
+    public void addScriptingListeners(Node node) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             addScriptingListenersOn((Element) node);
         }
@@ -432,33 +454,39 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      */
     protected void addScriptingListenersOn(Element elt) {
         // Attach the listeners
-        EventTarget target = (EventTarget)elt;
+        NodeEventTarget target = (NodeEventTarget)elt;
         if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
             if (SVGConstants.SVG_SVG_TAG.equals(elt.getLocalName())) {
                 // <svg> listeners
                 if (elt.hasAttributeNS(null, "onabort")) {
-                    target.addEventListener("SVGAbort",
-                                            svgAbortListener, false);
+                    target.addEventListenerNS
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGAbort",
+                         svgAbortListener, false, null);
                 }
                 if (elt.hasAttributeNS(null, "onerror")) {
-                    target.addEventListener("SVGError",
-                                            svgErrorListener, false);
+                    target.addEventListenerNS
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGError",
+                         svgErrorListener, false, null);
                 }
                 if (elt.hasAttributeNS(null, "onresize")) {
-                    target.addEventListener("SVGResize",
-                                            svgResizeListener, false);
+                    target.addEventListenerNS
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGResize",
+                         svgResizeListener, false, null);
                 }
                 if (elt.hasAttributeNS(null, "onscroll")) {
-                    target.addEventListener("SVGScroll",
-                                        svgScrollListener, false);
+                    target.addEventListenerNS
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGScroll",
+                         svgScrollListener, false, null);
                 }
                 if (elt.hasAttributeNS(null, "onunload")) {
-                    target.addEventListener("SVGUnload",
-                                            svgUnloadListener, false);
+                    target.addEventListenerNS
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGUnload",
+                         svgUnloadListener, false, null);
                 }
                 if (elt.hasAttributeNS(null, "onzoom")) {
-                    target.addEventListener("SVGZoom",
-                                            svgZoomListener, false);
+                    target.addEventListenerNS
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGZoom",
+                         svgZoomListener, false, null);
                 }
             } else {
                 String name = elt.getLocalName();
@@ -466,19 +494,19 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
                     name.startsWith("animate")) {
                     // animation listeners
                     if (elt.hasAttributeNS(null, "onbegin")) {
-                        target.addEventListener("beginEvent",
-                                                beginListener ,
-                                                false);
+                        target.addEventListenerNS
+                            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "beginEvent",
+                             beginListener, false, null);
                     }
                     if (elt.hasAttributeNS(null, "onend")) {
-                        target.addEventListener("endEvent",
-                                                endListener,
-                                                false);
+                        target.addEventListenerNS
+                            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "endEvent",
+                             endListener, false, null);
                     }
                     if (elt.hasAttributeNS(null, "onrepeat")) {
-                        target.addEventListener("repeatEvent",
-                                                repeatListener ,
-                                                false);
+                        target.addEventListenerNS
+                            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "repeatEvent",
+                             repeatListener, false, null);
                     }
                     return;
                 }
@@ -487,42 +515,64 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
 
         // UI listeners
         if (elt.hasAttributeNS(null, "onfocusin")) {
-            target.addEventListener("DOMFocusIn", focusinListener, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMFocusIn",
+                 focusinListener, false, null);
         }
         if (elt.hasAttributeNS(null, "onfocusout")) {
-            target.addEventListener("DOMFocusOut", focusoutListener,
-                                    false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMFocusOut",
+                 focusoutListener, false, null);
         }
         if (elt.hasAttributeNS(null, "onactivate")) {
-            target.addEventListener("DOMActivate", activateListener,
-                                    false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMActivate",
+                 activateListener, false, null);
         }
         if (elt.hasAttributeNS(null, "onclick")) {
-            target.addEventListener("click", clickListener, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "click",
+                 clickListener, false, null);
         } 
         if (elt.hasAttributeNS(null, "onmousedown")) {
-            target.addEventListener("mousedown", mousedownListener, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mousedown",
+                 mousedownListener, false, null);
         }
         if (elt.hasAttributeNS(null, "onmouseup")) {
-            target.addEventListener("mouseup", mouseupListener, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mouseup",
+                 mouseupListener, false, null);
         }
         if (elt.hasAttributeNS(null, "onmouseover")) {
-            target.addEventListener("mouseover", mouseoverListener, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mouseover",
+                 mouseoverListener, false, null);
         }
         if (elt.hasAttributeNS(null, "onmouseout")) {
-            target.addEventListener("mouseout", mouseoutListener, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mouseout",
+                 mouseoutListener, false, null);
         }
         if (elt.hasAttributeNS(null, "onmousemove")) {
-            target.addEventListener("mousemove", mousemoveListener, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mousemove",
+                 mousemoveListener, false, null);
         }
         if (elt.hasAttributeNS(null, "onkeypress")) {
-            target.addEventListener("keypress", keypressListener, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "keypress",
+                 keypressListener, false, null);
         }
         if (elt.hasAttributeNS(null, "onkeydown")) {
-            target.addEventListener("keydown", keydownListener, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "keydown",
+                 keydownListener, false, null);
         }
         if (elt.hasAttributeNS(null, "onkeyup")) {
-            target.addEventListener("keyup", keyupListener, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "keyup",
+                 keyupListener, false, null);
         }
     }
 
@@ -548,68 +598,105 @@ public class ScriptingEnvironment extends BaseScriptingEnvironment {
      * Removes the scripting listeners from the given element.
      */
     protected void removeScriptingListenersOn(Element elt) {
-        EventTarget target = (EventTarget)elt;
+        NodeEventTarget target = (NodeEventTarget)elt;
         if (SVGConstants.SVG_NAMESPACE_URI.equals(elt.getNamespaceURI())) {
             if (SVGConstants.SVG_SVG_TAG.equals(elt.getLocalName())) {
                 // <svg> listeners
-                target.removeEventListener("SVGAbort",
-                                           svgAbortListener, false);
-                target.removeEventListener("SVGError",
-                                           svgErrorListener, false);
-                target.removeEventListener("SVGResize",
-                                           svgResizeListener, false);
-                target.removeEventListener("SVGScroll",
-                                           svgScrollListener, false);
-                target.removeEventListener("SVGUnload",
-                                           svgUnloadListener, false);
-                target.removeEventListener("SVGZoom",
-                                           svgZoomListener, false);
+                target.removeEventListenerNS
+                    (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGAbort",
+                     svgAbortListener, false);
+                target.removeEventListenerNS
+                    (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGError",
+                     svgErrorListener, false);
+                target.removeEventListenerNS
+                    (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGResize",
+                     svgResizeListener, false);
+                target.removeEventListenerNS
+                    (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGScroll",
+                     svgScrollListener, false);
+                target.removeEventListenerNS
+                    (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGUnload",
+                     svgUnloadListener, false);
+                target.removeEventListenerNS
+                    (XMLConstants.XML_EVENTS_NAMESPACE_URI, "SVGZoom",
+                     svgZoomListener, false);
             } else {
                 String name = elt.getLocalName();
                 if (name.equals(SVGConstants.SVG_SET_TAG) ||
                     name.startsWith("animate")) {
                     // animation listeners
-                    target.removeEventListener("beginEvent",
-                                               beginListener ,
-                                               false);
-                    target.removeEventListener("endEvent",
-                                               endListener,
-                                               false);
-                    target.removeEventListener("repeatEvent",
-                                               repeatListener ,
-                                               false);
+                    target.removeEventListenerNS
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, "beginEvent",
+                         beginListener, false);
+                    target.removeEventListenerNS
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, "endEvent",
+                         endListener, false);
+                    target.removeEventListenerNS
+                        (XMLConstants.XML_EVENTS_NAMESPACE_URI, "repeatEvent",
+                         repeatListener , false);
                     return;
                 }
             }
         }
 
         // UI listeners
-        target.removeEventListener("DOMFocusIn", focusinListener, false);
-        target.removeEventListener("DOMFocusOut", focusoutListener, false);
-        target.removeEventListener("DOMActivate", activateListener, false);
-        target.removeEventListener("click", clickListener, false);
-        target.removeEventListener("mousedown", mousedownListener, false);
-        target.removeEventListener("mouseup", mouseupListener, false);
-        target.removeEventListener("mouseover", mouseoverListener, false);
-        target.removeEventListener("mouseout", mouseoutListener, false);
-        target.removeEventListener("mousemove", mousemoveListener, false);
-        target.removeEventListener("keypress", keypressListener, false);
-        target.removeEventListener("keydown", keydownListener, false);
-        target.removeEventListener("keyup", keyupListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMFocusIn",
+             focusinListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMFocusOut",
+             focusoutListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMActivate",
+             activateListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "click",
+             clickListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mousedown",
+             mousedownListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mouseup",
+             mouseupListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mouseover",
+             mouseoverListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mouseout",
+             mouseoutListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "mousemove",
+             mousemoveListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "keypress",
+             keypressListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "keydown",
+             keydownListener, false);
+        target.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, "keyup",
+             keyupListener, false);
     }
 
     /**
      * Updates the registration of a listener on the given element.
      */
     protected void updateScriptingListeners(Element elt, String attr) {
-        String        domEvt   = (String)       attrToDOMEvent.get(attr);
-        if (domEvt == null) return;  // Not an event attr.
-        EventListener listener = (EventListener)attrToListener.get(attr);
-        EventTarget   target   = (EventTarget)  elt;
-        if (elt.hasAttributeNS(null, attr))
-            target.addEventListener(domEvt, listener, false);
-        else
-            target.removeEventListener(domEvt, listener, false);
+        String domEvt = (String) attrToDOMEvent.get(attr);
+        if (domEvt == null) {
+            return;  // Not an event attr.
+        }
+        EventListener listener = (EventListener) attrToListener.get(attr);
+        NodeEventTarget target = (NodeEventTarget) elt;
+        if (elt.hasAttributeNS(null, attr)) {
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, domEvt,
+                 listener, false, null);
+        } else {
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, domEvt,
+                 listener, false);
+        }
     }
     
 

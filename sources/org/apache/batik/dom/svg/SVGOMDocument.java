@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -21,33 +21,34 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
-import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSNavigableDocument;
+import org.apache.batik.css.engine.CSSNavigableDocumentListener;
 import org.apache.batik.dom.AbstractStylableDocument;
 import org.apache.batik.dom.GenericAttr;
 import org.apache.batik.dom.GenericAttrNS;
 import org.apache.batik.dom.GenericCDATASection;
 import org.apache.batik.dom.GenericComment;
 import org.apache.batik.dom.GenericDocumentFragment;
-import org.apache.batik.dom.GenericDocumentType;
 import org.apache.batik.dom.GenericElement;
 import org.apache.batik.dom.GenericEntityReference;
 import org.apache.batik.dom.GenericProcessingInstruction;
 import org.apache.batik.dom.GenericText;
 import org.apache.batik.dom.StyleSheetFactory;
+import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.util.XMLSupport;
-import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
@@ -55,6 +56,9 @@ import org.w3c.dom.EntityReference;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGLangSpace;
 import org.w3c.dom.svg.SVGSVGElement;
@@ -68,7 +72,8 @@ import org.w3c.dom.svg.SVGSVGElement;
 public class SVGOMDocument
     extends    AbstractStylableDocument
     implements SVGDocument,
-               SVGConstants {
+               SVGConstants,
+               CSSNavigableDocument {
     
     /**
      * The error messages bundle class name.
@@ -101,6 +106,12 @@ public class SVGOMDocument
      * Whether the document supports SVG 1.2.
      */
     protected boolean isSVG12;
+
+    /**
+     * Map of CSSNavigableDocumentListeners to an array of wrapper
+     * DOM listeners.
+     */
+    protected HashMap cssNavigableDocumentListeners = new HashMap();
 
     /**
      * Creates a new uninitialized document.
@@ -339,6 +350,213 @@ public class SVGOMDocument
     public boolean isId(Attr node) {
         if (node.getNamespaceURI() != null) return false;
         return SVG_ID_ATTRIBUTE.equals(node.getNodeName());
+    }
+
+    // CSSNavigableDocument ///////////////////////////////////////////
+
+    /**
+     * Adds an event listener for mutations on the
+     * CSSNavigableDocument tree.
+     */
+    public void addCSSNavigableDocumentListener
+            (CSSNavigableDocumentListener l) {
+        if (cssNavigableDocumentListeners.containsKey(l)) {
+            return;
+        }
+
+        DOMNodeInsertedListenerWrapper nodeInserted
+            = new DOMNodeInsertedListenerWrapper(l);
+        DOMNodeRemovedListenerWrapper nodeRemoved
+            = new DOMNodeRemovedListenerWrapper(l);
+        DOMSubtreeModifiedListenerWrapper subtreeModified
+            = new DOMSubtreeModifiedListenerWrapper(l);
+        DOMCharacterDataModifiedListenerWrapper cdataModified
+            = new DOMCharacterDataModifiedListenerWrapper(l);
+        DOMAttrModifiedListenerWrapper attrModified
+            = new DOMAttrModifiedListenerWrapper(l);
+
+        cssNavigableDocumentListeners.put
+            (l, new EventListener[] { nodeInserted,
+                                      nodeRemoved,
+                                      subtreeModified,
+                                      cdataModified,
+                                      attrModified });
+
+        addEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                           "DOMNodeInserted", nodeInserted, false, null);
+        addEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                           "DOMNodeRemoved", nodeRemoved, false, null);
+        addEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                           "DOMSubtreeModified", subtreeModified, false, null);
+        addEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                           "DOMCharacterDataModified", cdataModified, false,
+                           null);
+        addEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                           "DOMAttrModified", attrModified, false, null);
+    }
+
+    /**
+     * Removes an event listener for mutations on the
+     * CSSNavigableDocument tree.
+     */
+    public void removeCSSNavigableDocumentListener
+            (CSSNavigableDocumentListener l) {
+        EventListener[] listeners
+            = (EventListener[]) cssNavigableDocumentListeners.get(l);
+        if (listeners == null) {
+            return;
+        }
+
+        removeEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                              "DOMNodeInserted", listeners[0], false);
+        removeEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                              "DOMNodeRemoved", listeners[1], false);
+        removeEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                              "DOMSubtreeModified", listeners[2], false);
+        removeEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                              "DOMCharacterDataModified", listeners[3], false);
+        removeEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                              "DOMAttrModified", listeners[4], false);
+
+        cssNavigableDocumentListeners.remove(l);
+    }
+
+    /**
+     * DOM node inserted listener wrapper.
+     */
+    protected class DOMNodeInsertedListenerWrapper implements EventListener {
+
+        /**
+         * The CSSNavigableDocumentListener.
+         */
+        protected CSSNavigableDocumentListener listener;
+
+        /**
+         * Creates a new DOMNodeInsertedListenerWrapper.
+         */
+        public DOMNodeInsertedListenerWrapper(CSSNavigableDocumentListener l) {
+            listener = l;
+        }
+
+        /**
+         * Handles the event.
+         */
+        public void handleEvent(Event evt) {
+            evt = EventSupport.getUltimateOriginalEvent(evt);
+            listener.nodeInserted((Node) evt.getTarget());
+        }
+    }
+
+    /**
+     * DOM node removed listener wrapper.
+     */
+    protected class DOMNodeRemovedListenerWrapper implements EventListener {
+
+        /**
+         * The CSSNavigableDocumentListener.
+         */
+        protected CSSNavigableDocumentListener listener;
+
+        /**
+         * Creates a new DOMNodeRemovedListenerWrapper.
+         */
+        public DOMNodeRemovedListenerWrapper(CSSNavigableDocumentListener l) {
+            listener = l;
+        }
+
+        /**
+         * Handles the event.
+         */
+        public void handleEvent(Event evt) {
+            evt = EventSupport.getUltimateOriginalEvent(evt);
+            listener.nodeToBeRemoved((Node) evt.getTarget());
+        }
+    }
+
+    /**
+     * DOM subtree modified listener wrapper.
+     */
+    protected class DOMSubtreeModifiedListenerWrapper implements EventListener {
+
+        /**
+         * The CSSNavigableDocumentListener.
+         */
+        protected CSSNavigableDocumentListener listener;
+
+        /**
+         * Creates a new DOMSubtreeModifiedListenerWrapper.
+         */
+        public DOMSubtreeModifiedListenerWrapper
+                (CSSNavigableDocumentListener l) {
+            listener = l;
+        }
+
+        /**
+         * Handles the event.
+         */
+        public void handleEvent(Event evt) {
+            evt = EventSupport.getUltimateOriginalEvent(evt);
+            listener.subtreeModified((Node) evt.getTarget());
+        }
+    }
+
+    /**
+     * DOM character data modified listener wrapper.
+     */
+    protected class DOMCharacterDataModifiedListenerWrapper
+            implements EventListener {
+
+        /**
+         * The CSSNavigableDocumentListener.
+         */
+        protected CSSNavigableDocumentListener listener;
+
+        /**
+         * Creates a new DOMCharacterDataModifiedListenerWrapper.
+         */
+        public DOMCharacterDataModifiedListenerWrapper
+                (CSSNavigableDocumentListener l) {
+            listener = l;
+        }
+
+        /**
+         * Handles the event.
+         */
+        public void handleEvent(Event evt) {
+            evt = EventSupport.getUltimateOriginalEvent(evt);
+            listener.subtreeModified((Node) evt.getTarget());
+        }
+    }
+
+    /**
+     * DOM attribute modified listener wrapper.
+     */
+    protected class DOMAttrModifiedListenerWrapper implements EventListener {
+
+        /**
+         * The CSSNavigableDocumentListener.
+         */
+        protected CSSNavigableDocumentListener listener;
+
+        /**
+         * Creates a new DOMAttrModifiedListenerWrapper.
+         */
+        public DOMAttrModifiedListenerWrapper(CSSNavigableDocumentListener l) {
+            listener = l;
+        }
+
+        /**
+         * Handles the event.
+         */
+        public void handleEvent(Event evt) {
+            evt = EventSupport.getUltimateOriginalEvent(evt);
+            MutationEvent mevt = (MutationEvent) evt;
+            listener.attrModified((Element) evt.getTarget(),
+                                  (Attr) mevt.getRelatedNode(),
+                                  mevt.getAttrChange(),
+                                  mevt.getPrevValue(),
+                                  mevt.getNewValue());
+        }
     }
 
     // AbstractDocument ///////////////////////////////////////////////

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -92,11 +92,12 @@ public class URIResolver {
     public Node getNode(String uri, Element ref)
         throws MalformedURLException, IOException, SecurityException {
 
-        String baseURI = AbstractNode.getBaseURI(ref);
+        String baseURI = getRefererBaseURI(ref);
         // System.err.println("baseURI: " + baseURI);
         // System.err.println("URI: " + uri);
-        if ((baseURI == null) && (uri.charAt(0) == '#'))
-            return document.getElementById(uri.substring(1));
+        if (baseURI == null && uri.charAt(0) == '#') {
+            return getNodeByFragment(uri.substring(1), ref);
+        }
 
         ParsedURL purl = new ParsedURL(baseURI, uri);
         // System.err.println("PURL: " + purl);
@@ -135,5 +136,23 @@ public class URIResolver {
         if (frag != null)
             return doc.getElementById(frag);
         return doc;
+    }
+
+    /**
+     * Returns the base URI of the referer element.
+     */
+    protected String getRefererBaseURI(Element ref) {
+        return ((AbstractNode) ref).getBaseURI();
+    }
+
+    /**
+     * Returns the node referenced by the given fragment identifier.
+     * This is called when the whole URI just contains a fragment identifier
+     * and there is no XML Base URI in effect.
+     * @param frag the URI fragment
+     * @param ref  the context element from which to resolve the URI fragment
+     */
+    protected Node getNodeByFragment(String frag, Element ref) {
+        return ref.getOwnerDocument().getElementById(frag);
     }
 }

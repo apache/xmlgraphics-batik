@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.css.engine.CSSNavigableNode;
 import org.apache.batik.dom.AbstractAttr;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.events.NodeEventTarget;
@@ -36,8 +37,8 @@ import org.w3c.dom.events.MutationEvent;
  * @version $Id$
  */
 public abstract class AbstractElement
-    extends org.apache.batik.dom.AbstractElement
-    implements NodeEventTarget {
+        extends org.apache.batik.dom.AbstractElement
+        implements NodeEventTarget, CSSNavigableNode {
     
     /**
      * The live attribute values.
@@ -61,14 +62,49 @@ public abstract class AbstractElement
 	initializeAttributes();
     }
 
-    // NodeEventTarget ////////////////////////////////////////////////////
+    // CSSNavigableNode ///////////////////////////////////////////////////
 
     /**
-     * Implements {@link NodeEventTarget#getParentNodeEventTarget()}.
+     * Returns the CSS parent node of this node.
      */
-    public NodeEventTarget getParentNodeEventTarget() {
-        return (NodeEventTarget)
-            CSSEngine.getLogicalParentNode(getParentNode());
+    public Node getCSSParentNode() {
+        return getXblParentNode();
+    }
+
+    /**
+     * Returns the CSS previous sibling node of this node.
+     */
+    public Node getCSSPreviousSibling() {
+        return getXblPreviousSibling();
+    }
+
+    /**
+     * Returns the CSS next sibling node of this node.
+     */
+    public Node getCSSNextSibling() {
+        return getXblNextSibling();
+    }
+
+    /**
+     * Returns the CSS first child node of this node.
+     */
+    public Node getCSSFirstChild() {
+        return getXblFirstChild();
+    }
+
+    /**
+     * Returns the CSS last child of this node.
+     */
+    public Node getCSSLastChild() {
+        return getXblLastChild();
+    }
+
+    /**
+     * Returns whether this node is the root of a (conceptual) hidden tree
+     * that selectors will not work across.
+     */
+    public boolean isHiddenFromSelectors() {
+        return false;
     }
 
     // Attributes /////////////////////////////////////////////////////////

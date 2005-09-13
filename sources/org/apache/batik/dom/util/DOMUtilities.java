@@ -407,4 +407,79 @@ public class DOMUtilities extends XMLUtilities {
 	    }
 	}
     }
+
+    /**
+     * String constants representing DOM modifier strings for various all
+     * key lock combinations.
+     */
+    protected static final String[] LOCK_STRINGS = {
+        "",
+        "CapsLock",
+        "NumLock",
+        "NumLock CapsLock",
+        "Scroll",
+        "Scroll CapsLock",
+        "Scroll NumLock",
+        "Scroll NumLock CapsLock",
+        "KanaMode",
+        "KanaMode CapsLock",
+        "KanaMode NumLock",
+        "KanaMode NumLock CapsLock",
+        "KanaMode Scroll",
+        "KanaMode Scroll CapsLock",
+        "KanaMode Scroll NumLock",
+        "KanaMode Scroll NumLock CapsLock"
+    };
+
+    /**
+     * String constants representing DOM modifier strings for various all
+     * shift modifier combinations.
+     */
+    protected static final String[] MODIFIER_STRINGS = {
+        "",
+        "Alt",
+        "AltGraph",
+        "Alt AltGraph",
+        "Control",
+        "Alt Control",
+        "AltGraph Control",
+        "Alt AltGraph Control",
+        "Shift",
+        "Alt Shift",
+        "AltGraph Shift",
+        "Alt AltGraph Shift",
+        "Control Shift",
+        "Alt Control Shift",
+        "AltGraph Control Shift",
+        "Alt AltGraph Control Shift",
+        "Meta",
+        "Alt Meta",
+        "AltGraph Meta",
+        "Alt AltGraph Meta",
+        "Control Meta",
+        "Alt Control Meta",
+        "AltGraph Control Meta",
+        "Alt AltGraph Control Meta",
+        "Shift Meta",
+        "Alt Shift Meta",
+        "AltGraph Shift Meta",
+        "Alt AltGraph Shift Meta",
+        "Control Shift Meta",
+        "Alt Control Shift Meta",
+        "AltGraph Control Shift Meta",
+        "Alt AltGraph Control Shift Meta"
+    };
+
+    /**
+     * Gets a DOM 3 modifiers string from the given lock and
+     * shift bitmasks.
+     */
+    public static String getModifiersList(int lockState, int modifiers) {
+        if ((modifiers & 0x20) != 0) {
+            modifiers = 0x10 | (modifiers & 0x0f);
+        } else {
+            modifiers = modifiers & 0x0f;
+        }
+        return LOCK_STRINGS[lockState & 0x0f] + MODIFIER_STRINGS[modifiers];
+    }
 }

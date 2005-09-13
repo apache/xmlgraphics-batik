@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2004  The Apache Software Foundation 
+   Copyright 2002-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,12 +30,17 @@ import java.util.Set;
 import java.util.jar.Manifest;
 
 import org.apache.batik.dom.AbstractElement;
+import org.apache.batik.dom.events.AbstractEvent;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.script.Interpreter;
 import org.apache.batik.script.InterpreterException;
+import org.apache.batik.script.ScriptEventWrapper;
 import org.apache.batik.script.ScriptHandler;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -483,11 +488,19 @@ public class BaseScriptingEnvironment {
             }
         }
 
-        Event ev;
         DocumentEvent de = (DocumentEvent)elt.getOwnerDocument();
-        ev = de.createEvent("SVGEvents");
-        ev.initEvent("SVGLoad", false, false);
-        EventTarget t = (EventTarget)elt;
+        AbstractEvent ev = (AbstractEvent) de.createEvent("SVGEvents");
+        String type;
+        if (bridgeContext.isSVG12()) {
+            type = "load";
+        } else {
+            type = "SVGLoad";
+        }
+        ev.initEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                       type,
+                       false,
+                       false);
+        NodeEventTarget t = (NodeEventTarget)elt;
 
         final String s =
             elt.getAttributeNS(null, SVGConstants.SVG_ONLOAD_ATTRIBUTE);
@@ -524,8 +537,14 @@ public class BaseScriptingEnvironment {
         EventListener l = new EventListener() {
                 public void handleEvent(Event evt) {
                     try {
-                        interp.bindObject(EVENT_NAME, evt);
-                        interp.bindObject(ALTERNATE_EVENT_NAME, evt);
+                        Object event;
+                        if (evt instanceof ScriptEventWrapper) {
+                            event = ((ScriptEventWrapper) evt).getEventObject();
+                        } else {
+                            event = evt;
+                        }
+                        interp.bindObject(EVENT_NAME, event);
+                        interp.bindObject(ALTERNATE_EVENT_NAME, event);
                         interp.evaluate(new StringReader(s), desc);
                     } catch (IOException io) {
                     } catch (InterpreterException e) {
@@ -533,30 +552,46 @@ public class BaseScriptingEnvironment {
                     }
                 }
             };
-        t.addEventListener("SVGLoad", l, false);
+        t.addEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, type,
+             l, false, null);
         t.dispatchEvent(ev);
-        t.removeEventListener("SVGLoad", l, false);
+        t.removeEventListenerNS
+            (XMLConstants.XML_EVENTS_NAMESPACE_URI, type,
+             l, false);
     }
 
     /**
      * Method to dispatch SVG Zoom event.
      */
     protected void dispatchSVGZoomEvent() {
-        dispatchSVGDocEvent("SVGZoom");
+        if (bridgeContext.isSVG12()) {
+            dispatchSVGDocEvent("zoom");
+        } else {
+            dispatchSVGDocEvent("SVGZoom");
+        }
     }
 
     /**
      * Method to dispatch SVG Scroll event.
      */
     protected void dispatchSVGScrollEvent() {
-        dispatchSVGDocEvent("SVGScroll");
+        if (bridgeContext.isSVG12()) {
+            dispatchSVGDocEvent("scroll");
+        } else {
+            dispatchSVGDocEvent("SVGScroll");
+        }
     }
 
     /**
      * Method to dispatch SVG Resize event.
      */
     protected void dispatchSVGResizeEvent() {
-        dispatchSVGDocEvent("SVGResize");
+        if (bridgeContext.isSVG12()) {
+            dispatchSVGDocEvent("resize");
+        } else {
+            dispatchSVGDocEvent("SVGResize");
+        }
     }
 
     protected void dispatchSVGDocEvent(String eventType) {
@@ -566,8 +601,11 @@ public class BaseScriptingEnvironment {
         EventTarget t = root;
 
         DocumentEvent de = (DocumentEvent)document;
-        Event ev = de.createEvent("SVGEvents");
-        ev.initEvent(eventType, false, false);
+        AbstractEvent ev = (AbstractEvent) de.createEvent("SVGEvents");
+        ev.initEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                       eventType,
+                       false,
+                       false);
         t.dispatchEvent(ev);
     }
 

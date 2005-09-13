@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000,2002-2003  The Apache Software Foundation 
+   Copyright 2000,2002-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
  */
 package org.apache.batik.dom.events;
 
+import org.apache.batik.dom.xbl.OriginalEvent;
+
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventTarget;
 
@@ -27,7 +29,8 @@ import org.w3c.dom.events.EventTarget;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-public abstract class AbstractEvent implements Event {
+public abstract class AbstractEvent
+        implements Event, OriginalEvent, Cloneable {
 
     /**
      * The event type.
@@ -84,6 +87,21 @@ public abstract class AbstractEvent implements Event {
      * Namespace URI of this event.
      */
     protected String namespaceURI;
+
+    /**
+     * The event from which this event was cloned for sXBL event retargetting.
+     */
+    protected Event originalEvent;
+
+    /**
+     * The number of nodes in the document this event will visit
+     * during capturing, bubbling and firing at the target.
+     * A value of 0 means to let the event be captured and bubble all
+     * the way to the document node.  This field is used to handle
+     * events which should not cross sXBL shadow scopes without stopping
+     * or retargetting.
+     */
+    protected int bubbleLimit = 0;
 
     /**
      * DOM: The <code>type</code> property represents the event name
@@ -155,6 +173,13 @@ public abstract class AbstractEvent implements Event {
      */
     public String getNamespaceURI() {
         return namespaceURI;
+    }
+
+    /**
+     * Gets the event from which this event was cloned.
+     */
+    public Event getOriginalEvent() {
+        return originalEvent;
     }
 
     /**
@@ -288,5 +313,42 @@ public abstract class AbstractEvent implements Event {
     public static boolean getEventPreventDefault(Event evt) {
         AbstractEvent ae = (AbstractEvent)evt;
         return ae.isDefaultPrevented();
+    }
+
+    /**
+     * Returns a new Event with the same field values as this object.
+     */
+    public Object clone() throws CloneNotSupportedException {
+        AbstractEvent newEvent = (AbstractEvent) super.clone();
+        newEvent.timeStamp = System.currentTimeMillis();
+        return newEvent;
+    }
+
+    /**
+     * Clones this event and sets the originalEvent field of the new event
+     * to be equal to this event.
+     */
+    public AbstractEvent cloneEvent() {
+        try {
+            AbstractEvent newEvent = (AbstractEvent) clone();
+            newEvent.originalEvent = this;
+            return newEvent;
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the bubble limit for this event.
+     */
+    public int getBubbleLimit() {
+        return bubbleLimit;
+    }
+
+    /**
+     * Set the number of nodse this event will visit.
+     */
+    public void setBubbleLimit(int n) {
+        bubbleLimit = n;
     }
 }

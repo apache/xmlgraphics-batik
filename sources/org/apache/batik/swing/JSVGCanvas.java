@@ -47,6 +47,7 @@ import javax.swing.ToolTipManager;
 
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.css.engine.CSSEngine;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.swing.gvt.AbstractImageZoomInteractor;
 import org.apache.batik.swing.gvt.AbstractPanInteractor;
 import org.apache.batik.swing.gvt.AbstractResetTransformInteractor;
@@ -189,7 +190,7 @@ public class JSVGCanvas extends JSVGComponent {
      */
     protected Map toolTipMap = null;
     protected EventListener toolTipListener = new ToolTipModifier();
-    protected EventTarget   lastTarget = null;;
+    protected EventTarget   lastTarget = null;
     protected Set toolTipDocs = null;
 
     /**
@@ -559,13 +560,17 @@ public class JSVGCanvas extends JSVGComponent {
                 ttdoc = (SVGDocument)((WeakReference)i.next()).get();
                 if (ttdoc == null) continue;
 
-                EventTarget root;
-                root = (EventTarget)ttdoc.getRootElement();
+                NodeEventTarget root;
+                root = (NodeEventTarget)ttdoc.getRootElement();
                 if (root == null) continue;
-                root.removeEventListener(SVGConstants.SVG_EVENT_MOUSEOVER,
-                                         toolTipListener, false);
-                root.removeEventListener(SVGConstants.SVG_EVENT_MOUSEOUT,
-                                         toolTipListener, false);
+                root.removeEventListenerNS
+                    (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                     SVGConstants.SVG_EVENT_MOUSEOVER,
+                     toolTipListener, false);
+                root.removeEventListenerNS
+                    (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                     SVGConstants.SVG_EVENT_MOUSEOUT,
+                     toolTipListener, false);
             }
             toolTipDocs = null;
         }
@@ -1013,14 +1018,18 @@ public class JSVGCanvas extends JSVGComponent {
             SVGDocument doc = (SVGDocument)elt.getOwnerDocument();
             WeakReference wr = new WeakReference(doc);
             if (toolTipDocs.add(wr)) {
-                EventTarget root;
-                root = (EventTarget)doc.getRootElement();
+                NodeEventTarget root;
+                root = (NodeEventTarget)doc.getRootElement();
                 // On mouseover, it sets the tooltip to the given value
-                root.addEventListener(SVGConstants.SVG_EVENT_MOUSEOVER,
-                                      toolTipListener, false);
+                root.addEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                        SVGConstants.SVG_EVENT_MOUSEOVER,
+                                        toolTipListener,
+                                        false, null);
                 // On mouseout, it removes the tooltip
-                root.addEventListener(SVGConstants.SVG_EVENT_MOUSEOUT,
-                                      toolTipListener, false);
+                root.addEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                        SVGConstants.SVG_EVENT_MOUSEOUT,
+                                        toolTipListener,
+                                        false, null);
             }
 
             toolTipMap.put(elt, toolTip);
@@ -1165,7 +1174,7 @@ public class JSVGCanvas extends JSVGComponent {
                     if (o != null) {
                         break;
                     }
-                    e = CSSEngine.getParentElement(e);
+                    e = CSSEngine.getParentCSSStylableElement(e);
                 }
                 final String theToolTip = (String)o;
                 if (prevLastTarget != lastTarget)

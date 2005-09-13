@@ -19,7 +19,10 @@ package org.apache.batik.dom;
 
 import java.io.Serializable;
 
+import org.apache.batik.dom.events.DOMMutationEvent;
 import org.apache.batik.dom.util.DOMUtilities;
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -610,15 +613,17 @@ public abstract class AbstractElement
 	AbstractDocument doc = getCurrentDocument();
 	if (doc.getEventsEnabled() && !oldv.equals(newv)) {
 	    DocumentEvent de = (DocumentEvent)doc;
-	    MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
-	    ev.initMutationEvent("DOMAttrModified",
-				 true,    // canBubbleArg
-				 false,   // cancelableArg
-				 node,    // relatedNodeArg
-				 oldv,    // prevValueArg
-				 newv,    // newValueArg
-				 name,    // attrNameArg
-                                 change); // attrChange
+	    DOMMutationEvent ev
+                = (DOMMutationEvent) de.createEvent("MutationEvents");
+	    ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                   "DOMAttrModified",
+                                   true,    // canBubbleArg
+                                   false,   // cancelableArg
+                                   node,    // relatedNodeArg
+                                   oldv,    // prevValueArg
+                                   newv,    // newValueArg
+                                   name,    // attrNameArg
+                                   change); // attrChange
 	    dispatchEvent(ev);
 	}
     }

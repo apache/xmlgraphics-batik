@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 package org.apache.batik.dom.svg;
 
 import org.apache.batik.css.engine.CSSEngine;
-import org.apache.batik.css.engine.CSSImportedElementRoot;
+import org.apache.batik.css.engine.CSSNavigableNode;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.util.ParsedURL;
@@ -196,8 +196,8 @@ public abstract class SVGOMElement
                 base = getCascadedXMLBase((Element) n);
                 break;
             }
-            if (n instanceof CSSImportedElementRoot) {
-                n = ((CSSImportedElementRoot) n).getCSSParentElement();
+            if (n instanceof CSSNavigableNode) {
+                n = ((CSSNavigableNode) n).getCSSParentNode();
             } else {
                 n = n.getParentNode();
             }

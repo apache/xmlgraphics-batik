@@ -44,10 +44,10 @@ import javax.swing.event.ChangeEvent;
 import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.bridge.UpdateManagerEvent;
+import org.apache.batik.dom.events.NodeEventTarget;
 
 import org.apache.batik.gvt.GraphicsNode;
 
-import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.JGVTComponentListener;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
@@ -56,6 +56,7 @@ import org.apache.batik.swing.svg.GVTTreeBuilderListener;
 import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.svg.SVGSVGElement;
 import org.w3c.dom.svg.SVGDocument;
@@ -174,9 +175,11 @@ public class JSVGScrollPane extends JPanel
 
     class SVGScrollDocumentLoaderListener extends SVGDocumentLoaderAdapter {
         public void documentLoadingCompleted(SVGDocumentLoaderEvent e) {
-            SVGSVGElement root = e.getSVGDocument().getRootElement();
-            root.addEventListener
-                (SVGConstants.SVG_SVGZOOM_EVENT_TYPE, 
+            NodeEventTarget root
+                = (NodeEventTarget) e.getSVGDocument().getRootElement();
+            root.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                 SVGConstants.SVG_SVGZOOM_EVENT_TYPE, 
                  new EventListener() {
                      public void handleEvent(Event evt) {
                          if (!(evt.getTarget() instanceof SVGSVGElement))
@@ -186,7 +189,7 @@ public class JSVGScrollPane extends JPanel
                          SVGSVGElement svg = (SVGSVGElement) evt.getTarget();
                          scaleChange(svg.getCurrentScale());
                      } // handleEvent()
-                 }, false);
+                 }, false, null);
         }// documentLoadingCompleted()			
     };
 	

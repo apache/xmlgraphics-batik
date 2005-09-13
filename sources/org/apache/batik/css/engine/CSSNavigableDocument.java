@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
+   Copyright 2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,28 +17,23 @@
  */
 package org.apache.batik.css.engine;
 
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
-
 /**
- * This interface represents a DOM node which must be set as parent
- * of an imported node to allow a mecanism similar to the SVG <use>
- * element to work.
+ * An interface for documents that have CSSNavigableNodes.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public interface CSSImportedElementRoot extends DocumentFragment {
-    
-    /**
-     * Returns the parent of the imported element, from the CSS
-     * point of view.
-     */
-    Element getCSSParentElement();
+public interface CSSNavigableDocument {
 
     /**
-     * Returns true if the imported element is local to
-     * the owning document.
+     * Adds an event listener for mutations on the
+     * CSSNavigableDocument tree.
      */
-    boolean getIsLocal();
+    void addCSSNavigableDocumentListener(CSSNavigableDocumentListener l);
+
+    /**
+     * Removes an event listener for mutations on the
+     * CSSNavigableDocument tree.
+     */
+    void removeCSSNavigableDocumentListener(CSSNavigableDocumentListener l);
 }

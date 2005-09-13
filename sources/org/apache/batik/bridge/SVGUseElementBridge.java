@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,19 +23,21 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.css.engine.CSSEngine;
-import org.apache.batik.dom.svg.SVGOMCSSImportedElementRoot;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMUseElement;
+import org.apache.batik.dom.svg.SVGOMUseShadowRoot;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MutationEvent;
 
 /**
@@ -45,7 +47,7 @@ import org.w3c.dom.events.MutationEvent;
  * @version $Id$
  */
 public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
-    /*
+    /**
      * Used to handle mutation of the referenced content. This is
      * only used in dynamic context and only for reference to local
      * content.
@@ -172,8 +174,8 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         // attach the referenced element to the current document
-        SVGOMCSSImportedElementRoot root;
-        root = new SVGOMCSSImportedElementRoot(document, e, isLocal);
+        SVGOMUseShadowRoot root;
+        root = new SVGOMUseShadowRoot(document, e, isLocal);
         root.appendChild(localRefElement);
 
         if (gn == null) {
@@ -185,11 +187,11 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         SVGOMUseElement ue = (SVGOMUseElement)e;
-        Node oldRoot = ue.getCSSImportedElementRoot();
+        Node oldRoot = ue.getCSSFirstChild();
         if (oldRoot != null) {
             disposeTree(oldRoot);
         }
-        ue.setCSSImportedElementRoot(root);
+        ue.setUseShadowTree(root);
 
         Element g = localRefElement;
 
@@ -223,11 +225,19 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
 
         if (l != null) {
             // Remove event listeners
-            EventTarget target = l.target;
-            target.removeEventListener("DOMAttrModified", l, true);
-            target.removeEventListener("DOMNodeInserted", l, true);
-            target.removeEventListener("DOMNodeRemoved", l, true);
-            target.removeEventListener("DOMCharacterDataModified",l, true);
+            NodeEventTarget target = l.target;
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMAttrModified",
+                 l, true);
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
+                 l, true);
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+                 l, true);
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMCharacterDataModified",
+                 l, true);
             l = null;
         }
 
@@ -238,21 +248,36 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         if (isLocal && ctx.isDynamic()) {
             l = new ReferencedElementMutationListener();
         
-            EventTarget target = (EventTarget)refElement;
+            NodeEventTarget target = (NodeEventTarget)refElement;
             l.target = target;
             
-            target.addEventListener("DOMAttrModified", l, true);
-            theCtx.storeEventListener(target, "DOMAttrModified", l, true);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMAttrModified",
+                 l, true, null);
+            theCtx.storeEventListenerNS
+                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMAttrModified",
+                 l, true);
             
-            target.addEventListener("DOMNodeInserted", l, true);
-            theCtx.storeEventListener(target, "DOMNodeInserted", l, true);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
+                 l, true, null);
+            theCtx.storeEventListenerNS
+                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
+                 l, true);
             
-            target.addEventListener("DOMNodeRemoved", l, true);
-            theCtx.storeEventListener(target, "DOMNodeRemoved", l, true);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+                 l, true, null);
+            theCtx.storeEventListenerNS
+                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+                 l, true);
             
-            target.addEventListener("DOMCharacterDataModified", l, true);
-            theCtx.storeEventListener
-                (target, "DOMCharacterDataModified", l, true);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMCharacterDataModified",
+                 l, true, null);
+            theCtx.storeEventListenerNS
+                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMCharacterDataModified",
+                 l, true);
         }
         
         return gn;
@@ -261,17 +286,25 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
     public void dispose() {
         if (l != null) {
             // Remove event listeners
-            EventTarget target = l.target;
-            target.removeEventListener("DOMAttrModified", l, true);
-            target.removeEventListener("DOMNodeInserted", l, true);
-            target.removeEventListener("DOMNodeRemoved", l, true);
-            target.removeEventListener("DOMCharacterDataModified",l, true);
+            NodeEventTarget target = l.target;
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMAttrModified",
+                 l, true);
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeInserted",
+                 l, true);
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMNodeRemoved",
+                 l, true);
+            target.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, "DOMCharacterDataModified",
+                 l, true);
             l = null;
         }
 
         SVGOMUseElement ue = (SVGOMUseElement)e;
-        if ((ue != null) && (ue.getCSSImportedElementRoot() != null)) {
-            disposeTree(ue.getCSSImportedElementRoot());
+        if (ue != null && ue.getCSSFirstChild() != null) {
+            disposeTree(ue.getCSSFirstChild());
         }
 
         super.dispose();
@@ -345,10 +378,14 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
         super.buildGraphicsNode(ctx, e, node);
 
         if (ctx.isInteractive()) {
-            EventTarget target = (EventTarget)e;
+            NodeEventTarget target = (NodeEventTarget)e;
             EventListener l = new CursorMouseOverListener(ctx);
-            target.addEventListener(SVG_EVENT_MOUSEOVER, l, false);
-            ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, l, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
+                 l, false, null);
+            ctx.storeEventListenerNS
+                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
+                 l, false);
         }
     }
 
@@ -382,8 +419,8 @@ public class SVGUseElementBridge extends AbstractGraphicsNodeBridge {
     /**
      * Used to handle modifications to the referenced content
      */
-    public class ReferencedElementMutationListener implements EventListener {
-        EventTarget target;
+    protected class ReferencedElementMutationListener implements EventListener {
+        protected NodeEventTarget target;
 
         public void handleEvent(Event evt) {
             // We got a mutation in the referenced content. We need to 

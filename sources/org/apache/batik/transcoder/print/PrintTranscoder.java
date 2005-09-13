@@ -36,7 +36,6 @@ import java.util.Vector;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.transcoder.SVGAbstractTranscoder;
-import org.apache.batik.transcoder.XMLAbstractTranscoder;
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;

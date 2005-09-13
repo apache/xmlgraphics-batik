@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 
-import org.apache.batik.css.engine.CSSImportNode;
-import org.apache.batik.dom.svg.SVGOMCSSImportedElementRoot;
+import org.apache.batik.dom.svg.SVGOMUseElement;
+import org.apache.batik.dom.svg.SVGOMUseShadowRoot;
 import org.apache.batik.ext.awt.image.renderable.ClipRable;
 import org.apache.batik.ext.awt.image.renderable.ClipRable8Bit;
 import org.apache.batik.ext.awt.image.renderable.Filter;
@@ -123,17 +123,13 @@ public class SVGClipPathElementBridge extends AbstractSVGBridge
             hasChildren = true;
 
             // if this is a 'use' element, get the actual shape used
-            if (child instanceof CSSImportNode) {
-                SVGOMCSSImportedElementRoot shadow =
-                    (SVGOMCSSImportedElementRoot)
-                    ((CSSImportNode) child).getCSSImportedElementRoot();
-                
-                if (shadow != null) {
-                    Node shadowChild = shadow.getFirstChild();
-                    if (shadowChild != null
-                            && shadowChild.getNodeType() == Node.ELEMENT_NODE) {
-                        child = (Element) shadowChild;
-                    }
+            if (child instanceof SVGOMUseElement) {
+                Node shadowChild
+                    = ((SVGOMUseElement) child).getCSSFirstChild();
+
+                if (shadowChild != null
+                        && shadowChild.getNodeType() == Node.ELEMENT_NODE) {
+                    child = (Element) shadowChild;
                 }
             }
 

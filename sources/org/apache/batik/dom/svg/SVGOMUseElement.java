@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2004  The Apache Software Foundation 
+   Copyright 2000-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
  */
 package org.apache.batik.dom.svg;
 
-import org.apache.batik.css.engine.CSSImportNode;
-import org.apache.batik.css.engine.CSSImportedElementRoot;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.dom.util.XMLSupport;
@@ -35,8 +33,7 @@ import org.w3c.dom.svg.SVGUseElement;
  */
 public class SVGOMUseElement
     extends    SVGURIReferenceGraphicsElement
-    implements SVGUseElement,
-               CSSImportNode {
+    implements SVGUseElement {
 
     /**
      * The attribute initializer.
@@ -56,9 +53,9 @@ public class SVGOMUseElement
     }
 
     /**
-     * Store the imported element.
+     * Store the shadow tree of the use element.
      */
-    protected CSSImportedElementRoot cssImportedElementRoot;
+    protected SVGOMUseShadowRoot shadowTree;
 
     /**
      * Creates a new SVGOMUseElement object.
@@ -132,20 +129,41 @@ public class SVGOMUseElement
 	throw new RuntimeException(" !!! TODO: getAnimatedInstanceRoot()");
     }
 
-    // CSSImportNode //////////////////////////////////////////////////
+    // CSSNavigableNode ///////////////////////////////////////////////
 
     /**
-     * The CSSImportedElementRoot.
+     * Returns the CSS first child node of this node.
      */
-    public CSSImportedElementRoot getCSSImportedElementRoot() {
-        return cssImportedElementRoot;
+    public Node getCSSFirstChild() {
+        if (shadowTree != null) {
+            return shadowTree.getFirstChild();
+        }
+        return null;
     }
 
     /**
-     * Sets the CSSImportedElementRoot.
+     * Returns the CSS last child of this stylable element.
      */
-    public void setCSSImportedElementRoot(CSSImportedElementRoot r) {
-        cssImportedElementRoot = r;
+    public Node getCSSLastChild() {
+        // use element shadow trees only ever have a single element
+        return getCSSFirstChild();
+    }
+
+    /**
+     * Returns whether this node is the root of a (conceptual) hidden tree
+     * that selectors will not work across.  Returns true here, since CSS
+     * selectors cannot work in the conceptual cloned sub-tree of the
+     * content referenced by the 'use' element.
+     */
+    public boolean isHiddenFromSelectors() {
+        return true;
+    }
+
+    /**
+     * Sets the shadow tree for this 'use' element.
+     */
+    public void setUseShadowTree(SVGOMUseShadowRoot r) {
+        shadowTree = r;
     }
 
     /**

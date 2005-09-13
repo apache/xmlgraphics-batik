@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@
 package org.apache.batik.script.rhino;
 
 import java.lang.ref.SoftReference;
-import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.WeakHashMap;
 
 import org.apache.batik.dom.AbstractNode;
+import org.apache.batik.dom.events.CustomEvent;
+import org.apache.batik.script.ScriptEventWrapper;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.JavaScriptException;
@@ -63,7 +63,13 @@ class EventTargetWrapper extends NativeJavaObject {
         }
         public void handleEvent(Event evt) {
             try {
-                interpreter.callHandler(function, evt);
+                Object event;
+                if (evt instanceof ScriptEventWrapper) {
+                    event = ((ScriptEventWrapper) evt).getEventObject();
+                } else {
+                    event = evt;
+                }
+                interpreter.callHandler(function, event);
             } catch (JavaScriptException e) {
                 // the only simple solution is to forward it as a
                 // RuntimeException to be catched by event dispatching
@@ -87,18 +93,170 @@ class EventTargetWrapper extends NativeJavaObject {
         }
         public void handleEvent(Event evt) {
             try {
-                array[0] = evt;
+                if (evt instanceof ScriptEventWrapper) {
+                    array[0] = ((ScriptEventWrapper) evt).getEventObject();
+                } else {
+                    array[0] = evt;
+                }
                 interpreter.enterContext();
                 ScriptableObject.callMethod(scriptable, HANDLE_EVENT, array);
             } catch (JavaScriptException e) {
                 // the only simple solution is to forward it as a
-                // RuntimeException to be catched by event dispatching
+                // RuntimeException to be caught by event dispatching
                 // in BridgeEventSupport.java
                 // another solution will to give UserAgent to interpreters
                 throw new WrappedException(e);
             } finally {
                 Context.exit();
             }
+        }
+    }
+
+    /**
+     * A Java object wrapper for a javascript custom event object.
+     */
+    static class ObjectCustomEvent implements CustomEvent, ScriptEventWrapper {
+
+        public Scriptable scriptable;
+        public RhinoInterpreter interpreter;
+        protected Map eventMap;
+
+        public ObjectCustomEvent(Scriptable s,
+                                 RhinoInterpreter interpreter,
+                                 Map eventMap) {
+            scriptable = s;
+            this.interpreter = interpreter;
+            this.eventMap = eventMap;
+        }
+
+        public Object getEventObject() {
+            return scriptable;
+        }
+
+        protected Object call(String fn) {
+            return call(fn, null);
+        }
+
+        protected Object call(String fn, Object[] args) {
+            try {
+                interpreter.enterContext();
+                return ScriptableObject.callMethod(scriptable, fn, args);
+            } catch (JavaScriptException e) {
+                throw new WrappedException(e);
+            } finally {
+                Context.exit();
+            }
+        }
+
+        public String getType() {
+            return (String) Context.toType(call("getType"), String.class);
+        }
+
+        public EventTarget getTarget() {
+            return (EventTarget) call("getTarget");
+        }
+
+        public void setTarget(EventTarget target) {
+            call("setTarget", new Object[] { target });
+        }
+
+        public EventTarget getCurrentTarget() {
+            return (EventTarget) call("getCurrentTarget");
+        }
+
+        public short getEventPhase() {
+            return (short) ((Integer) Context.toType(call("getEventPhase"), Integer.class)).intValue();
+        }
+
+        public boolean getBubbles() {
+            return ((Boolean) Context.toType(call("getBubbles"), Boolean.class)).booleanValue();
+        }
+
+        public boolean getCancelable() {
+            return ((Boolean) Context.toType(call("getCancelable"), Boolean.class)).booleanValue();
+        }
+
+        public long getTimeStamp() {
+            return (long) ((Double) Context.toType(call("getTimeStamp"), Double.class)).doubleValue();
+        }
+
+        public void stopPropagation() {
+            call("stopPropagation");
+        }
+
+        public void preventDefault() {
+            call("preventDefault");
+        }
+
+        public void initEvent(String t, boolean b, boolean c) {
+            call("initEvent", new Object[] { t, new Boolean(b), new Boolean(c) });
+        }
+
+        public String getNamespaceURI() {
+            return (String) Context.toType(call("getNamespaceURI"), String.class);
+        }
+
+        public boolean isCustom() {
+            return ((Boolean) Context.toType(call("isCustom"), Boolean.class)).booleanValue();
+        }
+
+        public void stopImmediatePropagation() {
+            call("stopImmediatePropagation");
+        }
+
+        public boolean isDefaultPrevented() {
+            return ((Boolean) Context.toType(call("isDefaultPrevented"), Boolean.class)).booleanValue();
+        }
+
+        public void initEventNS(String ns, String t, boolean b, boolean c) {
+            call("initEventNS", new Object[] { ns, t, new Boolean(b), new Boolean(c) });
+        }
+
+        public void setDispatchState(EventTarget t, short phase) {
+            call("setDispatchState", new Object[] { t, new Double(phase) });
+        }
+
+        public boolean isPropagationStopped() {
+            return ((Boolean) Context.toType(call("isPropagationStopped"), Boolean.class)).booleanValue();
+        }
+
+        public boolean isImmediatePropagationStopped() {
+            return ((Boolean) Context.toType(call("isImmediatePropagationStopped"), Boolean.class)).booleanValue();
+        }
+
+        public void resumePropagation() {
+            call("resumePropagation");
+        }
+
+        public CustomEvent retarget(EventTarget target) {
+            Object ret = call("retarget", new Object[] { target });
+            if (ret instanceof ScriptableObject) {
+                CustomEvent evt = new ObjectCustomEvent((NativeObject) ret,
+                                                        interpreter,
+                                                        eventMap);
+                eventMap.put(ret, new SoftReference(evt));
+                return evt;
+            }
+            // XXX some error here
+            return null;
+        }
+
+        public Event getOriginalEvent() {
+            Object origEvt = call("getOriginalEvent");
+            if (origEvt instanceof NativeObject) {
+                SoftReference sr = (SoftReference) eventMap.get(origEvt);
+                if (sr == null) {
+                    CustomEvent evt = new ObjectCustomEvent((NativeObject) origEvt,
+                                                            interpreter,
+                                                            eventMap);
+                    eventMap.put(origEvt, new SoftReference(evt));
+                    return evt;
+                }
+            } else if (origEvt instanceof NativeJavaObject) {
+                return (Event) ((NativeJavaObject) origEvt).unwrap();
+            }
+            // XXX some error here
+            return null;
         }
     }
 
@@ -399,6 +557,33 @@ class EventTargetWrapper extends NativeJavaObject {
         }
     }
 
+    static class FunctionDispatchProxy extends FunctionProxy {
+        protected Map              eventMap;
+        protected RhinoInterpreter interpreter;
+        FunctionDispatchProxy(RhinoInterpreter interpreter,
+                              Function delegate, Map eventMap) {
+            super(delegate);
+            this.eventMap = eventMap;
+            this.interpreter = interpreter;
+        }
+
+        public Object call(Context ctx, Scriptable scope,
+                           Scriptable thisObj, Object[] args)
+            throws JavaScriptException {
+            NativeJavaObject njo = (NativeJavaObject) thisObj;
+            if (args[0] instanceof NativeObject) {
+                Event evt = new ObjectCustomEvent((NativeObject) args[0],
+                                                  interpreter,
+                                                  eventMap);
+                eventMap.put(args[0], new SoftReference(evt));
+                args[0] = Context.toType(args[0], Scriptable.class);
+                ((EventTarget) njo.unwrap()).dispatchEvent(evt);
+                return Undefined.instance;
+            }
+            return delegate.call(ctx, scope, thisObj, args);
+        }
+    }
+
     // the keys are the underlying Java object, in order
     // to remove potential memory leaks use a WeakHashMap to allow
     // to collect entries as soon as the underlying Java object is
@@ -409,9 +594,7 @@ class EventTargetWrapper extends NativeJavaObject {
     public final static String ADDNS_NAME    = "addEventListenerNS";
     public final static String REMOVE_NAME   = "removeEventListener";
     public final static String REMOVENS_NAME = "removeEventListenerNS";
-    public final static Class[] ARGS_TYPE = { String.class,
-                                               EventListener.class,
-                                               Boolean.TYPE };
+    public final static String DISPATCH_NAME = "dispatchEvent";
 
     protected RhinoInterpreter interpreter;
     EventTargetWrapper(Scriptable scope, EventTarget object,
@@ -440,6 +623,8 @@ class EventTargetWrapper extends NativeJavaObject {
                                             (Function) method, initMap());
         } else if (name.equals(REMOVENS_NAME)) {
             method = new FunctionRemoveNSProxy((Function) method, initMap());
+        } else if (name.equals(DISPATCH_NAME)) {
+            method = new FunctionDispatchProxy(interpreter, (Function) method, initMap());
         }
         return method;
     }

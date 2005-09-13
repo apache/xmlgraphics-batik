@@ -109,7 +109,7 @@ public class TriplyIndexedTable {
     /**
      * Rehash the table
      */
-    protected void rehash () {
+    protected void rehash() {
         Entry[] oldTable = table;
         
         table = new Entry[oldTable.length * 2 + 1];

@@ -2,14 +2,15 @@
 <classpath>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry
-        excluding="org/apache/batik/script/jacl/**|org/apache/batik/script/jpython/**"
+        excluding="org/apache/batik/script/jacl/**|org/apache/batik/script/jpython/**|**/.svn/"
         kind="src" path="sources"/>
-    <classpathentry kind="src" path="test-sources"/>
+    <classpathentry excluding="**/.svn/" kind="src" path="sources-1.4"/>
+    <classpathentry excluding="**/.svn/" kind="src" path="test-sources"/>
     <classpathentry kind="lib" path="lib/js.jar"/>
     <classpathentry kind="lib" path="lib/pdf-transcoder.jar"/>
     <classpathentry kind="lib" path="lib/xerces_2_5_0.jar"/>
     <classpathentry kind="lib" path="lib/xml-apis-dom3.jar"/>
-    <classpathentry kind="src" path="resources"/>
-    <classpathentry kind="src" path="test-resources"/>
+    <classpathentry excluding="**/.svn/" kind="src" path="resources"/>
+    <classpathentry excluding="**/.svn/" kind="src" path="test-resources"/>
     <classpathentry kind="output" path="classes"/>
 </classpath>

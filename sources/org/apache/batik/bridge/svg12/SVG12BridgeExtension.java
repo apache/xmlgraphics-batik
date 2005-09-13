@@ -24,6 +24,7 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.SVGBridgeExtension;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.SVG12Constants;
+import org.apache.batik.util.XBLConstants;
 import org.w3c.dom.Element;
 
 /**
@@ -94,9 +95,24 @@ public class SVG12BridgeExtension extends SVGBridgeExtension {
         // bridges to handle elements in the SVG namespace
         super.registerTags(ctx);
 
+        // Bridges for SVG 1.2 elements
         ctx.putBridge(new SVGFlowRootElementBridge());
         ctx.putBridge(new SVGMultiImageElementBridge());
         ctx.putBridge(new SVGSolidColorElementBridge());
+
+        ctx.putBridge(new SVG12TextElementBridge());
+
+        // Bridges for XBL shadow trees and content elements
+        ctx.putBridge(new XBLShadowTreeElementBridge());
+        ctx.putBridge(new XBLContentElementBridge());
+
+        // Default bridge to handle bindable elements
+        ctx.setDefaultBridge(new BindableElementBridge());
+
+        // Namespaces to avoid for default bridges
+        ctx.putReservedNamespaceURI(null);
+        ctx.putReservedNamespaceURI(SVGConstants.SVG_NAMESPACE_URI);
+        ctx.putReservedNamespaceURI(XBLConstants.XBL_NAMESPACE_URI);
     }
 
     /**
@@ -108,6 +124,9 @@ public class SVG12BridgeExtension extends SVGBridgeExtension {
      */
     public boolean isDynamicElement(Element e) {
         String ns = e.getNamespaceURI();
+        if (XBLConstants.XBL_NAMESPACE_URI.equals(ns)) {
+            return true;
+        }
         if (!SVGConstants.SVG_NAMESPACE_URI.equals(ns)) {
             return false;
         }
