@@ -32,6 +32,8 @@ import java.util.List;
 import org.apache.batik.css.engine.CSSEngine;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.dom.AbstractNode;
+import org.apache.batik.dom.events.DOMMouseEvent;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.svg.SVGOMElement;
 import org.apache.batik.dom.util.XLinkSupport;
@@ -48,6 +50,8 @@ import org.apache.batik.gvt.RasterImageNode;
 import org.apache.batik.gvt.ShapeNode;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.MimeTypeConstants;
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -55,7 +59,6 @@ import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.MouseEvent;
 import org.w3c.dom.events.MutationEvent;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
@@ -478,17 +481,35 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
     protected void rebuildImageNode() {
         // Reference copy of the imgDocument
         if ((imgDocument != null) && (listener != null)) {
-            EventTarget tgt = (EventTarget)imgDocument.getRootElement();
+            NodeEventTarget tgt = (NodeEventTarget)imgDocument.getRootElement();
 
-            tgt.removeEventListener(SVG_EVENT_CLICK,     listener, false);
-            tgt.removeEventListener(SVG_EVENT_KEYDOWN,   listener, false);
-            tgt.removeEventListener(SVG_EVENT_KEYPRESS,  listener, false);
-            tgt.removeEventListener(SVG_EVENT_KEYUP,     listener, false);
-            tgt.removeEventListener(SVG_EVENT_MOUSEDOWN, listener, false);
-            tgt.removeEventListener(SVG_EVENT_MOUSEMOVE, listener, false);
-            tgt.removeEventListener(SVG_EVENT_MOUSEOUT,  listener, false);
-            tgt.removeEventListener(SVG_EVENT_MOUSEOVER, listener, false);
-            tgt.removeEventListener(SVG_EVENT_MOUSEUP,   listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYDOWN,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYPRESS,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYUP,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEDOWN,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEMOVE,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOUT,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEUP,
+                 listener, false);
             listener = null;
         }
 
@@ -644,34 +665,70 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         // to the <image> element (inside the original document).
         if (ctx.isInteractive()) {
             listener = new ForwardEventListener(svgElement, e);
-            EventTarget tgt = (EventTarget)svgElement;
+            NodeEventTarget tgt = (NodeEventTarget)svgElement;
 
-            tgt.addEventListener(SVG_EVENT_CLICK, listener, false);
-            subCtx.storeEventListener(tgt, SVG_EVENT_CLICK, listener, false);
+            tgt.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
+                 listener, false, null);
+            subCtx.storeEventListenerNS
+                (tgt, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
+                 listener, false);
 
-            tgt.addEventListener(SVG_EVENT_KEYDOWN, listener, false);
-            subCtx.storeEventListener(tgt, SVG_EVENT_KEYDOWN, listener, false);
+            tgt.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYDOWN,
+                 listener, false, null);
+            subCtx.storeEventListenerNS
+                (tgt, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYDOWN,
+                 listener, false);
 
-            tgt.addEventListener(SVG_EVENT_KEYPRESS, listener, false);
-            subCtx.storeEventListener(tgt, SVG_EVENT_KEYPRESS, listener, false);
+            tgt.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYPRESS,
+                 listener, false, null);
+            subCtx.storeEventListenerNS
+                (tgt, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYPRESS,
+                 listener, false);
 
-            tgt.addEventListener(SVG_EVENT_KEYUP, listener, false);
-            subCtx.storeEventListener(tgt, SVG_EVENT_KEYUP, listener, false);
+            tgt.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYUP,
+                 listener, false, null);
+            subCtx.storeEventListenerNS
+                (tgt, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYUP,
+                 listener, false);
 
-            tgt.addEventListener(SVG_EVENT_MOUSEDOWN, listener, false);
-            subCtx.storeEventListener(tgt, SVG_EVENT_MOUSEDOWN, listener,false);
+            tgt.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEDOWN,
+                 listener, false, null);
+            subCtx.storeEventListenerNS
+                (tgt, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEDOWN,
+                 listener, false);
 
-            tgt.addEventListener(SVG_EVENT_MOUSEMOVE, listener, false);
-            subCtx.storeEventListener(tgt, SVG_EVENT_MOUSEMOVE, listener,false);
+            tgt.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEMOVE,
+                 listener, false, null);
+            subCtx.storeEventListenerNS
+                (tgt, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEMOVE,
+                 listener, false);
 
-            tgt.addEventListener(SVG_EVENT_MOUSEOUT, listener, false);
-            subCtx.storeEventListener(tgt, SVG_EVENT_MOUSEOUT, listener, false);
+            tgt.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOUT,
+                 listener, false, null);
+            subCtx.storeEventListenerNS
+                (tgt, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOUT,
+                 listener, false);
 
-            tgt.addEventListener(SVG_EVENT_MOUSEOVER, listener, false);
-            subCtx.storeEventListener(tgt, SVG_EVENT_MOUSEOVER, listener,false);
+            tgt.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
+                 listener, false, null);
+            subCtx.storeEventListenerNS
+                (tgt, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
+                 listener, false);
 
-            tgt.addEventListener(SVG_EVENT_MOUSEUP, listener, false);
-            subCtx.storeEventListener(tgt, SVG_EVENT_MOUSEUP, listener, false);
+            tgt.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEUP,
+                 listener, false, null);
+            subCtx.storeEventListenerNS
+                (tgt, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEUP,
+                 listener, false);
         }
 
         return result;
@@ -679,17 +736,35 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
 
     public void dispose() {
         if ((imgDocument != null) && (listener != null)) {
-            EventTarget tgt = (EventTarget)imgDocument.getRootElement();
+            NodeEventTarget tgt = (NodeEventTarget)imgDocument.getRootElement();
 
-            tgt.removeEventListener(SVG_EVENT_CLICK,     listener, false);
-            tgt.removeEventListener(SVG_EVENT_KEYDOWN,   listener, false);
-            tgt.removeEventListener(SVG_EVENT_KEYPRESS,  listener, false);
-            tgt.removeEventListener(SVG_EVENT_KEYUP,     listener, false);
-            tgt.removeEventListener(SVG_EVENT_MOUSEDOWN, listener, false);
-            tgt.removeEventListener(SVG_EVENT_MOUSEMOVE, listener, false);
-            tgt.removeEventListener(SVG_EVENT_MOUSEOUT,  listener, false);
-            tgt.removeEventListener(SVG_EVENT_MOUSEOVER, listener, false);
-            tgt.removeEventListener(SVG_EVENT_MOUSEUP,   listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYDOWN,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYPRESS,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_KEYUP,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEDOWN,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEMOVE,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOUT,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
+                 listener, false);
+            tgt.removeEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEUP,
+                 listener, false);
             listener = null;
         }
 
@@ -727,26 +802,25 @@ public class SVGImageElementBridge extends AbstractGraphicsNodeBridge {
         }
 
         public void handleEvent(Event e) {
-            MouseEvent evt = (MouseEvent) e;
-            MouseEvent newMouseEvent = (MouseEvent)
+            DOMMouseEvent evt = (DOMMouseEvent) e;
+            DOMMouseEvent newMouseEvent = (DOMMouseEvent)
                 // DOM Level 2 6.5 cast from Document to DocumentEvent is ok
                 ((DocumentEvent)imgElement.getOwnerDocument()).createEvent("MouseEvents");
 
-            newMouseEvent.initMouseEvent(evt.getType(),
-                                         evt.getBubbles(),
-                                         evt.getCancelable(),
-                                         evt.getView(),
-                                         evt.getDetail(),
-                                         evt.getScreenX(),
-                                         evt.getScreenY(),
-                                         evt.getClientX(),
-                                         evt.getClientY(),
-                                         evt.getCtrlKey(),
-                                         evt.getAltKey(),
-                                         evt.getShiftKey(),
-                                         evt.getMetaKey(),
-                                         evt.getButton(),
-                                         (EventTarget)imgElement);
+            newMouseEvent.initMouseEventNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                 evt.getType(),
+                 evt.getBubbles(),
+                 evt.getCancelable(),
+                 evt.getView(),
+                 evt.getDetail(),
+                 evt.getScreenX(),
+                 evt.getScreenY(),
+                 evt.getClientX(),
+                 evt.getClientY(),
+                 evt.getButton(),
+                 (EventTarget)imgElement,
+                 evt.getModifiersString());
             ((EventTarget)imgElement).dispatchEvent(newMouseEvent);
         }
     }

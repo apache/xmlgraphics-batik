@@ -17,8 +17,6 @@
  */
 package org.apache.batik.util.gui.resource;
 
-import java.awt.Event;
-import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;

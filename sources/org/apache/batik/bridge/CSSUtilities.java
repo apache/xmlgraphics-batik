@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -555,6 +555,9 @@ public abstract class CSSUtilities
      * @param e the element
      */
     public static boolean convertDisplay(Element e) {
+        if (!(e instanceof CSSStylableElement)) {
+            return true;
+        }
         Value v = getComputedStyle(e, SVGCSSEngine.DISPLAY_INDEX);
         return v.getStringValue().charAt(0) != 'n';
     }

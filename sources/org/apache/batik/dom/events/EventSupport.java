@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ public class EventSupport {
      */
     public void addEventListener(String type, EventListener listener, 
 				 boolean useCapture) {
-        addEventListenerNS(null, type, null, listener, useCapture);
+        addEventListenerNS(null, type, listener, useCapture, null);
     }
 
     /**
@@ -104,9 +104,9 @@ public class EventSupport {
      */
     public void addEventListenerNS(String namespaceURI,
                                    String type,
-                                   Object group,
                                    EventListener listener,
-                                   boolean useCapture) {
+                                   boolean useCapture,
+                                   Object group) {
 	HashTable listeners;
 	if (useCapture) {
 	    if (capturingListeners == null) {
@@ -156,16 +156,16 @@ public class EventSupport {
      */
     public void removeEventListener(String type, EventListener listener, 
 				    boolean useCapture) {
-        removeEventListener(null, type, listener, useCapture);
+        removeEventListenerNS(null, type, listener, useCapture);
     }
 
     /**
      * Deregisters an event listener.
      */
-    public void removeEventListener(String namespaceURI,
-                                    String type,
-                                    EventListener listener,
-                                    boolean useCapture) {
+    public void removeEventListenerNS(String namespaceURI,
+                                      String type,
+                                      EventListener listener,
+                                      boolean useCapture) {
 	HashTable listeners;
 	if (useCapture) {
 	    listeners = capturingListeners;
@@ -259,6 +259,8 @@ public class EventSupport {
             aevt.stopPropagation(false);
             aevt.stopImmediatePropagation(false);
             aevt.preventDefault(false);
+        } else {
+            ce.setTarget(target);
         }
 	// dump the tree hierarchy from top to the target
 	NodeEventTarget [] ancestors = getAncestors(target);
@@ -312,26 +314,15 @@ public class EventSupport {
         return isCustom ? ce.isDefaultPrevented() : aevt.isDefaultPrevented();
     }
 
-    private static void fireEventListeners(NodeEventTarget node, 
-					   Event e,
-                                           boolean useCapture,
-                                           HashSet stoppedGroups,
-                                           HashSet toBeStoppedGroups,
-                                           boolean isCustom) {
-	String type = e.getType();
-	EventSupport support = node.getEventSupport();
-	// check if the event support has been instantiated
-	if (support == null) {
-	    return;
-	}
-        EventListenerList list = support.getEventListeners(type, useCapture);
-	// check if the event listeners list is not empty
-	if (list == null) {
-	    return;
-	}
-	// dump event listeners, we get the registered listeners NOW
-	EventListenerList.Entry[] listeners = list.getEventListeners();
-	// check if event listeners with the correct event type exist
+    /**
+     * Fires the given listeners on the given event target.
+     */
+    protected void fireEventListeners(NodeEventTarget node,
+                                      Event e,
+                                      EventListenerList.Entry[] listeners,
+                                      HashSet stoppedGroups,
+                                      HashSet toBeStoppedGroups,
+                                      boolean isCustom) {
 	if (listeners == null) {
 	    return;
 	}
@@ -354,25 +345,30 @@ public class EventSupport {
                     continue;
                 }
                 Object group = listeners[i].getGroup();
-                if (!stoppedGroups.contains(group)) {
+                if (stoppedGroups == null || !stoppedGroups.contains(group)) {
                     listeners[i].getListener().handleEvent(e);
                     if (isCustom) {
                         if (ce.isImmediatePropagationStopped()) {
-                            stoppedGroups.add(group);
-                            // XXX How to not stop other groups?
-                            // Need something like
-                            // aevt.stopImmediatePropagation(false);
+                            if (stoppedGroups != null) {
+                                stoppedGroups.add(group);
+                            }
+                            ce.resumePropagation();
                         } else if (ce.isPropagationStopped()) {
-                            toBeStoppedGroups.add(group);
-                            // XXX How to not stop other groups?
-                            // Need something like aevt.stopPropagation(false);
+                            if (toBeStoppedGroups != null) {
+                                toBeStoppedGroups.add(group);
+                            }
+                            ce.resumePropagation();
                         }
                     } else {
                         if (aevt.getStopImmediatePropagation()) {
-                            stoppedGroups.add(group);
+                            if (stoppedGroups != null) {
+                                stoppedGroups.add(group);
+                            }
                             aevt.stopImmediatePropagation(false);
                         } else if (aevt.getStopPropagation()) {
-                            toBeStoppedGroups.add(group);
+                            if (toBeStoppedGroups != null) {
+                                toBeStoppedGroups.add(group);
+                            }
                             aevt.stopPropagation(false);
                         }
                     }
@@ -385,8 +381,36 @@ public class EventSupport {
 	}
     }
 
-    // Returns all ancestors of the specified node
-    private static NodeEventTarget [] getAncestors(NodeEventTarget node) {
+    /**
+     * Fires the registered listeners on the given event target.
+     */
+    protected void fireEventListeners(NodeEventTarget node, 
+                                      Event e,
+                                      boolean useCapture,
+                                      HashSet stoppedGroups,
+                                      HashSet toBeStoppedGroups,
+                                      boolean isCustom) {
+	String type = e.getType();
+	EventSupport support = node.getEventSupport();
+	// check if the event support has been instantiated
+	if (support == null) {
+	    return;
+	}
+        EventListenerList list = support.getEventListeners(type, useCapture);
+	// check if the event listeners list is not empty
+	if (list == null) {
+	    return;
+	}
+	// dump event listeners, we get the registered listeners NOW
+	EventListenerList.Entry[] listeners = list.getEventListeners();
+        fireEventListeners(node, e, listeners, stoppedGroups,
+                           toBeStoppedGroups, isCustom);
+    }
+
+    /**
+     * Returns all ancestors of the specified node.
+     */
+    protected NodeEventTarget [] getAncestors(NodeEventTarget node) {
 	node = node.getParentNodeEventTarget(); // skip current node
 	int nancestors = 0;
 	for (NodeEventTarget n = node;
@@ -460,6 +484,74 @@ public class EventSupport {
     }
 
     /**
+     * Calls {@link AbstractEvent#setTarget}.
+     */
+    protected void setTarget(AbstractEvent evt, NodeEventTarget target) {
+        evt.setTarget(target);
+    }
+
+    /**
+     * Calls {@link AbstractEvent#stopPropagation(boolean)}.
+     */
+    protected void stopPropagation(AbstractEvent evt, boolean b) {
+        evt.stopPropagation(b);
+    }
+
+    /**
+     * Calls {@link AbstractEvent#stopImmediatePropagation(boolean)}.
+     */
+    protected void stopImmediatePropagation(AbstractEvent evt, boolean b) {
+        evt.stopImmediatePropagation(b);
+    }
+
+    /**
+     * Calls {@link AbstractEvent#preventDefault(boolean)}.
+     */
+    protected void preventDefault(AbstractEvent evt, boolean b) {
+        evt.preventDefault(b);
+    }
+
+    /**
+     * Calls {@link AbstractEvent#setCurrentTarget}.
+     */
+    protected void setCurrentTarget(AbstractEvent evt, NodeEventTarget target) {
+        evt.setCurrentTarget(target);
+    }
+
+    /**
+     * Calls {@link AbstractEvent#setEventPhase}.
+     */
+    protected void setEventPhase(AbstractEvent evt, short phase) {
+        evt.setEventPhase(phase);
+    }
+
+    /**
+     * Returns the ultimate original event for the given event.
+     */
+    public static Event getUltimateOriginalEvent(Event evt) {
+        for (;;) {
+            if (evt instanceof AbstractEvent) {
+                AbstractEvent aevt = (AbstractEvent) evt;
+                Event origEvt = aevt.getOriginalEvent();
+                if (origEvt == null) {
+                    break;
+                }
+                evt = origEvt;
+            } else if (evt instanceof CustomEvent) {
+                CustomEvent cevt = (CustomEvent) evt;
+                Event origEvt = cevt.getOriginalEvent();
+                if (origEvt == null) {
+                    break;
+                }
+                evt = origEvt;
+            } else {
+                 break;
+            }
+        }
+        return evt;
+    }
+
+    /**
      * Wrapper class for {@link org.w3c.dom.events.CustomEvent} objects.
      */
     protected class WrappedEvent implements CustomEvent {
@@ -485,17 +577,46 @@ public class EventSupport {
         protected Method isDefaultPreventedMethod;
 
         /**
+         * The resumePropagation method of the wrapped event object.
+         */
+        protected Method resumePropagationMethod;
+
+        /**
+         * The retarget method of the wrapped event object.
+         */
+        protected Method retargetMethod;
+
+        /**
+         * The setTarget method of the wrapped event object.
+         */
+        protected Method setTargetMethod;
+
+        /**
+         * The getOriginalEvent method of the wrapped event object.
+         */
+        protected Method getOriginalEventMethod;
+
+        /**
          * Creates a new WrappedEvent object.
          */
         public WrappedEvent(org.w3c.dom.events.CustomEvent e) {
             this.e = e;
             Class cls = e.getClass();
             try {
-                getNamespaceURIMethod = cls.getMethod("getNamespaceURI", (Class[])null);
+                getNamespaceURIMethod
+                    = cls.getMethod("getNamespaceURI", (Class[]) null);
                 stopImmediatePropagationMethod
-                    = cls.getMethod("stopImmediatePropagation", (Class[])null);
+                    = cls.getMethod("stopImmediatePropagation", (Class[]) null);
                 isDefaultPreventedMethod
-                    = cls.getMethod("isDefaultPrevented", (Class[])null);
+                    = cls.getMethod("isDefaultPrevented", (Class[]) null);
+                resumePropagationMethod
+                    = cls.getMethod("resumePropagation", (Class[]) null);
+                setTargetMethod = cls.getMethod
+                    ("setTarget", new Class[] { EventTarget.class });
+                retargetMethod = cls.getMethod
+                    ("retarget", new Class[] { EventTarget.class });
+                getOriginalEventMethod
+                    = cls.getMethod("getOriginalEvent", (Class[]) null);
             } catch (NoSuchMethodException nsme) {
                 throw createEventException
                     (DOMException.NOT_SUPPORTED_ERR,
@@ -607,6 +728,69 @@ public class EventSupport {
         }
 
         // CustomEvent ///////////////////////////////////////////////////////
+
+        /**
+         * Clears the 'propagationStopped' and 'immediatePropagationStopped'
+         * flags.  This is needed for standard event dispatching and should
+         * only be called by the DOM Events implementation.
+         */
+        public void resumePropagation() {
+            try {
+                resumePropagationMethod.invoke(e, null);
+            } catch (InvocationTargetException ite) {
+                ite.printStackTrace();
+            } catch (IllegalAccessException iae) {
+                iae.printStackTrace();
+            }
+        }
+
+        /**
+         * Sets the target for this event.  This is needed for initialization
+         * of the custom event object and should only be called by the DOM Events
+         * implementation.
+         */
+        public void setTarget(EventTarget target) {
+            try {
+                setTargetMethod.invoke(e, new Object[] { target });
+            } catch (InvocationTargetException ite) {
+                ite.printStackTrace();
+            } catch (IllegalAccessException iae) {
+                iae.printStackTrace();
+            }
+        }
+
+        /**
+         * Clones this event object and sets the 'originalEvent' field of the
+         * clone to be equal to the original event object.  This is needed
+         * for sXBL event retargetting and should only be called by the
+         * DOM Events implementation.
+         */
+        public CustomEvent retarget(EventTarget target) {
+            try {
+                return new WrappedEvent
+                    ((org.w3c.dom.events.CustomEvent)
+                     retargetMethod.invoke(e, new Object[] { target }));
+            } catch (InvocationTargetException ite) {
+                ite.printStackTrace();
+            } catch (IllegalAccessException iae) {
+                iae.printStackTrace();
+            }
+            return null;
+        }
+
+        /**
+         * Returns the event from which this event was cloned.
+         */
+        public Event getOriginalEvent() {
+            try {
+                return (Event) getOriginalEventMethod.invoke(e, null);
+            } catch (InvocationTargetException ite) {
+                ite.printStackTrace();
+            } catch (IllegalAccessException iae) {
+                iae.printStackTrace();
+            }
+            return null;
+        }
 
         /**
          * Returns the namespace URI of this custom event.

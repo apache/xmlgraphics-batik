@@ -28,7 +28,7 @@ public class DoublyIndexedTable {
     /**
      * The initial capacity
      */
-    protected final static int INITIAL_CAPACITY = 11;
+    protected int initialCapacity;
 
     /**
      * The underlying array
@@ -44,7 +44,7 @@ public class DoublyIndexedTable {
      * Creates a new DoublyIndexedTable.
      */
     public DoublyIndexedTable() {
-        table = new Entry[INITIAL_CAPACITY];
+        this(16);
     }
 
     /**
@@ -52,6 +52,7 @@ public class DoublyIndexedTable {
      * @param c The inital capacity.
      */
     public DoublyIndexedTable(int c) {
+        initialCapacity = c;
         table = new Entry[c];
     }
 
@@ -107,9 +108,62 @@ public class DoublyIndexedTable {
     }
     
     /**
+     * Removes an entry from the table.
+     * @return the value or null
+     */
+    public Object remove(Object o1, Object o2) {
+        int hash  = hashCode(o1, o2) & 0x7FFFFFFF;
+        int index = hash % table.length;
+
+        Entry e = table[index];
+        if (e == null) {
+            return null;
+        }
+
+        if (e.hash == hash && e.match(o1, o2)) {
+            table[index] = e.next;
+            count--;
+            return e.value;
+        }
+
+        Entry prev = e;
+        for (e = e.next; e != null; prev = e, e = e.next) {
+            if (e.hash == hash && e.match(o1, o2)) {
+                prev.next = e.next;
+                count--;
+                return e.value;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns an array of all of the values in the table.
+     */
+    public Object[] getValuesArray() {
+        Object[] values = new Object[count];
+        int i = 0;
+
+        for (int index = 0; index < table.length; index++) {
+            for (Entry e = table[index]; e != null; e = e.next) {
+                values[i++] = e.value;
+            }
+        }
+        return values;
+    }
+
+    /**
+     * Clears the table.
+     */
+    public void clear() {
+        table = new Entry[initialCapacity];
+        count = 0;
+    }
+
+    /**
      * Rehash the table
      */
-    protected void rehash () {
+    protected void rehash() {
         Entry[] oldTable = table;
 	
         table = new Entry[oldTable.length * 2 + 1];

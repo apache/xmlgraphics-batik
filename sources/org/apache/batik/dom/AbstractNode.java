@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,10 +23,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.batik.dom.events.DOMMutationEvent;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.dom.xbl.NodeXBL;
+import org.apache.batik.dom.xbl.XBLManagerData;
 import org.apache.batik.util.ParsedURL;
 import org.apache.batik.util.XMLConstants;
 import org.w3c.dom.Attr;
@@ -37,7 +40,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.TypeInfo;
 import org.w3c.dom.UserDataHandler;
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
@@ -53,12 +55,14 @@ import org.w3c.dom.events.MutationEvent;
  */
 public abstract class AbstractNode
     implements ExtendedNode,
+               NodeXBL,
+               XBLManagerData,
                Serializable {
 
     /**
      * An empty instance of NodeList.
      */
-    protected final static NodeList EMPTY_NODE_LIST = new NodeList() {
+    public final static NodeList EMPTY_NODE_LIST = new NodeList() {
         public Node item(int i) { return null; }
         public int  getLength() { return 0; }
     };
@@ -82,6 +86,11 @@ public abstract class AbstractNode
      * User data handlers.
      */
     protected HashMap userDataHandlers;
+
+    /**
+     * The XBL manager data.
+     */
+    protected Object managerData;
 
     /**
      * Sets the name of this node.
@@ -447,6 +456,10 @@ public abstract class AbstractNode
         return getCascadedXMLBase(this);
     }
 
+    public static String getBaseURI(Node n) {
+        return ((AbstractNode) n).getBaseURI();
+    }
+
     // DocumentPosition constants from DOM Level 3 Core org.w3c.dom.Node
     // interface.
 
@@ -739,6 +752,9 @@ public abstract class AbstractNode
                         Node attr = nnm.item(i);
                         String attrPrefix = attr.getPrefix();
                         String localName = attr.getLocalName();
+                        if (localName == null) {
+                            localName = attr.getNodeName();
+                        }
                         if (XMLConstants.XMLNS_PREFIX.equals(attrPrefix)
                                 && compareStrings(localName, prefix)
                                 || XMLConstants.XMLNS_PREFIX.equals(localName)
@@ -913,9 +929,7 @@ public abstract class AbstractNode
                                  EventListener listener,
                                  boolean useCapture) {
         if (eventSupport == null) {
-            eventSupport = new EventSupport(this);
-            AbstractDocument doc = getCurrentDocument();
-            doc.setEventsEnabled(true);
+            initializeEventSupport();
         }
         eventSupport.addEventListener(type, listener, useCapture);
     }
@@ -931,15 +945,13 @@ public abstract class AbstractNode
                                    boolean useCapture,
                                    Object evtGroup) {
         if (eventSupport == null) {
-            eventSupport = new EventSupport(this);
-            AbstractDocument doc = getCurrentDocument();
-            doc.setEventsEnabled(true);
+            initializeEventSupport();
         }
         eventSupport.addEventListenerNS(namespaceURI,
                                         type,
-                                        evtGroup,
                                         listener,
-                                        useCapture);
+                                        useCapture,
+                                        evtGroup);
     }
 
     /**
@@ -965,10 +977,10 @@ public abstract class AbstractNode
                                       EventListener listener,
                                       boolean useCapture) {
         if (eventSupport != null) {
-            eventSupport.removeEventListener(namespaceURI,
-                                             type,
-                                             listener,
-                                             useCapture);
+            eventSupport.removeEventListenerNS(namespaceURI,
+                                               type,
+                                               listener,
+                                               useCapture);
         }
     }
 
@@ -977,7 +989,7 @@ public abstract class AbstractNode
      * org.apache.batik.dom.events.NodeEventTarget#getParentNodeEventTarget()}.
      */
     public NodeEventTarget getParentNodeEventTarget() {
-        return (NodeEventTarget)getParentNode();
+        return (NodeEventTarget) getXblParentNode();
     }
 
     /**
@@ -986,9 +998,7 @@ public abstract class AbstractNode
      */
     public boolean dispatchEvent(Event evt) throws EventException {
         if (eventSupport == null) {
-            eventSupport = new EventSupport(this);
-            AbstractDocument doc = getCurrentDocument();
-            doc.setEventsEnabled(true);
+            initializeEventSupport();
         }
         return eventSupport.dispatchEvent(this, evt);
     }
@@ -1020,21 +1030,37 @@ public abstract class AbstractNode
     }
 
     /**
+     * Initializes the event support instance for this node if it has not
+     * been already, and returns it.
+     */
+    public EventSupport initializeEventSupport() {
+        if (eventSupport == null) {
+            AbstractDocument doc = getCurrentDocument();
+            AbstractDOMImplementation di
+                = (AbstractDOMImplementation) doc.getImplementation();
+            eventSupport = di.createEventSupport(this);
+            doc.setEventsEnabled(true);
+        }
+        return eventSupport;
+    }
+
+    /**
      * Recursively fires a DOMNodeInsertedIntoDocument event.
      */
     public void fireDOMNodeInsertedIntoDocumentEvent() {
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
             DocumentEvent de = (DocumentEvent)doc;
-            MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
-            ev.initMutationEvent("DOMNodeInsertedIntoDocument",
-                                 true,   // canBubbleArg
-                                 false,  // cancelableArg
-                                 null,   // relatedNodeArg
-                                 null,   // prevValueArg
-                                 null,   // newValueArg
-                                 null,   // attrNameArg
-                                 MutationEvent.ADDITION);
+            DOMMutationEvent ev = (DOMMutationEvent)de.createEvent("MutationEvents");
+            ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                   "DOMNodeInsertedIntoDocument",
+                                   true,   // canBubbleArg
+                                   false,  // cancelableArg
+                                   null,   // relatedNodeArg
+                                   null,   // prevValueArg
+                                   null,   // newValueArg
+                                   null,   // attrNameArg
+                                   MutationEvent.ADDITION);
             dispatchEvent(ev);
         }
     }
@@ -1046,15 +1072,17 @@ public abstract class AbstractNode
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
             DocumentEvent de = (DocumentEvent)doc;
-            MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
-            ev.initMutationEvent("DOMNodeRemovedFromDocument",
-                                 true,   // canBubbleArg
-                                 false,  // cancelableArg
-                                 null,   // relatedNodeArg
-                                 null,   // prevValueArg
-                                 null,   // newValueArg
-                                 null,   // attrNameArg
-                                 MutationEvent.REMOVAL);
+            DOMMutationEvent ev
+                = (DOMMutationEvent) de.createEvent("MutationEvents");
+            ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                   "DOMNodeRemovedFromDocument",
+                                   true,   // canBubbleArg
+                                   false,  // cancelableArg
+                                   null,   // relatedNodeArg
+                                   null,   // prevValueArg
+                                   null,   // newValueArg
+                                   null,   // attrNameArg
+                                   MutationEvent.REMOVAL);
             dispatchEvent(ev);
         }
     }
@@ -1067,15 +1095,17 @@ public abstract class AbstractNode
         AbstractDocument doc = getCurrentDocument();
         if (doc.getEventsEnabled()) {
             DocumentEvent de = (DocumentEvent)doc;
-            MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
-            ev.initMutationEvent("DOMCharacterDataModified",
-                                 true,  // canBubbleArg
-                                 false, // cancelableArg
-                                 null,  // relatedNodeArg
-                                 oldv,  // prevValueArg
-                                 newv,  // newValueArg
-                                 null,  // attrNameArg
-                                 MutationEvent.MODIFICATION);
+            DOMMutationEvent ev
+                = (DOMMutationEvent) de.createEvent("MutationEvents");
+            ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                   "DOMCharacterDataModified",
+                                   true,  // canBubbleArg
+                                   false, // cancelableArg
+                                   null,  // relatedNodeArg
+                                   oldv,  // prevValueArg
+                                   newv,  // newValueArg
+                                   null,  // attrNameArg
+                                   MutationEvent.MODIFICATION);
             dispatchEvent(ev);
         }
     }
@@ -1142,10 +1172,124 @@ public abstract class AbstractNode
                                                 getNodeName() });
     }
 
+    // NodeXBL //////////////////////////////////////////////////////////////
+
     /**
-     * Gets the base URI of the given node.
+     * Get the parent of this node in the fully flattened tree.
      */
-    public static String getBaseURI(Node n) {
-        return ((AbstractNode) n).getBaseURI();
+    public Node getXblParentNode() {
+        return ownerDocument.getXBLManager().getXblParentNode(this);
+    }
+
+    /**
+     * Get the list of child nodes of this node in the fully flattened tree.
+     */
+    public NodeList getXblChildNodes() {
+        return ownerDocument.getXBLManager().getXblChildNodes(this);
+    }
+
+    /**
+     * Get the list of child nodes of this node in the fully flattened tree
+     * that are within the same shadow scope.
+     */
+    public NodeList getXblScopedChildNodes() {
+        return ownerDocument.getXBLManager().getXblScopedChildNodes(this);
+    }
+
+    /**
+     * Get the first child node of this node in the fully flattened tree.
+     */
+    public Node getXblFirstChild() {
+        return ownerDocument.getXBLManager().getXblFirstChild(this);
+    }
+
+    /**
+     * Get the last child node of this node in the fully flattened tree.
+     */
+    public Node getXblLastChild() {
+        return ownerDocument.getXBLManager().getXblLastChild(this);
+    }
+
+    /**
+     * Get the node which directly precedes the current node in the
+     * xblParentNode's xblChildNodes list.
+     */
+    public Node getXblPreviousSibling() {
+        return ownerDocument.getXBLManager().getXblPreviousSibling(this);
+    }
+
+    /**
+     * Get the node which directly follows the current node in the
+     * xblParentNode's xblChildNodes list.
+     */
+    public Node getXblNextSibling() {
+        return ownerDocument.getXBLManager().getXblNextSibling(this);
+    }
+
+    /**
+     * Get the first element child of this node in the fully flattened tree.
+     */
+    public Element getXblFirstElementChild() {
+        return ownerDocument.getXBLManager().getXblFirstElementChild(this);
+    }
+
+    /**
+     * Get the last element child of this node in the fully flattened tree.
+     */
+    public Element getXblLastElementChild() {
+        return ownerDocument.getXBLManager().getXblLastElementChild(this);
+    }
+
+    /**
+     * Get the first element that precedes the current node in the
+     * xblParentNode's xblChildNodes list.
+     */
+    public Element getXblPreviousElementSibling() {
+        return ownerDocument.getXBLManager().getXblPreviousElementSibling(this);
+    }
+
+    /**
+     * Get the first element that follows the current node in the
+     * xblParentNode's xblChildNodes list.
+     */
+    public Element getXblNextElementSibling() {
+        return ownerDocument.getXBLManager().getXblNextElementSibling(this);
+    }
+
+    /**
+     * Get the bound element whose shadow tree this current node resides in.
+     */
+    public Element getXblBoundElement() {
+        return ownerDocument.getXBLManager().getXblBoundElement(this);
+    }
+
+    /**
+     * Get the shadow tree of this node.
+     */
+    public Element getXblShadowTree() {
+        return ownerDocument.getXBLManager().getXblShadowTree(this);
+    }
+
+    /**
+     * Get the xbl:definition elements currently binding this element.
+     */
+    public NodeList getXblDefinitions() {
+        return ownerDocument.getXBLManager().getXblDefinitions(this);
+    }
+
+    // XBLManagerData ////////////////////////////////////////////////////////
+
+    /**
+     * Returns the XBL manager associated data for this node.
+     */
+    public Object getManagerData() {
+        return managerData;
+    }
+
+    /**
+     * Sets the XBL manager associated data for this node.
+     */
+    public void setManagerData(Object data) {
+        managerData = data;
     }
 }

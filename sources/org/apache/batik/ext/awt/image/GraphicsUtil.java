@@ -391,7 +391,7 @@ public class GraphicsUtil {
      * This method also attempts to unwind the rendering chain a bit.
      * So it knows about certain operations (like affine, pad,
      * composite), rather than applying each of these operations in
-     * turn it accounts for there affects through modifications to the
+     * turn it accounts for their affects through modifications to the
      * Graphics2D. This avoids generating lots of intermediate images.
      *
      * @param g2d    The Graphics to draw into.
@@ -426,7 +426,7 @@ public class GraphicsUtil {
      * This method also attempts to unwind the rendering chain a bit.
      * So it knows about certain operations (like affine, pad,
      * composite), rather than applying each of these operations in
-     * turn it accounts for there affects through modifications to the
+     * turn it accounts for their affects through modifications to the
      * Graphics2D.  This avoids generating lots of intermediate images.
      *
      * @param g2d    The Graphics to draw into.
@@ -461,7 +461,6 @@ public class GraphicsUtil {
      * in a Rendering hint in the returned Graphics2D.
      * This allows for accurate determination of the 'devices' size,
      * and colorspace.
-
      * @param bi The BufferedImage that the returned Graphics should
      *           draw into.
      * @return A Graphics2D that draws into BufferedImage with <tt>bi</tt>

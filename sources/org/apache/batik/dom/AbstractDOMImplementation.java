@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@ package org.apache.batik.dom;
 import java.io.Serializable;
 
 import org.apache.batik.dom.events.DocumentEventSupport;
+import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.util.HashTable;
+
 import org.w3c.dom.DOMImplementation;
 
 /**
@@ -118,5 +120,12 @@ public abstract class AbstractDOMImplementation
      */
     public DocumentEventSupport createDocumentEventSupport() {
         return new DocumentEventSupport();
+    }
+
+    /**
+     * Creates an EventSupport object for a given node.
+     */
+    public EventSupport createEventSupport(AbstractNode n) {
+        return new EventSupport(n);
     }
 }

@@ -157,7 +157,3 @@ public class GraphicsNodeRed8Bit extends AbstractRed {
         return GraphicsUtil.sRGB_Unpre;
     }
 }
-
-
-
-

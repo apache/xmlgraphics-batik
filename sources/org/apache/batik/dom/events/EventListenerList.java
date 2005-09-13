@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2002  The Apache Software Foundation 
+   Copyright 2000-2002,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class EventListenerList {
     /**
      * Total number of event listners.
      */
-    int n;
+    protected int n;
 
     /**
      * Linked list of entries.
@@ -110,8 +110,7 @@ public class EventListenerList {
     }
 
     /**
-     * Returns an array containing all event listener entries for
-     * the given group.
+     * Returns an array containing all event listener entries.
      */
     public Entry[] getEventListeners() {
         if (listeners != null) {
@@ -126,8 +125,7 @@ public class EventListenerList {
     }
 
     /**
-     * Returns an array of EventListeners that match the given namespace URI
-     * and group.
+     * Returns an array of EventListeners that match the given namespace URI.
      */
     public Entry[] getEventListeners(String namespaceURI) {
         if (namespaceURI == null) {

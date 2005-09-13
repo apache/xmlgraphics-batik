@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,16 +49,16 @@ import org.apache.batik.bridge.DefaultScriptSecurity;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.ErrorConstants;
 import org.apache.batik.bridge.ExternalResourceSecurity;
-import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.RelaxedExternalResourceSecurity;
 import org.apache.batik.bridge.ScriptSecurity;
 import org.apache.batik.bridge.UpdateManager;
-import org.apache.batik.bridge.UpdateManagerAdapter;
 import org.apache.batik.bridge.UpdateManagerEvent;
 import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.ViewBox;
+import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
@@ -69,9 +68,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.event.EventDispatcher;
 import org.apache.batik.gvt.text.Mark;
 import org.apache.batik.gvt.renderer.ImageRenderer;
-import org.apache.batik.swing.gvt.GVTTreeRenderer;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
-import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.JGVTComponent;
 import org.apache.batik.swing.gvt.JGVTComponentListener;
 import org.apache.batik.util.ParsedURL;
@@ -679,7 +676,7 @@ public class AbstractJSVGComponent extends JGVTComponent {
             return;
         } 
 
-        bridgeContext = createBridgeContext();
+        bridgeContext = createBridgeContext((SVGOMDocument) doc);
 
         switch (documentState) {
         case ALWAYS_STATIC:
@@ -806,11 +803,16 @@ public class AbstractJSVGComponent extends JGVTComponent {
     /**
      * Creates a new bridge context.
      */
-    protected BridgeContext createBridgeContext() {
+    protected BridgeContext createBridgeContext(SVGOMDocument doc) {
         if (loader == null) {
             loader = new DocumentLoader(userAgent);
         }
-        BridgeContext result = new BridgeContext(userAgent, loader);
+        BridgeContext result;
+        if (doc.isSVG12()) {
+            result = new SVG12BridgeContext(userAgent, loader);
+        } else {
+            result = new BridgeContext(userAgent, loader);
+        }
         return result;
     }
 

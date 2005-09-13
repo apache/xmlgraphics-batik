@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -35,13 +35,22 @@ import org.apache.batik.dom.events.DocumentEventSupport;
 import org.apache.batik.dom.events.EventSupport;
 import org.apache.batik.dom.traversal.TraversalSupport;
 import org.apache.batik.dom.util.DOMUtilities;
+import org.apache.batik.dom.xbl.GenericXBLManager;
+import org.apache.batik.dom.xbl.XBLManager;
 import org.apache.batik.i18n.Localizable;
 import org.apache.batik.i18n.LocalizableSupport;
 import org.apache.batik.util.CleanerThread;
 import org.apache.batik.util.DOMConstants;
 import org.apache.batik.util.SoftDoublyIndexedTable;
 import org.apache.batik.util.XMLConstants;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+
 import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMErrorHandler;
@@ -49,26 +58,19 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.DOMLocator;
 import org.w3c.dom.DOMStringList;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
-import org.w3c.dom.UserDataHandler;
 import org.w3c.dom.events.DocumentEvent;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.MutationNameEvent;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.TreeWalker;
-
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.UserDataHandler;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathException;
 import org.w3c.dom.xpath.XPathExpression;
@@ -166,6 +168,11 @@ public abstract class AbstractDocument
      * The DOMConfiguration object for this document.
      */
     protected DocumentConfiguration domConfig;
+
+    /**
+     * The XBL manager for this document.
+     */
+    protected XBLManager xblManager = new GenericXBLManager();
 
     /**
      * The elementsById lists.
@@ -1078,7 +1085,9 @@ public abstract class AbstractDocument
             if (es1 != null) {
                 EventSupport es2 = e.getEventSupport();
                 if (es2 == null) {
-                    es2 = new EventSupport(e);
+                    AbstractDOMImplementation di
+                        = (AbstractDOMImplementation) implementation;
+                    es2 = di.createEventSupport(e);
                     setEventsEnabled(true);
                     e.eventSupport = es2;
                 }
@@ -1696,6 +1705,28 @@ public abstract class AbstractDocument
      * <b>DOM</b>: Implements {@link org.w3c.dom.Node#setTextContent(String)}.
      */
     public void setTextContent(String s) throws DOMException {
+    }
+
+    /**
+     * Sets the XBLManager used for this document.
+     */
+    public void setXBLManager(XBLManager m) {
+        boolean wasProcessing = xblManager.isProcessing();
+        xblManager.stopProcessing();
+        if (m == null) {
+            m = new GenericXBLManager();
+        }
+        xblManager = m;
+        if (wasProcessing) {
+            xblManager.startProcessing();
+        }
+    }
+
+    /**
+     * Returns the XBLManager used for this document.
+     */
+    public XBLManager getXBLManager() {
+        return xblManager;
     }
 
     /**
@@ -2556,6 +2587,111 @@ public abstract class AbstractDocument
         public String lookupNamespaceURI(String prefix) {
             return ((AbstractNode) contextNode).lookupNamespaceURI(prefix);
         }
+    }
+
+    // NodeXBL //////////////////////////////////////////////////////////////
+
+    /**
+     * Get the parent of this node in the fully flattened tree.
+     */
+    public Node getXblParentNode() {
+        return xblManager.getXblParentNode(this);
+    }
+
+    /**
+     * Get the list of child nodes of this node in the fully flattened tree.
+     */
+    public NodeList getXblChildNodes() {
+        return xblManager.getXblChildNodes(this);
+    }
+
+    /**
+     * Get the list of child nodes of this node in the fully flattened tree
+     * that are within the same shadow scope.
+     */
+    public NodeList getXblScopedChildNodes() {
+        return xblManager.getXblScopedChildNodes(this);
+    }
+
+    /**
+     * Get the first child node of this node in the fully flattened tree.
+     */
+    public Node getXblFirstChild() {
+        return xblManager.getXblFirstChild(this);
+    }
+
+    /**
+     * Get the last child node of this node in the fully flattened tree.
+     */
+    public Node getXblLastChild() {
+        return xblManager.getXblLastChild(this);
+    }
+
+    /**
+     * Get the node which directly precedes the current node in the
+     * xblParentNode's xblChildNodes list.
+     */
+    public Node getXblPreviousSibling() {
+        return xblManager.getXblPreviousSibling(this);
+    }
+
+    /**
+     * Get the node which directly follows the current node in the
+     * xblParentNode's xblChildNodes list.
+     */
+    public Node getXblNextSibling() {
+        return xblManager.getXblNextSibling(this);
+    }
+
+    /**
+     * Get the first element child of this node in the fully flattened tree.
+     */
+    public Element getXblFirstElementChild() {
+        return xblManager.getXblFirstElementChild(this);
+    }
+
+    /**
+     * Get the last element child of this node in the fully flattened tree.
+     */
+    public Element getXblLastElementChild() {
+        return xblManager.getXblLastElementChild(this);
+    }
+
+    /**
+     * Get the first element that precedes the current node in the
+     * xblParentNode's xblChildNodes list.
+     */
+    public Element getXblPreviousElementSibling() {
+        return xblManager.getXblPreviousElementSibling(this);
+    }
+
+    /**
+     * Get the first element that follows the current node in the
+     * xblParentNode's xblChildNodes list.
+     */
+    public Element getXblNextElementSibling() {
+        return xblManager.getXblNextElementSibling(this);
+    }
+
+    /**
+     * Get the bound element whose shadow tree this current node resides in.
+     */
+    public Element getXblBoundElement() {
+        return xblManager.getXblBoundElement(this);
+    }
+
+    /**
+     * Get the shadow tree of this node.
+     */
+    public Element getXblShadowTree() {
+        return xblManager.getXblShadowTree(this);
+    }
+
+    /**
+     * Get the xbl:definition elements currently binding this element.
+     */
+    public NodeList getXblDefinitions() {
+        return xblManager.getXblDefinitions(this);
     }
 
     // Serializable /////////////////////////////////////////////////

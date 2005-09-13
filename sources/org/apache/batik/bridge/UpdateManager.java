@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2003  The Apache Software Foundation 
+   Copyright 2001-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,18 +26,21 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.batik.bridge.svg12.DefaultXBLManager;
+import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.bridge.svg12.SVG12ScriptingEnvironment;
+import org.apache.batik.dom.events.AbstractEvent;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.RootGraphicsNode;
 import org.apache.batik.gvt.UpdateTracker;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.util.EventDispatcher;
+import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.EventDispatcher.Dispatcher;
 import org.apache.batik.util.RunnableQueue;
 import org.w3c.dom.Document;
 import org.w3c.dom.events.DocumentEvent;
-import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventTarget;
 
 /**
@@ -145,6 +148,8 @@ public class UpdateManager  {
         SVGOMDocument d = (SVGOMDocument) doc;
         if (d.isSVG12()) {
             scriptingEnvironment = new SVG12ScriptingEnvironment(ctx);
+            ctx.xblManager = new DefaultXBLManager(d, ctx);
+            d.setXBLManager(ctx.xblManager);
         } else {
             scriptingEnvironment = new ScriptingEnvironment(ctx);
         }
@@ -157,6 +162,11 @@ public class UpdateManager  {
         throws InterruptedException {
         scriptingEnvironment.loadScripts();
         scriptingEnvironment.dispatchSVGLoadEvent();
+        if (bridgeContext.isSVG12() && bridgeContext.xblManager != null) {
+            SVG12BridgeContext ctx12 = (SVG12BridgeContext) bridgeContext;
+            ctx12.addBindingListener();
+            bridgeContext.xblManager.startProcessing();
+        }
     }
 
     /**
@@ -329,9 +339,18 @@ public class UpdateManager  {
         updateRunnableQueue.preemptLater(new Runnable() {
                 public void run() {
                     synchronized (UpdateManager.this) {
-                        Event evt =
+                        AbstractEvent evt = (AbstractEvent)
                             ((DocumentEvent)document).createEvent("SVGEvents");
-                        evt.initEvent("SVGUnload", false, false);
+                        String type;
+                        if (bridgeContext.isSVG12()) {
+                            type = "unload";
+                        } else {
+                            type = "SVGUnload";
+                        }
+                        evt.initEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                        type,
+                                        false,    // canBubbleArg
+                                        false);   // cancelableArg
                         ((EventTarget)(document.getDocumentElement())).
                             dispatchEvent(evt);
                         running = false;

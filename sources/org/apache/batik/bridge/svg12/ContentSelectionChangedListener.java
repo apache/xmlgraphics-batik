@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002  The Apache Software Foundation 
+   Copyright 2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,20 +15,23 @@
    limitations under the License.
 
  */
-package org.apache.batik.css.engine;
+package org.apache.batik.bridge.svg12;
 
-import org.w3c.dom.Node;
+import java.util.EventListener;
 
 /**
- * This interface represents a node which imports a subtree.
+ * The interface for listening to changes in selected nodes on an
+ * xbl:content element.
  *
- * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
+ * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public interface CSSImportNode extends Node {
-    
+public interface ContentSelectionChangedListener extends EventListener {
+
     /**
-     * The CSSImportedElementRoot.
+     * Invoked after an xbl:content element has updated its selected
+     * nodes list.
+     * @param csce the ContentSelectionChangedEvent object
      */
-    CSSImportedElementRoot getCSSImportedElementRoot();
+    void contentSelectionChanged(ContentSelectionChangedEvent csce);
 }

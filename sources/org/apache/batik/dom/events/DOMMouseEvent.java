@@ -18,6 +18,7 @@
 package org.apache.batik.dom.events;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.events.MouseEvent;
@@ -35,10 +36,6 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
     private int screenY; 
     private int clientX; 
     private int clientY; 
-    private boolean ctrlKey; 
-    private boolean altKey; 
-    private boolean shiftKey; 
-    private boolean metaKey; 
     private short button; 
     private EventTarget relatedTarget;
 
@@ -152,6 +149,23 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
     }
 
     /**
+     * Returns the modifiers string for this event.
+     */
+    public String getModifiersString() {
+        if (modifierKeys.isEmpty()) {
+            return "";
+        }
+        StringBuffer sb = new StringBuffer();
+        Iterator i = modifierKeys.iterator();
+        sb.append((String) i.next());
+        while (i.hasNext()) {
+             sb.append(' ');
+             sb.append((String) i.next());
+        }
+        return sb.toString();
+    }
+
+    /**
      * DOM: The <code>initMouseEvent</code> method is used to
      * initialize the value of a <code>MouseEvent</code> created
      * through the <code>DocumentEvent</code> interface.  This method
@@ -205,12 +219,20 @@ public class DOMMouseEvent extends DOMUIEvent implements MouseEvent {
 	this.screenY = screenYArg; 
 	this.clientX = clientXArg; 
 	this.clientY = clientYArg; 
-	this.ctrlKey = ctrlKeyArg; 
-	this.altKey = altKeyArg; 
-	this.shiftKey = shiftKeyArg; 
-	this.metaKey = metaKeyArg; 
-	this.button = buttonArg;  
-	this.relatedTarget = relatedTargetArg;
+        if (ctrlKeyArg) {
+            modifierKeys.add(DOMKeyboardEvent.KEY_CONTROL);
+        }
+        if (altKeyArg) {
+            modifierKeys.add(DOMKeyboardEvent.KEY_ALT);
+        }
+        if (shiftKeyArg) {
+            modifierKeys.add(DOMKeyboardEvent.KEY_SHIFT);
+        }
+        if (metaKeyArg) {
+            modifierKeys.add(DOMKeyboardEvent.KEY_META);
+        }
+        this.button = buttonArg;  
+        this.relatedTarget = relatedTargetArg;
     }
 
     /**

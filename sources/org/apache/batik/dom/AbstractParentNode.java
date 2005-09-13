@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2003  The Apache Software Foundation 
+   Copyright 2000-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ package org.apache.batik.dom;
 
 import java.io.Serializable;
 
+import org.apache.batik.dom.events.DOMMutationEvent;
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -31,7 +34,6 @@ import org.w3c.dom.events.MutationEvent;
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$
  */
-
 public abstract class AbstractParentNode extends AbstractNode {
 
     /**
@@ -382,15 +384,17 @@ public abstract class AbstractParentNode extends AbstractNode {
 	AbstractDocument doc = getCurrentDocument();
 	if (doc.getEventsEnabled()) {
 	    DocumentEvent de = (DocumentEvent)doc;
-	    MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
-	    ev.initMutationEvent("DOMSubtreeModified",
-				 true,   // canBubbleArg
-				 false,  // cancelableArg
-				 null,   // relatedNodeArg
-				 null,   // prevValueArg
-				 null,   // newValueArg
-				 null,   // attrNameArg
-                                 MutationEvent.MODIFICATION);
+	    DOMMutationEvent ev
+                = (DOMMutationEvent) de.createEvent("MutationEvents");
+	    ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                   "DOMSubtreeModified",
+                                   true,   // canBubbleArg
+                                   false,  // cancelableArg
+                                   null,   // relatedNodeArg
+                                   null,   // prevValueArg
+                                   null,   // newValueArg
+                                   null,   // attrNameArg
+                                   MutationEvent.MODIFICATION);
 	    dispatchEvent(ev);
 	}
     }
@@ -402,15 +406,17 @@ public abstract class AbstractParentNode extends AbstractNode {
 	AbstractDocument doc = getCurrentDocument();
 	if (doc.getEventsEnabled()) {
 	    DocumentEvent de = (DocumentEvent)doc;
-	    MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
-	    ev.initMutationEvent("DOMNodeInserted",
-				 true,   // canBubbleArg
-				 false,  // cancelableArg
-				 this,   // relatedNodeArg
-				 null,   // prevValueArg
-				 null,   // newValueArg
-				 null,   // attrNameArg
-                                 MutationEvent.ADDITION);
+	    DOMMutationEvent ev
+                = (DOMMutationEvent) de.createEvent("MutationEvents");
+	    ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                   "DOMNodeInserted",
+                                   true,   // canBubbleArg
+                                   false,  // cancelableArg
+                                   this,   // relatedNodeArg
+                                   null,   // prevValueArg
+                                   null,   // newValueArg
+                                   null,   // attrNameArg
+                                   MutationEvent.ADDITION);
 	    AbstractNode n = (AbstractNode)node;
 	    n.dispatchEvent(ev);
 	    n.fireDOMNodeInsertedIntoDocumentEvent();
@@ -424,15 +430,17 @@ public abstract class AbstractParentNode extends AbstractNode {
 	AbstractDocument doc = getCurrentDocument();
 	if (doc.getEventsEnabled()) {
 	    DocumentEvent de = (DocumentEvent)doc;
-	    MutationEvent ev = (MutationEvent)de.createEvent("MutationEvents");
-	    ev.initMutationEvent("DOMNodeRemoved",
-				 true,   // canBubbleArg
-				 false,  // cancelableArg
-				 this,   // relatedNodeArg
-				 null,   // prevValueArg
-				 null,   // newValueArg
-				 null,   // attrNameArg
-                                 MutationEvent.REMOVAL);
+	    DOMMutationEvent ev
+                = (DOMMutationEvent) de.createEvent("MutationEvents");
+	    ev.initMutationEventNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                   "DOMNodeRemoved",
+                                   true,   // canBubbleArg
+                                   false,  // cancelableArg
+                                   this,   // relatedNodeArg
+                                   null,   // prevValueArg
+                                   null,   // newValueArg
+                                   null,   // attrNameArg
+                                   MutationEvent.REMOVAL);
 	    AbstractNode n = (AbstractNode)node;
 	    n.dispatchEvent(ev);
 	    n.fireDOMNodeRemovedFromDocumentEvent();

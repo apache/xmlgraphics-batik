@@ -22,7 +22,7 @@ import java.lang.ref.SoftReference;
 
 /**
  * This class represents a doubly indexed hash table, which holds
- * soft references to the contained values..
+ * soft references to the contained values.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  * @version $Id$

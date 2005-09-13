@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000-2001  The Apache Software Foundation 
+   Copyright 2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,6 +16,11 @@
 
  */
 package org.apache.batik.dom.events;
+
+import org.apache.batik.dom.xbl.OriginalEvent;
+
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventTarget;
 
 /**
  * An interface DOM 3 custom events should implement to be used with
@@ -33,11 +38,44 @@ package org.apache.batik.dom.events;
  *   does not implement this interface, reflection will be used to access
  *   the needed methods.
  * </p>
+ * <p>
+ *   This interface also has two methods--{@link #resumePropagation} and
+ *   {@link #setOriginalEvent}--which allow custom events to be handled
+ *   properly.
+ * </p>
  *
  * @author <a href="mailto:cam%40mcc%2eid%2eau">Cameron McCormack</a>
  * @version $Id$
  */
-public interface CustomEvent extends org.w3c.dom.events.CustomEvent {
+public interface CustomEvent
+        extends org.w3c.dom.events.CustomEvent, OriginalEvent {
+
+    /**
+     * Clears the 'propagationStopped' and 'immediatePropagationStopped'
+     * flags.  This is needed for standard event dispatching and should
+     * only be called by the DOM Events implementation.
+     */
+    void resumePropagation();
+
+    /**
+     * Sets the target for this event.  This is needed for initialization
+     * of the custom event object and should only be called by the DOM Events
+     * implementation.
+     */
+    void setTarget(EventTarget target);
+
+    /**
+     * Clones this event object and sets the 'originalEvent' field of the
+     * clone to be equal to the original event object.  This is needed
+     * for sXBL event retargetting and should only be called by the
+     * DOM Events implementation.
+     */
+    CustomEvent retarget(EventTarget target);
+
+    /**
+     * Returns the event from which this event was cloned.
+     */
+    Event getOriginalEvent();
 
     // Members inherited from DOM Level 3 Events org.w3c.dom.events.Event
     // interface follow.

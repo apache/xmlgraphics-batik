@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
+   Copyright 2002-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ import org.w3c.dom.Document;
 public class SVG12CSSEngine extends SVGCSSEngine {
     
     /**
-     * Creates a new SVGCSSEngine.
+     * Creates a new SVG12CSSEngine.
      * @param doc The associated document.
      * @param uri The document URI.
      * @param p The CSS parser to use.
@@ -59,7 +59,7 @@ public class SVG12CSSEngine extends SVGCSSEngine {
     }
 
     /**
-     * Creates a new SVGCSSEngine.
+     * Creates a new SVG12CSSEngine.
      * @param doc The associated document.
      * @param uri The document URI.
      * @param p The CSS parser to use.

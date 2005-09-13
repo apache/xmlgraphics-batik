@@ -20,13 +20,14 @@ package org.apache.batik.bridge;
 import java.awt.Cursor;
 
 import org.apache.batik.dom.events.AbstractEvent;
+import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.util.XLinkSupport;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.events.UIEvent;
 import org.w3c.dom.svg.SVGAElement;
 
 /**
@@ -71,18 +72,30 @@ public class SVGAElementBridge extends SVGGElementBridge {
         super.buildGraphicsNode(ctx, e, node);
 
         if (ctx.isInteractive()) {
-            EventTarget target = (EventTarget)e;
+            NodeEventTarget target = (NodeEventTarget)e;
             EventListener l = new AnchorListener(ctx.getUserAgent());
-            target.addEventListener(SVG_EVENT_CLICK, l, false);
-            ctx.storeEventListener(target, SVG_EVENT_CLICK, l, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
+                 l, false, null);
+            ctx.storeEventListenerNS
+                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_CLICK,
+                 l, false);
 
             l = new CursorMouseOverListener(ctx.getUserAgent());
-            target.addEventListener(SVG_EVENT_MOUSEOVER, l, false);
-            ctx.storeEventListener(target, SVG_EVENT_MOUSEOVER, l, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
+                 l, false, null);
+            ctx.storeEventListenerNS
+                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOVER,
+                 l, false);
 
             l = new CursorMouseOutListener(ctx.getUserAgent());
-            target.addEventListener(SVG_EVENT_MOUSEOUT, l, false);
-            ctx.storeEventListener(target, SVG_EVENT_MOUSEOUT, l, false);
+            target.addEventListenerNS
+                (XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOUT,
+                 l, false, null);
+            ctx.storeEventListenerNS
+                (target, XMLConstants.XML_EVENTS_NAMESPACE_URI, SVG_EVENT_MOUSEOUT,
+                 l, false);
         }
     }
 

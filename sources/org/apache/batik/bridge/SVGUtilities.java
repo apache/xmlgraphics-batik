@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2001-2004  The Apache Software Foundation 
+   Copyright 2001-2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -62,19 +62,16 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
     ////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns the node imported by the given node, or null.
-     */
-    public static Node getImportedChild(Node n) {
-        return CSSEngine.getImportedChild(n);
-    }   
-
-    /**
      * Returns the logical parent element of the given element.
      * The parent element of a used element is the &lt;use> element
      * which reference it.
      */
     public static Element getParentElement(Element elt) {
-        return CSSEngine.getParentElement(elt);
+        Node n = CSSEngine.getCSSParentNode(elt);
+        while (n != null && n.getNodeType() != Node.ELEMENT_NODE) {
+            n = CSSEngine.getCSSParentNode(elt);
+        }
+        return (Element) n;
     }
 
     /**
@@ -277,7 +274,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
             }
 
             try {
-                URIResolver resolver = new URIResolver(svgDoc, loader);
+                URIResolver resolver = ctx.createURIResolver(svgDoc, loader);
                 e = resolver.getElement(purl.toString(), e);
                 refs.add(purl);
             } catch(IOException ex) {

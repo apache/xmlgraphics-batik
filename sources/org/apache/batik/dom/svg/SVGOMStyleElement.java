@@ -25,6 +25,8 @@ import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.StyleSheet;
 import org.apache.batik.dom.AbstractDocument;
 import org.apache.batik.dom.util.XMLSupport;
+import org.apache.batik.util.XMLConstants;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.Event;
@@ -125,9 +127,11 @@ public class SVGOMStyleElement
                 }
                 String  media = getAttributeNS(null, SVG_MEDIA_ATTRIBUTE);
                 styleSheet = e.parseStyleSheet(text, burl, media);
-                addEventListener("DOMCharacterDataModified",
-                                 domCharacterDataModifiedListener,
-                                 false);
+                addEventListenerNS(XMLConstants.XML_EVENTS_NAMESPACE_URI,
+                                   "DOMCharacterDataModified",
+                                   domCharacterDataModifiedListener,
+                                   false,
+                                   null);
             }
         }
         return styleSheet;

@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2000,2002-2003  The Apache Software Foundation 
+   Copyright 2000,2002-2003,2005  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.apache.batik.util.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -53,6 +52,12 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import org.apache.batik.bridge.svg12.ContentManager;
+import org.apache.batik.bridge.svg12.DefaultXBLManager;
+import org.apache.batik.dom.AbstractDocument;
+import org.apache.batik.dom.svg12.XBLOMContentElement;
+import org.apache.batik.dom.xbl.NodeXBL;
+import org.apache.batik.dom.xbl.XBLManager;
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.ButtonFactory;
 import org.apache.batik.util.gui.resource.MissingListenerException;
@@ -61,6 +66,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.css.CSSStyleDeclaration;
 import org.w3c.dom.css.ViewCSS;
 
@@ -102,6 +108,9 @@ public class DOMViewer extends JFrame implements ActionMap {
      */
     protected Panel panel = new Panel();
 
+    /**
+     * Whether to show text nodes that contain only whitespace in the tree.
+     */
     protected boolean showWhitespace = true;
 
     /**
@@ -135,6 +144,10 @@ public class DOMViewer extends JFrame implements ActionMap {
 	getContentPane().add("South", p);
     }
 
+    /**
+     * Sets whether to show text nodes that contain only whitespace
+     * in the tree.
+     */
     public void setShowWhitespace(boolean state) {
         showWhitespace = state;
         if (panel.document != null)
@@ -363,8 +376,38 @@ public class DOMViewer extends JFrame implements ActionMap {
                     if (txt.trim().length() == 0)
                         continue;
                 }
-                    result.add(createTree(n, showWhitespace));
+                result.add(createTree(n, showWhitespace));
 	    }
+            if (node instanceof NodeXBL) {
+                Element shadowTree = ((NodeXBL) node).getXblShadowTree();
+                if (shadowTree != null) {
+                    DefaultMutableTreeNode shadowNode
+                        = new DefaultMutableTreeNode
+                            (new ShadowNodeInfo(shadowTree));
+                    shadowNode.add(createTree(shadowTree, showWhitespace));
+                    result.add(shadowNode);
+                }
+            }
+            if (node instanceof XBLOMContentElement) {
+                AbstractDocument doc
+                    = (AbstractDocument) node.getOwnerDocument();
+                XBLManager xm = doc.getXBLManager();
+                if (xm instanceof DefaultXBLManager) {
+                    DefaultMutableTreeNode selectedContentNode
+                        = new DefaultMutableTreeNode(new ContentNodeInfo(node));
+                    DefaultXBLManager dxm = (DefaultXBLManager) xm;
+                    ContentManager cm = dxm.getContentManager(node);
+                    if (cm != null) {
+                        NodeList nl
+                            = cm.getSelectedContent((XBLOMContentElement) node);
+                        for (int i = 0; i < nl.getLength(); i++) {
+                            selectedContentNode.add(createTree(nl.item(i),
+                                                               showWhitespace));
+                        }
+                        result.add(selectedContentNode);
+                    }
+                }
+            }
 	    return result;
 	}
 
@@ -693,10 +736,49 @@ public class DOMViewer extends JFrame implements ActionMap {
             if (node instanceof Element) {
                 String id = ((Element)node).getAttribute("id");
                 if (id.length() != 0) {
-                    return node.getNodeName() + " \""+id+"\"";
+                    return node.getNodeName() + " \"" + id + "\"";
                 }
             }
             return node.getNodeName();
+        }
+    }
+
+    /**
+     * To store the node information for a shadow tree.
+     */
+    protected static class ShadowNodeInfo extends NodeInfo {
+        /**
+         * Creates a new ShadowNodeInfo object.
+         */
+        public ShadowNodeInfo(Node n) {
+            super(n);
+        }
+
+        /**
+         * Returns a printable representation of the object.
+         */
+        public String toString() {
+            return "shadow tree";
+        }
+    }
+
+    /**
+     * To store the node information for an xbl:content node's
+     * selected content.
+     */
+    protected static class ContentNodeInfo extends NodeInfo {
+        /**
+         * Creates a new ContentNodeInfo object.
+         */
+        public ContentNodeInfo(Node n) {
+            super(n);
+        }
+
+        /**
+         * Returns a printable representation of the object.
+         */
+        public String toString() {
+            return "selected content";
         }
     }
 }
