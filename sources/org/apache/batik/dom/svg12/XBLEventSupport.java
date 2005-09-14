@@ -28,6 +28,7 @@ import org.apache.batik.dom.events.NodeEventTarget;
 import org.apache.batik.dom.util.HashTable;
 import org.apache.batik.dom.xbl.NodeXBL;
 import org.apache.batik.dom.xbl.ShadowTreeEvent;
+import org.apache.batik.util.XMLConstants;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
@@ -53,10 +54,63 @@ public class XBLEventSupport extends EventSupport {
     protected HashTable bubblingImplementationListeners;
 
     /**
+     * Map of event types to their aliases.
+     */
+    protected static HashTable eventTypeAliases = new HashTable();
+    static {
+        eventTypeAliases.put("SVGLoad",   "load");
+        eventTypeAliases.put("SVGUnoad",  "unload");
+        eventTypeAliases.put("SVGAbort",  "abort");
+        eventTypeAliases.put("SVGError",  "error");
+        eventTypeAliases.put("SVGResize", "resize");
+        eventTypeAliases.put("SVGScroll", "scroll");
+        eventTypeAliases.put("SVGZoom",   "zoom");
+    }
+
+    /**
      * Creates a new XBLEventSupport object.
      */
     public XBLEventSupport(AbstractNode n) {
         super(n);
+    }
+
+    /**
+     * Registers an event listener for the given namespaced event type
+     * in the specified group.
+     */
+    public void addEventListenerNS(String namespaceURI,
+                                   String type,
+                                   EventListener listener,
+                                   boolean useCapture,
+                                   Object group) {
+        super.addEventListenerNS
+            (namespaceURI, type, listener, useCapture, group);
+        if (namespaceURI == null
+                || namespaceURI.equals(XMLConstants.XML_EVENTS_NAMESPACE_URI)) {
+            String alias = (String) eventTypeAliases.get(type);
+            if (alias != null) {
+                super.addEventListenerNS
+                    (namespaceURI, alias, listener, useCapture, group);
+            }
+        }
+    }
+
+    /**
+     * Deregisters an event listener.
+     */
+    public void removeEventListenerNS(String namespaceURI,
+                                      String type,
+                                      EventListener listener,
+                                      boolean useCapture) {
+        super.removeEventListenerNS(namespaceURI, type, listener, useCapture);
+        if (namespaceURI == null
+                || namespaceURI.equals(XMLConstants.XML_EVENTS_NAMESPACE_URI)) {
+            String alias = (String) eventTypeAliases.get(type);
+            if (alias != null) {
+                super.removeEventListenerNS
+                    (namespaceURI, alias, listener, useCapture);
+            }
+        }
     }
 
     /**
