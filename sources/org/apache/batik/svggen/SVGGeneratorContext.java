@@ -108,7 +108,12 @@ public class SVGGeneratorContext implements ErrorConstants {
      * Number of decimal places to use in output values.
      * 3 decimal places are used by default.
      */
-    int precision;
+    int precision = 4;
+
+    /**
+     * Current double value formatter
+     */
+    protected DecimalFormat decimalFormat = decimalFormats[precision];
 
     /**
      * Class to describe the GraphicContext defaults to
@@ -429,11 +434,6 @@ public class SVGGeneratorContext implements ErrorConstants {
             return decimalFormat.format(value);
         } 
     }
-
-    /**
-     * Current double value formatter
-     */
-    protected DecimalFormat decimalFormat = decimalFormats[3];
 
     protected static DecimalFormatSymbols dsf 
         = new DecimalFormatSymbols(Locale.US);

@@ -19,7 +19,7 @@
       <text xml:space="preserve" x="10" y="20" transform="translate(150,90)" stroke="none">GeneralPath</text>
       <path fill="none" d="M30 30 Q30 50 50 60 Q30 50 10 60 Q30 50 30 30 Z" transform="translate(150,90)" />
       <text xml:space="preserve" x="10" y="20" transform="translate(150,180)" stroke="none">Area</text>
-      <path d="M35 32 C47.7025489807129 32 58 42.2974510192871 58 55 C58 67.7025527954102 47.7025489807129 78 35 78 C22.2974510192871 78 12 67.7025527954102 12 55 C12 42.2974510192871 22.2974510192871 32 35 32 ZM10 30 L10 80 L60 80 L60 30 Z" transform="translate(150,180)" stroke="none" />
+      <path d="M35 32 C47.702548980713 32 58 42.297451019287 58 55 C58 67.70255279541 47.702548980713 78 35 78 C22.297451019287 78 12 67.70255279541 12 55 C12 42.297451019287 22.297451019287 32 35 32 ZM10 30 L10 80 L60 80 L60 30 Z" transform="translate(150,180)" stroke="none" />
       <text xml:space="preserve" x="10" y="20" transform="translate(150,270)" stroke="none">QuadCurve2D</text>
       <path fill="none" d="M10 55 Q35 105 60 55" transform="translate(150,270)" />
       <text xml:space="preserve" x="10" y="20" transform="translate(75,340)" stroke="none">Line2D</text>

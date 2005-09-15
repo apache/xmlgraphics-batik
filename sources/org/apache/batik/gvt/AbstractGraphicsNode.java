@@ -273,6 +273,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
     }
 
     public void setClip(ClipRable newClipper) {
+        if ((newClipper == null) && (this.clip == null))
+            return; // No change still no clip.
+
         fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.clip = newClipper;
@@ -344,6 +347,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param newMask the new mask of this node
      */
     public void setMask(Mask newMask) {
+        if ((newMask == null) && (this.mask == null)) 
+            return; // No change still no mask.
+
         fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.mask = newMask;
@@ -363,6 +369,9 @@ public abstract class AbstractGraphicsNode implements GraphicsNode {
      * @param newFilter the new filter of this node
      */
     public void setFilter(Filter newFilter) {
+        if ((newFilter == null) && (this.filter == null)) 
+            return; // No change still no filter.
+
         fireGraphicsNodeChangeStarted();
         invalidateGeometryCache();
         this.filter = newFilter;
