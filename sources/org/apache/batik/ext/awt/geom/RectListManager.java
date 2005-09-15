@@ -270,6 +270,7 @@ public class RectListManager implements Collection {
                 while ((rects[idx] == null) && (idx > l)) idx--;
                 if (rects[idx] == null) {
                     rects[idx] = rect;
+                    bounds = null;
                     return;
                 }
             }
