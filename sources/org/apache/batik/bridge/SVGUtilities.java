@@ -69,7 +69,7 @@ public abstract class SVGUtilities implements SVGConstants, ErrorConstants {
     public static Element getParentElement(Element elt) {
         Node n = CSSEngine.getCSSParentNode(elt);
         while (n != null && n.getNodeType() != Node.ELEMENT_NODE) {
-            n = CSSEngine.getCSSParentNode(elt);
+            n = CSSEngine.getCSSParentNode(n);
         }
         return (Element) n;
     }
