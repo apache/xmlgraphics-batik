@@ -44,6 +44,16 @@ public class RectListManager implements Collection {
 
     Rectangle bounds = null;
 
+    public void dump() {
+        System.err.println("RLM: " + this + " Sz: " + size);
+        System.err.println("Bounds: " + getBounds());
+        for (int i=0; i<size; i++) {
+            Rectangle r = rects[i];
+            System.err.println("  [" + r.x + ", " + r.y + ", " +
+                               r.width + ", " + r.height + "]");
+        }
+    }
+
     /**
      * The comparator used to sort the elements of this List.
      * Sorts on x value of Rectangle.
@@ -179,6 +189,7 @@ public class RectListManager implements Collection {
         for (int i=0; i<size; i++) 
             rects[i] = null;
         size=0;
+        bounds = null;
     }
 
     /**
@@ -290,6 +301,7 @@ public class RectListManager implements Collection {
 
         rects[idx] = rect;
         size++;
+        bounds=null;
     }
 
     public boolean addAll(Collection c) {
@@ -404,6 +416,7 @@ public class RectListManager implements Collection {
             if (rects[idx].equals(rect)) {
                 System.arraycopy(rects, idx+1, rects, idx, size-idx);
                 size--;
+                bounds = null;
                 return true;
             }
             if (rects[idx].x != rect.x)  break;
@@ -414,6 +427,7 @@ public class RectListManager implements Collection {
             if (rects[idx].equals(rect)) {
                 System.arraycopy(rects, idx+1, rects, idx, size-idx);
                 size--;
+                bounds = null;
                 return true;
             }
             if (rects[idx].x != rect.x)  break;
@@ -469,6 +483,7 @@ public class RectListManager implements Collection {
                 i++;
             }
             size = j;
+            bounds = null;
         }
         return ret;
     }
@@ -522,6 +537,7 @@ public class RectListManager implements Collection {
                 i++;
             }
             size = j;
+            bounds = null;
         }
         return ret;
     }
@@ -545,6 +561,7 @@ public class RectListManager implements Collection {
         if (size == 0) {
             System.arraycopy(rlm.rects, 0, dst, size, rlm.size);
             size = rlm.size;
+            bounds = null;
             return;
         }
         
@@ -582,6 +599,7 @@ public class RectListManager implements Collection {
         }
         rects = dst;
         size += rlm.size;
+        bounds = null;
     }
 
     public void mergeRects(int overhead, int lineOverhead) {
@@ -675,6 +693,7 @@ public class RectListManager implements Collection {
             i++;
         }
         size = j;
+        bounds=null;
         r = getBounds();
         if (r == null) return;
         if (overhead + (r.height*lineOverhead) + (r.height*r.width) < area) {
@@ -793,6 +812,7 @@ public class RectListManager implements Collection {
             i++;
         }
         size = j;
+        bounds = null;
     }
 
     protected void splitRect(Rectangle r, Rectangle sr,

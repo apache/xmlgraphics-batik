@@ -71,6 +71,32 @@
     toggleDesc();
     toggleTitle();
 
+
+    var desc2  = document.getElementById("foo2");
+    var newD2 = document.createTextNode("Text 1");
+    var oldD2 = desc2.firstChild;
+
+    function toggleDesc2() {
+       desc2.removeChild(oldD2);
+       desc2.appendChild(newD2);
+       var tmp = newD2; newD2=oldD2; oldD2=tmp;
+       setTimeout("toggleDesc2()", 1000);
+    }
+
+    var title2  = document.getElementById("bar2");
+    var newT2 = document.createTextNode("Title 2");
+    var oldT2 = title2.firstChild;
+
+    function toggleTitle2() {
+       title2.removeChild(oldT2);
+       title2.appendChild(newT2);
+       var tmp = newT2; newT2=oldT2; oldT2=tmp;
+       setTimeout("toggleTitle2()", 1000);
+    }
+
+    toggleDesc2();
+    toggleTitle2();
+
     var elT = document.getElementById("title");
     var tglTitle = elT.firstChild;
     var elD = document.getElementById("desc");
@@ -155,6 +181,14 @@
 
        <rect x="135" y="285" width="75" height="75" style="fill:gold"
           ><title id="bar">Title 1</title
+          ><desc >Pre-existing Desc</desc></rect>
+
+       <rect x="240" y="285" width="75" height="75" style="fill:crimson"
+          ><title>Pre Existing Title</title
+          ><desc id="foo2">Text 2</desc></rect>
+
+       <rect x="345" y="285" width="75" height="75" style="fill:gold"
+          ><title id="bar2">Title 1</title
           ><desc >Pre-existing Desc</desc></rect>
 
     </g>

@@ -45,7 +45,9 @@ public abstract class MemoryLeakTest  extends AbstractTest {
     // (why so large I don't know) - it will bail if the all
     // the objects of interest are collected sooner so the runtime
     // is really only a concern for failures.
-    final static int NUM_GC=60;
+    final static int NUM_GC=10;
+    final static int MIN_MEMORY=200000; // 200KB
+    final static int ALLOC_SZ=1000; // 100KB
 
     final static String ERROR_OBJS_NOT_CLEARED = 
         "MemoryLeakTest.message.error.objs.not.cleared";
@@ -82,37 +84,59 @@ public abstract class MemoryLeakTest  extends AbstractTest {
     }
 
     public boolean checkObjects(String [] descs) {
-        for (int i=0; i<NUM_GC; i++) {
-            System.gc();
-            boolean passed = true;
-            for (int j=0; j< descs.length; j++) {
-                String desc = descs[j];
-                WeakRef wr = (WeakRef)objs.get(desc);
-                if ((wr != null) && (wr.get() != null)) {
-                    passed = false;
-                    break;
+        Runtime rt = Runtime.getRuntime();
+        List l = new ArrayList();
+        int nBlock = (int)(rt.totalMemory()/(ALLOC_SZ*NUM_GC));
+        try {
+            while (true) {
+                boolean passed = true;
+                synchronized (objs) {
+                    // System.err.println("FreeMemory: " + rt.freeMemory() + 
+                    //                    " of " +rt.totalMemory());
+
+                    for (int i=0; i<descs.length; i++) {
+                        String desc = descs[i];
+                        WeakRef wr = (WeakRef)objs.get(desc);
+                        if ((wr == null) || (wr.get() == null)) continue;
+                        passed = false;
+                        break;
+                    }
                 }
+                if (passed) return true;
+
+                List l2 = new ArrayList();
+                for (int i=0; i<nBlock; i++) {
+                    l2.add(new byte[ALLOC_SZ]);
+                }
+                l.add(l2);
             }
-            if (passed) return true;
-            Thread.yield();
+        } catch (OutOfMemoryError oom) {
+        } finally {
+            l = null;
         }
+        
+        for (int i=0; i<NUM_GC; i++)
+            rt.gc();
 
         StringBuffer sb = new StringBuffer();
+        boolean passed = true;
         synchronized (objs) {
-            boolean passed = true;
-            for (int j=0; j< descs.length; j++) {
-                String desc = descs[j];
+            for (int i=0; i<descs.length; i++) {
+                String desc = descs[i];
                 WeakRef wr = (WeakRef)objs.get(desc);
-                if ((wr == null) || (wr.get() == null)) continue;
+                if (wr == null) continue;
+                Object o = wr.get();
+                if (o == null) continue;
                 if (!passed)
-                    sb.append(","); // Already put one obj out
+                    sb.append(",");
                 passed = false;
                 sb.append("'");
                 sb.append(wr.getDesc());
                 sb.append("'");
             }
+            if (passed) return true;
         }
-        
+
         String objStr = sb.toString();
         TestReport.Entry entry = new TestReport.Entry
             (fmt(ERROR_DESCRIPTION, null),
@@ -134,23 +158,42 @@ public abstract class MemoryLeakTest  extends AbstractTest {
     }
 
     public boolean checkAllObjects() {
-        for (int i=0; i<NUM_GC; i++) {
-            System.gc();
-            synchronized (objs) {
+        Runtime rt = Runtime.getRuntime();
+        List l = new ArrayList();
+        int nBlock = (int)(rt.totalMemory()/(ALLOC_SZ*NUM_GC));
+        try {
+            while (true) {
+                // System.err.println("FreeMemory: " + rt.freeMemory() + 
+                //                    " of " +rt.totalMemory());
+
                 boolean passed = true;
-                Iterator iter = objs.values().iterator();
-                while (iter.hasNext()) {
-                    WeakRef wr = (WeakRef)iter.next();
-                    Object o = wr.get();
-                    if (o != null) {
-                        passed = false;
-                        break;
+                synchronized (objs) {
+                    Iterator iter = objs.values().iterator();
+                    while (iter.hasNext()) {
+                        WeakRef wr = (WeakRef)iter.next();
+                        if ((wr != null) && (wr.get() != null)) {
+                            passed = false;
+                            break;
+                        }
                     }
                 }
                 if (passed) return true;
+
+                List l2 = new ArrayList();
+                for (int i=0; i<nBlock; i++) {
+                    l2.add(new byte[ALLOC_SZ]);
+                }
+                l.add(l2);
             }
+        } catch (OutOfMemoryError oom) {
+        } finally {
+            l = null;
         }
-        
+
+        for (int i=0; i<NUM_GC; i++)
+            rt.gc();
+
+
         StringBuffer sb = new StringBuffer();
         synchronized (objs) {
             boolean passed = true;
@@ -168,7 +211,7 @@ public abstract class MemoryLeakTest  extends AbstractTest {
             }
             if (passed) return true;
         }
-        
+
         String objStr = sb.toString();
 
         TestReport.Entry entry = new TestReport.Entry

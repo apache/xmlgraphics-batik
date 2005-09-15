@@ -51,13 +51,13 @@
       <text xml:space="preserve" x="0" y="0" stroke="none">Various opacities</text>
       <rect x="0" y="0" transform="translate(0,10)" fill="rgb(80,255,80)" width="40" height="260" stroke="none" />
     </g>
-    <g font-size="9" transform="translate(150,30)" fill-opacity="0.0470588244498" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.0470588244498">
+    <g font-size="9" transform="translate(150,30)" fill-opacity="0.04705882445" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.04705882445">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,30)">
       <text xml:space="preserve" x="50" y="6" stroke="none">12</text>
     </g>
-    <g font-size="9" transform="translate(150,43)" fill-opacity="0.0980392172933" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.0980392172933">
+    <g font-size="9" transform="translate(150,43)" fill-opacity="0.098039217293" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.098039217293">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,43)">
@@ -69,31 +69,31 @@
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,56)">
       <text xml:space="preserve" x="50" y="6" stroke="none">38</text>
     </g>
-    <g font-size="9" transform="translate(150,69)" fill-opacity="0.2000000029802" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.2000000029802">
+    <g font-size="9" transform="translate(150,69)" fill-opacity="0.20000000298" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.20000000298">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,69)">
       <text xml:space="preserve" x="50" y="6" stroke="none">51</text>
     </g>
-    <g font-size="9" transform="translate(150,82)" fill-opacity="0.2470588237047" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.2470588237047">
+    <g font-size="9" transform="translate(150,82)" fill-opacity="0.247058823705" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.247058823705">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,82)">
       <text xml:space="preserve" x="50" y="6" stroke="none">63</text>
     </g>
-    <g font-size="9" transform="translate(150,95)" fill-opacity="0.2980392277241" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.2980392277241">
+    <g font-size="9" transform="translate(150,95)" fill-opacity="0.298039227724" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.298039227724">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,95)">
       <text xml:space="preserve" x="50" y="6" stroke="none">76</text>
     </g>
-    <g font-size="9" transform="translate(150,108)" fill-opacity="0.3490196168423" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.3490196168423">
+    <g font-size="9" transform="translate(150,108)" fill-opacity="0.349019616842" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.349019616842">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,108)">
       <text xml:space="preserve" x="50" y="6" stroke="none">89</text>
     </g>
-    <g font-size="9" transform="translate(150,121)" fill-opacity="0.4000000059605" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.4000000059605">
+    <g font-size="9" transform="translate(150,121)" fill-opacity="0.40000000596" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.40000000596">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,121)">
@@ -105,61 +105,61 @@
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,134)">
       <text xml:space="preserve" x="50" y="6" stroke="none">114</text>
     </g>
-    <g font-size="9" transform="translate(150,147)" fill-opacity="0.4980392158031" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.4980392158031">
+    <g font-size="9" transform="translate(150,147)" fill-opacity="0.498039215803" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.498039215803">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,147)">
       <text xml:space="preserve" x="50" y="6" stroke="none">127</text>
     </g>
-    <g font-size="9" transform="translate(150,160)" fill-opacity="0.5490196347237" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.5490196347237">
+    <g font-size="9" transform="translate(150,160)" fill-opacity="0.549019634724" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.549019634724">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,160)">
       <text xml:space="preserve" x="50" y="6" stroke="none">140</text>
     </g>
-    <g font-size="9" transform="translate(150,173)" fill-opacity="0.6000000238419" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.6000000238419">
+    <g font-size="9" transform="translate(150,173)" fill-opacity="0.600000023842" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.600000023842">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,173)">
       <text xml:space="preserve" x="50" y="6" stroke="none">153</text>
     </g>
-    <g font-size="9" transform="translate(150,186)" fill-opacity="0.6470588445663" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.6470588445663">
+    <g font-size="9" transform="translate(150,186)" fill-opacity="0.647058844566" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.647058844566">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,186)">
       <text xml:space="preserve" x="50" y="6" stroke="none">165</text>
     </g>
-    <g font-size="9" transform="translate(150,199)" fill-opacity="0.6980392336845" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.6980392336845">
+    <g font-size="9" transform="translate(150,199)" fill-opacity="0.698039233685" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.698039233685">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,199)">
       <text xml:space="preserve" x="50" y="6" stroke="none">178</text>
     </g>
-    <g font-size="9" transform="translate(150,212)" fill-opacity="0.7490196228027" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.7490196228027">
+    <g font-size="9" transform="translate(150,212)" fill-opacity="0.749019622803" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.749019622803">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,212)">
       <text xml:space="preserve" x="50" y="6" stroke="none">191</text>
     </g>
-    <g font-size="9" transform="translate(150,225)" fill-opacity="0.8000000119209" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.8000000119209">
+    <g font-size="9" transform="translate(150,225)" fill-opacity="0.800000011921" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.800000011921">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,225)">
       <text xml:space="preserve" x="50" y="6" stroke="none">204</text>
     </g>
-    <g font-size="9" transform="translate(150,238)" fill-opacity="0.8470588326454" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.8470588326454">
+    <g font-size="9" transform="translate(150,238)" fill-opacity="0.847058832645" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.847058832645">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,238)">
       <text xml:space="preserve" x="50" y="6" stroke="none">216</text>
     </g>
-    <g font-size="9" transform="translate(150,251)" fill-opacity="0.8980392217636" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.8980392217636">
+    <g font-size="9" transform="translate(150,251)" fill-opacity="0.898039221764" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.898039221764">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,251)">
       <text xml:space="preserve" x="50" y="6" stroke="none">229</text>
     </g>
-    <g font-size="9" transform="translate(150,264)" fill-opacity="0.9490196108818" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.9490196108818">
+    <g font-size="9" transform="translate(150,264)" fill-opacity="0.949019610882" fill="rgb(0,0,0)" text-rendering="optimizeLegibility" stroke="rgb(0,0,0)" stroke-opacity="0.949019610882">
       <rect width="40" x="0" height="13" y="0" stroke="none" />
     </g>
     <g text-rendering="optimizeLegibility" font-size="9" transform="translate(150,264)">
