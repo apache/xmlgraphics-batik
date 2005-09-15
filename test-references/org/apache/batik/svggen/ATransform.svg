@@ -21,7 +21,7 @@
       <text xml:space="preserve" x="10" y="12" stroke="none">Shear</text>
       <rect x="10" y="20" transform="matrix(1,1,0.2,1,0,0)" width="50" height="30" stroke="none" />
     </g>
-    <g fill="rgb(0,0,0)" text-rendering="optimizeLegibility" fill-opacity="0.5019608139992" stroke-opacity="0.5019608139992" stroke="rgb(0,0,0)">
+    <g fill="rgb(0,0,0)" text-rendering="optimizeLegibility" fill-opacity="0.501960813999" stroke-opacity="0.501960813999" stroke="rgb(0,0,0)">
       <rect width="56" x="164" height="80" y="150" stroke="none" />
     </g>
   </g>
