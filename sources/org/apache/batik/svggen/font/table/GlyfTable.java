@@ -73,31 +73,26 @@ public class GlyfTable implements Table {
         descript = new GlyfDescript[numGlyphs];
         ByteArrayInputStream bais = new ByteArrayInputStream(buf);
         for (int i = 0; i < numGlyphs; i++) {
-            int len = loca.getOffset((short)(i + 1)) - loca.getOffset(i);
+            int len = loca.getOffset((i + 1)) - loca.getOffset(i);
             if (len > 0) {
                 bais.reset();
                 bais.skip(loca.getOffset(i));
                 short numberOfContours = (short)(bais.read()<<8 | bais.read());
                 if (numberOfContours >= 0) {
                     descript[i] = new GlyfSimpleDescript(this, numberOfContours, bais);
-                }
-            } else {
-                descript[i] = null;
-            }
-        }
-
-        for (int i = 0; i < numGlyphs; i++) {
-            int len = loca.getOffset((short)(i + 1)) - loca.getOffset(i);
-            if (len > 0) {
-                bais.reset();
-                bais.skip(loca.getOffset(i));
-                short numberOfContours = (short)(bais.read()<<8 | bais.read());
-                if (numberOfContours < 0) {
+                } else {
                     descript[i] = new GlyfCompositeDescript(this, bais);
                 }
             }
         }
+
         buf = null;
+
+        for (int i = 0; i < numGlyphs; i++) {
+            if (descript[i] == null) continue;
+
+            descript[i].resolve();
+        }
     }
 
     public GlyfDescript getDescription(int i) {
