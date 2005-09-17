@@ -49,6 +49,9 @@ public abstract class GlyfDescript extends Program implements GlyphDescription {
         yMax = (short)(bais.read()<<8 | bais.read());
     }
 
+    public void resolve() {
+    }
+
     public int getNumberOfContours() {
         return numberOfContours;
     }
